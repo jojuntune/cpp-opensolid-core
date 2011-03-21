@@ -57,7 +57,7 @@ namespace opensolid
         typedef Matrix<double, dimensions_, axes_> MatrixType;
     protected:
         VectorType _origin;
-        MatrixType _unit_vectors;
+        MatrixType _vectors;
 
 		template <int other_dimensions_, int other_axes_>
 		friend class Datum;
@@ -83,15 +83,15 @@ namespace opensolid
         int axes() const;
         
         const VectorType& origin() const;
-        const MatrixType& unitVectors() const;
+        const MatrixType& vectors() const;
         
         VectorType operator()(double x) const;
         VectorType operator()(double x, double y) const;
         VectorType operator()(double x, double y, double z) const;
         VectorType operator()(double x, double y, double z, double w) const;
         
-        VectorType unitVector() const;
-        VectorType unitVector(int index) const;
+        VectorType vector() const;
+        VectorType vector(int index) const;
         VectorType xVector() const;
         VectorType yVector() const;
         VectorType zVector() const;
@@ -120,6 +120,10 @@ namespace opensolid
         Datum<dimensions_, axes_> rotatedBy(double angle, const Vector2d& point) const;
         Datum<dimensions_, axes_> rotatedBy(double angle, const Axis3d& axis) const;
         
+        Datum<dimensions_, axes_> normalized() const;
+        LinearDatum<dimensions_, axes_> linear() const;
+        Frame<dimensions_> inverse() const;
+        
         template <int other_dimensions_, int other_axes_>
         Datum<other_dimensions_, axes_> operator*(
             const Datum<other_dimensions_, other_axes_>& other
@@ -127,9 +131,6 @@ namespace opensolid
         
         template <int other_dimensions_>
         Datum<dimensions_, axes_> operator/(const Frame<other_dimensions_>& other) const;
-        
-        LinearDatum<dimensions_, axes_> linear() const;
-        Frame<dimensions_> inverse() const;
     };
     
     typedef Datum<Dynamic, Dynamic> DatumXd;
@@ -147,8 +148,6 @@ namespace opensolid
         Axis(const Datum<other_dimensions_, other_axes_>& other);
         
         using Datum<dimensions_, 1>::operator=;
-        
-        static Axis<dimensions_> FromPoints(const VectorType& origin, const VectorType& point);
     };
     
     class Plane3d : public Datum<3, 2>
@@ -169,12 +168,6 @@ namespace opensolid
         Plane3d(const Datum<other_dimensions_, other_axes_>& other);
         
         using Datum<3, 2>::operator=;
-        
-        static Plane3d FromPoints(
-            const Vector3d& origin,
-            const Vector3d& first_point,
-            const Vector3d& second_point
-        );
     };
     
     template <int dimensions_>
@@ -249,24 +242,18 @@ namespace opensolid
     inline Datum<dimensions_, axes_>::Datum(
         const VectorType& origin,
         const List<VectorType>& vectors
-    ) : _origin(origin) {
-        MatrixXd temp(origin.size(), vectors.size());
-        for (int i = 0; i < vectors.size(); ++i) {
-            assert(vectors[i].size() == origin.size());
-            temp.col(i) = vectors[i];
-        }
-        if (axes_ == Dynamic) {
-            _unit_vectors = orthogonalBasis(temp).leftCols(vectors.size());
-        } else {
-            _unit_vectors = orthogonalBasis(temp).leftCols(axes_);
-        }
+    ) : _origin(origin), _vectors(origin.size(), vectors.size()) {
+        assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
+        assert(vectors.size() == axes_ || axes_ == Dynamic);
+        vectors.copy(_vectors.colBegin());
     }
     
     template <int dimensions_, int axes_> template <class DerivedType>
     inline Datum<dimensions_, axes_>::Datum(
         const VectorType& origin,
         const MatrixBase<DerivedType>& vectors
-    ) : _origin(origin) {
+    ) : _origin(origin), _vectors(vectors) {
+        assert()
         if (axes_ == Dynamic) {
             _unit_vectors = orthogonalBasis(vectors).leftCols(vectors.cols());
         } else {
@@ -564,8 +551,22 @@ namespace opensolid
     }
     
     template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthogonalized() {
+        
+    }
+    
+    template <int dimensions_, int axes_>
     inline LinearDatum<dimensions_, axes_> Datum<dimensions_, axes_>::linear() const {
         return LinearDatum<dimensions_, axes_>(*this);
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Frame<dimensions_> Datum<dimensions_, axes_>::inverse() const {
+        assert(axes() == dimensions());
+        Datum<dimensions_, axes_> result;
+        result._origin = unitVectors().transpose() * -origin();
+        result._unit_vectors = unitVectors().transpose();
+        return result;
     }
         
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
@@ -588,15 +589,6 @@ namespace opensolid
         Datum<dimensions_, axes_> result;
         result._origin = origin() / other;
         result._unit_vectors = unitVectors() / other.linear();
-        return result;
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Frame<dimensions_> Datum<dimensions_, axes_>::inverse() const {
-        assert(axes() == dimensions());
-        Datum<dimensions_, axes_> result;
-        result._origin = unitVectors().transpose() * -origin();
-        result._unit_vectors = unitVectors().transpose();
         return result;
     }
     
