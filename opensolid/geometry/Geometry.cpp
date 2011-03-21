@@ -86,24 +86,43 @@ namespace opensolid
     
     Geometry Geometry::binormal() const {return Geometry(function().binormal(), domain());}
     
-    Geometry Geometry::LineFromEndpoints(
-        const VectorXd& start,
-        const VectorXd& end
-    ) {return Geometry(Function::Linear(start, end - start), Interval(0, 1));}
+    Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
+        return Geometry(Function::Linear(start, end - start), Interval(0, 1));
+    }
+        
+    Geometry Geometry::Arc2d(const Frame2d& frame, const Interval& angle) {
+        
+    }
     
-    Geometry Geometry::ArcFromEndpoints(
-        const Vector3d& center,
-        const Vector3d& normal,
+    Geometry Geometry::Arc2d(const Vector2d& center, const Interval& angle) {
+        
+    }
+    
+    Geometry Geometry::Arc2d(
+        const Vector2d& center,
+        bool counterclockwise,
+        const Vector2d& start,
+        const Vector2d& end
+    ) {
+        
+    }
+    
+    Geometry Geometry::Circle2d(const Vector2d& center);
+    
+    Geometry Geometry::Arc3d(const Plane3d& plane, const Interval& angle);
+    
+    Geometry Geometry::Arc3d(
+        const Axis3d& axis,
         const Vector3d& start,
         const Vector3d& end
     ) {
-        Vector3d start_radial = start - center;
-        Vector3d end_radial = end - center;
-        assert(start_radial.isOrthogonal(normal, Tolerance::roundoff()));
-        assert(end_radial.isOrthogonal(normal, Tolerance::roundoff()));
+        Vector3d start_radial = start - axis.origin();
+        Vector3d end_radial = end - axis.origin();
+        assert(start_radial.isOrthogonal(axis.unitVector(), Tolerance::roundoff()));
+        assert(end_radial.isOrthogonal(axis.unitVector(), Tolerance::roundoff()));
         double radius = start_radial.norm();
         Matrix<double, 3, 2> radial_vectors;
-        radial_vectors << start_radial, normal.cross(start_radial).normalized() * radius;
+        radial_vectors << start_radial, axis.unitVector().cross(start_radial).normalized() * radius;
         double angle = atan2(end_radial.dot(radial_vectors.col(1)), end_radial.dot(start_radial));
         if (angle < Tolerance::roundoff()) {angle += 2 * M_PI;}
         return Geometry(
@@ -115,6 +134,8 @@ namespace opensolid
             Interval(0, angle)
         );
     }
+    
+    Geometry Geometry::Circle3d(const Axis3d& axis);
 
     inline Geometry operator-(const Geometry& argument) {
         return Geometry(-argument.function(), argument.domain());

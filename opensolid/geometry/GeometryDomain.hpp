@@ -34,6 +34,7 @@ namespace opensolid
     struct Bounds<Domain>
     {
         typedef VectorXI Type;
+        
         static VectorXI bounds(const Domain& domain);
     };
     
@@ -41,6 +42,7 @@ namespace opensolid
     struct Bounds<Geometry>
     {
         typedef VectorXI Type;
+        
         static FunctionResult<VectorXI> bounds(const Geometry& geometry);
     };
     
@@ -107,17 +109,33 @@ namespace opensolid
         OPENSOLID_EXPORT Geometry normal() const;
         OPENSOLID_EXPORT Geometry binormal() const;
         
-        OPENSOLID_EXPORT static Geometry LineFromEndpoints(
+        OPENSOLID_EXPORT static Geometry Line(
             const VectorXd& start,
             const VectorXd& end
         );
         
-        OPENSOLID_EXPORT static Geometry ArcFromEndpoints(
-            const Vector3d& center,
-            const Vector3d& normal,
+        OPENSOLID_EXPORT static Geometry Arc2d(const Frame2d& frame, const Interval& angle);
+        
+        OPENSOLID_EXPORT static Geometry Arc2d(const Vector2d& center, const Interval& angle);
+        
+        OPENSOLID_EXPORT static Geometry Arc2d(
+            const Vector2d& center,
+            bool counterclockwise,
+            const Vector2d& start,
+            const Vector2d& end
+        );
+        
+        OPENSOLID_EXPORT static Geometry Circle2d(const Vector2d& center);
+        
+        OPENSOLID_EXPORT static Geometry Arc3d(const Plane3d& plane, const Interval& angle);
+        
+        OPENSOLID_EXPORT static Geometry Arc3d(
+            const Axis3d& axis,
             const Vector3d& start,
             const Vector3d& end
         );
+        
+        OPENSOLID_EXPORT static Geometry Circle3d(const Axis3d& axis);
     };
 
     OPENSOLID_EXPORT Geometry operator-(const Geometry& argument);
@@ -151,13 +169,32 @@ namespace opensolid
 
 namespace opensolid
 {
+    inline VectorXI Bounds<Domain>::bounds(const Domain& domain) {return domain.bounds();}
+    
     inline FunctionResult<VectorXI> Bounds<Geometry>::bounds(const Geometry& geometry) {
         return geometry.bounds();
     }
     
     inline Domain::Domain() : _boundaries() {}
     
-    inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
+    namespace
+    {
+        struct BoundaryChecker
+        {
+            const Domain& _domain;
+            
+            inline BoundaryChecker(const Domain& domain) : _domain(domain) {}
+            
+            inline void visit(const Geometry& boundary) {
+                assert(boundary.dimensions() == _domain.dimensions());
+                assert(boundary.parameters() == _domain.dimensions() - 1)
+            }
+        };
+    }
+    
+    inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {
+        boundaries.visit(BoundaryChecker(*this));
+    }
     
     inline Domain::Domain(const Interval& bounds) {
         _boundaries = rectangularBoundaries(VectorXI::Constant(1, bounds));
@@ -182,8 +219,6 @@ namespace opensolid
     
     inline int Domain::dimensions() const {return bounds().size();}
     
-    inline VectorXI Bounds<Domain>::bounds(const Domain& domain) {return domain.bounds();}
-    
     inline Geometry::Geometry() : _function(), _domain() {}
     
     inline Geometry::Geometry(const Function& function, const Domain& domain) :
@@ -194,9 +229,7 @@ namespace opensolid
     inline Geometry::Geometry(double value) : _function(value), _domain() {}
     
     template <class DerivedType>
-    inline Geometry::Geometry(const EigenBase<DerivedType>& value) : _function(value), _domain() {
-        assert(value.cols() == 1);
-    }
+    inline Geometry::Geometry(const EigenBase<DerivedType>& value) : _function(value), _domain() {}
     
     inline const Function& Geometry::function() const {return _function;}
     
