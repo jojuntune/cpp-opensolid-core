@@ -221,7 +221,7 @@ namespace opensolid
     template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
     inline void DatumProduct<DerivedType, dimensions_, axes_>::evalTo(ResultType& result) const {
         result = (
-            _datum.unitVectors().template cast<typename ResultType::Scalar>() * _matrix
+            _datum.vectors().template cast<typename ResultType::Scalar>() * _matrix
         ).colwise() + _datum.origin().template cast<typename ResultType::Scalar>();
     }
     
@@ -239,8 +239,11 @@ namespace opensolid
     
     template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
     inline void DatumQuotient<DerivedType, dimensions_, axes_>::evalTo(ResultType& result) const {
-        result = _datum.unitVectors().transpose().template cast<typename ResultType::Scalar>() *
-            (_matrix.colwise() - _datum.origin().template cast<typename ResultType::Scalar>());
+        result = (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
+            _datum.vectors().transpose() * (
+                _matrix.colwise() - _datum.origin().template cast<typename ResultType::Scalar>()
+            )
+        );
     }
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -262,7 +265,7 @@ namespace opensolid
     template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
     inline void LinearDatumProduct<DerivedType, dimensions_, axes_>::evalTo(
         ResultType& result
-    ) const {result = _datum.unitVectors().template cast<typename ResultType::Scalar>() * _matrix;}
+    ) const {result = _datum.vectors().template cast<typename ResultType::Scalar>() * _matrix;}
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumQuotient<DerivedType, dimensions_, axes_>::LinearDatumQuotient(
@@ -284,8 +287,10 @@ namespace opensolid
     inline void LinearDatumQuotient<DerivedType, dimensions_, axes_>::evalTo(
         ResultType& result
     ) const {
-        result = _datum.unitVectors().transpose().template cast<typename ResultType::Scalar>() *
-            _matrix;
+        Matrix<double, axes_, dimensions_> temp = (
+            _datum.vectors().transpose() * _datum.unitVectors()
+        ).ldlt().solve(_datum.vectors().transpose());
+        result = temp.template cast<typename DerivedType::Scalar>() * _matrix;
     }
     
     template <class DerivedType, int dimensions_, int axes_>
