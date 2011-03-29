@@ -109,33 +109,24 @@ namespace opensolid
         OPENSOLID_EXPORT Geometry normal() const;
         OPENSOLID_EXPORT Geometry binormal() const;
         
-        OPENSOLID_EXPORT static Geometry Line(
-            const VectorXd& start,
-            const VectorXd& end
-        );
+        OPENSOLID_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
         
-        OPENSOLID_EXPORT static Geometry Arc2d(const Frame2d& frame, const Interval& angle);
+        OPENSOLID_EXPORT static Geometry Arc(double radius, const Interval& angle);
         
-        OPENSOLID_EXPORT static Geometry Arc2d(const Vector2d& center, const Interval& angle);
-        
-        OPENSOLID_EXPORT static Geometry Arc2d(
+        OPENSOLID_EXPORT static Geometry Arc(
             const Vector2d& center,
-            bool counterclockwise,
             const Vector2d& start,
-            const Vector2d& end
+            const Vector2d& end,
+            bool counterclockwise
         );
         
-        OPENSOLID_EXPORT static Geometry Circle2d(const Vector2d& center);
-        
-        OPENSOLID_EXPORT static Geometry Arc3d(const Plane3d& plane, const Interval& angle);
-        
-        OPENSOLID_EXPORT static Geometry Arc3d(
+        OPENSOLID_EXPORT static Geometry Arc(
             const Axis3d& axis,
             const Vector3d& start,
             const Vector3d& end
         );
         
-        OPENSOLID_EXPORT static Geometry Circle3d(const Axis3d& axis);
+        OPENSOLID_EXPORT static Geometry Circle(double radius);
     };
 
     OPENSOLID_EXPORT Geometry operator-(const Geometry& argument);
@@ -187,7 +178,7 @@ namespace opensolid
             
             inline void visit(const Geometry& boundary) {
                 assert(boundary.dimensions() == _domain.dimensions());
-                assert(boundary.parameters() == _domain.dimensions() - 1)
+                assert(boundary.parameters() == _domain.dimensions() - 1);
             }
         };
     }

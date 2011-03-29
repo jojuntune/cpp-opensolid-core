@@ -87,55 +87,61 @@ namespace opensolid
     Geometry Geometry::binormal() const {return Geometry(function().binormal(), domain());}
     
     Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
-        return Geometry(Function::Linear(start, end - start), Interval(0, 1));
-    }
-        
-    Geometry Geometry::Arc2d(const Frame2d& frame, const Interval& angle) {
-        
+        return Geometry(start + Function::t * (end - start), Interval(0, 1));
     }
     
-    Geometry Geometry::Arc2d(const Vector2d& center, const Interval& angle) {
-        
+    Geometry Geometry::Arc(double radius, const Interval& angle) {
+        Vector2d x_vector = radius * Vector2d::UnitX();
+        Vector2d y_vector = radius * Vector2d::UnitY();
+        return Geometry(cos(Function::t) * x_vector + sin(Function::t) * y_vector, angle);
     }
     
-    Geometry Geometry::Arc2d(
+    Geometry Geometry::Arc(
         const Vector2d& center,
-        bool counterclockwise,
         const Vector2d& start,
-        const Vector2d& end
+        const Vector2d& end,
+        bool counterclockwise
     ) {
-        
+        Vector2d start_radial = start - center;
+        double radius = start_radial.norm();
+        Vector2d end_radial = end - center;
+        assert(abs(end_radial.norm() - radius) < Tolerance::roundoff());
+        Vector2d perpendicular = start_radial.unitOrthogonal() * radius;
+        if (!counterclockwise) {perpendicular = -perpendicular;}
+        double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
+        if (angle < Tolerance::roundoff()) {angle += 2 * M_PI;}
+        return Geometry(
+            center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
+            Interval(0, angle) 
+        );
     }
     
-    Geometry Geometry::Circle2d(const Vector2d& center);
-    
-    Geometry Geometry::Arc3d(const Plane3d& plane, const Interval& angle);
-    
-    Geometry Geometry::Arc3d(
+    Geometry Geometry::Arc(
         const Axis3d& axis,
         const Vector3d& start,
         const Vector3d& end
     ) {
-        Vector3d start_radial = start - axis.origin();
-        Vector3d end_radial = end - axis.origin();
-        assert(start_radial.isOrthogonal(axis.unitVector(), Tolerance::roundoff()));
-        assert(end_radial.isOrthogonal(axis.unitVector(), Tolerance::roundoff()));
+        Vector3d center = ((start - axis.origin()) / axis) * axis;
+        Vector3d start_radial = start - center;
+        Vector3d end_radial = end - center;
+        assert(end_radial.isOrthogonal(axis.vector(), Tolerance::roundoff()));
         double radius = start_radial.norm();
-        Matrix<double, 3, 2> radial_vectors;
-        radial_vectors << start_radial, axis.unitVector().cross(start_radial).normalized() * radius;
-        double angle = atan2(end_radial.dot(radial_vectors.col(1)), end_radial.dot(start_radial));
+        assert(abs(end_radial.norm() - radius) < Tolerance::roundoff());
+        Vector3d perpendicular = axis.vector().cross(start_radial).normalized() * radius;
+        double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
         if (angle < Tolerance::roundoff()) {angle += 2 * M_PI;}
         return Geometry(
-            Function::Elliptical(
-                center,
-                radial_vectors,
-                VectorXb::Constant(1, true)
-            ),
+            center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
             Interval(0, angle)
         );
     }
     
-    Geometry Geometry::Circle3d(const Axis3d& axis);
+    Geometry Geometry::Circle(double radius) {
+        Vector2d x_vector = radius * Vector2d::UnitX();
+        Vector2d y_vector = radius * Vector2d::UnitY();
+        Interval angle(0, 2 * M_PI);
+        return Geometry(cos(Function::t) * x_vector + sin(Function::t) * y_vector, angle);
+    }
 
     inline Geometry operator-(const Geometry& argument) {
         return Geometry(-argument.function(), argument.domain());
