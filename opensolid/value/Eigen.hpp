@@ -26,6 +26,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #include <opensolid/common/Bisected.hpp>
+#include "MatrixListAdapter.hpp"
 
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN

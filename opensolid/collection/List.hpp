@@ -30,82 +30,7 @@
 #include <opensolid/value/Matrix.hpp>
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
-
-namespace opensolid
-{
-    template <class Type>
-    class ListMatrixAdapter;
-    
-    template <class Type>
-    class ConstListMatrixAdapter;
-}
-
-namespace Eigen
-{
-    template <class Type>
-    struct ei_traits<opensolid::ListMatrixAdapter<Type> >
-    {
-        typedef typename Type::Scalar Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
-        
-        static const int RowsAtCompileTime = Type::RowsAtCompileTime;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = LvalueBit | NestByRefBit;
-        static const int CoeffReadCost = 2;
-    };
-    
-    template <class Type>
-    struct ei_traits<opensolid::ConstListMatrixAdapter<Type> >
-    {
-        typedef typename Type::Scalar Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
-        
-        static const int RowsAtCompileTime = Type::RowsAtCompileTime;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
-        static const int CoeffReadCost = 2;
-    };
-    
-    template <>
-    struct ei_traits<opensolid::ListMatrixAdapter<double> >
-    {
-        typedef double Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
-        
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = LvalueBit | NestByRefBit | RowMajorBit;
-        static const int CoeffReadCost = 2;
-    };
-    
-    template <>
-    struct ei_traits<opensolid::ConstListMatrixAdapter<double> >
-    {
-        typedef double Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
-        
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit | RowMajorBit;
-        static const int CoeffReadCost = 2;
-    };
-}
+#include "ListMatrixAdapter.hpp"
 
 namespace opensolid
 {
@@ -228,8 +153,7 @@ namespace opensolid
             const Type& tenth_item
         );
         
-        ListMatrixAdapter<Type> matrix();
-        ConstListMatrixAdapter<Type> matrix() const;
+        ListMatrixAdapter<Type> matrix() const;
         
         int size() const;
         bool empty() const;
@@ -285,170 +209,6 @@ namespace opensolid
     
     template <class Type>
     std::ostream& operator<<(std::ostream& stream, const List<Type>& list);
-    
-    template <class Type>
-    class ListMatrixAdapter : public MatrixBase<ListMatrixAdapter<Type> >
-    {
-    private:
-        List<Type>& _list;
-        
-        friend class ConstListMatrixAdapter<Type>;
-    public:
-        typedef MatrixBase<ListMatrixAdapter<Type> > Base;
-        typedef typename Type::Scalar Scalar;
-        typedef Scalar RealScalar;
-        typedef Scalar PacketScalar;
-        typedef Scalar CoeffReturnType;
-        typedef typename Eigen::ei_nested<ListMatrixAdapter<Type> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = Type::RowsAtCompileTime;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = LvalueBit | NestByRefBit;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
-        
-        ListMatrixAdapter(List<Type>& list);
-        ListMatrixAdapter(ListMatrixAdapter<Type>& other);
-        
-        template <class DerivedType>
-        void operator=(const ReturnByValue<DerivedType>& other);
-        
-        template <class DerivedType>
-        void operator=(const MatrixBase<DerivedType>& other);
-        
-        void resize(int rows, int cols);
-        
-        int rows() const;
-        int cols() const;
-        
-        typename const Type::Scalar& coeff(int row, int col) const;
-        typename Type::Scalar& coeffRef(int row, int col);
-    };
-    
-    template <class Type>
-    class ConstListMatrixAdapter : public MatrixBase<ConstListMatrixAdapter<Type> >
-    {
-    private:
-        const List<Type>& _list;
-    public:
-        typedef MatrixBase<ConstListMatrixAdapter<Type> > Base;
-        typedef typename Type::Scalar Scalar;
-        typedef Scalar RealScalar;
-        typedef Scalar PacketScalar;
-        typedef Scalar CoeffReturnType;
-        typedef typename Eigen::ei_nested<ConstListMatrixAdapter<Type> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = Type::RowsAtCompileTime;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
-        
-        ConstListMatrixAdapter(const List<Type>& list);
-        ConstListMatrixAdapter(const ListMatrixAdapter<Type>& other);
-        ConstListMatrixAdapter(const ConstListMatrixAdapter<Type>& other);
-        
-        int rows() const;
-        int cols() const;
-        
-        typename Type::Scalar coeff(int row, int col) const;
-    };
-    
-    template <>
-    class ListMatrixAdapter<double> : public MatrixBase<ListMatrixAdapter<double> >
-    {
-    private:
-        List<double>& _list;
-        
-        friend class ConstListMatrixAdapter<double>;
-    public:
-        typedef MatrixBase<ListMatrixAdapter<double> > Base;
-        typedef double Scalar;
-        typedef double RealScalar;
-        typedef double PacketScalar;
-        typedef double CoeffReturnType;
-        typedef Eigen::ei_nested<ListMatrixAdapter<double> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = LvalueBit | NestByRefBit;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
-        
-        ListMatrixAdapter(List<double>& list);
-        ListMatrixAdapter(ListMatrixAdapter<double>& other);
-        
-        template <class DerivedType>
-        void operator=(const ReturnByValue<DerivedType>& other);
-        
-        template <class DerivedType>
-        void operator=(const MatrixBase<DerivedType>& other);
-        
-        void resize(int rows, int cols);
-        
-        int rows() const;
-        int cols() const;
-        
-        const double& coeff(int row, int col) const;
-        double& coeffRef(int row, int col);
-    };
-    
-    template <>
-    class ConstListMatrixAdapter<double> : public MatrixBase<ConstListMatrixAdapter<double> >
-    {
-    private:
-        const List<double>& _list;
-    public:
-        typedef MatrixBase<ConstListMatrixAdapter<double> > Base;
-        typedef double Scalar;
-        typedef double RealScalar;
-        typedef double PacketScalar;
-        typedef double CoeffReturnType;
-        typedef Eigen::ei_nested<ConstListMatrixAdapter<double> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
-        
-        ConstListMatrixAdapter(const List<double>& list);
-        ConstListMatrixAdapter(const ListMatrixAdapter<double>& other);
-        ConstListMatrixAdapter(const ConstListMatrixAdapter<double>& other);
-        
-        int rows() const;
-        int cols() const;
-        
-        double coeff(int row, int col) const;
-    };
 }
 
 ////////// Implementation //////////
@@ -661,13 +421,8 @@ namespace opensolid
     }
         
     template <class Type>
-    inline ListMatrixAdapter<Type> List<Type>::matrix() {
+    inline ListMatrixAdapter<Type> List<Type>::matrix() const {
         return ListMatrixAdapter<Type>(*this);
-    }
-    
-    template <class Type>
-    inline ConstListMatrixAdapter<Type> List<Type>::matrix() const {
-        return ConstListMatrixAdapter<Type>(*this);
     }
     
     template <class Type>
@@ -846,17 +601,11 @@ namespace opensolid
     }
     
     template <class Type>
-    inline ListMatrixAdapter<Type>::ListMatrixAdapter(List<Type>& list) : _list(list) {}
+    inline ListMatrixAdapter<Type>::ListMatrixAdapter(const List<Type>& list) : _list(list) {}
     
     template <class Type>
-    inline ListMatrixAdapter<Type>::ListMatrixAdapter(ListMatrixAdapter<Type>& other) :
+    inline ListMatrixAdapter<Type>::ListMatrixAdapter(const ListMatrixAdapter<Type>& other) :
         _list(other._list) {}
-        
-    template <class Type>
-    inline void ListMatrixAdapter<Type>::resize(int rows, int cols) {
-        _list.resize(cols);
-        for (int i = 0; i < cols; ++i) {_list[i].resize(rows, 1);}
-    }
     
     template <class Type>
     inline int ListMatrixAdapter<Type>::rows() const {return _list.front().size();}
@@ -865,80 +614,20 @@ namespace opensolid
     inline int ListMatrixAdapter<Type>::cols() const {return _list.size();}
     
     template <class Type>
-    inline const typename Type::Scalar& ListMatrixAdapter<Type>::coeff(int row, int col) const {
+    inline typename Type::Scalar ListMatrixAdapter<Type>::coeff(int row, int col) const {
         return _list[col](row);
     }
     
-    template <class Type>
-    inline typename Type::Scalar& ListMatrixAdapter<Type>::coeffRef(int row, int col) {
-        return _list[col](row);
-    }
+    inline ListMatrixAdapter<double>::ListMatrixAdapter(const List<double>& list) : _list(list) {}
     
-    template <class Type>
-    inline ConstListMatrixAdapter<Type>::ConstListMatrixAdapter(const List<Type>& list) :
-        _list(list) {}
-    
-    template <class Type>
-    inline ConstListMatrixAdapter<Type>::ConstListMatrixAdapter(
-        const ListMatrixAdapter<Type>& other
-    ) : _list(other._list) {}
-    
-    template <class Type>
-    inline ConstListMatrixAdapter<Type>::ConstListMatrixAdapter(
-        const ConstListMatrixAdapter<Type>& other
-    ) : _list(other._list) {}
-        
-    template <class Type>
-    inline int ConstListMatrixAdapter<Type>::rows() const {return _list.front().size();}
-    
-    template <class Type>
-    inline int ConstListMatrixAdapter<Type>::cols() const {return _list.size();}
-    
-    template <class Type>
-    inline typename Type::Scalar ConstListMatrixAdapter<Type>::coeff(int row, int col) const {
-        return _list[col](row);
-    }
-    
-    inline ListMatrixAdapter<double>::ListMatrixAdapter(List<double>& list) : _list(list) {}
-    
-    inline ListMatrixAdapter<double>::ListMatrixAdapter(ListMatrixAdapter<double>& other) :
+    inline ListMatrixAdapter<double>::ListMatrixAdapter(const ListMatrixAdapter<double>& other) :
         _list(other._list) {}
-    
-    inline void ListMatrixAdapter<double>::resize(int rows, int cols) {
-        _list.resize(cols);
-        assert(rows == 1);
-    }
     
     inline int ListMatrixAdapter<double>::rows() const {return 1;}
     
     inline int ListMatrixAdapter<double>::cols() const {return _list.size();}
     
-    inline const double& ListMatrixAdapter<double>::coeff(int row, int col) const {
-        assert(row == 0);
-        return _list[col];
-    }
-    
-    inline double& ListMatrixAdapter<double>::coeffRef(int row, int col) {
-        assert(row == 0);
-        return _list[col];
-    }
-    
-    inline ConstListMatrixAdapter<double>::ConstListMatrixAdapter(const List<double>& list) :
-        _list(list) {}
-    
-    inline ConstListMatrixAdapter<double>::ConstListMatrixAdapter(
-        const ListMatrixAdapter<double>& other
-    ) : _list(other._list) {}
-    
-    inline ConstListMatrixAdapter<double>::ConstListMatrixAdapter(
-        const ConstListMatrixAdapter<double>& other
-    ) : _list(other._list) {}
-    
-    inline int ConstListMatrixAdapter<double>::rows() const {return 1;}
-    
-    inline int ConstListMatrixAdapter<double>::cols() const {return _list.size();}
-    
-    inline double ConstListMatrixAdapter<double>::coeff(int row, int col) const {
+    inline double ListMatrixAdapter<double>::coeff(int row, int col) const {
         assert(row == 0);
         return _list[col];
     }

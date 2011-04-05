@@ -121,7 +121,7 @@ namespace opensolid
         const Vector3d& start,
         const Vector3d& end
     ) {
-        Vector3d center = ((start - axis.origin()) / axis) * axis;
+        Vector3d center = (start / axis) * axis;
         Vector3d start_radial = start - center;
         Vector3d end_radial = end - center;
         assert(end_radial.isOrthogonal(axis.vector(), Tolerance::roundoff()));

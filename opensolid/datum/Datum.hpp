@@ -176,9 +176,11 @@ namespace opensolid
         
         Axis();
         Axis(const VectorType& origin, const VectorType& vector);
+
+        Axis(const Datum<dimensions_, 1>& other);
         
         template <int other_dimensions_, int other_axes_>
-        Axis(const Datum<other_dimensions_, other_axes_>& other);
+        explicit Axis(const Datum<other_dimensions_, other_axes_>& other);
         
         using Datum<dimensions_, 1>::operator=;
     };
@@ -196,9 +198,11 @@ namespace opensolid
             const Vector3d& first_vector,
             const Vector3d& second_vector
         );
+
+        Plane3d(const Datum<3, 2>& other);
         
         template <int other_dimensions_, int other_axes_>
-        Plane3d(const Datum<other_dimensions_, other_axes_>& other);
+        explicit Plane3d(const Datum<other_dimensions_, other_axes_>& other);
         
         using Datum<3, 2>::operator=;
     };
@@ -211,17 +215,19 @@ namespace opensolid
         typedef Matrix<double, dimensions_, dimensions_> MatrixType;
         
         Frame();
-        Frame(int size);
+        explicit Frame(int size);
         
-        Frame(const VectorType& origin);
+        explicit Frame(const VectorType& origin);
         
         template <class DerivedType>
         Frame(const VectorType& origin, const MatrixBase<DerivedType>& vectors);
         
         Frame(const VectorType& origin, const List<VectorType>& vectors);
+
+        Frame(const Datum<dimensions_, dimensions_>& other);
         
         template <int other_dimensions_, int other_axes_>
-        Frame(const Datum<other_dimensions_, other_axes_>& other);
+        explicit Frame(const Datum<other_dimensions_, other_axes_>& other);
         
         using Datum<dimensions_, dimensions_>::operator=;
     };
@@ -281,6 +287,7 @@ namespace opensolid
                 _vectors.leftCols(vectors.cols())
             ).rightCols(_vectors.cols() - vectors.cols());
         }
+        _normalized = _vectors.isUnitary(Tolerance::roundoff());
     }
 		
     template <int dimensions_, int axes_>
@@ -292,11 +299,9 @@ namespace opensolid
         const List<VectorType>& vectors
     ) : _origin(origin), _vectors(origin.size(), axes_ == Dynamic ? vectors.size() : axes_) {
         assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
+        assert(vectors.front().size() == origin.size());
         assert(vectors.size() <= axes_ || axes_ == Dynamic);
-        MatrixXd temp(origin.size(), vectors.size());
-        vectors.copy(temp.colBegin());
-        initializeVectors(temp);
-        _normalized = _vectors.isUnitary(Tolerance::roundoff());
+        initializeVectors(vectors.matrix());
     }
     
     template <int dimensions_, int axes_> template <class DerivedType>
@@ -308,7 +313,6 @@ namespace opensolid
         assert(vectors.rows() == origin.size());
         assert(vectors.cols() <= axes_ || axes_ == Dynamic);
         initializeVectors(vectors);
-        _normalized = _vectors.isUnitary(Tolerance::roundoff());
     }
     
     template <int dimensions_, int axes_>
@@ -579,7 +583,7 @@ namespace opensolid
         } else {
             return Datum<dimensions_, axes_>(
                 origin(),
-                orthogonalBasis(vectors()).leftCols(vectors.cols())
+                orthogonalBasis(vectors()).leftCols(vectors().cols())
             );
         }
     }
@@ -593,12 +597,12 @@ namespace opensolid
     inline Frame<dimensions_> Datum<dimensions_, axes_>::inverse() const {
         assert(axes() == dimensions());
         if (_normalized) {
-            return Datum<dimensions_, axes_>(
+            return Frame<dimensions_>(
                 vectors().transpose() * -origin(),
                 vectors().transpose()
             );
         } else {
-            return Datum<dimensions_, axes_>(
+            return Frame<dimensions_>(
                 -origin() / linear(),
                 vectors().inverse()
             );
@@ -636,6 +640,10 @@ namespace opensolid
     inline Axis<dimensions_>::Axis(const VectorType& origin, const VectorType& vector) :
         Datum<dimensions_, 1>(origin, vector) {}
     
+    template <int dimensions_>
+    inline Axis<dimensions_>::Axis(const Datum<dimensions_, 1>& other) :
+        Datum<dimensions_, 1>(other) {}
+
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Axis<dimensions_>::Axis(const Datum<other_dimensions_, other_axes_>& other) :
         Datum<dimensions_, 1>(other) {}
@@ -663,9 +671,22 @@ namespace opensolid
         const Vector3d& second_vector
     ) : Datum<3, 2>(origin, (Matrix<double, 3, 2>() << first_vector, second_vector).finished()) {}
     
+    inline Plane3d::Plane3d(const Datum<3, 2>& other) : Datum<3, 2>(other) {}
+
     template <int other_dimensions_, int other_axes_>
-    inline Plane3d::Plane3d(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<3, 2>(other) {}
+    inline Plane3d::Plane3d(const Datum<other_dimensions_, other_axes_>& other) {
+        this->_origin = other.origin();
+        assert(other.vectors().cols() == 1 || other.vectors().cols() == 2);
+        if (other.vectors().cols() == 1) {
+            Vector3d normal = other.vectors();
+            this->_vectors.col(0) = normal.unitOrthogonal();
+            this->_vectors.col(1) = normal.cross(this->_vectors.col(0)).normalized();
+            this->_normalized = true;
+        } else {
+            this->_vectors = other.vectors();
+            this->_normalized = this->_vectors.isUnitary(Tolerance::roundoff());
+        }
+    }
     
     template <int dimensions_>
     inline Frame<dimensions_>::Frame() {
@@ -700,6 +721,10 @@ namespace opensolid
     inline Frame<dimensions_>::Frame(const VectorType& origin, const List<VectorType>& vectors) :
         Datum<dimensions_, dimensions_>(origin, vectors) {}
         
+    template <int dimensions_>
+    Frame<dimensions_>::Frame(const Datum<dimensions_, dimensions_>& other) :
+        Datum<dimensions_, dimensions_>(other) {}
+
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) :
         Datum<dimensions_, dimensions_>(other) {}
