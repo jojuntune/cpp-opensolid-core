@@ -32,7 +32,6 @@ public:
         MatrixXd vectors(3, 2);
         vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
         Frame3d frame(Vector3d(1, 1, 1), vectors);
-        frame = frame.normalized();
         std::cout << frame.vectors() << std::endl;
         Vector3d product = Vector3d(1, 1, 1) * frame;
         std::cout << product << std::endl;
@@ -46,7 +45,6 @@ public:
         MatrixXd vectors(3, 2);
         vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
         Frame3d frame(Vector3d(1, 1, 1), vectors);
-        frame = frame.normalized();
         Vector3d quotient = Vector3d(1, 0, 0) / frame;
         std::cout << quotient.transpose() << std::endl;
         Vector3d quotient_error = quotient - Vector3d(-1 / sqrt(2.0), -1 / sqrt(2.0), -1);
@@ -80,7 +78,6 @@ public:
     
     void test2D() {
         Frame2d frame(Vector2d::UnitX(), Vector2d(1, 1));
-        frame = frame.normalized();
         TS_ASSERT_EQUALS(frame.vectors().rows(), 2);
         TS_ASSERT_EQUALS(frame.vectors().cols(), 2);
         TS_ASSERT((frame.xVector() - Vector2d(1, 1).normalized()).isZero(Tolerance::roundoff()));

@@ -65,6 +65,22 @@ namespace Eigen
         static const int Flags = NestByRefBit | RowMajorBit;
         static const int CoeffReadCost = 2;
     };
+    
+    template <>
+    struct ei_traits<opensolid::ListMatrixAdapter<Interval> >
+    {
+        typedef Interval Scalar;
+        typedef Dense StorageKind;
+        typedef int Index;
+        typedef MatrixXpr XprKind;
+        
+        static const int RowsAtCompileTime = 1;
+        static const int ColsAtCompileTime = Dynamic;
+        static const int MaxRowsAtCompileTime = 1;
+        static const int MaxColsAtCompileTime = Dynamic;
+        static const int Flags = NestByRefBit | RowMajorBit;
+        static const int CoeffReadCost = 2;
+    };
 }
 
 namespace opensolid
@@ -138,6 +154,95 @@ namespace opensolid
         
         double coeff(int row, int col) const;
     };
+    
+    template <>
+    class ListMatrixAdapter<Interval> : public MatrixBase<ListMatrixAdapter<Interval> >
+    {
+    private:
+        const List<Interval>& _list;
+    public:
+        typedef MatrixBase<ListMatrixAdapter<Interval> > Base;
+        typedef Interval Scalar;
+        typedef Interval RealScalar;
+        typedef Interval PacketScalar;
+        typedef Interval CoeffReturnType;
+        typedef Eigen::ei_nested<ListMatrixAdapter<Interval> >::type Nested;
+        typedef Dense StorageKind;
+        typedef int Index;
+        static const int RowsAtCompileTime = 1;
+        static const int ColsAtCompileTime = Dynamic;
+        static const int MaxRowsAtCompileTime = 1;
+        static const int MaxColsAtCompileTime = Dynamic;
+        static const int Flags = NestByRefBit;
+        static const int CoeffReadCost = 2;
+        static const int SizeAtCompileTime = Dynamic;
+        static const int MaxSizeAtCompileTime = Dynamic;
+        static const int IsVectorAtCompileTime = false;
+        using Base::derived;
+        using Base::const_cast_derived;
+        
+        ListMatrixAdapter(const List<Interval>& list);
+        ListMatrixAdapter(const ListMatrixAdapter<Interval>& other);
+        
+        int rows() const;
+        int cols() const;
+        
+        Interval coeff(int row, int col) const;
+    };
 }
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    template <class Type>
+    inline ListMatrixAdapter<Type>::ListMatrixAdapter(const List<Type>& list) : _list(list) {}
+    
+    template <class Type>
+    inline ListMatrixAdapter<Type>::ListMatrixAdapter(const ListMatrixAdapter<Type>& other) :
+        _list(other._list) {}
+    
+    template <class Type>
+    inline int ListMatrixAdapter<Type>::rows() const {return _list.front().size();}
+    
+    template <class Type>
+    inline int ListMatrixAdapter<Type>::cols() const {return _list.size();}
+    
+    template <class Type>
+    inline typename Type::Scalar ListMatrixAdapter<Type>::coeff(int row, int col) const {
+        return _list[col](row);
+    }
+    
+    inline ListMatrixAdapter<double>::ListMatrixAdapter(const List<double>& list) : _list(list) {}
+    
+    inline ListMatrixAdapter<double>::ListMatrixAdapter(const ListMatrixAdapter<double>& other) :
+        _list(other._list) {}
+    
+    inline int ListMatrixAdapter<double>::rows() const {return 1;}
+    
+    inline int ListMatrixAdapter<double>::cols() const {return _list.size();}
+    
+    inline double ListMatrixAdapter<double>::coeff(int row, int col) const {
+        assert(row == 0);
+        return _list[col];
+    }
+    
+    inline ListMatrixAdapter<Interval>::ListMatrixAdapter(const List<Interval>& list) :
+        _list(list) {}
+    
+    inline ListMatrixAdapter<Interval>::ListMatrixAdapter(
+        const ListMatrixAdapter<Interval>& other
+    ) : _list(other._list) {}
+    
+    inline int ListMatrixAdapter<Interval>::rows() const {return 1;}
+    
+    inline int ListMatrixAdapter<Interval>::cols() const {return _list.size();}
+    
+    inline Interval ListMatrixAdapter<Interval>::coeff(int row, int col) const {
+        assert(row == 0);
+        return _list[col];
+    }
+}
+
 
 #endif

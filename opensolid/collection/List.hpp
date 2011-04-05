@@ -30,10 +30,12 @@
 #include <opensolid/value/Matrix.hpp>
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
-#include "ListMatrixAdapter.hpp"
 
 namespace opensolid
 {
+    template <class Type>
+    class ListMatrixAdapter;
+    
     template <class Type>
     class List : public FixedSizeCollection<List<Type> >
     {
@@ -212,6 +214,8 @@ namespace opensolid
 }
 
 ////////// Implementation //////////
+
+#include "ListMatrixAdapter.hpp"
 
 namespace opensolid
 {   
@@ -598,38 +602,6 @@ namespace opensolid
         for (int i = 1; i < list.size(); ++i) {stream << "," << list[i];}
         stream << "]";
         return stream;
-    }
-    
-    template <class Type>
-    inline ListMatrixAdapter<Type>::ListMatrixAdapter(const List<Type>& list) : _list(list) {}
-    
-    template <class Type>
-    inline ListMatrixAdapter<Type>::ListMatrixAdapter(const ListMatrixAdapter<Type>& other) :
-        _list(other._list) {}
-    
-    template <class Type>
-    inline int ListMatrixAdapter<Type>::rows() const {return _list.front().size();}
-    
-    template <class Type>
-    inline int ListMatrixAdapter<Type>::cols() const {return _list.size();}
-    
-    template <class Type>
-    inline typename Type::Scalar ListMatrixAdapter<Type>::coeff(int row, int col) const {
-        return _list[col](row);
-    }
-    
-    inline ListMatrixAdapter<double>::ListMatrixAdapter(const List<double>& list) : _list(list) {}
-    
-    inline ListMatrixAdapter<double>::ListMatrixAdapter(const ListMatrixAdapter<double>& other) :
-        _list(other._list) {}
-    
-    inline int ListMatrixAdapter<double>::rows() const {return 1;}
-    
-    inline int ListMatrixAdapter<double>::cols() const {return _list.size();}
-    
-    inline double ListMatrixAdapter<double>::coeff(int row, int col) const {
-        assert(row == 0);
-        return _list[col];
     }
 }
 
