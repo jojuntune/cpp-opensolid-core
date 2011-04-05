@@ -239,11 +239,17 @@ namespace opensolid
     
     template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
     inline void DatumQuotient<DerivedType, dimensions_, axes_>::evalTo(ResultType& result) const {
-        result = (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
-            _datum.vectors().transpose() * (
+        if (_datum._normalized) {
+            result = _datum.vectors().transpose() * (
                 _matrix.colwise() - _datum.origin().template cast<typename ResultType::Scalar>()
-            )
-        );
+            );
+        } else {
+            result = (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
+                _datum.vectors().transpose() * (
+                    _matrix.colwise() - _datum.origin().template cast<typename ResultType::Scalar>()
+                )
+            );
+        }
     }
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -287,10 +293,15 @@ namespace opensolid
     inline void LinearDatumQuotient<DerivedType, dimensions_, axes_>::evalTo(
         ResultType& result
     ) const {
-        Matrix<double, axes_, dimensions_> temp = (
-            _datum.vectors().transpose() * _datum.unitVectors()
-        ).ldlt().solve(_datum.vectors().transpose());
-        result = temp.template cast<typename DerivedType::Scalar>() * _matrix;
+        if (_datum._normalized) {
+            result = _datum.vectors().transpose().template cast<typename ResultType::Scalar>() *
+                _matrix;
+        } else {
+            Matrix<double, axes_, dimensions_> temp = (
+                _datum.vectors().transpose() * _datum.vectors()
+            ).ldlt().solve(_datum.vectors().transpose());
+            result = temp.template cast<typename DerivedType::Scalar>() * _matrix;
+        }
     }
     
     template <class DerivedType, int dimensions_, int axes_>

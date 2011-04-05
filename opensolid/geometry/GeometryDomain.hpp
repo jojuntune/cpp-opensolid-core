@@ -176,7 +176,7 @@ namespace opensolid
             
             inline BoundaryChecker(const Domain& domain) : _domain(domain) {}
             
-            inline void visit(const Geometry& boundary) {
+            inline void operator()(const Geometry& boundary) {
                 assert(boundary.dimensions() == _domain.dimensions());
                 assert(boundary.parameters() == _domain.dimensions() - 1);
             }

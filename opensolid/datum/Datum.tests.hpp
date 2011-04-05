@@ -31,7 +31,7 @@ public:
     void testProduct() {
         MatrixXd vectors(3, 2);
         vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
-        Frame3d frame (Vector3d(1, 1, 1), vectors);
+        Frame3d frame(Vector3d(1, 1, 1), vectors);
         Vector3d product = Vector3d(1, 1, 1) * frame;
         std::cout << product.transpose() << std::endl;
         TS_ASSERT((product - Vector3d(1, 1 + sqrt(2.0), 2)).isZero(Tolerance::roundoff()));
@@ -72,13 +72,13 @@ public:
         TS_ASSERT((product.yVector() - Vector3d(0, 1, 0)).isZero(Tolerance::roundoff()));
         TS_ASSERT((product.zVector() - Vector3d(-1, 0, 0)).isZero(Tolerance::roundoff()));
         TS_ASSERT(quotient.origin().isZero(Tolerance::roundoff()));
-        TS_ASSERT(quotient.unitVectors().isIdentity(Tolerance::roundoff()));
+        TS_ASSERT(quotient.vectors().isIdentity(Tolerance::roundoff()));
     }
     
     void test2D() {
         Frame2d frame(Vector2d::UnitX(), Vector2d(1, 1));
-        TS_ASSERT_EQUALS(frame.unitVectors().rows(), 2);
-        TS_ASSERT_EQUALS(frame.unitVectors().cols(), 2);
+        TS_ASSERT_EQUALS(frame.vectors().rows(), 2);
+        TS_ASSERT_EQUALS(frame.vectors().cols(), 2);
         TS_ASSERT((frame.xVector() - Vector2d(1, 1).normalized()).isZero(Tolerance::roundoff()));
         TS_ASSERT((frame.yVector() - Vector2d(-1, 1).normalized()).isZero(Tolerance::roundoff()));
         Vector2d product_error = Vector2d(2, 2) * frame - Vector2d(1, 2 * sqrt(2.0));
@@ -93,27 +93,27 @@ public:
         
         vectors = Matrix3d::Random();
         frame = Frame3d(Vector3d::Ones(), vectors);
-        std::cout << frame.unitVectors() << std::endl;
+        std::cout << frame.vectors() << std::endl;
         std::cout << std::endl;
-        std::cout << frame.unitVectors() * frame.unitVectors().transpose() << std::endl;
-        std::cout << std::endl;
-        std::cout << vectors / frame.linear() << std::endl;
-        std::cout << std::endl;
-        
-        vectors = Matrix3d::Random();
-        frame = Frame3d(Vector3d::Ones(), vectors);
-        std::cout << frame.unitVectors() << std::endl;
-        std::cout << std::endl;
-        std::cout << frame.unitVectors() * frame.unitVectors().transpose() << std::endl;
+        std::cout << frame.vectors() * frame.vectors().transpose() << std::endl;
         std::cout << std::endl;
         std::cout << vectors / frame.linear() << std::endl;
         std::cout << std::endl;
         
         vectors = Matrix3d::Random();
         frame = Frame3d(Vector3d::Ones(), vectors);
-        std::cout << frame.unitVectors() << std::endl;
+        std::cout << frame.vectors() << std::endl;
         std::cout << std::endl;
-        std::cout << frame.unitVectors() * frame.unitVectors().transpose() << std::endl;
+        std::cout << frame.vectors() * frame.vectors().transpose() << std::endl;
+        std::cout << std::endl;
+        std::cout << vectors / frame.linear() << std::endl;
+        std::cout << std::endl;
+        
+        vectors = Matrix3d::Random();
+        frame = Frame3d(Vector3d::Ones(), vectors);
+        std::cout << frame.vectors() << std::endl;
+        std::cout << std::endl;
+        std::cout << frame.vectors() * frame.vectors().transpose() << std::endl;
         std::cout << std::endl;
         std::cout << vectors / frame.linear() << std::endl;
         std::cout << std::endl;

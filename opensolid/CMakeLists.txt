@@ -51,6 +51,7 @@ INSTALL(
 ADD_CXXTEST(Interval.tests value/Interval.tests.hpp opensolid)
 ADD_CXXTEST(Matrix.tests value/Matrix.tests.hpp opensolid)
 ADD_CXXTEST(Datum.tests datum/Datum.tests.hpp opensolid)
+ADD_CXXTEST(List.tests collection/List.tests.hpp opensolid)
 ADD_CXXTEST(Set.tests collection/Set.tests.hpp opensolid)
 ADD_CXXTEST(Function.tests function/Function.tests.hpp opensolid)
 ADD_CXXTEST(Geometry.tests geometry/Geometry.tests.hpp opensolid)

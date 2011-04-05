@@ -97,6 +97,7 @@ public:
     
     void testInterval3() {
         List<Interval> list(
+            3,
             Interval(0, 1),
             Interval(0, 4),
             Interval(0, 2)

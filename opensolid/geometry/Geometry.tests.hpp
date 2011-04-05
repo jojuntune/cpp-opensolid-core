@@ -31,7 +31,7 @@ public:
     void testLine() {
         Vector3d start(1, 2, 3);
         Vector3d end(4, 5, 6);
-        Geometry line = Geometry::LineFromEndpoints(start, end);
+        Geometry line = Geometry::Line(start, end);
         std::cout << line(0.5) << std::endl;
         TS_ASSERT((line(0.5) - Vector3d(2.5, 3.5, 4.5)).norm() < Tolerance::roundoff());
     }
@@ -40,7 +40,7 @@ public:
         Vector3d center(1, 1, 1);
         Vector3d start(3, 1, 1);
         Vector3d end(1, -1, 1);
-        Geometry arc = Geometry::ArcFromEndpoints(center, Vector3d::UnitZ(), start, end);
+        Geometry arc = Geometry::Arc(Axis3d(center, Vector3d::UnitZ()), start, end);
         Interval domain = arc.domain().bounds().scalar();
         std::cout << "Domain interval: " << domain << std::endl;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, domain);
