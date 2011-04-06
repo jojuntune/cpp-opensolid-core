@@ -23,6 +23,7 @@
 
 #include <opensolid/common/Bounds.hpp>
 #include <opensolid/common/Pair.hpp>
+#include <opensolid/collection/IteratorRange.hpp>
 #include "Eigen.hpp"
 #include "Interval.hpp"
 
@@ -284,6 +285,58 @@ namespace Eigen
         MatrixType& matrix,
         int index
     ) {return matrix.col(index);}
+    
+    
+    template <class DerivedType>
+    inline MatrixListAdapter<DerivedType>::MatrixListAdapter(const DerivedType& matrix) :
+        _matrix(matrix) {}
+    
+    template <class DerivedType>
+    inline int MatrixListAdapter<DerivedType>::size() const {return _matrix.cols();}
+    
+    template <class DerivedType>
+    inline bool MatrixListAdapter<DerivedType>::empty() const {return _matrix.cols() == 0;}
+    
+    template <class DerivedType> template <class VisitorType>
+    inline void MatrixListAdapter<DerivedType>::visit(const VisitorType& visitor) const {
+        opensolid::IteratorRange<Iterator>(begin(), end()).visit(visitor);
+    }
+    
+    template <class DerivedType>
+    inline typename Bounds<typename DerivedType::ColXpr::PlainObject>::Type
+    MatrixListAdapter<DerivedType>::bounds() const {
+        typename Bounds<typename DerivedType::ColXpr::PlainObject>::Type result =
+            _matrix.col(0).template cast<Interval>();
+        for (int i = 1; i < _matrix.cols(); ++i) {
+            result = result.hull(_matrix.col(i));
+        }
+        return result;
+    }
+    
+    template <class DerivedType>
+    inline typename DerivedType::ConstColIterator MatrixListAdapter<DerivedType>::begin() const {
+        return _matrix.colBegin();
+    }
+    
+    template <class DerivedType>
+    inline typename DerivedType::ConstColIterator MatrixListAdapter<DerivedType>::end() const {
+        return _matrix.colEnd();
+    }
+    
+    template <class DerivedType>
+    inline const typename DerivedType::ColXpr MatrixListAdapter<DerivedType>::front() const {
+        return _matrix.col(0);
+    }
+    
+    template <class DerivedType>
+    inline const typename DerivedType::ColXpr MatrixListAdapter<DerivedType>::back() const {
+        return _matrix.col(_matrix.cols() - 1);
+    }
+    
+    template <class DerivedType>
+    inline const typename DerivedType::ColXpr MatrixListAdapter<DerivedType>::operator[](
+        int index
+    ) const {return _matrix.col(index);}
     
     inline bool ContainOperation::operator()(
         const Interval& first_argument,

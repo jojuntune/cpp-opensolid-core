@@ -23,6 +23,7 @@
 
 #include <opensolid/common/ReferenceCountedBase.hpp>
 #include <opensolid/common/Bounds.hpp>
+#include "List.hpp"
 
 namespace opensolid
 {

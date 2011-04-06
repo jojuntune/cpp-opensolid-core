@@ -62,9 +62,9 @@ namespace opensolid
     template <int dimensions_>
     inline Frame<dimensions_>::Frame() {
         if (dimensions_ != Dynamic) {
-            _origin.setZero();
-            _vectors.setIdentity();
-            _normalized = true;
+            this->_origin.setZero();
+            this->_vectors.setIdentity();
+            this->_normalized = true;
         }
     }
     

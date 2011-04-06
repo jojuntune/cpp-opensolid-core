@@ -67,13 +67,13 @@ namespace opensolid
         template <int other_dimensions_, int other_axes_>
         friend class Datum;
         
-        template <int dimensions_>
+        template <int other_dimensions_>
         friend class Axis;
         
-        template <int dimensions>
+        template <int other_dimensions>
         friend class Plane;
         
-        template <int dimensions_>
+        template <int other_dimensions_>
         friend class Frame;
         
         template <class DerivedType, int other_dimensions_, int other_axes_>

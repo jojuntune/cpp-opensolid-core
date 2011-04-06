@@ -44,8 +44,8 @@ inline ColIterator colBegin() {return ColIterator(derived(), 0);}
 
 inline ColIterator colEnd() {return ColIterator(derived(), cols());}
 
-inline opensolid::MatrixListAdapter<Derived> list() const {
-    return opensolid::MatrixListAdapter<Derived>(derived());
+inline MatrixListAdapter<Derived> list() const {
+    return MatrixListAdapter<Derived>(derived());
 }
 
 template<class OtherDerived>

@@ -28,13 +28,13 @@ namespace opensolid
     template <int dimensions_>
     class Plane : public Datum<dimensions_, dimensions_ - 1>
     {
+    public:
+        typedef Matrix<double, dimensions_, 1> VectorType;
+        typedef Matrix<double, dimensions_, dimensions_ - 1> MatrixType;
     private:
         template <class DerivedType>
         void initialize(const VectorType& origin, const MatrixBase<DerivedType>& vectors);
     public:
-        typedef Matrix<double, dimensions_, 1> VectorType;
-        typedef Matrix<double, dimensions_, dimensions_ - 1> MatrixType;
-        
         Plane();
         
         template <class DerivedType>

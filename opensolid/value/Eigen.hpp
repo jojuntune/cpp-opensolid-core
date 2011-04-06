@@ -25,8 +25,9 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
+#include <opensolid/common/Bounds.hpp>
 #include <opensolid/common/Bisected.hpp>
-#include "MatrixListAdapter.hpp"
+#include <opensolid/collection/FixedSizeCollection.hpp>
 
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
@@ -48,7 +49,9 @@ namespace opensolid
 namespace Eigen
 {
     using opensolid::Interval;
+    using opensolid::Bounds;
     using opensolid::Bisected;
+    using opensolid::FixedSizeCollection;
     
     const Interval& ei_conj(const Interval& argument);
     const Interval& ei_real(const Interval& argument);
@@ -197,6 +200,33 @@ namespace Eigen
         MatrixColIterator(const MatrixColIterator<MatrixType>& other);
         
         static typename MatrixType::ColXpr block(MatrixType& matrix, int index);
+    };
+    
+    template <class DerivedType>
+    class MatrixListAdapter : public FixedSizeCollection<MatrixListAdapter<DerivedType> >
+    {
+    private:
+        const DerivedType& _matrix;
+    public:
+        typedef typename DerivedType::ConstColIterator Iterator;
+        
+        MatrixListAdapter(const DerivedType& matrix);
+        
+        int size() const;
+        bool empty() const;
+        
+        template <class VisitorType>
+        void visit(const VisitorType& visitor) const;
+        
+        typename Bounds<typename DerivedType::ColXpr::PlainObject>::Type bounds() const;
+        
+        Iterator begin() const;
+        Iterator end() const;
+        
+        const typename DerivedType::ColXpr front() const;
+        const typename DerivedType::ColXpr back() const;
+        
+        const typename DerivedType::ColXpr operator[](int index) const;
     };
     
     struct ContainOperation

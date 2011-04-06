@@ -58,7 +58,7 @@ namespace opensolid
 namespace opensolid
 {
     template <class DerivedType>
-    inline int FixedSizeCollection<DerivedType>::size() const {return derived().size();}
+    inline int FixedSizeCollection<DerivedType>::size() const {return this->derived().size();}
         
     template <class DerivedType> template <class ResultType, class FunctionType>
     inline FixedSizeCollectionMap<DerivedType, FunctionType, ResultType>

@@ -22,8 +22,9 @@
 #define OPENSOLID__ITERATORRANGE_HPP
 
 #include <iterator>
+#include <algorithm>
 
-#include "CollectionBase.hpp"
+#include "FixedSizeCollection.hpp"
 
 namespace opensolid
 {

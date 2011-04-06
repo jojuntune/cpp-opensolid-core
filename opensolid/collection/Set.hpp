@@ -95,12 +95,12 @@ namespace opensolid
         bool operator==(const Set<Type>& other) const;
     };
     
-    template <class Type>
-    struct Bounds<Set<Type> >
+    template <class ItemType>
+    struct Bounds<Set<ItemType> >
     {
-        typedef typename Bounds<Type>::Type Type;
+        typedef typename Bounds<ItemType>::Type Type;
         
-        static Type bounds(const Set<Type>& set);
+        static Type bounds(const Set<ItemType>& set);
     };
     
     template <class Type>
