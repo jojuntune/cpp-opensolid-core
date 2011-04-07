@@ -99,38 +99,38 @@ namespace opensolid
     class DatumProduct : public ReturnByValue<DatumProduct<DerivedType, dimensions_, axes_> >
     {
     private:
-        const MatrixBase<DerivedType>& _matrix;
+        const EigenBase<DerivedType>& _matrix;
         const Datum<dimensions_, axes_>& _datum;
     public:
         DatumProduct(
-            const MatrixBase<DerivedType>& matrix,
+            const EigenBase<DerivedType>& matrix,
             const Datum<dimensions_, axes_>& datum
         );
         
         int rows() const;
         int cols() const;
         
-        template <class ResultType>
-        void evalTo(ResultType& result) const;
+        template <class OtherDerivedType>
+        void evalTo(EigenBase<OtherDerivedType>& result) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
     class DatumQuotient : public ReturnByValue<DatumQuotient<DerivedType, dimensions_, axes_> >
     {
     private:
-        const MatrixBase<DerivedType>& _matrix;
+        const EigenBase<DerivedType>& _matrix;
         const Datum<dimensions_, axes_>& _datum;
     public:
         DatumQuotient(
-            const MatrixBase<DerivedType>& matrix,
+            const EigenBase<DerivedType>& matrix,
             const Datum<dimensions_, axes_>& datum
         );
         
         int rows() const;
         int cols() const;
         
-        template <class ResultType>
-        void evalTo(ResultType& result) const;
+        template <class OtherDerivedType>
+        void evalTo(EigenBase<OtherDerivedType>& result) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -138,19 +138,19 @@ namespace opensolid
         public ReturnByValue<LinearDatumProduct<DerivedType, dimensions_, axes_> >
     {
     private:
-        const MatrixBase<DerivedType>& _matrix;
+        const EigenBase<DerivedType>& _matrix;
         const Datum<dimensions_, axes_>& _datum;
     public:
         LinearDatumProduct(
-            const MatrixBase<DerivedType>& matrix,
+            const EigenBase<DerivedType>& matrix,
             const Datum<dimensions_, axes_>& datum
         );
         
         int rows() const;
         int cols() const;
         
-        template <class ResultType>
-        void evalTo(ResultType& result) const;
+        template <class OtherDerivedType>
+        void evalTo(EigenBase<OtherDerivedType>& result) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -158,42 +158,42 @@ namespace opensolid
         public ReturnByValue<LinearDatumQuotient<DerivedType, dimensions_, axes_> >
     {
     private:
-        const MatrixBase<DerivedType>& _matrix;
+        const EigenBase<DerivedType>& _matrix;
         const Datum<dimensions_, axes_>& _datum;
     public:
         LinearDatumQuotient(
-            const MatrixBase<DerivedType>& matrix,
+            const EigenBase<DerivedType>& matrix,
             const Datum<dimensions_, axes_>& datu
         );
         
         int rows() const;
         int cols() const;
         
-        template <class ResultType>
-        void evalTo(ResultType& result) const;
+        template <class OtherDerivedType>
+        void evalTo(EigenBase<OtherDerivedType>& result) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
     DatumProduct<DerivedType, dimensions_, axes_> operator*(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     );
     
     template <class DerivedType, int dimensions_, int axes_>
     DatumQuotient<DerivedType, dimensions_, axes_> operator/(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     );
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumProduct<DerivedType, dimensions_, axes_> operator*(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const LinearDatum<dimensions_, axes_>& linear_datum
     );
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumQuotient<DerivedType, dimensions_, axes_> operator/(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const LinearDatum<dimensions_, axes_>& linear_datum
     );
 }
@@ -204,7 +204,7 @@ namespace opensolid
 {
     template <class DerivedType, int dimensions_, int axes_>
     DatumProduct<DerivedType, dimensions_, axes_>::DatumProduct(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     ) : _matrix(matrix), _datum(datum) {}
     
@@ -218,16 +218,18 @@ namespace opensolid
         return _matrix.cols();
     }
     
-    template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
-    inline void DatumProduct<DerivedType, dimensions_, axes_>::evalTo(ResultType& result) const {
-        result = (
-            _datum.vectors().template cast<typename ResultType::Scalar>() * _matrix
-        ).colwise() + _datum.origin().template cast<typename ResultType::Scalar>();
+    template <class DerivedType, int dimensions_, int axes_> template <class OtherDerivedType>
+    inline void DatumProduct<DerivedType, dimensions_, axes_>::evalTo(
+        EigenBase<OtherDerivedType>& result
+    ) const {
+        result.derived() = (
+            _datum.vectors().template cast<typename OtherDerivedType::Scalar>() * _matrix.derived()
+        ).colwise() + _datum.origin().template cast<typename OtherDerivedType::Scalar>();
     }
     
     template <class DerivedType, int dimensions_, int axes_>
     DatumQuotient<DerivedType, dimensions_, axes_>::DatumQuotient(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     ) : _matrix(matrix), _datum(datum) {}
     
@@ -237,16 +239,20 @@ namespace opensolid
     template <class DerivedType, int dimensions_, int axes_>
     inline int DatumQuotient<DerivedType, dimensions_, axes_>::cols() const {return _matrix.cols();}
     
-    template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
-    inline void DatumQuotient<DerivedType, dimensions_, axes_>::evalTo(ResultType& result) const {
+    template <class DerivedType, int dimensions_, int axes_> template <class OtherDerivedType>
+    inline void DatumQuotient<DerivedType, dimensions_, axes_>::evalTo(
+        EigenBase<OtherDerivedType>& result
+    ) const {
         if (_datum._normalized) {
-            result = _datum.vectors().transpose() * (
-                _matrix.colwise() - _datum.origin().template cast<typename ResultType::Scalar>()
+            result.derived() = _datum.vectors().transpose() * (
+                _matrix.derived().colwise() -
+                _datum.origin().template cast<typename OtherDerivedType::Scalar>()
             );
         } else {
-            result = (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
+            result.derived() = (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
                 _datum.vectors().transpose() * (
-                    _matrix.colwise() - _datum.origin().template cast<typename ResultType::Scalar>()
+                    _matrix.derived().colwise() -
+                    _datum.origin().template cast<typename OtherDerivedType::Scalar>()
                 )
             );
         }
@@ -254,7 +260,7 @@ namespace opensolid
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumProduct<DerivedType, dimensions_, axes_>::LinearDatumProduct(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     ) : _matrix(matrix), _datum(datum) {}
     
@@ -268,14 +274,18 @@ namespace opensolid
         return _matrix.cols();
     }
     
-    template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
+    template <class DerivedType, int dimensions_, int axes_> template <class OtherDerivedType>
     inline void LinearDatumProduct<DerivedType, dimensions_, axes_>::evalTo(
-        ResultType& result
-    ) const {result = _datum.vectors().template cast<typename ResultType::Scalar>() * _matrix;}
+        EigenBase<OtherDerivedType>& result
+    ) const {
+        result.derived() =
+            _datum.vectors().template cast<typename OtherDerivedType::Scalar>() *
+            _matrix.derived();
+    }
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumQuotient<DerivedType, dimensions_, axes_>::LinearDatumQuotient(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     ) : _matrix(matrix), _datum(datum) {}
     
@@ -289,42 +299,44 @@ namespace opensolid
         return _matrix.cols();
     }
     
-    template <class DerivedType, int dimensions_, int axes_> template <class ResultType>
+    template <class DerivedType, int dimensions_, int axes_> template <class OtherDerivedType>
     inline void LinearDatumQuotient<DerivedType, dimensions_, axes_>::evalTo(
-        ResultType& result
+        EigenBase<OtherDerivedType>& result
     ) const {
         if (_datum._normalized) {
-            result = _datum.vectors().transpose().template cast<typename ResultType::Scalar>() *
-                _matrix;
+            result.derived() =
+                _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() *
+                _matrix.derived();
         } else {
             Matrix<double, axes_, dimensions_> temp = (
                 _datum.vectors().transpose() * _datum.vectors()
             ).ldlt().solve(_datum.vectors().transpose());
-            result = temp.template cast<typename DerivedType::Scalar>() * _matrix;
+            result.derived() =
+                temp.template cast<typename DerivedType::Scalar>() * _matrix.derived();
         }
     }
     
     template <class DerivedType, int dimensions_, int axes_>
     inline DatumProduct<DerivedType, dimensions_, axes_> operator*(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     ) {return DatumProduct<DerivedType, dimensions_, axes_>(matrix, datum);}
     
     template <class DerivedType, int dimensions_, int axes_>
     inline DatumQuotient<DerivedType, dimensions_, axes_> operator/(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const Datum<dimensions_, axes_>& datum
     ) {return DatumQuotient<DerivedType, dimensions_, axes_>(matrix, datum);}
     
     template <class DerivedType, int dimensions_, int axes_>
     inline LinearDatumProduct<DerivedType, dimensions_, axes_> operator*(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const LinearDatum<dimensions_, axes_>& linear_datum
     ) {return LinearDatumProduct<DerivedType, dimensions_, axes_>(matrix, linear_datum.datum());}
     
     template <class DerivedType, int dimensions_, int axes_>
     inline LinearDatumQuotient<DerivedType, dimensions_, axes_> operator/(
-        const MatrixBase<DerivedType>& matrix,
+        const EigenBase<DerivedType>& matrix,
         const LinearDatum<dimensions_, axes_>& linear_datum
     ) {return LinearDatumQuotient<DerivedType, dimensions_, axes_>(matrix, linear_datum.datum());}
 }

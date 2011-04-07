@@ -119,4 +119,15 @@ public:
         std::cout << vectors / frame.linear() << std::endl;
         std::cout << std::endl;
     }
+    
+    void testNonOrthogonal() {
+        Datum3d datum(
+            Vector3d(1, 2, 3),
+            Matrix3d::Ones().triangularView<Upper>()
+        );
+        Vector3d product_error = Vector3d(1, 1, 1) * datum - Vector3d(4, 4, 4);
+        TS_ASSERT(product_error.isZero(Tolerance::roundoff()));
+        Vector3d quotient_error = Vector3d(4, 4, 4) / datum - Vector3d(1, 1, 1);
+        TS_ASSERT(quotient_error.isZero(Tolerance::roundoff()));
+    }
 };

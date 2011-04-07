@@ -33,12 +33,12 @@ namespace opensolid
         typedef Matrix<double, dimensions_, dimensions_ - 1> MatrixType;
     private:
         template <class DerivedType>
-        void initialize(const VectorType& origin, const MatrixBase<DerivedType>& vectors);
+        void initialize(const VectorType& origin, const EigenBase<DerivedType>& vectors);
     public:
         Plane();
         
         template <class DerivedType>
-        Plane(const VectorType& origin, const MatrixBase<DerivedType>& vectors);
+        Plane(const VectorType& origin, const EigenBase<DerivedType>& vectors);
         
         Plane(const VectorType& origin, const List<VectorType>& vectors);
         
@@ -62,7 +62,7 @@ namespace opensolid
     template <int dimensions_> template <class DerivedType>
     inline void Plane<dimensions_>::initialize(
         const VectorType& origin,
-        const MatrixBase<DerivedType>& vectors
+        const EigenBase<DerivedType>& vectors
     ) {
         assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
         this->_origin = origin;
@@ -82,7 +82,7 @@ namespace opensolid
     template <int dimensions_> template <class DerivedType>
     inline Plane<dimensions_>::Plane(
         const VectorType& origin,
-        const MatrixBase<DerivedType>& vectors
+        const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors);}
     
     template <int dimensions_>

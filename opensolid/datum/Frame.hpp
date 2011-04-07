@@ -38,7 +38,7 @@ namespace opensolid
         explicit Frame(const VectorType& origin);
         
         template <class DerivedType>
-        Frame(const VectorType& origin, const MatrixBase<DerivedType>& vectors);
+        Frame(const VectorType& origin, const EigenBase<DerivedType>& vectors);
         
         Frame(const VectorType& origin, const List<VectorType>& vectors);
         
@@ -87,7 +87,7 @@ namespace opensolid
     template <int dimensions_> template <class DerivedType>
     inline Frame<dimensions_>::Frame(
         const VectorType& origin,
-        const MatrixBase<DerivedType>& vectors
+        const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors, true);}
     
     template <int dimensions_>

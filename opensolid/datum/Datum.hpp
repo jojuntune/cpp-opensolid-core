@@ -91,7 +91,7 @@ namespace opensolid
         template <class DerivedType>
         void initialize(
             const VectorType& origin, 
-            const MatrixBase<DerivedType>& vectors,
+            const EigenBase<DerivedType>& vectors,
             bool normalize
         );
         
@@ -101,7 +101,7 @@ namespace opensolid
 		Datum();
 
         template <class DerivedType>
-        Datum(const VectorType& origin, const MatrixBase<DerivedType>& vectors);
+        Datum(const VectorType& origin, const EigenBase<DerivedType>& vectors);
         
         Datum(const VectorType& origin, const List<VectorType>& vectors);
         
@@ -226,7 +226,7 @@ namespace opensolid
     template <int dimensions_, int axes_> template <class DerivedType>
     inline void Datum<dimensions_, axes_>::initialize(
         const VectorType& origin, 
-        const MatrixBase<DerivedType>& vectors,
+        const EigenBase<DerivedType>& vectors,
         bool normalize
     ) {
         assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
@@ -242,7 +242,7 @@ namespace opensolid
             _normalized = true;
         } else {
             _vectors = vectors.derived();
-            _normalized = vectors.derived().isUnitary(Tolerance::roundoff());
+            _normalized = _vectors.isUnitary(Tolerance::roundoff());
         }
     }
     
@@ -269,7 +269,7 @@ namespace opensolid
     template <int dimensions_, int axes_> template <class DerivedType>
     inline Datum<dimensions_, axes_>::Datum(
         const VectorType& origin,
-        const MatrixBase<DerivedType>& vectors
+        const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors, false);}
     
     template <int dimensions_, int axes_>

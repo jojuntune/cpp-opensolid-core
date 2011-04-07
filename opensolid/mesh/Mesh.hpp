@@ -34,7 +34,7 @@ namespace opensolid
         VertexData::Pointer _vertices;
     public:
         template<class DerivedType>
-        Mesh(const MatrixBase<DerivedType>& vertices);
+        Mesh(const EigenBase<DerivedType>& vertices);
         
         template<class DerivedType>
         Mesh(const CollectionBase<DerivedType>& vertices);
