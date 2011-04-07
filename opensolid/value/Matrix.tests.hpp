@@ -152,7 +152,7 @@ public:
         Matrix3d c;
         std::copy(a.rowBegin(), a.rowEnd(), c.rowBegin());
         TS_ASSERT_EQUALS(a, c);
-        List<Vector3d> input(3, Vector3d::UnitX(), Vector3d::UnitY(), Vector3d::UnitZ());
+        List<Vector3d> input(Vector3d::UnitX(), Vector3d::UnitY(), Vector3d::UnitZ());
         Matrix3d d;
         std::copy(input.begin(), input.end(), d.colBegin());
         TS_ASSERT(d.isIdentity());
