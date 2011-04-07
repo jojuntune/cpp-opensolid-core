@@ -57,29 +57,18 @@ namespace opensolid
         template <class DerivedType>
         List(const CollectionBase<DerivedType>& collection);
         
-        template <class IteratorType>
-        List(IteratorType begin, IteratorType end);
-        
         List(
-            int size,
-            const Type& first_item
-        );
-        
-        List(
-            int size,
             const Type& first_item,
             const Type& second_item
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -87,7 +76,6 @@ namespace opensolid
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -96,7 +84,6 @@ namespace opensolid
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -106,7 +93,6 @@ namespace opensolid
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -117,7 +103,6 @@ namespace opensolid
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -129,7 +114,6 @@ namespace opensolid
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -142,7 +126,6 @@ namespace opensolid
         );
         
         List(
-            int size,
             const Type& first_item,
             const Type& second_item,
             const Type& third_item,
@@ -241,37 +224,21 @@ namespace opensolid
         add(collection.derived());
     }
         
-    template <class Type> template <class IteratorType>
-    inline List<Type>::List(IteratorType begin, IteratorType end) : _vector(begin, end) {}
-        
     template <class Type>
     inline List<Type>::List(
-        int size,
-        const Type& first_item
-    ) : _vector(1) {
-        assert(size == 1);
-        _vector[0] = first_item;
-    }
-        
-    template <class Type>
-    inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item
     ) : _vector(2) {
-        assert(size == 2);
         _vector[0] = first_item;
         _vector[1] = second_item;
     }
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item
     ) : _vector(3) {
-        assert(size == 3);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -279,13 +246,11 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
         const Type& fourth_item
     ) : _vector(4) {
-        assert(size == 4);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -294,14 +259,12 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
         const Type& fourth_item,
         const Type& fifth_item
     ) : _vector(5) {
-        assert(size == 5);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -311,7 +274,6 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
@@ -319,7 +281,6 @@ namespace opensolid
         const Type& fifth_item,
         const Type& sixth_item
     ) : _vector(6) {
-        assert(size == 6);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -330,7 +291,6 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
@@ -339,7 +299,6 @@ namespace opensolid
         const Type& sixth_item,
         const Type& seventh_item
     ) : _vector(7) {
-        assert(size == 7);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -351,7 +310,6 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
@@ -361,7 +319,6 @@ namespace opensolid
         const Type& seventh_item,
         const Type& eighth_item
     ) : _vector(8) {
-        assert(size == 8);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -374,7 +331,6 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
@@ -385,7 +341,6 @@ namespace opensolid
         const Type& eighth_item,
         const Type& ninth_item
     ) : _vector(9) {
-        assert(size == 9);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;
@@ -399,7 +354,6 @@ namespace opensolid
     
     template <class Type>
     inline List<Type>::List(
-        int size,
         const Type& first_item,
         const Type& second_item,
         const Type& third_item,
@@ -411,7 +365,6 @@ namespace opensolid
         const Type& ninth_item,
         const Type& tenth_item
     ) : _vector(10) {
-        assert(size == 10);
         _vector[0] = first_item;
         _vector[1] = second_item;
         _vector[2] = third_item;

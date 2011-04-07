@@ -28,14 +28,13 @@ class ListTestSuite : public CxxTest::TestSuite
 {
 public:
     void testMatrixAdapter() {
-        List<double> doubles(3, 1.0, 2.0, 3.0);
+        List<double> doubles(1.0, 2.0, 3.0);
         TS_ASSERT_EQUALS(doubles.matrix().rows(), 1);
         TS_ASSERT_EQUALS(doubles.matrix().cols(), 3);
         TS_ASSERT_EQUALS(doubles.matrix()(0, 1), 2.0);
         TS_ASSERT_EQUALS(doubles.matrix(), RowVector3d(1, 2, 3));
         
         List<Vector3d> vectors(
-            3,
             Vector3d(1, 2, 3),
             Vector3d(4, 5, 6),
             Vector3d(7, 8, 9)
