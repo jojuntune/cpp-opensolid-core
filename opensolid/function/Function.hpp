@@ -50,6 +50,15 @@ namespace opensolid
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& value);
         
+        template <class XType, class YType>
+        Function(const XType& x, const YType& y);
+        
+        template <class XType, class YType, class ZType>
+        Function(const XType& x, const YType& y, const ZType& z);
+        
+        template <class XType, class YType, class ZType, class WType>
+        Function(const XType& x, const YType& y, const ZType& z, const WType& w);
+        
         const FunctionImplementation::Pointer& implementation() const;
         
         template <class Type>
@@ -167,6 +176,21 @@ namespace opensolid
     template <class DerivedType>
     inline Function::Function(const EigenBase<DerivedType>& value) :
         _implementation(new ConstantFunction(value)), _type(&typeid(ConstantFunction)) {}
+        
+    template <class XType, class YType>
+    Function::Function(const XType& x, const YType& y) {
+        _implementation = Function(x).concatenate(y).implementation();
+    }
+    
+    template <class XType, class YType, class ZType>
+    Function::Function(const XType& x, const YType& y, const ZType& z) {
+        _implementation = Function(x).concatenate(y).concatenate(z).implementation();
+    }
+    
+    template <class XType, class YType, class ZType, class WType>
+    Function::Function(const XType& x, const YType& y, const ZType& z, const WType& w) {
+        _implementation = Function(x).concatenate(y).concatenate(z).concatenate(w).implementation();
+    }
     
     inline const FunctionImplementation::Pointer& Function::implementation() const {
         return _implementation;

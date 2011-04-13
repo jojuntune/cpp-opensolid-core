@@ -83,7 +83,6 @@ namespace opensolid
     }
     
     Function Function::concatenate(const Function& other) const {
-        assert(parameters() == other.parameters());
         return new ConcatenationFunction(*this, other);
     }
     

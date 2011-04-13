@@ -20,7 +20,6 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/value/TempMatrix.hpp>
 #include <opensolid/value/Tolerance.hpp>
 #include <opensolid/value/check.hpp>
 #include "Function.hpp"
@@ -194,9 +193,12 @@ public:
         TS_ASSERT((quotient(parameter_values) - quotient_values).isZero(Tolerance::roundoff()));
     }
     
-    void testTempMatrix() {
-        Vector3d vector = Vector3d::Random();
-        TempMatrixXd temp(vector, 5);
-        TS_ASSERT_EQUALS(temp, vector.replicate(1, 5));
+    void testConcatenation() {
+        Function x = Function::t;
+        double y = 3;
+        Function z = Function::t.squaredNorm();
+        Function concatenated(x, y, z);
+        Vector3d error = concatenated(2.0) - Vector3d(2.0, 3.0, 4.0);
+        TS_ASSERT(error.isZero(Tolerance::roundoff()));
     }
 };
