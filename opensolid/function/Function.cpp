@@ -309,7 +309,7 @@ namespace opensolid
     }
     
     Function operator*(const Function& function, const DatumXd& datum) {
-        assert(dimensions() == datum.axes());
+        assert(function.dimensions() == datum.axes());
         Function result;
         function.implementation()->getTransformed(datum, result);
         return result;
@@ -317,7 +317,7 @@ namespace opensolid
     
     Function operator/(const Function& function, const DatumXd& datum) {
         assert(datum.axes() == datum.dimensions());
-        assert(dimensions() == datum.dimensions());
+        assert(function.dimensions() == datum.dimensions());
         Function result;
         function.implementation()->getTransformed(datum.inverse(), result);
         return result;
