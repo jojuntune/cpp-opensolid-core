@@ -39,7 +39,7 @@ namespace opensolid
     }
     
     void TransformedFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index) * datum();
+        result = operand().derivative(index) * datum().linear();
     }
     
     void TransformedFunction::getComposition(const Function& inner, Function& result) const {

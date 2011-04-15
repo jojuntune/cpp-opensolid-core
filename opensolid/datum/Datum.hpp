@@ -70,7 +70,7 @@ namespace opensolid
         template <int other_dimensions_>
         friend class Axis;
         
-        template <int other_dimensions>
+        template <int other_dimensions_>
         friend class Plane;
         
         template <int other_dimensions_>
@@ -97,6 +97,9 @@ namespace opensolid
         
         template <int other_dimensions_, int other_axes_>
         void initialize(const Datum<other_dimensions_, other_axes_>& other);
+        
+        template <int other_dimensions_, int other_axes_>
+        void initialize(const LinearDatum<other_dimensions_, other_axes_>& other);
     public:
 		Datum();
 
@@ -110,10 +113,18 @@ namespace opensolid
         template <int other_dimensions_, int other_axes_>
         Datum(const Datum<other_dimensions_, other_axes_>& other);
         
+        template <int other_dimensions_, int other_axes_>
+        Datum(const LinearDatum<other_dimensions_, other_axes_>& other);
+        
         Datum<dimensions_, axes_>& operator=(const Datum<dimensions_, axes_>& other);
         
         template <int other_dimensions_, int other_axes_>
         Datum<dimensions_, axes_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
+        
+        template <int other_dimensions_, int other_axes_>
+        Datum<dimensions_, axes_>& operator=(
+            const LinearDatum<other_dimensions_, other_axes_>& other
+        );
         
         int dimensions() const;
         int axes() const;
@@ -256,6 +267,17 @@ namespace opensolid
         _vectors = other.vectors();
         _normalized = other._normalized;
     }
+        
+    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
+    inline void Datum<dimensions_, axes_>::initialize(
+        const LinearDatum<other_dimensions_, other_axes_>& other
+    ) {
+        assert(other.datum().dimensions() == dimensions_ || dimensions_ == Dynamic);
+        assert(other.datum().axes() == axes_ || axes_ == Dynamic);
+        _origin = VectorType::Zero(other.datum().dimensions());
+        _vectors = other.datum().vectors();
+        _normalized = other.datum()._normalized;
+    }
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>::Datum() {}
@@ -282,6 +304,11 @@ namespace opensolid
         initialize(other);
     }
         
+    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
+    inline Datum<dimensions_, axes_>::Datum(
+        const LinearDatum<other_dimensions_, other_axes_>& other
+    ) {initialize(other);}
+        
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<dimensions_, axes_>& other
@@ -293,6 +320,14 @@ namespace opensolid
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<other_dimensions_, other_axes_>& other
+    ) {
+        initialize(other);
+        return *this;
+    }
+    
+    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
+    inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
+        const LinearDatum<other_dimensions_, other_axes_>& other
     ) {
         initialize(other);
         return *this;
