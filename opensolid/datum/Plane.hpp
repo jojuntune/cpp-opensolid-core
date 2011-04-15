@@ -34,6 +34,8 @@ namespace opensolid
     private:
         template <class DerivedType>
         void initialize(const VectorType& origin, const EigenBase<DerivedType>& vectors);
+        
+        using Datum<dimensions_, dimensions_ - 1>::initialize;
     public:
         Plane();
         
