@@ -161,21 +161,6 @@ namespace opensolid
         return Geometry(operator()(geometry.function()), geometry.domain());
     }
     
-    Function Function::operator*(const DatumXd& datum) const {
-        assert(dimensions() == datum.axes());
-        Function result;
-        implementation()->getTransformed(datum, result);
-        return result;
-    }
-    
-    Function Function::operator/(const DatumXd& datum) const {
-        assert(datum.axes() == datum.dimensions());
-        assert(dimensions() == datum.dimensions());
-        Function result;
-        implementation()->getTransformed(datum.inverse(), result);
-        return result;
-    }
-    
     std::ostream& operator<<(std::ostream& stream, const Function& function) {
         function.debug(stream);
         return stream;
@@ -321,6 +306,21 @@ namespace opensolid
         } else {
             return new QuotientFunction(first_operand, second_operand);
         }
+    }
+    
+    Function operator*(const Function& function, const DatumXd& datum) {
+        assert(dimensions() == datum.axes());
+        Function result;
+        function.implementation()->getTransformed(datum, result);
+        return result;
+    }
+    
+    Function operator/(const Function& function, const DatumXd& datum) {
+        assert(datum.axes() == datum.dimensions());
+        assert(dimensions() == datum.dimensions());
+        Function result;
+        function.implementation()->getTransformed(datum.inverse(), result);
+        return result;
     }
     
     Function sin(const Function& operand) {

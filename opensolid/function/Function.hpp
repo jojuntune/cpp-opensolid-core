@@ -90,9 +90,6 @@ namespace opensolid
         
         OPENSOLID_EXPORT Geometry operator()(const Domain& domain) const;
         OPENSOLID_EXPORT Geometry operator()(const Geometry& geometry) const;
-    
-        OPENSOLID_EXPORT Function operator*(const DatumXd& datum) const;
-        OPENSOLID_EXPORT Function operator/(const DatumXd& datum) const;
         
         OPENSOLID_EXPORT void debug(std::ostream& stream, int indent = 0) const;
         
@@ -146,6 +143,9 @@ namespace opensolid
         const Function& first_operand,
         const Function& second_operand
     );
+    
+    OPENSOLID_EXPORT Function operator*(const Function& function, const DatumXd& datum);
+    OPENSOLID_EXPORT Function operator/(const Function& function, const DatumXd& datum);
     
     OPENSOLID_EXPORT Function cos(const Function& argument);
     OPENSOLID_EXPORT Function sin(const Function& argument);
