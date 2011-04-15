@@ -71,6 +71,8 @@ namespace opensolid
         
         const typename Bounds<Type>::Type& bounds() const;
         
+        const Type& item() const;
+        
         Set<Type> left() const;
         Set<Type> right() const;
         
@@ -227,6 +229,12 @@ namespace opensolid
     inline const typename Bounds<Type>::Type& Set<Type>::bounds() const {
         assert(size() != 0);
         return root()->bounds();
+    }
+    
+    template <class Type>
+    inline const Type& Set<Type>::item() const {
+        assert(root() && root()->object());
+        return *root()->object();
     }
     
     template <class Type>

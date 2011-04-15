@@ -50,4 +50,11 @@ public:
         TS_ASSERT_EQUALS(list[1], Vector3d(8, 10, 12));
     }
     
+    void testItem() {
+        List<double> list(1);
+        list[0] = 3;
+        TS_ASSERT_EQUALS(list.item(), 3.0);
+        list.item() = 4;
+        TS_ASSERT_EQUALS(list[0], 4.0);
+    }
 };

@@ -262,4 +262,10 @@ public:
         TS_ASSERT(isFixedSize(set));
         TS_ASSERT(!isFixedSize(set.overlapping(randomVector())));
     }
+    
+    void testItem() {
+        Set<Vector3d> set;
+        set.add(Vector3d(1, 2, 3));
+        TS_ASSERT_EQUALS(set.item(), Vector3d(1, 2, 3));
+    }
 };

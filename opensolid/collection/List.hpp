@@ -163,6 +163,8 @@ namespace opensolid
         const Type& front() const;
         Type& back();
         const Type& back() const;
+        Type& item();
+        const Type& item() const;
         
         Type& operator[](int index);
         const Type& operator[](int index) const;
@@ -445,6 +447,18 @@ namespace opensolid
     
     template <class Type>
     inline const Type& List<Type>::back() const {return _vector.back();}
+    
+    template <class Type>
+    inline Type& List<Type>::item() {
+        assert(size() == 1);
+        return front();
+    }
+    
+    template <class Type>
+    inline const Type& List<Type>::item() const {
+        assert(size() == 1);
+        return front();
+    }
     
     template <class Type>
     inline Type& List<Type>::operator[](int index) {
