@@ -113,7 +113,7 @@
 
     # Install OpenSolid headers
     INSTALL(
-        DIRECTORY opensolid
+        DIRECTORY opensolid opensolid_scripting opensolid_python
         DESTINATION include
         FILES_MATCHING PATTERN "*.hpp"
         PATTERN ".svn" EXCLUDE
