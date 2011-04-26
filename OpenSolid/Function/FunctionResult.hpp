@@ -76,9 +76,57 @@ namespace OpenSolid
     {
     private:
         const Function& _function;
-        FunctionArgument<ArgumentType> _argument;
+        const ArgumentType& _argument;
     public:
         FunctionResult(const Function& function, const ArgumentType& argument);
+        
+        int rows() const;
+        int cols() const;
+        
+        template<class ResultType>
+        void evalTo(ResultType& result) const;
+    };
+    
+    template<>
+    class FunctionResult<int> : public ReturnByValue<FunctionResult<int> >
+    {
+    private:
+        const Function& _function;
+        double _argument;
+    public:
+        FunctionResult(const Function& function, int argument);
+        
+        int rows() const;
+        int cols() const;
+        
+        template<class ResultType>
+        void evalTo(ResultType& result) const;
+    };
+    
+    template<>
+    class FunctionResult<double> : public ReturnByValue<FunctionResult<double> >
+    {
+    private:
+        const Function& _function;
+        double _argument;
+    public:
+        FunctionResult(const Function& function, double argument);
+        
+        int rows() const;
+        int cols() const;
+        
+        template<class ResultType>
+        void evalTo(ResultType& result) const;
+    };
+    
+    template<>
+    class FunctionResult<Interval> : public ReturnByValue<FunctionResult<Interval> >
+    {
+    private:
+        const Function& _function;
+        Interval _argument;
+    public:
+        FunctionResult(const Function& function, const Interval& argument);
         
         int rows() const;
         int cols() const;
@@ -106,17 +154,19 @@ namespace OpenSolid
     
     template<class ArgumentType> template<class ResultType>
     inline void FunctionResult<ArgumentType>::evalTo(ResultType& result) const {
+        FunctionArgument<ArgumentType> argument(_argument);
+        
         // Common typedefs
         typedef typename ResultType::Scalar Scalar;
         typedef Map<const Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic> >
             ArgumentMapType;
             
         // Create argument map
-        Stride<Dynamic, Dynamic> argument_stride(_argument.outerStride(), _argument.innerStride());
+        Stride<Dynamic, Dynamic> argument_stride(argument.outerStride(), argument.innerStride());
         ArgumentMapType argument_map(
-            _argument.data(),
-            _argument.rows(),
-            _argument.cols(),
+            argument.data(),
+            argument.rows(),
+            argument.cols(),
             argument_stride
         );
         
@@ -128,6 +178,86 @@ namespace OpenSolid
         Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
         typedef Map<Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic> >
             ResultMapType;
+        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
+        
+        // Evaluate function
+        _function.implementation()->evaluate(argument_map, result_map);
+    }
+    
+    inline FunctionResult<int>::FunctionResult(const Function& function, int argument) :
+        _function(function), _argument(argument) {}
+    
+    inline int FunctionResult<int>::rows() const {return _function.dimensions();}
+    
+    inline int FunctionResult<int>::cols() const {return 1;}
+    
+    template<class ResultType>
+    inline void FunctionResult<int>::evalTo(ResultType& result) const {
+        // Create argument map
+        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > ArgumentMapType;
+        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
+        
+        // Create result map
+        int result_outer_stride =
+            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int result_inner_stride =
+            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
+        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > ResultMapType;
+        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
+        
+        // Evaluate function
+        _function.implementation()->evaluate(argument_map, result_map);
+    }
+    
+    inline FunctionResult<double>::FunctionResult(const Function& function, double argument) :
+        _function(function), _argument(argument) {}
+    
+    inline int FunctionResult<double>::rows() const {return _function.dimensions();}
+    
+    inline int FunctionResult<double>::cols() const {return 1;}
+    
+    template<class ResultType>
+    inline void FunctionResult<double>::evalTo(ResultType& result) const {
+        // Create argument map
+        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > ArgumentMapType;
+        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
+        
+        // Create result map
+        int result_outer_stride =
+            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int result_inner_stride =
+            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
+        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > ResultMapType;
+        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
+        
+        // Evaluate function
+        _function.implementation()->evaluate(argument_map, result_map);
+    }
+    
+    inline FunctionResult<Interval>::FunctionResult(
+        const Function& function,
+        const Interval& argument
+    ) : _function(function), _argument(argument) {}
+    
+    inline int FunctionResult<Interval>::rows() const {return _function.dimensions();}
+    
+    inline int FunctionResult<Interval>::cols() const {return 1;}
+    
+    template<class ResultType>
+    inline void FunctionResult<Interval>::evalTo(ResultType& result) const {
+        // Create argument map
+        typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > ArgumentMapType;
+        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
+        
+        // Create result map
+        int result_outer_stride =
+            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int result_inner_stride =
+            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
+        typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate function
