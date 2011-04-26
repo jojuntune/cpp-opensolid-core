@@ -210,7 +210,7 @@ namespace OpenSolid
     }
     
     inline Interval Domain::interval() const {
-        assert(dimensions == 1);
+        assert(dimensions() == 1);
         if (boundaries().empty()) {
             return Interval::Empty();
         } else {
