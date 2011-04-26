@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <opensolid/common/Bounds.hpp>
-#include <opensolid/common/Pair.hpp>
-#include <opensolid/collection/IteratorRange.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/Pair.hpp>
+#include <OpenSolid/Collection/IteratorRange.hpp>
 #include "Eigen.hpp"
 #include "Interval.hpp"
 
@@ -70,6 +70,10 @@ namespace Eigen
     typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > MapXd;
     typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > MapXI;
     typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXb;
+    
+    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > MapXcd;
+    typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > MapXcI;
+    typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXcb;
 }
 
 namespace opensolid
@@ -179,7 +183,7 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::RowXpr
+            typename MatrixType::ConstRowXpr
         >(matrix, index) {}
     
     template <class MatrixType>
@@ -188,7 +192,7 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::RowXpr
+            typename MatrixType::ConstRowXpr
         >(other) {}
     
     template <class MatrixType>
@@ -197,11 +201,11 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::RowXpr
+            typename MatrixType::ConstRowXpr
         >(other) {}
     
     template <class MatrixType>
-    inline const typename MatrixType::RowXpr ConstMatrixRowIterator<MatrixType>::block(
+    inline typename MatrixType::ConstRowXpr ConstMatrixRowIterator<MatrixType>::block(
         const MatrixType& matrix,
         int index
     ) {return matrix.row(index);}
@@ -236,7 +240,7 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::ColXpr
+            typename MatrixType::ConstColXpr
         >(matrix, index) {}
     
     template <class MatrixType>
@@ -245,7 +249,7 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::ColXpr
+            typename MatrixType::ConstColXpr
         >(other) {}
     
     template <class MatrixType>
@@ -254,11 +258,11 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::ColXpr
+            typename MatrixType::ConstColXpr
         >(other) {}
     
     template <class MatrixType>
-    inline const typename MatrixType::ColXpr ConstMatrixColIterator<MatrixType>::block(
+    inline typename MatrixType::ConstColXpr ConstMatrixColIterator<MatrixType>::block(
         const MatrixType& matrix,
         int index
     ) {return matrix.col(index);}
@@ -303,9 +307,9 @@ namespace Eigen
     }
     
     template <class DerivedType>
-    inline typename Bounds<typename DerivedType::ColXpr::PlainObject>::Type
+    inline typename Bounds<typename DerivedType::ConstColXpr::PlainObject>::Type
     MatrixListAdapter<DerivedType>::bounds() const {
-        typename Bounds<typename DerivedType::ColXpr::PlainObject>::Type result =
+        typename Bounds<typename DerivedType::ConstColXpr::PlainObject>::Type result =
             _matrix.col(0).template cast<Interval>();
         for (int i = 1; i < _matrix.cols(); ++i) {
             result = result.hull(_matrix.col(i));
@@ -324,17 +328,17 @@ namespace Eigen
     }
     
     template <class DerivedType>
-    inline const typename DerivedType::ColXpr MatrixListAdapter<DerivedType>::front() const {
+    inline typename DerivedType::ConstColXpr MatrixListAdapter<DerivedType>::front() const {
         return _matrix.col(0);
     }
     
     template <class DerivedType>
-    inline const typename DerivedType::ColXpr MatrixListAdapter<DerivedType>::back() const {
+    inline typename DerivedType::ConstColXpr MatrixListAdapter<DerivedType>::back() const {
         return _matrix.col(_matrix.cols() - 1);
     }
     
     template <class DerivedType>
-    inline const typename DerivedType::ColXpr MatrixListAdapter<DerivedType>::operator[](
+    inline typename DerivedType::ConstColXpr MatrixListAdapter<DerivedType>::operator[](
         int index
     ) const {return _matrix.col(index);}
     

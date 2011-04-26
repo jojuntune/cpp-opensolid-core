@@ -21,14 +21,14 @@
 #ifndef OPENSOLID__SCRIPTING__SCRIPT_HPP
 #define OPENSOLID__SCRIPTING__SCRIPT_HPP
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
 #include <string>
 
 #include <boost/python.hpp>
 #include <boost/python/raw_function.hpp>
 
-#include <opensolid_python/check.hpp>
+#include <OpenSolidPython/check.hpp>
 
 namespace opensolid
 {

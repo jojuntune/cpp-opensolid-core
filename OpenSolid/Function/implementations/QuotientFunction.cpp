@@ -32,12 +32,12 @@ namespace opensolid
     
     int QuotientFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void QuotientFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void QuotientFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) *
             secondOperand()(parameter_values).cwiseInverse().asDiagonal();
     }
     
-    void QuotientFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void QuotientFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = firstOperand()(parameter_bounds) *
             secondOperand()(parameter_bounds).cwiseInverse().asDiagonal();
     }

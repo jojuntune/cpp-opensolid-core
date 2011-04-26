@@ -29,11 +29,11 @@ namespace opensolid
     
     int SquareRootFunction::dimensions() const {return 1;}
     
-    void SquareRootFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void SquareRootFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).cwiseSqrt();
     }
     
-    void SquareRootFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void SquareRootFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = operand()(parameter_bounds).cwiseSqrt();
     }
 

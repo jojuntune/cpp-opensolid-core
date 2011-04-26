@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__VERTEXDATA_HPP
 #define OPENSOLID__VERTEXDATA_HPP
 
-#include <opensolid/common/ReferenceCountedBase.hpp>
-#include <opensolid/collection/CollectionBase.hpp>
-#include <opensolid/value/Matrix.hpp>
+#include <OpenSolid/Common/ReferenceCountedBase.hpp>
+#include <OpenSolid/Collection/CollectionBase.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
 
 namespace opensolid
 {

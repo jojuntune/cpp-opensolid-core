@@ -28,11 +28,11 @@ namespace opensolid
     
     int CosineFunction::dimensions() const {return 1;}
     
-    void CosineFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void CosineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).array().cos();
     }
     
-    void CosineFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void CosineFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = operand()(parameter_bounds).array().cos();
     }
 

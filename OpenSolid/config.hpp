@@ -22,19 +22,19 @@
 #define OPENSOLID__CONFIG_HPP
 
 #if defined(WIN32)
-    #if defined(opensolid_EXPORTS)
+    #if defined(OpenSolid_EXPORTS)
         #define OPENSOLID_EXPORT __declspec( dllexport )
     #else
         #define OPENSOLID_EXPORT __declspec( dllimport )
     #endif
 
-    #if defined(opensolid_python_EXPORTS)
+    #if defined(OpenSolidPython_EXPORTS)
         #define OPENSOLID_PYTHON_EXPORT __declspec( dllexport )
     #else
         #define OPENSOLID_PYTHON_EXPORT __declspec( dllimport )
     #endif
     
-    #if defined(opensolid_scripting_EXPORTS)
+    #if defined(OpenSolidScripting_EXPORTS)
         #define OPENSOLID_SCRIPTING_EXPORT __declspec( dllexport )
     #else
         #define OPENSOLID_SCRIPTING_EXPORT __declspec( dllimport )

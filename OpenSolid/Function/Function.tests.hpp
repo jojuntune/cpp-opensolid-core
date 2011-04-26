@@ -20,10 +20,9 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/value/Tolerance.hpp>
-#include <opensolid/value/check.hpp>
+#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Value/check.hpp>
 #include "Function.hpp"
-#include "implementations/ConstantFunction.hpp"
 
 using namespace opensolid;
 

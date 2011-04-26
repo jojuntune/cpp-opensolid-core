@@ -32,12 +32,12 @@ namespace opensolid
         return firstOperand().dimensions() + secondOperand().dimensions();
     }
     
-    void ConcatenationFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ConcatenationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results.topRows(firstOperand().dimensions()) = firstOperand()(parameter_values);
         results.bottomRows(secondOperand().dimensions()) = secondOperand()(parameter_values);
     }
     
-    void ConcatenationFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ConcatenationFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results.topRows(firstOperand().dimensions()) = firstOperand()(parameter_bounds);
         results.bottomRows(secondOperand().dimensions()) = secondOperand()(parameter_bounds);
     }

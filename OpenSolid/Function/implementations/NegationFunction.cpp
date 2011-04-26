@@ -27,11 +27,11 @@ namespace opensolid
     
     int NegationFunction::dimensions() const {return operand().dimensions();}
     
-    void NegationFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void NegationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = -operand()(parameter_values);
     }
     
-    void NegationFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void NegationFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = -operand()(parameter_bounds);
     }
 

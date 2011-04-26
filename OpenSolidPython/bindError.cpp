@@ -20,17 +20,30 @@
 
 #include <boost/python.hpp>
 
-#include <opensolid/value/Tolerance.hpp>
+#include <OpenSolid/Common/Error.hpp>
 
 using namespace boost::python;
 
 namespace opensolid
 {
-    void bindTolerance() {
-        class_<Tolerance>("Tolerance", no_init)
-            .def("size", &Tolerance::size).staticmethod("size")
-            .def("setSize", &Tolerance::setSize).staticmethod("setSize")
-            .def("roundoff", &Tolerance::roundoff).staticmethod("roundoff")
-            .def("setRoundoff", &Tolerance::setRoundoff).staticmethod("setRoundoff");
+    OPENSOLID_PYTHON_EXPORT PyObject* error_class;
+    
+    struct ErrorTranslator
+    {
+        void operator()(const Error& error) const {
+            PyErr_SetObject(error_class, object(error).ptr());
+        }
+    };
+    
+    void bindError() {
+        error_class = class_<Error>("Error", init<const std::string&, const std::string&>())
+            .def("expected", &Error::expected)
+            .def("caller", &Error::caller)
+            .def("get", &Error::get<std::string>)
+            .def("set", &Error::set<std::string>, return_value_policy<copy_non_const_reference>())
+            .def("has", &Error::has)
+            .def(self_ns::str(self))
+            .ptr();
+        register_exception_translator<Error>(ErrorTranslator());
     }
 }

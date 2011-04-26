@@ -32,11 +32,11 @@ namespace opensolid
     
     int DifferenceFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void DifferenceFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void DifferenceFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) - secondOperand()(parameter_values);
     }
     
-    void DifferenceFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void DifferenceFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = firstOperand()(parameter_bounds) - secondOperand()(parameter_bounds);
     }
 

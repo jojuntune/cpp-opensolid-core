@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/value/Tolerance.hpp>
+#include <OpenSolid/Value/Tolerance.hpp>
 #include "Geometry.hpp"
 
 using namespace opensolid;

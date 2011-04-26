@@ -27,11 +27,11 @@ namespace opensolid
     
     int SquaredNormFunction::dimensions() const {return 1;}
     
-    void SquaredNormFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void SquaredNormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).colwise().squaredNorm();
     }
     
-    void SquaredNormFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void SquaredNormFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = operand()(parameter_bounds).colwise().squaredNorm();
     }
 

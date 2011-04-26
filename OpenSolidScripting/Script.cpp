@@ -25,7 +25,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-#include <opensolid/common/Error.hpp>
+#include <OpenSolid/Common/Error.hpp>
 #include "Script.hpp"
 
 namespace opensolid
@@ -90,15 +90,15 @@ namespace opensolid
         }
     }
     
-    extern "C" OPENSOLID_PYTHON_EXPORT void initopensolid_python();
+    extern "C" OPENSOLID_PYTHON_EXPORT void initOpenSolidPython();
 
     Script::Script() {
         if (!Py_IsInitialized()) {
             Py_Initialize();
-            initopensolid_python();
+            initOpenSolidPython();
         }
         _environment = PythonDict(boost::python::import("__main__").attr("__dict__"));
-        boost::python::exec("from opensolid_python import *", _environment, _environment);
+        boost::python::exec("from OpenSolidPython import *", _environment, _environment);
     }
     
     Script& Script::run(const std::string& argument) {

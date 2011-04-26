@@ -27,11 +27,11 @@ namespace opensolid
     
     int NormFunction::dimensions() const {return 1;}
     
-    void NormFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void NormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).colwise().norm();
     }
     
-    void NormFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void NormFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = operand()(parameter_bounds).colwise().norm();
     }
 

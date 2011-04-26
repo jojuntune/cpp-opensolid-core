@@ -21,13 +21,13 @@
 #ifndef OPENSOLID__EIGEN_HPP
 #define OPENSOLID__EIGEN_HPP
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
-#include <opensolid/common/Bounds.hpp>
-#include <opensolid/common/Bisected.hpp>
-#include <opensolid/collection/FixedSizeCollection.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/Bisected.hpp>
+#include <OpenSolid/Collection/FixedSizeCollection.hpp>
 
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
@@ -42,6 +42,13 @@ namespace opensolid
 {
     class Interval;
     
+    Interval abs(const Interval& argument);
+    Interval sqrt(const Interval& argument);
+    OPENSOLID_EXPORT Interval exp(const Interval& argument);
+    OPENSOLID_EXPORT Interval log(const Interval& argument);
+    OPENSOLID_EXPORT Interval sin(const Interval& argument);
+    OPENSOLID_EXPORT Interval cos(const Interval& argument);
+    
     double lowerBound(const Interval& argument);
     double upperBound(const Interval& argument);
 }
@@ -53,17 +60,36 @@ namespace Eigen
     using opensolid::Bisected;
     using opensolid::FixedSizeCollection;
     
-    const Interval& ei_conj(const Interval& argument);
-    const Interval& ei_real(const Interval& argument);
-    Interval ei_imag(const Interval&);
-    Interval ei_abs(const Interval& argument);
-    Interval ei_abs2(const Interval& argument);
-    Interval ei_sqrt(const Interval& argument);
-    Interval ei_exp(const Interval&  argument);
-    Interval ei_log(const Interval&  argument);
-    Interval ei_sin(const Interval&  argument);
-    Interval ei_cos(const Interval&  argument);
-    Interval ei_pow(const Interval& x, const Interval& y);
+    namespace internal
+    {
+        using opensolid::abs;
+        using opensolid::sqrt;
+        using opensolid::exp;
+        using opensolid::log;
+        using opensolid::sin;
+        using opensolid::cos;
+        
+        const Interval& conj(const Interval& argument);
+        const Interval& real(const Interval& argument);
+        Interval imag(const Interval&);
+        //Interval abs(const Interval& argument);
+        Interval abs2(const Interval& argument);
+        //Interval sqrt(const Interval& argument);
+        //Interval exp(const Interval&  argument);
+        //Interval log(const Interval&  argument);
+        //Interval sin(const Interval&  argument);
+        //Interval cos(const Interval&  argument);
+        Interval pow(const Interval& x, const Interval& y); 
+    
+        template <class ScalarType, bool is_integer_>
+        struct significant_decimals_default_impl;
+        
+        template <>
+        struct significant_decimals_default_impl<Interval, false>
+        {
+            static inline int run();
+        };
+    }
     
     template <class Type>
     struct NumTraits;
@@ -81,20 +107,12 @@ namespace Eigen
         static const int AddCost = 2;
         static const int MulCost = 10;
         static const int IsSigned = 1;
+        static const int RequireInitialization = 0;
         
         static Interval epsilon();
         static Interval dummy_precision();
         static Interval lowest();
         static Interval highest();
-    };
-    
-    template <class ScalarType, bool is_integer_>
-    struct ei_significant_decimals_default_impl;
-    
-    template <>
-    struct ei_significant_decimals_default_impl<Interval, false>
-    {
-        static inline int run();
     };
     
     template <class DerivedType, class MatrixType, class BlockType>
@@ -142,7 +160,7 @@ namespace Eigen
         public MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::RowXpr
+            typename MatrixType::ConstRowXpr
         >
     {
     public:
@@ -150,7 +168,7 @@ namespace Eigen
         ConstMatrixRowIterator(const ConstMatrixRowIterator<MatrixType>& other);
         ConstMatrixRowIterator(const MatrixRowIterator<MatrixType>& other);
         
-        static const typename MatrixType::RowXpr block(const MatrixType& matrix, int index);
+        static typename MatrixType::ConstRowXpr block(const MatrixType& matrix, int index);
     };
     
     template <class MatrixType>
@@ -176,7 +194,7 @@ namespace Eigen
         public MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            const typename MatrixType::ColXpr
+            typename MatrixType::ConstColXpr
         >
     {
     public:
@@ -184,7 +202,7 @@ namespace Eigen
         ConstMatrixColIterator(const ConstMatrixColIterator<MatrixType>& other);
         ConstMatrixColIterator(const MatrixColIterator<MatrixType>& other);
         
-        static const typename MatrixType::ColXpr block(const MatrixType& matrix, int index);
+        static typename MatrixType::ConstColXpr block(const MatrixType& matrix, int index);
     };
     
     template <class MatrixType>
@@ -218,15 +236,15 @@ namespace Eigen
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
         
-        typename Bounds<typename DerivedType::ColXpr::PlainObject>::Type bounds() const;
+        typename Bounds<typename DerivedType::ConstColXpr::PlainObject>::Type bounds() const;
         
         Iterator begin() const;
         Iterator end() const;
         
-        const typename DerivedType::ColXpr front() const;
-        const typename DerivedType::ColXpr back() const;
+        typename DerivedType::ConstColXpr front() const;
+        typename DerivedType::ConstColXpr back() const;
         
-        const typename DerivedType::ColXpr operator[](int index) const;
+        typename DerivedType::ConstColXpr operator[](int index) const;
     };
     
     struct ContainOperation

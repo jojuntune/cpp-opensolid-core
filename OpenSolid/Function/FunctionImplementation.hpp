@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 #define OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 
-#include <opensolid/common/ReferenceCountedBase.hpp>
-#include <opensolid/value/Matrix.hpp>
-#include <opensolid/datum/Datum.hpp>
+#include <OpenSolid/Common/ReferenceCountedBase.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 
 namespace opensolid
 {
@@ -37,11 +37,11 @@ namespace opensolid
         virtual int parameters() const = 0;
         virtual int dimensions() const = 0;
         
-        void evaluate(const MapXd& parameter_values, MapXd& results) const;
-        void evaluate(const MapXI& parameter_bounds, MapXI& results) const;
+        void evaluate(const MapXcd& parameter_values, MapXd& results) const;
+        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        virtual void getValues(const MapXd& parameter_values, MapXd& results) const = 0;
-        virtual void getBounds(const MapXI& parameter_bounds, MapXI& results) const = 0;
+        virtual void getValues(const MapXcd& parameter_values, MapXd& results) const = 0;
+        virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const = 0;
         
         virtual void getDerivative(int index, Function& result) const = 0;
         
@@ -78,12 +78,12 @@ namespace opensolid
 namespace opensolid
 {
     inline void FunctionImplementation::evaluate(
-        const MapXd& parameter_values,
+        const MapXcd& parameter_values,
         MapXd& results
     ) const {getValues(parameter_values, results);}
     
     inline void FunctionImplementation::evaluate(
-        const MapXI& parameter_bounds,
+        const MapXcI& parameter_bounds,
         MapXI& results
     ) const {getBounds(parameter_bounds, results);}
 }

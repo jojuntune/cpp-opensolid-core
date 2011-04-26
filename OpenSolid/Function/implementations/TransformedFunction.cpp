@@ -30,11 +30,11 @@ namespace opensolid
     
     int TransformedFunction::dimensions() const {return datum().dimensions();}
     
-    void TransformedFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void TransformedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values) * datum();
     }
     
-    void TransformedFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void TransformedFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = operand()(parameter_bounds) * datum();
     }
     

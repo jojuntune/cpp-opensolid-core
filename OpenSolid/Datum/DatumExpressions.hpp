@@ -40,57 +40,60 @@ namespace opensolid
 
 namespace Eigen
 {
-    template <class DerivedType, int dimensions_, int axes_>
-    struct ei_traits<opensolid::DatumProduct<DerivedType, dimensions_, axes_> >
+    namespace internal
     {
-        typedef Matrix<
-            typename DerivedType::Scalar,
-            dimensions_,
-            DerivedType::ColsAtCompileTime
-        > ReturnType;
+        template <class DerivedType, int dimensions_, int axes_>
+        struct traits<opensolid::DatumProduct<DerivedType, dimensions_, axes_> >
+        {
+            typedef Matrix<
+                typename DerivedType::Scalar,
+                dimensions_,
+                DerivedType::ColsAtCompileTime
+            > ReturnType;
+            
+            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) &
+                ~DirectAccessBit;
+        };
         
-        static const int Flags = (ei_traits<ReturnType>::Flags | EvalBeforeNestingBit) &
-            ~DirectAccessBit;
-    };
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    struct ei_traits<opensolid::DatumQuotient<DerivedType, dimensions_, axes_> >
-    {
-        typedef Matrix<
-            typename DerivedType::Scalar,
-            axes_,
-            DerivedType::ColsAtCompileTime
-        > ReturnType;
+        template <class DerivedType, int dimensions_, int axes_>
+        struct traits<opensolid::DatumQuotient<DerivedType, dimensions_, axes_> >
+        {
+            typedef Matrix<
+                typename DerivedType::Scalar,
+                axes_,
+                DerivedType::ColsAtCompileTime
+            > ReturnType;
+            
+            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) &
+                ~DirectAccessBit;
+        };
         
-        static const int Flags = (ei_traits<ReturnType>::Flags | EvalBeforeNestingBit) &
-            ~DirectAccessBit;
-    };
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    struct ei_traits<opensolid::LinearDatumProduct<DerivedType, dimensions_, axes_> >
-    {
-        typedef Matrix<
-            typename DerivedType::Scalar,
-            dimensions_,
-            DerivedType::ColsAtCompileTime
-        > ReturnType;
+        template <class DerivedType, int dimensions_, int axes_>
+        struct traits<opensolid::LinearDatumProduct<DerivedType, dimensions_, axes_> >
+        {
+            typedef Matrix<
+                typename DerivedType::Scalar,
+                dimensions_,
+                DerivedType::ColsAtCompileTime
+            > ReturnType;
+            
+            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) &
+                ~DirectAccessBit;
+        };
         
-        static const int Flags = (ei_traits<ReturnType>::Flags | EvalBeforeNestingBit) &
-            ~DirectAccessBit;
-    };
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    struct ei_traits<opensolid::LinearDatumQuotient<DerivedType, dimensions_, axes_> >
-    {
-        typedef Matrix<
-            typename DerivedType::Scalar,
-            axes_,
-            DerivedType::ColsAtCompileTime
-        > ReturnType;
-        
-        static const int Flags = (ei_traits<ReturnType>::Flags | EvalBeforeNestingBit) &
-            ~DirectAccessBit;
-    };
+        template <class DerivedType, int dimensions_, int axes_>
+        struct traits<opensolid::LinearDatumQuotient<DerivedType, dimensions_, axes_> >
+        {
+            typedef Matrix<
+                typename DerivedType::Scalar,
+                axes_,
+                DerivedType::ColsAtCompileTime
+            > ReturnType;
+            
+            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) &
+                ~DirectAccessBit;
+        };
+    }
 }
 
 namespace opensolid

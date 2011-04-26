@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__TOLERANCE_HPP
 #define OPENSOLID__TOLERANCE_HPP
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
 namespace opensolid
 {

@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__GEOMETRYDOMAIN_HPP
 #define OPENSOLID__GEOMETRYDOMAIN_HPP
 
-#include <opensolid/common/Bounds.hpp>
-#include <opensolid/function/Function.hpp>
-#include <opensolid/collection/Set.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Collection/Set.hpp>
 
 namespace opensolid
 {

@@ -21,8 +21,10 @@
 #ifndef OPENSOLID__FUNCTIONARGUMENT_HPP
 #define OPENSOLID__FUNCTIONARGUMENT_HPP
 
-#include <opensolid/value/Eigen.hpp>
-#include <opensolid/value/Interval.hpp>
+#include <boost/mpl/if.hpp>
+
+#include <OpenSolid/Value/Eigen.hpp>
+#include <OpenSolid/Value/Interval.hpp>
 
 namespace opensolid
 {
@@ -30,7 +32,11 @@ namespace opensolid
     class FunctionArgument
     {
     private:
-        typename ei_meta_if<ei_has_direct_access<Type>::ret, const Type&, typename Type::PlainObject>::ret _argument;
+        typename boost::mpl::if_c<
+            Eigen::internal::has_direct_access<Type>::ret,
+            const Type&,
+            typename Type::PlainObject
+        >::type _argument;
     public:
         FunctionArgument(const Type& argument);
         

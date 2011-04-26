@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__SETNODE_HPP
 #define OPENSOLID__SETNODE_HPP
 
-#include <opensolid/common/ReferenceCountedBase.hpp>
-#include <opensolid/common/Bounds.hpp>
+#include <OpenSolid/Common/ReferenceCountedBase.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
 #include "List.hpp"
 
 namespace opensolid

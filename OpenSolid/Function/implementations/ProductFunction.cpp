@@ -32,12 +32,12 @@ namespace opensolid
     
     int ProductFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void ProductFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) *
             secondOperand()(parameter_values).eval().asDiagonal();
     }
     
-    void ProductFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ProductFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = firstOperand()(parameter_bounds) *
             secondOperand()(parameter_bounds).eval().asDiagonal();
     }

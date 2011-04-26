@@ -26,8 +26,8 @@
 #include <algorithm>
 #include <cassert>
 
-#include <opensolid/common/Bounds.hpp>
-#include <opensolid/value/Matrix.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
 

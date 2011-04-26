@@ -18,66 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__SCRIPTING__CHECK_HPP
-#define OPENSOLID__SCRIPTING__CHECK_HPP
+#include <OpenSolid/Common/Error.hpp>
 
-#include <opensolid/config.hpp>
-
-#include <string>
-
-#include <boost/python.hpp>
-
-#include <opensolid/value/Matrix.hpp>
-
-using namespace boost::python;
+#include "check.hpp"
 
 namespace opensolid
 {
-    class Function;
-    class Domain;
-    class Geometry;
-    
-    template<class Type>
-    std::string typeName();
-    
-    template<>
-    inline std::string typeName<bool>() {return "bool";}
-    
-    template<>
-    inline std::string typeName<int>() {return "int";}
-    
-    template<>
-    inline std::string typeName<double>() {return "double";}
-    
-    template<>
-    inline std::string typeName<std::string>() {return "string";}
-    
-    template<>
-    inline std::string typeName<Interval>() {return "Interval";}
-    
-    template<>
-    inline std::string typeName<MatrixXd>() {return "MatrixXd";}
-    
-    template<>
-    inline std::string typeName<MatrixXI>() {return "MatrixXI";}
-    
-    template<>
-    inline std::string typeName<Function>() {return "Function";}
-    
-    template<>
-    inline std::string typeName<Domain>() {return "Domain";}
-    
-    template<>
-    inline std::string typeName<Geometry>() {return "Geometry";}
-    
-    inline std::string typeName(object argument) {return argument.ptr()->ob_type->tp_name;}
-    
-    OPENSOLID_PYTHON_EXPORT void checkCompatiblePythonType(
+    void checkCompatiblePythonType(
         bool compatible,
         const std::string& expected_type,
         const std::string& type,
         const std::string& caller
-    );
+    ) {
+        if (!compatible) {
+            Error error("CompatiblePythonType", caller);
+            error.set("expected_type", expected_type).set("type", type);
+            throw error;
+        }
+    }
 }
-
-#endif

@@ -22,7 +22,7 @@
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/manage_new_object.hpp>
 
-#include <opensolid/function/Function.hpp>
+#include <OpenSolid/Function/Function.hpp>
 
 using namespace boost::python;
 

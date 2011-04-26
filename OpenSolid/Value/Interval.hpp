@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__INTERVAL_HPP
 #define OPENSOLID__INTERVAL_HPP
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
 #include <iostream>
 #include <algorithm>
@@ -30,9 +30,9 @@
 #include <cassert>
 #include <utility>
 
-#include <opensolid/common/Bounds.hpp>
-#include <opensolid/common/Bisected.hpp>
-#include <opensolid/common/Pair.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/Bisected.hpp>
+#include <OpenSolid/Common/Pair.hpp>
 #include "Eigen.hpp"
 
 namespace opensolid
@@ -220,27 +220,36 @@ namespace opensolid
 
 namespace Eigen
 {
-    inline const Interval& ei_conj(const Interval& argument) {return argument;}
-
-    inline const Interval& ei_real(const Interval& argument) {return argument;}
-
-    inline Interval ei_imag(const Interval&) {return Interval(0.0);}
-
-    inline Interval ei_abs(const Interval& argument) {return abs(argument);}
-
-    inline Interval ei_abs2(const Interval& argument) {return argument.squared();}
-
-    inline Interval ei_sqrt(const Interval& argument) {return sqrt(argument);}
-
-    inline Interval ei_exp(const Interval&  argument) {return exp(argument);}
-
-    inline Interval ei_log(const Interval&  argument) {return log(argument);}
-
-    inline Interval ei_sin(const Interval&  argument) {return sin(argument);}
-
-    inline Interval ei_cos(const Interval&  argument) {return cos(argument);}
-
-    inline Interval ei_pow(const Interval& x, const Interval& y) {return exp(y * log(x));}
+    namespace internal
+    {
+        inline const Interval& conj(const Interval& argument) {return argument;}
+    
+        inline const Interval& real(const Interval& argument) {return argument;}
+    
+        inline Interval imag(const Interval&) {return Interval(0.0);}
+    
+        //inline Interval abs(const Interval& argument) {return opensolid::abs(argument);}
+    
+        inline Interval abs2(const Interval& argument) {return argument.squared();}
+    
+        //inline Interval sqrt(const Interval& argument) {return opensolid::sqrt(argument);}
+    
+        //inline Interval exp(const Interval&  argument) {return opensolid::exp(argument);}
+    
+        //inline Interval log(const Interval&  argument) {return opensolid::log(argument);}
+    
+        //inline Interval sin(const Interval&  argument) {return opensolid::sin(argument);}
+    
+        //inline Interval cos(const Interval&  argument) {return opensolid::cos(argument);}
+    
+        inline Interval pow(const Interval& x, const Interval& y) {
+            return opensolid::exp(y * opensolid::log(x));
+        }
+    
+        inline int significant_decimals_default_impl<Interval, false>::run() {
+            return significant_decimals_default_impl<double, false>::run();
+        }
+    }
     
     inline Interval NumTraits<Interval>::epsilon() {return Interval(NumTraits<double>::epsilon());}
     
@@ -251,10 +260,6 @@ namespace Eigen
     inline Interval NumTraits<Interval>::lowest() {return Interval(NumTraits<double>::lowest());}
     
     inline Interval NumTraits<Interval>::highest() {return Interval(NumTraits<double>::highest());}
-    
-    inline int ei_significant_decimals_default_impl<Interval, false>::run() {
-        return ei_significant_decimals_default_impl<double, false>::run();
-    }
 }
 
 namespace opensolid

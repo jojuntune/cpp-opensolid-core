@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
 #include <boost/python.hpp>
 
@@ -33,7 +33,7 @@ namespace opensolid
     void bindTolerance();
     void bindFunction();
 
-    BOOST_PYTHON_MODULE(opensolid_python) {
+    BOOST_PYTHON_MODULE(OpenSolidPython) {
         bindError();
         bindInterval();
         bindEigen();

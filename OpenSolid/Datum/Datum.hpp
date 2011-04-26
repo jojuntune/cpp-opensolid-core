@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__DATUM_HPP
 #define OPENSOLID__DATUM_HPP
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
-#include <opensolid/collection/List.hpp>
-#include <opensolid/value/Matrix.hpp>
-#include <opensolid/value/Tolerance.hpp>
+#include <OpenSolid/Collection/List.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Value/Tolerance.hpp>
 
 namespace opensolid
 {
@@ -252,7 +252,8 @@ namespace opensolid
 			);
             _normalized = true;
         } else {
-            _vectors = vectors.derived();
+            _vectors.resize(origin.size(), vectors.cols());
+            _vectors.leftCols(vectors.cols()) = vectors.derived();
             _normalized = _vectors.isUnitary(Tolerance::roundoff());
         }
     }

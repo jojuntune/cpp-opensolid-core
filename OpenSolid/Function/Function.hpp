@@ -23,9 +23,9 @@
 
 #include <typeinfo>
 
-#include <opensolid/value/Interval.hpp>
-#include <opensolid/value/Matrix.hpp>
-#include <opensolid/datum/Datum.hpp>
+#include <OpenSolid/Value/Interval.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 #include "FunctionImplementation.hpp"
 #include "implementations/ConstantFunction.hpp"
 

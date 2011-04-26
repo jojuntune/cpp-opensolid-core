@@ -20,7 +20,7 @@
 
 #include <cmath>
 
-#include <opensolid/common/Error.hpp>
+#include <OpenSolid/Common/Error.hpp>
 
 #include "check.hpp"
 

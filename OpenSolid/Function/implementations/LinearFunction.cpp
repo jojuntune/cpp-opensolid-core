@@ -30,11 +30,11 @@ namespace opensolid
     
     int LinearFunction::dimensions() const {return _vectors.rows();}
     
-    void LinearFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void LinearFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = _point.replicate(1, parameter_values.cols()) + _vectors * parameter_values;
     }
     
-    void LinearFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void LinearFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = _point.cast<Interval>().replicate(1, parameter_bounds.cols())
             + _vectors.cast<Interval>() * parameter_bounds;
     }

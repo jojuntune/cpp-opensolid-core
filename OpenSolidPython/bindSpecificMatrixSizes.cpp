@@ -23,8 +23,8 @@
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/manage_new_object.hpp>
 
-#include <opensolid/value/Matrix.hpp>
-#include <opensolid/value/check.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Value/check.hpp>
 
 #include "check.hpp"
 

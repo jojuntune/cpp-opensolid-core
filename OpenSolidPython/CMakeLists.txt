@@ -1,5 +1,5 @@
 ADD_LIBRARY(
-    opensolid_python
+    OpenSolidPython
     SHARED
     bindError.cpp
     bindInterval.cpp
@@ -12,15 +12,15 @@ ADD_LIBRARY(
 )
 
 # Configure library name (opensolid_python.so on UNIX, opensolid_python.pyd on Windows)
-SET_TARGET_PROPERTIES(opensolid_python PROPERTIES PREFIX "")
+SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES PREFIX "")
 IF(WIN32)
-    SET_TARGET_PROPERTIES(opensolid_python PROPERTIES SUFFIX ".pyd")
+    SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES SUFFIX ".pyd")
 ENDIF(WIN32)
 
-TARGET_LINK_LIBRARIES(opensolid_python opensolid ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(OpenSolidPython OpenSolid ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
 INSTALL(
-    TARGETS opensolid_python
+    TARGETS OpenSolidPython
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib

@@ -22,8 +22,8 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/collection/List.hpp>
-#include <opensolid/collection/IteratorRange.hpp>
+#include <OpenSolid/Collection/List.hpp>
+#include <OpenSolid/Collection/IteratorRange.hpp>
 #include "Interval.hpp"
 #include "Matrix.hpp"
 
@@ -32,7 +32,7 @@ using namespace opensolid;
 template <class Type>
 void printDirectAccess(const Type& argument) {
     std::cout << typeid(Type).name();
-    if (ei_has_direct_access<Type>::ret) {
+    if (internal::has_direct_access<Type>::ret) {
         std::cout << " has direct access" << std::endl;
     } else {
         std::cout << " does not have direct access" << std::endl;

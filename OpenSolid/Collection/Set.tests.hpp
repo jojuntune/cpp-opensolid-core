@@ -26,7 +26,7 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/value/Matrix.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
 #include "Set.hpp"
 #include "IteratorRange.hpp"
 

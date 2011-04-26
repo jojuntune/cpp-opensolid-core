@@ -30,11 +30,11 @@ namespace opensolid
     
     int CompositionFunction::dimensions() const {return outer().dimensions();}
 
-    void CompositionFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void CompositionFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = outer()(inner()(parameter_values));
     }
 
-    void CompositionFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void CompositionFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = outer()(inner()(parameter_bounds));
     }
 

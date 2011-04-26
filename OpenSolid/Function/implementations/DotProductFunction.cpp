@@ -32,13 +32,13 @@ namespace opensolid
     
     int DotProductFunction::dimensions() const {return 1;}
     
-    void DotProductFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void DotProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values).cwiseProduct(
             secondOperand()(parameter_values)
         ).colwise().sum();
     }
     
-    void DotProductFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void DotProductFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = firstOperand()(parameter_bounds).cwiseProduct(
             secondOperand()(parameter_bounds)
         ).colwise().sum();

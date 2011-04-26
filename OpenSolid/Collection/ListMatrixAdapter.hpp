@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__LISTMATRIXADAPTER_HPP
 #define OPENSOLID__LISTMATRIXADAPTER_HPP
 
-#include <opensolid/value/Matrix.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
 
 namespace opensolid
 {
@@ -34,53 +34,56 @@ namespace opensolid
 
 namespace Eigen
 {
-    template <class Type>
-    struct ei_traits<opensolid::ListMatrixAdapter<Type> >
+    namespace internal
     {
-        typedef typename Type::Scalar Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
+        template <class Type>
+        struct traits<opensolid::ListMatrixAdapter<Type> >
+        {
+            typedef typename Type::Scalar Scalar;
+            typedef Dense StorageKind;
+            typedef int Index;
+            typedef MatrixXpr XprKind;
+            
+            static const int RowsAtCompileTime = Type::RowsAtCompileTime;
+            static const int ColsAtCompileTime = Dynamic;
+            static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
+            static const int MaxColsAtCompileTime = Dynamic;
+            static const int Flags = NestByRefBit;
+            static const int CoeffReadCost = 2;
+        };
         
-        static const int RowsAtCompileTime = Type::RowsAtCompileTime;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
-        static const int CoeffReadCost = 2;
-    };
-    
-    template <>
-    struct ei_traits<opensolid::ListMatrixAdapter<double> >
-    {
-        typedef double Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
+        template <>
+        struct traits<opensolid::ListMatrixAdapter<double> >
+        {
+            typedef double Scalar;
+            typedef Dense StorageKind;
+            typedef int Index;
+            typedef MatrixXpr XprKind;
+            
+            static const int RowsAtCompileTime = 1;
+            static const int ColsAtCompileTime = Dynamic;
+            static const int MaxRowsAtCompileTime = 1;
+            static const int MaxColsAtCompileTime = Dynamic;
+            static const int Flags = NestByRefBit | RowMajorBit;
+            static const int CoeffReadCost = 2;
+        };
         
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit | RowMajorBit;
-        static const int CoeffReadCost = 2;
-    };
-    
-    template <>
-    struct ei_traits<opensolid::ListMatrixAdapter<Interval> >
-    {
-        typedef Interval Scalar;
-        typedef Dense StorageKind;
-        typedef int Index;
-        typedef MatrixXpr XprKind;
-        
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit | RowMajorBit;
-        static const int CoeffReadCost = 2;
-    };
+        template <>
+        struct traits<opensolid::ListMatrixAdapter<Interval> >
+        {
+            typedef Interval Scalar;
+            typedef Dense StorageKind;
+            typedef int Index;
+            typedef MatrixXpr XprKind;
+            
+            static const int RowsAtCompileTime = 1;
+            static const int ColsAtCompileTime = Dynamic;
+            static const int MaxRowsAtCompileTime = 1;
+            static const int MaxColsAtCompileTime = Dynamic;
+            static const int Flags = NestByRefBit | RowMajorBit;
+            static const int CoeffReadCost = 2;
+        };
+    }
 }
 
 namespace opensolid
@@ -96,7 +99,7 @@ namespace opensolid
         typedef Scalar RealScalar;
         typedef Scalar PacketScalar;
         typedef Scalar CoeffReturnType;
-        typedef typename Eigen::ei_nested<ListMatrixAdapter<Type> >::type Nested;
+        typedef typename Eigen::internal::nested<ListMatrixAdapter<Type> >::type Nested;
         typedef Dense StorageKind;
         typedef int Index;
         static const int RowsAtCompileTime = Type::RowsAtCompileTime;
@@ -131,7 +134,7 @@ namespace opensolid
         typedef double RealScalar;
         typedef double PacketScalar;
         typedef double CoeffReturnType;
-        typedef Eigen::ei_nested<ListMatrixAdapter<double> >::type Nested;
+        typedef Eigen::internal::nested<ListMatrixAdapter<double> >::type Nested;
         typedef Dense StorageKind;
         typedef int Index;
         static const int RowsAtCompileTime = 1;
@@ -166,7 +169,7 @@ namespace opensolid
         typedef Interval RealScalar;
         typedef Interval PacketScalar;
         typedef Interval CoeffReturnType;
-        typedef Eigen::ei_nested<ListMatrixAdapter<Interval> >::type Nested;
+        typedef Eigen::internal::nested<ListMatrixAdapter<Interval> >::type Nested;
         typedef Dense StorageKind;
         typedef int Index;
         static const int RowsAtCompileTime = 1;

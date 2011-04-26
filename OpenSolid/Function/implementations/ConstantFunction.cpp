@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/value/Tolerance.hpp>
+#include <OpenSolid/Value/Tolerance.hpp>
 #include "../Function.hpp"
 #include "ConstantFunction.hpp"
 
@@ -30,11 +30,11 @@ namespace opensolid
     
     int ConstantFunction::dimensions() const {return value().size();}
     
-    void ConstantFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ConstantFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results.colwise() = value();
     }
     
-    void ConstantFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ConstantFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results.colwise() = value().cast<Interval>();
     }
     

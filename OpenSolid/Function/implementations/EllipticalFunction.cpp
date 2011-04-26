@@ -36,7 +36,7 @@ namespace opensolid
     
     int EllipticalFunction::dimensions() const {return point().size();}
     
-    void EllipticalFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void EllipticalFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd temp = MatrixXd::Ones(parameters() + 1, parameter_values.cols());
         for (int i = 0; i < parameters(); ++i) {
             if (convention()(i)) {
@@ -52,7 +52,7 @@ namespace opensolid
         results = (vectors() * temp).colwise() + point();
     }
     
-    void EllipticalFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void EllipticalFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         MatrixXI temp = MatrixXI::Ones(parameters() + 1, parameter_bounds.cols());
         for (int i = 0; i < parameters(); ++i) {
             if (convention()(i)) {

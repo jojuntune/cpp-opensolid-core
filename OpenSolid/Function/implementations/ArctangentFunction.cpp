@@ -30,11 +30,11 @@ namespace opensolid
     
     int ArctangentFunction::dimensions() const {return 1;}
     
-    void ArctangentFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ArctangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = atan(operand()(parameter_values).array());
     }
     
-    void ArctangentFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ArctangentFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = atan(operand()(parameter_bounds).array());
     }
 

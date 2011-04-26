@@ -29,12 +29,12 @@ namespace opensolid
     
     int TangentFunction::dimensions() const {return 1;}
     
-    void TangentFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void TangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd operand_values = operand()(parameter_values);
         results = operand_values.array().sin() / operand_values.array().cos();
     }
     
-    void TangentFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void TangentFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         MatrixXI operand_bounds = operand()(parameter_bounds);
         results = operand_bounds.array().sin() / operand_bounds.array().cos();
     }

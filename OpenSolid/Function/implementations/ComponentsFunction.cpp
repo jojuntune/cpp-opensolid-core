@@ -32,12 +32,12 @@ namespace opensolid
     
     int ComponentsFunction::dimensions() const {return num();}
     
-    void ComponentsFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ComponentsFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd operand_values = operand()(parameter_values);
         results = operand_values.middleRows(index(), num());
     }
     
-    void ComponentsFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ComponentsFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         MatrixXI operand_bounds = operand()(parameter_bounds);
         results = operand_bounds.middleRows(index(), num());
     }

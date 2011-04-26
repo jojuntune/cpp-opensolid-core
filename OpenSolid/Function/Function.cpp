@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/geometry/Domain.hpp>
-#include <opensolid/geometry/Geometry.hpp>
+#include <OpenSolid/Geometry/Domain.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 #include "Function.hpp"
 #include "implementations/ComponentsFunction.hpp"

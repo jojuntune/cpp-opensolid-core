@@ -32,7 +32,7 @@ namespace opensolid
     
     int CrossProductFunction::dimensions() const {return 3;}
     
-    void CrossProductFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void CrossProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         Matrix3Xd first_values = firstOperand()(parameter_values);
         Matrix3Xd second_values = secondOperand()(parameter_values);
         for (int i = 0; i < results.cols(); ++i) {
@@ -40,7 +40,7 @@ namespace opensolid
         }
     }
     
-    void CrossProductFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void CrossProductFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         Matrix3XI first_bounds = firstOperand()(parameter_bounds);
         Matrix3XI second_bounds = secondOperand()(parameter_bounds);
         for (int i = 0; i < results.cols(); ++i) {

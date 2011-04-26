@@ -37,8 +37,8 @@ namespace opensolid
         OPENSOLID_EXPORT int parameters() const;
         OPENSOLID_EXPORT int dimensions() const;
         
-        OPENSOLID_EXPORT void getValues(const MapXd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
         OPENSOLID_EXPORT void getDerivative(int index, Function& result) const;
         

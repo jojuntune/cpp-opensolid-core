@@ -20,8 +20,8 @@
 
 #include <boost/python.hpp>
 
-#include <opensolid/value/Interval.hpp>
-#include <opensolid/value/Matrix.hpp>
+#include <OpenSolid/Value/Interval.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
 
 using namespace boost::python;
 

@@ -19,8 +19,8 @@
  ***************************************************************************/
 
 #include "Domain.hpp"
-#include <opensolid/function/Function.hpp>
-#include <opensolid/collection/List.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Collection/List.hpp>
 
 namespace opensolid
 {

@@ -30,11 +30,11 @@ namespace opensolid
     
     int ArcsineFunction::dimensions() const {return 1;}
     
-    void ArcsineFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ArcsineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = asin(operand()(parameter_values).array());
     }
     
-    void ArcsineFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ArcsineFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = asin(operand()(parameter_bounds).array());
     }
 

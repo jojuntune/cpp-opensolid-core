@@ -30,11 +30,11 @@ namespace opensolid
     
     int SumFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void SumFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void SumFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) + secondOperand()(parameter_values);
     }
     
-    void SumFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void SumFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = firstOperand()(parameter_bounds) + secondOperand()(parameter_bounds);
     }
 

@@ -27,13 +27,13 @@ namespace opensolid
     
     int NormalizedFunction::dimensions() const {return operand().dimensions();}
 
-    void NormalizedFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void NormalizedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd operand_values = operand()(parameter_values);
         VectorXd squared_norms = operand_values.colwise().squaredNorm();
         results = operand_values * squared_norms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    void NormalizedFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void NormalizedFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         MatrixXI operand_bounds = operand()(parameter_bounds);
         VectorXI squared_norms = operand_bounds.colwise().squaredNorm();
         results = operand_bounds * squared_norms.cwiseSqrt().cwiseInverse().asDiagonal();

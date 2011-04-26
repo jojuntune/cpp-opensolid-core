@@ -37,7 +37,7 @@
     ENDIF (MSVC_IDE)
 
     # Initialize local include paths
-    INCLUDE_DIRECTORIES(BEFORE ${OpenSolid_SOURCE_DIR} external)
+    INCLUDE_DIRECTORIES(BEFORE ${OpenSolid_SOURCE_DIR} External)
 
 ########## Set up Python ##########
 
@@ -85,7 +85,7 @@
             COMMAND
             ${PYTHON_EXECUTABLE}
             ARGS
-            ${OpenSolid_SOURCE_DIR}/external/cxxtest/cxxtestgen.py
+            ${OpenSolid_SOURCE_DIR}/External/cxxtest/cxxtestgen.py
             --error-printer
             -o ${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/${source}
@@ -105,7 +105,7 @@
     
     # Install Eigen headers
     INSTALL(
-        DIRECTORY external/Eigen
+        DIRECTORY External/Eigen
         DESTINATION include
         PATTERN ".svn" EXCLUDE
         PATTERN "CMakeLists.txt" EXCLUDE
@@ -113,7 +113,7 @@
 
     # Install OpenSolid headers
     INSTALL(
-        DIRECTORY opensolid opensolid_scripting opensolid_python
+        DIRECTORY OpenSolid OpenSolidPython OpenSolidScripting
         DESTINATION include
         FILES_MATCHING PATTERN "*.hpp"
         PATTERN ".svn" EXCLUDE
@@ -121,10 +121,10 @@
     )
 
     # Compile and install libraries and tests in subdirectories
-    ADD_SUBDIRECTORY(opensolid)
-    ADD_SUBDIRECTORY(opensolid_python)
-    ADD_SUBDIRECTORY(opensolid_scripting)
+    ADD_SUBDIRECTORY(OpenSolid)
+    ADD_SUBDIRECTORY(OpenSolidPython)
+    ADD_SUBDIRECTORY(OpenSolidScripting)
 
 ########## Generate documentation ##########
 
-    ADD_SUBDIRECTORY(doc EXCLUDE_FROM_ALL)
+    ADD_SUBDIRECTORY(Documentation EXCLUDE_FROM_ALL)

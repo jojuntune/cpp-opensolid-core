@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__MESH_HPP
 #define OPENSOLID__MESH_HPP
 
-#include <opensolid/collection/Set.hpp>
+#include <OpenSolid/Collection/Set.hpp>
 #include "VertexData.hpp"
 #include "Simplex.hpp"
 

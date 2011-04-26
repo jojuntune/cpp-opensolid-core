@@ -24,7 +24,7 @@
 #include <ostream>
 #include <algorithm>
 
-#include <opensolid/common/Bounds.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
 #include "SetNode.hpp"

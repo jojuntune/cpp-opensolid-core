@@ -22,9 +22,9 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/common/Error.hpp>
-#include <opensolid/value/Matrix.hpp>
-#include <opensolid/value/Tolerance.hpp>
+#include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Value/Tolerance.hpp>
 #include "Script.hpp"
 
 using namespace opensolid;

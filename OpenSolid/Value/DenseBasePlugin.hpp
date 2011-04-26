@@ -63,33 +63,33 @@ inline bool adjacent(const DenseBase<OtherDerived>& other) const {
     return overlap(other) && derived().binaryExpr(other.derived(), AdjacentOperation()).any();
 }
 
-inline CwiseUnaryOp<LowerOperation, Derived> cwiseLower() const {
+inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const {
     return derived().unaryExpr(LowerOperation());
 }
 
-inline CwiseUnaryOp<UpperOperation, Derived> cwiseUpper() const {
+inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const {
     return derived().unaryExpr(UpperOperation());
 }
 
-inline CwiseUnaryOp<MedianOperation, Derived> cwiseMedian() const {
+inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const {
     return derived().unaryExpr(MedianOperation());
 }
 
-inline CwiseUnaryOp<WidthOperation, Derived> cwiseWidth() const {
+inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const {
     return derived().unaryExpr(WidthOperation());
 }
 
-inline CwiseUnaryOp<CenteredOperation, Derived> cwiseCentered() const {
+inline CwiseUnaryOp<CenteredOperation, const Derived> cwiseCentered() const {
     return derived().unaryExpr(CenteredOperation());
 }
 
 template <class OtherDerived>
-inline CwiseBinaryOp<HullOperation, Derived, OtherDerived> hull(
+inline CwiseBinaryOp<HullOperation, const Derived, const OtherDerived> hull(
     const DenseBase<OtherDerived>& other
 ) const {return derived().binaryExpr(other.derived(), HullOperation());}
 
 template <class OtherDerived>
-inline CwiseBinaryOp<IntersectionOperation, Derived, OtherDerived> intersection(
+inline CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerived> intersection(
     const DenseBase<OtherDerived>& other
 ) const {return derived().binaryExpr(other.derived(), IntersectionOperation());}
 

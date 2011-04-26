@@ -32,11 +32,11 @@ namespace opensolid
     
     int ParametersFunction::dimensions() const {return num();}
     
-    void ParametersFunction::getValues(const MapXd& parameter_values, MapXd& results) const {
+    void ParametersFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = parameter_values.middleRows(index(), num());
     }
     
-    void ParametersFunction::getBounds(const MapXI& parameter_bounds, MapXI& results) const {
+    void ParametersFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = parameter_bounds.middleRows(index(), num());
     }
 
