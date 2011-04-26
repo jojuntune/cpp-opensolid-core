@@ -46,51 +46,6 @@ namespace OpenSolid
         int outerStride() const;
         int innerStride() const;
     };
-    
-    template<>
-    class FunctionArgument<int>
-    {
-    private:
-        double _value;
-    public:
-        FunctionArgument(int argument);
-        
-        const double* data() const;
-        int rows() const;
-        int cols() const;
-        int outerStride() const;
-        int innerStride() const;
-    };
-    
-    template<>
-    class FunctionArgument<double>
-    {
-    private:
-        double _value;
-    public:
-        FunctionArgument(double argument);
-        
-        const double* data() const;
-        int rows() const;
-        int cols() const;
-        int outerStride() const;
-        int innerStride() const;
-    };
-    
-    template<>
-    class FunctionArgument<Interval>
-    {
-    private:
-        const Interval& _value;
-    public:
-        FunctionArgument(const Interval& argument);
-        
-        const Interval* data() const;
-        int rows() const;
-        int cols() const;
-        int outerStride() const;
-        int innerStride() const;
-    };
 }
 
 ////////// Implementation //////////
@@ -120,43 +75,6 @@ namespace OpenSolid
     inline int FunctionArgument<Type>::innerStride() const {
         return (Type::Flags & RowMajorBit) ? _argument.outerStride() : _argument.innerStride();
     }
-    
-    inline FunctionArgument<int>::FunctionArgument(int argument) : _value(argument) {}
-    
-    inline const double* FunctionArgument<int>::data() const {return &_value;}
-    
-    inline int FunctionArgument<int>::rows() const {return 1;}
-    
-    inline int FunctionArgument<int>::cols() const {return 1;}
-    
-    inline int FunctionArgument<int>::outerStride() const {return 1;}
-    
-    inline int FunctionArgument<int>::innerStride() const {return 1;}
-    
-    inline FunctionArgument<double>::FunctionArgument(double argument) : _value(argument) {}
-    
-    inline const double* FunctionArgument<double>::data() const {return &_value;}
-    
-    inline int FunctionArgument<double>::rows() const {return 1;}
-    
-    inline int FunctionArgument<double>::cols() const {return 1;}
-    
-    inline int FunctionArgument<double>::outerStride() const {return 1;}
-    
-    inline int FunctionArgument<double>::innerStride() const {return 1;}
-    
-    inline FunctionArgument<Interval>::FunctionArgument(const Interval& argument) :
-        _value(argument) {}
-    
-    inline const Interval* FunctionArgument<Interval>::data() const {return &_value;}
-    
-    inline int FunctionArgument<Interval>::rows() const {return 1;}
-    
-    inline int FunctionArgument<Interval>::cols() const {return 1;}
-    
-    inline int FunctionArgument<Interval>::outerStride() const {return 1;}
-    
-    inline int FunctionArgument<Interval>::innerStride() const {return 1;}
 }
 
 #endif
