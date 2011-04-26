@@ -24,7 +24,7 @@
 #include "../Function.hpp"
 #include "../FunctionImplementation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class UnaryFunction : public FunctionImplementation
     {
@@ -41,7 +41,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline const Function& UnaryFunction::operand() const {return _operand;}
 }

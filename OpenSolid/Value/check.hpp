@@ -25,7 +25,7 @@
 
 #include <string>
 
-namespace opensolid
+namespace OpenSolid
 {
     OPENSOLID_EXPORT void checkNonZeroValue(
         double value,

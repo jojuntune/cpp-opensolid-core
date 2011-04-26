@@ -31,7 +31,7 @@
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     class ListMatrixAdapter;
@@ -202,7 +202,7 @@ namespace opensolid
 
 #include "ListMatrixAdapter.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {   
     template <class Type> template <class DerivedType>
     inline void List<Type>::add(const FixedSizeCollection<DerivedType>& collection) {

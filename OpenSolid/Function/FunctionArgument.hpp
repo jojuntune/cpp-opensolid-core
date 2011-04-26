@@ -26,7 +26,7 @@
 #include <OpenSolid/Value/Eigen.hpp>
 #include <OpenSolid/Value/Interval.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     template<class Type>
     class FunctionArgument
@@ -95,7 +95,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template<class Type>
     inline FunctionArgument<Type>::FunctionArgument(const Type& argument) : _argument(argument) {}

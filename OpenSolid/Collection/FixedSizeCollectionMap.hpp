@@ -23,7 +23,7 @@
 
 #include <iterator>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType>
     class FixedSizeCollection;
@@ -53,7 +53,7 @@ namespace opensolid
 #include "FixedSizeCollection.hpp"
 #include "VisitorMap.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, class FunctionType, class ResultType>
     inline FixedSizeCollectionMap<DerivedType, FunctionType, ResultType>::FixedSizeCollectionMap(

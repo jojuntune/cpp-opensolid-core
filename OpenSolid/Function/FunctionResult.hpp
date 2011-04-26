@@ -24,7 +24,7 @@
 #include "Function.hpp"
 #include "FunctionArgument.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template<class ArgumentType>
     class FunctionResult;
@@ -35,28 +35,28 @@ namespace Eigen
     namespace internal
     {
         template<class ArgumentType>
-        struct traits<opensolid::FunctionResult<ArgumentType> >
+        struct traits<OpenSolid::FunctionResult<ArgumentType> >
         {
             typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime> ReturnType;
             static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
         template<>
-        struct traits<opensolid::FunctionResult<int> >
+        struct traits<OpenSolid::FunctionResult<int> >
         {
             typedef VectorXd ReturnType;
             static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
         template<>
-        struct traits<opensolid::FunctionResult<double> >
+        struct traits<OpenSolid::FunctionResult<double> >
         {
             typedef VectorXd ReturnType;
             static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
         template<>
-        struct traits<opensolid::FunctionResult<Interval> >
+        struct traits<OpenSolid::FunctionResult<Interval> >
         {
             typedef VectorXI ReturnType;
             static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
@@ -64,7 +64,7 @@ namespace Eigen
     }
 }
 
-namespace opensolid
+namespace OpenSolid
 {    
     template<class ArgumentType>
     class FunctionResult : public ReturnByValue<FunctionResult<ArgumentType> >
@@ -85,7 +85,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template<class ArgumentType>
     inline FunctionResult<ArgumentType>::FunctionResult(

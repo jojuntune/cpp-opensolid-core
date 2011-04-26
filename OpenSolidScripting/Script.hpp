@@ -30,7 +30,7 @@
 
 #include <OpenSolidPython/check.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     typedef boost::python::object PythonObject;
     typedef boost::python::str PythonStr;
@@ -63,7 +63,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     Script& Script::set(const std::string& name, const Type& argument) {

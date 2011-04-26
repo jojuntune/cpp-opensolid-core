@@ -23,7 +23,7 @@
 
 #include "Mesh.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class Simplex
     {
@@ -55,7 +55,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     // inline Simplex::Simplex(const Mesh& mesh, int index)
     // : _mesh(mesh), _index(index) {}

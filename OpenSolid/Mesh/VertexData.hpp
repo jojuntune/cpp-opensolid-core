@@ -25,7 +25,7 @@
 #include <OpenSolid/Collection/CollectionBase.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     class VertexData : public ReferenceCountedBase<VertexData<dimensions_> >
@@ -72,7 +72,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_> template <class DerivedType>
     inline VertexData<dimensions_>::VertexData(const DenseBase<DerivedType>& matrix) :

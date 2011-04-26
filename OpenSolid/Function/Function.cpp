@@ -44,7 +44,7 @@
 #include "implementations/SumFunction.hpp"
 #include "implementations/TangentFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {    
     Function Function::derivative(int index) const {
         Function result;

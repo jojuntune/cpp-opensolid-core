@@ -31,7 +31,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     class Function;
     class Domain;

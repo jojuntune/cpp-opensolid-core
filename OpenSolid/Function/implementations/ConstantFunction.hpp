@@ -23,7 +23,7 @@
 
 #include "../FunctionImplementation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class ConstantFunction : public FunctionImplementation
     {
@@ -56,7 +56,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline const VectorXd& ConstantFunction::value() const {return _value;}
 }

@@ -25,7 +25,7 @@
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Collection/Set.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     class Domain;
     class Geometry;
@@ -158,7 +158,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline VectorXI Bounds<Domain>::bounds(const Domain& domain) {return domain.bounds();}
     

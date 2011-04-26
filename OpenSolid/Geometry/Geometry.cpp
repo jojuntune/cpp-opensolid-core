@@ -21,7 +21,7 @@
 #include <OpenSolid/Value/Tolerance.hpp>
 #include "Geometry.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     Geometry Geometry::derivative(int parameter_index) const {
         return Geometry(function().derivative(parameter_index), domain());

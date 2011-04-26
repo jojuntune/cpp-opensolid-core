@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "CompositionFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     CompositionFunction::CompositionFunction(const Function& inner, const Function& outer) :
         _inner(inner), _outer(outer) {assert(inner.dimensions() == outer.parameters());}

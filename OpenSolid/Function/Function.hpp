@@ -29,7 +29,7 @@
 #include "FunctionImplementation.hpp"
 #include "implementations/ConstantFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class ArgumentType>
     class FunctionResult;
@@ -162,7 +162,7 @@ namespace opensolid
 
 #include "FunctionResult.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     inline Function::Function() : _implementation(0), _type(0) {}
     

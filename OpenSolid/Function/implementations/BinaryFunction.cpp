@@ -20,7 +20,7 @@
 
 #include "BinaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     BinaryFunction::BinaryFunction(const Function& first_operand, const Function& second_operand) :
         _first_operand(first_operand), _second_operand(second_operand) {

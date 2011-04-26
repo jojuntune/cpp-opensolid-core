@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__VISITORMAP_HPP
 #define OPENSOLID__VISITORMAP_HPP
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class VisitorType, class FunctionType>
     class VisitorMap
@@ -39,7 +39,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class VisitorType, class FunctionType>
     inline VisitorMap<VisitorType, FunctionType>::VisitorMap(

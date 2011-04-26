@@ -26,7 +26,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     MatrixXd* value(const Function& function) {
         return new MatrixXd(function.as<ConstantFunction>().value());

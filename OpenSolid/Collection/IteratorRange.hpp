@@ -26,7 +26,7 @@
 
 #include "FixedSizeCollection.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class IteratorType>
     class IteratorRange : public FixedSizeCollection<IteratorRange<IteratorType> >
@@ -54,7 +54,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class IteratorType>
     inline IteratorRange<IteratorType>::IteratorRange(IteratorType begin, IteratorType end) :

@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "TangentFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     TangentFunction::TangentFunction(const Function& operand) : UnaryFunction(operand) {
         assert(operand.dimensions() == 1);

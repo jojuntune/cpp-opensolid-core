@@ -23,7 +23,7 @@
 
 #include "BinaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class ProductFunction : public BinaryFunction
     {

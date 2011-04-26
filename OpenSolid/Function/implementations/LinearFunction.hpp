@@ -23,7 +23,7 @@
 
 #include "../FunctionImplementation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class LinearFunction : public FunctionImplementation
     {
@@ -52,7 +52,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline const VectorXd& LinearFunction::point() const {return _point;}
     

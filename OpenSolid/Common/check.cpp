@@ -21,7 +21,7 @@
 #include "Error.hpp"
 #include "check.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     void checkErrorHasData(bool has_data, const std::string& name, const std::string& caller) {
         if (!has_data) {throw Error("ErrorHasData", caller).set("name", name);}

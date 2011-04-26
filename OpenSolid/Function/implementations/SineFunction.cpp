@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "SineFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     SineFunction::SineFunction(const Function& operand) : UnaryFunction(operand) {
         assert(operand.dimensions() == 1);

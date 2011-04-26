@@ -23,7 +23,7 @@
 #include <OpenSolid/Value/Tolerance.hpp>
 #include "Geometry.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 class GeometryTestSuite : public CxxTest::TestSuite
 {

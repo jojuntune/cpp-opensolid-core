@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "EllipticalFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     EllipticalFunction::EllipticalFunction(
         const VectorXd& point,

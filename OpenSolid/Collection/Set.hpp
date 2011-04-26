@@ -30,7 +30,7 @@
 #include "SetNode.hpp"
 #include "List.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     class OverlapFunction;
@@ -156,7 +156,7 @@ namespace opensolid
     
 ////////// Implementation //////////
     
-namespace opensolid
+namespace OpenSolid
 {
     namespace
     {

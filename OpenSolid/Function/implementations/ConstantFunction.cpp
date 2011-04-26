@@ -22,7 +22,7 @@
 #include "../Function.hpp"
 #include "ConstantFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     ConstantFunction::ConstantFunction(const VectorXd& value) : _value(value) {}
     

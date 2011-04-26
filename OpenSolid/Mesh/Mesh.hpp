@@ -25,7 +25,7 @@
 #include "VertexData.hpp"
 #include "Simplex.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_, int order_>
     class Mesh
@@ -60,7 +60,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     // inline SimplexData::SimplexData(const MatrixXd& vertices_) : vertices(vertices_) {}
     // 

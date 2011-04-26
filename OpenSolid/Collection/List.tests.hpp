@@ -22,7 +22,7 @@
 
 #include "List.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 class ListTestSuite : public CxxTest::TestSuite
 {

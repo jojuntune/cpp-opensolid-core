@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "ArccosineFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     ArccosineFunction::ArccosineFunction(const Function& operand) :
         UnaryFunction<CosineFunction>(operand) {

@@ -23,7 +23,7 @@
 
 #include <iterator>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType>
     class CollectionBase;
@@ -48,7 +48,7 @@ namespace opensolid
 #include "CollectionBase.hpp"
 #include "VisitorMap.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, class FunctionType, class ResultType>
     inline CollectionMap<DerivedType, FunctionType, ResultType>::CollectionMap(

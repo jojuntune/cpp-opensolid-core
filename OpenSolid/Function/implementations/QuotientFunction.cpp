@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "QuotientFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     QuotientFunction::QuotientFunction(
         const Function& first_operand,

@@ -23,7 +23,7 @@
 
 #include "Datum.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     class Axis : public Datum<dimensions_, 1>
@@ -50,7 +50,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     inline Axis<dimensions_>::Axis() {}
@@ -75,6 +75,5 @@ namespace opensolid
         return *this;
     }
 }
-
 
 #endif

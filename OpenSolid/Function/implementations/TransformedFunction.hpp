@@ -25,7 +25,7 @@
 
 #include "UnaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class TransformedFunction : public UnaryFunction
     {
@@ -52,7 +52,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline const DatumXd& TransformedFunction::datum() const {return _datum;}
 }

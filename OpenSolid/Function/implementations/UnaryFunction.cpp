@@ -20,7 +20,7 @@
 
 #include "UnaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     UnaryFunction::UnaryFunction(const Function& operand) : _operand(operand) {}
     

@@ -23,7 +23,7 @@
 
 #include "CollectionBase.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, class FunctionType, class ResultType>
     class FixedSizeCollectionMap;
@@ -55,7 +55,7 @@ namespace opensolid
 #include "FixedSizeCollectionMap.hpp"
 #include "FixedSizeCollectionConcatenation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType>
     inline int FixedSizeCollection<DerivedType>::size() const {return this->derived().size();}

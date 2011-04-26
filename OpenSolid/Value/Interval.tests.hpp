@@ -22,7 +22,7 @@
 
 #include "Interval.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 class IntervalTestSuite : public CxxTest::TestSuite
 {

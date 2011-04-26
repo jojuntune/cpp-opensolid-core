@@ -28,7 +28,7 @@
 #include <OpenSolid/Common/Error.hpp>
 #include "Script.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     OPENSOLID_PYTHON_EXPORT extern PyObject* error_class;
     

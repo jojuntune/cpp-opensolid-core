@@ -25,7 +25,7 @@
 #include <OpenSolid/Common/Bounds.hpp>
 #include "List.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     class LeafNodes;
@@ -110,7 +110,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     namespace
     {

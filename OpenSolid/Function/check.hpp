@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__FUNCTION__CHECK_HPP
 #define OPENSOLID__FUNCTION__CHECK_HPP
 
-namespace opensolid
+namespace OpenSolid
 {
     class Function;
     

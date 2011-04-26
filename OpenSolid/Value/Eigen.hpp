@@ -38,7 +38,7 @@
 #include "DenseBasePlugin.hpp"
 #endif
 
-namespace opensolid
+namespace OpenSolid
 {
     class Interval;
     
@@ -55,30 +55,24 @@ namespace opensolid
 
 namespace Eigen
 {
-    using opensolid::Interval;
-    using opensolid::Bounds;
-    using opensolid::Bisected;
-    using opensolid::FixedSizeCollection;
+    using OpenSolid::Interval;
+    using OpenSolid::Bounds;
+    using OpenSolid::Bisected;
+    using OpenSolid::FixedSizeCollection;
     
     namespace internal
     {
-        using opensolid::abs;
-        using opensolid::sqrt;
-        using opensolid::exp;
-        using opensolid::log;
-        using opensolid::sin;
-        using opensolid::cos;
+        using OpenSolid::abs;
+        using OpenSolid::sqrt;
+        using OpenSolid::exp;
+        using OpenSolid::log;
+        using OpenSolid::sin;
+        using OpenSolid::cos;
         
         const Interval& conj(const Interval& argument);
         const Interval& real(const Interval& argument);
         Interval imag(const Interval&);
-        //Interval abs(const Interval& argument);
         Interval abs2(const Interval& argument);
-        //Interval sqrt(const Interval& argument);
-        //Interval exp(const Interval&  argument);
-        //Interval log(const Interval&  argument);
-        //Interval sin(const Interval&  argument);
-        //Interval cos(const Interval&  argument);
         Interval pow(const Interval& x, const Interval& y); 
     
         template <class ScalarType, bool is_integer_>
@@ -332,7 +326,7 @@ namespace Eigen
 #include <Eigen/Geometry>
 #include <Eigen/LU>
 
-namespace opensolid
+namespace OpenSolid
 {
     using namespace Eigen;
 }

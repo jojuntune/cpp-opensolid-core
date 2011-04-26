@@ -24,7 +24,7 @@
 
 #include "check.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     void checkNonZeroValue(double value, double tolerance, const std::string& caller) {
         if (std::abs(value) < tolerance) {

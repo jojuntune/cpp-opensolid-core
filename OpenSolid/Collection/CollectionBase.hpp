@@ -23,7 +23,7 @@
 
 #include <vector>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, class FunctionType, class ResultType>
     class CollectionMap;
@@ -61,7 +61,7 @@ namespace opensolid
 #include "CollectionMap.hpp"
 #include "CollectionConcatenation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType>
     inline const DerivedType& CollectionBase<DerivedType>::derived() const {

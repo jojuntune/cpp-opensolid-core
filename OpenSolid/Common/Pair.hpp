@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__PAIR_HPP
 #define OPENSOLID__PAIR_HPP
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     class Pair
@@ -39,7 +39,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     inline Pair<Type>::Pair(const Type& first, const Type& second) : 

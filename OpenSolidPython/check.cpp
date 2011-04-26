@@ -22,7 +22,7 @@
 
 #include "check.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     void checkCompatiblePythonType(
         bool compatible,

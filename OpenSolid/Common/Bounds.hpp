@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__BOUNDS_HPP
 #define OPENSOLID__BOUNDS_HPP
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class BoundedType>
     struct Bounds

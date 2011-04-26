@@ -23,7 +23,7 @@
 
 #include "UnaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class ArccosineFunction : public UnaryFunction<ArccosineFunction>
     {

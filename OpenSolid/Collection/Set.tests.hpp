@@ -30,7 +30,7 @@
 #include "Set.hpp"
 #include "IteratorRange.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 template <class Type>
 void testSet(const Set<Type>& set) {

@@ -24,7 +24,7 @@
 
 #include "Interval.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     typedef boost::numeric::interval<
         double,

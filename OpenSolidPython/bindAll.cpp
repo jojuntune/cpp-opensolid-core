@@ -24,7 +24,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     void bindError();
     void bindInterval();

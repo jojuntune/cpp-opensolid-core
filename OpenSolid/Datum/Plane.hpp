@@ -23,7 +23,7 @@
 
 #include "Datum.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     class Plane : public Datum<dimensions_, dimensions_ - 1>
@@ -59,7 +59,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_> template <class DerivedType>
     inline void Plane<dimensions_>::initialize(
@@ -108,6 +108,5 @@ namespace opensolid
         return *this;
     }
 }
-
 
 #endif

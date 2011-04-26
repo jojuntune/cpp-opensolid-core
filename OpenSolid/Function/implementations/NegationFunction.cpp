@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "NegationFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     NegationFunction::NegationFunction(const Function& operand) : UnaryFunction(operand) {}
     

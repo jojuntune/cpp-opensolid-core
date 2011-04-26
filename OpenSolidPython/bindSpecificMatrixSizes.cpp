@@ -30,7 +30,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class MatrixType, class DynamicType>
     object newFixedSizeMatrix(tuple arguments, dict keyword_arguments) {

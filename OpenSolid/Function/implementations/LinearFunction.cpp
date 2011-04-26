@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "LinearFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     LinearFunction::LinearFunction(const VectorXd& point, const MatrixXd& vectors) :
         _point(point), _vectors(vectors) {assert(point.rows() == _vectors.rows());}

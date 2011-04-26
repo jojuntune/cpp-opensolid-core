@@ -22,7 +22,7 @@
 
 #include "check.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     void checkConstantFunction(int parameters, const std::string& caller) {
         if (parameters != 0) {

@@ -23,7 +23,7 @@
 
 #include <iterator>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType>
     class FixedSizeCollection;
@@ -54,7 +54,7 @@ namespace opensolid
 
 #include "FixedSizeCollection.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class FirstDerivedType, class SecondDerivedType>
     inline FixedSizeCollectionConcatenation<

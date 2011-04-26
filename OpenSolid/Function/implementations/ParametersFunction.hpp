@@ -23,7 +23,7 @@
 
 #include "../FunctionImplementation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class ParametersFunction : public FunctionImplementation
     {
@@ -55,7 +55,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline int ParametersFunction::total() const {return _total;}
     

@@ -23,7 +23,7 @@
 
 #include <iterator>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType>
     class CollectionBase;
@@ -50,7 +50,7 @@ namespace opensolid
 
 #include "CollectionBase.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class FirstDerivedType, class SecondDerivedType>
     inline CollectionConcatenation<FirstDerivedType, SecondDerivedType>::CollectionConcatenation(

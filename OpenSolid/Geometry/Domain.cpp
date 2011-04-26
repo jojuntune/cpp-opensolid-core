@@ -22,7 +22,7 @@
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Collection/List.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     Set<Geometry> Domain::rectangularBoundaries(const VectorXI& bounds) {
         int dims = bounds.size();

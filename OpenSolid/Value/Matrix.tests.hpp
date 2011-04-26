@@ -27,7 +27,7 @@
 #include "Interval.hpp"
 #include "Matrix.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 template <class Type>
 void printDirectAccess(const Type& argument) {

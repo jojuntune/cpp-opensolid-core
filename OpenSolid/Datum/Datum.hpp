@@ -27,7 +27,7 @@
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Value/Tolerance.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     class Axis;
@@ -232,7 +232,7 @@ namespace opensolid
 #include "Plane.hpp"
 #include "Frame.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_, int axes_> template <class DerivedType>
     inline void Datum<dimensions_, axes_>::initialize(

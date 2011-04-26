@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Value/Matrix.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     class List;
@@ -37,7 +37,7 @@ namespace Eigen
     namespace internal
     {
         template <class Type>
-        struct traits<opensolid::ListMatrixAdapter<Type> >
+        struct traits<OpenSolid::ListMatrixAdapter<Type> >
         {
             typedef typename Type::Scalar Scalar;
             typedef Dense StorageKind;
@@ -53,7 +53,7 @@ namespace Eigen
         };
         
         template <>
-        struct traits<opensolid::ListMatrixAdapter<double> >
+        struct traits<OpenSolid::ListMatrixAdapter<double> >
         {
             typedef double Scalar;
             typedef Dense StorageKind;
@@ -69,7 +69,7 @@ namespace Eigen
         };
         
         template <>
-        struct traits<opensolid::ListMatrixAdapter<Interval> >
+        struct traits<OpenSolid::ListMatrixAdapter<Interval> >
         {
             typedef Interval Scalar;
             typedef Dense StorageKind;
@@ -86,7 +86,7 @@ namespace Eigen
     }
 }
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     class ListMatrixAdapter : public MatrixBase<ListMatrixAdapter<Type> >
@@ -196,7 +196,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class Type>
     inline ListMatrixAdapter<Type>::ListMatrixAdapter(const List<Type>& list) : _list(list) {}

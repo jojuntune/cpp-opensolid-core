@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "TransformedFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     TransformedFunction::TransformedFunction(const Function& operand, const DatumXd& datum) :
         UnaryFunction(operand), _datum(datum) {

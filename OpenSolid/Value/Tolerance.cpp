@@ -20,7 +20,7 @@
 
 #include "Tolerance.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     double& Tolerance::_size() {
         static double size = 1e-4;

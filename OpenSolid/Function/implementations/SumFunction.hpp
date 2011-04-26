@@ -23,7 +23,7 @@
 
 #include "BinaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class SumFunction : public BinaryFunction
     {

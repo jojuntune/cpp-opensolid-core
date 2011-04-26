@@ -25,7 +25,7 @@
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     class Function;
     
@@ -75,7 +75,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline void FunctionImplementation::evaluate(
         const MapXcd& parameter_values,

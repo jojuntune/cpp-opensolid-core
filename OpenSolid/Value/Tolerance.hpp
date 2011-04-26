@@ -23,7 +23,7 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace opensolid
+namespace OpenSolid
 {
     class Tolerance
     {

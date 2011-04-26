@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "DifferenceFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     DifferenceFunction::DifferenceFunction(
         const Function& first_operand,

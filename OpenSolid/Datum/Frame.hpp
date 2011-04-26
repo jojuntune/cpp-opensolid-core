@@ -23,7 +23,7 @@
 
 #include "Datum.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     class Frame : public Datum<dimensions_, dimensions_>
@@ -57,7 +57,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <int dimensions_>
     inline Frame<dimensions_>::Frame() {
@@ -109,8 +109,6 @@ namespace opensolid
         initialize(other);
         return *this;
     }
-    
 }
-
 
 #endif

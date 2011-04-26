@@ -24,7 +24,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     OPENSOLID_PYTHON_EXPORT PyObject* error_class;
     

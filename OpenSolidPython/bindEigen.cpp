@@ -32,7 +32,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class MatrixType>
     int rows(const MatrixType& argument) {return argument.rows();}
@@ -683,10 +683,7 @@ namespace opensolid
         checkValidMatrixProductDimensions(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument * second_argument);
     }
-}
-
-namespace opensolid
-{
+    
     void bindEigen() {         
         class_<MatrixXd>("MatrixXd", init<int, int>())
             .def("rows", &rows<MatrixXd>)

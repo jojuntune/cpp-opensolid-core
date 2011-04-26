@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "ArctangentFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     ArctangentFunction::ArctangentFunction(const Function& operand) :
         UnaryFunction<ArctangentFunction>(operand) {

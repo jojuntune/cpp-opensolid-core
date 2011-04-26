@@ -24,7 +24,7 @@
 #include <OpenSolid/Value/check.hpp>
 #include "Function.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 void assertIsApprox(const MatrixXI& first_argument, const MatrixXI& second_argument) {
     checkSameSize(

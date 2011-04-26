@@ -76,7 +76,7 @@ namespace Eigen
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXcb;
 }
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class ScalarType, int rows_, int cols_>
     struct Bounds<Matrix<ScalarType, rows_, cols_> >
@@ -303,7 +303,7 @@ namespace Eigen
     
     template <class DerivedType> template <class VisitorType>
     inline void MatrixListAdapter<DerivedType>::visit(const VisitorType& visitor) const {
-        opensolid::IteratorRange<Iterator>(begin(), end()).visit(visitor);
+        OpenSolid::IteratorRange<Iterator>(begin(), end()).visit(visitor);
     }
     
     template <class DerivedType>
@@ -429,7 +429,7 @@ namespace Eigen
     inline Interval CenteredOperation::operator()(double argument) const {return argument;}
 }
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class ScalarType, int rows_, int cols_>
     inline Matrix<Interval, rows_, cols_> Bounds<Matrix<ScalarType, rows_, cols_> >::bounds(

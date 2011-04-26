@@ -27,7 +27,7 @@
 #include <OpenSolid/Value/Tolerance.hpp>
 #include "Script.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 struct MatrixDoubler
 {

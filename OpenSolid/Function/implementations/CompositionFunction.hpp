@@ -24,7 +24,7 @@
 #include "../Function.hpp"
 #include "../FunctionImplementation.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class CompositionFunction : public FunctionImplementation
     {
@@ -53,7 +53,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     inline const Function& CompositionFunction::inner() const {return _inner;}
     

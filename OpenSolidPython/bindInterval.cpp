@@ -25,7 +25,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     tuple bisected(const Interval& argument) {
         Pair<Interval> bisected = argument.bisected();

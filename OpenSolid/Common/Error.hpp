@@ -32,7 +32,7 @@
 
 #include "check.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class Error
     {
@@ -62,7 +62,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {    
     template <class Type>
     Error& Error::set(const std::string& name, const Type& value) {

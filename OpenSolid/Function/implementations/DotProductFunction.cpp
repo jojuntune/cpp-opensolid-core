@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "DotProductFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     DotProductFunction::DotProductFunction(
         const Function& first_operand,

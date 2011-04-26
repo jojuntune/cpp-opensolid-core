@@ -41,6 +41,9 @@
     #endif
     
     #define __func__ __FUNCTION__
+
+    // Disable warning in Eigen code about const qualifier being added to reference type
+    #pragma warning( disable : 4181 )
 #else
     #define OPENSOLID_EXPORT
     #define OPENSOLID_PYTHON_EXPORT

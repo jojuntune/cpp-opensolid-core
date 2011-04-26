@@ -23,7 +23,7 @@
 
 #include "Error.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     Error::Error() : _expected(""), _caller("") {}
     

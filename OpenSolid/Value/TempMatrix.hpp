@@ -23,7 +23,7 @@
 
 #include "Matrix.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class ScalarType>
     class TempMatrix;
@@ -32,7 +32,7 @@ namespace opensolid
 namespace Eigen
 {
     template <class ScalarType>
-    struct ei_traits<opensolid::TempMatrix<ScalarType> >
+    struct ei_traits<OpenSolid::TempMatrix<ScalarType> >
     {
         typedef Dense StorageKind;
         typedef MatrixXpr XprKind;
@@ -51,7 +51,7 @@ namespace Eigen
     };
 }
 
-namespace opensolid
+namespace OpenSolid
 {    
     template <class ScalarType>
     class TempMatrix : public MatrixBase<TempMatrix<ScalarType> >
@@ -183,7 +183,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class ScalarType>
     inline void TempMatrix<ScalarType>::release() {

@@ -23,7 +23,7 @@
 #include <OpenSolid/Value/Tolerance.hpp>
 #include "Datum.hpp"
 
-using namespace opensolid;
+using namespace OpenSolid;
 
 class DatumTestSuite : public CxxTest::TestSuite
 {

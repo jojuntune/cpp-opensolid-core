@@ -23,7 +23,7 @@
 
 #include "Datum.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, int dimensions_, int axes_>
     class DatumProduct;
@@ -43,7 +43,7 @@ namespace Eigen
     namespace internal
     {
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<opensolid::DatumProduct<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::DatumProduct<DerivedType, dimensions_, axes_> >
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -56,7 +56,7 @@ namespace Eigen
         };
         
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<opensolid::DatumQuotient<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::DatumQuotient<DerivedType, dimensions_, axes_> >
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -69,7 +69,7 @@ namespace Eigen
         };
         
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<opensolid::LinearDatumProduct<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::LinearDatumProduct<DerivedType, dimensions_, axes_> >
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -82,7 +82,7 @@ namespace Eigen
         };
         
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<opensolid::LinearDatumQuotient<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::LinearDatumQuotient<DerivedType, dimensions_, axes_> >
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -96,7 +96,7 @@ namespace Eigen
     }
 }
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, int dimensions_, int axes_>
     class DatumProduct : public ReturnByValue<DatumProduct<DerivedType, dimensions_, axes_> >
@@ -203,7 +203,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class DerivedType, int dimensions_, int axes_>
     DatumProduct<DerivedType, dimensions_, axes_>::DatumProduct(

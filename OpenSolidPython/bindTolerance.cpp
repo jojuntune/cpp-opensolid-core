@@ -24,7 +24,7 @@
 
 using namespace boost::python;
 
-namespace opensolid
+namespace OpenSolid
 {
     void bindTolerance() {
         class_<Tolerance>("Tolerance", no_init)

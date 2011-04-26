@@ -35,7 +35,7 @@
 #include <OpenSolid/Common/Pair.hpp>
 #include "Eigen.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {   
     using std::min;
     using std::max;
@@ -228,22 +228,10 @@ namespace Eigen
     
         inline Interval imag(const Interval&) {return Interval(0.0);}
     
-        //inline Interval abs(const Interval& argument) {return opensolid::abs(argument);}
-    
         inline Interval abs2(const Interval& argument) {return argument.squared();}
     
-        //inline Interval sqrt(const Interval& argument) {return opensolid::sqrt(argument);}
-    
-        //inline Interval exp(const Interval&  argument) {return opensolid::exp(argument);}
-    
-        //inline Interval log(const Interval&  argument) {return opensolid::log(argument);}
-    
-        //inline Interval sin(const Interval&  argument) {return opensolid::sin(argument);}
-    
-        //inline Interval cos(const Interval&  argument) {return opensolid::cos(argument);}
-    
         inline Interval pow(const Interval& x, const Interval& y) {
-            return opensolid::exp(y * opensolid::log(x));
+            return exp(y * log(x));
         }
     
         inline int significant_decimals_default_impl<Interval, false>::run() {
@@ -262,7 +250,7 @@ namespace Eigen
     inline Interval NumTraits<Interval>::highest() {return Interval(NumTraits<double>::highest());}
 }
 
-namespace opensolid
+namespace OpenSolid
 {
     inline double lowerBound(const Interval& argument) {return argument.lower();}
     

@@ -23,7 +23,7 @@
 
 #include "UnaryFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     class NegationFunction : public UnaryFunction
     {

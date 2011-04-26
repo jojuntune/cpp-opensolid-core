@@ -20,7 +20,7 @@
 
 #include "Datum.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     MatrixXd orthogonalBasis(const MatrixXd& vectors) {
         MatrixXd result = vectors.householderQr().householderQ();

@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__BISECTED_HPP
 #define OPENSOLID__BISECTED_HPP
 
-namespace opensolid
+namespace OpenSolid
 {
     template <class BisectedType>
     class Bisected;

@@ -21,7 +21,7 @@
 #include "../Function.hpp"
 #include "ConcatenationFunction.hpp"
 
-namespace opensolid
+namespace OpenSolid
 {
     ConcatenationFunction::ConcatenationFunction(
         const Function& first_operand,
