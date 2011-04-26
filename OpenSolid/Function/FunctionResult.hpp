@@ -37,29 +37,34 @@ namespace Eigen
         template<class ArgumentType>
         struct traits<OpenSolid::FunctionResult<ArgumentType> >
         {
-            typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime> ReturnType;
-            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
+            typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime>
+                ReturnType;
+            static const int Flags =
+                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
         template<>
         struct traits<OpenSolid::FunctionResult<int> >
         {
             typedef VectorXd ReturnType;
-            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
+            static const int Flags =
+                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
         template<>
         struct traits<OpenSolid::FunctionResult<double> >
         {
             typedef VectorXd ReturnType;
-            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
+            static const int Flags =
+                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
         template<>
         struct traits<OpenSolid::FunctionResult<Interval> >
         {
             typedef VectorXI ReturnType;
-            static const int Flags = (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
+            static const int Flags =
+                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
     }
 }
@@ -103,16 +108,28 @@ namespace OpenSolid
     inline void FunctionResult<ArgumentType>::evalTo(ResultType& result) const {
         // Common typedefs
         typedef typename ResultType::Scalar Scalar;
-        typedef Map<const Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic> > ArgumentMapType;
+        typedef Map<const Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic> >
+            ArgumentMapType;
+            
         // Create argument map
         Stride<Dynamic, Dynamic> argument_stride(_argument.outerStride(), _argument.innerStride());
-        ArgumentMapType argument_map(_argument.data(), _argument.rows(), _argument.cols(), argument_stride);
+        ArgumentMapType argument_map(
+            _argument.data(),
+            _argument.rows(),
+            _argument.cols(),
+            argument_stride
+        );
+        
         // Create result map
-        int result_outer_stride = (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
-        int result_inner_stride = (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        int result_outer_stride =
+            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int result_inner_stride =
+            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
         Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
-        typedef Map<Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic> > ResultMapType;
+        typedef Map<Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic> >
+            ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
+        
         // Evaluate function
         _function.implementation()->evaluate(argument_map, result_map);
     }

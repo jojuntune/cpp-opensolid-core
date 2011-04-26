@@ -101,7 +101,9 @@ namespace OpenSolid
     inline FunctionArgument<Type>::FunctionArgument(const Type& argument) : _argument(argument) {}
     
     template<class Type>
-    inline const typename Type::Scalar* FunctionArgument<Type>::data() const {return _argument.data();}
+    inline const typename Type::Scalar* FunctionArgument<Type>::data() const {
+        return _argument.data();
+    }
     
     template<class Type>
     inline int FunctionArgument<Type>::rows() const {return _argument.rows();}
@@ -143,7 +145,8 @@ namespace OpenSolid
     
     inline int FunctionArgument<double>::innerStride() const {return 1;}
     
-    inline FunctionArgument<Interval>::FunctionArgument(const Interval& argument) : _value(argument) {}
+    inline FunctionArgument<Interval>::FunctionArgument(const Interval& argument) :
+        _value(argument) {}
     
     inline const Interval* FunctionArgument<Interval>::data() const {return &_value;}
     

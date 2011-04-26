@@ -63,6 +63,7 @@ namespace OpenSolid
         const Set<Geometry>& boundaries() const;
         bool empty() const;
         VectorXI bounds() const;
+        Interval interval() const;
         int dimensions() const;
         
         OPENSOLID_EXPORT Domain concatenate(const Domain& other) const;
@@ -205,6 +206,15 @@ namespace OpenSolid
             return VectorXI();
         } else {
             return boundaries().bounds();
+        }
+    }
+    
+    inline Interval Domain::interval() const {
+        assert(dimensions == 1);
+        if (boundaries().empty()) {
+            return Interval::Empty();
+        } else {
+            return boundaries().bounds().scalar();
         }
     }
     

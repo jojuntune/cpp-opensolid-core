@@ -41,7 +41,7 @@ public:
         Vector3d start(3, 1, 1);
         Vector3d end(1, -1, 1);
         Geometry arc = Geometry::Arc(Axis3d(center, Vector3d::UnitZ()), start, end);
-        Interval domain = arc.domain().bounds().scalar();
+        Interval domain = arc.domain().interval();
         std::cout << "Domain interval: " << domain << std::endl;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, domain);
         std::cout << "Parameter values:" << std::endl;

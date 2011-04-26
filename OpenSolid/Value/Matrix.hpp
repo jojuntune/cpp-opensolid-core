@@ -394,7 +394,7 @@ namespace Eigen
         if (first_argument == second_argument) {
             return Interval(first_argument);
         } else {
-            return Interval::empty();
+            return Interval::Empty();
         }
     }
     

@@ -67,7 +67,7 @@ namespace OpenSolid
         double upper() const;
         double median() const;
         double width() const;
-        bool isEmpty() const;
+        bool empty() const;
         Interval centered() const;
         Bisected<Interval> bisected() const;
         
@@ -99,8 +99,8 @@ namespace OpenSolid
         Interval& operator/=(double argument);
         Interval& operator/=(const Interval& other);
         
-        static Interval empty();
-        static Interval whole();
+        static Interval Empty();
+        static Interval Whole();
     };
 
     bool operator==(double first_argument, const Interval& second_argument);
@@ -279,7 +279,7 @@ namespace OpenSolid
     
     inline double Interval::width() const {return upper() - lower();}
     
-    inline bool Interval::isEmpty() const {return upper() < lower();}
+    inline bool Interval::empty() const {return upper() < lower();}
     
     inline Interval Interval::centered() const {return *this - median();}
     
@@ -427,14 +427,14 @@ namespace OpenSolid
         return *this;
     }
     
-    inline Interval Interval::empty() {
+    inline Interval Interval::Empty() {
         return Interval(
             std::numeric_limits<double>::infinity(),
             -std::numeric_limits<double>::infinity()
         );
     }
     
-    inline Interval Interval::whole() {
+    inline Interval Interval::Whole() {
         return Interval(
             -std::numeric_limits<double>::infinity(),
             std::numeric_limits<double>::infinity()
