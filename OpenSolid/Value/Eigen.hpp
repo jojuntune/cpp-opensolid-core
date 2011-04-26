@@ -32,7 +32,7 @@
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
-#define EIGEN_DENSEBASE_PLUGIN <opensolid/value/DenseBasePlugin.hpp>
+#define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Value/DenseBasePlugin.hpp>
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
 #include "DenseBasePlugin.hpp"
