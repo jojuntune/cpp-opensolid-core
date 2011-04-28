@@ -29,9 +29,6 @@
 namespace OpenSolid
 {
     template <class Type>
-    class LeafNodes;
-    
-    template <class Type>
     class SetNode
     {
     private:
@@ -176,7 +173,7 @@ namespace OpenSolid
         _object = 0;
         _parent = 0;
         _size = end - begin;
-        split(bounds(), _split_direction, _split_value);
+        split(_bounds, _split_direction, _split_value);
         if (_size == 2) {
             _left = *begin;
             _right = *(begin + 1);
@@ -193,10 +190,10 @@ namespace OpenSolid
             for (SetNode<Type>** i = lower; i <= upper; ++i) {
                 Interval difference = (*i)->_bounds(_split_direction) - _bounds(_split_direction);
                 if (difference.upper() < -difference.lower()) {
-                    if (left_size > 0) {
-                        left_bounds = left_bounds.hull((*i)->_bounds);
-                    } else {
+                    if (left_size == 0) {
                         left_bounds = (*i)->_bounds;
+                    } else {
+                        left_bounds = left_bounds.hull((*i)->_bounds);
                     }
                     ++left_size;
                     if (i != lower) {std::swap(*i, *lower);}
@@ -206,10 +203,10 @@ namespace OpenSolid
             for (SetNode<Type>** i = upper; i >= lower; --i) {
                 Interval difference = (*i)->_bounds(_split_direction) - _bounds(_split_direction);
                 if (difference.upper() > -difference.lower()) {
-                    if (right_size > 0) {
-                        right_bounds = right_bounds.hull((*i)->_bounds);
-                    } else {
+                    if (right_size == 0) {
                         right_bounds = (*i)->_bounds;
+                    } else {
+                        right_bounds = right_bounds.hull((*i)->_bounds);
                     }
                     ++right_size;
                     if (i != upper) {std::swap(*i, *upper);}
@@ -217,19 +214,19 @@ namespace OpenSolid
                 }
             }
             while (left_size < _size / 2 && lower <= upper) {
-                if (left_size > 0) {
-                    left_bounds = left_bounds.hull((*lower)->_bounds);
-                } else {
+                if (left_size == 0) {
                     left_bounds = (*lower)->_bounds;
+                } else {
+                    left_bounds = left_bounds.hull((*lower)->_bounds);
                 }
                 ++left_size;
                 ++lower;
             }
             while (right_size < _size - _size / 2 && lower <= upper) {
-                if (right_size > 0) {
-                    right_bounds = right_bounds.hull((*upper)->_bounds);
-                } else {
+                if (right_size == 0) {
                     right_bounds = (*upper)->_bounds;
+                } else {
+                    right_bounds = right_bounds.hull((*upper)->_bounds);
                 }
                 ++right_size;
                 --upper;

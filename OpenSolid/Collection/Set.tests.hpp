@@ -269,4 +269,48 @@ public:
         set.add(Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(set.item(), Vector3d(1, 2, 3));
     }
+    
+    void testSharing() {
+        Set<double> set1;
+        set1.update(List<double>(1, 2, 4, 5));
+        Set<double> set2 = set1;
+        TS_ASSERT_EQUALS(set1.rootNode(), set2.rootNode());
+        set2.add(3);
+        TS_ASSERT_DIFFERS(set1.rootNode(), set2.rootNode());
+        std::cout << set1 << std::endl;
+        std::cout << set2 << std::endl;
+        
+        const SetNode<double>* root_node;
+        {
+            Set<double> set3(List<double>(10, 11, 12));
+            root_node = set3.rootNode();
+            set1 = set3;
+            set2 = set3;
+            TS_ASSERT_EQUALS(set1.rootNode(), root_node);
+            TS_ASSERT_EQUALS(set2.rootNode(), root_node);
+        }
+        set1.add(13);
+        TS_ASSERT_DIFFERS(set1.rootNode(), root_node);
+        set2.add(14);
+        TS_ASSERT_EQUALS(set2.rootNode(), root_node);
+    }
+    
+    void testIterator() {
+        Set<double> set(List<double>(5, 1, 3, 2, 4));
+        Set<double>::Iterator i = set.begin();
+        TS_ASSERT_EQUALS(*i, 1);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 2);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 3);
+        --i;
+        TS_ASSERT_EQUALS(*i, 2);
+        ++i;
+        ++i;
+        TS_ASSERT_EQUALS(*i, 4);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 5);
+        ++i;
+        TS_ASSERT_EQUALS(i, set.end());
+    }
 };

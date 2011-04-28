@@ -24,6 +24,8 @@
 #include <ostream>
 #include <algorithm>
 
+#include <boost/iterator/iterator_facade.hpp>
+
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/ReferenceCountedBase.hpp>
 #include <OpenSolid/Common/Shared.hpp>
@@ -34,41 +36,29 @@
 
 namespace OpenSolid
 {
+    namespace
+    {
+        template <class Type>
+        class SetRoot;
+    }
+    
+    template <class Type>
+    class SetIterator;
+    
     template <class Type>
     class OverlapFunction;
     
     template <class Type, class FunctionType>
     class FilteredSet;
     
-    namespace
-    {
-        template <class Type>
-        class SetRoot : public ReferenceCountedBase<SetRoot<Type> >
-        {
-        private:
-            SetRoot();
-        public:
-            SetNode<Type>* node;
-            
-            inline SetRoot(SetNode<Type>* node_) : node(node_) {}
-            
-            inline SetRoot(const SetRoot<Type>& other) : node(new SetNode<Type>(*other.node)) {}
-            
-            inline ~SetRoot() {if (node) {delete node;}}
-        };
-    }
-    
     template <class Type>
     class Set : public FixedSizeCollection<Set<Type> >
     {
     private:
         Shared<SetRoot<Type> >  _root;
-        
-        void init(List<SetNode<Type>*>& nodes);
-        
-        template <class DerivedType>
-        void init(const CollectionBase<DerivedType>& collection);
     public:
+        typedef SetIterator<Type> Iterator;
+        
         Set();
         
         Set(const Set<Type>& other);
@@ -80,6 +70,11 @@ namespace OpenSolid
         bool empty() const;
         
         const SetNode<Type>* rootNode() const;
+        
+        SetIterator<Type> begin() const;
+        SetIterator<Type> end() const;
+        SetIterator<Type> rbegin() const;
+        SetIterator<Type> rend() const;
         
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
@@ -113,6 +108,43 @@ namespace OpenSolid
         typedef typename Bounds<ItemType>::Type Type;
         
         static Type bounds(const Set<ItemType>& set);
+    };
+    
+    namespace
+    {
+        template <class Type>
+        class SetRoot : public ReferenceCountedBase<SetRoot<Type> >
+        {
+        private:
+            SetRoot();
+        public:
+            SetNode<Type>* node;
+            
+            SetRoot(SetNode<Type>* node_);
+            SetRoot(const SetRoot<Type>& other);
+            ~SetRoot();
+        };
+    }
+    
+    template <class Type>
+    class SetIterator :
+        public boost::iterator_facade<
+            SetIterator<Type>,
+            const Type,
+            boost::bidirectional_traversal_tag
+        >
+    {
+    private:
+        const SetNode<Type>* _node;
+        
+        friend class boost::iterator_core_access;
+        
+        void increment();
+        void decrement();
+        bool equal(const SetIterator<Type>& other) const;
+        const Type& dereference() const;
+    public:
+        SetIterator(const SetNode<Type>* node);
     };
     
     template <class Type>
@@ -152,7 +184,7 @@ namespace OpenSolid
 ////////// Implementation //////////
     
 namespace OpenSolid
-{
+{   
     namespace
     {
         template <class Type>
@@ -165,7 +197,15 @@ namespace OpenSolid
     }
     
     template <class Type>
-    void Set<Type>::init(List<SetNode<Type>*>& nodes) {
+    inline Set<Type>::Set() : _root(new SetRoot<Type>(0)) {}
+    
+    template <class Type>
+    inline Set<Type>::Set(const Set<Type>& other) : _root(other._root) {}
+    
+    template <class Type> template <class DerivedType>
+    inline Set<Type>::Set(const CollectionBase<DerivedType>& collection) {
+        List<SetNode<Type>*> nodes =
+            collection.template mapped<SetNode<Type>*>(NodeCreator<Type>());
         if (nodes.empty()) {
             _root = new SetRoot<Type>(0);
         } else if (nodes.size() == 1) {
@@ -181,88 +221,98 @@ namespace OpenSolid
         }
     }
     
-    template <class Type> template <class DerivedType>
-    inline void Set<Type>::init(const CollectionBase<DerivedType>& collection) {
-        List<SetNode<Type>*> nodes =
-            collection.template mapped<SetNode<Type>*>(NodeCreator<Type>());
-        init(nodes);
-    }
-    
-    template <class Type>
-    inline Set<Type>::Set() : _root(new SetRoot<Type>(0)) {}
-    
-    template <class Type>
-    inline Set<Type>::Set(const Set<Type>& other) : _root(other._root) {}
-    
-    template <class Type> template <class DerivedType>
-    inline Set<Type>::Set(const CollectionBase<DerivedType>& collection) {
-        init(collection.derived());
-    }
+    template <class Type>       
+    inline int Set<Type>::size() const {return empty() ? 0 : rootNode()->size();}
     
     template <class Type>       
-    inline int Set<Type>::size() const {
-        return _root.constReference().node ? _root.constReference().node->size() : 0;
-    }
-    
-    template <class Type>       
-    inline bool Set<Type>::empty() const {return !_root.constReference().node;}
+    inline bool Set<Type>::empty() const {return !rootNode();}
     
     template <class Type>
-    inline const SetNode<Type>* Set<Type>::rootNode() const {
-        return _root.constReference().node;
+    inline const SetNode<Type>* Set<Type>::rootNode() const {return _root.constReference().node;}
+        
+    template <class Type>
+    inline SetIterator<Type> Set<Type>::begin() const {
+        if (empty()) {
+            return 0;
+        } else {
+            const SetNode<Type>* node = rootNode();
+            while (node->left()) {node = node->left();}
+            return node;
+        }
     }
+    
+    template <class Type>
+    inline SetIterator<Type> Set<Type>::end() const {return 0;}
+    
+    template <class Type>
+    inline SetIterator<Type> Set<Type>::rbegin() const {
+        if (empty()) {
+            return 0;
+        } else {
+            const SetNode<Type>* node = rootNode();
+            while (node->right()) {node = node->right();}
+            return node;
+        }
+    }
+    
+    template <class Type>
+    inline SetIterator<Type> Set<Type>::rend() const {return 0;}
     
     template <class Type> template <class VisitorType>
     inline void Set<Type>::visit(const VisitorType& visitor) const {
-        if (_root.constReference().node) {_root.constReference().node->visit(visitor);}
+        if (!empty()) {rootNode()->visit(visitor);}
     }
     
     template <class Type>
     inline const typename Bounds<Type>::Type& Set<Type>::bounds() const {
-        assert(_root.constReference().node);
-        return _root.constReference().node->bounds();
+        assert(!empty());
+        return rootNode()->bounds();
     }
     
     template <class Type>
     inline const Type& Set<Type>::item() const {
-        assert(_root.constReference().node && _root.constReference().node->object());
-        return *_root.constReference().node->object();
+        assert(!empty() && rootNode()->object());
+        return *rootNode()->object();
     }
     
     template <class Type>
     inline Set<Type>& Set<Type>::add(const Type& object) {
         typename Bounds<Type>::Type bounds = Bounds<Type>::bounds(object);
-        if (_root.constReference().node) {
+        if (empty()) {
+            _root = new SetRoot<Type>(new SetNode<Type>(bounds, object));
+        } else {
             SetRoot<Type>& root = _root.reference();
             root.node = root.node->insert(bounds, object);
-        } else {
-            _root = new SetRoot<Type>(new SetNode<Type>(bounds, object));
         }
         return *this;
     }
     
     template <class Type> template <class DerivedType>
     Set<Type>& Set<Type>::update(const CollectionBase<DerivedType>& collection) {
-        typename Bounds<Type>::Type overall_bounds = bounds();
-        List<SetNode<Type>*> nodes;
-        if (_root.constReference().node) {
-            SetRoot<Type>& root = _root.reference();
-            root.node->getLeaves(nodes);
-            root.node = 0;
+        List<SetNode<Type>*> nodes =
+            collection.template mapped<SetNode<Type>*>(NodeCreator<Type>());
+        if (!nodes.empty()) {
+            typename Bounds<Type>::Type overall_bounds = nodes[0]->bounds();
+            for (int i = 1; i < nodes.size(); ++i) {
+                overall_bounds = overall_bounds.hull(nodes[i]->bounds());
+            }
+            if (!empty()) {
+                overall_bounds = overall_bounds.hull(bounds());
+                nodes.reserve(nodes.size() + size());
+                SetRoot<Type>& root = _root.reference();
+                root.node->getLeaves(nodes);
+                root.node = 0;
+            }
+            _root = new SetRoot<Type>(
+                new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1)
+            );
         }
-        nodes.extend(collection.template mapped<SetNode<Type>*>(NodeCreator<Type>()));
-        for (int i = size(); i < nodes.size(); ++i) {
-            overall_bounds = overall_bounds.hull(nodes[i]->bounds());
-        }
-        _root = new SetRoot<Type>(
-            new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1)
-        );
         return *this;
     }
     
     template <class Type>
     inline Set<Type>& Set<Type>::remove(const Type& object) {
-        if (_root.constReference().node) {
+        if (!empty()) {
             typename Bounds<Type>::Type bounds = Bounds<Type>::bounds(object);
             SetRoot<Type>& root = _root.reference();
             root.node = root.node->remove(bounds, object);
@@ -279,7 +329,7 @@ namespace OpenSolid
     template <class Type> template <class FunctionType>
     inline FilteredSet<Type, FunctionType> Set<Type>::filtered(
         const FunctionType& function
-    ) const {return FilteredSet<Type, FunctionType>(_root.constReference().node, function);}
+    ) const {return FilteredSet<Type, FunctionType>(rootNode(), function);}
     
     template <class Type>
     inline FilteredSet<Type, OverlapFunction<Type> > Set<Type>::overlapping(
@@ -288,11 +338,59 @@ namespace OpenSolid
     
     template <class Type>
     inline bool Set<Type>::operator==(const Set<Type>& other) const {
-        return _root.constPointer() == other._root.constPointer();
+        return rootNode() == other.rootNode();
     }
     
     template <class Type>
     inline typename Bounds<Type>::Type bounds(const Set<Type>& set) {return set.bounds();}
+    
+    namespace
+    {
+        template <class Type>
+        inline SetRoot<Type>::SetRoot(SetNode<Type>* node_) : node(node_) {}
+        
+        template <class Type>
+        inline SetRoot<Type>::SetRoot(const SetRoot<Type>& other) :
+            node(new SetNode<Type>(*other.node)) {}
+        
+        template <class Type>
+        inline SetRoot<Type>::~SetRoot() {if (node) {delete node;}}
+    }
+    
+    template <class Type>
+    inline void SetIterator<Type>::increment() {
+        while (_node->parent() && _node->parent()->right() == _node) {_node = _node->parent();}
+        if (!_node->parent()) {
+            _node = 0;
+            return;
+        } else {
+            _node = _node->parent()->right();
+            while (_node->left()) {_node = _node->left();}
+        }
+    }
+    
+    template <class Type>
+    inline void SetIterator<Type>::decrement() {
+        while (_node->parent() && _node->parent()->left() == _node) {_node = _node->parent();}
+        if (!_node->parent()) {
+            _node = 0;
+            return;
+        } else {
+            _node = _node->parent()->left();
+            while (_node->right()) {_node = _node->right();}
+        }
+    }
+    
+    template <class Type>
+    inline bool SetIterator<Type>::equal(const SetIterator<Type>& other) const {
+        return _node == other._node;
+    }
+    
+    template <class Type>
+    inline const Type& SetIterator<Type>::dereference() const {return *_node->object();}
+    
+    template <class Type>
+    inline SetIterator<Type>::SetIterator(const SetNode<Type>* node) : _node(node) {}
     
     template <class Type>
     inline OverlapFunction<Type>::OverlapFunction(const typename Bounds<Type>::Type& bounds) :
@@ -326,7 +424,7 @@ namespace OpenSolid
     ) : _root(root), _function(function) {}
     
     template <class Type, class FunctionType> template <class VisitorType>
-    void FilteredSet<Type, FunctionType>::visit(const VisitorType& visitor) const {
+    inline void FilteredSet<Type, FunctionType>::visit(const VisitorType& visitor) const {
         if (_root) {visit(_root, visitor);}
     }
 
