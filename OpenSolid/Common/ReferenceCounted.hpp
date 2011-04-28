@@ -18,50 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__REFERENCECOUNTEDBASE_HPP
-#define OPENSOLID__REFERENCECOUNTEDBASE_HPP
+#ifndef OPENSOLID__REFERENCECOUNTED_HPP
+#define OPENSOLID__REFERENCECOUNTED_HPP
 
-#include <boost/intrusive_ptr.hpp>
-#include <boost/smart_ptr/detail/atomic_count.hpp>
+#include "ReferenceCountedBase.hpp"
 
 namespace OpenSolid
 {
-    template <class DerivedType>
-    class ReferenceCountedBase
+    template <class Type>
+    class ReferenceCounted : public ReferenceCountedBase<ReferenceCounted<Type> >
     {
     private:
-        ReferenceCountedBase(const ReferenceCountedBase&);
+        Type* _object;
     public:
-        mutable boost::detail::atomic_count intrusive_ptr_count;
+        ReferenceCounted(Type* object);
+        ~ReferenceCounted();
         
-        ReferenceCountedBase();
+        Type* object() const;
     };
-    
-    template <class DerivedType>
-    void intrusive_ptr_add_ref(const ReferenceCountedBase<DerivedType>* argument);
-    
-    template <class DerivedType>
-    void intrusive_ptr_release(const ReferenceCountedBase<DerivedType>* argument);
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    template <class DerivedType>
-    inline ReferenceCountedBase<DerivedType>::ReferenceCountedBase() : intrusive_ptr_count(0) {}
-        
-    template <class DerivedType>
-    inline void intrusive_ptr_add_ref(const ReferenceCountedBase<DerivedType>* argument) {
-        ++argument->intrusive_ptr_count;
-    }
+    template <class Type>
+    ReferenceCounted<Type>::ReferenceCounted(Type* object) : _object(object) {}
     
-    template <class DerivedType>
-    inline void intrusive_ptr_release(const ReferenceCountedBase<DerivedType>* argument) {
-        if (--argument->intrusive_ptr_count == 0) {
-            delete static_cast<const DerivedType*>(argument);
-        }
-    }
+    template <class Type>
+    ReferenceCounted<Type>::~ReferenceCounted() {delete _object;}
+    
+    template <class Type>
+    Type* ReferenceCounted<Type>::object() const {return _object;}
 }
 
 #endif
