@@ -23,8 +23,6 @@
 
 #include <new>
 
-#include <OpenSolid/Common/Shared.hpp>
-#include <OpenSolid/Common/ReferenceCountedBase.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include "List.hpp"
 
@@ -47,6 +45,9 @@ namespace OpenSolid
         SetNode<Type>* _right;
         const SetNode<Type>* _parent;
         int _size;
+    public:
+        SetNode();
+        explicit SetNode(const SetNode<Type>& other);
         
         SetNode(const typename Bounds<Type>::Type& bounds, const Type& object);
         
@@ -60,12 +61,10 @@ namespace OpenSolid
         
         SetNode(
             const typename Bounds<Type>::Type& overall_bounds,
-            const Shared<SetNode<Type> >* begin,
-            const Shared<SetNode<Type> >* end
+            SetNode<Type>** begin,
+            SetNode<Type>** end
         );
-    public:
-        SetNode();
-        explicit SetNode(const SetNode<Type>& other);
+        
         ~SetNode();
         
         const typename Bounds<Type>::Type& bounds() const;
@@ -77,36 +76,17 @@ namespace OpenSolid
         const SetNode<Type>* parent() const;
         int size() const;
         
-        void insert(
+        void getLeaves(List<SetNode<Type>*>& leaves);
+        
+        SetNode<Type>* insert(
             const typename Bounds<Type>::Type& new_bounds,
             const Type& new_object
-        ) const;
+        );
         
-        void remove(
+        SetNode<Type>* remove(
             const typename Bounds<Type>::Type& bounds,
             const Type& object
-        ) const;
-        
-        LeafNodes<Type> leaves() const;
-        
-        template <class VisitorType>
-        void visit(const VisitorType& visitor) const;
-    };
-    
-    template <class Type>
-    class LeafNodes : public FixedSizeCollection<LeafNodes<Type> >
-    {
-    private:
-        SetNode<Type>* _root;
-        
-        template <class VisitorType>
-        static void visit(SetNode<Type>* node, const VisitorType& visitor);
-    public:
-        typedef SetNode<Type>* Item;
-        
-        LeafNodes(SetNode<Type>* root);
-        
-        int size() const;
+        );
         
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
@@ -148,11 +128,33 @@ namespace OpenSolid
     }
     
     template <class Type>
+    inline SetNode<Type>::SetNode(const SetNode<Type>& other) :
+        _bounds(other._bounds),
+        _split_direction(other._split_direction),
+        _split_value(other._split_value),
+        _parent(0),
+        _size(other._size) {
+        if (other._object) {
+            assert(!other._left && !other._right);
+            _object = new Type(*other._object);
+            _left = 0;
+            _right = 0;
+        } else {
+            assert(other._left && other._right);
+            _object = 0;
+            _left = new SetNode<Type>(*other._left);
+            _left->_parent = this;
+            _right = new SetNode<Type>(*other._right);
+            _right->_parent = this;
+        }
+    }
+    
+    template <class Type>
     inline SetNode<Type>::SetNode(const typename Bounds<Type>::Type& bounds, const Type& object) :
         _bounds(bounds), _object(new Type(object)), _left(0), _right(0), _parent(0), _size(1) {}
     
     template <class Type>
-    inline void SetNode<Type>::SetNode(
+    inline SetNode<Type>::SetNode(
         const typename Bounds<Type>::Type& overall_bounds,
         int split_direction,
         double split_value,
@@ -235,14 +237,12 @@ namespace OpenSolid
             if (left_size == 1) {
                 _left = *begin;
             } else {
-                _left = new SetNode<Type>();
-                _left->init(left_bounds, begin, lower);
+                _left = new SetNode<Type>(left_bounds, begin, lower);
             }
             if (right_size == 1) {
                 _right = *lower;
             } else {
-                _right = new SetNode<Type>();
-                _right->init(right_bounds, lower, end);
+                _right = new SetNode<Type>(right_bounds, lower, end);
             }
         }
         _left->_parent = this;
@@ -250,28 +250,11 @@ namespace OpenSolid
     }
     
     template <class Type>
-    inline SetNode<Type>::SetNode(const SetNode<Type>& other) :
-        _bounds(other._bounds),
-        _split_direction(other._split_direction),
-        _split_value(other._split_value),
-        _object(new Type(*other._object)),
-        _parent(0),
-        _size(other._size) {
-        if (other._left) {
-            _left = new SetNode<Type>(*other._left);
-            _left._parent = this;
-        }
-        if (other.right().valid()) {
-            _right = new SetNode<Type>(*other._right);
-            _right._parent = this;
-        }
-    }
-    
-    template <class Type>
     inline SetNode<Type>::~SetNode() {
         if (_object) {
+            assert(!_left && !_right);
             delete _object;
-        } else {
+        } else if (_left && _right) {
             delete _left;
             delete _right;
         }
@@ -296,10 +279,26 @@ namespace OpenSolid
     inline const SetNode<Type>* SetNode<Type>::right() const {return _right;}
     
     template <class Type>
-    inline const SetNode<Type>* parent() const {return _parent;}
+    inline const SetNode<Type>* SetNode<Type>::parent() const {return _parent;}
     
     template <class Type>
     inline int SetNode<Type>::size() const {return _size;}
+    
+    template <class Type>
+    void SetNode<Type>::getLeaves(List<SetNode<Type>*>& leaves) {
+        if (_object) {
+            assert(!_left && !_right);
+            _parent = 0;
+            leaves.append(this);
+        } else {
+            assert(_left && _right);
+            _left->getLeaves(leaves);
+            _right->getLeaves(leaves);
+            _left = 0;
+            _right = 0;
+            delete this;
+        }
+    }
     
     template <class Type>
     SetNode<Type>* SetNode<Type>::insert(
@@ -308,9 +307,11 @@ namespace OpenSolid
     ) {
         typename Bounds<Type>::Type overall_bounds = _bounds.hull(new_bounds);
         if (_object) {
+            assert(!_left && !_right);
             SetNode<Type>* nodes[2] = {this, new SetNode<Type>(new_bounds, new_object)};
             return new SetNode<Type>(overall_bounds, nodes, nodes + 2);
         } else if (compatible(overall_bounds, _split_direction, _split_value)) {
+            assert(_left && _right);
             double median = new_bounds(_split_direction).median();
             if (median < _split_value) {
                 _left = _left->insert(new_bounds, new_object);
@@ -328,9 +329,11 @@ namespace OpenSolid
             _bounds = overall_bounds;
             return this;
         } else {
+            assert(_left && _right);
             List<SetNode<Type>*> nodes;
             nodes.reserve(_size + 1);
-            nodes.extend(leaves());
+            _left->getLeaves(nodes);
+            _right->getLeaves(nodes);
             nodes.append(new SetNode<Type>(new_bounds, new_object));
             return new(this) SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
         }
@@ -340,67 +343,65 @@ namespace OpenSolid
     SetNode<Type>* SetNode<Type>::remove(
         const typename Bounds<Type>::Type& removed_bounds,
         const Type& removed_object
-    ) const {
-        if (!_bounds.overlap(removed_bounds)) {return this;}
-        if (_object) {
+    ) {
+        if (!_bounds.overlap(removed_bounds)) {
+            return this;
+        } else if (_object) {
+            assert(!_left && !_right);
             if (*_object == removed_object) {
                 delete this;
                 return 0;
             } else {
                 return this;
             }
-        }
-        double median = removed_bounds(_split_direction).median();
-        if (median <= _split_value) {_left = _left->remove(removed_bounds, removed_object);}
-        if (median >= _split_value) {_right = _right->remove(removed_bounds, removed_object);}
-        if (!_left) {return _right;}
-        if (!_right) {return _left;}
-        typename Bounds<Type>::Type overall_bounds = _left->_bounds.hull(_right->_bounds);
-        if (compatible(overall_bounds, _split_direction, _split_value)) {
-            _left->_parent = this;
-            _right->_parent = this;
-            _bounds = overall_bounds;
-            return this;
         } else {
-            List<SetNode<Type>*> nodes;
-            nodes.reserve(_left->_size + _right->_size);
-            nodes.extend(_left->leaves());
-            nodes.extend(_right->leaves());
-            return new(this) SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
+            assert(_left && _right);
+            double median = removed_bounds(_split_direction).median();
+            if (median <= _split_value) {_left = _left->remove(removed_bounds, removed_object);}
+            if (median >= _split_value) {_right = _right->remove(removed_bounds, removed_object);}
+            if (!_left) {
+                SetNode<Type>* result = _right;
+                _right = 0;
+                delete this;
+                return result;
+            } else if (!_right) {
+                SetNode<Type>* result = _left;
+                _left = 0;
+                delete this;
+                return result;
+            } else {
+                typename Bounds<Type>::Type overall_bounds = _left->_bounds.hull(_right->_bounds);
+                if (compatible(overall_bounds, _split_direction, _split_value)) {
+                    _left->_parent = this;
+                    _right->_parent = this;
+                    _bounds = overall_bounds;
+                    return this;
+                } else {
+                    List<SetNode<Type>*> nodes;
+                    nodes.reserve(_left->_size + _right->_size);
+                    _left->getLeaves(nodes);
+                    _right->getLeaves(nodes);
+                    return new(this) SetNode<Type>(
+                        overall_bounds,
+                        &nodes.front(),
+                        &nodes.back() + 1
+                    );
+                }
+            }
         }
     }
-
-    template <class Type>
-    inline LeafNodes<Type> SetNode<Type>::leaves() const {return LeafNodes<Type>(this);}
         
     template <class Type> template <class VisitorType>
     void SetNode<Type>::visit(const VisitorType& visitor) const {
         if (_object) {
+            assert(!_left && !_right);
             const_cast<VisitorType&>(visitor)(*_object);
         } else {
+            assert(_left && _right);
             _left->visit(visitor);
             _right->visit(visitor);
         }
     }
-        
-    template <class Type> template <class VisitorType>
-    void LeafNodes<Type>::visit(const SetNode<Type>* node, const VisitorType& visitor) {
-        if (node->object().valid()) {
-            const_cast<VisitorType&>(visitor)(Shared<SetNode<Type> >(*node));
-        } else {
-            visit(node->left().constPointer(), visitor);
-            visit(node->right().constPointer(), visitor);
-        }
-    }
-    
-    template <class Type>
-    inline LeafNodes<Type>::LeafNodes(const SetNode<Type>* root) : _root(root) {}
-    
-    template <class Type>
-    inline int LeafNodes<Type>::size() const {return _root->size();}
-    
-    template <class Type> template <class VisitorType>
-    inline void LeafNodes<Type>::visit(const VisitorType& visitor) const {visit(_root, visitor);}
 }
 
 #endif

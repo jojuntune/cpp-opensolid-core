@@ -33,6 +33,7 @@ namespace OpenSolid
     private:
         boost::intrusive_ptr<Type> _pointer;
     public:
+        Shared();
         Shared(Type* object);
         
         bool valid() const;
@@ -53,6 +54,7 @@ namespace OpenSolid
     private:
         boost::intrusive_ptr<const Type> _pointer;
     public:
+        Shared();
         Shared(const Type* object);
         
         bool valid() const;
@@ -70,6 +72,7 @@ namespace OpenSolid
     private:
         boost::intrusive_ptr<ReferenceCounted<Type> > _pointer;
     public:
+        Shared();
         Shared(Type* object);
         
         bool valid() const;
@@ -90,6 +93,7 @@ namespace OpenSolid
     private:
         boost::intrusive_ptr<ReferenceCounted<const Type> > _pointer;
     public:
+        Shared();
         Shared(const Type* object);
         
         bool valid() const;
@@ -106,6 +110,9 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <class Type>
+    inline Shared<Type>::Shared() : _pointer(0) {}
+    
     template <class Type>
     inline Shared<Type>::Shared(Type* object) : _pointer(object) {}
     
@@ -137,6 +144,9 @@ namespace OpenSolid
     inline const Type* Shared<Type>::constPointer() const {return _pointer.get();}
 
     template <class Type>
+    inline Shared<const Type>::Shared() : _pointer(0) {}
+    
+    template <class Type>
     inline Shared<const Type>::Shared(const Type* object) : _pointer(object) {}
     
     template <class Type>
@@ -156,6 +166,9 @@ namespace OpenSolid
     template <class Type>
     inline const Type* Shared<const Type>::constPointer() const {return _pointer.get();}
 
+    template <class Type>
+    inline Shared<ReferenceCounted<Type> >::Shared() : _pointer(0) {}
+    
     template <class Type>
     inline Shared<ReferenceCounted<Type> >::Shared(Type* object) :
         _pointer(new ReferenceCounted<Type>(object)) {}
@@ -195,6 +208,9 @@ namespace OpenSolid
         return _pointer->object();
     }
 
+    template <class Type>
+    inline Shared<ReferenceCounted<const Type> >::Shared() : _pointer(0) {}
+    
     template <class Type>
     inline Shared<ReferenceCounted<const Type> >::Shared(const Type* object) :
         _pointer(new ReferenceCounted<const Type>(object)) {}

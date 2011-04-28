@@ -169,7 +169,7 @@ namespace OpenSolid
     void Function::debug(std::ostream& stream, int indent) const {
         for (int i = 0; i < indent; ++i) {stream << "  ";}
         stream << "R" << parameters() << " -> R" << dimensions() << " | ";
-        stream << implementation().get() << " | ";
+        stream << implementation() << " | ";
         implementation()->debug(stream, indent);
     }
          

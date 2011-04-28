@@ -33,15 +33,16 @@
 using namespace OpenSolid;
 
 template <class Type>
-void testSet(const Set<Type>& set) {
-    if (set.size() == 0) {return;}
-    if (set.size() > 1) {
-        Set<Type> left = set.left();
-        Set<Type> right = set.right();
-        TS_ASSERT(set.bounds().contain(left.bounds()));
-        TS_ASSERT(set.bounds().contain(right.bounds()));
-        testSet(set.left());
-        testSet(set.right());
+void testSet(const SetNode<Type>* node) {
+    if (!node || node->size() == 1) {
+        return;
+    } else {
+        const SetNode<Type>* left = node->left();
+        const SetNode<Type>* right = node->right();
+        TS_ASSERT(node->bounds().contain(left->bounds()));
+        TS_ASSERT(node->bounds().contain(right->bounds()));
+        testSet(node->left());
+        testSet(node->right());
     }
 }
 
@@ -71,7 +72,7 @@ public:
         list[4] = 5;
         Set<int> set(list);
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
         List<int> sorted(set);
         list.sort();
         TS_ASSERT_EQUALS(sorted, list);
@@ -83,7 +84,7 @@ public:
         list[1] = Interval(0, 2);
         Set<Interval> set(iteratorRange(list.begin(), list.end()));
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
     }
     
     void testInterval2() {
@@ -92,7 +93,7 @@ public:
         list.append(Interval(1, 2));
         Set<Interval> set(list);
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
     }
     
     void testInterval3() {
@@ -103,7 +104,7 @@ public:
         );
         Set<Interval> set(list);
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
     }
     
     void testVector2I() {
@@ -115,7 +116,7 @@ public:
         list[4] = Vector2I(Interval(8, 10), Interval(2, 6));
         Set<Vector2I> set(list);
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
     }
     
     void testDoubleOverlapping() {
@@ -150,19 +151,19 @@ public:
         Set<int> set;
         set.add(3).add(1).add(7).add(2).add(5);
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
         set.remove(3);
         std::cout << "3 removed" << std::endl;
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
         set.remove(5);
         std::cout << "5 removed" << std::endl;
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
         set.remove(7);
         std::cout << "7 removed" << std::endl;
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
     }
     
     void testRebalance() {
@@ -170,12 +171,12 @@ public:
         for (int i = 1; i <= 12; ++i) {
             set.add(i);
             std::cout << set << std::endl;
-            testSet(set);
+            testSet(set.rootNode());
         }
         for (int i = 12; i >= 1; --i) {
             set.remove(i);
             std::cout << set << std::endl;
-            testSet(set);
+            testSet(set.rootNode());
         }
     }
     
@@ -183,24 +184,24 @@ public:
         Set<int> parent;
         parent.add(1).add(3).add(5).add(7).add(9).add(11);
         std::cout << parent << std::endl;
-        testSet(parent);
+        testSet(parent.rootNode());
         Set<int> child;
         child.add(6).add(8).add(10);
         std::cout << child << std::endl;
-        testSet(child);
+        testSet(child.rootNode());
         parent.update(child);
         std::cout << parent << std::endl;
-        testSet(parent);
+        testSet(parent.rootNode());
     }
     
     void testLeafParentBug() {
         Set<Interval> set;
         set.add(Interval(-2, 2)).add(Interval(2, 6));
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
         set.add(Interval(-1, 1));
         std::cout << set << std::endl;
-        testSet(set);
+        testSet(set.rootNode());
     }
     
     void testIntervalConstructionTime() {
@@ -212,7 +213,7 @@ public:
         boost::timer iterator_timer;
         Set<Interval> iterator_set(intervals);
         double iterator_time = iterator_timer.elapsed();
-        testSet(iterator_set);
+        testSet(iterator_set.rootNode());
         std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
         
         boost::timer insertion_timer;
@@ -221,7 +222,7 @@ public:
             insertion_set.add(*i);
         }
         double insertion_time = insertion_timer.elapsed();
-        testSet(insertion_set);
+        testSet(insertion_set.rootNode());
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
         std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;
@@ -236,7 +237,7 @@ public:
         boost::timer iterator_timer;
         Set<Vector3I> iterator_set(vectors);
         double iterator_time = iterator_timer.elapsed();
-        testSet(iterator_set);
+        testSet(iterator_set.rootNode());
         std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
         
         boost::timer insertion_timer;
@@ -245,7 +246,7 @@ public:
             insertion_set.add(*i);
         }
         double insertion_time = insertion_timer.elapsed();
-        testSet(insertion_set);
+        testSet(insertion_set.rootNode());
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
         std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;

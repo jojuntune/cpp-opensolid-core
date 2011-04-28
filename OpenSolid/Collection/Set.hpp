@@ -25,6 +25,7 @@
 #include <algorithm>
 
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/ReferenceCountedBase.hpp>
 #include <OpenSolid/Common/Shared.hpp>
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
@@ -39,21 +40,34 @@ namespace OpenSolid
     template <class Type, class FunctionType>
     class FilteredSet;
     
+    namespace
+    {
+        template <class Type>
+        class SetRoot : public ReferenceCountedBase<SetRoot<Type> >
+        {
+        private:
+            SetRoot();
+        public:
+            SetNode<Type>* node;
+            
+            inline SetRoot(SetNode<Type>* node_) : node(node_) {}
+            
+            inline SetRoot(const SetRoot<Type>& other) : node(new SetNode<Type>(*other.node)) {}
+            
+            inline ~SetRoot() {if (node) {delete node;}}
+        };
+    }
+    
     template <class Type>
     class Set : public FixedSizeCollection<Set<Type> >
     {
     private:
-        Shared<SetNode<Type> >  _root;
+        Shared<SetRoot<Type> >  _root;
         
-        Set(const Shared<SetNode<Type> >& root);
-        
-        void init(const List<Shared<SetNode<Type> > >& nodes);
+        void init(List<SetNode<Type>*>& nodes);
         
         template <class DerivedType>
         void init(const CollectionBase<DerivedType>& collection);
-        
-        template <class FunctionType>
-        void init(const FilteredSet<Type, FunctionType>& filtered_set);
     public:
         Set();
         
@@ -65,6 +79,8 @@ namespace OpenSolid
         int size() const;
         bool empty() const;
         
+        const SetNode<Type>* rootNode() const;
+        
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
         
@@ -72,12 +88,7 @@ namespace OpenSolid
         
         const Type& item() const;
         
-        Set<Type> left() const;
-        Set<Type> right() const;
-        
         Set<Type>& add(const Type& object);
-        
-        Set<Type>& update(const Set<Type>& other);
         
         template <class DerivedType>
         Set<Type>& update(const CollectionBase<DerivedType>& collection);
@@ -116,38 +127,23 @@ namespace OpenSolid
     };
     
     template <class Type, class FunctionType>
-    class FilteredSetNodes : public CollectionBase<FilteredSetNodes<Type, FunctionType> >
+    class FilteredSet : public CollectionBase<FilteredSet<Type, FunctionType> >
     {
     private:
-        Shared<SetNode<Type> > _root;
+        const SetNode<Type>* _root;
         FunctionType _function;
         
         template <class VisitorType>
-        void visit(const Shared<SetNode<Type> >& node, const VisitorType& visitor) const;
+        void visit(const SetNode<Type>* node, const VisitorType& visitor) const;
     public:
-        FilteredSetNodes(const Shared<SetNode<Type> >& root, const FunctionType& function);
+        FilteredSet(const SetNode<Type>* root, const FunctionType& function);
         
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
     };
     
-    template <class Type, class FunctionType>
-    class FilteredSet : public CollectionBase<FilteredSet<Type, FunctionType> >
-    {
-    private:
-        Shared<SetNode<Type> > _root;
-        FunctionType _function;
-        
-        template <class VisitorType>
-        void visit(const Shared<SetNode<Type> > node, const VisitorType& visitor) const;
-    public:
-        FilteredSet(const Shared<SetNode<Type> >& root, const FunctionType& function);
-        
-        template <class VisitorType>
-        void visit(const VisitorType& visitor) const;
-        
-        FilteredSetNodes<Type, FunctionType> nodes() const;
-    };
+    template <class Type>    
+    std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node);
     
     template <class Type>
     std::ostream& operator<<(std::ostream& stream, const Set<Type>& set);
@@ -162,45 +158,38 @@ namespace OpenSolid
         template <class Type>
         struct NodeCreator
         {
-            inline Shared<SetNode<Type> > operator()(const Type& item) const {
+            inline SetNode<Type>* operator()(const Type& item) const {
                 return new SetNode<Type>(Bounds<Type>::bounds(item), item);
             }
         };
     }
     
     template <class Type>
-    inline Set<Type>::Set(const Shared<SetNode<Type> >& root) : _root(root) {}
-    
-    template <class Type>
-    void Set<Type>::init(const List<Shared<SetNode<Type> > >& nodes) {
+    void Set<Type>::init(List<SetNode<Type>*>& nodes) {
         if (nodes.empty()) {
-            _root = 0;
+            _root = new SetRoot<Type>(0);
         } else if (nodes.size() == 1) {
-            _root = nodes.front();
+            _root = new SetRoot<Type>(nodes[0]);
         } else {
-            typename Bounds<Type>::Type overall_bounds = nodes.front().constReference().bounds();
+            typename Bounds<Type>::Type overall_bounds = nodes[0]->bounds();
             for (int i = 1; i < nodes.size(); ++i) {
-                overall_bounds = overall_bounds.hull(nodes[i].constReference().bounds());
+                overall_bounds = overall_bounds.hull(nodes[i]->bounds());
             }
-            _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
+            _root = new SetRoot<Type>(
+                new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1)
+            );
         }
     }
     
     template <class Type> template <class DerivedType>
     inline void Set<Type>::init(const CollectionBase<DerivedType>& collection) {
-        List<Shared<SetNode<Type> > > nodes =
-            collection.template mapped<Shared<SetNode<Type> > >(NodeCreator<Type>());
-        init(nodes);
-    }
-        
-    template <class Type> template <class FunctionType>
-    inline void Set<Type>::init(const FilteredSet<Type, FunctionType>& filtered_set) {
-        List<Shared<SetNode<Type> > > nodes = filtered_set.nodes();
+        List<SetNode<Type>*> nodes =
+            collection.template mapped<SetNode<Type>*>(NodeCreator<Type>());
         init(nodes);
     }
     
     template <class Type>
-    inline Set<Type>::Set() : _root(0) {}
+    inline Set<Type>::Set() : _root(new SetRoot<Type>(0)) {}
     
     template <class Type>
     inline Set<Type>::Set(const Set<Type>& other) : _root(other._root) {}
@@ -211,106 +200,86 @@ namespace OpenSolid
     }
     
     template <class Type>       
-    inline int Set<Type>::size() const {return _root.valid() ? _root.constReference().size() : 0;}
+    inline int Set<Type>::size() const {
+        return _root.constReference().node ? _root.constReference().node->size() : 0;
+    }
     
     template <class Type>       
-    inline bool Set<Type>::empty() const {return _root.valid();}
+    inline bool Set<Type>::empty() const {return !_root.constReference().node;}
+    
+    template <class Type>
+    inline const SetNode<Type>* Set<Type>::rootNode() const {
+        return _root.constReference().node;
+    }
     
     template <class Type> template <class VisitorType>
     inline void Set<Type>::visit(const VisitorType& visitor) const {
-        if (_root.valid()) {_root.constReference().visit(visitor);}
+        if (_root.constReference().node) {_root.constReference().node->visit(visitor);}
     }
     
     template <class Type>
     inline const typename Bounds<Type>::Type& Set<Type>::bounds() const {
-        assert(_root.valid());
-        return _root.constReference().bounds();
+        assert(_root.constReference().node);
+        return _root.constReference().node->bounds();
     }
     
     template <class Type>
     inline const Type& Set<Type>::item() const {
-        assert(_root.valid() && _root.constReference().object().valid());
-        return root().constReference().object().constReference();
-    }
-    
-    template <class Type>
-    inline Set<Type> Set<Type>::left() const {
-        if (root()) {
-            return root().constReference().left();
-        } else {
-            return 0;
-        }
-    }
-    
-    template <class Type>
-    inline Set<Type> Set<Type>::right() const {
-        if (root()) {
-            return root().constReference().right();
-        } else {
-            return 0;
-        }
+        assert(_root.constReference().node && _root.constReference().node->object());
+        return *_root.constReference().node->object();
     }
     
     template <class Type>
     inline Set<Type>& Set<Type>::add(const Type& object) {
         typename Bounds<Type>::Type bounds = Bounds<Type>::bounds(object);
-        if (_root.valid()) {
-            _root = _root.constReference().insert(bounds, object);
-            _root.reference().updateParents();
+        if (_root.constReference().node) {
+            SetRoot<Type>& root = _root.reference();
+            root.node = root.node->insert(bounds, object);
         } else {
-            _root = new SetNode<Type>(bounds, object);
-        }
-        return *this;
-    }
-    
-    template <class Type>
-    Set<Type>& Set<Type>::update(const Set<Type>& other) {
-        if (_root.valid() && other._root.valid()) {
-            typename Bounds<Type>::Type overall_bounds = bounds().hull(other.bounds());
-            List<Shared<SetNode<Type> > > nodes = root().constReference().leaves() +
-                other.root().constReference().leaves();
-            _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
-            _root.reference().updateParents();
-        } else if (other.root().valid()) {
-            _root = other.root();
+            _root = new SetRoot<Type>(new SetNode<Type>(bounds, object));
         }
         return *this;
     }
     
     template <class Type> template <class DerivedType>
     Set<Type>& Set<Type>::update(const CollectionBase<DerivedType>& collection) {
-        List<Shared<SetNode<Type> > > nodes;
-        if (_root.valid()) {nodes.extend(_root.constReference().leaves());}
-        nodes.extend(collection.template mapped<Shared<SetNode<Type> > >(NodeCreator<Type>()));
         typename Bounds<Type>::Type overall_bounds = bounds();
+        List<SetNode<Type>*> nodes;
+        if (_root.constReference().node) {
+            SetRoot<Type>& root = _root.reference();
+            root.node->getLeaves(nodes);
+            root.node = 0;
+        }
+        nodes.extend(collection.template mapped<SetNode<Type>*>(NodeCreator<Type>()));
         for (int i = size(); i < nodes.size(); ++i) {
             overall_bounds = overall_bounds.hull(nodes[i]->bounds());
         }
-        _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
-        _root.reference().updatePointers();
+        _root = new SetRoot<Type>(
+            new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1)
+        );
         return *this;
     }
     
     template <class Type>
     inline Set<Type>& Set<Type>::remove(const Type& object) {
-        if (_root.valid()) {
+        if (_root.constReference().node) {
             typename Bounds<Type>::Type bounds = Bounds<Type>::bounds(object);
-            _root = _root.constReference().remove(bounds, object);
-            _root.reference().updatePointers();
+            SetRoot<Type>& root = _root.reference();
+            root.node = root.node->remove(bounds, object);
         }
         return *this;
     }
     
     template <class Type>
     inline Set<Type>& Set<Type>::clear() {
-        _root = 0;
+        _root = new SetRoot<Type>(0);
         return *this;
     }
     
     template <class Type> template <class FunctionType>
     inline FilteredSet<Type, FunctionType> Set<Type>::filtered(
         const FunctionType& function
-    ) const {return FilteredSet<Type, FunctionType>(_root, function);}
+    ) const {return FilteredSet<Type, FunctionType>(_root.constReference().node, function);}
     
     template <class Type>
     inline FilteredSet<Type, OverlapFunction<Type> > Set<Type>::overlapping(
@@ -335,71 +304,54 @@ namespace OpenSolid
     ) const {return _bounds.overlap(subset_bounds);}
     
     template <class Type, class FunctionType> template <class VisitorType>
-    void FilteredSetNodes<Type, FunctionType>::visit(
-        const Shared<SetNode<Type> >& node,
-        const VisitorType& visitor
-    ) const {
-        if (_function(node.constReference().bounds())) {
-            if (node.constReference().object().valid()) {
-                const_cast<VisitorType&>(visitor)(node);
-            } else {
-                visit(node.constReference().left(), visitor);
-                visit(node.constReference().right(), visitor);
-            }
-        }
-    }
-    
-    template <class Type, class FunctionType>
-    inline FilteredSetNodes<Type, FunctionType>::FilteredSetNodes(
-        const Shared<SetNode<Type> >& root,
-        const FunctionType& function
-    ) : _root(root), _function(function) {}
-    
-    template <class Type, class FunctionType> template <class VisitorType>
-    inline void FilteredSetNodes<Type, FunctionType>::visit(const VisitorType& visitor) const {
-        if (_root.valid()) {visit(_root, visitor);}
-    }
-    
-    template <class Type, class FunctionType> template <class VisitorType>
     void FilteredSet<Type, FunctionType>::visit(
-        const Shared<SetNode<Type> >& node,
+        const SetNode<Type>* node,
         const VisitorType& visitor
     ) const {
-        if (_function(node.constReference().bounds())) {
-            if (node.constReference().object().valid()) {
-                const_cast<VisitorType&>(visitor)(node.constReference().object().constReference());
+        if (_function(node->bounds())) {
+            if (node->object()) {
+                const_cast<VisitorType&>(visitor)(*node->object());
             } else {
-                visit(node.constReference().left(), visitor);
-                visit(node.constReference().right(), visitor);
+                assert(node->left() && node->right());
+                visit(node->left(), visitor);
+                visit(node->right(), visitor);
             }
         }
     }
         
     template <class Type, class FunctionType>
     inline FilteredSet<Type, FunctionType>::FilteredSet(
-        const Shared<SetNode<Type> >& root,
+        const SetNode<Type>* root,
         const FunctionType& function
     ) : _root(root), _function(function) {}
     
     template <class Type, class FunctionType> template <class VisitorType>
     void FilteredSet<Type, FunctionType>::visit(const VisitorType& visitor) const {
-        if (_root.valid()) {visit(_root, visitor);}
+        if (_root) {visit(_root, visitor);}
     }
-    
-    template <class Type, class FunctionType>
-    inline FilteredSetNodes<Type, FunctionType> FilteredSet<Type, FunctionType>::nodes() const {
-        return FilteredSetNodes<Type, FunctionType>(_root, _function);
+
+    template <class Type>    
+    std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node) {
+        stream << "{";
+        if (node.object()) {
+            stream << *node.object();
+        } else {
+            stream << *node.left();
+            stream << ",";
+            stream << *node.right();
+        }
+        stream << "}";
+        return stream;
     }
     
     template <class Type>
     std::ostream& operator<<(std::ostream& stream, const Set<Type>& set) {
         if (set.empty()) {
-            return stream << "{}";
-        } else if (set.size() == 1) {
-            return stream << "{" << set.item() << "}";
+            stream << "{}";
         } else {
-            return stream << "{" << set.left() << "," << set.right() << "}";
+            stream << *set.rootNode();
         }
+        return stream;
     }
 }
 

@@ -40,7 +40,7 @@ namespace OpenSolid
     class Function
     {
     private:
-        FunctionImplementation::Pointer _implementation;
+        Shared<const FunctionImplementation> _implementation;
         const std::type_info* _type;
     public:
         Function();
@@ -59,7 +59,7 @@ namespace OpenSolid
         template <class XType, class YType, class ZType, class WType>
         Function(const XType& x, const YType& y, const ZType& z, const WType& w);
         
-        const FunctionImplementation::Pointer& implementation() const;
+        const FunctionImplementation* implementation() const;
         
         template <class Type>
         bool isA() const;
@@ -192,8 +192,8 @@ namespace OpenSolid
         _implementation = Function(x).concatenate(y).concatenate(z).concatenate(w).implementation();
     }
     
-    inline const FunctionImplementation::Pointer& Function::implementation() const {
-        return _implementation;
+    inline const FunctionImplementation* Function::implementation() const {
+        return _implementation.constPointer();
     }
     
     template <class Type>
