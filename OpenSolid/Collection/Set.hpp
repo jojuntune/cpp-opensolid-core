@@ -48,6 +48,9 @@ namespace OpenSolid
     template <class Type, class FunctionType>
     class FilteredSet;
     
+    template <class Type, class FunctionType>
+    class FilteredSetIterator;
+    
     template <class Type>
     class Set : public FixedSizeCollection<Set<Type> >
     {
@@ -164,8 +167,35 @@ namespace OpenSolid
     public:
         FilteredSet(const SetNode<Type>* root, const FunctionType& function);
         
+        FilteredSetIterator<Type, FunctionType> begin() const;
+        FilteredSetIterator<Type, FunctionType> end() const;
+        FilteredSetIterator<Type, FunctionType> rbegin() const;
+        FilteredSetIterator<Type, FunctionType> rend() const;
+        
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
+    };
+    
+    template <class Type, class FunctionType>
+    class FilteredSetIterator : 
+        public boost::iterator_facade<
+            FilteredSetIterator<Type, FunctionType>,
+            const Type,
+            boost::bidirectional_traversal_tag
+        >
+    {
+    private:
+        const SetNode<Type>* _node;
+        FunctionType _function;
+        
+        friend class boost::iterator_core_access;
+        
+        void increment();
+        void decrement();
+        bool equal(const FilteredSetIterator<Type, FunctionType>& other) const;
+        const Type& dereference() const;
+    public:
+        FilteredSetIterator(const SetNode<Type>* node, const FunctionType& function);
     };
     
     template <class Type>    
@@ -414,10 +444,108 @@ namespace OpenSolid
         const FunctionType& function
     ) : _root(root), _function(function) {}
     
+    template <class Type, class FunctionType>
+    inline FilteredSetIterator<Type, FunctionType> FilteredSet<Type, FunctionType>::begin() const {
+        if (!_root) {
+            return FilteredSetIterator<Type, FunctionType>(0, _function);
+        } else {
+            const SetNode<Type>* node = _root;
+            while (node->left() && _function(node->bounds())) {node = node->left();}
+            while (!_function(node->bounds())) {
+                while (node->parent() && node->parent()->right() == node) {
+                    node = node->parent();
+                }
+                if (!node->parent()) {
+                    return FilteredSetIterator<Type, FunctionType>(0, _function);
+                } else {
+                    node = node->parent()->right();
+                    while (node->left() && _function(node->bounds())) {node = node->left();}
+                }
+            }
+            return FilteredSetIterator<Type, FunctionType>(node, _function);
+        }
+    }
+    
+    template <class Type, class FunctionType>
+    inline FilteredSetIterator<Type, FunctionType> FilteredSet<Type, FunctionType>::end() const {
+        return FilteredSetIterator<Type, FunctionType>(0, _function);
+    }
+    
+    template <class Type, class FunctionType>
+    inline FilteredSetIterator<Type, FunctionType> FilteredSet<Type, FunctionType>::rbegin() const {
+        if (!_root) {
+            return FilteredSetIterator<Type, FunctionType>(0, _function);
+        } else {
+            const SetNode<Type>* node = _root;
+            while (node->right() && _function(node->bounds())) {node = node->right();}
+            while (!_function(node->bounds())) {
+                while (node->parent() && node->parent()->left() == node) {
+                    node = node->parent();
+                }
+                if (!node->parent()) {
+                    return FilteredSetIterator<Type, FunctionType>(0, _function);
+                } else {
+                    node = node->parent()->left();
+                    while (node->right() && _function(node->bounds())) {node = node->right();}
+                }
+            }
+            return FilteredSetIterator<Type, FunctionType>(node, _function);
+        }
+    }
+    
+    template <class Type, class FunctionType>
+    inline FilteredSetIterator<Type, FunctionType> FilteredSet<Type, FunctionType>::rend() const {
+        return FilteredSetIterator<Type, FunctionType>(0, _function);
+    }
+    
     template <class Type, class FunctionType> template <class VisitorType>
     inline void FilteredSet<Type, FunctionType>::visit(const VisitorType& visitor) const {
         if (_root) {visit(_root, visitor);}
     }
+    
+    template <class Type, class FunctionType>
+    inline void FilteredSetIterator<Type, FunctionType>::increment() {
+        do {
+            while (_node->parent() && _node->parent()->right() == _node) {_node = _node->parent();}
+            if (!_node->parent()) {
+                _node = 0;
+                return;
+            } else {
+                _node = _node->parent()->right();
+                while (_node->left() && _function(_node->bounds())) {_node = _node->left();}
+            }
+        } while (!_function(_node->bounds()));
+    }
+    
+    template <class Type, class FunctionType>
+    inline void FilteredSetIterator<Type, FunctionType>::decrement() {
+        do {
+            while (_node->parent() && _node->parent()->left() == _node) {_node = _node->parent();}
+            if (!_node->parent()) {
+                _node = 0;
+                return;
+            } else {
+                _node = _node->parent()->left();
+                while (_node->right() && _function(_node->bounds())) {_node = _node->right();}
+            }
+        } while (!_function(_node->bounds()));
+    }
+    
+    template <class Type, class FunctionType>
+    inline bool FilteredSetIterator<Type, FunctionType>::equal(
+        const FilteredSetIterator<Type, FunctionType>& other
+    ) const {return _node == other._node;}
+    
+    template <class Type, class FunctionType>
+    inline const Type& FilteredSetIterator<Type, FunctionType>::dereference() const {
+        return *_node->object();
+    }
+    
+    template <class Type, class FunctionType>
+    inline FilteredSetIterator<Type, FunctionType>::FilteredSetIterator(
+        const SetNode<Type>* node,
+        const FunctionType& function
+    ) : _node(node), _function(function) {}
 
     template <class Type>    
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node) {

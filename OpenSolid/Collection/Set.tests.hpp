@@ -69,6 +69,13 @@ struct TestVisitor
     inline void operator()(const Vector3I& vector) {total_sum += vector.cwiseWidth().sum();}
 };
 
+struct TestFilter
+{
+    inline bool operator()(const Interval& interval) const {
+        return interval.overlap(Interval(2, 4)) || interval.overlap(Interval(7, 10));
+    }
+};
+
 class SetTestSuite : public CxxTest::TestSuite
 {
 public:
@@ -346,5 +353,28 @@ public:
         
         std::cout << "Visitation " << iteration_time / visitation_time;
         std::cout << " times faster" << std::endl;
+    }
+    
+    void testFilteredTraversal() {
+        Set<double> set(List<double>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        FilteredSetIterator<double, TestFilter> i = set.filtered(TestFilter()).begin();
+        TS_ASSERT_EQUALS(*i, 2.0);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 3.0);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 4.0);
+        --i;
+        TS_ASSERT_EQUALS(*i, 3.0);
+        ++i;
+        ++i;
+        TS_ASSERT_EQUALS(*i, 7.0);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 8.0);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 9.0);
+        ++i;
+        TS_ASSERT_EQUALS(*i, 10.0);
+        ++i;
+        TS_ASSERT_EQUALS(i, set.filtered(TestFilter()).end());
     }
 };
