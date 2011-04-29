@@ -501,11 +501,14 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::flipped() const {
         assert(axes() == 1 || axes() == dimensions() - 1);
+        Datum<dimensions_, axes_> result;
+        result._origin = origin();
         if (axes() == 1) {
-            return Axis<dimensions_>(origin(), -vector());
+            result._vectors = -vectors();
         } else {
-            return Plane<dimensions_>(origin(), -normalVector());
+            result._vectors = orthogonalBasis(normalVector()).rightCols(dimensions() - 1);
         }
+        return result;
     }
     
     template <int dimensions_, int axes_>
