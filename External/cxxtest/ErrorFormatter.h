@@ -50,8 +50,7 @@ namespace CxxTest
 
         void enterWorld( const WorldDescription & /*desc*/ )
         {
-            (*_o) << "Running " << totalTests;
-            _o->flush();
+            (*_o) << "Running " << totalTests << endl;
             _dotting = true;
             _reported = false;
         }
@@ -68,15 +67,15 @@ namespace CxxTest
             _reported = false;
         }
 
-        void enterTest( const TestDescription & )
+        void enterTest( const TestDescription &desc )
         {
             _reported = false;
+            (*_o) << "--- " << desc.testName() << " ---" << endl;
         }
 
         void leaveTest( const TestDescription & )
         {
             if ( !tracker().testFailed() ) {
-                ((*_o) << ".").flush();
                 _dotting = true;
             }
         }
