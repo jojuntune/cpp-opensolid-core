@@ -60,6 +60,15 @@ bool isFixedSize(const CollectionBase<DerivedType>& collection) {return false;}
 template <class DerivedType>
 bool isFixedSize(const FixedSizeCollection<DerivedType>& collection) {return true;}
 
+struct TestVisitor
+{
+    double total_sum;
+    
+    inline TestVisitor() : total_sum(0.0) {}
+    
+    inline void operator()(const Vector3I& vector) {total_sum += vector.cwiseWidth().sum();}
+};
+
 class SetTestSuite : public CxxTest::TestSuite
 {
 public:
@@ -312,5 +321,30 @@ public:
         TS_ASSERT_EQUALS(*i, 5);
         ++i;
         TS_ASSERT_EQUALS(i, set.end());
+    }
+    
+    void testTraversalTime() {
+        List<Vector3I> list(200000);
+        for (List<Vector3I>::Iterator i = list.begin(); i != list.end(); ++i) {*i = randomVector();}
+        Set<Vector3I> set(list);
+        
+        boost::timer visitation_timer;
+        TestVisitor visitor;
+        set.visit(visitor);
+        double visitation_time = visitation_timer.elapsed();
+        std::cout << "Visitation: " << visitor.total_sum;
+        std::cout << " in " << visitation_time << " s" << std::endl;
+        
+        
+        boost::timer iteration_timer;
+        double total_sum = 0.0;
+        for (Set<Vector3I>::Iterator i = set.begin(); i != set.end(); ++i) {
+            total_sum += i->cwiseWidth().sum();
+        }
+        double iteration_time = iteration_timer.elapsed();
+        std::cout << "Iteration: " << total_sum << " in " << iteration_time << " s" << std::endl;
+        
+        std::cout << "Visitation " << iteration_time / visitation_time;
+        std::cout << " times faster" << std::endl;
     }
 };
