@@ -29,6 +29,7 @@
 #include <OpenSolid/Common/Bisected.hpp>
 #include <OpenSolid/Collection/FixedSizeCollection.hpp>
 
+#define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
