@@ -36,11 +36,8 @@
 
 namespace OpenSolid
 {
-    namespace
-    {
-        template <class Type>
-        class SetRoot;
-    }
+    template <class Type>
+    class SetRoot;
     
     template <class Type>
     class SetIterator;
@@ -110,21 +107,18 @@ namespace OpenSolid
         static Type bounds(const Set<ItemType>& set);
     };
     
-    namespace
+    template <class Type>
+    class SetRoot : public ReferenceCountedBase<SetRoot<Type> >
     {
-        template <class Type>
-        class SetRoot : public ReferenceCountedBase<SetRoot<Type> >
-        {
-        private:
-            SetRoot();
-        public:
-            SetNode<Type>* node;
-            
-            SetRoot(SetNode<Type>* node_);
-            SetRoot(const SetRoot<Type>& other);
-            ~SetRoot();
-        };
-    }
+    private:
+        SetRoot();
+    public:
+        SetNode<Type>* node;
+        
+        SetRoot(SetNode<Type>* node_);
+        SetRoot(const SetRoot<Type>& other);
+        ~SetRoot();
+    };
     
     template <class Type>
     class SetIterator :
@@ -344,18 +338,15 @@ namespace OpenSolid
     template <class Type>
     inline typename Bounds<Type>::Type bounds(const Set<Type>& set) {return set.bounds();}
     
-    namespace
-    {
-        template <class Type>
-        inline SetRoot<Type>::SetRoot(SetNode<Type>* node_) : node(node_) {}
-        
-        template <class Type>
-        inline SetRoot<Type>::SetRoot(const SetRoot<Type>& other) :
-            node(new SetNode<Type>(*other.node)) {}
-        
-        template <class Type>
-        inline SetRoot<Type>::~SetRoot() {if (node) {delete node;}}
-    }
+    template <class Type>
+    inline SetRoot<Type>::SetRoot(SetNode<Type>* node_) : node(node_) {}
+    
+    template <class Type>
+    inline SetRoot<Type>::SetRoot(const SetRoot<Type>& other) :
+        node(new SetNode<Type>(*other.node)) {}
+    
+    template <class Type>
+    inline SetRoot<Type>::~SetRoot() {if (node) {delete node;}}
     
     template <class Type>
     inline void SetIterator<Type>::increment() {
