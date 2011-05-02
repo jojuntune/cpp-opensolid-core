@@ -182,24 +182,31 @@ namespace OpenSolid
     template <class XType, class YType>
     Function::Function(const XType& x, const YType& y) {
         _implementation = Function(x).concatenate(y).implementation();
+        _type = &typeid(implementation());
     }
     
     template <class XType, class YType, class ZType>
     Function::Function(const XType& x, const YType& y, const ZType& z) {
         _implementation = Function(x).concatenate(y).concatenate(z).implementation();
+        _type = &typeid(implementation());
     }
     
     template <class XType, class YType, class ZType, class WType>
     Function::Function(const XType& x, const YType& y, const ZType& z, const WType& w) {
         _implementation = Function(x).concatenate(y).concatenate(z).concatenate(w).implementation();
+        _type = &typeid(implementation());
     }
     
     inline const FunctionImplementation* Function::implementation() const {
+        assert(_implementation.valid());
         return _implementation.constPointer();
     }
     
     template <class Type>
-    inline bool Function::isA() const {return *_type == typeid(Type);}
+    inline bool Function::isA() const {
+        assert(_type);
+        return *_type == typeid(Type);
+    }
     
     template <class Type>
     inline const Type& Function::as() const {
