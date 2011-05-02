@@ -152,6 +152,9 @@ namespace OpenSolid
         const Geometry& second_argument
     );
     
+    OPENSOLID_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
+    OPENSOLID_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
+    
     OPENSOLID_EXPORT Geometry cos(const Geometry& argument);
     OPENSOLID_EXPORT Geometry sin(const Geometry& argument);
     OPENSOLID_EXPORT Geometry sqrt(const Geometry& argument);
@@ -224,7 +227,7 @@ namespace OpenSolid
     
     inline Geometry::Geometry(const Function& function, const Domain& domain) :
         _function(function), _domain(domain) {
-        assert(domain.dimensions() == function.parameters());
+        assert(function.isA<ConstantFunction>() || domain.dimensions() == function.parameters());
     }
     
     inline Geometry::Geometry(double value) : _function(value), _domain() {}

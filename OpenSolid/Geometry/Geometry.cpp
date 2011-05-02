@@ -191,6 +191,14 @@ namespace OpenSolid
         );
     }
     
+    Geometry operator*(const Geometry& geometry, const DatumXd& datum) {
+        return Geometry(geometry.function() * datum, geometry.domain());
+    }
+    
+    Geometry operator/(const Geometry& geometry, const DatumXd& datum) {
+        return Geometry(geometry.function() / datum, geometry.domain());
+    }
+    
     Geometry cos(const Geometry& argument) {
         return Geometry(cos(argument.function()), argument.domain());
     }
