@@ -505,8 +505,10 @@ namespace OpenSolid
         result._origin = origin();
         if (axes() == 1) {
             result._vectors = -vectors();
+            result._normalized = _normalized;
         } else {
             result._vectors = orthogonalBasis(normalVector()).rightCols(dimensions() - 1);
+            result._normalized = true;
         }
         return result;
     }
