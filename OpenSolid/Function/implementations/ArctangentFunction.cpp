@@ -23,8 +23,7 @@
 
 namespace OpenSolid
 {
-    ArctangentFunction::ArctangentFunction(const Function& operand) :
-        UnaryFunction<ArctangentFunction>(operand) {
+    ArctangentFunction::ArctangentFunction(const Function& operand) : UnaryFunction(operand) {
         assert(operand.dimensions() == 1);
     }
     

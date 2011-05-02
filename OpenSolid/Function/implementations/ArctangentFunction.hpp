@@ -25,7 +25,7 @@
 
 namespace OpenSolid
 {
-    class ArctangentFunction : public UnaryFunction<ArctangentFunction>
+    class ArctangentFunction : public UnaryFunction
     {
     public:
         OPENSOLID_EXPORT ArctangentFunction(const Function& argument);

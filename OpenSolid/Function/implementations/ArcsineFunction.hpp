@@ -25,7 +25,7 @@
 
 namespace OpenSolid
 {
-    class ArcsineFunction : public UnaryFunction<ArcsineFunction>
+    class ArcsineFunction : public UnaryFunction
     {
     public:
         OPENSOLID_EXPORT ArcsineFunction(const Function& operand);

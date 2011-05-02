@@ -23,8 +23,7 @@
 
 namespace OpenSolid
 {
-    ArcsineFunction::ArcsineFunction(const Function& operand) :
-        UnaryFunction<ArcsineFunction>(operand) {
+    ArcsineFunction::ArcsineFunction(const Function& operand) : UnaryFunction(operand) {
         assert(operand.dimensions() == 1);
     }
     
