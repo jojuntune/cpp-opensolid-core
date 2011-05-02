@@ -22,6 +22,8 @@
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 #include "Function.hpp"
+#include "implementations/ArccosineFunction.hpp"
+#include "implementations/ArcsineFunction.hpp"
 #include "implementations/ComponentsFunction.hpp"
 #include "implementations/CompositionFunction.hpp"
 #include "implementations/ConcatenationFunction.hpp"
@@ -352,6 +354,22 @@ namespace OpenSolid
             return sqrt(operand.as<ConstantFunction>().value().scalar());
         } else {
             return new SquareRootFunction(operand);
+        }
+    }
+    
+    Function asin(const Function& operand) {
+        if (operand.isA<ConstantFunction>()) {
+            return asin(operand.as<ConstantFunction>().value().scalar());
+        } else {
+            return new ArcsineFunction(operand);
+        }
+    }
+    
+    Function acos(const Function& operand) {
+        if (operand.isA<ConstantFunction>()) {
+            return acos(operand.as<ConstantFunction>().value().scalar());
+        } else {
+            return new ArccosineFunction(operand);
         }
     }
 }

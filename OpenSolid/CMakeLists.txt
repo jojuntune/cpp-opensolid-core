@@ -6,6 +6,8 @@ SET(FUNCTION_SOURCES
     Function/check.cpp
     Function/Function.cpp
     Function/FunctionImplementation.cpp
+    Function/implementations/ArccosineFunction.cpp
+    Function/implementations/ArcsineFunction.cpp
     Function/implementations/BinaryFunction.cpp
     Function/implementations/ComponentsFunction.cpp
     Function/implementations/CompositionFunction.cpp

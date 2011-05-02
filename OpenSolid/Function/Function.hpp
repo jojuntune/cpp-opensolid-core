@@ -151,6 +151,8 @@ namespace OpenSolid
     OPENSOLID_EXPORT Function sin(const Function& argument);
     OPENSOLID_EXPORT Function tan(const Function& argument);
     OPENSOLID_EXPORT Function sqrt(const Function& argument);
+    OPENSOLID_EXPORT Function acos(const Function& argument);
+    OPENSOLID_EXPORT Function asin(const Function& argument);
     
     OPENSOLID_EXPORT std::ostream& operator<<(
         std::ostream& stream,
