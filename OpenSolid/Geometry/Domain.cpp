@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "Domain.hpp"
+#include "Geometry.hpp"
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Collection/List.hpp>
 

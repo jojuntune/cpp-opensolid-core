@@ -137,10 +137,17 @@ namespace OpenSolid
     }
     
     Geometry Geometry::Circle(double radius) {
-        Vector2d x_vector = radius * Vector2d::UnitX();
-        Vector2d y_vector = radius * Vector2d::UnitY();
         Interval angle(0, 2 * M_PI);
-        return Geometry(cos(Function::t) * x_vector + sin(Function::t) * y_vector, angle);
+        Function theta = Function::Parameter(1, 0);
+        return Geometry(Function(radius * cos(theta), radius * sin(theta)), angle);
+    }
+    
+    Geometry Geometry::Helix(double radius, double pitch, const Interval& angle) {
+        Function theta = Function::Parameter(1, 0);
+        return Geometry(
+            Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),
+            angle
+        );
     }
 
     inline Geometry operator-(const Geometry& argument) {
