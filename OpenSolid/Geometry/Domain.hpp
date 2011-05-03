@@ -60,24 +60,7 @@ namespace OpenSolid
 {   
     inline Domain::Domain() : _boundaries() {}
     
-    namespace
-    {
-        struct BoundaryChecker
-        {
-            const Domain& _domain;
-            
-            inline BoundaryChecker(const Domain& domain) : _domain(domain) {}
-            
-            inline void operator()(const Geometry& boundary) {
-                assert(boundary.dimensions() == _domain.dimensions());
-                assert(boundary.parameters() == _domain.dimensions() - 1);
-            }
-        };
-    }
-    
-    inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {
-        boundaries.visit(BoundaryChecker(*this));
-    }
+    inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
     
     inline Domain::Domain(const Interval& bounds) {
         _boundaries = rectangularBoundaries(VectorXI::Constant(1, bounds));
