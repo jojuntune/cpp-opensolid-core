@@ -200,4 +200,35 @@ public:
         Vector3d error = concatenated(2.0) - Vector3d(2.0, 3.0, 4.0);
         TS_ASSERT(error.isZero(Tolerance::roundoff()));
     }
+    
+    void testZeros() {
+        Function x = Function::Parameter(1, 0);
+        List<Function> functions(
+            x - 1,
+            x.squaredNorm() - 1,
+            x * x * x - 4 * x * x + 5 * x - 2,
+            sin(x).squaredNorm() + 2 * sin(x) + 1
+        );
+        List<Interval> domains(
+            Interval(0, 2),
+            Interval(-2, 2),
+            Interval(0, 3),
+            Interval(-M_PI, 2 * M_PI)
+        );
+        List<RowVectorXd> expected_zeros(
+            RowVectorXd::Constant(1, 1.0),
+            RowVector2d(-1, 1),
+            RowVector2d(1, 2),
+            RowVector2d(-M_PI / 2, 3 * M_PI / 2)
+        );
+        for (int i = 0; i < 4; ++i) {
+            RowVectorXd values = functions[i](expected_zeros[i]);
+            TS_ASSERT(values.isZero(Tolerance::roundoff()));
+            RowVectorXd zeros = functions[i].zeros(domains[i]);
+            RowVectorXd errors = zeros - expected_zeros[i];
+            std::cout << "i = " << i;
+            std::cout << ", zeros = " << zeros << ", errors = " << errors << std::endl << std::endl;
+            TS_ASSERT(errors.isZero(Tolerance::roundoff()));
+        }
+    }
 };
