@@ -229,22 +229,31 @@ namespace OpenSolid
         int max_order = 4;
         List<Function> derivatives(max_order + 1);
         derivatives[0] = *this;
-        derivatives[1] = derivative();
-        derivatives[2] = derivatives[1].derivative();
-        derivatives[3] = derivatives[2].derivative();
-        derivatives[4] = derivatives[3].derivative();
+        for (int i = 1; i <= max_order; ++i) {derivatives[i] = derivatives[i - 1].derivative();}
         List<Interval> domains(1);
         domains[0] = domain;
         List<Interval> identified;
         List<int> orders;
+        std::cout << "Gathering domains" << std::endl;
         while (!domains.empty()) {
-            RowVectorXI bounds = operator()(domains.matrix());
+            std::cout << "domains: " << domains << std::endl;
+            std::cout << "Getting bounds" << std::endl;
+            std::cout << "domains.matrix() = " << domains.matrix() << std::endl;
+            std::cout << "*domains.matrix().data() = " << *domains.matrix().data() << std::endl;
+            RowVectorXI domain_matrix = domains.matrix();
+            std::cout << "domain_matrix = " << domain_matrix << std::endl;
+            RowVectorXI bounds = operator()(domain_matrix);
+            std::cout << "Got bounds" << std::endl;
             RowVectorXI bound_norms = bounds.cwiseAbs();
-            RowVectorXI derivative_bounds = derivative(domains.matrix());
+            std::cout << "Getting derivative bounds" << std::endl;
+            RowVectorXI derivative_bounds = derivatives[1](domains.matrix());
             RowVectorXI derivative_norms = derivative_bounds.cwiseAbs();
             List<Interval> subdomains;
             List<Interval>::ConstIterator i;
-            for (i = domains.cbegin(), int j = 0; i != domains.cend(); ++i, ++j) {
+            int j = 0;
+            std::cout << "Starting loop" << std::endl;
+            for (i = domains.cbegin(); i != domains.cend(); ++i) {
+                std::cout << "j = " << j << std::endl;
                 if (!(bound_norms[j] > Tolerance::roundoff())) {
                     if (derivative_norms[j] > tolerance) {
                         Interval convergence_ratio = derivative_norms[j] > tolerance ? 
@@ -253,6 +262,7 @@ namespace OpenSolid
                         if (convergence_ratio < 1 - tolerance) {
                             identified.append(*i);
                         } else {
+                            std::cout << "Bisecting for better convergence" << std::endl;
                             Pair<Interval> bisected = i->bisected();
                             subdomains.append(bisected.first());
                             subdomains.append(bisected.second());
@@ -261,6 +271,7 @@ namespace OpenSolid
                         if (bound_norms[j] < tolerance) {
                             identified.append(*i);
                         } else {
+                            std::cout << "General bisection" << std::endl;
                             Pair<Interval> bisected = i->bisected();
                             subdomains.append(bisected.first());
                             subdomains.append(bisected.second());
@@ -268,11 +279,14 @@ namespace OpenSolid
                     }
                 }
             }
+            std::cout << "subdomains: " << subdomains << std::endl;
             domains = subdomains;
+            ++j;
         }
         if (identified.empty()) {
             return RowVectorXd();
         } else {
+            std::cout << "Merging domains" << std::endl;
             Interval current = identified.front();
             List<Interval>::ConstIterator i;
             for (i = identified.cbegin() + 1; i != identified.cend(); ++i) {
@@ -284,6 +298,7 @@ namespace OpenSolid
                 }
             }
             domains.append(current);
+            std::cout << "Finding results" << std::endl;
             List<double> results;
             for (i = domains.cbegin(); i != domains.cend(); ++i) {
                 int order = 1;

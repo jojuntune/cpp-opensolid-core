@@ -26,9 +26,6 @@
 namespace OpenSolid
 {
     template <class Type>
-    class List;
-    
-    template <class Type>
     class ListMatrixAdapter;
 }
 
@@ -37,61 +34,7 @@ namespace Eigen
     namespace internal
     {
         template <class Type>
-        struct DirectAccessTraits
-        {
-            static const int bit = 0;
-        };
-        
-        template <>
-        struct DirectAccessTraits<Vector2d>
-        {
-            static const int bit = DirectAccessBit;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 2;
-        };
-        
-        template <>
-        struct DirectAccessTraits<Vector3d>
-        {
-            static const int bit = DirectAccessBit;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 3;
-        };
-        
-        template <>
-        struct DirectAccessTraits<Vector4d>
-        {
-            static const int bit = DirectAccessBit;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 4;
-        };
-        
-        template <>
-        struct DirectAccessTraits<Vector2I>
-        {
-            static const int bit = DirectAccessBit;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 2;
-        };
-        
-        template <>
-        struct DirectAccessTraits<Vector3I>
-        {
-            static const int bit = DirectAccessBit;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 3;
-        };
-        
-        template <>
-        struct DirectAccessTraits<Vector4I>
-        {
-            static const int bit = DirectAccessBit;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 4;
-        };
-        
-        template <class Type>
-        struct traits<OpenSolid::ListMatrixAdapter<Type> > : public DirectAccessTraits<Type>
+        struct traits<OpenSolid::ListMatrixAdapter<Type> >
         {
             typedef typename Type::Scalar Scalar;
             typedef Dense StorageKind;
@@ -105,88 +48,72 @@ namespace Eigen
             static const int Flags = NestByRefBit | DirectAccessTraits<Type>::bit;
             static const int CoeffReadCost = 2;
         };
-        
-        template <>
-        struct traits<OpenSolid::ListMatrixAdapter<double> >
-        {
-            typedef double Scalar;
-            typedef Dense StorageKind;
-            typedef int Index;
-            typedef MatrixXpr XprKind;
-            
-            static const int RowsAtCompileTime = 1;
-            static const int ColsAtCompileTime = Dynamic;
-            static const int MaxRowsAtCompileTime = 1;
-            static const int MaxColsAtCompileTime = Dynamic;
-            static const int Flags = NestByRefBit | RowMajorBit | DirectAccessBit;
-            static const int CoeffReadCost = 2;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 1;
-        };
-        
-        template <>
-        struct traits<OpenSolid::ListMatrixAdapter<Interval> >
-        {
-            typedef Interval Scalar;
-            typedef Dense StorageKind;
-            typedef int Index;
-            typedef MatrixXpr XprKind;
-            
-            static const int RowsAtCompileTime = 1;
-            static const int ColsAtCompileTime = Dynamic;
-            static const int MaxRowsAtCompileTime = 1;
-            static const int MaxColsAtCompileTime = Dynamic;
-            static const int Flags = NestByRefBit | RowMajorBit | DirectAccessBit;
-            static const int CoeffReadCost = 2;
-            static const int InnerStrideAtCompileTime = 1;
-            static const int OuterStrideAtCompileTime = 1;
-        };
     }
 }
 
 namespace OpenSolid
 {
-    template <class Type, int bit_>
-    class DirectAccessAdapter
-    {   
-    };
-    
     template <class Type>
-    class DirectAccessAdapter<Type, DirectAccessBit>
+    struct ListMatrixAdapterType
     {
-    public:
-        const typename Type::Scalar* data() const;
+        typedef ListMatrixAdapter<Type> Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<double>
+    {
+        typedef MapXcd Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<Vector2d>
+    {
+        typedef MapXcd Type;
+    };
+    
+    template <>
+    struct ListMatrixAdaterType<Vector3d>
+    {
+        typedef MapXcd Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<Vector4d>
+    {
+        typedef MapXcd Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<Interval>
+    {
+        typedef MapXcI Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<Vector2I>
+    {
+        typedef MapXcI Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<Vector3I>
+    {
+        typedef MapXcI Type;
+    };
+    
+    template <>
+    struct ListMatrixAdapterType<Vector4I>
+    {
+        typedef MapXcI Type;
     };
     
     template <class Type>
-    class ListMatrixAdapter :
-        public MatrixBase<ListMatrixAdapter<Type> >,
-        public DirectAccessAdapter<Type, internal::DirectAccessTraits<Type>::bit>
+    class ListMatrixAdapter : public MatrixBase<ListMatrixAdapter<Type> >
     {
     private:
         const List<Type>& _list;
-        
-        friend class DirectAccessAdapter<Type, internal::DirectAccessTraits<Type>::bit>;
     public:
-        typedef MatrixBase<ListMatrixAdapter<Type> > Base;
-        typedef typename Type::Scalar Scalar;
-        typedef Scalar RealScalar;
-        typedef Scalar PacketScalar;
-        typedef Scalar CoeffReturnType;
-        typedef typename Eigen::internal::nested<ListMatrixAdapter<Type> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = Type::RowsAtCompileTime;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = internal::traits<ListMatrixAdapter<Type> >::Flags;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
+        EIGEN_DENSE_PUBLIC_INTERFACE(ListMatrixAdapter<Type>)
         
         ListMatrixAdapter(const List<Type>& list);
         ListMatrixAdapter(const ListMatrixAdapter<Type>& other);
@@ -197,77 +124,10 @@ namespace OpenSolid
         typename Type::Scalar coeff(int row, int col) const;
     };
     
-    template <>
-    class ListMatrixAdapter<double> : public MatrixBase<ListMatrixAdapter<double> >
-    {
-    private:
-        const List<double>& _list;
-    public:
-        typedef MatrixBase<ListMatrixAdapter<double> > Base;
-        typedef double Scalar;
-        typedef double RealScalar;
-        typedef double PacketScalar;
-        typedef double CoeffReturnType;
-        typedef Eigen::internal::nested<ListMatrixAdapter<double> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
-        
-        ListMatrixAdapter(const List<double>& list);
-        ListMatrixAdapter(const ListMatrixAdapter<double>& other);
-        
-        int rows() const;
-        int cols() const;
-        
-        double coeff(int row, int col) const;
-        const double* data() const;
-    };
+    template <class Type>
+    ListMatrixAdapter<Type> listMatrixAdapter(const List<Type>& list);
     
-    template <>
-    class ListMatrixAdapter<Interval> : public MatrixBase<ListMatrixAdapter<Interval> >
-    {
-    private:
-        const List<Interval>& _list;
-    public:
-        typedef MatrixBase<ListMatrixAdapter<Interval> > Base;
-        typedef Interval Scalar;
-        typedef Interval RealScalar;
-        typedef Interval PacketScalar;
-        typedef Interval CoeffReturnType;
-        typedef Eigen::internal::nested<ListMatrixAdapter<Interval> >::type Nested;
-        typedef Dense StorageKind;
-        typedef int Index;
-        static const int RowsAtCompileTime = 1;
-        static const int ColsAtCompileTime = Dynamic;
-        static const int MaxRowsAtCompileTime = 1;
-        static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
-        static const int CoeffReadCost = 2;
-        static const int SizeAtCompileTime = Dynamic;
-        static const int MaxSizeAtCompileTime = Dynamic;
-        static const int IsVectorAtCompileTime = false;
-        using Base::derived;
-        using Base::const_cast_derived;
-        
-        ListMatrixAdapter(const List<Interval>& list);
-        ListMatrixAdapter(const ListMatrixAdapter<Interval>& other);
-        
-        int rows() const;
-        int cols() const;
-        
-        Interval coeff(int row, int col) const;
-        const Interval* data() const;
-    };
+    MapXcd listMatrixAdapter(const List<double>& list);
 }
 
 ////////// Implementation //////////
@@ -307,6 +167,11 @@ namespace OpenSolid
     inline int ListMatrixAdapter<double>::cols() const {return _list.size();}
     
     inline double ListMatrixAdapter<double>::coeff(int row, int col) const {
+        assert(row == 0);
+        return _list[col];
+    }
+    
+    inline double& ListMatrixAdapter<double>::coeff(int row, int col) const {
         assert(row == 0);
         return _list[col];
     }
