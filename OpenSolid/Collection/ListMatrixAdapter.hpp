@@ -37,7 +37,61 @@ namespace Eigen
     namespace internal
     {
         template <class Type>
-        struct traits<OpenSolid::ListMatrixAdapter<Type> >
+        struct DirectAccessTraits
+        {
+            static const int bit = 0;
+        };
+        
+        template <>
+        struct DirectAccessTraits<Vector2d>
+        {
+            static const int bit = DirectAccessBit;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 2;
+        };
+        
+        template <>
+        struct DirectAccessTraits<Vector3d>
+        {
+            static const int bit = DirectAccessBit;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 3;
+        };
+        
+        template <>
+        struct DirectAccessTraits<Vector4d>
+        {
+            static const int bit = DirectAccessBit;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 4;
+        };
+        
+        template <>
+        struct DirectAccessTraits<Vector2I>
+        {
+            static const int bit = DirectAccessBit;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 2;
+        };
+        
+        template <>
+        struct DirectAccessTraits<Vector3I>
+        {
+            static const int bit = DirectAccessBit;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 3;
+        };
+        
+        template <>
+        struct DirectAccessTraits<Vector4I>
+        {
+            static const int bit = DirectAccessBit;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 4;
+        };
+        
+        template <class Type>
+        struct traits<OpenSolid::ListMatrixAdapter<Type> > : public DirectAccessTraits<Type>
         {
             typedef typename Type::Scalar Scalar;
             typedef Dense StorageKind;
@@ -48,7 +102,7 @@ namespace Eigen
             static const int ColsAtCompileTime = Dynamic;
             static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
             static const int MaxColsAtCompileTime = Dynamic;
-            static const int Flags = NestByRefBit;
+            static const int Flags = NestByRefBit | DirectAccessTraits<Type>::bit;
             static const int CoeffReadCost = 2;
         };
         
@@ -64,8 +118,10 @@ namespace Eigen
             static const int ColsAtCompileTime = Dynamic;
             static const int MaxRowsAtCompileTime = 1;
             static const int MaxColsAtCompileTime = Dynamic;
-            static const int Flags = NestByRefBit | RowMajorBit;
+            static const int Flags = NestByRefBit | RowMajorBit | DirectAccessBit;
             static const int CoeffReadCost = 2;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 1;
         };
         
         template <>
@@ -80,19 +136,37 @@ namespace Eigen
             static const int ColsAtCompileTime = Dynamic;
             static const int MaxRowsAtCompileTime = 1;
             static const int MaxColsAtCompileTime = Dynamic;
-            static const int Flags = NestByRefBit | RowMajorBit;
+            static const int Flags = NestByRefBit | RowMajorBit | DirectAccessBit;
             static const int CoeffReadCost = 2;
+            static const int InnerStrideAtCompileTime = 1;
+            static const int OuterStrideAtCompileTime = 1;
         };
     }
 }
 
 namespace OpenSolid
 {
+    template <class Type, int bit_>
+    class DirectAccessAdapter
+    {   
+    };
+    
     template <class Type>
-    class ListMatrixAdapter : public MatrixBase<ListMatrixAdapter<Type> >
+    class DirectAccessAdapter<Type, DirectAccessBit>
+    {
+    public:
+        const typename Type::Scalar* data() const;
+    };
+    
+    template <class Type>
+    class ListMatrixAdapter :
+        public MatrixBase<ListMatrixAdapter<Type> >,
+        public DirectAccessAdapter<Type, internal::DirectAccessTraits<Type>::bit>
     {
     private:
         const List<Type>& _list;
+        
+        friend class DirectAccessAdapter<Type, internal::DirectAccessTraits<Type>::bit>;
     public:
         typedef MatrixBase<ListMatrixAdapter<Type> > Base;
         typedef typename Type::Scalar Scalar;
@@ -106,7 +180,7 @@ namespace OpenSolid
         static const int ColsAtCompileTime = Dynamic;
         static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
         static const int MaxColsAtCompileTime = Dynamic;
-        static const int Flags = NestByRefBit;
+        static const int Flags = internal::traits<ListMatrixAdapter<Type> >::Flags;
         static const int CoeffReadCost = 2;
         static const int SizeAtCompileTime = Dynamic;
         static const int MaxSizeAtCompileTime = Dynamic;
@@ -156,6 +230,7 @@ namespace OpenSolid
         int cols() const;
         
         double coeff(int row, int col) const;
+        const double* data() const;
     };
     
     template <>
@@ -191,6 +266,7 @@ namespace OpenSolid
         int cols() const;
         
         Interval coeff(int row, int col) const;
+        const Interval* data() const;
     };
 }
 
@@ -198,6 +274,11 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <class Type>
+    inline const typename Type::Scalar* DirectAccessAdapter<Type, DirectAccessBit>::data() const {
+        return static_cast<const ListMatrixAdapter<Type>&>(*this)._list.front().data();
+    };
+    
     template <class Type>
     inline ListMatrixAdapter<Type>::ListMatrixAdapter(const List<Type>& list) : _list(list) {}
     
@@ -230,6 +311,8 @@ namespace OpenSolid
         return _list[col];
     }
     
+    inline const double* ListMatrixAdapter<double>::data() const {return &_list.front();}
+    
     inline ListMatrixAdapter<Interval>::ListMatrixAdapter(const List<Interval>& list) :
         _list(list) {}
     
@@ -245,6 +328,8 @@ namespace OpenSolid
         assert(row == 0);
         return _list[col];
     }
+    
+    inline const Interval* ListMatrixAdapter<Interval>::data() const {return &_list.front();}
 }
 
 
