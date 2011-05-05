@@ -206,7 +206,7 @@ namespace OpenSolid
 #include "ListMatrixAdapter.hpp"
 
 namespace OpenSolid
-{   
+{
     template <class Type> template <class DerivedType>
     inline void List<Type>::add(const FixedSizeCollection<DerivedType>& collection) {
         _vector.reference().resize(size() + collection.size());
@@ -382,7 +382,7 @@ namespace OpenSolid
     }
         
     template <class Type>
-    inline typenmae ListMatrixAdapterType<Type>::Type List<Type>::matrix() const {
+    inline typename ListMatrixAdapterType<Type>::Type List<Type>::matrix() const {
         return listMatrixAdapter(*this);
     }
     
@@ -404,7 +404,7 @@ namespace OpenSolid
         std::for_each(begin(), end(), const_cast<VisitorType&>(visitor));
     }
     
-    template <class Type>    
+    template <class Type>
     typename Bounds<Type>::Type List<Type>::bounds() const {
         if (empty()) {return typename Bounds<Type>::Type();}
         typename Bounds<Type>::Type result = Bounds<Type>::bounds(front());
@@ -580,10 +580,14 @@ namespace OpenSolid
     
     template <class Type>
     std::ostream& operator<<(std::ostream& stream, const List<Type>& list) {
-        stream << "[";
-        stream << list.front();
-        for (int i = 1; i < list.size(); ++i) {stream << "," << list[i];}
-        stream << "]";
+        if (list.empty()) {
+            stream << "[]" << std::endl;
+        } else {
+            stream << "[";
+            stream << list.front();
+            for (int i = 1; i < list.size(); ++i) {stream << "," << list[i];}
+            stream << "]";
+        }
         return stream;
     }
 }
