@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Value/Tolerance.hpp>
@@ -180,9 +181,7 @@ public:
         frame = frame.rotatedBy(M_PI / 4, frame.zAxis());
         Function linear = Vector3d::Ones() * Function::t;
         Function product = linear * frame;
-        std::cout << "product:" << std::endl << product << std::endl;
         Function quotient = linear / frame;
-        std::cout << "quotient:" << std::endl << quotient << std::endl;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval(0, 1));
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);
@@ -224,11 +223,21 @@ public:
         for (int i = 0; i < 4; ++i) {
             RowVectorXd values = functions[i](expected_zeros[i]);
             TS_ASSERT(values.isZero(Tolerance::roundoff()));
-            RowVectorXd zeros = functions[i].zeros(domains[i]);
+            RowVectorXd zeros;
+            boost::timer timer;
+            for (int j = 0; j < 100; ++j) {zeros = functions[i].zeros(domains[i]);}
+            double elapsed = timer.elapsed();
             RowVectorXd errors = zeros - expected_zeros[i];
-            std::cout << "i = " << i;
-            std::cout << ", zeros = " << zeros << ", errors = " << errors << std::endl << std::endl;
             TS_ASSERT(errors.isZero(Tolerance::roundoff()));
+            std::cout << "i = " << i << std::endl;
+            std::cout << "  zeros = " << zeros << std::endl;
+            std::cout << "  errors = " << errors << std::endl;
+            std::cout << "  elapsed = " << elapsed << std::endl;
+            Function derivative = functions[i].derivative();
+            std::cout << "  derivative.zeros() = " << derivative.zeros(domains[i]) << std::endl;
+            Function second_derivative = derivative.derivative();
+            std::cout << "  second_derivative.zeros() = " <<
+                second_derivative.zeros(domains[i]) << std::endl;
         }
     }
 };

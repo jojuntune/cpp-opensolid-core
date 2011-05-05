@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <algorithm>
+
 #include <OpenSolid/Geometry/Domain.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 
@@ -47,7 +49,7 @@
 #include "implementations/TangentFunction.hpp"
 
 namespace OpenSolid
-{    
+{
     Function Function::derivative(int index) const {
         Function result;
         implementation()->getDerivative(index, result);
@@ -176,7 +178,7 @@ namespace OpenSolid
         if (!(function_norm > Tolerance::roundoff())) {
             Interval derivative_bounds = derivative(domain).scalar();
             Interval derivative_norm = abs(derivative_bounds);
-            Interval convergence_ratio = derivative_norm > tolerance ? 
+            Interval convergence_ratio = derivative_norm > tolerance ?
                 abs(1 - derivative_bounds / derivative_bounds) :
                 Interval::Whole();
             if (derivative_norm > tolerance && convergence_ratio < 1 - tolerance) {
@@ -225,102 +227,108 @@ namespace OpenSolid
     }
     */
     
+    double getZero(const List<Function>& derivatives, const Interval& domain_interval, int& order) {
+        double x = domain_interval.median();
+        double y = derivatives[order](x).scalar();
+        double derivative_value = derivatives[order + 1](x).scalar();
+        Interval derivative_bounds = derivatives[order + 1](domain_interval).scalar();
+        Interval convergence_ratio = abs(1 - derivative_bounds / derivative_value);
+        if (convergence_ratio < 1 - Tolerance::roundoff()) {
+            double last_y = y;
+            x = x - y / derivative_value;
+            y = derivatives[order](x).scalar();
+            while (abs(y) > 0 && abs(y) < abs(last_y)) {
+                double new_derivative_value = derivatives[order + 1](x).scalar();
+                convergence_ratio = abs(1 - derivative_bounds / new_derivative_value);
+                if (convergence_ratio < 0.5) {
+                    derivative_value = new_derivative_value;
+                }
+                last_y = y;
+                x = x - y / derivative_value;
+                y = derivatives[order](x).scalar();
+            }
+            while (order > 0 && abs(derivatives[order - 1](x).scalar()) < Tolerance::roundoff()) {
+                --order;
+            }
+            return x;
+        } else {
+            if ((y > 0) == (derivative_value > 0)) {
+                return getZero(derivatives, Interval(domain_interval.lower(), x), order);
+            } else {
+                return getZero(derivatives, Interval(x, domain_interval.upper()), order);
+            }
+        }
+    }
+    
+    void getZeros(
+        const List<Function>& derivatives,
+        const Interval& domain_interval,
+        int order,
+        List<double>& results
+    ) {
+        RowVector2d endpoint_x(domain_interval.lower(), domain_interval.upper());
+        RowVector2d endpoint_y = derivatives[order](endpoint_x);
+        if ((endpoint_y(0) > 0) != (endpoint_y(1) > 0)) {
+            double x = getZero(derivatives, domain_interval, order);
+            if (order == 0) {
+                results.append(x);
+            } else {
+                getZeros(derivatives, Interval(domain_interval.lower(), x), order - 1, results);
+                getZeros(derivatives, Interval(x, domain_interval.upper()), order - 1, results);
+            }
+        } else if (order > 0) {
+            getZeros(derivatives, domain_interval, order - 1, results);
+        }
+    }
+    
     RowVectorXd Function::zeros(const Interval& domain, double tolerance) const {
-        int max_order = 4;
-        List<Function> derivatives(max_order + 1);
+        int order = 4;
+        List<Function> derivatives(order + 1);
         derivatives[0] = *this;
-        for (int i = 1; i <= max_order; ++i) {derivatives[i] = derivatives[i - 1].derivative();}
-        List<Interval> domains(1);
-        domains[0] = domain;
-        List<Interval> identified;
-        List<int> orders;
-        std::cout << "Gathering domains" << std::endl;
-        while (!domains.empty()) {
-            std::cout << "domains: " << domains << std::endl;
-            std::cout << "Getting bounds" << std::endl;
-            std::cout << "domains.matrix() = " << domains.matrix() << std::endl;
-            std::cout << "*domains.matrix().data() = " << *domains.matrix().data() << std::endl;
-            RowVectorXI domain_matrix = domains.matrix();
-            std::cout << "domain_matrix = " << domain_matrix << std::endl;
-            RowVectorXI bounds = operator()(domain_matrix);
-            std::cout << "Got bounds" << std::endl;
-            RowVectorXI bound_norms = bounds.cwiseAbs();
-            std::cout << "Getting derivative bounds" << std::endl;
-            RowVectorXI derivative_bounds = derivatives[1](domains.matrix());
-            RowVectorXI derivative_norms = derivative_bounds.cwiseAbs();
-            List<Interval> subdomains;
-            List<Interval>::ConstIterator i;
-            int j = 0;
-            std::cout << "Starting loop" << std::endl;
-            for (i = domains.cbegin(); i != domains.cend(); ++i) {
-                std::cout << "j = " << j << std::endl;
-                if (!(bound_norms[j] > Tolerance::roundoff())) {
-                    if (derivative_norms[j] > tolerance) {
-                        Interval convergence_ratio = derivative_norms[j] > tolerance ? 
-                            abs(1 - derivative_bounds[j] / derivative_bounds[j]) :
-                            Interval::Whole();
-                        if (convergence_ratio < 1 - tolerance) {
-                            identified.append(*i);
-                        } else {
-                            std::cout << "Bisecting for better convergence" << std::endl;
-                            Pair<Interval> bisected = i->bisected();
-                            subdomains.append(bisected.first());
-                            subdomains.append(bisected.second());
-                        }
-                    } else {
-                        if (bound_norms[j] < tolerance) {
-                            identified.append(*i);
-                        } else {
-                            std::cout << "General bisection" << std::endl;
-                            Pair<Interval> bisected = i->bisected();
-                            subdomains.append(bisected.first());
-                            subdomains.append(bisected.second());
-                        }
+        RowVectorXd derivative_values(order);
+        for (int i = 1; i <= order; ++i) {
+            derivatives[i] = derivatives[i - 1].derivative();
+            derivative_values(i - 1) = derivatives[i](domain.median()).scalar();
+        }
+        if (derivative_values.isZero(Tolerance::roundoff())) {return RowVectorXd();}
+        RowVectorXI domain_intervals(1);
+        domain_intervals(0) = domain;
+        List<double> results;
+        while (domain_intervals.size() > 0) {
+            MatrixXI bounds(derivatives.size(), domain_intervals.size());
+            for (int i = 0; i < derivatives.size(); ++i) {
+                bounds.row(i) = derivatives[i](domain_intervals);
+            }
+            MatrixXI bound_norms = bounds.cwiseAbs();
+            List<Interval> bisected_intervals;
+            for (int i = 0; i < domain_intervals.size(); ++i) {
+                bool bisection_needed = true;
+                for (int j = 0; j <= order; ++j) {
+                    if (bound_norms(j, i) > Tolerance::roundoff()) {
+                        bisection_needed = false;
+                        if (j > 0) {getZeros(derivatives, domain_intervals[i], j - 1, results);}
+                        break;
                     }
                 }
+                if (bisection_needed) {
+                    Pair<Interval> bisected = domain_intervals[i].bisected();
+                    bisected_intervals.append(bisected.first());
+                    bisected_intervals.append(bisected.second());
+                }
             }
-            std::cout << "subdomains: " << subdomains << std::endl;
-            domains = subdomains;
-            ++j;
+            domain_intervals = bisected_intervals.matrix();
         }
-        if (identified.empty()) {
+        if (results.empty()) {
             return RowVectorXd();
         } else {
-            std::cout << "Merging domains" << std::endl;
-            Interval current = identified.front();
-            List<Interval>::ConstIterator i;
-            for (i = identified.cbegin() + 1; i != identified.cend(); ++i) {
-                if (i->lower() == current.upper()) {
-                    current = Interval(current.lower(), i->upper());
-                } else {
-                    domains.append(current);
-                    current = *i;
+            std::sort(results.begin(), results.end());
+            int index = 0;
+            for (int i = 1; i < results.size(); ++i) {
+                if (results[i] - results[index] > Tolerance::roundoff()) {
+                    results[++index] = results[i];
                 }
             }
-            domains.append(current);
-            std::cout << "Finding results" << std::endl;
-            List<double> results;
-            for (i = domains.cbegin(); i != domains.cend(); ++i) {
-                int order = 1;
-                Interval derivative_norm = abs(derivatives[order](*i).scalar());
-                while (!(derivative_norm > tolerance)) {
-                    ++order;
-                    if (order > max_order) {return RowVectorXd();}
-                    derivative_norm = abs(derivatives[order](*i).scalar());
-                }
-                Function f = derivatives[order - 1];
-                Function fp = derivatives[order];
-                double x = i->median();
-                double y = f(x).scalar();
-                double last_y;
-                do {
-                    x = x - y / fp(x).scalar();
-                    last_y = y;
-                    y = f(x).scalar();
-                } while (abs(y) < abs(last_y));
-                results.append(x);
-            }
-            return results.matrix();
+            return results.matrix().leftCols(index + 1);
         }
     }
     
@@ -507,7 +515,7 @@ namespace OpenSolid
             return tan(operand.as<ConstantFunction>().value().scalar());
         } else {
             return new TangentFunction(operand);
-        }   
+        }
     }
     
     Function sqrt(const Function& operand) {
