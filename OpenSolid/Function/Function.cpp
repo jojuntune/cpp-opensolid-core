@@ -165,68 +165,6 @@ namespace OpenSolid
         return Geometry(operator()(geometry.function()), geometry.domain());
     }
     
-    /*
-    void getZeros(
-        const Function& function,
-        const Function& derivative,
-        const Interval& domain,
-        double tolerance,
-        List<double>& results
-    ) {
-        Interval function_bounds = function(domain).scalar();
-        Interval function_norm = abs(function_bounds);
-        if (!(function_norm > Tolerance::roundoff())) {
-            Interval derivative_bounds = derivative(domain).scalar();
-            Interval derivative_norm = abs(derivative_bounds);
-            Interval convergence_ratio = derivative_norm > tolerance ?
-                abs(1 - derivative_bounds / derivative_bounds) :
-                Interval::Whole();
-            if (derivative_norm > tolerance && convergence_ratio < 1 - tolerance) {
-                RowVector2d endpoint_values = function(RowVector2d(domain.lower(), domain.upper()));
-                bool min_below = endpoint_values.minCoeff() < Tolerance::roundoff();
-                bool max_above = endpoint_values.maxCoeff() > -Tolerance::roundoff();
-                if (min_below && max_above) {
-                    // Newton iteration
-                    double x = domain.median();
-                    double y = function(x).scalar();
-                    double last_y;
-                    std::cout << "x = " << x << ", y = " << y << std::endl;
-                    do {
-                        x = x - y / derivative(x).scalar();
-                        last_y = y;
-                        y = function(x).scalar();
-                    } while (abs(y) < abs(last_y));
-                    results.append(x);
-                }
-            } else if (function_norm < tolerance) {
-                getZeros(derivative, derivative.derivative(), domain, tolerance, results);
-            } else {
-                // Recurse into bisected subdomains
-                Pair<Interval> bisected = domain.bisected();
-                getZeros(function, derivative, bisected.first(), tolerance, results);
-                getZeros(function, derivative, bisected.second(), tolerance, results);
-            }
-        }
-    }
-    
-    RowVectorXd Function::zeros(const Interval& domain, double tolerance) const {
-        if (abs(operator()(domain).scalar()).upper() < tolerance) {return RowVectorXd();}
-        List<double> temp;
-        getZeros(*this, derivative(), domain, tolerance, temp);
-        List<double> results;
-        results.reserve(temp.size());
-        double last_root = -std::numeric_limits<double>::infinity();
-        for (List<double>::ConstIterator i = temp.cbegin(); i != temp.cend(); ++i) {
-            if (*i - last_root > tolerance) {
-                results.append(*i);
-                last_root = *i;
-            }
-        }
-        assert(operator()(results.matrix()).isZero(Tolerance::roundoff()));
-        return results.matrix();
-    }
-    */
-    
     double getZero(const List<Function>& derivatives, const Interval& domain_interval, int& order) {
         double x = domain_interval.median();
         double y = derivatives[order](x).scalar();
@@ -316,7 +254,9 @@ namespace OpenSolid
                     bisected_intervals.append(bisected.second());
                 }
             }
-            domain_intervals = bisected_intervals.matrix();
+            domain_intervals = bisected_intervals.empty() ? 
+                RowVectorXI() : 
+                bisected_intervals.matrix();
         }
         if (results.empty()) {
             return RowVectorXd();

@@ -214,30 +214,65 @@ public:
             Interval(0, 3),
             Interval(-M_PI, 2 * M_PI)
         );
-        List<RowVectorXd> expected_zeros(
+        List<RowVectorXd> expected_function_zeros(
             RowVectorXd::Constant(1, 1.0),
             RowVector2d(-1, 1),
             RowVector2d(1, 2),
             RowVector2d(-M_PI / 2, 3 * M_PI / 2)
         );
+        List<RowVectorXd> expected_derivative_zeros(
+            RowVectorXd(),
+            RowVectorXd::Constant(1, 0.0),
+            RowVector2d(1, 5.0 / 3.0),
+            RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2)
+        );
+        List<RowVectorXd> expected_second_derivative_zeros(
+            RowVectorXd(),
+            RowVectorXd(),
+            RowVectorXd::Constant(1, 4.0 / 3.0),
+            RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2)
+        );
         for (int i = 0; i < 4; ++i) {
-            RowVectorXd values = functions[i](expected_zeros[i]);
-            TS_ASSERT(values.isZero(Tolerance::roundoff()));
-            RowVectorXd zeros;
-            boost::timer timer;
-            for (int j = 0; j < 100; ++j) {zeros = functions[i].zeros(domains[i]);}
-            double elapsed = timer.elapsed();
-            RowVectorXd errors = zeros - expected_zeros[i];
-            TS_ASSERT(errors.isZero(Tolerance::roundoff()));
-            std::cout << "i = " << i << std::endl;
-            std::cout << "  zeros = " << zeros << std::endl;
-            std::cout << "  errors = " << errors << std::endl;
-            std::cout << "  elapsed = " << elapsed << std::endl;
-            Function derivative = functions[i].derivative();
-            std::cout << "  derivative.zeros() = " << derivative.zeros(domains[i]) << std::endl;
+            Function function = functions[i];
+            Function derivative = function.derivative();
             Function second_derivative = derivative.derivative();
-            std::cout << "  second_derivative.zeros() = " <<
-                second_derivative.zeros(domains[i]) << std::endl;
+            
+            RowVectorXd function_values = function(expected_function_zeros[i]);
+            RowVectorXd derivative_values = derivative(expected_derivative_zeros[i]);
+            RowVectorXd second_derivative_values =
+                second_derivative(expected_second_derivative_zeros[i]);
+                
+            TS_ASSERT(function_values.isZero(Tolerance::roundoff()));
+            TS_ASSERT(derivative_values.isZero(Tolerance::roundoff()));
+            TS_ASSERT(second_derivative_values.isZero(Tolerance::roundoff()));
+            
+            RowVectorXd function_zeros;
+            boost::timer timer;
+            for (int j = 0; j < 100; ++j) {function_zeros = function.zeros(domains[i]);}
+            double elapsed = timer.elapsed();
+            RowVectorXd derivative_zeros = derivative.zeros(domains[i]);
+            RowVectorXd second_derivative_zeros = second_derivative.zeros(domains[i]);
+            
+            RowVectorXd function_errors = function_zeros - expected_function_zeros[i];
+            RowVectorXd derivative_errors = derivative_zeros - expected_derivative_zeros[i];
+            RowVectorXd second_derivative_errors =
+                second_derivative_zeros - expected_second_derivative_zeros[i];
+                
+            TS_ASSERT(function_errors.isZero(Tolerance::roundoff()));
+            TS_ASSERT(derivative_errors.isZero(Tolerance::roundoff()));
+            TS_ASSERT(second_derivative_errors.isZero(Tolerance::roundoff()));
+            
+            std::cout << "i = " << i << std::endl;
+            std::cout << "  elapsed = " << elapsed << std::endl;
+            
+            std::cout << "  function_zeros = " << function_zeros << std::endl;
+            std::cout << "  function_errors = " << function_errors << std::endl;
+            
+            std::cout << "  derivative_zeros = " << derivative_zeros << std::endl;
+            std::cout << "  derivative_errors = " << derivative_errors << std::endl;
+            
+            std::cout << "  second_derivative_zeros = " << second_derivative_zeros << std::endl;
+            std::cout << "  second_derivative_errors = " << second_derivative_errors << std::endl;
         }
     }
 };

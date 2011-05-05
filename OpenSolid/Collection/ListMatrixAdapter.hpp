@@ -45,7 +45,7 @@ namespace Eigen
             static const int ColsAtCompileTime = Dynamic;
             static const int MaxRowsAtCompileTime = Type::MaxRowsAtCompileTime;
             static const int MaxColsAtCompileTime = Dynamic;
-            static const int Flags = NestByRefBit | DirectAccessTraits<Type>::bit;
+            static const int Flags = NestByRefBit;
             static const int CoeffReadCost = 2;
         };
     }
@@ -53,10 +53,10 @@ namespace Eigen
 
 namespace OpenSolid
 {
-    template <class Type>
+    template <class ItemType>
     struct ListMatrixAdapterType
     {
-        typedef ListMatrixAdapter<Type> Type;
+        typedef ListMatrixAdapter<ItemType> Type;
     };
     
     template <>
@@ -113,6 +113,7 @@ namespace OpenSolid
     private:
         const List<Type>& _list;
     public:
+        typedef MatrixBase<ListMatrixAdapter<Type> > Base;
         EIGEN_DENSE_PUBLIC_INTERFACE(ListMatrixAdapter<Type>)
         
         ListMatrixAdapter(const List<Type>& list);
@@ -165,51 +166,43 @@ namespace OpenSolid
     }
     
     inline MapXcd listMatrixAdapter(const List<double>& list) {
-        return list.empty() ?
-            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcd(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
+        assert(!list.empty());
+        return MapXcd(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
     }
     
     inline MapXcd listMatrixAdapter(const List<Vector2d>& list) {
-        return list.empty() ?
-            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcd(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(1, 2));
+        assert(!list.empty());
+        return MapXcd(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(2, 1));
     }
     
     inline MapXcd listMatrixAdapter(const List<Vector3d>& list) {
-        return list.empty() ?
-            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcd(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(1, 3));
+        assert(!list.empty());
+        return MapXcd(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(3, 1));
     }
     
     inline MapXcd listMatrixAdapter(const List<Vector4d>& list) {
-        return list.empty() ?
-            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcd(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(1, 4));
+        assert(!list.empty());
+        return MapXcd(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(4, 1));
     }
     
     inline MapXcI listMatrixAdapter(const List<Interval>& list) {
-        return list.empty() ?
-            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcI(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
+        assert(!list.empty());
+        return MapXcI(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
     }
     
     inline MapXcI listMatrixAdapter(const List<Vector2I>& list) {
-        return list.empty() ?
-            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcI(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(1, 2));
+        assert(!list.empty());
+        return MapXcI(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(2, 1));
     }
     
     inline MapXcI listMatrixAdapter(const List<Vector3I>& list) {
-        return list.empty() ?
-            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcI(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(1, 3));
+        assert(!list.empty());
+        return MapXcI(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(3, 1));
     }
     
     inline MapXcI listMatrixAdapter(const List<Vector4I>& list) {
-        return list.empty() ?
-            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
-            MapXcI(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(1, 4));
+        assert(!list.empty());
+        return MapXcI(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(4, 1));
     }
 }
 
