@@ -72,7 +72,7 @@ namespace OpenSolid
     };
     
     template <>
-    struct ListMatrixAdaterType<Vector3d>
+    struct ListMatrixAdapterType<Vector3d>
     {
         typedef MapXcd Type;
     };
@@ -128,17 +128,19 @@ namespace OpenSolid
     ListMatrixAdapter<Type> listMatrixAdapter(const List<Type>& list);
     
     MapXcd listMatrixAdapter(const List<double>& list);
+    MapXcd listMatrixAdapter(const List<Vector2d>& list);
+    MapXcd listMatrixAdapter(const List<Vector3d>& list);
+    MapXcd listMatrixAdapter(const List<Vector4d>& list);
+    MapXcI listMatrixAdapter(const List<Interval>& list);
+    MapXcI listMatrixAdapter(const List<Vector2I>& list);
+    MapXcI listMatrixAdapter(const List<Vector3I>& list);
+    MapXcI listMatrixAdapter(const List<Vector4I>& list);
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    template <class Type>
-    inline const typename Type::Scalar* DirectAccessAdapter<Type, DirectAccessBit>::data() const {
-        return static_cast<const ListMatrixAdapter<Type>&>(*this)._list.front().data();
-    };
-    
     template <class Type>
     inline ListMatrixAdapter<Type>::ListMatrixAdapter(const List<Type>& list) : _list(list) {}
     
@@ -157,44 +159,58 @@ namespace OpenSolid
         return _list[col](row);
     }
     
-    inline ListMatrixAdapter<double>::ListMatrixAdapter(const List<double>& list) : _list(list) {}
-    
-    inline ListMatrixAdapter<double>::ListMatrixAdapter(const ListMatrixAdapter<double>& other) :
-        _list(other._list) {}
-    
-    inline int ListMatrixAdapter<double>::rows() const {return 1;}
-    
-    inline int ListMatrixAdapter<double>::cols() const {return _list.size();}
-    
-    inline double ListMatrixAdapter<double>::coeff(int row, int col) const {
-        assert(row == 0);
-        return _list[col];
+    template <class Type>
+    inline ListMatrixAdapter<Type> listMatrixAdapter(const List<Type>& list) {
+        return ListMatrixAdapter<Type>(list);
     }
     
-    inline double& ListMatrixAdapter<double>::coeff(int row, int col) const {
-        assert(row == 0);
-        return _list[col];
+    inline MapXcd listMatrixAdapter(const List<double>& list) {
+        return list.empty() ?
+            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcd(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
     }
     
-    inline const double* ListMatrixAdapter<double>::data() const {return &_list.front();}
-    
-    inline ListMatrixAdapter<Interval>::ListMatrixAdapter(const List<Interval>& list) :
-        _list(list) {}
-    
-    inline ListMatrixAdapter<Interval>::ListMatrixAdapter(
-        const ListMatrixAdapter<Interval>& other
-    ) : _list(other._list) {}
-    
-    inline int ListMatrixAdapter<Interval>::rows() const {return 1;}
-    
-    inline int ListMatrixAdapter<Interval>::cols() const {return _list.size();}
-    
-    inline Interval ListMatrixAdapter<Interval>::coeff(int row, int col) const {
-        assert(row == 0);
-        return _list[col];
+    inline MapXcd listMatrixAdapter(const List<Vector2d>& list) {
+        return list.empty() ?
+            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcd(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(1, 2));
     }
     
-    inline const Interval* ListMatrixAdapter<Interval>::data() const {return &_list.front();}
+    inline MapXcd listMatrixAdapter(const List<Vector3d>& list) {
+        return list.empty() ?
+            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcd(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(1, 3));
+    }
+    
+    inline MapXcd listMatrixAdapter(const List<Vector4d>& list) {
+        return list.empty() ?
+            MapXcd(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcd(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(1, 4));
+    }
+    
+    inline MapXcI listMatrixAdapter(const List<Interval>& list) {
+        return list.empty() ?
+            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcI(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
+    }
+    
+    inline MapXcI listMatrixAdapter(const List<Vector2I>& list) {
+        return list.empty() ?
+            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcI(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(1, 2));
+    }
+    
+    inline MapXcI listMatrixAdapter(const List<Vector3I>& list) {
+        return list.empty() ?
+            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcI(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(1, 3));
+    }
+    
+    inline MapXcI listMatrixAdapter(const List<Vector4I>& list) {
+        return list.empty() ?
+            MapXcI(0, 0, 0, Stride<Dynamic, Dynamic>(0, 0)) :
+            MapXcI(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(1, 4));
+    }
 }
 
 
