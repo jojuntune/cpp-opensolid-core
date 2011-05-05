@@ -42,7 +42,7 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    inline Pair<Type>::Pair(const Type& first, const Type& second) : 
+    inline Pair<Type>::Pair(const Type& first, const Type& second) :
         _first(first), _second(second) {}
     
     template <class Type>

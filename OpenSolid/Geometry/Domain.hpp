@@ -27,7 +27,7 @@
 #include "GeometryDomain.hpp"
 
 namespace OpenSolid
-{   
+{
     class Domain
     {
     private:
@@ -57,7 +57,7 @@ namespace OpenSolid
 #include "Geometry.hpp"
 
 namespace OpenSolid
-{   
+{
     inline Domain::Domain() : _boundaries() {}
     
     inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}

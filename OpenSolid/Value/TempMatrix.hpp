@@ -52,7 +52,7 @@ namespace Eigen
 }
 
 namespace OpenSolid
-{    
+{
     template <class ScalarType>
     class TempMatrix : public MatrixBase<TempMatrix<ScalarType> >
     {

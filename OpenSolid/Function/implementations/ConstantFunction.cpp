@@ -56,7 +56,7 @@ namespace OpenSolid
     
     void ConstantFunction::getNorm(Function& result) const {result = value().norm();}
     
-    void ConstantFunction::getNormalized(Function& result) const {    
+    void ConstantFunction::getNormalized(Function& result) const {
         double norm = value().norm();
         assert(abs(norm) > Tolerance::roundoff());
         result = value() / norm;

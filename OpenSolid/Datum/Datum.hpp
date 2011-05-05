@@ -90,7 +90,7 @@ namespace OpenSolid
         
         template <class DerivedType>
         void initialize(
-            const VectorType& origin, 
+            const VectorType& origin,
             const EigenBase<DerivedType>& vectors,
             bool normalize
         );
@@ -236,7 +236,7 @@ namespace OpenSolid
 {
     template <int dimensions_, int axes_> template <class DerivedType>
     inline void Datum<dimensions_, axes_>::initialize(
-        const VectorType& origin, 
+        const VectorType& origin,
         const EigenBase<DerivedType>& vectors,
         bool normalize
     ) {
@@ -386,14 +386,14 @@ namespace OpenSolid
         return origin() + vectors() * Vector4d(x, y, z, w);
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType
     Datum<dimensions_, axes_>::vector() const {
         assert(axes() == 1);
         return vectors();
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType Datum<dimensions_, axes_>::vector(
         int index
     ) const {
@@ -401,34 +401,34 @@ namespace OpenSolid
         return vectors().col(index);
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType
     Datum<dimensions_, axes_>::xVector() const {
         return vectors().col(0);
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType
     Datum<dimensions_, axes_>::yVector() const {
         assert(axes() >= 2);
         return vectors().col(1);
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType
     Datum<dimensions_, axes_>::zVector() const {
         assert(axes() >= 3);
         return vectors().col(2);
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType
     Datum<dimensions_, axes_>::wVector() const {
         assert(axes() >= 4);
         return vectors().col(3);
     }
     
-    template <int dimensions_, int axes_>    
+    template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType
     Datum<dimensions_, axes_>::normalVector() const {
         assert(axes() == dimensions() - 1);
@@ -617,7 +617,7 @@ namespace OpenSolid
     inline LinearDatum<dimensions_, axes_>::LinearDatum(const Datum<dimensions_, axes_>& datum) :
         _datum(datum) {}
      
-    template <int dimensions_, int axes_>   
+    template <int dimensions_, int axes_>
     inline const Datum<dimensions_, axes_>& LinearDatum<dimensions_, axes_>::datum() const {
         return _datum;
     }

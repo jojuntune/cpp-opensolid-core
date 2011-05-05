@@ -74,7 +74,7 @@ namespace Eigen
         const Interval& real(const Interval& argument);
         Interval imag(const Interval&);
         Interval abs2(const Interval& argument);
-        Interval pow(const Interval& x, const Interval& y); 
+        Interval pow(const Interval& x, const Interval& y);
     
         template <class ScalarType, bool is_integer_>
         struct significant_decimals_default_impl;

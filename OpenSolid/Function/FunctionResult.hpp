@@ -70,7 +70,7 @@ namespace Eigen
 }
 
 namespace OpenSolid
-{    
+{
     template<class ArgumentType>
     class FunctionResult : public ReturnByValue<FunctionResult<ArgumentType> >
     {

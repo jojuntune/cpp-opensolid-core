@@ -177,7 +177,7 @@ namespace OpenSolid
     };
     
     template <class Type, class FunctionType>
-    class FilteredSetIterator : 
+    class FilteredSetIterator :
         public boost::iterator_facade<
             FilteredSetIterator<Type, FunctionType>,
             const Type,
@@ -198,7 +198,7 @@ namespace OpenSolid
         FilteredSetIterator(const SetNode<Type>* node, const FunctionType& function);
     };
     
-    template <class Type>    
+    template <class Type>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node);
     
     template <class Type>
@@ -208,7 +208,7 @@ namespace OpenSolid
 ////////// Implementation //////////
     
 namespace OpenSolid
-{   
+{
     namespace
     {
         template <class Type>
@@ -245,10 +245,10 @@ namespace OpenSolid
         }
     }
     
-    template <class Type>       
+    template <class Type>
     inline int Set<Type>::size() const {return empty() ? 0 : rootNode()->size();}
     
-    template <class Type>       
+    template <class Type>
     inline bool Set<Type>::empty() const {return !rootNode();}
     
     template <class Type>
@@ -547,7 +547,7 @@ namespace OpenSolid
         const FunctionType& function
     ) : _node(node), _function(function) {}
 
-    template <class Type>    
+    template <class Type>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node) {
         stream << "{";
         if (node.object()) {

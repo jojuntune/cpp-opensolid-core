@@ -36,7 +36,7 @@
 #include "Eigen.hpp"
 
 namespace OpenSolid
-{   
+{
     using std::min;
     using std::max;
     using std::abs;
@@ -297,7 +297,7 @@ namespace OpenSolid
     
     inline Interval& Interval::operator()(int index) {
         assert(index == 0);
-        return *this;   
+        return *this;
     }
     
     inline Interval& Interval::operator()(int row, int col) {

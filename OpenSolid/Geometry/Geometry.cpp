@@ -112,7 +112,7 @@ namespace OpenSolid
         if (angle < Tolerance::roundoff()) {angle += 2 * M_PI;}
         return Geometry(
             center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
-            Interval(0, angle) 
+            Interval(0, angle)
         );
     }
     

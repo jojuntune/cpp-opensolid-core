@@ -124,7 +124,7 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 namespace OpenSolid
-{   
+{
     inline Geometry::Geometry() : _function(), _domain() {}
     
     inline Geometry::Geometry(const Function& function, const Domain& domain) :

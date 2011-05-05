@@ -63,7 +63,7 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 namespace OpenSolid
-{    
+{
     template <class Type>
     Error& Error::set(const std::string& name, const Type& value) {
         _data[name] = value;
