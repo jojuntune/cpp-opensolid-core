@@ -178,7 +178,7 @@ namespace OpenSolid
             while (abs(y) > 0 && abs(y) < abs(last_y)) {
                 double new_derivative_value = derivatives[order + 1](x).scalar();
                 convergence_ratio = abs(1 - derivative_bounds / new_derivative_value);
-                if (convergence_ratio < 0.5) {
+                if (convergence_ratio < 1 - Tolerance::roundoff()) {
                     derivative_value = new_derivative_value;
                 }
                 last_y = y;
