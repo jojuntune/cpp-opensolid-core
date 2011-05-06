@@ -32,6 +32,8 @@ namespace OpenSolid
     public:
         typedef Matrix<double, dimensions_, size_> VerticesType;
         typedef typename VerticesType::ConstColXpr VertexType;
+        typedef Simplex<dimensions_, 2> EdgeType;
+        typedef Simplex<dimensions_, size_ == Dynamic ? Dynamic : size_ - 1> FaceType;
         typedef Matrix<Interval, dimensions_, 1> BoundsType;
     private:
         VerticesType _vertices;
@@ -39,11 +41,37 @@ namespace OpenSolid
         template <class DerivedType>
         Simplex(const EigenBase<DerivedType>& vertices);
         
+        template <class FirstVertexType, class SecondVertexType>
+        Simplex(const FirstVertexType& first_vertex, const SecondVertexType& second_vertex);
+        
+        template <class FirstVertexType, class SecondVertexType, class ThirdVertexType>
+        Simplex(
+            const FirstVertexType& first_vertex,
+            const SecondVertexType& second_vertex,
+            const ThirdVertexType& third_vertex
+        );
+        
+        template <
+            class FirstVertexType,
+            class SecondVertexType,
+            class ThirdVertexType,
+            class FourthVertexType
+        >
+        Simplex(
+            const FirstVertexType& first_vertex,
+            const SecondVertexType& second_vertex,
+            const ThirdVertexType& third_vertex,
+            const FourthVertexType& fourth_vertex
+        );
+        
         int dimensions() const;
         int size() const;
         
         const VerticesType& vertices() const;
         VertexType vertex(int index) const;
+        
+        EdgeType edge(int index) const;
+        FaceType face(int index) const;
         
         BoundsType bounds() const;
     };
@@ -82,6 +110,43 @@ namespace OpenSolid
     template <int dimensions_, int size_> template <class DerivedType>
     inline Simplex<dimensions_, size_>::Simplex(const EigenBase<DerivedType>& vertices) :
         _vertices(vertices) {}
+        
+    template <int dimensions_, int size_> template <class FirstVertexType, class SecondVertexType>
+    inline Simplex<dimensions_, size_>::Simplex(
+        const FirstVertexType& first_vertex,
+        const SecondVertexType& second_vertex
+    ) {
+        _vertices.resize(first_vertex.size(), 2);
+        _vertices << first_vertex, second_vertex;
+    }
+    
+    template <int dimensions_, int size_>
+    template <class FirstVertexType, class SecondVertexType, class ThirdVertexType>
+    inline Simplex<dimensions_, size_>::Simplex(
+        const FirstVertexType& first_vertex,
+        const SecondVertexType& second_vertex,
+        const ThirdVertexType& third_vertex
+    ) {
+        _vertices.resize(first_vertex.size(), 3);
+        _vertices << first_vertex, second_vertex, third_vertex;
+    }
+    
+    template <int dimensions_, int size_> 
+    template <
+        class FirstVertexType,
+        class SecondVertexType,
+        class ThirdVertexType,
+        class FourthVertexType
+    >
+    inline Simplex<dimensions_, size_>::Simplex(
+        const FirstVertexType& first_vertex,
+        const SecondVertexType& second_vertex,
+        const ThirdVertexType& third_vertex,
+        const FourthVertexType& fourth_vertex
+    ) {
+        _vertices.resize(first_vertex.size(), 4);
+        _vertices << first_vertex, second_vertex, third_vertex, fourth_vertex;
+    }
     
     template <int dimensions_, int size_>
     inline int Simplex<dimensions_, size_>::dimensions() const {return _vertices.rows();}
@@ -96,6 +161,28 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::VertexType
     Simplex<dimensions_, size_>::vertex(int index) const {return _vertices.col(index);}
+    
+    template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::EdgeType
+    Simplex<dimensions_, size_>::edge(int index) const {
+        EdgeType::VerticesType edge_vertices;
+        edge_vertices.col(0) = vertices().col(index);
+        edge_vertices.col(1) = vertices().col((index + 1) % size());
+        return EdgeType(edge_vertices);
+    }
+    
+    template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::FaceType
+    Simplex<dimensions_, size_>::face(int index) const {
+        FaceType::VerticesType face_vertices;
+        Matrix<int, 1, size_ == Dynamic ? Dynamic : size_ - 1> indices(size() - 1);
+        for (int i = 0; i < indices.size(); ++i) {indices(i) = (index + 1 + i) % size();}
+        if (size() % 2 == 0 && index % 2 != 0) {indices.tail(2).reverseInPlace();}
+        for (int i = 0; i < indices.size(); ++i) {
+            face_vertices.col(i) = vertices().col(indices(i));
+        }
+        return FaceType(face_vertices);
+    }
     
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::BoundsType
