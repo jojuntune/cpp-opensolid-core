@@ -165,7 +165,7 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::EdgeType
     Simplex<dimensions_, size_>::edge(int index) const {
-        EdgeType::VerticesType edge_vertices;
+        typename EdgeType::VerticesType edge_vertices;
         edge_vertices.col(0) = vertices().col(index);
         edge_vertices.col(1) = vertices().col((index + 1) % size());
         return EdgeType(edge_vertices);
@@ -174,7 +174,7 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::FaceType
     Simplex<dimensions_, size_>::face(int index) const {
-        FaceType::VerticesType face_vertices;
+        typename FaceType::VerticesType face_vertices;
         Matrix<int, 1, size_ == Dynamic ? Dynamic : size_ - 1> indices(size() - 1);
         for (int i = 0; i < indices.size(); ++i) {indices(i) = (index + 1 + i) % size();}
         if (size() % 2 == 0 && index % 2 != 0) {indices.tail(2).reverseInPlace();}
