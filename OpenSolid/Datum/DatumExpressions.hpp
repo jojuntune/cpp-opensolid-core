@@ -247,13 +247,18 @@ namespace OpenSolid
         EigenBase<OtherDerivedType>& result
     ) const {
         if (_datum._normalized) {
-            result.derived() = _datum.vectors().transpose() * (
-                _matrix.derived().colwise() -
-                _datum.origin().template cast<typename OtherDerivedType::Scalar>()
-            );
+            result.derived() =
+                _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() * (
+                    _matrix.derived().colwise() -
+                    _datum.origin().template cast<typename OtherDerivedType::Scalar>()
+                );
         } else {
-            result.derived() = (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
-                _datum.vectors().transpose() * (
+            Matrix<typename OtherDerivedType::Scalar, axes_, axes_> symmetric_inverse =
+                (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
+                    Matrix<double, axes_, axes_>::Identity(_datum.axes(), _datum.axes())
+                ).template cast<typename OtherDerivedType::Scalar>();
+            result.derived() = symmetric_inverse * (
+                _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() * (
                     _matrix.derived().colwise() -
                     _datum.origin().template cast<typename OtherDerivedType::Scalar>()
                 )
