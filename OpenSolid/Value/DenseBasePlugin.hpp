@@ -49,18 +49,20 @@ inline MatrixListAdapter<Derived> list() const {
 }
 
 template<class OtherDerived>
-inline bool overlap(const DenseBase<OtherDerived>& other) const {
-    return derived().binaryExpr(other.derived(), OverlapOperation()).all();
+inline bool overlap(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
+    return derived().binaryExpr(other.derived(), OverlapOperation(tolerance)).all();
 }
 
 template<class OtherDerived>
-inline bool contain(const DenseBase<OtherDerived>& other) const {
-    return derived().binaryExpr(other.derived(), ContainOperation()).all();
+inline bool contain(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
+    return derived().binaryExpr(other.derived(), ContainOperation(tolerance)).all();
 }
 
 template<class OtherDerived>
-inline bool adjacent(const DenseBase<OtherDerived>& other) const {
-    return overlap(other) && derived().binaryExpr(other.derived(), AdjacentOperation()).any();
+inline bool adjacent(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
+    return
+        overlap(other, tolerance) &&
+        derived().binaryExpr(other.derived(), AdjacentOperation(tolerance)).any();
 }
 
 inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const {

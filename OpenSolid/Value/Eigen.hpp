@@ -45,10 +45,11 @@ namespace OpenSolid
     
     Interval abs(const Interval& argument);
     Interval sqrt(const Interval& argument);
-    OPENSOLID_EXPORT Interval exp(const Interval& argument);
-    OPENSOLID_EXPORT Interval log(const Interval& argument);
     OPENSOLID_EXPORT Interval sin(const Interval& argument);
     OPENSOLID_EXPORT Interval cos(const Interval& argument);
+    OPENSOLID_EXPORT Interval exp(const Interval& argument);
+    OPENSOLID_EXPORT Interval log(const Interval& argument);
+    OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& power);
     
     double lowerBound(const Interval& argument);
     double upperBound(const Interval& argument);
@@ -246,6 +247,10 @@ namespace Eigen
     {
         typedef bool result_type;
         
+        double tolerance;
+        
+        ContainOperation(double tolerance_);
+        
         bool operator()(const Interval& first_argument, const Interval& second_argument) const;
         bool operator()(double first_argument, double second_argument) const;
     };
@@ -254,6 +259,10 @@ namespace Eigen
     {
         typedef bool result_type;
         
+        double tolerance;
+        
+        OverlapOperation(double tolerance_);
+        
         bool operator()(const Interval& first_argument, const Interval& second_argument) const;
         bool operator()(double first_argument, double second_argument) const;
     };
@@ -261,6 +270,10 @@ namespace Eigen
     struct AdjacentOperation
     {
         typedef bool result_type;
+        
+        double tolerance;
+        
+        AdjacentOperation(double tolerance_);
         
         bool operator()(const Interval& first_argument, const Interval& second_argument) const;
         bool operator()(double first_argument, double second_argument) const;

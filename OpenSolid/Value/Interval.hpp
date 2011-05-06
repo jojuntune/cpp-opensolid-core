@@ -78,12 +78,12 @@ namespace OpenSolid
         
         Interval squared() const;
         
-        bool overlap(double value) const;
-        bool overlap(const Interval& other) const;
-        bool contain(double value) const;
-        bool contain(const Interval& other) const;
-        bool adjacent(double value) const;
-        bool adjacent(const Interval& other) const;
+        bool overlap(double value, double tolerance = 0.0) const;
+        bool overlap(const Interval& other, double tolerance = 0.0) const;
+        bool contain(double value, double tolerance = 0.0) const;
+        bool contain(const Interval& other, double tolerance = 0.0) const;
+        bool adjacent(double value, double tolerance = 0.0) const;
+        bool adjacent(const Interval& other, double tolerance = 0.0) const;
         
         Interval hull(double value) const;
         Interval hull(const Interval& other) const;
@@ -146,6 +146,7 @@ namespace OpenSolid
     OPENSOLID_EXPORT Interval atan(const Interval& argument);
     OPENSOLID_EXPORT Interval exp(const Interval& argument);
     OPENSOLID_EXPORT Interval log(const Interval& argument);
+    OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& power);
 
     OPENSOLID_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& value);
     
@@ -230,10 +231,6 @@ namespace Eigen
     
         inline Interval abs2(const Interval& argument) {return argument.squared();}
     
-        inline Interval pow(const Interval& x, const Interval& y) {
-            return exp(y * log(x));
-        }
-    
         inline int significant_decimals_default_impl<Interval, false>::run() {
             return significant_decimals_default_impl<double, false>::run();
         }
@@ -315,24 +312,30 @@ namespace OpenSolid
         }
     };
     
-    inline bool Interval::overlap(double value) const {return lower() <= value && value <= upper();}
-    
-    inline bool Interval::overlap(const Interval& other) const {
-        return lower() <= other.upper() && other.lower() <= upper();
+    inline bool Interval::overlap(double value, double tolerance) const {
+        return lower() - tolerance <= value && value <= upper() + tolerance;
     }
     
-    inline bool Interval::contain(double value) const {return lower() <= value && value <= upper();}
-    
-    inline bool Interval::contain(const Interval& other) const {
-        return lower() <= other.lower() && other.upper() <= upper();
+    inline bool Interval::overlap(const Interval& other, double tolerance) const {
+        return lower() - tolerance <= other.upper() && other.lower() <= upper() + tolerance;
     }
     
-    inline bool Interval::adjacent(double value) const {
-        return value == lower() || value == upper();
+    inline bool Interval::contain(double value, double tolerance) const {
+        return lower() - tolerance <= value && value <= upper() + tolerance;
     }
     
-    inline bool Interval::adjacent(const Interval& other) const {
-        return other.lower() == upper() || other.upper() == lower();
+    inline bool Interval::contain(const Interval& other, double tolerance) const {
+        return lower() - tolerance <= other.lower() && other.upper() <= upper() + tolerance;
+    }
+    
+    inline bool Interval::adjacent(double value, double tolerance) const {
+        return abs(value - lower()) <= tolerance || abs(value - upper()) <= tolerance;
+    }
+    
+    inline bool Interval::adjacent(const Interval& other, double tolerance) const {
+        return
+            abs(other.lower() - upper()) <= tolerance ||
+            abs(other.upper() - lower()) <= tolerance;
     }
         
     inline Interval Interval::hull(double value) const {

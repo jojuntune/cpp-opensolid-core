@@ -75,6 +75,10 @@ namespace OpenSolid
         return Interval(log(argument.lower()), log(argument.upper()));
     }
     
+    Interval pow(const Interval& base, const Interval& power) {
+        return exp(log(base) * power);
+    }
+    
     std::ostream& operator<<(std::ostream& stream, const Interval& value) {
         if (
             value.lower() == std::numeric_limits<double>::infinity() &&

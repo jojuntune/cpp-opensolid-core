@@ -342,31 +342,37 @@ namespace Eigen
         int index
     ) const {return _matrix.col(index);}
     
+    inline ContainOperation::ContainOperation(double tolerance_) : tolerance(tolerance_) {}
+    
     inline bool ContainOperation::operator()(
         const Interval& first_argument,
         const Interval& second_argument
-    ) const {return first_argument.contain(second_argument);}
+    ) const {return first_argument.contain(second_argument, tolerance);}
     
     inline bool ContainOperation::operator()(double first_argument, double second_argument) const {
-        return first_argument == second_argument;
+        return abs(first_argument - second_argument) <= tolerance;
     }
+    
+    inline OverlapOperation::OverlapOperation(double tolerance_) : tolerance(tolerance_) {}
     
     inline bool OverlapOperation::operator()(
         const Interval& first_argument,
         const Interval& second_argument
-    ) const {return first_argument.overlap(second_argument);}
+    ) const {return first_argument.overlap(second_argument, tolerance);}
     
     inline bool OverlapOperation::operator()(double first_argument, double second_argument) const {
-        return first_argument == second_argument;
+        return abs(first_argument - second_argument) <= tolerance;
     }
+    
+    inline AdjacentOperation::AdjacentOperation(double tolerance_) : tolerance(tolerance_) {}
         
     inline bool AdjacentOperation::operator()(
         const Interval& first_argument,
         const Interval& second_argument
-    ) const {return first_argument.adjacent(second_argument);}
+    ) const {return first_argument.adjacent(second_argument, tolerance);}
     
     inline bool AdjacentOperation::operator()(double first_argument, double second_argument) const {
-        return first_argument == second_argument;
+        return abs(first_argument - second_argument) <= tolerance;
     }
     
     inline Interval HullOperation::operator()(
