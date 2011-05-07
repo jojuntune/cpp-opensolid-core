@@ -29,12 +29,25 @@ namespace OpenSolid
     
     int SquareRootFunction::dimensions() const {return 1;}
     
+    struct SquareRoot
+    {
+        inline double operator()(double value) const {
+            assert(value > -Tolerance::roundoff());
+            return value > 0.0 ? sqrt(value) : 0.0;
+        }
+        
+        inline Interval operator()(const Interval& bounds) const {
+            assert(bounds > -Tolerance::roundoff());
+            return Interval(operator()(bounds.lower()), operator()(bounds.upper()));
+        }
+    };
+    
     void SquareRootFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).cwiseSqrt();
+        results = operand()(parameter_values).unaryExpr(SquareRoot());
     }
     
     void SquareRootFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).cwiseSqrt();
+        results = operand()(parameter_bounds).unaryExpr(SquareRoot());
     }
 
     void SquareRootFunction::getDerivative(int index, Function& result) const {
