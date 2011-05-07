@@ -144,9 +144,10 @@ namespace OpenSolid
     OPENSOLID_EXPORT Interval asin(const Interval& argument);
     OPENSOLID_EXPORT Interval acos(const Interval& argument);
     OPENSOLID_EXPORT Interval atan(const Interval& argument);
+    OPENSOLID_EXPORT Interval atan2(const Interval& y, const Interval& x);
     OPENSOLID_EXPORT Interval exp(const Interval& argument);
     OPENSOLID_EXPORT Interval log(const Interval& argument);
-    OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& power);
+    OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& exponent);
 
     OPENSOLID_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& value);
     

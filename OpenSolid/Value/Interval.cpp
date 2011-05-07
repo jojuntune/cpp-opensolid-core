@@ -67,6 +67,18 @@ namespace OpenSolid
         return Interval(atan(argument.lower()), atan(argument.upper()));
     }
 
+    Interval atan2(const Interval& y, const Interval& x) {
+        if (x > 0.0) {
+            return atan(y / x);
+        } else if (y > 0.0) {
+            return atan(-x / y) + M_PI / 2;
+        } else if (y < 0.0) {
+            return atan(-x / y) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
     Interval exp(const Interval& argument) {
         return Interval(exp(argument.lower()), exp(argument.upper()));
     }
@@ -75,8 +87,8 @@ namespace OpenSolid
         return Interval(log(argument.lower()), log(argument.upper()));
     }
     
-    Interval pow(const Interval& base, const Interval& power) {
-        return exp(log(base) * power);
+    Interval pow(const Interval& base, const Interval& exponent) {
+        return exp(log(base) * exponent);
     }
     
     std::ostream& operator<<(std::ostream& stream, const Interval& value) {
