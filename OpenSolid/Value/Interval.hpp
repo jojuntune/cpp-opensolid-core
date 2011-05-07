@@ -47,6 +47,7 @@ namespace OpenSolid
     using std::asin;
     using std::acos;
     using std::atan;
+    using std::atan2;
     using std::exp;
     using std::log;
     
