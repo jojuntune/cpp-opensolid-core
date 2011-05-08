@@ -471,19 +471,25 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline Plane<3> Datum<dimensions_, axes_>::yzPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        return Plane<3>(origin(), xVector());
+        Matrix<double, 3, 2> plane_vectors;
+        plane_vectors << yVector(), zVector();
+        return Plane<3>(origin(), plane_vectors);
     }
     
     template <int dimensions_, int axes_>
     inline Plane<3> Datum<dimensions_, axes_>::xzPlane() const {
-        assert(dimensions() == 3 && axes == 3);
-        return Plane<3>(origin(), yVector());
+        assert(dimensions() == 3 && axes() == 3);
+        Matrix<double, 3, 2> plane_vectors;
+        plane_vectors << xVector(), zVector();
+        return Plane<3>(origin(), plane_vectors);
     }
     
     template <int dimensions_, int axes_>
     inline Plane<3> Datum<dimensions_, axes_>::xyPlane() const {
-        assert(dimensions() == 3 && axes == 3);
-        return Plane<3>(origin(), zVector());
+        assert(dimensions() == 3 && axes() == 3);
+        Matrix<double, 3, 2> plane_vectors;
+        plane_vectors << xVector(), yVector();
+        return Plane<3>(origin(), plane_vectors);
     }
         
     template <int dimensions_, int axes_>
