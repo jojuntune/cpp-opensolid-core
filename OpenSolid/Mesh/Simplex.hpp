@@ -23,6 +23,7 @@
 
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
@@ -38,6 +39,8 @@ namespace OpenSolid
     private:
         VerticesType _vertices;
     public:
+        Simplex();
+        
         template <class DerivedType>
         Simplex(const EigenBase<DerivedType>& vertices);
         
@@ -70,12 +73,18 @@ namespace OpenSolid
         const VerticesType& vertices() const;
         VertexType vertex(int index) const;
         
-        EdgeType edge(int index) const;
+        double length() const;
+        double area() const;
+        double volume() const;
+        double hypervolume() const;
+        
+        EdgeType edge(int start_index, int end_index) const;
         FaceType face(int index) const;
         
         BoundsType bounds() const;
     };
     
+    typedef Simplex<1, 2> LineSegment1d;
     typedef Simplex<2, 2> LineSegment2d;
     typedef Simplex<3, 2> LineSegment3d;
     typedef Simplex<4, 2> LineSegment4d;
@@ -95,18 +104,33 @@ namespace OpenSolid
     
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
     
-    template<int dimensions_, int size_>
+    template <int dimensions_, int size_>
     struct Bounds<Simplex<dimensions_, size_> >
     {
         typedef typename Simplex<dimensions_, size_>::BoundsType Type;
         static Type bounds(const Simplex<dimensions_, size_>& simplex);
     };
+    
+    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
+    Simplex<datum_dimensions_, simplex_size_> operator*(
+        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
+        const Datum<datum_dimensions_, datum_axes_>& datum
+    );
+    
+    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
+    Simplex<datum_axes_, simplex_size_> operator/(
+        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
+        const Datum<datum_dimensions_, datum_axes_>& datum
+    );
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
+    template <int dimensions_, int size_>
+    inline Simplex<dimensions_, size_>::Simplex() : _vertices() {}
+        
     template <int dimensions_, int size_> template <class DerivedType>
     inline Simplex<dimensions_, size_>::Simplex(const EigenBase<DerivedType>& vertices) :
         _vertices(vertices) {}
@@ -163,11 +187,90 @@ namespace OpenSolid
     Simplex<dimensions_, size_>::vertex(int index) const {return _vertices.col(index);}
     
     template <int dimensions_, int size_>
+    inline double Simplex<dimensions_, size_>::length() const {
+        assert(size() == 2);
+        if (dimensions() == 1) {
+            return vertices()(0, 1) - vertices()(0, 0);
+        } else {
+            return (vertices().col(1) - vertices().col(0)).norm();
+        }
+    }
+    
+    template <int dimensions_, int size_>
+    inline double Simplex<dimensions_, size_>::area() const {
+        assert(size() == 3);
+        if (dimensions() == 2) {
+            return (vertices().rightCols(2).colwise() - vertices().col(0)).determinant() / 2;
+        } else {
+            Matrix2d temp;
+            double squared_area = 0.0;
+            for (int i = 0; i < dimensions() - 1; ++i) {
+                for (int j = i + 1; j < dimensions(); ++j) {
+                    temp << vertices().row(i).tail(2).array() - vertices()(i, 0),
+                        vertices().row(j).tail(2).array() - vertices()(j, 0);
+                    double determinant = temp.determinant();
+                    squared_area += determinant * determinant / 4;
+                }
+            }
+            return sqrt(squared_area);
+        }
+    }
+    
+    template <int dimensions_, int size_>
+    inline double Simplex<dimensions_, size_>::volume() const {
+        assert(size() == 4);
+        if (dimensions() == 3) {
+            return (vertices().rightCols(3).colwise() - vertices().col(0)).determinant() / 6;
+        } else {
+            Matrix3d temp;
+            double squared_volume = 0.0;
+            for (int i = 0; i < dimensions() - 2; ++i) {
+                for (int j = i + 1; j < dimensions() - 1; ++j) {
+                    for (int k = j + 1; k < dimensions(); ++k) {
+                        temp << vertices().row(i).tail(3).array() - vertices()(i, 0),
+                            vertices().row(j).tail(3).array() - vertices()(j, 0),
+                            vertices().row(k).tail(3).array() - vertices()(k, 0);
+                        double determinant = temp.determinant();
+                        squared_volume += determinant * determinant / 36;
+                    }
+                }
+            }
+            return sqrt(squared_volume);
+        }
+    }
+    
+    template <int dimensions_, int size_>
+    inline double Simplex<dimensions_, size_>::hypervolume() const {
+        assert(size() == 5);
+        if (dimensions() == 4) {
+            return (vertices().rightCols(4).colwise() - vertices().col(0)).determinant() / 24;
+        } else {
+            Matrix4d temp;
+            double squared_hypervolume = 0.0;
+            for (int i = 0; i < dimensions() - 3; ++i) {
+                for (int j = i + 1; j < dimensions() - 2; ++j) {
+                    for (int k = j + 1; k < dimensions() - 1; ++k) {
+                        for (int l = k + 1; l < dimensions(); ++l) {
+                            temp << vertices().row(i).tail(4).array() - vertices()(i, 0),
+                                vertices().row(j).tail(4).array() - vertices()(j, 0),
+                                vertices().row(k).tail(4).array() - vertices()(k, 0),
+                                vertices().row(l).tail(4).array() - vertices()(l, 0);
+                            double determinant = temp.determinant();
+                            squared_hypervolume += determinant * determinant / 576;
+                        }
+                    }
+                }
+            }
+            return sqrt(squared_hypervolume);
+        }
+    }
+    
+    template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::EdgeType
-    Simplex<dimensions_, size_>::edge(int index) const {
+    Simplex<dimensions_, size_>::edge(int start_index, int end_index) const {
         typename EdgeType::VerticesType edge_vertices;
-        edge_vertices.col(0) = vertices().col(index);
-        edge_vertices.col(1) = vertices().col((index + 1) % size());
+        edge_vertices.col(0) = vertices().col(start_index);
+        edge_vertices.col(1) = vertices().col(end_index);
         return EdgeType(edge_vertices);
     }
     
@@ -195,6 +298,18 @@ namespace OpenSolid
     Bounds<Simplex<dimensions_, size_> >::bounds(
         const Simplex<dimensions_, size_>& simplex
     ) {return simplex.bounds();}
+    
+    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
+    inline Simplex<datum_dimensions_, simplex_size_> operator*(
+        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
+        const Datum<datum_dimensions_, datum_axes_>& datum
+    ) {return Simplex<datum_dimensions_, simplex_size_>(simplex.vertices() * datum);}
+    
+    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
+    inline Simplex<datum_axes_, simplex_size_> operator/(
+        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
+        const Datum<datum_dimensions_, datum_axes_>& datum
+    ) {return Simplex<datum_axes_, simplex_size_>(simplex.vertices() / datum);}
 }
 
 #endif

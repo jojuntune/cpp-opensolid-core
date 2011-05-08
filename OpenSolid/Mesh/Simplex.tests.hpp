@@ -32,7 +32,7 @@ public:
         std::cout << "EDGES" << std::endl;
         for (int i = 0; i < 3; ++i) {
             std::cout << i << ":" << std::endl;
-            std::cout << triangle.edge(i).vertices() << std::endl;
+            std::cout << triangle.edge(i, (i + 1) % 3).vertices() << std::endl;
         }
     }
     
@@ -50,4 +50,35 @@ public:
         }
     }
     
+    void testDatumQuotient() {
+        Triangle3d triangle3d(Vector3d(1, 1, 1), Vector3d(3, 1, 2), Vector3d(2, 2, 4));
+        Triangle2d xy_projection = triangle3d / Frame3d().xyPlane();
+        TS_ASSERT((xy_projection.vertex(0) - Vector2d(1, 1)).isZero(Tolerance::roundoff()));
+        TS_ASSERT((xy_projection.vertex(1) - Vector2d(3, 1)).isZero(Tolerance::roundoff()));
+        TS_ASSERT((xy_projection.vertex(2) - Vector2d(2, 2)).isZero(Tolerance::roundoff()));
+        double xy_area = xy_projection.area();
+        TS_ASSERT(xy_area > 0.0);
+        Triangle2d yz_projection = triangle3d / Frame3d().yzPlane();
+        TS_ASSERT((yz_projection.vertex(0) - Vector2d(1, 1)).isZero(Tolerance::roundoff()));
+        TS_ASSERT((yz_projection.vertex(1) - Vector2d(1, 2)).isZero(Tolerance::roundoff()));
+        TS_ASSERT((yz_projection.vertex(2) - Vector2d(2, 4)).isZero(Tolerance::roundoff()));
+        double yz_area = yz_projection.area();
+        TS_ASSERT(yz_area < 0.0);
+        double xz_area = (triangle3d / Frame3d().xzPlane()).area();
+        double area_from_components =
+            sqrt(xy_area * xy_area + yz_area * yz_area + xz_area * xz_area);
+        TS_ASSERT_DELTA(triangle3d.area(), area_from_components, Tolerance::roundoff());
+    }
+    
+    void testVolumes() {
+        Tetrahedron3d tetrahedron(
+            Vector3d(1, 1, 1),
+            Vector3d(2, 1, 1),
+            Vector3d(1, 2, 1),
+            Vector3d(1, 1, 2)
+        );
+        TS_ASSERT_DELTA(tetrahedron.volume(), 1.0 / 6.0, Tolerance::roundoff());
+        TS_ASSERT_DELTA(tetrahedron.face(1).area(), 0.5, Tolerance::roundoff());
+        TS_ASSERT_DELTA(tetrahedron.edge(1, 3).length(), sqrt(2.0), Tolerance::roundoff());
+    }
 };
