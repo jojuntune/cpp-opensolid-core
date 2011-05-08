@@ -268,7 +268,7 @@ namespace OpenSolid
                     results[++index] = results[i];
                 }
             }
-            return results.matrix().leftCols(index + 1);
+            return results.matrix().head(index + 1);
         }
     }
     

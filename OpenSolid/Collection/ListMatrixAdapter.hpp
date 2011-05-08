@@ -62,49 +62,49 @@ namespace OpenSolid
     template <>
     struct ListMatrixAdapterType<double>
     {
-        typedef MapXcd Type;
+        typedef Map<const RowVectorXd> Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Vector2d>
     {
-        typedef MapXcd Type;
+        typedef Map<const Matrix<double, 2, Dynamic> > Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Vector3d>
     {
-        typedef MapXcd Type;
+        typedef Map<const Matrix<double, 3, Dynamic> > Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Vector4d>
     {
-        typedef MapXcd Type;
+        typedef Map<const Matrix<double, 4, Dynamic> > Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Interval>
     {
-        typedef MapXcI Type;
+        typedef Map<const RowVectorXI> Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Vector2I>
     {
-        typedef MapXcI Type;
+        typedef Map<const Matrix<Interval, 2, Dynamic> > Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Vector3I>
     {
-        typedef MapXcI Type;
+        typedef Map<const Matrix<Interval, 3, Dynamic> > Type;
     };
     
     template <>
     struct ListMatrixAdapterType<Vector4I>
     {
-        typedef MapXcI Type;
+        typedef Map<const Matrix<Interval, 4, Dynamic> > Type;
     };
     
     template <class Type>
@@ -128,14 +128,14 @@ namespace OpenSolid
     template <class Type>
     ListMatrixAdapter<Type> listMatrixAdapter(const List<Type>& list);
     
-    MapXcd listMatrixAdapter(const List<double>& list);
-    MapXcd listMatrixAdapter(const List<Vector2d>& list);
-    MapXcd listMatrixAdapter(const List<Vector3d>& list);
-    MapXcd listMatrixAdapter(const List<Vector4d>& list);
-    MapXcI listMatrixAdapter(const List<Interval>& list);
-    MapXcI listMatrixAdapter(const List<Vector2I>& list);
-    MapXcI listMatrixAdapter(const List<Vector3I>& list);
-    MapXcI listMatrixAdapter(const List<Vector4I>& list);
+    Map<const RowVectorXd> listMatrixAdapter(const List<double>& list);
+    Map<const Matrix<double, 2, Dynamic> > listMatrixAdapter(const List<Vector2d>& list);
+    Map<const Matrix<double, 3, Dynamic> > listMatrixAdapter(const List<Vector3d>& list);
+    Map<const Matrix<double, 4, Dynamic> > listMatrixAdapter(const List<Vector4d>& list);
+    Map<const RowVectorXI> listMatrixAdapter(const List<Interval>& list);
+    Map<const Matrix<Interval, 2, Dynamic> > listMatrixAdapter(const List<Vector2I>& list);
+    Map<const Matrix<Interval, 3, Dynamic> > listMatrixAdapter(const List<Vector3I>& list);
+    Map<const Matrix<Interval, 4, Dynamic> > listMatrixAdapter(const List<Vector4I>& list);
 }
 
 ////////// Implementation //////////
@@ -165,44 +165,44 @@ namespace OpenSolid
         return ListMatrixAdapter<Type>(list);
     }
     
-    inline MapXcd listMatrixAdapter(const List<double>& list) {
+    inline Map<const RowVectorXd> listMatrixAdapter(const List<double>& list) {
         assert(!list.empty());
-        return MapXcd(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
+        return Map<const RowVectorXd>(&list.front(), list.size());
     }
     
-    inline MapXcd listMatrixAdapter(const List<Vector2d>& list) {
+    inline Map<const Matrix<double, 2, Dynamic> > listMatrixAdapter(const List<Vector2d>& list) {
         assert(!list.empty());
-        return MapXcd(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(2, 1));
+        return Map<const Matrix<double, 2, Dynamic> >(list.front().data(), 2, list.size());
     }
     
-    inline MapXcd listMatrixAdapter(const List<Vector3d>& list) {
+    inline Map<const Matrix<double, 3, Dynamic> > listMatrixAdapter(const List<Vector3d>& list) {
         assert(!list.empty());
-        return MapXcd(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(3, 1));
+        return Map<const Matrix<double, 3, Dynamic> >(list.front().data(), 3, list.size());
     }
     
-    inline MapXcd listMatrixAdapter(const List<Vector4d>& list) {
+    inline Map<const Matrix<double, 4, Dynamic> > listMatrixAdapter(const List<Vector4d>& list) {
         assert(!list.empty());
-        return MapXcd(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(4, 1));
+        return Map<const Matrix<double, 4, Dynamic> >(list.front().data(), 4, list.size());
     }
     
-    inline MapXcI listMatrixAdapter(const List<Interval>& list) {
+    inline Map<const RowVectorXI> listMatrixAdapter(const List<Interval>& list) {
         assert(!list.empty());
-        return MapXcI(&list.front(), 1, list.size(), Stride<Dynamic, Dynamic>(1, 1));
+        return Map<const RowVectorXI>(&list.front(), list.size());
     }
     
-    inline MapXcI listMatrixAdapter(const List<Vector2I>& list) {
+    inline Map<const Matrix<Interval, 2, Dynamic> > listMatrixAdapter(const List<Vector2I>& list) {
         assert(!list.empty());
-        return MapXcI(list.front().data(), 2, list.size(), Stride<Dynamic, Dynamic>(2, 1));
+        return Map<const Matrix<Interval, 2, Dynamic> >(list.front().data(), 2, list.size());
     }
     
-    inline MapXcI listMatrixAdapter(const List<Vector3I>& list) {
+    inline Map<const Matrix<Interval, 3, Dynamic> > listMatrixAdapter(const List<Vector3I>& list) {
         assert(!list.empty());
-        return MapXcI(list.front().data(), 3, list.size(), Stride<Dynamic, Dynamic>(3, 1));
+        return Map<const Matrix<Interval, 3, Dynamic> >(list.front().data(), 3, list.size());
     }
     
-    inline MapXcI listMatrixAdapter(const List<Vector4I>& list) {
+    inline Map<const Matrix<Interval, 4, Dynamic> > listMatrixAdapter(const List<Vector4I>& list) {
         assert(!list.empty());
-        return MapXcI(list.front().data(), 4, list.size(), Stride<Dynamic, Dynamic>(4, 1));
+        return Map<const Matrix<Interval, 4, Dynamic> >(list.front().data(), 4, list.size());
     }
 }
 
