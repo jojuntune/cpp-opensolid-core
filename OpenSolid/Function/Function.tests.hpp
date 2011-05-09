@@ -206,33 +206,43 @@ public:
             x - 1,
             x.squaredNorm() - 1,
             x * x * x - 4 * x * x + 5 * x - 2,
-            sin(x).squaredNorm() + 2 * sin(x) + 1
+            sin(x).squaredNorm() + 2 * sin(x) + 1,
+            1 / x - 1,
+            sqrt(x) - x
         );
         List<Interval> domains(
             Interval(0, 2),
             Interval(-2, 2),
             Interval(0, 3),
-            Interval(-M_PI, 2 * M_PI)
+            Interval(-M_PI, 2 * M_PI),
+            Interval(0, 2),
+            Interval(0, 2)
         );
         List<RowVectorXd> expected_function_zeros(
             RowVectorXd::Constant(1, 1.0),
             RowVector2d(-1, 1),
             RowVector2d(1, 2),
-            RowVector2d(-M_PI / 2, 3 * M_PI / 2)
+            RowVector2d(-M_PI / 2, 3 * M_PI / 2),
+            RowVectorXd::Constant(1, 1.0),
+            RowVector2d(0, 1)
         );
         List<RowVectorXd> expected_derivative_zeros(
             RowVectorXd(),
             RowVectorXd::Constant(1, 0.0),
             RowVector2d(1, 5.0 / 3.0),
-            RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2)
+            RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2),
+            RowVectorXd(),
+            RowVectorXd::Constant(1, 0.25)
         );
         List<RowVectorXd> expected_second_derivative_zeros(
             RowVectorXd(),
             RowVectorXd(),
             RowVectorXd::Constant(1, 4.0 / 3.0),
-            RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2)
+            RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2),
+            RowVectorXd(),
+            RowVectorXd()
         );
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < functions.size(); ++i) {
             Function function = functions[i];
             Function derivative = function.derivative();
             Function second_derivative = derivative.derivative();
