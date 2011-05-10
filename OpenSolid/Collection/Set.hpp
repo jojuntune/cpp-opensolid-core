@@ -141,6 +141,7 @@ namespace OpenSolid
         bool equal(const SetIterator<Type>& other) const;
         const Type& dereference() const;
     public:
+        SetIterator();
         SetIterator(const SetNode<Type>* node);
     };
     
@@ -409,6 +410,9 @@ namespace OpenSolid
     
     template <class Type>
     inline const Type& SetIterator<Type>::dereference() const {return *_node->object();}
+    
+    template <class Type>
+    inline SetIterator<Type>::SetIterator() : _node(0) {}
     
     template <class Type>
     inline SetIterator<Type>::SetIterator(const SetNode<Type>* node) : _node(node) {}
