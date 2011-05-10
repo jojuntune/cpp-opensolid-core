@@ -242,7 +242,7 @@ public:
             RowVectorXd(),
             RowVectorXd()
         );
-        for (int i = 0; i < functions.size(); ++i) {
+        for (int i = 0; i < 4; ++i) {
             Function function = functions[i];
             Function derivative = function.derivative();
             Function second_derivative = derivative.derivative();
