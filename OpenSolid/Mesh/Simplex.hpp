@@ -36,6 +36,7 @@ namespace OpenSolid
         typedef Simplex<dimensions_, 2> EdgeType;
         typedef Simplex<dimensions_, size_ == Dynamic ? Dynamic : size_ - 1> FaceType;
         typedef Matrix<Interval, dimensions_, 1> BoundsType;
+        typedef Matrix<double, dimensions_, 1> VectorType;
     private:
         VerticesType _vertices;
     public:
@@ -77,6 +78,9 @@ namespace OpenSolid
         double area() const;
         double volume() const;
         double hypervolume() const;
+        
+        VectorType centroid() const;
+        VectorType normal() const;
         
         EdgeType edge(int start_index, int end_index) const;
         FaceType face(int index) const;
@@ -200,7 +204,7 @@ namespace OpenSolid
     inline double Simplex<dimensions_, size_>::area() const {
         assert(size() == 3);
         if (dimensions() == 2) {
-            return (vertices().rightCols(2).colwise() - vertices().col(0)).determinant() / 2;
+            return (vertices().rightCols<2>().colwise() - vertices().col(0)).determinant() / 2;
         } else {
             Matrix2d temp;
             double squared_area = 0.0;
@@ -220,7 +224,7 @@ namespace OpenSolid
     inline double Simplex<dimensions_, size_>::volume() const {
         assert(size() == 4);
         if (dimensions() == 3) {
-            return (vertices().rightCols(3).colwise() - vertices().col(0)).determinant() / 6;
+            return (vertices().rightCols<3>().colwise() - vertices().col(0)).determinant() / 6;
         } else {
             Matrix3d temp;
             double squared_volume = 0.0;
@@ -243,7 +247,7 @@ namespace OpenSolid
     inline double Simplex<dimensions_, size_>::hypervolume() const {
         assert(size() == 5);
         if (dimensions() == 4) {
-            return (vertices().rightCols(4).colwise() - vertices().col(0)).determinant() / 24;
+            return (vertices().rightCols<4>.colwise() - vertices().col(0)).determinant() / 24;
         } else {
             Matrix4d temp;
             double squared_hypervolume = 0.0;
@@ -263,6 +267,52 @@ namespace OpenSolid
             }
             return sqrt(squared_hypervolume);
         }
+    }
+    
+    template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::VectorType
+    Simplex<dimensions_, size_>::centroid() const {return vertices().rowwise().mean();}
+    
+    inline Vector2d simplexNormal(const LineSegment2d& line_segment) {
+        return (line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+    }
+    
+    inline Vector2d simplexNormal(const LineSegmentXd& line_segment) {
+        assert(line_segment.dimensions() == 2);
+        return Vector2d(line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+    }
+    
+    inline Vector3d simplexNormal(const Triangle3d& triangle) {
+        Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
+        Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+        return first_edge.cross(second_edge).normalized();
+    }
+    
+    inline Vector3d simplexNormal(const TriangleXd& triangle) {
+        assert(triangle.dimensions() == 3);
+        Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
+        Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+        return first_edge.cross(second_edge).normalized();
+    }
+    
+    inline VectorXd simplexNormal(const SimplexXd& simplex) {
+        assert(simplex.size() == 2 || simplex.size() == 3);
+        if (simplex.size() == 2) {
+            assert(simplex.dimensions() == 2);
+            return Vector2d(simplex.vertex(1) - simplex.vertex(0)).unitOrthogonal();
+        } else {
+            assert(simplex.dimensions() == 3);
+            Vector3d first_edge = simplex.vertex(1) - simplex.vertex(0);
+            Vector3d second_edge = simplex.vertex(2) - simplex.vertex(0);
+            return first_edge.cross(second_edge).normalized();
+        }
+    }
+    
+    template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::VectorType
+    Simplex<dimensions_, size_>::normal() const {
+        assert(size() == dimensions());
+        return simplexNormal(*this);
     }
     
     template <int dimensions_, int size_>
