@@ -105,4 +105,13 @@ public:
         Vector3d expected_normal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
         TS_ASSERT((triangle.normal() - expected_normal).isZero(roundoff));
     }
+    
+    void testCopyingAndEquality() {
+        Triangle2d triangle(Vector2d::Zero(), Vector2d::UnitX(), Vector2d::UnitY());
+        LineSegment2d line_segment = triangle.edge(1, 2);
+        SimplexXd simplex = triangle;
+        simplex = triangle.edge(1, 2);
+        TS_ASSERT_EQUALS(line_segment, simplex);
+    }
+    
 };

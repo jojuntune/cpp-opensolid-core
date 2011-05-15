@@ -42,6 +42,11 @@ namespace OpenSolid
     public:
         Simplex();
         
+        Simplex(const Simplex<dimensions_, size_>& other);
+        
+        template <int other_dimensions_, int other_size_>
+        Simplex(const Simplex<other_dimensions_, other_size_>& other);
+        
         template <class DerivedType>
         Simplex(const EigenBase<DerivedType>& vertices);
         
@@ -68,6 +73,13 @@ namespace OpenSolid
             const FourthVertexType& fourth_vertex
         );
         
+        Simplex<dimensions_, size_>& operator=(const Simplex<dimensions_, size_>& other);
+        
+        template <int other_dimensions_, int other_size_>
+        Simplex<dimensions_, size_>& operator=(
+            const Simplex<other_dimensions_, other_size_>& other
+        );
+        
         int dimensions() const;
         int size() const;
         
@@ -86,6 +98,9 @@ namespace OpenSolid
         FaceType face(int index) const;
         
         BoundsType bounds() const;
+        
+        template <int other_dimensions_, int other_size_>
+        bool operator==(const Simplex<other_dimensions_, other_size_>& other) const;
     };
     
     typedef Simplex<1, 2> LineSegment1d;
@@ -135,6 +150,15 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline Simplex<dimensions_, size_>::Simplex() : _vertices() {}
         
+    template <int dimensions_, int size_>
+    inline Simplex<dimensions_, size_>::Simplex(const Simplex<dimensions_, size_>& other)
+        : _vertices(other.vertices()) {}
+    
+    template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
+    inline Simplex<dimensions_, size_>::Simplex(
+        const Simplex<other_dimensions_, other_size_>& other
+    ) : _vertices(other.vertices()) {}
+        
     template <int dimensions_, int size_> template <class DerivedType>
     inline Simplex<dimensions_, size_>::Simplex(const EigenBase<DerivedType>& vertices) :
         _vertices(vertices) {}
@@ -174,6 +198,22 @@ namespace OpenSolid
     ) {
         _vertices.resize(first_vertex.size(), 4);
         _vertices << first_vertex, second_vertex, third_vertex, fourth_vertex;
+    }
+        
+    template <int dimensions_, int size_> 
+    inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
+        const Simplex<dimensions_, size_>& other
+    ) {
+        _vertices = other.vertices();
+        return *this;
+    }
+    
+    template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
+    inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
+        const Simplex<other_dimensions_, other_size_>& other
+    ) {
+        _vertices = other.vertices();
+        return *this;
     }
     
     template <int dimensions_, int size_>
@@ -342,6 +382,11 @@ namespace OpenSolid
     Simplex<dimensions_, size_>::bounds() const {
         return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
     }
+        
+    template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
+    inline bool Simplex<dimensions_, size_>::operator==(
+        const Simplex<other_dimensions_, other_size_>& other
+    ) const {return vertices() == other.vertices();}
     
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::BoundsType
