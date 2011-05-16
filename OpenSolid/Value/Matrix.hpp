@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Pair.hpp>
 #include <OpenSolid/Collection/IteratorRange.hpp>
@@ -74,6 +76,9 @@ namespace Eigen
     typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > MapXcd;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXcb;
+    
+    template <class DerivedType>
+    std::size_t hash_value(const DenseBase<DerivedType>& argument);
 }
 
 namespace OpenSolid
@@ -433,6 +438,29 @@ namespace Eigen
     }
     
     inline Interval CenteredOperation::operator()(double argument) const {return argument;}
+    
+    struct HashVisitor
+    {
+        std::size_t result;
+        
+        template <class ScalarType, class IndexType>
+        inline void init(const ScalarType& value, IndexType row, IndexType col) {
+            result = 0;
+            boost::hash_combine(result, value);
+        }
+        
+        template <class ScalarType, class IndexType>
+        inline void operator()(const ScalarType& value, IndexType row, IndexType col) {
+            boost::hash_combine(result, value);
+        }
+    };
+    
+    template <class DerivedType>
+    inline std::size_t hash_value(const DenseBase<DerivedType>& argument) {
+        HashVisitor visitor;
+        argument.visit(visitor);
+        return visitor.result;
+    }
 }
 
 namespace OpenSolid

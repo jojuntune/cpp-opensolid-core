@@ -171,14 +171,14 @@ namespace OpenSolid
         double derivative_value = derivatives[order + 1](x).scalar();
         Interval derivative_bounds = derivatives[order + 1](domain_interval).scalar();
         Interval convergence_ratio = abs(1 - derivative_bounds / derivative_value);
-        if (convergence_ratio < 1 - Tolerance::roundoff()) {
+        if (convergence_ratio.upper() < 1 - Tolerance::roundoff()) {
             double last_y = y;
             x = x - y / derivative_value;
             y = derivatives[order](x).scalar();
             while (abs(y) > 0 && abs(y) < abs(last_y)) {
                 double new_derivative_value = derivatives[order + 1](x).scalar();
                 convergence_ratio = abs(1 - derivative_bounds / new_derivative_value);
-                if (convergence_ratio < 1 - Tolerance::roundoff()) {
+                if (convergence_ratio.upper() < 1 - Tolerance::roundoff()) {
                     derivative_value = new_derivative_value;
                 }
                 last_y = y;
@@ -242,7 +242,7 @@ namespace OpenSolid
             for (int i = 0; i < domain_intervals.size(); ++i) {
                 bool bisection_needed = true;
                 for (int j = 0; j <= order; ++j) {
-                    if (bound_norms(j, i) > Tolerance::roundoff()) {
+                    if (bound_norms(j, i).lower() > Tolerance::roundoff()) {
                         bisection_needed = false;
                         if (j > 0) {getZeros(derivatives, domain_intervals[i], j - 1, results);}
                         break;

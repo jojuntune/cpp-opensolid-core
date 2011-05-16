@@ -114,4 +114,9 @@ public:
         TS_ASSERT_EQUALS(line_segment, simplex);
     }
     
+    void testHashing() {
+        LineSegment2d first_line(Vector2d::Zero(), Vector2d::Ones());
+        LineSegment2d second_line(Vector2d::Zero(), Vector2d::Ones());
+        TS_ASSERT_EQUALS(hash_value(first_line), hash_value(second_line));
+    }
 };

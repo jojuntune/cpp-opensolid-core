@@ -23,6 +23,8 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Collection/List.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Value/Tolerance.hpp>
@@ -132,6 +134,9 @@ namespace OpenSolid
         const VectorType& origin() const;
         const MatrixType& vectors() const;
         
+        template <int other_dimensions_, int other_axes_>
+        bool operator==(const Datum<other_dimensions_, other_axes_>& other) const;
+        
         VectorType operator()(double x) const;
         VectorType operator()(double x, double y) const;
         VectorType operator()(double x, double y, double z) const;
@@ -188,6 +193,9 @@ namespace OpenSolid
         const Datum<relative_dimensions_, relative_axes_>& relative,
         const Datum<base_dimensions_, base_axes_>& base
     );
+    
+    template <int dimensions_, int axes_>
+    std::size_t hash_value(const Datum<dimensions_, axes_>& datum);
     
     template <int dimensions_, int axes_>
     class LinearDatum
@@ -347,6 +355,15 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline const typename Datum<dimensions_, axes_>::MatrixType&
     Datum<dimensions_, axes_>::vectors() const {return _vectors;}
+        
+    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
+    inline bool Datum<dimensions_, axes_>::operator==(
+        const Datum<other_dimensions_, other_axes_>& other
+    ) const {
+        assert(dimensions() == other.dimensions());
+        assert(size() == other.size());
+        return origin() == other.origin() && vectors() == other.vectors();
+    }
         
     template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::VectorType  Datum<dimensions_, axes_>::operator()(
@@ -617,6 +634,14 @@ namespace OpenSolid
             relative.origin() / base,
             relative.vectors() / base.linear()
         );
+    }
+    
+    template <int dimensions_, int axes_>
+    inline std::size_t hash_value(const Datum<dimensions_, axes_>& datum) {
+        std::size_t result = 0;
+        boost::hash_combine(result, datum.origin());
+        boost::hash_combine(result, datum.vectors());
+        return result;
     }
     
     template <int dimensions_, int axes_>

@@ -25,6 +25,7 @@
 #include <algorithm>
 
 #include <boost/iterator/iterator_facade.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/ReferenceCountedBase.hpp>
@@ -101,6 +102,9 @@ namespace OpenSolid
         
         bool operator==(const Set<Type>& other) const;
     };
+    
+    template <class Type>
+    std::size_t hash_value(const Set<Type>& set);
     
     template <class ItemType>
     struct Bounds<Set<ItemType> >
@@ -364,6 +368,11 @@ namespace OpenSolid
     template <class Type>
     inline bool Set<Type>::operator==(const Set<Type>& other) const {
         return rootNode() == other.rootNode();
+    }
+    
+    template <class Type>
+    inline std::size_t hash_value(const Set<Type>& set) {
+        return boost::hash_value(set.rootNode());
     }
     
     template <class Type>

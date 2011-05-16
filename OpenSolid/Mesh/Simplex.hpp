@@ -103,6 +103,9 @@ namespace OpenSolid
         bool operator==(const Simplex<other_dimensions_, other_size_>& other) const;
     };
     
+    template <int dimensions_, int size_>
+    std::size_t hash_value(const Simplex<dimensions_, size_>& simplex);
+    
     typedef Simplex<1, 2> LineSegment1d;
     typedef Simplex<2, 2> LineSegment2d;
     typedef Simplex<3, 2> LineSegment3d;
@@ -386,7 +389,16 @@ namespace OpenSolid
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
     inline bool Simplex<dimensions_, size_>::operator==(
         const Simplex<other_dimensions_, other_size_>& other
-    ) const {return vertices() == other.vertices();}
+    ) const {
+        assert(dimensions() == other.dimensions());
+        assert(size() == other.size());
+        return vertices() == other.vertices();
+    }
+    
+    template <int dimensions_, int size_>
+    inline std::size_t hash_value(const Simplex<dimensions_, size_>& simplex) {
+        return hash_value(simplex.vertices());
+    }
     
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::BoundsType

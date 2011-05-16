@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <boost/unordered_map.hpp>
+
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Value/Tolerance.hpp>
@@ -106,5 +108,14 @@ public:
         TS_ASSERT_DELTA(curvature, 2 / (5 * sqrt(5.0)), Tolerance::roundoff());
         TS_ASSERT((normal - Vector3d(-2, 1, 0).normalized()).norm() < Tolerance::roundoff());
         TS_ASSERT((binormal - Vector3d::UnitZ()).norm() < Tolerance::roundoff());
+    }
+    
+    void testHashing() {
+        Geometry line = Geometry::Line(Vector2d::Zero(), Vector2d::Ones());
+        boost::unordered_map<Geometry, std::string> colors;
+        colors[line] = "red";
+        Geometry line_copy = line;
+        TS_ASSERT_DIFFERS(colors.find(line_copy), colors.end());
+        TS_ASSERT_EQUALS(colors[line_copy], "red");
     }
 };

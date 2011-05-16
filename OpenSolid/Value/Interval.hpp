@@ -30,6 +30,8 @@
 #include <cassert>
 #include <utility>
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Bisected.hpp>
 #include <OpenSolid/Common/Pair.hpp>
@@ -104,24 +106,10 @@ namespace OpenSolid
         static Interval Whole();
     };
 
-    bool operator==(double first_argument, const Interval& second_argument);
-    bool operator==(const Interval& first_argument, double second_argument);
     bool operator==(const Interval& first_argument, const Interval& second_argument);
-    bool operator!=(double first_argument, const Interval& second_argument);
-    bool operator!=(const Interval& first_argument, double second_argument);
     bool operator!=(const Interval& first_argument, const Interval& second_argument);
-    bool operator<(double first_argument, const Interval& second_argument);
-    bool operator<(const Interval& first_argument, double second_argument);
     bool operator<(const Interval& first_argument, const Interval& second_argument);
-    bool operator<=(double first_argument, const Interval& second_argument);
-    bool operator<=(const Interval& first_argument, double second_argument);
-    bool operator<=(const Interval& first_argument, const Interval& second_argument);
-    bool operator>(double first_argument, const Interval& second_argument);
-    bool operator>(const Interval& first_argument, double second_argument);
     bool operator>(const Interval& first_argument, const Interval& second_argument);
-    bool operator>=(double first_argument, const Interval& second_argument);
-    bool operator>=(const Interval& first_argument, double second_argument);
-    bool operator>=(const Interval& first_argument, const Interval& second_argument);
     
     Interval operator-(const Interval& argument);
     Interval operator+(double first_argument, const Interval& second_argument);
@@ -217,6 +205,8 @@ namespace OpenSolid
         const Interval& first() const;
         const Interval& second() const;
     };
+    
+    std::size_t hash_value(const Interval& argument);
 }
    
 ////////// Implementation //////////
@@ -446,80 +436,22 @@ namespace OpenSolid
         );
     }
 
-    inline bool operator==(double first_argument, const Interval& second_argument) {
-        return first_argument == second_argument.lower() &&
-            first_argument == second_argument.upper();
-    }
-
-    inline bool operator==(const Interval& first_argument, double second_argument) {
-        return first_argument.lower() == second_argument &&
-            first_argument.upper() == second_argument;
-    }
-
     inline bool operator==(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() == second_argument.upper() &&
-            first_argument.upper() == second_argument.lower();
-    }
-
-    inline bool operator!=(double first_argument, const Interval& second_argument) {
-        return first_argument < second_argument.lower() || first_argument > second_argument.upper();
-    }
-
-    inline bool operator!=(const Interval& first_argument, double second_argument) {
-        return first_argument.upper() < second_argument || first_argument.lower() > second_argument;
+        return first_argument.lower() == second_argument.lower() &&
+            first_argument.upper() == second_argument.upper();
     }
 
     inline bool operator!=(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() > second_argument.upper() ||
-            first_argument.upper() < second_argument.lower();
+        return first_argument.lower() != second_argument.lower() ||
+            first_argument.upper() != second_argument.upper();
     }
-
-    inline bool operator<(double first_argument, const Interval& second_argument) {
-        return first_argument < second_argument.lower();
-    }
-
-    inline bool operator<(const Interval& first_argument, double second_argument) {
-        return first_argument.upper() < second_argument;
-    }
-
+    
     inline bool operator<(const Interval& first_argument, const Interval& second_argument) {
         return first_argument.upper() < second_argument.lower();
     }
-
-    inline bool operator<=(double first_argument, const Interval& second_argument) {
-        return first_argument <= second_argument.lower();
-    }
-
-    inline bool operator<=(const Interval& first_argument, double second_argument) {
-        return first_argument.upper() <= second_argument;
-    }
-
-    inline bool operator<=(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.upper() <= second_argument.lower();
-    }
-
-    inline bool operator>(double first_argument, const Interval& second_argument) {
-        return first_argument > second_argument.upper();
-    }
-
-    inline bool operator>(const Interval& first_argument, double second_argument) {
-        return first_argument.lower() > second_argument;
-    }
-
+    
     inline bool operator>(const Interval& first_argument, const Interval& second_argument) {
         return first_argument.lower() > second_argument.upper();
-    }
-
-    inline bool operator>=(double first_argument, const Interval& second_argument) {
-        return first_argument >= second_argument.upper();
-    }
-
-    inline bool operator>=(const Interval& first_argument, double second_argument) {
-        return first_argument.lower() >= second_argument;
-    }
-
-    inline bool operator>=(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() >= second_argument.upper();
     }
         
     inline Interval operator-(const Interval& argument) {
@@ -707,6 +639,13 @@ namespace OpenSolid
     inline const Interval& Pair<Interval>::first() const {return _first;}
     
     inline const Interval& Pair<Interval>::second() const {return _second;}
+    
+    inline std::size_t hash_value(const Interval& argument) {
+        std::size_t result = 0;
+        boost::hash_combine(result, argument.lower());
+        boost::hash_combine(result, argument.upper());
+        return result;
+    }
 }
 
 #endif

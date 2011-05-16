@@ -23,6 +23,8 @@
 
 #include <typeinfo>
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Value/Interval.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -69,6 +71,8 @@ namespace OpenSolid
         
         int parameters() const;
         int dimensions() const;
+        
+        bool operator==(const Function& other) const;
         
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
@@ -159,6 +163,8 @@ namespace OpenSolid
     OPENSOLID_EXPORT Function acos(const Function& argument);
     OPENSOLID_EXPORT Function asin(const Function& argument);
     
+    std::size_t hash_value(const Function& function);
+    
     OPENSOLID_EXPORT std::ostream& operator<<(
         std::ostream& stream,
         const Function& function
@@ -222,10 +228,18 @@ namespace OpenSolid
     inline int Function::parameters() const {return implementation()->parameters();}
     
     inline int Function::dimensions() const {return implementation()->dimensions();}
+        
+    inline bool Function::operator==(const Function& other) const {
+        return implementation() == other.implementation();
+    }
     
     template <class ArgumentType>
     inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return FunctionResult<ArgumentType>(*this, argument);
+    }
+    
+    inline std::size_t hash_value(const Function& function) {
+        return boost::hash_value(function.implementation());
     }
 }
 

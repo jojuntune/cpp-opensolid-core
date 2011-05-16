@@ -20,6 +20,8 @@
  
 #ifndef OPENSOLID__DOMAIN_HPP
 #define OPENSOLID__DOMAIN_HPP
+ 
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Collection/Set.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
@@ -48,8 +50,12 @@ namespace OpenSolid
         Interval interval() const;
         int dimensions() const;
         
+        bool operator==(const Domain& other) const;
+        
         OPENSOLID_EXPORT Domain concatenate(const Domain& other) const;
     };
+    
+    std::size_t hash_value(const Domain& domain);
 }
 
 ////////// Implementation //////////
@@ -93,6 +99,12 @@ namespace OpenSolid
     }
     
     inline int Domain::dimensions() const {return bounds().size();}
+        
+    inline bool Domain::operator==(const Domain& other) const {
+        return boundaries() == other.boundaries();
+    }
+    
+    inline std::size_t hash_value(const Domain& domain) {return hash_value(domain.boundaries());}
     
     inline VectorXI Bounds<Domain>::bounds(const Domain& domain) {return domain.bounds();}
 }

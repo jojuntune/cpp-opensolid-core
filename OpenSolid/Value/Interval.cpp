@@ -68,11 +68,11 @@ namespace OpenSolid
     }
 
     Interval atan2(const Interval& y, const Interval& x) {
-        if (x > 0.0) {
+        if (x.lower() > 0.0) {
             return atan(y / x);
-        } else if (y > 0.0) {
+        } else if (y.lower() > 0.0) {
             return atan(-x / y) + M_PI / 2;
-        } else if (y < 0.0) {
+        } else if (y.upper() < 0.0) {
             return atan(-x / y) - M_PI / 2;
         } else {
             return Interval(-M_PI, M_PI);
