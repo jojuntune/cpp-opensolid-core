@@ -207,6 +207,7 @@ public:
             x.squaredNorm() - 1,
             x * x * x - 4 * x * x + 5 * x - 2,
             sin(x).squaredNorm() + 2 * sin(x) + 1,
+            sqrt(x) - 0.5,
             1 / x - 1,
             sqrt(x) - x
         );
@@ -215,6 +216,7 @@ public:
             Interval(-2, 2),
             Interval(0, 3),
             Interval(-M_PI, 2 * M_PI),
+            Interval(0, 1),
             Interval(0, 2),
             Interval(0, 2)
         );
@@ -223,6 +225,7 @@ public:
             RowVector2d(-1, 1),
             RowVector2d(1, 2),
             RowVector2d(-M_PI / 2, 3 * M_PI / 2),
+            RowVectorXd::Constant(1, 0.25),
             RowVectorXd::Constant(1, 1.0),
             RowVector2d(0, 1)
         );
@@ -232,6 +235,7 @@ public:
             RowVector2d(1, 5.0 / 3.0),
             RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2),
             RowVectorXd(),
+            RowVectorXd(),
             RowVectorXd::Constant(1, 0.25)
         );
         List<RowVectorXd> expected_second_derivative_zeros(
@@ -240,9 +244,10 @@ public:
             RowVectorXd::Constant(1, 4.0 / 3.0),
             RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2),
             RowVectorXd(),
+            RowVectorXd(),
             RowVectorXd()
         );
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 5; ++i) {
             Function function = functions[i];
             Function derivative = function.derivative();
             Function second_derivative = derivative.derivative();
@@ -284,5 +289,21 @@ public:
             std::cout << "  second_derivative_zeros = " << second_derivative_zeros << std::endl;
             std::cout << "  second_derivative_errors = " << second_derivative_errors << std::endl;
         }
+    }
+    
+    void testCircleDerivativeZeros() {
+        Function x = Function::Parameter(1, 0);
+        double R = 1;
+        double r = 0.5;
+        double slope = 0.5;
+        Function radius_function = R - r + sqrt(x * (2 * r - x));
+        Function derivative_difference = radius_function.derivative() - 1 / slope;
+        RowVectorXd parameter_values = RowVectorXd::LinSpaced(20, Interval(0, r));
+        std::cout << derivative_difference(parameter_values) << std::endl;
+        double expected_root = 0.052786404500042038;
+        RowVectorXd zeros = derivative_difference.zeros(Interval(0, r));
+        std::cout << zeros << std::endl;
+        TS_ASSERT_EQUALS(zeros.size(), 1);
+        TS_ASSERT_DELTA(zeros(0), expected_root, Tolerance::roundoff());
     }
 };
