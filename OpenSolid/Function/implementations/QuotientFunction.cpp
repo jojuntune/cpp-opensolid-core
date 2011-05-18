@@ -33,13 +33,13 @@ namespace OpenSolid
     int QuotientFunction::dimensions() const {return firstOperand().dimensions();}
     
     void QuotientFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = firstOperand()(parameter_values) *
-            secondOperand()(parameter_values).cwiseInverse().asDiagonal();
+        results = firstOperand()(parameter_values).array() /
+            secondOperand()(parameter_values).replicate(dimensions(), 1).array();
     }
     
     void QuotientFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = firstOperand()(parameter_bounds) *
-            secondOperand()(parameter_bounds).cwiseInverse().asDiagonal();
+        results = firstOperand()(parameter_bounds).array() /
+            secondOperand()(parameter_bounds).replicate(dimensions(), 1).array();
     }
 
     void QuotientFunction::getDerivative(int index, Function& result) const {
