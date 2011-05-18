@@ -51,7 +51,7 @@ namespace OpenSolid
         int parameters() const;
         int dimensions() const;
         
-        FunctionResult<VectorXI> bounds() const;
+        VectorXI bounds() const;
         Set<Geometry> boundaries() const;
         
         template <class ArgumentType>
@@ -156,7 +156,7 @@ namespace OpenSolid
     
     inline int Geometry::dimensions() const {return function().dimensions();}
     
-    inline FunctionResult<VectorXI> Geometry::bounds() const {return function()(domain().bounds());}
+    inline VectorXI Geometry::bounds() const {return function()(domain().bounds());}
     
     inline Set<Geometry> Geometry::boundaries() const {
         return domain().boundaries().mapped<Geometry>(function());
@@ -178,7 +178,7 @@ namespace OpenSolid
         return result;
     }
     
-    inline FunctionResult<VectorXI> Bounds<Geometry>::bounds(const Geometry& geometry) {
+    inline VectorXI Bounds<Geometry>::bounds(const Geometry& geometry) {
         return geometry.bounds();
     }
 }

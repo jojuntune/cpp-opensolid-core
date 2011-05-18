@@ -22,7 +22,6 @@
 #define OPENSOLID__GEOMETRYDOMAIN_HPP
 
 #include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Function/Function.hpp>
 
 namespace OpenSolid
 {
@@ -42,7 +41,7 @@ namespace OpenSolid
     {
         typedef VectorXI Type;
         
-        static FunctionResult<VectorXI> bounds(const Geometry& geometry);
+        static VectorXI bounds(const Geometry& geometry);
     };
 }
 
