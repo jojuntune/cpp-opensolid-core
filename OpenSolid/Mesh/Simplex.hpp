@@ -247,7 +247,9 @@ namespace OpenSolid
     inline double Simplex<dimensions_, size_>::area() const {
         assert(size() == 3);
         if (dimensions() == 2) {
-            return (vertices().rightCols<2>().colwise() - vertices().col(0)).determinant() / 2;
+            return (
+                vertices().template rightCols<2>().colwise() - vertices().col(0)
+            ).determinant() / 2;
         } else {
             Matrix2d temp;
             double squared_area = 0.0;
@@ -267,7 +269,9 @@ namespace OpenSolid
     inline double Simplex<dimensions_, size_>::volume() const {
         assert(size() == 4);
         if (dimensions() == 3) {
-            return (vertices().rightCols<3>().colwise() - vertices().col(0)).determinant() / 6;
+            return (
+                vertices().template rightCols<3>().colwise() - vertices().col(0)
+            ).determinant() / 6;
         } else {
             Matrix3d temp;
             double squared_volume = 0.0;
@@ -290,7 +294,9 @@ namespace OpenSolid
     inline double Simplex<dimensions_, size_>::hypervolume() const {
         assert(size() == 5);
         if (dimensions() == 4) {
-            return (vertices().rightCols<4>.colwise() - vertices().col(0)).determinant() / 24;
+            return (
+                vertices().template rightCols<4>.colwise() - vertices().col(0)
+            ).determinant() / 24;
         } else {
             Matrix4d temp;
             double squared_hypervolume = 0.0;

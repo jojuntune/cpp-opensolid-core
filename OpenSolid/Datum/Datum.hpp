@@ -361,7 +361,7 @@ namespace OpenSolid
         const Datum<other_dimensions_, other_axes_>& other
     ) const {
         assert(dimensions() == other.dimensions());
-        assert(size() == other.size());
+        assert(this->size() == other.size());
         return origin() == other.origin() && vectors() == other.vectors();
     }
         

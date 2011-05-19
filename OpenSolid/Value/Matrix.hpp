@@ -439,17 +439,19 @@ namespace Eigen
     
     inline Interval CenteredOperation::operator()(double argument) const {return argument;}
     
+    template <class DerivedType>
     struct HashVisitor
     {
+        typedef typename DerivedType::Scalar ScalarType;
+        typedef typename DerivedType::Index IndexType;
+    
         std::size_t result;
         
-        template <class ScalarType, class IndexType>
         inline void init(const ScalarType& value, IndexType row, IndexType col) {
             result = 0;
             boost::hash_combine(result, value);
         }
         
-        template <class ScalarType, class IndexType>
         inline void operator()(const ScalarType& value, IndexType row, IndexType col) {
             boost::hash_combine(result, value);
         }
@@ -457,7 +459,7 @@ namespace Eigen
     
     template <class DerivedType>
     inline std::size_t hash_value(const DenseBase<DerivedType>& argument) {
-        HashVisitor visitor;
+        HashVisitor<DerivedType> visitor;
         argument.visit(visitor);
         return visitor.result;
     }
