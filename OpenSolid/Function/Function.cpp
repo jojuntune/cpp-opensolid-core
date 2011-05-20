@@ -349,17 +349,18 @@ namespace OpenSolid
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {
+        double tolerance = Tolerance::roundoff();
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
             return first_operand.as<ConstantFunction>().value() +
                 second_operand.as<ConstantFunction>().value();
         } else if (
             first_operand.isA<ConstantFunction>() &&
-            first_operand.as<ConstantFunction>().value().isZero()
+            first_operand.as<ConstantFunction>().value().isZero(tolerance)
         ) {
             return second_operand;
         } else if (
             second_operand.isA<ConstantFunction>() &&
-            second_operand.as<ConstantFunction>().value().isZero()
+            second_operand.as<ConstantFunction>().value().isZero(tolerance)
         ) {
             return first_operand;
         } else {
@@ -368,17 +369,18 @@ namespace OpenSolid
     }
     
     Function operator-(const Function& first_operand, const Function& second_operand) {
+        double tolerance = Tolerance::roundoff();
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
             return first_operand.as<ConstantFunction>().value() -
                 second_operand.as<ConstantFunction>().value();
         } else if (
             first_operand.isA<ConstantFunction>() &&
-            first_operand.as<ConstantFunction>().value().isZero()
+            first_operand.as<ConstantFunction>().value().isZero(tolerance)
         ) {
             return -second_operand;
         } else if (
             second_operand.isA<ConstantFunction>() &&
-            second_operand.as<ConstantFunction>().value().isZero()
+            second_operand.as<ConstantFunction>().value().isZero(tolerance)
         ) {
             return first_operand;
         } else {
@@ -387,6 +389,7 @@ namespace OpenSolid
     }
     
     Function operator*(const Function& first_operand, const Function& second_operand) {
+        double tolerance = Tolerance::roundoff();
         Function multiplicand;
         Function multiplier;
         if (second_operand.dimensions() == 1) {
@@ -401,33 +404,44 @@ namespace OpenSolid
                 multiplier.as<ConstantFunction>().value().scalar();
         } else if (
             multiplicand.isA<ConstantFunction>() &&
-            multiplicand.as<ConstantFunction>().value().isZero()
+            multiplicand.as<ConstantFunction>().value().isZero(tolerance)
         ) {
             return multiplicand;
-        } else if (
-            multiplier.isA<ConstantFunction>() &&
-            multiplier.as<ConstantFunction>().value().isZero()
-        ) {
-            return VectorXd::Zero(multiplicand.dimensions());
+        } else if (multiplier.isA<ConstantFunction>()) {
+            double multiplier_value = multiplier.as<ConstantFunction>().value().scalar();
+            if (abs(multiplier_value) < tolerance) {
+                return VectorXd::Zero(multiplicand.dimensions());
+            } else if (abs(multiplier_value - 1) < tolerance) {
+                return multiplicand;
+            } else if (abs(multiplier_value + 1) < tolerance) {
+                return -multiplicand;
+            } else {
+                return new ProductFunction(multiplicand, multiplier);
+            }
         } else {
             return new ProductFunction(multiplicand, multiplier);
         }
     }
     
     Function operator/(const Function& first_operand, const Function& second_operand) {
+        double tolerance = Tolerance::roundoff();
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
             return first_operand.as<ConstantFunction>().value() /
                 second_operand.as<ConstantFunction>().value().scalar();
         } else if (
             first_operand.isA<ConstantFunction>() &&
-            first_operand.as<ConstantFunction>().value().isZero()
+            first_operand.as<ConstantFunction>().value().isZero(tolerance)
         ) {
             return first_operand;
         } else if (second_operand.isA<ConstantFunction>()) {
-            return new ProductFunction(
-                1 / second_operand.as<ConstantFunction>().value().scalar(),
-                first_operand
-            );
+            double second_value = second_operand.as<ConstantFunction>().value().scalar();
+            if (abs(second_value - 1) < tolerance) {
+                return first_operand;
+            } else if (abs(second_value + 1) < tolerance) {
+                return -first_operand;
+            } else {
+                return new ProductFunction(first_operand, 1 / second_value);
+            }
         } else {
             return new QuotientFunction(first_operand, second_operand);
         }
