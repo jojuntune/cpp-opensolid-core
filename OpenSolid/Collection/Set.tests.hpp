@@ -34,13 +34,14 @@ using namespace OpenSolid;
 
 template <class Type>
 void testSet(const SetNode<Type>* node) {
+    double tolerance = Tolerance::roundoff();
     if (!node || node->size() == 1) {
         return;
     } else {
         const SetNode<Type>* left = node->left();
         const SetNode<Type>* right = node->right();
-        TS_ASSERT(node->bounds().contain(left->bounds()));
-        TS_ASSERT(node->bounds().contain(right->bounds()));
+        TS_ASSERT(node->bounds().contain(left->bounds(), tolerance));
+        TS_ASSERT(node->bounds().contain(right->bounds(), tolerance));
         testSet(node->left());
         testSet(node->right());
     }

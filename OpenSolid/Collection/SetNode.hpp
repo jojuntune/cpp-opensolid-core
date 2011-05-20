@@ -119,8 +119,59 @@ namespace OpenSolid
         }
     
         inline bool compatible(const Interval& bounds, int split_direction, double split_value) {
+            assert(split_direction == 0);
             double split_ratio = (split_value - bounds.lower()) / (bounds.upper() - split_value);
             return split_ratio > 0.5 && split_ratio < 2;
+        }
+
+        template <class BoundsType>
+        inline double median(const BoundsType& bounds, int split_direction) {
+            return bounds(split_direction).median();
+        }
+
+        inline double median(const Interval& bounds, int split_direction) {
+            assert(split_direction == 0);
+            return bounds.median();
+        }
+
+        template <class BoundsType>
+        inline bool lesserMedian(
+            const BoundsType& first_bounds,
+            const BoundsType& second_bounds,
+            int split_direction
+        ) {
+            Interval difference = first_bounds(split_direction) - second_bounds(split_direction);
+            return difference.upper() < -difference.lower();
+        }
+
+        inline bool lesserMedian(
+            const Interval& first_bounds,
+            const Interval& second_bounds,
+            int split_direction
+        ) {
+            assert(split_direction == 0);
+            Interval difference = first_bounds - second_bounds;
+            return difference.upper() < -difference.lower();
+        }
+
+        template <class BoundsType>
+        inline bool greaterMedian(
+            const BoundsType& first_bounds,
+            const BoundsType& second_bounds,
+            int split_direction
+        ) {
+            Interval difference = first_bounds(split_direction) - second_bounds(split_direction);
+            return difference.upper() > -difference.lower();
+        }
+
+        inline bool greaterMedian(
+            const Interval& first_bounds,
+            const Interval& second_bounds,
+            int split_direction
+        ) {
+            assert(split_direction == 0);
+            Interval difference = first_bounds - second_bounds;
+            return difference.upper() > -difference.lower();
         }
     }
     
@@ -177,8 +228,8 @@ namespace OpenSolid
         if (_size == 2) {
             _left = *begin;
             _right = *(begin + 1);
-            double right_median = _right->_bounds(_split_direction).median();
-            double left_median = _left->_bounds(_split_direction).median();
+            double right_median = median(_right->_bounds, _split_direction);
+            double left_median = median(_left->_bounds, _split_direction);
             if (right_median < left_median) {std::swap(_left, _right);}
         } else {
             int left_size = 0;
@@ -188,8 +239,7 @@ namespace OpenSolid
             SetNode<Type>** lower = begin;
             SetNode<Type>** upper = end - 1;
             for (SetNode<Type>** i = lower; i <= upper; ++i) {
-                Interval difference = (*i)->_bounds(_split_direction) - _bounds(_split_direction);
-                if (difference.upper() < -difference.lower()) {
+                if (lesserMedian((*i)->_bounds, _bounds, _split_direction)) {
                     if (left_size == 0) {
                         left_bounds = (*i)->_bounds;
                     } else {
@@ -201,8 +251,7 @@ namespace OpenSolid
                 }
             }
             for (SetNode<Type>** i = upper; i >= lower; --i) {
-                Interval difference = (*i)->_bounds(_split_direction) - _bounds(_split_direction);
-                if (difference.upper() > -difference.lower()) {
+                if (greaterMedian((*i)->_bounds, _bounds, _split_direction)) {
                     if (right_size == 0) {
                         right_bounds = (*i)->_bounds;
                     } else {
@@ -309,11 +358,11 @@ namespace OpenSolid
             return new SetNode<Type>(overall_bounds, nodes, nodes + 2);
         } else if (compatible(overall_bounds, _split_direction, _split_value)) {
             assert(_left && _right);
-            double median = new_bounds(_split_direction).median();
-            if (median < _split_value) {
+            double mid = median(new_bounds, _split_direction);
+            if (mid < _split_value) {
                 _left = _left->insert(new_bounds, new_object);
                 _left->_parent = this;
-            } else if (median > _split_value) {
+            } else if (mid > _split_value) {
                 _right = _right->insert(new_bounds, new_object);
                 _right->_parent = this;
             } else if (_left->_size < _right->_size) {
@@ -353,9 +402,9 @@ namespace OpenSolid
             }
         } else {
             assert(_left && _right);
-            double median = removed_bounds(_split_direction).median();
-            if (median <= _split_value) {_left = _left->remove(removed_bounds, removed_object);}
-            if (median >= _split_value) {_right = _right->remove(removed_bounds, removed_object);}
+            double mid = median(removed_bounds, _split_direction);
+            if (mid <= _split_value) {_left = _left->remove(removed_bounds, removed_object);}
+            if (mid >= _split_value) {_right = _right->remove(removed_bounds, removed_object);}
             if (!_left) {
                 SetNode<Type>* result = _right;
                 _right = 0;

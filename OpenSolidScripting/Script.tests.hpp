@@ -280,19 +280,6 @@ public:
         TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseUpper()"), Vector3d(3, 6, 9));
     }
     
-    void testMatrixCentered() {
-        Script script;
-        script.run("v = Vector3d(1, 2, 3).hull(Vector3d(4, 5, 6))");
-        MatrixXd result = script.get<MatrixXd>("v.cwiseMedian()");
-        TS_ASSERT_EQUALS(result, Vector3d(2.5, 3.5, 4.5));
-        result = script.get<MatrixXd>("v.cwiseCentered().cwiseMedian()");
-        TS_ASSERT_EQUALS(result, Vector3d::Zero());
-        result = script.get<MatrixXd>("v.cwiseCentered().cwiseLower()");
-        TS_ASSERT_EQUALS(result, Vector3d::Constant(-1.5));
-        result = script.get<MatrixXd>("v.cwiseCentered().cwiseUpper()");
-        TS_ASSERT_EQUALS(result, Vector3d::Constant(1.5));
-    }
-    
     void testMatrixIntersection() {
         Script script;
         script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");

@@ -23,8 +23,8 @@
 
 #include <boost/mpl/if.hpp>
 
-#include <OpenSolid/Value/Eigen.hpp>
 #include <OpenSolid/Value/Interval.hpp>
+#include <OpenSolid/Value/Matrix.hpp>
 
 namespace OpenSolid
 {

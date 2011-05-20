@@ -40,8 +40,6 @@ namespace OpenSolid
         template <class DerivedType>
         Frame(const VectorType& origin, const EigenBase<DerivedType>& vectors);
         
-        Frame(const VectorType& origin, const List<VectorType>& vectors);
-        
         template <int other_dimensions_, int other_axes_>
         Frame(const Datum<other_dimensions_, other_axes_>& other);
         
@@ -89,11 +87,6 @@ namespace OpenSolid
         const VectorType& origin,
         const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors, true);}
-    
-    template <int dimensions_>
-    inline Frame<dimensions_>::Frame(const VectorType& origin, const List<VectorType>& vectors) {
-        initialize(origin, vectors.matrix(), true);
-    }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) {

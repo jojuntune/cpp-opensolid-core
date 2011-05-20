@@ -42,8 +42,6 @@ namespace OpenSolid
         template <class DerivedType>
         Plane(const VectorType& origin, const EigenBase<DerivedType>& vectors);
         
-        Plane(const VectorType& origin, const List<VectorType>& vectors);
-        
         template <int other_dimensions_, int other_axes_>
         Plane(const Datum<other_dimensions_, other_axes_>& other);
         
@@ -86,12 +84,6 @@ namespace OpenSolid
         const VectorType& origin,
         const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors);}
-    
-    template <int dimensions_>
-    inline Plane<dimensions_>::Plane(
-        const VectorType& origin,
-        const List<VectorType>& vectors
-    ) {initialize(origin, vectors.matrix());}
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) {

@@ -165,7 +165,11 @@ namespace OpenSolid
         return Geometry(operator()(geometry.function()), geometry.domain());
     }
     
-    double getZero(const List<Function>& derivatives, const Interval& domain_interval, int& order) {
+    double getZero(
+        const std::vector<Function>& derivatives,
+        const Interval& domain_interval,
+        int& order
+    ) {
         double x = domain_interval.median();
         double y = derivatives[order](x).scalar();
         double derivative_value = derivatives[order + 1](x).scalar();
@@ -199,17 +203,17 @@ namespace OpenSolid
     }
     
     void getZeros(
-        const List<Function>& derivatives,
+        const std::vector<Function>& derivatives,
         const Interval& domain_interval,
         int order,
-        List<double>& results
+        std::vector<double>& results
     ) {
         RowVector2d endpoint_x(domain_interval.lower(), domain_interval.upper());
         RowVector2d endpoint_y = derivatives[order](endpoint_x);
         if ((endpoint_y(0) > 0) != (endpoint_y(1) > 0)) {
             double x = getZero(derivatives, domain_interval, order);
             if (order == 0) {
-                results.append(x);
+                results.push_back(x);
             } else {
                 getZeros(derivatives, Interval(domain_interval.lower(), x), order - 1, results);
                 getZeros(derivatives, Interval(x, domain_interval.upper()), order - 1, results);
@@ -219,56 +223,66 @@ namespace OpenSolid
         }
     }
     
-    RowVectorXd Function::zeros(const Interval& domain, double tolerance) const {
+    RowVectorXd Function::zeros(const Interval& domain) const {
         int order = 4;
-        List<Function> derivatives(order + 1);
+        double tolerance = Tolerance::roundoff();
+        std::vector<Function> derivatives(order + 1);
         derivatives[0] = *this;
         RowVectorXd derivative_values(order);
         for (int i = 1; i <= order; ++i) {
             derivatives[i] = derivatives[i - 1].derivative();
             derivative_values(i - 1) = derivatives[i](domain.median()).scalar();
         }
-        if (derivative_values.isZero(Tolerance::roundoff())) {return RowVectorXd();}
+        if (derivative_values.isZero(tolerance)) {return RowVectorXd();}
         RowVectorXI domain_intervals(1);
         domain_intervals(0) = domain;
-        List<double> results;
+        std::vector<double> results;
         while (domain_intervals.size() > 0) {
             MatrixXI bounds(derivatives.size(), domain_intervals.size());
-            for (int i = 0; i < derivatives.size(); ++i) {
+            for (unsigned i = 0; i < derivatives.size(); ++i) {
                 bounds.row(i) = derivatives[i](domain_intervals);
             }
             MatrixXI bound_norms = bounds.cwiseAbs();
-            List<Interval> bisected_intervals;
+            std::vector<Interval> bisected_intervals;
             for (int i = 0; i < domain_intervals.size(); ++i) {
                 bool bisection_needed = true;
                 for (int j = 0; j <= order; ++j) {
-                    if (bound_norms(j, i).lower() > Tolerance::roundoff()) {
+                    if (bound_norms(j, i).lower() > tolerance) {
                         bisection_needed = false;
                         if (j > 0) {getZeros(derivatives, domain_intervals[i], j - 1, results);}
                         break;
                     }
                 }
                 if (bisection_needed) {
-                    Pair<Interval> bisected = domain_intervals[i].bisected();
-                    bisected_intervals.append(bisected.first());
-                    bisected_intervals.append(bisected.second());
+                    std::pair<Interval, Interval> bisected = domain_intervals[i].bisected();
+                    bisected_intervals.push_back(bisected.first);
+                    bisected_intervals.push_back(bisected.second);
                 }
             }
-            domain_intervals = bisected_intervals.empty() ? 
-                RowVectorXI() : 
-                bisected_intervals.matrix();
+            if (bisected_intervals.empty()) {
+                domain_intervals = RowVectorXI();
+            } else {
+                domain_intervals.resize(bisected_intervals.size());
+                std::copy(
+                    bisected_intervals.begin(),
+                    bisected_intervals.end(),
+                    domain_intervals.begin()
+                );
+            }
         }
         if (results.empty()) {
             return RowVectorXd();
         } else {
             std::sort(results.begin(), results.end());
             int index = 0;
-            for (int i = 1; i < results.size(); ++i) {
-                if (results[i] - results[index] > Tolerance::roundoff()) {
+            for (unsigned i = 1; i < results.size(); ++i) {
+                if (results[i] - results[index] > tolerance) {
                     results[++index] = results[i];
                 }
             }
-            return results.matrix().head(index + 1);
+            RowVectorXd final_results(index + 1);
+            std::copy(results.begin(), results.begin() + index + 1, final_results.begin());
+            return final_results;
         }
     }
     

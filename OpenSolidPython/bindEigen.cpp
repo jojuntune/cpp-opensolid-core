@@ -369,18 +369,6 @@ namespace OpenSolid
         return first_argument.contain(second_argument);
     }
     
-    bool adjacentXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        return first_argument.adjacent(second_argument.cast<Interval>());
-    }
-    
-    bool adjacentXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        return first_argument.cast<Interval>().adjacent(second_argument);
-    }
-    
-    bool adjacentXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        return first_argument.adjacent(second_argument);
-    }
-    
     MatrixXd* cwiseLower(const MatrixXI& argument) {return new MatrixXd(argument.cwiseLower());}
     
     MatrixXd* cwiseUpper(const MatrixXI& argument) {return new MatrixXd(argument.cwiseUpper());}
@@ -388,10 +376,6 @@ namespace OpenSolid
     MatrixXd* cwiseMedian(const MatrixXI& argument) {return new MatrixXd(argument.cwiseMedian());}
     
     MatrixXd* cwiseWidth(const MatrixXI& argument) {return new MatrixXd(argument.cwiseWidth());}
-    
-    MatrixXI* cwiseCentered(const MatrixXI& argument) {
-        return new MatrixXI(argument.cwiseCentered());
-    }
     
     MatrixXI* hullXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         return new MatrixXI(first_argument.hull(second_argument));
@@ -411,11 +395,6 @@ namespace OpenSolid
     
     MatrixXI* intersection(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         return new MatrixXI(first_argument.intersection(second_argument));
-    }
-    
-    tuple bisected(const MatrixXI& argument) {
-        Pair<MatrixXI> bisected = argument.bisected();
-        return boost::python::make_tuple(bisected.first(), bisected.second());
     }
     
     template <class MatrixType>
@@ -714,7 +693,6 @@ namespace OpenSolid
             .def("dot", &dotXdXd)
             .def("cross", &crossXdXI, return_value_policy<manage_new_object>())
             .def("cross", &crossXdXd, return_value_policy<manage_new_object>())
-            .def("adjacent", &adjacentXdXI)
             .def("hull", &hullXdXI, return_value_policy<manage_new_object>())
             .def("hull", &hullXdXd, return_value_policy<manage_new_object>())
             .def("Constant", &constant<MatrixXd>, return_value_policy<manage_new_object>())
@@ -776,17 +754,13 @@ namespace OpenSolid
             .def("overlap", &overlap)
             .def("contain", &containXIXI)
             .def("contain", &containXIXd)
-            .def("adjacent", &adjacentXIXI)
-            .def("adjacent", &adjacentXIXd)
             .def("cwiseLower", &cwiseLower, return_value_policy<manage_new_object>())
             .def("cwiseUpper", &cwiseUpper, return_value_policy<manage_new_object>())
             .def("cwiseMedian", &cwiseMedian, return_value_policy<manage_new_object>())
             .def("cwiseWidth", &cwiseWidth, return_value_policy<manage_new_object>())
-            .def("cwiseCentered", &cwiseCentered, return_value_policy<manage_new_object>())
             .def("hull", &hullXIXI, return_value_policy<manage_new_object>())
             .def("hull", &hullXIXd, return_value_policy<manage_new_object>())
             .def("intersection", &intersection, return_value_policy<manage_new_object>())
-            .def("bisected", &bisected)
             .def("Constant", &constant<MatrixXI>, return_value_policy<manage_new_object>())
             .staticmethod("Constant")
             .def("Zero", &zero<MatrixXI>, return_value_policy<manage_new_object>())

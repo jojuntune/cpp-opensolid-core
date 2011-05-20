@@ -23,6 +23,7 @@
 
 #include <ostream>
 #include <algorithm>
+#include <functional>
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/functional/hash.hpp>
@@ -30,6 +31,7 @@
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/ReferenceCountedBase.hpp>
 #include <OpenSolid/Common/Shared.hpp>
+#include <OpenSolid/Value/Tolerance.hpp>
 #include "CollectionBase.hpp"
 #include "FixedSizeCollection.hpp"
 #include "SetNode.hpp"
@@ -100,6 +102,11 @@ namespace OpenSolid
             const typename Bounds<Type>::Type& bounds
         ) const;
         
+        FilteredSet<Type, OverlapFunction<Type> > overlapping(
+            const typename Bounds<Type>::Type& bounds,
+            double tolerance
+        ) const;
+        
         bool operator==(const Set<Type>& other) const;
     };
     
@@ -154,8 +161,9 @@ namespace OpenSolid
     {
     private:
         typename Bounds<Type>::Type _bounds;
+        double _tolerance;
     public:
-        OverlapFunction(const typename Bounds<Type>::Type& bounds);
+        OverlapFunction(const typename Bounds<Type>::Type& bounds, double tolerance);
     
         bool operator()(const typename Bounds<Type>::Type& subset_bounds) const;
     };
@@ -217,7 +225,7 @@ namespace OpenSolid
     namespace
     {
         template <class Type>
-        struct NodeCreator
+        struct NodeCreator : public std::unary_function<Type, SetNode<Type>*>
         {
             inline SetNode<Type>* operator()(const Type& item) const {
                 return new SetNode<Type>(Bounds<Type>::bounds(item), item);
@@ -363,7 +371,13 @@ namespace OpenSolid
     template <class Type>
     inline FilteredSet<Type, OverlapFunction<Type> > Set<Type>::overlapping(
         const typename Bounds<Type>::Type& bounds
-    ) const {return filtered(OverlapFunction<Type>(bounds));}
+    ) const {return filtered(OverlapFunction<Type>(bounds, 0.0));}
+    
+    template <class Type>
+    inline FilteredSet<Type, OverlapFunction<Type> > Set<Type>::overlapping(
+        const typename Bounds<Type>::Type& bounds,
+        double tolerance
+    ) const {return filtered(OverlapFunction<Type>(bounds, tolerance));}
     
     template <class Type>
     inline bool Set<Type>::operator==(const Set<Type>& other) const {
@@ -427,13 +441,15 @@ namespace OpenSolid
     inline SetIterator<Type>::SetIterator(const SetNode<Type>* node) : _node(node) {}
     
     template <class Type>
-    inline OverlapFunction<Type>::OverlapFunction(const typename Bounds<Type>::Type& bounds) :
-        _bounds(bounds) {}
+    inline OverlapFunction<Type>::OverlapFunction(
+        const typename Bounds<Type>::Type& bounds,
+        double tolerance
+    ) : _bounds(bounds), _tolerance(tolerance) {}
 
     template <class Type>
     inline bool OverlapFunction<Type>::operator()(
         const typename Bounds<Type>::Type& subset_bounds
-    ) const {return _bounds.overlap(subset_bounds);}
+    ) const {return subset_bounds.overlap(_bounds, _tolerance);}
     
     template <class Type, class FunctionType> template <class VisitorType>
     void FilteredSet<Type, FunctionType>::visit(

@@ -28,8 +28,8 @@ using namespace boost::python;
 namespace OpenSolid
 {
     tuple bisected(const Interval& argument) {
-        Pair<Interval> bisected = argument.bisected();
-        return make_tuple(bisected.first(), bisected.second());
+        std::pair<Interval, Interval> bisected = argument.bisected();
+        return make_tuple(bisected.first, bisected.second);
     }
     
     bool overlapId(const Interval& first_argument, double second_argument) {
@@ -48,24 +48,12 @@ namespace OpenSolid
         return first_argument.contain(second_argument);
     }
     
-    bool adjacentId(const Interval& first_argument, double second_argument) {
-        return first_argument.adjacent(second_argument);
-    }
-    
-    bool adjacentII(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.adjacent(second_argument);
-    }
-    
     Interval hullId(const Interval& first_argument, double second_argument) {
         return first_argument.hull(second_argument);
     }
     
     Interval hullII(const Interval& first_argument, const Interval& second_argument) {
         return first_argument.hull(second_argument);
-    }
-    
-    Interval intersectionId(const Interval& first_argument, double second_argument) {
-        return first_argument.intersection(second_argument);
     }
     
     Interval intersectionII(const Interval& first_argument, const Interval& second_argument) {
@@ -78,24 +66,18 @@ namespace OpenSolid
             .def(init<double, double>())
             .def(init<Interval>())
             .def("empty", &Interval::empty)
-            .def("lower", &lowerBound)
-            .def("upper", &upperBound)
+            .def("lower", &Interval::lower)
+            .def("upper", &Interval::upper)
             .def("median", &Interval::median)
             .def("width", &Interval::width)
-            .def("centered", &Interval::centered)
             .def("bisected", &bisected)
             .def("squared", &Interval::squared)
-            .def("hull", &hullId)
-            .def("hull", &hullII)
             .def("overlap", &overlapId)
             .def("overlap", &overlapII)
             .def("contain", &containId)
             .def("contain", &containII)
-            .def("adjacent", &adjacentId)
-            .def("adjacent", &adjacentII)
             .def("hull", &hullId)
             .def("hull", &hullII)
-            .def("intersection", &intersectionId)
             .def("intersection", &intersectionII)
             .def("Empty", &Interval::Empty).staticmethod("Empty")
             .def("Whole", &Interval::Whole).staticmethod("Whole")
@@ -124,10 +106,6 @@ namespace OpenSolid
         def("abs", (double (*)(double)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);
         def("sqrt", (double (*)(double)) &sqrt);
-        def("exp", (Interval (*)(const Interval&))  &exp);
-        def("exp", (double (*)(double)) &exp);
-        def("log", (Interval (*)(const Interval&)) &log);
-        def("log", (double (*)(double)) &log);
         def("sin", (Interval (*)(const Interval&)) &sin);
         def("sin", (double (*)(double)) &sin);
         def("cos", (Interval (*)(const Interval&)) &cos);
@@ -140,6 +118,10 @@ namespace OpenSolid
         def("acos", (double (*)(double)) &acos);
         def("atan", (Interval (*)(const Interval&)) &atan);
         def("atan", (double (*)(double)) &atan);
+        def("exp", (Interval (*)(const Interval&))  &exp);
+        def("exp", (double (*)(double)) &exp);
+        def("log", (Interval (*)(const Interval&)) &log);
+        def("log", (double (*)(double)) &log);
         
         implicitly_convertible<double, Interval>();
     }

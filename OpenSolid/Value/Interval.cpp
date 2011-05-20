@@ -25,47 +25,18 @@
 #include "Interval.hpp"
 
 namespace OpenSolid
-{
-    typedef boost::numeric::interval<
-        double,
-        boost::numeric::interval_lib::policies<
-            boost::numeric::interval_lib::save_state_nothing<
-                boost::numeric::interval_lib::rounded_transc_exact<double,
-                    boost::numeric::interval_lib::rounded_arith_exact<double>
-                >
-            >,
-            boost::numeric::interval_lib::checking_base<double>
-        >
-    > BoostInterval;
-            
-    Interval sin(const Interval& argument) {
-        BoostInterval temp = boost::numeric::sin(BoostInterval(argument.lower(), argument.upper()));
-        return Interval(temp.lower(), temp.upper());
-    }
+{           
+    Interval sin(const Interval& argument) {return sin(argument.interval());}
 
-    Interval cos(const Interval& argument) {
-        BoostInterval temp = boost::numeric::cos(BoostInterval(argument.lower(), argument.upper()));
-        return Interval(temp.lower(), temp.upper());
-    }
+    Interval cos(const Interval& argument) {return cos(argument.interval());}
 
-    Interval tan(const Interval& argument) {
-        BoostInterval temp = boost::numeric::tan(BoostInterval(argument.lower(), argument.upper()));
-        return Interval(temp.lower(), temp.upper());
-    }
+    Interval tan(const Interval& argument) {return tan(argument.interval());}
 
-    Interval asin(const Interval& argument) {
-        BoostInterval temp = boost::numeric::asin(BoostInterval(argument.lower(), argument.upper()));
-        return Interval(temp.lower(), temp.upper());
-    }
+    Interval asin(const Interval& argument) {return asin(argument.interval());}
 
-    Interval acos(const Interval& argument) {
-        BoostInterval temp = boost::numeric::acos(BoostInterval(argument.lower(), argument.upper()));
-        return Interval(temp.lower(), temp.upper());
-    }
+    Interval acos(const Interval& argument) {return acos(argument.interval());}
 
-    Interval atan(const Interval& argument) {
-        return Interval(atan(argument.lower()), atan(argument.upper()));
-    }
+    Interval atan(const Interval& argument) {return atan(argument.interval());}
 
     Interval atan2(const Interval& y, const Interval& x) {
         if (x.lower() > 0.0) {
@@ -79,28 +50,21 @@ namespace OpenSolid
         }
     }
 
-    Interval exp(const Interval& argument) {
-        return Interval(exp(argument.lower()), exp(argument.upper()));
-    }
+    Interval exp(const Interval& argument) {return exp(argument.interval());}
 
-    Interval log(const Interval& argument) {
-        return Interval(log(argument.lower()), log(argument.upper()));
-    }
+    Interval log(const Interval& argument) {return log(argument.interval());}
     
     Interval pow(const Interval& base, const Interval& exponent) {
         return exp(log(base) * exponent);
     }
     
-    std::ostream& operator<<(std::ostream& stream, const Interval& value) {
-        if (
-            value.lower() == std::numeric_limits<double>::infinity() &&
-            value.upper() == -std::numeric_limits<double>::infinity()
-        ) {
+    std::ostream& operator<<(std::ostream& stream, const Interval& argument) {
+        if (argument.empty()) {
             stream << "[]";
-        } else if (value.lower() == value.upper()) {
-            stream << "[" << value.lower() << "]";
+        } else if (argument.singleton()) {
+            stream << "[" << argument.lower() << "]";
         } else {
-            stream << "[" << value.lower() << "," << value.upper() << "]";
+            stream << "[" << argument.lower() << "," << argument.upper() << "]";
         }
         return stream;
     }

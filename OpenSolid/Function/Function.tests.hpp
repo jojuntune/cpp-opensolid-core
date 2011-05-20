@@ -201,52 +201,56 @@ public:
     }
     
     void testZeros() {
+        std::vector<Function> functions(7);
+        std::vector<Interval> domains(7);
+        std::vector<RowVectorXd> expected_function_zeros(7);
+        std::vector<RowVectorXd> expected_derivative_zeros(7);
+        std::vector<RowVectorXd> expected_second_derivative_zeros(7);
+        
         Function x = Function::Parameter(1, 0);
-        List<Function> functions(
-            x - 1,
-            x.squaredNorm() - 1,
-            x * x * x - 4 * x * x + 5 * x - 2,
-            sin(x).squaredNorm() + 2 * sin(x) + 1,
-            sqrt(x) - 0.5,
-            1 / x - 1,
-            sqrt(x) - x
-        );
-        List<Interval> domains(
-            Interval(0, 2),
-            Interval(-2, 2),
-            Interval(0, 3),
-            Interval(-M_PI, 2 * M_PI),
-            Interval(0, 1),
-            Interval(0, 2),
-            Interval(0, 2)
-        );
-        List<RowVectorXd> expected_function_zeros(
-            RowVectorXd::Constant(1, 1.0),
-            RowVector2d(-1, 1),
-            RowVector2d(1, 2),
-            RowVector2d(-M_PI / 2, 3 * M_PI / 2),
-            RowVectorXd::Constant(1, 0.25),
-            RowVectorXd::Constant(1, 1.0),
-            RowVector2d(0, 1)
-        );
-        List<RowVectorXd> expected_derivative_zeros(
-            RowVectorXd(),
-            RowVectorXd::Constant(1, 0.0),
-            RowVector2d(1, 5.0 / 3.0),
-            RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2),
-            RowVectorXd(),
-            RowVectorXd(),
-            RowVectorXd::Constant(1, 0.25)
-        );
-        List<RowVectorXd> expected_second_derivative_zeros(
-            RowVectorXd(),
-            RowVectorXd(),
-            RowVectorXd::Constant(1, 4.0 / 3.0),
-            RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2),
-            RowVectorXd(),
-            RowVectorXd(),
-            RowVectorXd()
-        );
+
+        functions[0] = x - 1;
+        domains[0] = Interval(0, 2);
+        expected_function_zeros[0] = RowVectorXd::Constant(1, 1.0);
+        expected_derivative_zeros[0] = RowVectorXd();
+        expected_second_derivative_zeros[0] = RowVectorXd();
+
+        functions[1] = x.squaredNorm() - 1;
+        domains[1] = Interval(-2, 2);
+        expected_function_zeros[1] = RowVector2d(-1, 1);
+        expected_derivative_zeros[1] = RowVectorXd::Constant(1, 0.0);
+        expected_second_derivative_zeros[1] = RowVectorXd();
+
+        functions[2] = x * x * x - 4 * x * x + 5 * x - 2;
+        domains[2] = Interval(0, 3);
+        expected_function_zeros[2] = RowVector2d(1, 2);
+        expected_derivative_zeros[2] = RowVector2d(1, 5.0 / 3.0);
+        expected_second_derivative_zeros[2] = RowVectorXd::Constant(1, 4.0 / 3.0);
+
+        functions[3] = sin(x).squaredNorm() + 2 * sin(x) + 1;
+        domains[3] = Interval(-M_PI, 2 * M_PI);
+        expected_function_zeros[3] = RowVector2d(-M_PI / 2, 3 * M_PI / 2);
+        expected_derivative_zeros[3] = RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2);
+        expected_second_derivative_zeros[3] = RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2);
+
+        functions[4] = sqrt(x) - 0.5;
+        domains[4] = Interval(0, 1);
+        expected_function_zeros[4] = RowVectorXd::Constant(1, 0.25);
+        expected_derivative_zeros[4] = RowVectorXd();
+        expected_second_derivative_zeros[4] = RowVectorXd();
+
+        functions[5] = 1 / x - 1;
+        domains[5] = Interval(0, 2);
+        expected_function_zeros[5] = RowVectorXd::Constant(1, 1.0);
+        expected_derivative_zeros[5] = RowVectorXd();
+        expected_second_derivative_zeros[5] = RowVectorXd();
+
+        functions[6] = sqrt(x) - x;
+        domains[6] = Interval(0, 2);
+        expected_function_zeros[6] = RowVector2d(0, 1);
+        expected_derivative_zeros[6] = RowVectorXd::Constant(1, 0.25);
+        expected_second_derivative_zeros[6] = RowVectorXd();
+
         for (int i = 0; i < 5; ++i) {
             Function function = functions[i];
             Function derivative = function.derivative();
@@ -291,7 +295,7 @@ public:
         }
     }
     
-    void testCircleDerivativeZeros() {
+    void xtestCircleDerivativeZeros() {
         Function x = Function::Parameter(1, 0);
         double R = 1;
         double r = 0.5;

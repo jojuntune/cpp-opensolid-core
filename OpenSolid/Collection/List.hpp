@@ -35,9 +35,6 @@
 namespace OpenSolid
 {
     template <class Type>
-    struct ListMatrixAdapterType;
-    
-    template <class Type>
     class List : public FixedSizeCollection<List<Type> >
     {
     private:
@@ -139,8 +136,6 @@ namespace OpenSolid
             const Type& tenth_item
         );
         
-        typename ListMatrixAdapterType<Type>::Type matrix() const;
-        
         int size() const;
         bool empty() const;
         
@@ -202,8 +197,6 @@ namespace OpenSolid
 }
 
 ////////// Implementation //////////
-
-#include "ListMatrixAdapter.hpp"
 
 namespace OpenSolid
 {
@@ -379,11 +372,6 @@ namespace OpenSolid
         _vector.reference()[7] = eighth_item;
         _vector.reference()[8] = ninth_item;
         _vector.reference()[9] = tenth_item;
-    }
-        
-    template <class Type>
-    inline typename ListMatrixAdapterType<Type>::Type List<Type>::matrix() const {
-        return listMatrixAdapter(*this);
     }
     
     template <class Type>

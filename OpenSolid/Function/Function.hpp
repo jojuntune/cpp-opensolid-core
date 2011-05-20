@@ -25,6 +25,7 @@
 
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/Common/Shared.hpp>
 #include <OpenSolid/Value/Interval.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -95,10 +96,7 @@ namespace OpenSolid
         OPENSOLID_EXPORT Geometry operator()(const Domain& domain) const;
         OPENSOLID_EXPORT Geometry operator()(const Geometry& geometry) const;
         
-        OPENSOLID_EXPORT RowVectorXd zeros(
-            const Interval& domain,
-            double tolerance = Tolerance::size()
-        ) const;
+        OPENSOLID_EXPORT RowVectorXd zeros(const Interval& domain) const;
         
         OPENSOLID_EXPORT void debug(std::ostream& stream, int indent = 0) const;
         

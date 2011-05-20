@@ -26,6 +26,7 @@
 #include <OpenSolid/Collection/IteratorRange.hpp>
 #include "Interval.hpp"
 #include "Matrix.hpp"
+#include "Tolerance.hpp"
 
 using namespace OpenSolid;
 
@@ -42,12 +43,14 @@ void printDirectAccess(const Type& argument) {
 class MatrixTestSuite : public CxxTest::TestSuite
 {
 private:
+    double tolerance;
     double a;
     Interval b;
     Vector3d u;
     Vector3I v;
 public:
     void setUp() {
+        tolerance = Tolerance::roundoff();
         a = 2;
         b = Interval(2, 3);
         u = Vector3d(1, 2, 3);
@@ -55,9 +58,9 @@ public:
     }
 
     void testOverlap() {
-        TS_ASSERT(u.cast<Interval>().overlap(v));
+        TS_ASSERT(u.cast<Interval>().overlap(v, tolerance));
         TS_ASSERT(v.overlap(u.cast<Interval>()));
-        TS_ASSERT(!v.overlap((3 * u).cast<Interval>()));
+        TS_ASSERT(!v.overlap((3 * u).cast<Interval>(), tolerance));
     }
     
     void testHull() {
@@ -67,14 +70,6 @@ public:
         result = v.hull((3 * u).cast<Interval>());
         TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(3, 6, 9));
-    }
-    
-    void testCentered() {
-        Vector3I v = Vector3d(1, 2, 3).hull(Vector3d(4, 5, 6));
-        TS_ASSERT_EQUALS(v.cwiseMedian(), Vector3d(2.5, 3.5, 4.5));
-        TS_ASSERT_EQUALS(v.cwiseCentered().cwiseMedian(), Vector3d::Zero());
-        TS_ASSERT_EQUALS(v.cwiseCentered().cwiseLower(), Vector3d::Constant(-1.5));
-        TS_ASSERT_EQUALS(v.cwiseCentered().cwiseUpper(), Vector3d::Constant(1.5));
     }
     
     void testIntersection() {
@@ -109,24 +104,6 @@ public:
         TS_ASSERT_EQUALS(c, Vector4d(1, 2, 3, 4));
     }
     
-    void testBisected() {
-        Matrix2I matrix;
-        matrix << Interval(1, 2), Interval(3, 4), Interval(5, 7), Interval(8, 9);
-        Pair<Matrix2I> bisected = matrix.bisected();
-        TS_ASSERT_EQUALS(bisected.first().cwiseLower(), (Matrix2d() << 1, 3, 5, 8).finished());
-        TS_ASSERT_EQUALS(bisected.first().cwiseUpper(), (Matrix2d() << 2, 4, 6, 9).finished());
-        TS_ASSERT_EQUALS(bisected.second().cwiseLower(), (Matrix2d() << 1, 3, 6, 8).finished());
-        TS_ASSERT_EQUALS(bisected.second().cwiseUpper(), (Matrix2d() << 2, 4, 7, 9).finished());
-        
-        matrix << Interval(2, 3), Interval(4, 5), Interval(6, 8), Interval(9, 10);
-        Matrix2I first, second;
-        Pair<Matrix2I&>(first, second) = matrix.bisected();
-        TS_ASSERT_EQUALS(first.cwiseLower(), (Matrix2d() << 2, 4, 6, 9).finished());
-        TS_ASSERT_EQUALS(first.cwiseUpper(), (Matrix2d() << 3, 5, 7, 10).finished());
-        TS_ASSERT_EQUALS(second.cwiseLower(), (Matrix2d() << 2, 4, 7, 9).finished());
-        TS_ASSERT_EQUALS(second.cwiseUpper(), (Matrix2d() << 3, 5, 8, 10).finished());
-    }
-    
     void testDirectAccess() {
         Matrix3d matrix = Matrix3d::Random();
         printDirectAccess(matrix);
@@ -137,6 +114,18 @@ public:
     }
     
     void testIteration() {
+        RowVectorXd vector;
+        std::vector<double> list;
+        list.push_back(1);
+        list.push_back(2);
+        vector.resize(list.size());
+        std::copy(list.begin(), list.end(), vector.begin());
+        TS_ASSERT_EQUALS(vector, RowVector2d(1, 2));
+        TS_ASSERT_EQUALS(*vector.begin(), 1);
+        TS_ASSERT_EQUALS(*(vector.end() - 1), 2);
+    }
+    
+    void testBlockIteration() {
         Matrix3d a = Matrix3d::Random();
         int j = 0;
         for (Matrix3d::ConstRowIterator i = a.rowBegin(); i != a.rowEnd(); ++i) {

@@ -73,21 +73,8 @@ public:
     
     void testBisected() {
         Interval x(4, 5);
-        Bisected<Interval> bisected = x.bisected();
-        TS_ASSERT_EQUALS(bisected.first().lower(), 4);
-        TS_ASSERT_EQUALS(bisected.first().upper(), 4.5);
-        TS_ASSERT_EQUALS(bisected.second().lower(), 4.5);
-        TS_ASSERT_EQUALS(bisected.second().upper(), 5);
-        Interval a, b;
-        Pair<Interval&>(a, b) = Interval(2, 4).bisected();
-        TS_ASSERT_EQUALS(a.lower(), 2);
-        TS_ASSERT_EQUALS(a.upper(), 3);
-        TS_ASSERT_EQUALS(b.lower(), 3);
-        TS_ASSERT_EQUALS(b.upper(), 4);
-        Pair<Interval> pair = Interval(5, 7).bisected();
-        TS_ASSERT_EQUALS(pair.first().lower(), 5);
-        TS_ASSERT_EQUALS(pair.first().upper(), 6);
-        TS_ASSERT_EQUALS(pair.second().lower(), 6);
-        TS_ASSERT_EQUALS(pair.second().upper(), 7);
+        std::pair<Interval, Interval> bisected = x.bisected();
+        TS_ASSERT_EQUALS(bisected.first, Interval(4, 4.5));
+        TS_ASSERT_EQUALS(bisected.second, Interval(4.5, 5));
     }
 };

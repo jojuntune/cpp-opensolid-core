@@ -18,15 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+typedef ConstMatrixIterator<Derived> ConstIterator;
+typedef MatrixIterator<Derived> Iterator; 
+typedef ConstMatrixRowIterator<Derived> ConstRowIterator;
+typedef MatrixRowIterator<Derived> RowIterator;
+typedef ConstMatrixColIterator<Derived> ConstColIterator;
+typedef MatrixColIterator<Derived> ColIterator;
+
 inline Scalar scalar() const {
     assert(derived().size() == 1);
     return derived().eval().coeff(0, 0);
 }
 
-typedef ConstMatrixRowIterator<Derived> ConstRowIterator;
-typedef MatrixRowIterator<Derived> RowIterator;
-typedef ConstMatrixColIterator<Derived> ConstColIterator;
-typedef MatrixColIterator<Derived> ColIterator;
+inline ConstIterator begin() const {return ConstIterator(derived(), 0);}
+
+inline ConstIterator end() const {return ConstIterator(derived(), size());}
+
+inline Iterator begin() {return Iterator(derived(), 0);}
+
+inline Iterator end() {return Iterator(derived(), size());}
 
 inline ConstRowIterator rowBegin() const {return ConstRowIterator(derived(), 0);}
 
@@ -44,27 +54,6 @@ inline ColIterator colBegin() {return ColIterator(derived(), 0);}
 
 inline ColIterator colEnd() {return ColIterator(derived(), cols());}
 
-inline MatrixListAdapter<Derived> list() const {
-    return MatrixListAdapter<Derived>(derived());
-}
-
-template<class OtherDerived>
-inline bool overlap(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
-    return derived().binaryExpr(other.derived(), OverlapOperation(tolerance)).all();
-}
-
-template<class OtherDerived>
-inline bool contain(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
-    return derived().binaryExpr(other.derived(), ContainOperation(tolerance)).all();
-}
-
-template<class OtherDerived>
-inline bool adjacent(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
-    return
-        overlap(other, tolerance) &&
-        derived().binaryExpr(other.derived(), AdjacentOperation(tolerance)).any();
-}
-
 inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const {
     return derived().unaryExpr(LowerOperation());
 }
@@ -81,8 +70,14 @@ inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const {
     return derived().unaryExpr(WidthOperation());
 }
 
-inline CwiseUnaryOp<CenteredOperation, const Derived> cwiseCentered() const {
-    return derived().unaryExpr(CenteredOperation());
+template<class OtherDerived>
+inline bool overlap(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
+    return derived().binaryExpr(other.derived(), OverlapOperation(tolerance)).all();
+}
+
+template<class OtherDerived>
+inline bool contain(const DenseBase<OtherDerived>& other, double tolerance = 0.0) const {
+    return derived().binaryExpr(other.derived(), ContainOperation(tolerance)).all();
 }
 
 template <class OtherDerived>
@@ -95,12 +90,11 @@ inline CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerived> i
     const DenseBase<OtherDerived>& other
 ) const {return derived().binaryExpr(other.derived(), IntersectionOperation());}
 
+
 inline static const RandomAccessLinSpacedReturnType LinSpaced(Index size, const Interval& range) {
-    return LinSpaced(size, lowerBound(range), upperBound(range));
+    return LinSpaced(size, LowerOperation()(range), UpperOperation()(range));
 }
 
 inline static const RandomAccessLinSpacedReturnType LinSpaced(const Interval& range) {
-    return LinSpaced(lowerBound(range), upperBound(range));
+    return LinSpaced(LowerOperation()(range), UpperOperation()(range));
 }
-
-inline Bisected<Derived> bisected() const {return Bisected<Derived>(derived());}

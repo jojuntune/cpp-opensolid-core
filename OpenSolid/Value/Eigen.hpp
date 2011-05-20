@@ -25,9 +25,7 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Common/Bisected.hpp>
-#include <OpenSolid/Collection/FixedSizeCollection.hpp>
+#include "Interval.hpp"
 
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
@@ -39,43 +37,29 @@
 #include "DenseBasePlugin.hpp"
 #endif
 
-namespace OpenSolid
-{
-    class Interval;
-    
-    Interval abs(const Interval& argument);
-    Interval sqrt(const Interval& argument);
-    OPENSOLID_EXPORT Interval sin(const Interval& argument);
-    OPENSOLID_EXPORT Interval cos(const Interval& argument);
-    OPENSOLID_EXPORT Interval exp(const Interval& argument);
-    OPENSOLID_EXPORT Interval log(const Interval& argument);
-    OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& power);
-    
-    double lowerBound(const Interval& argument);
-    double upperBound(const Interval& argument);
-}
-
 namespace Eigen
 {
     using OpenSolid::Interval;
-    using OpenSolid::Bounds;
-    using OpenSolid::Bisected;
-    using OpenSolid::FixedSizeCollection;
     
     namespace internal
     {
         using OpenSolid::abs;
         using OpenSolid::sqrt;
-        using OpenSolid::exp;
-        using OpenSolid::log;
         using OpenSolid::sin;
         using OpenSolid::cos;
-        
+        using OpenSolid::tan;
+        using OpenSolid::asin;
+        using OpenSolid::acos;
+        using OpenSolid::atan;
+        using OpenSolid::atan2;
+        using OpenSolid::exp;
+        using OpenSolid::log;
+        using OpenSolid::pow;
+
         const Interval& conj(const Interval& argument);
         const Interval& real(const Interval& argument);
         Interval imag(const Interval&);
         Interval abs2(const Interval& argument);
-        Interval pow(const Interval& x, const Interval& y);
     
         template <class ScalarType, bool is_integer_>
         struct significant_decimals_default_impl;
@@ -109,6 +93,68 @@ namespace Eigen
         static Interval dummy_precision();
         static Interval lowest();
         static Interval highest();
+    };
+    
+    template <class MatrixType>
+    class MatrixIterator;
+    
+    template <class MatrixType>
+    class ConstMatrixIterator : 
+        public boost::iterator_facade<
+            ConstMatrixIterator<MatrixType>,
+            typename MatrixType::Scalar,
+            boost::random_access_traversal_tag,
+            typename MatrixType::Scalar
+        >
+    {
+    private:
+        friend class boost::iterator_core_access;
+        friend class MatrixIterator<MatrixType>;
+        
+        const MatrixType& _matrix;
+        int _index;
+        
+        typename MatrixType::Scalar dereference() const;
+        
+        bool equal(const MatrixIterator<MatrixType>& other);
+        bool equal(const ConstMatrixIterator<MatrixType>& other);
+        
+        void increment();
+        void decrement();
+        void advance(int argument);
+    public:
+        ConstMatrixIterator(const MatrixType& matrix, int index);
+        ConstMatrixIterator(const ConstMatrixIterator<MatrixType>& other);
+        ConstMatrixIterator(const MatrixIterator<MatrixType>& other);
+    };
+    
+    template <class MatrixType>
+    class MatrixIterator : 
+        public boost::iterator_facade<
+            MatrixIterator<MatrixType>,
+            typename MatrixType::Scalar,
+            boost::random_access_traversal_tag,
+            typename MatrixType::Scalar&
+        >
+    {
+    private:
+        friend class boost::iterator_core_access;
+        friend class ConstMatrixIterator<MatrixType>;
+        
+        MatrixType& _matrix;
+        int _index;
+        
+        typename MatrixType::Scalar& dereference() const;
+        
+        bool equal(const MatrixIterator<MatrixType>& other);
+        bool equal(const ConstMatrixIterator<MatrixType>& other);
+        
+        void increment();
+        void decrement();
+        void advance(int argument);
+    public:
+        MatrixIterator(MatrixType& matrix, int index);
+        MatrixIterator(const MatrixIterator<MatrixType>& other);
     };
     
     template <class DerivedType, class MatrixType, class BlockType>
@@ -216,85 +262,6 @@ namespace Eigen
         static typename MatrixType::ColXpr block(MatrixType& matrix, int index);
     };
     
-    template <class DerivedType>
-    class MatrixListAdapter : public FixedSizeCollection<MatrixListAdapter<DerivedType> >
-    {
-    private:
-        const DerivedType& _matrix;
-    public:
-        typedef typename DerivedType::ConstColIterator Iterator;
-        
-        MatrixListAdapter(const DerivedType& matrix);
-        
-        int size() const;
-        bool empty() const;
-        
-        template <class VisitorType>
-        void visit(const VisitorType& visitor) const;
-        
-        typename Bounds<typename DerivedType::ConstColXpr::PlainObject>::Type bounds() const;
-        
-        Iterator begin() const;
-        Iterator end() const;
-        
-        typename DerivedType::ConstColXpr front() const;
-        typename DerivedType::ConstColXpr back() const;
-        
-        typename DerivedType::ConstColXpr operator[](int index) const;
-    };
-    
-    struct ContainOperation
-    {
-        typedef bool result_type;
-        
-        double tolerance;
-        
-        ContainOperation(double tolerance_);
-        
-        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
-        bool operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct OverlapOperation
-    {
-        typedef bool result_type;
-        
-        double tolerance;
-        
-        OverlapOperation(double tolerance_);
-        
-        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
-        bool operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct AdjacentOperation
-    {
-        typedef bool result_type;
-        
-        double tolerance;
-        
-        AdjacentOperation(double tolerance_);
-        
-        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
-        bool operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct HullOperation
-    {
-        typedef Interval result_type;
-        
-        Interval operator()(const Interval& first_argument, const Interval& second_argument) const;
-        Interval operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct IntersectionOperation
-    {
-        typedef Interval result_type;
-        
-        Interval operator()(const Interval& first_argument, const Interval& second_argument) const;
-        Interval operator()(double first_argument, double second_argument) const;
-    };
-    
     struct LowerOperation
     {
         typedef double result_type;
@@ -327,22 +294,49 @@ namespace Eigen
         double operator()(double argument) const;
     };
     
-    struct CenteredOperation
+    struct OverlapOperation
+    {
+        typedef bool result_type;
+        
+        double tolerance;
+        
+        OverlapOperation(double tolerance_);
+        
+        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
+        bool operator()(double first_argument, double second_argument) const;
+    };
+    
+    struct ContainOperation
+    {
+        typedef bool result_type;
+        
+        double tolerance;
+        
+        ContainOperation(double tolerance_);
+        
+        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
+        bool operator()(double first_argument, double second_argument) const;
+    };
+    
+    struct HullOperation
     {
         typedef Interval result_type;
         
-        Interval operator()(const Interval& argument) const;
-        Interval operator()(double argument) const;
+        Interval operator()(const Interval& first_argument, const Interval& second_argument) const;
+        Interval operator()(double first_argument, double second_argument) const;
+    };
+    
+    struct IntersectionOperation
+    {
+        typedef Interval result_type;
+        
+        Interval operator()(const Interval& first_argument, const Interval& second_argument) const;
+        Interval operator()(double first_argument, double second_argument) const;
     };
 }
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <Eigen/LU>
-
-namespace OpenSolid
-{
-    using namespace Eigen;
-}
 
 #endif

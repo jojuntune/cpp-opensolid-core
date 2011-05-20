@@ -25,7 +25,6 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Collection/List.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Value/Tolerance.hpp>
 
@@ -107,8 +106,6 @@ namespace OpenSolid
 
         template <class DerivedType>
         Datum(const VectorType& origin, const EigenBase<DerivedType>& vectors);
-        
-        Datum(const VectorType& origin, const List<VectorType>& vectors);
         
         Datum(const Datum<dimensions_, axes_>& other);
         
@@ -290,12 +287,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>::Datum() {}
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_>::Datum(
-        const VectorType& origin,
-        const List<VectorType>& vectors
-    ) {initialize(origin, vectors.matrix(), false);}
     
     template <int dimensions_, int axes_> template <class DerivedType>
     inline Datum<dimensions_, axes_>::Datum(
