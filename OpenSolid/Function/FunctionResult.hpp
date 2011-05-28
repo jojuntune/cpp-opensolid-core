@@ -34,7 +34,7 @@ namespace Eigen
 {
     namespace internal
     {
-        template<class ArgumentType>
+        template <class ArgumentType>
         struct traits<OpenSolid::FunctionResult<ArgumentType> >
         {
             typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime>
@@ -43,7 +43,7 @@ namespace Eigen
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<>
+        template <>
         struct traits<OpenSolid::FunctionResult<int> >
         {
             typedef VectorXd ReturnType;
