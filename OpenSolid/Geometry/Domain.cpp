@@ -21,30 +21,29 @@
 #include "Domain.hpp"
 #include "Geometry.hpp"
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Collection/List.hpp>
 
 namespace OpenSolid
 {
     Set<Geometry> Domain::rectangularBoundaries(const VectorXI& bounds) {
         int dims = bounds.size();
-        List<Geometry> list;
+        std::vector<Geometry> list;
         if (dims == 1) {
-            list.append(bounds.scalar().lower());
-            list.append(bounds.scalar().upper());
+            list.push_back(bounds.scalar().lower());
+            list.push_back(bounds.scalar().upper());
         } else {
             VectorXI geometry_domain_bounds = bounds.tail(dims - 1);
             MatrixXd geometry_domain_unit_vectors = MatrixXd::Zero(dims, dims - 1);
             geometry_domain_unit_vectors.diagonal(-1).setOnes();
             VectorXd geometry_domain_origin = VectorXd::Zero(dims, 0);
             geometry_domain_origin(0) = bounds(0).lower();
-            list.append(
+            list.push_back(
                 Geometry(
                     Function::Linear(geometry_domain_origin, geometry_domain_unit_vectors),
                     geometry_domain_bounds
                 )
             );
             geometry_domain_origin(0) = bounds(0).upper();
-            list.append(
+            list.push_back(
                 Geometry(
                     Function::Linear(geometry_domain_origin, geometry_domain_unit_vectors),
                     geometry_domain_bounds
@@ -56,14 +55,14 @@ namespace OpenSolid
                 geometry_domain_unit_vectors(i - 1, i - 1) = 1;
                 geometry_domain_origin(i - 1) = 0;
                 geometry_domain_origin(i) = bounds(i).lower();
-                list.append(
+                list.push_back(
                     Geometry(
                         Function::Linear(geometry_domain_origin, geometry_domain_unit_vectors),
                         geometry_domain_bounds
                     )
                 );
                 geometry_domain_origin(i) = bounds(i).upper();
-                list.append(
+                list.push_back(
                     Geometry(
                         Function::Linear(geometry_domain_origin, geometry_domain_unit_vectors),
                         geometry_domain_bounds
@@ -71,23 +70,24 @@ namespace OpenSolid
                 );
             }
         }
-        return Set<Geometry>(list);
+        return Set<Geometry>(list.begin(), list.end());
     }
     
     Domain Domain::concatenate(const Domain& other) const {
         if (empty()) {return other;}
         if (other.empty()) {return *this;}
-        List<Geometry> own_boundaries(boundaries());
-        List<Geometry> other_boundaries(other.boundaries());
-        List<Geometry> result_boundaries;
-        result_boundaries.reserve(own_boundaries.size() + other_boundaries.size());
-        List<Geometry>::Iterator i;
-        for (i = own_boundaries.begin(); i != own_boundaries.end(); ++i) {
-            result_boundaries.append(i->concatenate(Function::Identity(other.dimensions())(other)));
+        Set<Geometry> result_boundaries;
+        Set<Geometry>::Iterator i;
+        for (i = boundaries().begin(); i != boundaries().end(); ++i) {
+            result_boundaries.insert(
+                i->concatenate(Function::Identity(other.dimensions())(other))
+            );
         }
-        for (i = other_boundaries.begin(); i != other_boundaries.end(); ++i) {
-            result_boundaries.append(Function::Identity(dimensions())(*this).concatenate(*i));
+        for (i = other.boundaries().begin(); i != other.boundaries().end(); ++i) {
+            result_boundaries.insert(
+                Function::Identity(dimensions())(*this).concatenate(*i)
+            );
         }
-        return Set<Geometry>(result_boundaries);
+        return Domain(result_boundaries);
     }
 }

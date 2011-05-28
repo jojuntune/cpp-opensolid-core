@@ -159,7 +159,12 @@ namespace OpenSolid
     inline VectorXI Geometry::bounds() const {return function()(domain().bounds());}
     
     inline Set<Geometry> Geometry::boundaries() const {
-        return domain().boundaries().mapped<Geometry>(function());
+        Set<Geometry> results;
+        Set<Geometry>::Iterator i;
+        for (i = domain().boundaries().begin(); i != domain().boundaries().end(); ++i) {
+            results.insert(function()(*i));
+        }
+        return results;
     }
     
     template <class ArgumentType>
