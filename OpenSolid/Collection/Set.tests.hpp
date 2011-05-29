@@ -58,22 +58,6 @@ Interval randomInterval() {
 
 Vector3I randomVector() {return Vector3I(randomInterval(), randomInterval(), randomInterval());}
 
-struct TestVisitor
-{
-    double total_sum;
-    
-    inline TestVisitor() : total_sum(0.0) {}
-    
-    inline void operator()(const Vector3I& vector) {total_sum += vector.cwiseWidth().sum();}
-};
-
-struct TestFilter
-{
-    inline bool operator()(const Interval& interval) const {
-        return interval.overlap(Interval(2, 4)) || interval.overlap(Interval(7, 10));
-    }
-};
-
 class SetTestSuite : public CxxTest::TestSuite
 {
 public:
