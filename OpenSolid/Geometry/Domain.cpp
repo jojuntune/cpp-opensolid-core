@@ -77,13 +77,12 @@ namespace OpenSolid
         if (empty()) {return other;}
         if (other.empty()) {return *this;}
         Set<Geometry> result_boundaries;
-        Set<Geometry>::Iterator i;
-        for (i = boundaries().begin(); i != boundaries().end(); ++i) {
+        for (auto i = boundaries().begin(); i != boundaries().end(); ++i) {
             result_boundaries.insert(
                 i->concatenate(Function::Identity(other.dimensions())(other))
             );
         }
-        for (i = other.boundaries().begin(); i != other.boundaries().end(); ++i) {
+        for (auto i = other.boundaries().begin(); i != other.boundaries().end(); ++i) {
             result_boundaries.insert(
                 Function::Identity(dimensions())(*this).concatenate(*i)
             );

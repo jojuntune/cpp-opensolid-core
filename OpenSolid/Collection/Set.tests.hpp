@@ -208,7 +208,7 @@ public:
     
     void testIntervalConstructionTime() {
         std::vector<Interval> intervals(30000);
-        for (std::vector<Interval>::iterator i = intervals.begin(); i != intervals.end(); ++i) {
+        for (auto i = intervals.begin(); i != intervals.end(); ++i) {
             *i = randomInterval();
         }
         
@@ -220,7 +220,7 @@ public:
         
         boost::timer insertion_timer;
         Set<Interval> insertion_set;
-        for (std::vector<Interval>::iterator i = intervals.begin(); i != intervals.end(); ++i) {
+        for (auto i = intervals.begin(); i != intervals.end(); ++i) {
             insertion_set.insert(*i);
         }
         double insertion_time = insertion_timer.elapsed();
@@ -232,9 +232,7 @@ public:
     
     void testVectorConstructionTime() {
         std::vector<Vector3I> vectors(30000);
-        for (std::vector<Vector3I>::iterator i = vectors.begin(); i != vectors.end(); ++i) {
-            *i = randomVector();
-        }
+        for (auto i = vectors.begin(); i != vectors.end(); ++i) {*i = randomVector();}
         
         boost::timer iterator_timer;
         Set<Vector3I> iterator_set(vectors.begin(), vectors.end());
@@ -244,7 +242,7 @@ public:
         
         boost::timer insertion_timer;
         Set<Vector3I> insertion_set;
-        for (std::vector<Vector3I>::iterator i = vectors.begin(); i != vectors.end(); ++i) {
+        for (auto i = vectors.begin(); i != vectors.end(); ++i) {
             insertion_set.insert(*i);
         }
         double insertion_time = insertion_timer.elapsed();
@@ -295,7 +293,7 @@ public:
         list[3] = 2;
         list[4] = 4;
         Set<double> set(list.begin(), list.end());
-        Set<double>::Iterator i = set.begin();
+        auto i = set.begin();
         TS_ASSERT_EQUALS(*i, 1);
         ++i;
         TS_ASSERT_EQUALS(*i, 2);

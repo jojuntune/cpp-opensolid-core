@@ -160,8 +160,7 @@ namespace OpenSolid
     
     inline Set<Geometry> Geometry::boundaries() const {
         Set<Geometry> results;
-        Set<Geometry>::Iterator i;
-        for (i = domain().boundaries().begin(); i != domain().boundaries().end(); ++i) {
+        for (auto i = domain().boundaries().begin(); i != domain().boundaries().end(); ++i) {
             results.insert(function()(*i));
         }
         return results;
