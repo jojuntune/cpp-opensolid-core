@@ -7,7 +7,7 @@
     # GCC-specific compiler flags
     IF (CMAKE_COMPILER_IS_GNUCXX)
         # Add extra warning flags
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-variable -fno-strict-aliasing")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -Wno-unused-variable")
         # Enable -fPIC on 64-bit systems where it is required
         IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
