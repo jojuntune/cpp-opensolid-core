@@ -370,6 +370,7 @@ namespace OpenSolid
                 _right->_parent = this;
             }
             _bounds = overall_bounds;
+            ++_size;
             return this;
         } else {
             assert(_left && _right);
@@ -423,6 +424,7 @@ namespace OpenSolid
                     _left->_parent = this;
                     _right->_parent = this;
                     _bounds = overall_bounds;
+                    _size = _left->size() + _right->size();
                     return this;
                 } else {
                     std::vector<SetNode<Type>*> nodes;

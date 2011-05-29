@@ -35,13 +35,16 @@ using namespace OpenSolid;
 template <class Type>
 void testSet(const SetNode<Type>* node) {
     double tolerance = Tolerance::roundoff();
-    if (!node || node->size() == 1) {
+    if (!node) {
         return;
+    } else if (node->object()) {
+        TS_ASSERT(node->size() == 1u);
     } else {
         const SetNode<Type>* left = node->left();
         const SetNode<Type>* right = node->right();
         TS_ASSERT(node->bounds().contain(left->bounds(), tolerance));
         TS_ASSERT(node->bounds().contain(right->bounds(), tolerance));
+        TS_ASSERT_EQUALS(node->size(), left->size() + right->size());
         testSet(node->left());
         testSet(node->right());
     }
@@ -167,18 +170,22 @@ public:
         set.insert(5);
         std::cout << set << std::endl;
         testSet(set.root());
+        TS_ASSERT_EQUALS(set.size(), 5);
         set.erase(3);
         std::cout << "3 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
+        TS_ASSERT_EQUALS(set.size(), 4);
         set.erase(5);
         std::cout << "5 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
+        TS_ASSERT_EQUALS(set.size(), 3);
         set.erase(7);
         std::cout << "7 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
+        TS_ASSERT_EQUALS(set.size(), 2);
     }
     
     void testRebalance() {
@@ -187,11 +194,13 @@ public:
             set.insert(i);
             std::cout << set << std::endl;
             testSet(set.root());
+            TS_ASSERT_EQUALS(set.size(), i);
         }
         for (int i = 12; i >= 1; --i) {
             set.erase(i);
             std::cout << set << std::endl;
             testSet(set.root());
+            TS_ASSERT_EQUALS(set.size(), i - 1);
         }
     }
     
@@ -201,20 +210,21 @@ public:
         set.insert(Interval(2, 6));
         std::cout << set << std::endl;
         testSet(set.root());
+        TS_ASSERT_EQUALS(set.size(), 2);
         set.insert(Interval(-1, 1));
         std::cout << set << std::endl;
         testSet(set.root());
+        TS_ASSERT_EQUALS(set.size(), 3);
     }
     
     void testIntervalConstructionTime() {
-        std::vector<Interval> intervals(30000);
-        for (auto i = intervals.begin(); i != intervals.end(); ++i) {
-            *i = randomInterval();
-        }
+        std::vector<Interval> intervals(100000);
+        for (auto i = intervals.begin(); i != intervals.end(); ++i) {*i = randomInterval();}
         
         boost::timer iterator_timer;
         Set<Interval> iterator_set(intervals.begin(), intervals.end());
         double iterator_time = iterator_timer.elapsed();
+        TS_ASSERT_EQUALS(iterator_set.size(), intervals.size());
         testSet(iterator_set.root());
         std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
         
@@ -224,6 +234,7 @@ public:
             insertion_set.insert(*i);
         }
         double insertion_time = insertion_timer.elapsed();
+        TS_ASSERT_EQUALS(insertion_set.size(), intervals.size());
         testSet(insertion_set.root());
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
@@ -231,12 +242,13 @@ public:
     }
     
     void testVectorConstructionTime() {
-        std::vector<Vector3I> vectors(30000);
+        std::vector<Vector3I> vectors(100000);
         for (auto i = vectors.begin(); i != vectors.end(); ++i) {*i = randomVector();}
         
         boost::timer iterator_timer;
         Set<Vector3I> iterator_set(vectors.begin(), vectors.end());
         double iterator_time = iterator_timer.elapsed();
+        TS_ASSERT_EQUALS(iterator_set.size(), vectors.size());
         testSet(iterator_set.root());
         std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
         
@@ -246,6 +258,7 @@ public:
             insertion_set.insert(*i);
         }
         double insertion_time = insertion_timer.elapsed();
+        TS_ASSERT_EQUALS(insertion_set.size(), vectors.size());
         testSet(insertion_set.root());
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
