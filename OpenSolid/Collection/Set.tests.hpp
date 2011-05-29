@@ -154,22 +154,22 @@ public:
         set.insert(5);
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 5);
+        TS_ASSERT_EQUALS(set.size(), 5u);
         set.erase(3);
         std::cout << "3 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 4);
+        TS_ASSERT_EQUALS(set.size(), 4u);
         set.erase(5);
         std::cout << "5 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 3);
+        TS_ASSERT_EQUALS(set.size(), 3u);
         set.erase(7);
         std::cout << "7 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 2);
+        TS_ASSERT_EQUALS(set.size(), 2u);
     }
     
     void testRebalance() {
@@ -178,13 +178,13 @@ public:
             set.insert(i);
             std::cout << set << std::endl;
             testSet(set.root());
-            TS_ASSERT_EQUALS(set.size(), i);
+            TS_ASSERT_EQUALS(set.size(), std::size_t(i));
         }
         for (int i = 12; i >= 1; --i) {
             set.erase(i);
             std::cout << set << std::endl;
             testSet(set.root());
-            TS_ASSERT_EQUALS(set.size(), i - 1);
+            TS_ASSERT_EQUALS(set.size(), std::size_t(i - 1));
         }
     }
     
@@ -194,11 +194,11 @@ public:
         set.insert(Interval(2, 6));
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 2);
+        TS_ASSERT_EQUALS(set.size(), 2u);
         set.insert(Interval(-1, 1));
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 3);
+        TS_ASSERT_EQUALS(set.size(), 3u);
     }
     
     void testIntervalConstructionTime() {
