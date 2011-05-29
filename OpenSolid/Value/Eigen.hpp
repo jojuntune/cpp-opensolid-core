@@ -111,7 +111,7 @@ namespace Eigen
         friend class boost::iterator_core_access;
         friend class MatrixIterator<MatrixType>;
         
-        const MatrixType& _matrix;
+        const MatrixType* _matrix;
         int _index;
         
         typename MatrixType::Scalar dereference() const;
@@ -141,7 +141,7 @@ namespace Eigen
         friend class boost::iterator_core_access;
         friend class ConstMatrixIterator<MatrixType>;
         
-        MatrixType& _matrix;
+        MatrixType* _matrix;
         int _index;
         
         typename MatrixType::Scalar& dereference() const;
@@ -172,7 +172,7 @@ namespace Eigen
         
         friend class boost::iterator_core_access;
         
-        MatrixType& _matrix;
+        MatrixType* _matrix;
         int _index;
         
         BlockType dereference() const;

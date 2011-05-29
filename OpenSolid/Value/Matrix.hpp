@@ -124,7 +124,7 @@ namespace Eigen
     
     template <class MatrixType>
     inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
-        return _matrix(_index);
+        return (*_matrix)(_index);
     }
     
     template <class MatrixType>
@@ -150,7 +150,7 @@ namespace Eigen
     inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
         const MatrixType& matrix,
         int index
-    ) : _matrix(matrix), _index(index) {}
+    ) : _matrix(&matrix), _index(index) {}
     
     template <class MatrixType>
     inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
@@ -164,7 +164,7 @@ namespace Eigen
     
     template <class MatrixType>
     inline typename MatrixType::Scalar& MatrixIterator<MatrixType>::dereference() const {
-        return _matrix(_index);
+        return (*_matrix)(_index);
     }
     
     template <class MatrixType>
@@ -188,7 +188,7 @@ namespace Eigen
     
     template <class MatrixType>
     inline MatrixIterator<MatrixType>::MatrixIterator(MatrixType& matrix, int index) :
-        _matrix(matrix), _index(index) {}
+        _matrix(&matrix), _index(index) {}
     
     template <class MatrixType>
     inline MatrixIterator<MatrixType>::MatrixIterator(const MatrixIterator<MatrixType>& other) :
@@ -196,7 +196,7 @@ namespace Eigen
     
     template <class DerivedType, class MatrixType, class BlockType>
     inline BlockType MatrixBlockIterator<DerivedType, MatrixType, BlockType>::dereference() const {
-        return DerivedType::block(_matrix, _index);
+        return DerivedType::block(*_matrix, _index);
     }
     
     template <class DerivedType, class MatrixType, class BlockType>
@@ -220,7 +220,7 @@ namespace Eigen
     inline MatrixBlockIterator<DerivedType, MatrixType, BlockType>::MatrixBlockIterator(
         MatrixType& matrix,
         int index
-    ) : _matrix(matrix), _index(index) {}
+    ) : _matrix(&matrix), _index(index) {}
     
     template <class DerivedType, class MatrixType, class BlockType>
     template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
