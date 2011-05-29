@@ -25,11 +25,10 @@
 
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
-
 #include "Domain.hpp"
 
 namespace OpenSolid
-{
+{   
     class Geometry
     {
     private:
@@ -129,6 +128,8 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
+#include "Domain.hpp"
+
 namespace OpenSolid
 {
     inline Geometry::Geometry() : _function(), _domain() {}
@@ -175,15 +176,15 @@ namespace OpenSolid
         return function() == other.function() && domain() == other.domain();
     }
     
+    inline VectorXI Bounds<Geometry>::bounds(const Geometry& geometry) {
+        return geometry.bounds();
+    }
+    
     inline std::size_t hash_value(const Geometry& geometry) {
         std::size_t result = 0;
         boost::hash_combine(result, geometry.function());
         boost::hash_combine(result, geometry.domain());
         return result;
-    }
-    
-    inline VectorXI Bounds<Geometry>::bounds(const Geometry& geometry) {
-        return geometry.bounds();
     }
 }
 
