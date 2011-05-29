@@ -407,7 +407,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::BoundsType
+    inline typename Bounds<Simplex<dimensions_, size_> >::Type
     Bounds<Simplex<dimensions_, size_> >::bounds(
         const Simplex<dimensions_, size_>& simplex
     ) {return simplex.bounds();}
