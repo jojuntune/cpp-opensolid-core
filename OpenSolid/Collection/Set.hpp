@@ -117,18 +117,6 @@ namespace OpenSolid
     };
     
     template <class Type>
-    class OverlapFunction
-    {
-    private:
-        typename Bounds<Type>::Type _bounds;
-        double _tolerance;
-    public:
-        OverlapFunction(const typename Bounds<Type>::Type& bounds);
-    
-        bool operator()(const typename Bounds<Type>::Type& subset_bounds) const;
-    };
-    
-    template <class Type>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node);
     
     template <class Type>
@@ -343,7 +331,12 @@ namespace OpenSolid
     
     template <class Type>
     inline Set<Type> Set<Type>::overlapping(const typename Bounds<Type>::Type& bounds) const {
-        return filtered(OverlapFunction<Type>(bounds));
+        double tolerance = Tolerance::roundoff();
+        return filtered(
+            [&bounds, tolerance] (const typename Bounds<Type>::Type& subset_bounds) {
+                return bounds.overlap(subset_bounds, tolerance);
+            }
+        );
     }
     
     template <class Type>
@@ -384,15 +377,6 @@ namespace OpenSolid
     
     template <class Type>
     inline SetIterator<Type>::SetIterator(const SetNode<Type>* node) : _node(node) {}
-    
-    template <class Type>
-    inline OverlapFunction<Type>::OverlapFunction(const typename Bounds<Type>::Type& bounds) :
-        _bounds(bounds), _tolerance(Tolerance::roundoff()) {}
-
-    template <class Type>
-    inline bool OverlapFunction<Type>::operator()(
-        const typename Bounds<Type>::Type& subset_bounds
-    ) const {return subset_bounds.overlap(_bounds, _tolerance);}
 
     template <class Type>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node) {
