@@ -24,8 +24,8 @@
 #include <typeinfo>
 
 #include <boost/functional/hash.hpp>
+#include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Common/Shared.hpp>
 #include <OpenSolid/Value/Interval.hpp>
 #include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -43,7 +43,7 @@ namespace OpenSolid
     class Function
     {
     private:
-        Shared<const FunctionImplementation> _implementation;
+        boost::intrusive_ptr<const FunctionImplementation> _implementation;
         const std::type_info* _type;
     public:
         Function();
@@ -207,8 +207,7 @@ namespace OpenSolid
     }
     
     inline const FunctionImplementation* Function::implementation() const {
-        assert(_implementation.valid());
-        return _implementation.constPointer();
+        return _implementation.get();
     }
     
     template <class Type>
