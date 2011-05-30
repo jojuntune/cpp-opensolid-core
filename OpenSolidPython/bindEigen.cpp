@@ -24,9 +24,8 @@
 #include <boost/python/manage_new_object.hpp>
 #include <boost/python/raw_function.hpp>
 
-#include <OpenSolid/Value/Tolerance.hpp>
-#include <OpenSolid/Value/Matrix.hpp>
-#include <OpenSolid/Value/check.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 #include "check.hpp"
 
@@ -45,7 +44,7 @@ namespace OpenSolid
     
     template <class MatrixType>
     typename MatrixType::Scalar scalar(const MatrixType& argument) {
-        checkScalarValue(argument.rows(), argument.cols(), __func__);
+        checkScalarValue(argument, __func__);
         return argument.scalar();
     }
         
@@ -55,30 +54,18 @@ namespace OpenSolid
     }
     
     void getComponentBlock(slice indices, int size, int& block_start, int& block_size) {
-        checkNoMatrixIndexStep(indices.step() == object(), __func__);
+        checkNoMatrixIndexStep(indices, __func__);
         if (indices.start() == object()) {
             block_start = 0;
         } else {
-            extract<int> extracted(indices.start());
-            checkCompatiblePythonType(
-                extracted.check(),
-                typeName<int>(),
-                typeName(indices.stop()),
-                __func__
-            );
-            block_start = extracted;
+            checkCompatiblePythonType<int>(indices.start(), __func__);
+            block_start = extract<int>(indices.start());
         }
         if (indices.stop() == object()) {
             block_size = block_start < 0 ? -block_start : size - block_start;
         } else {
-            extract<int> extracted(indices.stop());
-            checkCompatiblePythonType(
-                extracted.check(),
-                typeName<int>(),
-                typeName(indices.stop()),
-                __func__
-            );
-            block_size = extracted;
+            checkCompatiblePythonType<int>(indices.stop(), __func__);
+            block_size = extract<int>(indices.stop());
         }
         checkComponentBlockInRange(block_start, block_size, size, __func__);
         if (block_start < 0) {block_start += size;}
@@ -86,7 +73,7 @@ namespace OpenSolid
     
     template <class MatrixType>
     typename MatrixType::Scalar getI(const MatrixType& matrix, int index) {
-        checkVectorOrRowVectorValue(matrix.rows(), matrix.cols(), __func__);
+        checkVectorOrRowVectorValue(matrix, __func__);
         if (matrix.cols() == 1) {
             return matrix(positiveIndex(index, matrix.rows()), 0);
         } else {
@@ -96,7 +83,7 @@ namespace OpenSolid
     
     template <class MatrixType>
     MatrixType* getS(const MatrixType& matrix, slice indices) {
-        checkVectorOrRowVectorValue(matrix.rows(), matrix.cols(), __func__);
+        checkVectorOrRowVectorValue(matrix, __func__);
         int block_start;
         int block_size;
         if (matrix.cols() == 1) {
@@ -171,7 +158,7 @@ namespace OpenSolid
     
     template <class MatrixType>
     void setI(MatrixType& matrix, int index, typename MatrixType::Scalar argument) {
-        checkVectorOrRowVectorValue(matrix.rows(), matrix.cols(), __func__);
+        checkVectorOrRowVectorValue(matrix, __func__);
         if (matrix.cols() == 1) {
             matrix(positiveIndex(index, matrix.rows()), 0) = argument;
         } else {
@@ -181,16 +168,16 @@ namespace OpenSolid
     
     template <class MatrixType>
     void setS(MatrixType& matrix, slice indices, const MatrixType& argument) {
-        checkVectorOrRowVectorValue(matrix.rows(), matrix.cols(), __func__);
+        checkVectorOrRowVectorValue(matrix, __func__);
         int block_start;
         int block_size;
         if (matrix.cols() == 1) {
             getComponentBlock(indices, matrix.rows(), block_start, block_size);
-            checkSameSize(block_size, 1, argument.rows(), argument.cols(), __func__);
+            checkSpecificMatrixSize(argument, block_size, 1, __func__);
             matrix.block(block_start, 0, block_size, 1) = argument;
         } else {
             getComponentBlock(indices, matrix.cols(), block_start, block_size);
-            checkSameSize(1, block_size, argument.rows(), argument.cols(), __func__);
+            checkSpecificMatrixSize(argument, 1, block_size, __func__);
             matrix.block(0, block_start, 1, block_size) = argument;
         }
     }
@@ -205,7 +192,7 @@ namespace OpenSolid
         int block_start;
         int block_size;
         getComponentBlock(rows, matrix.rows(), block_start, block_size);
-        checkSameSize(block_size, 1, argument.rows(), argument.cols(), __func__);
+        checkSpecificMatrixSize(argument, block_size, 1, __func__);
         matrix.block(block_start, positiveIndex(col, matrix.cols()), block_size, 1) = argument;
     }
     
@@ -214,7 +201,7 @@ namespace OpenSolid
         int block_start;
         int block_size;
         getComponentBlock(cols, matrix.cols(), block_start, block_size);
-        checkSameSize(1, block_size, argument.rows(), argument.cols(), __func__);
+        checkSpecificMatrixSize(argument, 1, block_size, __func__);
         matrix.block(positiveIndex(row, matrix.rows()), block_start, 1, block_size) = argument;
     }
     
@@ -226,7 +213,7 @@ namespace OpenSolid
         int col_start;
         int col_size;
         getComponentBlock(cols, matrix.cols(), col_start, col_size);
-        checkSameSize(row_size, col_size, argument.rows(), argument.cols(), __func__);
+        checkSpecificMatrixSize(argument, row_size, col_size, __func__);
         matrix.block(row_start, col_start, row_size, col_size) = argument;
     }
     
@@ -248,13 +235,13 @@ namespace OpenSolid
     
     template <class MatrixType>
     typename MatrixType::Scalar squaredNorm(const MatrixType& argument) {
-        checkVectorValue(argument.cols(), __func__);
+        checkVectorValue(argument, __func__);
         return argument.col(0).squaredNorm();
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar norm(const MatrixType& argument) {
-        checkVectorValue(argument.cols(), __func__);
+        checkVectorValue(argument, __func__);
         return argument.col(0).norm();
     }
     
@@ -263,21 +250,21 @@ namespace OpenSolid
     
     template <>
     MatrixXd* normalized(const MatrixXd& argument) {
-        checkVectorValue(argument.cols(), __func__);
-        checkNonZeroValue(argument.squaredNorm(), Tolerance::roundoff(), __func__);
+        checkVectorValue(argument, __func__);
+        checkNonZeroValue(argument.squaredNorm(), __func__);
         return new MatrixXd(argument.col(0).normalized());
     }
     
     template <>
     MatrixXI* normalized(const MatrixXI& argument) {
-        checkVectorValue(argument.cols(), __func__);
-        checkNonZeroValue(argument.squaredNorm().lower(), Tolerance::roundoff(), __func__);
+        checkVectorValue(argument, __func__);
+        checkNonZeroValue(argument.squaredNorm().lower(), __func__);
         return new MatrixXI(argument.col(0).normalized());
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar determinant(const MatrixType& argument) {
-        checkSquareMatrix(argument.rows(), argument.cols(), __func__);
+        checkSquareMatrix(argument, __func__);
         return argument.determinant();
     }
     
@@ -290,46 +277,48 @@ namespace OpenSolid
     }
     
     double dotXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
     Interval dotXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
         return first_argument.col(0).cast<Interval>().dot(second_argument.col(0));
     }
     
     Interval dotXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
         return first_argument.col(0).dot(second_argument.col(0).cast<Interval>());
     }
     
     Interval dotXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
     MatrixXd* crossXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
-        checkValidCrossProductDimensions(first_argument.rows(), second_argument.rows(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
+        checkSameSize(first_argument.rows(), 3, __func__);
+        checkSameSize(second_argument.rows(), 3, __func__);
         return new MatrixXd(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
     }
     
     MatrixXI* crossXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
-        checkValidCrossProductDimensions(first_argument.rows(), second_argument.rows(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
+        checkSameSize(first_argument.rows(), 3, __func__);
+        checkSameSize(second_argument.rows(), 3, __func__);
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cast<Interval>().cross(
                 second_argument.block<3, 1>(0, 0)
@@ -338,9 +327,10 @@ namespace OpenSolid
     }
     
     MatrixXI* crossXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
-        checkValidCrossProductDimensions(first_argument.rows(), second_argument.rows(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
+        checkSameSize(first_argument.rows(), 3, __func__);
+        checkSameSize(second_argument.rows(), 3, __func__);
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(
                 second_argument.block<3, 1>(0, 0).cast<Interval>()
@@ -349,9 +339,10 @@ namespace OpenSolid
     }
     
     MatrixXI* crossXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkVectorValue(first_argument.cols(), __func__);
-        checkVectorValue(second_argument.cols(), __func__);
-        checkValidCrossProductDimensions(first_argument.rows(), second_argument.rows(), __func__);
+        checkVectorValue(first_argument, __func__);
+        checkVectorValue(second_argument, __func__);
+        checkSameSize(first_argument.rows(), 3, __func__);
+        checkSameSize(second_argument.rows(), 3, __func__);
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
@@ -412,90 +403,42 @@ namespace OpenSolid
     MatrixType* random(int rows, int cols) {return new MatrixType(MatrixType::Random(rows, cols));}
     
     bool operator==(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument.operator==(second_argument);
     }
     
     bool operator==(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument.operator==(second_argument);
     }
     
     bool operator==(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument.cast<Interval>().eval() == second_argument;
     }
     
     bool operator==(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument == second_argument.cast<Interval>().eval();
     }
     
     bool operator!=(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument.operator!=(second_argument);
     }
     
     bool operator!=(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument.operator!=(second_argument);
     }
     
     bool operator!=(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument.cast<Interval>().eval() != second_argument;
     }
     
     bool operator!=(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument != second_argument.cast<Interval>().eval();
     }
     
@@ -504,90 +447,42 @@ namespace OpenSolid
     MatrixXI* negXI(const MatrixXI& argument) {return new MatrixXI(-argument);}
     
     MatrixXd* addXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXd(first_argument + second_argument);
     }
     
     MatrixXI* addXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument.cast<Interval>() + second_argument);
     }
     
     MatrixXI* addXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument + second_argument.cast<Interval>());
     }
     
     MatrixXI* addXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument + second_argument);
     }
     
     MatrixXd* subXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXd(first_argument - second_argument);
     }
     
     MatrixXI* subXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument.cast<Interval>() - second_argument);
     }
     
     MatrixXI* subXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument - second_argument.cast<Interval>());
     }
     
     MatrixXI* subXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkSameSize(
-            first_argument.rows(),
-            first_argument.cols(),
-            second_argument.rows(),
-            second_argument.cols(),
-            __func__
-        );
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument - second_argument);
     }
     
@@ -624,42 +519,42 @@ namespace OpenSolid
     }
     
     MatrixXd* divXdd(const MatrixXd& first_argument, double second_argument) {
-        checkNonZeroValue(second_argument, Tolerance::roundoff(), __func__);
+        checkNonZeroValue(second_argument, __func__);
         return new MatrixXd(first_argument / second_argument);
     }
     
     MatrixXI* divXdI(const MatrixXd& first_argument, const Interval& second_argument) {
-        checkNonZeroValue(abs(second_argument).lower(), Tolerance::roundoff(), __func__);
+        checkNonZeroValue(abs(second_argument).lower(), __func__);
         return new MatrixXI(first_argument.cast<Interval>() / second_argument);
     }
     
     MatrixXI* divXId(const MatrixXI& first_argument, double second_argument) {
-        checkNonZeroValue(second_argument, Tolerance::roundoff(), __func__);
+        checkNonZeroValue(second_argument, __func__);
         return new MatrixXI(first_argument / Interval(second_argument));
     }
     
     MatrixXI* divXII(const MatrixXI& first_argument, const Interval& second_argument) {
-        checkNonZeroValue(abs(second_argument).lower(), Tolerance::roundoff(), __func__);
+        checkNonZeroValue(abs(second_argument).lower(), __func__);
         return new MatrixXI(first_argument / second_argument);
     }
     
     MatrixXd* mulXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        checkValidMatrixProductDimensions(first_argument.cols(), second_argument.rows(), __func__);
+        checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXd(first_argument * second_argument);
     }
     
     MatrixXI* mulXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        checkValidMatrixProductDimensions(first_argument.cols(), second_argument.rows(), __func__);
+        checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument.cast<Interval>() * second_argument);
     }
     
     MatrixXI* mulXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        checkValidMatrixProductDimensions(first_argument.cols(), second_argument.rows(), __func__);
+        checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument * second_argument.cast<Interval>());
     }
     
     MatrixXI* mulXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        checkValidMatrixProductDimensions(first_argument.cols(), second_argument.rows(), __func__);
+        checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument * second_argument);
     }
     

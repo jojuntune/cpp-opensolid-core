@@ -30,7 +30,7 @@
 
 namespace OpenSolid
 {
-    OPENSOLID_PYTHON_EXPORT extern PyObject* error_class;
+    OPENSOLID_PYTHON_EXPORT extern PyObject* error_class_ptr;
     
     inline PythonObject wrap(PyObject* pointer) {
         return PythonObject(boost::python::handle<>(boost::python::borrowed(pointer)));
@@ -51,7 +51,7 @@ namespace OpenSolid
         PyObject* traceback;
         PyErr_Fetch(&type, &value, &traceback);
         Error error;
-        if (PyErr_GivenExceptionMatches(type, error_class)) {
+        if (PyErr_GivenExceptionMatches(type, error_class_ptr)) {
             error = extract<Error>(wrap(value));
         } else if (PyErr_GivenExceptionMatches(type, PyExc_SyntaxError)) {
             error = Error("ValidPythonSyntax", __func__);

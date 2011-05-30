@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 #include "Geometry.hpp"
 
 namespace OpenSolid

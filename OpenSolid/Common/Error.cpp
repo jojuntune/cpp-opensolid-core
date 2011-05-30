@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <sstream>
-#include <iostream>
+#include <algorithm>
 
 #include "Error.hpp"
 
@@ -40,6 +39,13 @@ namespace OpenSolid
     
     std::ostream& operator<<(std::ostream& stream, const Error& error) {
         stream << "Error(\"" << error.expected() << "\", \"" << error.caller() << "\")";
+        std::for_each(
+            error._data.begin(),
+            error._data.end(),
+            [&stream] (const std::pair<std::string, std::string>& key_value) {
+                stream << ".set(\"" << key_value.first << "\", \"" << key_value.second << "\")";
+            }
+        );
         return stream;
     }
 }

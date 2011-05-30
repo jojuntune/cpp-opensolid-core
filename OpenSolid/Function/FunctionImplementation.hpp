@@ -22,7 +22,7 @@
 #define OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 
 #include <OpenSolid/Common/ReferenceCountedBase.hpp>
-#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid

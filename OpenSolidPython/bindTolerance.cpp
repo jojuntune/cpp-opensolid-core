@@ -20,7 +20,7 @@
 
 #include <boost/python.hpp>
 
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 
 using namespace boost::python;
 

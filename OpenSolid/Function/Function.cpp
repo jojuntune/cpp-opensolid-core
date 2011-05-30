@@ -20,7 +20,7 @@
 
 #include <algorithm>
 
-#include <OpenSolid/Geometry/Domain.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 #include "Function.hpp"

@@ -21,20 +21,12 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Value/Tolerance.hpp>
-#include <OpenSolid/Value/check.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 #include "Function.hpp"
 
 using namespace OpenSolid;
 
 void assertIsApprox(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-    checkSameSize(
-        first_argument.rows(),
-        first_argument.cols(),
-        second_argument.rows(),
-        second_argument.cols(),
-        __func__
-    );
     for (int j = 0; j < first_argument.cols(); ++j) {
         for (int i = 0; i < first_argument.rows(); ++i) {
             TS_ASSERT_DELTA(

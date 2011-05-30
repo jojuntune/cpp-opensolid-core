@@ -25,8 +25,8 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Value/Matrix.hpp>
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

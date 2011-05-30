@@ -11,7 +11,7 @@ ADD_LIBRARY(
     check.cpp
 )
 
-# Configure library name (opensolid_python.so on UNIX, opensolid_python.pyd on Windows)
+# Configure library name (OpenSolidPython.so on UNIX, OpenSolidPython.pyd on Windows)
 SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES PREFIX "")
 IF(WIN32)
     SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES SUFFIX ".pyd")

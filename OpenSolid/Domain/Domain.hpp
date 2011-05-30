@@ -23,8 +23,8 @@
  
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Collection/Set.hpp>
-#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Function/Function.hpp>
 
 namespace OpenSolid
@@ -77,7 +77,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include "Geometry.hpp"
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {

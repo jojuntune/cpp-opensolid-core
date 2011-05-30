@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 #include "Datum.hpp"
 
 using namespace OpenSolid;

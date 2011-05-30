@@ -24,13 +24,11 @@
 #include <OpenSolid/config.hpp>
 
 #include <string>
-#include <sstream>
+#include <iostream>
 #include <map>
 #include <cassert>
 
-#include <boost/any.hpp>
-
-#include "check.hpp"
+#include <boost/lexical_cast.hpp>
 
 namespace OpenSolid
 {
@@ -39,7 +37,12 @@ namespace OpenSolid
     private:
         std::string _expected;
         std::string _caller;
-        std::map<std::string, boost::any> _data;
+        std::map<std::string, std::string> _data;
+
+        friend OPENSOLID_EXPORT std::ostream& operator<<(
+            std::ostream& stream,
+            const Error& error
+        );
     public:
         OPENSOLID_EXPORT Error();
         OPENSOLID_EXPORT Error(const std::string& expected, const std::string& caller);
@@ -49,7 +52,7 @@ namespace OpenSolid
         OPENSOLID_EXPORT std::string caller() const;
         
         template <class Type>
-        Error& set(const std::string& name, const Type& value);
+        Error& set(const std::string& name, const Type& argument);
         
         OPENSOLID_EXPORT bool has(const std::string& name) const;
         
@@ -65,17 +68,16 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    Error& Error::set(const std::string& name, const Type& value) {
-        _data[name] = value;
+    Error& Error::set(const std::string& name, const Type& argument) {
+        _data[name] = boost::lexical_cast<std::string>(argument);
         return *this;
     }
     
     template <class Type>
     Type Error::get(const std::string& name) const {
-        std::map<std::string, boost::any>::const_iterator position = _data.find(name);
+        std::map<std::string, std::string>::const_iterator position = _data.find(name);
         assert(position != _data.end());
-        assert(position->second.type() == typeid(Type));
-        return boost::any_cast<Type>(position->second);
+        return boost::lexical_cast<Type>(position->second);
     }
 }
 

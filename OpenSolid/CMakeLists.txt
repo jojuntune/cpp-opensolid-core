@@ -1,9 +1,6 @@
 # Collect source files
-SET(COMMON_SOURCES Common/Error.cpp Common/check.cpp)
-SET(VALUE_SOURCES Value/Interval.cpp Value/Tolerance.cpp Value/check.cpp)
-SET(DATUM_SOURCES Datum/Datum.cpp)
+
 SET(FUNCTION_SOURCES
-    Function/check.cpp
     Function/Function.cpp
     Function/FunctionImplementation.cpp
     Function/implementations/ArccosineFunction.cpp
@@ -33,14 +30,23 @@ SET(FUNCTION_SOURCES
     Function/implementations/TransformedFunction.cpp
     Function/implementations/UnaryFunction.cpp
 )
-SET(GEOMETRY_SOURCES Geometry/Geometry.cpp Geometry/Domain.cpp)
+
+SET(GEOMETRY_SOURCES
+    Geometry/Geometry.cpp
+)
+
+SET(DOMAIN_SOURCES
+    Domain/Domain.cpp
+)
 
 ADD_LIBRARY(OpenSolid SHARED
-    ${COMMON_SOURCES}
-    ${VALUE_SOURCES}
-    ${DATUM_SOURCES}
+    Common/Error.cpp
+    Interval/Interval.cpp
+    Interval/Tolerance.cpp
+    Datum/Datum.cpp
     ${FUNCTION_SOURCES}
     ${GEOMETRY_SOURCES}
+    ${DOMAIN_SOURCES}
 )
     
 INSTALL(
@@ -50,10 +56,10 @@ INSTALL(
     ARCHIVE DESTINATION lib
 )
 
-ADD_CXXTEST(Interval.tests Value/Interval.tests.hpp OpenSolid)
-ADD_CXXTEST(Matrix.tests Value/Matrix.tests.hpp OpenSolid)
+ADD_CXXTEST(Interval.tests Interval/Interval.tests.hpp OpenSolid)
+ADD_CXXTEST(Matrix.tests Matrix/Matrix.tests.hpp OpenSolid)
 ADD_CXXTEST(Datum.tests Datum/Datum.tests.hpp OpenSolid)
-ADD_CXXTEST(Set.tests Collection/Set.tests.hpp OpenSolid)
+ADD_CXXTEST(Set.tests Set/Set.tests.hpp OpenSolid)
 ADD_CXXTEST(Function.tests Function/Function.tests.hpp OpenSolid)
 ADD_CXXTEST(Geometry.tests Geometry/Geometry.tests.hpp OpenSolid)
-ADD_CXXTEST(Simplex.tests Mesh/Simplex.tests.hpp OpenSolid)
+ADD_CXXTEST(Simplex.tests Simplex/Simplex.tests.hpp OpenSolid)

@@ -22,7 +22,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 #include "Geometry.hpp"
 
 using namespace OpenSolid;

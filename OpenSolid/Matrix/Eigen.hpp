@@ -25,13 +25,13 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
-#include "Interval.hpp"
+#include <OpenSolid/Interval/Interval.hpp>
 
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
-#define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Value/DenseBasePlugin.hpp>
+#define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Matrix/DenseBasePlugin.hpp>
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
 #include "DenseBasePlugin.hpp"

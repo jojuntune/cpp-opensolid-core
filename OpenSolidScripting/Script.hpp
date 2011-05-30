@@ -73,14 +73,8 @@ namespace OpenSolid
     
     template <class Type>
     Type cast(PythonObject argument) {
-        extract<Type> extracted(argument);
-        checkCompatiblePythonType(
-            extracted.check(),
-            typeName<Type>(),
-            typeName(argument),
-            __func__
-        );
-        return extracted;
+        checkCompatiblePythonType<Type>(argument, __func__);
+        return extract<Type>(argument);
     }
     
     template <class Type>

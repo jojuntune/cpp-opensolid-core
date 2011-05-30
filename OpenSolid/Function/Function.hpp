@@ -26,8 +26,8 @@
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Value/Interval.hpp>
-#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Interval/Interval.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 #include "FunctionImplementation.hpp"
 #include "implementations/ConstantFunction.hpp"

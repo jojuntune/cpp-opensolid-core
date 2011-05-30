@@ -26,17 +26,11 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    OPENSOLID_PYTHON_EXPORT PyObject* error_class;
-    
-    struct ErrorTranslator
-    {
-        void operator()(const Error& error) const {
-            PyErr_SetObject(error_class, object(error).ptr());
-        }
-    };
+    OPENSOLID_PYTHON_EXPORT PyObject* error_class_ptr;
     
     void bindError() {
-        error_class = class_<Error>("Error", init<const std::string&, const std::string&>())
+        error_class_ptr =
+            class_<Error>("Error", init<const std::string&, const std::string&>())
             .def("expected", &Error::expected)
             .def("caller", &Error::caller)
             .def("get", &Error::get<std::string>)
@@ -44,6 +38,11 @@ namespace OpenSolid
             .def("has", &Error::has)
             .def(self_ns::str(self))
             .ptr();
-        register_exception_translator<Error>(ErrorTranslator());
+        register_exception_translator<Error>(
+            [] (const Error& error) {
+                object error_object(error);
+                PyErr_SetObject(error_class_ptr, error_object.ptr());
+            }
+        );
     }
 }

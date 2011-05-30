@@ -19,8 +19,6 @@
  ***************************************************************************/
 
 #include "Domain.hpp"
-#include "Geometry.hpp"
-#include <OpenSolid/Function/Function.hpp>
 
 namespace OpenSolid
 {

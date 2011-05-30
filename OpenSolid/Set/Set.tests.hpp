@@ -26,7 +26,7 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include "Set.hpp"
 
 using namespace OpenSolid;
@@ -177,13 +177,13 @@ public:
             set.insert(i);
             std::cout << set << std::endl;
             testSet(set.root());
-            TS_ASSERT_EQUALS(set.size(), std::size_t(i));
+            TS_ASSERT_EQUALS(set.size(), i);
         }
         for (int i = 12; i >= 1; --i) {
             set.erase(i);
             std::cout << set << std::endl;
             testSet(set.root());
-            TS_ASSERT_EQUALS(set.size(), std::size_t(i - 1));
+            TS_ASSERT_EQUALS(set.size(), i - 1);
         }
     }
     

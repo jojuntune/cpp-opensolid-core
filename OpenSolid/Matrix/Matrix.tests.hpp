@@ -22,9 +22,9 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include "Interval.hpp"
+#include <OpenSolid/Interval/Interval.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 #include "Matrix.hpp"
-#include "Tolerance.hpp"
 
 using namespace OpenSolid;
 

@@ -23,9 +23,9 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Value/Matrix.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
-#include "Domain.hpp"
+#include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
 {   
@@ -127,8 +127,6 @@ namespace OpenSolid
 }
 
 ////////// Implementation //////////
-
-#include "Domain.hpp"
 
 namespace OpenSolid
 {

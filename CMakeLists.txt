@@ -53,26 +53,6 @@
     # Add Boost library directory to link path so auto-linking works when using MSVC
     LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-########## Set up OpenGL ##########
-
-    FIND_PACKAGE(OpenGL REQUIRED)
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
-    
-    # Most POSIX systems have OpenGL headers in GL/ subdirectory
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR}/GL)
-    
-    # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR}/Headers)
-
-########## Set up Qt ##########
-
-    FIND_PACKAGE(Qt4 REQUIRED)
-    SET(QT_USE_QTOPENGL ON)
-    SET(QT_USE_QTXML ON)
-    INCLUDE(${QT_USE_FILE})
-    INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
-    ADD_DEFINITIONS(${QT_DEFINITIONS})
-
 ########## Set up CxxTest ##########
 
     MACRO(ADD_CXXTEST name source)

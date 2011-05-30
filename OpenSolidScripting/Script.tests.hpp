@@ -23,8 +23,8 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Value/Matrix.hpp>
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include "Script.hpp"
 
 using namespace OpenSolid;
@@ -194,7 +194,7 @@ public:
         try {
             script.run(text);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "SameSize");
+            TS_ASSERT_EQUALS(error.expected(), "SameSizeMatrices");
             TS_ASSERT_EQUALS(error.get<int>("first_rows"), 2);
             TS_ASSERT_EQUALS(error.get<int>("second_rows"), 3);
         }
@@ -317,7 +317,7 @@ public:
         TS_ASSERT_EQUALS(script.get<double>("b[-1]"), 12.0);
         TS_ASSERT_EQUALS(script.get<MatrixXd>("b[:]"), Vector3d(10, 11, 12));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("b[-2:]"), Vector2d(11, 12));
-        TS_ASSERT_EQUALS(script.get<double>("a[1,1]"), 5.0);
+        TS_ASSERT_EQUALS(script.get<double>("a[1, 1]"), 5.0);
         TS_ASSERT_EQUALS(script.get<double>("a[-2, -1]"), 6.0);
         TS_ASSERT_EQUALS(script.get<MatrixXd>("a[:, 0]"), Vector3d(1, 4, 7));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("a[2, :]"), RowVector3d(7, 8, 9));

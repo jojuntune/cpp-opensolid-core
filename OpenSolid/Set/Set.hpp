@@ -30,7 +30,7 @@
 #include <boost/smart_ptr/detail/atomic_count.hpp>
 
 #include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Value/Tolerance.hpp>
+#include <OpenSolid/Interval/Tolerance.hpp>
 #include "SetNode.hpp"
 
 namespace OpenSolid
@@ -60,7 +60,7 @@ namespace OpenSolid
         
         void operator=(const Set<Type>& other);
         
-        std::size_t size() const;
+        int size() const;
         bool empty() const;
         const typename Bounds<Type>::Type& bounds() const;
         
@@ -71,7 +71,7 @@ namespace OpenSolid
         SetIterator<Type> end() const;
         
         void insert(const Type& object);
-        std::size_t erase(const Type& object);
+        int erase(const Type& object);
         void clear();
         
         template <class FunctionType>
@@ -162,10 +162,14 @@ namespace OpenSolid
             _root = nodes[0];
             _shared_count = new boost::detail::atomic_count(1);
         } else {
-            typename Bounds<Type>::Type overall_bounds = nodes[0]->bounds();
-            for (std::size_t i = 1; i < nodes.size(); ++i) {
-                overall_bounds = overall_bounds.hull(nodes[i]->bounds());
-            }
+            typename Bounds<Type>::Type overall_bounds = nodes.front()->bounds();
+            std::for_each(
+                nodes.begin() + 1,
+                nodes.end(),
+                [&overall_bounds] (SetNode<Type>* node) {
+                    overall_bounds = overall_bounds.hull(node->bounds());
+                }
+            );
             _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
             _shared_count = new boost::detail::atomic_count(1);
         }
@@ -180,7 +184,7 @@ namespace OpenSolid
     }
     
     template <class Type>
-    inline std::size_t Set<Type>::size() const {return empty() ? 0 : root()->size();}
+    inline int Set<Type>::size() const {return empty() ? 0 : root()->size();}
     
     template <class Type>
     inline bool Set<Type>::empty() const {return !root();}
@@ -253,7 +257,7 @@ namespace OpenSolid
     }
     
     template <class Type>
-    inline std::size_t Set<Type>::erase(const Type& object) {
+    inline int Set<Type>::erase(const Type& object) {
         if (empty()) {
             return 0;
         } else {
@@ -263,7 +267,7 @@ namespace OpenSolid
                 _shared_count = new boost::detail::atomic_count(1);
             }
             typename Bounds<Type>::Type bounds = Bounds<Type>::bounds(object);
-            std::size_t previous_size = size();
+            int previous_size = size();
             _root = _root->erase(bounds, object);
             return size() - previous_size;
         }
@@ -315,10 +319,14 @@ namespace OpenSolid
                 result._shared_count = new boost::detail::atomic_count(1);
                 return result;
             } else {
-                typename Bounds<Type>::Type overall_bounds = nodes[0]->bounds();
-                for (std::size_t i = 1; i < nodes.size(); ++i) {
-                    overall_bounds = overall_bounds.hull(nodes[i]->bounds());
-                }
+                typename Bounds<Type>::Type overall_bounds = nodes.front()->bounds();
+                std::for_each(
+                    nodes.begin() + 1,
+                    nodes.end(),
+                    [&overall_bounds] (SetNode<Type>* node) {
+                        overall_bounds = overall_bounds.hull(node->bounds());
+                    }
+                );
                 Set<Type> result;
                 result._root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
                 result._shared_count = new boost::detail::atomic_count(1);

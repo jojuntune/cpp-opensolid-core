@@ -23,8 +23,7 @@
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/manage_new_object.hpp>
 
-#include <OpenSolid/Value/Matrix.hpp>
-#include <OpenSolid/Value/check.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 #include "check.hpp"
 
@@ -34,25 +33,15 @@ namespace OpenSolid
 {
     template <class MatrixType, class DynamicType>
     object newFixedSizeMatrix(tuple arguments, dict keyword_arguments) {
-        checkCorrectNumberOfCoefficients(
-            len(arguments) - 1,
-            MatrixType::SizeAtCompileTime,
-            __func__
-        );
+        checkSameSize(len(arguments) - 1, MatrixType::SizeAtCompileTime, __func__);
         int rows = MatrixType::RowsAtCompileTime;
         int cols = MatrixType::ColsAtCompileTime;
         DynamicType result(rows, cols);
         for (int i = 0; i < MatrixType::SizeAtCompileTime; ++i) {
             int row = i / MatrixType::ColsAtCompileTime;
             int col = i % MatrixType::ColsAtCompileTime;
-            extract<typename MatrixType::Scalar> extracted(arguments[i + 1]);
-            checkCompatiblePythonType(
-                extracted.check(),
-                typeName<typename MatrixType::Scalar>(),
-                typeName(arguments[i + 1]),
-                __func__
-            );
-            result(row, col) = extracted;
+            checkCompatiblePythonType<typename MatrixType::Scalar>(arguments[i + 1], __func__);
+            result(row, col) = extract<typename MatrixType::Scalar>(arguments[i + 1]);
         }
         return object(result);
     }
@@ -120,17 +109,11 @@ namespace OpenSolid
         }
         DynamicType result(rows, cols);
         for (int i = 0; i < size; ++i) {
-            extract<typename MatrixType::Scalar> extracted(arguments[i + 1]);
-            checkCompatiblePythonType(
-                extracted.check(),
-                typeName<typename MatrixType::Scalar>(),
-                typeName(arguments[i + 1]),
-                __func__
-            );
+            checkCompatiblePythonType<typename MatrixType::Scalar>(arguments[i + 1], __func__);
             if (MatrixType::RowsAtCompileTime == Dynamic) {
-                result(i, 0) = extracted;
+                result(i, 0) = extract<typename MatrixType::Scalar>(arguments[i + 1]);
             } else {
-                result(0, i) = extracted;
+                result(0, i) = extract<typename MatrixType::Scalar>(arguments[i + 1]);
             }
         }
         return object(result);
@@ -211,26 +194,16 @@ namespace OpenSolid
     
     template <class MatrixType, class DynamicType>
     object newFixedSizeVector(tuple arguments, dict keyword_arguments) {
-        checkCorrectNumberOfCoefficients(
-            len(arguments) - 1,
-            MatrixType::SizeAtCompileTime,
-            __func__
-        );
+        checkSameSize(len(arguments) - 1, MatrixType::SizeAtCompileTime, __func__);
         int rows = MatrixType::RowsAtCompileTime;
         int cols = MatrixType::ColsAtCompileTime;
         DynamicType result(rows, cols);
         for (int i = 0; i < MatrixType::SizeAtCompileTime; ++i) {
-            extract<typename MatrixType::Scalar> extracted(arguments[i + 1]);
-            checkCompatiblePythonType(
-                extracted.check(),
-                typeName<typename MatrixType::Scalar>(),
-                typeName(arguments[i + 1]),
-                __func__
-            );
+            checkCompatiblePythonType<typename MatrixType::Scalar>(arguments[i + 1], __func__);
             if (MatrixType::ColsAtCompileTime == 1) {
-                result(i, 0) = extracted;
+                result(i, 0) = extract<typename MatrixType::Scalar>(arguments[i + 1]);
             } else {
-                result(0, i) = extracted;
+                result(0, i) = extract<typename MatrixType::Scalar>(arguments[i + 1]);
             }
         }
         return object(result);

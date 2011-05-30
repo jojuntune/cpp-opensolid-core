@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__SIMPLEX_HPP
 #define OPENSOLID__SIMPLEX_HPP
 
-#include <OpenSolid/Value/Matrix.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
