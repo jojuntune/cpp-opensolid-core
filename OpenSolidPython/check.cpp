@@ -58,7 +58,7 @@ namespace OpenSolid
         const std::string& caller
     ) {
         if (first_dimensions != 1u && second_dimensions != 1u) {
-            Error error("ProductDimensions", caller);
+            Error error("ValidProductDimensions", caller);
             error.set("first_dimensions", first_dimensions);
             error.set("second_dimensions", second_dimensions);
             throw error;
@@ -106,7 +106,7 @@ namespace OpenSolid
     void checkNoMatrixIndexStep(
         boost::python::slice indices,
         const std::string& caller
-    ) {if (indices.step() != boost::python::object()) {throw Error("NoMatrixStep", caller);}}
+    ) {if (indices.step() != boost::python::object()) {throw Error("NoMatrixIndexStep", caller);}}
     
     void checkConstantFunction(
         const Function& function,
