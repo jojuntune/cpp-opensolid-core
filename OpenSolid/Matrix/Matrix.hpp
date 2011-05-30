@@ -130,12 +130,22 @@ namespace Eigen
     template <class MatrixType>
     inline bool ConstMatrixIterator<MatrixType>::equal(
         const ConstMatrixIterator<MatrixType>& other
-    ) {return _index == other._index;}
+    ) const {return _index == other._index;}
     
     template <class MatrixType>
-    inline bool ConstMatrixIterator<MatrixType>::equal(const MatrixIterator<MatrixType>& other) {
-        return _index == other._index;
-    }
+    inline bool ConstMatrixIterator<MatrixType>::equal(
+        const MatrixIterator<MatrixType>& other
+    ) const {return _index == other._index;}
+    
+    template <class MatrixType>
+    inline int ConstMatrixIterator<MatrixType>::distance_to(
+        const ConstMatrixIterator<MatrixType>& other
+    ) const {return other._index - _index;}
+    
+    template <class MatrixType>
+    inline int ConstMatrixIterator<MatrixType>::distance_to(
+        const MatrixIterator<MatrixType>& other
+    ) const {return other._index - _index;}
     
     template <class MatrixType>
     inline void ConstMatrixIterator<MatrixType>::increment() {++_index;}
@@ -168,14 +178,24 @@ namespace Eigen
     }
     
     template <class MatrixType>
-    inline bool MatrixIterator<MatrixType>::equal(const MatrixIterator<MatrixType>& other) {
-        return _index == other._index;
-    }
+    inline bool MatrixIterator<MatrixType>::equal(
+        const MatrixIterator<MatrixType>& other
+    ) const {return _index == other._index;}
     
     template <class MatrixType>
-    inline bool MatrixIterator<MatrixType>::equal(const ConstMatrixIterator<MatrixType>& other) {
-        return _index == other._index;
-    }
+    inline bool MatrixIterator<MatrixType>::equal(
+        const ConstMatrixIterator<MatrixType>& other
+    ) const {return _index == other._index;}
+    
+    template <class MatrixType>
+    inline int MatrixIterator<MatrixType>::distance_to(
+        const MatrixIterator<MatrixType>& other
+    ) const {return other._index - _index;}
+    
+    template <class MatrixType>
+    inline int MatrixIterator<MatrixType>::distance_to(
+        const ConstMatrixIterator<MatrixType>& other
+    ) const {return other._index - _index;}
     
     template <class MatrixType>
     inline void MatrixIterator<MatrixType>::increment() {++_index;}
@@ -204,6 +224,12 @@ namespace Eigen
     inline bool MatrixBlockIterator<DerivedType, MatrixType, BlockType>::equal(
         const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
     ) const {return _index == other._index;}
+    
+    template <class DerivedType, class MatrixType, class BlockType>
+    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
+    inline int MatrixBlockIterator<DerivedType, MatrixType, BlockType>::distance_to(
+        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
+    ) const {return other._index - _index;}
     
     template <class DerivedType, class MatrixType, class BlockType>
     inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::increment() {++_index;}

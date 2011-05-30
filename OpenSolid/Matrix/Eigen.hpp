@@ -103,7 +103,7 @@ namespace Eigen
         public boost::iterator_facade<
             ConstMatrixIterator<MatrixType>,
             typename MatrixType::Scalar,
-            boost::random_access_traversal_tag,
+            std::random_access_iterator_tag,
             typename MatrixType::Scalar
         >
     {
@@ -116,8 +116,11 @@ namespace Eigen
         
         typename MatrixType::Scalar dereference() const;
         
-        bool equal(const MatrixIterator<MatrixType>& other);
-        bool equal(const ConstMatrixIterator<MatrixType>& other);
+        bool equal(const MatrixIterator<MatrixType>& other) const;
+        bool equal(const ConstMatrixIterator<MatrixType>& other) const;
+        
+        int distance_to(const MatrixIterator<MatrixType>& other) const;
+        int distance_to(const ConstMatrixIterator<MatrixType>& other) const;
         
         void increment();
         void decrement();
@@ -133,7 +136,7 @@ namespace Eigen
         public boost::iterator_facade<
             MatrixIterator<MatrixType>,
             typename MatrixType::Scalar,
-            boost::random_access_traversal_tag,
+            std::random_access_iterator_tag,
             typename MatrixType::Scalar&
         >
     {
@@ -146,8 +149,11 @@ namespace Eigen
         
         typename MatrixType::Scalar& dereference() const;
         
-        bool equal(const MatrixIterator<MatrixType>& other);
-        bool equal(const ConstMatrixIterator<MatrixType>& other);
+        bool equal(const MatrixIterator<MatrixType>& other) const;
+        bool equal(const ConstMatrixIterator<MatrixType>& other) const;
+        
+        int distance_to(const MatrixIterator<MatrixType>& other) const;
+        int distance_to(const ConstMatrixIterator<MatrixType>& other) const;
         
         void increment();
         void decrement();
@@ -162,7 +168,7 @@ namespace Eigen
         public boost::iterator_facade<
             DerivedType,
             BlockType,
-            boost::random_access_traversal_tag,
+            std::random_access_iterator_tag,
             BlockType
         >
     {
@@ -179,6 +185,11 @@ namespace Eigen
         
         template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
         bool equal(
+            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
+        ) const;
+        
+        template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
+        int distance_to(
             const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
         ) const;
         
