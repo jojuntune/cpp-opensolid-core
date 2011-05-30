@@ -125,7 +125,7 @@ public:
         Set<double> set(list.begin(), list.end());
         std::cout << set << std::endl;
         Set<double> overlapping = set.overlapping(Interval(2.5, 4.5));
-        TS_ASSERT_EQUALS(overlapping.size(), 2u);
+        TS_ASSERT_EQUALS(overlapping.size(), 2);
         std::cout << overlapping.front() - 3 << ", " << overlapping.back() - 4 << std::endl;
         TS_ASSERT_EQUALS(overlapping.front(), 3);
         TS_ASSERT_EQUALS(overlapping.back(), 4);
@@ -139,7 +139,7 @@ public:
         list[3] = Vector2d(5, 3);
         Set<Vector2d> set(list.begin(), list.end());
         Set<Vector2d> overlapping = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
-        TS_ASSERT_EQUALS(overlapping.size(), 2u);
+        TS_ASSERT_EQUALS(overlapping.size(), 2);
         TS_ASSERT_EQUALS(overlapping.front(), Vector2d(1, 3));
         TS_ASSERT_EQUALS(overlapping.back(), Vector2d(5, 3));
     }
@@ -153,22 +153,22 @@ public:
         set.insert(5);
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 5u);
+        TS_ASSERT_EQUALS(set.size(), 5);
         set.erase(3);
         std::cout << "3 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 4u);
+        TS_ASSERT_EQUALS(set.size(), 4);
         set.erase(5);
         std::cout << "5 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 3u);
+        TS_ASSERT_EQUALS(set.size(), 3);
         set.erase(7);
         std::cout << "7 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 2u);
+        TS_ASSERT_EQUALS(set.size(), 2);
     }
     
     void testRebalance() {
@@ -193,11 +193,11 @@ public:
         set.insert(Interval(2, 6));
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 2u);
+        TS_ASSERT_EQUALS(set.size(), 2);
         set.insert(Interval(-1, 1));
         std::cout << set << std::endl;
         testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 3u);
+        TS_ASSERT_EQUALS(set.size(), 3);
     }
     
     void testIntervalConstructionTime() {
@@ -207,17 +207,15 @@ public:
         boost::timer iterator_timer;
         Set<Interval> iterator_set(intervals.begin(), intervals.end());
         double iterator_time = iterator_timer.elapsed();
-        TS_ASSERT_EQUALS(iterator_set.size(), intervals.size());
+        TS_ASSERT_EQUALS(iterator_set.size(), int(intervals.size()));
         testSet(iterator_set.root());
         std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
         
         boost::timer insertion_timer;
         Set<Interval> insertion_set;
-        for (auto i = intervals.begin(); i != intervals.end(); ++i) {
-            insertion_set.insert(*i);
-        }
+        for (auto i = intervals.begin(); i != intervals.end(); ++i) {insertion_set.insert(*i);}
         double insertion_time = insertion_timer.elapsed();
-        TS_ASSERT_EQUALS(insertion_set.size(), intervals.size());
+        TS_ASSERT_EQUALS(insertion_set.size(), int(intervals.size()));
         testSet(insertion_set.root());
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
@@ -231,17 +229,15 @@ public:
         boost::timer iterator_timer;
         Set<Vector3I> iterator_set(vectors.begin(), vectors.end());
         double iterator_time = iterator_timer.elapsed();
-        TS_ASSERT_EQUALS(iterator_set.size(), vectors.size());
+        TS_ASSERT_EQUALS(iterator_set.size(), int(vectors.size()));
         testSet(iterator_set.root());
         std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
         
         boost::timer insertion_timer;
         Set<Vector3I> insertion_set;
-        for (auto i = vectors.begin(); i != vectors.end(); ++i) {
-            insertion_set.insert(*i);
-        }
+        for (auto i = vectors.begin(); i != vectors.end(); ++i) {insertion_set.insert(*i);}
         double insertion_time = insertion_timer.elapsed();
-        TS_ASSERT_EQUALS(insertion_set.size(), vectors.size());
+        TS_ASSERT_EQUALS(insertion_set.size(), int(vectors.size()));
         testSet(insertion_set.root());
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
