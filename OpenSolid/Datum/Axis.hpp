@@ -29,11 +29,11 @@ namespace OpenSolid
     class Axis : public Datum<dimensions_, 1>
     {
     public:
-        typedef Matrix<double, dimensions_, 1> VectorType;
-        typedef Matrix<double, dimensions_, 1> MatrixType;
+        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<double, dimensions_, 1> Matrix;
         
         Axis();
-        Axis(const VectorType& origin, const VectorType& vector);
+        Axis(const Vector& origin, const Vector& vector);
         
         template <int other_dimensions_, int other_axes_>
         Axis(const Datum<other_dimensions_, other_axes_>& other);
@@ -56,7 +56,7 @@ namespace OpenSolid
     inline Axis<dimensions_>::Axis() {}
     
     template <int dimensions_>
-    inline Axis<dimensions_>::Axis(const VectorType& origin, const VectorType& vector) {
+    inline Axis<dimensions_>::Axis(const Vector& origin, const Vector& vector) {
         initialize(origin, vector, true);
     }
 

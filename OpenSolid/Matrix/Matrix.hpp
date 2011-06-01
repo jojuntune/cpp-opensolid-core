@@ -23,7 +23,7 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/Traits.hpp>
 #include "Eigen.hpp"
 
 namespace Eigen
@@ -73,9 +73,6 @@ namespace Eigen
     typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > MapXcd;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXcb;
-        
-    template <class DerivedType>
-    std::size_t hash_value(const EigenBase<DerivedType>& argument);
 }
 
 namespace OpenSolid
@@ -83,13 +80,14 @@ namespace OpenSolid
     using namespace Eigen;
     
     template <class ScalarType, int rows_, int cols_>
-    struct Bounds<Matrix<ScalarType, rows_, cols_> >
+    struct Traits<Matrix<ScalarType, rows_, cols_>>
     {
-        typedef Matrix<Interval, rows_, cols_> Type;
+        typedef Matrix<Interval, rows_, cols_> Bounds;
         
-        static Matrix<Interval, rows_, cols_> bounds(
-            const Matrix<ScalarType, rows_, cols_>& matrix
-        );
+        static auto bounds(const Matrix<ScalarType, rows_, cols_> argument) ->
+            decltype(argument.cast<Interval>());
+            
+        static std::size_t hash(const Matrix<ScalarType, rows_, cols_>& argument);
     };
 }
 
@@ -435,38 +433,42 @@ namespace Eigen
         return (first_argument == second_argument) ? Interval(first_argument) : Interval::Empty();
     }
     
-    template <class DerivedType>
-    struct HashVisitor
-    {
-        typedef typename DerivedType::Scalar ScalarType;
-        typedef typename DerivedType::Index IndexType;
-    
-        std::size_t result;
-        
-        inline void init(const ScalarType& value, IndexType row, IndexType col) {
-            result = 0;
-            boost::hash_combine(result, value);
-        }
-        
-        inline void operator()(const ScalarType& value, IndexType row, IndexType col) {
-            boost::hash_combine(result, value);
-        }
-    };
-    
-    template <class DerivedType>
-    inline std::size_t hash_value(const EigenBase<DerivedType>& argument) {
-        HashVisitor<DerivedType> visitor;
-        argument.derived().visit(visitor);
-        return visitor.result;
+    template <class ScalarType, int rows_, int cols_>
+    inline std::size_t hash_value(const Matrix<ScalarType, rows_, cols_>& argument) {
+        return OpenSolid::Traits<Matrix<ScalarType, rows_, cols_>>::hash(argument);
     }
 }
 
 namespace OpenSolid
 {
     template <class ScalarType, int rows_, int cols_>
-    inline Matrix<Interval, rows_, cols_> Bounds<Matrix<ScalarType, rows_, cols_> >::bounds(
-        const Matrix<ScalarType, rows_, cols_>& matrix
-    ) {return matrix.template cast<Interval>();}
+    inline auto Traits<Matrix<ScalarType, rows_, cols_>>::bounds(
+        const Matrix<ScalarType, rows_, cols_> argument
+    ) -> decltype(argument.cast<Interval>()) {return argument.cast<Interval>();}
+
+    template <class ScalarType, int rows_, int cols_>
+    struct HashVisitor
+    {
+        std::size_t result;
+        
+        inline void init(const ScalarType& value, int row, int col) {
+            result = 0;
+            boost::hash_combine(result, value);
+        }
+        
+        inline void operator()(const ScalarType& value, int row, int col) {
+            boost::hash_combine(result, value);
+        }
+    };
+    
+    template <class ScalarType, int rows_, int cols_>
+    inline std::size_t Traits<Matrix<ScalarType, rows_, cols_>>::hash(
+        const Matrix<ScalarType, rows_, cols_>& argument
+    ) {
+        HashVisitor<ScalarType, rows_, cols_> visitor;
+        argument.visit(visitor);
+        return visitor.result;
+    }
 }
 
 #endif

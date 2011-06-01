@@ -33,8 +33,6 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Common/Bounds.hpp>
-
 namespace OpenSolid
 {
     using std::min;
@@ -144,38 +142,27 @@ namespace OpenSolid
     OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& exponent);
 
     OPENSOLID_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& argument);
-    
-    template <>
-    struct Bounds<int>
-    {
-        typedef Interval Type;
-        
-        static Interval bounds(int value);
-    };
-    
-    template <>
-    struct Bounds<double>
-    {
-        typedef Interval Type;
-        
-        static Interval bounds(double value);
-    };
-    
-    template <>
-    struct Bounds<Interval>
-    {
-        typedef Interval Type;
-        
-        static const Interval& bounds(const Interval& value);
-    };
-    
-    std::size_t hash_value(const Interval& argument);
 }
    
 ////////// Implementation //////////
 
+#include "Traits.hpp"
+
 namespace OpenSolid
-{   
+{
+    inline Interval Traits<int>::bounds(int argument) {return Interval(argument);}
+    
+    inline Interval Traits<double>::bounds(double argument) {return Interval(argument);}
+
+    inline const Interval& Traits<Interval>::bounds(const Interval& argument) {return argument;}
+    
+    inline std::size_t Traits<Interval>::hash(const Interval& argument) {
+        std::size_t result = 0;
+        boost::hash_combine(result, argument.lower());
+        boost::hash_combine(result, argument.upper());
+        return result;
+    }
+    
     inline Interval::Interval(const BoostInterval& interval) : _interval(interval) {}
         
     inline Interval::Interval() : _interval() {}
@@ -360,19 +347,6 @@ namespace OpenSolid
     inline Interval abs(const Interval& argument) {return abs(argument.interval());}
 
     inline Interval sqrt(const Interval& argument) {return sqrt(argument.interval());}
-    
-    inline Interval Bounds<int>::bounds(int value) {return Interval(value);}
-    
-    inline Interval Bounds<double>::bounds(double value) {return Interval(value);}
-    
-    inline const Interval& Bounds<Interval>::bounds(const Interval& value) {return value;}
-    
-    inline std::size_t hash_value(const Interval& argument) {
-        std::size_t result = 0;
-        boost::hash_combine(result, argument.lower());
-        boost::hash_combine(result, argument.upper());
-        return result;
-    }
 }
 
 #endif

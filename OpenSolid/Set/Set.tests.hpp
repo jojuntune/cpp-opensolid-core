@@ -31,16 +31,16 @@
 
 using namespace OpenSolid;
 
-template <class Type>
-void testSet(const SetNode<Type>* node) {
+template <class Type, class BoundsType>
+void testSet(const SetNode<Type, BoundsType>* node) {
     double tolerance = Tolerance::roundoff();
     if (!node) {
         return;
     } else if (node->object()) {
         TS_ASSERT(node->size() == 1u);
     } else {
-        const SetNode<Type>* left = node->left();
-        const SetNode<Type>* right = node->right();
+        const SetNode<Type, BoundsType>* left = node->left();
+        const SetNode<Type, BoundsType>* right = node->right();
         TS_ASSERT(node->bounds().contain(left->bounds(), tolerance));
         TS_ASSERT(node->bounds().contain(right->bounds(), tolerance));
         TS_ASSERT_EQUALS(node->size(), left->size() + right->size());
@@ -258,7 +258,7 @@ public:
         std::cout << set1 << std::endl;
         std::cout << set2 << std::endl;
         
-        const SetNode<double>* root;
+        const Set<double>::Node* root;
         {
             std::vector<double> list2(3);
             list2[0] = 10;

@@ -29,16 +29,16 @@ namespace OpenSolid
     class Frame : public Datum<dimensions_, dimensions_>
     {
     public:
-        typedef Matrix<double, dimensions_, 1> VectorType;
-        typedef Matrix<double, dimensions_, dimensions_> MatrixType;
+        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<double, dimensions_, dimensions_> Matrix;
         
         Frame();
         explicit Frame(int size);
         
-        explicit Frame(const VectorType& origin);
+        explicit Frame(const Vector& origin);
         
         template <class DerivedType>
-        Frame(const VectorType& origin, const EigenBase<DerivedType>& vectors);
+        Frame(const Vector& origin, const EigenBase<DerivedType>& vectors);
         
         template <int other_dimensions_, int other_axes_>
         Frame(const Datum<other_dimensions_, other_axes_>& other);
@@ -75,16 +75,16 @@ namespace OpenSolid
     }
         
     template <int dimensions_>
-    inline Frame<dimensions_>::Frame(const VectorType& origin) {
+    inline Frame<dimensions_>::Frame(const Vector& origin) {
         assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
         this->_origin = origin;
-        this->_vectors = MatrixType::Identity(origin.size(), origin.size());
+        this->_vectors = Matrix::Identity(origin.size(), origin.size());
         this->_normalized = true;
     }
     
     template <int dimensions_> template <class DerivedType>
     inline Frame<dimensions_>::Frame(
-        const VectorType& origin,
+        const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors, true);}
 

@@ -21,7 +21,6 @@
 #ifndef OPENSOLID__SIMPLEX_HPP
 #define OPENSOLID__SIMPLEX_HPP
 
-#include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
@@ -31,14 +30,13 @@ namespace OpenSolid
     class Simplex
     {
     public:
-        typedef Matrix<double, dimensions_, size_> VerticesType;
-        typedef typename VerticesType::ConstColXpr VertexType;
-        typedef Simplex<dimensions_, 2> EdgeType;
-        typedef Simplex<dimensions_, size_ == Dynamic ? Dynamic : size_ - 1> FaceType;
-        typedef Matrix<Interval, dimensions_, 1> BoundsType;
-        typedef Matrix<double, dimensions_, 1> VectorType;
+        typedef Matrix<double, dimensions_, size_> Vertices;
+        typedef typename Vertices::ConstColXpr Vertex;
+        typedef Simplex<dimensions_, 2> Edge;
+        typedef Simplex<dimensions_, size_ == Dynamic ? Dynamic : size_ - 1> Face;
+        typedef Matrix<double, dimensions_, 1> Vector;
     private:
-        VerticesType _vertices;
+        Vertices _vertices;
     public:
         Simplex();
         
@@ -83,28 +81,25 @@ namespace OpenSolid
         int dimensions() const;
         int size() const;
         
-        const VerticesType& vertices() const;
-        VertexType vertex(int index) const;
+        const Vertices& vertices() const;
+        Vertex vertex(int index) const;
         
         double length() const;
         double area() const;
         double volume() const;
         double hypervolume() const;
         
-        VectorType centroid() const;
-        VectorType normal() const;
+        Vector centroid() const;
+        Vector normal() const;
         
-        EdgeType edge(int start_index, int end_index) const;
-        FaceType face(int index) const;
+        Edge edge(int start_index, int end_index) const;
+        Face face(int index) const;
         
-        BoundsType bounds() const;
+        Matrix<Interval, dimensions_, 1> bounds() const;
         
         template <int other_dimensions_, int other_size_>
         bool operator==(const Simplex<other_dimensions_, other_size_>& other) const;
     };
-    
-    template <int dimensions_, int size_>
-    std::size_t hash_value(const Simplex<dimensions_, size_>& simplex);
     
     typedef Simplex<1, 2> LineSegment1d;
     typedef Simplex<2, 2> LineSegment2d;
@@ -126,13 +121,6 @@ namespace OpenSolid
     
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
     
-    template <int dimensions_, int size_>
-    struct Bounds<Simplex<dimensions_, size_> >
-    {
-        typedef typename Simplex<dimensions_, size_>::BoundsType Type;
-        static Type bounds(const Simplex<dimensions_, size_>& simplex);
-    };
-    
     template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
     Simplex<datum_dimensions_, simplex_size_> operator*(
         const Simplex<simplex_dimensions_, simplex_size_>& simplex,
@@ -148,8 +136,20 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
+#include "Traits.hpp"
+
 namespace OpenSolid
 {
+    template <int dimensions_, int size_>
+    inline std::size_t Traits<Simplex<dimensions_, size_>>::hash(
+        const Simplex<dimensions_, size_>& argument
+    ) {return hash_value(argument.vertices());}
+    
+    template <int dimensions_, int size_>
+    inline Matrix<Interval, dimensions_, 1> Traits<Simplex<dimensions_, size_>>::bounds(
+        const Simplex<dimensions_, size_>& argument
+    ) {return argument.bounds();}
+    
     template <int dimensions_, int size_>
     inline Simplex<dimensions_, size_>::Simplex() : _vertices() {}
         
@@ -226,11 +226,11 @@ namespace OpenSolid
     inline int Simplex<dimensions_, size_>::size() const {return _vertices.cols();}
     
     template <int dimensions_, int size_>
-    inline const typename Simplex<dimensions_, size_>::VerticesType&
+    inline const typename Simplex<dimensions_, size_>::Vertices&
     Simplex<dimensions_, size_>::vertices() const {return _vertices;}
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::VertexType
+    inline typename Simplex<dimensions_, size_>::Vertex
     Simplex<dimensions_, size_>::vertex(int index) const {return _vertices.col(index);}
     
     template <int dimensions_, int size_>
@@ -319,76 +319,78 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::VectorType
+    inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::centroid() const {return vertices().rowwise().mean();}
     
-    inline Vector2d simplexNormal(const LineSegment2d& line_segment) {
-        return (line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
-    }
-    
-    inline Vector2d simplexNormal(const LineSegmentXd& line_segment) {
-        assert(line_segment.dimensions() == 2);
-        return Vector2d(line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
-    }
-    
-    inline Vector3d simplexNormal(const Triangle3d& triangle) {
-        Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
-        Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
-        return first_edge.cross(second_edge).normalized();
-    }
-    
-    inline Vector3d simplexNormal(const TriangleXd& triangle) {
-        assert(triangle.dimensions() == 3);
-        Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
-        Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
-        return first_edge.cross(second_edge).normalized();
-    }
-    
-    inline VectorXd simplexNormal(const SimplexXd& simplex) {
-        assert(simplex.size() == 2 || simplex.size() == 3);
-        if (simplex.size() == 2) {
-            assert(simplex.dimensions() == 2);
-            return Vector2d(simplex.vertex(1) - simplex.vertex(0)).unitOrthogonal();
-        } else {
-            assert(simplex.dimensions() == 3);
-            Vector3d first_edge = simplex.vertex(1) - simplex.vertex(0);
-            Vector3d second_edge = simplex.vertex(2) - simplex.vertex(0);
+    namespace
+    {
+        inline Vector2d simplexNormal(const LineSegment2d& line_segment) {
+            return (line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+        }
+        
+        inline Vector2d simplexNormal(const LineSegmentXd& line_segment) {
+            assert(line_segment.dimensions() == 2);
+            return Vector2d(line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+        }
+        
+        inline Vector3d simplexNormal(const Triangle3d& triangle) {
+            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
+            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
             return first_edge.cross(second_edge).normalized();
+        }
+        
+        inline Vector3d simplexNormal(const TriangleXd& triangle) {
+            assert(triangle.dimensions() == 3);
+            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
+            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+            return first_edge.cross(second_edge).normalized();
+        }
+        
+        inline VectorXd simplexNormal(const SimplexXd& simplex) {
+            assert(simplex.size() == 2 || simplex.size() == 3);
+            if (simplex.size() == 2) {
+                assert(simplex.dimensions() == 2);
+                return Vector2d(simplex.vertex(1) - simplex.vertex(0)).unitOrthogonal();
+            } else {
+                assert(simplex.dimensions() == 3);
+                Vector3d first_edge = simplex.vertex(1) - simplex.vertex(0);
+                Vector3d second_edge = simplex.vertex(2) - simplex.vertex(0);
+                return first_edge.cross(second_edge).normalized();
+            }
         }
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::VectorType
+    inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::normal() const {
         assert(size() == dimensions());
         return simplexNormal(*this);
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::EdgeType
+    inline typename Simplex<dimensions_, size_>::Edge
     Simplex<dimensions_, size_>::edge(int start_index, int end_index) const {
-        typename EdgeType::VerticesType edge_vertices;
+        typename Edge::Vertices edge_vertices;
         edge_vertices.col(0) = vertices().col(start_index);
         edge_vertices.col(1) = vertices().col(end_index);
-        return EdgeType(edge_vertices);
+        return Edge(edge_vertices);
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::FaceType
+    inline typename Simplex<dimensions_, size_>::Face
     Simplex<dimensions_, size_>::face(int index) const {
-        typename FaceType::VerticesType face_vertices;
+        typename Face::Vertices face_vertices;
         Matrix<int, 1, size_ == Dynamic ? Dynamic : size_ - 1> indices(size() - 1);
         for (int i = 0; i < indices.size(); ++i) {indices(i) = (index + 1 + i) % size();}
         if (size() % 2 == 0 && index % 2 != 0) {indices.tail(2).reverseInPlace();}
         for (int i = 0; i < indices.size(); ++i) {
             face_vertices.col(i) = vertices().col(indices(i));
         }
-        return FaceType(face_vertices);
+        return Face(face_vertices);
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::BoundsType
-    Simplex<dimensions_, size_>::bounds() const {
+    inline Matrix<Interval, dimensions_, 1> Simplex<dimensions_, size_>::bounds() const {
         return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
     }
         
@@ -400,17 +402,6 @@ namespace OpenSolid
         assert(size() == other.size());
         return vertices() == other.vertices();
     }
-    
-    template <int dimensions_, int size_>
-    inline std::size_t hash_value(const Simplex<dimensions_, size_>& simplex) {
-        return hash_value(simplex.vertices());
-    }
-    
-    template <int dimensions_, int size_>
-    inline typename Bounds<Simplex<dimensions_, size_> >::Type
-    Bounds<Simplex<dimensions_, size_> >::bounds(
-        const Simplex<dimensions_, size_>& simplex
-    ) {return simplex.bounds();}
     
     template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
     inline Simplex<datum_dimensions_, simplex_size_> operator*(

@@ -121,13 +121,13 @@ public:
     }
     
     void testNonOrthogonal() {
-        Datum3d datum(
+        CoordinateSystem3d coordinate_system(
             Vector3d(1, 2, 3),
             Matrix3d::Ones().triangularView<Upper>()
         );
-        Vector3d product_error = Vector3d(1, 1, 1) * datum - Vector3d(4, 4, 4);
+        Vector3d product_error = Vector3d(1, 1, 1) * coordinate_system - Vector3d(4, 4, 4);
         TS_ASSERT(product_error.isZero(Tolerance::roundoff()));
-        Vector3d quotient_error = Vector3d(4, 4, 4) / datum - Vector3d(1, 1, 1);
+        Vector3d quotient_error = Vector3d(4, 4, 4) / coordinate_system - Vector3d(1, 1, 1);
         TS_ASSERT(quotient_error.isZero(Tolerance::roundoff()));
     }
 };

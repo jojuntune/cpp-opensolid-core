@@ -26,21 +26,22 @@
 namespace OpenSolid
 {
     template <int dimensions_>
-    class Plane : public Datum<dimensions_, dimensions_ - 1>
+    class Plane : public Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
     {
     public:
-        typedef Matrix<double, dimensions_, 1> VectorType;
-        typedef Matrix<double, dimensions_, dimensions_ - 1> MatrixType;
+        static const int static_axes = dimensions_ == Dynamic ? Dynamic : dimensions_ - 1;
+        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<double, dimensions_, static_axes> Matrix;
     private:
         template <class DerivedType>
-        void initialize(const VectorType& origin, const EigenBase<DerivedType>& vectors);
+        void initialize(const Vector& origin, const EigenBase<DerivedType>& vectors);
         
-        using Datum<dimensions_, dimensions_ - 1>::initialize;
+        using Datum<dimensions_, static_axes>::initialize;
     public:
         Plane();
         
         template <class DerivedType>
-        Plane(const VectorType& origin, const EigenBase<DerivedType>& vectors);
+        Plane(const Vector& origin, const EigenBase<DerivedType>& vectors);
         
         template <int other_dimensions_, int other_axes_>
         Plane(const Datum<other_dimensions_, other_axes_>& other);
@@ -61,7 +62,7 @@ namespace OpenSolid
 {
     template <int dimensions_> template <class DerivedType>
     inline void Plane<dimensions_>::initialize(
-        const VectorType& origin,
+        const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {
         assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
@@ -81,7 +82,7 @@ namespace OpenSolid
     
     template <int dimensions_> template <class DerivedType>
     inline Plane<dimensions_>::Plane(
-        const VectorType& origin,
+        const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors);}
 

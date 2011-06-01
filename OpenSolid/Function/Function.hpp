@@ -161,8 +161,6 @@ namespace OpenSolid
     OPENSOLID_EXPORT Function acos(const Function& argument);
     OPENSOLID_EXPORT Function asin(const Function& argument);
     
-    std::size_t hash_value(const Function& function);
-    
     OPENSOLID_EXPORT std::ostream& operator<<(
         std::ostream& stream,
         const Function& function
@@ -172,9 +170,14 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 #include "FunctionResult.hpp"
+#include "Traits.hpp"
 
 namespace OpenSolid
 {
+    inline std::size_t Traits<Function>::hash(const Function& function) {
+        return boost::hash_value(function.implementation());
+    }
+    
     inline Function::Function() : _implementation(0), _type(0) {}
     
     inline Function::Function(const FunctionImplementation* implementation) :
@@ -233,10 +236,6 @@ namespace OpenSolid
     template <class ArgumentType>
     inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return FunctionResult<ArgumentType>(*this, argument);
-    }
-    
-    inline std::size_t hash_value(const Function& function) {
-        return boost::hash_value(function.implementation());
     }
 }
 

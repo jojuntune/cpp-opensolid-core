@@ -122,14 +122,23 @@ namespace OpenSolid
     OPENSOLID_EXPORT Geometry cos(const Geometry& argument);
     OPENSOLID_EXPORT Geometry sin(const Geometry& argument);
     OPENSOLID_EXPORT Geometry sqrt(const Geometry& argument);
-    
-    std::size_t hash_value(const Geometry& geometry);
 }
 
 ////////// Implementation //////////
 
+#include "Traits.hpp"
+
 namespace OpenSolid
 {
+    inline VectorXI Traits<Geometry>::bounds(const Geometry& geometry) {return geometry.bounds();}
+    
+    inline std::size_t Traits<Geometry>::hash(const Geometry& geometry) {
+        std::size_t result = 0;
+        boost::hash_combine(result, geometry.function());
+        boost::hash_combine(result, geometry.domain());
+        return result;
+    }
+    
     inline Geometry::Geometry() : _function(), _domain() {}
     
     inline Geometry::Geometry(const Function& function, const Domain& domain) :
@@ -172,17 +181,6 @@ namespace OpenSolid
         
     inline bool Geometry::operator==(const Geometry& other) const {
         return function() == other.function() && domain() == other.domain();
-    }
-    
-    inline VectorXI Bounds<Geometry>::bounds(const Geometry& geometry) {
-        return geometry.bounds();
-    }
-    
-    inline std::size_t hash_value(const Geometry& geometry) {
-        std::size_t result = 0;
-        boost::hash_combine(result, geometry.function());
-        boost::hash_combine(result, geometry.domain());
-        return result;
     }
 }
 

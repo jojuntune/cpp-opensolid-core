@@ -26,19 +26,10 @@
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Geometry/Traits.hpp>
 
 namespace OpenSolid
 {
-    class Geometry;
-    
-    template <>
-    struct Bounds<Geometry>
-    {
-        typedef VectorXI Type;
-        
-        static VectorXI bounds(const Geometry& geometry);
-    };
-    
     class Domain
     {
     private:
@@ -46,6 +37,8 @@ namespace OpenSolid
         
         OPENSOLID_EXPORT static Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
     public:
+        typedef VectorXI Bounds;
+        
         Domain();
         Domain(const Set<Geometry>& geometry);
         Domain(const Interval& bounds);
@@ -63,24 +56,21 @@ namespace OpenSolid
         
         OPENSOLID_EXPORT Domain concatenate(const Domain& other) const;
     };
-
-    template <>
-    struct Bounds<Domain>
-    {
-        typedef VectorXI Type;
-        
-        static VectorXI bounds(const Domain& domain);
-    };
-    
-    std::size_t hash_value(const Domain& domain);
 }
 
 ////////// Implementation //////////
 
 #include <OpenSolid/Geometry/Geometry.hpp>
+#include "Traits.hpp"
 
 namespace OpenSolid
 {
+    inline VectorXI Traits<Domain>::bounds(const Domain& domain) {return domain.bounds();}
+    
+    inline std::size_t Traits<Domain>::hash(const Domain& domain) {
+        return Traits<Set<Geometry>>::hash(domain.boundaries());
+    }
+    
     inline Domain::Domain() : _boundaries() {}
     
     inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
@@ -120,10 +110,6 @@ namespace OpenSolid
     inline bool Domain::operator==(const Domain& other) const {
         return boundaries() == other.boundaries();
     }
-    
-    inline VectorXI Bounds<Domain>::bounds(const Domain& domain) {return domain.bounds();}
-    
-    inline std::size_t hash_value(const Domain& domain) {return hash_value(domain.boundaries());}
 }
 
 #endif
