@@ -32,7 +32,7 @@ namespace OpenSolid
     class FunctionImplementation : public ReferenceCountedBase<FunctionImplementation>
     {
     public:
-        OPENSOLID_EXPORT virtual ~FunctionImplementation();
+        OPENSOLID_CORE_EXPORT virtual ~FunctionImplementation();
         
         virtual int parameters() const = 0;
         virtual int dimensions() const = 0;
@@ -45,31 +45,31 @@ namespace OpenSolid
         
         virtual void getDerivative(int index, Function& result) const = 0;
         
-        OPENSOLID_EXPORT virtual void getComponents(
+        OPENSOLID_CORE_EXPORT virtual void getComponents(
             int index,
             int num,
             Function& result
         ) const;
         
-        OPENSOLID_EXPORT virtual void getComposition(
+        OPENSOLID_CORE_EXPORT virtual void getComposition(
             const Function& inner,
             Function& result
         ) const;
         
-        OPENSOLID_EXPORT virtual void getTransformed(
+        OPENSOLID_CORE_EXPORT virtual void getTransformed(
             const DatumXd& datum,
             Function& result
         ) const;
         
-        OPENSOLID_EXPORT virtual void getNorm(Function& result) const;
-        OPENSOLID_EXPORT virtual void getNormalized(Function& result) const;
-        OPENSOLID_EXPORT virtual void getSquaredNorm(Function& result) const;
-        OPENSOLID_EXPORT virtual void getTangent(Function& result) const;
-        OPENSOLID_EXPORT virtual void getCurvature(Function& result) const;
-        OPENSOLID_EXPORT virtual void getNormal(Function& result) const;
-        OPENSOLID_EXPORT virtual void getBinormal(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getNormalized(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getSquaredNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getTangent(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getCurvature(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getNormal(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void getBinormal(Function& result) const;
         
-        OPENSOLID_EXPORT virtual void debug(std::ostream& stream, int indent) const = 0;
+        OPENSOLID_CORE_EXPORT virtual void debug(std::ostream& stream, int indent) const = 0;
     };
 }
 

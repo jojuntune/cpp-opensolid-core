@@ -212,7 +212,7 @@ namespace OpenSolid
         ) const;
     };
     
-    OPENSOLID_EXPORT MatrixXd orthogonalBasis(const MatrixXd& vectors);
+    OPENSOLID_CORE_EXPORT MatrixXd orthogonalBasis(const MatrixXd& vectors);
 }
 
 ////////// Implementation //////////

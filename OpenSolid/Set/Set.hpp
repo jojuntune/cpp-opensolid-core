@@ -103,9 +103,6 @@ namespace OpenSolid
     };
     
     template <class Type, class BoundsFunctionType>
-    std::size_t hash_value(const Set<Type, BoundsFunctionType>& set);
-    
-    template <class Type, class BoundsFunctionType>
     class SetIterator :
         public boost::iterator_facade<
             SetIterator<Type, BoundsFunctionType>,

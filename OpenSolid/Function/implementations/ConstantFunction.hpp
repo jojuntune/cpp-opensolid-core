@@ -30,27 +30,27 @@ namespace OpenSolid
     private:
         VectorXd _value;
     public:
-        OPENSOLID_EXPORT ConstantFunction(const VectorXd& value);
+        OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXd& value);
         
         const VectorXd& value() const;
         
-        OPENSOLID_EXPORT int parameters() const;
-        OPENSOLID_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int parameters() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        OPENSOLID_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_EXPORT void getComponents(int index, int num, Function& result) const;
-        OPENSOLID_EXPORT void getComposition(const Function& inner, Function& result) const;
-        OPENSOLID_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComponents(int index, int num, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
         
-        OPENSOLID_EXPORT void getNorm(Function& result) const;
-        OPENSOLID_EXPORT void getNormalized(Function& result) const;
-        OPENSOLID_EXPORT void getSquaredNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT void getNormalized(Function& result) const;
+        OPENSOLID_CORE_EXPORT void getSquaredNorm(Function& result) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
 

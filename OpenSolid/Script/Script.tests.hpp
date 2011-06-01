@@ -28,11 +28,12 @@
 #include "Script.hpp"
 
 using namespace OpenSolid;
+using namespace boost::python;
 
 struct MatrixDoubler
 {
-    inline PythonObject operator()(PythonTuple arguments, PythonDict keyword_arguments) {
-        return PythonObject(MatrixXd(2 * extract<MatrixXd>(arguments[0])));
+    inline object operator()(tuple arguments, dict keyword_arguments) {
+        return object(MatrixXd(2 * extract<MatrixXd>(arguments[0])));
     }
 };
 

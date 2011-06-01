@@ -28,22 +28,22 @@ namespace OpenSolid
     class ConcatenationFunction : public BinaryFunction
     {
     public:
-        OPENSOLID_EXPORT ConcatenationFunction(
+        OPENSOLID_CORE_EXPORT ConcatenationFunction(
             const Function& first_operand,
             const Function& second_operand
         );
         
-        OPENSOLID_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        OPENSOLID_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_EXPORT void getComponents(int index, int num, Function& result) const;
-        OPENSOLID_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComponents(int index, int num, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
 

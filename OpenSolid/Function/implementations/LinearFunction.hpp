@@ -31,22 +31,22 @@ namespace OpenSolid
         VectorXd _point;
         MatrixXd _vectors;
     public:
-        LinearFunction(const VectorXd& point, const MatrixXd& vectors);
+        OPENSOLID_CORE_EXPORT LinearFunction(const VectorXd& point, const MatrixXd& vectors);
         
         const VectorXd& point() const;
         const MatrixXd& vectors() const;
         
-        OPENSOLID_EXPORT int parameters() const;
-        OPENSOLID_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int parameters() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
 
-        OPENSOLID_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
 

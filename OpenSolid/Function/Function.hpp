@@ -78,90 +78,90 @@ namespace OpenSolid
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
-        OPENSOLID_EXPORT Function derivative(int index = 0) const;
-        OPENSOLID_EXPORT Function norm() const;
-        OPENSOLID_EXPORT Function normalized() const;
-        OPENSOLID_EXPORT Function squaredNorm() const;
-        OPENSOLID_EXPORT Function component(int index) const;
-        OPENSOLID_EXPORT Function components(int index, int num) const;
-        OPENSOLID_EXPORT Function concatenate(const Function& other) const;
-        OPENSOLID_EXPORT Function dot(const Function& other) const;
-        OPENSOLID_EXPORT Function cross(const Function& other) const;
-        OPENSOLID_EXPORT Function operator()(const Function& inner) const;
-        OPENSOLID_EXPORT Function tangent() const;
-        OPENSOLID_EXPORT Function curvature() const;
-        OPENSOLID_EXPORT Function normal() const;
-        OPENSOLID_EXPORT Function binormal() const;
+        OPENSOLID_CORE_EXPORT Function derivative(int index = 0) const;
+        OPENSOLID_CORE_EXPORT Function norm() const;
+        OPENSOLID_CORE_EXPORT Function normalized() const;
+        OPENSOLID_CORE_EXPORT Function squaredNorm() const;
+        OPENSOLID_CORE_EXPORT Function component(int index) const;
+        OPENSOLID_CORE_EXPORT Function components(int index, int num) const;
+        OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function dot(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function cross(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function operator()(const Function& inner) const;
+        OPENSOLID_CORE_EXPORT Function tangent() const;
+        OPENSOLID_CORE_EXPORT Function curvature() const;
+        OPENSOLID_CORE_EXPORT Function normal() const;
+        OPENSOLID_CORE_EXPORT Function binormal() const;
         
-        OPENSOLID_EXPORT Geometry operator()(const Domain& domain) const;
-        OPENSOLID_EXPORT Geometry operator()(const Geometry& geometry) const;
+        OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
+        OPENSOLID_CORE_EXPORT Geometry operator()(const Geometry& geometry) const;
         
-        OPENSOLID_EXPORT RowVectorXd zeros(const Interval& domain) const;
+        OPENSOLID_CORE_EXPORT RowVectorXd zeros(const Interval& domain) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent = 0) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
         
-        OPENSOLID_EXPORT static Function t;
-        OPENSOLID_EXPORT static Function u;
-        OPENSOLID_EXPORT static Function v;
+        OPENSOLID_CORE_EXPORT static Function t;
+        OPENSOLID_CORE_EXPORT static Function u;
+        OPENSOLID_CORE_EXPORT static Function v;
         
-        OPENSOLID_EXPORT static Function CurveParameter();
-        OPENSOLID_EXPORT static Function SurfaceParameter(int index);
-        OPENSOLID_EXPORT static Function VolumeParameter(int index);
-        OPENSOLID_EXPORT static Function HypervolumeParameter(int index);
-        OPENSOLID_EXPORT static Function Parameter(int total, int index);
-        OPENSOLID_EXPORT static Function Parameters(int total, int index, int num);
-        OPENSOLID_EXPORT static Function Identity(int dimensions);
+        OPENSOLID_CORE_EXPORT static Function CurveParameter();
+        OPENSOLID_CORE_EXPORT static Function SurfaceParameter(int index);
+        OPENSOLID_CORE_EXPORT static Function VolumeParameter(int index);
+        OPENSOLID_CORE_EXPORT static Function HypervolumeParameter(int index);
+        OPENSOLID_CORE_EXPORT static Function Parameter(int total, int index);
+        OPENSOLID_CORE_EXPORT static Function Parameters(int total, int index, int num);
+        OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
         
-        OPENSOLID_EXPORT static Function Linear(
+        OPENSOLID_CORE_EXPORT static Function Linear(
             const VectorXd& point,
             const MatrixXd& vectors
         );
         
-        OPENSOLID_EXPORT static Function Elliptical(
+        OPENSOLID_CORE_EXPORT static Function Elliptical(
             const VectorXd& point,
             const MatrixXd& vectors
         );
         
-        OPENSOLID_EXPORT static Function Elliptical(
+        OPENSOLID_CORE_EXPORT static Function Elliptical(
             const VectorXd& point,
             const MatrixXd& vectors,
             const VectorXb& convention
         );
     };
 
-    OPENSOLID_EXPORT Function operator-(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
     
-    OPENSOLID_EXPORT Function operator+(
+    OPENSOLID_CORE_EXPORT Function operator+(
         const Function& first_operand,
         const Function& second_operand
     );
     
-    OPENSOLID_EXPORT Function operator-(
+    OPENSOLID_CORE_EXPORT Function operator-(
         const Function& first_operand,
         const Function& second_operand
     );
     
-    OPENSOLID_EXPORT Function operator*(
+    OPENSOLID_CORE_EXPORT Function operator*(
         const Function& first_operand,
         const Function& second_operand
     );
     
-    OPENSOLID_EXPORT Function operator/(
+    OPENSOLID_CORE_EXPORT Function operator/(
         const Function& first_operand,
         const Function& second_operand
     );
     
-    OPENSOLID_EXPORT Function operator*(const Function& function, const DatumXd& datum);
-    OPENSOLID_EXPORT Function operator/(const Function& function, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXd& datum);
     
-    OPENSOLID_EXPORT Function cos(const Function& argument);
-    OPENSOLID_EXPORT Function sin(const Function& argument);
-    OPENSOLID_EXPORT Function tan(const Function& argument);
-    OPENSOLID_EXPORT Function sqrt(const Function& argument);
-    OPENSOLID_EXPORT Function acos(const Function& argument);
-    OPENSOLID_EXPORT Function asin(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function sin(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function tan(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function sqrt(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function acos(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function asin(const Function& argument);
     
-    OPENSOLID_EXPORT std::ostream& operator<<(
+    OPENSOLID_CORE_EXPORT std::ostream& operator<<(
         std::ostream& stream,
         const Function& function
     );

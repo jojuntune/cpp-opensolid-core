@@ -84,7 +84,7 @@ namespace OpenSolid
     {
         typedef Matrix<Interval, rows_, cols_> Bounds;
         
-        static auto bounds(const Matrix<ScalarType, rows_, cols_> argument) ->
+        static auto bounds(const Matrix<ScalarType, rows_, cols_>& argument) ->
             decltype(argument.cast<Interval>());
             
         static std::size_t hash(const Matrix<ScalarType, rows_, cols_>& argument);
@@ -443,7 +443,7 @@ namespace OpenSolid
 {
     template <class ScalarType, int rows_, int cols_>
     inline auto Traits<Matrix<ScalarType, rows_, cols_>>::bounds(
-        const Matrix<ScalarType, rows_, cols_> argument
+        const Matrix<ScalarType, rows_, cols_>& argument
     ) -> decltype(argument.cast<Interval>()) {return argument.cast<Interval>();}
 
     template <class ScalarType, int rows_, int cols_>

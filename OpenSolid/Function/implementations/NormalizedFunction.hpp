@@ -28,20 +28,20 @@ namespace OpenSolid
     class NormalizedFunction : public UnaryFunction
     {
     public:
-        OPENSOLID_EXPORT NormalizedFunction(const Function& operand);
+        OPENSOLID_CORE_EXPORT NormalizedFunction(const Function& operand);
         
-        OPENSOLID_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
 
-        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        OPENSOLID_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_EXPORT void getNorm(Function& result) const;
-        OPENSOLID_EXPORT void getNormalized(Function& result) const;
-        OPENSOLID_EXPORT void getSquaredNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT void getNormalized(Function& result) const;
+        OPENSOLID_CORE_EXPORT void getSquaredNorm(Function& result) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
 

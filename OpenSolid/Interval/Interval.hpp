@@ -130,18 +130,18 @@ namespace OpenSolid
     
     Interval abs(const Interval& argument);
     Interval sqrt(const Interval& argument);
-    OPENSOLID_EXPORT Interval sin(const Interval& argument);
-    OPENSOLID_EXPORT Interval cos(const Interval& argument);
-    OPENSOLID_EXPORT Interval tan(const Interval& argument);
-    OPENSOLID_EXPORT Interval asin(const Interval& argument);
-    OPENSOLID_EXPORT Interval acos(const Interval& argument);
-    OPENSOLID_EXPORT Interval atan(const Interval& argument);
-    OPENSOLID_EXPORT Interval atan2(const Interval& y, const Interval& x);
-    OPENSOLID_EXPORT Interval exp(const Interval& argument);
-    OPENSOLID_EXPORT Interval log(const Interval& argument);
-    OPENSOLID_EXPORT Interval pow(const Interval& base, const Interval& exponent);
+    OPENSOLID_CORE_EXPORT Interval sin(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval cos(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval tan(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval asin(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval acos(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval atan(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval atan2(const Interval& y, const Interval& x);
+    OPENSOLID_CORE_EXPORT Interval exp(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval log(const Interval& argument);
+    OPENSOLID_CORE_EXPORT Interval pow(const Interval& base, const Interval& exponent);
 
-    OPENSOLID_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& argument);
+    OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& argument);
 }
    
 ////////// Implementation //////////

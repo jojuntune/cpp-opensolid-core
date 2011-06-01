@@ -31,21 +31,21 @@ namespace OpenSolid
         int _index;
         int _num;
     public:
-        OPENSOLID_EXPORT ComponentsFunction(const Function& operand, int index, int num);
+        OPENSOLID_CORE_EXPORT ComponentsFunction(const Function& operand, int index, int num);
         
         int index() const;
         int num() const;
         
-        OPENSOLID_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
 
-        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
 
-        OPENSOLID_EXPORT void getDerivative(int parameter_index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int parameter_index, Function& result) const;
         
-        OPENSOLID_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
 

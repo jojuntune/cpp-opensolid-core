@@ -56,72 +56,76 @@ namespace OpenSolid
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
-        OPENSOLID_EXPORT Geometry derivative(int parameter_index = 0) const;
-        OPENSOLID_EXPORT Geometry norm() const;
-        OPENSOLID_EXPORT Geometry normalized() const;
-        OPENSOLID_EXPORT Geometry squaredNorm() const;
-        OPENSOLID_EXPORT Geometry component(int index) const;
-        OPENSOLID_EXPORT Geometry components(int index, int num) const;
-        OPENSOLID_EXPORT Geometry concatenate(const Geometry& other) const;
-        OPENSOLID_EXPORT Geometry dot(const Geometry& other) const;
-        OPENSOLID_EXPORT Geometry cross(const Geometry& other) const;
-        OPENSOLID_EXPORT Geometry tangent() const;
-        OPENSOLID_EXPORT Geometry curvature() const;
-        OPENSOLID_EXPORT Geometry normal() const;
-        OPENSOLID_EXPORT Geometry binormal() const;
+        OPENSOLID_CORE_EXPORT Geometry derivative(int parameter_index = 0) const;
+        OPENSOLID_CORE_EXPORT Geometry norm() const;
+        OPENSOLID_CORE_EXPORT Geometry normalized() const;
+        OPENSOLID_CORE_EXPORT Geometry squaredNorm() const;
+        OPENSOLID_CORE_EXPORT Geometry component(int index) const;
+        OPENSOLID_CORE_EXPORT Geometry components(int index, int num) const;
+        OPENSOLID_CORE_EXPORT Geometry concatenate(const Geometry& other) const;
+        OPENSOLID_CORE_EXPORT Geometry dot(const Geometry& other) const;
+        OPENSOLID_CORE_EXPORT Geometry cross(const Geometry& other) const;
+        OPENSOLID_CORE_EXPORT Geometry tangent() const;
+        OPENSOLID_CORE_EXPORT Geometry curvature() const;
+        OPENSOLID_CORE_EXPORT Geometry normal() const;
+        OPENSOLID_CORE_EXPORT Geometry binormal() const;
         
         bool operator==(const Geometry& other) const;
         
-        OPENSOLID_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
+        OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
         
-        OPENSOLID_EXPORT static Geometry Arc(double radius, const Interval& angle);
+        OPENSOLID_CORE_EXPORT static Geometry Arc(double radius, const Interval& angle);
         
-        OPENSOLID_EXPORT static Geometry Arc(
+        OPENSOLID_CORE_EXPORT static Geometry Arc(
             const Vector2d& center,
             const Vector2d& start,
             const Vector2d& end,
             bool counterclockwise
         );
         
-        OPENSOLID_EXPORT static Geometry Arc(
+        OPENSOLID_CORE_EXPORT static Geometry Arc(
             const Axis3d& axis,
             const Vector3d& start,
             const Vector3d& end
         );
         
-        OPENSOLID_EXPORT static Geometry Circle(double radius);
+        OPENSOLID_CORE_EXPORT static Geometry Circle(double radius);
         
-        OPENSOLID_EXPORT static Geometry Helix(double radius, double pitch, const Interval& angle);
+        OPENSOLID_CORE_EXPORT static Geometry Helix(
+            double radius,
+            double pitch,
+            const Interval& angle
+        );
     };
 
-    OPENSOLID_EXPORT Geometry operator-(const Geometry& argument);
+    OPENSOLID_CORE_EXPORT Geometry operator-(const Geometry& argument);
     
-    OPENSOLID_EXPORT Geometry operator+(
+    OPENSOLID_CORE_EXPORT Geometry operator+(
         const Geometry& first_argument,
         const Geometry& second_argument
     );
     
-    OPENSOLID_EXPORT Geometry operator-(
+    OPENSOLID_CORE_EXPORT Geometry operator-(
         const Geometry& first_argument,
         const Geometry& second_argument
     );
     
-    OPENSOLID_EXPORT Geometry operator*(
+    OPENSOLID_CORE_EXPORT Geometry operator*(
         const Geometry& first_argument,
         const Geometry& second_argument
     );
     
-    OPENSOLID_EXPORT Geometry operator/(
+    OPENSOLID_CORE_EXPORT Geometry operator/(
         const Geometry& first_argument,
         const Geometry& second_argument
     );
     
-    OPENSOLID_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
-    OPENSOLID_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
     
-    OPENSOLID_EXPORT Geometry cos(const Geometry& argument);
-    OPENSOLID_EXPORT Geometry sin(const Geometry& argument);
-    OPENSOLID_EXPORT Geometry sqrt(const Geometry& argument);
+    OPENSOLID_CORE_EXPORT Geometry cos(const Geometry& argument);
+    OPENSOLID_CORE_EXPORT Geometry sin(const Geometry& argument);
+    OPENSOLID_CORE_EXPORT Geometry sqrt(const Geometry& argument);
 }
 
 ////////// Implementation //////////

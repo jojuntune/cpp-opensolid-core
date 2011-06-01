@@ -28,30 +28,24 @@
 #include <boost/python.hpp>
 #include <boost/python/raw_function.hpp>
 
-#include <OpenSolidPython/check.hpp>
+#include <OpenSolid/Python/check.hpp>
 
 namespace OpenSolid
 {
-    typedef boost::python::object PythonObject;
-    typedef boost::python::str PythonStr;
-    typedef boost::python::dict PythonDict;
-    typedef boost::python::list PythonList;
-    typedef boost::python::tuple PythonTuple;
-    
     class Script
     {
     private:
-        PythonObject _environment;
+        boost::python::object _environment;
         
-        OPENSOLID_SCRIPTING_EXPORT void _throw();
-        OPENSOLID_SCRIPTING_EXPORT PythonObject _get(const std::string& argument);
+        OPENSOLID_SCRIPT_EXPORT void _throw();
+        OPENSOLID_SCRIPT_EXPORT boost::python::object _get(const std::string& argument);
     public:
-        OPENSOLID_SCRIPTING_EXPORT Script();
+        OPENSOLID_SCRIPT_EXPORT Script();
 
         template <class Type>
         Script& set(const std::string& name, const Type& argument);
 
-        OPENSOLID_SCRIPTING_EXPORT Script& run(const std::string& argument);
+        OPENSOLID_SCRIPT_EXPORT Script& run(const std::string& argument);
 
         template <class Type>
         Type get(const std::string& code);
@@ -72,14 +66,14 @@ namespace OpenSolid
     }
     
     template <class Type>
-    Type cast(PythonObject argument) {
+    Type cast(boost::python::object argument) {
         checkCompatiblePythonType<Type>(argument, __func__);
         return extract<Type>(argument);
     }
     
     template <class Type>
     inline Type Script::get(const std::string& code) {
-        PythonObject result = _get(code);
+        boost::python::object result = _get(code);
         return cast<Type>(_get(code));
     }
     

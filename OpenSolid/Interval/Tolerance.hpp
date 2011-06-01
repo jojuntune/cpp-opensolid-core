@@ -28,13 +28,13 @@ namespace OpenSolid
     class Tolerance
     {
     private:
-        OPENSOLID_EXPORT static double& _size();
-        OPENSOLID_EXPORT static double& _roundoff();
+        OPENSOLID_CORE_EXPORT static double& _size();
+        OPENSOLID_CORE_EXPORT static double& _roundoff();
     public:
-        OPENSOLID_EXPORT static const double size();
-        OPENSOLID_EXPORT static void setSize(double size);
-        OPENSOLID_EXPORT static const double roundoff();
-        OPENSOLID_EXPORT static void setRoundoff(double roundoff);
+        OPENSOLID_CORE_EXPORT static const double size();
+        OPENSOLID_CORE_EXPORT static void setSize(double size);
+        OPENSOLID_CORE_EXPORT static const double roundoff();
+        OPENSOLID_CORE_EXPORT static void setRoundoff(double roundoff);
     };
 }
 

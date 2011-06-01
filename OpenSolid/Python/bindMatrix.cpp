@@ -558,7 +558,7 @@ namespace OpenSolid
         return new MatrixXI(first_argument * second_argument);
     }
     
-    void bindEigen() {         
+    void bindMatrix() {         
         class_<MatrixXd>("MatrixXd", init<int, int>())
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)

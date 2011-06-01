@@ -39,28 +39,28 @@ namespace OpenSolid
         std::string _caller;
         std::map<std::string, std::string> _data;
 
-        friend OPENSOLID_EXPORT std::ostream& operator<<(
+        friend OPENSOLID_CORE_EXPORT std::ostream& operator<<(
             std::ostream& stream,
             const Error& error
         );
     public:
-        OPENSOLID_EXPORT Error();
-        OPENSOLID_EXPORT Error(const std::string& expected, const std::string& caller);
-        OPENSOLID_EXPORT ~Error() throw ();
+        OPENSOLID_CORE_EXPORT Error();
+        OPENSOLID_CORE_EXPORT Error(const std::string& expected, const std::string& caller);
+        OPENSOLID_CORE_EXPORT ~Error() throw ();
 
-        OPENSOLID_EXPORT std::string expected() const;
-        OPENSOLID_EXPORT std::string caller() const;
+        OPENSOLID_CORE_EXPORT std::string expected() const;
+        OPENSOLID_CORE_EXPORT std::string caller() const;
         
         template <class Type>
         Error& set(const std::string& name, const Type& argument);
         
-        OPENSOLID_EXPORT bool has(const std::string& name) const;
+        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
         
         template <class Type>
         Type get(const std::string& name) const;
     };
     
-    OPENSOLID_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
+    OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
 }
 
 ////////// Implementation //////////

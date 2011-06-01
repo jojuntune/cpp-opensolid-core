@@ -28,7 +28,7 @@ namespace OpenSolid
 {
     void bindError();
     void bindInterval();
-    void bindEigen();
+    void bindMatrix();
     void bindSpecificMatrixSizes();
     void bindTolerance();
     void bindFunction();
@@ -36,7 +36,7 @@ namespace OpenSolid
     BOOST_PYTHON_MODULE(OpenSolidPython) {
         bindError();
         bindInterval();
-        bindEigen();
+        bindMatrix();
         bindSpecificMatrixSizes();
         bindTolerance();
         bindFunction();

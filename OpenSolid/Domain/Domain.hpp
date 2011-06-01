@@ -35,7 +35,7 @@ namespace OpenSolid
     private:
         Set<Geometry> _boundaries;
         
-        OPENSOLID_EXPORT static Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
+        OPENSOLID_CORE_EXPORT static Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
     public:
         typedef VectorXI Bounds;
         
@@ -54,7 +54,7 @@ namespace OpenSolid
         
         bool operator==(const Domain& other) const;
         
-        OPENSOLID_EXPORT Domain concatenate(const Domain& other) const;
+        OPENSOLID_CORE_EXPORT Domain concatenate(const Domain& other) const;
     };
 }
 

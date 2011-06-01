@@ -32,21 +32,21 @@ namespace OpenSolid
     private:
         DatumXd _datum;
     public:
-        OPENSOLID_EXPORT TransformedFunction(const Function& function, const DatumXd& datum);
+        OPENSOLID_CORE_EXPORT TransformedFunction(const Function& function, const DatumXd& datum);
         
         const DatumXd& datum() const;
         
-        OPENSOLID_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        OPENSOLID_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_EXPORT void getComposition(const Function& inner, Function& result) const;
-        OPENSOLID_EXPORT void getTransformed(const DatumXd& other, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& other, Function& result) const;
         
-        OPENSOLID_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
 
