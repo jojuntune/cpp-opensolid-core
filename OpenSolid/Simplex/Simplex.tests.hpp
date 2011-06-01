@@ -132,4 +132,15 @@ public:
         Vector3d projection = (Vector3d(3, 4, 5) / coordinate_system) * coordinate_system;
         TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero(roundoff));
     }
+    
+    void testLineSegment1d() {
+        LineSegment3d segment3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+        LineSegment1d quotient = segment3d / Frame3d().yAxis();
+        LineSegment1d segment1d(2, 5);
+        TS_ASSERT((quotient.vertices() - segment1d.vertices()).isZero(roundoff));
+        LineSegment3d product =
+            LineSegment1d(1.0 / 3.0, 2.0 / 3.0) * segment3d.coordinateSystem();
+        TS_ASSERT((product.vertex(0) - Vector3d(2, 3, 4)).isZero(roundoff));
+        TS_ASSERT((product.vertex(1) - Vector3d(3, 4, 5)).isZero(roundoff));
+    }
 };

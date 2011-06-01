@@ -48,27 +48,32 @@ namespace OpenSolid
         template <class DerivedType>
         Simplex(const EigenBase<DerivedType>& vertices);
         
-        template <class FirstVertexType, class SecondVertexType>
-        Simplex(const FirstVertexType& first_vertex, const SecondVertexType& second_vertex);
+        Simplex(double first_vertex, double second_vertex);
         
-        template <class FirstVertexType, class SecondVertexType, class ThirdVertexType>
+        template <class FirstDerivedType, class SecondDerivedType>
         Simplex(
-            const FirstVertexType& first_vertex,
-            const SecondVertexType& second_vertex,
-            const ThirdVertexType& third_vertex
+            const EigenBase<FirstDerivedType>& first_vertex,
+            const EigenBase<SecondDerivedType>& second_vertex
+        );
+        
+        template <class FirstDerivedType, class SecondDerivedType, class ThirdDerivedType>
+        Simplex(
+            const EigenBase<FirstDerivedType>& first_vertex,
+            const EigenBase<SecondDerivedType>& second_vertex,
+            const EigenBase<ThirdDerivedType>& third_vertex
         );
         
         template <
-            class FirstVertexType,
-            class SecondVertexType,
-            class ThirdVertexType,
-            class FourthVertexType
+            class FirstDerivedType,
+            class SecondDerivedType,
+            class ThirdDerivedType,
+            class FourthDerivedType
         >
         Simplex(
-            const FirstVertexType& first_vertex,
-            const SecondVertexType& second_vertex,
-            const ThirdVertexType& third_vertex,
-            const FourthVertexType& fourth_vertex
+            const EigenBase<FirstDerivedType>& first_vertex,
+            const EigenBase<SecondDerivedType>& second_vertex,
+            const EigenBase<ThirdDerivedType>& third_vertex,
+            const EigenBase<FourthDerivedType>& fourth_vertex
         );
         
         Simplex<dimensions_, size_>& operator=(const Simplex<dimensions_, size_>& other);
@@ -169,41 +174,54 @@ namespace OpenSolid
     inline Simplex<dimensions_, size_>::Simplex(const EigenBase<DerivedType>& vertices) :
         _vertices(vertices) {}
         
-    template <int dimensions_, int size_> template <class FirstVertexType, class SecondVertexType>
+    template <int dimensions_, int size_>
+    inline Simplex<dimensions_, size_>::Simplex(double first_vertex, double second_vertex) {
+        static_assert(
+            (dimensions_ == 1 || dimensions_ == Dynamic) && (size_ == 2 || size_ == Dynamic),
+            "Only 1D line segments can be constructed from two doubles"
+        );
+        _vertices.resize(1, 2);
+        _vertices(0) = first_vertex;
+        _vertices(1) = second_vertex;
+    }
+
+    template <int dimensions_, int size_>
+    template <class FirstDerivedType, class SecondDerivedType>
     inline Simplex<dimensions_, size_>::Simplex(
-        const FirstVertexType& first_vertex,
-        const SecondVertexType& second_vertex
+        const EigenBase<FirstDerivedType>& first_vertex,
+        const EigenBase<SecondDerivedType>& second_vertex
     ) {
         _vertices.resize(first_vertex.size(), 2);
-        _vertices << first_vertex, second_vertex;
+        _vertices << first_vertex.derived(), second_vertex.derived();
     }
-    
+        
     template <int dimensions_, int size_>
-    template <class FirstVertexType, class SecondVertexType, class ThirdVertexType>
+    template <class FirstDerivedType, class SecondDerivedType, class ThirdDerivedType>
     inline Simplex<dimensions_, size_>::Simplex(
-        const FirstVertexType& first_vertex,
-        const SecondVertexType& second_vertex,
-        const ThirdVertexType& third_vertex
+        const EigenBase<FirstDerivedType>& first_vertex,
+        const EigenBase<SecondDerivedType>& second_vertex,
+        const EigenBase<ThirdDerivedType>& third_vertex
     ) {
         _vertices.resize(first_vertex.size(), 3);
-        _vertices << first_vertex, second_vertex, third_vertex;
+        _vertices << first_vertex.derived(), second_vertex.derived(), third_vertex.derived();
     }
-    
+        
     template <int dimensions_, int size_> 
     template <
-        class FirstVertexType,
-        class SecondVertexType,
-        class ThirdVertexType,
-        class FourthVertexType
+        class FirstDerivedType,
+        class SecondDerivedType,
+        class ThirdDerivedType,
+        class FourthDerivedType
     >
     inline Simplex<dimensions_, size_>::Simplex(
-        const FirstVertexType& first_vertex,
-        const SecondVertexType& second_vertex,
-        const ThirdVertexType& third_vertex,
-        const FourthVertexType& fourth_vertex
+        const EigenBase<FirstDerivedType>& first_vertex,
+        const EigenBase<SecondDerivedType>& second_vertex,
+        const EigenBase<ThirdDerivedType>& third_vertex,
+        const EigenBase<FourthDerivedType>& fourth_vertex
     ) {
         _vertices.resize(first_vertex.size(), 4);
-        _vertices << first_vertex, second_vertex, third_vertex, fourth_vertex;
+        _vertices << first_vertex.derived(), second_vertex.derived(), third_vertex.derived(),
+            fourth_vertex.derived();
     }
         
     template <int dimensions_, int size_> 
