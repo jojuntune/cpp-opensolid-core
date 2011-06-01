@@ -65,7 +65,7 @@ namespace OpenSolid
     
     template <class MatrixType, class DynamicType>
     void bindFixedSizeMatrix(const char* name) {
-        class_<FixedSizeMatrix<MatrixType> >(name, no_init)
+        class_<FixedSizeMatrix<MatrixType>>(name, no_init)
             .def(
                 "__new__",
                 raw_function(&newFixedSizeMatrix<MatrixType, DynamicType>)
@@ -148,7 +148,7 @@ namespace OpenSolid
     
     template <class MatrixType, class DynamicType>
     void bindVector(const char* name) {
-        class_<Vector<MatrixType> >(name, no_init)
+        class_<Vector<MatrixType>>(name, no_init)
             .def(
                 "__new__",
                 raw_function(&newVector<MatrixType, DynamicType>)
@@ -248,7 +248,7 @@ namespace OpenSolid
     
     template <class MatrixType, class DynamicType>
     void bindFixedSizeVector(const char* name) {
-        class_<FixedSizeVector<MatrixType> > fixed_size_vector(name, no_init);
+        class_<FixedSizeVector<MatrixType>> fixed_size_vector(name, no_init);
         fixed_size_vector
             .def(
                 "__new__",

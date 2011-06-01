@@ -49,7 +49,7 @@ namespace OpenSolid
     template <class Type, class BoundsFunction>
     class SetIterator;
 
-    template <class Type, class BoundsFunctionType = DefaultBoundsFunction<Type> >
+    template <class Type, class BoundsFunctionType = DefaultBoundsFunction<Type>>
     class Set
     {
     public:

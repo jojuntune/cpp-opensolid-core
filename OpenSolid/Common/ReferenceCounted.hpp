@@ -26,7 +26,7 @@
 namespace OpenSolid
 {
     template <class Type>
-    class ReferenceCounted : public ReferenceCountedBase<ReferenceCounted<Type> >
+    class ReferenceCounted : public ReferenceCountedBase<ReferenceCounted<Type>>
     {
     private:
         Type* _object;

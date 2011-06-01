@@ -43,7 +43,7 @@ namespace Eigen
     namespace internal
     {
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<OpenSolid::DatumProduct<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::DatumProduct<DerivedType, dimensions_, axes_>>
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -56,7 +56,7 @@ namespace Eigen
         };
         
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<OpenSolid::DatumQuotient<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::DatumQuotient<DerivedType, dimensions_, axes_>>
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -69,7 +69,7 @@ namespace Eigen
         };
         
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<OpenSolid::LinearDatumProduct<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::LinearDatumProduct<DerivedType, dimensions_, axes_>>
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -82,7 +82,7 @@ namespace Eigen
         };
         
         template <class DerivedType, int dimensions_, int axes_>
-        struct traits<OpenSolid::LinearDatumQuotient<DerivedType, dimensions_, axes_> >
+        struct traits<OpenSolid::LinearDatumQuotient<DerivedType, dimensions_, axes_>>
         {
             typedef Matrix<
                 typename DerivedType::Scalar,
@@ -99,7 +99,7 @@ namespace Eigen
 namespace OpenSolid
 {
     template <class DerivedType, int dimensions_, int axes_>
-    class DatumProduct : public ReturnByValue<DatumProduct<DerivedType, dimensions_, axes_> >
+    class DatumProduct : public ReturnByValue<DatumProduct<DerivedType, dimensions_, axes_>>
     {
     private:
         const EigenBase<DerivedType>& _matrix;
@@ -118,7 +118,7 @@ namespace OpenSolid
     };
     
     template <class DerivedType, int dimensions_, int axes_>
-    class DatumQuotient : public ReturnByValue<DatumQuotient<DerivedType, dimensions_, axes_> >
+    class DatumQuotient : public ReturnByValue<DatumQuotient<DerivedType, dimensions_, axes_>>
     {
     private:
         const EigenBase<DerivedType>& _matrix;
@@ -138,7 +138,7 @@ namespace OpenSolid
     
     template <class DerivedType, int dimensions_, int axes_>
     class LinearDatumProduct :
-        public ReturnByValue<LinearDatumProduct<DerivedType, dimensions_, axes_> >
+        public ReturnByValue<LinearDatumProduct<DerivedType, dimensions_, axes_>>
     {
     private:
         const EigenBase<DerivedType>& _matrix;
@@ -158,7 +158,7 @@ namespace OpenSolid
     
     template <class DerivedType, int dimensions_, int axes_>
     class LinearDatumQuotient :
-        public ReturnByValue<LinearDatumQuotient<DerivedType, dimensions_, axes_> >
+        public ReturnByValue<LinearDatumQuotient<DerivedType, dimensions_, axes_>>
     {
     private:
         const EigenBase<DerivedType>& _matrix;

@@ -29,7 +29,7 @@ namespace OpenSolid
     class Set;
     
     template <class Type, class BoundsFunctionType>
-    struct Traits<Set<Type, BoundsFunctionType> >
+    struct Traits<Set<Type, BoundsFunctionType>>
     {
         typedef typename BoundsFunctionType::Bounds Bounds;
         

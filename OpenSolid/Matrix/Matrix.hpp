@@ -66,13 +66,13 @@ namespace Eigen
     typedef Matrix<bool, 4, Dynamic> Matrix4Xb;
     typedef Matrix<bool, Dynamic, 4> MatrixX4b;
     
-    typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > MapXd;
-    typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > MapXI;
-    typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXb;
+    typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXd;
+    typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
+    typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXb;
     
-    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic> > MapXcd;
-    typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic> > MapXcI;
-    typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic> > MapXcb;
+    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcd;
+    typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
+    typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
 }
 
 namespace OpenSolid
