@@ -119,4 +119,17 @@ public:
         LineSegment2d second_line(Vector2d::Zero(), Vector2d::Ones());
         TS_ASSERT_EQUALS(hash_value(first_line), hash_value(second_line));
     }
+    
+    void testCoordinateSystem() {
+        Triangle3d triangle(Vector3d::Zero(), Vector3d(2, 0, 0), Vector3d(1, 2, 0));
+        CoordinateSystem<3, 2> coordinate_system = triangle.coordinateSystem();
+        Vector3d product = Vector2d(0.5, 0.5) * coordinate_system;
+        TS_ASSERT((product - Vector3d(1.5, 1, 0)).isZero(roundoff));
+        Vector2d quotient = Vector3d(1, 0, 0) / coordinate_system;
+        TS_ASSERT((quotient - Vector2d(0.5, 0)).isZero(roundoff));
+        quotient = Vector3d(3, 2, 0) / coordinate_system;
+        TS_ASSERT((quotient - Vector2d(1, 1)).isZero(roundoff));
+        Vector3d projection = (Vector3d(3, 4, 5) / coordinate_system) * coordinate_system;
+        TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero(roundoff));
+    }
 };

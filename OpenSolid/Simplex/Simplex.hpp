@@ -33,7 +33,7 @@ namespace OpenSolid
         typedef Matrix<double, dimensions_, size_> Vertices;
         typedef typename Vertices::ConstColXpr Vertex;
         typedef Simplex<dimensions_, 2> Edge;
-        typedef Simplex<dimensions_, size_ == Dynamic ? Dynamic : size_ - 1> Face;
+        typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> Face;
         typedef Matrix<double, dimensions_, 1> Vector;
     private:
         Vertices _vertices;
@@ -94,6 +94,9 @@ namespace OpenSolid
         
         Edge edge(int start_index, int end_index) const;
         Face face(int index) const;
+        
+        CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>
+        coordinateSystem() const;
         
         Matrix<Interval, dimensions_, 1> bounds() const;
         
@@ -239,7 +242,7 @@ namespace OpenSolid
         if (dimensions() == 1) {
             return vertices()(0, 1) - vertices()(0, 0);
         } else {
-            return (vertices().col(1) - vertices().col(0)).norm();
+            return (vertex(1) - vertex(0)).norm();
         }
     }
     
@@ -248,7 +251,7 @@ namespace OpenSolid
         assert(size() == 3);
         if (dimensions() == 2) {
             return (
-                vertices().template rightCols<2>().colwise() - vertices().col(0)
+                vertices().template rightCols<2>().colwise() - vertex(0)
             ).determinant() / 2;
         } else {
             Matrix2d temp;
@@ -270,7 +273,7 @@ namespace OpenSolid
         assert(size() == 4);
         if (dimensions() == 3) {
             return (
-                vertices().template rightCols<3>().colwise() - vertices().col(0)
+                vertices().template rightCols<3>().colwise() - vertex(0)
             ).determinant() / 6;
         } else {
             Matrix3d temp;
@@ -295,7 +298,7 @@ namespace OpenSolid
         assert(size() == 5);
         if (dimensions() == 4) {
             return (
-                vertices().template rightCols<4>.colwise() - vertices().col(0)
+                vertices().template rightCols<4>.colwise() - vertex(0)
             ).determinant() / 24;
         } else {
             Matrix4d temp;
@@ -371,8 +374,8 @@ namespace OpenSolid
     inline typename Simplex<dimensions_, size_>::Edge
     Simplex<dimensions_, size_>::edge(int start_index, int end_index) const {
         typename Edge::Vertices edge_vertices;
-        edge_vertices.col(0) = vertices().col(start_index);
-        edge_vertices.col(1) = vertices().col(end_index);
+        edge_vertices.col(0) = vertex(start_index);
+        edge_vertices.col(1) = vertex(end_index);
         return Edge(edge_vertices);
     }
     
@@ -380,13 +383,22 @@ namespace OpenSolid
     inline typename Simplex<dimensions_, size_>::Face
     Simplex<dimensions_, size_>::face(int index) const {
         typename Face::Vertices face_vertices;
-        Matrix<int, 1, size_ == Dynamic ? Dynamic : size_ - 1> indices(size() - 1);
+        Matrix<int, 1, (size_ == Dynamic ? Dynamic : size_ - 1)> indices(size() - 1);
         for (int i = 0; i < indices.size(); ++i) {indices(i) = (index + 1 + i) % size();}
         if (size() % 2 == 0 && index % 2 != 0) {indices.tail(2).reverseInPlace();}
         for (int i = 0; i < indices.size(); ++i) {
-            face_vertices.col(i) = vertices().col(indices(i));
+            face_vertices.col(i) = vertex(indices(i));
         }
         return Face(face_vertices);
+    }
+
+    template <int dimensions_, int size_>
+    inline CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>
+    Simplex<dimensions_, size_>::coordinateSystem() const {
+        return CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>(
+            vertex(0),
+            vertices().rightCols(size() - 1).colwise() - vertex(0)
+        );
     }
     
     template <int dimensions_, int size_>
