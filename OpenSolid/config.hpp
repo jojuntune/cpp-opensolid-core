@@ -44,7 +44,7 @@
 #else
     #define OPENSOLID_CORE_EXPORT
     #define OPENSOLID_PYTHON_EXPORT
-    #define OPENSOLID_SCRIPTING_EXPORT
+    #define OPENSOLID_SCRIPT_EXPORT
 #endif
 
 #ifndef M_PI

@@ -204,7 +204,7 @@
     )
 
     INSTALL(
-        DIRECTORY .
+        DIRECTORY ../OpenSolid
         DESTINATION include
         FILES_MATCHING PATTERN "*.hpp"
         PATTERN "*.tests.hpp" EXCLUDE
