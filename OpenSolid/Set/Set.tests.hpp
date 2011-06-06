@@ -154,7 +154,7 @@ public:
         std::cout << set << std::endl;
         testSet(set.root());
         TS_ASSERT_EQUALS(set.size(), 5);
-        set.erase(3);
+        TS_ASSERT_EQUALS(set.erase(3), 1);
         std::cout << "3 removed" << std::endl;
         std::cout << set << std::endl;
         testSet(set.root());

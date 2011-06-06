@@ -302,7 +302,7 @@ namespace OpenSolid
             Bounds bounds = _bounds_function(object);
             int previous_size = size();
             _root = _root->erase(object, bounds);
-            return size() - previous_size;
+            return previous_size - size();
         }
     }
     
