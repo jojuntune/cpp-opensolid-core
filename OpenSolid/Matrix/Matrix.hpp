@@ -28,24 +28,24 @@
 
 namespace Eigen
 {
-    typedef Matrix<Interval, 2, 1> Vector2I;
-    typedef Matrix<Interval, 1, 2> RowVector2I;
-    typedef Matrix<Interval, 2, 2> Matrix2I;
-    typedef Matrix<Interval, 3, 1> Vector3I;
-    typedef Matrix<Interval, 1, 3> RowVector3I;
-    typedef Matrix<Interval, 3, 3> Matrix3I;
-    typedef Matrix<Interval, 4, 1> Vector4I;
-    typedef Matrix<Interval, 1, 4> RowVector4I;
-    typedef Matrix<Interval, 4, 4> Matrix4I;
-    typedef Matrix<Interval, Dynamic, 1> VectorXI;
-    typedef Matrix<Interval, 1, Dynamic> RowVectorXI;
-    typedef Matrix<Interval, Dynamic, Dynamic> MatrixXI;
-    typedef Matrix<Interval, 2, Dynamic> Matrix2XI;
-    typedef Matrix<Interval, Dynamic, 2> MatrixX2I;
-    typedef Matrix<Interval, 3, Dynamic> Matrix3XI;
-    typedef Matrix<Interval, Dynamic, 3> MatrixX3I;
-    typedef Matrix<Interval, 4, Dynamic> Matrix4XI;
-    typedef Matrix<Interval, Dynamic, 4> MatrixX4I;
+    typedef Matrix<OpenSolid::Interval, 2, 1> Vector2I;
+    typedef Matrix<OpenSolid::Interval, 1, 2> RowVector2I;
+    typedef Matrix<OpenSolid::Interval, 2, 2> Matrix2I;
+    typedef Matrix<OpenSolid::Interval, 3, 1> Vector3I;
+    typedef Matrix<OpenSolid::Interval, 1, 3> RowVector3I;
+    typedef Matrix<OpenSolid::Interval, 3, 3> Matrix3I;
+    typedef Matrix<OpenSolid::Interval, 4, 1> Vector4I;
+    typedef Matrix<OpenSolid::Interval, 1, 4> RowVector4I;
+    typedef Matrix<OpenSolid::Interval, 4, 4> Matrix4I;
+    typedef Matrix<OpenSolid::Interval, Dynamic, 1> VectorXI;
+    typedef Matrix<OpenSolid::Interval, 1, Dynamic> RowVectorXI;
+    typedef Matrix<OpenSolid::Interval, Dynamic, Dynamic> MatrixXI;
+    typedef Matrix<OpenSolid::Interval, 2, Dynamic> Matrix2XI;
+    typedef Matrix<OpenSolid::Interval, Dynamic, 2> MatrixX2I;
+    typedef Matrix<OpenSolid::Interval, 3, Dynamic> Matrix3XI;
+    typedef Matrix<OpenSolid::Interval, Dynamic, 3> MatrixX3I;
+    typedef Matrix<OpenSolid::Interval, 4, Dynamic> Matrix4XI;
+    typedef Matrix<OpenSolid::Interval, Dynamic, 4> MatrixX4I;
     
     typedef Matrix<bool, 2, 1> Vector2b;
     typedef Matrix<bool, 1, 2> RowVector2b;
@@ -110,15 +110,21 @@ namespace Eigen
         }
     }
     
-    inline Interval NumTraits<Interval>::epsilon() {return Interval(NumTraits<double>::epsilon());}
-    
-    inline Interval NumTraits<Interval>::dummy_precision() {
-        return Interval(NumTraits<double>::dummy_precision());
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::epsilon() {
+        return OpenSolid::Interval(NumTraits<double>::epsilon());
     }
     
-    inline Interval NumTraits<Interval>::lowest() {return Interval(NumTraits<double>::lowest());}
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::dummy_precision() {
+        return OpenSolid::Interval(NumTraits<double>::dummy_precision());
+    }
     
-    inline Interval NumTraits<Interval>::highest() {return Interval(NumTraits<double>::highest());}
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::lowest() {
+        return OpenSolid::Interval(NumTraits<double>::lowest());
+    }
+    
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::highest() {
+        return OpenSolid::Interval(NumTraits<double>::highest());
+    }
     
     template <class MatrixType>
     inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
@@ -366,25 +372,25 @@ namespace Eigen
         int index
     ) {return matrix.col(index);}
     
-    inline double LowerOperation::operator()(const Interval& argument) const {
+    inline double LowerOperation::operator()(const OpenSolid::Interval& argument) const {
         return argument.lower();
     }
     
     inline double LowerOperation::operator()(double argument) const {return argument;}
     
-    inline double UpperOperation::operator()(const Interval& argument) const {
+    inline double UpperOperation::operator()(const OpenSolid::Interval& argument) const {
         return argument.upper();
     }
     
     inline double UpperOperation::operator()(double argument) const {return argument;}
     
-    inline double MedianOperation::operator()(const Interval& argument) const {
+    inline double MedianOperation::operator()(const OpenSolid::Interval& argument) const {
         return argument.median();
     }
     
     inline double MedianOperation::operator()(double argument) const {return argument;}
     
-    inline double WidthOperation::operator()(const Interval& argument) const {
+    inline double WidthOperation::operator()(const OpenSolid::Interval& argument) const {
         return argument.width();
     }
     
@@ -393,8 +399,8 @@ namespace Eigen
     inline OverlapOperation::OverlapOperation(double tolerance_) : tolerance(tolerance_) {}
     
     inline bool OverlapOperation::operator()(
-        const Interval& first_argument,
-        const Interval& second_argument
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
     ) const {return first_argument.overlap(second_argument, tolerance);}
     
     inline bool OverlapOperation::operator()(double first_argument, double second_argument) const {
@@ -404,33 +410,36 @@ namespace Eigen
     inline ContainOperation::ContainOperation(double tolerance_) : tolerance(tolerance_) {}
     
     inline bool ContainOperation::operator()(
-        const Interval& first_argument,
-        const Interval& second_argument
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
     ) const {return first_argument.contain(second_argument, tolerance);}
     
     inline bool ContainOperation::operator()(double first_argument, double second_argument) const {
         return abs(first_argument - second_argument) <= tolerance;
     }
     
-    inline Interval HullOperation::operator()(
-        const Interval& first_argument,
-        const Interval& second_argument
+    inline OpenSolid::Interval HullOperation::operator()(
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
     ) const {return first_argument.hull(second_argument);}
     
-    inline Interval HullOperation::operator()(double first_argument, double second_argument) const {
-        return OpenSolid::BoostInterval::hull(first_argument, second_argument);
-    }
+    inline OpenSolid::Interval HullOperation::operator()(
+        double first_argument,
+        double second_argument
+    ) const {return OpenSolid::BoostInterval::hull(first_argument, second_argument);}
     
-    inline Interval IntersectionOperation::operator()(
-        const Interval& first_argument,
-        const Interval& second_argument
+    inline OpenSolid::Interval IntersectionOperation::operator()(
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
     ) const {return first_argument.intersection(second_argument);}
     
-    inline Interval IntersectionOperation::operator()(
+    inline OpenSolid::Interval IntersectionOperation::operator()(
         double first_argument,
         double second_argument
     ) const {
-        return (first_argument == second_argument) ? Interval(first_argument) : Interval::Empty();
+        return (first_argument == second_argument) ?
+            OpenSolid::Interval(first_argument) :
+            OpenSolid::Interval::Empty();
     }
     
     template <class ScalarType, int rows_, int cols_>

@@ -91,10 +91,13 @@ inline CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerived> i
 ) const {return derived().binaryExpr(other.derived(), IntersectionOperation());}
 
 
-inline static const RandomAccessLinSpacedReturnType LinSpaced(Index size, const Interval& range) {
+inline static const RandomAccessLinSpacedReturnType LinSpaced(
+    Index size,
+    const OpenSolid::Interval& range
+) {
     return LinSpaced(size, LowerOperation()(range), UpperOperation()(range));
 }
 
-inline static const RandomAccessLinSpacedReturnType LinSpaced(const Interval& range) {
+inline static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range) {
     return LinSpaced(LowerOperation()(range), UpperOperation()(range));
 }

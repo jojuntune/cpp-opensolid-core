@@ -38,11 +38,10 @@
 #endif
 
 namespace Eigen
-{
-    using OpenSolid::Interval;
-    
+{   
     namespace internal
     {
+        using OpenSolid::Interval;
         using OpenSolid::abs;
         using OpenSolid::sqrt;
         using OpenSolid::sin;
@@ -75,11 +74,11 @@ namespace Eigen
     struct NumTraits;
     
     template <>
-    struct NumTraits<Interval>
+    struct NumTraits<OpenSolid::Interval>
     {
-        typedef Interval Real;
-        typedef Interval NonInteger;
-        typedef Interval Nested;
+        typedef OpenSolid::Interval Real;
+        typedef OpenSolid::Interval NonInteger;
+        typedef OpenSolid::Interval Nested;
         
         static const int IsComplex = 0;
         static const int IsInteger = 0;
@@ -89,10 +88,10 @@ namespace Eigen
         static const int IsSigned = 1;
         static const int RequireInitialization = 0;
         
-        static Interval epsilon();
-        static Interval dummy_precision();
-        static Interval lowest();
-        static Interval highest();
+        static OpenSolid::Interval epsilon();
+        static OpenSolid::Interval dummy_precision();
+        static OpenSolid::Interval lowest();
+        static OpenSolid::Interval highest();
     };
     
     template <class MatrixType>
@@ -277,7 +276,7 @@ namespace Eigen
     {
         typedef double result_type;
         
-        double operator()(const Interval& argument) const;
+        double operator()(const OpenSolid::Interval& argument) const;
         double operator()(double argument) const;
     };
     
@@ -285,7 +284,7 @@ namespace Eigen
     {
         typedef double result_type;
         
-        double operator()(const Interval& argument) const;
+        double operator()(const OpenSolid::Interval& argument) const;
         double operator()(double argument) const;
     };
     
@@ -293,7 +292,7 @@ namespace Eigen
     {
         typedef double result_type;
         
-        double operator()(const Interval& argument) const;
+        double operator()(const OpenSolid::Interval& argument) const;
         double operator()(double argument) const;
     };
     
@@ -301,7 +300,7 @@ namespace Eigen
     {
         typedef double result_type;
         
-        double operator()(const Interval& argument) const;
+        double operator()(const OpenSolid::Interval& argument) const;
         double operator()(double argument) const;
     };
     
@@ -313,7 +312,11 @@ namespace Eigen
         
         OverlapOperation(double tolerance_);
         
-        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
+        bool operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+        
         bool operator()(double first_argument, double second_argument) const;
     };
     
@@ -325,24 +328,36 @@ namespace Eigen
         
         ContainOperation(double tolerance_);
         
-        bool operator()(const Interval& first_argument, const Interval& second_argument) const;
+        bool operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+        
         bool operator()(double first_argument, double second_argument) const;
     };
     
     struct HullOperation
     {
-        typedef Interval result_type;
+        typedef OpenSolid::Interval result_type;
         
-        Interval operator()(const Interval& first_argument, const Interval& second_argument) const;
-        Interval operator()(double first_argument, double second_argument) const;
+        OpenSolid::Interval operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+        
+        OpenSolid::Interval operator()(double first_argument, double second_argument) const;
     };
     
     struct IntersectionOperation
     {
-        typedef Interval result_type;
+        typedef OpenSolid::Interval result_type;
         
-        Interval operator()(const Interval& first_argument, const Interval& second_argument) const;
-        Interval operator()(double first_argument, double second_argument) const;
+        OpenSolid::Interval operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+        
+        OpenSolid::Interval operator()(double first_argument, double second_argument) const;
     };
 }
 
