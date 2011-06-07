@@ -107,6 +107,7 @@ namespace OpenSolid
         
         static Interval Empty();
         static Interval Whole();
+        static Interval Hull(double first_argument, double second_argument);
     };
 
     bool operator==(const Interval& first_argument, const Interval& second_argument);
@@ -267,6 +268,10 @@ namespace OpenSolid
     inline Interval Interval::Empty() {return BoostInterval::empty();}
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}
+    
+    inline Interval Interval::Hull(double first_argument, double second_argument) {
+        return BoostInterval::hull(first_argument, second_argument);
+    }
 
     inline bool operator==(const Interval& first_argument, const Interval& second_argument) {
         return first_argument.lower() == second_argument.lower() &&

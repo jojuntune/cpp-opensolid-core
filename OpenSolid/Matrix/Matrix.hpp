@@ -426,7 +426,7 @@ namespace Eigen
     inline OpenSolid::Interval HullOperation::operator()(
         double first_argument,
         double second_argument
-    ) const {return OpenSolid::BoostInterval::hull(first_argument, second_argument);}
+    ) const {return OpenSolid::Interval::Hull(first_argument, second_argument);}
     
     inline OpenSolid::Interval IntersectionOperation::operator()(
         const OpenSolid::Interval& first_argument,
