@@ -298,4 +298,24 @@ public:
         ++i;
         TS_ASSERT_EQUALS(i, set.end());
     }
+    
+    void testRangeOperations() {
+        Set<double> set;
+        std::vector<double> insertion_list(5);
+        insertion_list[0] = 5;
+        insertion_list[1] = 1;
+        insertion_list[2] = 3;
+        insertion_list[3] = 2;
+        insertion_list[4] = 4;
+        std::vector<double> erasure_list(5);
+        erasure_list[0] = 1;
+        erasure_list[1] = 3;
+        erasure_list[2] = 5;
+        erasure_list[3] = 7;
+        erasure_list[4] = 9;
+        set.insert(insertion_list.begin(), insertion_list.end());
+        TS_ASSERT_EQUALS(set.size(), 5);
+        TS_ASSERT_EQUALS(set.erase(erasure_list.begin(), erasure_list.end()), 3);
+        TS_ASSERT_EQUALS(set.size(), 2);
+    }
 };

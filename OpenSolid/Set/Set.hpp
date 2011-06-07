@@ -24,6 +24,7 @@
 #include <ostream>
 #include <algorithm>
 #include <functional>
+#include <numeric>
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/functional/hash.hpp>
@@ -92,6 +93,13 @@ namespace OpenSolid
         
         void insert(const Type& object);
         int erase(const Type& object);
+        
+        template <class IteratorType>
+        void insert(IteratorType begin, IteratorType end);
+        
+        template <class IteratorType>
+        int erase(IteratorType begin, IteratorType end);
+        
         void clear();
         
         template <class FunctionType>
@@ -304,6 +312,21 @@ namespace OpenSolid
             _root = _root->erase(object, bounds);
             return previous_size - size();
         }
+    }
+    
+    template <class Type, class BoundsFunctionType> template <class IteratorType>
+    inline void Set<Type, BoundsFunctionType>::insert(IteratorType begin, IteratorType end) {
+        std::for_each(begin, end, [this] (const Type& object) {this->insert(object);});
+    }
+    
+    template <class Type, class BoundsFunctionType> template <class IteratorType>
+    inline int Set<Type, BoundsFunctionType>::erase(IteratorType begin, IteratorType end) {
+        return std::accumulate(
+            begin,
+            end,
+            0,
+            [this] (int result, const Type& object) {return result + this->erase(object);}
+        );
     }
     
     template <class Type, class BoundsFunctionType>
