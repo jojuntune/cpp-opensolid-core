@@ -32,12 +32,12 @@ namespace OpenSolid
     struct SquareRoot
     {
         inline double operator()(double value) const {
-            assert(value > -Tolerance::roundoff());
+            assert(!Comparison::lesser(value, 0.0));
             return value > 0.0 ? sqrt(value) : 0.0;
         }
         
         inline Interval operator()(const Interval& bounds) const {
-            assert(bounds > -Tolerance::roundoff());
+            assert(!Comparison::lesser(bounds, 0.0));
             return Interval(operator()(bounds.lower()), operator()(bounds.upper()));
         }
     };

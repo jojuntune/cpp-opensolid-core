@@ -21,27 +21,10 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include "Function.hpp"
 
 using namespace OpenSolid;
-
-void assertIsApprox(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-    for (int j = 0; j < first_argument.cols(); ++j) {
-        for (int i = 0; i < first_argument.rows(); ++i) {
-            TS_ASSERT_DELTA(
-                first_argument(i, j).lower(),
-                second_argument(i, j).lower(),
-                Tolerance::roundoff()
-            );
-            TS_ASSERT_DELTA(
-                first_argument(i, j).upper(),
-                second_argument(i, j).upper(),
-                Tolerance::roundoff()
-            );
-        }
-    }
-}
 
 class FunctionTestSuite : public CxxTest::TestSuite
 {
@@ -126,7 +109,7 @@ public:
     void testSine() {
         Function f = sin(Function::t);
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
-        TS_ASSERT(result.isApprox(RowVector4d(0, 1, 0, -1)));
+        TS_ASSERT(Comparison::equal(result, RowVector4d(0, 1, 0, -1)));
         RowVector4I bounds = f(
             RowVector4I(
                 Interval(0, M_PI / 2),
@@ -135,16 +118,18 @@ public:
                 Interval(0, 2 * M_PI)
             )
         );
-        assertIsApprox(
-            bounds,
-            RowVector4I(Interval(0, 1), Interval(0, 1), Interval(-1, 0), Interval(-1, 1))
+        TS_ASSERT(
+            Comparison::equal(
+                bounds,
+                RowVector4I(Interval(0, 1), Interval(0, 1), Interval(-1, 0), Interval(-1, 1))
+            )
         );
     }
     
     void testCosine() {
         Function f = cos(Function::t);
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
-        TS_ASSERT(result.isApprox(RowVector4d(1, 0, -1, 0)));
+        TS_ASSERT(Comparison::equal(result, RowVector4d(1, 0, -1, 0)));
         RowVector4I bounds = f(
             RowVector4I(
                 Interval(0, M_PI / 2),
@@ -153,9 +138,11 @@ public:
                 Interval(0, 2 * M_PI)
             )
         );
-        assertIsApprox(
-            bounds,
-            RowVector4I(Interval(0, 1), Interval(-1, 0), Interval(-1, 0), Interval(-1, 1))
+        TS_ASSERT(
+            Comparison::equal(
+                bounds,
+                RowVector4I(Interval(0, 1), Interval(-1, 0), Interval(-1, 0), Interval(-1, 1))
+            )
         );
     }
     
@@ -179,8 +166,8 @@ public:
             Vector3d(1, 1, 1);
         MatrixXd quotient_values = (Vector3d(sqrt(2.0), 0, 1) * parameter_values).colwise() +
             Vector3d(-sqrt(2.0), 0, -1);
-        TS_ASSERT((product(parameter_values) - product_values).isZero(Tolerance::roundoff()));
-        TS_ASSERT((quotient(parameter_values) - quotient_values).isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(product(parameter_values), product_values));
+        TS_ASSERT(Comparison::equal(quotient(parameter_values), quotient_values));
     }
     
     void testConcatenation() {
@@ -188,8 +175,7 @@ public:
         double y = 3;
         Function z = Function::t.squaredNorm();
         Function concatenated(x, y, z);
-        Vector3d error = concatenated(2.0) - Vector3d(2.0, 3.0, 4.0);
-        TS_ASSERT(error.isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(concatenated(2.0), Vector3d(2.0, 3.0, 4.0)));
     }
     
     void testZeros() {
@@ -253,9 +239,9 @@ public:
             RowVectorXd second_derivative_values =
                 second_derivative(expected_second_derivative_zeros[i]);
                 
-            TS_ASSERT(function_values.isZero(Tolerance::roundoff()));
-            TS_ASSERT(derivative_values.isZero(Tolerance::roundoff()));
-            TS_ASSERT(second_derivative_values.isZero(Tolerance::roundoff()));
+            TS_ASSERT(Comparison::zero(function_values));
+            TS_ASSERT(Comparison::zero(derivative_values));
+            TS_ASSERT(Comparison::zero(second_derivative_values));
             
             RowVectorXd function_zeros;
             boost::timer timer;
@@ -263,27 +249,31 @@ public:
             double elapsed = timer.elapsed();
             RowVectorXd derivative_zeros = derivative.zeros(domains[i]);
             RowVectorXd second_derivative_zeros = second_derivative.zeros(domains[i]);
-            
-            RowVectorXd function_errors = function_zeros - expected_function_zeros[i];
-            RowVectorXd derivative_errors = derivative_zeros - expected_derivative_zeros[i];
-            RowVectorXd second_derivative_errors =
-                second_derivative_zeros - expected_second_derivative_zeros[i];
                 
-            TS_ASSERT(function_errors.isZero(Tolerance::roundoff()));
-            TS_ASSERT(derivative_errors.isZero(Tolerance::roundoff()));
-            TS_ASSERT(second_derivative_errors.isZero(Tolerance::roundoff()));
+            TS_ASSERT(
+                Comparison::equal(function_zeros, expected_function_zeros[i])
+            );
+            TS_ASSERT(
+                Comparison::equal(derivative_zeros, expected_derivative_zeros[i])
+            );
+            TS_ASSERT(
+                Comparison::equal(second_derivative_zeros, expected_second_derivative_zeros[i])
+            );
             
             std::cout << "i = " << i << std::endl;
             std::cout << "  elapsed = " << elapsed << std::endl;
             
             std::cout << "  function_zeros = " << function_zeros << std::endl;
-            std::cout << "  function_errors = " << function_errors << std::endl;
+            std::cout << "  function_errors = ";
+            std::cout << function_zeros - expected_function_zeros[i] << std::endl;
             
             std::cout << "  derivative_zeros = " << derivative_zeros << std::endl;
-            std::cout << "  derivative_errors = " << derivative_errors << std::endl;
+            std::cout << "  derivative_errors = ";
+            std::cout << derivative_zeros - expected_derivative_zeros[i] << std::endl;
             
             std::cout << "  second_derivative_zeros = " << second_derivative_zeros << std::endl;
-            std::cout << "  second_derivative_errors = " << second_derivative_errors << std::endl;
+            std::cout << "  second_derivative_errors = ";
+            std::cout << second_derivative_zeros - expected_second_derivative_zeros[i] << std::endl;
         }
     }
     
@@ -296,10 +286,9 @@ public:
         Function derivative_difference = radius_function.derivative() - 1 / slope;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(20, Interval(0, r));
         std::cout << derivative_difference(parameter_values) << std::endl;
-        double expected_root = 0.052786404500042038;
         RowVectorXd zeros = derivative_difference.zeros(Interval(0, r));
         std::cout << zeros << std::endl;
         TS_ASSERT_EQUALS(zeros.size(), 1);
-        TS_ASSERT_DELTA(zeros(0), expected_root, Tolerance::roundoff());
+        TS_ASSERT(Comparison::equal(zeros(0), 0.052786404500042038));
     }
 };

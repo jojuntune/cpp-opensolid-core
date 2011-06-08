@@ -28,6 +28,9 @@ namespace OpenSolid
     template <class Type>
     struct Traits;
     
+    template <class Type>
+    std::size_t hash_value(const Type& argument);
+    
     class Interval;
     
     template <>
@@ -36,6 +39,7 @@ namespace OpenSolid
         typedef Interval Bounds;
         
         static Interval bounds(int argument);
+        static std::size_t hash(int argument);
     };
     
     template <>
@@ -44,20 +48,20 @@ namespace OpenSolid
         typedef Interval Bounds;
         
         static Interval bounds(double argument);
+        static std::size_t hash(double argument);
     };
-    
-    template <class Type>
-    std::size_t hash_value(const Type& argument);
 }
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Interval/Interval.hpp>
-
 namespace OpenSolid
 {    
     template <class Type>
-    std::size_t hash_value(const Type& argument) {return Traits<Type>::hash(argument);}
+    inline std::size_t hash_value(const Type& argument) {return Traits<Type>::hash(argument);}
+    
+    inline std::size_t Traits<int>::hash(int argument) {return boost::hash_value(argument);}
+    
+    inline std::size_t Traits<double>::hash(double argument) {return boost::hash_value(argument);}
 }
 
 #endif

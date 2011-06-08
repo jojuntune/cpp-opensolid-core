@@ -22,8 +22,8 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Interval/Interval.hpp>
-#include <OpenSolid/Interval/Tolerance.hpp>
 #include "Matrix.hpp"
 
 using namespace OpenSolid;
@@ -41,14 +41,12 @@ void printDirectAccess(const Type& argument) {
 class MatrixTestSuite : public CxxTest::TestSuite
 {
 private:
-    double tolerance;
     double a;
     Interval b;
     Vector3d u;
     Vector3I v;
 public:
     void setUp() {
-        tolerance = Tolerance::roundoff();
         a = 2;
         b = Interval(2, 3);
         u = Vector3d(1, 2, 3);
@@ -56,9 +54,9 @@ public:
     }
 
     void testOverlap() {
-        TS_ASSERT(u.cast<Interval>().overlap(v, tolerance));
+        TS_ASSERT(u.cast<Interval>().overlap(v, Comparison::tolerance()));
         TS_ASSERT(v.overlap(u.cast<Interval>()));
-        TS_ASSERT(!v.overlap((3 * u).cast<Interval>(), tolerance));
+        TS_ASSERT(!v.overlap((3 * u).cast<Interval>(), Comparison::tolerance()));
     }
     
     void testHull() {

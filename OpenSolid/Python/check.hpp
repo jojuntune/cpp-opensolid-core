@@ -30,7 +30,6 @@
 
 #include <OpenSolid/Common/Error.hpp>
 #include <OpenSolid/Interval/Interval.hpp>
-#include <OpenSolid/Interval/Tolerance.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>

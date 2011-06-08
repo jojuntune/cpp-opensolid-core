@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include "../Function.hpp"
 #include "ConstantFunction.hpp"
 
@@ -58,7 +58,7 @@ namespace OpenSolid
     
     void ConstantFunction::getNormalized(Function& result) const {
         double norm = value().norm();
-        assert(abs(norm) > Tolerance::roundoff());
+        assert(Comparison::greater(norm, 0.0));
         result = value() / norm;
     }
     

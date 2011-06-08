@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include "Geometry.hpp"
 
 namespace OpenSolid
@@ -108,11 +108,11 @@ namespace OpenSolid
         Vector2d start_radial = start - center;
         double radius = start_radial.norm();
         Vector2d end_radial = end - center;
-        assert(abs(end_radial.norm() - radius) < Tolerance::roundoff());
+        assert(Comparison::equal(end_radial.norm(), radius));
         Vector2d perpendicular = start_radial.unitOrthogonal() * radius;
         if (!counterclockwise) {perpendicular = -perpendicular;}
         double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
-        if (angle < Tolerance::roundoff()) {angle += 2 * M_PI;}
+        if (!Comparison::greater(angle, 0.0)) {angle += 2 * M_PI;}
         return Geometry(
             center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
             Interval(0, angle)
@@ -127,12 +127,12 @@ namespace OpenSolid
         Vector3d center = (start / axis) * axis;
         Vector3d start_radial = start - center;
         Vector3d end_radial = end - center;
-        assert(end_radial.isOrthogonal(axis.vector(), Tolerance::roundoff()));
+        assert(end_radial.isOrthogonal(axis.vector(), Comparison::tolerance()));
         double radius = start_radial.norm();
-        assert(abs(end_radial.norm() - radius) < Tolerance::roundoff());
+        assert(Comparison::equal(end_radial.norm(), radius));
         Vector3d perpendicular = axis.vector().cross(start_radial).normalized() * radius;
         double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
-        if (angle < Tolerance::roundoff()) {angle += 2 * M_PI;}
+        if (!Comparison::greater(angle, 0.0)) {angle += 2 * M_PI;}
         return Geometry(
             center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
             Interval(0, angle)

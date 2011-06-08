@@ -22,7 +22,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include "Geometry.hpp"
 
 using namespace OpenSolid;
@@ -35,7 +35,7 @@ public:
         Vector3d end(4, 5, 6);
         Geometry line = Geometry::Line(start, end);
         std::cout << line(0.5) << std::endl;
-        TS_ASSERT((line(0.5) - Vector3d(2.5, 3.5, 4.5)).norm() < Tolerance::roundoff());
+        TS_ASSERT(Comparison::equal(line(0.5), Vector3d(2.5, 3.5, 4.5)));
     }
     
     void testArc() {
@@ -50,49 +50,47 @@ public:
         std::cout << parameter_values << std::endl << std::endl;
         std::cout << "Values:" << std::endl;
         std::cout << arc(parameter_values) << std::endl;
-        TS_ASSERT((arc(M_PI / 2) - Vector3d(1, 3, 1)).norm() < Tolerance::roundoff());
-        TS_ASSERT((arc(3 * M_PI / 2) - Vector3d(1, -1, 1)).norm() < Tolerance::roundoff());
+        TS_ASSERT(Comparison::equal(arc(M_PI / 2), Vector3d(1, 3, 1)));
+        TS_ASSERT(Comparison::equal(arc(3 * M_PI / 2), Vector3d(1, -1, 1)));
         
         Geometry derivative = arc.derivative();
         std::cout << "Derivative function: " << std::endl << derivative.function() << std::endl;
         std::cout << "Derivative values:" << std::endl;
         std::cout << derivative(parameter_values) << std::endl;
-        TS_ASSERT((derivative(0.0) - Vector3d(0, 2, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((derivative(M_PI / 2) - Vector3d(-2, 0, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((derivative(M_PI) - Vector3d(0, -2, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((derivative(3 * M_PI / 2) - Vector3d(2, 0, 0)).norm() < Tolerance::roundoff());
+        TS_ASSERT(Comparison::equal(derivative(0.0), Vector3d(0, 2, 0)));
+        TS_ASSERT(Comparison::equal(derivative(M_PI / 2), Vector3d(-2, 0, 0)));
+        TS_ASSERT(Comparison::equal(derivative(M_PI), Vector3d(0, -2, 0)));
+        TS_ASSERT(Comparison::equal(derivative(3 * M_PI / 2), Vector3d(2, 0, 0)));
         
         Geometry tangent = arc.tangent();
         std::cout << "Tangent function: " << std::endl << tangent.function() << std::endl;
         std::cout << "Tangent values:" << std::endl;
         std::cout << tangent(parameter_values) << std::endl;
-        TS_ASSERT((tangent(0.0) - Vector3d(0, 1, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((tangent(M_PI / 2) - Vector3d(-1, 0, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((tangent(M_PI) - Vector3d(0, -1, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((tangent(3 * M_PI / 2) - Vector3d(1, 0, 0)).norm() < Tolerance::roundoff());
+        TS_ASSERT(Comparison::equal(tangent(0.0), Vector3d(0, 1, 0)));
+        TS_ASSERT(Comparison::equal(tangent(M_PI / 2), Vector3d(-1, 0, 0)));
+        TS_ASSERT(Comparison::equal(tangent(M_PI), Vector3d(0, -1, 0)));
+        TS_ASSERT(Comparison::equal(tangent(3 * M_PI / 2), Vector3d(1, 0, 0)));
         
         Geometry second_derivative = arc.derivative().derivative();
         std::cout << "Second derivative function: " << std::endl;
         std::cout << second_derivative.function() << std::endl;
         std::cout << "Second derivative values:" << std::endl;
         std::cout << second_derivative(parameter_values) << std::endl;
-        Vector3d error = second_derivative(0.0) - Vector3d(-2, 0, 0);
-        TS_ASSERT(error.isZero(Tolerance::roundoff()));
-        error = second_derivative(M_PI / 2) - Vector3d(0, -2, 0);
-        TS_ASSERT(error.isZero(Tolerance::roundoff()));
-        error = second_derivative(M_PI) - Vector3d(2, 0, 0);
-        TS_ASSERT(error.isZero(Tolerance::roundoff()));
-        error = second_derivative(M_PI * 3 / 2) - Vector3d(0, 2, 0);
-        TS_ASSERT(error.isZero(Tolerance::roundoff()));
+        
+        TS_ASSERT(Comparison::equal(second_derivative(0.0), Vector3d(-2, 0, 0)));
+        TS_ASSERT(Comparison::equal(second_derivative(M_PI / 2), Vector3d(0, -2, 0)));
+        TS_ASSERT(Comparison::equal(second_derivative(M_PI), Vector3d(2, 0, 0)));
+        TS_ASSERT(Comparison::equal(second_derivative(M_PI * 3 / 2), Vector3d(0, 2, 0)));
         
         Geometry normal = arc.tangent().tangent();
         std::cout << "Normal function: " << std::endl << normal.function() << std::endl;
         std::cout << "Normal values:" << std::endl;
         std::cout << normal(parameter_values) << std::endl;
-        TS_ASSERT((normal(0.0) - Vector3d(-1, 0, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((normal(M_PI / 2) - Vector3d(0, -1, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((normal(M_PI) - Vector3d(1, 0, 0)).norm() < Tolerance::roundoff());
-        TS_ASSERT((normal(3 * M_PI / 2) - Vector3d(0, 1, 0)).norm() < Tolerance::roundoff());
+        
+        TS_ASSERT(Comparison::equal(normal(0.0), Vector3d(-1, 0, 0)));
+        TS_ASSERT(Comparison::equal(normal(M_PI / 2), Vector3d(0, -1, 0)));
+        TS_ASSERT(Comparison::equal(normal(M_PI), Vector3d(1, 0, 0)));
+        TS_ASSERT(Comparison::equal(normal(3 * M_PI / 2), Vector3d(0, 1, 0)));
     }
     
     void testCurveOperations() {
@@ -104,10 +102,11 @@ public:
         double curvature = parabola.curvature()(1).scalar();
         Vector3d normal = parabola.normal()(1);
         Vector3d binormal = parabola.binormal()(1);
-        TS_ASSERT((tangent - Vector3d(1, 2, 0).normalized()).norm() < Tolerance::roundoff());
-        TS_ASSERT_DELTA(curvature, 2 / (5 * sqrt(5.0)), Tolerance::roundoff());
-        TS_ASSERT((normal - Vector3d(-2, 1, 0).normalized()).norm() < Tolerance::roundoff());
-        TS_ASSERT((binormal - Vector3d::UnitZ()).norm() < Tolerance::roundoff());
+        
+        TS_ASSERT(Comparison::equal(parabola.tangent()(1), Vector3d(1, 2, 0).normalized()));
+        TS_ASSERT(Comparison::equal(parabola.curvature()(1).scalar(), 2 / (5 * sqrt(5.0))));
+        TS_ASSERT(Comparison::equal(parabola.normal()(1), Vector3d(-2, 1, 0).normalized()));
+        TS_ASSERT(Comparison::equal(parabola.binormal()(1), Vector3d::UnitZ()));
     }
     
     void testHashing() {

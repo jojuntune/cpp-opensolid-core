@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include "Datum.hpp"
 
 using namespace OpenSolid;
@@ -35,10 +35,10 @@ public:
         std::cout << frame.vectors() << std::endl;
         Vector3d product = Vector3d(1, 1, 1) * frame;
         std::cout << product << std::endl;
-        TS_ASSERT((product - Vector3d(1, 1 + sqrt(2.0), 2)).isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(product, Vector3d(1, 1 + sqrt(2.0), 2)));
         product = Vector3d(1, 1, 1) * frame.linear();
         std::cout << product.transpose() << std::endl;
-        TS_ASSERT((product - Vector3d(0, sqrt(2.0), 1)).isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(product, Vector3d(0, sqrt(2.0), 1)));
     }
     
     void testQuotient() {
@@ -47,45 +47,40 @@ public:
         Frame3d frame(Vector3d(1, 1, 1), vectors);
         Vector3d quotient = Vector3d(1, 0, 0) / frame;
         std::cout << quotient.transpose() << std::endl;
-        Vector3d quotient_error = quotient - Vector3d(-1 / sqrt(2.0), -1 / sqrt(2.0), -1);
-        TS_ASSERT(quotient_error.isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(quotient, Vector3d(-1 / sqrt(2.0), -1 / sqrt(2.0), -1)));
         Vector3d linear_quotient = Vector3d(1, 0, 0) / frame.linear();
         std::cout << linear_quotient.transpose() << std::endl;
-        Vector3d linear_quotient_error =
-            linear_quotient - Vector3d(1 / sqrt(2.0), -1 / sqrt(2.0), 0);
-        TS_ASSERT(linear_quotient_error.isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(linear_quotient, Vector3d(1 / sqrt(2.0), -1 / sqrt(2.0), 0)));
     }
     
     void testDatumTransformation() {
         Frame3d global;
         Frame3d frame = global.translatedBy(Vector3d(1, 1, 1)).rotatedBy(-M_PI / 2, global.xAxis());
-        TS_ASSERT((Vector3d(1, 2, 3) * frame - Vector3d(2, 4, -3)).isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(Vector3d(1, 2, 3) * frame, Vector3d(2, 4, -3)));
     }
     
     void testDatumComposition() {
         Frame3d frame(Vector3d::UnitX(), Matrix3d::Identity());
         frame = frame.rotatedBy(-M_PI / 4, frame.yAxis());
         Frame3d product = frame * frame;
+        Vector3d expected_product_origin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
         Frame3d quotient = frame / frame;
-        Vector3d origin_error = product.origin() - Vector3d(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
-        TS_ASSERT(origin_error.isZero(Tolerance::roundoff()));
-        TS_ASSERT((product.xVector() - Vector3d(0, 0, 1)).isZero(Tolerance::roundoff()));
-        TS_ASSERT((product.yVector() - Vector3d(0, 1, 0)).isZero(Tolerance::roundoff()));
-        TS_ASSERT((product.zVector() - Vector3d(-1, 0, 0)).isZero(Tolerance::roundoff()));
-        TS_ASSERT(quotient.origin().isZero(Tolerance::roundoff()));
-        TS_ASSERT(quotient.vectors().isIdentity(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(product.origin(), expected_product_origin));
+        TS_ASSERT(Comparison::equal(product.xVector(), Vector3d(0, 0, 1)));
+        TS_ASSERT(Comparison::equal(product.yVector(), Vector3d(0, 1, 0)));
+        TS_ASSERT(Comparison::equal(product.zVector(), Vector3d(-1, 0, 0)));
+        TS_ASSERT(Comparison::zero(quotient.origin()));
+        TS_ASSERT(quotient.vectors().isIdentity(Comparison::tolerance()));
     }
     
     void test2D() {
         Frame2d frame(Vector2d::UnitX(), Vector2d(1, 1));
         TS_ASSERT_EQUALS(frame.vectors().rows(), 2);
         TS_ASSERT_EQUALS(frame.vectors().cols(), 2);
-        TS_ASSERT((frame.xVector() - Vector2d(1, 1).normalized()).isZero(Tolerance::roundoff()));
-        TS_ASSERT((frame.yVector() - Vector2d(-1, 1).normalized()).isZero(Tolerance::roundoff()));
-        Vector2d product_error = Vector2d(2, 2) * frame - Vector2d(1, 2 * sqrt(2.0));
-        TS_ASSERT(product_error.isZero(Tolerance::roundoff()));
-        Vector2d quotient_error = Vector2d(2, 1) / frame - Vector2d(sqrt(2.0), 0);
-        TS_ASSERT(quotient_error.isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(frame.xVector(), Vector2d(1, 1).normalized()));
+        TS_ASSERT(Comparison::equal(frame.yVector(), Vector2d(-1, 1).normalized()));
+        TS_ASSERT(Comparison::equal(Vector2d(2, 2) * frame, Vector2d(1, 2 * sqrt(2.0))));
+        TS_ASSERT(Comparison::equal(Vector2d(2, 1) / frame, Vector2d(sqrt(2.0), 0)));
     }
     
     void testAccuracy() {
@@ -125,9 +120,7 @@ public:
             Vector3d(1, 2, 3),
             Matrix3d::Ones().triangularView<Upper>()
         );
-        Vector3d product_error = Vector3d(1, 1, 1) * coordinate_system - Vector3d(4, 4, 4);
-        TS_ASSERT(product_error.isZero(Tolerance::roundoff()));
-        Vector3d quotient_error = Vector3d(4, 4, 4) / coordinate_system - Vector3d(1, 1, 1);
-        TS_ASSERT(quotient_error.isZero(Tolerance::roundoff()));
+        TS_ASSERT(Comparison::equal(Vector3d(1, 1, 1) * coordinate_system, Vector3d(4, 4, 4)));
+        TS_ASSERT(Comparison::equal(Vector3d(4, 4, 4) / coordinate_system, Vector3d(1, 1, 1)));
     }
 };

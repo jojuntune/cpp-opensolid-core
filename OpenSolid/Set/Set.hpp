@@ -32,7 +32,7 @@
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Interval/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include "SetNode.hpp"
@@ -399,7 +399,7 @@ namespace OpenSolid
     inline Set<Type, BoundsFunctionType> Set<Type, BoundsFunctionType>::overlapping(
         const typename Set<Type, BoundsFunctionType>::Bounds& bounds
     ) const {
-        double tolerance = Tolerance::roundoff();
+        double tolerance = Comparison::tolerance();
         return filtered(
             [&bounds, tolerance] (const Bounds& subset_bounds) {
                 return bounds.overlap(subset_bounds, tolerance);

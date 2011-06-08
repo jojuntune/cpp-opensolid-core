@@ -23,7 +23,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include "Script.hpp"
 
@@ -116,7 +116,7 @@ public:
         script.set("a", 4.0);
         script.set("b", 5.0);
         Vector3d result = script.get<MatrixXd>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
-        TS_ASSERT_LESS_THAN((result - Vector3d(5, 7, 3)).norm(), Tolerance::roundoff());
+        TS_ASSERT(Comparison::equal(result,  Vector3d(5, 7, 3)));
     }
     
     void testMatrixXI() {

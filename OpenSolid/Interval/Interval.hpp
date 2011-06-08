@@ -33,6 +33,8 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/Common/Comparison.hpp>
+
 namespace OpenSolid
 {
     using std::min;
@@ -151,10 +153,43 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    namespace Comparison
+    {
+        inline bool zero(const Interval& argument) {
+            return zero(argument.lower()) && zero(argument.upper());
+        }
+    
+        inline bool equal(const Interval& first_argument, const Interval& second_argument) {
+            return equal(first_argument.lower(), second_argument.lower()) &&
+                equal(first_argument.upper(), second_argument.upper());
+        }
+    
+        inline bool equal(const Interval& first_argument, double second_argument) {
+            return equal(first_argument.lower(), second_argument) &&
+                equal(first_argument.upper(), second_argument);
+        }
+    
+        inline bool lesser(const Interval& first_argument, const Interval& second_argument) {
+            return lesser(first_argument.upper(), second_argument.lower());
+        }
+    
+        inline bool lesser(const Interval& first_argument, double second_argument) {
+            return lesser(first_argument.upper(), second_argument);
+        }
+    
+        inline bool greater(const Interval& first_argument, const Interval& second_argument) {
+            return greater(first_argument.lower(), second_argument.upper());
+        }
+    
+        inline bool greater(const Interval& first_argument, double second_argument) {
+            return greater(first_argument.lower(), second_argument);
+        }
+    }
+    
     inline Interval Traits<int>::bounds(int argument) {return Interval(argument);}
     
     inline Interval Traits<double>::bounds(double argument) {return Interval(argument);}
-
+    
     inline const Interval& Traits<Interval>::bounds(const Interval& argument) {return argument;}
     
     inline std::size_t Traits<Interval>::hash(const Interval& argument) {

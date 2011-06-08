@@ -99,7 +99,7 @@
 
     SET(COMMON_SOURCES Common/Error.cpp)
 
-    SET(INTERVAL_SOURCES Interval/Interval.cpp Interval/Tolerance.cpp)
+    SET(INTERVAL_SOURCES Interval/Interval.cpp)
     
     SET(DATUM_SOURCES Datum/Datum.cpp)
     
@@ -153,7 +153,6 @@
         Python/check.cpp
         Python/bindError.cpp
         Python/bindInterval.cpp
-        Python/bindTolerance.cpp
         Python/bindMatrix.cpp
         Python/bindSpecificMatrixSizes.cpp
         Python/bindFunction.cpp

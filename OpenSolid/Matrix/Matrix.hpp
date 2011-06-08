@@ -24,6 +24,7 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/Traits.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include "Eigen.hpp"
 
 namespace Eigen
@@ -89,6 +90,18 @@ namespace OpenSolid
             
         static std::size_t hash(const Matrix<ScalarType, rows_, cols_>& argument);
     };
+    
+    namespace Comparison
+    {
+        template <class DerivedType>
+        bool zero(const EigenBase<DerivedType>& argument);
+        
+        template <class FirstDerivedType, class SecondDerivedType>
+        bool equal(
+            const EigenBase<FirstDerivedType>& first_argument,
+            const EigenBase<SecondDerivedType>& second_argument
+        );
+    }
 }
 
 ////////// Implementation //////////
@@ -449,7 +462,7 @@ namespace Eigen
 }
 
 namespace OpenSolid
-{
+{   
     template <class ScalarType, int rows_, int cols_>
     inline auto Traits<Matrix<ScalarType, rows_, cols_>>::bounds(
         const Matrix<ScalarType, rows_, cols_>& argument
@@ -477,6 +490,47 @@ namespace OpenSolid
         HashVisitor<ScalarType, rows_, cols_> visitor;
         argument.visit(visitor);
         return visitor.result;
+    }
+    
+    namespace Comparison
+    {
+        template <class ScalarType>
+        struct ScalarZero
+        {
+            typedef bool result_type;
+
+            inline bool operator()(ScalarType argument) const {return zero(argument);}
+        };
+
+        template <class DerivedType>
+        inline bool zero(const EigenBase<DerivedType>& argument) {
+            return argument.derived().unaryExpr(ScalarZero<typename DerivedType::Scalar>()).all();
+        }
+
+        template <class FirstScalarType, class SecondScalarType>
+        struct ScalarEqual
+        {
+            typedef bool result_type;
+
+            inline bool operator()(
+                FirstScalarType first_argument,
+                SecondScalarType second_argument
+            ) const {return equal(first_argument, second_argument);}
+        };
+        
+        template <class FirstDerivedType, class SecondDerivedType>
+        inline bool equal(
+            const EigenBase<FirstDerivedType>& first_argument,
+            const EigenBase<SecondDerivedType>& second_argument
+        ) {
+            return first_argument.derived().binaryExpr(
+                second_argument.derived(),
+                ScalarEqual<
+                    typename FirstDerivedType::Scalar,
+                    typename SecondDerivedType::Scalar
+                >()
+            ).all();
+        }
     }
 }
 

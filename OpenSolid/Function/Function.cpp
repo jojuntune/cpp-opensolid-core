@@ -175,23 +175,21 @@ namespace OpenSolid
         double derivative_value = derivatives[order + 1](x).scalar();
         Interval derivative_bounds = derivatives[order + 1](domain_interval).scalar();
         Interval convergence_ratio = abs(1 - derivative_bounds / derivative_value);
-        if (convergence_ratio.upper() < 1 - Tolerance::roundoff()) {
+        if (Comparison::lesser(convergence_ratio, 1.0)) {
             double last_y = y;
             x = x - y / derivative_value;
             y = derivatives[order](x).scalar();
             while (abs(y) > 0 && abs(y) < abs(last_y)) {
                 double new_derivative_value = derivatives[order + 1](x).scalar();
                 convergence_ratio = abs(1 - derivative_bounds / new_derivative_value);
-                if (convergence_ratio.upper() < 1 - Tolerance::roundoff()) {
+                if (Comparison::lesser(convergence_ratio, 1.0)) {
                     derivative_value = new_derivative_value;
                 }
                 last_y = y;
                 x = x - y / derivative_value;
                 y = derivatives[order](x).scalar();
             }
-            while (order > 0 && abs(derivatives[order - 1](x).scalar()) < Tolerance::roundoff()) {
-                --order;
-            }
+            while (order > 0 && Comparison::zero(derivatives[order - 1](x).scalar())) {--order;}
             return x;
         } else {
             if ((y > 0) == (derivative_value > 0)) {
@@ -225,7 +223,6 @@ namespace OpenSolid
     
     RowVectorXd Function::zeros(const Interval& domain) const {
         int order = 4;
-        double tolerance = Tolerance::roundoff();
         std::vector<Function> derivatives(order + 1);
         derivatives[0] = *this;
         RowVectorXd derivative_values(order);
@@ -233,7 +230,7 @@ namespace OpenSolid
             derivatives[i] = derivatives[i - 1].derivative();
             derivative_values(i - 1) = derivatives[i](domain.median()).scalar();
         }
-        if (derivative_values.isZero(tolerance)) {return RowVectorXd();}
+        if (Comparison::zero(derivative_values)) {return RowVectorXd();}
         RowVectorXI domain_intervals(1);
         domain_intervals(0) = domain;
         std::vector<double> results;
@@ -247,7 +244,7 @@ namespace OpenSolid
             for (int i = 0; i < domain_intervals.size(); ++i) {
                 bool bisection_needed = true;
                 for (int j = 0; j <= order; ++j) {
-                    if (bound_norms(j, i).lower() > tolerance) {
+                    if (Comparison::greater(bound_norms(j, i), 0.0)) {
                         bisection_needed = false;
                         if (j > 0) {getZeros(derivatives, domain_intervals[i], j - 1, results);}
                         break;
@@ -276,7 +273,7 @@ namespace OpenSolid
             std::sort(results.begin(), results.end());
             int index = 0;
             for (unsigned i = 1; i < results.size(); ++i) {
-                if (results[i] - results[index] > tolerance) {
+                if (Comparison::greater(results[i], results[index])) {
                     results[++index] = results[i];
                 }
             }
@@ -349,18 +346,17 @@ namespace OpenSolid
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {
-        double tolerance = Tolerance::roundoff();
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
             return first_operand.as<ConstantFunction>().value() +
                 second_operand.as<ConstantFunction>().value();
         } else if (
             first_operand.isA<ConstantFunction>() &&
-            first_operand.as<ConstantFunction>().value().isZero(tolerance)
+            Comparison::zero(first_operand.as<ConstantFunction>().value())
         ) {
             return second_operand;
         } else if (
             second_operand.isA<ConstantFunction>() &&
-            second_operand.as<ConstantFunction>().value().isZero(tolerance)
+            Comparison::zero(second_operand.as<ConstantFunction>().value())
         ) {
             return first_operand;
         } else {
@@ -369,18 +365,17 @@ namespace OpenSolid
     }
     
     Function operator-(const Function& first_operand, const Function& second_operand) {
-        double tolerance = Tolerance::roundoff();
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
             return first_operand.as<ConstantFunction>().value() -
                 second_operand.as<ConstantFunction>().value();
         } else if (
             first_operand.isA<ConstantFunction>() &&
-            first_operand.as<ConstantFunction>().value().isZero(tolerance)
+            Comparison::zero(first_operand.as<ConstantFunction>().value())
         ) {
             return -second_operand;
         } else if (
             second_operand.isA<ConstantFunction>() &&
-            second_operand.as<ConstantFunction>().value().isZero(tolerance)
+            Comparison::zero(second_operand.as<ConstantFunction>().value())
         ) {
             return first_operand;
         } else {
@@ -389,7 +384,6 @@ namespace OpenSolid
     }
     
     Function operator*(const Function& first_operand, const Function& second_operand) {
-        double tolerance = Tolerance::roundoff();
         Function multiplicand;
         Function multiplier;
         if (second_operand.dimensions() == 1) {
@@ -404,16 +398,16 @@ namespace OpenSolid
                 multiplier.as<ConstantFunction>().value().scalar();
         } else if (
             multiplicand.isA<ConstantFunction>() &&
-            multiplicand.as<ConstantFunction>().value().isZero(tolerance)
+            Comparison::zero(multiplicand.as<ConstantFunction>().value())
         ) {
             return multiplicand;
         } else if (multiplier.isA<ConstantFunction>()) {
             double multiplier_value = multiplier.as<ConstantFunction>().value().scalar();
-            if (abs(multiplier_value) < tolerance) {
+            if (Comparison::zero(multiplier_value)) {
                 return VectorXd::Zero(multiplicand.dimensions());
-            } else if (abs(multiplier_value - 1) < tolerance) {
+            } else if (Comparison::zero(multiplier_value - 1)) {
                 return multiplicand;
-            } else if (abs(multiplier_value + 1) < tolerance) {
+            } else if (Comparison::zero(multiplier_value + 1)) {
                 return -multiplicand;
             } else {
                 return new ProductFunction(multiplicand, multiplier);
@@ -424,20 +418,19 @@ namespace OpenSolid
     }
     
     Function operator/(const Function& first_operand, const Function& second_operand) {
-        double tolerance = Tolerance::roundoff();
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
             return first_operand.as<ConstantFunction>().value() /
                 second_operand.as<ConstantFunction>().value().scalar();
         } else if (
             first_operand.isA<ConstantFunction>() &&
-            first_operand.as<ConstantFunction>().value().isZero(tolerance)
+            Comparison::zero(first_operand.as<ConstantFunction>().value())
         ) {
             return first_operand;
         } else if (second_operand.isA<ConstantFunction>()) {
             double second_value = second_operand.as<ConstantFunction>().value().scalar();
-            if (abs(second_value - 1) < tolerance) {
+            if (Comparison::zero(second_value - 1)) {
                 return first_operand;
-            } else if (abs(second_value + 1) < tolerance) {
+            } else if (Comparison::zero(second_value + 1)) {
                 return -first_operand;
             } else {
                 return new ProductFunction(first_operand, 1 / second_value);

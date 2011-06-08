@@ -24,7 +24,6 @@
 #include <boost/python/manage_new_object.hpp>
 #include <boost/python/raw_function.hpp>
 
-#include <OpenSolid/Interval/Tolerance.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 #include "check.hpp"

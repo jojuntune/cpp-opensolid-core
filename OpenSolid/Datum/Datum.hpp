@@ -25,7 +25,7 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Interval/Tolerance.hpp>
+#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 #include "Traits.hpp"
@@ -255,7 +255,7 @@ namespace OpenSolid
         } else {
             _vectors.resize(origin.size(), vectors.cols());
             _vectors.leftCols(vectors.cols()) = vectors.derived();
-            _normalized = _vectors.isUnitary(Tolerance::roundoff());
+            _normalized = _vectors.isUnitary(Comparison::tolerance());
         }
     }
     

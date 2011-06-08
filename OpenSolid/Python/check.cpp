@@ -23,7 +23,7 @@
 namespace OpenSolid
 {
     void checkNonZeroValue(double value, const std::string& caller) {
-        if (abs(value) < Tolerance::roundoff()) {
+        if (Comparison::zero(value)) {
             Error error("NonZeroValue", caller);
             error.set("value", value);
             throw error;

@@ -33,7 +33,7 @@ using namespace OpenSolid;
 
 template <class Type, class BoundsType>
 void testSet(const SetNode<Type, BoundsType>* node) {
-    double tolerance = Tolerance::roundoff();
+    double tolerance = Comparison::tolerance();
     if (!node) {
         return;
     } else if (node->object()) {

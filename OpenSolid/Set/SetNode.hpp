@@ -24,6 +24,7 @@
 #include <new>
 #include <vector>
 
+#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Interval/Interval.hpp>
 
 namespace OpenSolid
@@ -394,7 +395,7 @@ namespace OpenSolid
         const Type& argument,
         const BoundsType& argument_bounds
     ) {
-        double tolerance = Tolerance::roundoff();
+        double tolerance = Comparison::tolerance();
         if (!_bounds.overlap(argument_bounds, tolerance)) {
             return this;
         } else if (_object) {

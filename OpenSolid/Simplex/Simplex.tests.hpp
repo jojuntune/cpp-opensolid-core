@@ -27,10 +27,6 @@ using namespace OpenSolid;
 class SimplexTestSuite : public CxxTest::TestSuite
 {
 public:
-    double roundoff;
-    
-    void setUp() {roundoff = Tolerance::roundoff();}
-    
     void testEdges() {
         Triangle3d triangle(Vector3d::Zero(), Vector3d(1, 0, 1), Vector3d(0, 1, 1));
         std::cout << "EDGES" << std::endl;
@@ -57,21 +53,26 @@ public:
     void testDatumQuotient() {
         Triangle3d triangle3d(Vector3d(1, 1, 1), Vector3d(3, 1, 2), Vector3d(2, 2, 4));
         Triangle2d xy_projection = triangle3d / Frame3d().xyPlane();
-        TS_ASSERT((xy_projection.vertex(0) - Vector2d(1, 1)).isZero(roundoff));
-        TS_ASSERT((xy_projection.vertex(1) - Vector2d(3, 1)).isZero(roundoff));
-        TS_ASSERT((xy_projection.vertex(2) - Vector2d(2, 2)).isZero(roundoff));
+        
+        TS_ASSERT(Comparison::equal(xy_projection.vertex(0), Vector2d(1, 1)));
+        TS_ASSERT(Comparison::equal(xy_projection.vertex(1), Vector2d(3, 1)));
+        TS_ASSERT(Comparison::equal(xy_projection.vertex(2), Vector2d(2, 2)));
+        
         double xy_area = xy_projection.area();
         TS_ASSERT(xy_area > 0.0);
         Triangle2d yz_projection = triangle3d / Frame3d().yzPlane();
-        TS_ASSERT((yz_projection.vertex(0) - Vector2d(1, 1)).isZero(roundoff));
-        TS_ASSERT((yz_projection.vertex(1) - Vector2d(1, 2)).isZero(roundoff));
-        TS_ASSERT((yz_projection.vertex(2) - Vector2d(2, 4)).isZero(roundoff));
+        
+        TS_ASSERT(Comparison::equal(yz_projection.vertex(0), Vector2d(1, 1)));
+        TS_ASSERT(Comparison::equal(yz_projection.vertex(1), Vector2d(1, 2)));
+        TS_ASSERT(Comparison::equal(yz_projection.vertex(2), Vector2d(2, 4)));
+        
         double yz_area = yz_projection.area();
         TS_ASSERT(yz_area < 0.0);
         double xz_area = (triangle3d / Frame3d().xzPlane()).area();
         double area_from_components =
             sqrt(xy_area * xy_area + yz_area * yz_area + xz_area * xz_area);
-        TS_ASSERT_DELTA(triangle3d.area(), area_from_components, roundoff);
+            
+        TS_ASSERT(Comparison::equal(triangle3d.area(), area_from_components));
     }
     
     void testVolumes() {
@@ -81,9 +82,9 @@ public:
             Vector3d(1, 2, 1),
             Vector3d(1, 1, 2)
         );
-        TS_ASSERT_DELTA(tetrahedron.volume(), 1.0 / 6.0, roundoff);
-        TS_ASSERT_DELTA(tetrahedron.face(1).area(), 0.5, roundoff);
-        TS_ASSERT_DELTA(tetrahedron.edge(1, 3).length(), sqrt(2.0), roundoff);
+        TS_ASSERT(Comparison::equal(tetrahedron.volume(), 1.0 / 6.0));
+        TS_ASSERT(Comparison::equal(tetrahedron.face(1).area(), 0.5));
+        TS_ASSERT(Comparison::equal(tetrahedron.edge(1, 3).length(), sqrt(2.0)));
     }
     
     void testCentroid() {
@@ -93,17 +94,17 @@ public:
             Vector3d(1, 2, 1),
             Vector3d(1, 1, 2)
         );
-        TS_ASSERT((tetrahedron.centroid() - Vector3d::Constant(1.25)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(tetrahedron.centroid(), Vector3d::Constant(1.25)));
         Triangle2d triangle(Vector2d(1, 1), Vector2d(2, 2), Vector2d(1, 3));
-        TS_ASSERT((triangle.centroid() - Vector2d(4.0 / 3.0, 2)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(triangle.centroid(), Vector2d(4.0 / 3.0, 2)));
     }
     
     void testNormal() {
         LineSegment2d line_segment(Vector2d(1, 1), Vector2d(3, 2));
-        TS_ASSERT((line_segment.normal() - Vector2d(-1, 2).normalized()).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(line_segment.normal(), Vector2d(-1, 2).normalized()));
         Triangle3d triangle(Vector3d(1, 1, 1), Vector3d(3, 1, 2), Vector3d(2, 2, 4));
         Vector3d expected_normal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
-        TS_ASSERT((triangle.normal() - expected_normal).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(triangle.normal(), expected_normal));
     }
     
     void testCopyingAndEquality() {
@@ -124,23 +125,23 @@ public:
         Triangle3d triangle(Vector3d::Zero(), Vector3d(2, 0, 0), Vector3d(1, 2, 0));
         CoordinateSystem<3, 2> coordinate_system = triangle.coordinateSystem();
         Vector3d product = Vector2d(0.5, 0.5) * coordinate_system;
-        TS_ASSERT((product - Vector3d(1.5, 1, 0)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(product, Vector3d(1.5, 1, 0)));
         Vector2d quotient = Vector3d(1, 0, 0) / coordinate_system;
-        TS_ASSERT((quotient - Vector2d(0.5, 0)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(quotient, Vector2d(0.5, 0)));
         quotient = Vector3d(3, 2, 0) / coordinate_system;
-        TS_ASSERT((quotient - Vector2d(1, 1)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(quotient, Vector2d(1, 1)));
         Vector3d projection = (Vector3d(3, 4, 5) / coordinate_system) * coordinate_system;
-        TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(projection, Vector3d(3, 4, 0)));
     }
     
     void testLineSegment1d() {
         LineSegment3d segment3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
         LineSegment1d quotient = segment3d / Frame3d().yAxis();
         LineSegment1d segment1d(2, 5);
-        TS_ASSERT((quotient.vertices() - segment1d.vertices()).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(quotient.vertices(), segment1d.vertices()));
         LineSegment3d product =
             LineSegment1d(1.0 / 3.0, 2.0 / 3.0) * segment3d.coordinateSystem();
-        TS_ASSERT((product.vertex(0) - Vector3d(2, 3, 4)).isZero(roundoff));
-        TS_ASSERT((product.vertex(1) - Vector3d(3, 4, 5)).isZero(roundoff));
+        TS_ASSERT(Comparison::equal(product.vertex(0), Vector3d(2, 3, 4)));
+        TS_ASSERT(Comparison::equal(product.vertex(1), Vector3d(3, 4, 5)));
     }
 };

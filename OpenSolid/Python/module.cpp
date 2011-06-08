@@ -30,7 +30,6 @@ namespace OpenSolid
     void bindInterval();
     void bindMatrix();
     void bindSpecificMatrixSizes();
-    void bindTolerance();
     void bindFunction();
 
     BOOST_PYTHON_MODULE(OpenSolidPython) {
@@ -38,7 +37,6 @@ namespace OpenSolid
         bindInterval();
         bindMatrix();
         bindSpecificMatrixSizes();
-        bindTolerance();
         bindFunction();
     }
 }
