@@ -45,25 +45,25 @@ namespace OpenSolid
         return extract<std::string>(str("").join(strings));
     }
     
-    void Script::_throw() {
+    Error Script::error() {
         PyObject* type;
         PyObject* value;
         PyObject* traceback;
         PyErr_Fetch(&type, &value, &traceback);
-        Error error;
+        Error result;
         if (PyErr_GivenExceptionMatches(type, error_class_ptr)) {
-            error = extract<Error>(wrap(value));
+            result = extract<Error>(wrap(value));
         } else if (PyErr_GivenExceptionMatches(type, PyExc_SyntaxError)) {
-            error = Error("ValidPythonSyntax", __func__);
+            result = Error("ValidPythonSyntax", __func__);
         } else {
-            error = Error("NoPythonExceptions", __func__);
+            result = Error("NoPythonExceptions", __func__);
         }
         if (traceback) {
-            error.set("traceback", formattedTraceback(wrap(type), wrap(value), wrap(traceback)));
+            result.set("traceback", formattedTraceback(wrap(type), wrap(value), wrap(traceback)));
         }
         PyErr_Restore(type, value, traceback);
         PyErr_Clear();
-        throw error;
+        return result;
     }
     
     object Script::_get(const std::string& argument) {
@@ -81,28 +81,40 @@ namespace OpenSolid
         try {
             return eval(str(last_line), _environment, _environment);
         } catch (const error_already_set&) {
-            _throw();
-            // Never reached - avoid compiler warning about not returning a value
-            return object();
+            throw error();
         }
     }
     
-    extern "C" OPENSOLID_PYTHON_EXPORT void initOpenSolidPython();
+    OPENSOLID_PYTHON_EXPORT void bindAll();
 
-    Script::Script() {
+    struct OpenSolidModule
+    {
+    };
+
+    object Script::main() {
+        static object result;
         if (!Py_IsInitialized()) {
             Py_Initialize();
-            initOpenSolidPython();
+            result = import("__main__");
+            scope global(result);
+            bindAll();
+            class_<OpenSolidModule>("OpenSolidModule");
         }
-        _environment = dict(import("__main__").attr("__dict__"));
-        exec("from OpenSolidPython import *", _environment, _environment);
+        return result;
+    }
+
+    Script::Script() {
+        _environment = dict(main().attr("__dict__"));
+        _module = eval("OpenSolidModule()", _environment, _environment);
+        _module.attr("__dict__") = _environment;
+        _environment["OpenSolid"] = _module;
     }
     
     Script& Script::run(const std::string& argument) {
         try {
             exec(str(argument), _environment, _environment);
         } catch (const error_already_set&) {
-            _throw();
+            throw error();
         }
         return *this;
     }

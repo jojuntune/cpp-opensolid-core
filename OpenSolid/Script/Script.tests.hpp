@@ -37,6 +37,37 @@ struct MatrixDoubler
     }
 };
 
+class CustomClass
+{
+private:
+    double _value;
+    Function _function;
+    Vector3d _vector;
+public:
+    CustomClass() :
+        _value(3), _function(Function::Parameter(1, 0) * Vector3d(1, 1, 1)), _vector(1, 2, 3) {}
+        
+    void setValue(double value) {_value = value;}
+    double value() const {return _value;}
+    
+    void setFunction(const Function& function) {_function = function;}
+    Function function() const {return _function;}
+    
+    void setVector(const MatrixXd& vector) {_vector = vector;}
+    MatrixXd vector() const {return _vector;}
+};
+
+void bindCustomClass() {
+    class_<CustomClass>("CustomClass")
+        .def(init<>())
+        .def("setValue", &CustomClass::setValue)
+        .def("value", &CustomClass::value)
+        .def("setFunction", &CustomClass::setFunction)
+        .def("function", &CustomClass::function)
+        .def("setVector", &CustomClass::setVector)
+        .def("vector", &CustomClass::vector);
+}
+
 class ScriptingTestSuite : public CxxTest::TestSuite
 {
 public:
@@ -304,6 +335,18 @@ public:
         TS_ASSERT_THROWS(script2.run("twice(Vector3d(1, 2, 3))"), Error);
     }
     
+    void testCustomClass() {
+        Script script1;
+        Script script2;
+        script1.extend(bindCustomClass);
+        script1.run("a = CustomClass()");
+        script1.run("a.setValue(10)");
+        TS_ASSERT_EQUALS(script1.get<double>("a.value()"), 10.0);
+        TS_ASSERT(script1.get<MatrixXd>("a.function()(3.0)").isApprox(Vector3d(3, 3, 3)));
+        TS_ASSERT_EQUALS(script1.get<MatrixXd>("a.vector()"), Vector3d(1, 2, 3));
+        TS_ASSERT_THROWS(script2.run("b = CustomClass()"), Error);
+    }
+    
     void testTranspose() {
         Script script;
         MatrixXd a = script.get<MatrixXd>("Vector3d(1, 2, 3).transpose()");
@@ -347,5 +390,37 @@ public:
         TS_ASSERT(script.get<bool>("a1 != 2 * b1"));
         TS_ASSERT(script.get<bool>("b1 == a1"));
         TS_ASSERT(script.get<bool>("b1 != 2 * a1"));
+    }
+
+    void testOverloading() {
+        Script script;
+        script.set("f1", 3 * Function::Parameter(1, 0));
+        Function f2 = Vector3d(2, 0, 0) * Function::Parameter(2, 0) +
+            Vector3d(0, 0.5, 0) * Function::Parameter(2, 1);
+        script.set("f2", f2);
+        TS_ASSERT(Comparison::equal(script.get<double>("f1(2).scalar()"), 6.0));
+        TS_ASSERT(
+            Comparison::equal(script.get<Interval>("f1(Interval(2, 3)).scalar()"), Interval(6, 9))
+        );
+        TS_ASSERT(
+            Comparison::equal(script.get<MatrixXd>("f2(Vector2d(1, 1))"), Vector3d(2, 0.5, 0))
+        );
+        TS_ASSERT(
+            Comparison::equal(
+                script.get<MatrixXI>("f2(Vector2I(Interval(1, 2), Interval(2, 3)))"),
+                Vector3I(Interval(2, 4), Interval(1, 1.5), 0.0)
+            )
+        );
+    }
+
+    void testExplicitModule() {
+        Script script;
+        script.run("f = OpenSolid.Function.Parameter(1, 0) * OpenSolid.Vector3d(1, 2, 3)");
+        TS_ASSERT(
+            Comparison::equal(
+                script.get<MatrixXI>("f(OpenSolid.Vector2I(OpenSolid.Interval(1, 2), 0))"),
+                Vector3I(Interval(1, 2), Interval(2, 4), Interval(3, 6))
+            )
+        );
     }
 };

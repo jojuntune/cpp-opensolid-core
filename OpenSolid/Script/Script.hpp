@@ -36,22 +36,31 @@ namespace OpenSolid
     {
     private:
         boost::python::object _environment;
+        boost::python::object _module;
         
-        OPENSOLID_SCRIPT_EXPORT void _throw();
+        OPENSOLID_SCRIPT_EXPORT Error error();
         OPENSOLID_SCRIPT_EXPORT boost::python::object _get(const std::string& argument);
+        
+        OPENSOLID_SCRIPT_EXPORT static boost::python::object main();
     public:
         OPENSOLID_SCRIPT_EXPORT Script();
 
+        OPENSOLID_SCRIPT_EXPORT Script& run(const std::string& argument);
+
         template <class Type>
         Script& set(const std::string& name, const Type& argument);
-
-        OPENSOLID_SCRIPT_EXPORT Script& run(const std::string& argument);
 
         template <class Type>
         Type get(const std::string& code);
         
         template <class FunctionType>
         Script& def(const char* name, FunctionType function);
+        
+        template <class BindFunctionType>
+        Script& extend(BindFunctionType bind_function);
+        
+        template <class Type>
+        static Type cast(boost::python::object argument);
     };
 }
 
@@ -60,27 +69,31 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    Script& Script::set(const std::string& name, const Type& argument) {
+    inline Script& Script::set(const std::string& name, const Type& argument) {
         _environment[name] = argument;
         return *this;
     }
     
     template <class Type>
-    Type cast(boost::python::object argument) {
-        checkCompatiblePythonType<Type>(argument, __func__);
-        return extract<Type>(argument);
+    inline Type Script::get(const std::string& code) {return cast<Type>(_get(code));}
+    
+    template <class FunctionType>
+    inline Script& Script::def(const char* name, FunctionType function) {
+       _environment[name] = boost::python::raw_function(function);
+        return *this;
+    }
+        
+    template <class BindFunctionType>
+    inline Script& Script::extend(BindFunctionType bind_function) {
+        scope local(_module);
+        bind_function();
+        return *this;
     }
     
     template <class Type>
-    inline Type Script::get(const std::string& code) {
-        boost::python::object result = _get(code);
-        return cast<Type>(_get(code));
-    }
-    
-    template <class FunctionType>
-    Script& Script::def(const char* name, FunctionType function) {
-        _environment[name] = boost::python::raw_function(function);
-        return *this;
+    inline Type Script::cast(boost::python::object argument) {
+        checkCompatiblePythonType<Type>(argument, __func__);
+        return boost::python::extract<Type>(argument);
     }
 }
 

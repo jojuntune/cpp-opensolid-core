@@ -31,12 +31,14 @@ namespace OpenSolid
     void bindMatrix();
     void bindSpecificMatrixSizes();
     void bindFunction();
-
-    BOOST_PYTHON_MODULE(OpenSolidPython) {
+    
+    OPENSOLID_PYTHON_EXPORT void bindAll() {
         bindError();
         bindInterval();
         bindMatrix();
         bindSpecificMatrixSizes();
         bindFunction();
     }
+
+    BOOST_PYTHON_MODULE(OpenSolidPython) {bindAll();}
 }
