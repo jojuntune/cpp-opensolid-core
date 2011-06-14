@@ -85,29 +85,27 @@ namespace OpenSolid
         }
     }
     
-    OPENSOLID_PYTHON_EXPORT void bindAll();
+    extern "C" OPENSOLID_PYTHON_EXPORT void initopensolid();
 
-    struct OpenSolidModule
+    struct Extensions
     {
     };
 
-    object Script::main() {
-        static object result;
+    Script::Script() {
+        static object main;
         if (!Py_IsInitialized()) {
             Py_Initialize();
-            result = import("__main__");
-            scope global(result);
-            bindAll();
-            class_<OpenSolidModule>("OpenSolidModule");
+            initopensolid();
+            main = import("__main__");
+            scope global(main);
+            class_<Extensions>("Extensions");
         }
-        return result;
-    }
-
-    Script::Script() {
-        _environment = dict(main().attr("__dict__"));
-        _module = eval("OpenSolidModule()", _environment, _environment);
-        _module.attr("__dict__") = _environment;
-        _environment["OpenSolid"] = _module;
+        _environment = dict(main.attr("__dict__"));
+        exec("import opensolid", _environment, _environment);
+        exec("from opensolid import *", _environment, _environment);
+        exec("extensions = Extensions()", _environment, _environment);
+        _extensions = _environment["extensions"];
+        _extensions.attr("__dict__") = _environment;
     }
     
     Script& Script::run(const std::string& argument) {

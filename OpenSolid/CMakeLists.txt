@@ -95,7 +95,7 @@
     
 ########## Compile libraries ##########
 
-    # OpenSolidCore
+    # OpenSolidCore library
 
     SET(COMMON_SOURCES Common/Error.cpp)
 
@@ -147,7 +147,7 @@
         ${DOMAIN_SOURCES}
     )
     
-    # OpenSolidPython
+    # Python extension module
     
     SET(PYTHON_SOURCES
         Python/check.cpp
@@ -159,24 +159,24 @@
         Python/module.cpp
     )
     
-    ADD_LIBRARY(OpenSolidPython SHARED ${PYTHON_SOURCES})
+    ADD_LIBRARY(opensolid SHARED ${PYTHON_SOURCES})
     
-    SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(opensolid PROPERTIES PREFIX "")
     
     IF(WIN32)
-        SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES SUFFIX ".pyd")
+        SET_TARGET_PROPERTIES(opensolid PROPERTIES SUFFIX ".pyd")
     ENDIF(WIN32)
     
-    TARGET_LINK_LIBRARIES(OpenSolidPython OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
-    # OpenSolidScript
+    # OpenSolidScript library
     
     ADD_LIBRARY(OpenSolidScript SHARED Script/Script.cpp)
     
     TARGET_LINK_LIBRARIES(
         OpenSolidScript
         OpenSolidCore
-        OpenSolidPython
+        opensolid
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARIES}
     )
@@ -210,7 +210,7 @@
     )
         
     INSTALL(
-        TARGETS OpenSolidCore OpenSolidPython OpenSolidScript
+        TARGETS OpenSolidCore opensolid OpenSolidScript
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib

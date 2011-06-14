@@ -28,7 +28,7 @@
         #define OPENSOLID_CORE_EXPORT __declspec( dllimport )
     #endif
 
-    #if defined(OpenSolidPython_EXPORTS)
+    #if defined(opensolid_EXPORTS)
         #define OPENSOLID_PYTHON_EXPORT __declspec( dllexport )
     #else
         #define OPENSOLID_PYTHON_EXPORT __declspec( dllimport )

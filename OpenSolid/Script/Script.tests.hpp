@@ -415,10 +415,14 @@ public:
 
     void testExplicitModule() {
         Script script;
-        script.run("f = OpenSolid.Function.Parameter(1, 0) * OpenSolid.Vector3d(1, 2, 3)");
+        TS_ASSERT_EQUALS(
+            script.get<std::string>("str(opensolid)"),
+            "<module 'opensolid' (built-in)>"
+        );
+        script.run("f = opensolid.Function.Parameter(1, 0) * opensolid.Vector3d(1, 2, 3)");
         TS_ASSERT(
             Comparison::equal(
-                script.get<MatrixXI>("f(OpenSolid.Vector2I(OpenSolid.Interval(1, 2), 0))"),
+                script.get<MatrixXI>("f(opensolid.Vector2I(opensolid.Interval(1, 2), 0))"),
                 Vector3I(Interval(1, 2), Interval(2, 4), Interval(3, 6))
             )
         );
