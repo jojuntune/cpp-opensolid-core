@@ -23,12 +23,30 @@
 
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/Common/Eigen.hpp>
 #include <OpenSolid/Common/Traits.hpp>
-#include <OpenSolid/Common/Comparison.hpp>
-#include "Eigen.hpp"
 
 namespace Eigen
 {
+    typedef Matrix<OpenSolid::Double, 2, 1> Vector2D;
+    typedef Matrix<OpenSolid::Double, 1, 2> RowVector2D;
+    typedef Matrix<OpenSolid::Double, 2, 2> Matrix2D;
+    typedef Matrix<OpenSolid::Double, 3, 1> Vector3D;
+    typedef Matrix<OpenSolid::Double, 1, 3> RowVector3D;
+    typedef Matrix<OpenSolid::Double, 3, 3> Matrix3D;
+    typedef Matrix<OpenSolid::Double, 4, 1> Vector4D;
+    typedef Matrix<OpenSolid::Double, 1, 4> RowVector4D;
+    typedef Matrix<OpenSolid::Double, 4, 4> Matrix4D;
+    typedef Matrix<OpenSolid::Double, Dynamic, 1> VectorXD;
+    typedef Matrix<OpenSolid::Double, 1, Dynamic> RowVectorXD;
+    typedef Matrix<OpenSolid::Double, Dynamic, Dynamic> MatrixXD;
+    typedef Matrix<OpenSolid::Double, 2, Dynamic> Matrix2XD;
+    typedef Matrix<OpenSolid::Double, Dynamic, 2> MatrixX2D;
+    typedef Matrix<OpenSolid::Double, 3, Dynamic> Matrix3XD;
+    typedef Matrix<OpenSolid::Double, Dynamic, 3> MatrixX3D;
+    typedef Matrix<OpenSolid::Double, 4, Dynamic> Matrix4XD;
+    typedef Matrix<OpenSolid::Double, Dynamic, 4> MatrixX4D;
+    
     typedef Matrix<OpenSolid::Interval, 2, 1> Vector2I;
     typedef Matrix<OpenSolid::Interval, 1, 2> RowVector2I;
     typedef Matrix<OpenSolid::Interval, 2, 2> Matrix2I;
@@ -67,11 +85,11 @@ namespace Eigen
     typedef Matrix<bool, 4, Dynamic> Matrix4Xb;
     typedef Matrix<bool, Dynamic, 4> MatrixX4b;
     
-    typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXd;
+    typedef Map<MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> MapXD;
     typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
     typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXb;
     
-    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcd;
+    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcD;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
 }
@@ -90,55 +108,12 @@ namespace OpenSolid
             
         static std::size_t hash(const Matrix<ScalarType, rows_, cols_>& argument);
     };
-    
-    namespace Comparison
-    {
-        template <class DerivedType>
-        bool zero(const EigenBase<DerivedType>& argument);
-        
-        template <class FirstDerivedType, class SecondDerivedType>
-        bool equal(
-            const EigenBase<FirstDerivedType>& first_argument,
-            const EigenBase<SecondDerivedType>& second_argument
-        );
-    }
 }
 
 ////////// Implementation //////////
 
 namespace Eigen
-{
-    namespace internal
-    {
-        inline const Interval& conj(const Interval& argument) {return argument;}
-    
-        inline const Interval& real(const Interval& argument) {return argument;}
-    
-        inline Interval imag(const Interval&) {return Interval(0.0);}
-    
-        inline Interval abs2(const Interval& argument) {return argument.squared();}
-    
-        inline int significant_decimals_default_impl<Interval, false>::run() {
-            return significant_decimals_default_impl<double, false>::run();
-        }
-    }
-    
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::epsilon() {
-        return OpenSolid::Interval(NumTraits<double>::epsilon());
-    }
-    
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::dummy_precision() {
-        return OpenSolid::Interval(NumTraits<double>::dummy_precision());
-    }
-    
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::lowest() {
-        return OpenSolid::Interval(NumTraits<double>::lowest());
-    }
-    
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::highest() {
-        return OpenSolid::Interval(NumTraits<double>::highest());
-    }
-    
+{    
     template <class MatrixType>
     inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
         return (*_matrix)(_index);

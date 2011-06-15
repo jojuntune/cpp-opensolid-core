@@ -18,26 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__TRAITS_HPP
-#define OPENSOLID__TRAITS_HPP
-
-#include <boost/functional/hash.hpp>
+#ifndef OPENSOLID__SCALARBASE_HPP
+#define OPENSOLID__SCALARBASE_HPP
 
 namespace OpenSolid
 {
-    template <class Type>
-    struct Traits;
-    
-    template <class Type>
-    std::size_t hash_value(const Type& argument);
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{    
-    template <class Type>
-    inline std::size_t hash_value(const Type& argument) {return Traits<Type>::hash(argument);}
+    template <class DerivedType>
+    class ScalarBase
+    {
+    public:
+        DerivedType& derived();
+        const DerivedType& derived() const;
+    };
 }
 
 #endif

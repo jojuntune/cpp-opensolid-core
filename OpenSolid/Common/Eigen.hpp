@@ -25,7 +25,8 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
-#include <OpenSolid/Interval/Interval.hpp>
+#include <OpenSolid/Scalar/Double.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
@@ -38,62 +39,7 @@
 #endif
 
 namespace Eigen
-{   
-    namespace internal
-    {
-        using OpenSolid::Interval;
-        using OpenSolid::abs;
-        using OpenSolid::sqrt;
-        using OpenSolid::sin;
-        using OpenSolid::cos;
-        using OpenSolid::tan;
-        using OpenSolid::asin;
-        using OpenSolid::acos;
-        using OpenSolid::atan;
-        using OpenSolid::atan2;
-        using OpenSolid::exp;
-        using OpenSolid::log;
-        using OpenSolid::pow;
-
-        const Interval& conj(const Interval& argument);
-        const Interval& real(const Interval& argument);
-        Interval imag(const Interval&);
-        Interval abs2(const Interval& argument);
-    
-        template <class ScalarType, bool is_integer_>
-        struct significant_decimals_default_impl;
-        
-        template <>
-        struct significant_decimals_default_impl<Interval, false>
-        {
-            static inline int run();
-        };
-    }
-    
-    template <class Type>
-    struct NumTraits;
-    
-    template <>
-    struct NumTraits<OpenSolid::Interval>
-    {
-        typedef OpenSolid::Interval Real;
-        typedef OpenSolid::Interval NonInteger;
-        typedef OpenSolid::Interval Nested;
-        
-        static const int IsComplex = 0;
-        static const int IsInteger = 0;
-        static const int ReadCost = 2;
-        static const int AddCost = 2;
-        static const int MulCost = 10;
-        static const int IsSigned = 1;
-        static const int RequireInitialization = 0;
-        
-        static OpenSolid::Interval epsilon();
-        static OpenSolid::Interval dummy_precision();
-        static OpenSolid::Interval lowest();
-        static OpenSolid::Interval highest();
-    };
-    
+{
     template <class MatrixType>
     class MatrixIterator;
     
@@ -270,94 +216,6 @@ namespace Eigen
         MatrixColIterator(const MatrixColIterator<MatrixType>& other);
         
         static typename MatrixType::ColXpr block(MatrixType& matrix, int index);
-    };
-    
-    struct LowerOperation
-    {
-        typedef double result_type;
-        
-        double operator()(const OpenSolid::Interval& argument) const;
-        double operator()(double argument) const;
-    };
-    
-    struct UpperOperation
-    {
-        typedef double result_type;
-        
-        double operator()(const OpenSolid::Interval& argument) const;
-        double operator()(double argument) const;
-    };
-    
-    struct MedianOperation
-    {
-        typedef double result_type;
-        
-        double operator()(const OpenSolid::Interval& argument) const;
-        double operator()(double argument) const;
-    };
-    
-    struct WidthOperation
-    {
-        typedef double result_type;
-        
-        double operator()(const OpenSolid::Interval& argument) const;
-        double operator()(double argument) const;
-    };
-    
-    struct OverlapOperation
-    {
-        typedef bool result_type;
-        
-        double tolerance;
-        
-        OverlapOperation(double tolerance_);
-        
-        bool operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
-        ) const;
-        
-        bool operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct ContainOperation
-    {
-        typedef bool result_type;
-        
-        double tolerance;
-        
-        ContainOperation(double tolerance_);
-        
-        bool operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
-        ) const;
-        
-        bool operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct HullOperation
-    {
-        typedef OpenSolid::Interval result_type;
-        
-        OpenSolid::Interval operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
-        ) const;
-        
-        OpenSolid::Interval operator()(double first_argument, double second_argument) const;
-    };
-    
-    struct IntersectionOperation
-    {
-        typedef OpenSolid::Interval result_type;
-        
-        OpenSolid::Interval operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
-        ) const;
-        
-        OpenSolid::Interval operator()(double first_argument, double second_argument) const;
     };
 }
 

@@ -26,19 +26,19 @@
 
 namespace OpenSolid
 {           
-    Interval sin(const Interval& argument) {return sin(argument.interval());}
+    Interval sin(Interval argument) {return sin(argument.interval());}
 
-    Interval cos(const Interval& argument) {return cos(argument.interval());}
+    Interval cos(Interval argument) {return cos(argument.interval());}
 
-    Interval tan(const Interval& argument) {return tan(argument.interval());}
+    Interval tan(Interval argument) {return tan(argument.interval());}
 
-    Interval asin(const Interval& argument) {return asin(argument.interval());}
+    Interval asin(Interval argument) {return asin(argument.interval());}
 
-    Interval acos(const Interval& argument) {return acos(argument.interval());}
+    Interval acos(Interval argument) {return acos(argument.interval());}
 
-    Interval atan(const Interval& argument) {return atan(argument.interval());}
+    Interval atan(Interval argument) {return atan(argument.interval());}
 
-    Interval atan2(const Interval& y, const Interval& x) {
+    Interval atan2(Interval y, Interval x) {
         if (x.lower() > 0.0) {
             return atan(y / x);
         } else if (y.lower() > 0.0) {
@@ -50,15 +50,15 @@ namespace OpenSolid
         }
     }
 
-    Interval exp(const Interval& argument) {return exp(argument.interval());}
+    Interval exp(Interval argument) {return exp(argument.interval());}
 
-    Interval log(const Interval& argument) {return log(argument.interval());}
+    Interval log(Interval argument) {return log(argument.interval());}
     
-    Interval pow(const Interval& base, const Interval& exponent) {
+    Interval pow(Interval base, Interval exponent) {
         return exp(log(base) * exponent);
     }
     
-    std::ostream& operator<<(std::ostream& stream, const Interval& argument) {
+    std::ostream& operator<<(std::ostream& stream, Interval argument) {
         if (argument.empty()) {
             stream << "[]";
         } else if (argument.singleton()) {
