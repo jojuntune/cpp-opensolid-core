@@ -40,12 +40,6 @@ namespace OpenSolid
     
     template <class MatrixType>
     int size(const MatrixType& argument) {return argument.size();}
-    
-    template <class MatrixType>
-    typename MatrixType::Scalar scalar(const MatrixType& argument) {
-        checkScalarValue(argument, __func__);
-        return argument.scalar();
-    }
         
     int positiveIndex(int index, int size) {
         checkComponentIndexInRange(index, size, __func__);
@@ -562,7 +556,6 @@ namespace OpenSolid
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)
             .def("size", &size<MatrixXd>)
-            .def("scalar", &scalar<MatrixXd>)
             .def("get", &getI<MatrixXd>)
             .def("get", &getS<MatrixXd>, return_value_policy<manage_new_object>())
             .def("get", &getII<MatrixXd>)
@@ -620,7 +613,6 @@ namespace OpenSolid
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
-            .def("scalar", &scalar<MatrixXI>)
             .def("get", &getI<MatrixXI>)
             .def("get", &getS<MatrixXI>, return_value_policy<manage_new_object>())
             .def("get", &getII<MatrixXI>)

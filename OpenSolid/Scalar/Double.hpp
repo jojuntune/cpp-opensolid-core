@@ -21,37 +21,80 @@
 #ifndef OPENSOLID__DOUBLE_HPP
 #define OPENSOLID__DOUBLE_HPP
 
+#include <iostream>
+
 #include "ScalarBase.hpp"
 
 namespace OpenSolid
 {
+    class Interval;
+    
     class Double : public ScalarBase<Double>
     {
     private:
         double _value;
     public:
+        static Double defaultPrecision() const;
+        
+        Double();
         Double(double value);
         
-        Double squared() const;
+        operator double() const;
         
-        bool overlap(Double value) const;
-        bool overlap(Double value, Double precision) const;
-        bool overlap(Interval other) const;
-        bool overlap(Interval other, Double precision) const;
-        bool contain(Double value) const;
-        bool contain(Double value, Double precision) const;
-        bool contain(Interval other) const;
-        bool contain(Interval other, Double precision) const;
+        bool operator==(Double other);
+        bool operator!=(Double other);
+        bool operator<(Double other);
+        bool operator>(Double other);
+        bool operator<=(Double other);
+        bool operator>=(Double other);
+        
+        bool isZero(Double precision = defaultPrecision()) const;
+        bool isEqual(Double other, Double precision = defaultPrecision()) const;
+        bool isEqual(Interval other, Double precision = defaultPrecision()) const;
+        bool isLessThan(Double other, Double precision = defaultPrecision()) const;
+        bool isLessThan(Interval other, Double precision = defaultPrecision()) const;
+        bool isGreaterThan(Double other, Double precision = defaultPrecision()) const;
+        bool isGreaterThan(Interval other, Double precision = defaultPrecision()) const;
+        
+        bool overlap(Double value, Double precision = defaultPrecision()) const;
+        bool overlap(Interval other, Double precision = defaultPrecision()) const;
+        bool contain(Double value, Double precision = defaultPrecision()) const;
+        bool contain(Interval other, Double precision = defaultPrecision()) const;
+        
+        Double& operator+=(Double other);
+        Double& operator-=(Double other);
+        Double& operator*=(Double other);
+        Double& operator/=(Double other);
+        
+        Double operator-() const;
+        Double operator+(Double other) const;
+        Double operator-(Double other) const;
+        Double operator*(Double other) const;
+        Double operator/(Double other) const;
+        
+        Double squared() const;
         
         Interval hull(Double value) const;
         Interval hull(Interval other) const;
         Interval intersection(Double value) const;
         Interval intersection(Interval other) const;
+    
+        friend Double min(Double first_argument, Double second_argument);
+        friend Double max(Double first_argument, Double second_argument);
+        friend Double abs(Double argument);
+        friend Double sqrt(Double argument);
+        friend Double sin(Double argument);
+        friend Double cos(Double argument);
+        friend Double tan(Double argument);
+        friend Double asin(Double argument);
+        friend Double acos(Double argument);
+        friend Double atan(Double argument);
+        friend Double atan2(Double first_argument, Double second_argument);
+        friend Double exp(Double argument);
+        friend Double log(Double argument);
+        friend Double pow(Double argument);
         
-        Double& operator+=(const Double& other);
-        Double& operator-=(const Double& other);
-        Double& operator/=(const Double& other);
-        Double& operator*=(const Double& other);
+        friend std::ostream& operator<<(std::ostream& stream, Double argument);
     };
     
     Double min(Double first_argument, Double second_argument);
@@ -68,7 +111,7 @@ namespace OpenSolid
     Double exp(Double argument);
     Double log(Double argument);
     Double pow(Double argument);
-    
+
     std::ostream& operator<<(std::ostream& stream, Double argument);
 }
 
@@ -119,11 +162,143 @@ namespace Eigen
 ////////// Implementation //////////
 
 #include <OpenSolid/Common/Eigen.hpp>
+#include "Interval.hpp"
 #include "Traits.hpp"
 
 namespace OpenSolid
 {
+    inline Double Double::defaultPrecision() {return Eigen::NumTraits<double>::dummy_precision();}
     
+    inline Double::Double() {}
+    
+    inline Double::Double(double value) : _value(value) {}
+    
+    inline Double::operator double() const {return _value;}
+    
+    inline bool Double::operator==(Double other) {return _value == other._value;}
+    
+    inline bool Double::operator!=(Double other) {return _value != other._value;}
+    
+    inline bool Double::operator<(Double other) {return _value < other._value;}
+    
+    inline bool Double::operator>(Double other) {return _value > other._value;}
+    
+    inline bool Double::operator<=(Double other) {return _value <= other._value;}
+    
+    inline bool Double::operator>=(Double other) {return _value >= other._value;}
+        
+    inline bool Double::isZero(Double precision) const {return std::abs(_value) < precision._value;}
+    
+    inline bool Double::isEqual(Double other, Double precision) const {
+        return std::abs(_value - other._value) < precision._value;
+    }
+    
+    inline bool Double::isEqual(Interval other, Double precision) const {
+        return isEqual(other.lower(), precision) && isEqual(other.upper(), precision);
+    }
+    
+    inline bool Double::isLessThan(Double other, Double precision) const {
+        return other._value - _value > precision;
+    }
+    
+    inline bool Double::isLessThan(Interval other, Double precision) const {
+        return isLessThan(other.lower(), precision);
+    }
+    
+    inline bool Double::isGreaterThan(Double other, Double precision) const {
+        return _value - other._value > precision;
+    }
+    
+    inline bool Double::isGreaterThan(Interval other, Double precision) const {
+        return isGreaterThan(other.upper(), precision);
+    }
+    
+    inline bool Double::overlap(Double value, Double precision) const {
+        return isEqual(value, precision);
+    }
+    
+    inline bool Double::overlap(Interval other, Double precision) const {
+        return isEqual(other, precision);
+    }
+    
+    inline bool Double::contain(Double value, Double precision) const {
+        return isEqual(other, precision);
+    }
+    
+    inline bool Double::contain(Interval other, Double precision) const {
+        return isEqual(other, precision);
+    }
+    
+    inline Double& Double::operator+=(Double other) {
+        _value += other._value;
+        return *this;
+    }
+    
+    inline Double& Double::operator-=(Double other) {
+        _value -= other._value;
+        return *this;
+    }
+    
+    inline Double& Double::operator*=(Double other) {
+        _value *= other._value;
+        return *this;
+    }
+    
+    inline Double& Double::operator/=(Double other) {
+        _value /= other._value;
+        return *this;
+    }
+    
+    inline Double Double::operator-() const {return -_value;}
+    
+    inline Double Double::operator+(Double other) const {return _value + other._value;}
+    
+    inline Double Double::operator-(Double other) const {return _value - other._value;}
+    
+    inline Double Double::operator*(Double other) const {return _value * other._value;}
+    
+    inline Double Double::operator/(Double other) const {return _value / other._value;}
+    
+    inline Double Double::squared() const {return _value * _value;}
+    
+    inline Interval Double::hull(Double other) const {
+        return *this <= other ? Interval(*this, other) : Interval(other, *this);
+    }
+    
+    inline Interval Double::hull(Interval other) const {
+        if (*this < other.lower()) {
+            return Interval(*this, other.upper());
+        } else if (other.upper() < *this) {
+            return Interval(other.lower(), *this)
+        } else {
+            return other;
+        }
+    }
+    
+    inline Interval Double::intersection(Double other) const {
+        return *this == other ? Interval(*this) : Interval::Empty();
+    }
+    
+    inline Interval Double::intersection(Interval other) const {
+        
+    }
+    
+    inline Double min(Double first_argument, Double second_argument);
+    inline Double max(Double first_argument, Double second_argument);
+    inline Double abs(Double argument);
+    inline Double sqrt(Double argument);
+    inline Double sin(Double argument);
+    inline Double cos(Double argument);
+    inline Double tan(Double argument);
+    inline Double asin(Double argument);
+    inline Double acos(Double argument);
+    inline Double atan(Double argument);
+    inline Double atan2(Double first_argument, Double second_argument);
+    inline Double exp(Double argument);
+    inline Double log(Double argument);
+    inline Double pow(Double argument);
+
+    inline std::ostream& operator<<(std::ostream& stream, Double argument);
 }
 
 namespace Eigen

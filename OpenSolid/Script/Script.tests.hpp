@@ -268,14 +268,14 @@ public:
     void testFunction() {
         Script script;
         script.run("f = Function.u.squaredNorm() * 1.0 + Function.v.squaredNorm() * 1.0");
-        double result = script.get<double>("f(Vector2d(1, 2)).scalar()");
+        double result = script.get<double>("f(Vector2d(1, 2))[0]");
         TS_ASSERT_EQUALS(result, 5.0);
-        result = script.get<double>("f.derivative(0)(Vector2d(3, 4)).scalar()");
+        result = script.get<double>("f.derivative(0)(Vector2d(3, 4))[0]");
         TS_ASSERT_EQUALS(result, 6.0);
-        result = script.get<double>("f.derivative(1).derivative(1)(Vector2d(5, 6)).scalar()");
+        result = script.get<double>("f.derivative(1).derivative(1)(Vector2d(5, 6))[0]");
         TS_ASSERT_EQUALS(result, 2.0);
         std::string expression =
-            "f.derivative(0)(Vector2I(Interval(1, 2), Interval(3, 4))).scalar()";
+            "f.derivative(0)(Vector2I(Interval(1, 2), Interval(3, 4)))[0]";
         TS_ASSERT_EQUALS(script.get<Interval>(expression).lower(), 2);
         TS_ASSERT_EQUALS(script.get<Interval>(expression).upper(), 4);
     }
@@ -398,9 +398,9 @@ public:
         Function f2 = Vector3d(2, 0, 0) * Function::Parameter(2, 0) +
             Vector3d(0, 0.5, 0) * Function::Parameter(2, 1);
         script.set("f2", f2);
-        TS_ASSERT(Comparison::equal(script.get<double>("f1(2).scalar()"), 6.0));
+        TS_ASSERT(Comparison::equal(script.get<double>("f1(2)[0]"), 6.0));
         TS_ASSERT(
-            Comparison::equal(script.get<Interval>("f1(Interval(2, 3)).scalar()"), Interval(6, 9))
+            Comparison::equal(script.get<Interval>("f1(Interval(2, 3))[0]"), Interval(6, 9))
         );
         TS_ASSERT(
             Comparison::equal(script.get<MatrixXd>("f2(Vector2d(1, 1))"), Vector3d(2, 0.5, 0))
