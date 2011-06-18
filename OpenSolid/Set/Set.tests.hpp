@@ -33,7 +33,6 @@ using namespace OpenSolid;
 
 template <class Type, class BoundsType>
 void testSet(const SetNode<Type, BoundsType>* node) {
-    double tolerance = Comparison::tolerance();
     if (!node) {
         return;
     } else if (node->object()) {
@@ -41,8 +40,8 @@ void testSet(const SetNode<Type, BoundsType>* node) {
     } else {
         const SetNode<Type, BoundsType>* left = node->left();
         const SetNode<Type, BoundsType>* right = node->right();
-        TS_ASSERT(node->bounds().contain(left->bounds(), tolerance));
-        TS_ASSERT(node->bounds().contain(right->bounds(), tolerance));
+        TS_ASSERT(left->bounds().isSubsetOf(node->bounds()));
+        TS_ASSERT(right->bounds().isSubsetOf(node->bounds()));
         TS_ASSERT_EQUALS(node->size(), left->size() + right->size());
         testSet(node->left());
         testSet(node->right());
@@ -50,8 +49,8 @@ void testSet(const SetNode<Type, BoundsType>* node) {
 }
 
 Interval randomInterval() {
-    double mid = 10 * double(rand()) / RAND_MAX;
-    double width = double(rand()) / RAND_MAX;
+    Double mid = 10 * Double(rand()) / RAND_MAX;
+    Double width = Double(rand()) / RAND_MAX;
     return Interval(mid - width / 2, mid + width / 2);
 }
 
@@ -61,16 +60,16 @@ class SetTestSuite : public CxxTest::TestSuite
 {
 public:
     void testInteger() {
-        std::vector<int> list(5);
+        std::vector<Double> list(5);
         list[0] = 3;
         list[1] = 1;
         list[2] = 7;
         list[3] = 2;
         list[4] = 5;
-        Set<int> set(list.begin(), list.end());
+        Set<Double> set(list.begin(), list.end());
         std::cout << set << std::endl;
         testSet(set.root());
-        std::vector<int> sorted(set.begin(), set.end());
+        std::vector<Double> sorted(set.begin(), set.end());
         std::sort(list.begin(), list.end());
         TS_ASSERT_EQUALS(sorted, list);
     }
@@ -116,36 +115,36 @@ public:
     }
     
     void testDoubleOverlapping() {
-        std::vector<double> list(5);
+        std::vector<Double> list(5);
         list[0] = 5;
         list[1] = 3;
         list[2] = 1;
         list[3] = 4;
         list[4] = 2;
-        Set<double> set(list.begin(), list.end());
+        Set<Double> set(list.begin(), list.end());
         std::cout << set << std::endl;
-        Set<double> overlapping = set.overlapping(Interval(2.5, 4.5));
+        Set<Double> overlapping = set.overlapping(Interval(2.5, 4.5));
         TS_ASSERT_EQUALS(overlapping.size(), 2);
         std::cout << overlapping.front() - 3 << ", " << overlapping.back() - 4 << std::endl;
         TS_ASSERT_EQUALS(overlapping.front(), 3);
         TS_ASSERT_EQUALS(overlapping.back(), 4);
     }
     
-    void testVector2dOverlapping() {
-        std::vector<Vector2d> list(4);
-        list[0] = Vector2d(1, 1);
-        list[1] = Vector2d(5, 1);
-        list[2] = Vector2d(1, 3);
-        list[3] = Vector2d(5, 3);
-        Set<Vector2d> set(list.begin(), list.end());
-        Set<Vector2d> overlapping = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
+    void testVector2DOverlapping() {
+        std::vector<Vector2D> list(4);
+        list[0] = Vector2D(1, 1);
+        list[1] = Vector2D(5, 1);
+        list[2] = Vector2D(1, 3);
+        list[3] = Vector2D(5, 3);
+        Set<Vector2D> set(list.begin(), list.end());
+        Set<Vector2D> overlapping = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
         TS_ASSERT_EQUALS(overlapping.size(), 2);
-        TS_ASSERT_EQUALS(overlapping.front(), Vector2d(1, 3));
-        TS_ASSERT_EQUALS(overlapping.back(), Vector2d(5, 3));
+        TS_ASSERT_EQUALS(overlapping.front(), Vector2D(1, 3));
+        TS_ASSERT_EQUALS(overlapping.back(), Vector2D(5, 3));
     }
     
-    void testIntegerInsertion() {
-        Set<int> set;
+    void testDoubleInsertion() {
+        Set<Double> set;
         set.insert(3);
         set.insert(1);
         set.insert(7);
@@ -245,26 +244,26 @@ public:
     }
     
     void testSharing() {
-        std::vector<double> list(4);
+        std::vector<Double> list(4);
         list[0] = 1;
         list[1] = 2;
         list[2] = 4;
         list[3] = 5;
-        Set<double> set1(list.begin(), list.end());
-        Set<double> set2 = set1;
+        Set<Double> set1(list.begin(), list.end());
+        Set<Double> set2 = set1;
         TS_ASSERT_EQUALS(set1.root(), set2.root());
         set2.insert(3);
         TS_ASSERT_DIFFERS(set1.root(), set2.root());
         std::cout << set1 << std::endl;
         std::cout << set2 << std::endl;
         
-        const Set<double>::Node* root;
+        const Set<Double>::Node* root;
         {
-            std::vector<double> list2(3);
+            std::vector<Double> list2(3);
             list2[0] = 10;
             list2[1] = 11;
             list2[2] = 12;
-            Set<double> set3(list2.begin(), list2.end());
+            Set<Double> set3(list2.begin(), list2.end());
             root = set3.root();
             set1 = set3;
             set2 = set3;
@@ -278,13 +277,13 @@ public:
     }
     
     void testIterator() {
-        std::vector<double> list(5);
+        std::vector<Double> list(5);
         list[0] = 5;
         list[1] = 1;
         list[2] = 3;
         list[3] = 2;
         list[4] = 4;
-        Set<double> set(list.begin(), list.end());
+        Set<Double> set(list.begin(), list.end());
         auto i = set.begin();
         TS_ASSERT_EQUALS(*i, 1);
         ++i;
@@ -300,14 +299,14 @@ public:
     }
     
     void testRangeOperations() {
-        Set<double> set;
-        std::vector<double> insertion_list(5);
+        Set<Double> set;
+        std::vector<Double> insertion_list(5);
         insertion_list[0] = 5;
         insertion_list[1] = 1;
         insertion_list[2] = 3;
         insertion_list[3] = 2;
         insertion_list[4] = 4;
-        std::vector<double> erasure_list(5);
+        std::vector<Double> erasure_list(5);
         erasure_list[0] = 1;
         erasure_list[1] = 3;
         erasure_list[2] = 5;

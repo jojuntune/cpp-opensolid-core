@@ -99,7 +99,7 @@
 
     SET(COMMON_SOURCES Common/Error.cpp)
 
-    SET(INTERVAL_SOURCES Interval/Interval.cpp)
+    SET(SCALAR_SOURCES Scalar/Interval.cpp)
     
     SET(DATUM_SOURCES Datum/Datum.cpp)
     

@@ -30,8 +30,8 @@ namespace OpenSolid
     {
     public:
         static const int static_axes = dimensions_ == Dynamic ? Dynamic : dimensions_ - 1;
-        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<double, dimensions_, static_axes> Matrix;
+        typedef Eigen::Matrix<Double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<Double, dimensions_, static_axes> Matrix;
     private:
         template <class DerivedType>
         void initialize(const Vector& origin, const EigenBase<DerivedType>& vectors);

@@ -29,12 +29,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-#include <boost/type_traits/remove_const.hpp>
 
-#include <OpenSolid/Common/Comparison.hpp>
-#include <OpenSolid/Interval/Interval.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
 #include "SetNode.hpp"
 
 namespace OpenSolid
@@ -42,9 +37,9 @@ namespace OpenSolid
     template <class Type>
     struct DefaultBoundsFunction
     {
-        typedef typename Traits<Type>::Bounds Bounds;
+        typedef decltype(Type().bounds()) Bounds;
         
-        auto operator()(const Type& argument) const -> decltype(Traits<Type>::bounds(argument));
+        auto operator()(const Type& argument) const -> decltype(argument.bounds());
     };
 
     template <class Type, class BoundsFunction>
@@ -55,9 +50,7 @@ namespace OpenSolid
     {
     public:
         typedef typename BoundsFunctionType::Bounds Bounds;
-        
         typedef SetNode<Type, Bounds> Node;
-        
         typedef SetIterator<Type, BoundsFunctionType> Iterator;
     private:
         Node* _root;
@@ -84,6 +77,7 @@ namespace OpenSolid
         int size() const;
         bool empty() const;
         const Bounds& bounds() const;
+        std::size_t hashValue() const;
         
         const Type& front() const;
         const Type& back() const;
@@ -145,18 +139,7 @@ namespace OpenSolid
 #include "Traits.hpp"
     
 namespace OpenSolid
-{
-    template <class Type, class BoundsFunctionType>
-    inline const typename Traits<Set<Type, BoundsFunctionType>>::Bounds&
-    Traits<Set<Type, BoundsFunctionType>>::bounds(const Set<Type, BoundsFunctionType>& argument) {
-        return argument.bounds();
-    }
-    
-    template <class Type, class BoundsFunctionType>
-    inline std::size_t Traits<Set<Type, BoundsFunctionType>>::hash(
-        const Set<Type, BoundsFunctionType>& argument
-    ) {return boost::hash_value(argument.root());}
-    
+{   
     template <class Type>
     inline auto DefaultBoundsFunction<Type>::operator()(const Type& argument) const ->
         decltype(Traits<Type>::bounds(argument)) {return Traits<Type>::bounds(argument);}
@@ -263,6 +246,11 @@ namespace OpenSolid
     Set<Type, BoundsFunctionType>::bounds() const {
         assert(!empty());
         return root()->bounds();
+    }
+    
+    template <class Type, class BoundsFunctionType>
+    inline std::size_t Set<Type, BoundsFunctionType>::hashValue() const {
+        return boost::hash_value(root());
     }
     
     template <class Type, class BoundsFunctionType>
@@ -399,11 +387,8 @@ namespace OpenSolid
     inline Set<Type, BoundsFunctionType> Set<Type, BoundsFunctionType>::overlapping(
         const typename Set<Type, BoundsFunctionType>::Bounds& bounds
     ) const {
-        double tolerance = Comparison::tolerance();
         return filtered(
-            [&bounds, tolerance] (const Bounds& subset_bounds) {
-                return bounds.overlap(subset_bounds, tolerance);
-            }
+            [&bounds] (const Bounds& subset_bounds) {return bounds.overlap(subset_bounds);}
         );
     }
     

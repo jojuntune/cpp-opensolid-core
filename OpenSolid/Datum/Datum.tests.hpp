@@ -29,66 +29,66 @@ class DatumTestSuite : public CxxTest::TestSuite
 {
 public:
     void testProduct() {
-        MatrixXd vectors(3, 2);
-        vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
-        Frame3d frame(Vector3d(1, 1, 1), vectors);
+        MatrixXD vectors(3, 2);
+        vectors << Vector3D(1, 1, 0), Vector3D(-1, 1, 0);
+        Frame3D frame(Vector3D(1, 1, 1), vectors);
         std::cout << frame.vectors() << std::endl;
-        Vector3d product = Vector3d(1, 1, 1) * frame;
+        Vector3D product = Vector3D(1, 1, 1) * frame;
         std::cout << product << std::endl;
-        TS_ASSERT(Comparison::equal(product, Vector3d(1, 1 + sqrt(2.0), 2)));
-        product = Vector3d(1, 1, 1) * frame.linear();
+        TS_ASSERT(product.isEqualTo(Vector3D(1, 1 + sqrt(2.0), 2)));
+        product = Vector3D(1, 1, 1) * frame.linear();
         std::cout << product.transpose() << std::endl;
-        TS_ASSERT(Comparison::equal(product, Vector3d(0, sqrt(2.0), 1)));
+        TS_ASSERT(product.isEqualTo(Vector3D(0, sqrt(2.0), 1)));
     }
     
     void testQuotient() {
-        MatrixXd vectors(3, 2);
-        vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
-        Frame3d frame(Vector3d(1, 1, 1), vectors);
-        Vector3d quotient = Vector3d(1, 0, 0) / frame;
+        MatrixXD vectors(3, 2);
+        vectors << Vector3D(1, 1, 0), Vector3D(-1, 1, 0);
+        Frame3D frame(Vector3D(1, 1, 1), vectors);
+        Vector3D quotient = Vector3D(1, 0, 0) / frame;
         std::cout << quotient.transpose() << std::endl;
-        TS_ASSERT(Comparison::equal(quotient, Vector3d(-1 / sqrt(2.0), -1 / sqrt(2.0), -1)));
-        Vector3d linear_quotient = Vector3d(1, 0, 0) / frame.linear();
+        TS_ASSERT(quotient.isEqualTo(Vector3D(-1 / sqrt(2.0), -1 / sqrt(2.0), -1)));
+        Vector3D linear_quotient = Vector3D(1, 0, 0) / frame.linear();
         std::cout << linear_quotient.transpose() << std::endl;
-        TS_ASSERT(Comparison::equal(linear_quotient, Vector3d(1 / sqrt(2.0), -1 / sqrt(2.0), 0)));
+        TS_ASSERT(linear_quotient.isEqualTo(Vector3D(1 / sqrt(2.0), -1 / sqrt(2.0), 0)));
     }
     
     void testDatumTransformation() {
-        Frame3d global;
-        Frame3d frame = global.translatedBy(Vector3d(1, 1, 1)).rotatedBy(-M_PI / 2, global.xAxis());
-        TS_ASSERT(Comparison::equal(Vector3d(1, 2, 3) * frame, Vector3d(2, 4, -3)));
+        Frame3D global;
+        Frame3D frame = global.translatedBy(Vector3D(1, 1, 1)).rotatedBy(-M_PI / 2, global.xAxis());
+        TS_ASSERT((Vector3D(1, 2, 3) * frame).isEqualTo(Vector3D(2, 4, -3)));
     }
     
     void testDatumComposition() {
-        Frame3d frame(Vector3d::UnitX(), Matrix3d::Identity());
+        Frame3D frame(Vector3D::UnitX(), Matrix3D::Identity());
         frame = frame.rotatedBy(-M_PI / 4, frame.yAxis());
-        Frame3d product = frame * frame;
-        Vector3d expected_product_origin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
-        Frame3d quotient = frame / frame;
-        TS_ASSERT(Comparison::equal(product.origin(), expected_product_origin));
-        TS_ASSERT(Comparison::equal(product.xVector(), Vector3d(0, 0, 1)));
-        TS_ASSERT(Comparison::equal(product.yVector(), Vector3d(0, 1, 0)));
-        TS_ASSERT(Comparison::equal(product.zVector(), Vector3d(-1, 0, 0)));
-        TS_ASSERT(Comparison::zero(quotient.origin()));
-        TS_ASSERT(quotient.vectors().isIdentity(Comparison::tolerance()));
+        Frame3D product = frame * frame;
+        Vector3D expected_product_origin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
+        Frame3D quotient = frame / frame;
+        TS_ASSERT(product.origin().isEqualTo(expected_product_origin));
+        TS_ASSERT(product.xVector().isEqualTo(Vector3D(0, 0, 1)));
+        TS_ASSERT(product.yVector().isEqualTo(Vector3D(0, 1, 0)));
+        TS_ASSERT(product.zVector().isEqualTo(Vector3D(-1, 0, 0)));
+        TS_ASSERT(quotient.origin().isZero());
+        TS_ASSERT(quotient.vectors().isIdentity());
     }
     
     void test2D() {
-        Frame2d frame(Vector2d::UnitX(), Vector2d(1, 1));
+        Frame2D frame(Vector2D::UnitX(), Vector2D(1, 1));
         TS_ASSERT_EQUALS(frame.vectors().rows(), 2);
         TS_ASSERT_EQUALS(frame.vectors().cols(), 2);
-        TS_ASSERT(Comparison::equal(frame.xVector(), Vector2d(1, 1).normalized()));
-        TS_ASSERT(Comparison::equal(frame.yVector(), Vector2d(-1, 1).normalized()));
-        TS_ASSERT(Comparison::equal(Vector2d(2, 2) * frame, Vector2d(1, 2 * sqrt(2.0))));
-        TS_ASSERT(Comparison::equal(Vector2d(2, 1) / frame, Vector2d(sqrt(2.0), 0)));
+        TS_ASSERT(frame.xVector().isEqualTo(Vector2D(1, 1).normalized()));
+        TS_ASSERT(frame.yVector().isEqualTo(Vector2D(-1, 1).normalized()));
+        TS_ASSERT((Vector2D(2, 2) * frame).isEqualTo(Vector2D(1, 2 * sqrt(2.0))));
+        TS_ASSERT((Vector2D(2, 1) / frame).isEqualTo(Vector2D(sqrt(2.0), 0)));
     }
     
     void testAccuracy() {
-        Matrix3d vectors;
-        Frame3d frame;
+        Matrix3D vectors;
+        Frame3D frame;
         
-        vectors = Matrix3d::Random();
-        frame = Frame3d(Vector3d::Ones(), vectors);
+        vectors = Matrix3D::Random();
+        frame = Frame3D(Vector3D::Ones(), vectors);
         std::cout << frame.vectors() << std::endl;
         std::cout << std::endl;
         std::cout << frame.vectors() * frame.vectors().transpose() << std::endl;
@@ -96,8 +96,8 @@ public:
         std::cout << vectors / frame.linear() << std::endl;
         std::cout << std::endl;
         
-        vectors = Matrix3d::Random();
-        frame = Frame3d(Vector3d::Ones(), vectors);
+        vectors = Matrix3D::Random();
+        frame = Frame3D(Vector3D::Ones(), vectors);
         std::cout << frame.vectors() << std::endl;
         std::cout << std::endl;
         std::cout << frame.vectors() * frame.vectors().transpose() << std::endl;
@@ -105,8 +105,8 @@ public:
         std::cout << vectors / frame.linear() << std::endl;
         std::cout << std::endl;
         
-        vectors = Matrix3d::Random();
-        frame = Frame3d(Vector3d::Ones(), vectors);
+        vectors = Matrix3D::Random();
+        frame = Frame3D(Vector3D::Ones(), vectors);
         std::cout << frame.vectors() << std::endl;
         std::cout << std::endl;
         std::cout << frame.vectors() * frame.vectors().transpose() << std::endl;
@@ -116,11 +116,11 @@ public:
     }
     
     void testNonOrthogonal() {
-        CoordinateSystem3d coordinate_system(
-            Vector3d(1, 2, 3),
-            Matrix3d::Ones().triangularView<Upper>()
+        CoordinateSystem3D coordinate_system(
+            Vector3D(1, 2, 3),
+            Matrix3D::Ones().triangularView<Upper>()
         );
-        TS_ASSERT(Comparison::equal(Vector3d(1, 1, 1) * coordinate_system, Vector3d(4, 4, 4)));
-        TS_ASSERT(Comparison::equal(Vector3d(4, 4, 4) / coordinate_system, Vector3d(1, 1, 1)));
+        TS_ASSERT((Vector3D(1, 1, 1) * coordinate_system).isEqualTo(Vector3D(4, 4, 4)));
+        TS_ASSERT((Vector3D(4, 4, 4) / coordinate_system).isEqualTo(Vector3D(1, 1, 1)));
     }
 };

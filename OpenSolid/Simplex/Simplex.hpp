@@ -30,11 +30,11 @@ namespace OpenSolid
     class Simplex
     {
     public:
-        typedef Matrix<double, dimensions_, size_> Vertices;
+        typedef Matrix<Double, dimensions_, size_> Vertices;
         typedef typename Vertices::ConstColXpr Vertex;
         typedef Simplex<dimensions_, 2> Edge;
         typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> Face;
-        typedef Matrix<double, dimensions_, 1> Vector;
+        typedef Matrix<Double, dimensions_, 1> Vector;
     private:
         Vertices _vertices;
     public:
@@ -48,7 +48,7 @@ namespace OpenSolid
         template <class DerivedType>
         Simplex(const EigenBase<DerivedType>& vertices);
         
-        Simplex(double first_vertex, double second_vertex);
+        Simplex(Double first_vertex, Double second_vertex);
         
         template <class FirstDerivedType, class SecondDerivedType>
         Simplex(
@@ -89,10 +89,10 @@ namespace OpenSolid
         const Vertices& vertices() const;
         Vertex vertex(int index) const;
         
-        double length() const;
-        double area() const;
-        double volume() const;
-        double hypervolume() const;
+        Double length() const;
+        Double area() const;
+        Double volume() const;
+        Double hypervolume() const;
         
         Vector centroid() const;
         Vector normal() const;
@@ -104,30 +104,31 @@ namespace OpenSolid
         coordinateSystem() const;
         
         Matrix<Interval, dimensions_, 1> bounds() const;
+        std::size_t hashValue() const;
         
         template <int other_dimensions_, int other_size_>
         bool operator==(const Simplex<other_dimensions_, other_size_>& other) const;
     };
     
-    typedef Simplex<1, 2> LineSegment1d;
-    typedef Simplex<2, 2> LineSegment2d;
-    typedef Simplex<3, 2> LineSegment3d;
-    typedef Simplex<4, 2> LineSegment4d;
-    typedef Simplex<Dynamic, 2> LineSegmentXd;
+    typedef Simplex<1, 2> LineSegment1D;
+    typedef Simplex<2, 2> LineSegment2D;
+    typedef Simplex<3, 2> LineSegment3D;
+    typedef Simplex<4, 2> LineSegment4D;
+    typedef Simplex<Dynamic, 2> LineSegmentXD;
     
-    typedef Simplex<2, 3> Triangle2d;
-    typedef Simplex<3, 3> Triangle3d;
-    typedef Simplex<4, 3> Triangle4d;
-    typedef Simplex<Dynamic, 3> TriangleXd;
+    typedef Simplex<2, 3> Triangle2D;
+    typedef Simplex<3, 3> Triangle3D;
+    typedef Simplex<4, 3> Triangle4D;
+    typedef Simplex<Dynamic, 3> TriangleXD;
     
-    typedef Simplex<3, 4> Tetrahedron3d;
-    typedef Simplex<4, 4> Tetrahedron4d;
-    typedef Simplex<Dynamic, 4> TetrahedronXd;
+    typedef Simplex<3, 4> Tetrahedron3D;
+    typedef Simplex<4, 4> Tetrahedron4D;
+    typedef Simplex<Dynamic, 4> TetrahedronXD;
     
-    typedef Simplex<4, 5> Pentachoron4d;
-    typedef Simplex<Dynamic, 5> PentachoronXd;
+    typedef Simplex<4, 5> Pentachoron4D;
+    typedef Simplex<Dynamic, 5> PentachoronXD;
     
-    typedef Simplex<Dynamic, Dynamic> SimplexXd;
+    typedef Simplex<Dynamic, Dynamic> SimplexXD;
     
     template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
     Simplex<datum_dimensions_, simplex_size_> operator*(
@@ -144,20 +145,8 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include "Traits.hpp"
-
 namespace OpenSolid
-{
-    template <int dimensions_, int size_>
-    inline std::size_t Traits<Simplex<dimensions_, size_>>::hash(
-        const Simplex<dimensions_, size_>& argument
-    ) {return hash_value(argument.vertices());}
-    
-    template <int dimensions_, int size_>
-    inline Matrix<Interval, dimensions_, 1> Traits<Simplex<dimensions_, size_>>::bounds(
-        const Simplex<dimensions_, size_>& argument
-    ) {return argument.bounds();}
-    
+{   
     template <int dimensions_, int size_>
     inline Simplex<dimensions_, size_>::Simplex() : _vertices() {}
         
@@ -175,10 +164,10 @@ namespace OpenSolid
         _vertices(vertices) {}
         
     template <int dimensions_, int size_>
-    inline Simplex<dimensions_, size_>::Simplex(double first_vertex, double second_vertex) {
+    inline Simplex<dimensions_, size_>::Simplex(Double first_vertex, Double second_vertex) {
         static_assert(
             (dimensions_ == 1 || dimensions_ == Dynamic) && (size_ == 2 || size_ == Dynamic),
-            "Only 1D line segments can be constructed from two doubles"
+            "Only 1D line segments can be constructed from two Doubles"
         );
         _vertices.resize(1, 2);
         _vertices(0) = first_vertex;
@@ -255,7 +244,7 @@ namespace OpenSolid
     Simplex<dimensions_, size_>::vertex(int index) const {return _vertices.col(index);}
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::length() const {
+    inline Double Simplex<dimensions_, size_>::length() const {
         assert(size() == 2);
         if (dimensions() == 1) {
             return vertices()(0, 1) - vertices()(0, 0);
@@ -265,20 +254,20 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::area() const {
+    inline Double Simplex<dimensions_, size_>::area() const {
         assert(size() == 3);
         if (dimensions() == 2) {
             return (
                 vertices().template rightCols<2>().colwise() - vertex(0)
             ).determinant() / 2;
         } else {
-            Matrix2d temp;
-            double squared_area = 0.0;
+            Matrix2D temp;
+            Double squared_area = 0.0;
             for (int i = 0; i < dimensions() - 1; ++i) {
                 for (int j = i + 1; j < dimensions(); ++j) {
                     temp << vertices().row(i).tail(2).array() - vertices()(i, 0),
                         vertices().row(j).tail(2).array() - vertices()(j, 0);
-                    double determinant = temp.determinant();
+                    Double determinant = temp.determinant();
                     squared_area += determinant * determinant / 4;
                 }
             }
@@ -287,22 +276,22 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::volume() const {
+    inline Double Simplex<dimensions_, size_>::volume() const {
         assert(size() == 4);
         if (dimensions() == 3) {
             return (
                 vertices().template rightCols<3>().colwise() - vertex(0)
             ).determinant() / 6;
         } else {
-            Matrix3d temp;
-            double squared_volume = 0.0;
+            Matrix3D temp;
+            Double squared_volume = 0.0;
             for (int i = 0; i < dimensions() - 2; ++i) {
                 for (int j = i + 1; j < dimensions() - 1; ++j) {
                     for (int k = j + 1; k < dimensions(); ++k) {
                         temp << vertices().row(i).tail(3).array() - vertices()(i, 0),
                             vertices().row(j).tail(3).array() - vertices()(j, 0),
                             vertices().row(k).tail(3).array() - vertices()(k, 0);
-                        double determinant = temp.determinant();
+                        Double determinant = temp.determinant();
                         squared_volume += determinant * determinant / 36;
                     }
                 }
@@ -312,15 +301,15 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::hypervolume() const {
+    inline Double Simplex<dimensions_, size_>::hypervolume() const {
         assert(size() == 5);
         if (dimensions() == 4) {
             return (
                 vertices().template rightCols<4>.colwise() - vertex(0)
             ).determinant() / 24;
         } else {
-            Matrix4d temp;
-            double squared_hypervolume = 0.0;
+            Matrix4D temp;
+            Double squared_hypervolume = 0.0;
             for (int i = 0; i < dimensions() - 3; ++i) {
                 for (int j = i + 1; j < dimensions() - 2; ++j) {
                     for (int k = j + 1; k < dimensions() - 1; ++k) {
@@ -329,7 +318,7 @@ namespace OpenSolid
                                 vertices().row(j).tail(4).array() - vertices()(j, 0),
                                 vertices().row(k).tail(4).array() - vertices()(k, 0),
                                 vertices().row(l).tail(4).array() - vertices()(l, 0);
-                            double determinant = temp.determinant();
+                            Double determinant = temp.determinant();
                             squared_hypervolume += determinant * determinant / 576;
                         }
                     }
@@ -345,37 +334,37 @@ namespace OpenSolid
     
     namespace
     {
-        inline Vector2d simplexNormal(const LineSegment2d& line_segment) {
+        inline Vector2D simplexNormal(const LineSegment2D& line_segment) {
             return (line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
         }
         
-        inline Vector2d simplexNormal(const LineSegmentXd& line_segment) {
+        inline Vector2D simplexNormal(const LineSegmentXD& line_segment) {
             assert(line_segment.dimensions() == 2);
-            return Vector2d(line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+            return Vector2D(line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
         }
         
-        inline Vector3d simplexNormal(const Triangle3d& triangle) {
-            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
-            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+        inline Vector3D simplexNormal(const Triangle3D& triangle) {
+            Vector3D first_edge = triangle.vertex(1) - triangle.vertex(0);
+            Vector3D second_edge = triangle.vertex(2) - triangle.vertex(0);
             return first_edge.cross(second_edge).normalized();
         }
         
-        inline Vector3d simplexNormal(const TriangleXd& triangle) {
+        inline Vector3D simplexNormal(const TriangleXD& triangle) {
             assert(triangle.dimensions() == 3);
-            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
-            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+            Vector3D first_edge = triangle.vertex(1) - triangle.vertex(0);
+            Vector3D second_edge = triangle.vertex(2) - triangle.vertex(0);
             return first_edge.cross(second_edge).normalized();
         }
         
-        inline VectorXd simplexNormal(const SimplexXd& simplex) {
+        inline VectorXD simplexNormal(const SimplexXD& simplex) {
             assert(simplex.size() == 2 || simplex.size() == 3);
             if (simplex.size() == 2) {
                 assert(simplex.dimensions() == 2);
-                return Vector2d(simplex.vertex(1) - simplex.vertex(0)).unitOrthogonal();
+                return Vector2D(simplex.vertex(1) - simplex.vertex(0)).unitOrthogonal();
             } else {
                 assert(simplex.dimensions() == 3);
-                Vector3d first_edge = simplex.vertex(1) - simplex.vertex(0);
-                Vector3d second_edge = simplex.vertex(2) - simplex.vertex(0);
+                Vector3D first_edge = simplex.vertex(1) - simplex.vertex(0);
+                Vector3D second_edge = simplex.vertex(2) - simplex.vertex(0);
                 return first_edge.cross(second_edge).normalized();
             }
         }
@@ -422,6 +411,11 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline Matrix<Interval, dimensions_, 1> Simplex<dimensions_, size_>::bounds() const {
         return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
+    }
+    
+    template <int dimensions_, int size_>
+    inline std::size_t Simplex<dimensions_, size_>::hashValue() const {
+        return argument.vertices().hashValue();
     }
         
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>

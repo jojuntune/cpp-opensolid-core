@@ -49,86 +49,113 @@ inline ColIterator colBegin() {return ColIterator(derived(), 0);}
 
 inline ColIterator colEnd() {return ColIterator(derived(), cols());}
 
-inline auto cwiseLower() const ->
-    decltype(derived().unaryExpr([] (Scalar argument) {return argument.lower();})) {
-    return derived().unaryExpr([] (Scalar argument) {return argument.lower();});
+inline auto cwiseLower() const -> decltype(derived().unaryExpr(LowerOperation())) {
+    return derived().unaryExpr(LowerOperation());
 }
 
-inline auto cwiseUpper() const ->
-    decltype(derived().unaryExpr([] (Scalar argument) {return argument.upper();})) {
-    return derived().unaryExpr([] (Scalar argument) {return argument.upper();});
+inline auto cwiseUpper() const -> decltype(derived().unaryExpr(UpperOperation())) {
+    return derived().unaryExpr(UpperOperation());
 }
 
-inline auto cwiseMedian() const ->
-    decltype(derived().unaryExpr([] (Scalar argument) {return argument.median();})) {
-    return derived().unaryExpr([] (Scalar argument) {return argument.median();});
+inline auto cwiseMedian() const -> decltype(derived().unaryExpr(MedianOperation())) {
+    return derived().unaryExpr(MedianOperation());
 }
 
-inline auto cwiseWidth() const ->
-    decltype(derived().unaryExpr([] (Scalar argument) {return argument.width();})) {
-    return derived().unaryExpr([] (Scalar argument) {return argument.width();});
+inline auto cwiseWidth() const -> decltype(derived().unaryExpr(WidthOperation())) {
+    return derived().unaryExpr(WidthOperation());
 }
+
+template <class OtherDerivedType>
+inline bool isEqualTo(
+    const DenseBase<OtherDerivedType>& other,
+    Scalar precision = NumTraits<Scalar>::dummy_precision
+) {return derived().isApprox(other, precision);}
 
 template<class OtherDerivedType>
-inline bool overlap(
-    const EigenBase<OtherDerivedType>& other,
-    Double precision = NumTraits<Double>::dummy_precision()
+inline bool overlaps(
+    const DenseBase<OtherDerivedType>& other,
+    Scalar precision = NumTraits<Scalar>::dummy_precision()
 ) const {
     return derived().binaryExpr(
         other.derived(),
         [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.overlap(second_argument, precision);
+            return first_argument.overlaps(second_argument, precision.lower());
         }
     ).all();
 }
 
 template<class OtherDerivedType>
-inline bool contain(
-    const EigenBase<OtherDerivedType>& other,
-    Double precision = NumTraits<Double>::dummy_precision()
+inline bool isSubsetOf(
+    const DenseBase<OtherDerivedType>& other,
+    Scalar precision = NumTraits<Scalar>::dummy_precision()
 ) const {
     return derived().binaryExpr(
         other.derived(),
         [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.contain(second_argument, precision);
+            return first_argument.isSubsetOf(second_argument, precision.lower());
+        }
+    ).all();
+}
+
+template<class OtherDerivedType>
+inline bool isProperSubsetOf(
+    const DenseBase<OtherDerivedType>& other,
+    Scalar precision = NumTraits<Scalar>::dummy_precision()
+) const {
+    return derived().binaryExpr(
+        other.derived(),
+        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
+            return first_argument.isProperSubsetOf(second_argument, precision.lower());
+        }
+    ).all();
+}
+
+template<class OtherDerivedType>
+inline bool isSupersetOf(
+    const DenseBase<OtherDerivedType>& other,
+    Scalar precision = NumTraits<Scalar>::dummy_precision()
+) const {
+    return derived().binaryExpr(
+        other.derived(),
+        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
+            return first_argument.isSupersetOf(second_argument, precision.lower());
+        }
+    ).all();
+}
+
+template<class OtherDerivedType>
+inline bool isProperSupersetOf(
+    const DenseBase<OtherDerivedType>& other,
+    Scalar precision = NumTraits<Scalar>::dummy_precision()
+) const {
+    return derived().binaryExpr(
+        other.derived(),
+        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
+            return first_argument.isProperSupersetOf(second_argument, precision.lower());
         }
     ).all();
 }
 
 template <class OtherDerivedType>
-inline auto hull(const EigenBase<OtherDerivedType>& other) const -> 
-    decltype(
-        derived().binaryExpr(
-            other.derived(),
-            [] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-                return first_argument.hull(second_argument);
-            }
-        )
-    ) {
-    return derived().binaryExpr(
-        other.derived(),
-        [] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.hull(second_argument);
-        }
-    );
+inline auto hull(const DenseBase<OtherDerivedType>& other) const ->
+    decltype(derived().binaryExpr(other.derived(), HullOperation())) {
+    return derived().binaryExpr(other.derived(), HullOperation());
 }
 
 template <class OtherDerivedType>
-inline auto hull(const EigenBase<OtherDerivedType>& other) const -> 
-    decltype(
-        derived().binaryExpr(
-            other.derived(),
-            [] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-                return first_argument.intersection(second_argument);
-            }
-        )
-    ) {
-    return derived().binaryExpr(
-        other.derived(),
-        [] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.intersection(second_argument);
-        }
-    );
+inline auto intersection(const DenseBase<OtherDerivedType>& other) const ->
+    decltype(derived().binaryExpr(other.derived(), HullOperation())) {
+    return derived().binaryExpr(other.derived(), IntersectionOperation());
+}
+
+inline auto bounds() const -> decltype(derived().cast<OpenSolid::Interval>()) {
+    return derived().cast<OpenSolid::Interval>();
+}
+
+inline std::size_t hashValue() const {
+    HashVisitor visitor;
+    derived().visit(visitor);
+    return visitor.result;
 }
 
 inline static auto LinSpaced(Index size, const OpenSolid::Interval& range) ->

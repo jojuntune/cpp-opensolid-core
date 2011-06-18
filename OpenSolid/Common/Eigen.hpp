@@ -24,6 +24,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Scalar/Double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
@@ -216,6 +217,65 @@ namespace Eigen
         MatrixColIterator(const MatrixColIterator<MatrixType>& other);
         
         static typename MatrixType::ColXpr block(MatrixType& matrix, int index);
+    };
+    
+    struct LowerOperation()
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct UpperOperation()
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct MedianOperation()
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct WidthOperation()
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct HullOperation()
+    {
+        typedef OpenSolid::Interval result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Interval operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct IntersectionOperation()
+    {
+        typedef OpenSolid::Interval result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Interval operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct HashVisitor
+    {
+        std::size_t result;
+        
+        template <class ScalarType>
+        inline void init(ScalarType argument, int, int);
+        
+        template <class ScalarType>
+        inline void operator()(ScalarType argument, int, int);
     };
 }
 

@@ -37,7 +37,7 @@ namespace OpenSolid
 namespace OpenSolid
 {    
     template <class Type>
-    inline std::size_t hash_value(const Type& argument) {return Traits<Type>::hash(argument);}
+    inline std::size_t hash_value(const Type& argument) {return argument.hashValue();}
 }
 
 #endif

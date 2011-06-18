@@ -29,8 +29,8 @@ namespace OpenSolid
     class Axis : public Datum<dimensions_, 1>
     {
     public:
-        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<double, dimensions_, 1> Matrix;
+        typedef Eigen::Matrix<Double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<Double, dimensions_, 1> Matrix;
         
         Axis();
         Axis(const Vector& origin, const Vector& vector);
@@ -42,10 +42,10 @@ namespace OpenSolid
         Axis<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
     };
     
-    typedef Axis<2> Axis2d;
-    typedef Axis<3> Axis3d;
-    typedef Axis<4> Axis4d;
-    typedef Axis<Dynamic> AxisXd;
+    typedef Axis<2> Axis2D;
+    typedef Axis<3> Axis3D;
+    typedef Axis<4> Axis4D;
+    typedef Axis<Dynamic> AxisXD;
 }
 
 ////////// Implementation //////////

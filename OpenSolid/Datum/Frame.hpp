@@ -29,8 +29,8 @@ namespace OpenSolid
     class Frame : public Datum<dimensions_, dimensions_>
     {
     public:
-        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<double, dimensions_, dimensions_> Matrix;
+        typedef Eigen::Matrix<Double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<Double, dimensions_, dimensions_> Matrix;
         
         Frame();
         explicit Frame(int size);
@@ -47,10 +47,10 @@ namespace OpenSolid
         Frame<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
     };
     
-    typedef Frame<2> Frame2d;
-    typedef Frame<3> Frame3d;
-    typedef Frame<4> Frame4d;
-    typedef Frame<Dynamic> FrameXd;
+    typedef Frame<2> Frame2D;
+    typedef Frame<3> Frame3D;
+    typedef Frame<4> Frame4D;
+    typedef Frame<Dynamic> FrameXD;
 }
 
 ////////// Implementation //////////
