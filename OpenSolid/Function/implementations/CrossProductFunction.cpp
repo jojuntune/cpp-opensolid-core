@@ -32,9 +32,9 @@ namespace OpenSolid
     
     int CrossProductFunction::dimensions() const {return 3;}
     
-    void CrossProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        Matrix3Xd first_values = firstOperand()(parameter_values);
-        Matrix3Xd second_values = secondOperand()(parameter_values);
+    void CrossProductFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+        Matrix3XD first_values = firstOperand()(parameter_values);
+        Matrix3XD second_values = secondOperand()(parameter_values);
         for (int i = 0; i < results.cols(); ++i) {
             results.col(i) = first_values.col(i).cross(second_values.col(i));
         }

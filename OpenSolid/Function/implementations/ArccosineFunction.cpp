@@ -29,7 +29,7 @@ namespace OpenSolid
     
     int ArccosineFunction::dimensions() const {return 1;}
     
-    void ArccosineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void ArccosineFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = acos(operand()(parameter_values).array());
     }
     

@@ -27,7 +27,7 @@ namespace OpenSolid
     
     int SquaredNormFunction::dimensions() const {return 1;}
     
-    void SquaredNormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void SquaredNormFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = operand()(parameter_values).colwise().squaredNorm();
     }
     

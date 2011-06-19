@@ -30,7 +30,7 @@ namespace OpenSolid
     
     int SumFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void SumFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void SumFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = firstOperand()(parameter_values) + secondOperand()(parameter_values);
     }
     

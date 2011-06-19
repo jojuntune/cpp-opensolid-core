@@ -32,7 +32,7 @@ namespace OpenSolid
     
     int DotProductFunction::dimensions() const {return 1;}
     
-    void DotProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void DotProductFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = firstOperand()(parameter_values).cwiseProduct(
             secondOperand()(parameter_values)
         ).colwise().sum();

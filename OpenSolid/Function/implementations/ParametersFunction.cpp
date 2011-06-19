@@ -32,7 +32,7 @@ namespace OpenSolid
     
     int ParametersFunction::dimensions() const {return num();}
     
-    void ParametersFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void ParametersFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = parameter_values.middleRows(index(), num());
     }
     
@@ -42,9 +42,9 @@ namespace OpenSolid
 
     void ParametersFunction::getDerivative(int index, Function& result) const {
         if (_index <= index && index < _index + num()) {
-            result = VectorXd::Unit(num(), index - _index);
+            result = VectorXD::Unit(num(), index - _index);
         } else {
-            result = VectorXd::Zero(num());
+            result = VectorXD::Zero(num());
         }
     }
     

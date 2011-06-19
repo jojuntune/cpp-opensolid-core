@@ -18,21 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "Domain.hpp"
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Function/Function.hpp>
 
 namespace OpenSolid
 {
-    Set<Geometry> Domain::rectangularBoundaries(const VectorXI& bounds) {
+    Set<Geometry, VectorXI> Domain::rectangularBoundaries(const VectorXI& bounds) {
         int dims = bounds.size();
         std::vector<Geometry> list;
         if (dims == 1) {
-            list.push_back(bounds.scalar().lower());
-            list.push_back(bounds.scalar().upper());
+            list.push_back(bounds.lower());
+            list.push_back(bounds.upper());
         } else {
             VectorXI geometry_domain_bounds = bounds.tail(dims - 1);
-            MatrixXd geometry_domain_unit_vectors = MatrixXd::Zero(dims, dims - 1);
+            MatrixXD geometry_domain_unit_vectors = MatrixXD::Zero(dims, dims - 1);
             geometry_domain_unit_vectors.diagonal(-1).setOnes();
-            VectorXd geometry_domain_origin = VectorXd::Zero(dims, 0);
+            VectorXD geometry_domain_origin = VectorXD::Zero(dims, 0);
             geometry_domain_origin(0) = bounds(0).lower();
             list.push_back(
                 Geometry(
@@ -74,7 +75,7 @@ namespace OpenSolid
     Domain Domain::concatenate(const Domain& other) const {
         if (empty()) {return other;}
         if (other.empty()) {return *this;}
-        Set<Geometry> result_boundaries;
+        Set<Geometry, VectorXI> result_boundaries;
         for (auto i = boundaries().begin(); i != boundaries().end(); ++i) {
             result_boundaries.insert(
                 i->concatenate(Function::Identity(other.dimensions())(other))

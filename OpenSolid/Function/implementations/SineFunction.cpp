@@ -29,7 +29,7 @@ namespace OpenSolid
     
     int SineFunction::dimensions() const {return 1;}
     
-    void SineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void SineFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = operand()(parameter_values).array().sin();
     }
     

@@ -86,13 +86,13 @@ public:
     }
     
     void testLinSpaced() {
-        VectorXd x = VectorXd::LinSpaced(3, 1, 2);
-        VectorXd y = VectorXd::LinSpaced(3, Interval(1, 2));
+        VectorXD x = VectorXD::LinSpaced(3, 1, 2);
+        VectorXD y = VectorXD::LinSpaced(3, Interval(1, 2));
         TS_ASSERT_EQUALS(x, Vector3D(1, 1.5, 2));
         TS_ASSERT_EQUALS(y, Vector3D(1, 1.5, 2));
         
-        RowVectorXd a = RowVectorXd::LinSpaced(3, 1, 2);
-        RowVectorXd b = RowVectorXd::LinSpaced(3, Interval(1, 2));
+        RowVectorXD a = RowVectorXD::LinSpaced(3, 1, 2);
+        RowVectorXD b = RowVectorXD::LinSpaced(3, Interval(1, 2));
         TS_ASSERT_EQUALS(a, RowVector3D(1, 1.5, 2));
         TS_ASSERT_EQUALS(b, RowVector3D(1, 1.5, 2));
         
@@ -110,7 +110,7 @@ public:
     }
     
     void testIteration() {
-        RowVectorXd vector;
+        RowVectorXD vector;
         std::vector<Double> list;
         list.push_back(1);
         list.push_back(2);

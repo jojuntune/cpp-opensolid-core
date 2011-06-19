@@ -28,11 +28,11 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    MatrixXd* value(const Function& function) {
+    MatrixXD* value(const Function& function) {
         return new MatrixXd(function.as<ConstantFunction>().value());
     }
     
-    MatrixXd* callDouble(const Function& function, double argument) {
+    MatrixXD* callDouble(const Function& function, double argument) {
         return new MatrixXd(function(argument));
     }
     

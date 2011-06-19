@@ -29,8 +29,8 @@ namespace OpenSolid
     
     int TangentFunction::dimensions() const {return 1;}
     
-    void TangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd operand_values = operand()(parameter_values);
+    void TangentFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+        MatrixXD operand_values = operand()(parameter_values);
         results = operand_values.array().sin() / operand_values.array().cos();
     }
     

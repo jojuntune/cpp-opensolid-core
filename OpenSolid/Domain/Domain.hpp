@@ -23,33 +23,35 @@
  
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Set/Set.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Geometry/Traits.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {
+    class Geometry;
+    
     class Domain
     {
     private:
-        Set<Geometry> _boundaries;
+        Set<Geometry, VectorXI> _boundaries;
         
-        OPENSOLID_CORE_EXPORT static Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
+        OPENSOLID_CORE_EXPORT static Set<Geometry, VectorXI> rectangularBoundaries(
+            const VectorXI& bounds
+        );
     public:
         typedef VectorXI Bounds;
         
         Domain();
-        Domain(const Set<Geometry>& geometry);
+        Domain(const Set<Geometry, VectorXI>& geometry);
         Domain(const Interval& bounds);
         
         template <class DerivedType>
         Domain(const EigenBase<DerivedType>& bounds);
         
-        const Set<Geometry>& boundaries() const;
+        const Set<Geometry, VectorXI>& boundaries() const;
         bool empty() const;
         VectorXI bounds() const;
-        Interval interval() const;
+        std::size_t hashValue() const;
         int dimensions() const;
         
         bool operator==(const Domain& other) const;
@@ -61,19 +63,12 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 #include <OpenSolid/Geometry/Geometry.hpp>
-#include "Traits.hpp"
 
 namespace OpenSolid
 {
-    inline VectorXI Traits<Domain>::bounds(const Domain& domain) {return domain.bounds();}
-    
-    inline std::size_t Traits<Domain>::hash(const Domain& domain) {
-        return Traits<Set<Geometry>>::hash(domain.boundaries());
-    }
-    
     inline Domain::Domain() : _boundaries() {}
     
-    inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
+    inline Domain::Domain(const Set<Geometry, VectorXI>& boundaries) : _boundaries(boundaries) {}
     
     inline Domain::Domain(const Interval& bounds) {
         _boundaries = rectangularBoundaries(VectorXI::Constant(1, bounds));
@@ -84,7 +79,7 @@ namespace OpenSolid
         _boundaries = rectangularBoundaries(bounds);
     }
     
-    inline const Set<Geometry>& Domain::boundaries() const {return _boundaries;}
+    inline const Set<Geometry, VectorXI>& Domain::boundaries() const {return _boundaries;}
     
     inline bool Domain::empty() const {return boundaries().empty();}
     
@@ -96,14 +91,7 @@ namespace OpenSolid
         }
     }
     
-    inline Interval Domain::interval() const {
-        assert(dimensions() == 1);
-        if (boundaries().empty()) {
-            return Interval::Empty();
-        } else {
-            return boundaries().bounds().scalar();
-        }
-    }
+    inline std::size_t Domain::hashValue() const {return boundaries().hashValue();}
     
     inline int Domain::dimensions() const {return bounds().size();}
         

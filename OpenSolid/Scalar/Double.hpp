@@ -27,7 +27,14 @@
 
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/config.hpp>
 #include <OpenSolid/Scalar/ScalarBase.hpp>
+
+namespace Eigen
+{
+    template <class DerivedType>
+    struct EigenBase;
+}
 
 namespace OpenSolid
 {
@@ -38,12 +45,22 @@ namespace OpenSolid
     private:
         double _value;
     public:
+        typedef ScalarBase<Double> Base;
+        typedef Interval Bounds;
+
         static Double defaultPrecision();
         
         Double();
+        Double(int value);
+        Double(float value);
         Double(double value);
         
-        double& value();
+        template <class DerivedType>
+        Double(const Eigen::EigenBase<DerivedType>& matrix);
+        
+        template <class DerivedType>
+        void operator=(const Eigen::EigenBase<DerivedType>& matrix);
+        
         double value() const;
         operator double() const;
         
@@ -62,75 +79,71 @@ namespace OpenSolid
         Interval intersection(Double argument) const;
         Interval intersection(Interval argument) const;
         
-        bool operator==(Double argument);
-        bool operator!=(Double argument);
-        bool operator<(Double argument);
-        bool operator>(Double argument);
-        bool operator<=(Double argument);
-        bool operator>=(Double argument);
+        using Base::isApprox;
+        using Base::isEqualTo;
+        using Base::isLessThan;
+        using Base::isGreaterThan;
+        using Base::isLessThanOrEqualTo;
+        using Base::isGreaterThanOrEqualTo;
+        using Base::overlaps;
+        using Base::isSubsetOf;
+        using Base::isProperSubsetOf;
+        using Base::isSupersetOf;
+        using Base::isProperSupersetOf;
         
-        bool isZero(Double precision = defaultPrecision()) const;
-        bool isApprox(Double argument, Double precision = defaultPrecision()) const;
-        bool isApprox(Interval argument, Double precision = defaultPrecision()) const;
-        bool isEqualTo(Double argument, Double precision = defaultPrecision()) const;
-        bool isEqualTo(Interval argument, Double precision = defaultPrecision()) const;
-        bool isLessThan(Double argument, Double precision = defaultPrecision()) const;
-        bool isLessThan(Interval argument, Double precision = defaultPrecision()) const;
-        bool isGreaterThan(Double argument, Double precision = defaultPrecision()) const;
-        bool isGreaterThan(Interval argument, Double precision = defaultPrecision()) const;
-        bool isLessThanOrEqualTo(Double argument, Double precision = defaultPrecision()) const;
-        bool isLessThanOrEqualTo(Interval argument, Double precision = defaultPrecision()) const;
-        bool isGreaterThanOrEqualTo(Double argument, Double precision = defaultPrecision()) const;
-        bool isGreaterThanOrEqualTo(Interval argument, Double precision = defaultPrecision()) const;
+        bool isZero(double precision = OPENSOLID_PRECISION) const;
         
-        bool overlaps(Double argument, Double precision = defaultPrecision()) const;
-        bool overlaps(Interval argument, Double precision = defaultPrecision()) const;
-        bool isSubsetOf(Double argument, Double precision = defaultPrecision()) const;
-        bool isSubsetOf(Interval argument, Double precision = defaultPrecision()) const;
-        bool isProperSubsetOf(Double argument, Double precision = defaultPrecision()) const;
-        bool isProperSubsetOf(Interval argument, Double precision = defaultPrecision()) const;
-        bool isSupersetOf(Double argument, Double precision = defaultPrecision()) const;
-        bool isSupersetOf(Interval argument, Double precision = defaultPrecision()) const;
-        bool isProperSupersetOf(Double argument, Double precision = defaultPrecision()) const;
-        bool isProperSupersetOf(Interval argument, Double precision = defaultPrecision()) const;
+        bool isApprox(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isApprox(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isEqualTo(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isEqualTo(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isLessThan(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThan(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isGreaterThan(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThan(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isLessThanOrEqualTo(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThanOrEqualTo(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isGreaterThanOrEqualTo(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThanOrEqualTo(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool overlaps(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool overlaps(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isSubsetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSubsetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isProperSubsetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSubsetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isSupersetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSupersetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isProperSupersetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSupersetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
         Double& operator+=(Double argument);
         Double& operator-=(Double argument);
         Double& operator*=(Double argument);
         Double& operator/=(Double argument);
-        
-        friend Double operator-(Double argument);
-        friend Double operator+(Double first_argument, Double second_argument);
-        friend Double operator-(Double first_argument, Double second_argument);
-        friend Double operator*(Double first_argument, Double second_argument);
-        friend Double operator/(Double first_argument, Double second_argument);
-    
-        friend Double min(Double first_argument, Double second_argument);
-        friend Double max(Double first_argument, Double second_argument);
-        friend Double abs(Double argument);
-        friend Double sqrt(Double argument);
-        friend Double sin(Double argument);
-        friend Double cos(Double argument);
-        friend Double tan(Double argument);
-        friend Double asin(Double argument);
-        friend Double acos(Double argument);
-        friend Double atan(Double argument);
-        friend Double atan2(Double first_argument, Double second_argument);
-        friend Double exp(Double argument);
-        friend Double log(Double argument);
-        friend Double pow(Double base, Double exponent);
-        
-        friend std::ostream& operator<<(std::ostream& stream, Double argument);
     };
-        
-    Double operator-(Double argument);
-    Double operator+(Double first_argument, Double second_argument);
-    Double operator-(Double first_argument, Double second_argument);
-    Double operator*(Double first_argument, Double second_argument);
-    Double operator/(Double first_argument, Double second_argument);
     
-    Double min(Double first_argument, Double second_argument);
-    Double max(Double first_argument, Double second_argument);
+    using std::abs;
+    using std::sqrt;
+    using std::sin;
+    using std::cos;
+    using std::tan;
+    using std::asin;
+    using std::acos;
+    using std::atan;
+    using std::exp;
+    using std::log;
+    using std::pow;
+    using std::atan2;
     
     Double abs(Double argument);
     Double sqrt(Double argument);
@@ -140,10 +153,24 @@ namespace OpenSolid
     Double asin(Double argument);
     Double acos(Double argument);
     Double atan(Double argument);
-    Double atan2(Double first_argument, Double second_argument);
     Double exp(Double argument);
     Double log(Double argument);
-    Double pow(Double argument);
+
+    Double pow(Double base, Double exponent);
+    Double pow(Double base, int exponent);
+    Double pow(int base, Double exponent);
+    Double pow(Double base, float exponent);
+    Double pow(float base, Double exponent);
+    Double pow(Double base, double exponent);
+    Double pow(double base, Double exponent);
+
+    Double atan2(Double y, Double exponent);
+    Double atan2(Double y, int exponent);
+    Double atan2(int y, Double exponent);
+    Double atan2(Double y, float exponent);
+    Double atan2(float y, Double exponent);
+    Double atan2(Double y, double exponent);
+    Double atan2(double y, Double exponent);
 
     std::ostream& operator<<(std::ostream& stream, Double argument);
 }
@@ -164,6 +191,15 @@ namespace Eigen
         struct significant_decimals_default_impl<OpenSolid::Double, false>
         {
             static inline int run();
+        };
+        
+        template <class ScalarType>
+        struct is_arithmetic;
+        
+        template <>
+        struct is_arithmetic<OpenSolid::Double>
+        {
+            static const bool value = true;
         };
     }
     
@@ -194,17 +230,27 @@ namespace Eigen
 
 ////////// Implementation //////////
 
-#include "Interval.hpp"
+#include <OpenSolid/Scalar/operators.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 
 namespace OpenSolid
 {
-    inline Double Double::defaultPrecision() {return 1e-12;}
-    
     inline Double::Double() {}
     
+    inline Double::Double(int value) : _value(value) {}
+    
+    inline Double::Double(float value) : _value(value) {}
+    
     inline Double::Double(double value) : _value(value) {}
-
-    inline double& Double::value() {return _value;}
+        
+    template <class DerivedType>
+    inline Double::Double(const Eigen::EigenBase<DerivedType>& matrix) :
+        _value(matrix.derived().eval().coeff(0, 0).value()) {}
+    
+    template <class DerivedType>
+    inline void Double::operator=(const Eigen::EigenBase<DerivedType>& matrix) {
+        _value = matrix.derived().eval().coeff(0, 0).value();
+    }
 
     inline double Double::value() const {return _value;}
     
@@ -232,7 +278,7 @@ namespace OpenSolid
         if (*this < argument.lower()) {
             return Interval(*this, argument.upper());
         } else if (argument.upper() < *this) {
-            return Interval(argument.lower(), *this)
+            return Interval(argument.lower(), *this);
         } else {
             return argument;
         }
@@ -249,109 +295,97 @@ namespace OpenSolid
             return Interval::Empty();
         }
     }
-    
-    inline bool Double::operator==(Double other) {return _value == other._value;}
-    
-    inline bool Double::operator!=(Double other) {return _value != other._value;}
-    
-    inline bool Double::operator<(Double other) {return _value < other._value;}
-    
-    inline bool Double::operator>(Double other) {return _value > other._value;}
-    
-    inline bool Double::operator<=(Double other) {return _value <= other._value;}
-    
-    inline bool Double::operator>=(Double other) {return _value >= other._value;}
         
-    inline bool Double::isZero(Double precision) const {return std::abs(_value) < precision._value;}
+    inline bool Double::isZero(double precision) const {return std::abs(_value) < precision;}
     
-    inline bool Double::isApprox(Double argument, Double precision) const {
-        return std::abs(_value - argument._value) < precision._value;
+    inline bool Double::isApprox(Double argument, double precision) const {
+        return std::abs(_value - argument._value) < precision;
     }
     
-    inline bool Double::isApprox(Interval argument, Double precision) const {
+    inline bool Double::isApprox(Interval argument, double precision) const {
         return this->isApprox(argument.lower(), precision) &&
             this->isApprox(argument.upper(), precision);
     }
     
-    inline bool Double::isEqualTo(Double argument, Double precision) const {
+    inline bool Double::isEqualTo(Double argument, double precision) const {
         return this->isApprox(argument, precision);
     }
     
-    inline bool Double::isEqualTo(Interval argument, Double precision) const {
+    inline bool Double::isEqualTo(Interval argument, double precision) const {
         return this->isApprox(argument, precision);
     }
     
-    inline bool Double::isLessThan(Double argument, Double precision) const {
-        return _value < argument._value - precision._value;
+    inline bool Double::isLessThan(Double argument, double precision) const {
+        return _value < argument._value - precision;
     }
     
-    inline bool Double::isLessThan(Interval argument, Double precision) const {
+    inline bool Double::isLessThan(Interval argument, double precision) const {
         return this->isLessThan(argument.lower(), precision);
     }
     
-    inline bool Double::isGreaterThan(Double argument, Double precision) const {
-        return _value > argument._value + precision._value;
+    inline bool Double::isGreaterThan(Double argument, double precision) const {
+        return _value > argument._value + precision;
     }
     
-    inline bool Double::isGreaterThan(Interval argument, Double precision) const {
+    inline bool Double::isGreaterThan(Interval argument, double precision) const {
         return this->isGreaterThan(argument.upper(), precision);
     }
 
-    inline bool Double::isLessThanOrEqualTo(Double argument, Double precision) const {
-        return _value < argument._value + precision._value;
+    inline bool Double::isLessThanOrEqualTo(Double argument, double precision) const {
+        return _value < argument._value + precision;
     }
 
-    inline bool Double::isLessThanOrEqualTo(Interval argument, Double precision) const {
+    inline bool Double::isLessThanOrEqualTo(Interval argument, double precision) const {
         return this->isLessThanOrEqualTo(argument.lower(), precision);
     }
 
-    inline bool Double::isGreaterThanOrEqualTo(Double argument, Double precision) const {
-        return _value > argument._value - precision._value;
+    inline bool Double::isGreaterThanOrEqualTo(Double argument, double precision) const {
+        return _value > argument._value - precision;
     }
 
-    inline bool Double::isGreaterThanOrEqualTo(Interval argument, Double precision) const {
+    inline bool Double::isGreaterThanOrEqualTo(Interval argument, double precision) const {
         return this->isGreaterThanOrEqualTo(argument.upper(), precision);
     }
 
-    inline bool Double::overlaps(Double argument, Double precision) const {
+    inline bool Double::overlaps(Double argument, double precision) const {
         return this->isEqualTo(argument, precision);
     }
 
-    inline bool Double::overlaps(Interval argument, Double precision) const {
+    inline bool Double::overlaps(Interval argument, double precision) const {
         this->isGreaterThanOrEqualTo(argument.lower(), precision) &&
             this->isLessThanOrEqualTo(argument.upper(), precision);
     }
 
-    inline bool Double::isSubsetOf(Double argument, Double precision) const {
+    inline bool Double::isSubsetOf(Double argument, double precision) const {
         return this->isEqualTo(argument, precision);
     }
 
-    inline bool Double::isSubsetOf(Interval argument, Double precision) const {
+    inline bool Double::isSubsetOf(Interval argument, double precision) const {
         return this->overlaps(argument, precision);
     }
 
-    inline bool Double::isProperSubsetOf(Double argument, Double precision) const {
+    inline bool Double::isProperSubsetOf(Double argument, double precision) const {
         return false;
     }
 
-    inline bool Double::isProperSubsetOf(Interval argument, Double precision) const {
+    inline bool Double::isProperSubsetOf(Interval argument, double precision) const {
         return this->isGreaterThan(argument.lower(), precision) &&
             this->isLessThan(argument.upper(), precision);
     }
 
-    inline bool Double::isSupersetOf(Double argument, Double precision) const {
+    inline bool Double::isSupersetOf(Double argument, double precision) const {
         return this->isEqualTo(argument, precision);
     }
 
-    inline bool Double::isSupersetOf(Interval argument, Double precision) const {
+    inline bool Double::isSupersetOf(Interval argument, double precision) const {
         return this->isEqualTo(argument, precision);
     }
 
-    inline bool Double::isProperSupersetOf(Double argument, Double precision) const {
+    inline bool Double::isProperSupersetOf(Double argument, double precision) const {
         return false;
     }
 
-    inline bool Double::isProperSupersetOf(Interval argument, Double precision) const {
+    inline bool Double::isProperSupersetOf(Interval argument, double precision) const {
         return false;
     }
 
@@ -376,95 +410,47 @@ namespace OpenSolid
         return *this;
     }
     
-    inline Double operator-(Double argument) {return -argument._value;}
+    inline Double abs(Double argument) {return std::abs(argument.value());}
     
-    inline Double operator+(Double first_argument, Double second_argument) {
-        return first_argument._value + second_argument._value;
-    }
+    inline Double sqrt(Double argument) {return std::sqrt(argument.value());}
     
-    inline Double operator-(Double first_argument, Double second_argument) {
-        return first_argument._value - second_argument._value;
-    }
+    inline Double sin(Double argument) {return std::sin(argument.value());}
     
-    inline Double operator*(Double first_argument, Double second_argument) {
-        return first_argument._value * second_argument._value;
-    }
+    inline Double cos(Double argument) {return std::cos(argument.value());}
     
-    inline Double operator/(Double first_argument, Double second_argument) {
-        return first_argument._value / second_argument._value;
-    }
+    inline Double tan(Double argument) {return std::tan(argument.value());}
     
-    inline Double min(Double first_argument, Double second_argument) {
-        return std::min(first_argument._value, second_argument._value);
-    }
+    inline Double asin(Double argument) {return std::asin(argument.value());}
     
-    inline Double max(Double first_argument, Double second_argument) {
-        return std::max(first_argument._value, second_argument._value);
-    }
+    inline Double acos(Double argument) {return std::acos(argument.value());}
     
-    inline Double abs(Double argument) {return std::abs(argument._value);}
+    inline Double atan(Double argument) {return std::atan(argument.value());}
     
-    inline Double sqrt(Double argument) {return std::sqrt(argument._value);}
+    inline Double exp(Double argument) {return std::exp(argument.value());}
     
-    inline Double sin(Double argument) {return std::sin(argument._value);}
-    
-    inline Double cos(Double argument) {return std::cos(argument._value);}
-    
-    inline Double tan(Double argument) {return std::tan(argument._value);}
-    
-    inline Double asin(Double argument) {return std::asin(argument._value);}
-    
-    inline Double acos(Double argument) {return std::acos(argument._value);}
-    
-    inline Double atan(Double argument) {return std::atan(argument._value);}
-    
-    inline Double atan2(Double y, Double x) {return std::atan2(y._value, x._value);}
-    
-    inline Double exp(Double argument) {return std::exp(argument._value);}
-    
-    inline Double log(Double argument) {return std::log(argument._value);}
+    inline Double log(Double argument) {return std::log(argument.value());}
     
     inline Double pow(Double base, Double exponent) {
-        return std::pow(base._value, exponent._value);
+        return std::pow(base.value(), exponent.value());
     }
+    
+    inline Double atan2(Double y, Double x) {return std::atan2(y.value(), x.value());}
+
+    inline Double atan2(Double y, int x) {return std::atan2(y.value(), double(x));}
+
+    inline Double atan2(int y, Double x) {return std::atan2(double(y), x.value());}
+
+    inline Double atan2(Double y, float x) {return std::atan2(y.value(), double(x));}
+
+    inline Double atan2(float y, Double x) {return std::atan2(double(y), x.value());}
+
+    inline Double atan2(Double y, double x) {return std::atan2(y.value(), x);}
+
+    inline Double atan2(double y, Double x) {return std::atan2(y, x.value());}
 
     inline std::ostream& operator<<(std::ostream& stream, Double argument) {
-        stream << argument._value;
+        stream << argument.value();
         return stream;
-    }
-}
-
-namespace Eigen
-{   
-    namespace internal
-    {
-        inline OpenSolid::Double conj(OpenSolid::Double argument) {return argument;}
-        
-        inline OpenSolid::Double real(OpenSolid::Double argument) {return argument;}
-        
-        inline OpenSolid::Double imag(OpenSolid::Double) {return 0.0;}
-        
-        inline OpenSolid::Double abs2(OpenSolid::Double argument) {return argument.squared();}
-        
-        inline int significant_decimals_default_impl<OpenSolid::Double, false>::run() {
-            return significant_decimals_default_impl<double, false>::run();
-        }
-    }
-    
-    inline OpenSolid::Double NumTraits<OpenSolid::Double>::epsilon() {
-        return std::numeric_limits<double>::epsilon();
-    }
-    
-    inline OpenSolid::Double NumTraits<OpenSolid::Double>::dummy_precision() {
-        return OpenSolid::Double::defaultPrecision();
-    }
-    
-    inline OpenSolid::Double NumTraits<OpenSolid::Double>::lowest() {
-        return std::numeric_limits<double>::min();
-    }
-    
-    inline OpenSolid::Double NumTraits<OpenSolid::Double>::highest() {
-        return std::numeric_limits<double>::max();
     }
 }
 

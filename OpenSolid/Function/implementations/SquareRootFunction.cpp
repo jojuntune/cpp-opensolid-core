@@ -31,18 +31,18 @@ namespace OpenSolid
     
     struct SquareRoot
     {
-        inline double operator()(double value) const {
-            assert(!Comparison::lesser(value, 0.0));
+        inline Double operator()(Double value) const {
+            assert(value.isGreaterThanOrEqualTo(0.0));
             return value > 0.0 ? sqrt(value) : 0.0;
         }
         
         inline Interval operator()(const Interval& bounds) const {
-            assert(!Comparison::lesser(bounds, 0.0));
+            assert(bounds.isGreaterThanOrEqualTo(0.0));
             return Interval(operator()(bounds.lower()), operator()(bounds.upper()));
         }
     };
     
-    void SquareRootFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void SquareRootFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = operand()(parameter_values).unaryExpr(SquareRoot());
     }
     

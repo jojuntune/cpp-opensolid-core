@@ -22,7 +22,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Common/Comparison.hpp>
+#include <OpenSolid/Common/HashFunction.hpp>
 #include "Geometry.hpp"
 
 using namespace OpenSolid;
@@ -31,45 +31,45 @@ class GeometryTestSuite : public CxxTest::TestSuite
 {
 public:
     void testLine() {
-        Vector3d start(1, 2, 3);
-        Vector3d end(4, 5, 6);
+        Vector3D start(1, 2, 3);
+        Vector3D end(4, 5, 6);
         Geometry line = Geometry::Line(start, end);
         std::cout << line(0.5) << std::endl;
-        TS_ASSERT(Comparison::equal(line(0.5), Vector3d(2.5, 3.5, 4.5)));
+        TS_ASSERT(line(0.5).isEqualTo(Vector3D(2.5, 3.5, 4.5)));
     }
     
     void testArc() {
-        Vector3d center(1, 1, 1);
-        Vector3d start(3, 1, 1);
-        Vector3d end(1, -1, 1);
-        Geometry arc = Geometry::Arc(Axis3d(center, Vector3d::UnitZ()), start, end);
+        Vector3D center(1, 1, 1);
+        Vector3D start(3, 1, 1);
+        Vector3D end(1, -1, 1);
+        Geometry arc = Geometry::Arc(Axis3D(center, Vector3D::UnitZ()), start, end);
         Interval domain = arc.domain().interval();
         std::cout << "Domain interval: " << domain << std::endl;
-        RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, domain);
+        RowVectorXD parameter_values = RowVectorXD::LinSpaced(13, domain);
         std::cout << "Parameter values:" << std::endl;
         std::cout << parameter_values << std::endl << std::endl;
         std::cout << "Values:" << std::endl;
         std::cout << arc(parameter_values) << std::endl;
-        TS_ASSERT(Comparison::equal(arc(M_PI / 2), Vector3d(1, 3, 1)));
-        TS_ASSERT(Comparison::equal(arc(3 * M_PI / 2), Vector3d(1, -1, 1)));
+        TS_ASSERT(arc(M_PI / 2).isEqualTo(Vector3D(1, 3, 1)));
+        TS_ASSERT(arc(3 * M_PI / 2).isEqualTo(Vector3D(1, -1, 1)));
         
         Geometry derivative = arc.derivative();
         std::cout << "Derivative function: " << std::endl << derivative.function() << std::endl;
         std::cout << "Derivative values:" << std::endl;
         std::cout << derivative(parameter_values) << std::endl;
-        TS_ASSERT(Comparison::equal(derivative(0.0), Vector3d(0, 2, 0)));
-        TS_ASSERT(Comparison::equal(derivative(M_PI / 2), Vector3d(-2, 0, 0)));
-        TS_ASSERT(Comparison::equal(derivative(M_PI), Vector3d(0, -2, 0)));
-        TS_ASSERT(Comparison::equal(derivative(3 * M_PI / 2), Vector3d(2, 0, 0)));
+        TS_ASSERT(derivative(0.0).isEqualTo(Vector3D(0, 2, 0)));
+        TS_ASSERT(derivative(M_PI / 2).isEqualTo(Vector3D(-2, 0, 0)));
+        TS_ASSERT(derivative(M_PI).isEqualTo(Vector3D(0, -2, 0)));
+        TS_ASSERT(derivative(3 * M_PI / 2).isEqualTo(Vector3D(2, 0, 0)));
         
         Geometry tangent = arc.tangent();
         std::cout << "Tangent function: " << std::endl << tangent.function() << std::endl;
         std::cout << "Tangent values:" << std::endl;
         std::cout << tangent(parameter_values) << std::endl;
-        TS_ASSERT(Comparison::equal(tangent(0.0), Vector3d(0, 1, 0)));
-        TS_ASSERT(Comparison::equal(tangent(M_PI / 2), Vector3d(-1, 0, 0)));
-        TS_ASSERT(Comparison::equal(tangent(M_PI), Vector3d(0, -1, 0)));
-        TS_ASSERT(Comparison::equal(tangent(3 * M_PI / 2), Vector3d(1, 0, 0)));
+        TS_ASSERT(tangent(0.0).isEqualTo(Vector3D(0, 1, 0)));
+        TS_ASSERT(tangent(M_PI / 2).isEqualTo(Vector3D(-1, 0, 0)));
+        TS_ASSERT(tangent(M_PI).isEqualTo(Vector3D(0, -1, 0)));
+        TS_ASSERT(tangent(3 * M_PI / 2).isEqualTo(Vector3D(1, 0, 0)));
         
         Geometry second_derivative = arc.derivative().derivative();
         std::cout << "Second derivative function: " << std::endl;
@@ -77,41 +77,41 @@ public:
         std::cout << "Second derivative values:" << std::endl;
         std::cout << second_derivative(parameter_values) << std::endl;
         
-        TS_ASSERT(Comparison::equal(second_derivative(0.0), Vector3d(-2, 0, 0)));
-        TS_ASSERT(Comparison::equal(second_derivative(M_PI / 2), Vector3d(0, -2, 0)));
-        TS_ASSERT(Comparison::equal(second_derivative(M_PI), Vector3d(2, 0, 0)));
-        TS_ASSERT(Comparison::equal(second_derivative(M_PI * 3 / 2), Vector3d(0, 2, 0)));
+        TS_ASSERT(second_derivative(0.0).isEqualTo(Vector3D(-2, 0, 0)));
+        TS_ASSERT(second_derivative(M_PI / 2).isEqualTo(Vector3D(0, -2, 0)));
+        TS_ASSERT(second_derivative(M_PI.isEqualTo(Vector3D(2, 0, 0)));
+        TS_ASSERT(second_derivative(M_PI * 3 / 2).isEqualTo(Vector3D(0, 2, 0)));
         
         Geometry normal = arc.tangent().tangent();
         std::cout << "Normal function: " << std::endl << normal.function() << std::endl;
         std::cout << "Normal values:" << std::endl;
         std::cout << normal(parameter_values) << std::endl;
         
-        TS_ASSERT(Comparison::equal(normal(0.0), Vector3d(-1, 0, 0)));
-        TS_ASSERT(Comparison::equal(normal(M_PI / 2), Vector3d(0, -1, 0)));
-        TS_ASSERT(Comparison::equal(normal(M_PI), Vector3d(1, 0, 0)));
-        TS_ASSERT(Comparison::equal(normal(3 * M_PI / 2), Vector3d(0, 1, 0)));
+        TS_ASSERT(normal(0.0).isEqualTo(Vector3D(-1, 0, 0)));
+        TS_ASSERT(normal(M_PI / 2).isEqualTo(Vector3D(0, -1, 0)));
+        TS_ASSERT(normal(M_PI).isEqualTo(Vector3D(1, 0, 0)));
+        TS_ASSERT(normal(3 * M_PI / 2).isEqualTo(Vector3D(0, 1, 0)));
     }
     
     void testCurveOperations() {
         Geometry parabola(
-            Function::t * Vector3d::UnitX() + Function::t.squaredNorm() * Vector3d::UnitY(),
+            Function::t * Vector3D::UnitX() + Function::t.squaredNorm() * Vector3D::UnitY(),
             Interval(-2, 2)
         );
-        Vector3d tangent = parabola.tangent()(1);
-        double curvature = parabola.curvature()(1).scalar();
-        Vector3d normal = parabola.normal()(1);
-        Vector3d binormal = parabola.binormal()(1);
+        Vector3D tangent = parabola.tangent()(1);
+        Double curvature = parabola.curvature()(1).scalar();
+        Vector3D normal = parabola.normal()(1);
+        Vector3D binormal = parabola.binormal()(1);
         
-        TS_ASSERT(Comparison::equal(parabola.tangent()(1), Vector3d(1, 2, 0).normalized()));
-        TS_ASSERT(Comparison::equal(parabola.curvature()(1).scalar(), 2 / (5 * sqrt(5.0))));
-        TS_ASSERT(Comparison::equal(parabola.normal()(1), Vector3d(-2, 1, 0).normalized()));
-        TS_ASSERT(Comparison::equal(parabola.binormal()(1), Vector3d::UnitZ()));
+        TS_ASSERT(parabola.tangent()(1).isEqualTo(Vector3D(1, 2, 0).normalized()));
+        TS_ASSERT(parabola.curvature()(1).isEqualTo(2 / (5 * sqrt(5.0))));
+        TS_ASSERT(parabola.normal()(1).isEqualTo(Vector3D(-2, 1, 0).normalized()));
+        TS_ASSERT(parabola.binormal()(1).isEqualTo(Vector3D::UnitZ()));
     }
     
     void testHashing() {
-        Geometry line = Geometry::Line(Vector2d::Zero(), Vector2d::Ones());
-        boost::unordered_map<Geometry, std::string> colors;
+        Geometry line = Geometry::Line(Vector2D::Zero(), Vector2D::Ones());
+        boost::unordered_map<Geometry, std::string, HashFunction> colors;
         colors[line] = "red";
         Geometry line_copy = line;
         TS_ASSERT_DIFFERS(colors.find(line_copy), colors.end());

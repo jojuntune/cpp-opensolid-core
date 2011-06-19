@@ -219,7 +219,7 @@ namespace Eigen
         static typename MatrixType::ColXpr block(MatrixType& matrix, int index);
     };
     
-    struct LowerOperation()
+    struct LowerOperation
     {
         typedef OpenSolid::Double result_type;
         
@@ -227,7 +227,7 @@ namespace Eigen
         OpenSolid::Double operator()(ScalarType argument) const;
     };
     
-    struct UpperOperation()
+    struct UpperOperation
     {
         typedef OpenSolid::Double result_type;
         
@@ -235,7 +235,7 @@ namespace Eigen
         OpenSolid::Double operator()(ScalarType argument) const;
     };
     
-    struct MedianOperation()
+    struct MedianOperation
     {
         typedef OpenSolid::Double result_type;
         
@@ -243,7 +243,7 @@ namespace Eigen
         OpenSolid::Double operator()(ScalarType argument) const;
     };
     
-    struct WidthOperation()
+    struct WidthOperation
     {
         typedef OpenSolid::Double result_type;
         
@@ -251,7 +251,7 @@ namespace Eigen
         OpenSolid::Double operator()(ScalarType argument) const;
     };
     
-    struct HullOperation()
+    struct HullOperation
     {
         typedef OpenSolid::Interval result_type;
         
@@ -259,7 +259,7 @@ namespace Eigen
         OpenSolid::Interval operator()(ScalarType first_argument, ScalarType second_argument) const;
     };
     
-    struct IntersectionOperation()
+    struct IntersectionOperation
     {
         typedef OpenSolid::Interval result_type;
         

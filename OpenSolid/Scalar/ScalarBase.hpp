@@ -21,8 +21,10 @@
 #ifndef OPENSOLID__SCALARBASE_HPP
 #define OPENSOLID__SCALARBASE_HPP
 
+#include <OpenSolid/config.hpp>
+
 namespace OpenSolid
-{
+{   
     template <class DerivedType>
     class ScalarBase
     {
@@ -48,13 +50,61 @@ namespace OpenSolid
         const DerivedType* end() const;
         DerivedType* begin();
         DerivedType* end();
+        
+        DerivedType minCoeff() const;
+        DerivedType minCoeff(int* index) const;
+        DerivedType minCoeff(int* row, int* col) const;
+        DerivedType maxCoeff() const;
+        DerivedType maxCoeff(int* index) const;
+        DerivedType maxCoeff(int* row, int* col) const;
+        
+        bool isApprox(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isApprox(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isApprox(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isEqualTo(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isEqualTo(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isEqualTo(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isLessThan(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThan(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThan(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isGreaterThan(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThan(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThan(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isLessThanOrEqualTo(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThanOrEqualTo(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThanOrEqualTo(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isGreaterThanOrEqualTo(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThanOrEqualTo(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThanOrEqualTo(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool overlaps(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool overlaps(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool overlaps(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isSubsetOf(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSubsetOf(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSubsetOf(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isProperSubsetOf(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSubsetOf(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSubsetOf(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isSupersetOf(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSupersetOf(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSupersetOf(double argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isProperSupersetOf(int argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSupersetOf(float argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSupersetOf(double argument, double precision = OPENSOLID_PRECISION) const;
     };
 }
 
 ////////// Implementation //////////
-
-#include "Double.hpp"
-#include "Interval.hpp"
 
 namespace OpenSolid
 {
@@ -140,6 +190,207 @@ namespace OpenSolid
     
     template <class DerivedType>
     inline DerivedType* ScalarBase<DerivedType>::end() {return ++&derived();}
+    
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::minCoeff() const {
+        return derived();
+    }
+    
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::minCoeff(int* index) const {
+        *index = 0;
+        return derived();
+    }
+    
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::minCoeff(int* row, int* col) const {
+        *row = 0;
+        *col = 0;
+        return derived();
+    }
+    
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::maxCoeff() const {
+        return derived();
+    }
+    
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::maxCoeff(int* index) const {
+        *index = 0;
+        return derived();
+    }
+    
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::maxCoeff(int* row, int* col) const {
+        *row = 0;
+        *col = 0;
+        return derived();
+    }
+        
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isApprox(int argument, double precision) const {
+        return derived().isApprox(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isApprox(float argument, double precision) const {
+        return derived().isApprox(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isApprox(double argument, double precision) const {
+        return derived().isApprox(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isEqualTo(int argument, double precision) const {
+        return derived().isEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isEqualTo(float argument, double precision) const {
+        return derived().isEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isEqualTo(double argument, double precision) const {
+        return derived().isEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isLessThan(int argument, double precision) const {
+        return derived().isLessThan(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isLessThan(float argument, double precision) const {
+        return derived().isLessThan(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isLessThan(double argument, double precision) const {
+        return derived().isLessThan(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isGreaterThan(int argument, double precision) const {
+        return derived().isGreaterThan(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isGreaterThan(float argument, double precision) const {
+        return derived().isGreaterThan(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isGreaterThan(double argument, double precision) const {
+        return derived().isGreaterThan(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isLessThanOrEqualTo(int argument, double precision) const {
+        return derived().isLessThanOrEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isLessThanOrEqualTo(float argument, double precision) const {
+        return derived().isLessThanOrEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isLessThanOrEqualTo(double argument, double precision) const {
+        return derived().isLessThanOrEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isGreaterThanOrEqualTo(int argument, double precision) const {
+        return derived().isGreaterThanOrEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isGreaterThanOrEqualTo(float argument, double precision) const {
+        return derived().isGreaterThanOrEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isGreaterThanOrEqualTo(double argument, double precision) const {
+        return derived().isGreaterThanOrEqualTo(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::overlaps(int argument, double precision) const {
+        return derived().overlaps(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::overlaps(float argument, double precision) const {
+        return derived().overlaps(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::overlaps(double argument, double precision) const {
+        return derived().overlaps(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isSubsetOf(int argument, double precision) const {
+        return derived().isSubsetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isSubsetOf(float argument, double precision) const {
+        return derived().isSubsetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isSubsetOf(double argument, double precision) const {
+        return derived().isSubsetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isProperSubsetOf(int argument, double precision) const {
+        return derived().isProperSubsetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isProperSubsetOf(float argument, double precision) const {
+        return derived().isProperSubsetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isProperSubsetOf(double argument, double precision) const {
+        return derived().isProperSubsetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isSupersetOf(int argument, double precision) const {
+        return derived().isSupersetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isSupersetOf(float argument, double precision) const {
+        return derived().isSupersetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isSupersetOf(double argument, double precision) const {
+        return derived().isSupersetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isProperSupersetOf(int argument, double precision) const {
+        return derived().isProperSupersetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isProperSupersetOf(float argument, double precision) const {
+        return derived().isProperSupersetOf(Double(argument), precision);
+    }
+    
+    template <class DerivedType>
+    inline bool ScalarBase<DerivedType>::isProperSupersetOf(double argument, double precision) const {
+        return derived().isProperSupersetOf(Double(argument), precision);
+    }
 }
 
 #endif

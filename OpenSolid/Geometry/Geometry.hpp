@@ -25,19 +25,22 @@
 
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
-{   
+{
+    class Domain;
+    
     class Geometry
     {
     private:
         Function _function;
         Domain _domain;
     public:
+        typedef VectorXI Bounds;
+        
         Geometry();
         Geometry(const Function& function, const Domain& domain);
-        Geometry(double value);
+        Geometry(Double value);
         
         template <class DerivedType>
         Geometry(const EigenBase<DerivedType>& value);
@@ -45,12 +48,14 @@ namespace OpenSolid
         const Function& function() const;
         const Domain& domain() const;
         
-        const VectorXd& value() const;
+        const VectorXD& value() const;
         
         int parameters() const;
         int dimensions() const;
         
         VectorXI bounds() const;
+        std::size_t hashValue() const;
+        
         Set<Geometry> boundaries() const;
         
         template <class ArgumentType>
@@ -72,29 +77,29 @@ namespace OpenSolid
         
         bool operator==(const Geometry& other) const;
         
-        OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
+        OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXD& start, const VectorXD& end);
         
-        OPENSOLID_CORE_EXPORT static Geometry Arc(double radius, const Interval& angle);
+        OPENSOLID_CORE_EXPORT static Geometry Arc(Double radius, const Interval& angle);
         
         OPENSOLID_CORE_EXPORT static Geometry Arc(
-            const Vector2d& center,
-            const Vector2d& start,
-            const Vector2d& end,
+            const Vector2D& center,
+            const Vector2D& start,
+            const Vector2D& end,
             bool counterclockwise
         );
         
         OPENSOLID_CORE_EXPORT static Geometry Arc(
-            const Axis3d& axis,
-            const Vector3d& start,
-            const Vector3d& end
+            const Axis3D& axis,
+            const Vector3D& start,
+            const Vector3D& end
         );
         
-        OPENSOLID_CORE_EXPORT static Geometry Circle(double radius);
+        OPENSOLID_CORE_EXPORT static Geometry Circle(Double radius);
         
         OPENSOLID_CORE_EXPORT static Geometry Helix(
-            double radius,
-            double pitch,
-            const Interval& angle
+            Double radius,
+            Double pitch,
+            Interval angle
         );
     };
 
@@ -120,8 +125,8 @@ namespace OpenSolid
         const Geometry& second_argument
     );
     
-    OPENSOLID_CORE_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
-    OPENSOLID_CORE_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Geometry operator*(const Geometry& geometry, const DatumXD& datum);
+    OPENSOLID_CORE_EXPORT Geometry operator/(const Geometry& geometry, const DatumXD& datum);
     
     OPENSOLID_CORE_EXPORT Geometry cos(const Geometry& argument);
     OPENSOLID_CORE_EXPORT Geometry sin(const Geometry& argument);
@@ -130,19 +135,10 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include "Traits.hpp"
+#include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
 {
-    inline VectorXI Traits<Geometry>::bounds(const Geometry& geometry) {return geometry.bounds();}
-    
-    inline std::size_t Traits<Geometry>::hash(const Geometry& geometry) {
-        std::size_t result = 0;
-        boost::hash_combine(result, geometry.function());
-        boost::hash_combine(result, geometry.domain());
-        return result;
-    }
-    
     inline Geometry::Geometry() : _function(), _domain() {}
     
     inline Geometry::Geometry(const Function& function, const Domain& domain) :
@@ -150,7 +146,7 @@ namespace OpenSolid
         assert(function.isA<ConstantFunction>() || domain.dimensions() == function.parameters());
     }
     
-    inline Geometry::Geometry(double value) : _function(value), _domain() {}
+    inline Geometry::Geometry(Double value) : _function(value), _domain() {}
     
     template <class DerivedType>
     inline Geometry::Geometry(const EigenBase<DerivedType>& value) : _function(value), _domain() {}
@@ -159,7 +155,7 @@ namespace OpenSolid
     
     inline const Domain& Geometry::domain() const {return _domain;}
     
-    inline const VectorXd& Geometry::value() const {
+    inline const VectorXD& Geometry::value() const {
         assert(function().isA<ConstantFunction>());
         return function().as<ConstantFunction>().value();
     }
@@ -169,6 +165,13 @@ namespace OpenSolid
     inline int Geometry::dimensions() const {return function().dimensions();}
     
     inline VectorXI Geometry::bounds() const {return function()(domain().bounds());}
+    
+    inline std::size_t Geometry::hashValue() const {
+        std::size_t result = 0;
+        boost::hash_combine(result, function().hashValue());
+        boost::hash_combine(result, domain().hashValue());
+        return result;
+    }
     
     inline Set<Geometry> Geometry::boundaries() const {
         Set<Geometry> results;

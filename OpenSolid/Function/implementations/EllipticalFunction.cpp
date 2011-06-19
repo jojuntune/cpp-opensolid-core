@@ -24,8 +24,8 @@
 namespace OpenSolid
 {
     EllipticalFunction::EllipticalFunction(
-        const VectorXd& point,
-        const MatrixXd& vectors,
+        const VectorXD& point,
+        const MatrixXD& vectors,
         const VectorXb& convention
     ) : _point(point), _vectors(vectors), _convention(convention) {
         assert(point.rows() == _vectors.rows());
@@ -36,8 +36,8 @@ namespace OpenSolid
     
     int EllipticalFunction::dimensions() const {return point().size();}
     
-    void EllipticalFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd temp = MatrixXd::Ones(parameters() + 1, parameter_values.cols());
+    void EllipticalFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+        MatrixXD temp = MatrixXD::Ones(parameters() + 1, parameter_values.cols());
         for (int i = 0; i < parameters(); ++i) {
             if (convention()(i)) {
                 temp.row(i).array() *= cos(parameter_values.row(i).array());
@@ -69,8 +69,8 @@ namespace OpenSolid
     }
 
     void EllipticalFunction::getDerivative(int index, Function& result) const {
-        VectorXd new_point = VectorXd::Zero(dimensions());
-        MatrixXd new_vectors = vectors();
+        VectorXD new_point = VectorXD::Zero(dimensions());
+        MatrixXD new_vectors = vectors();
         VectorXb new_convention = convention();
         new_convention(index) = !new_convention(index);
         if (convention()(index)) {

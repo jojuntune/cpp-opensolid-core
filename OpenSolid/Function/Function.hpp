@@ -26,7 +26,8 @@
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Interval/Interval.hpp>
+#include <OpenSolid/Scalar/Double.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 #include "FunctionImplementation.hpp"
@@ -48,7 +49,7 @@ namespace OpenSolid
     public:
         Function();
         Function(const FunctionImplementation* function);
-        Function(double value);
+        Function(Double value);
         
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& value);
@@ -73,6 +74,8 @@ namespace OpenSolid
         int parameters() const;
         int dimensions() const;
         
+        std::size_t hashValue() const;
+        
         bool operator==(const Function& other) const;
         
         template <class ArgumentType>
@@ -96,7 +99,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
         OPENSOLID_CORE_EXPORT Geometry operator()(const Geometry& geometry) const;
         
-        OPENSOLID_CORE_EXPORT RowVectorXd zeros(const Interval& domain) const;
+        OPENSOLID_CORE_EXPORT RowVectorXD zeros(const Interval& domain) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
         
@@ -113,18 +116,18 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
         
         OPENSOLID_CORE_EXPORT static Function Linear(
-            const VectorXd& point,
-            const MatrixXd& vectors
+            const VectorXD& point,
+            const MatrixXD& vectors
         );
         
         OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const VectorXd& point,
-            const MatrixXd& vectors
+            const VectorXD& point,
+            const MatrixXD& vectors
         );
         
         OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const VectorXd& point,
-            const MatrixXd& vectors,
+            const VectorXD& point,
+            const MatrixXD& vectors,
             const VectorXb& convention
         );
     };
@@ -151,8 +154,8 @@ namespace OpenSolid
         const Function& second_operand
     );
     
-    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXd& datum);
-    OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXD& datum);
+    OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXD& datum);
     
     OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function sin(const Function& argument);
@@ -170,21 +173,16 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 #include "FunctionResult.hpp"
-#include "Traits.hpp"
 
 namespace OpenSolid
 {
-    inline std::size_t Traits<Function>::hash(const Function& function) {
-        return boost::hash_value(function.implementation());
-    }
-    
     inline Function::Function() : _implementation(0), _type(0) {}
     
     inline Function::Function(const FunctionImplementation* implementation) :
         _implementation(implementation), _type(&typeid(implementation)) {}
     
-    inline Function::Function(double value) :
-        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
+    inline Function::Function(Double value) :
+        _implementation(new ConstantFunction(VectorXD::Constant(1, value))),
         _type(&typeid(ConstantFunction)) {}
     
     template <class DerivedType>
@@ -229,6 +227,8 @@ namespace OpenSolid
     
     inline int Function::dimensions() const {return implementation()->dimensions();}
         
+    inline std::size_t Function::hashValue() const {return boost::hash_value(implementation());}
+    
     inline bool Function::operator==(const Function& other) const {
         return implementation() == other.implementation();
     }

@@ -24,7 +24,6 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/Eigen.hpp>
-#include <OpenSolid/Common/Traits.hpp>
 
 namespace Eigen
 {
@@ -89,7 +88,7 @@ namespace Eigen
     typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
     typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXb;
     
-    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcD;
+    typedef Map<const MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> MapXcD;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
 }
@@ -102,7 +101,66 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 namespace Eigen
-{    
+{
+    namespace internal
+    {
+        inline OpenSolid::Double conj(OpenSolid::Double argument) {return argument;}
+        
+        inline OpenSolid::Double real(OpenSolid::Double argument) {return argument;}
+        
+        inline OpenSolid::Double imag(OpenSolid::Double) {return 0.0;}
+        
+        inline OpenSolid::Double abs2(OpenSolid::Double argument) {return argument.squared();}
+        
+        inline int significant_decimals_default_impl<OpenSolid::Double, false>::run() {
+            return significant_decimals_default_impl<double, false>::run();
+        }
+
+        inline OpenSolid::Interval conj(OpenSolid::Interval argument) {return argument;}
+        
+        inline OpenSolid::Interval real(OpenSolid::Interval argument) {return argument;}
+        
+        inline OpenSolid::Interval imag(OpenSolid::Interval) {return 0.0;}
+        
+        inline OpenSolid::Interval abs2(OpenSolid::Interval argument) {return argument.squared();}
+        
+        inline int significant_decimals_default_impl<OpenSolid::Interval, false>::run() {
+            return significant_decimals_default_impl<double, false>::run();
+        }
+    }
+
+    inline OpenSolid::Double NumTraits<OpenSolid::Double>::epsilon() {
+        return std::numeric_limits<double>::epsilon();
+    }
+    
+    inline OpenSolid::Double NumTraits<OpenSolid::Double>::dummy_precision() {
+        return OPENSOLID_PRECISION;
+    }
+    
+    inline OpenSolid::Double NumTraits<OpenSolid::Double>::lowest() {
+        return std::numeric_limits<double>::min();
+    }
+    
+    inline OpenSolid::Double NumTraits<OpenSolid::Double>::highest() {
+        return std::numeric_limits<double>::max();
+    }
+
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::epsilon() {
+        return std::numeric_limits<double>::epsilon();
+    }
+    
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::dummy_precision() {
+        return OPENSOLID_PRECISION;
+    }
+    
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::lowest() {
+        return std::numeric_limits<double>::min();
+    }
+    
+    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::highest() {
+        return std::numeric_limits<double>::max();
+    }
+
     template <class MatrixType>
     inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
         return (*_matrix)(_index);

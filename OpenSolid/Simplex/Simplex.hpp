@@ -38,6 +38,8 @@ namespace OpenSolid
     private:
         Vertices _vertices;
     public:
+        typedef Matrix<Interval, dimensions_, 1> Bounds;
+        
         Simplex();
         
         Simplex(const Simplex<dimensions_, size_>& other);

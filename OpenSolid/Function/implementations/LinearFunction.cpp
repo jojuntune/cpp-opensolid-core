@@ -23,14 +23,14 @@
 
 namespace OpenSolid
 {
-    LinearFunction::LinearFunction(const VectorXd& point, const MatrixXd& vectors) :
+    LinearFunction::LinearFunction(const VectorXD& point, const MatrixXD& vectors) :
         _point(point), _vectors(vectors) {assert(point.rows() == _vectors.rows());}
     
     int LinearFunction::parameters() const {return _vectors.cols();}
     
     int LinearFunction::dimensions() const {return _vectors.rows();}
     
-    void LinearFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void LinearFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = _point.replicate(1, parameter_values.cols()) + _vectors * parameter_values;
     }
     
@@ -43,7 +43,7 @@ namespace OpenSolid
         result = _vectors.col(index);
     }
     
-    void LinearFunction::getTransformed(const DatumXd& datum, Function& result) const {
+    void LinearFunction::getTransformed(const DatumXD& datum, Function& result) const {
         result = new LinearFunction(point() * datum, vectors() * datum);
     }
     

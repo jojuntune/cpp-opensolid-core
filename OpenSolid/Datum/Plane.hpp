@@ -50,10 +50,10 @@ namespace OpenSolid
         Plane<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
     };
     
-    typedef Plane<2> Plane2d;
-    typedef Plane<3> Plane3d;
-    typedef Plane<4> Plane4d;
-    typedef Plane<Dynamic> PlaneXd;
+    typedef Plane<2> Plane2D;
+    typedef Plane<3> Plane3D;
+    typedef Plane<4> Plane4D;
+    typedef Plane<Dynamic> PlaneXD;
 }
 
 ////////// Implementation //////////

@@ -255,7 +255,7 @@ namespace OpenSolid
         } else {
             Matrix<typename OtherDerivedType::Scalar, axes_, axes_> symmetric_inverse =
                 (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
-                    Matrix<double, axes_, axes_>::Identity(_datum.axes(), _datum.axes())
+                    Matrix<Double, axes_, axes_>::Identity(_datum.axes(), _datum.axes())
                 ).template cast<typename OtherDerivedType::Scalar>();
             result.derived() = symmetric_inverse * (
                 _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() * (
@@ -316,7 +316,7 @@ namespace OpenSolid
                 _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() *
                 _matrix.derived();
         } else {
-            Matrix<double, axes_, dimensions_> temp = (
+            Matrix<Double, axes_, dimensions_> temp = (
                 _datum.vectors().transpose() * _datum.vectors()
             ).ldlt().solve(_datum.vectors().transpose());
             result.derived() =

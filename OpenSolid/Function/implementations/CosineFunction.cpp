@@ -28,7 +28,7 @@ namespace OpenSolid
     
     int CosineFunction::dimensions() const {return 1;}
     
-    void CosineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void CosineFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = operand()(parameter_values).array().cos();
     }
     

@@ -32,7 +32,7 @@ namespace OpenSolid
         return firstOperand().dimensions() + secondOperand().dimensions();
     }
     
-    void ConcatenationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void ConcatenationFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results.topRows(firstOperand().dimensions()) = firstOperand()(parameter_values);
         results.bottomRows(secondOperand().dimensions()) = secondOperand()(parameter_values);
     }

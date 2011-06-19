@@ -29,7 +29,7 @@ namespace OpenSolid
     
     int ArctangentFunction::dimensions() const {return 1;}
     
-    void ArctangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void ArctangentFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
         results = atan(operand()(parameter_values).array());
     }
     

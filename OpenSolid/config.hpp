@@ -51,4 +51,8 @@
     #define M_PI 3.14159265358979323846
 #endif
 
+#ifndef OPENSOLID_PRECISION
+    #define OPENSOLID_PRECISION 1e-12
+#endif
+
 #endif

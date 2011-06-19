@@ -21,8 +21,6 @@
 #ifndef OPENSOLID__INTERVAL_HPP
 #define OPENSOLID__INTERVAL_HPP
 
-#include <OpenSolid/config.hpp>
-
 #include <iostream>
 #include <cassert>
 #include <utility>
@@ -30,35 +28,53 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/config.hpp>
 #include <OpenSolid/Scalar/ScalarBase.hpp>
-#include <OpenSolid/Scalar/Double.hpp>
+
+namespace Eigen
+{
+    template <class DerivedType>
+    struct EigenBase;
+}
 
 namespace OpenSolid
 {
-    typedef boost::numeric::interval<
-        double,
-        boost::numeric::interval_lib::policies<
-            boost::numeric::interval_lib::save_state_nothing<
-                boost::numeric::interval_lib::rounded_transc_exact<double,
-                    boost::numeric::interval_lib::rounded_arith_exact<double>
-                >
-            >,
-            boost::numeric::interval_lib::checking_base<double>
-        >
-    > BoostInterval;
+    class Double;
+    
+    typedef boost::numeric::interval_lib::policies<
+        boost::numeric::interval_lib::save_state_nothing<
+            boost::numeric::interval_lib::rounded_transc_exact<double,
+                boost::numeric::interval_lib::rounded_arith_exact<double>
+            >
+        >,
+        boost::numeric::interval_lib::checking_base<double>
+    > IntervalPolicies;
+    
+    typedef boost::numeric::interval<double, IntervalPolicies> BoostInterval;
     
     class Interval : public ScalarBase<Interval>
     {
     private:
         BoostInterval _value;
     public:
+        typedef ScalarBase<Interval> Base;
+        typedef Interval Bounds;
+        
         Interval();
+        Interval(int argument);
+        Interval(float argument);
+        Interval(double argument);
         Interval(Double argument);
         Interval(Double lower, Double upper);
         Interval(const BoostInterval& argument);
         
-        BoostInterval& value();
-        const BoostInterval& value() const;
+        template <class DerivedType>
+        Interval(const Eigen::EigenBase<DerivedType>& matrix);
+        
+        template <class DerivedType>
+        void operator=(const Eigen::EigenBase<DerivedType>& matrix);
+        
+        BoostInterval value() const;
         
         Double lower() const;
         Double upper() const;
@@ -80,117 +96,80 @@ namespace OpenSolid
         Interval intersection(Double argument) const;
         Interval intersection(Interval argument) const;
         
-        bool isZero(Double precision = Double::defaultPrecision()) const;
-        bool isApprox(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool isApprox(Interval argument, Double precision = Double::defaultPrecision()) const;
-        bool isEqualTo(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool isEqualTo(Interval argument, Double precision = Double::defaultPrecision()) const;
-        bool isLessThan(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool isLessThan(Interval argument, Double precision = Double::defaultPrecision()) const;
-        bool isGreaterThan(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool isGreaterThan(Interval argument, Double precision = Double::defaultPrecision()) const;
+        using Base::isApprox;
+        using Base::isEqualTo;
+        using Base::isLessThan;
+        using Base::isGreaterThan;
+        using Base::isLessThanOrEqualTo;
+        using Base::isGreaterThanOrEqualTo;
+        using Base::overlaps;
+        using Base::isSubsetOf;
+        using Base::isProperSubsetOf;
+        using Base::isSupersetOf;
+        using Base::isProperSupersetOf;
         
-        bool isLessThanOrEqualTo(
-            Double argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
-
-        bool isLessThanOrEqualTo(
-            Interval argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
+        bool isZero(double precision = OPENSOLID_PRECISION) const;
         
-        bool isGreaterThanOrEqualTo(
-            Double argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
+        bool isApprox(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isApprox(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
-        bool isGreaterThanOrEqualTo(
-            Interval argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
+        bool isEqualTo(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isEqualTo(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
-        bool overlaps(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool overlaps(Interval argument, Double precision = Double::defaultPrecision()) const;
-
-        bool isSubsetOf(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool isSubsetOf(Interval argument, Double precision = Double::defaultPrecision()) const;
+        bool isLessThan(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThan(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
-        bool isProperSubsetOf(
-            Double argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
+        bool isGreaterThan(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThan(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
-        bool isProperSubsetOf(
-            Interval argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
-
-        bool isSupersetOf(Double argument, Double precision = Double::defaultPrecision()) const;
-        bool isSupersetOf(Interval argument, Double precision = Double::defaultPrecision()) const;
+        bool isLessThanOrEqualTo(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isLessThanOrEqualTo(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
-        bool isProperSupersetOf(
-            Double argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
+        bool isGreaterThanOrEqualTo(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isGreaterThanOrEqualTo(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
-        bool isProperSupersetOf(
-            Interval argument,
-            Double precision = Double::defaultPrecision()
-        ) const;
+        bool overlaps(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool overlaps(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isSubsetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSubsetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isProperSubsetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSubsetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isSupersetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isSupersetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
+        
+        bool isProperSupersetOf(Double argument, double precision = OPENSOLID_PRECISION) const;
+        bool isProperSupersetOf(Interval argument, double precision = OPENSOLID_PRECISION) const;
         
         Interval& operator+=(Double argument);
         Interval& operator+=(Interval argument);
+        
         Interval& operator-=(Double argument);
         Interval& operator-=(Interval argument);
+        
         Interval& operator*=(Double argument);
         Interval& operator*=(Interval argument);
+        
         Interval& operator/=(Double argument);
         Interval& operator/=(Interval argument);
         
         static Interval Empty();
         static Interval Whole();
     };
-
-    bool operator==(Double first_argument, Interval second_argument);
-    bool operator==(Interval first_argument, Double second_argument);
-    bool operator==(Interval first_argument, Interval second_argument);
-    bool operator!=(Double first_argument, Interval second_argument);
-    bool operator!=(Interval first_argument, Double second_argument);
-    bool operator!=(Interval first_argument, Interval second_argument);
-    bool operator<(Double first_argument, Interval second_argument);
-    bool operator<(Interval first_argument, Double second_argument);
-    bool operator<(Interval first_argument, Interval second_argument);
-    bool operator>(Double first_argument, Interval second_argument);
-    bool operator>(Interval first_argument, Double second_argument);
-    bool operator>(Interval first_argument, Interval second_argument);
-    bool operator<=(Double first_argument, Interval second_argument);
-    bool operator<=(Interval first_argument, Double second_argument);
-    bool operator<=(Interval first_argument, Interval second_argument);
-    bool operator>=(Double first_argument, Interval second_argument);
-    bool operator>=(Interval first_argument, Double second_argument);
-    bool operator>=(Interval first_argument, Interval second_argument);
     
-    Interval operator-(Interval argument);
-    Interval operator+(Double first_argument, Interval second_argument);
-    Interval operator+(Interval first_argument, Double second_argument);
-    Interval operator+(Interval first_argument, Interval second_argument);
-    Interval operator-(Double first_argument, Interval second_argument);
-    Interval operator-(Interval first_argument, Double second_argument);
-    Interval operator-(Interval first_argument, Interval second_argument);
-    Interval operator*(Double first_argument, Interval second_argument);
-    Interval operator*(Interval first_argument, Double second_argument);
-    Interval operator*(Interval first_argument, Interval second_argument);
-    Interval operator/(Double first_argument, Interval second_argument);
-    Interval operator/(Interval first_argument, Double second_argument);
-    Interval operator/(Interval first_argument, Interval second_argument);
-    
-    Interval min(Double first_argument, Interval second_argument);
-    Interval min(Interval first_argument, Double second_argument);
-    Interval min(Interval first_argument, Interval second_argument);
-    Interval max(Double first_argument, Interval second_argument);
-    Interval max(Interval first_argument, Double second_argument);
-    Interval max(Interval first_argument, Interval second_argument);
+    using boost::numeric::abs;
+    using boost::numeric::sqrt;
+    using boost::numeric::sin;
+    using boost::numeric::cos;
+    using boost::numeric::tan;
+    using boost::numeric::asin;
+    using boost::numeric::acos;
+    using boost::numeric::atan;
+    using boost::numeric::exp;
+    using boost::numeric::log;
+    using boost::numeric::pow;
 
     Interval abs(Interval argument);
     Interval sqrt(Interval argument);
@@ -200,7 +179,6 @@ namespace OpenSolid
     OPENSOLID_CORE_EXPORT Interval asin(Interval argument);
     OPENSOLID_CORE_EXPORT Interval acos(Interval argument);
     OPENSOLID_CORE_EXPORT Interval atan(Interval argument);
-    OPENSOLID_CORE_EXPORT Interval atan2(Interval y, Interval x);
     OPENSOLID_CORE_EXPORT Interval exp(Interval argument);
     OPENSOLID_CORE_EXPORT Interval log(Interval argument);
     OPENSOLID_CORE_EXPORT Interval pow(Interval base, Interval exponent);
@@ -217,33 +195,65 @@ namespace Eigen
         OpenSolid::Interval imag(OpenSolid::Interval);
         OpenSolid::Interval abs2(OpenSolid::Interval argument);
         
+        
+        template <class ScalarType, bool is_integer_>
+        struct significant_decimals_default_impl;
+
         template <>
         struct significant_decimals_default_impl<OpenSolid::Interval, false>
         {
             static inline int run();
         };
+        
+        template <class ScalarType>
+        struct is_arithmetic;
+        
+        template <>
+        struct is_arithmetic<OpenSolid::Interval>
+        {
+            static const bool value = true;
+        };
     }
     
+    template <class Type>
+    struct NumTraits;
+    
     template <>
-    struct NumTraits<OpenSolid::Interval> : public NumTraits<OpenSolid::Double>
+    struct NumTraits<OpenSolid::Interval>
     {
         typedef OpenSolid::Interval Real;
         typedef OpenSolid::Interval NonInteger;
         typedef OpenSolid::Interval Nested;
         
+        static const int IsComplex = 0;
+        static const int IsInteger = 0;
         static const int ReadCost = 2;
         static const int AddCost = 2;
         static const int MulCost = 10;
+        static const int IsSigned = 1;
+        static const int RequireInitialization = 0;
+        
+        static OpenSolid::Interval epsilon();
+        static OpenSolid::Interval dummy_precision();
+        static OpenSolid::Interval lowest();
+        static OpenSolid::Interval highest();  
     };
 }
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Common/Eigen.hpp>
+#include <OpenSolid/Scalar/operators.hpp>
+#include <OpenSolid/Scalar/Double.hpp>
 
 namespace OpenSolid
 {   
     inline Interval::Interval() : _value() {}
+    
+    inline Interval::Interval(int argument) : _value(argument) {}
+
+    inline Interval::Interval(float argument) : _value(argument) {}
+
+    inline Interval::Interval(double argument) : _value(argument) {}
 
     inline Interval::Interval(Double argument) : _value(argument.value()) {}
 
@@ -252,21 +262,28 @@ namespace OpenSolid
 
     inline Interval::Interval(const BoostInterval& argument) : _value(argument) {}
         
-    inline BoostInterval& Interval::value() {return _value;}
+    template <class DerivedType>
+    inline Interval::Interval(const Eigen::EigenBase<DerivedType>& matrix) :
+        _value(matrix.derived().eval().coeff(0, 0).value()) {}
     
-    inline const BoostInterval& Interval::value() const {return _value;}
+    template <class DerivedType>
+    inline void Interval::operator=(const Eigen::EigenBase<DerivedType>& matrix) {
+        _value = matrix.derived().eval().coeff(0, 0).value();
+    }
+        
+    inline BoostInterval Interval::value() const {return _value;}
     
     inline Double Interval::lower() const {return value().lower();}
 
     inline Double Interval::upper() const {return value().upper();}
     
-    inline Double Interval::median() const {return median(value());}
+    inline Double Interval::median() const {return boost::numeric::median(value());}
     
-    inline Double Interval::width() const {return width(value());}
+    inline Double Interval::width() const {return boost::numeric::width(value());}
     
-    inline bool Interval::empty() const {return empty(value());}
+    inline bool Interval::empty() const {return boost::numeric::empty(value());}
     
-    inline bool Interval::singleton() const {return singleton(value());}
+    inline bool Interval::singleton() const {return boost::numeric::singleton(value());}
     
     inline Interval Interval::bounds() const {return *this;}
     
@@ -311,103 +328,103 @@ namespace OpenSolid
         return boost::numeric::intersect(value(), argument.value());
     }
         
-    inline bool Interval::isZero(Double precision = Double::defaultPrecision()) const {
+    inline bool Interval::isZero(double precision) const {
         return lower().isZero(precision) && upper().isZero(precision);
     }
 
-    inline bool Interval::isApprox(Double argument, Double precision) const {
+    inline bool Interval::isApprox(Double argument, double precision) const {
         return lower().isEqualTo(argument, precision) && upper().isEqualTo(argument, precision);
     }
 
-    inline bool Interval::isApprox(Interval argument, Double precision) const {
+    inline bool Interval::isApprox(Interval argument, double precision) const {
         return lower().isEqualTo(argument.upper(), precision) &&
             upper().isEqualTo(argument.lower(), precision);
     }
 
-    inline bool Interval::isEqualTo(Double argument, Double precision) const {
+    inline bool Interval::isEqualTo(Double argument, double precision) const {
         return this->isApprox(argument, precision);
     }
 
-    inline bool Interval::isEqualTo(Interval argument, Double precision) const {
+    inline bool Interval::isEqualTo(Interval argument, double precision) const {
         return this->isApprox(argument, precision);
     }
 
-    inline bool Interval::isLessThan(Double argument, Double precision) const {
+    inline bool Interval::isLessThan(Double argument, double precision) const {
         return upper().isLessThan(argument, precision);
     }
 
-    inline bool Interval::isLessThan(Interval argument, Double precision) const {
+    inline bool Interval::isLessThan(Interval argument, double precision) const {
         return upper().isLessThan(argument.lower(), precision);
     }
 
-    inline bool Interval::isGreaterThan(Double argument, Double precision) const {
+    inline bool Interval::isGreaterThan(Double argument, double precision) const {
         return lower().isGreaterThan(argument, precision);
     }
 
-    inline bool Interval::isGreaterThan(Interval argument, Double precision) const {
+    inline bool Interval::isGreaterThan(Interval argument, double precision) const {
         return lower().isGreaterThan(argument.upper(), precision);
     }
 
-    inline bool Interval::isLessThanOrEqualTo(Double argument, Double precision) const {
+    inline bool Interval::isLessThanOrEqualTo(Double argument, double precision) const {
         return upper().isLessThanOrEqualTo(argument, precision);
     }
 
-    inline bool Interval::isLessThanOrEqualTo(Interval argument, Double precision) const {
+    inline bool Interval::isLessThanOrEqualTo(Interval argument, double precision) const {
         return upper().isLessThanOrEqualTo(argument.lower(), precision);
     }
 
-    inline bool Interval::isGreaterThanOrEqualTo(Double argument, Double precision) const {
+    inline bool Interval::isGreaterThanOrEqualTo(Double argument, double precision) const {
         return lower().isGreaterThanOrEqualTo(argument, precision);
     }
 
-    inline bool Interval::isGreaterThanOrEqualTo(Interval argument, Double precision) const {
+    inline bool Interval::isGreaterThanOrEqualTo(Interval argument, double precision) const {
         return lower().isGreaterThanOrEqualTo(argument.upper(), precision);
     }
     
-    inline bool Interval::overlaps(Double argument, Double precision) const {
+    inline bool Interval::overlaps(Double argument, double precision) const {
         return lower().isLessThanOrEqualTo(argument, precision) &&
             upper().isGreaterThanOrEqualTo(argument, precision);
     }
     
-    inline bool Interval::overlaps(Interval argument, Double precision) const {
+    inline bool Interval::overlaps(Interval argument, double precision) const {
         return lower().isLessThanOrEqualTo(argument.upper(), precision) &&
             upper().isGreaterThanOrEqualTo(argument.lower(), precision);
     }
     
-    inline bool Interval::isSubsetOf(Double argument, Double precision) const {
+    inline bool Interval::isSubsetOf(Double argument, double precision) const {
         return this->isEqualTo(argument, precision);
     }
     
-    inline bool Interval::isSubsetOf(Interval argument, Double precision) const {
+    inline bool Interval::isSubsetOf(Interval argument, double precision) const {
         return lower().isGreaterThanOrEqualTo(argument.lower(), precision) &&
             upper().isLessThanOrEqualTo(argument.upper(), precision);
     }
     
-    inline bool Interval::isProperSubsetOf(Double argument, Double precision) const {
+    inline bool Interval::isProperSubsetOf(Double argument, double precision) const {
         return false;
     }
     
-    inline bool Interval::isProperSubsetOf(Interval argument, Double precision) const {
+    inline bool Interval::isProperSubsetOf(Interval argument, double precision) const {
         return lower().isGreaterThan(argument.lower(), precision) &&
             upper().isLessThan(argument.upper(), precision);
     }
     
-    inline bool Interval::isSupersetOf(Double argument, Double precision) const {
+    inline bool Interval::isSupersetOf(Double argument, double precision) const {
         return lower().isLessThanOrEqualTo(argument, precision) &&
             upper().isGreaterThanOrEqualTo(argument, precision);
     }
     
-    inline bool Interval::isSupersetOf(Interval argument, Double precision) const {
+    inline bool Interval::isSupersetOf(Interval argument, double precision) const {
         return lower().isLessThanOrEqualTo(argument.lower(), precision) &&
             upper().isGreaterThanOrEqualTo(argument.upper(), precision);
     }
     
-    inline bool Interval::isProperSupersetOf(Double argument, Double precision) const {
+    inline bool Interval::isProperSupersetOf(Double argument, double precision) const {
         return lower().isLessThan(argument, precision) &&
             upper().isGreaterThan(argument, precision);
     }
     
-    inline bool Interval::isProperSupersetOf(Interval argument, Double precision) const {
+    inline bool Interval::isProperSupersetOf(Interval argument, double precision) const {
         return lower().isLessThan(argument.lower(), precision) &&
             upper().isGreaterThan(argument.upper(), precision);
     }
@@ -456,171 +473,9 @@ namespace OpenSolid
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}
 
-    inline bool operator==(Double first_argument, Interval second_argument) {
-        return first_argument == second_argument.lower() &&
-            first_argument == second_argument.upper();
-    }
-
-    inline bool operator==(Interval first_argument, Double second_argument) {
-        return first_argument.lower() == second_argument &&
-            first_argument.upper() == second_argument;
-    }
-
-    inline bool operator==(Interval first_argument, Interval second_argument) {
-        return first_argument.lower() == second_argument.lower() &&
-            first_argument.upper() == second_argument.upper();
-    }
-
-    inline bool operator!=(Double first_argument, Interval second_argument) {
-        return first_argument != second_argument.lower() ||
-            first_argument != second_argument.upper();
-    }
-
-    inline bool operator!=(Interval first_argument, Double second_argument) {
-        return first_argument.lower() != second_argument ||
-            first_argument.upper() != second_argument;
-    }
-
-    inline bool operator!=(Interval first_argument, Interval second_argument) {
-        return first_argument.lower() != second_argument.lower() ||
-            first_argument.upper() != second_argument.upper();
-    }
-
-    inline bool operator<(Double first_argument, Interval second_argument) {
-        if (first_argument == second_argument.lower()) {
-            return first_argument < second_argument.upper();
-        } else {
-            return first_argument < second_argument.lower();
-        }
-    }
-
-    inline bool operator<(Interval first_argument, Double second_argument) {
-        return first_argument.lower() < second_argument;
-    }
-
-    inline bool operator<(Interval first_argument, Interval second_argument) {
-        if (first_argument.lower() == second_argument.lower()) {
-            return first_argument.upper() < second_argument.upper();
-        } else {
-            return first_argument.lower() < second_argument.lower();
-        }
-    }
-
-    inline bool operator>(Double first_argument, Interval second_argument) {
-        return first_argument > second_argument.lower();
-    }
-
-    inline bool operator>(Interval first_argument, Double second_argument) {
-        if (first_argument.lower() == second_argument) {
-            return first_argument.upper() > second_argument;
-        } else {
-            return first_argument.lower() > second_argument;
-        }
-    }
-
-    inline bool operator>(Interval first_argument, Interval second_argument) {
-        if (first_argument.lower() == second_argument.lower()) {
-            return first_argument.upper() < second_argument.upper();
-        } else {
-            return first_argument.lower() < second_argument.lower();
-        }
-    }
-        
-    inline Interval operator-(Interval argument) {return -argument.value();}
-
-    inline Interval operator+(Double first_argument, Interval second_argument) {
-        return first_argument.value() + second_argument.value();
-    }
-
-    inline Interval operator+(Interval first_argument, Double second_argument) {
-        return first_argument.value() + second_argument.value();
-    }
-
-    inline Interval operator+(Interval first_argument, Interval second_argument) {
-        return first_argument.value() + second_argument.value();
-    }
-
-    inline Interval operator-(Double first_argument, Interval second_argument) {
-        return first_argument.value() - second_argument.value();
-    }
-
-    inline Interval operator-(Interval first_argument, Double second_argument) {
-        return first_argument.value() - second_argument.value();
-    }
-
-    inline Interval operator-(Interval first_argument, Interval second_argument) {
-        return first_argument.value() - second_argument.value();
-    }
-
-    inline Interval operator*(Double first_argument, Interval second_argument) {
-        return first_argument.value() * second_argument.value();
-    }
-
-    inline Interval operator*(Interval first_argument, Double second_argument) {
-        return first_argument.value() * second_argument.value();
-    }
-
-    inline Interval operator*(Interval first_argument, Interval second_argument) {
-        return first_argument.value() * second_argument.value();
-    }
-
-    inline Interval operator/(Double first_argument, Interval second_argument) {
-        return first_argument.value() / second_argument.value();
-    }
-
-    inline Interval operator/(Interval first_argument, Double second_argument) {
-        return first_argument.value() / second_argument.value();
-    }
-
-    inline Interval operator/(Interval first_argument, Interval second_argument) {
-        return first_argument.value() / second_argument.value();
-    }
-    
-    inline Interval min(Double first_argument, Interval second_argument) {
-        return boost::numeric::min(first_argument.value(), second_argument.value());
-    }
-
-    inline Interval min(Interval first_argument, Double second_argument) {
-        return boost::numeric::min(first_argument.value(), second_argument.value());
-    }
-
-    inline Interval min(Interval first_argument, Interval second_argument) {
-        return boost::numeric::min(first_argument.value(), second_argument.value());
-    }
-
-    inline Interval max(Double first_argument, Interval second_argument) {
-        return boost::numeric::min(first_argument.value(), second_argument.value());
-    }
-
-    inline Interval max(Interval first_argument, Double second_argument) {
-        return boost::numeric::min(first_argument.value(), second_argument.value());
-    }
-
-    inline Interval max(Interval first_argument, Interval second_argument) {
-        return boost::numeric::min(first_argument.value(), second_argument.value());
-    }
-
     inline Interval abs(Interval argument) {return boost::numeric::abs(argument.value());}
 
     inline Interval sqrt(Interval argument) {return boost::numeric::sqrt(argument.value());}
-}
-
-namespace Eigen
-{   
-    namespace internal
-    {
-        inline OpenSolid::Interval conj(OpenSolid::Interval argument) {return argument;}
-        
-        inline OpenSolid::Interval real(OpenSolid::Interval argument) {return argument;}
-        
-        inline OpenSolid::Interval imag(OpenSolid::Interval) {return 0.0;}
-        
-        inline OpenSolid::Interval abs2(OpenSolid::Interval argument) {return argument.squared();}
-        
-        inline int significant_decimals_default_impl<OpenSolid::Interval, false>::run() {
-            return significant_decimals_default_impl<double, false>::run();
-        }
-    }
 }
 
 #endif
