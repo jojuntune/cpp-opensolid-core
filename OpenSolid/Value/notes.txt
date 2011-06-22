@@ -1,0 +1,72 @@
+BlockReference
+BlockIterator -> BlockReference
+BlockRange -> BlockIterator, BlockIterator
+
+begin, end
+rowwise (begin, end)
+colwise (begin, end)
+
+x
+y
+z
+w
+
+operator()(index)
+operator()(row, col)
+
+operator()(First(num))
+operator()(Last(num))
+operator()(Range(start, num))
+operator()(All(), col) // col()
+operator()(row, All()) // row()
+operator()(First(num), col)
+
+
+cwiseLower
+cwiseUpper
+cwiseWidth
+cwiseMedian
+cwiseProduct
+cwiseQuotient
+unaryExpr
+binaryExpr
+dot
+cross
+inverse
+determinant
+norm
+normalized
+
+bounds
+hashValue (base on data pointer)
+
+transpose (store row major/col major flag?)
+-> or just transposedProduct
+
+Constant
+LinSpaced
+Ones
+Zero
+Identity
+Unit
+
+isZero
+isIdentity
+isOrthogonal
+isEqualTo
+isParallelTo
+isPerpendicularTo
+isSubsetOf
+isProperSubsetOf
+isSupersetOf
+isProperSupersetOf
+
+operator const Map<MatrixXd, Aligned>
+map -> Map<MatrixXd, Aligned> (ensure memory is aligned)
+
+operators/global functions:
+==, !=
+unary -, +, -, *
+abs
+sqrt
+etc.
