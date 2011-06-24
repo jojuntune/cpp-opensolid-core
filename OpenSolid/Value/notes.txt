@@ -1,3 +1,5 @@
+---------- ValueBase ----------
+
 BlockReference
 BlockIterator -> BlockReference
 BlockRange -> BlockIterator, BlockIterator
@@ -5,15 +7,12 @@ BlockRange -> BlockIterator, BlockIterator
 begin, end
 rowwise (begin, end)
 colwise (begin, end)
-
 x
 y
 z
 w
-
 operator()(index)
 operator()(row, col)
-
 operator()(First(num))
 operator()(Last(num))
 operator()(Range(start, num))
@@ -21,7 +20,13 @@ operator()(All(), col) // col()
 operator()(row, All()) // row()
 operator()(First(num), col)
 
+---------- Double / Interval / MatrixBase ----------
 
+data
+lower
+upper
+median
+width
 cwiseLower
 cwiseUpper
 cwiseWidth
@@ -36,13 +41,9 @@ inverse
 determinant
 norm
 normalized
-
 bounds
-hashValue (base on data pointer)
-
-transpose (store row major/col major flag?)
--> or just transposedProduct
-
+hashValue
+transposedProduct
 Constant
 LinSpaced
 Ones
@@ -50,6 +51,7 @@ Zero
 Identity
 Unit
 
+---------- Double / Interval / MatrixBase / ValueBase (built-in type overloads) ----------
 isZero
 isIdentity
 isOrthogonal
@@ -61,12 +63,26 @@ isProperSubsetOf
 isSupersetOf
 isProperSupersetOf
 
-operator const Map<MatrixXd, Aligned>
-map -> Map<MatrixXd, Aligned> (ensure memory is aligned)
-
-operators/global functions:
+---------- Global ----------
 ==, !=
 unary -, +, -, *
 abs
 sqrt
 etc.
+
+---------- Names ----------
+
+Double
+Interval
+
+Matrix<Double>
+Vector<Double>
+RowVector<Double>
+
+Matrix<Interval>
+Vector<Interval>
+RowVector<Interval>
+
+In Python, etc.: simply Matrix/Vector/RowVector, construct C++ object of type appropriate for
+given constructor arguments
+

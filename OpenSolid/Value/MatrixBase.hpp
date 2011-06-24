@@ -30,10 +30,23 @@ namespace OpenSolid
     template <class DerivedType, class ScalarType>
     class MatrixBase : public ValueBase<DerivedType, ScalarType>
     {
+    public:
+        typedef ScalarType Scalar;
+        static const Index RowsAtCompileTime = Eigen::Dynamic;
+        static const Index ColsAtCompileTime = Eigen::Dynamic;
+        static const Index SizeAtCompileTime = Eigen::Dynamic;
+    protected:
+        typedef Eigen::Map<
+            Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>,
+            Eigen::Aligned
+        > MapType;
     private:
         static ScalarType* allocate(Index size);
+        
+         MapType _map;
     protected:
-        Eigen::Map<Eigen::Matrix<ScalarType, Eigen::Dynamic, Eigen::Dynamic>, Eigen::Aligned> _map;
+        MapType& map();
+        const MapType& map() const;
     public:
         MatrixBase(Index rows, Index cols);
         

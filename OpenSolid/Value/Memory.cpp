@@ -23,23 +23,23 @@
 
 namespace OpenSolid
 {
-    static boost::singleton_pool<void, 16> pool16;
-    static boost::singleton_pool<void, 32> pool32;
-    static boost::singleton_pool<void, 64> pool64;
-    static boost::singleton_pool<void, 128> pool128;
-    static boost::singleton_pool<void, 256> pool256;
+    typedef boost::singleton_pool<Memory, 16> pool16;
+    typedef boost::singleton_pool<Memory, 32> pool32;
+    typedef boost::singleton_pool<Memory, 64> pool64;
+    typedef boost::singleton_pool<Memory, 128> pool128;
+    typedef boost::singleton_pool<Memory, 256> pool256;
     
     void* Memory::allocate(std::size_t size) {
         if (size & 16 == size) {
-            return pool16.malloc();
+            return pool16::malloc();
         } else if (size & 32 == size) {
-            return pool32.malloc();
+            return pool32::malloc();
         } else if (size & 64 == size) {
-            return pool64.malloc();
+            return pool64::malloc();
         } else if (size & 128 == size) {
-            return pool128.malloc();
+            return pool128::malloc();
         } else if (size & 256 == size) {
-            return pool256.malloc();
+            return pool256::malloc();
         } else {
             return Eigen::internal::aligned_malloc(size);
         }
@@ -47,15 +47,15 @@ namespace OpenSolid
     
     void* Memory::free(void* pointer, std::size_t size) {
         if (size & 16 == size) {
-            pool16.free(pointer);
+            pool16::free(pointer);
         } else if (size & 32 == size) {
-            pool32.free(pointer);
+            pool32::free(pointer);
         } else if (size & 64 == size) {
-            pool64.free(pointer);
+            pool64::free(pointer);
         } else if (size & 128 == size) {
-            pool128.free(pointer);
+            pool128::free(pointer);
         } else if (size & 256 == size) {
-            pool256.free(pointer);
+            pool256::free(pointer);
         } else {
             return Eigen::internal::aligned_free(pointer);
         }

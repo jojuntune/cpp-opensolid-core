@@ -25,10 +25,14 @@
 
 namespace OpenSolid
 {   
+    class Interval;
+    
     template <class DerivedType>
     class ScalarBase
     {
     public:
+        typedef Interval Bounds;
+        
         DerivedType& derived();
         const DerivedType& derived() const;
         

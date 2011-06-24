@@ -33,6 +33,10 @@ namespace OpenSolid
     public:
         DerivedType& derived();
         const DerivedType& derived() const;
+        
+        Index rows() const;
+        Index cols() const;
+        Index size() const;
     };
 }
 
@@ -49,6 +53,15 @@ namespace OpenSolid
     inline const DerivedType& ValueBase<DerivedType, ScalarType>::derived() const {
         return static_cast<DerivedType&>(*this);
     }
+    
+    template <class DerivedType, class ScalarType>
+    inline Index ValueBase<DerivedType, ScalarType>::rows() const {return derived().rows();}
+    
+    template <class DerivedType, class ScalarType>
+    inline Index ValueBase<DerivedType, ScalarType>::cols() const {return derived().cols();}
+    
+    template <class DerivedType, class ScalarType>
+    inline Index ValueBase<DerivedType, ScalarType>::size() const {return rows() * cols();}
 }
 
 #endif
