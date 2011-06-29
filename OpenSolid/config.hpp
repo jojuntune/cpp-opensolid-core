@@ -55,4 +55,8 @@
     #define OPENSOLID_PRECISION 1e-12
 #endif
 
+#ifndef OPENSOLID_SMALL_MATRIX_SIZE
+    #define OPENSOLID_DOUBLE_MATRIX_SIZE 4
+#endif
+
 #endif

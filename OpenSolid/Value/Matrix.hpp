@@ -21,109 +21,76 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <OpenSolid/Value/MatrixBase.hpp>
-#include <OpenSolid/Value/Scalar.hpp>
+#include <type_traits>
+
+#include <OpenSolid/config.hpp>
+#include <OpenSolid/Value/Double.hpp>
 #include <OpenSolid/Value/Interval.hpp>
 
 namespace OpenSolid
-{
-    class Matrix : public MatrixBase<Matrix, Scalar>
+{   
+    template <class ScalarType, Index rows_ = -1, Index cols_ = -1>
+    class Matrix : public ValueBase<Matrix<ScalarType, rows_, cols_>>
     {
-    protected:
-        Eigen::Map<Eigen::MatrixXd, Aligned>& map();
-        const Eigen::Map<Eigen::MatrixXd, Aligned>& map() const;
+    private:
+        Eigen::Matrix<ScalarType, rows_, cols_> _matrix;
     public:
+        Matrix();
+        Matrix(Index size);
         Matrix(Index rows, Index cols);
+        Matrix(const ScalarType& x, const ScalarType& y);
+        Matrix(const ScalarType& x, const ScalarType& y, const ScalarType& z);
+        
+        Matrix(const Matrix<ScalarType, rows_, cols_>& other);
+        
+        template <Index argument_rows_, Index argument_cols_>
+        Matrix(const Matrix<ScalarType, argument_rows_, argument_cols_>& argument);
+        
+        template <Index argument_rows_, Index argument_cols_>
+        Matrix(Matrix<ScalarType, argument_rows_, argument_cols_>&& argument);
+        
+        Matrix<ScalarType, rows_, cols_>& operator=(const Matrix<ScalarType, rows_, cols_>& other);
+        
+        template <Index argument_rows_, Index argument_cols_>
+        Matrix<ScalarType, rows_, cols_> operator=(
+            const Matrix<ScalarType, argument_rows_, argument_cols_>& argument
+        );
+        
+        template <Index argument_rows_, Index argument_cols_>
+        Matrix<ScalarType, rows_, cols_>::operator=(
+            Matrix<ScalarType, argument_rows_, argument_cols_>&& argument
+        );
+        
+        Index rows() const;
+        Index cols() const;
+        
+        
+        
+        static Matrix<ScalarType, rows_, cols_> Zero();
+        static Matrix<ScalarType, rows_, cols_> Zero(Index size);
+        static Matrix<ScalarType, rows_, cols_> Zero(Index rows, Index cols);
+        
+        static Matrix<ScalarType, rows_, cols_> Ones();
+        static Matrix<ScalarType, rows_, cols_> Ones(Index size);
+        static Matrix<ScalarType, rows_, cols_> Ones(Index rows, Index cols);
+        
+        static Matrix<ScalarType, rows_, cols_> Identity();
+        static Matrix<ScalarType, rows_, cols_> Identity(Index size);
+        
+        static Matrix<ScalarType, rows_, cols_> UnitX();
+        static Matrix<ScalarType, rows_, cols_> UnitY();
+        static Matrix<ScalarType, rows_, cols_> UnitZ();
+        static Matrix<ScalarType, rows_, cols_> Unit(Index index);
+        
+        static Matrix<ScalarType, rows_, cols_> LinSpaced(const Interval& range);
+        static Matrix<ScalarType, rows_, cols_> LinSpaced(Index size, const Interval& range);
     }
-    
-    class Vector : public Matrix
-    {
-    public:
-        Vector(Index size);
-        Vector(Scalar x, Scalar y);
-        Vector(Scalar x, Scalar y, Scalar z);
-        Vector(Scalar x, Scalar y, Scalar z, Scalar w);
-        
-        static Vector Zero(Index size);
-        static Vector Unit(Index size, Index index);
-        static Vector LinSpaced(Index size, Interval interval);
-    };
-    
-    class RowVector : public Matrix
-    {
-    public:
-        RowVector(Index size);
-        RowVector(Scalar x, Scalar y);
-        RowVector(Scalar x, Scalar y, Scalar z);
-        RowVector(Scalar x, Scalar y, Scalar z, Scalar w);
-        
-        static RowVector Zero(Index size);
-        static RowVector Unit(Index size, Index index);
-        static RowVector LinSpaced(Index size, Interval interval);
-    };
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    inline Eigen::Map<Eigen::MatrixXd, Aligned>& map() {
-        return reinterpret_cast<Eigen::Map<Eigen::MatrixXd, Aligned>&>(_map);
-    }
-    
-    const Eigen::Map<Eigen::MatrixXd, Aligned>& map() const {
-        return reinterpret_cast<const Eigen::Map<Eigen::MatrixXd, Aligned>&>(_map);
-    }
-    
-    inline Matrix::Matrix(Index rows, Index cols) : MatrixBase(rows, cols) {}
-    
-    inline Vector::Vector(Index size) : Matrix(size, 1) {}
-    
-    inline Vector::Vector(Scalar x, Scalar y) : Matrix(2, 1) {
-        map() = Eigen::Vector2d(x, y);
-    }
-    
-    inline Vector::Vector(Scalar x, Scalar y, Scalar z) : Matrix(3, 1) {
-         map() = Eigen::Vector3d(x, y, z);
-    }
-    
-    inline Vector::Vector(Scalar x, Scalar y, Scalar z, Scalar w) : Matrix(4, 1) {
-         map() = Eigen::Vector4d(x, y, z, w);
-    }
-    
-    inline Vector Vector::Zero(Index size) : Matrix(size, 1) {map().setZero();}
-    
-    inline Vector Vector::Unit(Index size, Index index) : Matrix(size, 1) {
-        map() = VectorXd::Unit(size, index);
-    }
-    
-    inline Vector Vector::LinSpaced(Index size, Interval interval) {
-        map().setLinSpaced(size, interval.lower(), interval.upper());
-    }
-    
-    inline RowVector::RowVector(Index size) : Matrix(1, size) {}
-    
-    inline RowVector::RowVector(Scalar x, Scalar y) : Matrix(1, 2) {
-        map() = Eigen::RowVector2d(x, y);
-    }
-    
-    inline RowVector::RowVector(Scalar x, Scalar y, Scalar z) : Matrix(1, 3) {
-         map() = Eigen::RowVector3d(x, y, z);
-    }
-    
-    inline RowVector::RowVector(Scalar x, Scalar y, Scalar z, Scalar w) : Matrix(1, 4) {
-         map() = Eigen::RowVector4d(x, y, z, w);
-    }
-    
-    inline RowVector RowVector::Zero(Index size) : Matrix(1, size) {map().setZero();}
-    
-    inline RowVector RowVector::Unit(Index size, Index index) : Matrix(1, size) {
-        map() = RowVectorXd::Unit(size, index);
-    }
-    
-    inline RowVector RowVector::LinSpaced(Index size, Interval interval) {
-        map().setLinSpaced(size, interval.lower(), interval.upper());
-    }
 }
 
 #endif
