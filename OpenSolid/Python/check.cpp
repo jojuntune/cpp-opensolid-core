@@ -22,8 +22,8 @@
 
 namespace OpenSolid
 {
-    void checkNonZeroValue(double value, const std::string& caller) {
-        if (Comparison::zero(value)) {
+    void checkNonZeroValue(Double value, const std::string& caller) {
+        if (value.isZero()) {
             Error error("NonZeroValue", caller);
             error.set("value", value);
             throw error;

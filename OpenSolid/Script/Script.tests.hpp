@@ -23,7 +23,6 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include "Script.hpp"
 
@@ -147,7 +146,7 @@ public:
         script.set("a", 4.0);
         script.set("b", 5.0);
         Vector3d result = script.get<MatrixXd>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
-        TS_ASSERT(Comparison::equal(result,  Vector3d(5, 7, 3)));
+        TS_ASSERT(result.isEqualTo(Vector3d(5, 7, 3)));
     }
     
     void testMatrixXI() {
@@ -398,19 +397,18 @@ public:
         Function f2 = Vector3d(2, 0, 0) * Function::Parameter(2, 0) +
             Vector3d(0, 0.5, 0) * Function::Parameter(2, 1);
         script.set("f2", f2);
-        TS_ASSERT(Comparison::equal(script.get<double>("f1(2)[0]"), 6.0));
+        TS_ASSERT(script.get<Double>("f1(2)[0]").isEqualTo(6.0));
+        Interval interval_bounds = script.get<Interval>("f1(Interval(2, 3))[0]");
+        TS_ASSERT(interval_bounds.lower().isEqualTo(6));
+        TS_ASSERT(interval_bounds.upper().isEqualTo(9));
         TS_ASSERT(
-            Comparison::equal(script.get<Interval>("f1(Interval(2, 3))[0]"), Interval(6, 9))
+            script.get<MatrixXD>("f2(Vector2d(1, 1))").isEqualTo(Vector3d(2, 0.5, 0))
         );
-        TS_ASSERT(
-            Comparison::equal(script.get<MatrixXd>("f2(Vector2d(1, 1))"), Vector3d(2, 0.5, 0))
+        MatrixXI matrix_bounds = script.get<MatrixXI>(
+            "f2(Vector2I(Interval(1, 2), Interval(2, 3)))"
         );
-        TS_ASSERT(
-            Comparison::equal(
-                script.get<MatrixXI>("f2(Vector2I(Interval(1, 2), Interval(2, 3)))"),
-                Vector3I(Interval(2, 4), Interval(1, 1.5), 0.0)
-            )
-        );
+        TS_ASSERT(matrix_bounds.cwiseLower().isEqualTo(Vector3D(2, 1, 0)));
+        TS_ASSERT(matrix_bounds.cwiseUpper().isEqualTo(Vector3D(4, 1.5, 0)));
     }
 
     void testExplicitModule() {
@@ -420,11 +418,10 @@ public:
             "<module 'opensolid' (built-in)>"
         );
         script.run("f = opensolid.Function.Parameter(1, 0) * opensolid.Vector3d(1, 2, 3)");
-        TS_ASSERT(
-            Comparison::equal(
-                script.get<MatrixXI>("f(opensolid.Vector2I(opensolid.Interval(1, 2), 0))"),
-                Vector3I(Interval(1, 2), Interval(2, 4), Interval(3, 6))
-            )
+        MatrixXI bounds = script.get<MatrixXI>(
+            "f(opensolid.Vector2I(opensolid.Interval(1, 2), 0))"
         );
+        TS_ASSERT(bounds.cwiseLower().isEqualTo(Vector3D(1, 2, 3)));
+        TS_ASSERT(bounds.cwiseUpper().isEqualTo(Vector3D(2, 4, 6)));
     }
 };

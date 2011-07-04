@@ -26,19 +26,31 @@
 
 namespace OpenSolid
 {           
-    Interval sin(Interval argument) {return sin(argument.interval());}
+    Interval sin(const Interval& argument) {
+        return boost::numeric::sin(argument.implementation());
+    }
 
-    Interval cos(Interval argument) {return cos(argument.interval());}
+    Interval cos(const Interval& argument) {
+        return boost::numeric::cos(argument.implementation());
+    }
 
-    Interval tan(Interval argument) {return tan(argument.interval());}
+    Interval tan(const Interval& argument) {
+        return boost::numeric::tan(argument.implementation());
+    }
 
-    Interval asin(Interval argument) {return asin(argument.interval());}
+    Interval asin(const Interval& argument) {
+        return boost::numeric::asin(argument.implementation());
+    }
 
-    Interval acos(Interval argument) {return acos(argument.interval());}
+    Interval acos(const Interval& argument) {
+        return boost::numeric::acos(argument.implementation());
+    }
 
-    Interval atan(Interval argument) {return atan(argument.interval());}
+    Interval atan(const Interval& argument) {
+        return boost::numeric::atan(argument.implementation());
+    }
 
-    Interval atan2(Interval y, Interval x) {
+    Interval atan2(const Interval& y, const Interval& x) {
         if (x.lower() > 0.0) {
             return atan(y / x);
         } else if (y.lower() > 0.0) {
@@ -50,15 +62,13 @@ namespace OpenSolid
         }
     }
 
-    Interval exp(Interval argument) {return exp(argument.interval());}
+    Interval exp(const Interval& argument) {return boost::numeric::exp(argument.implementation());}
 
-    Interval log(Interval argument) {return log(argument.interval());}
+    Interval log(const Interval& argument) {return boost::numeric::log(argument.implementation());}
     
-    Interval pow(Interval base, Interval exponent) {
-        return exp(log(base) * exponent);
-    }
+    Interval pow(const Interval& base, const Interval& exponent) {return exp(log(base) * exponent);}
     
-    std::ostream& operator<<(std::ostream& stream, Interval argument) {
+    std::ostream& operator<<(std::ostream& stream, const Interval& argument) {
         if (argument.empty()) {
             stream << "[]";
         } else if (argument.singleton()) {

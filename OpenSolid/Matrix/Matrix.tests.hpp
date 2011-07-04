@@ -22,9 +22,8 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Common/Comparison.hpp>
-#include <OpenSolid/Interval/Interval.hpp>
-#include "Matrix.hpp"
+#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 using namespace OpenSolid;
 

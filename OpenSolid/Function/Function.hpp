@@ -49,6 +49,9 @@ namespace OpenSolid
     public:
         Function();
         Function(const FunctionImplementation* function);
+        Function(int value);
+        Function(float value);
+        Function(double value);
         Function(Double value);
         
         template <class DerivedType>
@@ -180,6 +183,18 @@ namespace OpenSolid
     
     inline Function::Function(const FunctionImplementation* implementation) :
         _implementation(implementation), _type(&typeid(implementation)) {}
+    
+    inline Function::Function(int value) :
+        _implementation(new ConstantFunction(VectorXD::Constant(1, value))),
+        _type(&typeid(ConstantFunction)) {}
+    
+    inline Function::Function(float value) :
+        _implementation(new ConstantFunction(VectorXD::Constant(1, value))),
+        _type(&typeid(ConstantFunction)) {}
+    
+    inline Function::Function(double value) :
+        _implementation(new ConstantFunction(VectorXD::Constant(1, value))),
+        _type(&typeid(ConstantFunction)) {}
     
     inline Function::Function(Double value) :
         _implementation(new ConstantFunction(VectorXD::Constant(1, value))),

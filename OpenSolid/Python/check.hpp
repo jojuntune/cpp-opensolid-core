@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__SCRIPTING__CHECK_HPP
 #define OPENSOLID__SCRIPTING__CHECK_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Common/config.hpp>
 
 #include <string>
 
@@ -45,7 +45,7 @@ namespace OpenSolid
     template <class ExpectedType>
     void checkCompatiblePythonType(boost::python::object argument, const std::string& caller);
     
-    OPENSOLID_PYTHON_EXPORT void checkNonZeroValue(double value, const std::string& caller);
+    OPENSOLID_PYTHON_EXPORT void checkNonZeroValue(Double value, const std::string& caller);
     
     OPENSOLID_PYTHON_EXPORT void checkSameSize(
         int first_size,

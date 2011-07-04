@@ -20,8 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Common/Comparison.hpp>
-#include "Datum.hpp"
+#include <OpenSolid/Datum/Datum.hpp>
 
 using namespace OpenSolid;
 

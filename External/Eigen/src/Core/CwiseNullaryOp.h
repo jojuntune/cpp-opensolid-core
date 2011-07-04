@@ -470,11 +470,14 @@ DenseBase<Derived>::Zero()
 template<typename Derived>
 bool DenseBase<Derived>::isZero(RealScalar prec) const
 {
+    return derived().unaryExpr(ZeroOperation(prec.lower().implementation())).all();
+  /*
   for(Index j = 0; j < cols(); ++j)
     for(Index i = 0; i < rows(); ++i)
       if(!internal::isMuchSmallerThan(this->coeff(i, j), static_cast<Scalar>(1), prec))
         return false;
   return true;
+  */
 }
 
 /** Sets all coefficients in this expression to zero.

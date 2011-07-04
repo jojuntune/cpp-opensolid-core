@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include "Interval.hpp"
+#include <OpenSolid/Scalar/Interval.hpp>
 
 using namespace OpenSolid;
 

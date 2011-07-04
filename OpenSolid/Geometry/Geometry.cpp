@@ -18,7 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Common/Comparison.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
@@ -93,7 +92,7 @@ namespace OpenSolid
         return Geometry(start + Function::t * (end - start), Interval(0, 1));
     }
     
-    Geometry Geometry::Arc(Double radius, Interval angle) {
+    Geometry Geometry::Arc(Double radius, const Interval& angle) {
         Vector2D x_vector = radius * Vector2D::UnitX();
         Vector2D y_vector = radius * Vector2D::UnitY();
         return Geometry(cos(Function::t) * x_vector + sin(Function::t) * y_vector, angle);
@@ -145,7 +144,7 @@ namespace OpenSolid
         return Geometry(Function(radius * cos(theta), radius * sin(theta)), angle);
     }
     
-    Geometry Geometry::Helix(Double radius, Double pitch, Interval angle) {
+    Geometry Geometry::Helix(Double radius, Double pitch, const Interval& angle) {
         Function theta = Function::Parameter(1, 0);
         return Geometry(
             Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),

@@ -25,11 +25,10 @@
 
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    
     class Geometry
     {
     private:
@@ -56,7 +55,7 @@ namespace OpenSolid
         VectorXI bounds() const;
         std::size_t hashValue() const;
         
-        Set<Geometry> boundaries() const;
+        Set<Geometry, VectorXI> boundaries() const;
         
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
@@ -99,7 +98,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT static Geometry Helix(
             Double radius,
             Double pitch,
-            Interval angle
+            const Interval& angle
         );
     };
 

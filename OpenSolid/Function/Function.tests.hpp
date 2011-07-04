@@ -21,8 +21,7 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Common/Comparison.hpp>
-#include "Function.hpp"
+#include <OpenSolid/Function/Function.hpp>
 
 using namespace OpenSolid;
 
@@ -32,60 +31,60 @@ public:
     void testConstant() {
         Function f = 3.0;
         TS_ASSERT(f.isA<ConstantFunction>());
-        TS_ASSERT(f(0.0).isEqualTo(3.0));
-        TS_ASSERT(f.as<ConstantFunction>().value().isEqualTo(3.0));
+        TS_ASSERT(f(0.0).isEqualTo(Double(3.0)));
+        TS_ASSERT(f.as<ConstantFunction>().value().isEqualTo(Double(3.0)));
     }
     
     void testArithmetic() {
         Function function = 2.0 + Function::u * 1.0 - 1.0 * Function::v;
         
-        TS_ASSERT(function(Vector2D(0, 0)).isEqualTo(2.0));
-        TS_ASSERT(function(Vector2D(1, 0)).isEqualTo(3.0));
-        TS_ASSERT(function(Vector2D(1, 1)).isEqualTo(2.0));
-        TS_ASSERT(function(Vector2D(0, 1)).isEqualTo(1.0));
-        TS_ASSERT(function.derivative(0)(Vector2D(0, 0)).isEqualTo(1.0));
-        TS_ASSERT(function.derivative(1)(Vector2D(0, 0)).isEqualTo(-1.0));
+        TS_ASSERT(function(Vector2D(0, 0)).isEqualTo(Double(2.0)));
+        TS_ASSERT(function(Vector2D(1, 0)).isEqualTo(Double(3.0)));
+        TS_ASSERT(function(Vector2D(1, 1)).isEqualTo(Double(2.0)));
+        TS_ASSERT(function(Vector2D(0, 1)).isEqualTo(Double(1.0)));
+        TS_ASSERT(function.derivative(0)(Vector2D(0, 0)).isEqualTo(Double(1.0)));
+        TS_ASSERT(function.derivative(1)(Vector2D(0, 0)).isEqualTo(Double(-1.0)));
         
         Function negated = -function;
         
-        TS_ASSERT(negated(Vector2D(0, 0)).isEqualTo(-2.0));
-        TS_ASSERT(negated(Vector2D(1, 0)).isEqualTo(-3.0));
-        TS_ASSERT(negated(Vector2D(1, 1)).isEqualTo(-2.0));
-        TS_ASSERT(negated(Vector2D(0, 1)).isEqualTo(-1.0));
-        TS_ASSERT(negated.derivative(0)(Vector2D(0, 0)).isEqualTo(-1.0));
-        TS_ASSERT(negated.derivative(1)(Vector2D(0, 0)).isEqualTo(1.0));
+        TS_ASSERT(negated(Vector2D(0, 0)).isEqualTo(Double(-2.0)));
+        TS_ASSERT(negated(Vector2D(1, 0)).isEqualTo(Double(-3.0)));
+        TS_ASSERT(negated(Vector2D(1, 1)).isEqualTo(Double(-2.0)));
+        TS_ASSERT(negated(Vector2D(0, 1)).isEqualTo(Double(-1.0)));
+        TS_ASSERT(negated.derivative(0)(Vector2D(0, 0)).isEqualTo(Double(-1.0)));
+        TS_ASSERT(negated.derivative(1)(Vector2D(0, 0)).isEqualTo(Double(1.0)));
     }
 
     void testMultiplication() {
         Function function = 1.0 + Function::u / 1.0 * Function::v / 1.0;
     
-        TS_ASSERT(function(Vector2D(0, 0)).isEqualTo(1.0));
-        TS_ASSERT(function(Vector2D(1, 0)).isEqualTo(1.0));
-        TS_ASSERT(function(Vector2D(1, 1)).isEqualTo(2.0));
-        TS_ASSERT(function(Vector2D(0, 1)).isEqualTo(1.0));
+        TS_ASSERT(function(Vector2D(0, 0)).isEqualTo(Double(1.0)));
+        TS_ASSERT(function(Vector2D(1, 0)).isEqualTo(Double(1.0)));
+        TS_ASSERT(function(Vector2D(1, 1)).isEqualTo(Double(2.0)));
+        TS_ASSERT(function(Vector2D(0, 1)).isEqualTo(Double(1.0)));
     
         Function u_derivative = function.derivative(0);
         
         TS_ASSERT(u_derivative(Vector2D(0, 0)).isZero());
         TS_ASSERT(u_derivative(Vector2D(1, 0)).isZero());
-        TS_ASSERT(u_derivative(Vector2D(1, 1)).isEqualTo(1.0));
-        TS_ASSERT(u_derivative(Vector2D(0, 1)).isEqualTo(1.0));
+        TS_ASSERT(u_derivative(Vector2D(1, 1)).isEqualTo(Double(1.0)));
+        TS_ASSERT(u_derivative(Vector2D(0, 1)).isEqualTo(Double(1.0)));
     
         Function v_derivative = function.derivative(1);
         
         TS_ASSERT(v_derivative(Vector2D(0, 0)).isZero());
-        TS_ASSERT(v_derivative(Vector2D(1, 0)).isEqualTo(1.0));
-        TS_ASSERT(v_derivative(Vector2D(1, 1)).isEqualTo(1.0));
+        TS_ASSERT(v_derivative(Vector2D(1, 0)).isEqualTo(Double(1.0)));
+        TS_ASSERT(v_derivative(Vector2D(1, 1)).isEqualTo(Double(1.0)));
         TS_ASSERT(v_derivative(Vector2D(0, 1)).isZero());
     }
     
     void testSquare() {
         Function function = Function::u.squaredNorm() * 1.0 + Function::v.squaredNorm() * 1.0;
-        TS_ASSERT(function(Vector2D(1, 2)).isEqualTo(5.0));
+        TS_ASSERT(function(Vector2D(1, 2)).isEqualTo(Double(5.0)));
         Function u_derivative = function.derivative(0);
-        TS_ASSERT(u_derivative(Vector2D(3, 4)).isEqualTo(6.0));
+        TS_ASSERT(u_derivative(Vector2D(3, 4)).isEqualTo(Double(6.0)));
         Function v_second_derivative = function.derivative(1).derivative(1);
-        TS_ASSERT(v_second_derivative(Vector2D(5, 6)).isEqualTo(2.0));
+        TS_ASSERT(v_second_derivative(Vector2D(5, 6)).isEqualTo(Double(2.0)));
     }
 
     void testNorm() {
@@ -103,7 +102,7 @@ public:
     
     void testConversion() {
         Function function = Function::u * Function::v;
-        TS_ASSERT_EQUALS(function(Vector2D(2, 3)).isEqualTo(6.0));
+        TS_ASSERT(function(Vector2D(2, 3)).isEqualTo(Double(6.0)));
     }
     
     void testSine() {
@@ -131,7 +130,7 @@ public:
     void testCosine() {
         Function f = cos(Function::t);
         RowVector4D result = f(RowVector4D(0, M_PI / 2, M_PI, 3 * M_PI / 2));
-        TS_ASSERT(Comparison::equal(result, RowVector4D(1, 0, -1, 0)));
+        TS_ASSERT(result.isEqualTo(RowVector4D(1, 0, -1, 0)));
         RowVector4I bounds = f(
             RowVector4I(
                 Interval(0, M_PI / 2),

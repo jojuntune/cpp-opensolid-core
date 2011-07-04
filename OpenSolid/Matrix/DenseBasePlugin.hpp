@@ -27,279 +27,112 @@ typedef MatrixColIterator<Derived> ColIterator;
 
 typedef Matrix<OpenSolid::Interval, RowsAtCompileTime, ColsAtCompileTime> Bounds;
 
-inline void assertIsScalar() const {
-    static_assert(
-        RowsAtCompileTime == 1 || RowsAtCompileTime == Dynamic,
-        "1x1 (scalar) matrix expected"
-    );
-    static_assert(
-        ColsAtCompileTime == 1 || ColsAtCompileTime == Dynamic,
-        "1x1 (scalar) matrix expected"
-    );
-    assert(size() == 1 && "1x1 (scalar) matrix expected");
-}
+inline ConstIterator begin() const;
+inline ConstIterator end() const;
+inline Iterator begin();
+inline Iterator end();
 
-inline ConstIterator begin() const {return ConstIterator(derived(), 0);}
+inline ConstRowIterator rowBegin();
+inline ConstRowIterator rowEnd();
+inline RowIterator rowBegin();
+inline RowIterator rowEnd();
 
-inline ConstIterator end() const {return ConstIterator(derived(), size());}
+inline ConstColIterator colBegin() const;
+inline ConstColIterator colEnd() const;
+inline ColIterator colBegin();
+inline ColIterator colEnd();
 
-inline Iterator begin() {return Iterator(derived(), 0);}
+inline OpenSolid::Double lower() const;
+inline OpenSolid::Double upper() const;
+inline OpenSolid::Double median() const;
+inline OpenSolid::Double width() const;
 
-inline Iterator end() {return Iterator(derived(), size());}
-
-inline ConstRowIterator rowBegin() const {return ConstRowIterator(derived(), 0);}
-
-inline ConstRowIterator rowEnd() const {return ConstRowIterator(derived(), rows());}
-
-inline RowIterator rowBegin() {return RowIterator(derived(), 0);}
-
-inline RowIterator rowEnd() {return RowIterator(derived(), rows());}
-
-inline ConstColIterator colBegin() const {return ConstColIterator(derived(), 0);}
-
-inline ConstColIterator colEnd() const {return ConstColIterator(derived(), cols());}
-
-inline ColIterator colBegin() {return ColIterator(derived(), 0);}
-
-inline ColIterator colEnd() {return ColIterator(derived(), cols());}
-
-inline OpenSolid::Double lower() const {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).lower();
-}
-
-inline OpenSolid::Double upper() const {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).upper();
-}
-
-inline OpenSolid::Double median() const {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).median();
-}
-
-inline OpenSolid::Double width() const {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).width();
-}
-
-inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const {
-    return derived().unaryExpr(LowerOperation());
-}
-
-inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const {
-    return derived().unaryExpr(UpperOperation());
-}
-
-inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const {
-    return derived().unaryExpr(MedianOperation());
-}
-
-inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const {
-    return derived().unaryExpr(WidthOperation());
-}
+inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const;
+inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const;
+inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
+inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
 
 template <class OtherDerivedType>
 inline bool isEqualTo(
     const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {return derived().isApprox(other, precision);}
+    double precision = OPENSOLID_PRECISION
+) const;
 
-template <class DerivedType>
-inline bool isEqualTo(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isEqualTo(argument.derived(), precision);
-}
-
-template <class DerivedType>
+template <class OtherDerivedType>
 inline bool isLessThan(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isLessThan(argument.derived(), precision);
-}
+    const DenseBase<OtherDerivedType>& other,
+    double precision = OPENSOLID_PRECISION
+) const;
 
-template <class DerivedType>
+template <class OtherDerivedType>
 inline bool isGreaterThan(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isGreaterThan(argument.derived(), precision);
-}
+    const DenseBase<OtherDerivedType>& other,
+    double precision = OPENSOLID_PRECISION
+) const;
 
-template <class DerivedType>
+template <class OtherDerivedType>
 inline bool isLessThanOrEqualTo(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isLessThanOrEqualTo(argument.derived(), precision);
-}
+    const DenseBase<OtherDerivedType>& other,
+    double precision = OPENSOLID_PRECISION
+) const;
 
-template <class DerivedType>
+template <class OtherDerivedType>
 inline bool isGreaterThanOrEqualTo(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isGreaterThanOrEqualTo(argument.derived(), precision);
-}
-
-template <class DerivedType>
-inline bool overlaps(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).overlaps(argument.derived(), precision);
-}
-
-template <class DerivedType>
-inline bool isSubsetOf(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isSubsetOf(argument.derived(), precision);
-}
-
-template <class DerivedType>
-inline bool isProperSubsetOf(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isProperSubsetOf(argument.derived(), precision);
-}
-
-template <class DerivedType>
-inline bool isSupersetOf(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isSupersetOf(argument.derived(), precision);
-}
-
-template <class DerivedType>
-inline bool isProperSupersetOf(
-    const OpenSolid::ScalarBase<DerivedType>& argument,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).isProperSupersetOf(argument.derived(), precision);
-}
+    const DenseBase<OtherDerivedType>& other,
+    double precision = OPENSOLID_PRECISION
+) const;
 
 template<class OtherDerivedType>
 inline bool overlaps(
     const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) const {
-    return derived().binaryExpr(
-        other.derived(),
-        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.overlaps(second_argument, precision);
-        }
-    ).all();
-}
+    double precision = OPENSOLID_PRECISION
+) const;
 
 template<class OtherDerivedType>
 inline bool isSubsetOf(
     const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) const {
-    return derived().binaryExpr(
-        other.derived(),
-        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.isSubsetOf(second_argument, precision);
-        }
-    ).all();
-}
+    double precision = OPENSOLID_PRECISION
+) const;
 
 template<class OtherDerivedType>
 inline bool isProperSubsetOf(
     const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) const {
-    return derived().binaryExpr(
-        other.derived(),
-        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.isProperSubsetOf(second_argument, precision);
-        }
-    ).all();
-}
+    double precision = OPENSOLID_PRECISION
+) const;
 
 template<class OtherDerivedType>
 inline bool isSupersetOf(
     const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) const {
-    return derived().binaryExpr(
-        other.derived(),
-        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.isSupersetOf(second_argument, precision);
-        }
-    ).all();
-}
+    double precision = OPENSOLID_PRECISION
+) const;
 
 template<class OtherDerivedType>
 inline bool isProperSupersetOf(
     const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OpenSolid::Double::defaultPrecision()
-) const {
-    return derived().binaryExpr(
-        other.derived(),
-        [precision] (Scalar first_argument, typename OtherDerivedType::Scalar second_argument) {
-            return first_argument.isProperSupersetOf(second_argument, precision);
-        }
-    ).all();
-}
+    double precision = OPENSOLID_PRECISION
+) const;
 
 template <class OtherDerivedType>
 inline CwiseBinaryOp<HullOperation, const Derived, const OtherDerivedType> hull(
     const DenseBase<OtherDerivedType>& other
-) {return derived().binaryExpr(other.derived(), HullOperation());}
+) const;
 
 template <class OtherDerivedType>
 inline CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> intersection(
     const DenseBase<OtherDerivedType>& other
-) {return derived().binaryExpr(other.derived(), IntersectionOperation());}
-
-
-inline OpenSolid::Interval hull(Scalar argument) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).hull(argument);
-}
-
-inline OpenSolid::Interval intersection(Scalar argument) {
-    assertIsScalar();
-    return derived().eval().coeff(0, 0).intersection(argument);
-}
+) const;
 
 inline typename internal::conditional<
     internal::is_same<Scalar, OpenSolid::Interval>::value,
     const Derived&,
     const CwiseUnaryOp<internal::scalar_cast_op<Scalar, OpenSolid::Interval>, const Derived>
->::type bounds() const {
-    return derived().cast<OpenSolid::Interval>();
-}
+>::type bounds() const;
 
-inline std::size_t hashValue() const {
-    HashVisitor visitor;
-    derived().visit(visitor);
-    return visitor.result;
-}
+inline std::size_t hashValue() const;
 
 inline static const RandomAccessLinSpacedReturnType LinSpaced(
     Index size,
     const OpenSolid::Interval& range
-) {return LinSpaced(size, range.lower(), range.upper());}
+);
 
-inline static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range) {
-    return LinSpaced(range.lower(), range.upper());
-}
+inline static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range);

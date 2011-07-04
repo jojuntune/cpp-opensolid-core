@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include "Simplex.hpp"
+#include <OpenSolid/Simplex/Simplex.hpp>
 
 using namespace OpenSolid;
 
@@ -94,9 +94,9 @@ public:
             Vector3D(1, 2, 1),
             Vector3D(1, 1, 2)
         );
-        TS_ASSERT(Comparison::equal(tetrahedron.centroid(), Vector3D::Constant(1.25)));
+        TS_ASSERT(tetrahedron.centroid().isEqualTo(Vector3D::Constant(1.25)));
         Triangle2D triangle(Vector2D(1, 1), Vector2D(2, 2), Vector2D(1, 3));
-        TS_ASSERT(Comparison::equal(triangle.centroid(), Vector2D(4.0 / 3.0, 2)));
+        TS_ASSERT(triangle.centroid().isEqualTo(Vector2D(4.0 / 3.0, 2)));
     }
     
     void testNormal() {

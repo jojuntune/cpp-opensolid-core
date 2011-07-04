@@ -23,7 +23,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Common/HashFunction.hpp>
-#include "Geometry.hpp"
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 using namespace OpenSolid;
 

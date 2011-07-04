@@ -30,7 +30,7 @@
 #include <boost/functional/hash.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
 
-#include "SetNode.hpp"
+#include <OpenSolid/Set/SetNode.hpp>
 
 namespace OpenSolid
 {

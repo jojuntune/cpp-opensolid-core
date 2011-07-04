@@ -21,10 +21,9 @@
 #ifndef OPENSOLID__DATUM_HPP
 #define OPENSOLID__DATUM_HPP
 
-#include <OpenSolid/config.hpp>
-
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/Common/config.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
@@ -216,11 +215,11 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include "DatumExpressions.hpp"
-#include "Axis.hpp"
-#include "Plane.hpp"
-#include "Frame.hpp"
-#include "CoordinateSystem.hpp"
+#include <OpenSolid/Datum/DatumExpressions.hpp>
+#include <OpenSolid/Datum/Axis.hpp>
+#include <OpenSolid/Datum/Plane.hpp>
+#include <OpenSolid/Datum/Frame.hpp>
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
 
 namespace OpenSolid
 {   
@@ -546,7 +545,7 @@ namespace OpenSolid
         const Axis<3>& axis
     ) const {
         assert(dimensions() == 3);
-        Matrix3D rotation = AngleAxisd(angle, axis.vector()).toRotationMatrix();
+        Matrix3D rotation = AngleAxis<Double>(angle, axis.vector()).toRotationMatrix();
         Datum<dimensions_, axes_> result;
         result._origin = axis.origin() + rotation * (origin() - axis.origin());
         result._vectors = rotation * vectors();

@@ -27,7 +27,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include "Set.hpp"
+#include <OpenSolid/Set/Set.hpp>
 
 using namespace OpenSolid;
 
@@ -171,7 +171,7 @@ public:
     }
     
     void testRebalance() {
-        Set<int> set;
+        Set<Double> set;
         for (int i = 1; i <= 12; ++i) {
             set.insert(i);
             std::cout << set << std::endl;

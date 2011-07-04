@@ -23,7 +23,13 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Common/Eigen.hpp>
+#include <OpenSolid/Scalar/Double.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
+
+namespace OpenSolid
+{
+    using namespace Eigen;
+}
 
 namespace Eigen
 {
@@ -93,12 +99,10 @@ namespace Eigen
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
 }
 
-namespace OpenSolid
-{
-    using namespace Eigen;
-}
-
 ////////// Implementation //////////
+
+#include <OpenSolid/Scalar/Double.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 
 namespace Eigen
 {
@@ -110,19 +114,27 @@ namespace Eigen
         
         inline OpenSolid::Double imag(OpenSolid::Double) {return 0.0;}
         
-        inline OpenSolid::Double abs2(OpenSolid::Double argument) {return argument.squared();}
+        inline OpenSolid::Double abs2(OpenSolid::Double argument) {
+            return argument.squaredNorm();
+        }
         
         inline int significant_decimals_default_impl<OpenSolid::Double, false>::run() {
             return significant_decimals_default_impl<double, false>::run();
         }
 
-        inline OpenSolid::Interval conj(OpenSolid::Interval argument) {return argument;}
+        inline const OpenSolid::Interval& conj(const OpenSolid::Interval& argument) {
+            return argument;
+        }
         
-        inline OpenSolid::Interval real(OpenSolid::Interval argument) {return argument;}
+        inline const OpenSolid::Interval& real(const OpenSolid::Interval& argument) {
+            return argument;
+        }
         
-        inline OpenSolid::Interval imag(OpenSolid::Interval) {return 0.0;}
+        inline OpenSolid::Interval imag(const OpenSolid::Interval&) {return 0.0;}
         
-        inline OpenSolid::Interval abs2(OpenSolid::Interval argument) {return argument.squared();}
+        inline OpenSolid::Interval abs2(const OpenSolid::Interval& argument) {
+            return argument.squaredNorm();
+        }
         
         inline int significant_decimals_default_impl<OpenSolid::Interval, false>::run() {
             return significant_decimals_default_impl<double, false>::run();
@@ -160,6 +172,221 @@ namespace Eigen
     inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::highest() {
         return std::numeric_limits<double>::max();
     }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ConstIterator DenseBase<DerivedType>::begin() const {
+        return ConstIterator(derived(), 0);
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ConstIterator DenseBase<DerivedType>::end() const {
+        return ConstIterator(derived(), size());
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::Iterator DenseBase<DerivedType>::begin() {
+        return Iterator(derived(), 0);
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::Iterator DenseBase<DerivedType>::end() {
+        return Iterator(derived(), size());
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ConstRowIterator
+    DenseBase<DerivedType>::rowBegin() const {return ConstRowIterator(derived(), 0);}
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ConstRowIterator
+    DenseBase<DerivedType>::rowEnd() const {return ConstRowIterator(derived(), rows());}
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::RowIterator DenseBase<DerivedType>::rowBegin() {
+        return RowIterator(derived(), 0);
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::RowIterator DenseBase<DerivedType>::rowEnd() {
+        return RowIterator(derived(), rows());
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ConstColIterator
+    DenseBase<DerivedType>::colBegin() const {return ConstColIterator(derived(), 0);}
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ConstColIterator
+    DenseBase<DerivedType>::colEnd() const {return ConstColIterator(derived(), cols());}
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ColIterator DenseBase<DerivedType>::colBegin() {
+        return ColIterator(derived(), 0);
+    }
+
+    template <class DerivedType>
+    inline typename DenseBase<DerivedType>::ColIterator DenseBase<DerivedType>::colEnd() {
+        return ColIterator(derived(), cols());
+    }
+
+    template <class DerivedType>
+    inline OpenSolid::Double DenseBase<DerivedType>::lower() const {
+        return derived().eval().value().lower();
+    }
+
+    template <class DerivedType>
+    inline OpenSolid::Double DenseBase<DerivedType>::upper() const {
+        return derived().eval().value().upper();
+    }
+
+    template <class DerivedType>
+    inline OpenSolid::Double DenseBase<DerivedType>::median() const {
+        return derived().eval().value().median();
+    }
+
+    template <class DerivedType>
+    inline OpenSolid::Double DenseBase<DerivedType>::width() const {
+        return derived().eval().value().width();
+    }
+
+    template <class DerivedType>
+    inline CwiseUnaryOp<LowerOperation, const DerivedType> DenseBase<DerivedType>::cwiseLower() const {
+        return derived().unaryExpr(LowerOperation());
+    }
+
+    template <class DerivedType>
+    inline CwiseUnaryOp<UpperOperation, const DerivedType> DenseBase<DerivedType>::cwiseUpper() const {
+        return derived().unaryExpr(UpperOperation());
+    }
+
+    template <class DerivedType>
+    inline CwiseUnaryOp<MedianOperation, const DerivedType> DenseBase<DerivedType>::cwiseMedian() const {
+        return derived().unaryExpr(MedianOperation());
+    }
+
+    template <class DerivedType>
+    inline CwiseUnaryOp<WidthOperation, const DerivedType> DenseBase<DerivedType>::cwiseWidth() const {
+        return derived().unaryExpr(WidthOperation());
+    }
+
+    template <class DerivedType> template <class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isEqualTo(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {return  derived().binaryExpr(other.derived(), EqualOperation(precision)).all();}
+
+    template <class DerivedType> template <class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isLessThan(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {
+        return derived().eval().value().isLessThan(
+            argument.derived().eval().value(),
+            precision
+        );
+    }
+
+    template <class DerivedType> template <class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isGreaterThan(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {
+        return derived().eval().value().isGreaterThan(
+            argument.derived().eval().value(),
+            precision
+        );
+    }
+
+    template <class DerivedType> template <class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isLessThanOrEqualTo(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {
+        return derived().eval().value().isLessThanOrEqualTo(
+            argument.derived().eval().value(),
+            precision
+        );
+    }
+
+    template <class DerivedType> template <class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isGreaterThanOrEqualTo(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {
+        return derived().eval().value().isGreaterThanOrEqualTo(
+            argument.derived().eval().value(),
+            precision
+        );
+    }
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::overlaps(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {return derived().binaryExpr(other.derived(), OverlapOperation(precision)).all();}
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isSubsetOf(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {return derived().binaryExpr(other.derived(), SubsetOperation(precision)).all();}
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isProperSubsetOf(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {return derived().binaryExpr(other.derived(), ProperSubsetOperation(precision)).all();}
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isSupersetOf(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {return derived().binaryExpr(other.derived(), SupersetOperation(precision)).all();}
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isProperSupersetOf(
+        const DenseBase<OtherDerivedType>& other,
+        double precision = OPENSOLID_PRECISION
+    ) const {return derived().binaryExpr(other.derived(), ProperSupersetOperation(precision)).all();}
+
+    template <class OtherDerivedType>
+    inline CwiseBinaryOp<HullOperation, const DerivedType, const OtherDerivedType> DenseBase<DerivedType>::hull(
+        const DenseBase<OtherDerivedType>& other
+    ) const {return derived().binaryExpr(other.derived(), HullOperation());}
+
+    template <class DerivedType> template <class OtherDerivedType>
+    inline CwiseBinaryOp<IntersectionOperation, const DerivedType, const OtherDerivedType> DenseBase<DerivedType>::intersection(
+        const DenseBase<OtherDerivedType>& other
+    ) const {return derived().binaryExpr(other.derived(), IntersectionOperation());}
+
+    template <class DerivedType>
+    inline typename internal::conditional<
+        internal::is_same<Scalar, OpenSolid::Interval>::value,
+        const DerivedType&,
+        const CwiseUnaryOp<internal::scalar_cast_op<Scalar, OpenSolid::Interval>, const Derived>
+    >::type DenseBase<DerivedType>::bounds() const {return derived().cast<OpenSolid::Interval>();}
+
+    template <class DerivedType>
+    inline std::size_t DenseBase<DerivedType>::hashValue() const {
+        HashVisitor visitor;
+        derived().visit(visitor);
+        return visitor.result;
+    }
+
+    template <class DerivedType>
+    inline static const RandomAccessLinSpacedReturnType DenseBase<DerivedType>::LinSpaced(
+        Index size,
+        const OpenSolid::Interval& range
+    ) {return LinSpaced(size, range.lower(), range.upper());}
+
+    template <class DerivedType>
+    inline static const RandomAccessLinSpacedReturnType DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
+        return LinSpaced(range.lower(), range.upper());
+    }
+
+
+
+
 
     template <class MatrixType>
     inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
@@ -438,6 +665,68 @@ namespace Eigen
         ScalarType first_argument,
         ScalarType second_argument
     ) const {return first_argument.intersection(second_argument);}
+    
+    inline ZeroOperation::ZeroOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool ZeroOperation::operator()(ScalarType argument) const {
+        return argument.isZero(_precision);
+    }
+    
+    inline EqualOperation::EqualOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool EqualOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.isEqualTo(second_argument, _precision);}
+    
+    inline OverlapOperation::OverlapOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool OverlapOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.overlaps(second_argument, _precision);}
+    
+    inline SubsetOperation::SubsetOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool SubsetOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.isSubsetOf(second_argument, _precision);}
+    
+    inline ProperSubsetOperation::ProperSubsetOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool ProperSubsetOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.isProperSubsetOf(second_argument, _precision);}
+    
+    inline SupersetOperation::SupersetOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool SupersetOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.isSupersetOf(second_argument, _precision);}
+    
+    inline ProperSupersetOperation::ProperSupersetOperation(double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool ProperSupersetOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.isProperSupersetOf(second_argument, _precision);}
     
     template <class ScalarType>
     inline void HashVisitor::init(ScalarType argument, int, int) {
