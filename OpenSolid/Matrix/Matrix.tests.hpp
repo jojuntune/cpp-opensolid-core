@@ -114,37 +114,37 @@ public:
         list.push_back(1);
         list.push_back(2);
         vector.resize(list.size());
-        std::copy(list.begin(), list.end(), vector.begin());
+        std::copy(list.begin(), list.end(), begin(vector));
         TS_ASSERT_EQUALS(vector, RowVector2D(1, 2));
-        TS_ASSERT_EQUALS(*vector.begin(), 1);
-        TS_ASSERT_EQUALS(*(vector.end() - 1), 2);
+        TS_ASSERT_EQUALS(*begin(vector), 1);
+        TS_ASSERT_EQUALS(*(end(vector) - 1), 2);
     }
     
     void testBlockIteration() {
         Matrix3D a = Matrix3D::Random();
         int j = 0;
-        for (Matrix3D::ConstRowIterator i = a.rowBegin(); i != a.rowEnd(); ++i) {
+        for (auto i = begin(a.rowwise()); i != end(a.rowwise()); ++i) {
             TS_ASSERT_EQUALS(*i, a.row(j++));
         }
         j = 0;
-        for (Matrix3D::ConstColIterator i = a.colBegin(); i != a.colEnd(); ++i) {
+        for (auto i = begin(a.colwise()); i != end(a.colwise()); ++i) {
             TS_ASSERT_EQUALS(*i, a.col(j++));
         }
         Matrix3D b;
-        std::copy(a.colBegin(), a.colEnd(), b.colBegin());
+        std::copy(begin(a.colwise()), end(a.colwise()), begin(b.colwise()));
         TS_ASSERT_EQUALS(a, b);
         Matrix3D c;
-        std::copy(a.rowBegin(), a.rowEnd(), c.rowBegin());
+        std::copy(begin(a.rowwise()), end(a.rowwise()), begin(c.rowwise()));
         TS_ASSERT_EQUALS(a, c);
         std::vector<Vector3D> input(3);
         input[0] = Vector3D::UnitX();
         input[1] = Vector3D::UnitY();
         input[2] = Vector3D::UnitZ();
         Matrix3D d;
-        std::copy(input.begin(), input.end(), d.colBegin());
+        std::copy(input.begin(), input.end(), begin(d.colwise()));
         TS_ASSERT(d.isIdentity());
         std::vector<RowVector3D> output(3);
-        std::copy(a.rowBegin(), a.rowEnd(), output.begin());
+        std::copy(begin(a.rowwise()), end(a.rowwise()), output.begin());
         for (std::size_t i = 0; i < output.size(); ++i) {
             TS_ASSERT_EQUALS(output[i], a.row(i));
         }

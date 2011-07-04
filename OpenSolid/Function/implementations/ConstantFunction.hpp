@@ -28,11 +28,11 @@ namespace OpenSolid
     class ConstantFunction : public FunctionImplementation
     {
     private:
-        VectorXD _value;
+        VectorXD _vector;
     public:
         OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXD& value);
         
-        const VectorXD& value() const;
+        const VectorXD& vector() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
@@ -58,7 +58,7 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline const VectorXD& ConstantFunction::value() const {return _value;}
+    inline const VectorXD& ConstantFunction::vector() const {return _vector;}
 }
 
 #endif

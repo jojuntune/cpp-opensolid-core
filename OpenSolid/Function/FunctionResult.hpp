@@ -93,6 +93,8 @@ namespace OpenSolid
         
         template<class ResultType>
         void evalTo(ResultType& result) const;
+        
+        typename ArgumentType::Scalar value() const;
     };
     
     template<>
@@ -109,6 +111,8 @@ namespace OpenSolid
         
         template<class ResultType>
         void evalTo(ResultType& result) const;
+        
+        Double value() const;
     };
     
     template<>
@@ -125,6 +129,8 @@ namespace OpenSolid
         
         template<class ResultType>
         void evalTo(ResultType& result) const;
+        
+        Double value() const;
     };
     
     template<>
@@ -141,6 +147,8 @@ namespace OpenSolid
         
         template<class ResultType>
         void evalTo(ResultType& result) const;
+        
+        Double value() const;
     };
     
     template<>
@@ -157,6 +165,8 @@ namespace OpenSolid
         
         template<class ResultType>
         void evalTo(ResultType& result) const;
+        
+        Interval value() const;
     };
 }
 
@@ -208,6 +218,13 @@ namespace OpenSolid
         _function.implementation()->evaluate(argument_map, result_map);
     }
     
+    template<class ArgumentType>
+    inline typename ArgumentType::Scalar FunctionResult<ArgumentType>::value() const {
+        Matrix<typename ArgumentType::Scalar, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+    
     inline FunctionResult<int>::FunctionResult(const Function& function, int argument) :
         _function(function), _argument(argument) {}
     
@@ -232,6 +249,12 @@ namespace OpenSolid
         
         // Evaluate function
         _function.implementation()->evaluate(argument_map, result_map);
+    }
+    
+    inline Double FunctionResult<int>::value() const {
+        Matrix<Double, 1, 1> result;
+        evalTo(result);
+        return result.value();
     }
     
     inline FunctionResult<double>::FunctionResult(const Function& function, double argument) :
@@ -260,6 +283,12 @@ namespace OpenSolid
         _function.implementation()->evaluate(argument_map, result_map);
     }
     
+    inline Double FunctionResult<double>::value() const {
+        Matrix<Double, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+    
     inline FunctionResult<Double>::FunctionResult(const Function& function, Double argument) :
         _function(function), _argument(argument) {}
     
@@ -286,6 +315,12 @@ namespace OpenSolid
         _function.implementation()->evaluate(argument_map, result_map);
     }
     
+    inline Double FunctionResult<Double>::value() const {
+        Matrix<Double, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+    
     inline FunctionResult<Interval>::FunctionResult(const Function& function, Interval argument) :
         _function(function), _argument(argument) {}
     
@@ -310,6 +345,12 @@ namespace OpenSolid
         
         // Evaluate function
         _function.implementation()->evaluate(argument_map, result_map);
+    }
+    
+    inline Interval FunctionResult<Interval>::value() const {
+        Matrix<Interval, 1, 1> result;
+        evalTo(result);
+        return result.value();
     }
 }
 

@@ -66,7 +66,7 @@ public:
 
     void testSquare() {
         Interval two_three(2.0, 3.0);
-        Interval four_nine = two_three.squared();
+        Interval four_nine = two_three.squaredNorm();
         TS_ASSERT_EQUALS(four_nine.lower(), 4.0);
         TS_ASSERT_EQUALS(four_nine.upper(), 9.0);
     }

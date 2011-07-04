@@ -27,8 +27,8 @@ namespace OpenSolid
         int dims = bounds.size();
         std::vector<Geometry> list;
         if (dims == 1) {
-            list.push_back(bounds.lower());
-            list.push_back(bounds.upper());
+            list.push_back(bounds.value().lower());
+            list.push_back(bounds.value().upper());
         } else {
             VectorXI geometry_domain_bounds = bounds.tail(dims - 1);
             MatrixXD geometry_domain_unit_vectors = MatrixXD::Zero(dims, dims - 1);

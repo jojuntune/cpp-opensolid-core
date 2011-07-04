@@ -43,7 +43,7 @@ public:
         Vector3D start(3, 1, 1);
         Vector3D end(1, -1, 1);
         Geometry arc = Geometry::Arc(Axis3D(center, Vector3D::UnitZ()), start, end);
-        Interval domain = arc.domain().interval();
+        Interval domain = arc.domain().bounds().value();
         std::cout << "Domain interval: " << domain << std::endl;
         RowVectorXD parameter_values = RowVectorXD::LinSpaced(13, domain);
         std::cout << "Parameter values:" << std::endl;
@@ -79,7 +79,7 @@ public:
         
         TS_ASSERT(second_derivative(0.0).isEqualTo(Vector3D(-2, 0, 0)));
         TS_ASSERT(second_derivative(M_PI / 2).isEqualTo(Vector3D(0, -2, 0)));
-        TS_ASSERT(second_derivative(M_PI.isEqualTo(Vector3D(2, 0, 0)));
+        TS_ASSERT(second_derivative(M_PI).isEqualTo(Vector3D(2, 0, 0)));
         TS_ASSERT(second_derivative(M_PI * 3 / 2).isEqualTo(Vector3D(0, 2, 0)));
         
         Geometry normal = arc.tangent().tangent();
@@ -99,12 +99,12 @@ public:
             Interval(-2, 2)
         );
         Vector3D tangent = parabola.tangent()(1);
-        Double curvature = parabola.curvature()(1).scalar();
+        Double curvature = parabola.curvature()(1).value();
         Vector3D normal = parabola.normal()(1);
         Vector3D binormal = parabola.binormal()(1);
         
         TS_ASSERT(parabola.tangent()(1).isEqualTo(Vector3D(1, 2, 0).normalized()));
-        TS_ASSERT(parabola.curvature()(1).isEqualTo(2 / (5 * sqrt(5.0))));
+        TS_ASSERT(parabola.curvature()(1).value().isEqualTo(2 / (5 * sqrt(5.0))));
         TS_ASSERT(parabola.normal()(1).isEqualTo(Vector3D(-2, 1, 0).normalized()));
         TS_ASSERT(parabola.binormal()(1).isEqualTo(Vector3D::UnitZ()));
     }

@@ -401,7 +401,7 @@ namespace OpenSolid
     inline Set<Type, BoundsType, BoundsFunctionType>
     Set<Type, BoundsType, BoundsFunctionType>::overlapping(const BoundsType& bounds) const {
         return filtered(
-            [&bounds] (const BoundsType& subset_bounds) {return bounds.overlap(subset_bounds);}
+            [&bounds] (const BoundsType& subset_bounds) {return bounds.overlaps(subset_bounds);}
         );
     }
     

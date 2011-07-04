@@ -47,7 +47,7 @@ namespace OpenSolid
         const Function& function() const;
         const Domain& domain() const;
         
-        const VectorXD& value() const;
+        const VectorXD& vector() const;
         
         int parameters() const;
         int dimensions() const;
@@ -154,9 +154,9 @@ namespace OpenSolid
     
     inline const Domain& Geometry::domain() const {return _domain;}
     
-    inline const VectorXD& Geometry::value() const {
+    inline const VectorXD& Geometry::vector() const {
         assert(function().isA<ConstantFunction>());
-        return function().as<ConstantFunction>().value();
+        return function().as<ConstantFunction>().vector();
     }
     
     inline int Geometry::parameters() const {return function().parameters();}

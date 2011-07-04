@@ -22,7 +22,6 @@
 #define OPENSOLID__SCALARBASE_HPP
 
 #include <OpenSolid/Common/config.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {
@@ -42,10 +41,10 @@ namespace OpenSolid
         DerivedType& operator()(int index);
         DerivedType& operator()(int row, int col);
         
-        const DerivedType* begin() const;
-        const DerivedType* end() const;
-        DerivedType* begin();
-        DerivedType* end();
+        DerivedType rowwise() const;
+        DerivedType& rowwise();
+        DerivedType colwise() const;
+        DerivedType& colwise();
         
         DerivedType minCoeff() const;
         DerivedType minCoeff(int* index) const;
@@ -54,6 +53,18 @@ namespace OpenSolid
         DerivedType maxCoeff(int* index) const;
         DerivedType maxCoeff(int* row, int* col) const;
     };
+    
+    template <class DerivedType>
+    const DerivedType* begin(const ScalarBase<DerivedType>& argument);
+    
+    template <class DerivedType>
+    const DerivedType* end(const ScalarBase<DerivedType>& argument);
+    
+    template <class DerivedType>
+    DerivedType* begin(const ScalarBase<DerivedType>& argument);
+    
+    template <class DerivedType>
+    DerivedType* end(const ScalarBase<DerivedType>& argument);
 }
 
 ////////// Implementation //////////
@@ -104,23 +115,21 @@ namespace OpenSolid
         assert(col == 0);
         return derived();
     }
+        
+    template <class DerivedType>
+    inline DerivedType ScalarBase<DerivedType>::rowwise() const {return derived();}
     
     template <class DerivedType>
-    inline const DerivedType* ScalarBase<DerivedType>::begin() const {return &derived();}
+    inline DerivedType& ScalarBase<DerivedType>::rowwise() {return derived();}
     
     template <class DerivedType>
-    inline const DerivedType* ScalarBase<DerivedType>::end() const {return ++&derived();}
+    inline DerivedType ScalarBase<DerivedType>::colwise() const {return derived();}
     
     template <class DerivedType>
-    inline DerivedType* ScalarBase<DerivedType>::begin() {return &derived();}
+    inline DerivedType& ScalarBase<DerivedType>::colwise() {return derived();}
     
     template <class DerivedType>
-    inline DerivedType* ScalarBase<DerivedType>::end() {return ++&derived();}
-    
-    template <class DerivedType>
-    inline DerivedType ScalarBase<DerivedType>::minCoeff() const {
-        return derived();
-    }
+    inline DerivedType ScalarBase<DerivedType>::minCoeff() const {return derived();}
     
     template <class DerivedType>
     inline DerivedType ScalarBase<DerivedType>::minCoeff(int* index) const {
@@ -136,9 +145,7 @@ namespace OpenSolid
     }
     
     template <class DerivedType>
-    inline DerivedType ScalarBase<DerivedType>::maxCoeff() const {
-        return derived();
-    }
+    inline DerivedType ScalarBase<DerivedType>::maxCoeff() const {return derived();}
     
     template <class DerivedType>
     inline DerivedType ScalarBase<DerivedType>::maxCoeff(int* index) const {
@@ -151,6 +158,26 @@ namespace OpenSolid
         *row = 0;
         *col = 0;
         return derived();
+    }
+    
+    template <class DerivedType>
+    inline const DerivedType* begin(const ScalarBase<DerivedType>& argument) {
+        return &argument.derived();
+    }
+    
+    template <class DerivedType>
+    inline const DerivedType* end(const ScalarBase<DerivedType>& argument) {
+        return ++begin(argument);
+    }
+    
+    template <class DerivedType>
+    inline DerivedType* begin(ScalarBase<DerivedType>& argument) {
+        return &argument.derived();
+    }
+    
+    template <class DerivedType>
+    inline DerivedType* end(ScalarBase<DerivedType>& argument) {
+        return ++begin(argument);
     }
 }
 

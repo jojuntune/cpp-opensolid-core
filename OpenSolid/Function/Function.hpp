@@ -55,7 +55,7 @@ namespace OpenSolid
         Function(Double value);
         
         template <class DerivedType>
-        Function(const EigenBase<DerivedType>& value);
+        Function(const EigenBase<DerivedType>& vector);
         
         template <class XType, class YType>
         Function(const XType& x, const YType& y);
@@ -201,8 +201,8 @@ namespace OpenSolid
         _type(&typeid(ConstantFunction)) {}
     
     template <class DerivedType>
-    inline Function::Function(const EigenBase<DerivedType>& value) :
-        _implementation(new ConstantFunction(value)), _type(&typeid(ConstantFunction)) {}
+    inline Function::Function(const EigenBase<DerivedType>& vector) :
+        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
         
     template <class XType, class YType>
     Function::Function(const XType& x, const YType& y) {

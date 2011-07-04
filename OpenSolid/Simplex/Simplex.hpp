@@ -417,7 +417,7 @@ namespace OpenSolid
     
     template <int dimensions_, int size_>
     inline std::size_t Simplex<dimensions_, size_>::hashValue() const {
-        return argument.vertices().hashValue();
+        return vertices().hashValue();
     }
         
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>

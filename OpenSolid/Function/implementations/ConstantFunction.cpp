@@ -23,47 +23,47 @@
 
 namespace OpenSolid
 {
-    ConstantFunction::ConstantFunction(const VectorXD& value) : _value(value) {}
+    ConstantFunction::ConstantFunction(const VectorXD& vector) : _vector(vector) {}
     
     int ConstantFunction::parameters() const {return 0;}
     
-    int ConstantFunction::dimensions() const {return value().size();}
+    int ConstantFunction::dimensions() const {return vector().size();}
     
     void ConstantFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
-        results.colwise() = value();
+        results.colwise() = vector();
     }
     
     void ConstantFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results.colwise() = value().cast<Interval>();
+        results.colwise() = vector().cast<Interval>();
     }
     
     void ConstantFunction::getDerivative(int index, Function& result) const {
-        result = VectorXD::Zero(value().size());
+        result = VectorXD::Zero(vector().size());
     }
     
     void ConstantFunction::getComponents(int index, int num, Function& result) const {
-        result = value().middleRows(index, num);
+        result = vector().middleRows(index, num);
     }
     
     void ConstantFunction::getComposition(const Function& inner, Function& result) const {
-        result = value();
+        result = vector();
     }
     
     void ConstantFunction::getTransformed(const DatumXD& datum, Function& result) const {
-        result = value() * datum;
+        result = vector() * datum;
     }
     
-    void ConstantFunction::getNorm(Function& result) const {result = value().norm();}
+    void ConstantFunction::getNorm(Function& result) const {result = vector().norm();}
     
     void ConstantFunction::getNormalized(Function& result) const {
-        Double norm = value().norm();
+        Double norm = vector().norm();
         assert(norm.isGreaterThan(0.0));
-        result = value() / norm;
+        result = vector() / norm;
     }
     
-    void ConstantFunction::getSquaredNorm(Function& result) const {result = value().squaredNorm();}
+    void ConstantFunction::getSquaredNorm(Function& result) const {result = vector().squaredNorm();}
     
     void ConstantFunction::debug(std::ostream& stream, int indent) const {
-        stream << "ConstantFunction: " << value().transpose() << std::endl;
+        stream << "ConstantFunction: " << vector().transpose() << std::endl;
     }
 }

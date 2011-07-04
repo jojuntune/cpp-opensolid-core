@@ -21,10 +21,260 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <boost/functional/hash.hpp>
-
 #include <OpenSolid/Scalar/Double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
+
+namespace Eigen
+{   
+    namespace internal
+    {
+        template <class ScalarType, bool is_integer_>
+        struct significant_decimals_default_impl;
+        
+        template <class ScalarType>
+        struct is_arithmetic;
+
+        template <class Type>
+        struct traits;
+
+        OpenSolid::Double conj(OpenSolid::Double argument);
+        OpenSolid::Double real(OpenSolid::Double argument);
+        OpenSolid::Double imag(OpenSolid::Double);
+        OpenSolid::Double abs2(OpenSolid::Double argument);
+        
+        template <>
+        struct significant_decimals_default_impl<OpenSolid::Double, false>
+        {
+            static inline int run();
+        };
+        
+        template <>
+        struct is_arithmetic<OpenSolid::Double>
+        {
+            static const bool value = true;
+        };
+
+        const OpenSolid::Interval& conj(const OpenSolid::Interval& argument);
+        const OpenSolid::Interval& real(const OpenSolid::Interval& argument);
+        OpenSolid::Interval imag(const OpenSolid::Interval&);
+        OpenSolid::Interval abs2(const OpenSolid::Interval& argument);
+
+        template <>
+        struct significant_decimals_default_impl<OpenSolid::Interval, false>
+        {
+            static inline int run();
+        };
+        
+        template <>
+        struct is_arithmetic<OpenSolid::Interval>
+        {
+            static const bool value = true;
+        };
+    }
+    
+    template <class Type>
+    struct NumTraits;
+    
+    template <>
+    struct NumTraits<OpenSolid::Double>
+    {
+        typedef OpenSolid::Double Real;
+        typedef OpenSolid::Double NonInteger;
+        typedef OpenSolid::Double Nested;
+        
+        static const int IsComplex = 0;
+        static const int IsInteger = 0;
+        static const int ReadCost = 1;
+        static const int AddCost = 1;
+        static const int MulCost = 1;
+        static const int IsSigned = 1;
+        static const int RequireInitialization = 0;
+        
+        static OpenSolid::Double epsilon();
+        static OpenSolid::Double dummy_precision();
+        static OpenSolid::Double lowest();
+        static OpenSolid::Double highest();
+    };
+    
+    template <>
+    struct NumTraits<OpenSolid::Interval>
+    {
+        typedef OpenSolid::Interval Real;
+        typedef OpenSolid::Interval NonInteger;
+        typedef OpenSolid::Interval Nested;
+        
+        static const int IsComplex = 0;
+        static const int IsInteger = 0;
+        static const int ReadCost = 2;
+        static const int AddCost = 2;
+        static const int MulCost = 10;
+        static const int IsSigned = 1;
+        static const int RequireInitialization = 0;
+        
+        static OpenSolid::Interval epsilon();
+        static OpenSolid::Interval dummy_precision();
+        static OpenSolid::Interval lowest();
+        static OpenSolid::Interval highest();  
+    };
+    
+    struct LowerOperation
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct UpperOperation
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct MedianOperation
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct WidthOperation
+    {
+        typedef OpenSolid::Double result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Double operator()(ScalarType argument) const;
+    };
+    
+    struct HullOperation
+    {
+        typedef OpenSolid::Interval result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Interval operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct IntersectionOperation
+    {
+        typedef OpenSolid::Interval result_type;
+        
+        template <class ScalarType>
+        OpenSolid::Interval operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct ZeroOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        ZeroOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType argument) const;
+    };
+    
+    struct EqualOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        EqualOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct OverlapOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        OverlapOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct SubsetOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        SubsetOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct ProperSubsetOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        ProperSubsetOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct SupersetOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        SupersetOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct ProperSupersetOperation
+    {
+        typedef bool result_type;
+        
+        double _precision;
+        
+        ProperSupersetOperation(double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
+    struct HashVisitor
+    {
+        std::size_t result;
+        
+        template <class ScalarType>
+        inline void init(ScalarType argument, int, int);
+        
+        template <class ScalarType>
+        inline void operator()(ScalarType argument, int, int);
+    };
+}
+
+#define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
+#define EIGEN_FAST_MATH 0
+#define EIGEN_DONT_ALIGN
+#define EIGEN_DONT_VECTORIZE
+
+#define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Matrix/DenseBasePlugin.hpp>
+
+#ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
+#include "DenseBasePlugin.hpp"
+#endif
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <Eigen/LU>
 
 namespace OpenSolid
 {
@@ -101,8 +351,9 @@ namespace Eigen
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Scalar/Double.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
+#include <boost/functional/hash.hpp>
+
+#include <OpenSolid/Matrix/MatrixIterator.hpp>
 
 namespace Eigen
 {
@@ -174,150 +425,26 @@ namespace Eigen
     }
 
     template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ConstIterator DenseBase<DerivedType>::begin() const {
-        return ConstIterator(derived(), 0);
-    }
+    inline CwiseUnaryOp<LowerOperation, const DerivedType>
+    DenseBase<DerivedType>::cwiseLower() const {return derived().unaryExpr(LowerOperation());}
 
     template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ConstIterator DenseBase<DerivedType>::end() const {
-        return ConstIterator(derived(), size());
-    }
+    inline CwiseUnaryOp<UpperOperation, const DerivedType>
+    DenseBase<DerivedType>::cwiseUpper() const {return derived().unaryExpr(UpperOperation());}
 
     template <class DerivedType>
-    inline typename DenseBase<DerivedType>::Iterator DenseBase<DerivedType>::begin() {
-        return Iterator(derived(), 0);
-    }
+    inline CwiseUnaryOp<MedianOperation, const DerivedType>
+    DenseBase<DerivedType>::cwiseMedian() const {return derived().unaryExpr(MedianOperation());}
 
     template <class DerivedType>
-    inline typename DenseBase<DerivedType>::Iterator DenseBase<DerivedType>::end() {
-        return Iterator(derived(), size());
-    }
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ConstRowIterator
-    DenseBase<DerivedType>::rowBegin() const {return ConstRowIterator(derived(), 0);}
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ConstRowIterator
-    DenseBase<DerivedType>::rowEnd() const {return ConstRowIterator(derived(), rows());}
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::RowIterator DenseBase<DerivedType>::rowBegin() {
-        return RowIterator(derived(), 0);
-    }
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::RowIterator DenseBase<DerivedType>::rowEnd() {
-        return RowIterator(derived(), rows());
-    }
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ConstColIterator
-    DenseBase<DerivedType>::colBegin() const {return ConstColIterator(derived(), 0);}
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ConstColIterator
-    DenseBase<DerivedType>::colEnd() const {return ConstColIterator(derived(), cols());}
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ColIterator DenseBase<DerivedType>::colBegin() {
-        return ColIterator(derived(), 0);
-    }
-
-    template <class DerivedType>
-    inline typename DenseBase<DerivedType>::ColIterator DenseBase<DerivedType>::colEnd() {
-        return ColIterator(derived(), cols());
-    }
-
-    template <class DerivedType>
-    inline OpenSolid::Double DenseBase<DerivedType>::lower() const {
-        return derived().eval().value().lower();
-    }
-
-    template <class DerivedType>
-    inline OpenSolid::Double DenseBase<DerivedType>::upper() const {
-        return derived().eval().value().upper();
-    }
-
-    template <class DerivedType>
-    inline OpenSolid::Double DenseBase<DerivedType>::median() const {
-        return derived().eval().value().median();
-    }
-
-    template <class DerivedType>
-    inline OpenSolid::Double DenseBase<DerivedType>::width() const {
-        return derived().eval().value().width();
-    }
-
-    template <class DerivedType>
-    inline CwiseUnaryOp<LowerOperation, const DerivedType> DenseBase<DerivedType>::cwiseLower() const {
-        return derived().unaryExpr(LowerOperation());
-    }
-
-    template <class DerivedType>
-    inline CwiseUnaryOp<UpperOperation, const DerivedType> DenseBase<DerivedType>::cwiseUpper() const {
-        return derived().unaryExpr(UpperOperation());
-    }
-
-    template <class DerivedType>
-    inline CwiseUnaryOp<MedianOperation, const DerivedType> DenseBase<DerivedType>::cwiseMedian() const {
-        return derived().unaryExpr(MedianOperation());
-    }
-
-    template <class DerivedType>
-    inline CwiseUnaryOp<WidthOperation, const DerivedType> DenseBase<DerivedType>::cwiseWidth() const {
-        return derived().unaryExpr(WidthOperation());
-    }
+    inline CwiseUnaryOp<WidthOperation, const DerivedType>
+    DenseBase<DerivedType>::cwiseWidth() const {return derived().unaryExpr(WidthOperation());}
 
     template <class DerivedType> template <class OtherDerivedType>
     inline bool DenseBase<DerivedType>::isEqualTo(
         const DenseBase<OtherDerivedType>& other,
         double precision = OPENSOLID_PRECISION
-    ) const {return  derived().binaryExpr(other.derived(), EqualOperation(precision)).all();}
-
-    template <class DerivedType> template <class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::isLessThan(
-        const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
-    ) const {
-        return derived().eval().value().isLessThan(
-            argument.derived().eval().value(),
-            precision
-        );
-    }
-
-    template <class DerivedType> template <class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::isGreaterThan(
-        const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
-    ) const {
-        return derived().eval().value().isGreaterThan(
-            argument.derived().eval().value(),
-            precision
-        );
-    }
-
-    template <class DerivedType> template <class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::isLessThanOrEqualTo(
-        const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
-    ) const {
-        return derived().eval().value().isLessThanOrEqualTo(
-            argument.derived().eval().value(),
-            precision
-        );
-    }
-
-    template <class DerivedType> template <class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::isGreaterThanOrEqualTo(
-        const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
-    ) const {
-        return derived().eval().value().isGreaterThanOrEqualTo(
-            argument.derived().eval().value(),
-            precision
-        );
-    }
+    ) const {return derived().binaryExpr(other.derived(), EqualOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::overlaps(
@@ -349,22 +476,35 @@ namespace Eigen
         double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), ProperSupersetOperation(precision)).all();}
 
-    template <class OtherDerivedType>
-    inline CwiseBinaryOp<HullOperation, const DerivedType, const OtherDerivedType> DenseBase<DerivedType>::hull(
-        const DenseBase<OtherDerivedType>& other
-    ) const {return derived().binaryExpr(other.derived(), HullOperation());}
+    template <class DerivedType> template <class OtherDerivedType>
+    inline CwiseBinaryOp<HullOperation, const DerivedType, const OtherDerivedType>
+    DenseBase<DerivedType>::hull(const DenseBase<OtherDerivedType>& other) const {
+        return derived().binaryExpr(other.derived(), HullOperation());
+    }
 
     template <class DerivedType> template <class OtherDerivedType>
-    inline CwiseBinaryOp<IntersectionOperation, const DerivedType, const OtherDerivedType> DenseBase<DerivedType>::intersection(
-        const DenseBase<OtherDerivedType>& other
-    ) const {return derived().binaryExpr(other.derived(), IntersectionOperation());}
+    inline CwiseBinaryOp<IntersectionOperation, const DerivedType, const OtherDerivedType>
+    DenseBase<DerivedType>::intersection(const DenseBase<OtherDerivedType>& other) const {
+        return derived().binaryExpr(other.derived(), IntersectionOperation());
+    }
 
     template <class DerivedType>
     inline typename internal::conditional<
-        internal::is_same<Scalar, OpenSolid::Interval>::value,
+        internal::is_same<
+            typename internal::traits<DerivedType>::Scalar,
+            OpenSolid::Interval
+        >::value,
         const DerivedType&,
-        const CwiseUnaryOp<internal::scalar_cast_op<Scalar, OpenSolid::Interval>, const Derived>
-    >::type DenseBase<DerivedType>::bounds() const {return derived().cast<OpenSolid::Interval>();}
+        const CwiseUnaryOp<
+            internal::scalar_cast_op<
+                typename internal::traits<DerivedType>::Scalar,
+                OpenSolid::Interval
+            >,
+            const DerivedType
+        >
+    >::type DenseBase<DerivedType>::bounds() const {
+        return derived().template cast<OpenSolid::Interval>();
+    }
 
     template <class DerivedType>
     inline std::size_t DenseBase<DerivedType>::hashValue() const {
@@ -374,266 +514,18 @@ namespace Eigen
     }
 
     template <class DerivedType>
-    inline static const RandomAccessLinSpacedReturnType DenseBase<DerivedType>::LinSpaced(
-        Index size,
+    inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
+    DenseBase<DerivedType>::LinSpaced(
+        typename DenseBase<DerivedType>::Index size,
         const OpenSolid::Interval& range
     ) {return LinSpaced(size, range.lower(), range.upper());}
 
     template <class DerivedType>
-    inline static const RandomAccessLinSpacedReturnType DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
+    inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
+    DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
         return LinSpaced(range.lower(), range.upper());
     }
-
-
-
-
-
-    template <class MatrixType>
-    inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
-        return (*_matrix)(_index);
-    }
-    
-    template <class MatrixType>
-    inline bool ConstMatrixIterator<MatrixType>::equal(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
-    
-    template <class MatrixType>
-    inline bool ConstMatrixIterator<MatrixType>::equal(
-        const MatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
-    
-    template <class MatrixType>
-    inline int ConstMatrixIterator<MatrixType>::distance_to(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
-    
-    template <class MatrixType>
-    inline int ConstMatrixIterator<MatrixType>::distance_to(
-        const MatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
-    
-    template <class MatrixType>
-    inline void ConstMatrixIterator<MatrixType>::increment() {++_index;}
-    
-    template <class MatrixType>
-    inline void ConstMatrixIterator<MatrixType>::decrement() {--_index;}
-    
-    template <class MatrixType>
-    inline void ConstMatrixIterator<MatrixType>::advance(int argument) {_index += argument;}
-    
-    template <class MatrixType>
-    inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const MatrixType& matrix,
-        int index
-    ) : _matrix(&matrix), _index(index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const ConstMatrixIterator<MatrixType>& other
-    ) : _matrix(other._matrix), _index(other._index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const MatrixIterator<MatrixType>& other
-    ) : _matrix(other._matrix), _index(other._index) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::Scalar& MatrixIterator<MatrixType>::dereference() const {
-        return (*_matrix)(_index);
-    }
-    
-    template <class MatrixType>
-    inline bool MatrixIterator<MatrixType>::equal(
-        const MatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
-    
-    template <class MatrixType>
-    inline bool MatrixIterator<MatrixType>::equal(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
-    
-    template <class MatrixType>
-    inline int MatrixIterator<MatrixType>::distance_to(
-        const MatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
-    
-    template <class MatrixType>
-    inline int MatrixIterator<MatrixType>::distance_to(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
-    
-    template <class MatrixType>
-    inline void MatrixIterator<MatrixType>::increment() {++_index;}
-    
-    template <class MatrixType>
-    inline void MatrixIterator<MatrixType>::decrement() {--_index;}
-    
-    template <class MatrixType>
-    inline void MatrixIterator<MatrixType>::advance(int argument) {_index += argument;}
-    
-    template <class MatrixType>
-    inline MatrixIterator<MatrixType>::MatrixIterator(MatrixType& matrix, int index) :
-        _matrix(&matrix), _index(index) {}
-    
-    template <class MatrixType>
-    inline MatrixIterator<MatrixType>::MatrixIterator(const MatrixIterator<MatrixType>& other) :
-        _matrix(other._matrix), _index(other._index) {}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline BlockType MatrixBlockIterator<DerivedType, MatrixType, BlockType>::dereference() const {
-        return DerivedType::block(*_matrix, _index);
-    }
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
-    inline bool MatrixBlockIterator<DerivedType, MatrixType, BlockType>::equal(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
-    ) const {return _index == other._index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
-    inline int MatrixBlockIterator<DerivedType, MatrixType, BlockType>::distance_to(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
-    ) const {return other._index - _index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::increment() {++_index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::decrement() {--_index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::advance(int argument) {
-        _index += argument;
-    }
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline MatrixBlockIterator<DerivedType, MatrixType, BlockType>::MatrixBlockIterator(
-        MatrixType& matrix,
-        int index
-    ) : _matrix(&matrix), _index(index) {}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
-    inline MatrixBlockIterator<DerivedType, MatrixType, BlockType>::MatrixBlockIterator(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
-    ) : _matrix(other._matrix), _index(other._index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const MatrixType& matrix,
-        int index
-    ) : MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const ConstMatrixRowIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const MatrixRowIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::ConstRowXpr ConstMatrixRowIterator<MatrixType>::block(
-        const MatrixType& matrix,
-        int index
-    ) {return matrix.row(index);}
-    
-    template <class MatrixType>
-    inline MatrixRowIterator<MatrixType>::MatrixRowIterator(MatrixType& matrix, int index) :
-        MatrixBlockIterator<
-            MatrixRowIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::RowXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline MatrixRowIterator<MatrixType>::MatrixRowIterator(
-        const MatrixRowIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            MatrixRowIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::RowXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::RowXpr MatrixRowIterator<MatrixType>::block(
-        MatrixType& matrix,
-        int index
-    ) {return matrix.row(index);}
-    
-    template <class MatrixType>
-    inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const MatrixType& matrix,
-        int index
-    ) : MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const ConstMatrixColIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const MatrixColIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::ConstColXpr ConstMatrixColIterator<MatrixType>::block(
-        const MatrixType& matrix,
-        int index
-    ) {return matrix.col(index);}
-    
-    template <class MatrixType>
-    inline MatrixColIterator<MatrixType>::MatrixColIterator(MatrixType& matrix, int index) :
-        MatrixBlockIterator<
-            MatrixColIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::ColXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline MatrixColIterator<MatrixType>::MatrixColIterator(
-        const MatrixColIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            MatrixColIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::ColXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::ColXpr MatrixColIterator<MatrixType>::block(
-        MatrixType& matrix,
-        int index
-    ) {return matrix.col(index);}
-    
+        
     template <class ScalarType>
     inline OpenSolid::Double LowerOperation::operator()(ScalarType argument) const {
         return argument.lower();

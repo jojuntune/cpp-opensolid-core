@@ -185,7 +185,7 @@
     
 ########## Generate tests ##########
 
-    ADD_CXXTEST(Interval.tests Interval/Interval.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(Interval.tests Scalar/Interval.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Matrix.tests Matrix/Matrix.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Datum.tests Datum/Datum.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Set.tests Set/Set.tests.hpp OpenSolidCore)
