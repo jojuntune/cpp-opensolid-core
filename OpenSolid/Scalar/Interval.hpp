@@ -298,6 +298,10 @@ namespace OpenSolid
     inline Interval Interval::intersection(const Interval& argument) const {
         return boost::numeric::intersect(implementation(), argument.implementation());
     }
+    
+    inline bool Interval::isZero(double precision) const {
+        return lower().isZero(precision) && upper().isZero(precision);
+    }
 
     inline bool Interval::isEqualTo(const Interval& argument, double precision) const {
         return lower().isEqualTo(argument.upper(), precision) &&
@@ -377,6 +381,12 @@ namespace OpenSolid
     inline bool operator!=(const Interval& first_argument, const Interval& second_argument) {
         return first_argument.lower() != second_argument.lower() ||
             first_argument.upper() != second_argument.upper();
+    }
+
+    inline bool operator<(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.lower() == second_argument.lower() ?
+            first_argument.upper() < second_argument.upper() :
+            first_argument.lower() < second_argument.lower();
     }
 
     inline bool operator>(const Interval& first_argument, const Interval& second_argument) {

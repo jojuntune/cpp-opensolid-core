@@ -149,39 +149,38 @@
     
     # Python extension module
     
-    # SET(PYTHON_SOURCES
-    #     Python/check.cpp
-    #     Python/bindError.cpp
-    #     Python/bindInterval.cpp
-    #     Python/bindMatrix.cpp
-    #     Python/bindSpecificMatrixSizes.cpp
-    #     Python/bindFunction.cpp
-    #     Python/module.cpp
-    # )
-    # 
-    # ADD_LIBRARY(opensolid SHARED ${PYTHON_SOURCES})
-    # 
-    # SET_TARGET_PROPERTIES(opensolid PROPERTIES PREFIX "")
-    # 
-    # IF(WIN32)
-    #     SET_TARGET_PROPERTIES(opensolid PROPERTIES SUFFIX ".pyd")
-    # ENDIF(WIN32)
-    # 
-    # TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+    SET(PYTHON_SOURCES
+        Python/check.cpp
+        Python/bindError.cpp
+        Python/bindDouble.cpp
+        Python/bindInterval.cpp
+        # Python/bindMatrix.cpp
+        # Python/bindSpecificMatrixSizes.cpp
+        # Python/bindFunction.cpp
+        Python/module.cpp
+    )
+    
+    ADD_LIBRARY(opensolid SHARED ${PYTHON_SOURCES})
+    
+    SET_TARGET_PROPERTIES(opensolid PROPERTIES PREFIX "")
+    
+    IF(WIN32)
+        SET_TARGET_PROPERTIES(opensolid PROPERTIES SUFFIX ".pyd")
+    ENDIF(WIN32)
+    
+    TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
     # OpenSolidScript library
     
-    # ADD_LIBRARY(OpenSolidScript SHARED Script/Script.cpp)
-    # 
-    # TARGET_LINK_LIBRARIES(
-    #     OpenSolidScript
-    #     OpenSolidCore
-    #     opensolid
-    #     ${Boost_LIBRARIES}
-    #     ${PYTHON_LIBRARIES}
-    # )
-
+    ADD_LIBRARY(OpenSolidScript SHARED Script/Script.cpp)
     
+    TARGET_LINK_LIBRARIES(
+        OpenSolidScript
+        OpenSolidCore
+        opensolid
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARIES}
+    )
     
 ########## Generate tests ##########
 
@@ -192,7 +191,7 @@
     ADD_CXXTEST(Function.tests Function/Function.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Geometry.tests Geometry/Geometry.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Simplex.tests Simplex/Simplex.tests.hpp OpenSolidCore)
-    # ADD_CXXTEST(Script.tests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
+    ADD_CXXTEST(Script.tests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
     
 ########## Install libraries and headers ##########
     

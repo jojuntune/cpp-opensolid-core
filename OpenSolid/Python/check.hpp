@@ -25,11 +25,8 @@
 
 #include <string>
 
-#include <boost/python.hpp>
-#include <boost/python/slice.hpp>
-
 #include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Interval/Interval.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
@@ -37,6 +34,7 @@
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Python/BoostPython.hpp>
 
 using namespace boost::python;
 
@@ -165,10 +163,13 @@ namespace OpenSolid
         inline std::string typeName<std::string>() {return "std::string";}
         
         template <>
+        inline std::string typeName<Double>() {return "Double";}
+        
+        template <>
         inline std::string typeName<Interval>() {return "Interval";}
         
         template <>
-        inline std::string typeName<MatrixXd>() {return "MatrixXd";}
+        inline std::string typeName<MatrixXD>() {return "MatrixXD";}
         
         template <>
         inline std::string typeName<MatrixXI>() {return "MatrixXI";}

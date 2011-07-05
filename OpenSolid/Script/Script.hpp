@@ -25,9 +25,7 @@
 
 #include <string>
 
-#include <boost/python.hpp>
-#include <boost/python/raw_function.hpp>
-
+#include <OpenSolid/Python/BoostPython.hpp>
 #include <OpenSolid/Python/check.hpp>
 
 namespace OpenSolid

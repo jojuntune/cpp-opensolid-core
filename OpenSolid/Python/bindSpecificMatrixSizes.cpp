@@ -18,14 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <boost/python.hpp>
-#include <boost/python/raw_function.hpp>
-#include <boost/python/return_value_policy.hpp>
-#include <boost/python/manage_new_object.hpp>
-
+#include <OpenSolid/Python/BoostPython.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-
-#include "check.hpp"
+#include <OpenSolid/Python/check.hpp>
 
 using namespace boost::python;
 

@@ -19,24 +19,25 @@
  *****************************************************************************/
 
 #include <OpenSolid/Common/config.hpp>
-
-#include <boost/python.hpp>
+#include <OpenSolid/Python/BoostPython.hpp>
 
 using namespace boost::python;
 
 namespace OpenSolid
 {
     void bindError();
+    void bindDouble();
     void bindInterval();
-    void bindMatrix();
-    void bindSpecificMatrixSizes();
-    void bindFunction();
+    //void bindMatrix();
+    //void bindSpecificMatrixSizes();
+    //void bindFunction();
 
     BOOST_PYTHON_MODULE(opensolid) {
         bindError();
+        bindDouble();
         bindInterval();
-        bindMatrix();
-        bindSpecificMatrixSizes();
-        bindFunction();
+        //bindMatrix();
+        //bindSpecificMatrixSizes();
+        //bindFunction();
     }
 }

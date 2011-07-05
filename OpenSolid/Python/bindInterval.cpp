@@ -18,10 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <boost/python.hpp>
-
-#include <OpenSolid/Interval/Interval.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Python/BoostPython.hpp>
 
 using namespace boost::python;
 
@@ -32,97 +30,92 @@ namespace OpenSolid
         return make_tuple(bisected.first, bisected.second);
     }
     
-    bool overlapId(const Interval& first_argument, double second_argument) {
-        return first_argument.overlap(second_argument);
-    }
-    
-    bool overlapII(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.overlap(second_argument);
-    }
-    
-    bool containId(const Interval& first_argument, double second_argument) {
-        return first_argument.contain(second_argument);
-    }
-    
-    bool containII(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.contain(second_argument);
-    }
-    
-    Interval hullId(const Interval& first_argument, double second_argument) {
-        return first_argument.hull(second_argument);
-    }
-    
-    Interval hullII(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.hull(second_argument);
-    }
-    
-    Interval intersectionII(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.intersection(second_argument);
-    }
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isZero_overloads, isZero, 0, 1)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isEqualTo_overloads, isEqualTo, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isLessThan_overloads, isLessThan, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isGreaterThan_overloads, isGreaterThan, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isLessThanOrEqualTo_overloads, isLessThanOrEqualTo, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isGreaterThanOrEqualTo_overloads, isGreaterThanOrEqualTo, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(overlaps_overloads, overlaps, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isSubsetOf_overloads, isSubsetOf, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isProperSubsetOf_overloads, isProperSubsetOf, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isSupersetOf_overloads, isSupersetOf, 1, 2)
+    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isProperSupersetOf_overloads, isProperSupersetOf, 1, 2)
     
     void bindInterval() {
         class_<Interval>("Interval")
             .def(init<double>())
             .def(init<double, double>())
+            .def(init<Double>())
+            .def(init<Double, Double>())
             .def(init<Interval>())
-            .def("empty", &Interval::empty)
             .def("lower", &Interval::lower)
             .def("upper", &Interval::upper)
             .def("median", &Interval::median)
             .def("width", &Interval::width)
+            .def("squaredNorm", &Interval::squaredNorm)
+            .def("empty", &Interval::empty)
+            .def("singleton", &Interval::singleton)
+            .def("bounds", &Interval::bounds)
+            .def("hashValue", &Interval::hashValue)
             .def("bisected", &bisected)
-            .def("squared", &Interval::squared)
-            .def("overlap", &overlapId)
-            .def("overlap", &overlapII)
-            .def("contain", &containId)
-            .def("contain", &containII)
-            .def("hull", &hullId)
-            .def("hull", &hullII)
-            .def("intersection", &intersectionII)
+            .def("hull", &Interval::hull)
+            .def("intersection", &Interval::intersection)
+            .def("isZero", &Interval::isZero, isZero_overloads())
+            .def("isEqualTo", &Interval::isEqualTo, isEqualTo_overloads())
+            .def("isLessThan", &Interval::isLessThan, isLessThan_overloads())
+            .def("isGreaterThan", &Interval::isGreaterThan, isGreaterThan_overloads())
+            .def("isLessThanOrEqualTo", &Interval::isLessThanOrEqualTo, isLessThanOrEqualTo_overloads())
+            .def("isGreaterThanOrEqualTo", &Interval::isGreaterThanOrEqualTo, isGreaterThanOrEqualTo_overloads())
+            .def("overlaps", &Interval::overlaps, overlaps_overloads())
+            .def("isSubsetOf", &Interval::isSubsetOf, isSubsetOf_overloads())
+            .def("isProperSubsetOf", &Interval::isProperSubsetOf, isProperSubsetOf_overloads())
+            .def("isSupersetOf", &Interval::isSupersetOf, isSupersetOf_overloads())
+            .def("isProperSupersetOf", &Interval::isProperSupersetOf, isProperSupersetOf_overloads())
             .def("Empty", &Interval::Empty).staticmethod("Empty")
             .def("Whole", &Interval::Whole).staticmethod("Whole")
             .def(self == self)
-            .def(self == int())
-            .def(self == float())
-            .def(self == double())
-            .def(int() == self)
-            .def(float() == self)
-            .def(double() == self)
+            .def(self != self)
+            .def(self < self)
+            .def(self > self)
+            .def(self <= self)
+            .def(self >= self)
             .def(-self)
-            .def(self + double())
+            .def(int() + self)
+            .def(float() + self)
             .def(double() + self)
+            .def(Double() + self)
             .def(self + self)
-            .def(self - double())
+            .def(int() - self)
+            .def(float() - self)
             .def(double() - self)
+            .def(Double() - self)
             .def(self - self)
-            .def(self * double())
+            .def(int() * self)
+            .def(float() * self)
             .def(double() * self)
+            .def(Double() * self)
             .def(self * self)
-            .def(self / double())
+            .def(int() / self)
+            .def(float() / self)
             .def(double() / self)
+            .def(Double() / self)
             .def(self / self)
             .def(self_ns::str(self));
         def("abs", (Interval (*)(const Interval&)) &abs);
-        def("abs", (double (*)(double)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);
-        def("sqrt", (double (*)(double)) &sqrt);
         def("sin", (Interval (*)(const Interval&)) &sin);
-        def("sin", (double (*)(double)) &sin);
         def("cos", (Interval (*)(const Interval&)) &cos);
-        def("cos", (double (*)(double)) &cos);
         def("tan", (Interval (*)(const Interval&)) &tan);
-        def("tan", (double (*)(double)) &tan);
         def("asin", (Interval (*)(const Interval&)) &asin);
-        def("asin", (double (*)(double)) &asin);
         def("acos", (Interval (*)(const Interval&)) &acos);
-        def("acos", (double (*)(double)) &acos);
         def("atan", (Interval (*)(const Interval&)) &atan);
-        def("atan", (double (*)(double)) &atan);
         def("exp", (Interval (*)(const Interval&))  &exp);
-        def("exp", (double (*)(double)) &exp);
         def("log", (Interval (*)(const Interval&)) &log);
-        def("log", (double (*)(double)) &log);
         
+        implicitly_convertible<int, Interval>();
+        implicitly_convertible<float, Interval>();
         implicitly_convertible<double, Interval>();
+        implicitly_convertible<Double, Interval>();
     }
 }

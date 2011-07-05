@@ -20,13 +20,12 @@
 
 #include <vector>
 
-#include <boost/python/handle.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
 #include <OpenSolid/Common/Error.hpp>
-#include "Script.hpp"
+#include <OpenSolid/Script/Script.hpp>
 
 using namespace boost::python;
 
