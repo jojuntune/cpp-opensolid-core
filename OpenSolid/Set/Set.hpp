@@ -164,8 +164,8 @@ namespace OpenSolid
             _shared_count = other._shared_count;
             ++*_shared_count;
         } else {
-            _root = 0;
-            _shared_count = 0;
+            _root = nullptr;
+            _shared_count = nullptr;
         }
     }
         
@@ -183,8 +183,8 @@ namespace OpenSolid
             [bounds_function] (const Type& item) {return new Node(item, bounds_function(item));}
         );
         if (nodes.empty()) {
-            _root = 0;
-            _shared_count = 0;
+            _root = nullptr;
+            _shared_count = nullptr;
         } else if (nodes.size() == 1) {
             _root = nodes[0];
             _shared_count = new boost::detail::atomic_count(1);
@@ -232,8 +232,8 @@ namespace OpenSolid
             _shared_count = other._shared_count;
             ++*_shared_count;
         } else {
-            _root = 0;
-            _shared_count = 0;
+            _root = nullptr;
+            _shared_count = nullptr;
         }
     }
         
@@ -339,8 +339,8 @@ namespace OpenSolid
                 delete _root;
                 delete _shared_count;
             }
-            _root = 0;
-            _shared_count = 0;
+            _root = nullptr;
+            _shared_count = nullptr;
         }
     }
     
@@ -414,7 +414,7 @@ namespace OpenSolid
     inline void SetIterator<Type, BoundsType, BoundsFunctionType>::increment() {
         while (_node->parent() && _node->parent()->right() == _node) {_node = _node->parent();}
         if (!_node->parent()) {
-            _node = 0;
+            _node = nullptr;
             return;
         } else {
             _node = _node->parent()->right();

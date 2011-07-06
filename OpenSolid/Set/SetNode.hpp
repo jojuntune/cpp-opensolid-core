@@ -168,14 +168,14 @@ namespace OpenSolid
     void SetNode<Type, BoundsType>::getLeaves(std::vector<SetNode<Type, BoundsType>*>& leaves) {
         if (_object) {
             assert(!_left && !_right);
-            _parent = 0;
+            _parent = nullptr;
             leaves.push_back(this);
         } else {
             assert(_left && _right);
             _left->getLeaves(leaves);
             _right->getLeaves(leaves);
-            _left = 0;
-            _right = 0;
+            _left = nullptr;
+            _right = nullptr;
             delete this;
         }
     }
@@ -190,11 +190,11 @@ namespace OpenSolid
         if (other._object) {
             assert(!other._left && !other._right);
             _object = new Type(*other._object);
-            _left = 0;
-            _right = 0;
+            _left = nullptr;
+            _right = nullptr;
         } else {
             assert(other._left && other._right);
-            _object = 0;
+            _object = nullptr;
             _left = new SetNode<Type, BoundsType>(*other._left);
             _left->_parent = this;
             _right = new SetNode<Type, BoundsType>(*other._right);
@@ -226,9 +226,9 @@ namespace OpenSolid
         SetNode<Type, BoundsType>** begin,
         SetNode<Type, BoundsType>** end
     ) {
-        _object = 0;
+        _object = nullptr;
         _bounds = overall_bounds;
-        _parent = 0;
+        _parent = nullptr;
         _size = end - begin;
         split(_bounds, _split_direction, _split_value);
         if (_size == 2) {
@@ -415,12 +415,12 @@ namespace OpenSolid
             }
             if (!_left) {
                 SetNode<Type, BoundsType>* result = _right;
-                _right = 0;
+                _right = nullptr;
                 delete this;
                 return result;
             } else if (!_right) {
                 SetNode<Type, BoundsType>* result = _left;
-                _left = 0;
+                _left = nullptr;
                 delete this;
                 return result;
             } else {
