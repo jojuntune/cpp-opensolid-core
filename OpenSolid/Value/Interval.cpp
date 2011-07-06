@@ -22,7 +22,8 @@
 
 #include <boost/numeric/interval.hpp>
 
-#include "Interval.hpp"
+#include <OpenSolid/Value/Double.hpp>
+#include <OpenSolid/Value/Interval.hpp>
 
 namespace OpenSolid
 {           

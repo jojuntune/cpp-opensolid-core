@@ -18,64 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__RANGE_HPP
-#define OPENSOLID__RANGE_HPP
+#ifndef OPENSOLID__VECTOR_HPP
+#define OPENSOLID__VECTOR_HPP
+
+#include <OpenSolid/Value/VectorBase.hpp>
+#include <OpenSolid/Value/Double.hpp>
+#include <OpenSolid/Value/Interval.hpp>
+#include <OpenSolid/Value/Range.hpp>
 
 namespace OpenSolid
 {
-    class Range
+    template <class ScalarType>
+    class Vector : public VectorBase
     {
     private:
-        int _start;
-        int _size;
-    public:
-        Range(int index);
-        Range(int start, int size)
+        typedef Eigen::Matrix<ScalarType, Eigen::Dynamic, 1, 0, 4, 1> MatrixType;
         
-        int start(int indexed_size) const;
-        int size(int indexed_size) const;
-    };
-    
-    class First : public Range
-    {
+        MatrixType _matrix;
+        
+        friend class MatrixBase<ScalarType>;
     public:
-        First(int size);
-    };
-    
-    class Last : public Range
-    {
-    public:
-        Last(int size);
-    };
-    
-    class All : public Range
-    {
-    public:
-        All();
+        typedef ScalarType Scalar;
+        typedef Vector<Interval> Bounds;
+        
+        Vector();
+        Vector(int size);
+        Vector(Double x, Double y);
+        Vector(Double x, Double y, Double z);
+        Vector(Double x, Double y, Double z, Double w);
+        Vector(const Matrix<ScalarType>& argument);
     };
 }
 
 ////////// Implementation //////////
-
-namespace OpenSolid
-{
-    inline Range::Range(int index) : _start(index), _size(1) {}
-    
-    inline Range::Range(int start, int size) : _start(start), _size(size) {}
-    
-    inline int Range::start(int indexed_size) const {
-        return _start == -1 ? indexed_size - _size : _start;
-    }
-    
-    inline int Range::size(int indexed_size) const {
-        return _size == -1 ? indexed_size - _start : _size;
-    }
-    
-    inline First::First(int size) : Range(0, size) {}
-    
-    inline Last::Last(int size) : Range(-1, size) {}
-    
-    inline All::All() : Range(0, -1) {}
-}
 
 #endif
