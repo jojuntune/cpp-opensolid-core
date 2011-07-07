@@ -249,7 +249,7 @@ public:
         Script script;
         script.set<MatrixXD>("a", Vector3D(1, 2, 3));
         script.set<MatrixXD>("b", Vector3D(1, 2, 3));
-        TS_ASSERT(script.get<bool>("a == b"));
+        TS_ASSERT(script.get<bool>("a.isEqualTo(b)"));
         TS_ASSERT_EQUALS(script.get<MatrixXD>("-a"), Vector3D(-1, -2, -3));
         TS_ASSERT_EQUALS(script.get<MatrixXD>("a + b"), Vector3D(2, 4, 6));
         TS_ASSERT_EQUALS(script.get<MatrixXD>("a - b"), Vector3D(0, 0, 0));
@@ -384,18 +384,16 @@ public:
         Script script;
         script.run("a1 = Vector2D(1, 2)");
         script.run("a2 = Vector2D(1, 2)");
-        script.run("b1 = Vector2I(Interval(1), Interval(2))");
-        script.run("b2 = Vector2I(Interval(1), Interval(2))");
-        TS_ASSERT(script.get<bool>("a1 == a2"));
-        TS_ASSERT(script.get<bool>("a1 != 2 * a2"));
-        TS_ASSERT(!script.get<bool>("a1 != a2"));
-        TS_ASSERT(!script.get<bool>("a1 == 2 * a2"));
-        TS_ASSERT(script.get<bool>("b1 == b2"));
-        TS_ASSERT(script.get<bool>("b1 != 2 * b2"));
-        TS_ASSERT(script.get<bool>("a1 == b1"));
-        TS_ASSERT(script.get<bool>("a1 != 2 * b1"));
-        TS_ASSERT(script.get<bool>("b1 == a1"));
-        TS_ASSERT(script.get<bool>("b1 != 2 * a1"));
+        script.run("b1 = Vector2I(1, 2)");
+        script.run("b2 = Vector2I(1, 2)");
+        TS_ASSERT(script.get<bool>("a1.isEqualTo(a2)"));
+        TS_ASSERT(script.get<bool>("a1.isNotEqualTo(2 * a2)"));
+        TS_ASSERT(script.get<bool>("b1.isEqualTo(b2)"));
+        TS_ASSERT(script.get<bool>("b1.isNotEqualTo(2 * b2)"));
+        TS_ASSERT(script.get<bool>("a1.isEqualTo(b1)"));
+        TS_ASSERT(script.get<bool>("a1.isNotEqualTo(2 * b1)"));
+        TS_ASSERT(script.get<bool>("b1.isEqualTo(a1)"));
+        TS_ASSERT(script.get<bool>("b1.isNotEqualTo(2 * a1)"));
     }
 
     void testOverloading() {

@@ -37,6 +37,14 @@ namespace OpenSolid
         return first_argument.isEqualTo(second_argument, precision);
     }
 
+    bool isNotEqualTo(Double first_argument, Double second_argument) {
+        return first_argument.isNotEqualTo(second_argument);
+    }
+
+    bool isNotEqualToP(Double first_argument, Double second_argument, Double precision) {
+        return first_argument.isNotEqualTo(second_argument, precision);
+    }
+
     bool isLessThan(Double first_argument, Double second_argument) {
         return first_argument.isLessThan(second_argument);
     }
@@ -80,6 +88,8 @@ namespace OpenSolid
             .def("isZero", &isZeroP)
             .def("isEqualTo", &isEqualTo)
             .def("isEqualTo", &isEqualToP)
+            .def("isNotEqualTo", &isNotEqualTo)
+            .def("isNotEqualTo", &isNotEqualToP)
             .def("isLessThan", &isLessThan)
             .def("isLessThan", &isLessThanP)
             .def("isGreaterThan", &isGreaterThan)

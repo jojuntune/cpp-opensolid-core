@@ -56,6 +56,28 @@ namespace OpenSolid
         Double precision
     ) {return first_argument.isEqualTo(second_argument, precision);}
 
+    bool isNotEqualToD(
+        const Interval& first_argument,
+        Double second_argument
+    ) {return first_argument.isNotEqualTo(second_argument);}
+
+    bool isNotEqualToDP(
+        const Interval& first_argument,
+        Double second_argument,
+        Double precision
+    ) {return first_argument.isNotEqualTo(second_argument, precision);}
+
+    bool isNotEqualToI(
+        const Interval& first_argument,
+        const Interval& second_argument
+    ) {return first_argument.isNotEqualTo(second_argument);}
+
+    bool isNotEqualToIP(
+        const Interval& first_argument,
+        const Interval& second_argument,
+        Double precision
+    ) {return first_argument.isNotEqualTo(second_argument, precision);}
+
     bool isLessThanD(
         const Interval& first_argument,
         Double second_argument
@@ -212,10 +234,10 @@ namespace OpenSolid
     
     void bindInterval() {
         class_<Interval>("Interval")
-            .def(init<double>())
-            .def(init<Double>())
-            .def(init<Double, Double>())
             .def(init<Interval>())
+            .def(init<Double>())
+            .def(init<double>())
+            .def(init<Double, Double>())
             .def("lower", &Interval::lower)
             .def("upper", &Interval::upper)
             .def("median", &Interval::median)
@@ -234,6 +256,10 @@ namespace OpenSolid
             .def("isEqualTo", &isEqualToIP)
             .def("isEqualTo", &isEqualToD)
             .def("isEqualTo", &isEqualToDP)
+            .def("isNotEqualTo", &isEqualToI)
+            .def("isNotEqualTo", &isEqualToIP)
+            .def("isNotEqualTo", &isEqualToD)
+            .def("isNotEqualTo", &isEqualToDP)
             .def("isLessThan", &isLessThanI)
             .def("isLessThan", &isLessThanIP)
             .def("isLessThan", &isLessThanD)
@@ -266,55 +292,35 @@ namespace OpenSolid
             .def("Whole", &Interval::Whole).staticmethod("Whole")
             .def(self == self)
             .def(self == Double())
-            .def(self == double())
             .def(Double() == self)
-            .def(double() == self)
             .def(self != self)
             .def(self != Double())
-            .def(self != double())
             .def(Double() != self)
-            .def(double() != self)
             .def(self < self)
             .def(self < Double())
-            .def(self < double())
             .def(Double() < self)
-            .def(double() < self)
             .def(self > self)
             .def(self > Double())
-            .def(self > double())
             .def(Double() > self)
-            .def(double() > self)
             .def(self <= self)
             .def(self <= Double())
-            .def(self <= double())
             .def(Double() <= self)
-            .def(double() <= self)
             .def(self >= self)
             .def(self >= Double())
-            .def(self >= double())
             .def(Double() >= self)
-            .def(double() >= self)
             .def(-self)
             .def(self + self)
             .def(self + Double())
-            .def(self + double())
             .def(Double() + self)
-            .def(double() + self)
             .def(self - self)
             .def(self - Double())
-            .def(self - double())
             .def(Double() - self)
-            .def(double() - self)
             .def(self * self)
             .def(self * Double())
-            .def(self * double())
             .def(Double() * self)
-            .def(double() * self)
             .def(self / self)
             .def(self / Double())
-            .def(self / double())
             .def(Double() / self)
-            .def(double() / self)
             .def(self_ns::str(self));
         def("abs", (Interval (*)(const Interval&)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);
@@ -326,18 +332,14 @@ namespace OpenSolid
         def("atan", (Interval (*)(const Interval&)) &atan);
         def("atan2", (Interval (*)(const Interval&, const Interval&)) &atan2);
         def("atan2", (Interval (*)(const Interval&, Double)) &atan2);
-        def("atan2", (Interval (*)(const Interval&, double)) &atan2);
         def("atan2", (Interval (*)(Double, const Interval&)) &atan2);
-        def("atan2", (Interval (*)(double, const Interval&)) &atan2);
         def("exp", (Interval (*)(const Interval&))  &exp);
         def("log", (Interval (*)(const Interval&)) &log);
         def("pow", (Interval (*)(const Interval&, const Interval&)) &pow);
         def("pow", (Interval (*)(const Interval&, Double)) &pow);
-        def("pow", (Interval (*)(const Interval&, double)) &pow);
         def("pow", (Interval (*)(Double, const Interval&)) &pow);
-        def("pow", (Interval (*)(double, const Interval&)) &pow);
         
-        implicitly_convertible<double, Interval>();
         implicitly_convertible<Double, Interval>();
+        implicitly_convertible<double, Interval>();
     }
 }

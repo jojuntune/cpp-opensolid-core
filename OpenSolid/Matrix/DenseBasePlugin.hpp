@@ -31,6 +31,12 @@ inline bool isEqualTo(
     OpenSolid::Double precision = OPENSOLID_PRECISION
 ) const;
 
+template <class OtherDerivedType>
+inline bool isNotEqualTo(
+    const DenseBase<OtherDerivedType>& other,
+    OpenSolid::Double precision = OPENSOLID_PRECISION
+) const;
+
 template<class OtherDerivedType>
 inline bool overlaps(
     const DenseBase<OtherDerivedType>& other,

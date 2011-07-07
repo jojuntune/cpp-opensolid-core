@@ -44,14 +44,10 @@ namespace OpenSolid
     
     typedef boost::numeric::interval<double, IntervalPolicies> BoostInterval;
 
-    struct BoostIntervalConstructionTag
-    {
-    };
-    
     class Interval
     {
     private:
-        BoostInterval _implementation;
+        BoostInterval _value;
     public:
         typedef Interval Bounds;
         
@@ -59,9 +55,9 @@ namespace OpenSolid
         Interval(double argument);
         Interval(Double argument);
         Interval(Double lower, Double upper);
-        Interval(const BoostInterval& argument, BoostIntervalConstructionTag);
+        Interval(const BoostInterval& argument);
         
-        const BoostInterval& implementation() const;
+        const BoostInterval& value() const;
         
         Double lower() const;
         Double upper() const;
@@ -94,6 +90,21 @@ namespace OpenSolid
         ) const;
         
         bool isEqualTo(
+            const Interval& argument,
+            Double precision = OPENSOLID_PRECISION
+        ) const;
+        
+        bool isNotEqualTo(
+            double argument,
+            Double precision = OPENSOLID_PRECISION
+        ) const;
+        
+        bool isNotEqualTo(
+            Double argument,
+            Double precision = OPENSOLID_PRECISION
+        ) const;
+        
+        bool isNotEqualTo(
             const Interval& argument,
             Double precision = OPENSOLID_PRECISION
         ) const;
@@ -316,35 +327,31 @@ namespace OpenSolid
         return *this <= argument ? Interval(*this, argument) : Interval(argument, *this);
     }
 
-    inline Interval::Interval() : _implementation() {}
+    inline Interval::Interval() : _value() {}
     
-    inline Interval::Interval(double argument) : _implementation(argument) {}
+    inline Interval::Interval(double argument) : _value(argument) {}
 
-    inline Interval::Interval(Double argument) : _implementation(argument.implementation()) {}
+    inline Interval::Interval(Double argument) : _value(argument.value()) {}
 
-    inline Interval::Interval(Double lower, Double upper) :
-        _implementation(lower.implementation(), upper.implementation()) {}
+    inline Interval::Interval(Double lower, Double upper) : _value(lower.value(), upper.value()) {}
 
-    inline Interval::Interval(const BoostInterval& argument, BoostIntervalConstructionTag) :
-        _implementation(argument) {}
+    inline Interval::Interval(const BoostInterval& argument) : _value(argument) {}
         
-    inline const BoostInterval& Interval::implementation() const {return _implementation;}
+    inline const BoostInterval& Interval::value() const {return _value;}
     
-    inline Double Interval::lower() const {return implementation().lower();}
+    inline Double Interval::lower() const {return value().lower();}
 
-    inline Double Interval::upper() const {return implementation().upper();}
+    inline Double Interval::upper() const {return value().upper();}
     
-    inline Double Interval::median() const {return boost::numeric::median(implementation());}
+    inline Double Interval::median() const {return boost::numeric::median(value());}
     
-    inline Double Interval::width() const {return boost::numeric::width(implementation());}
+    inline Double Interval::width() const {return boost::numeric::width(value());}
 
-    inline Interval Interval::squared() const {
-        return Interval(boost::numeric::square(implementation()), BoostIntervalConstructionTag());
-    }
+    inline Interval Interval::squared() const {return boost::numeric::square(value());}
     
-    inline bool Interval::isEmpty() const {return boost::numeric::empty(implementation());}
+    inline bool Interval::isEmpty() const {return boost::numeric::empty(value());}
     
-    inline bool Interval::isSingleton() const {return boost::numeric::singleton(implementation());}
+    inline bool Interval::isSingleton() const {return boost::numeric::singleton(value());}
     
     inline Interval Interval::bounds() const {return *this;}
     
@@ -361,17 +368,11 @@ namespace OpenSolid
     }
     
     inline Interval Interval::hull(const Interval& argument) const {
-        return Interval(
-            boost::numeric::hull(implementation(), argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
+        return boost::numeric::hull(value(), argument.value());
     }
 
     inline Interval Interval::intersection(const Interval& argument) const {
-        return Interval(
-            boost::numeric::intersect(implementation(), argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
+        return boost::numeric::intersect(value(), argument.value());
     }
     
     inline bool Interval::isZero(Double precision) const {
@@ -391,6 +392,21 @@ namespace OpenSolid
     inline bool Interval::isEqualTo(const Interval& argument, Double precision) const {
         return lower().isEqualTo(argument.upper(), precision) &&
             upper().isEqualTo(argument.lower(), precision);
+    }
+
+    inline bool Interval::isNotEqualTo(double argument, Double precision) const {
+        return lower().isNotEqualTo(argument, precision) ||
+            upper().isNotEqualTo(argument, precision);
+    }
+
+    inline bool Interval::isNotEqualTo(Double argument, Double precision) const {
+        return lower().isNotEqualTo(argument, precision) ||
+            upper().isNotEqualTo(argument, precision);
+    }
+
+    inline bool Interval::isNotEqualTo(const Interval& argument, Double precision) const {
+        return lower().isNotEqualTo(argument.upper(), precision) ||
+            upper().isNotEqualTo(argument.lower(), precision);
     }
 
     inline bool Interval::isLessThan(double argument, Double precision) const {
@@ -482,72 +498,68 @@ namespace OpenSolid
     }
 
     inline Interval& Interval::operator+=(double argument) {
-        _implementation += argument;
+        _value += argument;
         return *this;
     }
 
     inline Interval& Interval::operator+=(Double argument) {
-        _implementation += argument.implementation();
+        _value += argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator+=(const Interval& argument) {
-        _implementation += argument.implementation();
+        _value += argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator-=(double argument) {
-        _implementation -= argument;
+        _value -= argument;
         return *this;
     }
 
     inline Interval& Interval::operator-=(Double argument) {
-        _implementation -= argument.implementation();
+        _value -= argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator-=(const Interval& argument) {
-        _implementation -= argument.implementation();
+        _value -= argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator*=(double argument) {
-        _implementation -= argument;
+        _value -= argument;
         return *this;
     }
 
     inline Interval& Interval::operator*=(Double argument) {
-        _implementation -= argument.implementation();
+        _value -= argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator*=(const Interval& argument) {
-        _implementation -= argument.implementation();
+        _value -= argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator/=(double argument) {
-        _implementation /= argument;
+        _value /= argument;
         return *this;
     }
 
     inline Interval& Interval::operator/=(Double argument) {
-        _implementation /= argument.implementation();
+        _value /= argument.value();
         return *this;
     }
 
     inline Interval& Interval::operator/=(const Interval& argument) {
-        _implementation /= argument.implementation();
+        _value /= argument.value();
         return *this;
     }
     
-    inline Interval Interval::Empty() {
-        return Interval(BoostInterval::empty(), BoostIntervalConstructionTag());
-    }
+    inline Interval Interval::Empty() {return BoostInterval::empty();}
     
-    inline Interval Interval::Whole() {
-        return Interval(BoostInterval::whole(), BoostIntervalConstructionTag());
-    }
+    inline Interval Interval::Whole() {return BoostInterval::whole();}
 
     inline bool operator==(double first_argument, const Interval& second_argument) {
         return first_argument == second_argument.lower() &&
@@ -719,162 +731,94 @@ namespace OpenSolid
             first_argument.lower() >= second_argument.lower();
     }
 
-    inline Interval operator-(const Interval& argument) {
-        return Interval(-argument.implementation(), BoostIntervalConstructionTag());
-    }
+    inline Interval operator-(const Interval& argument) {return -argument.value();}
 
     inline Interval operator+(double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument + second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument + second_argument.value();
     }
 
     inline Interval operator+(Double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() + second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() + second_argument.value();
     }
 
     inline Interval operator+(const Interval& first_argument, double second_argument) {
-        return Interval(
-            first_argument.implementation() + second_argument,
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() + second_argument;
     }
 
     inline Interval operator+(const Interval& first_argument, Double second_argument) {
-        return Interval(
-            first_argument.implementation() + second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() + second_argument.value();
     }
 
     inline Interval operator+(const Interval& first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() + second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() + second_argument.value();
     }
 
     inline Interval operator-(double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument - second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument - second_argument.value();
     }
 
     inline Interval operator-(Double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() - second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() - second_argument.value();
     }
 
     inline Interval operator-(const Interval& first_argument, double second_argument) {
-        return Interval(
-            first_argument.implementation() - second_argument,
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() - second_argument;
     }
 
     inline Interval operator-(const Interval& first_argument, Double second_argument) {
-        return Interval(
-            first_argument.implementation() - second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() - second_argument.value();
     }
 
     inline Interval operator-(const Interval& first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() - second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() - second_argument.value();
     }
 
     inline Interval operator*(double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument * second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument * second_argument.value();
     }
 
     inline Interval operator*(Double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() * second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() * second_argument.value();
     }
 
     inline Interval operator*(const Interval& first_argument, double second_argument) {
-        return Interval(
-            first_argument.implementation() * second_argument,
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() * second_argument;
     }
 
     inline Interval operator*(const Interval& first_argument, Double second_argument) {
-        return Interval(
-            first_argument.implementation() * second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() * second_argument.value();
     }
 
     inline Interval operator*(const Interval& first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() * second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() * second_argument.value();
     }
 
     inline Interval operator/(double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument / second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument / second_argument.value();
     }
 
     inline Interval operator/(Double first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() / second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() / second_argument.value();
     }
 
     inline Interval operator/(const Interval& first_argument, double second_argument) {
-        return Interval(
-            first_argument.implementation() / second_argument,
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() / second_argument;
     }
 
     inline Interval operator/(const Interval& first_argument, Double second_argument) {
-        return Interval(
-            first_argument.implementation() / second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() / second_argument.value();
     }
 
     inline Interval operator/(const Interval& first_argument, const Interval& second_argument) {
-        return Interval(
-            first_argument.implementation() / second_argument.implementation(),
-            BoostIntervalConstructionTag()
-        );
+        return first_argument.value() / second_argument.value();
     }
 
     inline Interval abs(const Interval& argument) {
-        return Interval(
-            boost::numeric::abs(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
+        return boost::numeric::abs(argument.value());
     }
 
     inline Interval sqrt(const Interval& argument) {
-        return Interval(
-            boost::numeric::sqrt(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
+        return boost::numeric::sqrt(argument.value());
     }
     
     inline const Interval& conj(const Interval& argument) {return argument;}

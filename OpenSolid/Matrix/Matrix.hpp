@@ -216,6 +216,18 @@ namespace Eigen
         bool operator()(ScalarType first_argument, ScalarType second_argument) const;
     };
     
+    struct NotEqualOperation
+    {
+        typedef bool result_type;
+        
+        OpenSolid::Double _precision;
+        
+        NotEqualOperation(OpenSolid::Double precision);
+        
+        template <class ScalarType>
+        bool operator()(ScalarType first_argument, ScalarType second_argument) const;
+    };
+    
     struct OverlapOperation
     {
         typedef bool result_type;
@@ -463,6 +475,12 @@ namespace Eigen
         OpenSolid::Double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), EqualOperation(precision)).all();}
 
+    template <class DerivedType> template <class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::isNotEqualTo(
+        const DenseBase<OtherDerivedType>& other,
+        OpenSolid::Double precision = OPENSOLID_PRECISION
+    ) const {return derived().binaryExpr(other.derived(), NotEqualOperation(precision)).any();}
+
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::overlaps(
         const DenseBase<OtherDerivedType>& other,
@@ -585,6 +603,15 @@ namespace Eigen
         ScalarType first_argument,
         ScalarType second_argument
     ) const {return first_argument.isEqualTo(second_argument, _precision);}
+    
+    inline NotEqualOperation::NotEqualOperation(OpenSolid::Double precision) :
+        _precision(precision) {}
+    
+    template <class ScalarType>
+    inline bool NotEqualOperation::operator()(
+        ScalarType first_argument,
+        ScalarType second_argument
+    ) const {return first_argument.isNotEqualTo(second_argument, _precision);}
     
     inline OverlapOperation::OverlapOperation(OpenSolid::Double precision) :
         _precision(precision) {}

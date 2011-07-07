@@ -26,47 +26,17 @@
 
 namespace OpenSolid
 {           
-    Interval sin(const Interval& argument) {
-        return Interval(
-            boost::numeric::sin(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 
-    Interval cos(const Interval& argument) {
-        return Interval(
-            boost::numeric::cos(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval cos(const Interval& argument) {return boost::numeric::cos(argument.value());}
 
-    Interval tan(const Interval& argument) {
-        return Interval(
-            boost::numeric::tan(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval tan(const Interval& argument) {return boost::numeric::tan(argument.value());}
 
-    Interval asin(const Interval& argument) {
-        return Interval(
-            boost::numeric::asin(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval asin(const Interval& argument) {return boost::numeric::asin(argument.value());}
 
-    Interval acos(const Interval& argument) {
-        return Interval(
-            boost::numeric::acos(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval acos(const Interval& argument) {return boost::numeric::acos(argument.value());}
 
-    Interval atan(const Interval& argument) {
-        return Interval(
-            boost::numeric::atan(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval atan(const Interval& argument) {return boost::numeric::atan(argument.value());}
 
     Interval atan2(double y, const Interval& x) {
         if (x.lower() > 0.0) {
@@ -128,39 +98,19 @@ namespace OpenSolid
         }
     }
 
-    Interval exp(const Interval& argument) {
-        return Interval(
-            boost::numeric::exp(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval exp(const Interval& argument) {return boost::numeric::exp(argument.value());}
 
-    Interval log(const Interval& argument) {
-        return Interval(
-            boost::numeric::log(argument.implementation()),
-            BoostIntervalConstructionTag()
-        );
-    }
+    Interval log(const Interval& argument) {return boost::numeric::log(argument.value());}
     
-    Interval pow(double base, const Interval& exponent) {
-        return exp(log(base) * exponent);
-    }
+    Interval pow(double base, const Interval& exponent) {return exp(log(base) * exponent);}
     
-    Interval pow(Double base, const Interval& exponent) {
-        return exp(log(base) * exponent);
-    }
+    Interval pow(Double base, const Interval& exponent) {return exp(log(base) * exponent);}
     
-    Interval pow(const Interval& base, double exponent) {
-        return exp(log(base) * exponent);
-    }
+    Interval pow(const Interval& base, double exponent) {return exp(log(base) * exponent);}
     
-    Interval pow(const Interval& base, Double exponent) {
-        return exp(log(base) * exponent);
-    }
+    Interval pow(const Interval& base, Double exponent) {return exp(log(base) * exponent);}
     
-    Interval pow(const Interval& base, const Interval& exponent) {
-        return exp(log(base) * exponent);
-    }
+    Interval pow(const Interval& base, const Interval& exponent) {return exp(log(base) * exponent);}
     
     std::ostream& operator<<(std::ostream& stream, const Interval& argument) {
         if (argument.isEmpty()) {

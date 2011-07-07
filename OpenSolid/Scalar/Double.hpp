@@ -36,14 +36,14 @@ namespace OpenSolid
     class Double
     {
     private:
-        double _implementation;
+        double _value;
     public:
         typedef Interval Bounds;
         
         Double();
         Double(double argument);
         
-        double implementation() const;
+        double value() const;
         
         Interval bounds() const;
         std::size_t hashValue() const;
@@ -52,6 +52,7 @@ namespace OpenSolid
         
         bool isZero(Double precision = OPENSOLID_PRECISION) const;
         bool isEqualTo(Double argument, Double precision = OPENSOLID_PRECISION) const;
+        bool isNotEqualTo(Double argument, Double precision = OPENSOLID_PRECISION) const;
         bool isLessThan(Double argument, Double precision = OPENSOLID_PRECISION) const;
         bool isGreaterThan(Double argument, Double precision = OPENSOLID_PRECISION) const;
         bool isLessThanOrEqualTo(Double argument, Double precision = OPENSOLID_PRECISION) const;
@@ -148,244 +149,248 @@ namespace OpenSolid
 {
     inline Double::Double() {}
     
-    inline Double::Double(double argument) : _implementation(argument) {}
+    inline Double::Double(double argument) : _value(argument) {}
 
-    inline double Double::implementation() const {return _implementation;}
+    inline double Double::value() const {return _value;}
     
-    inline std::size_t Double::hashValue() const {return boost::hash_value(implementation());}
+    inline std::size_t Double::hashValue() const {return boost::hash_value(value());}
         
     inline bool Double::isZero(Double precision) const {
-        return std::abs(implementation()) < precision;
+        return std::abs(value()) < precision;
     }
     
     inline bool Double::isEqualTo(Double argument, Double precision) const {
-        return std::abs(implementation() - argument.implementation()) < precision.implementation();
+        return std::abs(value() - argument.value()) < precision.value();
+    }
+    
+    inline bool Double::isNotEqualTo(Double argument, Double precision) const {
+        return std::abs(value() - argument.value()) > precision.value();
     }
     
     inline bool Double::isLessThan(Double argument, Double precision) const {
-        return implementation() < argument.implementation() - precision.implementation();
+        return value() < argument.value() - precision.value();
     }
     
     inline bool Double::isGreaterThan(Double argument, Double precision) const {
-        return implementation() > argument.implementation() + precision.implementation();
+        return value() > argument.value() + precision.value();
     }
 
     inline bool Double::isLessThanOrEqualTo(Double argument, Double precision) const {
-        return implementation() < argument.implementation() + precision.implementation();
+        return value() < argument.value() + precision.value();
     }
 
     inline bool Double::isGreaterThanOrEqualTo(Double argument, Double precision) const {
-        return implementation() > argument.implementation() - precision.implementation();
+        return value() > argument.value() - precision.value();
     }
     
     inline Double& Double::operator+=(Double argument) {
-        _implementation += argument._implementation;
+        _value += argument._value;
         return *this;
     }
     
     inline Double& Double::operator-=(Double argument) {
-        _implementation -= argument._implementation;
+        _value -= argument._value;
         return *this;
     }
     
     inline Double& Double::operator*=(Double argument) {
-        _implementation *= argument._implementation;
+        _value *= argument._value;
         return *this;
     }
     
     inline Double& Double::operator/=(Double argument) {
-        _implementation /= argument._implementation;
+        _value /= argument._value;
         return *this;
     }
     
     inline bool operator==(double first_argument, Double second_argument) {
-        return first_argument == second_argument.implementation();
+        return first_argument == second_argument.value();
     }
     
     inline bool operator==(Double first_argument, double second_argument) {
-        return first_argument.implementation() == second_argument;
+        return first_argument.value() == second_argument;
     }
     
     inline bool operator==(Double first_argument, Double second_argument) {
-        return first_argument.implementation() == second_argument.implementation();
+        return first_argument.value() == second_argument.value();
     }
     
     inline bool operator!=(double first_argument, Double second_argument) {
-        return first_argument != second_argument.implementation();
+        return first_argument != second_argument.value();
     }
     
     inline bool operator!=(Double first_argument, double second_argument) {
-        return first_argument.implementation() != second_argument;
+        return first_argument.value() != second_argument;
     }
     
     inline bool operator!=(Double first_argument, Double second_argument) {
-        return first_argument.implementation() != second_argument.implementation();
+        return first_argument.value() != second_argument.value();
     }
     
     inline bool operator<(double first_argument, Double second_argument) {
-        return first_argument < second_argument.implementation();
+        return first_argument < second_argument.value();
     }
     
     inline bool operator<(Double first_argument, double second_argument) {
-        return first_argument.implementation() < second_argument;
+        return first_argument.value() < second_argument;
     }
     
     inline bool operator<(Double first_argument, Double second_argument) {
-        return first_argument.implementation() < second_argument.implementation();
+        return first_argument.value() < second_argument.value();
     }
     
     inline bool operator>(double first_argument, Double second_argument) {
-        return first_argument > second_argument.implementation();
+        return first_argument > second_argument.value();
     }
     
     inline bool operator>(Double first_argument, double second_argument) {
-        return first_argument.implementation() > second_argument;
+        return first_argument.value() > second_argument;
     }
     
     inline bool operator>(Double first_argument, Double second_argument) {
-        return first_argument.implementation() > second_argument.implementation();
+        return first_argument.value() > second_argument.value();
     }
     
     inline bool operator<=(double first_argument, Double second_argument) {
-        return first_argument <= second_argument.implementation();
+        return first_argument <= second_argument.value();
     }
     
     inline bool operator<=(Double first_argument, double second_argument) {
-        return first_argument.implementation() <= second_argument;
+        return first_argument.value() <= second_argument;
     }
     
     inline bool operator<=(Double first_argument, Double second_argument) {
-        return first_argument.implementation() <= second_argument.implementation();
+        return first_argument.value() <= second_argument.value();
     }
     
     inline bool operator>=(double first_argument, Double second_argument) {
-        return first_argument >= second_argument.implementation();
+        return first_argument >= second_argument.value();
     }
     
     inline bool operator>=(Double first_argument, double second_argument) {
-        return first_argument.implementation() >= second_argument;
+        return first_argument.value() >= second_argument;
     }
     
     inline bool operator>=(Double first_argument, Double second_argument) {
-        return first_argument.implementation() >= second_argument.implementation();
+        return first_argument.value() >= second_argument.value();
     }
     
-    inline Double operator-(Double argument) {return -argument.implementation();}
+    inline Double operator-(Double argument) {return -argument.value();}
     
     inline Double operator+(double first_argument, Double second_argument) {
-        return first_argument + second_argument.implementation();
+        return first_argument + second_argument.value();
     }
     
     inline Double operator+(Double first_argument, double second_argument) {
-        return first_argument.implementation() + second_argument;
+        return first_argument.value() + second_argument;
     }
     
     inline Double operator+(Double first_argument, Double second_argument) {
-        return first_argument.implementation() + second_argument.implementation();
+        return first_argument.value() + second_argument.value();
     }
     
     inline Double operator-(double first_argument, Double second_argument) {
-        return first_argument - second_argument.implementation();
+        return first_argument - second_argument.value();
     }
     
     inline Double operator-(Double first_argument, double second_argument) {
-        return first_argument.implementation() - second_argument;
+        return first_argument.value() - second_argument;
     }
     
     inline Double operator-(Double first_argument, Double second_argument) {
-        return first_argument.implementation() - second_argument.implementation();
+        return first_argument.value() - second_argument.value();
     }
     
     inline Double operator*(double first_argument, Double second_argument) {
-        return first_argument * second_argument.implementation();
+        return first_argument * second_argument.value();
     }
     
     inline Double operator*(Double first_argument, double second_argument) {
-        return first_argument.implementation() * second_argument;
+        return first_argument.value() * second_argument;
     }
     
     inline Double operator*(Double first_argument, Double second_argument) {
-        return first_argument.implementation() * second_argument.implementation();
+        return first_argument.value() * second_argument.value();
     }
     
     inline Double operator/(double first_argument, Double second_argument) {
-        return first_argument / second_argument.implementation();
+        return first_argument / second_argument.value();
     }
     
     inline Double operator/(Double first_argument, double second_argument) {
-        return first_argument.implementation() / second_argument;
+        return first_argument.value() / second_argument;
     }
     
     inline Double operator/(Double first_argument, Double second_argument) {
-        return first_argument.implementation() / second_argument.implementation();
+        return first_argument.value() / second_argument.value();
     }
     
     inline Double min(double first_argument, Double second_argument) {
-        return std::min(first_argument, second_argument.implementation());
+        return std::min(first_argument, second_argument.value());
     }
     
     inline Double min(Double first_argument, double second_argument) {
-        return std::min(first_argument.implementation(), second_argument);
+        return std::min(first_argument.value(), second_argument);
     }
     
     inline Double min(Double first_argument, Double second_argument) {
-        return std::min(first_argument.implementation(), second_argument.implementation());
+        return std::min(first_argument.value(), second_argument.value());
     }
     
     inline Double max(double first_argument, Double second_argument) {
-        return std::max(first_argument, second_argument.implementation());
+        return std::max(first_argument, second_argument.value());
     }
     
     inline Double max(Double first_argument, double second_argument) {
-        return std::max(first_argument.implementation(), second_argument);
+        return std::max(first_argument.value(), second_argument);
     }
     
     inline Double max(Double first_argument, Double second_argument) {
-        return std::max(first_argument.implementation(), second_argument.implementation());
+        return std::max(first_argument.value(), second_argument.value());
     }
     
-    inline Double abs(Double argument) {return std::abs(argument.implementation());}
+    inline Double abs(Double argument) {return std::abs(argument.value());}
     
-    inline Double sqrt(Double argument) {return std::sqrt(argument.implementation());}
+    inline Double sqrt(Double argument) {return std::sqrt(argument.value());}
     
-    inline Double sin(Double argument) {return std::sin(argument.implementation());}
+    inline Double sin(Double argument) {return std::sin(argument.value());}
     
-    inline Double cos(Double argument) {return std::cos(argument.implementation());}
+    inline Double cos(Double argument) {return std::cos(argument.value());}
     
-    inline Double tan(Double argument) {return std::tan(argument.implementation());}
+    inline Double tan(Double argument) {return std::tan(argument.value());}
     
-    inline Double asin(Double argument) {return std::asin(argument.implementation());}
+    inline Double asin(Double argument) {return std::asin(argument.value());}
     
-    inline Double acos(Double argument) {return std::acos(argument.implementation());}
+    inline Double acos(Double argument) {return std::acos(argument.value());}
     
-    inline Double atan(Double argument) {return std::atan(argument.implementation());}
+    inline Double atan(Double argument) {return std::atan(argument.value());}
     
     inline Double atan2(double y, Double x) {
-        return std::atan2(y, x.implementation());
+        return std::atan2(y, x.value());
     }
     
     inline Double atan2(Double y, double x) {
-        return std::atan2(y.implementation(), x);
+        return std::atan2(y.value(), x);
     }
     
     inline Double atan2(Double y, Double x) {
-        return std::atan2(y.implementation(), x.implementation());
+        return std::atan2(y.value(), x.value());
     }
     
-    inline Double exp(Double argument) {return std::exp(argument.implementation());}
+    inline Double exp(Double argument) {return std::exp(argument.value());}
     
-    inline Double log(Double argument) {return std::log(argument.implementation());}
+    inline Double log(Double argument) {return std::log(argument.value());}
     
     inline Double pow(double base, Double exponent) {
-        return std::pow(base, exponent.implementation());
+        return std::pow(base, exponent.value());
     }
     
     inline Double pow(Double base, double exponent) {
-        return std::pow(base.implementation(), exponent);
+        return std::pow(base.value(), exponent);
     }
     
     inline Double pow(Double base, Double exponent) {
-        return std::pow(base.implementation(), exponent.implementation());
+        return std::pow(base.value(), exponent.value());
     }
     
     inline Double conj(Double argument) {return argument;}
@@ -397,7 +402,7 @@ namespace OpenSolid
     inline Double abs2(Double argument) {return argument * argument;}
 
     inline std::ostream& operator<<(std::ostream& stream, Double argument) {
-        stream << argument.implementation();
+        stream << argument.value();
         return stream;
     }
 }
