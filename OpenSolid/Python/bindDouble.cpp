@@ -130,6 +130,9 @@ namespace OpenSolid
             .def(self / double())
             .def(double() / self)
             .def(self_ns::str(self));
+        
+        implicitly_convertible<double, Double>();
+        
         def("abs", (Double (*)(Double)) &abs);
         def("abs", (double (*)(double)) &abs);
         def("sqrt", (Double (*)(Double)) &sqrt);
@@ -158,7 +161,5 @@ namespace OpenSolid
         def("pow", (Double (*)(Double, double)) &pow);
         def("pow", (Double (*)(double, Double)) &pow);
         def("pow", (double (*)(double, double)) &pow);
-        
-        implicitly_convertible<double, Double>();
     }
 }

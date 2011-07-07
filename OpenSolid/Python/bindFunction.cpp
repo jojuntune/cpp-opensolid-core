@@ -58,8 +58,11 @@ namespace OpenSolid
     }
         
     void bindFunction() {
-        class_<Function> function_class("Function", no_init);
+        class_<Function> function_class("Function");
         function_class
+            .def(init<MatrixXD>())
+            .def(init<Double>())
+            .def(init<double>())
             .def("CurveParameter", &Function::CurveParameter)
             .staticmethod("CurveParameter")
             .def("SurfaceParameter", &Function::SurfaceParameter)
@@ -71,11 +74,11 @@ namespace OpenSolid
             .def("Parameter", &Function::Parameter).staticmethod("Parameter")
             .def("parameters", &Function::parameters)
             .def("dimensions", &Function::dimensions)
-            .def("__call__", &callInterval, return_value_policy<manage_new_object>())
-            .def("__call__", &callDouble, return_value_policy<manage_new_object>())
+            .def("__call__", &callFunction)
             .def("__call__", &callMatrixXI, return_value_policy<manage_new_object>())
             .def("__call__", &callMatrixXD, return_value_policy<manage_new_object>())
-            .def("__call__", &callFunction)
+            .def("__call__", &callInterval, return_value_policy<manage_new_object>())
+            .def("__call__", &callDouble, return_value_policy<manage_new_object>())
             .def("derivative", &Function::derivative)
             .def("component", &Function::component)
             .def("cross", &Function::cross)
@@ -89,22 +92,11 @@ namespace OpenSolid
             .def(self + self)
             .def(self - self)
             .def(self * self)
-            .def(self / self)
-            .def(double() + self)
-            .def(self + double())
-            .def(double() - self)
-            .def(self - double())
-            .def(double() * self)
-            .def(self * double())
-            .def(double() / self)
-            .def(self / double())
-            .def(MatrixXD() + self)
-            .def(self + MatrixXD())
-            .def(MatrixXD() - self)
-            .def(self - MatrixXD())
-            .def(MatrixXD() * self)
-            .def(self * MatrixXD())
-            .def(MatrixXD() / self);
+            .def(self / self);
+            
+        implicitly_convertible<MatrixXD, Function>();
+        implicitly_convertible<Double, Function>();
+        implicitly_convertible<double, Function>();
             
         function_class.attr("t") = object(Function::t);
         function_class.attr("u") = object(Function::u);

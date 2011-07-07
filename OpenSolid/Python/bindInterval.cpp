@@ -322,6 +322,10 @@ namespace OpenSolid
             .def(self / Double())
             .def(Double() / self)
             .def(self_ns::str(self));
+        
+        implicitly_convertible<Double, Interval>();
+        implicitly_convertible<double, Interval>();
+        
         def("abs", (Interval (*)(const Interval&)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);
         def("sin", (Interval (*)(const Interval&)) &sin);
@@ -338,8 +342,5 @@ namespace OpenSolid
         def("pow", (Interval (*)(const Interval&, const Interval&)) &pow);
         def("pow", (Interval (*)(const Interval&, Double)) &pow);
         def("pow", (Interval (*)(Double, const Interval&)) &pow);
-        
-        implicitly_convertible<Double, Interval>();
-        implicitly_convertible<double, Interval>();
     }
 }
