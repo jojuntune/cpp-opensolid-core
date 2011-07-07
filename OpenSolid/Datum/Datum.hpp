@@ -28,6 +28,18 @@
 
 namespace OpenSolid
 {
+    template <int other_dimensions_, int other_axes_>
+    class Datum;
+    
+    template <int other_dimensions_>
+    class Axis;
+    
+    template <int other_dimensions_>
+    class Plane;
+    
+    template <int other_dimensions_>
+    class Frame;
+    
     template <int dimensions_, int axes_>
     class LinearDatum;
     

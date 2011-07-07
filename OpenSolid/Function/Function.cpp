@@ -187,7 +187,7 @@ namespace OpenSolid
                 x = x - y / derivative_value;
                 y = derivatives[order](x).value();
             }
-            while (order > 0 && derivatives[order - 1](x).isZero()) {--order;}
+            while (order > 0 && derivatives[order - 1](x).eval().isZero()) {--order;}
             return x;
         } else {
             if ((y > 0) == (derivative_value > 0)) {

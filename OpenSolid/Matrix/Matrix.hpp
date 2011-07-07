@@ -472,37 +472,37 @@ namespace Eigen
     template <class DerivedType> template <class OtherDerivedType>
     inline bool DenseBase<DerivedType>::isEqualTo(
         const DenseBase<OtherDerivedType>& other,
-        OpenSolid::Double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision
     ) const {return derived().binaryExpr(other.derived(), EqualOperation(precision)).all();}
 
     template <class DerivedType> template <class OtherDerivedType>
     inline bool DenseBase<DerivedType>::isNotEqualTo(
         const DenseBase<OtherDerivedType>& other,
-        OpenSolid::Double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision
     ) const {return derived().binaryExpr(other.derived(), NotEqualOperation(precision)).any();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::overlaps(
         const DenseBase<OtherDerivedType>& other,
-        OpenSolid::Double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision
     ) const {return derived().binaryExpr(other.derived(), OverlapOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::strictlyOverlaps(
         const DenseBase<OtherDerivedType>& other,
-        OpenSolid::Double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision
     ) const {return derived().binaryExpr(other.derived(), StrictOverlapOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::contains(
         const DenseBase<OtherDerivedType>& other,
-        OpenSolid::Double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision
     ) const {return derived().binaryExpr(other.derived(), ContainOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::strictlyContains(
         const DenseBase<OtherDerivedType>& other,
-        OpenSolid::Double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision
     ) const {return derived().binaryExpr(other.derived(), StrictContainOperation(precision)).all();}
 
     template <class DerivedType> template <class OtherDerivedType>

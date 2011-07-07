@@ -69,8 +69,8 @@ namespace OpenSolid
     template <int dimensions_>
     inline Frame<dimensions_>::Frame(int size) {
         assert(size == dimensions_ || dimensions_ == Dynamic);
-        this->_origin = VectorType::Zero(size);
-        this->_vectors = MatrixType::Identity(size, size);
+        this->_origin = Vector::Zero(size);
+        this->_vectors = Matrix::Identity(size, size);
         this->_normalized = true;
     }
         

@@ -37,7 +37,7 @@ namespace OpenSolid
     template <class Type, class BoundsType>
     struct DefaultBoundsFunction
     {
-        typedef typename BoundsType Bounds;
+        typedef BoundsType Bounds;
         
         BoundsType operator()(const Type& argument) const;
     };
@@ -153,7 +153,7 @@ namespace OpenSolid
     template <class Type, class BoundsType, class BoundsFunctionType>
     inline Set<Type, BoundsType, BoundsFunctionType>::Set(
         const BoundsFunctionType& bounds_function
-    ) : _root(0), _shared_count(0), _bounds_function(bounds_function) {}
+    ) : _root(nullptr), _shared_count(nullptr), _bounds_function(bounds_function) {}
     
     template <class Type, class BoundsType, class BoundsFunctionType>
     inline Set<Type, BoundsType, BoundsFunctionType>::Set(
@@ -173,7 +173,7 @@ namespace OpenSolid
     inline Set<Type, BoundsType, BoundsFunctionType>::Set(
         IteratorType begin,
         IteratorType end,
-        const BoundsFunctionType& bounds_function = BoundsFunctionType()
+        const BoundsFunctionType& bounds_function
     ) : _bounds_function(bounds_function) {
         std::vector<Node*> nodes;
         std::transform(
@@ -241,7 +241,7 @@ namespace OpenSolid
     inline SetIterator<Type, BoundsType, BoundsFunctionType>
     Set<Type, BoundsType, BoundsFunctionType>::begin() const {
         if (empty()) {
-            return 0;
+            return nullptr;
         } else {
             const Node* node = root();
             while (node->left()) {node = node->left();}
@@ -251,7 +251,7 @@ namespace OpenSolid
     
     template <class Type, class BoundsType, class BoundsFunctionType>
     inline SetIterator<Type, BoundsType, BoundsFunctionType>
-    Set<Type, BoundsType, BoundsFunctionType>::end() const {return 0;}
+    Set<Type, BoundsType, BoundsFunctionType>::end() const {return nullptr;}
     
     template <class Type, class BoundsType, class BoundsFunctionType>
     inline const BoundsType& Set<Type, BoundsType, BoundsFunctionType>::bounds() const {
@@ -433,7 +433,7 @@ namespace OpenSolid
     }
     
     template <class Type, class BoundsType, class BoundsFunctionType>
-    inline SetIterator<Type, BoundsType, BoundsFunctionType>::SetIterator() : _node(0) {}
+    inline SetIterator<Type, BoundsType, BoundsFunctionType>::SetIterator() : _node(nullptr) {}
     
     template <class Type, class BoundsType, class BoundsFunctionType>
     inline SetIterator<Type, BoundsType, BoundsFunctionType>::SetIterator(

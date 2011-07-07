@@ -185,7 +185,7 @@ namespace OpenSolid
         _bounds(other._bounds),
         _split_direction(other._split_direction),
         _split_value(other._split_value),
-        _parent(0),
+        _parent(nullptr),
         _size(other._size) {
         if (other._object) {
             assert(!other._left && !other._right);
@@ -204,7 +204,12 @@ namespace OpenSolid
     
     template <class Type, class BoundsType>
     inline SetNode<Type, BoundsType>::SetNode(const Type& object, const BoundsType& bounds) :
-        _object(new Type(object)), _bounds(bounds), _left(0), _right(0), _parent(0), _size(1) {}
+        _object(new Type(object)),
+        _bounds(bounds),
+        _left(nullptr),
+        _right(nullptr),
+        _parent(nullptr),
+        _size(1) {}
     
     template <class Type, class BoundsType>
     inline SetNode<Type, BoundsType>::SetNode(
@@ -213,8 +218,13 @@ namespace OpenSolid
         Double split_value,
         SetNode<Type, BoundsType>* left,
         SetNode<Type, BoundsType>* right
-    ) : _object(0), _bounds(overall_bounds), _split_direction(split_direction),
-        _split_value(split_value), _left(left), _right(right), _parent(0),
+    ) : _object(nullptr),
+        _bounds(overall_bounds),
+        _split_direction(split_direction),
+        _split_value(split_value),
+        _left(left),
+        _right(right),
+        _parent(nullptr),
         _size(left->_size + right->_size) {
         _left._parent = this;
         _right._parent = this;
@@ -400,7 +410,7 @@ namespace OpenSolid
             assert(!_left && !_right);
             if (*_object == argument) {
                 delete this;
-                return 0;
+                return nullptr;
             } else {
                 return this;
             }

@@ -15,9 +15,13 @@
         # Enable C++0x and add extra warning flags
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -Wno-unused-variable")
         # Enable -fPIC on 64-bit systems where it is required
-        IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-        ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        ENDIF (CMAKE_SIZEOF_VOID_P EQUAL 8)
+        EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+        IF (GCC_VERSION VERSION_LESS 4.6)
+            ADD_DEFINITIONS(-Dnullptr=0)
+        ENDIF (GCC_VERSION VERSION_LESS 4.6)
     ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
     # FreeBSD-specific compiler flags
