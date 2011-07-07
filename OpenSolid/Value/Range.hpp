@@ -21,31 +21,32 @@
 #ifndef OPENSOLID__RANGE_HPP
 #define OPENSOLID__RANGE_HPP
 
+#include <OpenSolid/Value/ValueBase.hpp>
+
 namespace OpenSolid
 {
     class Range
     {
     private:
-        int _start;
-        int _size;
+        Index _start;
+        Index _size;
     public:
-        Range(int index);
-        Range(int start, int size)
+        Range(Index start, Index size)
         
-        int start(int indexed_size) const;
-        int size(int indexed_size) const;
+        Index start() const;
+        Index size() const;
     };
     
     class First : public Range
     {
     public:
-        First(int size);
+        First(Index size);
     };
     
     class Last : public Range
     {
     public:
-        Last(int size);
+        Last(Index size);
     };
     
     class All : public Range
@@ -59,21 +60,15 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline Range::Range(int index) : _start(index), _size(1) {}
+    inline Range::Range(Index start, Index size) : _start(start), _size(size) {}
     
-    inline Range::Range(int start, int size) : _start(start), _size(size) {}
+    inline Index Range::start() const {return _start;}
     
-    inline int Range::start(int indexed_size) const {
-        return _start == -1 ? indexed_size - _size : _start;
-    }
+    inline Index Range::size() const {return _size;}
     
-    inline int Range::size(int indexed_size) const {
-        return _size == -1 ? indexed_size - _start : _size;
-    }
+    inline First::First(Index size) : Range(0, size) {}
     
-    inline First::First(int size) : Range(0, size) {}
-    
-    inline Last::Last(int size) : Range(-1, size) {}
+    inline Last::Last(Index size) : Range(-1, size) {}
     
     inline All::All() : Range(0, -1) {}
 }

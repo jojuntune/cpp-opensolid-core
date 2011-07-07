@@ -5,7 +5,7 @@ arithmetic_operator_list = ['unary-', '+', '-', '*', '/']
 function_list = ['min', 'max']
 operator_list = comparison_operator_list + arithmetic_operator_list + function_list
 builtin_type_list = ['int', 'float', 'double']
-scalar_type_list = ['Double', 'Interval']
+custom_type_list = ['Double', 'Interval']
 
 header = open('operators.hpp', 'w')
 
@@ -75,6 +75,30 @@ def write_definition(operator, first_type, second_type):
                 result = operator + '(' + first_value + ', ' + second_value + ')'
             else:
                 result = first_value + ' ' + operator + ' ' + second_value
+                
+        # elif 'Interval' in (first_type, second_type) or operator in function_list:
+        #     prefix = None
+        #     specialization = None
+        #     if 'Interval' in (first_type, second_type):
+        #         prefix = 'boost::numeric'
+        #         specialization = 'double, IntervalPolicies'
+        #     else:
+        #         prefix = 'std'
+        #         specialization = 'double'
+        #     name = operator if operator in function_list else 'operator' + operator
+        #     full_name = prefix + '::' + name + '<' + specialization + '>'
+        #     if 'Interval' in (first_type, second_type):
+        #         lines = [
+        #             full_name + '(',
+        #             ' ' * 12 + first_value + ',',
+        #             ' ' * 12 + second_value,
+        #             ' ' * 8 + ')'
+        #         ]
+        #         result = '\n'.join(lines)
+        #     else:
+        #         result = full_name + '(' + first_value + ', ' + second_value + ')'
+        # else:
+        #     result = first_value + ' ' + operator + ' ' + second_value
             
         header.write(' ' * 8 + 'return ' + result + ';\n')
         header.write(' ' * 4 + '}\n')
@@ -137,6 +161,11 @@ header.write("""
 
 namespace OpenSolid
 {
+    using std::min;
+    using std::max;
+    using boost::numeric::min;
+    using boost::numeric::max;
+
     class Double;
     class Interval;
 """)

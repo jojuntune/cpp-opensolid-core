@@ -36,10 +36,15 @@ namespace OpenSolid
         int cols() const;
         int size() const;
         
+        DerivedType operator()(int index) const;
+        DerivedType operator()(int row, int col) const;
         DerivedType& operator()(int index);
-        const DerivedType& operator()(int index) const;
         DerivedType& operator()(int row, int col);
-        const DerivedType& operator()(int row, int col) const;
+        
+        DerivedType rowwise() const;
+        DerivedType& rowwise();
+        DerivedType colwise() const;
+        DerivedType& colwise();
         
         DerivedType minCoeff() const;
         DerivedType minCoeff(int* index) const;
