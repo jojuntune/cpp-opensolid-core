@@ -65,17 +65,17 @@ public:
     
         Function u_derivative = function.derivative(0);
         
-        TS_ASSERT(u_derivative(Vector2D(0, 0)).eval().isZero());
-        TS_ASSERT(u_derivative(Vector2D(1, 0)).eval().isZero());
+        TS_ASSERT(u_derivative(Vector2D(0, 0)).isZero());
+        TS_ASSERT(u_derivative(Vector2D(1, 0)).isZero());
         TS_ASSERT(u_derivative(Vector2D(1, 1)).value().isEqualTo(1.0));
         TS_ASSERT(u_derivative(Vector2D(0, 1)).value().isEqualTo(1.0));
     
         Function v_derivative = function.derivative(1);
         
-        TS_ASSERT(v_derivative(Vector2D(0, 0)).eval().isZero());
+        TS_ASSERT(v_derivative(Vector2D(0, 0)).isZero());
         TS_ASSERT(v_derivative(Vector2D(1, 0)).value().isEqualTo(1.0));
         TS_ASSERT(v_derivative(Vector2D(1, 1)).value().isEqualTo(1.0));
-        TS_ASSERT(v_derivative(Vector2D(0, 1)).eval().isZero());
+        TS_ASSERT(v_derivative(Vector2D(0, 1)).isZero());
     }
     
     void testSquare() {

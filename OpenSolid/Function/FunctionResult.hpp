@@ -21,8 +21,9 @@
 #ifndef OPENSOLID__FUNCTIONRESULT_HPP
 #define OPENSOLID__FUNCTIONRESULT_HPP
 
-#include "Function.hpp"
-#include "FunctionArgument.hpp"
+#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Function/FunctionArgument.hpp>
 
 namespace OpenSolid
 {
@@ -95,6 +96,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         typename ArgumentType::Scalar value() const;
+        bool isZero(Double tolerance = OPENSOLID_PRECISION) const;
     };
     
     template<>
@@ -113,6 +115,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         Double value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template<>
@@ -131,6 +134,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         Double value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template<>
@@ -149,6 +153,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         Double value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template<>
@@ -167,6 +172,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         Interval value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
 }
 
@@ -225,6 +231,11 @@ namespace OpenSolid
         return result.value();
     }
     
+    template <class ArgumentType>
+    inline bool FunctionResult<ArgumentType>::isZero(Double precision) const {
+        return eval().isZero(precision);
+    }
+    
     inline FunctionResult<int>::FunctionResult(const Function& function, int argument) :
         _function(function), _argument(argument) {}
     
@@ -255,6 +266,10 @@ namespace OpenSolid
         Matrix<Double, 1, 1> result;
         evalTo(result);
         return result.value();
+    }
+    
+    inline bool FunctionResult<int>::isZero(Double precision) const {
+        return eval().isZero(precision);
     }
     
     inline FunctionResult<double>::FunctionResult(const Function& function, double argument) :
@@ -289,6 +304,10 @@ namespace OpenSolid
         return result.value();
     }
     
+    inline bool FunctionResult<double>::isZero(Double precision) const {
+        return eval().isZero(precision);
+    }
+    
     inline FunctionResult<Double>::FunctionResult(const Function& function, Double argument) :
         _function(function), _argument(argument) {}
     
@@ -321,6 +340,10 @@ namespace OpenSolid
         return result.value();
     }
     
+    inline bool FunctionResult<Double>::isZero(Double precision) const {
+        return eval().isZero(precision);
+    }
+    
     inline FunctionResult<Interval>::FunctionResult(const Function& function, Interval argument) :
         _function(function), _argument(argument) {}
     
@@ -351,6 +374,10 @@ namespace OpenSolid
         Matrix<Interval, 1, 1> result;
         evalTo(result);
         return result.value();
+    }
+    
+    inline bool FunctionResult<Interval>::isZero(Double precision) const {
+        return eval().isZero(precision);
     }
 }
 
