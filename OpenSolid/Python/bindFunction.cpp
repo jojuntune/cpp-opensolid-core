@@ -26,19 +26,19 @@ using namespace boost::python;
 namespace OpenSolid
 {
     MatrixXD* vector(const Function& function) {
-        return new MatrixXd(function.as<ConstantFunction>().vector());
+        return new MatrixXD(function.as<ConstantFunction>().vector());
     }
     
     MatrixXD* callDouble(const Function& function, double argument) {
-        return new MatrixXd(function(argument));
+        return new MatrixXD(function(argument));
     }
     
     MatrixXI* callInterval(const Function& function, const Interval& argument) {
         return new MatrixXI(function(argument));
     }
     
-    MatrixXd* callMatrixXd(const Function& function, const MatrixXd& argument) {
-        return new MatrixXd(function(argument));
+    MatrixXD* callMatrixXD(const Function& function, const MatrixXD& argument) {
+        return new MatrixXD(function(argument));
     }
     
     MatrixXI* callMatrixXI(const Function& function, const MatrixXI& argument) {
@@ -49,11 +49,11 @@ namespace OpenSolid
         return function(argument);
     }
     
-    Function crossMatrix(const Function& function, const MatrixXd& argument) {
+    Function crossMatrix(const Function& function, const MatrixXD& argument) {
         return function.cross(argument);
     }
     
-    Function dotMatrix(const Function& function, const MatrixXd& argument) {
+    Function dotMatrix(const Function& function, const MatrixXD& argument) {
         return function.dot(argument);
     }
         
@@ -74,7 +74,7 @@ namespace OpenSolid
             .def("__call__", &callInterval, return_value_policy<manage_new_object>())
             .def("__call__", &callDouble, return_value_policy<manage_new_object>())
             .def("__call__", &callMatrixXI, return_value_policy<manage_new_object>())
-            .def("__call__", &callMatrixXd, return_value_policy<manage_new_object>())
+            .def("__call__", &callMatrixXD, return_value_policy<manage_new_object>())
             .def("__call__", &callFunction)
             .def("derivative", &Function::derivative)
             .def("component", &Function::component)
@@ -98,13 +98,13 @@ namespace OpenSolid
             .def(self * double())
             .def(double() / self)
             .def(self / double())
-            .def(MatrixXd() + self)
-            .def(self + MatrixXd())
-            .def(MatrixXd() - self)
-            .def(self - MatrixXd())
-            .def(MatrixXd() * self)
-            .def(self * MatrixXd())
-            .def(MatrixXd() / self);
+            .def(MatrixXD() + self)
+            .def(self + MatrixXD())
+            .def(MatrixXD() - self)
+            .def(self - MatrixXD())
+            .def(MatrixXD() * self)
+            .def(self * MatrixXD())
+            .def(MatrixXD() / self);
             
         function_class.attr("t") = object(Function::t);
         function_class.attr("u") = object(Function::u);

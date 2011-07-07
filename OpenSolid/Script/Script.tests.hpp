@@ -106,7 +106,7 @@ public:
         }
     }
     
-    void xtestEvaluationError() {
+    void testEvaluationError() {
         Script script;
         script.set("a", Interval(1));
         script.set("b", MatrixXD(Vector3D(2, 3, 4)));
@@ -147,7 +147,7 @@ public:
         TS_ASSERT_EQUALS(result.upper(), 8.0);
     }
     
-    void xtestMatrixXD() {
+    void testMatrixXD() {
         Script script;
         script.set("v", MatrixXD(Vector3D(1, 2, 3)));
         script.set("a", 4.0);
@@ -156,7 +156,7 @@ public:
         TS_ASSERT(result.isEqualTo(Vector3D(5, 7, 3)));
     }
     
-    void xtestMatrixXI() {
+    void testMatrixXI() {
         Script script;
         Vector3I vector(Interval(1.0, 2.0), Interval(2.0, 3.0), Interval(3.0, 4.0));
         script.set("v", MatrixXI(vector));
@@ -171,7 +171,7 @@ public:
         TS_ASSERT_EQUALS(result.z().upper(), 4.0);
     }
     
-    void xtestInternalConversionError() {
+    void testInternalConversionError() {
         Script script;
         std::string text =
             "a = Interval(1)                    \n"
@@ -204,7 +204,7 @@ public:
         }
     }
     
-    void xtestMultilineEvaluate() {
+    void testMultilineEvaluate() {
         Script script;
         std::string text =
             "a = Vector3D(1, 2, 3)  \n"
@@ -221,7 +221,7 @@ public:
         TS_ASSERT_EQUALS(result.upper(), 4.0);
     }
     
-    void xtestErrorTranslation() {
+    void testErrorTranslation() {
         Script script;
         std::string text =
             "a = Vector2D(1, 2)    \n"
@@ -238,14 +238,14 @@ public:
         }
     }
     
-    void xtestLinSpaced() {
+    void testLinSpaced() {
         Script script;
         MatrixXD result = script.get<MatrixXD>("RowVectorXD.LinSpaced(3, Interval(0, 1))");
         TS_ASSERT_EQUALS(result, RowVectorXD::LinSpaced(3, Interval(0, 1)));
         TS_ASSERT_EQUALS(result, RowVector3D(0, 0.5, 1));
     }
     
-    void xtestMatrixOperators() {
+    void testMatrixOperators() {
         Script script;
         script.set<MatrixXD>("a", Vector3D(1, 2, 3));
         script.set<MatrixXD>("b", Vector3D(1, 2, 3));
@@ -258,7 +258,7 @@ public:
         TS_ASSERT_EQUALS(script.get<MatrixXD>("a / 2"), Vector3D(0.5, 1, 1.5));
     }
     
-    void xtestExtraction() {
+    void testExtraction() {
         Script script;
         std::string expression = "Vector2D(1, 2) + Vector2I(Interval(1, 2), Interval(2, 3))";
         TS_ASSERT_THROWS(script.get<MatrixXD>(expression), Error);
@@ -271,7 +271,7 @@ public:
         }
     }
     
-    void xtestFunction() {
+    void testFunction() {
         Script script;
         script.run("f = Function.u.squaredNorm() * 1.0 + Function.v.squaredNorm() * 1.0");
         Double result = script.get<Double>("f(Vector2D(1, 2))[0]");
@@ -298,7 +298,7 @@ public:
         TS_ASSERT_EQUALS(b.upper(), 5);
     }
     
-    void xtestMatrixOverlap() {
+    void testMatrixOverlap() {
         Script script;
         script.run("u = Vector3D(1, 2, 3)");
         script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
@@ -306,7 +306,7 @@ public:
         TS_ASSERT(!script.get<bool>("v.contain(3 * u)"));
     }
     
-    void xtestMatrixHull() {
+    void testMatrixHull() {
         Script script;
         script.run("u = Vector3D(1, 2, 3)");
         script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
@@ -318,7 +318,7 @@ public:
         TS_ASSERT_EQUALS(script.get<MatrixXD>("result.cwiseUpper()"), Vector3D(3, 6, 9));
     }
     
-    void xtestMatrixIntersection() {
+    void testMatrixIntersection() {
         Script script;
         script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
         script.run("x = (v + Vector3I.Constant(Interval(0.5))).intersection(v)");
@@ -333,7 +333,7 @@ public:
         );
     }
     
-    void xtestCustomFunction() {
+    void testCustomFunction() {
         Script script1;
         Script script2;
         script1.def("twice", MatrixDoubler());
@@ -341,7 +341,7 @@ public:
         TS_ASSERT_THROWS(script2.run("twice(Vector3D(1, 2, 3))"), Error);
     }
     
-    void xtestCustomClass() {
+    void testCustomClass() {
         Script script1;
         Script script2;
         script1.extend(bindCustomClass);
@@ -353,14 +353,14 @@ public:
         TS_ASSERT_THROWS(script2.run("b = CustomClass()"), Error);
     }
     
-    void xtestTranspose() {
+    void testTranspose() {
         Script script;
         MatrixXD a = script.get<MatrixXD>("Vector3D(1, 2, 3).transpose()");
         MatrixXD b = script.get<MatrixXD>("RowVector3D(1, 2, 3)");
         TS_ASSERT_EQUALS(a, b);
     }
     
-    void xtestMatrixIndexing() {
+    void testMatrixIndexing() {
         Script script;
         script.run("a = Matrix3D(1, 2, 3, 4, 5, 6, 7, 8, 9)");
         script.run("b = Vector3D(10, 11, 12)");
@@ -380,7 +380,7 @@ public:
         TS_ASSERT_EQUALS(script.get<MatrixXD>("a"), test);
     }
     
-    void xtestMatrixEquality() {
+    void testMatrixEquality() {
         Script script;
         script.run("a1 = Vector2D(1, 2)");
         script.run("a2 = Vector2D(1, 2)");
@@ -398,7 +398,7 @@ public:
         TS_ASSERT(script.get<bool>("b1 != 2 * a1"));
     }
 
-    void xtestOverloading() {
+    void testOverloading() {
         Script script;
         script.set("f1", 3 * Function::Parameter(1, 0));
         Function f2 = Vector3D(2, 0, 0) * Function::Parameter(2, 0) +
@@ -418,7 +418,7 @@ public:
         TS_ASSERT(matrix_bounds.cwiseUpper().isEqualTo(Vector3D(4, 1.5, 0)));
     }
 
-    void xtestExplicitModule() {
+    void testExplicitModule() {
         Script script;
         TS_ASSERT_EQUALS(
             script.get<std::string>("str(opensolid)"),

@@ -154,9 +154,9 @@
         Python/bindError.cpp
         Python/bindDouble.cpp
         Python/bindInterval.cpp
-        # Python/bindMatrix.cpp
-        # Python/bindSpecificMatrixSizes.cpp
-        # Python/bindFunction.cpp
+        Python/bindMatrix.cpp
+        Python/bindSpecificMatrixSizes.cpp
+        Python/bindFunction.cpp
         Python/module.cpp
     )
     
