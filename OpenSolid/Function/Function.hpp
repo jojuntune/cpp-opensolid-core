@@ -55,14 +55,23 @@ namespace OpenSolid
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& vector);
         
-        template <class XType, class YType>
-        Function(const XType& x, const YType& y);
+        OPENSOLID_CORE_EXPORT Function(
+            const Function& x,
+            const Function& y
+        );
         
-        template <class XType, class YType, class ZType>
-        Function(const XType& x, const YType& y, const ZType& z);
+        OPENSOLID_CORE_EXPORT Function(
+            const Function& x,
+            const Function& y,
+            const Function& z
+        );
         
-        template <class XType, class YType, class ZType, class WType>
-        Function(const XType& x, const YType& y, const ZType& z, const WType& w);
+        OPENSOLID_CORE_EXPORT Function(
+            const Function& x,
+            const Function& y,
+            const Function& z,
+            const Function& w
+        );
         
         const FunctionImplementation* implementation() const;
         
@@ -193,24 +202,6 @@ namespace OpenSolid
     template <class DerivedType>
     inline Function::Function(const EigenBase<DerivedType>& vector) :
         _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
-        
-    template <class XType, class YType>
-    Function::Function(const XType& x, const YType& y) {
-        _implementation = Function(x).concatenate(y).implementation();
-        _type = &typeid(implementation());
-    }
-    
-    template <class XType, class YType, class ZType>
-    Function::Function(const XType& x, const YType& y, const ZType& z) {
-        _implementation = Function(x).concatenate(y).concatenate(z).implementation();
-        _type = &typeid(implementation());
-    }
-    
-    template <class XType, class YType, class ZType, class WType>
-    Function::Function(const XType& x, const YType& y, const ZType& z, const WType& w) {
-        _implementation = Function(x).concatenate(y).concatenate(z).concatenate(w).implementation();
-        _type = &typeid(implementation());
-    }
     
     inline const FunctionImplementation* Function::implementation() const {
         return _implementation.get();

@@ -50,6 +50,21 @@
 
 namespace OpenSolid
 {
+    Function::Function(const Function& x, const Function& y) {
+        _implementation = x.concatenate(y).implementation();
+        _type = &typeid(implementation());
+    }
+    
+    Function::Function(const Function& x, const Function& y, const Function& z) {
+        _implementation = x.concatenate(y).concatenate(z).implementation();
+        _type = &typeid(implementation());
+    }
+    
+    Function::Function(const Function& x, const Function& y, const Function& z, const Function& w) {
+        _implementation = x.concatenate(y).concatenate(z).concatenate(w).implementation();
+        _type = &typeid(implementation());
+    }
+    
     Function Function::derivative(int index) const {
         Function result;
         implementation()->getDerivative(index, result);
