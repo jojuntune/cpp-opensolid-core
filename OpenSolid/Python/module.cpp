@@ -28,16 +28,16 @@ namespace OpenSolid
     void bindError();
     void bindInterval();
     void bindDouble();
-    //void bindMatrix();
-    //void bindSpecificMatrixSizes();
-    //void bindFunction();
+    void bindMatrix();
+    void bindSpecificMatrixSizes();
+    void bindFunction();
 
     BOOST_PYTHON_MODULE(opensolid) {
         bindError();
         bindInterval();
         bindDouble();
-        //bindMatrix();
-        //bindSpecificMatrixSizes();
-        //bindFunction();
+        bindMatrix();
+        bindSpecificMatrixSizes();
+        bindFunction();
     }
 }

@@ -25,49 +25,100 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isZero_overloads, isZero, 0, 1)
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isEqualTo_overloads, isEqualTo, 1, 2)
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isLessThan_overloads, isLessThan, 1, 2)
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isGreaterThan_overloads, isGreaterThan, 1, 2)
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isLessThanOrEqualTo_overloads, isLessThanOrEqualTo, 1, 2)
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isGreaterThanOrEqualTo_overloads, isGreaterThanOrEqualTo, 1, 2)
+    bool isZero(Double argument) {return argument.isZero();}
+    
+    bool isZeroP(Double argument, Double precision) {return argument.isZero(precision);}
+
+    bool isEqualTo(Double first_argument, Double second_argument) {
+        return first_argument.isEqualTo(second_argument);
+    }
+
+    bool isEqualToP(Double first_argument, Double second_argument, Double precision) {
+        return first_argument.isEqualTo(second_argument, precision);
+    }
+
+    bool isLessThan(Double first_argument, Double second_argument) {
+        return first_argument.isLessThan(second_argument);
+    }
+
+    bool isLessThanP(Double first_argument, Double second_argument, Double precision) {
+        return first_argument.isLessThan(second_argument, precision);
+    }
+
+    bool isGreaterThan(Double first_argument, Double second_argument) {
+        return first_argument.isGreaterThan(second_argument);
+    }
+
+    bool isGreaterThanP(Double first_argument, Double second_argument, Double precision) {
+        return first_argument.isGreaterThan(second_argument, precision);
+    }
+
+    bool isLessThanOrEqualTo(Double first_argument, Double second_argument) {
+        return first_argument.isLessThanOrEqualTo(second_argument);
+    }
+
+    bool isLessThanOrEqualToP(Double first_argument, Double second_argument, Double precision) {
+        return first_argument.isLessThanOrEqualTo(second_argument, precision);
+    }
+
+    bool isGreaterThanOrEqualTo(Double first_argument, Double second_argument) {
+        return first_argument.isGreaterThanOrEqualTo(second_argument);
+    }
+
+    bool isGreaterThanOrEqualToP(Double first_argument, Double second_argument, Double precision) {
+        return first_argument.isGreaterThanOrEqualTo(second_argument, precision);
+    }
     
     void bindDouble() {
         class_<Double>("Double")
-            .def(init<double>())
             .def(init<Double>())
+            .def(init<double>())
             .def("bounds", &Double::bounds)
             .def("hashValue", &Double::hashValue)
             .def("hull", &Double::hull)
-            .def("isZero", &Double::isZero, isZero_overloads())
-            .def("isEqualTo", &Double::isEqualTo, isEqualTo_overloads())
-            .def("isLessThan", &Double::isLessThan, isLessThan_overloads())
-            .def("isGreaterThan", &Double::isGreaterThan, isGreaterThan_overloads())
-            .def("isLessThanOrEqualTo", &Double::isLessThanOrEqualTo, isLessThanOrEqualTo_overloads())
-            .def("isGreaterThanOrEqualTo", &Double::isGreaterThanOrEqualTo, isGreaterThanOrEqualTo_overloads())
+            .def("isZero", &isZero)
+            .def("isZero", &isZeroP)
+            .def("isEqualTo", &isEqualTo)
+            .def("isEqualTo", &isEqualToP)
+            .def("isLessThan", &isLessThan)
+            .def("isLessThan", &isLessThanP)
+            .def("isGreaterThan", &isGreaterThan)
+            .def("isGreaterThan", &isGreaterThanP)
+            .def("isLessThanOrEqualTo", &isLessThanOrEqualTo)
+            .def("isLessThanOrEqualTo", &isLessThanOrEqualToP)
+            .def("isGreaterThanOrEqualTo", &isGreaterThanOrEqualTo)
+            .def("isGreaterThanOrEqualTo", &isGreaterThanOrEqualToP)
             .def(self == self)
+            .def(self == double())
+            .def(double() == self)
             .def(self != self)
+            .def(self != double())
+            .def(double() != self)
             .def(self < self)
+            .def(self < double())
+            .def(double() < self)
             .def(self > self)
+            .def(self > double())
+            .def(double() > self)
             .def(self <= self)
+            .def(self <= double())
+            .def(double() <= self)
             .def(self >= self)
+            .def(self >= double())
+            .def(double() >= self)
             .def(-self)
-            .def(int() + self)
-            .def(float() + self)
-            .def(double() + self)
             .def(self + self)
-            .def(int() - self)
-            .def(float() - self)
-            .def(double() - self)
+            .def(self + double())
+            .def(double() + self)
             .def(self - self)
-            .def(int() * self)
-            .def(float() * self)
-            .def(double() * self)
+            .def(self - double())
+            .def(double() - self)
             .def(self * self)
-            .def(int() / self)
-            .def(float() / self)
-            .def(double() / self)
+            .def(self * double())
+            .def(double() * self)
             .def(self / self)
+            .def(self / double())
+            .def(double() / self)
             .def(self_ns::str(self));
         def("abs", (Double (*)(Double)) &abs);
         def("abs", (double (*)(double)) &abs);
@@ -85,13 +136,19 @@ namespace OpenSolid
         def("acos", (double (*)(double)) &acos);
         def("atan", (Double (*)(Double)) &atan);
         def("atan", (double (*)(double)) &atan);
+        def("atan2", (Double (*)(Double, Double)) &atan2);
+        def("atan2", (Double (*)(Double, double)) &atan2);
+        def("atan2", (Double (*)(double, Double)) &atan2);
+        def("atan2", (double (*)(double, double)) &atan2);
         def("exp", (Double (*)(Double))  &exp);
         def("exp", (double (*)(double)) &exp);
         def("log", (Double (*)(Double)) &log);
         def("log", (double (*)(double)) &log);
+        def("pow", (Double (*)(Double, Double)) &pow);
+        def("pow", (Double (*)(Double, double)) &pow);
+        def("pow", (Double (*)(double, Double)) &pow);
+        def("pow", (double (*)(double, double)) &pow);
         
-        implicitly_convertible<int, Double>();
-        implicitly_convertible<float, Double>();
         implicitly_convertible<double, Double>();
     }
 }

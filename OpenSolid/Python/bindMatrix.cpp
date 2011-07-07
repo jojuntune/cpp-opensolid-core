@@ -37,6 +37,9 @@ namespace OpenSolid
     
     template <class MatrixType>
     int size(const MatrixType& argument) {return argument.size();}
+    
+    template <class MatrixType>
+    typename MatrixType::Scalar value(const MatrixType& argument) {return argument.value();}
         
     int positiveIndex(int index, int size) {
         checkComponentIndexInRange(index, size, __func__);
@@ -565,6 +568,7 @@ namespace OpenSolid
             .def("rows", &rows<MatrixXD>)
             .def("cols", &cols<MatrixXD>)
             .def("size", &size<MatrixXD>)
+            .def("value", &value<MatrixXD>)
             .def("get", &getI<MatrixXD>)
             .def("get", &getS<MatrixXD>, return_value_policy<manage_new_object>())
             .def("get", &getII<MatrixXD>)
@@ -600,7 +604,9 @@ namespace OpenSolid
             .def("Random", &random<MatrixXD>, return_value_policy<manage_new_object>())
             .staticmethod("Random")
             .def(self == self)
+            .def(self == MatrixXI())
             .def(self != self)
+            .def(self != MatrixXI())
             .def("__neg__", &negXD, return_value_policy<manage_new_object>())
             .def("__add__", &addXDXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXDXD, return_value_policy<manage_new_object>())
@@ -620,6 +626,7 @@ namespace OpenSolid
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
+            .def("value", &value<MatrixXI>)
             .def("get", &getI<MatrixXI>)
             .def("get", &getS<MatrixXI>, return_value_policy<manage_new_object>())
             .def("get", &getII<MatrixXI>)
@@ -666,7 +673,9 @@ namespace OpenSolid
             .def("Random", &random<MatrixXI>, return_value_policy<manage_new_object>())
             .staticmethod("Random")
             .def(self == self)
+            .def(self == MatrixXD())
             .def(self != self)
+            .def(self != MatrixXD())
             .def("__neg__", &negXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXIXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXIXD, return_value_policy<manage_new_object>())

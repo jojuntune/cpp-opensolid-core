@@ -68,6 +68,54 @@ namespace OpenSolid
         );
     }
 
+    Interval atan2(double y, const Interval& x) {
+        if (x.lower() > 0.0) {
+            return atan(y / x);
+        } else if (y > 0.0) {
+            return atan(-x / y) + M_PI / 2;
+        } else if (y < 0.0) {
+            return atan(-x / y) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
+    Interval atan2(Double y, const Interval& x) {
+        if (x.lower() > 0.0) {
+            return atan(y / x);
+        } else if (y > 0.0) {
+            return atan(-x / y) + M_PI / 2;
+        } else if (y < 0.0) {
+            return atan(-x / y) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
+    Interval atan2(const Interval& y, double x) {
+        if (x > 0.0) {
+            return atan(y / x);
+        } else if (y.lower() > 0.0) {
+            return atan(-x / y) + M_PI / 2;
+        } else if (y.upper() < 0.0) {
+            return atan(-x / y) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
+    Interval atan2(const Interval& y, Double x) {
+        if (x > 0.0) {
+            return atan(y / x);
+        } else if (y.lower() > 0.0) {
+            return atan(-x / y) + M_PI / 2;
+        } else if (y.upper() < 0.0) {
+            return atan(-x / y) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
     Interval atan2(const Interval& y, const Interval& x) {
         if (x.lower() > 0.0) {
             return atan(y / x);
@@ -92,6 +140,22 @@ namespace OpenSolid
             boost::numeric::log(argument.implementation()),
             BoostIntervalConstructionTag()
         );
+    }
+    
+    Interval pow(double base, const Interval& exponent) {
+        return exp(log(base) * exponent);
+    }
+    
+    Interval pow(Double base, const Interval& exponent) {
+        return exp(log(base) * exponent);
+    }
+    
+    Interval pow(const Interval& base, double exponent) {
+        return exp(log(base) * exponent);
+    }
+    
+    Interval pow(const Interval& base, Double exponent) {
+        return exp(log(base) * exponent);
     }
     
     Interval pow(const Interval& base, const Interval& exponent) {

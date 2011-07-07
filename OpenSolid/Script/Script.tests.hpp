@@ -302,8 +302,8 @@ public:
         Script script;
         script.run("u = Vector3D(1, 2, 3)");
         script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
-        TS_ASSERT(script.get<bool>("v.contain(u)"));
-        TS_ASSERT(!script.get<bool>("v.contain(3 * u)"));
+        TS_ASSERT(script.get<bool>("v.contains(u)"));
+        TS_ASSERT(!script.get<bool>("v.contains(3 * u)"));
     }
     
     void testMatrixHull() {

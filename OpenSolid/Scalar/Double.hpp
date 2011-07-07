@@ -41,8 +41,6 @@ namespace OpenSolid
         typedef Interval Bounds;
         
         Double();
-        Double(int argument);
-        Double(float argument);
         Double(double argument);
         
         double implementation() const;
@@ -65,17 +63,37 @@ namespace OpenSolid
         Double& operator/=(Double argument);
     };
     
+    bool operator==(double first_argument, Double second_argument);
+    bool operator==(Double first_argument, double second_argument);
     bool operator==(Double first_argument, Double second_argument);
+    bool operator!=(double first_argument, Double second_argument);
+    bool operator!=(Double first_argument, double second_argument);
     bool operator!=(Double first_argument, Double second_argument);
+    bool operator<(double first_argument, Double second_argument);
+    bool operator<(Double first_argument, double second_argument);
     bool operator<(Double first_argument, Double second_argument);
+    bool operator>(double first_argument, Double second_argument);
+    bool operator>(Double first_argument, double second_argument);
     bool operator>(Double first_argument, Double second_argument);
+    bool operator<=(double first_argument, Double second_argument);
+    bool operator<=(Double first_argument, double second_argument);
     bool operator<=(Double first_argument, Double second_argument);
+    bool operator>=(double first_argument, Double second_argument);
+    bool operator>=(Double first_argument, double second_argument);
     bool operator>=(Double first_argument, Double second_argument);
     
     Double operator-(Double argument);
+    Double operator+(double first_argument, Double second_argument);
+    Double operator+(Double first_argument, double second_argument);
     Double operator+(Double first_argument, Double second_argument);
+    Double operator-(double first_argument, Double second_argument);
+    Double operator-(Double first_argument, double second_argument);
     Double operator-(Double first_argument, Double second_argument);
+    Double operator*(double first_argument, Double second_argument);
+    Double operator*(Double first_argument, double second_argument);
     Double operator*(Double first_argument, Double second_argument);
+    Double operator/(double first_argument, Double second_argument);
+    Double operator/(Double first_argument, double second_argument);
     Double operator/(Double first_argument, Double second_argument);
     
     using std::min;
@@ -93,7 +111,11 @@ namespace OpenSolid
     using std::log;
     using std::pow;
     
+    Double min(double first_argument, Double second_argument);
+    Double min(Double first_argument, double second_argument);
     Double min(Double first_argument, Double second_argument);
+    Double max(double first_argument, Double second_argument);
+    Double max(Double first_argument, double second_argument);
     Double max(Double first_argument, Double second_argument);
     
     Double abs(Double argument);
@@ -104,9 +126,13 @@ namespace OpenSolid
     Double asin(Double argument);
     Double acos(Double argument);
     Double atan(Double argument);
+    Double atan2(double y, Double exponent);
+    Double atan2(Double y, double exponent);
     Double atan2(Double y, Double exponent);
     Double exp(Double argument);
     Double log(Double argument);
+    Double pow(double base, Double exponent);
+    Double pow(Double base, double exponent);
     Double pow(Double base, Double exponent);
     Double conj(Double argument);
     Double real(Double argument);
@@ -121,10 +147,6 @@ namespace OpenSolid
 namespace OpenSolid
 {
     inline Double::Double() {}
-    
-    inline Double::Double(int argument) : _implementation(argument) {}
-    
-    inline Double::Double(float argument) : _implementation(argument) {}
     
     inline Double::Double(double argument) : _implementation(argument) {}
 
@@ -176,24 +198,72 @@ namespace OpenSolid
         return *this;
     }
     
+    inline bool operator==(double first_argument, Double second_argument) {
+        return first_argument == second_argument.implementation();
+    }
+    
+    inline bool operator==(Double first_argument, double second_argument) {
+        return first_argument.implementation() == second_argument;
+    }
+    
     inline bool operator==(Double first_argument, Double second_argument) {
         return first_argument.implementation() == second_argument.implementation();
+    }
+    
+    inline bool operator!=(double first_argument, Double second_argument) {
+        return first_argument != second_argument.implementation();
+    }
+    
+    inline bool operator!=(Double first_argument, double second_argument) {
+        return first_argument.implementation() != second_argument;
     }
     
     inline bool operator!=(Double first_argument, Double second_argument) {
         return first_argument.implementation() != second_argument.implementation();
     }
     
+    inline bool operator<(double first_argument, Double second_argument) {
+        return first_argument < second_argument.implementation();
+    }
+    
+    inline bool operator<(Double first_argument, double second_argument) {
+        return first_argument.implementation() < second_argument;
+    }
+    
     inline bool operator<(Double first_argument, Double second_argument) {
         return first_argument.implementation() < second_argument.implementation();
+    }
+    
+    inline bool operator>(double first_argument, Double second_argument) {
+        return first_argument > second_argument.implementation();
+    }
+    
+    inline bool operator>(Double first_argument, double second_argument) {
+        return first_argument.implementation() > second_argument;
     }
     
     inline bool operator>(Double first_argument, Double second_argument) {
         return first_argument.implementation() > second_argument.implementation();
     }
     
+    inline bool operator<=(double first_argument, Double second_argument) {
+        return first_argument <= second_argument.implementation();
+    }
+    
+    inline bool operator<=(Double first_argument, double second_argument) {
+        return first_argument.implementation() <= second_argument;
+    }
+    
     inline bool operator<=(Double first_argument, Double second_argument) {
         return first_argument.implementation() <= second_argument.implementation();
+    }
+    
+    inline bool operator>=(double first_argument, Double second_argument) {
+        return first_argument >= second_argument.implementation();
+    }
+    
+    inline bool operator>=(Double first_argument, double second_argument) {
+        return first_argument.implementation() >= second_argument;
     }
     
     inline bool operator>=(Double first_argument, Double second_argument) {
@@ -202,24 +272,72 @@ namespace OpenSolid
     
     inline Double operator-(Double argument) {return -argument.implementation();}
     
+    inline Double operator+(double first_argument, Double second_argument) {
+        return first_argument + second_argument.implementation();
+    }
+    
+    inline Double operator+(Double first_argument, double second_argument) {
+        return first_argument.implementation() + second_argument;
+    }
+    
     inline Double operator+(Double first_argument, Double second_argument) {
         return first_argument.implementation() + second_argument.implementation();
+    }
+    
+    inline Double operator-(double first_argument, Double second_argument) {
+        return first_argument - second_argument.implementation();
+    }
+    
+    inline Double operator-(Double first_argument, double second_argument) {
+        return first_argument.implementation() - second_argument;
     }
     
     inline Double operator-(Double first_argument, Double second_argument) {
         return first_argument.implementation() - second_argument.implementation();
     }
     
+    inline Double operator*(double first_argument, Double second_argument) {
+        return first_argument * second_argument.implementation();
+    }
+    
+    inline Double operator*(Double first_argument, double second_argument) {
+        return first_argument.implementation() * second_argument;
+    }
+    
     inline Double operator*(Double first_argument, Double second_argument) {
         return first_argument.implementation() * second_argument.implementation();
+    }
+    
+    inline Double operator/(double first_argument, Double second_argument) {
+        return first_argument / second_argument.implementation();
+    }
+    
+    inline Double operator/(Double first_argument, double second_argument) {
+        return first_argument.implementation() / second_argument;
     }
     
     inline Double operator/(Double first_argument, Double second_argument) {
         return first_argument.implementation() / second_argument.implementation();
     }
     
+    inline Double min(double first_argument, Double second_argument) {
+        return std::min(first_argument, second_argument.implementation());
+    }
+    
+    inline Double min(Double first_argument, double second_argument) {
+        return std::min(first_argument.implementation(), second_argument);
+    }
+    
     inline Double min(Double first_argument, Double second_argument) {
         return std::min(first_argument.implementation(), second_argument.implementation());
+    }
+    
+    inline Double max(double first_argument, Double second_argument) {
+        return std::max(first_argument, second_argument.implementation());
+    }
+    
+    inline Double max(Double first_argument, double second_argument) {
+        return std::max(first_argument.implementation(), second_argument);
     }
     
     inline Double max(Double first_argument, Double second_argument) {
@@ -242,6 +360,14 @@ namespace OpenSolid
     
     inline Double atan(Double argument) {return std::atan(argument.implementation());}
     
+    inline Double atan2(double y, Double x) {
+        return std::atan2(y, x.implementation());
+    }
+    
+    inline Double atan2(Double y, double x) {
+        return std::atan2(y.implementation(), x);
+    }
+    
     inline Double atan2(Double y, Double x) {
         return std::atan2(y.implementation(), x.implementation());
     }
@@ -249,6 +375,14 @@ namespace OpenSolid
     inline Double exp(Double argument) {return std::exp(argument.implementation());}
     
     inline Double log(Double argument) {return std::log(argument.implementation());}
+    
+    inline Double pow(double base, Double exponent) {
+        return std::pow(base, exponent.implementation());
+    }
+    
+    inline Double pow(Double base, double exponent) {
+        return std::pow(base.implementation(), exponent);
+    }
     
     inline Double pow(Double base, Double exponent) {
         return std::pow(base.implementation(), exponent.implementation());

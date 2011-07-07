@@ -28,31 +28,31 @@ inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
 template <class OtherDerivedType>
 inline bool isEqualTo(
     const DenseBase<OtherDerivedType>& other,
-    double precision = OPENSOLID_PRECISION
+    OpenSolid::Double precision = OPENSOLID_PRECISION
 ) const;
 
 template<class OtherDerivedType>
 inline bool overlaps(
     const DenseBase<OtherDerivedType>& other,
-    double precision = OPENSOLID_PRECISION
+    OpenSolid::Double precision = OPENSOLID_PRECISION
 ) const;
 
 template<class OtherDerivedType>
 inline bool strictlyOverlaps(
     const DenseBase<OtherDerivedType>& other,
-    double precision = OPENSOLID_PRECISION
+    OpenSolid::Double precision = OPENSOLID_PRECISION
 ) const;
 
 template<class OtherDerivedType>
 inline bool contains(
     const DenseBase<OtherDerivedType>& other,
-    double precision = OPENSOLID_PRECISION
+    OpenSolid::Double precision = OPENSOLID_PRECISION
 ) const;
 
 template<class OtherDerivedType>
 inline bool strictlyContains(
     const DenseBase<OtherDerivedType>& other,
-    double precision = OPENSOLID_PRECISION
+    OpenSolid::Double precision = OPENSOLID_PRECISION
 ) const;
 
 template <class OtherDerivedType>

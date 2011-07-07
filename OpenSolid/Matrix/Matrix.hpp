@@ -196,9 +196,9 @@ namespace Eigen
     {
         typedef bool result_type;
         
-        double _precision;
+        OpenSolid::Double _precision;
         
-        ZeroOperation(double precision);
+        ZeroOperation(OpenSolid::Double precision);
         
         template <class ScalarType>
         bool operator()(ScalarType argument) const;
@@ -208,9 +208,9 @@ namespace Eigen
     {
         typedef bool result_type;
         
-        double _precision;
+        OpenSolid::Double _precision;
         
-        EqualOperation(double precision);
+        EqualOperation(OpenSolid::Double precision);
         
         template <class ScalarType>
         bool operator()(ScalarType first_argument, ScalarType second_argument) const;
@@ -220,9 +220,9 @@ namespace Eigen
     {
         typedef bool result_type;
         
-        double _precision;
+        OpenSolid::Double _precision;
         
-        OverlapOperation(double precision);
+        OverlapOperation(OpenSolid::Double precision);
         
         template <class ScalarType>
         bool operator()(ScalarType first_argument, ScalarType second_argument) const;
@@ -232,9 +232,9 @@ namespace Eigen
     {
         typedef bool result_type;
         
-        double _precision;
+        OpenSolid::Double _precision;
         
-        StrictOverlapOperation(double precision);
+        StrictOverlapOperation(OpenSolid::Double precision);
         
         template <class ScalarType>
         bool operator()(ScalarType first_argument, ScalarType second_argument) const;
@@ -244,9 +244,9 @@ namespace Eigen
     {
         typedef bool result_type;
         
-        double _precision;
+        OpenSolid::Double _precision;
         
-        ContainOperation(double precision);
+        ContainOperation(OpenSolid::Double precision);
         
         template <class ScalarType>
         bool operator()(ScalarType first_argument, ScalarType second_argument) const;
@@ -256,9 +256,9 @@ namespace Eigen
     {
         typedef bool result_type;
         
-        double _precision;
+        OpenSolid::Double _precision;
         
-        StrictContainOperation(double precision);
+        StrictContainOperation(OpenSolid::Double precision);
         
         template <class ScalarType>
         bool operator()(ScalarType first_argument, ScalarType second_argument) const;
@@ -460,31 +460,31 @@ namespace Eigen
     template <class DerivedType> template <class OtherDerivedType>
     inline bool DenseBase<DerivedType>::isEqualTo(
         const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), EqualOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::overlaps(
         const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), OverlapOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::strictlyOverlaps(
         const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), StrictOverlapOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::contains(
         const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), ContainOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::strictlyContains(
         const DenseBase<OtherDerivedType>& other,
-        double precision = OPENSOLID_PRECISION
+        OpenSolid::Double precision = OPENSOLID_PRECISION
     ) const {return derived().binaryExpr(other.derived(), StrictContainOperation(precision)).all();}
 
     template <class DerivedType> template <class OtherDerivedType>
@@ -569,7 +569,7 @@ namespace Eigen
         ScalarType second_argument
     ) const {return first_argument.intersection(second_argument);}
     
-    inline ZeroOperation::ZeroOperation(double precision) :
+    inline ZeroOperation::ZeroOperation(OpenSolid::Double precision) :
         _precision(precision) {}
     
     template <class ScalarType>
@@ -577,7 +577,7 @@ namespace Eigen
         return argument.isZero(_precision);
     }
     
-    inline EqualOperation::EqualOperation(double precision) :
+    inline EqualOperation::EqualOperation(OpenSolid::Double precision) :
         _precision(precision) {}
     
     template <class ScalarType>
@@ -586,7 +586,7 @@ namespace Eigen
         ScalarType second_argument
     ) const {return first_argument.isEqualTo(second_argument, _precision);}
     
-    inline OverlapOperation::OverlapOperation(double precision) :
+    inline OverlapOperation::OverlapOperation(OpenSolid::Double precision) :
         _precision(precision) {}
     
     template <class ScalarType>
@@ -595,7 +595,7 @@ namespace Eigen
         ScalarType second_argument
     ) const {return first_argument.overlaps(second_argument, _precision);}
     
-    inline StrictOverlapOperation::StrictOverlapOperation(double precision) :
+    inline StrictOverlapOperation::StrictOverlapOperation(OpenSolid::Double precision) :
         _precision(precision) {}
     
     template <class ScalarType>
@@ -604,7 +604,7 @@ namespace Eigen
         ScalarType second_argument
     ) const {return first_argument.strictlyOverlaps(second_argument, _precision);}
     
-    inline ContainOperation::ContainOperation(double precision) :
+    inline ContainOperation::ContainOperation(OpenSolid::Double precision) :
         _precision(precision) {}
     
     template <class ScalarType>
@@ -613,7 +613,7 @@ namespace Eigen
         ScalarType second_argument
     ) const {return first_argument.contains(second_argument, _precision);}
     
-    inline StrictContainOperation::StrictContainOperation(double precision) :
+    inline StrictContainOperation::StrictContainOperation(OpenSolid::Double precision) :
         _precision(precision) {}
     
     template <class ScalarType>
