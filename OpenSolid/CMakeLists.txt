@@ -271,7 +271,7 @@
     
 ########## Set up source groups for Visual Studio ##########
 
-    ADD_CUSTOM_TARGET(ALL_SOURCES SOURCES
+    ADD_LIBRARY(ALL_SOURCES EXCLUDE_FROM_ALL
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
         ${DATUM_HEADERS}
