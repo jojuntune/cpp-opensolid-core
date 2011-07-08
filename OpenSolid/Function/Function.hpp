@@ -30,8 +30,8 @@
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
-#include "FunctionImplementation.hpp"
-#include "implementations/ConstantFunction.hpp"
+#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ConstantFunction.hpp>
 
 namespace OpenSolid
 {
@@ -182,7 +182,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include "FunctionResult.hpp"
+#include <OpenSolid/Function/FunctionResult.hpp>
 
 namespace OpenSolid
 {

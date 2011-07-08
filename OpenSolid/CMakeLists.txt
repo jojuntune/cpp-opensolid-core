@@ -91,78 +91,249 @@
         ADD_TEST(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})
     ENDMACRO(ADD_CXXTEST)
     
+########## Define lists of source files ##########
+    
+    SET(COMMON_HEADERS
+        Common/config.hpp
+        Common/Error.hpp
+        Common/HashFunction.hpp
+        Common/ReferenceCounted.hpp
+        Common/ReferenceCountedBase.hpp
+    )
+    
+    SET(COMMON_SOURCES
+        Common/Error.cpp
+    )
+    
+    SET(DATUM_HEADERS
+        Datum/Axis.hpp
+        Datum/CoordinateSystem.hpp
+        Datum/Datum.hpp
+        Datum/Datum.tests.hpp
+        Datum/DatumExpressions.hpp
+        Datum/Frame.hpp
+        Datum/Plane.hpp
+    )
+    
+    SET(DATUM_SOURCES
+        Datum/Datum.cpp
+    )
+    
+    SET(DOMAIN_HEADERS
+        Domain/Domain.hpp
+    )
+    
+    SET(DOMAIN_SOURCES
+        Domain/Domain.cpp
+    )
+    
+    SET(FUNCTION_HEADERS
+        Function/Function.hpp
+        Function/Function.tests.hpp
+        Function/FunctionArgument.hpp
+        Function/FunctionResult.hpp
+    )
+    
+    SET(FUNCTION_SOURCES
+        Function/Function.cpp
+    )
+    
+    SET(FUNCTIONIMPLEMENTATION_HEADERS
+        Function/FunctionImplementation/ArccosineFunction.hpp
+        Function/FunctionImplementation/ArcsineFunction.hpp
+        Function/FunctionImplementation/BinaryFunction.hpp
+        Function/FunctionImplementation/ComponentsFunction.hpp
+        Function/FunctionImplementation/CompositionFunction.hpp
+        Function/FunctionImplementation/ConcatenationFunction.hpp
+        Function/FunctionImplementation/ConstantFunction.hpp
+        Function/FunctionImplementation/CosineFunction.hpp
+        Function/FunctionImplementation/CrossProductFunction.hpp
+        Function/FunctionImplementation/DifferenceFunction.hpp
+        Function/FunctionImplementation/DotProductFunction.hpp
+        Function/FunctionImplementation/EllipticalFunction.hpp
+        Function/FunctionImplementation/FunctionImplementation.hpp
+        Function/FunctionImplementation/LinearFunction.hpp
+        Function/FunctionImplementation/NegationFunction.hpp
+        Function/FunctionImplementation/NormalizedFunction.hpp
+        Function/FunctionImplementation/NormFunction.hpp
+        Function/FunctionImplementation/ParametersFunction.hpp
+        Function/FunctionImplementation/ProductFunction.hpp
+        Function/FunctionImplementation/QuotientFunction.hpp
+        Function/FunctionImplementation/SineFunction.hpp
+        Function/FunctionImplementation/SquaredNormFunction.hpp
+        Function/FunctionImplementation/SquareRootFunction.hpp
+        Function/FunctionImplementation/SumFunction.hpp
+        Function/FunctionImplementation/TangentFunction.hpp
+        Function/FunctionImplementation/TransformedFunction.hpp
+        Function/FunctionImplementation/UnaryFunction.hpp
+    )
+    
+    SET(FUNCTIONIMPLEMENTATION_SOURCES
+        Function/FunctionImplementation/ArccosineFunction.cpp
+        Function/FunctionImplementation/ArcsineFunction.cpp
+        Function/FunctionImplementation/BinaryFunction.cpp
+        Function/FunctionImplementation/ComponentsFunction.cpp
+        Function/FunctionImplementation/CompositionFunction.cpp
+        Function/FunctionImplementation/ConcatenationFunction.cpp
+        Function/FunctionImplementation/ConstantFunction.cpp
+        Function/FunctionImplementation/CosineFunction.cpp
+        Function/FunctionImplementation/CrossProductFunction.cpp
+        Function/FunctionImplementation/DifferenceFunction.cpp
+        Function/FunctionImplementation/DotProductFunction.cpp
+        Function/FunctionImplementation/EllipticalFunction.cpp
+        Function/FunctionImplementation/FunctionImplementation.cpp
+        Function/FunctionImplementation/LinearFunction.cpp
+        Function/FunctionImplementation/NegationFunction.cpp
+        Function/FunctionImplementation/NormalizedFunction.cpp
+        Function/FunctionImplementation/NormFunction.cpp
+        Function/FunctionImplementation/ParametersFunction.cpp
+        Function/FunctionImplementation/ProductFunction.cpp
+        Function/FunctionImplementation/QuotientFunction.cpp
+        Function/FunctionImplementation/SineFunction.cpp
+        Function/FunctionImplementation/SquaredNormFunction.cpp
+        Function/FunctionImplementation/SquareRootFunction.cpp
+        Function/FunctionImplementation/SumFunction.cpp
+        Function/FunctionImplementation/TangentFunction.cpp
+        Function/FunctionImplementation/TransformedFunction.cpp
+        Function/FunctionImplementation/UnaryFunction.cpp
+    )
+    
+    SET(GEOMETRY_HEADERS
+        Geometry/Geometry.hpp
+        Geometry/Geometry.tests.hpp
+    )
+    
+    SET(GEOMETRY_SOURCES
+        Geometry/Geometry.cpp
+    )
+    
+    SET(MATRIX_HEADERS
+        Matrix/DenseBasePlugin.hpp
+        Matrix/Matrix.hpp
+        Matrix/Matrix.tests.hpp
+        Matrix/MatrixIterator.hpp
+    )
+    
+    SET(MATRIX_SOURCES
+    )
+    
+    SET(PYTHON_HEADERS
+        Python/BoostPython.hpp
+        Python/check.hpp
+    )
+    
+    SET(PYTHON_SOURCES
+        Python/bindDouble.cpp
+        Python/bindError.cpp
+        Python/bindFunction.cpp
+        Python/bindInterval.cpp
+        Python/bindMatrix.cpp
+        Python/bindSpecificMatrixSizes.cpp
+        Python/check.cpp
+        Python/module.cpp
+    )
+
+    SET(SCALAR_HEADERS
+        Scalar/Double.hpp
+        Scalar/Interval.hpp
+        Scalar/Interval.tests.hpp
+    )
+
+    SET(SCALAR_SOURCES
+        Scalar/Interval.cpp
+    )
+    
+    SET(SCRIPT_HEADERS
+        Script/Script.hpp
+        Script/Script.tests.hpp
+    )
+    
+    SET(SCRIPT_SOURCES
+        Script/Script.cpp
+    )
+    
+    SET(SET_HEADERS
+        Set/Set.hpp
+        Set/Set.tests.hpp
+        Set/SetNode.hpp
+    )
+    
+    SET(SET_SOURCES
+    )
+    
+    SET(SIMPLEX_HEADERS
+        Simplex/Simplex.hpp
+        Simplex/Simplex.tests.hpp
+    )
+    
+    SET(SIMPLEX_SOURCES
+    )
+    
+########## Set up source groups for Visual Studio ##########
+
+    ADD_CUSTOM_TARGET(ALL_SOURCES SOURCES
+        ${COMMON_HEADERS}
+        ${COMMON_SOURCES}
+        ${DATUM_HEADERS}
+        ${DATUM_SOURCES}
+        ${DOMAIN_HEADERS}
+        ${DOMAIN_SOURCES}
+        ${FUNCTION_HEADERS}
+        ${FUNCTION_SOURCES}
+        ${GEOMETRY_HEADERS}
+        ${GEOMETRY_SOURCES}
+        ${MATRIX_HEADERS}
+        ${MATRIX_SOURCES}
+        ${PYTHON_HEADERS}
+        ${PYTHON_SOURCES}
+        ${SCALAR_HEADERS}
+        ${SCALAR_SOURCES}
+        ${SCRIPT_HEADERS}
+        ${SCRIPT_SOURCES}
+        ${SET_HEADERS}
+        ${SET_SOURCES}
+        ${SIMPLEX_HEADERS}
+        ${SIMPLEX_SOURCES}
+    )
+    
+    SOURCE_GROUP(Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
+    SOURCE_GROUP(Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
+    SOURCE_GROUP(Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
+    SOURCE_GROUP(Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
+    SOURCE_GROUP(Function\\FunctionImplementation FILES
+        ${FUNCTIONIMPLEMENTATION_HEADERS}
+        ${FUNCTIONIMPLEMENTATION_SOURCES}
+    )
+    SOURCE_GROUP(Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
+    SOURCE_GROUP(Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
+    SOURCE_GROUP(Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
+    SOURCE_GROUP(Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
+    SOURCE_GROUP(Script FILES ${SCRIPT_HEADERS} ${SCRIPT_SOURCES})
+    SOURCE_GROUP(Set FILES ${SET_HEADERS} ${SET_SOURCES})
+    SOURCE_GROUP(Simplex FILES ${SIMPLEX_HEADERS} ${SIMPLEX_SOURCES})
+    
 ######################################################################
 #                                                                    #
 #                               BUILD                                #
 #                                                                    #
 ######################################################################
     
-########## Compile libraries ##########
-
-    # OpenSolidCore library
-
-    SET(COMMON_SOURCES Common/Error.cpp)
-
-    SET(SCALAR_SOURCES Scalar/Interval.cpp)
-    
-    SET(DATUM_SOURCES Datum/Datum.cpp)
-    
-    SET(FUNCTION_SOURCES
-        Function/Function.cpp
-        Function/FunctionImplementation.cpp
-        Function/implementations/ArccosineFunction.cpp
-        Function/implementations/ArcsineFunction.cpp
-        Function/implementations/BinaryFunction.cpp
-        Function/implementations/ComponentsFunction.cpp
-        Function/implementations/CompositionFunction.cpp
-        Function/implementations/ConcatenationFunction.cpp
-        Function/implementations/ConstantFunction.cpp
-        Function/implementations/CosineFunction.cpp
-        Function/implementations/CrossProductFunction.cpp
-        Function/implementations/DifferenceFunction.cpp
-        Function/implementations/DotProductFunction.cpp
-        Function/implementations/EllipticalFunction.cpp
-        Function/implementations/LinearFunction.cpp
-        Function/implementations/NegationFunction.cpp
-        Function/implementations/NormFunction.cpp
-        Function/implementations/NormalizedFunction.cpp
-        Function/implementations/ParametersFunction.cpp
-        Function/implementations/ProductFunction.cpp
-        Function/implementations/QuotientFunction.cpp
-        Function/implementations/SineFunction.cpp
-        Function/implementations/SquaredNormFunction.cpp
-        Function/implementations/SquareRootFunction.cpp
-        Function/implementations/SumFunction.cpp
-        Function/implementations/TangentFunction.cpp
-        Function/implementations/TransformedFunction.cpp
-        Function/implementations/UnaryFunction.cpp
-    )
-    
-    SET(DOMAIN_SOURCES Domain/Domain.cpp)
-    
-    SET(GEOMETRY_SOURCES Geometry/Geometry.cpp)
+########## Compile OpenSolidCore library ##########
     
     ADD_LIBRARY(OpenSolidCore SHARED
         ${COMMON_SOURCES}
-        ${SCALAR_SOURCES}
         ${DATUM_SOURCES}
-        ${FUNCTION_SOURCES}
-        ${GEOMETRY_SOURCES}
         ${DOMAIN_SOURCES}
+        ${FUNCTION_SOURCES}
+        ${FUNCTIONIMPLEMENTATION_SOURCES}
+        ${GEOMETRY_SOURCES}
+        ${MATRIX_SOURCES}
+        ${SCALAR_SOURCES}
+        ${SET_SOURCES}
+        ${SIMPLEX_SOURCES}
     )
     
-    # Python extension module
-    
-    SET(PYTHON_SOURCES
-        Python/check.cpp
-        Python/bindError.cpp
-        Python/bindDouble.cpp
-        Python/bindInterval.cpp
-        Python/bindMatrix.cpp
-        Python/bindSpecificMatrixSizes.cpp
-        Python/bindFunction.cpp
-        Python/module.cpp
-    )
+########## Compile Python extension module ##########
     
     ADD_LIBRARY(opensolid SHARED ${PYTHON_SOURCES})
     
@@ -174,9 +345,9 @@
     
     TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
-    # OpenSolidScript library
+########## Compile OpenSolidScript library ##########
     
-    ADD_LIBRARY(OpenSolidScript SHARED Script/Script.cpp)
+    ADD_LIBRARY(OpenSolidScript SHARED ${SCRIPT_SOURCES})
     
     TARGET_LINK_LIBRARIES(
         OpenSolidScript
@@ -186,7 +357,7 @@
         ${PYTHON_LIBRARIES}
     )
     
-########## Generate tests ##########
+########## Compile tests ##########
 
     ADD_CXXTEST(Interval.tests Scalar/Interval.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Matrix.tests Matrix/Matrix.tests.hpp OpenSolidCore)
@@ -197,24 +368,34 @@
     ADD_CXXTEST(Simplex.tests Simplex/Simplex.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Script.tests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
     
-########## Install libraries and headers ##########
+######################################################################
+#                                                                    #
+#                              INSTALL                               #
+#                                                                    #
+######################################################################
     
-    # INSTALL(
-    #     DIRECTORY ../External/Eigen
-    #     DESTINATION include
-    #     PATTERN "CMakeLists.txt" EXCLUDE
-    # )
-    # 
-    # INSTALL(
-    #     DIRECTORY ../OpenSolid
-    #     DESTINATION include
-    #     FILES_MATCHING PATTERN "*.hpp"
-    #     PATTERN "*.tests.hpp" EXCLUDE
-    # )
-    #     
-    # INSTALL(
-    #     TARGETS OpenSolidCore opensolid OpenSolidScript
-    #     RUNTIME DESTINATION bin
-    #     LIBRARY DESTINATION lib
-    #     ARCHIVE DESTINATION lib
-    # )
+########## Install Eigen headers ##########
+
+    INSTALL(
+        DIRECTORY ../External/Eigen
+        DESTINATION include
+        PATTERN "CMakeLists.txt" EXCLUDE
+    )
+    
+########## Install OpenSolid headers ##########
+    
+    INSTALL(
+        DIRECTORY ../OpenSolid
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.hpp"
+        PATTERN "*.tests.hpp" EXCLUDE
+    )
+    
+########## Install libraries ##########
+        
+    INSTALL(
+        TARGETS OpenSolidCore opensolid OpenSolidScript
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+    )

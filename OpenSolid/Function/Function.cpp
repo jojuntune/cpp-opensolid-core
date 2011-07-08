@@ -20,33 +20,32 @@
 
 #include <algorithm>
 
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ArccosineFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ArcsineFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ComponentsFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/CompositionFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ConcatenationFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/CosineFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/CrossProductFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/DifferenceFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/DotProductFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/NegationFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/NormFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/NormalizedFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ParametersFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ProductFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/QuotientFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/SineFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/SquaredNormFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/SquareRootFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/SumFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/TangentFunction.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
-
-#include "Function.hpp"
-#include "implementations/ArccosineFunction.hpp"
-#include "implementations/ArcsineFunction.hpp"
-#include "implementations/ComponentsFunction.hpp"
-#include "implementations/CompositionFunction.hpp"
-#include "implementations/ConcatenationFunction.hpp"
-#include "implementations/ConstantFunction.hpp"
-#include "implementations/CosineFunction.hpp"
-#include "implementations/CrossProductFunction.hpp"
-#include "implementations/DifferenceFunction.hpp"
-#include "implementations/DotProductFunction.hpp"
-#include "implementations/EllipticalFunction.hpp"
-#include "implementations/LinearFunction.hpp"
-#include "implementations/NegationFunction.hpp"
-#include "implementations/NormFunction.hpp"
-#include "implementations/NormalizedFunction.hpp"
-#include "implementations/ParametersFunction.hpp"
-#include "implementations/ProductFunction.hpp"
-#include "implementations/QuotientFunction.hpp"
-#include "implementations/SineFunction.hpp"
-#include "implementations/SquaredNormFunction.hpp"
-#include "implementations/SquareRootFunction.hpp"
-#include "implementations/SumFunction.hpp"
-#include "implementations/TangentFunction.hpp"
 
 namespace OpenSolid
 {
