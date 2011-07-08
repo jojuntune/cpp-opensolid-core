@@ -233,7 +233,7 @@ namespace OpenSolid
     
     template <class ArgumentType>
     inline bool FunctionResult<ArgumentType>::isZero(Double precision) const {
-        return eval().isZero(precision);
+        return this->eval().isZero(precision);
     }
     
     inline FunctionResult<int>::FunctionResult(const Function& function, int argument) :
