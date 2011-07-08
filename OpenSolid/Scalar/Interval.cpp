@@ -38,6 +38,18 @@ namespace OpenSolid
 
     Interval atan(const Interval& argument) {return boost::numeric::atan(argument.value());}
 
+    Interval atan2(int y, const Interval& x) {
+        if (x.lower() > 0.0) {
+            return atan(double(y) / x);
+        } else if (double(y) > 0.0) {
+            return atan(-x / double(y)) + M_PI / 2;
+        } else if (double(y) < 0.0) {
+            return atan(-x / double(y)) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
     Interval atan2(double y, const Interval& x) {
         if (x.lower() > 0.0) {
             return atan(y / x);
@@ -57,6 +69,18 @@ namespace OpenSolid
             return atan(-x / y) + M_PI / 2;
         } else if (y < 0.0) {
             return atan(-x / y) - M_PI / 2;
+        } else {
+            return Interval(-M_PI, M_PI);
+        }
+    }
+
+    Interval atan2(const Interval& y, int x) {
+        if (double(x) > 0.0) {
+            return atan(y / double(x));
+        } else if (y.lower() > 0.0) {
+            return atan(-double(x) / y) + M_PI / 2;
+        } else if (y.upper() < 0.0) {
+            return atan(-double(x) / y) - M_PI / 2;
         } else {
             return Interval(-M_PI, M_PI);
         }
@@ -102,9 +126,13 @@ namespace OpenSolid
 
     Interval log(const Interval& argument) {return boost::numeric::log(argument.value());}
     
+    Interval pow(int base, const Interval& exponent) {return exp(log(double(base)) * exponent);}
+    
     Interval pow(double base, const Interval& exponent) {return exp(log(base) * exponent);}
     
     Interval pow(Double base, const Interval& exponent) {return exp(log(base) * exponent);}
+    
+    Interval pow(const Interval& base, int exponent) {return exp(log(base) * double(exponent));}
     
     Interval pow(const Interval& base, double exponent) {return exp(log(base) * exponent);}
     

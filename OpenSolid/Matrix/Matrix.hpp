@@ -547,12 +547,12 @@ namespace Eigen
     DenseBase<DerivedType>::LinSpaced(
         typename DenseBase<DerivedType>::Index size,
         const OpenSolid::Interval& range
-    ) {return LinSpaced(size, range.lower(), range.upper());}
+    ) {return LinSpaced(size, Scalar(range.lower()), Scalar(range.upper()));}
 
     template <class DerivedType>
     inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
     DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
-        return LinSpaced(range.lower(), range.upper());
+        return LinSpaced(Scalar(range.lower()), Scalar(range.upper()));
     }
         
     template <class ScalarType>
