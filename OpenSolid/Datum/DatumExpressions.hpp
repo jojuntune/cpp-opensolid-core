@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__DATUMEXPRESSIONS_HPP
 #define OPENSOLID__DATUMEXPRESSIONS_HPP
 
-#include "Datum.hpp"
+#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
@@ -115,6 +115,9 @@ namespace OpenSolid
         
         template <class OtherDerivedType>
         void evalTo(EigenBase<OtherDerivedType>& result) const;
+
+        typename DerivedType::Scalar value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -134,6 +137,9 @@ namespace OpenSolid
         
         template <class OtherDerivedType>
         void evalTo(EigenBase<OtherDerivedType>& result) const;
+
+        typename DerivedType::Scalar value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -154,6 +160,9 @@ namespace OpenSolid
         
         template <class OtherDerivedType>
         void evalTo(EigenBase<OtherDerivedType>& result) const;
+
+        typename DerivedType::Scalar value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -174,6 +183,9 @@ namespace OpenSolid
         
         template <class OtherDerivedType>
         void evalTo(EigenBase<OtherDerivedType>& result) const;
+
+        typename DerivedType::Scalar value() const;
+        bool isZero(Double precision = OPENSOLID_PRECISION) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -229,6 +241,18 @@ namespace OpenSolid
             _datum.vectors().template cast<typename OtherDerivedType::Scalar>() * _matrix.derived()
         ).colwise() + _datum.origin().template cast<typename OtherDerivedType::Scalar>();
     }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    typename DerivedType::Scalar DatumProduct<DerivedType, dimensions_, axes_>::value() const {
+        Matrix<typename DerivedType::Scalar, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    bool DatumProduct<DerivedType, dimensions_, axes_>::isZero(Double precision) const {
+        return this->eval().isZero(precision)
+    };
     
     template <class DerivedType, int dimensions_, int axes_>
     DatumQuotient<DerivedType, dimensions_, axes_>::DatumQuotient(
@@ -265,6 +289,18 @@ namespace OpenSolid
             );
         }
     }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    typename DerivedType::Scalar DatumQuotient<DerivedType, dimensions_, axes_>::value() const {
+        Matrix<typename DerivedType::Scalar, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    bool DatumQuotient<DerivedType, dimensions_, axes_>::isZero(Double precision) const {
+        return this->eval().isZero(precision)
+    };
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumProduct<DerivedType, dimensions_, axes_>::LinearDatumProduct(
@@ -290,6 +326,18 @@ namespace OpenSolid
             _datum.vectors().template cast<typename OtherDerivedType::Scalar>() *
             _matrix.derived();
     }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    typename DerivedType::Scalar LinearDatumProduct<DerivedType, dimensions_, axes_>::value() const {
+        Matrix<typename DerivedType::Scalar, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    bool LinearDatumProduct<DerivedType, dimensions_, axes_>::isZero(Double precision) const {
+        return this->eval().isZero(precision)
+    };
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumQuotient<DerivedType, dimensions_, axes_>::LinearDatumQuotient(
@@ -323,6 +371,18 @@ namespace OpenSolid
                 temp.template cast<typename DerivedType::Scalar>() * _matrix.derived();
         }
     }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    typename DerivedType::Scalar LinearDatumQuotient<DerivedType, dimensions_, axes_>::value() const {
+        Matrix<typename DerivedType::Scalar, 1, 1> result;
+        evalTo(result);
+        return result.value();
+    }
+
+    template <class DerivedType, int dimensions_, int axes_>
+    bool LinearDatumQuotient<DerivedType, dimensions_, axes_>::isZero(Double precision) const {
+        return this->eval().isZero(precision)
+    };
     
     template <class DerivedType, int dimensions_, int axes_>
     inline DatumProduct<DerivedType, dimensions_, axes_> operator*(
