@@ -18,24 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-typedef Matrix<OpenSolid::Interval, RowsAtCompileTime, ColsAtCompileTime> Bounds;
-
 inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const;
 inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const;
 inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
 inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
-
-template <class OtherDerivedType>
-inline bool isEqualTo(
-    const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OPENSOLID_PRECISION
-) const;
-
-template <class OtherDerivedType>
-inline bool isNotEqualTo(
-    const DenseBase<OtherDerivedType>& other,
-    OpenSolid::Double precision = OPENSOLID_PRECISION
-) const;
 
 template<class OtherDerivedType>
 inline bool overlaps(
@@ -70,17 +56,6 @@ template <class OtherDerivedType>
 inline CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> intersection(
     const DenseBase<OtherDerivedType>& other
 ) const;
-
-inline typename internal::conditional<
-    internal::is_same<Scalar, OpenSolid::Interval>::value,
-    const Derived&,
-    const CwiseUnaryOp<
-        internal::scalar_cast_op<Scalar, OpenSolid::Interval>,
-        const Derived
-    >
->::type bounds() const;
-
-inline std::size_t hashValue() const;
 
 inline static const RandomAccessLinSpacedReturnType LinSpaced(
     Index size,

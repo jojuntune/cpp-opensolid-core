@@ -42,13 +42,13 @@ class MatrixTestSuite : public CxxTest::TestSuite
 private:
     Double a;
     Interval b;
-    Vector3D u;
+    Vector3d u;
     Vector3I v;
 public:
     void setUp() {
         a = 2;
         b = Interval(2, 3);
-        u = Vector3D(1, 2, 3);
+        u = Vector3d(1, 2, 3);
         v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4));
     }
 
@@ -60,11 +60,11 @@ public:
     
     void testHull() {
         Vector3I result = (3 * u).cast<Interval>().hull(v);
-        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3D(1, 2, 3));
-        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3D(3, 6, 9));
+        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
+        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(3, 6, 9));
         result = v.hull((3 * u).cast<Interval>());
-        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3D(1, 2, 3));
-        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3D(3, 6, 9));
+        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
+        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(3, 6, 9));
     }
     
     void testIntersection() {
@@ -79,28 +79,28 @@ public:
     }
     
     void testIsZero() {
-        Vector3D zero(0, 0, 0);
+        Vector3d zero(0, 0, 0);
         TS_ASSERT(zero.isZero());
         TS_ASSERT(!u.isZero());
     }
     
     void testLinSpaced() {
-        VectorXD x = VectorXD::LinSpaced(3, 1, 2);
-        VectorXD y = VectorXD::LinSpaced(3, Interval(1, 2));
-        TS_ASSERT_EQUALS(x, Vector3D(1, 1.5, 2));
-        TS_ASSERT_EQUALS(y, Vector3D(1, 1.5, 2));
+        VectorXd x = VectorXd::LinSpaced(3, 1, 2);
+        VectorXd y = VectorXd::LinSpaced(3, Interval(1, 2));
+        TS_ASSERT_EQUALS(x, Vector3d(1, 1.5, 2));
+        TS_ASSERT_EQUALS(y, Vector3d(1, 1.5, 2));
         
-        RowVectorXD a = RowVectorXD::LinSpaced(3, 1, 2);
-        RowVectorXD b = RowVectorXD::LinSpaced(3, Interval(1, 2));
-        TS_ASSERT_EQUALS(a, RowVector3D(1, 1.5, 2));
-        TS_ASSERT_EQUALS(b, RowVector3D(1, 1.5, 2));
+        RowVectorXd a = RowVectorXd::LinSpaced(3, 1, 2);
+        RowVectorXd b = RowVectorXd::LinSpaced(3, Interval(1, 2));
+        TS_ASSERT_EQUALS(a, RowVector3d(1, 1.5, 2));
+        TS_ASSERT_EQUALS(b, RowVector3d(1, 1.5, 2));
         
-        Vector4D c = Vector4D::LinSpaced(Interval(1, 4));
-        TS_ASSERT_EQUALS(c, Vector4D(1, 2, 3, 4));
+        Vector4d c = Vector4d::LinSpaced(Interval(1, 4));
+        TS_ASSERT_EQUALS(c, Vector4d(1, 2, 3, 4));
     }
     
     void testDirectAccess() {
-        Matrix3D matrix = Matrix3D::Random();
+        Matrix3d matrix = Matrix3d::Random();
         printDirectAccess(matrix);
         printDirectAccess(3 * matrix);
         printDirectAccess(matrix.replicate(2, 2));
@@ -109,19 +109,19 @@ public:
     }
     
     void testIteration() {
-        RowVectorXD vector;
+        RowVectorXd vector;
         std::vector<Double> list;
         list.push_back(1);
         list.push_back(2);
         vector.resize(list.size());
         std::copy(list.begin(), list.end(), begin(vector));
-        TS_ASSERT_EQUALS(vector, RowVector2D(1, 2));
+        TS_ASSERT_EQUALS(vector, RowVector2d(1, 2));
         TS_ASSERT_EQUALS(*begin(vector), 1);
         TS_ASSERT_EQUALS(*(end(vector) - 1), 2);
     }
     
     void testBlockIteration() {
-        Matrix3D a = Matrix3D::Random();
+        Matrix3d a = Matrix3d::Random();
         int j = 0;
         for (auto i = begin(a.rowwise()); i != end(a.rowwise()); ++i) {
             TS_ASSERT_EQUALS(*i, a.row(j++));
@@ -130,20 +130,20 @@ public:
         for (auto i = begin(a.colwise()); i != end(a.colwise()); ++i) {
             TS_ASSERT_EQUALS(*i, a.col(j++));
         }
-        Matrix3D b;
+        Matrix3d b;
         std::copy(begin(a.colwise()), end(a.colwise()), begin(b.colwise()));
         TS_ASSERT_EQUALS(a, b);
-        Matrix3D c;
+        Matrix3d c;
         std::copy(begin(a.rowwise()), end(a.rowwise()), begin(c.rowwise()));
         TS_ASSERT_EQUALS(a, c);
-        std::vector<Vector3D> input(3);
-        input[0] = Vector3D::UnitX();
-        input[1] = Vector3D::UnitY();
-        input[2] = Vector3D::UnitZ();
-        Matrix3D d;
+        std::vector<Vector3d> input(3);
+        input[0] = Vector3d::UnitX();
+        input[1] = Vector3d::UnitY();
+        input[2] = Vector3d::UnitZ();
+        Matrix3d d;
         std::copy(input.begin(), input.end(), begin(d.colwise()));
         TS_ASSERT(d.isIdentity());
-        std::vector<RowVector3D> output(3);
+        std::vector<RowVector3d> output(3);
         std::copy(begin(a.rowwise()), end(a.rowwise()), output.begin());
         for (std::size_t i = 0; i < output.size(); ++i) {
             TS_ASSERT_EQUALS(output[i], a.row(i));
@@ -151,14 +151,14 @@ public:
     }
     
     void testPointerAccess() {
-        Matrix3D a = Matrix3D::Zero();
-        Double* write;
+        Matrix3d a = Matrix3d::Zero();
+        double* write;
         write = &a.coeffRef(0, 0);
         *write = 3;
         write = &a.row(1).coeffRef(0, 0);
         *(write + 1) = 4;
-        const Matrix3D b = a;
-        const Double* read;
+        const Matrix3d b = a;
+        const double* read;
         read = b.data();
         TS_ASSERT_EQUALS(*read, 3);
         read = b.row(1).data();

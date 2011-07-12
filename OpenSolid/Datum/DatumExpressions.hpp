@@ -117,7 +117,7 @@ namespace OpenSolid
         void evalTo(EigenBase<OtherDerivedType>& result) const;
 
         typename DerivedType::Scalar value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        bool isZero(double precision = 1e-12) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -139,7 +139,7 @@ namespace OpenSolid
         void evalTo(EigenBase<OtherDerivedType>& result) const;
 
         typename DerivedType::Scalar value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        bool isZero(double precision = 1e-12) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -162,7 +162,7 @@ namespace OpenSolid
         void evalTo(EigenBase<OtherDerivedType>& result) const;
 
         typename DerivedType::Scalar value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        bool isZero(double precision = 1e-12) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>
@@ -185,7 +185,7 @@ namespace OpenSolid
         void evalTo(EigenBase<OtherDerivedType>& result) const;
 
         typename DerivedType::Scalar value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        bool isZero(double precision = 1e-12) const;
     };
     
     template <class DerivedType, int dimensions_, int axes_>

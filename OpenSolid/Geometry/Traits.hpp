@@ -18,27 +18,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__HASHFUNCTION_HPP
-#define OPENSOLID__HASHFUNCTION_HPP
+#ifndef OPENSOLID__GEOMETRY__TRAITS_HPP
+#define OPENSOLID__GEOMETRY__TRAITS_HPP
+
+#include <OpenSolid/Common/Traits.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {
-    struct HashFunction
+    class Geometry;
+
+    template <>
+    struct Traits<Geometry>
     {
-        template <class Type>
-        inline std::size_t operator()(const Type& argument) const;
+        typedef VectorXI Bounds;
+
+        VectorXI bounds(const Geometry& geometry);
+        std::size_t hash(const Geometry& goemetry);
     };
 }
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    template <class Type>
-    inline std::size_t HashFunction::operator()(const Type& argument) const {
-        return Traits<Type>::hashValue(argument);
-    }
-}
-
 
 #endif

@@ -30,8 +30,8 @@ namespace OpenSolid
     {
     public:
         static const int static_axes = dimensions_ == Dynamic ? Dynamic : dimensions_ - 1;
-        typedef Eigen::Matrix<Double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<Double, dimensions_, static_axes> Matrix;
+        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
+        typedef Eigen::Matrix<double, dimensions_, static_axes> Matrix;
     private:
         template <class DerivedType>
         void initialize(const Vector& origin, const EigenBase<DerivedType>& vectors);
@@ -50,10 +50,10 @@ namespace OpenSolid
         Plane<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
     };
     
-    typedef Plane<2> Plane2D;
-    typedef Plane<3> Plane3D;
-    typedef Plane<4> Plane4D;
-    typedef Plane<Dynamic> PlaneXD;
+    typedef Plane<2> Plane2d;
+    typedef Plane<3> Plane3d;
+    typedef Plane<4> Plane4d;
+    typedef Plane<Dynamic> PlaneXd;
 }
 
 ////////// Implementation //////////

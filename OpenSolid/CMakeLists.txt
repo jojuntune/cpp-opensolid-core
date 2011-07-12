@@ -47,7 +47,7 @@
     ENDIF (MSVC_IDE)
 
     # Initialize local include paths
-    INCLUDE_DIRECTORIES(BEFORE .. ../External)
+    INCLUDE_DIRECTORIES(BEFORE ../External ..)
     
 ########## Set up Python ##########
 
@@ -99,6 +99,7 @@
         Common/HashFunction.hpp
         Common/ReferenceCounted.hpp
         Common/ReferenceCountedBase.hpp
+        Common/Traits.hpp
     )
     
     SET(COMMON_SOURCES
@@ -201,6 +202,7 @@
     SET(GEOMETRY_HEADERS
         Geometry/Geometry.hpp
         Geometry/Geometry.tests.hpp
+        Geometry/Traits.hpp
     )
     
     SET(GEOMETRY_SOURCES
@@ -234,7 +236,6 @@
     )
 
     SET(SCALAR_HEADERS
-        Scalar/Double.hpp
         Scalar/Interval.hpp
         Scalar/Interval.tests.hpp
     )
@@ -280,6 +281,8 @@
         ${DOMAIN_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
+        ${FUNCTIONIMPLEMENTATION_HEADERS}
+        ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_HEADERS}
         ${GEOMETRY_SOURCES}
         ${MATRIX_HEADERS}
@@ -336,19 +339,15 @@
 ########## Compile Python extension module ##########
     
     ADD_LIBRARY(opensolid SHARED ${PYTHON_SOURCES})
-    
     SET_TARGET_PROPERTIES(opensolid PROPERTIES PREFIX "")
-    
     IF(WIN32)
         SET_TARGET_PROPERTIES(opensolid PROPERTIES SUFFIX ".pyd")
     ENDIF(WIN32)
-    
     TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
 ########## Compile OpenSolidScript library ##########
     
     ADD_LIBRARY(OpenSolidScript SHARED ${SCRIPT_SOURCES})
-    
     TARGET_LINK_LIBRARIES(
         OpenSolidScript
         OpenSolidCore
