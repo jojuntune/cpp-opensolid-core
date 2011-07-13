@@ -54,6 +54,17 @@ namespace OpenSolid
     typedef Plane<3> Plane3d;
     typedef Plane<4> Plane4d;
     typedef Plane<Dynamic> PlaneXd;
+
+    template <int dimensions_>
+    struct Traits<Plane<dimensions_>>
+    {
+        static std::size_t hash(const Plane<dimensions_>& argument);
+
+        static bool equal(
+            const Plane<dimensions_>& first_argument,
+            const Plane<dimensions_>& second_argument
+        );
+    };
 }
 
 ////////// Implementation //////////
@@ -99,6 +110,23 @@ namespace OpenSolid
         assert(other._normalized);
         initialize(other);
         return *this;
+    }
+
+    template <int dimensions_>
+    inline std::size_t Traits<Plane<dimensions_>>::hash(const Plane<dimensions_>& argument) {
+        return Traits<
+            Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+        >::hash(argument);
+    }
+
+    template <int dimensions_>
+    inline bool Traits<Plane<dimensions_>>::equal(
+        const Plane<dimensions_>& first_argument,
+        const Plane<dimensions_>& second_argument
+    ) {
+        return Traits<
+            Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+        >::equal(first_argument, second_argument);
     }
 }
 

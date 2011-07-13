@@ -24,6 +24,7 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Common/Traits.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
@@ -61,6 +62,7 @@ namespace OpenSolid
     public:
         typedef Eigen::Matrix<double, dimensions_, 1> Vector;
         typedef Eigen::Matrix<double, dimensions_, axes_> Matrix;
+        typedef Eigen::Matrix<Interval, dimensions_, 1> Bounds;
     protected:
         Vector _origin;
         Matrix _vectors;
@@ -129,11 +131,6 @@ namespace OpenSolid
         const Vector& origin() const;
         const Matrix& vectors() const;
         
-        std::size_t hashValue() const;
-        
-        template <int other_dimensions_, int other_axes_>
-        bool operator==(const Datum<other_dimensions_, other_axes_>& other) const;
-        
         Vector operator()(double x) const;
         Vector operator()(double x, double y) const;
         Vector operator()(double x, double y, double z) const;
@@ -188,6 +185,17 @@ namespace OpenSolid
     typedef Datum<3, 3> Datum3d;
     typedef Datum<4, 4> Datum4d;
     typedef Datum<Dynamic, Dynamic> DatumXd;
+
+    template <int dimensions_, int axes_>
+    struct Traits<Datum<dimensions_, axes_>>
+    {
+        static std::size_t hash(const Datum<dimensions_, axes_>& argument);
+
+        static bool equal(
+            const Datum<dimensions_, axes_>& first_argument
+            const Datum<dimensions_, axes_>& second_argument
+        );
+    };
     
     template <int dimensions_, int axes_>
     class LinearDatum
@@ -335,15 +343,7 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     inline const typename Datum<dimensions_, axes_>::Matrix&
-    Datum<dimensions_, axes_>::vectors() const {return _vectors;}   
-    
-    template <int dimensions_, int axes_>
-    inline std::size_t Datum<dimensions_, axes_>::hashValue() const {
-        std::size_t result = 0;
-        boost::hash_combine(result, origin().hashValue());
-        boost::hash_combine(result, vectors().hashValue());
-        return result;
-    }
+    Datum<dimensions_, axes_>::vectors() const {return _vectors;}
         
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline bool Datum<dimensions_, axes_>::operator==(
@@ -383,10 +383,10 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::operator()(
-        Double x,
-        Double y,
-        Double z,
-        Double w
+        double x,
+        double y,
+        double z,
+        double w
     ) const {
         assert(axes() == 4);
         return origin() + vectors() * Vector4d(x, y, z, w);
@@ -541,7 +541,7 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotatedBy(
         double angle,
-        const Vector2D& point
+        const Vector2d& point
     ) const {
         assert(dimensions() == 2);
         Matrix2d rotation = Matrix2d(Rotation2D<double>(angle));
@@ -615,6 +615,31 @@ namespace OpenSolid
         Datum<base_axes_, axes_> result;
         result.initialize(origin() / base, vectors() / base.linear(), false);
         return result;
+    }
+
+    template <int dimensions_, int axes_>
+    inline std::size_t Traits<Datum<dimensions_, axes_>>::hash(
+        const Datum<dimensions_, axes_>& argument
+    ) {
+        std::size_t result = 0;
+        boost::hash_combine(
+            result,
+            Traits<typename Datum<dimensions_, axes_>::Vector>::hash(argument.origin())
+        );
+        boost:::hash_combine(
+            result,
+            Traits<typename Datum<dimensions_, axes_>::Matrix>::hash(argument.vectors())
+        );
+        return result;
+    }
+
+    template <int dimensions_, int axes_>
+    inline bool Traits<Datum<dimensions_, axes_>>::equal(
+        const Datum<dimensions_, axes_>& first_argument,
+        const Datum<dimensions_, axes_>& second_argument
+    ) {
+        return first_argument.origin() == second_argument.origin() &&
+            first_argument.vectors() == second_argument.vectors();
     }
     
     template <int dimensions_, int axes_>

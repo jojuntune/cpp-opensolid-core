@@ -32,7 +32,7 @@ namespace OpenSolid
     
     int ProductFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void ProductFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void ProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) *
             secondOperand()(parameter_values).eval().asDiagonal();
     }

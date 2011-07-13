@@ -23,14 +23,14 @@
 
 namespace OpenSolid
 {
-    TransformedFunction::TransformedFunction(const Function& operand, const DatumXD& datum) :
+    TransformedFunction::TransformedFunction(const Function& operand, const DatumXd& datum) :
         UnaryFunction(operand), _datum(datum) {
         assert(operand.dimensions() == datum.axes());
     }
     
     int TransformedFunction::dimensions() const {return datum().dimensions();}
     
-    void TransformedFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void TransformedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values) * datum();
     }
     
@@ -46,7 +46,7 @@ namespace OpenSolid
         result = operand()(inner) * datum();
     }
     
-    void TransformedFunction::getTransformed(const DatumXD& other, Function& result) const {
+    void TransformedFunction::getTransformed(const DatumXd& other, Function& result) const {
         result = operand() * (datum() * other);
     }
     

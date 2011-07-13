@@ -225,7 +225,6 @@
     )
     
     SET(PYTHON_SOURCES
-        Python/bindDouble.cpp
         Python/bindError.cpp
         Python/bindFunction.cpp
         Python/bindInterval.cpp
@@ -236,6 +235,7 @@
     )
 
     SET(SCALAR_HEADERS
+        Scalar/Comparison.hpp
         Scalar/Interval.hpp
         Scalar/Interval.tests.hpp
     )

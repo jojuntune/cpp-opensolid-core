@@ -25,20 +25,20 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    MatrixXD* vector(const Function& function) {
-        return new MatrixXD(function.as<ConstantFunction>().vector());
+    MatrixXd* vector(const Function& function) {
+        return new MatrixXd(function.as<ConstantFunction>().vector());
     }
     
-    MatrixXD* callDouble(const Function& function, double argument) {
-        return new MatrixXD(function(argument));
+    MatrixXd* callDouble(const Function& function, double argument) {
+        return new MatrixXd(function(argument));
     }
     
     MatrixXI* callInterval(const Function& function, const Interval& argument) {
         return new MatrixXI(function(argument));
     }
     
-    MatrixXD* callMatrixXD(const Function& function, const MatrixXD& argument) {
-        return new MatrixXD(function(argument));
+    MatrixXd* callMatrixXd(const Function& function, const MatrixXd& argument) {
+        return new MatrixXd(function(argument));
     }
     
     MatrixXI* callMatrixXI(const Function& function, const MatrixXI& argument) {
@@ -49,11 +49,11 @@ namespace OpenSolid
         return function(argument);
     }
     
-    Function crossMatrix(const Function& function, const MatrixXD& argument) {
+    Function crossMatrix(const Function& function, const MatrixXd& argument) {
         return function.cross(argument);
     }
     
-    Function dotMatrix(const Function& function, const MatrixXD& argument) {
+    Function dotMatrix(const Function& function, const MatrixXd& argument) {
         return function.dot(argument);
     }
         
@@ -61,18 +61,16 @@ namespace OpenSolid
         class_<Function> function_class("Function");
         function_class
             .def(init<Function>())
-            .def(init<MatrixXD>())
-            .def(init<Double>())
+            .def(init<MatrixXd>())
             .def(init<double>())
             .def(init<Function, Function>())
             .def(init<Function, Function, Function>())
             .def(init<Function, Function, Function, Function>())
             .def("parameters", &Function::parameters)
             .def("dimensions", &Function::dimensions)
-            .def("hashValue", &Function::hashValue)
             .def("__call__", &callFunction)
             .def("__call__", &callMatrixXI, return_value_policy<manage_new_object>())
-            .def("__call__", &callMatrixXD, return_value_policy<manage_new_object>())
+            .def("__call__", &callMatrixXd, return_value_policy<manage_new_object>())
             .def("__call__", &callInterval, return_value_policy<manage_new_object>())
             .def("__call__", &callDouble, return_value_policy<manage_new_object>())
             .def("derivative", &Function::derivative)
@@ -105,8 +103,7 @@ namespace OpenSolid
             .def(self * self)
             .def(self / self);
             
-        implicitly_convertible<MatrixXD, Function>();
-        implicitly_convertible<Double, Function>();
+        implicitly_convertible<MatrixXd, Function>();
         implicitly_convertible<double, Function>();
             
         function_class.attr("t") = object(Function::t);

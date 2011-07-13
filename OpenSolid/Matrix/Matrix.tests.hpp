@@ -40,7 +40,7 @@ void printDirectAccess(const Type& argument) {
 class MatrixTestSuite : public CxxTest::TestSuite
 {
 private:
-    Double a;
+    double a;
     Interval b;
     Vector3d u;
     Vector3I v;
@@ -110,7 +110,7 @@ public:
     
     void testIteration() {
         RowVectorXd vector;
-        std::vector<Double> list;
+        std::vector<double> list;
         list.push_back(1);
         list.push_back(2);
         vector.resize(list.size());

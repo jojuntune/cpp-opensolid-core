@@ -51,6 +51,17 @@ namespace OpenSolid
     typedef Frame<3> Frame3d;
     typedef Frame<4> Frame4d;
     typedef Frame<Dynamic> FrameXd;
+
+    template <int dimensions_>
+    struct Traits<Frame<dimensions_>>
+    {
+        static std::size_t hash(const Frame<dimensions_>& argument);
+
+        static bool equal(
+            const Frame<dimensions_>& first_argument,
+            const Frame<dimensions_>& second_argument
+        );
+    };
 }
 
 ////////// Implementation //////////
@@ -102,6 +113,17 @@ namespace OpenSolid
         initialize(other);
         return *this;
     }
+
+    template <int dimensions_>
+    inline std::size_t Traits<Frame<dimensions_>>::hash(const Frame<dimensions_>& argument) {
+        return Traits<Datum<dimensions_, dimensions_>>::hash(argument);
+    }
+
+    template <int dimensions_>
+    inline bool Traits<Frame<dimensions_>>::equal(
+        const Frame<dimensions_>& first_argument,
+        const Frame<dimensions_>& second_argument
+    ) {return Traits<Datum<dimensions_, dimensions_>>::equal(first_argument, second_argument);}
 }
 
 #endif

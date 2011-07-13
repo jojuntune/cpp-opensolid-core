@@ -169,7 +169,7 @@ namespace OpenSolid
         inline std::string typeName<Interval>() {return "Interval";}
         
         template <>
-        inline std::string typeName<MatrixXD>() {return "MatrixXD";}
+        inline std::string typeName<MatrixXd>() {return "MatrixXd";}
         
         template <>
         inline std::string typeName<MatrixXI>() {return "MatrixXI";}

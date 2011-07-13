@@ -27,7 +27,7 @@ namespace OpenSolid
     
     int NormFunction::dimensions() const {return 1;}
     
-    void NormFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void NormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).colwise().norm();
     }
     

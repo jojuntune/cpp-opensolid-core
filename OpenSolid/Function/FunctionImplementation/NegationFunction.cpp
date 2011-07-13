@@ -27,7 +27,7 @@ namespace OpenSolid
     
     int NegationFunction::dimensions() const {return operand().dimensions();}
     
-    void NegationFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void NegationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = -operand()(parameter_values);
     }
     
@@ -39,7 +39,7 @@ namespace OpenSolid
         result = -operand().derivative(index);
     }
     
-    void NegationFunction::getTransformed(const DatumXD& datum, Function& result) const {
+    void NegationFunction::getTransformed(const DatumXd& datum, Function& result) const {
         result = -(operand() * datum);
     }
     

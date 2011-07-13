@@ -20,6 +20,7 @@
 
 #include <algorithm>
 
+#include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Function/FunctionImplementation/ArccosineFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/ArcsineFunction.hpp>
@@ -128,7 +129,7 @@ namespace OpenSolid
             (isA<ConstantFunction>() && as<ConstantFunction>().vector().isZero()) ||
             (other.isA<ConstantFunction>() && other.as<ConstantFunction>().vector().isZero())
         ) {
-            return Vector3D::Zero();
+            return Vector3d::Zero();
         } else {
             return new CrossProductFunction(*this, other);
         }
@@ -179,24 +180,24 @@ namespace OpenSolid
         return Geometry(operator()(geometry.function()), geometry.domain());
     }
     
-    Double getZero(
+    double getZero(
         const std::vector<Function>& derivatives,
         const Interval& domain_interval,
         int& order
     ) {
-        Double x = domain_interval.median();
-        Double y = derivatives[order](x).value();
-        Double derivative_value = derivatives[order + 1](x).value();
+        double x = domain_interval.median();
+        double y = derivatives[order](x).value();
+        double derivative_value = derivatives[order + 1](x).value();
         Interval derivative_bounds = derivatives[order + 1](domain_interval).value();
         Interval convergence_ratio = abs(1 - derivative_bounds / derivative_value);
-        if (convergence_ratio.isLessThan(1.0)) {
-            Double last_y = y;
+        if (convergence_ratio < Approx(1.0)) {
+            double last_y = y;
             x = x - y / derivative_value;
             y = derivatives[order](x).value();
             while (abs(y) > 0 && abs(y) < abs(last_y)) {
-                Double new_derivative_value = derivatives[order + 1](x).value();
+                double new_derivative_value = derivatives[order + 1](x).value();
                 convergence_ratio = abs(1 - derivative_bounds / new_derivative_value);
-                if (convergence_ratio.isLessThan(1.0)) {derivative_value = new_derivative_value;}
+                if (convergence_ratio < Approx(1.0)) {derivative_value = new_derivative_value;}
                 last_y = y;
                 x = x - y / derivative_value;
                 y = derivatives[order](x).value();
@@ -216,12 +217,12 @@ namespace OpenSolid
         const std::vector<Function>& derivatives,
         const Interval& domain_interval,
         int order,
-        std::vector<Double>& results
+        std::vector<double>& results
     ) {
-        RowVector2D endpoint_x(domain_interval.lower(), domain_interval.upper());
-        RowVector2D endpoint_y = derivatives[order](endpoint_x);
+        RowVector2d endpoint_x(domain_interval.lower(), domain_interval.upper());
+        RowVector2d endpoint_y = derivatives[order](endpoint_x);
         if ((endpoint_y(0) > 0) != (endpoint_y(1) > 0)) {
-            Double x = getZero(derivatives, domain_interval, order);
+            double x = getZero(derivatives, domain_interval, order);
             if (order == 0) {
                 results.push_back(x);
             } else {
@@ -233,19 +234,19 @@ namespace OpenSolid
         }
     }
     
-    RowVectorXD Function::zeros(const Interval& domain) const {
+    RowVectorXd Function::roots(const Interval& domain) const {
         int order = 4;
         std::vector<Function> derivatives(order + 1);
         derivatives[0] = *this;
-        RowVectorXD derivative_values(order);
+        RowVectorXd derivative_values(order);
         for (int i = 1; i <= order; ++i) {
             derivatives[i] = derivatives[i - 1].derivative();
             derivative_values(i - 1) = derivatives[i](domain.median()).value();
         }
-        if (derivative_values.isZero()) {return RowVectorXD();}
+        if (derivative_values.isZero()) {return RowVectorXd();}
         RowVectorXI domain_intervals(1);
         domain_intervals(0) = domain;
-        std::vector<Double> results;
+        std::vector<double> results;
         while (domain_intervals.size() > 0) {
             MatrixXI bounds(derivatives.size(), domain_intervals.size());
             for (unsigned i = 0; i < derivatives.size(); ++i) {
@@ -256,7 +257,7 @@ namespace OpenSolid
             for (int i = 0; i < domain_intervals.size(); ++i) {
                 bool bisection_needed = true;
                 for (int j = 0; j <= order; ++j) {
-                    if (bound_norms(j, i).isGreaterThan(0.0)) {
+                    if (bound_norms(j, i) > Zero()) {
                         bisection_needed = false;
                         if (j > 0) {getZeros(derivatives, domain_intervals[i], j - 1, results);}
                         break;
@@ -280,14 +281,14 @@ namespace OpenSolid
             }
         }
         if (results.empty()) {
-            return RowVectorXD();
+            return RowVectorXd();
         } else {
             std::sort(results.begin(), results.end());
             int index = 0;
             for (unsigned i = 1; i < results.size(); ++i) {
-                if (results[i].isGreaterThan(results[index])) {results[++index] = results[i];}
+                if (results[i] > Approx(results[index])) {results[++index] = results[i];}
             }
-            RowVectorXD final_results(index + 1);
+            RowVectorXd final_results(index + 1);
             std::copy(results.begin(), results.begin() + index + 1, begin(final_results));
             return final_results;
         }
@@ -329,13 +330,13 @@ namespace OpenSolid
         return new ParametersFunction(dimensions, 0, dimensions);
     }
     
-    Function Function::Linear(const VectorXD& point, const MatrixXD& vectors) {
+    Function Function::Linear(const VectorXd& point, const MatrixXd& vectors) {
         return new LinearFunction(point, vectors);
     }
     
     Function Function::Elliptical(
-        const VectorXD& point,
-        const MatrixXD& vectors
+        const VectorXd& point,
+        const MatrixXd& vectors
     ) {
         return new EllipticalFunction(
             point,
@@ -345,8 +346,8 @@ namespace OpenSolid
     }
     
     Function Function::Elliptical(
-        const VectorXD& point,
-        const MatrixXD& vectors,
+        const VectorXd& point,
+        const MatrixXd& vectors,
         const VectorXb& convention
     ) {return new EllipticalFunction(point, vectors, convention);}
     
@@ -404,7 +405,7 @@ namespace OpenSolid
             multiplier = first_operand;
         }
         if (multiplicand.isA<ConstantFunction>() && multiplier.isA<ConstantFunction>()) {
-            Double multiplier_value = multiplier.as<ConstantFunction>().vector().value();
+            double multiplier_value = multiplier.as<ConstantFunction>().vector().value();
             return multiplicand.as<ConstantFunction>().vector() * multiplier_value;
         } else if (
             multiplicand.isA<ConstantFunction>() &&
@@ -412,12 +413,12 @@ namespace OpenSolid
         ) {
             return multiplicand;
         } else if (multiplier.isA<ConstantFunction>()) {
-            Double multiplier_value = multiplier.as<ConstantFunction>().vector().value();
-            if (multiplier_value.isZero()) {
-                return VectorXD::Zero(multiplicand.dimensions());
-            } else if (multiplier_value.isEqualTo(1.0)) {
+            double multiplier_value = multiplier.as<ConstantFunction>().vector().value();
+            if (multiplier_value == Zero()) {
+                return VectorXd::Zero(multiplicand.dimensions());
+            } else if (multiplier_value == Approx(1.0)) {
                 return multiplicand;
-            } else if (multiplier_value.isEqualTo(-1.0)) {
+            } else if (multiplier_value == Approx(-1.0)) {
                 return -multiplicand;
             } else {
                 return new ProductFunction(multiplicand, multiplier);
@@ -429,7 +430,7 @@ namespace OpenSolid
     
     Function operator/(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
-            Double divisor_value = second_operand.as<ConstantFunction>().vector().value();
+            double divisor_value = second_operand.as<ConstantFunction>().vector().value();
             return first_operand.as<ConstantFunction>().vector() / divisor_value;
         } else if (
             first_operand.isA<ConstantFunction>() &&
@@ -437,10 +438,10 @@ namespace OpenSolid
         ) {
             return first_operand;
         } else if (second_operand.isA<ConstantFunction>()) {
-            Double second_value = second_operand.as<ConstantFunction>().vector().value();
-            if (second_value.isEqualTo(1.0)) {
+            double second_value = second_operand.as<ConstantFunction>().vector().value();
+            if (second_value == Approx(1.0)) {
                 return first_operand;
-            } else if (second_value.isEqualTo(-1.0)) {
+            } else if (second_value == Approx(-1.0)) {
                 return -first_operand;
             } else {
                 return new ProductFunction(first_operand, 1 / second_value);
@@ -450,14 +451,14 @@ namespace OpenSolid
         }
     }
     
-    Function operator*(const Function& function, const DatumXD& datum) {
+    Function operator*(const Function& function, const DatumXd& datum) {
         assert(function.dimensions() == datum.axes());
         Function result;
         function.implementation()->getTransformed(datum, result);
         return result;
     }
     
-    Function operator/(const Function& function, const DatumXD& datum) {
+    Function operator/(const Function& function, const DatumXd& datum) {
         assert(datum.axes() == datum.dimensions());
         assert(function.dimensions() == datum.dimensions());
         Function result;

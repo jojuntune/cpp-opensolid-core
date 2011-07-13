@@ -33,8 +33,9 @@ namespace OpenSolid
     {
         typedef VectorXI Bounds;
 
-        VectorXI bounds(const Geometry& geometry);
-        std::size_t hash(const Geometry& goemetry);
+        VectorXI bounds(const Geometry& argument);
+        std::size_t hash(const Geometry& argument);
+        bool equal(const Geometry& first_argument, const Geometry& second_argument);
     };
 }
 

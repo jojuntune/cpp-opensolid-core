@@ -23,7 +23,6 @@
 
 #include <boost/mpl/if.hpp>
 
-#include <OpenSolid/Scalar/Double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 

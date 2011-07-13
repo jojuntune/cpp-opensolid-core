@@ -47,7 +47,7 @@ namespace Eigen
         template <>
         struct traits<OpenSolid::FunctionResult<int>>
         {
-            typedef VectorXD ReturnType;
+            typedef VectorXd ReturnType;
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
@@ -55,15 +55,7 @@ namespace Eigen
         template<>
         struct traits<OpenSolid::FunctionResult<double>>
         {
-            typedef VectorXD ReturnType;
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template<>
-        struct traits<OpenSolid::FunctionResult<OpenSolid::Double>>
-        {
-            typedef VectorXD ReturnType;
+            typedef VectorXd ReturnType;
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
@@ -96,7 +88,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         typename ArgumentType::Scalar value() const;
-        bool isZero(Double tolerance = OPENSOLID_PRECISION) const;
+        bool isZero(double tolerance = 1e-12) const;
     };
     
     template<>
@@ -104,7 +96,7 @@ namespace OpenSolid
     {
     private:
         const Function& _function;
-        Double _argument;
+        double _argument;
     public:
         FunctionResult(const Function& function, int argument);
         
@@ -114,8 +106,8 @@ namespace OpenSolid
         template<class ResultType>
         void evalTo(ResultType& result) const;
         
-        Double value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        double value() const;
+        bool isZero(double precision = 1e-12) const;
     };
     
     template<>
@@ -123,7 +115,7 @@ namespace OpenSolid
     {
     private:
         const Function& _function;
-        Double _argument;
+        double _argument;
     public:
         FunctionResult(const Function& function, double argument);
         
@@ -133,27 +125,8 @@ namespace OpenSolid
         template<class ResultType>
         void evalTo(ResultType& result) const;
         
-        Double value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
-    };
-    
-    template<>
-    class FunctionResult<Double> : public ReturnByValue<FunctionResult<Double>>
-    {
-    private:
-        const Function& _function;
-        Double _argument;
-    public:
-        FunctionResult(const Function& function, Double argument);
-        
-        int rows() const;
-        int cols() const;
-        
-        template<class ResultType>
-        void evalTo(ResultType& result) const;
-        
-        Double value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        double value() const;
+        bool isZero(double precision = 1e-12) const;
     };
     
     template<>
@@ -172,7 +145,7 @@ namespace OpenSolid
         void evalTo(ResultType& result) const;
         
         Interval value() const;
-        bool isZero(Double precision = OPENSOLID_PRECISION) const;
+        bool isZero(double precision = 1e-12) const;
     };
 }
 
@@ -232,7 +205,7 @@ namespace OpenSolid
     }
     
     template <class ArgumentType>
-    inline bool FunctionResult<ArgumentType>::isZero(Double precision) const {
+    inline bool FunctionResult<ArgumentType>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
@@ -246,7 +219,7 @@ namespace OpenSolid
     template<class ResultType>
     inline void FunctionResult<int>::evalTo(ResultType& result) const {
         // Create argument map
-        typedef Map<const MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
+        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
         
         // Create result map
@@ -255,20 +228,20 @@ namespace OpenSolid
         int result_inner_stride =
             (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
         Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
-        typedef Map<MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
+        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate function
         _function.implementation()->evaluate(argument_map, result_map);
     }
     
-    inline Double FunctionResult<int>::value() const {
-        Matrix<Double, 1, 1> result;
+    inline double FunctionResult<int>::value() const {
+        Matrix<double, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
-    inline bool FunctionResult<int>::isZero(Double precision) const {
+    inline bool FunctionResult<int>::isZero(double precision) const {
         return eval().isZero(precision);
     }
     
@@ -282,7 +255,7 @@ namespace OpenSolid
     template<class ResultType>
     inline void FunctionResult<double>::evalTo(ResultType& result) const {
         // Create argument map
-        typedef Map<const MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
+        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
         
         // Create result map
@@ -291,56 +264,20 @@ namespace OpenSolid
         int result_inner_stride =
             (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
         Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
-        typedef Map<MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
+        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate function
         _function.implementation()->evaluate(argument_map, result_map);
     }
     
-    inline Double FunctionResult<double>::value() const {
-        Matrix<Double, 1, 1> result;
+    inline double FunctionResult<double>::value() const {
+        Matrix<double, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
-    inline bool FunctionResult<double>::isZero(Double precision) const {
-        return eval().isZero(precision);
-    }
-    
-    inline FunctionResult<Double>::FunctionResult(const Function& function, Double argument) :
-        _function(function), _argument(argument) {}
-    
-    inline int FunctionResult<Double>::rows() const {return _function.dimensions();}
-    
-    inline int FunctionResult<Double>::cols() const {return 1;}
-    
-    template<class ResultType>
-    inline void FunctionResult<Double>::evalTo(ResultType& result) const {
-        // Create argument map
-        typedef Map<const MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
-        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
-        
-        // Create result map
-        int result_outer_stride =
-            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
-        int result_inner_stride =
-            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
-        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
-        typedef Map<MatrixXD, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
-        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
-        
-        // Evaluate function
-        _function.implementation()->evaluate(argument_map, result_map);
-    }
-    
-    inline Double FunctionResult<Double>::value() const {
-        Matrix<Double, 1, 1> result;
-        evalTo(result);
-        return result.value();
-    }
-    
-    inline bool FunctionResult<Double>::isZero(Double precision) const {
+    inline bool FunctionResult<double>::isZero(double precision) const {
         return eval().isZero(precision);
     }
     
@@ -376,7 +313,7 @@ namespace OpenSolid
         return result.value();
     }
     
-    inline bool FunctionResult<Interval>::isZero(Double precision) const {
+    inline bool FunctionResult<Interval>::isZero(double precision) const {
         return eval().isZero(precision);
     }
 }

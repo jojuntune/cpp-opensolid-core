@@ -27,9 +27,9 @@ namespace OpenSolid
     
     int NormalizedFunction::dimensions() const {return operand().dimensions();}
 
-    void NormalizedFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
-        MatrixXD operand_values = operand()(parameter_values);
-        VectorXD squared_norms = operand_values.colwise().squaredNorm();
+    void NormalizedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+        MatrixXd operand_values = operand()(parameter_values);
+        VectorXd squared_norms = operand_values.colwise().squaredNorm();
         results = operand_values * squared_norms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 

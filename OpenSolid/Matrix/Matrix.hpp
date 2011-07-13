@@ -21,7 +21,6 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <OpenSolid/Scalar/Double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
 namespace Eigen
@@ -208,21 +207,10 @@ namespace OpenSolid
 {
     using namespace Eigen;
     
-    struct HashVisitor
-    {
-        std::size_t result;
-        
-        template <class ScalarType>
-        inline void init(const ScalarType& argument, int, int);
-        
-        template <class ScalarType>
-        inline void operator()(const ScalarType& argument, int, int);
-    };
-    
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
     struct Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
     {
-        typename internal::conditional<
+        static typename internal::conditional<
             internal::is_same<ScalarType, Interval>::value,
             const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>&,
             const CwiseUnaryOp<
@@ -233,9 +221,14 @@ namespace OpenSolid
             const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
         ) const;
 
-        inline std::size_t hashValue(
+        static std::size_t hash(
             const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
         ) const;
+
+        static bool equal(
+            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
+            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
+        );
     };
 }
 
@@ -357,19 +350,38 @@ namespace Eigen
 
 namespace OpenSolid
 {
-    template <class ScalarType>
-    inline void HashVisitor::init(ScalarType argument, int, int) {
-        result = 0;
-        boost::hash_combine(result, argument.hashValue());
-    }
-    
-    template <class ScalarType>
-    inline void HashVisitor::operator()(ScalarType argument, int, int) {
-        boost::hash_combine(result, argument.hashValue());
+    namespace
+    {
+        struct HashVisitor
+        {
+            std::size_t result;
+        
+            template <class ScalarType>
+            inline void init(const ScalarType& argument, int, int) {
+                result = 0;
+                boost::hash_combine(result, Traits<ScalarType>::hash(argument));
+            }
+        
+            template <class ScalarType>
+            inline void operator()(const ScalarType& argument, int, int) {
+                boost::hash_combine(result, Traits<ScalarType>::hash(argument));
+            }
+        };
+
+        struct EqualVisitor
+        {
+            typedef bool result_type;
+
+            template <class ScalarType>
+            inline bool operator()(
+                const ScalarType& first_argument,
+                const ScalarType& second_argument
+            ) {return Traits<ScalarType>::equal(first_argument, second_argument);}
+        };
     }
 
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    typename Eigen::internal::conditional<
+    inline typename Eigen::internal::conditional<
         Eigen::internal::is_same<ScalarType, Interval>::value,
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>&,
         const CwiseUnaryOp<
@@ -380,16 +392,21 @@ namespace OpenSolid
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return derived().template cast<Interval>();}
 
-
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
     inline std::size_t
-    Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::hashValue(
+    Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::hash(
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {
         HashVisitor visitor;
         derived().visit(visitor);
         return visitor.result;
     }
+
+    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
+    inline bool Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::equal(
+        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
+        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
+    ) {return first_argument.binaryExpr(second_argument, EqualVisitor()).all();}
 }
 
 #endif

@@ -40,6 +40,17 @@ namespace OpenSolid
     typedef CoordinateSystem<3, 3> CoordinateSystem3d;
     typedef CoordinateSystem<4, 4> CoordinateSystem4d;
     typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystemXd;
+
+    template <int dimensions_, int axes_>
+    struct Traits<CoordinateSystem<dimensions_, axes_>>
+    {
+        static std::size_t hash(const CoordinateSystem<dimensions_, axes_>& argument);
+        
+        static bool equal(
+            const CoordinateSystem<dimensions_, axes_>& first_argument,
+            const CoordinateSystem<dimensions_, axes_>& second_argument
+        );
+    };
 }
 
 ////////// Implementation //////////
@@ -51,7 +62,17 @@ namespace OpenSolid
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors, false);}
-    
+
+    template <int dimensions_, int axes_>
+    inline std::size_t Traits<CoordinateSystem<dimensions_, axes_>>::hash(
+        const CoordinateSystem<dimensions_, axes_>& argument
+    ) {return Traits<Datum<dimensions_, axes_>>::hash(argument);}
+
+    template <int dimensions_, int axes_>
+    inline bool Traits<CoordinateSystem<dimensions_, axes_>>::equal(
+        const CoordinateSystem<dimensions_, axes_>& first_argument,
+        const CoordinateSystem<dimensions_, axes_>& second_argument
+    ) {return Traits<Datum<dimensions_, axes_>>::equal(first_argument, second_argument);}
 }
 
 

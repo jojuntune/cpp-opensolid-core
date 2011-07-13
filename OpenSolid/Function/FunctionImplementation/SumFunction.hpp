@@ -35,7 +35,7 @@ namespace OpenSolid
         
         OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcD& parameter_values, MapXD& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;

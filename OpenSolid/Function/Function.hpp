@@ -26,7 +26,8 @@
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Scalar/Double.hpp>
+#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Common/Traits.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -50,7 +51,6 @@ namespace OpenSolid
         Function();
         Function(const FunctionImplementation* function);
         Function(double value);
-        Function(Double value);
         
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& vector);
@@ -84,10 +84,6 @@ namespace OpenSolid
         int parameters() const;
         int dimensions() const;
         
-        std::size_t hashValue() const;
-        
-        bool operator==(const Function& other) const;
-        
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
@@ -109,7 +105,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
         OPENSOLID_CORE_EXPORT Geometry operator()(const Geometry& geometry) const;
         
-        OPENSOLID_CORE_EXPORT RowVectorXD zeros(const Interval& domain) const;
+        OPENSOLID_CORE_EXPORT RowVectorXd roots(const Interval& domain) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
         
@@ -126,20 +122,27 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
         
         OPENSOLID_CORE_EXPORT static Function Linear(
-            const VectorXD& point,
-            const MatrixXD& vectors
+            const VectorXd& point,
+            const MatrixXd& vectors
         );
         
         OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const VectorXD& point,
-            const MatrixXD& vectors
+            const VectorXd& point,
+            const MatrixXd& vectors
         );
         
         OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const VectorXD& point,
-            const MatrixXD& vectors,
+            const VectorXd& point,
+            const MatrixXd& vectors,
             const VectorXb& convention
         );
+    };
+
+    template <>
+    struct Traits<Function>
+    {
+        std::size_t hash(const Function& argument);
+        bool equal(const Function& first_argument, const Function& second_argument);
     };
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
@@ -164,8 +167,8 @@ namespace OpenSolid
         const Function& second_operand
     );
     
-    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXD& datum);
-    OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXD& datum);
+    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXd& datum);
     
     OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function sin(const Function& argument);
@@ -192,13 +195,9 @@ namespace OpenSolid
         _implementation(implementation), _type(&typeid(implementation)) {}
     
     inline Function::Function(double value) :
-        _implementation(new ConstantFunction(VectorXD::Constant(1, value))),
+        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
         _type(&typeid(ConstantFunction)) {}
-    
-    inline Function::Function(Double value) :
-        _implementation(new ConstantFunction(VectorXD::Constant(1, value))),
-        _type(&typeid(ConstantFunction)) {}
-    
+
     template <class DerivedType>
     inline Function::Function(const EigenBase<DerivedType>& vector) :
         _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
@@ -222,17 +221,20 @@ namespace OpenSolid
     inline int Function::parameters() const {return implementation()->parameters();}
     
     inline int Function::dimensions() const {return implementation()->dimensions();}
-        
-    inline std::size_t Function::hashValue() const {return boost::hash_value(implementation());}
-    
-    inline bool Function::operator==(const Function& other) const {
-        return implementation() == other.implementation();
-    }
     
     template <class ArgumentType>
     inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return FunctionResult<ArgumentType>(*this, argument);
     }
+        
+    inline std::size_t Traits<Function>::hash(const Function& argument) const {
+        return boost::hash_value(argument.implementation());
+    }
+    
+    inline bool Traits<Function>::equal(
+        const Function& first_argument,
+        const Function& second_argument
+    ) const {return first_argument.implementation() == second_argument.implementation();}
 }
 
 #endif

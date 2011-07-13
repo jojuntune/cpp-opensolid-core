@@ -23,13 +23,13 @@
 
 namespace OpenSolid
 {
-    ConstantFunction::ConstantFunction(const VectorXD& vector) : _vector(vector) {}
+    ConstantFunction::ConstantFunction(const VectorXd& vector) : _vector(vector) {}
     
     int ConstantFunction::parameters() const {return 0;}
     
     int ConstantFunction::dimensions() const {return vector().size();}
     
-    void ConstantFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void ConstantFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results.colwise() = vector();
     }
     
@@ -38,7 +38,7 @@ namespace OpenSolid
     }
     
     void ConstantFunction::getDerivative(int index, Function& result) const {
-        result = VectorXD::Zero(vector().size());
+        result = VectorXd::Zero(vector().size());
     }
     
     void ConstantFunction::getComponents(int index, int num, Function& result) const {
@@ -49,14 +49,14 @@ namespace OpenSolid
         result = vector();
     }
     
-    void ConstantFunction::getTransformed(const DatumXD& datum, Function& result) const {
+    void ConstantFunction::getTransformed(const DatumXd& datum, Function& result) const {
         result = vector() * datum;
     }
     
     void ConstantFunction::getNorm(Function& result) const {result = vector().norm();}
     
     void ConstantFunction::getNormalized(Function& result) const {
-        Double norm = vector().norm();
+        double norm = vector().norm();
         assert(norm.isGreaterThan(0.0));
         result = vector() / norm;
     }

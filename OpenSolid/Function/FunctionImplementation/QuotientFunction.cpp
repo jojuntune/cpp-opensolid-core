@@ -32,7 +32,7 @@ namespace OpenSolid
     
     int QuotientFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void QuotientFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void QuotientFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values).array() /
             secondOperand()(parameter_values).replicate(dimensions(), 1).array();
     }

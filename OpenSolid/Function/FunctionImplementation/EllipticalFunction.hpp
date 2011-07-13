@@ -28,24 +28,24 @@ namespace OpenSolid
     class EllipticalFunction : public FunctionImplementation
     {
     private:
-        VectorXD _point;
-        MatrixXD _vectors;
+        VectorXd _point;
+        MatrixXd _vectors;
         VectorXb _convention;
     public:
         OPENSOLID_CORE_EXPORT EllipticalFunction(
-            const VectorXD& point,
-            const MatrixXD& vectors,
+            const VectorXd& point,
+            const MatrixXd& vectors,
             const VectorXb& convention
         );
         
-        const VectorXD& point() const;
-        const MatrixXD& vectors() const;
+        const VectorXd& point() const;
+        const MatrixXd& vectors() const;
         const VectorXb& convention() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcD& parameter_values, MapXD& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
@@ -58,9 +58,9 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline const VectorXD& EllipticalFunction::point() const {return _point;}
+    inline const VectorXd& EllipticalFunction::point() const {return _point;}
     
-    inline const MatrixXD& EllipticalFunction::vectors() const {return _vectors;}
+    inline const MatrixXd& EllipticalFunction::vectors() const {return _vectors;}
     
     inline const VectorXb& EllipticalFunction::convention() const {return _convention;}
 }

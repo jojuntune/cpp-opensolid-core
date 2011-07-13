@@ -28,23 +28,23 @@ namespace OpenSolid
     class ConstantFunction : public FunctionImplementation
     {
     private:
-        VectorXD _vector;
+        VectorXd _vector;
     public:
-        OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXD& value);
+        OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXd& value);
         
-        const VectorXD& vector() const;
+        const VectorXd& vector() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcD& parameter_values, MapXD& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
         
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
         OPENSOLID_CORE_EXPORT void getComponents(int index, int num, Function& result) const;
         OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
-        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXD& datum, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
         
         OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
         OPENSOLID_CORE_EXPORT void getNormalized(Function& result) const;
@@ -58,7 +58,7 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline const VectorXD& ConstantFunction::vector() const {return _vector;}
+    inline const VectorXd& ConstantFunction::vector() const {return _vector;}
 }
 
 #endif

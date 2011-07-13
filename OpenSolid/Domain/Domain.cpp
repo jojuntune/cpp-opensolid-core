@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    Set<Geometry, VectorXI> Domain::rectangularBoundaries(const VectorXI& bounds) {
+    Set<Geometry> Domain::rectangularBoundaries(const VectorXI& bounds) {
         int dims = bounds.size();
         std::vector<Geometry> list;
         if (dims == 1) {
@@ -31,9 +31,9 @@ namespace OpenSolid
             list.push_back(bounds.value().upper());
         } else {
             VectorXI geometry_domain_bounds = bounds.tail(dims - 1);
-            MatrixXD geometry_domain_unit_vectors = MatrixXD::Zero(dims, dims - 1);
+            MatrixXd geometry_domain_unit_vectors = MatrixXd::Zero(dims, dims - 1);
             geometry_domain_unit_vectors.diagonal(-1).setOnes();
-            VectorXD geometry_domain_origin = VectorXD::Zero(dims, 0);
+            VectorXd geometry_domain_origin = VectorXd::Zero(dims, 0);
             geometry_domain_origin(0) = bounds(0).lower();
             list.push_back(
                 Geometry(

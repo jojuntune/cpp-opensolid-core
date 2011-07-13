@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
@@ -88,30 +89,30 @@ namespace OpenSolid
     
     Geometry Geometry::binormal() const {return Geometry(function().binormal(), domain());}
     
-    Geometry Geometry::Line(const VectorXD& start, const VectorXD& end) {
+    Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
         return Geometry(start + Function::t * (end - start), Interval(0, 1));
     }
     
-    Geometry Geometry::Arc(Double radius, const Interval& angle) {
-        Vector2D x_vector = radius * Vector2D::UnitX();
-        Vector2D y_vector = radius * Vector2D::UnitY();
+    Geometry Geometry::Arc(double radius, const Interval& angle) {
+        Vector2d x_vector = radius * Vector2d::UnitX();
+        Vector2d y_vector = radius * Vector2d::UnitY();
         return Geometry(cos(Function::t) * x_vector + sin(Function::t) * y_vector, angle);
     }
     
     Geometry Geometry::Arc(
-        const Vector2D& center,
-        const Vector2D& start,
-        const Vector2D& end,
+        const Vector2d& center,
+        const Vector2d& start,
+        const Vector2d& end,
         bool counterclockwise
     ) {
-        Vector2D start_radial = start - center;
-        Double radius = start_radial.norm();
-        Vector2D end_radial = end - center;
-        assert(end_radial.norm().isEqualTo(radius));
-        Vector2D perpendicular = start_radial.unitOrthogonal() * radius;
+        Vector2d start_radial = start - center;
+        double radius = start_radial.norm();
+        Vector2d end_radial = end - center;
+        assert(end_radial.norm() == Approx(radius));
+        Vector2d perpendicular = start_radial.unitOrthogonal() * radius;
         if (!counterclockwise) {perpendicular = -perpendicular;}
-        Double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
-        if (angle.isLessThanOrEqualTo(0.0)) {angle += 2 * M_PI;}
+        double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
+        if (angle <= Zero()) {angle += 2 * M_PI;}
         return Geometry(
             center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
             Interval(0, angle)
@@ -119,32 +120,32 @@ namespace OpenSolid
     }
     
     Geometry Geometry::Arc(
-        const Axis3D& axis,
-        const Vector3D& start,
-        const Vector3D& end
+        const Axis3d& axis,
+        const Vector3d& start,
+        const Vector3d& end
     ) {
-        Vector3D center = (start / axis) * axis;
-        Vector3D start_radial = start - center;
-        Vector3D end_radial = end - center;
+        Vector3d center = (start / axis) * axis;
+        Vector3d start_radial = start - center;
+        Vector3d end_radial = end - center;
         assert(end_radial.isOrthogonal(axis.vector()));
-        Double radius = start_radial.norm();
-        assert(end_radial.norm().isEqualTo(radius));
-        Vector3D perpendicular = axis.vector().cross(start_radial).normalized() * radius;
-        Double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
-        if (angle.isLessThanOrEqualTo(0.0)) {angle += 2 * M_PI;}
+        double radius = start_radial.norm();
+        assert(end_radial.norm() == Approx(radius));
+        Vector3d perpendicular = axis.vector().cross(start_radial).normalized() * radius;
+        double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
+        if (angle <= Zero()) {angle += 2 * M_PI;}
         return Geometry(
             center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
             Interval(0, angle)
         );
     }
     
-    Geometry Geometry::Circle(Double radius) {
+    Geometry Geometry::Circle(double radius) {
         Interval angle(0, 2 * M_PI);
         Function theta = Function::Parameter(1, 0);
         return Geometry(Function(radius * cos(theta), radius * sin(theta)), angle);
     }
     
-    Geometry Geometry::Helix(Double radius, Double pitch, const Interval& angle) {
+    Geometry Geometry::Helix(double radius, double pitch, const Interval& angle) {
         Function theta = Function::Parameter(1, 0);
         return Geometry(
             Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),
@@ -200,11 +201,11 @@ namespace OpenSolid
         );
     }
     
-    Geometry operator*(const Geometry& geometry, const DatumXD& datum) {
+    Geometry operator*(const Geometry& geometry, const DatumXd& datum) {
         return Geometry(geometry.function() * datum, geometry.domain());
     }
     
-    Geometry operator/(const Geometry& geometry, const DatumXD& datum) {
+    Geometry operator/(const Geometry& geometry, const DatumXd& datum) {
         return Geometry(geometry.function() / datum, geometry.domain());
     }
     

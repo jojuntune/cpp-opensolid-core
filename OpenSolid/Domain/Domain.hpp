@@ -40,8 +40,6 @@ namespace OpenSolid
         
         OPENSOLID_CORE_EXPORT static Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
     public:
-        typedef VectorXI Bounds;
-        
         Domain();
         Domain(const Set<Geometry>& boundaries);
         Domain(const Interval& bounds);
@@ -68,8 +66,9 @@ namespace OpenSolid
     {
         typedef VectorXI Bounds;
 
-        VectorXI bounds(const Domain& domain);
-        std::size_t hash(const Domain& domain);
+        VectorXI bounds(const Domain& argument);
+        std::size_t hash(const Domain& argument);
+        bool equal(const Domain& first_argument, const Domain& second_argument);
     };
 }
 
@@ -125,12 +124,19 @@ namespace OpenSolid
         assert(dimensions() == 1);
         return value().upper();
     }
-        
-    inline bool Domain::operator==(const Domain& other) const {
-        return boundaries() == other.boundaries();
-    }
     
-    inline std::size_t Domain::hashValue() const {return boundaries().hashValue();}
+    inline VectorXI Traits<Domain>::bounds(const Domain& argument) {return argument.bounds();}
+
+    inline std::size_t Traits<Domain>::hash(const Domain& argument) {
+        return Traits<Set<Geometry>>::hash(argument.boundaries());
+    }
+
+    inline bool Traits<Domain>::equal(const Domain& first_argument, const Domain& second_argument) {
+        return Traits<Set<Geometry>>::equal(
+            first_argument.boundaries(),
+            second_argument.boundaries()
+        );
+    }
 }
 
 #endif

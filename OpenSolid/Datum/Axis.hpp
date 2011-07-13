@@ -46,6 +46,17 @@ namespace OpenSolid
     typedef Axis<3> Axis3d;
     typedef Axis<4> Axis4d;
     typedef Axis<Dynamic> AxisXd;
+
+    template <int dimensions_>
+    struct Traits<Axis<dimensions_>>
+    {
+        static std::size_t hash(const Axis<dimensions_>& argument);
+
+        static bool equal(
+            const Axis<dimensions_>& first_argument,
+            const Axis<dimensions_>& second_argument
+        );
+    };
 }
 
 ////////// Implementation //////////
@@ -74,6 +85,17 @@ namespace OpenSolid
         initialize(other);
         return *this;
     }
+
+    template <int dimensions_>
+    inline std::size_t Traits<Axis<dimensions_>>::hash(const Axis<dimensions_>& argument) {
+        return Traits<Datum<dimensions_, 1>>::hash(argument);
+    }
+
+    template <int dimensions_>
+    inline bool Traits<Axis<dimensions_>>::equal(
+        const Axis<dimensions_>& first_argument,
+        const Axis<dimensions_>& second_argument
+    ) {return Traits<Datum<dimensions_, 1>>::equal(first_argument, second_argument);}
 }
 
 #endif

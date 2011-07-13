@@ -37,10 +37,10 @@ namespace OpenSolid
         virtual int parameters() const = 0;
         virtual int dimensions() const = 0;
         
-        void evaluate(const MapXcD& parameter_values, MapXD& results) const;
+        void evaluate(const MapXcd& parameter_values, MapXd& results) const;
         void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        virtual void getValues(const MapXcD& parameter_values, MapXD& results) const = 0;
+        virtual void getValues(const MapXcd& parameter_values, MapXd& results) const = 0;
         virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const = 0;
         
         virtual void getDerivative(int index, Function& result) const = 0;
@@ -57,7 +57,7 @@ namespace OpenSolid
         ) const;
         
         OPENSOLID_CORE_EXPORT virtual void getTransformed(
-            const DatumXD& datum,
+            const DatumXd& datum,
             Function& result
         ) const;
         
@@ -78,8 +78,8 @@ namespace OpenSolid
 namespace OpenSolid
 {
     inline void FunctionImplementation::evaluate(
-        const MapXcD& parameter_values,
-        MapXD& results
+        const MapXcd& parameter_values,
+        MapXd& results
     ) const {getValues(parameter_values, results);}
     
     inline void FunctionImplementation::evaluate(

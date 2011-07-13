@@ -130,17 +130,17 @@ public:
         TS_ASSERT_EQUALS(overlapping.back(), 4);
     }
     
-    void testVector2DOverlapping() {
-        std::vector<Vector2D> list(4);
-        list[0] = Vector2D(1, 1);
-        list[1] = Vector2D(5, 1);
-        list[2] = Vector2D(1, 3);
-        list[3] = Vector2D(5, 3);
-        Set<Vector2D> set(list.begin(), list.end());
-        Set<Vector2D> overlapping = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
+    void testVector2dOverlapping() {
+        std::vector<Vector2d> list(4);
+        list[0] = Vector2d(1, 1);
+        list[1] = Vector2d(5, 1);
+        list[2] = Vector2d(1, 3);
+        list[3] = Vector2d(5, 3);
+        Set<Vector2d> set(list.begin(), list.end());
+        Set<Vector2d> overlapping = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
         TS_ASSERT_EQUALS(overlapping.size(), 2);
-        TS_ASSERT_EQUALS(overlapping.front(), Vector2D(1, 3));
-        TS_ASSERT_EQUALS(overlapping.back(), Vector2D(5, 3));
+        TS_ASSERT_EQUALS(overlapping.front(), Vector2d(1, 3));
+        TS_ASSERT_EQUALS(overlapping.back(), Vector2d(5, 3));
     }
     
     void testDoubleInsertion() {

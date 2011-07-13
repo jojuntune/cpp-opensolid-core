@@ -30,142 +30,6 @@ namespace OpenSolid
         return make_tuple(bisected.first, bisected.second);
     }
 
-    bool isZero(const Interval& argument) {return argument.isZero();}
-
-    bool isZeroP(const Interval& argument, Double precision) {return argument.isZero(precision);}
-
-    bool isEqualToD(
-        const Interval& first_argument,
-        Double second_argument
-    ) {return first_argument.isEqualTo(second_argument);}
-
-    bool isEqualToDP(
-        const Interval& first_argument,
-        Double second_argument,
-        Double precision
-    ) {return first_argument.isEqualTo(second_argument, precision);}
-
-    bool isEqualToI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.isEqualTo(second_argument);}
-
-    bool isEqualToIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        Double precision
-    ) {return first_argument.isEqualTo(second_argument, precision);}
-
-    bool isNotEqualToD(
-        const Interval& first_argument,
-        Double second_argument
-    ) {return first_argument.isNotEqualTo(second_argument);}
-
-    bool isNotEqualToDP(
-        const Interval& first_argument,
-        Double second_argument,
-        Double precision
-    ) {return first_argument.isNotEqualTo(second_argument, precision);}
-
-    bool isNotEqualToI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.isNotEqualTo(second_argument);}
-
-    bool isNotEqualToIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        Double precision
-    ) {return first_argument.isNotEqualTo(second_argument, precision);}
-
-    bool isLessThanD(
-        const Interval& first_argument,
-        Double second_argument
-    ) {return first_argument.isLessThan(second_argument);}
-
-    bool isLessThanDP(
-        const Interval& first_argument,
-        Double second_argument,
-        Double precision
-    ) {return first_argument.isLessThan(second_argument, precision);}
-
-    bool isLessThanI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.isLessThan(second_argument);}
-
-    bool isLessThanIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        Double precision
-    ) {return first_argument.isLessThan(second_argument, precision);}
-
-    bool isGreaterThanD(
-        const Interval& first_argument,
-        Double second_argument
-    ) {return first_argument.isGreaterThan(second_argument);}
-
-    bool isGreaterThanDP(
-        const Interval& first_argument,
-        Double second_argument,
-        Double precision
-    ) {return first_argument.isGreaterThan(second_argument, precision);}
-
-    bool isGreaterThanI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.isGreaterThan(second_argument);}
-
-    bool isGreaterThanIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        Double precision
-    ) {return first_argument.isGreaterThan(second_argument, precision);}
-
-    bool isLessThanOrEqualToD(
-        const Interval& first_argument,
-        Double second_argument
-    ) {return first_argument.isLessThanOrEqualTo(second_argument);}
-
-    bool isLessThanOrEqualToDP(
-        const Interval& first_argument,
-        Double second_argument,
-        Double precision
-    ) {return first_argument.isLessThanOrEqualTo(second_argument, precision);}
-
-    bool isLessThanOrEqualToI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.isLessThanOrEqualTo(second_argument);}
-
-    bool isLessThanOrEqualToIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        Double precision
-    ) {return first_argument.isLessThanOrEqualTo(second_argument, precision);}
-
-    bool isGreaterThanOrEqualToD(
-        const Interval& first_argument,
-        Double second_argument
-    ) {return first_argument.isGreaterThanOrEqualTo(second_argument);}
-
-    bool isGreaterThanOrEqualToDP(
-        const Interval& first_argument,
-        Double second_argument,
-        Double precision
-    ) {return first_argument.isGreaterThanOrEqualTo(second_argument, precision);}
-
-    bool isGreaterThanOrEqualToI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.isGreaterThanOrEqualTo(second_argument);}
-
-    bool isGreaterThanOrEqualToIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        Double precision
-    ) {return first_argument.isGreaterThanOrEqualTo(second_argument, precision);}
-
     bool overlaps(
         const Interval& first_argument,
         const Interval& second_argument
@@ -174,7 +38,7 @@ namespace OpenSolid
     bool overlapsP(
         const Interval& first_argument,
         const Interval& second_argument,
-        Double precision
+        double precision
     ) {return first_argument.overlaps(second_argument, precision);}
 
     bool strictlyOverlaps(
@@ -185,18 +49,18 @@ namespace OpenSolid
     bool strictlyOverlapsP(
         const Interval& first_argument,
         const Interval& second_argument,
-        Double precision
+        double precision
     ) {return first_argument.strictlyOverlaps(second_argument, precision);}
 
     bool containsD(
         const Interval& first_argument,
-        Double second_argument
+        double second_argument
     ) {return first_argument.contains(second_argument);}
 
     bool containsDP(
         const Interval& first_argument,
-        Double second_argument,
-        Double precision
+        double second_argument,
+        double precision
     ) {return first_argument.contains(second_argument, precision);}
 
     bool containsI(
@@ -207,18 +71,18 @@ namespace OpenSolid
     bool containsIP(
         const Interval& first_argument,
         const Interval& second_argument,
-        Double precision
+        double precision
     ) {return first_argument.contains(second_argument, precision);}
 
     bool strictlyContainsD(
         const Interval& first_argument,
-        Double second_argument
+        double second_argument
     ) {return first_argument.strictlyContains(second_argument);}
 
     bool strictlyContainsDP(
         const Interval& first_argument,
-        Double second_argument,
-        Double precision
+        double second_argument,
+        double precision
     ) {return first_argument.strictlyContains(second_argument, precision);}
 
     bool strictlyContainsI(
@@ -229,15 +93,14 @@ namespace OpenSolid
     bool strictlyContainsIP(
         const Interval& first_argument,
         const Interval& second_argument,
-        Double precision
+        double precision
     ) {return first_argument.strictlyContains(second_argument, precision);}
     
     void bindInterval() {
         class_<Interval>("Interval")
             .def(init<Interval>())
-            .def(init<Double>())
             .def(init<double>())
-            .def(init<Double, Double>())
+            .def(init<double, double>())
             .def("lower", &Interval::lower)
             .def("upper", &Interval::upper)
             .def("median", &Interval::median)
@@ -293,39 +156,38 @@ namespace OpenSolid
             .def("Whole", &Interval::Whole)
                 .staticmethod("Whole")
             .def(self == self)
-            .def(self == Double())
-            .def(Double() == self)
+            .def(self == double())
+            .def(double() == self)
             .def(self != self)
-            .def(self != Double())
-            .def(Double() != self)
+            .def(self != double())
+            .def(double() != self)
             .def(self < self)
-            .def(self < Double())
-            .def(Double() < self)
+            .def(self < double())
+            .def(double() < self)
             .def(self > self)
-            .def(self > Double())
-            .def(Double() > self)
+            .def(self > double())
+            .def(double() > self)
             .def(self <= self)
-            .def(self <= Double())
-            .def(Double() <= self)
+            .def(self <= double())
+            .def(double() <= self)
             .def(self >= self)
-            .def(self >= Double())
-            .def(Double() >= self)
+            .def(self >= double())
+            .def(double() >= self)
             .def(-self)
             .def(self + self)
-            .def(self + Double())
-            .def(Double() + self)
+            .def(self + double())
+            .def(double() + self)
             .def(self - self)
-            .def(self - Double())
-            .def(Double() - self)
+            .def(self - double())
+            .def(double() - self)
             .def(self * self)
-            .def(self * Double())
-            .def(Double() * self)
+            .def(self * double())
+            .def(double() * self)
             .def(self / self)
-            .def(self / Double())
-            .def(Double() / self)
+            .def(self / double())
+            .def(double() / self)
             .def(self_ns::str(self));
         
-        implicitly_convertible<Double, Interval>();
         implicitly_convertible<double, Interval>();
         
         def("abs", (Interval (*)(const Interval&)) &abs);
@@ -337,12 +199,8 @@ namespace OpenSolid
         def("acos", (Interval (*)(const Interval&)) &acos);
         def("atan", (Interval (*)(const Interval&)) &atan);
         def("atan2", (Interval (*)(const Interval&, const Interval&)) &atan2);
-        def("atan2", (Interval (*)(const Interval&, Double)) &atan2);
-        def("atan2", (Interval (*)(Double, const Interval&)) &atan2);
         def("exp", (Interval (*)(const Interval&))  &exp);
         def("log", (Interval (*)(const Interval&)) &log);
         def("pow", (Interval (*)(const Interval&, const Interval&)) &pow);
-        def("pow", (Interval (*)(const Interval&, Double)) &pow);
-        def("pow", (Interval (*)(Double, const Interval&)) &pow);
     }
 }

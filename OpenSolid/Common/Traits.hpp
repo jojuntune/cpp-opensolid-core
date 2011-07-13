@@ -40,7 +40,8 @@ namespace OpenSolid
         typedef Interval Bounds;
         
         static Interval bounds(int argument);
-        static std::size_t hashValue(int argument);
+        static std::size_t hash(int argument);
+        static bool equal(int first_argument, int second_argument);
     };
     
     template <>
@@ -49,7 +50,8 @@ namespace OpenSolid
         typedef Interval Bounds;
         
         static Interval bounds(double argument);
-        static std::size_t hashValue(double argument);
+        static std::size_t hash(double argument);
+        static bool equal(double first_argument, double second_argument);
     };
     
     template <class Type, class AllocatorType>
@@ -58,32 +60,31 @@ namespace OpenSolid
         typedef typename Traits<Type>::Bounds Bounds;
         
         static Bounds bounds(const std::vector<Type, AllocatorType>& argument);
-        static std::size_t hashValue(const std::vector<Type, AllocatorType>& argument);
+
+        static std::size_t hash(const std::vector<Type, AllocatorType>& argument);
+
+        static bool equal(
+            const std::vector<Type, AllocatorType>& first_argument,
+            const std::vector<Type, AllocatorType>& second_argument
+        );
     };
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
-{
-    template <class Type>
-    inline typename Type::Bounds Traits<Type>::bounds(const Type& argument) {
-        return argument.bounds();
+{   
+    inline std::size_t Traits<int>::hash(int argument) {return boost::hash_value(argument);}
+
+    inline bool Traits<int>::equal(int first_argument, int second_argument) {
+        return first_argument == second_argument;
     }
     
-    template <class Type>
-    inline std::size_t Traits<Type>::hashValue(const Type& argument) {
-        return argument.hashValue();
+    inline std::size_t Traits<double>::hash(double argument) {return boost::hash_value(argument);}
+
+    inline bool Traits<double>::equal(double first_argument, double second_argument) {
+        return first_argument == second_argument;
     }
-    
-    inline std::size_t Traits<int>::hashValue(int argument) {return boost::hash_value(argument);}
-    
-    inline std::size_t Traits<double>::hashValue(double argument) {return boost::hash_value(argument);}
-    
-    template <class Type, class AllocatorType>
-    struct Traits<std::vector<Type, AllocatorType>>
-    
-    typedef typename Traits<Type>::Bounds Bounds;
     
     template <class Type, class AllocatorType>
     typename Traits<Type>::Bounds Traits<std::vector<Type, AllocatorType>>::bounds(
@@ -100,7 +101,7 @@ namespace OpenSolid
     }
     
     template <class Type, class AllocatorType>
-    std::size_t Traits<std::vector<Type, AllocatorType>>::hashValue(
+    std::size_t Traits<std::vector<Type, AllocatorType>>::hash(
         const std::vector<Type, AllocatorType>& argument
     ) {
         std::size_t result = 0;
@@ -113,6 +114,12 @@ namespace OpenSolid
         );
         return result;
     }
+
+    template <class Type, class AllocatorType>
+    bool Traits<std::vector<Type, AllocatorType>>::equal(
+        const std::vector<Type, AllocatorType>& first_argument,
+        const std::vector<Type, AllocatorType>& second_argument
+    ) {return first_argument == second_argument;}
 }
 
 #endif

@@ -44,17 +44,6 @@ namespace OpenSolid
     
     typedef boost::numeric::interval<double, IntervalPolicies> BoostInterval;
 
-    class Interval;
-
-    template <>
-    struct Traits<Interval>
-    {
-        typedef Interval Bounds;
-
-        const Interval& bounds(const Interval& argument);
-        std::size_t hashValue(const Interval& argument);
-    };
-
     class Interval
     {
     private:
@@ -82,9 +71,14 @@ namespace OpenSolid
         Interval hull(const Interval& argument) const;
         Interval intersection(const Interval& argument) const;
         
-        bool contains(double argument) const;
-        bool contains(const Interval& argument) const;
-        bool overlaps(const Interval& argument) const;
+        bool contains(double argument, double tolerance = 1e-12) const;
+        bool strictlyContains(double argument, double tolerance = 1e-12) const;
+
+        bool contains(const Interval& argument, double tolerance = 1e-12) const;
+        bool strictlyContains(const Interval& argument, double tolerance = 1e-12) const;
+
+        bool overlaps(const Interval& argument, double tolerance = 1e-12) const;
+        bool strictlyOverlaps(const Interval& argument, double tolerance = 1e-12) const;
         
         Interval& operator+=(double argument);
         Interval& operator+=(const Interval& argument);
@@ -97,16 +91,41 @@ namespace OpenSolid
         
         static Interval Empty();
         static Interval Whole();
-        static Interval Zero(double precision = 1e-12);
-        static Interval Epsilon(double precision = 1e-12);
+    };
+
+    template <>
+    struct Traits<Interval>
+    {
+        typedef Interval Bounds;
+
+        static const Interval& bounds(const Interval& argument);
+        static std::size_t hash(const Interval& argument);
+        static bool equal(const Interval& first_argument, const Interval& second_argument);
     };
 
     bool operator==(double first_argument, const Interval& second_argument);
+    bool operator==(const Interval& first_argument, double second_argument);
+    bool operator==(const Interval& first_argument, const Interval& second_argument);
+
     bool operator!=(double first_argument, const Interval& second_argument);
-    bool operator<(double first_argument, const Interval& second_argument);
-    bool operator>(double first_argument, const Interval& second_argument);
+    bool operator!=(const Interval& first_argument, double second_argument);
+    bool operator!=(const Interval& first_argument, const Interval& second_argument);
+
+    Interval operator<(double first_argument, const Interval& second_argument);
+    Interval operator<(const Interval& first_argument, double second_argument);
+    Interval operator<(const Interval& first_argument, const Interval& second_argument);
+
+    Interval operator>(double first_argument, const Interval& second_argument);
+    Interval operator>(const Interval& first_argument, double second_argument);
+    Interval operator>(const Interval& first_argument, const Interval& second_argument);
+
     bool operator<=(double first_argument, const Interval& second_argument);
+    bool operator<=(const Interval& first_argument, double second_argument);
+    bool operator<=(const Interval& first_argument, const Interval& second_argument);
+
     bool operator>=(double first_argument, const Interval& second_argument);
+    bool operator>=(const Interval& first_argument, double second_argument);
+    bool operator>=(const Interval& first_argument, const Interval& second_argument);
         
     Interval operator-(const Interval& argument);
 
@@ -154,15 +173,6 @@ namespace OpenSolid
     inline Interval Traits<int>::bounds(int argument) {return argument;}
 
     inline Interval Traits<double>::bounds(double argument) {return argument;}
-    
-    inline const Interval& Traits<Interval>::bounds(const Interval& argument) {return argument;}
-    
-    inline std::size_t Traits<Interval>::hashValue(const Interval& argument) {
-        std::size_t result = 0;
-        boost::hash_combine(result, boost::hash_value(argument.lower()));
-        boost::hash_combine(result, boost::hash_value(argument.upper()));
-        return result;
-    }
 
     inline Interval::Interval() : _value() {}
     
@@ -200,17 +210,29 @@ namespace OpenSolid
     inline Interval Interval::intersection(const Interval& argument) const {
         return boost::numeric::intersect(value(), argument.value());
     }
-    
-    inline bool Interval::contains(double argument) const {
-        return lower() <= argument && upper() >= argument;
+        
+    inline bool Interval::contains(double argument, double tolerance) const {
+        return argument >= lower() - tolerance && argument <= upper() + tolerance;
     }
-    
-    inline bool Interval::contains(const Interval& argument) const {
-        return lower() <= argument.lower() && upper() >= argument.upper();
+
+    inline bool Interval::strictlyContains(double argument, double tolerance) const {
+        return argument > lower() + tolerance && argument < upper() - tolerance;
     }
-    
-    inline bool Interval::overlaps(const Interval& argument) const {
-        return lower() <= argument.upper() && upper() >= argument.lower();
+
+    inline bool Interval::contains(const Interval& argument, double tolerance) const {
+        return argument.lower() >= lower() - tolerance && argument.upper() <= upper() + tolerance;
+    }
+
+    inline bool Interval::strictlyContains(const Interval& argument, double tolerance) const {
+        return argument.lower() > lower() + tolerance && argument.upper() < upper() - tolerance;
+    }
+
+    inline bool Interval::overlaps(const Interval& argument, double tolerance) const {
+        return argument.lower() <= upper() + tolerance && argument.upper() >= lower() - tolerance;
+    }
+
+    inline bool Interval::strictlyOverlaps(const Interval& argument, double tolerance) const {
+        return argument.lower() < upper() - tolerance && argument.upper() > lower() + tolerance;
     }
 
     inline Interval& Interval::operator+=(double argument) {
@@ -256,35 +278,100 @@ namespace OpenSolid
     inline Interval Interval::Empty() {return BoostInterval::empty();}
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}
+    
+    inline const Interval& Traits<Interval>::bounds(const Interval& argument) {return argument;}
+    
+    inline std::size_t Traits<Interval>::hash(const Interval& argument) {
+        std::size_t result = 0;
+        boost::hash_combine(result, boost::hash_value(argument.lower()));
+        boost::hash_combine(result, boost::hash_value(argument.upper()));
+        return result;
+    }
 
-    inline Interval Interval::Zero(double precision) {return Interval(-precision, precision);}
-
-    inline Interval Interval::Epsilon(double precision) {return Interval(-precision, precision);}
+    inline bool Traits<Interval>::equal(
+        const Interval& first_argument,
+        const Interval& second_argument
+    ) {
+        return first_argument.lower() == second_argument.lower() &&
+            first_argument.upper() == second_argument.upper();
+    }
 
     inline bool operator==(double first_argument, const Interval& second_argument) {
-        return first_argument >= second_argument.lower() &&
-            first_argument <= second_argument.upper();
+        return first_argument == second_argument.lower() &&
+            first_argument == second_argument.upper();
+    }
+
+    inline bool operator==(const Interval& first_argument, double second_argument) {
+        return first_argument.lower() == second_argument &&
+            first_argument.upper() == second_argument;
+    }
+
+    inline bool operator==(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.lower() == second_argument.upper() &&
+            first_argument.upper() == second_argument.lower();
     }
 
     inline bool operator!=(double first_argument, const Interval& second_argument) {
-        return first_argument < second_argument.lower() ||
-            first_argument > second_argument.upper();
+        return first_argument > second_argument.upper() ||
+            first_argument < second_argument.lower();
+    }
+
+    inline bool operator!=(const Interval& first_argument, double second_argument) {
+        return first_argument.lower() > second_argument ||
+            first_argument.upper() < second_argument;
+    }
+
+    inline bool operator!=(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.lower() > second_argument.upper() ||
+            first_argument.upper() < second_argument.lower();
     }
 
     inline bool operator<(double first_argument, const Interval& second_argument) {
         return first_argument < second_argument.lower();
     }
 
+    inline bool operator<(const Interval& first_argument, double second_argument) {
+        return first_argument.upper() < second_argument;
+    }
+
+    inline bool operator<(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.upper() < second_argument.lower();
+    }
+
     inline bool operator>(double first_argument, const Interval& second_argument) {
         return first_argument > second_argument.upper();
     }
 
+    inline bool operator>(const Interval& first_argument, double second_argument) {
+        return first_argument.lower() > second_argument;
+    }
+
+    inline bool operator>(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.lower() > second_argument.upper();
+    }
+
     inline bool operator<=(double first_argument, const Interval& second_argument) {
-        return first_argument <= second_argument.upper();
+        return first_argument <= second_argument.lower();
+    }
+
+    inline bool operator<=(const Interval& first_argument, double second_argument) {
+        return first_argument.upper() <= second_argument;
+    }
+
+    inline bool operator<=(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.upper() <= second_argument.lower();
     }
 
     inline bool operator>=(double first_argument, const Interval& second_argument) {
-        return first_argument >= second_argument.lower();
+        return first_argument >= second_argument.upper();
+    }
+
+    inline bool operator>=(const Interval& first_argument, double second_argument) {
+        return first_argument.lower() >= second_argument;
+    }
+
+    inline bool operator>=(const Interval& first_argument, const Interval& second_argument) {
+        return first_argument.lower() >= second_argument.upper();
     }
 
     inline Interval operator-(const Interval& argument) {return -argument.value();}

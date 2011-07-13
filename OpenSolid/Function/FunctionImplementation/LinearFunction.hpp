@@ -28,23 +28,23 @@ namespace OpenSolid
     class LinearFunction : public FunctionImplementation
     {
     private:
-        VectorXD _point;
-        MatrixXD _vectors;
+        VectorXd _point;
+        MatrixXd _vectors;
     public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const VectorXD& point, const MatrixXD& vectors);
+        OPENSOLID_CORE_EXPORT LinearFunction(const VectorXd& point, const MatrixXd& vectors);
         
-        const VectorXD& point() const;
-        const MatrixXD& vectors() const;
+        const VectorXd& point() const;
+        const MatrixXd& vectors() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcD& parameter_values, MapXD& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXD& datum, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
@@ -54,9 +54,9 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline const VectorXD& LinearFunction::point() const {return _point;}
+    inline const VectorXd& LinearFunction::point() const {return _point;}
     
-    inline const MatrixXD& LinearFunction::vectors() const {return _vectors;}
+    inline const MatrixXd& LinearFunction::vectors() const {return _vectors;}
 }
 
 #endif

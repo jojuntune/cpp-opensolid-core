@@ -32,7 +32,7 @@ namespace OpenSolid
     
     int DifferenceFunction::dimensions() const {return firstOperand().dimensions();}
     
-    void DifferenceFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void DifferenceFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) - secondOperand()(parameter_values);
     }
     

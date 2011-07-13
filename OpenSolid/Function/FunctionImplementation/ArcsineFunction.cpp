@@ -29,7 +29,7 @@ namespace OpenSolid
     
     int ArcsineFunction::dimensions() const {return 1;}
     
-    void ArcsineFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void ArcsineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = asin(operand()(parameter_values).array());
     }
     

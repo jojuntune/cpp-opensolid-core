@@ -31,7 +31,7 @@ namespace OpenSolid
     
     struct SquareRoot
     {
-        inline Double operator()(Double value) const {
+        inline double operator()(double value) const {
             assert(value.isGreaterThanOrEqualTo(0.0));
             return value > 0.0 ? sqrt(value) : 0.0;
         }
@@ -42,7 +42,7 @@ namespace OpenSolid
         }
     };
     
-    void SquareRootFunction::getValues(const MapXcD& parameter_values, MapXD& results) const {
+    void SquareRootFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).unaryExpr(SquareRoot());
     }
     
