@@ -43,7 +43,7 @@ namespace OpenSolid
     template <class ExpectedType>
     void checkCompatiblePythonType(boost::python::object argument, const std::string& caller);
     
-    OPENSOLID_PYTHON_EXPORT void checkNonZeroValue(Double value, const std::string& caller);
+    OPENSOLID_PYTHON_EXPORT void checkNonZeroValue(double value, const std::string& caller);
     
     OPENSOLID_PYTHON_EXPORT void checkSameSize(
         int first_size,
@@ -161,9 +161,6 @@ namespace OpenSolid
         
         template <>
         inline std::string typeName<std::string>() {return "std::string";}
-        
-        template <>
-        inline std::string typeName<Double>() {return "Double";}
         
         template <>
         inline std::string typeName<Interval>() {return "Interval";}

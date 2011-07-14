@@ -34,17 +34,77 @@ namespace OpenSolid
     Comparison approxI(const Interval& argument) {return Approx(argument);}
     
     Comparison approxIP(const Interval& argument, double precision) {
-        return Approx(argument, precision;)
+        return Approx(argument, precision);
     }
     
     Comparison approxD(double argument) {return Approx(argument);}
     
     Comparison approxDP(double argument, double precision) {
-        return Approx(argument, precision;)
+        return Approx(argument, precision);
+    }
+
+    bool equalI(const Comparison& comparison, const Interval& argument) {
+        return argument == comparison;
+    }
+
+    bool equalD(const Comparison& comparison, double argument) {
+        return argument == comparison;
+    }
+
+    bool notEqualI(const Comparison& comparison, const Interval& argument) {
+        return argument != comparison;
+    }
+
+    bool notEqualD(const Comparison& comparison, double argument) {
+        return argument != comparison;
+    }
+
+    bool lessI(const Comparison& comparison, const Interval& argument) {
+        return argument > comparison;
+    }
+
+    bool lessD(const Comparison& comparison, double argument) {
+        return argument > comparison;
+    }
+
+    bool greaterI(const Comparison& comparison, const Interval& argument) {
+        return argument < comparison;
+    }
+
+    bool greaterD(const Comparison& comparison, double argument) {
+        return argument < comparison;
+    }
+
+    bool lessOrEqualI(const Comparison& comparison, const Interval& argument) {
+        return argument >= comparison;
+    }
+
+    bool lessOrEqualD(const Comparison& comparison, double argument) {
+        return argument >= comparison;
+    }
+
+    bool greaterOrEqualI(const Comparison& comparison, const Interval& argument) {
+        return argument <= comparison;
+    }
+
+    bool greaterOrEqualD(const Comparison& comparison, double argument) {
+        return argument <= comparison;
     }
     
     void bindComparison() {
-        class_<Comparison>("Comparison", no_init());
+        class_<Comparison>("Comparison", no_init)
+            .def("__eq__", &equalI)
+            .def("__eq__", &equalD)
+            .def("__ne__", &notEqualI)
+            .def("__ne__", &notEqualD)
+            .def("__lt__", &lessI)
+            .def("__lt__", &lessD)
+            .def("__gt__", &greaterI)
+            .def("__gt__", &greaterD)
+            .def("__le__", &lessOrEqualI)
+            .def("__le__", &lessOrEqualD)
+            .def("__ge__", &greaterOrEqualI)
+            .def("__ge__", &greaterOrEqualD);
         def("Zero", &zero);
         def("Zero", &zeroP);
         def("Approx", &approxI);

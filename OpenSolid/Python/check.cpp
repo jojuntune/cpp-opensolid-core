@@ -19,11 +19,12 @@
  ***************************************************************************/
 
 #include <OpenSolid/Python/check.hpp>
+#include <OpenSolid/Scalar/Comparison.hpp>
 
 namespace OpenSolid
 {
-    void checkNonZeroValue(Double value, const std::string& caller) {
-        if (value.isZero()) {
+    void checkNonZeroValue(double value, const std::string& caller) {
+        if (value == Zero()) {
             Error error("NonZeroValue", caller);
             error.set("value", value);
             throw error;

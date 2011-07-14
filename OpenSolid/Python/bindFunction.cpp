@@ -96,7 +96,6 @@ namespace OpenSolid
                 .staticmethod("HypervolumeParameter")
             .def("Parameter", &Function::Parameter)
                 .staticmethod("Parameter")
-            .def(self == self)
             .def(-self)
             .def(self + self)
             .def(self - self)

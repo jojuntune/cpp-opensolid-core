@@ -212,7 +212,7 @@ public:
             "b = Vector3d(4, 5, 6)  \n"
             "a.dot(b)               \n"
         ;
-        TS_ASSERT_EQUALS(script.get<Double>(text), 32.0);
+        TS_ASSERT_EQUALS(script.get<double>(text), 32.0);
     }
     
     void testIntervalConversion() {
@@ -348,7 +348,7 @@ public:
         script1.extend(bindCustomClass);
         script1.run("a = CustomClass()");
         script1.run("a.setValue(10)");
-        TS_ASSERT_EQUALS(script1.get<Double>("a.value()"), 10.0);
+        TS_ASSERT_EQUALS(script1.get<double>("a.value()"), 10.0);
         TS_ASSERT(script1.get<MatrixXd>("a.function()(3.0)").isApprox(Vector3d(3, 3, 3)));
         TS_ASSERT_EQUALS(script1.get<MatrixXd>("a.vector()"), Vector3d(1, 2, 3));
         TS_ASSERT_THROWS(script2.run("b = CustomClass()"), Error);

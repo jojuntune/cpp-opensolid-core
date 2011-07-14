@@ -226,6 +226,7 @@
         Python/bindComparison.cpp
         Python/bindError.cpp
         Python/bindFunction.cpp
+        Python/bindDouble.cpp
         Python/bindInterval.cpp
         Python/bindMatrix.cpp
         Python/bindSpecificMatrixSizes.cpp

@@ -266,21 +266,21 @@ namespace OpenSolid
     template <class MatrixType>
     MatrixType* transpose(const MatrixType& argument) {return new MatrixType(argument.transpose());}
     
-    Double dotXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+    double dotXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkVectorValue(first_argument, __func__);
         checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
-    Interval dotXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+    Interval dotXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         checkVectorValue(first_argument, __func__);
         checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
         return first_argument.col(0).cast<Interval>().dot(second_argument.col(0));
     }
     
-    Interval dotXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    Interval dotXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         checkVectorValue(first_argument, __func__);
         checkVectorValue(second_argument, __func__);
         checkSameDimensions(first_argument.rows(), second_argument.rows(), __func__);
@@ -294,7 +294,7 @@ namespace OpenSolid
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
-    MatrixXd* crossXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+    MatrixXd* crossXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkVectorValue(first_argument, __func__);
         checkVectorValue(second_argument, __func__);
         checkSameSize(first_argument.rows(), 3, __func__);
@@ -304,7 +304,7 @@ namespace OpenSolid
         );
     }
     
-    MatrixXI* crossXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+    MatrixXI* crossXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         checkVectorValue(first_argument, __func__);
         checkVectorValue(second_argument, __func__);
         checkSameSize(first_argument.rows(), 3, __func__);
@@ -316,7 +316,7 @@ namespace OpenSolid
         );
     }
     
-    MatrixXI* crossXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    MatrixXI* crossXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         checkVectorValue(first_argument, __func__);
         checkVectorValue(second_argument, __func__);
         checkSameSize(first_argument.rows(), 3, __func__);
@@ -342,127 +342,115 @@ namespace OpenSolid
     bool isZero(const MatrixType& argument) {return argument.isZero();}
     
     template <class MatrixType>
-    bool isZeroP(const MatrixType& argument, Double precision) {return argument.isZero(precision);}
+    bool isZeroP(const MatrixType& argument, double precision) {return argument.isZero(precision);}
     
-    bool isEqualToXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        return first_argument.isEqualTo(second_argument.cwiseLower()) &&
-            first_argument.isEqualTo(second_argument.cwiseUpper());
+    bool isApproxXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+        return first_argument.isApprox(second_argument.cwiseLower()) &&
+            first_argument.isApprox(second_argument.cwiseUpper());
     }
     
-    bool isEqualToXDXIP(
+    bool isApproxXdXIP(
         const MatrixXd& first_argument,
         const MatrixXI& second_argument,
-        Double precision
+        double precision
     ) {
-        return first_argument.isEqualTo(second_argument.cwiseLower(), precision) &&
-            first_argument.isEqualTo(second_argument.cwiseUpper(), precision);
+        return first_argument.isApprox(second_argument.cwiseLower(), precision) &&
+            first_argument.isApprox(second_argument.cwiseUpper(), precision);
     }
     
-    bool isEqualToXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        return first_argument.isEqualTo(second_argument);
+    bool isApproxXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+        return first_argument.isApprox(second_argument);
     }
     
-    bool isEqualToXDXDP(
+    bool isApproxXdXdP(
         const MatrixXd& first_argument,
         const MatrixXd& second_argument,
-        Double precision
-    ) {return first_argument.isEqualTo(second_argument, precision);}
+        double precision
+    ) {return first_argument.isApprox(second_argument, precision);}
     
-    bool isEqualToXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        return first_argument.isEqualTo(second_argument);
+    bool isApproxXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        return first_argument.isApprox(second_argument);
     }
     
-    bool isEqualToXIXIP(
+    bool isApproxXIXIP(
         const MatrixXI& first_argument,
         const MatrixXI& second_argument,
-        Double precision
-    ) {return first_argument.isEqualTo(second_argument, precision);}
+        double precision
+    ) {return first_argument.isApprox(second_argument, precision);}
     
-    bool isEqualToXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        return first_argument.cwiseLower().isEqualTo(second_argument) &&
-            first_argument.cwiseUpper().isEqualTo(second_argument);
+    bool isApproxXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+        return first_argument.cwiseLower().isApprox(second_argument) &&
+            first_argument.cwiseUpper().isApprox(second_argument);
     }
     
-    bool isEqualToXIXDP(
+    bool isApproxXIXdP(
         const MatrixXI& first_argument,
         const MatrixXd& second_argument,
-        Double precision
+        double precision
     ) {
-        return first_argument.cwiseLower().isEqualTo(second_argument, precision) &&
-            first_argument.cwiseUpper().isEqualTo(second_argument, precision);
-    }
-    
-    bool isNotEqualToXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        return first_argument.isNotEqualTo(second_argument.cwiseLower()) ||
-            first_argument.isNotEqualTo(second_argument.cwiseUpper());
-    }
-    
-    bool isNotEqualToXDXIP(
-        const MatrixXd& first_argument,
-        const MatrixXI& second_argument,
-        Double precision
-    ) {
-        return first_argument.isNotEqualTo(second_argument.cwiseLower(), precision) ||
-            first_argument.isNotEqualTo(second_argument.cwiseUpper(), precision);
-    }
-    
-    bool isNotEqualToXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        return first_argument.isNotEqualTo(second_argument);
-    }
-    
-    bool isNotEqualToXDXDP(
-        const MatrixXd& first_argument,
-        const MatrixXd& second_argument,
-        Double precision
-    ) {return first_argument.isNotEqualTo(second_argument, precision);}
-    
-    bool isNotEqualToXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        return first_argument.isNotEqualTo(second_argument);
-    }
-    
-    bool isNotEqualToXIXIP(
-        const MatrixXI& first_argument,
-        const MatrixXI& second_argument,
-        Double precision
-    ) {return first_argument.isNotEqualTo(second_argument, precision);}
-    
-    bool isNotEqualToXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        return first_argument.cwiseLower().isNotEqualTo(second_argument) ||
-            first_argument.cwiseUpper().isNotEqualTo(second_argument);
-    }
-    
-    bool isNotEqualToXIXDP(
-        const MatrixXI& first_argument,
-        const MatrixXd& second_argument,
-        Double precision
-    ) {
-        return first_argument.cwiseLower().isNotEqualTo(second_argument, precision) ||
-            first_argument.cwiseUpper().isNotEqualTo(second_argument, precision);
+        return first_argument.cwiseLower().isApprox(second_argument, precision) &&
+            first_argument.cwiseUpper().isApprox(second_argument, precision);
     }
     
     bool overlaps(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         return first_argument.overlaps(second_argument);
     }
     
+    bool overlapsP(
+        const MatrixXI& first_argument,
+        const MatrixXI& second_argument,
+        double precision
+    ) {return first_argument.overlaps(second_argument, precision);}
+    
     bool strictlyOverlaps(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         return first_argument.strictlyOverlaps(second_argument);
     }
     
-    bool containsXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    bool strictlyOverlapsP(
+        const MatrixXI& first_argument,
+        const MatrixXI& second_argument,
+        double precision
+    ) {return first_argument.strictlyOverlaps(second_argument, precision);}
+    
+    bool containsXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         return first_argument.contains(second_argument.cast<Interval>());
     }
+    
+    bool containsXdP(
+        const MatrixXI& first_argument,
+        const MatrixXd& second_argument,
+        double precision
+    ) {return first_argument.contains(second_argument.cast<Interval>(), precision);}
     
     bool containsXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         return first_argument.contains(second_argument);
     }
     
-    bool strictlyContainsXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    bool containsXIP(
+        const MatrixXI& first_argument,
+        const MatrixXI& second_argument,
+        double precision
+    ) {return first_argument.contains(second_argument, precision);}
+    
+    bool strictlyContainsXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         return first_argument.strictlyContains(second_argument.cast<Interval>());
     }
+    
+    bool strictlyContainsXdP(
+        const MatrixXI& first_argument,
+        const MatrixXd& second_argument,
+        double precision
+    ) {return first_argument.strictlyContains(second_argument.cast<Interval>(), precision);}
     
     bool strictlyContainsXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         return first_argument.strictlyContains(second_argument);
     }
+    
+    bool strictlyContainsXIP(
+        const MatrixXI& first_argument,
+        const MatrixXI& second_argument,
+        double precision
+    ) {return first_argument.strictlyContains(second_argument, precision);}
     
     MatrixXd* cwiseLower(const MatrixXI& argument) {return new MatrixXd(argument.cwiseLower());}
     
@@ -472,15 +460,15 @@ namespace OpenSolid
     
     MatrixXd* cwiseWidth(const MatrixXI& argument) {return new MatrixXd(argument.cwiseWidth());}
     
-    MatrixXI* hullXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+    MatrixXI* hullXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         return new MatrixXI(first_argument.hull(second_argument));
     }
     
-    MatrixXI* hullXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+    MatrixXI* hullXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         return new MatrixXI(first_argument.cast<Interval>().hull(second_argument));
     }
     
-    MatrixXI* hullXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    MatrixXI* hullXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         return new MatrixXI(first_argument.hull(second_argument.cast<Interval>()));
     }
     
@@ -506,21 +494,21 @@ namespace OpenSolid
     template <class MatrixType>
     MatrixType* random(int rows, int cols) {return new MatrixType(MatrixType::Random(rows, cols));}
     
-    MatrixXd* negXD(const MatrixXd& argument) {return new MatrixXd(-argument);}
+    MatrixXd* negXd(const MatrixXd& argument) {return new MatrixXd(-argument);}
     
     MatrixXI* negXI(const MatrixXI& argument) {return new MatrixXI(-argument);}
     
-    MatrixXd* addXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+    MatrixXd* addXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXd(first_argument + second_argument);
     }
     
-    MatrixXI* addXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+    MatrixXI* addXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument.cast<Interval>() + second_argument);
     }
     
-    MatrixXI* addXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    MatrixXI* addXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument + second_argument.cast<Interval>());
     }
@@ -530,17 +518,17 @@ namespace OpenSolid
         return new MatrixXI(first_argument + second_argument);
     }
     
-    MatrixXd* subXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+    MatrixXd* subXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXd(first_argument - second_argument);
     }
     
-    MatrixXI* subXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+    MatrixXI* subXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument.cast<Interval>() - second_argument);
     }
     
-    MatrixXI* subXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    MatrixXI* subXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return new MatrixXI(first_argument - second_argument.cast<Interval>());
     }
@@ -550,15 +538,15 @@ namespace OpenSolid
         return new MatrixXI(first_argument - second_argument);
     }
     
-    MatrixXd* rmulXDD(const MatrixXd& self, Double argument) {
+    MatrixXd* rmulXdd(const MatrixXd& self, double argument) {
         return new MatrixXd(argument * self);
     }
     
-    MatrixXI* rmulXID(const MatrixXI& self, Double argument) {
+    MatrixXI* rmulXId(const MatrixXI& self, double argument) {
         return new MatrixXI(Interval(argument) * self);
     }
     
-    MatrixXI* rmulXDI(const MatrixXd& self, const Interval& argument) {
+    MatrixXI* rmulXdI(const MatrixXd& self, const Interval& argument) {
         return new MatrixXI(argument * self.cast<Interval>());
     }
     
@@ -566,15 +554,15 @@ namespace OpenSolid
         return new MatrixXI(argument * self);
     }
     
-    MatrixXd* mulXDD(const MatrixXd& first_argument, Double second_argument) {
+    MatrixXd* mulXdd(const MatrixXd& first_argument, double second_argument) {
         return new MatrixXd(first_argument * second_argument);
     }
     
-    MatrixXI* mulXDI(const MatrixXd& first_argument, const Interval& second_argument) {
+    MatrixXI* mulXdI(const MatrixXd& first_argument, const Interval& second_argument) {
         return new MatrixXI(first_argument.cast<Interval>() * second_argument);
     }
     
-    MatrixXI* mulXID(const MatrixXI& first_argument, Double second_argument) {
+    MatrixXI* mulXId(const MatrixXI& first_argument, double second_argument) {
         return new MatrixXI(first_argument * Interval(second_argument));
     }
     
@@ -582,17 +570,17 @@ namespace OpenSolid
         return new MatrixXI(first_argument * second_argument);
     }
     
-    MatrixXd* divXDD(const MatrixXd& first_argument, Double second_argument) {
+    MatrixXd* divXdd(const MatrixXd& first_argument, double second_argument) {
         checkNonZeroValue(second_argument, __func__);
         return new MatrixXd(first_argument / second_argument);
     }
     
-    MatrixXI* divXDI(const MatrixXd& first_argument, const Interval& second_argument) {
+    MatrixXI* divXdI(const MatrixXd& first_argument, const Interval& second_argument) {
         checkNonZeroValue(abs(second_argument).lower(), __func__);
         return new MatrixXI(first_argument.cast<Interval>() / second_argument);
     }
     
-    MatrixXI* divXID(const MatrixXI& first_argument, Double second_argument) {
+    MatrixXI* divXId(const MatrixXI& first_argument, double second_argument) {
         checkNonZeroValue(second_argument, __func__);
         return new MatrixXI(first_argument / Interval(second_argument));
     }
@@ -602,17 +590,17 @@ namespace OpenSolid
         return new MatrixXI(first_argument / second_argument);
     }
     
-    MatrixXd* mulXDXD(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+    MatrixXd* mulXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXd(first_argument * second_argument);
     }
     
-    MatrixXI* mulXDXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+    MatrixXI* mulXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument.cast<Interval>() * second_argument);
     }
     
-    MatrixXI* mulXIXD(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+    MatrixXI* mulXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument * second_argument.cast<Interval>());
     }
@@ -642,30 +630,24 @@ namespace OpenSolid
             .def("set", &setSI<MatrixXd>)
             .def("set", &setSS<MatrixXd>)
             .def("__setitem__", raw_function(&setItem))
-            .def("bounds", &bounds<MatrixXd>, return_value_policy<manage_new_object>())
-            .def("hashValue", &hashValue<MatrixXd>)
             .def("squaredNorm", &squaredNorm<MatrixXd>)
             .def("norm", &norm<MatrixXd>)
             .def("normalized", &normalized<MatrixXd>, return_value_policy<manage_new_object>())
             .def("determinant", &determinant<MatrixXd>)
             .def("trace", &trace<MatrixXd>)
             .def("transpose", &transpose<MatrixXd>, return_value_policy<manage_new_object>())
-            .def("dot", &dotXDXI)
-            .def("dot", &dotXDXD)
-            .def("cross", &crossXDXI, return_value_policy<manage_new_object>())
-            .def("cross", &crossXDXD, return_value_policy<manage_new_object>())
+            .def("dot", &dotXdXI)
+            .def("dot", &dotXdXd)
+            .def("cross", &crossXdXI, return_value_policy<manage_new_object>())
+            .def("cross", &crossXdXd, return_value_policy<manage_new_object>())
             .def("isZero", &isZero<MatrixXd>)
             .def("isZero", &isZeroP<MatrixXd>)
-            .def("isEqualTo", &isEqualToXDXI)
-            .def("isEqualTo", &isEqualToXDXIP)
-            .def("isEqualTo", &isEqualToXDXD)
-            .def("isEqualTo", &isEqualToXDXDP)
-            .def("isNotEqualTo", &isNotEqualToXDXI)
-            .def("isNotEqualTo", &isNotEqualToXDXIP)
-            .def("isNotEqualTo", &isNotEqualToXDXD)
-            .def("isNotEqualTo", &isNotEqualToXDXDP)
-            .def("hull", &hullXDXI, return_value_policy<manage_new_object>())
-            .def("hull", &hullXDXD, return_value_policy<manage_new_object>())
+            .def("isApprox", &isApproxXdXI)
+            .def("isApprox", &isApproxXdXIP)
+            .def("isApprox", &isApproxXdXd)
+            .def("isApprox", &isApproxXdXdP)
+            .def("hull", &hullXdXI, return_value_policy<manage_new_object>())
+            .def("hull", &hullXdXd, return_value_policy<manage_new_object>())
             .def("Constant", &constant<MatrixXd>, return_value_policy<manage_new_object>())
                 .staticmethod("Constant")
             .def("Zero", &zero<MatrixXd>, return_value_policy<manage_new_object>())
@@ -674,19 +656,19 @@ namespace OpenSolid
                 .staticmethod("Ones")
             .def("Random", &random<MatrixXd>, return_value_policy<manage_new_object>())
                 .staticmethod("Random")
-            .def("__neg__", &negXD, return_value_policy<manage_new_object>())
-            .def("__add__", &addXDXI, return_value_policy<manage_new_object>())
-            .def("__add__", &addXDXD, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXDXI, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXDXD, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXDI, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXDD, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXDI, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXDD, return_value_policy<manage_new_object>())
-            .def("__div__", &divXDI, return_value_policy<manage_new_object>())
-            .def("__div__", &divXDD, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXDXI, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXDXD, return_value_policy<manage_new_object>())
+            .def("__neg__", &negXd, return_value_policy<manage_new_object>())
+            .def("__add__", &addXdXI, return_value_policy<manage_new_object>())
+            .def("__add__", &addXdXd, return_value_policy<manage_new_object>())
+            .def("__sub__", &subXdXI, return_value_policy<manage_new_object>())
+            .def("__sub__", &subXdXd, return_value_policy<manage_new_object>())
+            .def("__mul__", &mulXdI, return_value_policy<manage_new_object>())
+            .def("__mul__", &mulXdd, return_value_policy<manage_new_object>())
+            .def("__rmul__", &rmulXdI, return_value_policy<manage_new_object>())
+            .def("__rmul__", &rmulXdd, return_value_policy<manage_new_object>())
+            .def("__div__", &divXdI, return_value_policy<manage_new_object>())
+            .def("__div__", &divXdd, return_value_policy<manage_new_object>())
+            .def("__mul__", &mulXdXI, return_value_policy<manage_new_object>())
+            .def("__mul__", &mulXdXd, return_value_policy<manage_new_object>())
             .def(self_ns::str(self));
         
         class_<MatrixXI>("MatrixXI", init<int, int>())
@@ -708,8 +690,6 @@ namespace OpenSolid
             .def("set", &setSI<MatrixXI>)
             .def("set", &setSS<MatrixXI>)
             .def("__setitem__", raw_function(&setItem))
-            .def("bounds", &bounds<MatrixXI>, return_value_policy<manage_new_object>())
-            .def("hashValue", &hashValue<MatrixXI>)
             .def("squaredNorm", &squaredNorm<MatrixXI>)
             .def("norm", &norm<MatrixXI>)
             .def("normalized", &normalized<MatrixXI>, return_value_policy<manage_new_object>())
@@ -717,31 +697,33 @@ namespace OpenSolid
             .def("trace", &trace<MatrixXI>)
             .def("transpose", &transpose<MatrixXI>, return_value_policy<manage_new_object>())
             .def("dot", &dotXIXI)
-            .def("dot", &dotXIXD)
+            .def("dot", &dotXIXd)
             .def("cross", &crossXIXI, return_value_policy<manage_new_object>())
-            .def("cross", &crossXIXD, return_value_policy<manage_new_object>())
+            .def("cross", &crossXIXd, return_value_policy<manage_new_object>())
             .def("isZero", &isZero<MatrixXI>)
             .def("isZero", &isZeroP<MatrixXI>)
-            .def("isEqualTo", &isEqualToXIXI)
-            .def("isEqualTo", &isEqualToXIXIP)
-            .def("isEqualTo", &isEqualToXIXD)
-            .def("isEqualTo", &isEqualToXIXDP)
-            .def("isNotEqualTo", &isNotEqualToXIXI)
-            .def("isNotEqualTo", &isNotEqualToXIXIP)
-            .def("isNotEqualTo", &isNotEqualToXIXD)
-            .def("isNotEqualTo", &isNotEqualToXIXDP)
+            .def("isApprox", &isApproxXIXI)
+            .def("isApprox", &isApproxXIXIP)
+            .def("isApprox", &isApproxXIXd)
+            .def("isApprox", &isApproxXIXdP)
             .def("overlaps", &overlaps)
+            .def("overlaps", &overlapsP)
             .def("strictlyOverlaps", &strictlyOverlaps)
+            .def("strictlyOverlaps", &strictlyOverlapsP)
             .def("contains", &containsXI)
-            .def("contains", &containsXD)
+            .def("contains", &containsXIP)
+            .def("contains", &containsXd)
+            .def("contains", &containsXdP)
             .def("strictlyContains", &strictlyContainsXI)
-            .def("strictlyContains", &strictlyContainsXD)
+            .def("strictlyContains", &strictlyContainsXIP)
+            .def("strictlyContains", &strictlyContainsXd)
+            .def("strictlyContains", &strictlyContainsXdP)
             .def("cwiseLower", &cwiseLower, return_value_policy<manage_new_object>())
             .def("cwiseUpper", &cwiseUpper, return_value_policy<manage_new_object>())
             .def("cwiseMedian", &cwiseMedian, return_value_policy<manage_new_object>())
             .def("cwiseWidth", &cwiseWidth, return_value_policy<manage_new_object>())
             .def("hull", &hullXIXI, return_value_policy<manage_new_object>())
-            .def("hull", &hullXIXD, return_value_policy<manage_new_object>())
+            .def("hull", &hullXIXd, return_value_policy<manage_new_object>())
             .def("intersection", &intersection, return_value_policy<manage_new_object>())
             .def("Constant", &constant<MatrixXI>, return_value_policy<manage_new_object>())
                 .staticmethod("Constant")
@@ -753,17 +735,17 @@ namespace OpenSolid
                 .staticmethod("Random")
             .def("__neg__", &negXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXIXI, return_value_policy<manage_new_object>())
-            .def("__add__", &addXIXD, return_value_policy<manage_new_object>())
+            .def("__add__", &addXIXd, return_value_policy<manage_new_object>())
             .def("__sub__", &subXIXI, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXIXD, return_value_policy<manage_new_object>())
+            .def("__sub__", &subXIXd, return_value_policy<manage_new_object>())
             .def("__mul__", &mulXII, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXID, return_value_policy<manage_new_object>())
+            .def("__mul__", &mulXId, return_value_policy<manage_new_object>())
             .def("__rmul__", &rmulXII, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXID, return_value_policy<manage_new_object>())
+            .def("__rmul__", &rmulXId, return_value_policy<manage_new_object>())
             .def("__div__", &divXII, return_value_policy<manage_new_object>())
-            .def("__div__", &divXID, return_value_policy<manage_new_object>())
+            .def("__div__", &divXId, return_value_policy<manage_new_object>())
             .def("__mul__", &mulXIXI, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXIXD, return_value_policy<manage_new_object>())
+            .def("__mul__", &mulXIXd, return_value_policy<manage_new_object>())
             .def(self_ns::str(self));
     }
 }

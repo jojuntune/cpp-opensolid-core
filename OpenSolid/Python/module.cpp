@@ -28,6 +28,7 @@ namespace OpenSolid
     void bindError();
     void bindInterval();
     void bindDouble();
+    void bindComparison();
     void bindMatrix();
     void bindSpecificMatrixSizes();
     void bindFunction();
@@ -36,6 +37,7 @@ namespace OpenSolid
         bindError();
         bindInterval();
         bindDouble();
+        bindComparison();
         bindMatrix();
         bindSpecificMatrixSizes();
         bindFunction();
