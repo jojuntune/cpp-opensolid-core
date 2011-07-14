@@ -223,6 +223,7 @@
     )
     
     SET(PYTHON_SOURCES
+        Python/bindComparison.cpp
         Python/bindError.cpp
         Python/bindFunction.cpp
         Python/bindInterval.cpp
