@@ -226,12 +226,6 @@ namespace OpenSolid
     }
     
     template <class MatrixType>
-    MatrixXI* bounds(const MatrixType& argument) {return new MatrixXI(argument.bounds());}
-    
-    template <class MatrixType>
-    std::size_t hashValue(const MatrixType& argument) {return argument.hashValue();}
-    
-    template <class MatrixType>
     typename MatrixType::Scalar squaredNorm(const MatrixType& argument) {
         checkVectorValue(argument, __func__);
         return argument.col(0).squaredNorm();

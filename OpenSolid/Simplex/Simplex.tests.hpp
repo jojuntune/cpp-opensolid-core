@@ -61,7 +61,7 @@ public:
         
         double xy_area = xy_projection.area();
         TS_ASSERT(xy_area > 0.0);
-        Triangle2d yz_projection = triangle3D / Frame3d().yzPlane();
+        Triangle2d yz_projection = triangle3d / Frame3d().yzPlane();
         
         TS_ASSERT(yz_projection.vertex(0).isApprox(Vector2d(1, 1)));
         TS_ASSERT(yz_projection.vertex(1).isApprox(Vector2d(1, 2)));
@@ -69,7 +69,7 @@ public:
         
         double yz_area = yz_projection.area();
         TS_ASSERT(yz_area < 0.0);
-        double xz_area = (triangle3D / Frame3d().xzPlane()).area();
+        double xz_area = (triangle3d / Frame3d().xzPlane()).area();
         double area_from_components =
             sqrt(xy_area * xy_area + yz_area * yz_area + xz_area * xz_area);
             
@@ -120,8 +120,8 @@ public:
         LineSegment2d first_line(Vector2d::Zero(), Vector2d::Ones());
         LineSegment2d second_line(Vector2d::Zero(), Vector2d::Ones());
         TS_ASSERT_EQUALS(
-            Traits<LineSegment2d>::hash(first_line),
-            Traits<LineSegment2d>::hash(second_line)
+            std::hash<LineSegment2d>()(first_line),
+            std::hash<LineSegment2d>()(second_line)
         );
     }
     

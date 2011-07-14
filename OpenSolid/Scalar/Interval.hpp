@@ -29,7 +29,7 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
-#include <OpenSolid/Common/Traits.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
 
 namespace OpenSolid
 {
@@ -94,13 +94,9 @@ namespace OpenSolid
     };
 
     template <>
-    struct Traits<Interval>
+    struct Bounds<Interval>
     {
-        typedef Interval Bounds;
-
-        static const Interval& bounds(const Interval& argument);
-        static std::size_t hash(const Interval& argument);
-        static bool equal(const Interval& first_argument, const Interval& second_argument);
+        Interval operator()(const Interval& argument) const;
     };
 
     bool operator==(double first_argument, const Interval& second_argument);
@@ -111,13 +107,13 @@ namespace OpenSolid
     bool operator!=(const Interval& first_argument, double second_argument);
     bool operator!=(const Interval& first_argument, const Interval& second_argument);
 
-    Interval operator<(double first_argument, const Interval& second_argument);
-    Interval operator<(const Interval& first_argument, double second_argument);
-    Interval operator<(const Interval& first_argument, const Interval& second_argument);
+    bool operator<(double first_argument, const Interval& second_argument);
+    bool operator<(const Interval& first_argument, double second_argument);
+    bool operator<(const Interval& first_argument, const Interval& second_argument);
 
-    Interval operator>(double first_argument, const Interval& second_argument);
-    Interval operator>(const Interval& first_argument, double second_argument);
-    Interval operator>(const Interval& first_argument, const Interval& second_argument);
+    bool operator>(double first_argument, const Interval& second_argument);
+    bool operator>(const Interval& first_argument, double second_argument);
+    bool operator>(const Interval& first_argument, const Interval& second_argument);
 
     bool operator<=(double first_argument, const Interval& second_argument);
     bool operator<=(const Interval& first_argument, double second_argument);
@@ -166,14 +162,30 @@ namespace OpenSolid
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& argument);
 }
 
+namespace std
+{
+    template <>
+    struct hash<OpenSolid::Interval>
+    {
+        std::size_t operator()(const OpenSolid::Interval& argument) const;
+    };
+
+    template <>
+    struct equal_to<OpenSolid::Interval>
+    {
+        bool operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+    };
+}
+
 ////////// Implementation //////////
+
+#include <OpenSolid/Scalar/double.hpp>
 
 namespace OpenSolid
 {
-    inline Interval Traits<int>::bounds(int argument) {return argument;}
-
-    inline Interval Traits<double>::bounds(double argument) {return argument;}
-
     inline Interval::Interval() : _value() {}
     
     inline Interval::Interval(double argument) : _value(argument) {}
@@ -279,22 +291,7 @@ namespace OpenSolid
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}
     
-    inline const Interval& Traits<Interval>::bounds(const Interval& argument) {return argument;}
-    
-    inline std::size_t Traits<Interval>::hash(const Interval& argument) {
-        std::size_t result = 0;
-        boost::hash_combine(result, boost::hash_value(argument.lower()));
-        boost::hash_combine(result, boost::hash_value(argument.upper()));
-        return result;
-    }
-
-    inline bool Traits<Interval>::equal(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {
-        return first_argument.lower() == second_argument.lower() &&
-            first_argument.upper() == second_argument.upper();
-    }
+    inline Interval Bounds<Interval>::operator()(const Interval& argument) const {return argument;}
 
     inline bool operator==(double first_argument, const Interval& second_argument) {
         return first_argument == second_argument.lower() &&
@@ -440,5 +437,27 @@ namespace OpenSolid
     
     inline Interval abs2(const Interval& argument) {return argument.squared();}
 }
+
+namespace std
+{
+    inline std::size_t hash<OpenSolid::Interval>::operator()(
+        const OpenSolid::Interval& argument
+    ) const {
+        size_t result = 0;
+        boost::hash_combine(result, boost::hash_value(argument.lower()));
+        boost::hash_combine(result, boost::hash_value(argument.upper()));
+        return result;
+    }
+
+    inline bool equal_to<OpenSolid::Interval>::operator()(
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
+    ) const {
+        return first_argument.lower() == second_argument.lower() &&
+            first_argument.upper() == second_argument.upper();
+    }
+}
+
+#include <OpenSolid/Scalar/Comparison.hpp>
 
 #endif

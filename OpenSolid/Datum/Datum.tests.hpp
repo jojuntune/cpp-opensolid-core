@@ -72,7 +72,7 @@ public:
         TS_ASSERT(quotient.vectors().isIdentity());
     }
     
-    void test2D() {
+    void test2d() {
         Frame2d frame(Vector2d::UnitX(), Vector2d(1, 1));
         TS_ASSERT_EQUALS(frame.vectors().rows(), 2);
         TS_ASSERT_EQUALS(frame.vectors().cols(), 2);

@@ -21,14 +21,14 @@
 #ifndef OPENSOLID__ERROR_HPP
 #define OPENSOLID__ERROR_HPP
 
-#include <OpenSolid/Common/config.hpp>
-
 #include <string>
 #include <iostream>
 #include <map>
 #include <cassert>
 
 #include <boost/lexical_cast.hpp>
+
+#include <OpenSolid/Common/config.hpp>
 
 namespace OpenSolid
 {

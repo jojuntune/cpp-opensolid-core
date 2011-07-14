@@ -21,10 +21,9 @@
 #ifndef OPENSOLID__DATUM_HPP
 #define OPENSOLID__DATUM_HPP
 
-#include <boost/functional/hash.hpp>
+#include <functional>
 
 #include <OpenSolid/Common/config.hpp>
-#include <OpenSolid/Common/Traits.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
@@ -131,6 +130,9 @@ namespace OpenSolid
         const Vector& origin() const;
         const Matrix& vectors() const;
         
+        template <int other_dimensions_, int other_axes_>
+        bool operator==(const Datum<other_dimensions_, other_axes_>& other) const;
+        
         Vector operator()(double x) const;
         Vector operator()(double x, double y) const;
         Vector operator()(double x, double y, double z) const;
@@ -185,17 +187,6 @@ namespace OpenSolid
     typedef Datum<3, 3> Datum3d;
     typedef Datum<4, 4> Datum4d;
     typedef Datum<Dynamic, Dynamic> DatumXd;
-
-    template <int dimensions_, int axes_>
-    struct Traits<Datum<dimensions_, axes_>>
-    {
-        static std::size_t hash(const Datum<dimensions_, axes_>& argument);
-
-        static bool equal(
-            const Datum<dimensions_, axes_>& first_argument
-            const Datum<dimensions_, axes_>& second_argument
-        );
-    };
     
     template <int dimensions_, int axes_>
     class LinearDatum
@@ -231,6 +222,24 @@ namespace OpenSolid
     };
     
     OPENSOLID_CORE_EXPORT MatrixXd orthogonalBasis(const MatrixXd& vectors);
+}
+
+namespace std
+{
+    template <int dimensions_, int axes_>
+    struct hash<OpenSolid::Datum<dimensions_, axes_>>
+    {
+        std::size_t operator()(const OpenSolid::Datum<dimensions_, axes_>& argument) const;
+    };
+
+    template <int dimensions_, int axes_>
+    struct equal_to<OpenSolid::Datum<dimensions_, axes_>>
+    {
+        bool operator()(
+            const OpenSolid::Datum<dimensions_, axes_>& first_argument,
+            const OpenSolid::Datum<dimensions_, axes_>& second_argument
+        ) const;
+    };
 }
 
 ////////// Implementation //////////
@@ -616,31 +625,6 @@ namespace OpenSolid
         result.initialize(origin() / base, vectors() / base.linear(), false);
         return result;
     }
-
-    template <int dimensions_, int axes_>
-    inline std::size_t Traits<Datum<dimensions_, axes_>>::hash(
-        const Datum<dimensions_, axes_>& argument
-    ) {
-        std::size_t result = 0;
-        boost::hash_combine(
-            result,
-            Traits<typename Datum<dimensions_, axes_>::Vector>::hash(argument.origin())
-        );
-        boost:::hash_combine(
-            result,
-            Traits<typename Datum<dimensions_, axes_>::Matrix>::hash(argument.vectors())
-        );
-        return result;
-    }
-
-    template <int dimensions_, int axes_>
-    inline bool Traits<Datum<dimensions_, axes_>>::equal(
-        const Datum<dimensions_, axes_>& first_argument,
-        const Datum<dimensions_, axes_>& second_argument
-    ) {
-        return first_argument.origin() == second_argument.origin() &&
-            first_argument.vectors() == second_argument.vectors();
-    }
     
     template <int dimensions_, int axes_>
     inline LinearDatum<dimensions_, axes_>::LinearDatum(const Datum<dimensions_, axes_>& datum) :
@@ -691,6 +675,34 @@ namespace OpenSolid
     ) const {
         assert(datum().axes() == 4);
         return datum().vectors() * Vector4d(x, y, z, w);
+    }
+}
+
+namespace std
+{
+    template <int dimensions_, int axes_>
+    inline size_t hash<OpenSolid::Datum<dimensions_, axes_>>::operator()(
+        const OpenSolid::Datum<dimensions_, axes_>& argument
+    ) const {
+        size_t result = 0;
+        boost::hash_combine(
+            result,
+            hash<typename OpenSolid::Datum<dimensions_, axes_>::Vector>()(argument.origin())
+        );
+        boost:::hash_combine(
+            result,
+            hash<typename OpenSolid::Datum<dimensions_, axes_>::Matrix>()(argument.vectors())
+        );
+        return result;
+    }
+
+    template <int dimensions_, int axes_>
+    inline bool equal_to<OpenSolid::Datum<dimensions_, axes_>>::operator()(
+        const OpenSolid::Datum<dimensions_, axes_>& first_argument,
+        const OpenSolid::Datum<dimensions_, axes_>& second_argument
+    ) const {
+        return first_argument.origin() == second_argument.origin() &&
+            first_argument.vectors() == second_argument.vectors();
     }
 }
 

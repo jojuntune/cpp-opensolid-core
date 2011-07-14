@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__SIMPLEX_HPP
 #define OPENSOLID__SIMPLEX_HPP
 
-#include <OpenSolid/Common/Traits.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
@@ -129,21 +129,6 @@ namespace OpenSolid
     typedef Simplex<Dynamic, 5> PentachoronXd;
     
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
-
-    template <int dimensions_, int size_>
-    struct Traits<Simplex<dimensions_, size_>>
-    {
-        typedef Matrix<Interval, dimensions_, 1> Bounds;
-
-        static Matrix<Interval, dimensions_, 1> bounds(const Simplex<dimensions_, size_>& argument);
-        
-        static std::size_t hash(const Simplex<dimensions_, size_>& argument);
-
-        static bool equal(
-            const Simplex<dimensions_, size_>& first_argument,
-            const Simplex<dimensions_, size_>& second_argument
-        );
-    };
     
     template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
     Simplex<datum_dimensions_, simplex_size_> operator*(
@@ -156,6 +141,15 @@ namespace OpenSolid
         const Simplex<simplex_dimensions_, simplex_size_>& simplex,
         const Datum<datum_dimensions_, datum_axes_>& datum
     );
+}
+
+namespace std
+{
+    template <int dimensions_, int size_>
+    struct hash<OpenSolid::Simplex<dimensions_, size_>>
+    {
+        size_t operator()(const OpenSolid::Simplex<dimensions_, size_>& argument) const;
+    };
 }
 
 ////////// Implementation //////////
@@ -436,22 +430,6 @@ namespace OpenSolid
         assert(size() == other.size());
         return vertices() == other.vertices();
     }
-
-    template <int dimensions_, int size_>
-    inline Matrix<Interval, dimensions_, 1> Traits<Simplex<dimensions_, size_>>::bounds(
-        const Simplex<dimensions_, size_>& argument
-    ) {return argument.bounds();}
-
-    template <int dimensions_, int size_>
-    inline std::size_t Traits<Simplex<dimensions_, size_>>::hash(
-        const Simplex<dimensions_, size_>& argument
-    ) {return Traits<typename Simplex<dimensions_, size_>::Vertices>::hash(argument.vertices();}
-
-    template <int dimensions_, int size_>
-    inline bool Traits<Simplex<dimensions_, size_>>::equal(
-        const Simplex<dimensions_, size_>& first_argument,
-        const Simplex<dimensions_, size_>& second_argument
-    ) {return first_argument == second_argument;}
     
     template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
     inline Simplex<datum_dimensions_, simplex_size_> operator*(
@@ -464,6 +442,18 @@ namespace OpenSolid
         const Simplex<simplex_dimensions_, simplex_size_>& simplex,
         const Datum<datum_dimensions_, datum_axes_>& datum
     ) {return Simplex<datum_axes_, simplex_size_>(simplex.vertices() / datum);}
+}
+
+namespace std
+{
+    template <int dimensions_, int size_>
+    inline size_t hash<OpenSolid::Simplex<dimensions_, size_>>::operator()(
+        const OpenSolid::Simplex<dimensions_, size_>& argument
+    ) const {
+        return hash<typename OpenSolid::Simplex<dimensions_, size_>::Vertices>()(
+            argument.vertices()
+        );
+    }
 }
 
 #endif

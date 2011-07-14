@@ -91,7 +91,7 @@ public:
     void testNorm() {
         Function arc = 3 * (cos(Function::t) * Vector2d(1, 0) +
             Vector2d::UnitY() * sin(Function::t));
-        TS_ASSERT(arc.normalized()(M_PI / 4).isEqualTo(Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))))
+        TS_ASSERT(arc.normalized()(M_PI / 4).isApprox(Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))))
     }
     
     void testVector() {
@@ -249,7 +249,7 @@ public:
             
             RowVectorXd function_zeros;
             boost::timer timer;
-            for (int j = 0; j < 100; ++j) {function_zeros = function.zeros(domains[i]);}
+            for (int j = 0; j < 100; ++j) {function_zeros = function.roots(domains[i]);}
             double elapsed = timer.elapsed();
             RowVectorXd derivative_zeros = derivative.roots(domains[i]);
             RowVectorXd second_derivative_zeros = second_derivative.roots(domains[i]);

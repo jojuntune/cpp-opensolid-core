@@ -27,7 +27,6 @@
 #include <boost/intrusive_ptr.hpp>
 
 #include <OpenSolid/Common/config.hpp>
-#include <OpenSolid/Common/Traits.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -138,13 +137,6 @@ namespace OpenSolid
         );
     };
 
-    template <>
-    struct Traits<Function>
-    {
-        std::size_t hash(const Function& argument);
-        bool equal(const Function& first_argument, const Function& second_argument);
-    };
-
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
     
     OPENSOLID_CORE_EXPORT Function operator+(
@@ -181,6 +173,24 @@ namespace OpenSolid
         std::ostream& stream,
         const Function& function
     );
+}
+
+namespace std
+{
+    template <>
+    struct hash<OpenSolid::Function>
+    {
+        size_t operator()(const OpenSolid::Function& argument) const;
+    };
+
+    template <>
+    struct equal_to<OpenSolid::Function>
+    {
+        bool operator()(
+            const OpenSolid::Function& first_argument,
+            const OpenSolid::Function& second_argument
+        ) const;
+    };
 }
 
 ////////// Implementation //////////
@@ -226,14 +236,17 @@ namespace OpenSolid
     inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return FunctionResult<ArgumentType>(*this, argument);
     }
-        
-    inline std::size_t Traits<Function>::hash(const Function& argument) const {
+}
+
+namespace std
+{
+    inline size_t hash<OpenSolid::Function>::operator()(const OpenSolid::Function& argument) const {
         return boost::hash_value(argument.implementation());
     }
-    
-    inline bool Traits<Function>::equal(
-        const Function& first_argument,
-        const Function& second_argument
+
+    inline bool equal_to<OpenSolid::Function>::operator()(
+        const OpenSolid::Function& first_argument,
+        const OpenSolid::Function& second_argument
     ) const {return first_argument.implementation() == second_argument.implementation();}
 }
 

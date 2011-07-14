@@ -20,7 +20,7 @@
 
 #include <algorithm>
 
-#include "Error.hpp"
+#include <OpenSolid/Common/Error.hpp>
 
 namespace OpenSolid
 {

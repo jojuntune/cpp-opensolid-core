@@ -75,7 +75,7 @@ namespace OpenSolid
     Domain Domain::concatenate(const Domain& other) const {
         if (empty()) {return other;}
         if (other.empty()) {return *this;}
-        Set<Geometry, VectorXI> result_boundaries;
+        Set<Geometry> result_boundaries;
         for (auto i = boundaries().begin(); i != boundaries().end(); ++i) {
             result_boundaries.insert(
                 i->concatenate(Function::Identity(other.dimensions())(other))

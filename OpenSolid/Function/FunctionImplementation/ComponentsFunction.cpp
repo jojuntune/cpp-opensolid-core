@@ -33,7 +33,7 @@ namespace OpenSolid
     int ComponentsFunction::dimensions() const {return num();}
     
     void ComponentsFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        d operand_values = operand()(parameter_values);
+        MatrixXd operand_values = operand()(parameter_values);
         results = operand_values.middleRows(index(), num());
     }
     

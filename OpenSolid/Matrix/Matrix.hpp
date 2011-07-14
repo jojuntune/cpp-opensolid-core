@@ -21,6 +21,7 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
+#include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
 namespace Eigen
@@ -118,9 +119,29 @@ namespace Eigen
         ) const;
     };
     
-    struct OverlapOperation
+    class OverlapOperation
     {
+    private:
+        double _precision;
+    public:
         typedef bool result_type;
+
+        OverlapOperation(double precision);
+
+        bool operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+    };
+    
+    class StrictOverlapOperation
+    {
+    private:
+        double _precision;
+    public:
+        typedef bool result_type;
+
+        StrictOverlapOperation(double precision);
 
         bool operator()(
             const OpenSolid::Interval& first_argument,
@@ -130,7 +151,27 @@ namespace Eigen
     
     struct ContainOperation
     {
+    private:
+        double _precision;
+    public:
         typedef bool result_type;
+
+        ContainOperation(double precision);
+        
+        bool operator()(
+            const OpenSolid::Interval& first_argument,
+            const OpenSolid::Interval& second_argument
+        ) const;
+    };
+    
+    struct StrictContainOperation
+    {
+    private:
+        double _precision;
+    public:
+        typedef bool result_type;
+
+        StrictContainOperation(double precision);
         
         bool operator()(
             const OpenSolid::Interval& first_argument,
@@ -208,27 +249,31 @@ namespace OpenSolid
     using namespace Eigen;
     
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    struct Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    struct Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
     {
-        static typename internal::conditional<
-            internal::is_same<ScalarType, Interval>::value,
-            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>&,
-            const CwiseUnaryOp<
-                internal::scalar_cast_op<Scalar, Interval>,
-                const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
-            >
-        >::type bounds(
+        Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_> operator()(
             const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
         ) const;
+    };
+}
 
-        static std::size_t hash(
-            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
+namespace std
+{
+    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
+    struct hash<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    {
+        size_t operator()(
+            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
         ) const;
+    };
 
-        static bool equal(
-            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
-            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
-        );
+    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
+    struct equal_to<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    {
+        bool operator()(
+            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
+            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
+        ) const;
     };
 }
 
@@ -263,19 +308,22 @@ namespace Eigen
         return NumTraits<double>::highest();
     }
         
-    template <class ScalarType>
-    inline double LowerOperation::operator()(ScalarType argument) const {return argument.lower();}
+    inline double LowerOperation::operator()(const OpenSolid::Interval& argument) const {
+        return argument.lower();
+    }
     
-    template <class ScalarType>
-    inline double UpperOperation::operator()(ScalarType argument) const {return argument.upper();}
+    inline double UpperOperation::operator()(const OpenSolid::Interval& argument) const {
+        return argument.upper();
+    }
     
-    template <class ScalarType>
-    inline double MedianOperation::operator()(ScalarType argument) const {return argument.median();}
+    inline double MedianOperation::operator()(const OpenSolid::Interval& argument) const {
+        return argument.median();
+    }
     
-    template <class ScalarType>
-    inline double WidthOperation::operator()(ScalarType argument) const {return argument.width();}
+    inline double WidthOperation::operator()(const OpenSolid::Interval& argument) const {
+        return argument.width();
+    }
     
-    template <class ScalarType>
     inline OpenSolid::Interval HullOperation::operator()(
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument
@@ -285,16 +333,34 @@ namespace Eigen
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument
     ) const {return first_argument.intersection(second_argument);}
+
+    inline OverlapOperation::OverlapOperation(double precision) : _precision(precision) {}
     
     inline bool OverlapOperation::operator()(
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument
-    ) const {return first_argument.overlaps(second_argument);}
+    ) const {return first_argument.overlaps(second_argument, _precision);}
+
+    inline StrictOverlapOperation::StrictOverlapOperation(double precision) : _precision(precision) {}
+    
+    inline bool StrictOverlapOperation::operator()(
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
+    ) const {return first_argument.strictlyOverlaps(second_argument, _precision);}
+
+    inline ContainOperation::ContainOperation(double precision) : _precision(precision) {}
     
     inline bool ContainOperation::operator()(
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument
-    ) const {return first_argument.contains(second_argument);}
+    ) const {return first_argument.contains(second_argument, _precision);}
+
+    inline StrictContainOperation::StrictContainOperation(double precision) : _precision(precision) {}
+    
+    inline bool StrictContainOperation::operator()(
+        const OpenSolid::Interval& first_argument,
+        const OpenSolid::Interval& second_argument
+    ) const {return first_argument.strictlyContains(second_argument, _precision);}
 
     template <class DerivedType>
     inline CwiseUnaryOp<LowerOperation, const DerivedType>
@@ -314,13 +380,27 @@ namespace Eigen
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::overlaps(
-        const DenseBase<OtherDerivedType>& other
-    ) const {return derived().binaryExpr(other.derived(), OverlapOperation()).all();}
+        const DenseBase<OtherDerivedType>& other,
+        double precision
+    ) const {return derived().binaryExpr(other.derived(), OverlapOperation(precision)).all();}
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::strictlyOverlaps(
+        const DenseBase<OtherDerivedType>& other,
+        double precision
+    ) const {return derived().binaryExpr(other.derived(), StrictOverlapOperation(precision)).all();}
 
     template <class DerivedType> template<class OtherDerivedType>
     inline bool DenseBase<DerivedType>::contains(
-        const DenseBase<OtherDerivedType>& other
-    ) const {return derived().binaryExpr(other.derived(), ContainOperation()).all();}
+        const DenseBase<OtherDerivedType>& other,
+        double precision
+    ) const {return derived().binaryExpr(other.derived(), ContainOperation(precision)).all();}
+
+    template <class DerivedType> template<class OtherDerivedType>
+    inline bool DenseBase<DerivedType>::strictlyContains(
+        const DenseBase<OtherDerivedType>& other,
+        double precision
+    ) const {return derived().binaryExpr(other.derived(), StrictContainOperation(precision)).all();}
 
     template <class DerivedType> template <class OtherDerivedType>
     inline CwiseBinaryOp<HullOperation, const DerivedType, const OtherDerivedType>
@@ -350,63 +430,63 @@ namespace Eigen
 
 namespace OpenSolid
 {
-    namespace
+    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
+    inline Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_>
+    Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::operator()(
+        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
+    ) const {return argument.template cast<Interval>();}
+}
+
+namespace
+{
+    struct HashVisitor
     {
-        struct HashVisitor
-        {
-            std::size_t result;
+        std::size_t result;
         
-            template <class ScalarType>
-            inline void init(const ScalarType& argument, int, int) {
-                result = 0;
-                boost::hash_combine(result, Traits<ScalarType>::hash(argument));
-            }
+        template <class ScalarType>
+        inline void init(const ScalarType& argument, int, int) {
+            result = 0;
+            boost::hash_combine(result, std::hash<ScalarType>()(argument));
+        }
         
-            template <class ScalarType>
-            inline void operator()(const ScalarType& argument, int, int) {
-                boost::hash_combine(result, Traits<ScalarType>::hash(argument));
-            }
-        };
+        template <class ScalarType>
+        inline void operator()(const ScalarType& argument, int, int) {
+            boost::hash_combine(result, std::hash<ScalarType>()(argument));
+        }
+    };
 
-        struct EqualVisitor
-        {
-            typedef bool result_type;
+    struct EqualVisitor
+    {
+        typedef bool result_type;
 
-            template <class ScalarType>
-            inline bool operator()(
-                const ScalarType& first_argument,
-                const ScalarType& second_argument
-            ) {return Traits<ScalarType>::equal(first_argument, second_argument);}
-        };
-    }
+        template <class ScalarType>
+        inline bool operator()(
+            const ScalarType& first_argument,
+            const ScalarType& second_argument
+        ) {return std::equal_to<ScalarType>()(first_argument, second_argument);}
+    };
+}
 
+namespace std
+{
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    inline typename Eigen::internal::conditional<
-        Eigen::internal::is_same<ScalarType, Interval>::value,
-        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>&,
-        const CwiseUnaryOp<
-            Eigen::internal::scalar_cast_op<Scalar, Interval>,
-            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
-        >
-    >::type Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::bounds(
-        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
-    ) const {return derived().template cast<Interval>();}
-
-    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    inline std::size_t
-    Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::hash(
-        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
+    inline size_t hash<
+        Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
+    >::operator()(
+        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {
         HashVisitor visitor;
-        derived().visit(visitor);
+        argument.visit(visitor);
         return visitor.result;
     }
 
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    inline bool Traits<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::equal(
-        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
-        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
-    ) {return first_argument.binaryExpr(second_argument, EqualVisitor()).all();}
+    inline bool equal_to<
+        Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
+    >::operator()(
+        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
+        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
+    ) const {return first_argument.binaryExpr(second_argument, EqualVisitor()).all();}
 }
 
 #endif

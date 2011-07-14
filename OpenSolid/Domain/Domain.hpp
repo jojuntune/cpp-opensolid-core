@@ -24,14 +24,19 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
-#include <OpenSolid/Common/Traits.hpp>
+#include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Geometry/Traits.hpp>
 
 namespace OpenSolid
 {
     class Geometry;
+
+    template <>
+    struct Bounds<Geometry>
+    {
+        VectorXI operator()(const Geometry& geometry) const;
+    };
     
     class Domain
     {
@@ -60,15 +65,23 @@ namespace OpenSolid
         
         OPENSOLID_CORE_EXPORT Domain concatenate(const Domain& other) const;
     };
+}
+
+namespace std
+{
+    template <>
+    struct hash<OpenSolid::Domain>
+    {
+        size_t operator()(const OpenSolid::Domain& argument) const;
+    };
 
     template <>
-    struct Traits<Domain>
+    struct equal_to<OpenSolid::Domain>
     {
-        typedef VectorXI Bounds;
-
-        VectorXI bounds(const Domain& argument);
-        std::size_t hash(const Domain& argument);
-        bool equal(const Domain& first_argument, const Domain& second_argument);
+        bool operator()(
+            const OpenSolid::Domain& first_argument,
+            const OpenSolid::Domain& second_argument
+        ) const;
     };
 }
 
@@ -124,15 +137,19 @@ namespace OpenSolid
         assert(dimensions() == 1);
         return value().upper();
     }
-    
-    inline VectorXI Traits<Domain>::bounds(const Domain& argument) {return argument.bounds();}
+}
 
-    inline std::size_t Traits<Domain>::hash(const Domain& argument) {
-        return Traits<Set<Geometry>>::hash(argument.boundaries());
+namespace std
+{
+    inline size_t hash<OpenSolid::Domain>::operator()(const OpenSolid::Domain& argument) const {
+        return hash<OpenSolid::Set<OpenSolid::Geometry>>()(argument.boundaries());
     }
 
-    inline bool Traits<Domain>::equal(const Domain& first_argument, const Domain& second_argument) {
-        return Traits<Set<Geometry>>::equal(
+    inline bool equal_to<OpenSolid::Domain>::operator()(
+        const OpenSolid::Domain& first_argument,
+        const OpenSolid::Domain& second_argument
+    ) const {
+        return equal_to<OpenSolid::Set<OpenSolid::Geometry>>()(
             first_argument.boundaries(),
             second_argument.boundaries()
         );

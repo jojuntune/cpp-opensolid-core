@@ -54,9 +54,8 @@ namespace OpenSolid
         int dimensions() const;
         
         VectorXI bounds() const;
-        std::size_t hashValue() const;
         
-        Set<Geometry, VectorXI> boundaries() const;
+        Set<Geometry> boundaries() const;
         
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
@@ -74,8 +73,6 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry curvature() const;
         OPENSOLID_CORE_EXPORT Geometry normal() const;
         OPENSOLID_CORE_EXPORT Geometry binormal() const;
-        
-        bool operator==(const Geometry& other) const;
         
         OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
         
@@ -133,10 +130,27 @@ namespace OpenSolid
     OPENSOLID_CORE_EXPORT Geometry sqrt(const Geometry& argument);
 }
 
+namespace std
+{
+    template <>
+    struct hash<OpenSolid::Geometry>
+    {
+        size_t operator()(const OpenSolid::Geometry& argument) const;
+    };
+
+    template <>
+    struct equal_to<OpenSolid::Geometry>
+    {
+        bool operator()(
+            const OpenSolid::Geometry& first_argument,
+            const OpenSolid::Geometry& second_argument
+        ) const;
+    };
+}
+
 ////////// Implementation //////////
 
 #include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Geometry/Traits.hpp>
 
 namespace OpenSolid
 {
@@ -186,21 +200,31 @@ namespace OpenSolid
         return function()(argument);
     }
 
-    inline VectorXI Traits<Geometry>::bounds(const Geometry& argument) {return argument.bounds();}
+    inline VectorXI Bounds<Geometry>::operator()(const Geometry& argument) const {
+        return argument.bounds();
+    }
+}
 
-    inline std::size_t Traits<Geometry>::hash(const Geometry& argument) {
-        std::size_t result = 0;
-        boost::hash_combine(result, Traits<Function>::hash(argument.function()));
-        boost::hash_combine(result, Traits<Domain>::hash(argument.domain()));
+namespace std
+{
+    inline size_t hash<OpenSolid::Geometry>::operator()(const OpenSolid::Geometry& argument) const {
+        size_t result = 0;
+        boost::hash_combine(result, hash<OpenSolid::Function>()(argument.function()));
+        boost::hash_combine(result, hash<OpenSolid::Domain>()(argument.domain()));
         return result;
     }
 
-    inline bool Traits<Geometry>::equal(
-        const Geometry& first_argument,
-        const Geometry& second_argument
-    ) {
-        return Traits<Function>::equal(first_argument.function(), second_argument.function()) &&
-            Traits<Domain>::equal(first_argument.domain(), second_argument.domain());
+    inline bool equal_to<OpenSolid::Geometry>::operator()(
+        const OpenSolid::Geometry& first_argument,
+        const OpenSolid::Geometry& second_argument
+    ) const {
+        return equal_to<OpenSolid::Function>()(
+            first_argument.function(),
+            second_argument.function()
+        ) && equal_to<OpenSolid::Domain>()(
+            first_argument.domain(),
+            second_argument.domain()
+        );
     }
 }
 

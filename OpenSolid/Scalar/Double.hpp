@@ -18,46 +18,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/FunctionImplementation/SquareRootFunction.hpp>
+#ifndef OPENSOLID__DOUBLE_HPP
+#define OPENSOLID__DOUBLE_HPP
+
+#include <algorithm>
+#include <cstdlib>
+#include <cmath>
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
+#include <OpenSolid/Common/Bounds.hpp>
 
 namespace OpenSolid
 {
-    SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryFunction(operand) {
-        assert(operand.dimensions() == 1);
-    }
+    using std::min;
+    using std::max;
+    using std::abs;
+    using std::sqrt;
+    using std::sin;
+    using std::cos;
+    using std::tan;
+    using std::asin;
+    using std::acos;
+    using std::atan;
+    using std::atan2;
+    using std::exp;
+    using std::log;
+    using std::pow;
+
+    class Interval;
     
-    int SquareRootFunction::dimensions() const {return 1;}
-    
-    struct SquareRoot
+    template <>
+    struct Bounds<int>
     {
-        inline double operator()(double value) const {
-            assert(value >= Zero());
-            return value > 0.0 ? sqrt(value) : 0.0;
-        }
-        
-        inline Interval operator()(const Interval& bounds) const {
-            assert(bounds >= Zero());
-            return Interval(operator()(bounds.lower()), operator()(bounds.upper()));
-        }
+        Interval operator()(int argument) const;
     };
     
-    void SquareRootFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).unaryExpr(SquareRoot());
-    }
-    
-    void SquareRootFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).unaryExpr(SquareRoot());
-    }
-
-    void SquareRootFunction::getDerivative(int index, Function& result) const {
-        result = 0.5 * operand().derivative(index) / sqrt(operand());
-    }
-    
-    void SquareRootFunction::getSquaredNorm(Function& result) const {result = operand().norm();}
-    
-    void SquareRootFunction::debug(std::ostream& stream, int indent) const {
-        stream << "SquareRootFunction" << std::endl;
-        operand().debug(stream, indent + 1);
-    }
+    template <>
+    struct Bounds<double>
+    {
+        Interval operator()(double argument) const;
+    };
 }
+
+////////// Implementation //////////
+
+#include <OpenSolid/Scalar/Interval.hpp>
+
+namespace OpenSolid
+{
+    inline Interval Bounds<int>::operator()(int argument) const {return argument;}
+
+    inline Interval Bounds<double>::operator()(double argument) const {return argument;}
+}
+
+#endif

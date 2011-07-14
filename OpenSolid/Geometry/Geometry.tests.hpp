@@ -18,11 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Common/HashFunction.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 
@@ -112,7 +111,7 @@ public:
     
     void testHashing() {
         Geometry line = Geometry::Line(Vector2d::Zero(), Vector2d::Ones());
-        boost::unordered_map<Geometry, std::string, HashFunction> colors;
+        std::unordered_map<Geometry, std::string> colors;
         colors[line] = "red";
         Geometry line_copy = line;
         TS_ASSERT_DIFFERS(colors.find(line_copy), colors.end());

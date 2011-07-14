@@ -94,12 +94,11 @@
 ########## Define lists of source files ##########
     
     SET(COMMON_HEADERS
+        Common/Bounds.hpp
         Common/config.hpp
         Common/Error.hpp
-        Common/HashFunction.hpp
         Common/ReferenceCounted.hpp
         Common/ReferenceCountedBase.hpp
-        Common/Traits.hpp
     )
     
     SET(COMMON_SOURCES
@@ -202,7 +201,6 @@
     SET(GEOMETRY_HEADERS
         Geometry/Geometry.hpp
         Geometry/Geometry.tests.hpp
-        Geometry/Traits.hpp
     )
     
     SET(GEOMETRY_SOURCES
@@ -236,6 +234,7 @@
 
     SET(SCALAR_HEADERS
         Scalar/Comparison.hpp
+        Scalar/double.hpp
         Scalar/Interval.hpp
         Scalar/Interval.tests.hpp
     )

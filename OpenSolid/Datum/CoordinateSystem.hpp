@@ -40,16 +40,25 @@ namespace OpenSolid
     typedef CoordinateSystem<3, 3> CoordinateSystem3d;
     typedef CoordinateSystem<4, 4> CoordinateSystem4d;
     typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystemXd;
+}
+
+namespace std
+{
+    template <int dimensions_, int axes_>
+    struct hash<OpenSolid::CoordinateSystem<dimensions_, axes_>>
+    {
+        std::size_t operator()(
+            const OpenSolid::CoordinateSystem<dimensions_, axes_>& argument
+        ) const;
+    };
 
     template <int dimensions_, int axes_>
-    struct Traits<CoordinateSystem<dimensions_, axes_>>
+    struct equal_to<OpenSolid::CoordinateSystem<dimensions_, axes_>>
     {
-        static std::size_t hash(const CoordinateSystem<dimensions_, axes_>& argument);
-        
-        static bool equal(
-            const CoordinateSystem<dimensions_, axes_>& first_argument,
-            const CoordinateSystem<dimensions_, axes_>& second_argument
-        );
+        bool operator()(
+            const OpenSolid::CoordinateSystem<dimensions_, axes_>& first_argument,
+            const OpenSolid::CoordinateSystem<dimensions_, axes_>& second_argument
+        ) const;
     };
 }
 
@@ -62,17 +71,22 @@ namespace OpenSolid
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {initialize(origin, vectors, false);}
+}
+
+namespace std
+{
+    template <int dimensions_, int axes_>
+    inline size_t hash<OpenSolid::CoordinateSystem<dimensions_, axes_>>::operator()(
+        const OpenSolid::CoordinateSystem<dimensions_, axes_>& argument
+    ) const {return hash<OpenSolid::Datum<dimensions_, axes_>>()(argument);}
 
     template <int dimensions_, int axes_>
-    inline std::size_t Traits<CoordinateSystem<dimensions_, axes_>>::hash(
-        const CoordinateSystem<dimensions_, axes_>& argument
-    ) {return Traits<Datum<dimensions_, axes_>>::hash(argument);}
-
-    template <int dimensions_, int axes_>
-    inline bool Traits<CoordinateSystem<dimensions_, axes_>>::equal(
-        const CoordinateSystem<dimensions_, axes_>& first_argument,
-        const CoordinateSystem<dimensions_, axes_>& second_argument
-    ) {return Traits<Datum<dimensions_, axes_>>::equal(first_argument, second_argument);}
+    inline bool equal_to<OpenSolid::CoordinateSystem<dimensions_, axes_>>::operator()(
+        const OpenSolid::CoordinateSystem<dimensions_, axes_>& first_argument,
+        const OpenSolid::CoordinateSystem<dimensions_, axes_>& second_argument
+    ) const {
+        return equal_to<OpenSolid::Datum<dimensions_, axes_>>()(first_argument, second_argument);
+    }
 }
 
 

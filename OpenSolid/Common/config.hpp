@@ -18,10 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <algorithm>
-#include <cstdlib>
-#include <cmath>
-
 #ifndef OPENSOLID__CONFIG_HPP
 #define OPENSOLID__CONFIG_HPP
 
@@ -50,27 +46,5 @@
     #define OPENSOLID_PYTHON_EXPORT
     #define OPENSOLID_SCRIPT_EXPORT
 #endif
-
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
-
-namespace OpenSolid
-{
-    using std::min;
-    using std::max;
-    using std::abs;
-    using std::sqrt;
-    using std::sin;
-    using std::cos;
-    using std::tan;
-    using std::asin;
-    using std::acos;
-    using std::atan;
-    using std::atan2;
-    using std::exp;
-    using std::log;
-    using std::pow;
-}
 
 #endif

@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__PLANE_HPP
 #define OPENSOLID__PLANE_HPP
 
-#include "Datum.hpp"
+#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
@@ -54,16 +54,23 @@ namespace OpenSolid
     typedef Plane<3> Plane3d;
     typedef Plane<4> Plane4d;
     typedef Plane<Dynamic> PlaneXd;
+}
+
+namespace std
+{
+    template <int dimensions_>
+    struct hash<OpenSolid::Plane<dimensions_>>
+    {
+        std::size_t operator()(const OpenSolid::Plane<dimensions_>& argument) const;
+    };
 
     template <int dimensions_>
-    struct Traits<Plane<dimensions_>>
+    struct equal_to<OpenSolid::Plane<dimensions_>>
     {
-        static std::size_t hash(const Plane<dimensions_>& argument);
-
-        static bool equal(
-            const Plane<dimensions_>& first_argument,
-            const Plane<dimensions_>& second_argument
-        );
+        bool operator()(
+            const OpenSolid::Plane<dimensions_>& first_argument,
+            const OpenSolid::Plane<dimensions_>& second_argument
+        ) const;
     };
 }
 
@@ -111,22 +118,27 @@ namespace OpenSolid
         initialize(other);
         return *this;
     }
+}
 
+namespace std
+{
     template <int dimensions_>
-    inline std::size_t Traits<Plane<dimensions_>>::hash(const Plane<dimensions_>& argument) {
-        return Traits<
-            Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
-        >::hash(argument);
+    inline size_t hash<OpenSolid::Plane<dimensions_>>::operator()(
+        const OpenSolid::Plane<dimensions_>& argument
+    ) const {
+        return hash<
+            OpenSolid::Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+        >()(argument);
     }
 
     template <int dimensions_>
-    inline bool Traits<Plane<dimensions_>>::equal(
-        const Plane<dimensions_>& first_argument,
-        const Plane<dimensions_>& second_argument
-    ) {
-        return Traits<
-            Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
-        >::equal(first_argument, second_argument);
+    inline bool equal_to<OpenSolid::Plane<dimensions_>>::operator()(
+        const OpenSolid::Plane<dimensions_>& first_argument,
+        const OpenSolid::Plane<dimensions_>& second_argument
+    ) const {
+        return equal_to<
+            OpenSolid::Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+        >()(first_argument, second_argument);
     }
 }
 

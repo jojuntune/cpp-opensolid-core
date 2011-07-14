@@ -57,7 +57,7 @@ namespace OpenSolid
     
     void ConstantFunction::getNormalized(Function& result) const {
         double norm = vector().norm();
-        assert(norm.isGreaterThan(0.0));
+        assert(norm > Zero());
         result = vector() / norm;
     }
     

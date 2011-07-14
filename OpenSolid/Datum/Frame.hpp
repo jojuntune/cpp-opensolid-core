@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__FRAME_HPP
 #define OPENSOLID__FRAME_HPP
 
-#include "Datum.hpp"
+#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
@@ -51,16 +51,23 @@ namespace OpenSolid
     typedef Frame<3> Frame3d;
     typedef Frame<4> Frame4d;
     typedef Frame<Dynamic> FrameXd;
+}
+
+namespace std
+{
+    template <int dimensions_>
+    struct hash<OpenSolid::Frame<dimensions_>>
+    {
+        std::size_t operator()(const OpenSolid::Frame<dimensions_>& argument) const;
+    };
 
     template <int dimensions_>
-    struct Traits<Frame<dimensions_>>
+    struct equal_to<OpenSolid::Frame<dimensions_>>
     {
-        static std::size_t hash(const Frame<dimensions_>& argument);
-
-        static bool equal(
-            const Frame<dimensions_>& first_argument,
-            const Frame<dimensions_>& second_argument
-        );
+        bool operator()(
+            const OpenSolid::Frame<dimensions_>& first_argument,
+            const OpenSolid::Frame<dimensions_>& second_argument
+        ) const;
     };
 }
 
@@ -113,17 +120,25 @@ namespace OpenSolid
         initialize(other);
         return *this;
     }
+}
+
+namespace std
+{
+    template <int dimensions_>
+    inline size_t hash<OpenSolid::Frame<dimensions_>>::operator()(
+        const OpenSolid::Frame<dimensions_>& argument
+    ) const {return hash<OpenSolid::Datum<dimensions_, dimensions_>>()(argument);}
 
     template <int dimensions_>
-    inline std::size_t Traits<Frame<dimensions_>>::hash(const Frame<dimensions_>& argument) {
-        return Traits<Datum<dimensions_, dimensions_>>::hash(argument);
+    inline bool equal_to<OpenSolid::Frame<dimensions_>>::operator()(
+        const OpenSolid::Frame<dimensions_>& first_argument,
+        const OpenSolid::Frame<dimensions_>& second_argument
+    ) const {
+        return equal_to<OpenSolid::Datum<dimensions_, dimensions_>>()(
+            first_argument,
+            second_argument
+        );
     }
-
-    template <int dimensions_>
-    inline bool Traits<Frame<dimensions_>>::equal(
-        const Frame<dimensions_>& first_argument,
-        const Frame<dimensions_>& second_argument
-    ) {return Traits<Datum<dimensions_, dimensions_>>::equal(first_argument, second_argument);}
 }
 
 #endif

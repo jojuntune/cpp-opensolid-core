@@ -18,15 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__HASHFUNCTION_HPP
-#define OPENSOLID__HASHFUNCTION_HPP
+#ifndef OPENSOLID__BOUNDS_HPP
+#define OPENSOLID__BOUNDS_HPP
+
+#include <functional>
+#include <vector>
 
 namespace OpenSolid
 {
-    struct HashFunction
+    template <class Type>
+    class Bounds
     {
-        template <class Type>
-        inline std::size_t operator()(const Type& argument) const;
+        auto operator()(const Type& argument) const -> decltype(argument.bounds());
+    };
+
+    template <class Type, class AllocatorType>
+    class Bounds<std::vector<Type, AllocatorType>>
+    {
+        typename std::result_of<Bounds<Type>(Type)>::type operator()(
+            const std::vector<Type, AllocatorType>& argument
+        ) const;
     };
 }
 
@@ -35,10 +46,30 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    inline std::size_t HashFunction::operator()(const Type& argument) const {
-        return Traits<Type>::hashValue(argument);
+    inline auto Bounds<Type>::operator()(const Type& argument) const ->
+        decltype(argument.bounds()) {
+        return argument.bounds();
+    }
+    
+    template <class Type, class AllocatorType>
+    typename std::result_of<Bounds<Type>(Type)>::type
+    Bounds<std::vector<Type, AllocatorType>>::operator()(
+        const std::vector<Type, AllocatorType>& argument
+    ) const {
+        typedef std::result_of<Bounds<Type>(Type)>::type BoundsType;
+        Bounds<Type> bounds_function;
+        if (argument.empty()) {
+            return BoundsType::Empty();
+        } else {
+            BoundsType result = bounds_function(argument.front());
+            std::for_each(
+                ++argument.begin(),
+                argument.end(),
+                [&result] (const Type& item) {result = result.hull(bounds_function(item));}
+            );
+            return result;
+        }
     }
 }
-
 
 #endif
