@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__COORDINATESYSTEM_HPP
 #define OPENSOLID__COORDINATESYSTEM_HPP
 
+#include <functional>
+
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid

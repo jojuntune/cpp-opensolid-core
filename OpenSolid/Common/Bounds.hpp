@@ -23,20 +23,29 @@
 
 #include <functional>
 #include <vector>
+#include <type_traits>
 
 namespace OpenSolid
 {
-    template <class Type>
+    template <class BoundedType>
     class Bounds
     {
-        auto operator()(const Type& argument) const -> decltype(argument.bounds());
+        typedef typename std::remove_const<
+            typename std::remove_reference<
+                decltype(((const Type*) nullptr)->bounds())
+            >::type
+        >::type Type;
+
+        auto operator()(const BoundedType& argument) const -> decltype(argument.bounds());
     };
 
-    template <class Type, class AllocatorType>
-    class Bounds<std::vector<Type, AllocatorType>>
+    template <class BoundedType, class AllocatorType>
+    class Bounds<std::vector<BoundedType, AllocatorType>>
     {
-        typename std::result_of<Bounds<Type>(Type)>::type operator()(
-            const std::vector<Type, AllocatorType>& argument
+        typedef typename Bounds<BoundedType>::Type Type;
+
+        typename Bounds<BoundedType>::Type operator()(
+            const std::vector<BoundedType, AllocatorType>& argument
         ) const;
     };
 }
@@ -45,21 +54,20 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    template <class Type>
-    inline auto Bounds<Type>::operator()(const Type& argument) const ->
+    template <class BoundedType>
+    inline auto Bounds<BoundedType>::operator()(const BoundedType& argument) const ->
         decltype(argument.bounds()) {
         return argument.bounds();
     }
     
-    template <class Type, class AllocatorType>
-    typename std::result_of<Bounds<Type>(Type)>::type
-    Bounds<std::vector<Type, AllocatorType>>::operator()(
-        const std::vector<Type, AllocatorType>& argument
+    template <class BoundedType, class AllocatorType>
+    typename Bounds<BoundedType>::Type Bounds<std::vector<BoundedType, AllocatorType>>::operator()(
+        const std::vector<BoundedType, AllocatorType>& argument
     ) const {
-        typedef std::result_of<Bounds<Type>(Type)>::type BoundsType;
+        typedef typename Bounds<BoundedType>::Type BoundsType;
         Bounds<Type> bounds_function;
         if (argument.empty()) {
-            return BoundsType::Empty();
+            return BoundsType();
         } else {
             BoundsType result = bounds_function(argument.front());
             std::for_each(

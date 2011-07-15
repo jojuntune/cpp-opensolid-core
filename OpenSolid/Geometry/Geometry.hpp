@@ -185,7 +185,13 @@ namespace OpenSolid
     
     inline int Geometry::dimensions() const {return function().dimensions();}
     
-    inline VectorXI Geometry::bounds() const {return function()(domain().bounds());}
+    inline VectorXI Geometry::bounds() const {
+        if (function().isA<ConstantFunction>()) {
+            return function().as<ConstantFunction>().vector().cast<Interval>();
+        } else {
+            return function()(domain().bounds());
+        }
+    }
     
     inline Set<Geometry> Geometry::boundaries() const {
         Set<Geometry> results;

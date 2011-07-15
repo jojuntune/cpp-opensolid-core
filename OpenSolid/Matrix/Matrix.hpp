@@ -251,7 +251,18 @@ namespace OpenSolid
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
     struct Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
     {
-        Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_> operator()(
+        typedef Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_> Type;
+
+        typedef typename internal::conditional<
+            internal::is_same<ScalarType, Interval>::value,
+            const Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_>&,
+            const CwiseUnaryOp<
+                internal::scalar_cast_op<ScalarType, Interval>,
+                const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
+            >
+        >::type CastType;
+
+        CastType operator()(
             const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
         ) const;
     };
@@ -426,12 +437,44 @@ namespace Eigen
     DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
         return LinSpaced(Scalar(range.lower()), Scalar(range.upper()));
     }
+
+    template <class DerivedType>
+    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty() {
+        return Constant(OpenSolid::Interval::Empty());
+    }
+    
+    template <class DerivedType>
+    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty(
+        typename DenseBase<DerivedType>::Index size
+    ) {return Constant(size, OpenSolid::Interval::Empty());}
+    
+    template <class DerivedType>
+    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty(
+        typename DenseBase<DerivedType>::Index rows,
+        typename DenseBase<DerivedType>::Index cols
+    ) {return Constant(rows, cols, OpenSolid::Interval::Empty());}
+
+    template <class DerivedType>
+    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole() {
+        return Constant(OpenSolid::Interval::Whole());
+    }
+    
+    template <class DerivedType>
+    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole(
+        typename DenseBase<DerivedType>::Index size
+    ) {return Constant(size, OpenSolid::Interval::Whole());}
+    
+    template <class DerivedType>
+    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole(
+        typename DenseBase<DerivedType>::Index rows,
+        typename DenseBase<DerivedType>::Index cols
+    ) {return Constant(rows, cols, OpenSolid::Interval::Whole());}
 }
 
 namespace OpenSolid
 {
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    inline Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_>
+    inline typename Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::CastType
     Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::operator()(
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return argument.template cast<Interval>();}

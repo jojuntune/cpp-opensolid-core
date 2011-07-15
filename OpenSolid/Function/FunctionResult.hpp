@@ -21,7 +21,8 @@
 #ifndef OPENSOLID__FUNCTIONRESULT_HPP
 #define OPENSOLID__FUNCTIONRESULT_HPP
 
-#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Scalar/double.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Function/FunctionArgument.hpp>
 

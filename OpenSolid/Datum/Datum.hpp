@@ -244,6 +244,8 @@ namespace std
 
 ////////// Implementation //////////
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Datum/DatumExpressions.hpp>
 #include <OpenSolid/Datum/Axis.hpp>
 #include <OpenSolid/Datum/Plane.hpp>

@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__PLANE_HPP
 #define OPENSOLID__PLANE_HPP
 
+#include <functional>
+
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid

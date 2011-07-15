@@ -22,8 +22,8 @@
 #define OPENSOLID__FUNCTION_HPP
 
 #include <typeinfo>
+#include <functional>
 
-#include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
 #include <OpenSolid/Common/config.hpp>
@@ -194,6 +194,8 @@ namespace std
 }
 
 ////////// Implementation //////////
+
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Function/FunctionResult.hpp>
 

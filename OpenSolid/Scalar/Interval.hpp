@@ -96,7 +96,9 @@ namespace OpenSolid
     template <>
     struct Bounds<Interval>
     {
-        Interval operator()(const Interval& argument) const;
+        typedef Interval Type;
+
+        const Interval& operator()(const Interval& argument) const;
     };
 
     bool operator==(double first_argument, const Interval& second_argument);
@@ -186,7 +188,7 @@ namespace std
 
 namespace OpenSolid
 {
-    inline Interval::Interval() : _value() {}
+    inline Interval::Interval() : _value(BoostInterval::empty()) {}
     
     inline Interval::Interval(double argument) : _value(argument) {}
 
@@ -291,7 +293,9 @@ namespace OpenSolid
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}
     
-    inline Interval Bounds<Interval>::operator()(const Interval& argument) const {return argument;}
+    inline const Interval& Bounds<Interval>::operator()(const Interval& argument) const {
+        return argument;
+    }
 
     inline bool operator==(double first_argument, const Interval& second_argument) {
         return first_argument == second_argument.lower() &&

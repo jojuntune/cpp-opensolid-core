@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__DOMAIN_HPP
 #define OPENSOLID__DOMAIN_HPP
  
-#include <boost/functional/hash.hpp>
+#include <functional>
 
 #include <OpenSolid/Common/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
@@ -35,6 +35,8 @@ namespace OpenSolid
     template <>
     struct Bounds<Geometry>
     {
+        typedef VectorXI Type;
+
         VectorXI operator()(const Geometry& geometry) const;
     };
     
@@ -56,7 +58,7 @@ namespace OpenSolid
         bool empty() const;
         int dimensions() const;
 
-        VectorXI bounds() const;
+        const VectorXI& bounds() const;
         Interval value() const;
         double lower() const;
         double upper() const;
@@ -87,6 +89,8 @@ namespace std
 
 ////////// Implementation //////////
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
@@ -110,20 +114,15 @@ namespace OpenSolid
     
     inline int Domain::dimensions() const {return bounds().size();}
     
-    inline VectorXI Domain::bounds() const {
-        if (boundaries().empty()) {
-            return VectorXI();
-        } else {
-            return boundaries().bounds();
-        }
+    inline const VectorXI& Domain::bounds() const {
+        assert(!empty());
+        return boundaries().bounds();
     }
 
     inline Interval Domain::value() const {
-        if (boundaries().empty()) {
-            return Interval::Empty();
-        } else {
-            return bounds().value();
-        }
+        assert(!empty());
+        assert(dimensions() == 1);
+        return bounds().value();
     }
 
     inline double Domain::lower() const {

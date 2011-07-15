@@ -53,12 +53,16 @@ namespace OpenSolid
     template <>
     struct Bounds<int>
     {
+        typedef Interval Type;
+
         Interval operator()(int argument) const;
     };
     
     template <>
     struct Bounds<double>
     {
+        typedef Interval Type;
+
         Interval operator()(double argument) const;
     };
 }

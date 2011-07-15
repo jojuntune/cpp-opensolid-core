@@ -24,42 +24,52 @@ inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
 inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
 
 template<class OtherDerivedType>
-inline bool overlaps(
+bool overlaps(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
 template<class OtherDerivedType>
-inline bool strictlyOverlaps(
+bool strictlyOverlaps(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
 template<class OtherDerivedType>
-inline bool contains(
+bool contains(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
 template<class OtherDerivedType>
-inline bool strictlyContains(
+bool strictlyContains(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
 template <class OtherDerivedType>
-inline CwiseBinaryOp<HullOperation, const Derived, const OtherDerivedType> hull(
+CwiseBinaryOp<HullOperation, const Derived, const OtherDerivedType> hull(
     const DenseBase<OtherDerivedType>& other
 ) const;
 
 template <class OtherDerivedType>
-inline CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> intersection(
+CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> intersection(
     const DenseBase<OtherDerivedType>& other
 ) const;
 
-inline static const RandomAccessLinSpacedReturnType LinSpaced(
+static const RandomAccessLinSpacedReturnType LinSpaced(
     Index size,
     const OpenSolid::Interval& range
 );
 
-inline static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range);
+static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range);
+
+static const ConstantReturnType Empty();
+static const ConstantReturnType Empty(Index size);
+static const ConstantReturnType Empty(Index rows, Index cols);
+
+static const ConstantReturnType Whole();
+static const ConstantReturnType Whole(Index size);
+static const ConstantReturnType Whole(Index rows, Index cols);
+
+

@@ -41,7 +41,7 @@ namespace OpenSolid
     class Set
     {
     public:
-        typedef decltype(BoundsFunctionType()(*((const Type*) nullptr))) Bounds;
+        typedef typename BoundsFunctionType::Type Bounds;
         typedef SetNode<Type, Bounds> Node;
         typedef SetIterator<Type, Bounds> Iterator;
     private:
@@ -68,7 +68,7 @@ namespace OpenSolid
         
         int size() const;
         bool empty() const;
-        Bounds bounds() const;
+        const Bounds& bounds() const;
         
         const Type& front() const;
         const Type& back() const;
@@ -245,7 +245,7 @@ namespace OpenSolid
     Set<Type, BoundsFunctionType>::end() const {return nullptr;}
     
     template <class Type, class BoundsFunctionType>
-    inline typename Set<Type, BoundsFunctionType>::Bounds
+    inline const typename Set<Type, BoundsFunctionType>::Bounds&
     Set<Type, BoundsFunctionType>::bounds() const {
         assert(!empty());
         return root()->bounds();
