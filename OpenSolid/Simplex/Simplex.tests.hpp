@@ -22,6 +22,7 @@
 
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
+#include <OpenSolid/Set/Set.hpp>
 
 using namespace OpenSolid;
 
@@ -148,4 +149,29 @@ public:
         TS_ASSERT(product.vertex(0).isApprox(Vector3d(2, 3, 4)));
         TS_ASSERT(product.vertex(1).isApprox(Vector3d(3, 4, 5)));
     }
+
+	void testSet() {
+		Set<Triangle3d> set;
+		Triangle3d first_triangle(
+			Vector3d::Zero(),
+			Vector3d(1, 0, 0),
+			Vector3d(0, 1, 0)
+		);
+		Triangle3d second_triangle(
+			Vector3d(2, 1, 0),
+			Vector3d(3, 0, 0),
+			Vector3d(3, 1, 0)
+		);
+		Triangle3d third_triangle(
+			Vector3d(0, 0, 1),
+			Vector3d(1, 0, 1),
+			Vector3d(1, 1, 1)
+		);
+		set.insert(first_triangle);
+		set.insert(second_triangle);
+		set.insert(third_triangle);
+		Set<Triangle3d> overlapping = set.overlapping(first_triangle.bounds());
+		TS_ASSERT_EQUALS(overlapping.size(), 1);
+		TS_ASSERT_EQUALS(overlapping.front(), first_triangle);
+	}
 };

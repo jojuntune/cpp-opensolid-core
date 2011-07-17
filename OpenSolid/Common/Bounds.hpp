@@ -28,11 +28,11 @@
 namespace OpenSolid
 {
     template <class BoundedType>
-    class Bounds
+    struct Bounds
     {
         typedef typename std::remove_const<
             typename std::remove_reference<
-                decltype(((const Type*) nullptr)->bounds())
+                decltype(((const BoundedType*) nullptr)->bounds())
             >::type
         >::type Type;
 
@@ -40,7 +40,7 @@ namespace OpenSolid
     };
 
     template <class BoundedType, class AllocatorType>
-    class Bounds<std::vector<BoundedType, AllocatorType>>
+    struct Bounds<std::vector<BoundedType, AllocatorType>>
     {
         typedef typename Bounds<BoundedType>::Type Type;
 
