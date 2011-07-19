@@ -23,6 +23,8 @@
 
 #include <functional>
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Common/config.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
@@ -242,9 +244,16 @@ namespace std
     };
 }
 
-////////// Implementation //////////
+namespace boost
+{
+    template <int dimensions_, int axes_>
+    struct hash<OpenSolid::Datum<dimensions_, axes_>> :
+        public std::hash<OpenSolid::Datum<dimensions_, axes_>>
+    {
+    };
+}
 
-#include <boost/functional/hash.hpp>
+////////// Implementation //////////
 
 #include <OpenSolid/Datum/DatumExpressions.hpp>
 #include <OpenSolid/Datum/Axis.hpp>

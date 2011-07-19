@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__GEOMETRY_HPP
 #define OPENSOLID__GEOMETRY_HPP
 
+#include <functional>
+
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Matrix/Matrix.hpp>
@@ -145,6 +147,14 @@ namespace std
             const OpenSolid::Geometry& first_argument,
             const OpenSolid::Geometry& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <>
+    struct hash<OpenSolid::Geometry> : public std::hash<OpenSolid::Geometry>
+    {
     };
 }
 

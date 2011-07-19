@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <boost/functional/hash.hpp>
+#include <boost/unordered_map.hpp>
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Scalar/Comparison.hpp>
@@ -124,6 +126,14 @@ public:
             std::hash<LineSegment2d>()(first_line),
             std::hash<LineSegment2d>()(second_line)
         );
+    }
+    
+    void testBoostHashing() {
+        boost::unordered_map<LineSegment2d, std::string> map;
+        LineSegment2d first_line(Vector2d::Zero(), Vector2d::Ones());
+        LineSegment2d second_line(Vector2d::Zero(), Vector2d::Ones());
+        map[first_line] = "value";
+        TS_ASSERT_EQUALS(map[second_line], "value");
     }
     
     void testCoordinateSystem() {

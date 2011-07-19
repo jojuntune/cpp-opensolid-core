@@ -25,6 +25,7 @@
 #include <functional>
 
 #include <boost/intrusive_ptr.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
@@ -190,6 +191,14 @@ namespace std
             const OpenSolid::Function& first_argument,
             const OpenSolid::Function& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <>
+    struct hash<OpenSolid::Function> : public std::hash<OpenSolid::Function>
+    {
     };
 }
 

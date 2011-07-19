@@ -23,6 +23,8 @@
  
 #include <functional>
 
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Common/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Set/Set.hpp>
@@ -84,6 +86,14 @@ namespace std
             const OpenSolid::Domain& first_argument,
             const OpenSolid::Domain& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <>
+    struct hash<OpenSolid::Domain> : public std::hash<OpenSolid::Domain>
+    {
     };
 }
 

@@ -21,8 +21,6 @@
 #ifndef OPENSOLID__AXIS_HPP
 #define OPENSOLID__AXIS_HPP
 
-#include <functional>
-
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
@@ -65,6 +63,14 @@ namespace std
             const OpenSolid::Axis<dimensions_>& first_argument,
             const OpenSolid::Axis<dimensions_>& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <int dimensions_>
+    struct hash<OpenSolid::Axis<dimensions_>> : public std::hash<OpenSolid::Axis<dimensions_>>
+    {
     };
 }
 

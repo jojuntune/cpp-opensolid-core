@@ -21,6 +21,10 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
+#include <functional>
+
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
@@ -285,6 +289,15 @@ namespace std
             const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
             const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
+    struct hash<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>> :
+        public std::hash<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    {
     };
 }
 

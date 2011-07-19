@@ -21,6 +21,10 @@
 #ifndef OPENSOLID__SIMPLEX_HPP
 #define OPENSOLID__SIMPLEX_HPP
 
+#include <functional>
+
+#include <boost/functional/hash.hpp>
+
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -150,6 +154,15 @@ namespace std
     struct hash<OpenSolid::Simplex<dimensions_, size_>>
     {
         size_t operator()(const OpenSolid::Simplex<dimensions_, size_>& argument) const;
+    };
+}
+
+namespace boost
+{
+    template <int dimensions_, int size_>
+    struct hash<OpenSolid::Simplex<dimensions_, size_>> :
+        public std::hash<OpenSolid::Simplex<dimensions_, size_>>
+    {
     };
 }
 

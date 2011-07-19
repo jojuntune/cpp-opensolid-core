@@ -21,8 +21,6 @@
 #ifndef OPENSOLID__FRAME_HPP
 #define OPENSOLID__FRAME_HPP
 
-#include <functional>
-
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
@@ -70,6 +68,14 @@ namespace std
             const OpenSolid::Frame<dimensions_>& first_argument,
             const OpenSolid::Frame<dimensions_>& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <int dimensions_>
+    struct hash<OpenSolid::Frame<dimensions_>> : public std::hash<OpenSolid::Frame<dimensions_>>
+    {
     };
 }
 

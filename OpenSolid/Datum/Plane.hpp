@@ -21,8 +21,6 @@
 #ifndef OPENSOLID__PLANE_HPP
 #define OPENSOLID__PLANE_HPP
 
-#include <functional>
-
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
@@ -73,6 +71,14 @@ namespace std
             const OpenSolid::Plane<dimensions_>& first_argument,
             const OpenSolid::Plane<dimensions_>& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <int dimensions_>
+    struct hash<OpenSolid::Plane<dimensions_>> : public std::hash<OpenSolid::Plane<dimensions_>>
+    {
     };
 }
 

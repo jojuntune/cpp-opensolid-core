@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cassert>
 #include <utility>
+#include <functional>
 
 #include <boost/numeric/interval.hpp>
 #include <boost/functional/hash.hpp>
@@ -179,6 +180,14 @@ namespace std
             const OpenSolid::Interval& first_argument,
             const OpenSolid::Interval& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <>
+    struct hash<OpenSolid::Interval> : public std::hash<OpenSolid::Interval>
+    {
     };
 }
 

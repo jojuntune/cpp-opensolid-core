@@ -28,6 +28,7 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Set/SetNode.hpp>
@@ -136,6 +137,15 @@ namespace std
             const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
             const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
         );
+    };
+}
+
+namespace boost
+{
+    template <class Type, class BoundsFunctionType>
+    struct hash<OpenSolid::Set<Type, BoundsFunctionType>> :
+        public std::hash<OpenSolid::Set<Type, BoundsFunctionType>>
+    {
     };
 }
     

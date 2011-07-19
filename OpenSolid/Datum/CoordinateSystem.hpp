@@ -21,8 +21,6 @@
 #ifndef OPENSOLID__COORDINATESYSTEM_HPP
 #define OPENSOLID__COORDINATESYSTEM_HPP
 
-#include <functional>
-
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
@@ -61,6 +59,15 @@ namespace std
             const OpenSolid::CoordinateSystem<dimensions_, axes_>& first_argument,
             const OpenSolid::CoordinateSystem<dimensions_, axes_>& second_argument
         ) const;
+    };
+}
+
+namespace boost
+{
+    template <int dimensions_, int axes_>
+    struct hash<OpenSolid::CoordinateSystem<dimensions_, axes_>> :
+        public std::hash<OpenSolid::CoordinateSystem<dimensions_, axes_>>
+    {
     };
 }
 
