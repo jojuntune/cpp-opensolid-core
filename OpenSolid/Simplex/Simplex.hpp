@@ -95,6 +95,7 @@ namespace OpenSolid
         double volume() const;
         double hypervolume() const;
         
+        Vector vector() const;
         Vector centroid() const;
         Vector normal() const;
         
@@ -335,6 +336,17 @@ namespace OpenSolid
             }
             return sqrt(squared_hypervolume);
         }
+    }
+    
+    template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::Vector
+    Simplex<dimensions_, size_>::vector() const {
+        static_assert(
+            size_ == 2 || size_ == Dynamic,
+            "Simplex::vector() only valid for line segments"
+        );
+        assert(size() == 2 && "Simplex::vector() only valid for line segments");
+        return vertex(1) - vertex(0);
     }
     
     template <int dimensions_, int size_>

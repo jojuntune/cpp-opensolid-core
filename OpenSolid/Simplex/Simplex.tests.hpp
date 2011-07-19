@@ -174,4 +174,9 @@ public:
 		TS_ASSERT_EQUALS(overlapping.size(), 1);
 		TS_ASSERT_EQUALS(overlapping.front(), first_triangle);
 	}
+
+    void testVector() {
+        LineSegment3d line_segment(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+        TS_ASSERT(line_segment.vector().isApprox(Vector3d::Constant(3)));
+    }
 };
