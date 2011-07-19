@@ -95,6 +95,7 @@
     
     SET(COMMON_HEADERS
         Common/Bounds.hpp
+        Common/Bounds.tests.hpp
         Common/config.hpp
         Common/Error.hpp
         Common/ReferenceCounted.hpp
@@ -367,6 +368,7 @@
     ADD_CXXTEST(Geometry.tests Geometry/Geometry.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Simplex.tests Simplex/Simplex.tests.hpp OpenSolidCore)
     ADD_CXXTEST(Script.tests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
+    ADD_CXXTEST(Bounds.tests Common/Bounds.tests.hpp OpenSolidCore)
     
 ######################################################################
 #                                                                    #
