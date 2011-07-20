@@ -295,7 +295,7 @@ public:
         ++i;
         TS_ASSERT_EQUALS(*i, 5);
         ++i;
-        TS_ASSERT_EQUALS(i, set.end());
+        TS_ASSERT(i == set.end());
     }
     
     void testRangeOperations() {
