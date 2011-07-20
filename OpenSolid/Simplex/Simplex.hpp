@@ -24,6 +24,7 @@
 #include <functional>
 
 #include <boost/functional/hash.hpp>
+#include <boost/geometry.hpp>
 
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
@@ -168,6 +169,50 @@ namespace boost
         public std::hash<OpenSolid::Simplex<dimensions_, size_>>
     {
     };
+
+    namespace geometry
+    {
+        namespace traits
+        {
+            template <>
+            struct tag<OpenSolid::LineSegment2d>
+            {
+                typedef segment_tag type;
+            };
+
+            template <>
+            struct tag<OpenSolid::LineSegment3d>
+            {
+                typedef segment_tag type;
+            };
+
+            template <>
+            struct point_type<OpenSolid::LineSegment2d>
+            {
+                typedef Eigen::Vector2d type;
+            };
+
+            template <>
+            struct point_type<OpenSolid::LineSegment3d>
+            {
+                typedef Eigen::Vector3d type;
+            };
+
+            template <std::size_t index_, std::size_t dimension_>
+            struct indexed_access<OpenSolid::LineSegment2d, index_, dimension_>
+            {
+                static double get(const OpenSolid::LineSegment2d& argument);
+                static inline void set(OpenSolid::LineSegment2d& argument, double value);
+            };
+
+            template <std::size_t index_, std::size_t dimension_>
+            struct indexed_access<OpenSolid::LineSegment3d, index_, dimension_>
+            {
+                static double get(const OpenSolid::LineSegment3d& argument);
+                static inline void set(OpenSolid::LineSegment3d& argument, double value);
+            };
+        }
+    }
 }
 
 ////////// Implementation //////////
@@ -490,6 +535,37 @@ namespace std
         return hash<typename OpenSolid::Simplex<dimensions_, size_>::Vertices>()(
             argument.vertices()
         );
+    }
+}
+
+namespace boost
+{
+    namespace geometry
+    {
+        namespace traits
+        {
+            template <std::size_t index_, std::size_t dimension_>
+            double indexed_access<OpenSolid::LineSegment2d, index_, dimension_>::get(
+                const OpenSolid::LineSegment2d& argument
+            ) {return argument.vertex(index_)(dimension_);}
+
+            template <std::size_t index_, std::size_t dimension_>
+            void indexed_access<OpenSolid::LineSegment2d, index_, dimension_>::set(
+                OpenSolid::LineSegment2d& argument,
+                double value
+            ) {argument.vertex(index_)(dimension_) = value;}
+
+            template <std::size_t index_, std::size_t dimension_>
+            double indexed_access<OpenSolid::LineSegment3d, index_, dimension_>::get(
+                const OpenSolid::LineSegment3d& argument
+            ) {return argument.vertex(index_)(dimension_);}
+
+            template <std::size_t index_, std::size_t dimension_>
+            void indexed_access<OpenSolid::LineSegment3d, index_, dimension_>::set(
+                OpenSolid::LineSegment3d& argument,
+                double value
+            ) {argument.vertex(index_)(dimension_) = value;}
+        }
     }
 }
 

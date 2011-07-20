@@ -20,6 +20,7 @@
 
 #include <boost/functional/hash.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/geometry.hpp>
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Scalar/Comparison.hpp>
@@ -188,5 +189,15 @@ public:
     void testVector() {
         LineSegment3d line_segment(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
         TS_ASSERT(line_segment.vector().isApprox(Vector3d::Constant(3)));
+    }
+
+    void testBoostGeometry() {
+        LineSegment3d segment3d(Vector3d(1, 1, 1), Vector3d(4, 5, 6));
+        TS_ASSERT(boost::geometry::length(segment3d) == Approx(segment3d.length()));
+        //LineSegment2d segment1(Vector2d::Zero(), Vector2d(2, 0));
+        //LineSegment2d segment2(Vector2d(1, 1), Vector2d(1, 3));
+        //LineSegment2d segment3(Vector2d(0, 1), Vector2d(2, 3));
+        //TS_ASSERT(!boost::geometry::intersects(segment1, segment2));
+        //TS_ASSERT(boost::geometry::intersects(segment2, segment3));
     }
 };
