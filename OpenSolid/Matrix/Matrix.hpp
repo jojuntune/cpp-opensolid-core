@@ -639,7 +639,7 @@ namespace
         inline bool operator()(
             const ScalarType& first_argument,
             const ScalarType& second_argument
-        ) {return std::equal_to<ScalarType>()(first_argument, second_argument);}
+        ) const {return std::equal_to<ScalarType>()(first_argument, second_argument);}
     };
 }
 

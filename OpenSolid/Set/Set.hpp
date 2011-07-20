@@ -136,7 +136,7 @@ namespace std
         bool operator()(
             const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
             const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
-        );
+        ) const;
     };
 }
 
@@ -467,7 +467,7 @@ namespace std
     inline bool equal_to<OpenSolid::Set<Type, BoundsFunctionType>>::operator()(
         const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
         const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
-    ) {return first_argument.root() == second_argument.root();}
+    ) const {return first_argument.root() == second_argument.root();}
 }
 
 #endif
