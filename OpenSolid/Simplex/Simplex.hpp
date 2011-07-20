@@ -36,7 +36,8 @@ namespace OpenSolid
     {
     public:
         typedef Matrix<double, dimensions_, size_> Vertices;
-        typedef typename Vertices::ConstColXpr Vertex;
+        typedef typename Vertices::ColXpr Vertex;
+        typedef typename Vertices::ConstColXpr ConstVertex;
         typedef Simplex<dimensions_, 2> Edge;
         typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> Face;
         typedef Matrix<double, dimensions_, 1> Vector;
@@ -91,8 +92,11 @@ namespace OpenSolid
         int dimensions() const;
         int size() const;
         
+        Vertices& vertices();
         const Vertices& vertices() const;
-        Vertex vertex(int index) const;
+
+        Vertex vertex(int index);
+        ConstVertex vertex(int index) const;
         
         double length() const;
         double area() const;
@@ -259,11 +263,19 @@ namespace OpenSolid
     inline int Simplex<dimensions_, size_>::size() const {return _vertices.cols();}
     
     template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::Vertices&
+    Simplex<dimensions_, size_>::vertices() {return _vertices;}
+    
+    template <int dimensions_, int size_>
     inline const typename Simplex<dimensions_, size_>::Vertices&
     Simplex<dimensions_, size_>::vertices() const {return _vertices;}
     
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::Vertex
+    Simplex<dimensions_, size_>::vertex(int index) {return _vertices.col(index);}
+    
+    template <int dimensions_, int size_>
+    inline typename Simplex<dimensions_, size_>::ConstVertex
     Simplex<dimensions_, size_>::vertex(int index) const {return _vertices.col(index);}
     
     template <int dimensions_, int size_>
