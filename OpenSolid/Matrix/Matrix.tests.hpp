@@ -164,4 +164,12 @@ public:
         read = b.row(1).data();
         TS_ASSERT_EQUALS(*(read + 1), 4);
     }
+
+    void testBoostGeometry() {
+        Vector2d point(3, 4);
+        TS_ASSERT_EQUALS(boost::geometry::get<0>(point), 3);
+        TS_ASSERT_EQUALS(boost::geometry::get<1>(point), 4);
+        Vector2d origin = Vector2d::Zero();
+        TS_ASSERT(boost::geometry::distance(origin, point) == Approx(5));
+    }
 };

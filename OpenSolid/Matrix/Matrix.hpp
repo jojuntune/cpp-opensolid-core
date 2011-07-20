@@ -24,6 +24,8 @@
 #include <functional>
 
 #include <boost/functional/hash.hpp>
+#include <boost/geometry.hpp>
+#include <boost/mpl/int.hpp>
 
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
@@ -299,6 +301,72 @@ namespace boost
         public std::hash<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
     {
     };
+
+    namespace geometry
+    {
+        namespace traits
+        {
+            template <>
+            struct tag<Eigen::Vector2d>
+            {
+                typedef boost::geometry::point_tag type;
+            };
+            
+            template <>
+            struct tag<Eigen::Vector3d>
+            {
+                typedef boost::geometry::point_tag type;
+            };
+
+            template <>
+            struct coordinate_type<Eigen::Vector2d>
+            {
+                typedef double type;
+            };
+
+            template <>
+            struct coordinate_type<Eigen::Vector3d>
+            {
+                typedef double type;
+            };
+
+            template <>
+            struct coordinate_system<Eigen::Vector2d>
+            {
+                typedef cs::cartesian type;
+            };
+
+            template <>
+            struct coordinate_system<Eigen::Vector3d>
+            {
+                typedef cs::cartesian type;
+            };
+
+            template <>
+            struct dimension<Eigen::Vector2d> : public mpl::int_<2>
+            {
+            };
+
+            template <>
+            struct dimension<Eigen::Vector3d> : public mpl::int_<3>
+            {
+            };
+
+            template<std::size_t dimension_>
+            struct access<Eigen::Vector2d, dimension_>
+            {
+                static double get(const Eigen::Vector2d& argument);
+                static void set(Eigen::Vector2d& argument, double value);
+            };
+
+            template<std::size_t dimension_>
+            struct access<Eigen::Vector3d, dimension_>
+            {
+                static double get(const Eigen::Vector3d& argument);
+                static void set(Eigen::Vector3d& argument, double value);
+            };
+        }
+    };
 }
 
 ////////// Implementation //////////
@@ -543,6 +611,35 @@ namespace std
         const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
         const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
     ) const {return first_argument.binaryExpr(second_argument, EqualVisitor()).all();}
+}
+
+namespace boost
+{
+    namespace geometry
+    {
+        namespace traits
+        {
+            template<std::size_t dimension_>
+            inline double access<Eigen::Vector2d, dimension_>::get(const Eigen::Vector2d& argument) {
+                return argument(dimension_);
+            }
+
+            template<std::size_t dimension_>
+            inline void access<Eigen::Vector2d, dimension_>::set(Eigen::Vector2d& argument, double value) {
+                argument(dimension_) = value;
+            }
+
+            template<std::size_t dimension_>
+            inline double access<Eigen::Vector3d, dimension_>::get(const Eigen::Vector3d& argument) {
+                return argument(dimension_);
+            }
+
+            template<std::size_t dimension_>
+            inline void access<Eigen::Vector3d, dimension_>::set(Eigen::Vector3d& argument, double value) {
+                argument(dimension_) = value;
+            }
+        }
+    }
 }
 
 #endif
