@@ -365,8 +365,60 @@ namespace boost
                 static double get(const Eigen::Vector3d& argument);
                 static void set(Eigen::Vector3d& argument, double value);
             };
+
+            template <>
+            struct tag<Eigen::Vector2I>
+            {
+                typedef box_tag type;
+            };
+
+            template <>
+            struct tag<Eigen::Vector3I>
+            {
+                typedef box_tag type;
+            };
+
+            template <>
+            struct point_type<Eigen::Vector2I>
+            {
+                typedef Eigen::Vector2d type;
+            };
+
+            template <>
+            struct point_type<Eigen::Vector3I>
+            {
+                typedef Eigen::Vector3d type;
+            };
+
+            template <std::size_t dimension_>
+            struct indexed_access<Eigen::Vector2I, min_corner, dimension_>
+            {
+                static double get(const Eigen::Vector2I& argument);
+                static void set(Eigen::Vector2I& argument, double value);
+            };
+
+            template <std::size_t dimension_>
+            struct indexed_access<Eigen::Vector2I, max_corner, dimension_>
+            {
+                static double get(const Eigen::Vector2I& argument);
+                static void set(Eigen::Vector2I& argument, double value);
+            };
+
+            template <std::size_t dimension_>
+            struct indexed_access<Eigen::Vector3I, min_corner, dimension_>
+            {
+                static double get(const Eigen::Vector3I& argument);
+                static void set(Eigen::Vector3I& argument, double value);
+            };
+
+            template <std::size_t dimension_>
+            struct indexed_access<Eigen::Vector3I, max_corner, dimension_>
+            {
+                static double get(const Eigen::Vector3I& argument);
+                static void set(Eigen::Vector3I& argument, double value);
+            };
         }
-    };
+    }
 }
 
 ////////// Implementation //////////
@@ -638,6 +690,50 @@ namespace boost
             inline void access<Eigen::Vector3d, dimension_>::set(Eigen::Vector3d& argument, double value) {
                 argument(dimension_) = value;
             }
+
+            template <std::size_t dimension_>
+            inline double indexed_access<Eigen::Vector2I, min_corner, dimension_>::get(
+                const Eigen::Vector2I& argument
+            ) {return argument(dimension_).lower();}
+
+            template <std::size_t dimension_>
+            inline void indexed_access<Eigen::Vector2I, min_corner, dimension_>::set(
+                Eigen::Vector2I& argument,
+                double value
+            ) {*reinterpret_cast<double*>(&argument.coeffRef(dimension_)) = value;}
+
+            template <std::size_t dimension_>
+            inline double indexed_access<Eigen::Vector2I, max_corner, dimension_>::get(
+                const Eigen::Vector2I& argument
+            ) {return argument(dimension_).upper();}
+
+            template <std::size_t dimension_>
+            inline void indexed_access<Eigen::Vector2I, max_corner, dimension_>::set(
+                Eigen::Vector2I& argument,
+                double value
+            ) {*(reinterpret_cast<double*>(&argument.coeffRef(dimension_)) + 1) = value;}
+
+            template <std::size_t dimension_>
+            inline double indexed_access<Eigen::Vector3I, min_corner, dimension_>::get(
+                const Eigen::Vector3I& argument
+            ) {return argument(dimension_).lower();}
+
+            template <std::size_t dimension_>
+            inline void indexed_access<Eigen::Vector3I, min_corner, dimension_>::set(
+                Eigen::Vector3I& argument,
+                double value
+            ) {*reinterpret_cast<double*>(&argument.coeffRef(dimension_)) = value;}
+
+            template <std::size_t dimension_>
+            inline double indexed_access<Eigen::Vector3I, max_corner, dimension_>::get(
+                const Eigen::Vector3I& argument
+            ) {return argument(dimension_).upper();}
+
+            template <std::size_t dimension_>
+            inline void indexed_access<Eigen::Vector3I, max_corner, dimension_>::set(
+                Eigen::Vector3I& argument,
+                double value
+            ) {*(reinterpret_cast<double*>(&argument.coeffRef(dimension_)) + 1) = value;}
         }
     }
 }
