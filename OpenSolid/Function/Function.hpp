@@ -50,6 +50,7 @@ namespace OpenSolid
     public:
         Function();
         Function(const FunctionImplementation* function);
+        Function(int value);
         Function(double value);
         
         template <class DerivedType>
@@ -91,6 +92,10 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Function norm() const;
         OPENSOLID_CORE_EXPORT Function normalized() const;
         OPENSOLID_CORE_EXPORT Function squaredNorm() const;
+        OPENSOLID_CORE_EXPORT Function x() const;
+        OPENSOLID_CORE_EXPORT Function y() const;
+        OPENSOLID_CORE_EXPORT Function z() const;
+        OPENSOLID_CORE_EXPORT Function w() const;
         OPENSOLID_CORE_EXPORT Function component(int index) const;
         OPENSOLID_CORE_EXPORT Function components(int index, int num) const;
         OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
@@ -214,6 +219,10 @@ namespace OpenSolid
     
     inline Function::Function(const FunctionImplementation* implementation) :
         _implementation(implementation), _type(&typeid(implementation)) {}
+    
+    inline Function::Function(int value) :
+        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
+        _type(&typeid(ConstantFunction)) {}
     
     inline Function::Function(double value) :
         _implementation(new ConstantFunction(VectorXd::Constant(1, value))),

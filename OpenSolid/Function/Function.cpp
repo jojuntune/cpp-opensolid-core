@@ -88,6 +88,14 @@ namespace OpenSolid
         implementation()->getSquaredNorm(result);
         return result;
     }
+
+    Function Function::x() const {return component(0);}
+
+    Function Function::y() const {return component(1);}
+
+    Function Function::z() const {return component(2);}
+
+    Function Function::w() const {return component(3);}
     
     Function Function::component(int index) const {
         Function result;

@@ -104,6 +104,8 @@ public:
     void testConversion() {
         Function function = Function::u * Function::v;
         TS_ASSERT(function(Vector2d(2, 3)).value() == Approx(6.0));
+        function = Function(2);
+        TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
     }
     
     void testSine() {
@@ -156,6 +158,8 @@ public:
         TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
         result = f(RowVector3d(0, 0.5, 1)).row(1);
         TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
+        double value = f.z()(0.5).value();
+        TS_ASSERT(value == Approx(4.5));
     }
     
     void testTransformation() {
