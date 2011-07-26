@@ -42,41 +42,41 @@ public:
         TS_ASSERT(function(Vector2d(0, 0)).value() == Approx(2.0));
         TS_ASSERT(function(Vector2d(1, 0)).value() == Approx(3.0));
         TS_ASSERT(function(Vector2d(1, 1)).value() == Approx(2.0));
-        TS_ASSERT(function(Vector2d(0, 1)).value() == Approx(1.0));
-        TS_ASSERT(function.derivative(0)(Vector2d(0, 0)).value() == Approx(1.0));
-        TS_ASSERT(function.derivative(1)(Vector2d(0, 0)).value() == Approx(-1.0));
+        TS_ASSERT(function(Vector2d(0, 1)).value() == One());
+        TS_ASSERT(function.derivative(0)(Vector2d(0, 0)).value() == One());
+        TS_ASSERT(function.derivative(1)(Vector2d(0, 0)).value() == -One());
         
         Function negated = -function;
         
-        TS_ASSERT(negated(Vector2d(0, 0)).value() == Approx(-2.0));
-        TS_ASSERT(negated(Vector2d(1, 0)).value() == Approx(-3.0));
-        TS_ASSERT(negated(Vector2d(1, 1)).value() == Approx(-2.0));
-        TS_ASSERT(negated(Vector2d(0, 1)).value() == Approx(-1.0));
-        TS_ASSERT(negated.derivative(0)(Vector2d(0, 0)).value() == Approx(-1.0));
-        TS_ASSERT(negated.derivative(1)(Vector2d(0, 0)).value() == Approx(1.0));
+        TS_ASSERT(negated(Vector2d(0, 0)).value() == -Approx(2.0));
+        TS_ASSERT(negated(Vector2d(1, 0)).value() == -Approx(3.0));
+        TS_ASSERT(negated(Vector2d(1, 1)).value() == -Approx(2.0));
+        TS_ASSERT(negated(Vector2d(0, 1)).value() == -One());
+        TS_ASSERT(negated.derivative(0)(Vector2d(0, 0)).value() == -One());
+        TS_ASSERT(negated.derivative(1)(Vector2d(0, 0)).value() == One());
     }
 
     void testMultiplication() {
         Function function = 1.0 + Function::u / 1.0 * Function::v / 1.0;
     
-        TS_ASSERT(function(Vector2d(0, 0)).value() == Approx(1.0));
-        TS_ASSERT(function(Vector2d(1, 0)).value() == Approx(1.0));
+        TS_ASSERT(function(Vector2d(0, 0)).value() == One());
+        TS_ASSERT(function(Vector2d(1, 0)).value() == One());
         TS_ASSERT(function(Vector2d(1, 1)).value() == Approx(2.0));
-        TS_ASSERT(function(Vector2d(0, 1)).value() == Approx(1.0));
+        TS_ASSERT(function(Vector2d(0, 1)).value() == One());
     
         Function u_derivative = function.derivative(0);
         
-        TS_ASSERT(u_derivative(Vector2d(0, 0)).isZero());
-        TS_ASSERT(u_derivative(Vector2d(1, 0)).isZero());
-        TS_ASSERT(u_derivative(Vector2d(1, 1)).value() == Approx(1.0));
-        TS_ASSERT(u_derivative(Vector2d(0, 1)).value() == Approx(1.0));
+        TS_ASSERT(u_derivative(Vector2d(0, 0)).value() == Zero());
+        TS_ASSERT(u_derivative(Vector2d(1, 0)).value() == Zero());
+        TS_ASSERT(u_derivative(Vector2d(1, 1)).value() == One());
+        TS_ASSERT(u_derivative(Vector2d(0, 1)).value() == One());
     
         Function v_derivative = function.derivative(1);
         
-        TS_ASSERT(v_derivative(Vector2d(0, 0)).isZero());
-        TS_ASSERT(v_derivative(Vector2d(1, 0)).value() == Approx(1.0));
-        TS_ASSERT(v_derivative(Vector2d(1, 1)).value() == Approx(1.0));
-        TS_ASSERT(v_derivative(Vector2d(0, 1)).isZero());
+        TS_ASSERT(v_derivative(Vector2d(0, 0)).value() == Zero());
+        TS_ASSERT(v_derivative(Vector2d(1, 0)).value() == One());
+        TS_ASSERT(v_derivative(Vector2d(1, 1)).value() == One());
+        TS_ASSERT(v_derivative(Vector2d(0, 1)).value() == Zero());
     }
     
     void testSquare() {

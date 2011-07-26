@@ -76,7 +76,7 @@ public:
         set.insert(first_vector);
         set.insert(second_vector);
         Interval bounds = set.bounds();
-        TS_ASSERT(bounds.lower() == Approx(1));
+        TS_ASSERT(bounds.lower() == One());
         TS_ASSERT(bounds.upper() == Approx(3));
     }
 };

@@ -198,14 +198,14 @@ namespace OpenSolid
         double derivative_value = derivatives[order + 1](x).value();
         Interval derivative_bounds = derivatives[order + 1](domain_interval).value();
         Interval convergence_ratio = abs(1 - derivative_bounds / derivative_value);
-        if (convergence_ratio < Approx(1.0)) {
+        if (convergence_ratio < One()) {
             double last_y = y;
             x = x - y / derivative_value;
             y = derivatives[order](x).value();
             while (abs(y) > 0 && abs(y) < abs(last_y)) {
                 double new_derivative_value = derivatives[order + 1](x).value();
                 convergence_ratio = abs(1 - derivative_bounds / new_derivative_value);
-                if (convergence_ratio < Approx(1.0)) {derivative_value = new_derivative_value;}
+                if (convergence_ratio < One()) {derivative_value = new_derivative_value;}
                 last_y = y;
                 x = x - y / derivative_value;
                 y = derivatives[order](x).value();
@@ -424,9 +424,9 @@ namespace OpenSolid
             double multiplier_value = multiplier.as<ConstantFunction>().vector().value();
             if (multiplier_value == Zero()) {
                 return VectorXd::Zero(multiplicand.dimensions());
-            } else if (multiplier_value == Approx(1.0)) {
+            } else if (multiplier_value == One()) {
                 return multiplicand;
-            } else if (multiplier_value == Approx(-1.0)) {
+            } else if (multiplier_value == -One()) {
                 return -multiplicand;
             } else {
                 return new ProductFunction(multiplicand, multiplier);
@@ -447,9 +447,9 @@ namespace OpenSolid
             return first_operand;
         } else if (second_operand.isA<ConstantFunction>()) {
             double second_value = second_operand.as<ConstantFunction>().vector().value();
-            if (second_value == Approx(1.0)) {
+            if (second_value == One()) {
                 return first_operand;
-            } else if (second_value == Approx(-1.0)) {
+            } else if (second_value == -One()) {
                 return -first_operand;
             } else {
                 return new ProductFunction(first_operand, 1 / second_value);

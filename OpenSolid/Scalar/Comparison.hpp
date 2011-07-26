@@ -29,9 +29,8 @@ namespace OpenSolid
     {
     private:
         Interval _interval;
-    protected:
-        Comparison(double lower, double upper);
     public:
+        Comparison(double lower, double upper);
         const Interval& interval() const;
     };
 
@@ -39,6 +38,12 @@ namespace OpenSolid
     {
     public:
         Zero(double precision = 1e-12);
+    };
+
+    class One : public Comparison
+    {
+    public:
+        One(double precision = 1e-12);
     };
 
     class Approx : public Comparison
@@ -61,6 +66,8 @@ namespace OpenSolid
     bool operator>(const Interval& value, const Comparison& comparison);
     bool operator<=(const Interval& value, const Comparison& comparison);
     bool operator>=(const Interval& value, const Comparison& comparison);
+
+    Comparison operator-(const Comparison& argument);
 }
 
 ////////// Implementation //////////
@@ -72,6 +79,8 @@ namespace OpenSolid
     inline const Interval& Comparison::interval() const {return _interval;}
 
     inline Zero::Zero(double precision) : Comparison(-precision, precision) {}
+
+    inline One::One(double precision) : Comparison(1 - precision, 1 + precision) {}
 
     inline Approx::Approx(double value, double precision) :
         Comparison(value - precision, value + precision) {}
@@ -125,6 +134,10 @@ namespace OpenSolid
 
     inline bool operator>=(const Interval& value, const Comparison& comparison) {
         return value.lower() >= comparison.interval().lower();
+    }
+
+    inline Comparison operator-(const Comparison& argument) {
+        return Comparison(-argument.interval().upper(), -argument.interval().lower());
     }
 }
 
