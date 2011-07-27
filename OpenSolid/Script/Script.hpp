@@ -34,7 +34,7 @@ namespace OpenSolid
     {
     private:
         boost::python::object _environment;
-        boost::python::object _extensions;
+        boost::python::object _environment_dict;
         
         OPENSOLID_SCRIPT_EXPORT Error error();
         OPENSOLID_SCRIPT_EXPORT boost::python::object _get(const std::string& argument);
@@ -50,6 +50,8 @@ namespace OpenSolid
 
         template <class Type>
         Type get(const std::string& code);
+
+        OPENSOLID_SCRIPT_EXPORT boost::python::object& environment();
         
         template <class FunctionType>
         Script& def(const char* name, FunctionType function);
@@ -68,25 +70,12 @@ namespace OpenSolid
 {
     template <class Type>
     inline Script& Script::set(const std::string& name, const Type& argument) {
-        _environment[name] = argument;
+        _environment_dict[name] = argument;
         return *this;
     }
     
     template <class Type>
     inline Type Script::get(const std::string& code) {return cast<Type>(_get(code));}
-    
-    template <class FunctionType>
-    inline Script& Script::def(const char* name, FunctionType function) {
-       _environment[name] = boost::python::raw_function(function);
-        return *this;
-    }
-        
-    template <class BindFunctionType>
-    inline Script& Script::extend(BindFunctionType bind_function) {
-        scope local(_extensions);
-        bind_function();
-        return *this;
-    }
     
     template <class Type>
     inline Type Script::cast(boost::python::object argument) {

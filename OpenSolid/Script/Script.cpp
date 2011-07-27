@@ -78,7 +78,7 @@ namespace OpenSolid
         lines.pop_back();
         if (!lines.empty()) {run(boost::algorithm::join(lines, "\n"));}
         try {
-            return eval(str(last_line), _environment, _environment);
+            return eval(str(last_line), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
             throw error();
         }
@@ -86,30 +86,28 @@ namespace OpenSolid
     
     extern "C" OPENSOLID_PYTHON_EXPORT void initopensolid();
 
-    struct Extensions
-    {
-    };
-
     Script::Script() {
-        static object main;
+        static object global;
+        static object hidden;
         if (!Py_IsInitialized()) {
             Py_Initialize();
             initopensolid();
-            main = import("__main__");
-            scope global(main);
-            class_<Extensions>("Extensions");
+            global = import("__main__").attr("__dict__");
+            hidden = dict(global);
+            exec("import opensolid", global, global);
+            exec("from opensolid import *", global, global);
+            exec("class Environment: pass", hidden, hidden);
         }
-        _environment = dict(main.attr("__dict__"));
-        exec("import opensolid", _environment, _environment);
-        exec("from opensolid import *", _environment, _environment);
-        exec("extensions = Extensions()", _environment, _environment);
-        _extensions = _environment["extensions"];
-        _extensions.attr("__dict__") = _environment;
+        _environment_dict = dict(global);
+        _environment = eval("Environment()", hidden, hidden);
+        _environment.attr("__dict__") = _environment_dict;
     }
+
+    object& Script::environment() {return _environment;}
     
     Script& Script::run(const std::string& argument) {
         try {
-            exec(str(argument), _environment, _environment);
+            exec(str(argument), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
             throw error();
         }

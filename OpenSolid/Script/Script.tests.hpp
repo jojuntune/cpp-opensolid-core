@@ -30,12 +30,7 @@
 using namespace OpenSolid;
 using namespace boost::python;
 
-struct MatrixDoubler
-{
-    inline object operator()(tuple arguments, dict keyword_arguments) {
-        return object(MatrixXd(2 * extract<MatrixXd>(arguments[0])));
-    }
-};
+MatrixXd twice(const MatrixXd& argument) {return 2 * argument;}
 
 class CustomClass
 {
@@ -45,28 +40,22 @@ private:
     Vector3d _vector;
 public:
     CustomClass() :
-        _value(3), _function(Function::Parameter(1, 0) * Vector3d(1, 1, 1)), _vector(1, 2, 3) {}
+        _value(3),
+        _function(Function::Parameter(1, 0) * Vector3d(1, 1, 1)),
+        _vector(1, 2, 3) {}
         
     void setValue(double value) {_value = value;}
+
     double value() const {return _value;}
     
     void setFunction(const Function& function) {_function = function;}
+
     Function function() const {return _function;}
     
     void setVector(const MatrixXd& vector) {_vector = vector;}
+
     MatrixXd vector() const {return _vector;}
 };
-
-void bindCustomClass() {
-    class_<CustomClass>("CustomClass")
-        .def(init<>())
-        .def("setValue", &CustomClass::setValue)
-        .def("value", &CustomClass::value)
-        .def("setFunction", &CustomClass::setFunction)
-        .def("function", &CustomClass::function)
-        .def("setVector", &CustomClass::setVector)
-        .def("vector", &CustomClass::vector);
-}
 
 class ScriptingTestSuite : public CxxTest::TestSuite
 {
@@ -333,11 +322,31 @@ public:
             script.get<MatrixXd>("y.cwiseUpper()")
         );
     }
+
+    void testCustomVariable() {
+        Script script1;
+        Script script2;
+        script1.environment().attr("a") = 3;
+        TS_ASSERT_EQUALS(script1.get<double>("a"), 3);
+        TS_ASSERT_THROWS(script2.get<double>("a"), Error);
+    }
+
+    void testVariableThroughScope() {
+        Script script1;
+        Script script2;
+        scope s = script1.environment();
+        s.attr("a") = 3;
+        TS_ASSERT_EQUALS(script1.get<double>("a"), 3);
+        TS_ASSERT_THROWS(script2.get<double>("a"), Error);
+    }
     
     void testCustomFunction() {
         Script script1;
         Script script2;
-        script1.def("twice", MatrixDoubler());
+
+        scope s = script1.environment();
+        def("twice", twice);
+
         TS_ASSERT_EQUALS(script1.get<MatrixXd>("twice(Vector3d(1, 2, 3))"), Vector3d(2, 4, 6));
         TS_ASSERT_THROWS(script2.run("twice(Vector3d(1, 2, 3))"), Error);
     }
@@ -345,7 +354,17 @@ public:
     void testCustomClass() {
         Script script1;
         Script script2;
-        script1.extend(bindCustomClass);
+
+        scope s = script1.environment();
+        class_<CustomClass>("CustomClass")
+            .def(init<>())
+            .def("setValue", &CustomClass::setValue)
+            .def("value", &CustomClass::value)
+            .def("setFunction", &CustomClass::setFunction)
+            .def("function", &CustomClass::function)
+            .def("setVector", &CustomClass::setVector)
+            .def("vector", &CustomClass::vector);
+
         script1.run("a = CustomClass()");
         script1.run("a.setValue(10)");
         TS_ASSERT_EQUALS(script1.get<double>("a.value()"), 10.0);
