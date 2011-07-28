@@ -183,7 +183,7 @@ public:
         set.insert(third_triangle);
         std::vector<Triangle3d> overlapping;
         set.filter(first_triangle.bounds(), std::back_inserter(overlapping));
-        TS_ASSERT_EQUALS(overlapping.size(), 1);
+        TS_ASSERT_EQUALS(overlapping.size(), 1u);
         TS_ASSERT_EQUALS(overlapping.front(), first_triangle);
     }
 

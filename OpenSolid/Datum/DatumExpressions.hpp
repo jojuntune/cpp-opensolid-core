@@ -251,8 +251,8 @@ namespace OpenSolid
 
     template <class DerivedType, int dimensions_, int axes_>
     bool DatumProduct<DerivedType, dimensions_, axes_>::isZero(double precision) const {
-        return this->eval().isZero(precision)
-    };
+        return this->eval().isZero(precision);
+    }
     
     template <class DerivedType, int dimensions_, int axes_>
     DatumQuotient<DerivedType, dimensions_, axes_>::DatumQuotient(
@@ -299,8 +299,8 @@ namespace OpenSolid
 
     template <class DerivedType, int dimensions_, int axes_>
     bool DatumQuotient<DerivedType, dimensions_, axes_>::isZero(double precision) const {
-        return this->eval().isZero(precision)
-    };
+        return this->eval().isZero(precision);
+    }
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumProduct<DerivedType, dimensions_, axes_>::LinearDatumProduct(
@@ -336,8 +336,8 @@ namespace OpenSolid
 
     template <class DerivedType, int dimensions_, int axes_>
     bool LinearDatumProduct<DerivedType, dimensions_, axes_>::isZero(double precision) const {
-        return this->eval().isZero(precision)
-    };
+        return this->eval().isZero(precision);
+    }
     
     template <class DerivedType, int dimensions_, int axes_>
     LinearDatumQuotient<DerivedType, dimensions_, axes_>::LinearDatumQuotient(
@@ -381,8 +381,8 @@ namespace OpenSolid
 
     template <class DerivedType, int dimensions_, int axes_>
     bool LinearDatumQuotient<DerivedType, dimensions_, axes_>::isZero(double precision) const {
-        return this->eval().isZero(precision)
-    };
+        return this->eval().isZero(precision);
+    }
     
     template <class DerivedType, int dimensions_, int axes_>
     inline DatumProduct<DerivedType, dimensions_, axes_> operator*(

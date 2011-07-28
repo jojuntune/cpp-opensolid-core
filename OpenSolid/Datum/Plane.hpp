@@ -135,7 +135,10 @@ namespace std
         const OpenSolid::Plane<dimensions_>& argument
     ) const {
         return hash<
-            OpenSolid::Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+            OpenSolid::Datum<
+                dimensions_,
+                dimensions_ == Eigen::Dynamic ? Eigen::Dynamic : dimensions_ - 1
+            >
         >()(argument);
     }
 
@@ -145,7 +148,10 @@ namespace std
         const OpenSolid::Plane<dimensions_>& second_argument
     ) const {
         return equal_to<
-            OpenSolid::Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+            OpenSolid::Datum<
+                dimensions_,
+                dimensions_ == Eigen::Dynamic ? Eigen::Dynamic : dimensions_ - 1
+            >
         >()(first_argument, second_argument);
     }
 }

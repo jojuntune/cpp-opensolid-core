@@ -125,7 +125,7 @@ public:
         std::cout << set << std::endl;
         std::vector<double> overlapping;
         set.filter(Interval(2.5, 4.5), std::back_inserter(overlapping));
-        TS_ASSERT_EQUALS(overlapping.size(), 2);
+        TS_ASSERT_EQUALS(overlapping.size(), 2u);
         TS_ASSERT_EQUALS(overlapping.front(), 3);
         TS_ASSERT_EQUALS(overlapping.back(), 4);
     }
@@ -139,7 +139,7 @@ public:
         Set<Vector2d> set(list.begin(), list.end());
         std::vector<Vector2d> overlapping;
         set.filter(Vector2I(Interval(1, 5), Interval(2, 4)), std::back_inserter(overlapping));
-        TS_ASSERT_EQUALS(overlapping.size(), 2);
+        TS_ASSERT_EQUALS(overlapping.size(), 2u);
         TS_ASSERT_EQUALS(overlapping.front(), Vector2d(1, 3));
         TS_ASSERT_EQUALS(overlapping.back(), Vector2d(5, 3));
     }

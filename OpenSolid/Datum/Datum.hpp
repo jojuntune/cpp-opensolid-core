@@ -700,7 +700,7 @@ namespace std
             result,
             hash<typename OpenSolid::Datum<dimensions_, axes_>::Vector>()(argument.origin())
         );
-        boost:::hash_combine(
+        boost::hash_combine(
             result,
             hash<typename OpenSolid::Datum<dimensions_, axes_>::Matrix>()(argument.vectors())
         );

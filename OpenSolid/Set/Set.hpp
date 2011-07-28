@@ -795,7 +795,7 @@ namespace OpenSolid
     
     template <class Type, class BoundsType>
     inline SetIterator<Type, BoundsType>::SetIterator(
-        const typename SetNode<Type, BoundsType>* node
+        const SetNode<Type, BoundsType>* node
     ) : _node(node) {}
 
     template <class Type, class BoundsType>
