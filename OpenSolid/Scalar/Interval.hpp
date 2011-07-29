@@ -90,6 +90,7 @@ namespace OpenSolid
         Interval& operator/=(double argument);
         Interval& operator/=(const Interval& argument);
         
+        static Interval Hull(double first_argument, double second_argument);
         static Interval Empty();
         static Interval Whole();
     };
@@ -298,6 +299,10 @@ namespace OpenSolid
         return *this;
     }
     
+    inline Interval Interval::Hull(double first_argument, double second_argument) {
+        return Interval(min(first_argument, second_argument), max(first_argument, second_argument));
+    }
+
     inline Interval Interval::Empty() {return BoostInterval::empty();}
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}

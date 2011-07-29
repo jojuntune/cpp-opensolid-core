@@ -65,6 +65,9 @@ public:
         result = v.hull((3 * u).cast<Interval>());
         TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(3, 6, 9));
+        result = Vector3I::Hull(Vector3d(4, 2, 6), Vector3d(1, 5, 3));
+        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
+        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(4, 5, 6));
     }
     
     void testIntersection() {

@@ -64,6 +64,12 @@ static const RandomAccessLinSpacedReturnType LinSpaced(
 
 static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range);
 
+template <class FirstDerivedType, class SecondDerivedType>
+static CwiseBinaryOp<HullOperation, const FirstDerivedType, const SecondDerivedType> Hull(
+    const DenseBase<FirstDerivedType>& first_argument,
+    const DenseBase<SecondDerivedType>& second_argument
+);
+
 static const ConstantReturnType Empty();
 static const ConstantReturnType Empty(Index size);
 static const ConstantReturnType Empty(Index rows, Index cols);

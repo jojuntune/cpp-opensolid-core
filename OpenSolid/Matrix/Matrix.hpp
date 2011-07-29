@@ -108,6 +108,8 @@ namespace Eigen
     struct HullOperation
     {
         typedef OpenSolid::Interval result_type;
+
+        OpenSolid::Interval operator()(double first_argument, double second_argument) const;
         
         OpenSolid::Interval operator()(
             const OpenSolid::Interval& first_argument,
@@ -469,6 +471,11 @@ namespace Eigen
     }
     
     inline OpenSolid::Interval HullOperation::operator()(
+        double first_argument,
+        double second_argument
+    ) const {return OpenSolid::Interval::Hull(first_argument, second_argument);}
+    
+    inline OpenSolid::Interval HullOperation::operator()(
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument
     ) const {return first_argument.hull(second_argument);}
@@ -570,6 +577,13 @@ namespace Eigen
     DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
         return LinSpaced(Scalar(range.lower()), Scalar(range.upper()));
     }
+
+    template <class DerivedType> template <class FirstDerivedType, class SecondDerivedType>
+    inline CwiseBinaryOp<HullOperation, const FirstDerivedType, const SecondDerivedType>
+    DenseBase<DerivedType>::Hull(
+        const DenseBase<FirstDerivedType>& first_argument,
+        const DenseBase<SecondDerivedType>& second_argument
+    ) {return first_argument.hull(second_argument);}
 
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty() {
