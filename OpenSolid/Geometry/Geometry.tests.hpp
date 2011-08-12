@@ -98,15 +98,10 @@ public:
             Function::t * Vector3d::UnitX() + Function::t.squaredNorm() * Vector3d::UnitY(),
             Interval(-2, 2)
         );
-        Vector3d tangent = parabola.tangent()(1);
-        double curvature = parabola.curvature()(1).value();
-        Vector3d normal = parabola.normal()(1);
-        Vector3d binormal = parabola.binormal()(1);
-        
-        TS_ASSERT(parabola.tangent()(1).isApprox(Vector3d(1, 2, 0).normalized()));
-        TS_ASSERT(parabola.curvature()(1).value() == Approx(2 / (5 * sqrt(5.0))));
-        TS_ASSERT(parabola.normal()(1).isApprox(Vector3d(-2, 1, 0).normalized()));
-        TS_ASSERT(parabola.binormal()(1).isApprox(Vector3d::UnitZ()));
+        TS_ASSERT((parabola.tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());
+        TS_ASSERT(parabola.curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
+        TS_ASSERT((parabola.normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
+        TS_ASSERT((parabola.binormal()(1) - Vector3d::UnitZ()).isZero());
     }
     
     void testHashing() {
