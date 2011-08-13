@@ -38,6 +38,9 @@ namespace OpenSolid
     template <class Type, class BoundsType>
     class SetIterator;
 
+    template <class Type, class BoundsFunctionType>
+    class SetInserter;
+
     template <class Type, class BoundsFunctionType = Bounds<Type>>
     class Set
     {
@@ -87,6 +90,8 @@ namespace OpenSolid
         int erase(IteratorType begin, IteratorType end);
         
         void clear();
+
+        SetInserter<Type, BoundsFunctionType> inserter();
 
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
@@ -205,6 +210,20 @@ namespace OpenSolid
     public:
         SetIterator();
         SetIterator(const SetNode<Type, BoundsType>* node);
+    };
+
+    template <class Type, class BoundsFunctionType>
+    class SetInserter
+    {
+    private:
+        Set<Type, BoundsFunctionType>* _set;
+    public:
+        SetInserter(Set<Type, BoundsFunctionType>* set);
+
+        SetInserter<Type, BoundsFunctionType>& operator*();
+        void operator=(const Type& item);
+        SetInserter<Type, BoundsFunctionType>& operator++();
+        SetInserter<Type, BoundsFunctionType>& operator++(int);
     };
     
     template <class Type, class BoundsType>
@@ -427,6 +446,11 @@ namespace OpenSolid
             _root = nullptr;
             _shared_count = nullptr;
         }
+    }
+
+    template <class Type, class BoundsFunctionType>
+    inline SetInserter<Type, BoundsFunctionType> Set<Type, BoundsFunctionType>::inserter() {
+        return SetInserter<Type, BoundsFunctionType>(this);
     }
 
     namespace
@@ -797,6 +821,27 @@ namespace OpenSolid
     inline SetIterator<Type, BoundsType>::SetIterator(
         const SetNode<Type, BoundsType>* node
     ) : _node(node) {}
+
+    template <class Type, class BoundsFunctionType>
+    inline SetInserter<Type, BoundsFunctionType>::SetInserter(Set<Type, BoundsFunctionType>* set) :
+        _set(set) {}
+
+    template <class Type, class BoundsFunctionType>
+    inline SetInserter<Type, BoundsFunctionType>&
+    SetInserter<Type, BoundsFunctionType>::operator*() {return *this;}
+    
+    template <class Type, class BoundsFunctionType>
+    inline void SetInserter<Type, BoundsFunctionType>::operator=(const Type& item) {
+        _set->insert(item);
+    }
+    
+    template <class Type, class BoundsFunctionType>
+    inline SetInserter<Type, BoundsFunctionType>&
+    SetInserter<Type, BoundsFunctionType>::operator++() {return *this;}
+    
+    template <class Type, class BoundsFunctionType>
+    inline SetInserter<Type, BoundsFunctionType>&
+    SetInserter<Type, BoundsFunctionType>::operator++(int) {return *this;}
 
     template <class Type, class BoundsType>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type, BoundsType>& node) {
