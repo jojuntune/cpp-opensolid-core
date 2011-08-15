@@ -185,6 +185,34 @@ public:
         Function concatenated(x, y, z);
         TS_ASSERT(concatenated(2.0).isApprox(Vector3d(2.0, 3.0, 4.0)));
     }
+
+    void testArccosine() {
+        Function f = acos(Function::Parameter(1, 0));
+        Interval bounds;
+        bounds = f(Interval(-1, 0)).value();
+        TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
+        TS_ASSERT(bounds.upper() - M_PI == Zero());
+        bounds = f(Interval(0.5, 1.5)).value();
+        TS_ASSERT(bounds.lower() == Zero());
+        TS_ASSERT(bounds.upper() - M_PI / 3 == Zero());
+        bounds = f(Interval(1 + 1e-14, 1 + 1e-10)).value();
+        TS_ASSERT(bounds.lower() == Zero());
+        TS_ASSERT(bounds.upper() == Zero());
+    }
+
+    void testArcsine() {
+        Function f = asin(Function::Parameter(1, 0));
+        Interval bounds;
+        bounds = f(Interval(-1, 0)).value();
+        TS_ASSERT(bounds.lower() + M_PI / 2 == Zero());
+        TS_ASSERT(bounds.upper() == Zero());
+        bounds = f(Interval(0.5, 1.5)).value();
+        TS_ASSERT(bounds.lower() - M_PI / 6 == Zero());
+        TS_ASSERT(bounds.upper() - M_PI / 2 == Zero());
+        bounds = f(Interval(1 + 1e-14, 1 + 1e-10)).value();
+        TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
+        TS_ASSERT(bounds.upper() - M_PI / 2 == Zero());
+    }
     
     void testZeros() {
         std::vector<Function> functions(7);

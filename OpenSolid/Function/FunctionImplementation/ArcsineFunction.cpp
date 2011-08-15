@@ -29,12 +29,33 @@ namespace OpenSolid
     
     int ArcsineFunction::dimensions() const {return 1;}
     
+    struct Arcsine
+    {
+        inline double operator()(double value) const {
+            assert(Interval(-1, 1).contains(value));
+            value = max(-1.0, value);
+            value = min(value, 1.0);
+            return asin(value);
+        }
+        
+        inline Interval operator()(const Interval& bounds) const {
+            assert(Interval(-1, 1).overlaps(bounds));
+            double lower = bounds.lower();
+            lower = max(-1.0, lower);
+            lower = min(lower, 1.0);
+            double upper = bounds.upper();
+            upper = max(-1.0, upper);
+            upper = min(upper, 1.0);
+            return asin(Interval(lower, upper));
+        }
+    };
+    
     void ArcsineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = asin(operand()(parameter_values).array());
+        results = operand()(parameter_values).unaryExpr(Arcsine());
     }
     
     void ArcsineFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = asin(operand()(parameter_bounds).array());
+        results = operand()(parameter_bounds).unaryExpr(Arcsine());
     }
 
     void ArcsineFunction::getDerivative(int index, Function& result) const {
