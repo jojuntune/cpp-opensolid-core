@@ -360,15 +360,15 @@
     
 ########## Compile tests ##########
 
-    ADD_CXXTEST(Interval.tests Scalar/Interval.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Matrix.tests Matrix/Matrix.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Datum.tests Datum/Datum.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Set.tests Set/Set.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Function.tests Function/Function.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Geometry.tests Geometry/Geometry.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Simplex.tests Simplex/Simplex.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(Script.tests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
-    ADD_CXXTEST(Bounds.tests Common/Bounds.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(IntervalTests Scalar/Interval.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(MatrixTests Matrix/Matrix.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(DatumTests Datum/Datum.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(SetTests Set/Set.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(FunctionTests Function/Function.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(GeometryTests Geometry/Geometry.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(SimplexTests Simplex/Simplex.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(ScriptTests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
+    ADD_CXXTEST(BoundsTests Common/Bounds.tests.hpp OpenSolidCore)
     
 ######################################################################
 #                                                                    #
