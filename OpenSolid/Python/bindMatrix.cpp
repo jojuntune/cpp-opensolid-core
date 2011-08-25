@@ -28,6 +28,29 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    template <class ExpressionType>
+    struct ExpressionConverter
+    {
+        typedef Matrix<typename ExpressionType::Scalar, Dynamic, Dynamic> MatrixType;
+
+        inline bool convertible() const {return true;}
+
+        inline PyObject* operator()(const ExpressionType& expression) const {
+            return manage_new_object::apply<MatrixType*>::type()(new MatrixType(expression));
+        }
+
+        inline const PyTypeObject* get_pytype() const {return 0;}
+    };
+
+    struct ManageNewMatrix
+    {
+        template <class ExpressionType>
+        struct apply
+        {
+            typedef ExpressionConverter<ExpressionType> type;
+        };
+    };
+
     template <class MatrixType>
     int rows(const MatrixType& argument) {return argument.rows();}
     
@@ -223,6 +246,36 @@ namespace OpenSolid
             object index = arguments[1];
             return set(index, value);
         }
+    }
+
+    template <class MatrixType>
+    ConstMatrixIterator<MatrixType> matrixBegin(const MatrixType& argument) {
+        return begin(argument);
+    }
+
+    template <class MatrixType>
+    ConstMatrixIterator<MatrixType> matrixEnd(const MatrixType& argument) {
+        return end(argument);
+    }
+
+    template <class MatrixType>
+    ConstMatrixColIterator<MatrixType> matrixColBegin(const MatrixType& argument) {
+        return begin(argument.colwise());
+    }
+
+    template <class MatrixType>
+    ConstMatrixColIterator<MatrixType> matrixColEnd(const MatrixType& argument) {
+        return end(argument.colwise());
+    }
+
+    template <class MatrixType>
+    ConstMatrixRowIterator<MatrixType> matrixRowBegin(const MatrixType& argument) {
+        return begin(argument.rowwise());
+    }
+
+    template <class MatrixType>
+    ConstMatrixRowIterator<MatrixType> matrixRowEnd(const MatrixType& argument) {
+        return end(argument.rowwise());
     }
     
     template <class MatrixType>
@@ -493,6 +546,11 @@ namespace OpenSolid
     
     template <class MatrixType>
     MatrixType* random(int rows, int cols) {return new MatrixType(MatrixType::Random(rows, cols));}
+
+    template <class MatrixType>
+    MatrixType* identity(int rows, int cols) {
+        return new MatrixType(MatrixType::Identity(rows, cols));
+    }
     
     MatrixXd* negXd(const MatrixXd& argument) {return new MatrixXd(-argument);}
     
@@ -610,7 +668,7 @@ namespace OpenSolid
         return new MatrixXI(first_argument * second_argument);
     }
     
-    void bindMatrix() {         
+    void bindMatrix() {
         class_<MatrixXd>("MatrixXd", init<int, int>())
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)
@@ -630,6 +688,21 @@ namespace OpenSolid
             .def("set", &setSI<MatrixXd>)
             .def("set", &setSS<MatrixXd>)
             .def("__setitem__", raw_function(&setItem))
+            .def("__iter__", range(&matrixBegin<MatrixXd>, &matrixEnd<MatrixXd>))
+            .def(
+                "colwise",
+                range<return_value_policy<ManageNewMatrix>>(
+                    &matrixColBegin<MatrixXd>,
+                    &matrixColEnd<MatrixXd>
+                )
+             )
+            .def(
+                "rowwise",
+                range<return_value_policy<ManageNewMatrix>>(
+                    &matrixRowBegin<MatrixXd>,
+                    &matrixRowEnd<MatrixXd>
+                )
+            )
             .def("squaredNorm", &squaredNorm<MatrixXd>)
             .def("norm", &norm<MatrixXd>)
             .def("normalized", &normalized<MatrixXd>, return_value_policy<manage_new_object>())
@@ -656,6 +729,8 @@ namespace OpenSolid
                 .staticmethod("Ones")
             .def("Random", &random<MatrixXd>, return_value_policy<manage_new_object>())
                 .staticmethod("Random")
+            .def("Identity", &identity<MatrixXd>, return_value_policy<manage_new_object>())
+                .staticmethod("Identity")
             .def("__neg__", &negXd, return_value_policy<manage_new_object>())
             .def("__add__", &addXdXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXdXd, return_value_policy<manage_new_object>())
@@ -690,6 +765,21 @@ namespace OpenSolid
             .def("set", &setSI<MatrixXI>)
             .def("set", &setSS<MatrixXI>)
             .def("__setitem__", raw_function(&setItem))
+            .def("__iter__", range(&matrixBegin<MatrixXI>, &matrixEnd<MatrixXI>))
+            .def(
+                "colwise",
+                range<return_value_policy<ManageNewMatrix>>(
+                    &matrixColBegin<MatrixXI>,
+                    &matrixColEnd<MatrixXI>
+                )
+             )
+            .def(
+                "rowwise",
+                range<return_value_policy<ManageNewMatrix>>(
+                    &matrixRowBegin<MatrixXI>,
+                    &matrixRowEnd<MatrixXI>
+                )
+            )
             .def("squaredNorm", &squaredNorm<MatrixXI>)
             .def("norm", &norm<MatrixXI>)
             .def("normalized", &normalized<MatrixXI>, return_value_policy<manage_new_object>())
@@ -733,6 +823,8 @@ namespace OpenSolid
                 .staticmethod("Ones")
             .def("Random", &random<MatrixXI>, return_value_policy<manage_new_object>())
                 .staticmethod("Random")
+            .def("Identity", &identity<MatrixXI>, return_value_policy<manage_new_object>())
+                .staticmethod("Identity")
             .def("__neg__", &negXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXIXI, return_value_policy<manage_new_object>())
             .def("__add__", &addXIXd, return_value_policy<manage_new_object>())

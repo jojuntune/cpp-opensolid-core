@@ -55,6 +55,9 @@ namespace OpenSolid
     template <class MatrixType, class DynamicType>
     DynamicType* zeroFixedSizeMatrix() {return new DynamicType(MatrixType::Zero());}
     
+    template <class MatrixType, class DynamicType>
+    DynamicType* identityFixedSizeMatrix() {return new DynamicType(MatrixType::Identity());}
+    
     template <class MatrixType>
     class FixedSizeMatrix {};
     
@@ -89,7 +92,13 @@ namespace OpenSolid
                 &zeroFixedSizeMatrix<MatrixType, DynamicType>,
                 return_value_policy<manage_new_object>()
             )
-            .staticmethod("Zero");
+            .staticmethod("Zero")
+            .def(
+                "Identity",
+                &identityFixedSizeMatrix<MatrixType, DynamicType>,
+                return_value_policy<manage_new_object>()
+            )
+            .staticmethod("Identity");
     }
     
     template <class MatrixType, class DynamicType>
