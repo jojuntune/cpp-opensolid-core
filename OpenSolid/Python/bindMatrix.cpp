@@ -33,23 +33,15 @@ namespace OpenSolid
     {
         typedef Matrix<typename ExpressionType::Scalar, Dynamic, Dynamic> MatrixType;
 
-        inline bool convertible() const {return true;}
-
-        inline PyObject* operator()(const ExpressionType& expression) const {
+        static inline PyObject* convert(const ExpressionType& expression) {
             return manage_new_object::apply<MatrixType*>::type()(new MatrixType(expression));
         }
-
-        inline const PyTypeObject* get_pytype() const {return 0;}
     };
 
-    struct ManageNewMatrix
-    {
-        template <class ExpressionType>
-        struct apply
-        {
-            typedef ExpressionConverter<ExpressionType> type;
-        };
-    };
+    template <class ExpressionType>
+    void registerExpressionConverter() {
+        to_python_converter<ExpressionType, ExpressionConverter<ExpressionType>>();
+    }
 
     template <class MatrixType>
     int rows(const MatrixType& argument) {return argument.rows();}
@@ -397,54 +389,6 @@ namespace OpenSolid
     template <class MatrixType>
     bool isZeroP(const MatrixType& argument, double precision) {return argument.isZero(precision);}
     
-    bool isApproxXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        return first_argument.isApprox(second_argument.cwiseLower()) &&
-            first_argument.isApprox(second_argument.cwiseUpper());
-    }
-    
-    bool isApproxXdXIP(
-        const MatrixXd& first_argument,
-        const MatrixXI& second_argument,
-        double precision
-    ) {
-        return first_argument.isApprox(second_argument.cwiseLower(), precision) &&
-            first_argument.isApprox(second_argument.cwiseUpper(), precision);
-    }
-    
-    bool isApproxXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        return first_argument.isApprox(second_argument);
-    }
-    
-    bool isApproxXdXdP(
-        const MatrixXd& first_argument,
-        const MatrixXd& second_argument,
-        double precision
-    ) {return first_argument.isApprox(second_argument, precision);}
-    
-    bool isApproxXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        return first_argument.isApprox(second_argument);
-    }
-    
-    bool isApproxXIXIP(
-        const MatrixXI& first_argument,
-        const MatrixXI& second_argument,
-        double precision
-    ) {return first_argument.isApprox(second_argument, precision);}
-    
-    bool isApproxXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        return first_argument.cwiseLower().isApprox(second_argument) &&
-            first_argument.cwiseUpper().isApprox(second_argument);
-    }
-    
-    bool isApproxXIXdP(
-        const MatrixXI& first_argument,
-        const MatrixXd& second_argument,
-        double precision
-    ) {
-        return first_argument.cwiseLower().isApprox(second_argument, precision) &&
-            first_argument.cwiseUpper().isApprox(second_argument, precision);
-    }
-    
     bool overlaps(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         return first_argument.overlaps(second_argument);
     }
@@ -669,17 +613,24 @@ namespace OpenSolid
     }
     
     void bindMatrix() {
+        registerExpressionConverter<decltype(*begin((const MatrixXd()).colwise()))>();
+        registerExpressionConverter<decltype(*begin((const MatrixXd()).rowwise()))>();
+        registerExpressionConverter<decltype(*begin((const MatrixXI()).colwise()))>();
+        registerExpressionConverter<decltype(*begin((const MatrixXI()).rowwise()))>();
+
+        return_value_policy<manage_new_object> manage_new_matrix;
+
         class_<MatrixXd>("MatrixXd", init<int, int>())
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)
             .def("size", &size<MatrixXd>)
             .def("value", &value<MatrixXd>)
             .def("get", &getI<MatrixXd>)
-            .def("get", &getS<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("get", &getS<MatrixXd>, manage_new_matrix)
             .def("get", &getII<MatrixXd>)
-            .def("get", &getIS<MatrixXd>, return_value_policy<manage_new_object>())
-            .def("get", &getSI<MatrixXd>, return_value_policy<manage_new_object>())
-            .def("get", &getSS<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("get", &getIS<MatrixXd>, manage_new_matrix)
+            .def("get", &getSI<MatrixXd>, manage_new_matrix)
+            .def("get", &getSS<MatrixXd>, manage_new_matrix)
             .def("__getitem__", raw_function(&getItem))
             .def("set", &setI<MatrixXd>)
             .def("set", &setS<MatrixXd>)
@@ -689,74 +640,58 @@ namespace OpenSolid
             .def("set", &setSS<MatrixXd>)
             .def("__setitem__", raw_function(&setItem))
             .def("__iter__", range(&matrixBegin<MatrixXd>, &matrixEnd<MatrixXd>))
-            .def(
-                "colwise",
-                range<return_value_policy<ManageNewMatrix>>(
-                    &matrixColBegin<MatrixXd>,
-                    &matrixColEnd<MatrixXd>
-                )
-             )
-            .def(
-                "rowwise",
-                range<return_value_policy<ManageNewMatrix>>(
-                    &matrixRowBegin<MatrixXd>,
-                    &matrixRowEnd<MatrixXd>
-                )
-            )
+            .def("colwise", range(&matrixColBegin<MatrixXd>, &matrixColEnd<MatrixXd>))
+            .def("rowwise", range(&matrixRowBegin<MatrixXd>, &matrixRowEnd<MatrixXd>))
             .def("squaredNorm", &squaredNorm<MatrixXd>)
             .def("norm", &norm<MatrixXd>)
-            .def("normalized", &normalized<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("normalized", &normalized<MatrixXd>, manage_new_matrix)
             .def("determinant", &determinant<MatrixXd>)
             .def("trace", &trace<MatrixXd>)
-            .def("transpose", &transpose<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("transpose", &transpose<MatrixXd>, manage_new_matrix)
             .def("dot", &dotXdXI)
             .def("dot", &dotXdXd)
-            .def("cross", &crossXdXI, return_value_policy<manage_new_object>())
-            .def("cross", &crossXdXd, return_value_policy<manage_new_object>())
+            .def("cross", &crossXdXI, manage_new_matrix)
+            .def("cross", &crossXdXd, manage_new_matrix)
             .def("isZero", &isZero<MatrixXd>)
             .def("isZero", &isZeroP<MatrixXd>)
-            .def("isApprox", &isApproxXdXI)
-            .def("isApprox", &isApproxXdXIP)
-            .def("isApprox", &isApproxXdXd)
-            .def("isApprox", &isApproxXdXdP)
-            .def("hull", &hullXdXI, return_value_policy<manage_new_object>())
-            .def("hull", &hullXdXd, return_value_policy<manage_new_object>())
-            .def("Constant", &constant<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("hull", &hullXdXI, manage_new_matrix)
+            .def("hull", &hullXdXd, manage_new_matrix)
+            .def("Constant", &constant<MatrixXd>, manage_new_matrix)
                 .staticmethod("Constant")
-            .def("Zero", &zero<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("Zero", &zero<MatrixXd>, manage_new_matrix)
                 .staticmethod("Zero")
-            .def("Ones", &ones<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("Ones", &ones<MatrixXd>, manage_new_matrix)
                 .staticmethod("Ones")
-            .def("Random", &random<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("Random", &random<MatrixXd>, manage_new_matrix)
                 .staticmethod("Random")
-            .def("Identity", &identity<MatrixXd>, return_value_policy<manage_new_object>())
+            .def("Identity", &identity<MatrixXd>, manage_new_matrix)
                 .staticmethod("Identity")
-            .def("__neg__", &negXd, return_value_policy<manage_new_object>())
-            .def("__add__", &addXdXI, return_value_policy<manage_new_object>())
-            .def("__add__", &addXdXd, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXdXI, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXdXd, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXdI, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXdd, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXdI, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXdd, return_value_policy<manage_new_object>())
-            .def("__div__", &divXdI, return_value_policy<manage_new_object>())
-            .def("__div__", &divXdd, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXdXI, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXdXd, return_value_policy<manage_new_object>())
+            .def("__neg__", &negXd, manage_new_matrix) 
+            .def("__add__", &addXdXI, manage_new_matrix)
+            .def("__add__", &addXdXd, manage_new_matrix)
+            .def("__sub__", &subXdXI, manage_new_matrix)
+            .def("__sub__", &subXdXd, manage_new_matrix)
+            .def("__mul__", &mulXdI, manage_new_matrix)
+            .def("__mul__", &mulXdd, manage_new_matrix)
+            .def("__rmul__", &rmulXdI, manage_new_matrix)
+            .def("__rmul__", &rmulXdd, manage_new_matrix)
+            .def("__div__", &divXdI, manage_new_matrix)
+            .def("__div__", &divXdd, manage_new_matrix)
+            .def("__mul__", &mulXdXI, manage_new_matrix)
+            .def("__mul__", &mulXdXd, manage_new_matrix)
             .def(self_ns::str(self));
-        
+
         class_<MatrixXI>("MatrixXI", init<int, int>())
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
             .def("value", &value<MatrixXI>)
             .def("get", &getI<MatrixXI>)
-            .def("get", &getS<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("get", &getS<MatrixXI>, manage_new_matrix)
             .def("get", &getII<MatrixXI>)
-            .def("get", &getIS<MatrixXI>, return_value_policy<manage_new_object>())
-            .def("get", &getSI<MatrixXI>, return_value_policy<manage_new_object>())
-            .def("get", &getSS<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("get", &getIS<MatrixXI>, manage_new_matrix)
+            .def("get", &getSI<MatrixXI>, manage_new_matrix)
+            .def("get", &getSS<MatrixXI>, manage_new_matrix)
             .def("__getitem__", raw_function(&getItem))
             .def("set", &setI<MatrixXI>)
             .def("set", &setS<MatrixXI>)
@@ -766,36 +701,20 @@ namespace OpenSolid
             .def("set", &setSS<MatrixXI>)
             .def("__setitem__", raw_function(&setItem))
             .def("__iter__", range(&matrixBegin<MatrixXI>, &matrixEnd<MatrixXI>))
-            .def(
-                "colwise",
-                range<return_value_policy<ManageNewMatrix>>(
-                    &matrixColBegin<MatrixXI>,
-                    &matrixColEnd<MatrixXI>
-                )
-             )
-            .def(
-                "rowwise",
-                range<return_value_policy<ManageNewMatrix>>(
-                    &matrixRowBegin<MatrixXI>,
-                    &matrixRowEnd<MatrixXI>
-                )
-            )
+            .def("colwise", range(&matrixColBegin<MatrixXI>, &matrixColEnd<MatrixXI>))
+            .def("rowwise", range(&matrixRowBegin<MatrixXI>, &matrixRowEnd<MatrixXI>))
             .def("squaredNorm", &squaredNorm<MatrixXI>)
             .def("norm", &norm<MatrixXI>)
-            .def("normalized", &normalized<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("normalized", &normalized<MatrixXI>, manage_new_matrix)
             .def("determinant", &determinant<MatrixXI>)
             .def("trace", &trace<MatrixXI>)
-            .def("transpose", &transpose<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("transpose", &transpose<MatrixXI>, manage_new_matrix)
             .def("dot", &dotXIXI)
             .def("dot", &dotXIXd)
-            .def("cross", &crossXIXI, return_value_policy<manage_new_object>())
-            .def("cross", &crossXIXd, return_value_policy<manage_new_object>())
+            .def("cross", &crossXIXI, manage_new_matrix)
+            .def("cross", &crossXIXd, manage_new_matrix)
             .def("isZero", &isZero<MatrixXI>)
             .def("isZero", &isZeroP<MatrixXI>)
-            .def("isApprox", &isApproxXIXI)
-            .def("isApprox", &isApproxXIXIP)
-            .def("isApprox", &isApproxXIXd)
-            .def("isApprox", &isApproxXIXdP)
             .def("overlaps", &overlaps)
             .def("overlaps", &overlapsP)
             .def("strictlyOverlaps", &strictlyOverlaps)
@@ -808,36 +727,36 @@ namespace OpenSolid
             .def("strictlyContains", &strictlyContainsXIP)
             .def("strictlyContains", &strictlyContainsXd)
             .def("strictlyContains", &strictlyContainsXdP)
-            .def("cwiseLower", &cwiseLower, return_value_policy<manage_new_object>())
-            .def("cwiseUpper", &cwiseUpper, return_value_policy<manage_new_object>())
-            .def("cwiseMedian", &cwiseMedian, return_value_policy<manage_new_object>())
-            .def("cwiseWidth", &cwiseWidth, return_value_policy<manage_new_object>())
-            .def("hull", &hullXIXI, return_value_policy<manage_new_object>())
-            .def("hull", &hullXIXd, return_value_policy<manage_new_object>())
-            .def("intersection", &intersection, return_value_policy<manage_new_object>())
-            .def("Constant", &constant<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("cwiseLower", &cwiseLower, manage_new_matrix)
+            .def("cwiseUpper", &cwiseUpper, manage_new_matrix)
+            .def("cwiseMedian", &cwiseMedian, manage_new_matrix)
+            .def("cwiseWidth", &cwiseWidth, manage_new_matrix)
+            .def("hull", &hullXIXI, manage_new_matrix)
+            .def("hull", &hullXIXd, manage_new_matrix)
+            .def("intersection", &intersection, manage_new_matrix)
+            .def("Constant", &constant<MatrixXI>, manage_new_matrix)
                 .staticmethod("Constant")
-            .def("Zero", &zero<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("Zero", &zero<MatrixXI>, manage_new_matrix)
                 .staticmethod("Zero")
-            .def("Ones", &ones<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("Ones", &ones<MatrixXI>, manage_new_matrix)
                 .staticmethod("Ones")
-            .def("Random", &random<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("Random", &random<MatrixXI>, manage_new_matrix)
                 .staticmethod("Random")
-            .def("Identity", &identity<MatrixXI>, return_value_policy<manage_new_object>())
+            .def("Identity", &identity<MatrixXI>, manage_new_matrix)
                 .staticmethod("Identity")
-            .def("__neg__", &negXI, return_value_policy<manage_new_object>())
-            .def("__add__", &addXIXI, return_value_policy<manage_new_object>())
-            .def("__add__", &addXIXd, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXIXI, return_value_policy<manage_new_object>())
-            .def("__sub__", &subXIXd, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXII, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXId, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXII, return_value_policy<manage_new_object>())
-            .def("__rmul__", &rmulXId, return_value_policy<manage_new_object>())
-            .def("__div__", &divXII, return_value_policy<manage_new_object>())
-            .def("__div__", &divXId, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXIXI, return_value_policy<manage_new_object>())
-            .def("__mul__", &mulXIXd, return_value_policy<manage_new_object>())
+            .def("__neg__", &negXI, manage_new_matrix)
+            .def("__add__", &addXIXI, manage_new_matrix)
+            .def("__add__", &addXIXd, manage_new_matrix)
+            .def("__sub__", &subXIXI, manage_new_matrix)
+            .def("__sub__", &subXIXd, manage_new_matrix)
+            .def("__mul__", &mulXII, manage_new_matrix)
+            .def("__mul__", &mulXId, manage_new_matrix)
+            .def("__rmul__", &rmulXII, manage_new_matrix)
+            .def("__rmul__", &rmulXId, manage_new_matrix)
+            .def("__div__", &divXII, manage_new_matrix)
+            .def("__div__", &divXId, manage_new_matrix)
+            .def("__mul__", &mulXIXI, manage_new_matrix)
+            .def("__mul__", &mulXIXd, manage_new_matrix)
             .def(self_ns::str(self));
     }
 }

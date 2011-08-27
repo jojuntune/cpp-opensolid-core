@@ -143,7 +143,7 @@ public:
         script.set("a", 4.0);
         script.set("b", 5.0);
         Vector3d result = script.get<MatrixXd>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
-        TS_ASSERT(result.isApprox(Vector3d(5, 7, 3)));
+        TS_ASSERT((result - Vector3d(5, 7, 3)).isZero());
     }
     
     void testMatrixXI() {
@@ -239,7 +239,7 @@ public:
         Script script;
         script.set<MatrixXd>("a", Vector3d(1, 2, 3));
         script.set<MatrixXd>("b", Vector3d(1, 2, 3));
-        TS_ASSERT(script.get<bool>("a.isApprox(b)"));
+        TS_ASSERT(script.get<bool>("(a - b).isZero()"));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("-a"), Vector3d(-1, -2, -3));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("a + b"), Vector3d(2, 4, 6));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("a - b"), Vector3d(0, 0, 0));
@@ -368,7 +368,7 @@ public:
         script1.run("a = CustomClass()");
         script1.run("a.setValue(10)");
         TS_ASSERT_EQUALS(script1.get<double>("a.value()"), 10.0);
-        TS_ASSERT(script1.get<MatrixXd>("a.function()(3.0)").isApprox(Vector3d(3, 3, 3)));
+        TS_ASSERT((script1.get<MatrixXd>("a.function()(3.0)") - Vector3d(3, 3, 3)).isZero());
         TS_ASSERT_EQUALS(script1.get<MatrixXd>("a.vector()"), Vector3d(1, 2, 3));
         TS_ASSERT_THROWS(script2.run("b = CustomClass()"), Error);
     }
@@ -406,14 +406,14 @@ public:
         script.run("a2 = Vector2d(1, 2)");
         script.run("b1 = Vector2I(1, 2)");
         script.run("b2 = Vector2I(1, 2)");
-        TS_ASSERT(script.get<bool>("a1.isApprox(a2)"));
-        TS_ASSERT(script.get<bool>("not a1.isApprox(2 * a2)"));
-        TS_ASSERT(script.get<bool>("b1.isApprox(b2)"));
-        TS_ASSERT(script.get<bool>("not b1.isApprox(2 * b2)"));
-        TS_ASSERT(script.get<bool>("a1.isApprox(b1)"));
-        TS_ASSERT(script.get<bool>("not a1.isApprox(2 * b1)"));
-        TS_ASSERT(script.get<bool>("b1.isApprox(a1)"));
-        TS_ASSERT(script.get<bool>("not b1.isApprox(2 * a1)"));
+        TS_ASSERT(script.get<bool>("(a1 - a2).isZero()"));
+        TS_ASSERT(script.get<bool>("not (a1 - 2 * a2).isZero()"));
+        TS_ASSERT(script.get<bool>("(b1 - b2).isZero()"));
+        TS_ASSERT(script.get<bool>("not (b1 - 2 * b2).isZero()"));
+        TS_ASSERT(script.get<bool>("(a1 - b1).isZero()"));
+        TS_ASSERT(script.get<bool>("not (a1 - 2 * b1).isZero()"));
+        TS_ASSERT(script.get<bool>("(b1 - a1).isZero()"));
+        TS_ASSERT(script.get<bool>("not (b1 - 2 * a1).isZero()"));
     }
 
     void testOverloading() {
@@ -422,18 +422,18 @@ public:
         Function f2 = Vector3d(2, 0, 0) * Function::Parameter(2, 0) +
             Vector3d(0, 0.5, 0) * Function::Parameter(2, 1);
         script.set("f2", f2);
-        TS_ASSERT(script.get<double>("f1(2).value()") == Approx(6.0));
+        TS_ASSERT(script.get<double>("f1(2).value()") - 6 == Zero());
         Interval interval_bounds = script.get<Interval>("f1(Interval(2, 3)).value()");
-        TS_ASSERT(interval_bounds.lower() == Approx(6));
-        TS_ASSERT(interval_bounds.upper() == Approx(9));
+        TS_ASSERT(interval_bounds.lower() - 6 == Zero());
+        TS_ASSERT(interval_bounds.upper() - 9 == Zero());
         TS_ASSERT(
-            script.get<MatrixXd>("f2(Vector2d(1, 1))").isApprox(Vector3d(2, 0.5, 0))
+            (script.get<MatrixXd>("f2(Vector2d(1, 1))") - Vector3d(2, 0.5, 0)).isZero()
         );
         MatrixXI matrix_bounds = script.get<MatrixXI>(
             "f2(Vector2I(Interval(1, 2), Interval(2, 3)))"
         );
-        TS_ASSERT(matrix_bounds.cwiseLower().isApprox(Vector3d(2, 1, 0)));
-        TS_ASSERT(matrix_bounds.cwiseUpper().isApprox(Vector3d(4, 1.5, 0)));
+        TS_ASSERT((matrix_bounds.cwiseLower() - Vector3d(2, 1, 0)).isZero());
+        TS_ASSERT((matrix_bounds.cwiseUpper() - Vector3d(4, 1.5, 0)).isZero());
     }
 
     void testExplicitModule() {
@@ -446,7 +446,7 @@ public:
         MatrixXI bounds = script.get<MatrixXI>(
             "f(opensolid.Vector2I(opensolid.Interval(1, 2), 0))"
         );
-        TS_ASSERT(bounds.cwiseLower().isApprox(Vector3d(1, 2, 3)));
-        TS_ASSERT(bounds.cwiseUpper().isApprox(Vector3d(2, 4, 6)));
+        TS_ASSERT((bounds.cwiseLower() - Vector3d(1, 2, 3)).isZero());
+        TS_ASSERT((bounds.cwiseUpper() - Vector3d(2, 4, 6)).isZero());
     }
 };
