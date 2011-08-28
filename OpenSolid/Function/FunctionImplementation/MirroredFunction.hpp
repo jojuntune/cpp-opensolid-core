@@ -31,11 +31,11 @@ namespace OpenSolid
     private:
         PlaneXd _plane;
         VectorXd _normal;
+        double _d;
     public:
         OPENSOLID_CORE_EXPORT MirroredFunction(const Function& operand, const PlaneXd& plane);
         
         const PlaneXd& plane() const;
-        const VectorXd& normal() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
@@ -44,8 +44,6 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
@@ -56,8 +54,6 @@ namespace OpenSolid
 namespace OpenSolid
 {
     inline const PlaneXd& MirroredFunction::plane() const {return _plane;}
-    
-    inline const VectorXd& MirroredFunction::normal() const {return _normal;}
 }
 
 #endif

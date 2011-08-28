@@ -108,6 +108,13 @@ namespace OpenSolid
         implementation()->getComponents(index, num, result);
         return result;
     }
+
+    Function Function::mirrored(const PlaneXd& plane) const {
+        assert(plane.dimensions() == dimensions());
+        Function result;
+        implementation()->getMirrored(plane, result);
+        return result;
+    }
     
     Function Function::concatenate(const Function& other) const {
         return new ConcatenationFunction(*this, other);

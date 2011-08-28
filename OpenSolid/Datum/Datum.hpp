@@ -42,20 +42,11 @@ namespace OpenSolid
     template <int other_dimensions_>
     class Frame;
     
-    template <int dimensions_, int axes_>
-    class LinearDatum;
-    
     template <class DerivedType, int dimensions_, int axes_>
     class DatumProduct;
     
     template <class DerivedType, int dimensions_, int axes_>
     class DatumQuotient;
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    class LinearDatumProduct;
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    class LinearDatumQuotient;
 
     template <int dimensions_, int axes_>
     class Datum
@@ -87,12 +78,6 @@ namespace OpenSolid
         template <class DerivedType, int other_dimensions_, int other_axes_>
         friend class DatumQuotient;
         
-        template <class DerivedType, int other_dimensions_, int other_axes_>
-        friend class LinearDatumProduct;
-        
-        template <class DerivedType, int other_dimensions_, int other_axes_>
-        friend class LinearDatumQuotient;
-        
         template <class DerivedType>
         void initialize(
             const Vector& origin,
@@ -102,9 +87,6 @@ namespace OpenSolid
         
         template <int other_dimensions_, int other_axes_>
         void initialize(const Datum<other_dimensions_, other_axes_>& other);
-        
-        template <int other_dimensions_, int other_axes_>
-        void initialize(const LinearDatum<other_dimensions_, other_axes_>& other);
     public:
         Datum();
         
@@ -113,18 +95,10 @@ namespace OpenSolid
         template <int other_dimensions_, int other_axes_>
         Datum(const Datum<other_dimensions_, other_axes_>& other);
         
-        template <int other_dimensions_, int other_axes_>
-        Datum(const LinearDatum<other_dimensions_, other_axes_>& other);
-        
         Datum<dimensions_, axes_>& operator=(const Datum<dimensions_, axes_>& other);
         
         template <int other_dimensions_, int other_axes_>
         Datum<dimensions_, axes_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
-        
-        template <int other_dimensions_, int other_axes_>
-        Datum<dimensions_, axes_>& operator=(
-            const LinearDatum<other_dimensions_, other_axes_>& other
-        );
         
         int dimensions() const;
         int axes() const;
@@ -171,7 +145,7 @@ namespace OpenSolid
         Datum<dimensions_, axes_> rotatedBy(double angle, const Axis<3>& axis) const;
         
         Datum<dimensions_, axes_> normalized() const;
-        LinearDatum<dimensions_, axes_> linear() const;
+        Datum<dimensions_, axes_> linear() const;
         Frame<dimensions_> inverse() const;
     
         template <int base_dimensions_, int base_axes_>
@@ -189,39 +163,6 @@ namespace OpenSolid
     typedef Datum<3, 3> Datum3d;
     typedef Datum<4, 4> Datum4d;
     typedef Datum<Dynamic, Dynamic> DatumXd;
-    
-    template <int dimensions_, int axes_>
-    class LinearDatum
-    {
-    private:
-        const Datum<dimensions_, axes_>& _datum;
-    public:
-        LinearDatum(const Datum<dimensions_, axes_>& datum);
-        
-        const Datum<dimensions_, axes_>& datum() const;
-        
-        typename Datum<dimensions_, axes_>::Vector operator()(
-            double x
-        ) const;
-        
-        typename Datum<dimensions_, axes_>::Vector operator()(
-            double x,
-            double y
-        ) const;
-        
-        typename Datum<dimensions_, axes_>::Vector operator()(
-            double x,
-            double y,
-            double z
-        ) const;
-        
-        typename Datum<dimensions_, axes_>::Vector operator()(
-            double x,
-            double y,
-            double z,
-            double w
-        ) const;
-    };
     
     OPENSOLID_CORE_EXPORT MatrixXd orthogonalBasis(const MatrixXd& vectors);
 }
@@ -297,17 +238,6 @@ namespace OpenSolid
         _vectors = other.vectors();
         _normalized = other._normalized;
     }
-        
-    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
-    inline void Datum<dimensions_, axes_>::initialize(
-        const LinearDatum<other_dimensions_, other_axes_>& other
-    ) {
-        assert(other.datum().dimensions() == dimensions_ || dimensions_ == Dynamic);
-        assert(other.datum().axes() == axes_ || axes_ == Dynamic);
-        _origin = Vector::Zero(other.datum().dimensions());
-        _vectors = other.datum().vectors();
-        _normalized = other.datum()._normalized;
-    }
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>::Datum() {}
@@ -322,11 +252,6 @@ namespace OpenSolid
         initialize(other);
     }
         
-    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
-    inline Datum<dimensions_, axes_>::Datum(
-        const LinearDatum<other_dimensions_, other_axes_>& other
-    ) {initialize(other);}
-        
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<dimensions_, axes_>& other
@@ -338,14 +263,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<other_dimensions_, other_axes_>& other
-    ) {
-        initialize(other);
-        return *this;
-    }
-    
-    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
-    inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
-        const LinearDatum<other_dimensions_, other_axes_>& other
     ) {
         initialize(other);
         return *this;
@@ -597,8 +514,10 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int axes_>
-    inline LinearDatum<dimensions_, axes_> Datum<dimensions_, axes_>::linear() const {
-        return LinearDatum<dimensions_, axes_>(*this);
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::linear() const {
+        Datum<dimensions_, axes_> result(*this);
+        result._origin.setZero();
+        return result;
     }
     
     template <int dimensions_, int axes_>
@@ -635,57 +554,6 @@ namespace OpenSolid
         Datum<base_axes_, axes_> result;
         result.initialize(origin() / base, vectors() / base.linear(), false);
         return result;
-    }
-    
-    template <int dimensions_, int axes_>
-    inline LinearDatum<dimensions_, axes_>::LinearDatum(const Datum<dimensions_, axes_>& datum) :
-        _datum(datum) {}
-     
-    template <int dimensions_, int axes_>
-    inline const Datum<dimensions_, axes_>& LinearDatum<dimensions_, axes_>::datum() const {
-        return _datum;
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector
-    LinearDatum<dimensions_, axes_>::operator()(
-        double x
-    ) const {
-        assert(datum().axes() == 1);
-        return datum().vectors() * x;
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector
-    LinearDatum<dimensions_, axes_>::operator()(
-        double x,
-        double y
-    ) const {
-        assert(datum().axes() == 2);
-        return datum().vectors() * Vector2d(x, y);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector
-    LinearDatum<dimensions_, axes_>::operator()(
-        double x,
-        double y,
-        double z
-    ) const {
-        assert(datum().axes() == 3);
-        return datum().vectors() * Vector3d(x, y, z);
-    }
-
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector
-    LinearDatum<dimensions_, axes_>::operator()(
-        double x,
-        double y,
-        double z,
-        double w
-    ) const {
-        assert(datum().axes() == 4);
-        return datum().vectors() * Vector4d(x, y, z, w);
     }
 }
 

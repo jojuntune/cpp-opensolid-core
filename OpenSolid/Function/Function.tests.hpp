@@ -213,6 +213,17 @@ public:
         TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
         TS_ASSERT(bounds.upper() - M_PI / 2 == Zero());
     }
+
+    void testMirrored() {
+        Function f = Vector3d(1, 1, 1) + Function::Parameter(1, 0) * Vector3d(1, 1, 1);
+        Function mirrored = f.mirrored(Frame3d().yzPlane());
+        TS_ASSERT((mirrored(1) - Vector3d(-2, 2, 2)).isZero());
+        Function rotated = mirrored * Frame3d().rotatedBy(-M_PI / 2, Frame3d().yAxis());
+        TS_ASSERT((rotated(1) - Vector3d(-2, 2, -2)).isZero());
+        Function derivative = mirrored.derivative();
+        TS_ASSERT(derivative.isA<ConstantFunction>());
+        TS_ASSERT((derivative.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
+    }
     
     void testZeros() {
         std::vector<Function> functions(7);

@@ -21,6 +21,7 @@
 #include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
 #include <OpenSolid/Function/FunctionImplementation/ComponentsFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/CompositionFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/MirroredFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/NormFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/NormalizedFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/SquaredNormFunction.hpp>
@@ -40,6 +41,10 @@ namespace OpenSolid
         
     void FunctionImplementation::getTransformed(const DatumXd& datum, Function& result) const {
         result = new TransformedFunction(this, datum);
+    }
+
+    void FunctionImplementation::getMirrored(const PlaneXd& plane, Function& result) const {
+        result = new MirroredFunction(this, plane);
     }
     
     void FunctionImplementation::getNorm(Function& result) const {
