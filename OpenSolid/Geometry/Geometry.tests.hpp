@@ -53,8 +53,8 @@ public:
         TS_ASSERT(arc(M_PI / 2).isApprox(Vector3d(1, 3, 1)));
         TS_ASSERT(arc(3 * M_PI / 2).isApprox(Vector3d(1, -1, 1)));
         
-        Geometry derivative = arc.derivative();
-        std::cout << "Derivative function: " << std::endl << derivative.function() << std::endl;
+        Function derivative = arc.function().derivative();
+        std::cout << "Derivative function: " << std::endl << derivative << std::endl;
         std::cout << "Derivative values:" << std::endl;
         std::cout << derivative(parameter_values) << std::endl;
         TS_ASSERT(derivative(0.0).isApprox(Vector3d(0, 2, 0)));
@@ -62,8 +62,8 @@ public:
         TS_ASSERT(derivative(M_PI).isApprox(Vector3d(0, -2, 0)));
         TS_ASSERT(derivative(3 * M_PI / 2).isApprox(Vector3d(2, 0, 0)));
         
-        Geometry tangent = arc.tangent();
-        std::cout << "Tangent function: " << std::endl << tangent.function() << std::endl;
+        Function tangent = arc.function().tangent();
+        std::cout << "Tangent function: " << std::endl << tangent << std::endl;
         std::cout << "Tangent values:" << std::endl;
         std::cout << tangent(parameter_values) << std::endl;
         TS_ASSERT(tangent(0.0).isApprox(Vector3d(0, 1, 0)));
@@ -71,9 +71,9 @@ public:
         TS_ASSERT(tangent(M_PI).isApprox(Vector3d(0, -1, 0)));
         TS_ASSERT(tangent(3 * M_PI / 2).isApprox(Vector3d(1, 0, 0)));
         
-        Geometry second_derivative = arc.derivative().derivative();
+        Function second_derivative = arc.function().derivative().derivative();
         std::cout << "Second derivative function: " << std::endl;
-        std::cout << second_derivative.function() << std::endl;
+        std::cout << second_derivative << std::endl;
         std::cout << "Second derivative values:" << std::endl;
         std::cout << second_derivative(parameter_values) << std::endl;
         
@@ -82,8 +82,8 @@ public:
         TS_ASSERT(second_derivative(M_PI).isApprox(Vector3d(2, 0, 0)));
         TS_ASSERT(second_derivative(M_PI * 3 / 2).isApprox(Vector3d(0, 2, 0)));
         
-        Geometry normal = arc.tangent().tangent();
-        std::cout << "Normal function: " << std::endl << normal.function() << std::endl;
+        Function normal = arc.function().tangent().tangent();
+        std::cout << "Normal function: " << std::endl << normal << std::endl;
         std::cout << "Normal values:" << std::endl;
         std::cout << normal(parameter_values) << std::endl;
         
@@ -98,10 +98,10 @@ public:
             Function::t * Vector3d::UnitX() + Function::t.squaredNorm() * Vector3d::UnitY(),
             Interval(-2, 2)
         );
-        TS_ASSERT((parabola.tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());
-        TS_ASSERT(parabola.curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
-        TS_ASSERT((parabola.normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
-        TS_ASSERT((parabola.binormal()(1) - Vector3d::UnitZ()).isZero());
+        TS_ASSERT((parabola.function().tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());
+        TS_ASSERT(parabola.function().curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
+        TS_ASSERT((parabola.function().normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
+        TS_ASSERT((parabola.function().binormal()(1) - Vector3d::UnitZ()).isZero());
     }
     
     void testHashing() {

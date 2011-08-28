@@ -215,14 +215,18 @@ public:
     }
 
     void testMirrored() {
+        Datum3d mirror = Frame3d().yzPlane().translatedBy(Vector3d(1, 0, 0)).mirror();
         Function f = Vector3d(1, 1, 1) + Function::Parameter(1, 0) * Vector3d(1, 1, 1);
-        Function mirrored = f.mirrored(Frame3d().yzPlane());
-        TS_ASSERT((mirrored(1) - Vector3d(-2, 2, 2)).isZero());
-        Function rotated = mirrored * Frame3d().rotatedBy(-M_PI / 2, Frame3d().yAxis());
-        TS_ASSERT((rotated(1) - Vector3d(-2, 2, -2)).isZero());
-        Function derivative = mirrored.derivative();
-        TS_ASSERT(derivative.isA<ConstantFunction>());
-        TS_ASSERT((derivative.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
+        Function mirrored1 = f * mirror;
+        Function mirrored2 = f / mirror;
+        TS_ASSERT((mirrored1(1) - Vector3d(0, 2, 2)).isZero());
+        TS_ASSERT((mirrored2(1) - Vector3d(0, 2, 2)).isZero());
+        Function derivative1 = mirrored1.derivative();
+        Function derivative2 = mirrored2.derivative();
+        TS_ASSERT(derivative1.isA<ConstantFunction>());
+        TS_ASSERT(derivative2.isA<ConstantFunction>());
+        TS_ASSERT((derivative1.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((derivative2.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
     }
     
     void testZeros() {

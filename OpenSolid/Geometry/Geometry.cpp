@@ -22,73 +22,7 @@
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
-{
-    Geometry Geometry::derivative(int parameter_index) const {
-        return Geometry(function().derivative(parameter_index), domain());
-    }
-    
-    Geometry Geometry::norm() const {return Geometry(function().norm(), domain());}
-    
-    Geometry Geometry::normalized() const {return Geometry(function().normalized(), domain());}
-    
-    Geometry Geometry::squaredNorm() const {return Geometry(function().squaredNorm(), domain());}
-    
-    Geometry Geometry::component(int index) const {
-        return Geometry(function().component(index), domain());
-    }
-    
-    Geometry Geometry::components(int index, int num) const {
-        return Geometry(function().components(index, num), domain());
-    }
-    
-    std::pair<Function, Function> mergedFunctions(
-        const Function& first_operand,
-        const Function& second_operand
-    ) {
-        if (first_operand.isA<ConstantFunction>() || second_operand.isA<ConstantFunction>()) {
-            return std::pair<Function, Function>(first_operand, second_operand);
-        }
-        int first_parameters = first_operand.parameters();
-        int second_parameters = second_operand.parameters();
-        int total = first_parameters + second_parameters;
-        return std::pair<Function, Function>(
-            first_operand(Function::Parameters(total, 0, first_parameters)),
-            second_operand(Function::Parameters(total, first_parameters, second_parameters))
-        );
-    }
-    
-    Geometry Geometry::concatenate(const Geometry& other) const {
-        std::pair<Function, Function> functions = mergedFunctions(function(), other.function());
-        return Geometry(
-            functions.first.concatenate(functions.second),
-            domain().concatenate(other.domain())
-        );
-    }
-    
-    Geometry Geometry::dot(const Geometry& other) const {
-        std::pair<Function, Function> functions = mergedFunctions(function(), other.function());
-        return Geometry(
-            functions.first.dot(functions.second),
-            domain().concatenate(other.domain())
-        );
-    }
-    
-    Geometry Geometry::cross(const Geometry& other) const {
-        std::pair<Function, Function> functions = mergedFunctions(function(), other.function());
-        return Geometry(
-            functions.first.cross(functions.second),
-            domain().concatenate(other.domain())
-        );
-    }
-    
-    Geometry Geometry::tangent() const {return Geometry(function().tangent(), domain());}
-    
-    Geometry Geometry::curvature() const {return Geometry(function().curvature(), domain());}
-    
-    Geometry Geometry::normal() const {return Geometry(function().normal(), domain());}
-    
-    Geometry Geometry::binormal() const {return Geometry(function().binormal(), domain());}
-    
+{   
     Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
         return Geometry(start + Function::t * (end - start), Interval(0, 1));
     }
@@ -152,54 +86,6 @@ namespace OpenSolid
             angle
         );
     }
-
-    inline Geometry operator-(const Geometry& argument) {
-        return Geometry(-argument.function(), argument.domain());
-    }
-    
-    inline Geometry operator+(const Geometry& first_operand, const Geometry& second_operand) {
-        std::pair<Function, Function> functions = mergedFunctions(
-            first_operand.function(),
-            second_operand.function()
-        );
-        return Geometry(
-            functions.first + functions.second,
-            first_operand.domain().concatenate(second_operand.domain())
-        );
-    }
-    
-    inline Geometry operator-(const Geometry& first_operand, const Geometry& second_operand) {
-        std::pair<Function, Function> functions = mergedFunctions(
-            first_operand.function(),
-            second_operand.function()
-        );
-        return Geometry(
-            functions.first - functions.second,
-            first_operand.domain().concatenate(second_operand.domain())
-        );
-    }
-    
-    Geometry operator*(const Geometry& first_operand, const Geometry& second_operand) {
-        std::pair<Function, Function> functions = mergedFunctions(
-            first_operand.function(),
-            second_operand.function()
-        );
-        return Geometry(
-            functions.first * functions.second,
-            first_operand.domain().concatenate(second_operand.domain())
-        );
-    }
-    
-    Geometry operator/(const Geometry& first_operand, const Geometry& second_operand) {
-        std::pair<Function, Function> functions = mergedFunctions(
-            first_operand.function(),
-            second_operand.function()
-        );
-        return Geometry(
-            functions.first / functions.second,
-            first_operand.domain().concatenate(second_operand.domain())
-        );
-    }
     
     Geometry operator*(const Geometry& geometry, const DatumXd& datum) {
         return Geometry(geometry.function() * datum, geometry.domain());
@@ -207,17 +93,5 @@ namespace OpenSolid
     
     Geometry operator/(const Geometry& geometry, const DatumXd& datum) {
         return Geometry(geometry.function() / datum, geometry.domain());
-    }
-    
-    Geometry cos(const Geometry& argument) {
-        return Geometry(cos(argument.function()), argument.domain());
-    }
-    
-    Geometry sin(const Geometry& argument) {
-        return Geometry(sin(argument.function()), argument.domain());
-    }
-    
-    Geometry sqrt(const Geometry& argument) {
-        return Geometry(sqrt(argument.function()), argument.domain());
     }
 }

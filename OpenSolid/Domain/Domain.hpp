@@ -66,8 +66,6 @@ namespace OpenSolid
         double upper() const;
         
         bool operator==(const Domain& other) const;
-        
-        OPENSOLID_CORE_EXPORT Domain concatenate(const Domain& other) const;
     };
 }
 

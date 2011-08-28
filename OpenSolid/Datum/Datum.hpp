@@ -146,7 +146,8 @@ namespace OpenSolid
         
         Datum<dimensions_, axes_> normalized() const;
         Datum<dimensions_, axes_> linear() const;
-        Frame<dimensions_> inverse() const;
+        Datum<dimensions_, dimensions_> inverse() const;
+        Datum<dimensions_, dimensions_> mirror() const;
     
         template <int base_dimensions_, int base_axes_>
         Datum<base_dimensions_, axes_> operator*(
@@ -521,19 +522,34 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int axes_>
-    inline Frame<dimensions_> Datum<dimensions_, axes_>::inverse() const {
+    inline Datum<dimensions_, dimensions_> Datum<dimensions_, axes_>::inverse() const {
         assert(axes() == dimensions());
+        Datum<dimensions_, dimensions_> result;
         if (_normalized) {
-            return Frame<dimensions_>(
-                vectors().transpose() * -origin(),
-                vectors().transpose()
-            );
+            result.initialize(vectors().transpose() * -origin(), vectors().transpose(), false);
         } else {
-            return Frame<dimensions_>(
-                -origin() / linear(),
-                vectors().inverse()
-            );
+            result.initialize(-origin() / linear(), vectors().inverse(), false);
         }
+        return result;
+    }
+
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, dimensions_> Datum<dimensions_, axes_>::mirror() const {
+        static_assert(
+            axes_ == dimensions_ - 1 || dimensions_ == Dynamic || axes_ == Dynamic,
+            "mirror() only valid for planes"
+        );
+        assert(axes() == dimensions() - 1 && "mirror() only valid for planes");
+        Vector normal_vector = normalVector();
+        typedef Eigen::Matrix<double, dimensions_, dimensions_> SquareMatrix;
+        SquareMatrix N = normal_vector * normal_vector.transpose();
+        Datum<dimensions_, dimensions_> result;
+        result.initialize(
+            2 * N * origin(),
+            SquareMatrix::Identity(dimensions(), dimensions()) - 2 * N,
+            false
+        );
+        return result;
     }
     
     template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>

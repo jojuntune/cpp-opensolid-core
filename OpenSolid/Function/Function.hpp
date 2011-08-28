@@ -98,7 +98,6 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Function w() const;
         OPENSOLID_CORE_EXPORT Function component(int index) const;
         OPENSOLID_CORE_EXPORT Function components(int index, int num) const;
-        OPENSOLID_CORE_EXPORT Function mirrored(const PlaneXd& plane) const;
         OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function dot(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function cross(const Function& other) const;

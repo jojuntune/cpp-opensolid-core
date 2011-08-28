@@ -62,19 +62,7 @@ namespace OpenSolid
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
-        OPENSOLID_CORE_EXPORT Geometry derivative(int parameter_index = 0) const;
-        OPENSOLID_CORE_EXPORT Geometry norm() const;
-        OPENSOLID_CORE_EXPORT Geometry normalized() const;
-        OPENSOLID_CORE_EXPORT Geometry squaredNorm() const;
-        OPENSOLID_CORE_EXPORT Geometry component(int index) const;
-        OPENSOLID_CORE_EXPORT Geometry components(int index, int num) const;
-        OPENSOLID_CORE_EXPORT Geometry concatenate(const Geometry& other) const;
-        OPENSOLID_CORE_EXPORT Geometry dot(const Geometry& other) const;
-        OPENSOLID_CORE_EXPORT Geometry cross(const Geometry& other) const;
-        OPENSOLID_CORE_EXPORT Geometry tangent() const;
-        OPENSOLID_CORE_EXPORT Geometry curvature() const;
-        OPENSOLID_CORE_EXPORT Geometry normal() const;
-        OPENSOLID_CORE_EXPORT Geometry binormal() const;
+        OPENSOLID_CORE_EXPORT Geometry mirrored(const PlaneXd& plane) const;
         
         OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
         
@@ -101,35 +89,9 @@ namespace OpenSolid
             const Interval& angle
         );
     };
-
-    OPENSOLID_CORE_EXPORT Geometry operator-(const Geometry& argument);
-    
-    OPENSOLID_CORE_EXPORT Geometry operator+(
-        const Geometry& first_argument,
-        const Geometry& second_argument
-    );
-    
-    OPENSOLID_CORE_EXPORT Geometry operator-(
-        const Geometry& first_argument,
-        const Geometry& second_argument
-    );
-    
-    OPENSOLID_CORE_EXPORT Geometry operator*(
-        const Geometry& first_argument,
-        const Geometry& second_argument
-    );
-    
-    OPENSOLID_CORE_EXPORT Geometry operator/(
-        const Geometry& first_argument,
-        const Geometry& second_argument
-    );
     
     OPENSOLID_CORE_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
     OPENSOLID_CORE_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
-    
-    OPENSOLID_CORE_EXPORT Geometry cos(const Geometry& argument);
-    OPENSOLID_CORE_EXPORT Geometry sin(const Geometry& argument);
-    OPENSOLID_CORE_EXPORT Geometry sqrt(const Geometry& argument);
 }
 
 namespace std
@@ -174,7 +136,8 @@ namespace OpenSolid
     inline Geometry::Geometry(double value) : _function(value), _domain() {}
     
     template <class DerivedType>
-    inline Geometry::Geometry(const EigenBase<DerivedType>& value) : _function(value), _domain() {}
+    inline Geometry::Geometry(const EigenBase<DerivedType>& value) :
+        _function(value), _domain() {}
     
     inline const Function& Geometry::function() const {return _function;}
     
@@ -205,9 +168,15 @@ namespace OpenSolid
     
     inline Set<Geometry> Geometry::boundaries() const {
         Set<Geometry> results;
-        for (auto i = domain().boundaries().begin(); i != domain().boundaries().end(); ++i) {
-            results.insert(function()(*i));
-        }
+        domain().boundaries().transform(
+            [this] (const Geometry& domain_boundary) {
+                return Geometry(
+                    this->function()(domain_boundary.function()),
+                    domain_boundary.domain()
+                );
+            },
+            results.inserter()
+        );
         return results;
     }
     
