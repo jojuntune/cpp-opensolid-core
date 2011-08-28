@@ -102,6 +102,10 @@ public:
         TS_ASSERT(parabola.function().curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
         TS_ASSERT((parabola.function().normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
         TS_ASSERT((parabola.function().binormal()(1) - Vector3d::UnitZ()).isZero());
+        Geometry reversed = parabola.reversed();
+        TS_ASSERT((reversed(-1) - Vector3d(1, 1, 0)).isZero());
+        TS_ASSERT((reversed(1) - Vector3d(-1, 1, 0)).isZero());
+
     }
     
     void testHashing() {

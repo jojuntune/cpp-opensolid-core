@@ -58,6 +58,8 @@ namespace OpenSolid
         VectorXI bounds() const;
         
         Set<Geometry> boundaries() const;
+
+        Geometry reversed() const;
         
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
@@ -176,6 +178,12 @@ namespace OpenSolid
             results.inserter()
         );
         return results;
+    }
+
+    inline Geometry Geometry::reversed() const {
+        assert(parameters() == 1);
+        Function reversed_parameter = domain().lower() + domain().upper() - Function::Parameter(1, 0);
+        return Geometry(function()(reversed_parameter), domain());
     }
     
     template <class ArgumentType>
