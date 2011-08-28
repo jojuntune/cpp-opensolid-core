@@ -31,10 +31,10 @@ namespace OpenSolid
     template <class ExpressionType>
     struct ExpressionConverter
     {
-        typedef Matrix<typename ExpressionType::Scalar, Dynamic, Dynamic> MatrixType;
-
         static inline PyObject* convert(const ExpressionType& expression) {
-            return manage_new_object::apply<MatrixType*>::type()(new MatrixType(expression));
+            typedef Matrix<typename ExpressionType::Scalar, Dynamic, Dynamic> MatrixType;
+            typedef typename manage_new_object::apply<MatrixType*>::type ConverterType;
+            return ConverterType()(new MatrixType(expression));
         }
     };
 
@@ -613,10 +613,10 @@ namespace OpenSolid
     }
     
     void bindMatrix() {
-        registerExpressionConverter<decltype(*begin((const MatrixXd()).colwise()))>();
-        registerExpressionConverter<decltype(*begin((const MatrixXd()).rowwise()))>();
-        registerExpressionConverter<decltype(*begin((const MatrixXI()).colwise()))>();
-        registerExpressionConverter<decltype(*begin((const MatrixXI()).rowwise()))>();
+        registerExpressionConverter<MatrixXd::ConstColXpr>();
+        registerExpressionConverter<MatrixXd::ConstRowXpr>();
+        registerExpressionConverter<MatrixXI::ConstColXpr>();
+        registerExpressionConverter<MatrixXI::ConstRowXpr>();
 
         return_value_policy<manage_new_object> manage_new_matrix;
 
