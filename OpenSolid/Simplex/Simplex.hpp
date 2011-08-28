@@ -53,7 +53,7 @@ namespace OpenSolid
         Simplex(const Simplex<other_dimensions_, other_size_>& other);
         
         template <class DerivedType>
-        Simplex(const EigenBase<DerivedType>& vertices);
+        explicit Simplex(const EigenBase<DerivedType>& vertices);
         
         Simplex(double first_vertex, double second_vertex);
         
