@@ -62,8 +62,6 @@ namespace OpenSolid
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
-        OPENSOLID_CORE_EXPORT Geometry mirrored(const PlaneXd& plane) const;
-        
         OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
         
         OPENSOLID_CORE_EXPORT static Geometry Arc(double radius, const Interval& angle);
