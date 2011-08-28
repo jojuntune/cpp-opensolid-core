@@ -60,11 +60,6 @@ namespace OpenSolid
             const DatumXd& datum,
             Function& result
         ) const;
-
-        OPENSOLID_CORE_EXPORT virtual void getMirrored(
-            const PlaneXd& plane,
-            Function& result
-        ) const;
         
         OPENSOLID_CORE_EXPORT virtual void getNorm(Function& result) const;
         OPENSOLID_CORE_EXPORT virtual void getNormalized(Function& result) const;

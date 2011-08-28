@@ -154,7 +154,6 @@
         Function/FunctionImplementation/EllipticalFunction.hpp
         Function/FunctionImplementation/FunctionImplementation.hpp
         Function/FunctionImplementation/LinearFunction.hpp
-        Function/FunctionImplementation/MirroredFunction.hpp
         Function/FunctionImplementation/NegationFunction.hpp
         Function/FunctionImplementation/NormalizedFunction.hpp
         Function/FunctionImplementation/NormFunction.hpp
@@ -185,7 +184,6 @@
         Function/FunctionImplementation/EllipticalFunction.cpp
         Function/FunctionImplementation/FunctionImplementation.cpp
         Function/FunctionImplementation/LinearFunction.cpp
-        Function/FunctionImplementation/MirroredFunction.cpp
         Function/FunctionImplementation/NegationFunction.cpp
         Function/FunctionImplementation/NormalizedFunction.cpp
         Function/FunctionImplementation/NormFunction.cpp

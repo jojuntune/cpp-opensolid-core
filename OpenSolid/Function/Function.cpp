@@ -111,9 +111,12 @@ namespace OpenSolid
 
     Function Function::mirrored(const PlaneXd& plane) const {
         assert(plane.dimensions() == dimensions());
-        Function result;
-        implementation()->getMirrored(plane, result);
-        return result;
+        VectorXd normal = plane.normalVector();
+        MatrixXd N = normal * normal.transpose();
+        return *this * CoordinateSystemXd(
+            -2 * N * plane.origin(),
+            MatrixXd::Identity(dimensions(), dimensions()) - 2 * N
+        );
     }
     
     Function Function::concatenate(const Function& other) const {
