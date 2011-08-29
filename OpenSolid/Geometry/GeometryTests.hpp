@@ -95,7 +95,7 @@ public:
     
     void testCurveOperations() {
         Geometry parabola(
-            Function::t * Vector3d::UnitX() + Function::t.squaredNorm() * Vector3d::UnitY(),
+            Parameter() * Vector3d::UnitX() + Parameter().squaredNorm() * Vector3d::UnitY(),
             Interval(-2, 2)
         );
         TS_ASSERT((parabola.function().tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());

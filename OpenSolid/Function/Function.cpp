@@ -313,10 +313,6 @@ namespace OpenSolid
         stream << implementation() << " | ";
         implementation()->debug(stream, indent);
     }
-         
-    Function Function::t = new ParametersFunction(1, 0, 1);
-    Function Function::u = new ParametersFunction(2, 0, 1);
-    Function Function::v = new ParametersFunction(2, 1, 1);
     
     Function Function::CurveParameter() {return new ParametersFunction(1, 0, 1);}
     

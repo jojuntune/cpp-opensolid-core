@@ -37,7 +37,7 @@ public:
     }
     
     void testArithmetic() {
-        Function function = 2.0 + Function::u * 1.0 - 1.0 * Function::v;
+        Function function = 2.0 + Parameter(2, 0) * 1.0 - 1.0 * Parameter(2, 1);
         
         TS_ASSERT(function(Vector2d(0, 0)).value() == Approx(2.0));
         TS_ASSERT(function(Vector2d(1, 0)).value() == Approx(3.0));
@@ -57,7 +57,7 @@ public:
     }
 
     void testMultiplication() {
-        Function function = 1.0 + Function::u / 1.0 * Function::v / 1.0;
+        Function function = 1.0 + Parameter(2, 0) / 1.0 * Parameter(2, 1) / 1.0;
     
         TS_ASSERT(function(Vector2d(0, 0)).value() == One());
         TS_ASSERT(function(Vector2d(1, 0)).value() == One());
@@ -80,7 +80,9 @@ public:
     }
     
     void testSquare() {
-        Function function = Function::u.squaredNorm() * 1.0 + Function::v.squaredNorm() * 1.0;
+        Parameter u(2, 0);
+        Parameter v(2, 1);
+        Function function = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0;
         TS_ASSERT(function(Vector2d(1, 2)).value() == Approx(5.0));
         Function u_derivative = function.derivative(0);
         TS_ASSERT(u_derivative(Vector2d(3, 4)).value() == Approx(6.0));
@@ -89,9 +91,9 @@ public:
     }
 
     void testNorm() {
-        Function arc = 3 * (cos(Function::t) * Vector2d(1, 0) +
-            Vector2d::UnitY() * sin(Function::t));
-        TS_ASSERT(arc.normalized()(M_PI / 4).isApprox(Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))))
+        Function arc = 3 * (cos(Parameter()) * Vector2d(1, 0) +
+            Vector2d::UnitY() * sin(Parameter()));
+        TS_ASSERT(arc.normalized()(M_PI / 4).isApprox(Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))));
     }
     
     void testVector() {
@@ -102,14 +104,14 @@ public:
     }
     
     void testConversion() {
-        Function function = Function::u * Function::v;
+        Function function = Parameter(2, 0) * Parameter(2, 1);
         TS_ASSERT(function(Vector2d(2, 3)).value() == Approx(6.0));
         function = Function(2);
         TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
     }
     
     void testSine() {
-        Function f = sin(Function::t);
+        Function f = sin(Parameter());
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT(result.isApprox(RowVector4d(0, 1, 0, -1)));
         RowVector4I bounds = f(
@@ -131,7 +133,7 @@ public:
     }
     
     void testCosine() {
-        Function f = cos(Function::t);
+        Function f = cos(Parameter());
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT(result.isApprox(RowVector4d(1, 0, -1, 0)));
         RowVector4I bounds = f(
@@ -153,7 +155,7 @@ public:
     }
     
     void testComponent() {
-        Function f = Vector3d(1, 2, 3) + Function::t * Vector3d(1, 2, 3);
+        Function f = Vector3d(1, 2, 3) + Parameter() * Vector3d(1, 2, 3);
         RowVector3d result = f.component(1)(RowVector3d(0, 0.5, 1));
         TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
         result = f(RowVector3d(0, 0.5, 1)).row(1);
@@ -166,7 +168,7 @@ public:
         Frame3d frame;
         frame = frame.translatedBy(Vector3d(1, 1, 1));
         frame = frame.rotatedBy(M_PI / 4, frame.zAxis());
-        Function linear = Vector3d::Ones() * Function::t;
+        Function linear = Vector3d::Ones() * Parameter();
         Function product = linear * frame;
         Function quotient = linear / frame;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval(0, 1));
@@ -179,9 +181,9 @@ public:
     }
     
     void testConcatenation() {
-        Function x = Function::t;
+        Function x = Parameter();
         double y = 3;
-        Function z = Function::t.squaredNorm();
+        Function z = Parameter().squaredNorm();
         Function concatenated(x, y, z);
         TS_ASSERT(concatenated(2.0).isApprox(Vector3d(2.0, 3.0, 4.0)));
     }
@@ -260,7 +262,12 @@ public:
         domains[3] = Interval(-M_PI, 2 * M_PI);
         expected_function_zeros[3] = RowVector2d(-M_PI / 2, 3 * M_PI / 2);
         expected_derivative_zeros[3] = RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2);
-        expected_second_derivative_zeros[3] = RowVector4d(-M_PI / 2, M_PI / 6, 5 * M_PI / 6, 3 * M_PI / 2);
+        expected_second_derivative_zeros[3] = RowVector4d(
+            -M_PI / 2,
+            M_PI / 6,
+            5 * M_PI / 6,
+            3 * M_PI / 2
+        );
 
         functions[4] = sqrt(x) - 0.5;
         domains[4] = Interval(0, 1);

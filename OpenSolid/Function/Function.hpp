@@ -114,10 +114,6 @@ namespace OpenSolid
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
         
-        OPENSOLID_CORE_EXPORT static Function t;
-        OPENSOLID_CORE_EXPORT static Function u;
-        OPENSOLID_CORE_EXPORT static Function v;
-        
         OPENSOLID_CORE_EXPORT static Function CurveParameter();
         OPENSOLID_CORE_EXPORT static Function SurfaceParameter(int index);
         OPENSOLID_CORE_EXPORT static Function VolumeParameter(int index);

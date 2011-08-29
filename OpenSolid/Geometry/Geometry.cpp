@@ -24,13 +24,13 @@
 namespace OpenSolid
 {   
     Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
-        return Geometry(start + Function::t * (end - start), Interval(0, 1));
+        return Geometry(start + Parameter() * (end - start), Interval(0, 1));
     }
     
     Geometry Geometry::Arc(double radius, const Interval& angle) {
         Vector2d x_vector = radius * Vector2d::UnitX();
         Vector2d y_vector = radius * Vector2d::UnitY();
-        return Geometry(cos(Function::t) * x_vector + sin(Function::t) * y_vector, angle);
+        return Geometry(cos(Parameter()) * x_vector + sin(Parameter()) * y_vector, angle);
     }
     
     Geometry Geometry::Arc(
@@ -48,7 +48,7 @@ namespace OpenSolid
         double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
         if (angle <= Zero()) {angle += 2 * M_PI;}
         return Geometry(
-            center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
+            center + cos(Parameter()) * start_radial + sin(Parameter()) * perpendicular,
             Interval(0, angle)
         );
     }
@@ -68,7 +68,7 @@ namespace OpenSolid
         double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
         if (angle <= Zero()) {angle += 2 * M_PI;}
         return Geometry(
-            center + cos(Function::t) * start_radial + sin(Function::t) * perpendicular,
+            center + cos(Parameter()) * start_radial + sin(Parameter()) * perpendicular,
             Interval(0, angle)
         );
     }
