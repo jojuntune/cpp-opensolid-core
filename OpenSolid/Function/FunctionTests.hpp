@@ -23,6 +23,7 @@
 
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Function/Parameter.hpp>
 
 using namespace OpenSolid;
 
@@ -187,7 +188,7 @@ public:
     }
 
     void testArccosine() {
-        Function f = acos(Function::Parameter(1, 0));
+        Function f = acos(Parameter());
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
@@ -201,7 +202,7 @@ public:
     }
 
     void testArcsine() {
-        Function f = asin(Function::Parameter(1, 0));
+        Function f = asin(Parameter());
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lower() + M_PI / 2 == Zero());
@@ -216,7 +217,7 @@ public:
 
     void testMirrored() {
         Datum3d mirror = Frame3d().yzPlane().translatedBy(Vector3d(1, 0, 0)).mirror();
-        Function f = Vector3d(1, 1, 1) + Function::Parameter(1, 0) * Vector3d(1, 1, 1);
+        Function f = Vector3d(1, 1, 1) + Parameter() * Vector3d(1, 1, 1);
         Function mirrored1 = f * mirror;
         Function mirrored2 = f / mirror;
         TS_ASSERT((mirrored1(1) - Vector3d(0, 2, 2)).isZero());
@@ -236,7 +237,7 @@ public:
         std::vector<RowVectorXd> expected_derivative_zeros(7);
         std::vector<RowVectorXd> expected_second_derivative_zeros(7);
         
-        Function x = Function::Parameter(1, 0);
+        Parameter x;
 
         functions[0] = x - 1;
         domains[0] = Interval(0, 2);
@@ -323,7 +324,7 @@ public:
     }
     
     void xtestCircleDerivativeZeros() {
-        Function x = Function::Parameter(1, 0);
+        Parameter x;
         double R = 1;
         double r = 0.5;
         double slope = 0.5;

@@ -27,6 +27,7 @@
 
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Function/Parameter.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
@@ -182,7 +183,7 @@ namespace OpenSolid
 
     inline Geometry Geometry::reversed() const {
         assert(parameters() == 1);
-        Function reversed_parameter = domain().lower() + domain().upper() - Function::Parameter(1, 0);
+        Function reversed_parameter = domain().lower() + domain().upper() - Parameter();
         return Geometry(function()(reversed_parameter), domain());
     }
     

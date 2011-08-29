@@ -26,6 +26,7 @@
 #include <OpenSolid/Common/Error.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Script/Script.hpp>
+#include <OpenSolid/Function/Parameter.hpp>
 
 using namespace OpenSolid;
 using namespace boost::python;
@@ -41,7 +42,7 @@ private:
 public:
     CustomClass() :
         _value(3),
-        _function(Function::Parameter(1, 0) * Vector3d(1, 1, 1)),
+        _function(Parameter() * Vector3d(1, 1, 1)),
         _vector(1, 2, 3) {}
         
     void setValue(double value) {_value = value;}
@@ -263,7 +264,7 @@ public:
     
     void testFunction() {
         Script script;
-        script.run("f = Function.u.squaredNorm() * 1.0 + Function.v.squaredNorm() * 1.0");
+        script.run("f = Parameter(2, 0).squaredNorm() * 1.0 + Parameter(2, 1).squaredNorm() * 1.0");
         double result = script.get<double>("f(Vector2d(1, 2))[0]");
         TS_ASSERT_EQUALS(result, 5.0);
         result = script.get<double>("f.derivative(0)(Vector2d(3, 4)).value()");
@@ -418,9 +419,9 @@ public:
 
     void testOverloading() {
         Script script;
-        script.set("f1", 3 * Function::Parameter(1, 0));
-        Function f2 = Vector3d(2, 0, 0) * Function::Parameter(2, 0) +
-            Vector3d(0, 0.5, 0) * Function::Parameter(2, 1);
+        script.set("f1", 3 * Parameter());
+        Function f2 = Vector3d(2, 0, 0) * Parameter(2, 0) +
+            Vector3d(0, 0.5, 0) * Parameter(2, 1);
         script.set("f2", f2);
         TS_ASSERT(script.get<double>("f1(2).value()") - 6 == Zero());
         Interval interval_bounds = script.get<Interval>("f1(Interval(2, 3)).value()");
@@ -442,11 +443,22 @@ public:
             script.get<std::string>("str(opensolid)"),
             "<module 'opensolid' (built-in)>"
         );
-        script.run("f = opensolid.Function.Parameter(1, 0) * opensolid.Vector3d(1, 2, 3)");
+        script.run("f = opensolid.Parameter() * opensolid.Vector3d(1, 2, 3)");
         MatrixXI bounds = script.get<MatrixXI>(
             "f(opensolid.Vector2I(opensolid.Interval(1, 2), 0))"
         );
         TS_ASSERT((bounds.cwiseLower() - Vector3d(1, 2, 3)).isZero());
         TS_ASSERT((bounds.cwiseUpper() - Vector3d(2, 4, 6)).isZero());
+    }
+
+    void testFunctionExtraction() {
+        Script script;
+        Function f = script.get<Function>("sin(Parameter()) + 1");
+        TS_ASSERT(f(0).value() - 1 == Zero());
+        TS_ASSERT(f(M_PI / 2).value() - 2 == Zero());
+        f = script.get<Function>("Parameter(2, 0) + 3 * Parameter(2, 1)");
+        TS_ASSERT(f.parameters() == 2);
+        TS_ASSERT(f.dimensions() == 1);
+        TS_ASSERT(f(Vector2d(1, 2)).value() - 7 == Zero());
     }
 };

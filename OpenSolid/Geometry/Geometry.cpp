@@ -75,12 +75,12 @@ namespace OpenSolid
     
     Geometry Geometry::Circle(double radius) {
         Interval angle(0, 2 * M_PI);
-        Function theta = Function::Parameter(1, 0);
+        Parameter theta;
         return Geometry(Function(radius * cos(theta), radius * sin(theta)), angle);
     }
     
     Geometry Geometry::Helix(double radius, double pitch, const Interval& angle) {
-        Function theta = Function::Parameter(1, 0);
+        Parameter theta;
         return Geometry(
             Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),
             angle

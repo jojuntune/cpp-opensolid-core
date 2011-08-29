@@ -326,14 +326,6 @@ namespace OpenSolid
     
     Function Function::HypervolumeParameter(int index) {return new ParametersFunction(4, index, 1);}
     
-    Function Function::Parameter(int total, int index) {
-        return new ParametersFunction(total, index, 1);
-    }
-    
-    Function Function::Parameters(int total, int index, int num) {
-        return new ParametersFunction(total, index, num);
-    }
-    
     Function Function::Identity(int dimensions) {
         return new ParametersFunction(dimensions, 0, dimensions);
     }

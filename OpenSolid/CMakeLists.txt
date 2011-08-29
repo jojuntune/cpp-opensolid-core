@@ -133,6 +133,8 @@
         Function/FunctionTests.hpp
         Function/FunctionArgument.hpp
         Function/FunctionResult.hpp
+        Function/Parameter.hpp
+        Function/Parameters.hpp
     )
     
     SET(FUNCTION_SOURCES

@@ -19,6 +19,8 @@
  *****************************************************************************/
 
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Function/Parameter.hpp>
+#include <OpenSolid/Function/Parameters.hpp>
 #include <OpenSolid/Python/BoostPython.hpp>
 
 using namespace boost::python;
@@ -56,6 +58,14 @@ namespace OpenSolid
     Function dotMatrix(const Function& function, const MatrixXd& argument) {
         return function.dot(argument);
     }
+
+    Function parameter1() {return Parameter();}
+
+    Function parameter2(int total, int index) {return Parameter(total, index);}
+
+    Function parameters1(int total) {return Parameters(total);}
+
+    Function parameters2(int total, int index, int num) {return Parameters(total, index, num);}
         
     void bindFunction() {
         class_<Function> function_class("Function");
@@ -86,31 +96,40 @@ namespace OpenSolid
             .def("curvature", &Function::curvature)
             .def("normal", &Function::normal)
             .def("binormal", &Function::binormal)
-            .def("CurveParameter", &Function::CurveParameter)
-                .staticmethod("CurveParameter")
-            .def("SurfaceParameter", &Function::SurfaceParameter)
-                .staticmethod("SurfaceParameter")
-            .def("VolumeParameter", &Function::VolumeParameter)
-                .staticmethod("VolumeParameter")
-            .def("HypervolumeParameter", &Function::HypervolumeParameter)
-                .staticmethod("HypervolumeParameter")
-            .def("Parameter", &Function::Parameter)
-                .staticmethod("Parameter")
             .def(-self)
+            .def(double() + self)
+            .def(self + double())
+            .def(MatrixXd() + self)
+            .def(self + MatrixXd())
             .def(self + self)
+            .def(double() - self)
+            .def(self - double())
+            .def(MatrixXd() - self)
+            .def(self - MatrixXd())
             .def(self - self)
+            .def(double() * self)
+            .def(self * double())
+            .def(MatrixXd() * self)
+            .def(self * MatrixXd())
             .def(self * self)
+            .def(double() / self)
+            .def(self / double())
+            .def(MatrixXd() / self)
             .def(self / self);
+
+        def("Parameter", &parameter1);
+        def("Parameter", &parameter2);
+        def("Parameters", &parameters1);
+        def("Parameters", &parameters2);
             
         implicitly_convertible<MatrixXd, Function>();
         implicitly_convertible<double, Function>();
             
-        function_class.attr("t") = object(Function::t);
-        function_class.attr("u") = object(Function::u);
-        function_class.attr("v") = object(Function::v);
-            
         def("sqrt", (Function (*)(const Function&)) &sqrt);
         def("sin", (Function (*)(const Function&)) &sin);
         def("cos", (Function (*)(const Function&)) &cos);
+        def("tan", (Function (*)(const Function&)) &tan);
+        def("acos", (Function (*)(const Function&)) &acos);
+        def("asin", (Function (*)(const Function&)) &asin);
     }
 }
