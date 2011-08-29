@@ -156,7 +156,7 @@ namespace OpenSolid
     OPENSOLID_CORE_EXPORT Interval asin(const Interval& argument);
     OPENSOLID_CORE_EXPORT Interval acos(const Interval& argument);
     OPENSOLID_CORE_EXPORT Interval atan(const Interval& argument);
-    OPENSOLID_CORE_EXPORT Interval atan2(const Interval& x, const Interval& y);
+    OPENSOLID_CORE_EXPORT Interval atan2(const Interval& y, const Interval& x);
     OPENSOLID_CORE_EXPORT Interval exp(const Interval& argument);
     OPENSOLID_CORE_EXPORT Interval log(const Interval& argument);
     OPENSOLID_CORE_EXPORT Interval pow(const Interval& base, const Interval& exponent);
