@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__COMPONENTSFUNCTION_HPP
 #define OPENSOLID__COMPONENTSFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class ComponentsFunction : public UnaryFunction
+    class ComponentsFunction : public UnaryOperation
     {
     private:
         int _index;

@@ -56,7 +56,7 @@ Interval randomInterval() {
 
 Vector3I randomVector() {return Vector3I(randomInterval(), randomInterval(), randomInterval());}
 
-class SetTestSuite : public CxxTest::TestSuite
+class SetTests : public CxxTest::TestSuite
 {
 public:
     void testInteger() {

@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__NORMALIZEDFUNCTION_HPP
 #define OPENSOLID__NORMALIZEDFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class NormalizedFunction : public UnaryFunction
+    class NormalizedFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT NormalizedFunction(const Function& operand);

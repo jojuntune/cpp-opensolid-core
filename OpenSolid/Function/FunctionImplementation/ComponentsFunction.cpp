@@ -24,7 +24,7 @@
 namespace OpenSolid
 {
     ComponentsFunction::ComponentsFunction(const Function& operand, int index, int num) :
-        UnaryFunction(operand), _index(index), _num(num) {
+        UnaryOperation(operand), _index(index), _num(num) {
         assert(index >= 0);
         assert(num > 0);
         assert(index + num <= operand.dimensions());

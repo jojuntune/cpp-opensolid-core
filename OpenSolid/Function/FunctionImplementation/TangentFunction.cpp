@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    TangentFunction::TangentFunction(const Function& operand) : UnaryFunction(operand) {
+    TangentFunction::TangentFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);
     }
     

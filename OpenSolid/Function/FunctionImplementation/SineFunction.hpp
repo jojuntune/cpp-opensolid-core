@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__SINEFUNCTION_HPP
 #define OPENSOLID__SINEFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class SineFunction : public UnaryFunction
+    class SineFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT SineFunction(const Function& operand);

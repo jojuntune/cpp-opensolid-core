@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__ARCCOSINEFUNCTION_HPP
 #define OPENSOLID__ARCCOSINEFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class ArccosineFunction : public UnaryFunction
+    class ArccosineFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT ArccosineFunction(const Function& operand);

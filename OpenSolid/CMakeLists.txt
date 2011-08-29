@@ -95,7 +95,7 @@
     
     SET(COMMON_HEADERS
         Common/Bounds.hpp
-        Common/Bounds.tests.hpp
+        Common/BoundsTests.hpp
         Common/config.hpp
         Common/Error.hpp
         Common/ReferenceCounted.hpp
@@ -110,7 +110,7 @@
         Datum/Axis.hpp
         Datum/CoordinateSystem.hpp
         Datum/Datum.hpp
-        Datum/Datum.tests.hpp
+        Datum/DatumTests.hpp
         Datum/DatumExpressions.hpp
         Datum/Frame.hpp
         Datum/Plane.hpp
@@ -130,7 +130,7 @@
     
     SET(FUNCTION_HEADERS
         Function/Function.hpp
-        Function/Function.tests.hpp
+        Function/FunctionTests.hpp
         Function/FunctionArgument.hpp
         Function/FunctionResult.hpp
     )
@@ -142,7 +142,7 @@
     SET(FUNCTIONIMPLEMENTATION_HEADERS
         Function/FunctionImplementation/ArccosineFunction.hpp
         Function/FunctionImplementation/ArcsineFunction.hpp
-        Function/FunctionImplementation/BinaryFunction.hpp
+        Function/FunctionImplementation/BinaryOperation.hpp
         Function/FunctionImplementation/ComponentsFunction.hpp
         Function/FunctionImplementation/CompositionFunction.hpp
         Function/FunctionImplementation/ConcatenationFunction.hpp
@@ -166,13 +166,13 @@
         Function/FunctionImplementation/SumFunction.hpp
         Function/FunctionImplementation/TangentFunction.hpp
         Function/FunctionImplementation/TransformedFunction.hpp
-        Function/FunctionImplementation/UnaryFunction.hpp
+        Function/FunctionImplementation/UnaryOperation.hpp
     )
     
     SET(FUNCTIONIMPLEMENTATION_SOURCES
         Function/FunctionImplementation/ArccosineFunction.cpp
         Function/FunctionImplementation/ArcsineFunction.cpp
-        Function/FunctionImplementation/BinaryFunction.cpp
+        Function/FunctionImplementation/BinaryOperation.cpp
         Function/FunctionImplementation/ComponentsFunction.cpp
         Function/FunctionImplementation/CompositionFunction.cpp
         Function/FunctionImplementation/ConcatenationFunction.cpp
@@ -196,12 +196,12 @@
         Function/FunctionImplementation/SumFunction.cpp
         Function/FunctionImplementation/TangentFunction.cpp
         Function/FunctionImplementation/TransformedFunction.cpp
-        Function/FunctionImplementation/UnaryFunction.cpp
+        Function/FunctionImplementation/UnaryOperation.cpp
     )
     
     SET(GEOMETRY_HEADERS
         Geometry/Geometry.hpp
-        Geometry/Geometry.tests.hpp
+        Geometry/GeometryTests.hpp
     )
     
     SET(GEOMETRY_SOURCES
@@ -211,7 +211,7 @@
     SET(MATRIX_HEADERS
         Matrix/DenseBasePlugin.hpp
         Matrix/Matrix.hpp
-        Matrix/Matrix.tests.hpp
+        Matrix/MatrixTests.hpp
         Matrix/MatrixIterator.hpp
     )
     
@@ -239,7 +239,7 @@
         Scalar/Comparison.hpp
         Scalar/double.hpp
         Scalar/Interval.hpp
-        Scalar/Interval.tests.hpp
+        Scalar/IntervalTests.hpp
     )
 
     SET(SCALAR_SOURCES
@@ -248,7 +248,7 @@
     
     SET(SCRIPT_HEADERS
         Script/Script.hpp
-        Script/Script.tests.hpp
+        Script/ScriptTests.hpp
     )
     
     SET(SCRIPT_SOURCES
@@ -257,7 +257,7 @@
     
     SET(SET_HEADERS
         Set/Set.hpp
-        Set/Set.tests.hpp
+        Set/SetTests.hpp
         Set/SetNode.hpp
     )
     
@@ -266,7 +266,7 @@
     
     SET(SIMPLEX_HEADERS
         Simplex/Simplex.hpp
-        Simplex/Simplex.tests.hpp
+        Simplex/SimplexTests.hpp
     )
     
     SET(SIMPLEX_SOURCES
@@ -360,15 +360,15 @@
     
 ########## Compile tests ##########
 
-    ADD_CXXTEST(IntervalTests Scalar/Interval.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(MatrixTests Matrix/Matrix.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(DatumTests Datum/Datum.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(SetTests Set/Set.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(FunctionTests Function/Function.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(GeometryTests Geometry/Geometry.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(SimplexTests Simplex/Simplex.tests.hpp OpenSolidCore)
-    ADD_CXXTEST(ScriptTests Script/Script.tests.hpp OpenSolidScript OpenSolidCore)
-    ADD_CXXTEST(BoundsTests Common/Bounds.tests.hpp OpenSolidCore)
+    ADD_CXXTEST(IntervalTests Scalar/IntervalTests.hpp OpenSolidCore)
+    ADD_CXXTEST(MatrixTests Matrix/MatrixTests.hpp OpenSolidCore)
+    ADD_CXXTEST(DatumTests Datum/DatumTests.hpp OpenSolidCore)
+    ADD_CXXTEST(SetTests Set/SetTests.hpp OpenSolidCore)
+    ADD_CXXTEST(FunctionTests Function/FunctionTests.hpp OpenSolidCore)
+    ADD_CXXTEST(GeometryTests Geometry/GeometryTests.hpp OpenSolidCore)
+    ADD_CXXTEST(SimplexTests Simplex/SimplexTests.hpp OpenSolidCore)
+    ADD_CXXTEST(ScriptTests Script/ScriptTests.hpp OpenSolidScript OpenSolidCore)
+    ADD_CXXTEST(BoundsTests Common/BoundsTests.hpp OpenSolidCore)
     
 ######################################################################
 #                                                                    #
@@ -390,7 +390,7 @@
         DIRECTORY ../OpenSolid
         DESTINATION include
         FILES_MATCHING PATTERN "*.hpp"
-        PATTERN "*.tests.hpp" EXCLUDE
+        PATTERN "*Tests.hpp" EXCLUDE
     )
     
 ########## Install libraries ##########

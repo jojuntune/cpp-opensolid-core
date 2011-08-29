@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    SineFunction::SineFunction(const Function& operand) : UnaryFunction(operand) {
+    SineFunction::SineFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);
     }
     

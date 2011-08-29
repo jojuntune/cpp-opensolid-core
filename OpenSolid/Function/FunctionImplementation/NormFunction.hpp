@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__NORMFUNCTION_HPP
 #define OPENSOLID__NORMFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class NormFunction : public UnaryFunction
+    class NormFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT NormFunction(const Function& operand);

@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__SQUAREROOTFUNCTION_HPP
 #define OPENSOLID__SQUAREROOTFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class SquareRootFunction : public UnaryFunction
+    class SquareRootFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT SquareRootFunction(const Function& operand);

@@ -24,7 +24,7 @@
 namespace OpenSolid
 {
     TransformedFunction::TransformedFunction(const Function& operand, const DatumXd& datum) :
-        UnaryFunction(operand), _datum(datum) {
+        UnaryOperation(operand), _datum(datum) {
         assert(operand.dimensions() == datum.axes());
     }
     

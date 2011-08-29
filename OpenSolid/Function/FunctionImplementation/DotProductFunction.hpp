@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__DOTPRODUCTFUNCTION_HPP
 #define OPENSOLID__DOTPRODUCTFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/BinaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/BinaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class DotProductFunction : public BinaryFunction
+    class DotProductFunction : public BinaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT DotProductFunction(

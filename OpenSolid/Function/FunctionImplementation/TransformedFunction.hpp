@@ -23,11 +23,11 @@
 
 #include <OpenSolid/Datum/Datum.hpp>
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class TransformedFunction : public UnaryFunction
+    class TransformedFunction : public UnaryOperation
     {
     private:
         DatumXd _datum;

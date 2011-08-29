@@ -24,7 +24,7 @@
 namespace OpenSolid
 {
     CosineFunction::CosineFunction(const Function& operand) :
-        UnaryFunction(operand) {assert(operand.dimensions() == 1);}
+        UnaryOperation(operand) {assert(operand.dimensions() == 1);}
     
     int CosineFunction::dimensions() const {return 1;}
     

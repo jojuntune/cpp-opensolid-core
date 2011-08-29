@@ -26,7 +26,7 @@ namespace OpenSolid
     ConcatenationFunction::ConcatenationFunction(
         const Function& first_operand,
         const Function& second_operand
-    ) : BinaryFunction(first_operand, second_operand) {}
+    ) : BinaryOperation(first_operand, second_operand) {}
     
     int ConcatenationFunction::dimensions() const {
         return firstOperand().dimensions() + secondOperand().dimensions();

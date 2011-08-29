@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__COSINEFUNCTION_HPP
 #define OPENSOLID__COSINEFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class CosineFunction : public UnaryFunction
+    class CosineFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT CosineFunction(const Function& operand);

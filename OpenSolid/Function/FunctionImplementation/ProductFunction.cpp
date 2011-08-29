@@ -26,7 +26,7 @@ namespace OpenSolid
     ProductFunction::ProductFunction(
         const Function& first_operand,
         const Function& second_operand
-    ) : BinaryFunction(first_operand, second_operand) {
+    ) : BinaryOperation(first_operand, second_operand) {
         assert(second_operand.dimensions() == 1);
     }
     

@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__CONCATENATIONFUNCTION_HPP
 #define OPENSOLID__CONCATENATIONFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/BinaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/BinaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class ConcatenationFunction : public BinaryFunction
+    class ConcatenationFunction : public BinaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT ConcatenationFunction(

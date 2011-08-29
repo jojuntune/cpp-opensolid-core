@@ -24,7 +24,7 @@
 
 using namespace OpenSolid;
 
-class IntervalTestSuite : public CxxTest::TestSuite
+class IntervalTests : public CxxTest::TestSuite
 {
 public:
     void testInterval() {

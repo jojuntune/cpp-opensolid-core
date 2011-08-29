@@ -18,32 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__UNARYFUNCTION_HPP
-#define OPENSOLID__UNARYFUNCTION_HPP
-
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Function/FunctionImplementation/BinaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class UnaryFunction : public FunctionImplementation
-    {
-    private:
-        Function _operand;
-    public:
-        UnaryFunction(const Function& operand);
-        
-        const Function& operand() const;
-        
-        int parameters() const;
-    };
+    BinaryOperation::BinaryOperation(const Function& first_operand, const Function& second_operand) :
+        _first_operand(first_operand), _second_operand(second_operand) {
+        bool equal_parameters = first_operand.parameters() == second_operand.parameters();
+        bool first_is_constant = first_operand.isA<ConstantFunction>();
+        bool second_is_constant = second_operand.isA<ConstantFunction>();
+        assert(equal_parameters || first_is_constant || second_is_constant);
+    }
+    
+    int BinaryOperation::parameters() const {
+        return max(firstOperand().parameters(), secondOperand().parameters());
+    }
 }
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    inline const Function& UnaryFunction::operand() const {return _operand;}
-}
-
-#endif

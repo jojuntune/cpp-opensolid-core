@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    NormFunction::NormFunction(const Function& operand) : UnaryFunction(operand) {}
+    NormFunction::NormFunction(const Function& operand) : UnaryOperation(operand) {}
     
     int NormFunction::dimensions() const {return 1;}
     

@@ -57,7 +57,7 @@ public:
     MatrixXd vector() const {return _vector;}
 };
 
-class ScriptingTestSuite : public CxxTest::TestSuite
+class ScriptTests : public CxxTest::TestSuite
 {
 public:
     void testRun() {

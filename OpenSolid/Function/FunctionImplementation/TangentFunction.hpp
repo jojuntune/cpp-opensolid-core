@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__TANGENTFUNCTION_HPP
 #define OPENSOLID__TANGENTFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class TangentFunction : public UnaryFunction
+    class TangentFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT TangentFunction(const Function& operand);

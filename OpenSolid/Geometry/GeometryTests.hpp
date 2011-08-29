@@ -27,7 +27,7 @@
 
 using namespace OpenSolid;
 
-class GeometryTestSuite : public CxxTest::TestSuite
+class GeometryTests : public CxxTest::TestSuite
 {
 public:
     void testLine() {

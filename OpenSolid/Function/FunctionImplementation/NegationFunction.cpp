@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    NegationFunction::NegationFunction(const Function& operand) : UnaryFunction(operand) {}
+    NegationFunction::NegationFunction(const Function& operand) : UnaryOperation(operand) {}
     
     int NegationFunction::dimensions() const {return operand().dimensions();}
     

@@ -26,7 +26,7 @@ namespace OpenSolid
     DifferenceFunction::DifferenceFunction(
         const Function& first_operand,
         const Function& second_operand
-    ) : BinaryFunction(first_operand, second_operand) {
+    ) : BinaryOperation(first_operand, second_operand) {
         assert(first_operand.dimensions() == second_operand.dimensions());
     }
     

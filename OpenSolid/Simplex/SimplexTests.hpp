@@ -29,7 +29,7 @@
 
 using namespace OpenSolid;
 
-class SimplexTestSuite : public CxxTest::TestSuite
+class SimplexTests : public CxxTest::TestSuite
 {
 public:
     void testEdges() {

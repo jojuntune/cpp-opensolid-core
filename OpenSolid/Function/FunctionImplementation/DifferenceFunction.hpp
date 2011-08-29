@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__DIFFERENCEFUNCTION_HPP
 #define OPENSOLID__DIFFERENCEFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/BinaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/BinaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class DifferenceFunction : public BinaryFunction
+    class DifferenceFunction : public BinaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT DifferenceFunction(

@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__SQUAREDNORMFUNCTION_HPP
 #define OPENSOLID__SQUAREDNORMFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class SquaredNormFunction : public UnaryFunction
+    class SquaredNormFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT SquaredNormFunction(const Function& operand);

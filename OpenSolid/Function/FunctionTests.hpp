@@ -26,7 +26,7 @@
 
 using namespace OpenSolid;
 
-class FunctionTestSuite : public CxxTest::TestSuite
+class FunctionTests : public CxxTest::TestSuite
 {
 public:
     void testConstant() {

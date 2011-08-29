@@ -37,7 +37,7 @@ void printDirectAccess(const Type& argument) {
     }
 }
 
-class MatrixTestSuite : public CxxTest::TestSuite
+class MatrixTests : public CxxTest::TestSuite
 {
 private:
     double a;

@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryFunction(operand) {}
+    NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryOperation(operand) {}
     
     int NormalizedFunction::dimensions() const {return operand().dimensions();}
 

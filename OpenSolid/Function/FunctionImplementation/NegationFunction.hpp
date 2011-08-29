@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__NEGATIONFUNCTION_HPP
 #define OPENSOLID__NEGATIONFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    class NegationFunction : public UnaryFunction
+    class NegationFunction : public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT NegationFunction(const Function& operand);

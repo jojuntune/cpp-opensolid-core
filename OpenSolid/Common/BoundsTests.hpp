@@ -27,7 +27,7 @@
 
 using namespace OpenSolid;
 
-class BoundsTestSuite : public CxxTest::TestSuite
+class BoundsTests : public CxxTest::TestSuite
 {
 public:
     void testPair() {

@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryFunction(operand) {
+    SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);
     }
     

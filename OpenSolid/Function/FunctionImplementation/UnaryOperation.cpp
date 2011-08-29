@@ -18,19 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Function/FunctionImplementation/BinaryFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {
-    BinaryFunction::BinaryFunction(const Function& first_operand, const Function& second_operand) :
-        _first_operand(first_operand), _second_operand(second_operand) {
-        bool equal_parameters = first_operand.parameters() == second_operand.parameters();
-        bool first_is_constant = first_operand.isA<ConstantFunction>();
-        bool second_is_constant = second_operand.isA<ConstantFunction>();
-        assert(equal_parameters || first_is_constant || second_is_constant);
-    }
+    UnaryOperation::UnaryOperation(const Function& operand) : _operand(operand) {}
     
-    int BinaryFunction::parameters() const {
-        return max(firstOperand().parameters(), secondOperand().parameters());
-    }
+    int UnaryOperation::parameters() const {return operand().parameters();}
 }
