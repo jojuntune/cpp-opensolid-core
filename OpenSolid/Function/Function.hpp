@@ -211,6 +211,8 @@ namespace boost
 
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/Function/Parameter.hpp>
+#include <OpenSolid/Function/Parameters.hpp>
 #include <OpenSolid/Function/FunctionResult.hpp>
 
 namespace OpenSolid

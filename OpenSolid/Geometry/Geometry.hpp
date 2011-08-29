@@ -27,7 +27,6 @@
 
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/Parameter.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid

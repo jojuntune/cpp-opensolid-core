@@ -24,9 +24,9 @@
 
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Script/Script.hpp>
-#include <OpenSolid/Function/Parameter.hpp>
 
 using namespace OpenSolid;
 using namespace boost::python;

@@ -23,7 +23,6 @@
 
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/Parameter.hpp>
 
 using namespace OpenSolid;
 

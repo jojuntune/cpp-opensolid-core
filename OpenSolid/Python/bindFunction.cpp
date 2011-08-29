@@ -19,8 +19,6 @@
  *****************************************************************************/
 
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/Parameter.hpp>
-#include <OpenSolid/Function/Parameters.hpp>
 #include <OpenSolid/Python/BoostPython.hpp>
 
 using namespace boost::python;
