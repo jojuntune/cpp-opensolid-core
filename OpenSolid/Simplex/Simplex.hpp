@@ -156,7 +156,8 @@ namespace OpenSolid
 namespace std
 {
     template <int dimensions_, int size_>
-    struct hash<OpenSolid::Simplex<dimensions_, size_>>
+    struct hash<OpenSolid::Simplex<dimensions_, size_>> :
+        public unary_function<OpenSolid::Simplex<dimensions_, size_>, size_t>
     {
         size_t operator()(const OpenSolid::Simplex<dimensions_, size_>& argument) const;
     };

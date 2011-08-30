@@ -45,7 +45,8 @@ namespace OpenSolid
 namespace std
 {
     template <int dimensions_, int axes_>
-    struct hash<OpenSolid::CoordinateSystem<dimensions_, axes_>>
+    struct hash<OpenSolid::CoordinateSystem<dimensions_, axes_>> :
+        public unary_function<OpenSolid::CoordinateSystem<dimensions_, axes_>, size_t>
     {
         std::size_t operator()(
             const OpenSolid::CoordinateSystem<dimensions_, axes_>& argument
@@ -53,7 +54,12 @@ namespace std
     };
 
     template <int dimensions_, int axes_>
-    struct equal_to<OpenSolid::CoordinateSystem<dimensions_, axes_>>
+    struct equal_to<OpenSolid::CoordinateSystem<dimensions_, axes_>> :
+        public binary_function<
+            OpenSolid::CoordinateSystem<dimensions_, axes_>,
+            OpenSolid::CoordinateSystem<dimensions_, axes_>,
+            bool
+        >
     {
         bool operator()(
             const OpenSolid::CoordinateSystem<dimensions_, axes_>& first_argument,

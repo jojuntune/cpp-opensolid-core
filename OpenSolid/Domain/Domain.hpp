@@ -72,13 +72,14 @@ namespace OpenSolid
 namespace std
 {
     template <>
-    struct hash<OpenSolid::Domain>
+    struct hash<OpenSolid::Domain> : public unary_function<OpenSolid::Domain, size_t>
     {
         size_t operator()(const OpenSolid::Domain& argument) const;
     };
 
     template <>
-    struct equal_to<OpenSolid::Domain>
+    struct equal_to<OpenSolid::Domain> :
+        public binary_function<OpenSolid::Domain, OpenSolid::Domain, bool>
     {
         bool operator()(
             const OpenSolid::Domain& first_argument,

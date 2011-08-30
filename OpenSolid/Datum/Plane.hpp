@@ -59,13 +59,15 @@ namespace OpenSolid
 namespace std
 {
     template <int dimensions_>
-    struct hash<OpenSolid::Plane<dimensions_>>
+    struct hash<OpenSolid::Plane<dimensions_>> :
+        public unary_function<OpenSolid::Plane<dimensions_>, size_t>
     {
         std::size_t operator()(const OpenSolid::Plane<dimensions_>& argument) const;
     };
 
     template <int dimensions_>
-    struct equal_to<OpenSolid::Plane<dimensions_>>
+    struct equal_to<OpenSolid::Plane<dimensions_>> :
+        public binary_function<OpenSolid::Plane<dimensions_>, OpenSolid::Plane<dimensions_>, bool>
     {
         bool operator()(
             const OpenSolid::Plane<dimensions_>& first_argument,

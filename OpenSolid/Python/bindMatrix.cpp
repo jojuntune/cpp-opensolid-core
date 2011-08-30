@@ -611,6 +611,46 @@ namespace OpenSolid
         checkSameSize(first_argument.cols(), second_argument.rows(), __func__);
         return new MatrixXI(first_argument * second_argument);
     }
+
+    bool eqXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument == second_argument;
+    }
+
+    bool eqXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument.cast<Interval>() == second_argument;
+    }
+
+    bool eqXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument == second_argument.cast<Interval>();
+    }
+
+    bool eqXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument == second_argument;
+    }
+
+    bool neXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument != second_argument;
+    }
+
+    bool neXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument.cast<Interval>() != second_argument;
+    }
+
+    bool neXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument != second_argument.cast<Interval>();
+    }
+
+    bool neXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        checkSameSizeMatrices(first_argument, second_argument, __func__);
+        return first_argument != second_argument;
+    }
     
     void bindMatrix() {
         registerExpressionConverter<MatrixXd::ConstColXpr>();
@@ -679,6 +719,10 @@ namespace OpenSolid
             .def("__div__", &divXdd, manage_new_matrix)
             .def("__mul__", &mulXdXI, manage_new_matrix)
             .def("__mul__", &mulXdXd, manage_new_matrix)
+            .def("__eq__", &eqXdXd)
+            .def("__eq__", &eqXdXI)
+            .def("__ne__", &neXdXd)
+            .def("__ne__", &neXdXI)
             .def(self_ns::str(self));
 
         class_<MatrixXI>("MatrixXI", init<int, int>())
@@ -757,6 +801,10 @@ namespace OpenSolid
             .def("__div__", &divXId, manage_new_matrix)
             .def("__mul__", &mulXIXI, manage_new_matrix)
             .def("__mul__", &mulXIXd, manage_new_matrix)
+            .def("__eq__", &eqXIXd)
+            .def("__eq__", &eqXIXI)
+            .def("__ne__", &neXIXd)
+            .def("__ne__", &neXIXI)
             .def(self_ns::str(self));
     }
 }

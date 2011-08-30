@@ -56,13 +56,15 @@ namespace OpenSolid
 namespace std
 {
     template <int dimensions_>
-    struct hash<OpenSolid::Frame<dimensions_>>
+    struct hash<OpenSolid::Frame<dimensions_>> :
+        public unary_function<OpenSolid::Frame<dimensions_>, size_t>
     {
         std::size_t operator()(const OpenSolid::Frame<dimensions_>& argument) const;
     };
 
     template <int dimensions_>
-    struct equal_to<OpenSolid::Frame<dimensions_>>
+    struct equal_to<OpenSolid::Frame<dimensions_>> :
+        public binary_function<OpenSolid::Frame<dimensions_>, OpenSolid::Frame<dimensions_>, bool>
     {
         bool operator()(
             const OpenSolid::Frame<dimensions_>& first_argument,

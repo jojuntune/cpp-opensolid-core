@@ -171,13 +171,19 @@ namespace OpenSolid
 namespace std
 {
     template <int dimensions_, int axes_>
-    struct hash<OpenSolid::Datum<dimensions_, axes_>>
+    struct hash<OpenSolid::Datum<dimensions_, axes_>> :
+        public unary_function<OpenSolid::Datum<dimensions_, axes_>, size_t>
     {
         std::size_t operator()(const OpenSolid::Datum<dimensions_, axes_>& argument) const;
     };
 
     template <int dimensions_, int axes_>
-    struct equal_to<OpenSolid::Datum<dimensions_, axes_>>
+    struct equal_to<OpenSolid::Datum<dimensions_, axes_>> :
+        public binary_function<
+            OpenSolid::Datum<dimensions_, axes_>,
+            OpenSolid::Datum<dimensions_, axes_>,
+            bool
+        >
     {
         bool operator()(
             const OpenSolid::Datum<dimensions_, axes_>& first_argument,

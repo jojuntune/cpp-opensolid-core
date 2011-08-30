@@ -180,13 +180,14 @@ namespace OpenSolid
 namespace std
 {
     template <>
-    struct hash<OpenSolid::Function>
+    struct hash<OpenSolid::Function> : public unary_function<OpenSolid::Function, size_t>
     {
         size_t operator()(const OpenSolid::Function& argument) const;
     };
 
     template <>
-    struct equal_to<OpenSolid::Function>
+    struct equal_to<OpenSolid::Function> :
+        public binary_function<OpenSolid::Function, OpenSolid::Function, bool>
     {
         bool operator()(
             const OpenSolid::Function& first_argument,

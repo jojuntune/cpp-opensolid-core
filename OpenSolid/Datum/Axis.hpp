@@ -51,13 +51,15 @@ namespace OpenSolid
 namespace std
 {
     template <int dimensions_>
-    struct hash<OpenSolid::Axis<dimensions_>>
+    struct hash<OpenSolid::Axis<dimensions_>> :
+        public unary_function<OpenSolid::Axis<dimensions_>, size_t>
     {
         std::size_t operator()(const OpenSolid::Axis<dimensions_>& argument) const;
     };
 
     template <int dimensions_>
-    struct equal_to<OpenSolid::Axis<dimensions_>>
+    struct equal_to<OpenSolid::Axis<dimensions_>> :
+        public binary_function<OpenSolid::Axis<dimensions_>, OpenSolid::Axis<dimensions_>, bool>
     {
         bool operator()(
             const OpenSolid::Axis<dimensions_>& first_argument,

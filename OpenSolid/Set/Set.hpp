@@ -245,13 +245,19 @@ namespace OpenSolid
 namespace std
 {
     template <class Type, class BoundsFunctionType>
-    struct hash<OpenSolid::Set<Type, BoundsFunctionType>>
+    struct hash<OpenSolid::Set<Type, BoundsFunctionType>> :
+        public unary_function<OpenSolid::Set<Type, BoundsFunctionType>, size_t>
     {
         size_t operator()(const OpenSolid::Set<Type, BoundsFunctionType>& argument) const;
     };
 
     template <class Type, class BoundsFunctionType>
-    struct equal_to<OpenSolid::Set<Type, BoundsFunctionType>>
+    struct equal_to<OpenSolid::Set<Type, BoundsFunctionType>> :
+        public binary_function<
+            OpenSolid::Set<Type, BoundsFunctionType>,
+            OpenSolid::Set<Type, BoundsFunctionType>,
+            bool
+        >
     {
         bool operator()(
             const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,

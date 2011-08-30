@@ -97,13 +97,14 @@ namespace OpenSolid
 namespace std
 {
     template <>
-    struct hash<OpenSolid::Geometry>
+    struct hash<OpenSolid::Geometry> : public unary_function<OpenSolid::Geometry, size_t>
     {
         size_t operator()(const OpenSolid::Geometry& argument) const;
     };
 
     template <>
-    struct equal_to<OpenSolid::Geometry>
+    struct equal_to<OpenSolid::Geometry> :
+        public binary_function<OpenSolid::Geometry, OpenSolid::Geometry, bool>
     {
         bool operator()(
             const OpenSolid::Geometry& first_argument,

@@ -279,7 +279,11 @@ namespace OpenSolid
 namespace std
 {
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    struct hash<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    struct hash<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>> :
+        public std::unary_function<
+            Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>,
+            size_t
+        >
     {
         size_t operator()(
             const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
@@ -287,7 +291,12 @@ namespace std
     };
 
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    struct equal_to<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    struct equal_to<Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>> :
+        public binary_function<
+            Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>,
+            Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>,
+            bool
+        >
     {
         bool operator()(
             const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,

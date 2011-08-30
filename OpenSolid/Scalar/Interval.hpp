@@ -172,13 +172,14 @@ namespace OpenSolid
 namespace std
 {
     template <>
-    struct hash<OpenSolid::Interval>
+    struct hash<OpenSolid::Interval> : public unary_function<OpenSolid::Interval, size_t>
     {
         std::size_t operator()(const OpenSolid::Interval& argument) const;
     };
 
     template <>
-    struct equal_to<OpenSolid::Interval>
+    struct equal_to<OpenSolid::Interval> :
+        public binary_function<OpenSolid::Interval, OpenSolid::Interval, bool>
     {
         bool operator()(
             const OpenSolid::Interval& first_argument,

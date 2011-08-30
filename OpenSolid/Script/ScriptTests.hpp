@@ -461,4 +461,27 @@ public:
         TS_ASSERT(f.dimensions() == 1);
         TS_ASSERT(f(Vector2d(1, 2)).value() - 7 == Zero());
     }
+
+    void testComparisons() {
+        Script script;
+        script.run("a1 = Vector3d(1, 2, 3)");
+        script.run("a2 = Vector3d(1, 2, 3)");
+        script.run("b1 = Vector3I(1, 2, 3)");
+        script.run("b2 = Vector3I(1, 2, 3)");
+
+        TS_ASSERT(script.get<bool>("a1 == a2"));
+        TS_ASSERT(script.get<bool>("(a1 - a2).isZero()"));
+        TS_ASSERT(script.get<bool>("a1 != 2 * a2"));
+        TS_ASSERT(script.get<bool>("not (a1 - 2 * a2).isZero()"));
+
+        TS_ASSERT(script.get<bool>("b1 == b2"));
+        TS_ASSERT(script.get<bool>("(b1 - b2).isZero()"));
+        TS_ASSERT(script.get<bool>("b1 != 2 * b2"));
+        TS_ASSERT(script.get<bool>("not (b1 - 2 * b2).isZero()"));
+
+        TS_ASSERT(script.get<bool>("a1 == b1"));
+        TS_ASSERT(script.get<bool>("(a1 - b1).isZero()"));
+        TS_ASSERT(script.get<bool>("a1 != 2 * b1"));
+        TS_ASSERT(script.get<bool>("not (a1 - 2 * b1).isZero()"));
+    }
 };
