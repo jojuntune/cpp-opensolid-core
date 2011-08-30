@@ -113,13 +113,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT RowVectorXd roots(const Interval& domain) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
-        
-        OPENSOLID_CORE_EXPORT static Function CurveParameter();
-        OPENSOLID_CORE_EXPORT static Function SurfaceParameter(int index);
-        OPENSOLID_CORE_EXPORT static Function VolumeParameter(int index);
-        OPENSOLID_CORE_EXPORT static Function HypervolumeParameter(int index);
-        OPENSOLID_CORE_EXPORT static Function Parameter(int total, int index);
-        OPENSOLID_CORE_EXPORT static Function Parameters(int total, int index, int num);
+
         OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
         
         OPENSOLID_CORE_EXPORT static Function Linear(

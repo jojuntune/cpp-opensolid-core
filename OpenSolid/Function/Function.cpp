@@ -314,14 +314,6 @@ namespace OpenSolid
         implementation()->debug(stream, indent);
     }
     
-    Function Function::CurveParameter() {return new ParametersFunction(1, 0, 1);}
-    
-    Function Function::SurfaceParameter(int index) {return new ParametersFunction(2, index, 1);}
-    
-    Function Function::VolumeParameter(int index) {return new ParametersFunction(3, index, 1);}
-    
-    Function Function::HypervolumeParameter(int index) {return new ParametersFunction(4, index, 1);}
-    
     Function Function::Identity(int dimensions) {
         return new ParametersFunction(dimensions, 0, dimensions);
     }
