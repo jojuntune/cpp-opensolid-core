@@ -426,38 +426,48 @@ namespace OpenSolid
     
     namespace
     {
+        inline Vector2d lineNormal(const Matrix2d& vertices) {
+            return (vertices.col(1) - vertices.col(0)).unitOrthogonal();
+        }
+
+        inline Vector3d triangleNormal(const Matrix3d& vertices) {
+            Matrix3d edges;
+            edges.col(0) = vertices.col(1) - vertices.col(0);
+            edges.col(1) = vertices.col(2) - vertices.col(1);
+            edges.col(2) = vertices.col(0) - vertices.col(2);
+            Matrix3d::Index longest_edge_index;
+            edges.colwise().norm().maxCoeff(&longest_edge_index);
+            Matrix3d::Index first_index = (longest_edge_index + 1) % 3;
+            Matrix3d::Index second_index = (longest_edge_index + 2) % 3;
+            return edges.col(first_index).cross(edges.col(second_index)).normalized();
+        }
+
         inline Vector2d simplexNormal(const LineSegment2d& line_segment) {
-            return (line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+            return lineNormal(line_segment.vertices());
         }
         
         inline Vector2d simplexNormal(const LineSegmentXd& line_segment) {
             assert(line_segment.dimensions() == 2);
-            return Vector2d(line_segment.vertex(1) - line_segment.vertex(0)).unitOrthogonal();
+            return lineNormal(line_segment.vertices());
         }
         
         inline Vector3d simplexNormal(const Triangle3d& triangle) {
-            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
-            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
-            return first_edge.cross(second_edge).normalized();
+            return triangleNormal(triangle.vertices());
         }
         
         inline Vector3d simplexNormal(const TriangleXd& triangle) {
             assert(triangle.dimensions() == 3);
-            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
-            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
-            return first_edge.cross(second_edge).normalized();
+            return triangleNormal(triangle.vertices());
         }
         
         inline VectorXd simplexNormal(const SimplexXd& simplex) {
             assert(simplex.size() == 2 || simplex.size() == 3);
             if (simplex.size() == 2) {
                 assert(simplex.dimensions() == 2);
-                return Vector2d(simplex.vertex(1) - simplex.vertex(0)).unitOrthogonal();
+                return lineNormal(simplex.vertices());
             } else {
                 assert(simplex.dimensions() == 3);
-                Vector3d first_edge = simplex.vertex(1) - simplex.vertex(0);
-                Vector3d second_edge = simplex.vertex(2) - simplex.vertex(0);
-                return first_edge.cross(second_edge).normalized();
+                return triangleNormal(simplex.vertices());
             }
         }
     }
