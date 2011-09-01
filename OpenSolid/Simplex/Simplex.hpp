@@ -254,7 +254,8 @@ namespace OpenSolid
         const EigenBase<SecondDerivedType>& second_vertex
     ) {
         _vertices.resize(first_vertex.size(), 2);
-        _vertices << first_vertex.derived(), second_vertex.derived();
+        _vertices.col(0) = first_vertex.derived();
+        _vertices.col(1) = second_vertex.derived();
     }
         
     template <int dimensions_, int size_>
@@ -265,7 +266,9 @@ namespace OpenSolid
         const EigenBase<ThirdDerivedType>& third_vertex
     ) {
         _vertices.resize(first_vertex.size(), 3);
-        _vertices << first_vertex.derived(), second_vertex.derived(), third_vertex.derived();
+        _vertices.col(0) = first_vertex.derived();
+        _vertices.col(1) = second_vertex.derived();
+        _vertices.col(2) = third_vertex.derived();
     }
         
     template <int dimensions_, int size_> 
@@ -282,8 +285,10 @@ namespace OpenSolid
         const EigenBase<FourthDerivedType>& fourth_vertex
     ) {
         _vertices.resize(first_vertex.size(), 4);
-        _vertices << first_vertex.derived(), second_vertex.derived(), third_vertex.derived(),
-            fourth_vertex.derived();
+        _vertices.col(0) = first_vertex.derived();
+        _vertices.col(1) = second_vertex.derived();
+        _vertices.col(2) = third_vertex.derived();
+        _vertices.col(3) = fourth_vertex.derived();
     }
         
     template <int dimensions_, int size_> 
