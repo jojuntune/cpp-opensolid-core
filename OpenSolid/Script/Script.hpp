@@ -44,6 +44,7 @@ namespace OpenSolid
         OPENSOLID_SCRIPT_EXPORT Script();
 
         OPENSOLID_SCRIPT_EXPORT Script& run(const std::string& argument);
+        OPENSOLID_SCRIPT_EXPORT Script& runFile(const std::string& filename);
 
         template <class Type>
         Script& set(const std::string& name, const Type& argument);

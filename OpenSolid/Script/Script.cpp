@@ -113,4 +113,13 @@ namespace OpenSolid
         }
         return *this;
     }
+    
+    Script& Script::runFile(const std::string& filename) {
+        try {
+            exec_file(str(filename), _environment_dict, _environment_dict);
+        } catch (const error_already_set&) {
+            throw error();
+        }
+        return *this;
+    }
 }
