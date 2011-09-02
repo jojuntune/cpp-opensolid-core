@@ -230,6 +230,20 @@ public:
         TS_ASSERT((derivative1.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
         TS_ASSERT((derivative2.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
     }
+
+    void testNormal() {
+        Parameter theta;
+        Function f = Vector2d(1, 1) + Function(2 * cos(theta), 2 * sin(theta));
+        TS_ASSERT((f(-M_PI / 2) - Vector2d(1, -1)).isZero());
+        TS_ASSERT((f(0) - Vector2d(3, 1)).isZero());
+        TS_ASSERT((f(M_PI / 2) - Vector2d(1, 3)).isZero());
+        Function normal = f.normal();
+        TS_ASSERT((f(-M_PI / 2) + 2 * normal(-M_PI / 2) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(-M_PI / 4) + 2 * normal(-M_PI / 4) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(0) + 2 * normal(0) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(M_PI / 4) + 2 * normal(M_PI / 4) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(M_PI / 2) + 2 * normal(M_PI / 2) - Vector2d(1, 1)).isZero());
+    }
     
     void testZeros() {
         std::vector<Function> functions(7);
