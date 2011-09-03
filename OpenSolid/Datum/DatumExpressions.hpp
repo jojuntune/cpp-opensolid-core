@@ -147,9 +147,9 @@ namespace OpenSolid
     inline void DatumProduct<DerivedType, dimensions_, axes_>::evalTo(
         EigenBase<OtherDerivedType>& result
     ) const {
-        result.derived() = (
-            _datum.vectors().template cast<typename OtherDerivedType::Scalar>() * _matrix.derived()
-        ).colwise() + _datum.origin().template cast<typename OtherDerivedType::Scalar>();
+        typedef typename OtherDerivedType::Scalar OtherScalar;
+        result.derived() = _datum.vectors().template cast<OtherScalar>() * _matrix.derived();
+        result.derived().colwise() += _datum.origin().template cast<OtherScalar>();
     }
 
     template <class DerivedType, int dimensions_, int axes_>
@@ -180,22 +180,15 @@ namespace OpenSolid
     inline void DatumQuotient<DerivedType, dimensions_, axes_>::evalTo(
         EigenBase<OtherDerivedType>& result
     ) const {
-        if (_datum._normalized) {
-            result.derived() =
-                _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() * (
-                    _matrix.derived().colwise() -
-                    _datum.origin().template cast<typename OtherDerivedType::Scalar>()
-                );
-        } else {
-            Matrix<typename OtherDerivedType::Scalar, axes_, axes_> symmetric_inverse =
+        typedef typename OtherDerivedType::Scalar OtherScalar;
+        result.derived() = _datum.vectors().transpose().template cast<OtherScalar>() * (
+            _matrix.derived().colwise() - _datum.origin().template cast<OtherScalar>()
+        );
+        if (!_datum._normalized) {
+            result.derived().applyOnTheLeft(
                 (_datum.vectors().transpose() * _datum.vectors()).ldlt().solve(
                     Matrix<double, axes_, axes_>::Identity(_datum.axes(), _datum.axes())
-                ).template cast<typename OtherDerivedType::Scalar>();
-            result.derived() = symmetric_inverse * (
-                _datum.vectors().transpose().template cast<typename OtherDerivedType::Scalar>() * (
-                    _matrix.derived().colwise() -
-                    _datum.origin().template cast<typename OtherDerivedType::Scalar>()
-                )
+                ).template cast<OtherScalar>()
             );
         }
     }
