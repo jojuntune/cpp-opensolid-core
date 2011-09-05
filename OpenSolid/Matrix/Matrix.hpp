@@ -274,6 +274,11 @@ namespace OpenSolid
             const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
         ) const;
     };
+
+    template <int first_argument_, int second_argument_>
+    void assertEqual();
+
+    void assertEqual(int first_argument, int second_argument);
 }
 
 namespace std
@@ -634,6 +639,21 @@ namespace OpenSolid
     Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::operator()(
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return argument.template cast<Interval>();}
+
+    template <int first_argument_, int second_argument_>
+    inline void assertEqual() {
+        static const bool equal = (first_argument_ == second_argument_);
+        static const bool first_dynamic = (first_argument_ == Dynamic);
+        static const bool second_dynamic = (second_argument_ == Dynamic);
+        static_assert(
+            equal || first_dynamic || second_dynamic,
+            "Matrix sizes different at compile time"
+        );
+    }
+
+    inline void assertEqual(int first_argument, int second_argument) {
+        assert(first_argument == second_argument && "Matrix sizes different");
+    }
 }
 
 namespace

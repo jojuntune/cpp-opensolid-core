@@ -64,12 +64,28 @@ public:
         Frame3d product = frame * frame;
         Vector3d expected_product_origin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
         Frame3d quotient = frame / frame;
-        TS_ASSERT(product.origin().isApprox(expected_product_origin));
-        TS_ASSERT(product.xVector().isApprox(Vector3d(0, 0, 1)));
-        TS_ASSERT(product.yVector().isApprox(Vector3d(0, 1, 0)));
-        TS_ASSERT(product.zVector().isApprox(Vector3d(-1, 0, 0)));
+        TS_ASSERT((product.origin() - expected_product_origin).isZero());
+        TS_ASSERT((product.xVector() - Vector3d(0, 0, 1)).isZero());
+        TS_ASSERT((product.yVector() - Vector3d(0, 1, 0)).isZero());
+        TS_ASSERT((product.zVector() - Vector3d(-1, 0, 0)).isZero());
         TS_ASSERT(quotient.origin().isZero());
         TS_ASSERT(quotient.vectors().isIdentity());
+    }
+
+    void testAdvancedDatumComposition() {
+        Matrix<double, 3, 2> plane_vectors;
+        plane_vectors.col(0) = Vector3d(1, 0, 1);
+        plane_vectors.col(1) = Vector3d(0, 1, 0);
+        Plane3d plane(Vector3d(1, 1, 1), plane_vectors);
+        TS_ASSERT(plane.vectors().col(0).norm() == One());
+        TS_ASSERT(plane.vectors().col(1).norm() == One());
+        CoordinateSystem<3, 2> projected = (plane / Frame3d().xyPlane()) * Frame3d().xyPlane();
+        TS_ASSERT((projected.vectors().col(0) - Vector3d(1 / sqrt(2.0), 0, 0)).isZero());
+        TS_ASSERT((projected.vectors().col(1) - Vector3d(0, 1, 0)).isZero());
+        Axis3d axis = Axis2d(Vector2d::Zero(), Vector2d(1, 1)) * plane;
+        TS_ASSERT((axis.origin() - plane.origin()).isZero());
+        Vector3d expected_axis_vector = Vector3d(1 / sqrt(2.0), 1, 1 / sqrt(2.0)).normalized();
+        TS_ASSERT((axis.vectors() - expected_axis_vector).isZero());
     }
     
     void test2d() {

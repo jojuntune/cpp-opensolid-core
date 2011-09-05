@@ -114,12 +114,20 @@ namespace OpenSolid
     inline Frame<dimensions_>::Frame(
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
-    ) {initialize(origin, vectors, true);}
+    ) {
+        _origin = origin;
+        _vectors = orthogonalBasis(vectors).leftCols(_origin.size());
+        _normalized = true;
+    }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) {
         assert(other._normalized);
-        initialize(other);
+        assert(other.dimensions() == dimensions());
+        assert(other.axes() == dimensions());
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
@@ -127,7 +135,11 @@ namespace OpenSolid
         const Datum<other_dimensions_, other_axes_>& other
     ) {
         assert(other._normalized);
-        initialize(other);
+        assert(other.dimensions() == dimensions());
+        assert(other.axes() == dimensions());
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = true;
         return *this;
     }
 }

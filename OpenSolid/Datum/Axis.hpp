@@ -85,13 +85,17 @@ namespace OpenSolid
     
     template <int dimensions_>
     inline Axis<dimensions_>::Axis(const Vector& origin, const Vector& vector) {
-        initialize(origin, vector, true);
+        _origin = origin;
+        _vectors = vector.normalized();
+        _normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Axis<dimensions_>::Axis(const Datum<other_dimensions_, other_axes_>& other) {
         assert(other._normalized);
-        initialize(other);
+        _origin = other.origin();
+        _vectors = other.vectors();
+        _normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
@@ -99,7 +103,9 @@ namespace OpenSolid
         const Datum<other_dimensions_, other_axes_>& other
     ) {
         assert(other._normalized);
-        initialize(other);
+        _origin = other.origin();
+        _vectors = other.vectors();
+        _normalized = true;
         return *this;
     }
 }

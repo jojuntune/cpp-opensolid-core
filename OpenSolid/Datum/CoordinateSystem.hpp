@@ -34,6 +34,14 @@ namespace OpenSolid
         
         template <class DerivedType>
         CoordinateSystem(const Vector& origin, const EigenBase<DerivedType>& vectors);
+        
+        template <int other_dimensions_, int other_axes_>
+        CoordinateSystem(const Datum<other_dimensions_, other_axes_>& other);
+        
+        template <int other_dimensions_, int other_axes_>
+        CoordinateSystem<dimensions_, axes_>& operator=(
+            const Datum<other_dimensions_, other_axes_>& other
+        );
     };
     
     typedef CoordinateSystem<2, 2> CoordinateSystem2d;
@@ -85,7 +93,32 @@ namespace OpenSolid
     inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
-    ) {initialize(origin, vectors, false);}
+    ) {
+        _origin = origin;
+        _vectors = vectors;
+        _normalized = _vectors.isUnitary();
+    }
+
+    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
+    inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
+        const Datum<other_dimensions_, other_axes_>& other
+    ) {
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = other._normalized;
+    }
+
+    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
+    inline CoordinateSystem<dimensions_, axes_>& CoordinateSystem<dimensions_, axes_>::operator=(
+        const Datum<other_dimensions_, other_axes_>& other
+    ) {
+        assert(other.dimensions() == dimensions());
+        assert(other.axes() == dimensions());
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = other._normalized;
+        return *this;
+    }
 }
 
 namespace std

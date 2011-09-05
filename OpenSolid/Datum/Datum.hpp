@@ -30,17 +30,20 @@
 
 namespace OpenSolid
 {
-    template <int other_dimensions_, int other_axes_>
+    template <int dimensions_, int axes_>
     class Datum;
     
-    template <int other_dimensions_>
+    template <int dimensions_>
     class Axis;
     
-    template <int other_dimensions_>
+    template <int dimensions_>
     class Plane;
     
-    template <int other_dimensions_>
+    template <int dimensions_>
     class Frame;
+
+    template <int dimensions_, int axes_>
+    class CoordinateSystem;
     
     template <class DerivedType, int dimensions_, int axes_>
     class DatumProduct;
@@ -71,22 +74,15 @@ namespace OpenSolid
         
         template <int other_dimensions_>
         friend class Frame;
+
+        template <int other_dimensions_, int other_axes_>
+        friend class CoordinateSystem;
         
         template <class DerivedType, int other_dimensions_, int other_axes_>
         friend class DatumProduct;
         
         template <class DerivedType, int other_dimensions_, int other_axes_>
         friend class DatumQuotient;
-        
-        template <class DerivedType>
-        void initialize(
-            const Vector& origin,
-            const EigenBase<DerivedType>& vectors,
-            bool normalize
-        );
-        
-        template <int other_dimensions_, int other_axes_>
-        void initialize(const Datum<other_dimensions_, other_axes_>& other);
     public:
         Datum();
         
@@ -210,60 +206,31 @@ namespace boost
 #include <OpenSolid/Datum/CoordinateSystem.hpp>
 
 namespace OpenSolid
-{   
-    template <int dimensions_, int axes_> template <class DerivedType>
-    inline void Datum<dimensions_, axes_>::initialize(
-        const Vector& origin,
-        const EigenBase<DerivedType>& vectors,
-        bool normalize
-    ) {
-        assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
-        assert(vectors.rows() == origin.size());
-        assert(
-            vectors.cols() == axes_ || axes_ == Dynamic || (normalize && vectors.cols() < axes_)
-        );
-        _origin = origin;
-        if (normalize) {
-            _vectors = orthogonalBasis(vectors.derived()).leftCols(
-                axes_ == Dynamic ? vectors.cols() : axes_
-            );
-            _normalized = true;
-        } else {
-            _vectors.resize(origin.size(), vectors.cols());
-            _vectors.leftCols(vectors.cols()) = vectors.derived();
-            _normalized = _vectors.isUnitary();
-        }
-    }
-    
-    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
-    inline void Datum<dimensions_, axes_>::initialize(
-        const Datum<other_dimensions_, other_axes_>& other
-    ) {
-        assert(other.dimensions() == dimensions_ || dimensions_ == Dynamic);
-        assert(other.axes() == axes_ || axes_ == Dynamic);
-        _origin = other.origin();
-        _vectors = other.vectors();
-        _normalized = other._normalized;
-    }
-    
+{
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>::Datum() {}
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>::Datum(const Datum<dimensions_, axes_>& other) {
-        initialize(other);
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = other._normalized;
     }
     
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline Datum<dimensions_, axes_>::Datum(const Datum<other_dimensions_, other_axes_>& other) {
-        initialize(other);
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = other._normalized;
     }
         
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<dimensions_, axes_>& other
     ) {
-        initialize(other);
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = other._normalized;
         return *this;
     }
     
@@ -271,7 +238,9 @@ namespace OpenSolid
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<other_dimensions_, other_axes_>& other
     ) {
-        initialize(other);
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = other._normalized;
         return *this;
     }
     
@@ -515,15 +484,19 @@ namespace OpenSolid
             return *this;
         } else {
             Datum<dimensions_, axes_> result;
-            result.initialize(origin(), vectors(), true);
+            result._origin = origin();
+            result._vectors = orthogonalBasis(vectors()).leftCols(vectors().cols());
+            result._normalized = true;
             return result;
         }
     }
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::linear() const {
-        Datum<dimensions_, axes_> result(*this);
-        result._origin.setZero();
+        Datum<dimensions_, axes_> result;
+        result._origin = Vector::Zero(origin().size());
+        result._vectors = vectors();
+        result._normalized = _normalized;
         return result;
     }
     
@@ -532,9 +505,13 @@ namespace OpenSolid
         assert(axes() == dimensions());
         Datum<dimensions_, dimensions_> result;
         if (_normalized) {
-            result.initialize(vectors().transpose() * -origin(), vectors().transpose(), false);
+            result._origin = vectors().transpose() * -origin();
+            result._vectors = vectors().transpose();
+            result._normalized = true;
         } else {
-            result.initialize(-origin() / linear(), vectors().inverse(), false);
+            result._origin = -origin() / linear();
+            result._vectors = vectors().inverse();
+            result._normalized = false;
         }
         return result;
     }
@@ -550,11 +527,9 @@ namespace OpenSolid
         typedef Eigen::Matrix<double, dimensions_, dimensions_> SquareMatrix;
         SquareMatrix N = normal_vector * normal_vector.transpose();
         Datum<dimensions_, dimensions_> result;
-        result.initialize(
-            2 * N * origin(),
-            SquareMatrix::Identity(dimensions(), dimensions()) - 2 * N,
-            false
-        );
+        result._origin = 2 * N * origin();
+        result._vectors = SquareMatrix::Identity(dimensions(), dimensions()) - 2 * N;
+        result._normalized = false;
         return result;
     }
     
@@ -564,7 +539,9 @@ namespace OpenSolid
     ) const {
         assert(dimensions() == base.axes());
         Datum<base_dimensions_, axes_> result;
-        result.initialize(origin() * base, vectors() * base.linear(), false);
+        result._origin = origin() * base;
+        result._vectors = base.vectors() * vectors();
+        result._normalized = result.vectors().isUnitary();
         return result;
     }
     
@@ -574,7 +551,9 @@ namespace OpenSolid
     ) const {
         assert(dimensions() == base.axes());
         Datum<base_axes_, axes_> result;
-        result.initialize(origin() / base, vectors() / base.linear(), false);
+        result._origin = origin() / base;
+        result._vectors = vectors() / base.linear();
+        result._normalized = result.vectors().isUnitary();
         return result;
     }
 }

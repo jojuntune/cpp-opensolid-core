@@ -32,12 +32,7 @@ namespace OpenSolid
         static const int static_axes = dimensions_ == Dynamic ? Dynamic : dimensions_ - 1;
         typedef Eigen::Matrix<double, dimensions_, 1> Vector;
         typedef Eigen::Matrix<double, dimensions_, static_axes> Matrix;
-    private:
-        template <class DerivedType>
-        void initialize(const Vector& origin, const EigenBase<DerivedType>& vectors);
-        
-        using Datum<dimensions_, static_axes>::initialize;
-    public:
+
         Plane();
         
         template <class DerivedType>
@@ -87,9 +82,12 @@ namespace boost
 ////////// Implementation //////////
 
 namespace OpenSolid
-{
+{       
+    template <int dimensions_>
+    inline Plane<dimensions_>::Plane() {}
+    
     template <int dimensions_> template <class DerivedType>
-    inline void Plane<dimensions_>::initialize(
+    inline Plane<dimensions_>::Plane(
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {
@@ -104,20 +102,13 @@ namespace OpenSolid
         }
         this->_normalized = true;
     }
-        
-    template <int dimensions_>
-    inline Plane<dimensions_>::Plane() {}
-    
-    template <int dimensions_> template <class DerivedType>
-    inline Plane<dimensions_>::Plane(
-        const Vector& origin,
-        const EigenBase<DerivedType>& vectors
-    ) {initialize(origin, vectors);}
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) {
         assert(other._normalized);
-        initialize(other);
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
@@ -125,7 +116,9 @@ namespace OpenSolid
         const Datum<other_dimensions_, other_axes_>& other
     ) {
         assert(other._normalized);
-        initialize(other);
+        _origin = other._origin;
+        _vectors = other._vectors;
+        _normalized = true;
         return *this;
     }
 }
