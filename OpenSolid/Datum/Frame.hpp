@@ -115,9 +115,9 @@ namespace OpenSolid
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {
-        _origin = origin;
-        _vectors = orthogonalBasis(vectors).leftCols(_origin.size());
-        _normalized = true;
+        this->_origin = origin;
+        this->_vectors = orthogonalBasis(vectors).leftCols(this->_origin.size());
+        this->_normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
@@ -125,9 +125,9 @@ namespace OpenSolid
         assert(other._normalized);
         assert(other.dimensions() == dimensions());
         assert(other.axes() == dimensions());
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = true;
+        this->_origin = other._origin;
+        this->_vectors = other._vectors;
+        this->_normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
@@ -137,9 +137,9 @@ namespace OpenSolid
         assert(other._normalized);
         assert(other.dimensions() == dimensions());
         assert(other.axes() == dimensions());
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = true;
+        this->_origin = other._origin;
+        this->_vectors = other._vectors;
+        this->_normalized = true;
         return *this;
     }
 }

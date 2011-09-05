@@ -94,18 +94,18 @@ namespace OpenSolid
         const Vector& origin,
         const EigenBase<DerivedType>& vectors
     ) {
-        _origin = origin;
-        _vectors = vectors;
-        _normalized = _vectors.isUnitary();
+        this->_origin = origin;
+        this->_vectors = vectors;
+        this->_normalized = this->_vectors.isUnitary();
     }
 
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
         const Datum<other_dimensions_, other_axes_>& other
     ) {
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = other._normalized;
+        this->_origin = other._origin;
+        this->_vectors = other._vectors;
+        this->_normalized = other._normalized;
     }
 
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
@@ -114,9 +114,9 @@ namespace OpenSolid
     ) {
         assert(other.dimensions() == dimensions());
         assert(other.axes() == dimensions());
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = other._normalized;
+        this->_origin = other._origin;
+        this->_vectors = other._vectors;
+        this->_normalized = other._normalized;
         return *this;
     }
 }

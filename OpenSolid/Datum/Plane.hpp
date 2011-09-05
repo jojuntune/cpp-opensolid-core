@@ -106,9 +106,9 @@ namespace OpenSolid
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) {
         assert(other._normalized);
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = true;
+        this->_origin = other._origin;
+        this->_vectors = other._vectors;
+        this->_normalized = true;
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
@@ -116,9 +116,9 @@ namespace OpenSolid
         const Datum<other_dimensions_, other_axes_>& other
     ) {
         assert(other._normalized);
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = true;
+        this->_origin = other._origin;
+        this->_vectors = other._vectors;
+        this->_normalized = true;
         return *this;
     }
 }
