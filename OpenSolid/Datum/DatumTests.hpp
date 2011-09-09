@@ -121,6 +121,8 @@ public:
 
     void testPlaneFromNormal() {
         Plane3d plane(Vector3d(1, 1, 1), Vector3d::UnitZ());
+        TS_ASSERT(plane.basis().isUnitary());
+        TS_ASSERT((plane.basis().col(0).cross(plane.basis().col(1)) - Vector3d::UnitZ()).isZero());
         Vector3d point(2, 2, 2);
         Vector3d projected_point = point % plane;
         Vector3d expected_projected(2, 2, 1);
