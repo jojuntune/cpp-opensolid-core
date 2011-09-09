@@ -307,7 +307,7 @@ namespace OpenSolid
                 return_value_policy<manage_new_object>()
             )
             .staticmethod("UnitY");
-        if (MatrixType::SizeAtCompileTime >= 3) {
+        if (MatrixType::SizeAtCompileTime == 3) {
             fixed_size_vector.def(
                 "UnitZ",
                 &unitZFixedSizeVector<MatrixType, DynamicType>,
@@ -315,23 +315,13 @@ namespace OpenSolid
             );
             fixed_size_vector.staticmethod("UnitZ");
         }
-        if (MatrixType::SizeAtCompileTime == 4) {
-            fixed_size_vector.def(
-                "UnitW",
-                &unitWFixedSizeVector<MatrixType, DynamicType>,
-                return_value_policy<manage_new_object>()
-            );
-            fixed_size_vector.staticmethod("UnitW");
-        }
     }
 
     void bindSpecificMatrixSizes() {
         bindFixedSizeMatrix<Matrix2d, MatrixXd>("Matrix2d");
         bindFixedSizeMatrix<Matrix3d, MatrixXd>("Matrix3d");
-        bindFixedSizeMatrix<Matrix4d, MatrixXd>("Matrix4d");
         bindFixedSizeMatrix<Matrix2I, MatrixXI>("Matrix2I");
         bindFixedSizeMatrix<Matrix3I, MatrixXI>("Matrix3I");
-        bindFixedSizeMatrix<Matrix4I, MatrixXI>("Matrix4I");
         
         bindVector<VectorXd, MatrixXd>("VectorXd");
         bindVector<VectorXI, MatrixXI>("VectorXI");
@@ -340,15 +330,11 @@ namespace OpenSolid
         
         bindFixedSizeVector<Vector2d, MatrixXd>("Vector2d");
         bindFixedSizeVector<Vector3d, MatrixXd>("Vector3d");
-        bindFixedSizeVector<Vector4d, MatrixXd>("Vector4d");
         bindFixedSizeVector<Vector2I, MatrixXI>("Vector2I");
         bindFixedSizeVector<Vector3I, MatrixXI>("Vector3I");
-        bindFixedSizeVector<Vector4I, MatrixXI>("Vector4I");
         bindFixedSizeVector<RowVector2d, MatrixXd>("RowVector2d");
         bindFixedSizeVector<RowVector3d, MatrixXd>("RowVector3d");
-        bindFixedSizeVector<RowVector4d, MatrixXd>("RowVector4d");
         bindFixedSizeVector<RowVector2I, MatrixXI>("RowVector2I");
         bindFixedSizeVector<RowVector3I, MatrixXI>("RowVector3I");
-        bindFixedSizeVector<RowVector4I, MatrixXI>("RowVector4I");
     }
 }
