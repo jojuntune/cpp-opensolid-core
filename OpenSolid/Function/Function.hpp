@@ -28,6 +28,7 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -42,7 +43,7 @@ namespace OpenSolid
     class Domain;
     class Geometry;
     
-    class Function
+    class Function : public Transformable<Function>
     {
     private:
         boost::intrusive_ptr<const FunctionImplementation> _implementation;
@@ -50,29 +51,15 @@ namespace OpenSolid
     public:
         Function();
         Function(const FunctionImplementation* function);
+
         Function(int value);
         Function(double value);
         
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& vector);
         
-        OPENSOLID_CORE_EXPORT Function(
-            const Function& x,
-            const Function& y
-        );
-        
-        OPENSOLID_CORE_EXPORT Function(
-            const Function& x,
-            const Function& y,
-            const Function& z
-        );
-        
-        OPENSOLID_CORE_EXPORT Function(
-            const Function& x,
-            const Function& y,
-            const Function& z,
-            const Function& w
-        );
+        OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y);
+        OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y, const Function& z);
         
         const FunctionImplementation* implementation() const;
         
@@ -89,13 +76,13 @@ namespace OpenSolid
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
         OPENSOLID_CORE_EXPORT Function derivative(int index = 0) const;
+        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& matrix, const VectorXd& vector) const;
         OPENSOLID_CORE_EXPORT Function norm() const;
         OPENSOLID_CORE_EXPORT Function normalized() const;
         OPENSOLID_CORE_EXPORT Function squaredNorm() const;
         OPENSOLID_CORE_EXPORT Function x() const;
         OPENSOLID_CORE_EXPORT Function y() const;
         OPENSOLID_CORE_EXPORT Function z() const;
-        OPENSOLID_CORE_EXPORT Function w() const;
         OPENSOLID_CORE_EXPORT Function component(int index) const;
         OPENSOLID_CORE_EXPORT Function components(int index, int num) const;
         OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
@@ -157,6 +144,7 @@ namespace OpenSolid
     
     OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXd& datum);
     OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Function operator%(const Function& function, const DatumXd& datum);
     
     OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function sin(const Function& argument);

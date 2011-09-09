@@ -39,9 +39,11 @@ namespace OpenSolid
         result = -operand().derivative(index);
     }
     
-    void NegationFunction::getTransformed(const DatumXd& datum, Function& result) const {
-        result = -(operand() * datum);
-    }
+    void NegationFunction::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {result = -(operand().transformed(matrix, vector));}
     
     void NegationFunction::getNorm(Function& result) const {result = operand().norm();}
     

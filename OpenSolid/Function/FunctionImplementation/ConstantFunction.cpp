@@ -47,7 +47,7 @@ namespace OpenSolid
 
     void ConstantFunction::getMirrored(const PlaneXd& plane, Function& result) const {
         std::cout << "vector(): " << vector().transpose() << std::endl;
-        VectorXd normal = plane.normalVector();
+        VectorXd normal = plane.normal();
         result = vector() - 2 * normal * (vector() - plane.origin()).dot(normal);
         std::cout << "result: " << result.as<ConstantFunction>().vector().transpose() << std::endl;
     }
@@ -56,9 +56,11 @@ namespace OpenSolid
         result = vector();
     }
     
-    void ConstantFunction::getTransformed(const DatumXd& datum, Function& result) const {
-        result = vector() * datum;
-    }
+    void ConstantFunction::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {result = matrix * this->vector() + vector;}
     
     void ConstantFunction::getNorm(Function& result) const {result = vector().norm();}
     

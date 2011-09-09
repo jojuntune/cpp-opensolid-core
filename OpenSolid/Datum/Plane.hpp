@@ -28,26 +28,31 @@ namespace OpenSolid
     template <int dimensions_>
     class Plane : public Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
     {
-    public:
+    private:
         static const int static_axes = dimensions_ == Dynamic ? Dynamic : dimensions_ - 1;
-        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<double, dimensions_, static_axes> Matrix;
-
+    public:
         Plane();
-        
-        template <class DerivedType>
-        Plane(const Vector& origin, const EigenBase<DerivedType>& vectors);
+
+        template <class VectorsType>
+        Plane(const Matrix<double, dimensions_, 1>& origin, const EigenBase<VectorsType>& vectors);
+
+        Plane(const Vector3d& origin, const Vector3d& first_vector, const Vector3d& second_vector);
         
         template <int other_dimensions_, int other_axes_>
         Plane(const Datum<other_dimensions_, other_axes_>& other);
         
         template <int other_dimensions_, int other_axes_>
         Plane<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
+
+        static Plane<dimensions_> XY();
+        static Plane<dimensions_> XZ();
+        static Plane<dimensions_> YX();
+        static Plane<dimensions_> YZ();
+        static Plane<dimensions_> ZX();
+        static Plane<dimensions_> ZY();
     };
     
-    typedef Plane<2> Plane2d;
     typedef Plane<3> Plane3d;
-    typedef Plane<4> Plane4d;
     typedef Plane<Dynamic> PlaneXd;
 }
 
@@ -85,41 +90,102 @@ namespace OpenSolid
 {       
     template <int dimensions_>
     inline Plane<dimensions_>::Plane() {}
-    
-    template <int dimensions_> template <class DerivedType>
-    inline Plane<dimensions_>::Plane(
-        const Vector& origin,
-        const EigenBase<DerivedType>& vectors
-    ) {
-        assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
-        this->_origin = origin;
-        assert(vectors.rows() == origin.size());
-        assert(vectors.cols() == 1 || vectors.cols() == origin.size() - 1);
-        if (vectors.cols() == 1) {
-            this->_vectors = orthogonalBasis(vectors).rightCols(origin.size() - 1);
-        } else {
-            this->_vectors = orthogonalBasis(vectors).leftCols(origin.size() - 1);
+
+    /*
+    namespace
+    {
+        template <int dimensions_> template <class VectorsType>
+        Matrix<double, dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1> planeBasis(
+            const EigenBase<VectorsType>& vectors
+        ) {
+            if (vectors.cols() == 1) {
+                int sign = vectors.rows() % 2 == 0 ? -1 : 1;
+                return sign * orthonormalBasis(vectors).rightCols(vectors.rows() - 1);
+            } else {
+                return orthonormalBasis(vectors).leftCols(vectors.rows() - 1);
+            }
         }
-        this->_normalized = true;
+    }
+    */
+    
+    template <int dimensions_> template <class VectorsType>
+    Plane<dimensions_>::Plane(
+        const Matrix<double, dimensions_, 1>& origin,
+        const EigenBase<VectorsType>& vectors
+    ) : Datum<dimensions_, static_axes>(origin, planeBasis<dimensions_>(vectors)) {}
+
+    namespace
+    {
+        inline Matrix<double, 3, 2> planeBasis(Vector3d first_vector, Vector3d second_vector) {
+            first_vector.normalize();
+            second_vector -= second_vector.dot(first_vector) * first_vector;
+            second_vector.normalize();
+            Matrix<double, 3, 2> result;
+            result << first_vector, second_vector;
+            return result;
+        }
+    }
+    
+    template <int dimensions_>
+    Plane<dimensions_>::Plane(
+        const Vector3d& origin,
+        const Vector3d& first_vector,
+        const Vector3d& second_vector
+    ) : Datum<dimensions_, static_axes>(origin, planeBasis(first_vector, second_vector)) {
+        assertCompatible<dimensions_, 3>();
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) {
-        assert(other._normalized);
-        this->_origin = other._origin;
-        this->_vectors = other._vectors;
-        this->_normalized = true;
+    inline Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) :
+        Datum<dimensions_, static_axes>(other) {
+        assert(other.axes() == other.dimensions() - 1);
+        assert(other.basis().isUnitary());
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Plane<dimensions_>& Plane<dimensions_>::operator=(
         const Datum<other_dimensions_, other_axes_>& other
     ) {
-        assert(other._normalized);
-        this->_origin = other._origin;
-        this->_vectors = other._vectors;
-        this->_normalized = true;
+        assert(other.axes() == other.dimensions() - 1);
+        assert(other.basis().isUnitary());
+        Datum<dimensions_, static_axes>::operator=(other);
         return *this;
+    }
+
+    template <int dimensions_>
+    inline Plane<dimensions_> Plane<dimensions_>::XY() {
+        assertCompatible<dimensions_, 3>();
+        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitY());
+    }
+    
+    template <int dimensions_>
+    inline Plane<dimensions_> Plane<dimensions_>::XZ() {
+        assertCompatible<dimensions_, 3>();
+        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitZ());
+    }
+    
+    template <int dimensions_>
+    inline Plane<dimensions_> Plane<dimensions_>::YX() {
+        assertCompatible<dimensions_, 3>();
+        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitY(), Vector3d::UnitX());
+    }
+    
+    template <int dimensions_>
+    inline Plane<dimensions_> Plane<dimensions_>::YZ() {
+        assertCompatible<dimensions_, 3>();
+        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitY(), Vector3d::UnitZ());
+    }
+    
+    template <int dimensions_>
+    inline Plane<dimensions_> Plane<dimensions_>::ZX() {
+        assertCompatible<dimensions_, 3>();
+        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitZ(), Vector3d::UnitX());
+    }
+    
+    template <int dimensions_>
+    inline Plane<dimensions_> Plane<dimensions_>::ZY() {
+        assertCompatible<dimensions_, 3>();
+        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitZ(), Vector3d::UnitY());
     }
 }
 

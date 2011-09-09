@@ -18,49 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINEARFUNCTION_HPP
-#define OPENSOLID__LINEARFUNCTION_HPP
-
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#ifndef OPENSOLID__NORMALPLANE_HPP
+#define OPENSOLID__NORMALPLANE_HPP
 
 namespace OpenSolid
 {
-    class LinearFunction : public FunctionImplementation
+    struct NormalPlane
     {
-    private:
-        VectorXd _point;
-        MatrixXd _vectors;
-    public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const VectorXd& point, const MatrixXd& vectors);
-        
-        const VectorXd& point() const;
-        const MatrixXd& vectors() const;
-        
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
-
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    inline const VectorXd& LinearFunction::point() const {return _point;}
-    
-    inline const MatrixXd& LinearFunction::vectors() const {return _vectors;}
 }
 
 #endif

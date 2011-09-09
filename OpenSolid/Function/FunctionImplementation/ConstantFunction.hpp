@@ -45,7 +45,12 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT void getComponents(int index, int num, Function& result) const;
         OPENSOLID_CORE_EXPORT void getMirrored(const PlaneXd& plane, Function& result) const;
         OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
-        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
+
+        OPENSOLID_CORE_EXPORT void getTransformed(
+            const MatrixXd& matrix,
+            const VectorXd& vector,
+            Function& result
+        ) const;
         
         OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
         OPENSOLID_CORE_EXPORT void getNormalized(Function& result) const;

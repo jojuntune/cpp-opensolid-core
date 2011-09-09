@@ -22,7 +22,7 @@
 
 namespace OpenSolid
 {
-    MatrixXd orthogonalBasis(const MatrixXd& vectors) {
+    MatrixXd orthonormalBasis(const MatrixXd& vectors) {
         MatrixXd result = vectors.householderQr().householderQ();
         int num_candidate_directions = min(vectors.cols(), vectors.rows() - 1);
         for (int i = 0; i < num_candidate_directions; ++i) {

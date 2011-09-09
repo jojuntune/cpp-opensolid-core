@@ -60,14 +60,15 @@ namespace OpenSolid
         _type = &typeid(implementation());
     }
     
-    Function::Function(const Function& x, const Function& y, const Function& z, const Function& w) {
-        _implementation = x.concatenate(y).concatenate(z).concatenate(w).implementation();
-        _type = &typeid(implementation());
-    }
-    
     Function Function::derivative(int index) const {
         Function result;
         implementation()->getDerivative(index, result);
+        return result;
+    }
+    
+    Function Function::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        Function result;
+        implementation()->getTransformed(matrix, vector, result);
         return result;
     }
     
@@ -94,8 +95,6 @@ namespace OpenSolid
     Function Function::y() const {return component(1);}
 
     Function Function::z() const {return component(2);}
-
-    Function Function::w() const {return component(3);}
     
     Function Function::component(int index) const {
         Function result;
@@ -440,18 +439,21 @@ namespace OpenSolid
     }
     
     Function operator*(const Function& function, const DatumXd& datum) {
-        assert(function.dimensions() == datum.axes());
-        Function result;
-        function.implementation()->getTransformed(datum, result);
-        return result;
+        return function.transformed(datum.basis(), datum.origin());
     }
     
     Function operator/(const Function& function, const DatumXd& datum) {
-        assert(datum.axes() == datum.dimensions());
-        assert(function.dimensions() == datum.dimensions());
-        Function result;
-        function.implementation()->getTransformed(datum.inverse(), result);
-        return result;
+        return function.transformed(
+            datum.inverseMatrix(),
+            -datum.inverseMatrix() * datum.origin()
+        );
+    }
+    
+    Function operator%(const Function& function, const DatumXd& datum) {
+        return function.transformed(
+            datum.projectionMatrix(),
+            datum.origin() - datum.projectionMatrix() * datum.origin()
+        );
     }
     
     Function sin(const Function& operand) {

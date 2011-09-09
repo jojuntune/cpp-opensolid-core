@@ -57,7 +57,8 @@ namespace OpenSolid
         ) const;
         
         OPENSOLID_CORE_EXPORT virtual void getTransformed(
-            const DatumXd& datum,
+            const MatrixXd& matrix,
+            const VectorXd& vector,
             Function& result
         ) const;
         

@@ -26,6 +26,7 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
@@ -42,7 +43,7 @@ namespace OpenSolid
         VectorXI operator()(const Geometry& geometry) const;
     };
     
-    class Domain
+    class Domain : public Transformable<Domain>
     {
     private:
         Set<Geometry> _boundaries;
@@ -66,6 +67,8 @@ namespace OpenSolid
         double upper() const;
         
         bool operator==(const Domain& other) const;
+
+        OPENSOLID_CORE_EXPORT Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };
 }
 

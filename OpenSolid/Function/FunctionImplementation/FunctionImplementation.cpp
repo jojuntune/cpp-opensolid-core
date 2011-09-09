@@ -38,9 +38,13 @@ namespace OpenSolid
         result = new CompositionFunction(inner, this);
     }
         
-    void FunctionImplementation::getTransformed(const DatumXd& datum, Function& result) const {
-        result = new TransformedFunction(this, datum);
-    }
+    
+        
+    void FunctionImplementation::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {result = new TransformedFunction(this, matrix, vector);}
     
     void FunctionImplementation::getNorm(Function& result) const {
         result = new NormFunction(this);

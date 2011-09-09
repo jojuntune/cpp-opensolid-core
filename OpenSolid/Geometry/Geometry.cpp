@@ -23,6 +23,16 @@
 
 namespace OpenSolid
 {   
+    Geometry Geometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        return Geometry(function().transformed(matrix, vector), domain());
+    }
+
+    Geometry Geometry::reversed() const {
+        assert(parameters() == 1);
+        Function reversed_parameter = domain().lower() + domain().upper() - Parameter();
+        return Geometry(function()(reversed_parameter), domain());
+    }
+
     Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
         return Geometry(start + Parameter() * (end - start), Interval(0, 1));
     }
@@ -61,10 +71,10 @@ namespace OpenSolid
         Vector3d center = (start / axis) * axis;
         Vector3d start_radial = start - center;
         Vector3d end_radial = end - center;
-        assert(end_radial.isOrthogonal(axis.vector()));
+        assert(end_radial.isOrthogonal(axis.direction()));
         double radius = start_radial.norm();
         assert(end_radial.norm() == Approx(radius));
-        Vector3d perpendicular = axis.vector().cross(start_radial).normalized() * radius;
+        Vector3d perpendicular = axis.direction().cross(start_radial).normalized() * radius;
         double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
         if (angle <= Zero()) {angle += 2 * M_PI;}
         return Geometry(
@@ -93,5 +103,9 @@ namespace OpenSolid
     
     Geometry operator/(const Geometry& geometry, const DatumXd& datum) {
         return Geometry(geometry.function() / datum, geometry.domain());
+    }
+    
+    Geometry operator%(const Geometry& geometry, const DatumXd& datum) {
+        return Geometry(geometry.function() % datum, geometry.domain());
     }
 }

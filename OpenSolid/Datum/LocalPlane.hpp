@@ -18,39 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINEARFUNCTION_HPP
-#define OPENSOLID__LINEARFUNCTION_HPP
-
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#ifndef OPENSOLID__LOCALPLANE_HPP
+#define OPENSOLID__LOCALPLANE_HPP
 
 namespace OpenSolid
 {
-    class LinearFunction : public FunctionImplementation
+    class LocalPlane
     {
     private:
-        VectorXd _point;
-        MatrixXd _vectors;
+        int _first_index;
+        int _second_index;
     public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const VectorXd& point, const MatrixXd& vectors);
+        LocalPlane(int first_index, int second_index);
         
-        const VectorXd& point() const;
-        const MatrixXd& vectors() const;
-        
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        int firstIndex() const;
+        int secondIndex() const;
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        static LocalPlane XY();
+        static LocalPlane XZ();
+        static LocalPlane YX();
+        static LocalPlane YZ();
+        static LocalPlane ZX();
+        static LocalPlane ZY();
     };
 }
 
@@ -58,9 +47,24 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline const VectorXd& LinearFunction::point() const {return _point;}
-    
-    inline const MatrixXd& LinearFunction::vectors() const {return _vectors;}
+    inline LocalPlane::LocalPlane(int first_index, int second_index) :
+        _first_index(first_index), _second_index(second_index) {}
+
+    inline int LocalPlane::firstIndex() const {return _first_index;}
+
+    inline int LocalPlane::secondIndex() const {return _second_index;}
+
+    inline LocalPlane LocalPlane::XY() {return LocalPlane(0, 1);}
+
+    inline LocalPlane LocalPlane::XZ() {return LocalPlane(0, 2);}
+
+    inline LocalPlane LocalPlane::YX() {return LocalPlane(1, 0);}
+
+    inline LocalPlane LocalPlane::YZ() {return LocalPlane(1, 2);}
+
+    inline LocalPlane LocalPlane::ZX() {return LocalPlane(2, 0);}
+
+    inline LocalPlane LocalPlane::ZY() {return LocalPlane(2, 1);}
 }
 
 #endif

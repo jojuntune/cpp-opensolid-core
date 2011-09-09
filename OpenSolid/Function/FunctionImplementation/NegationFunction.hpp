@@ -37,7 +37,11 @@ namespace OpenSolid
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& datum, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getTransformed(
+            const MatrixXd& matrix,
+            const VectorXd& vector,
+            Function& result
+        ) const;
         
         OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
         OPENSOLID_CORE_EXPORT void getSquaredNorm(Function& result) const;

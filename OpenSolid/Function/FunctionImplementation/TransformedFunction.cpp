@@ -23,31 +23,40 @@
 
 namespace OpenSolid
 {
-    TransformedFunction::TransformedFunction(const Function& operand, const DatumXd& datum) :
-        UnaryOperation(operand), _datum(datum) {
-        assert(operand.dimensions() == datum.axes());
+    TransformedFunction::TransformedFunction(
+        const Function& operand,
+        const MatrixXd& matrix,
+        const VectorXd& vector
+    ) : UnaryOperation(operand), _matrix(matrix), _vector(vector) {
+        assert(operand.dimensions() == matrix.cols());
+        assert(vector.size() == matrix.rows());
     }
     
-    int TransformedFunction::dimensions() const {return datum().dimensions();}
+    int TransformedFunction::dimensions() const {return matrix().rows();}
     
     void TransformedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values) * datum();
+        results = (matrix() * operand()(parameter_values)).colwise() + vector();
     }
     
     void TransformedFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds) * datum();
+        results = (matrix().cast<Interval>() * operand()(parameter_bounds)).colwise() +
+            vector().cast<Interval>();
     }
     
     void TransformedFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index) * datum().linear();
+        result = operand().derivative(index).transformed(matrix(), VectorXd::Zero(dimensions()));
     }
     
     void TransformedFunction::getComposition(const Function& inner, Function& result) const {
-        result = operand()(inner) * datum();
+        result = operand()(inner).transformed(matrix(), vector());
     }
     
-    void TransformedFunction::getTransformed(const DatumXd& other, Function& result) const {
-        result = operand() * (datum() * other);
+    void TransformedFunction::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {
+        result = operand().transformed(matrix * this->matrix(), matrix * this->vector() + vector);
     }
     
     void TransformedFunction::debug(std::ostream& stream, int indent) const {

@@ -111,9 +111,10 @@ public:
     }
     
     void testSine() {
+        typedef Matrix<Interval, 1, 4> RowVector4I;
         Function f = sin(Parameter());
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
-        TS_ASSERT(result.isApprox(RowVector4d(0, 1, 0, -1)));
+        TS_ASSERT((result - RowVector4d(0, 1, 0, -1)).isZero());
         RowVector4I bounds = f(
             RowVector4I(
                 Interval(0, M_PI / 2),
@@ -128,14 +129,15 @@ public:
             Interval(-1, 0),
             Interval(-1, 1)
         );
-        TS_ASSERT(bounds.cwiseLower().isApprox(expected_bounds.cwiseLower()));
-        TS_ASSERT(bounds.cwiseUpper().isApprox(expected_bounds.cwiseUpper()));
+        TS_ASSERT((bounds.cwiseLower() - expected_bounds.cwiseLower()).isZero());
+        TS_ASSERT((bounds.cwiseUpper() - expected_bounds.cwiseUpper()).isZero());
     }
     
     void testCosine() {
+        typedef Matrix<Interval, 1, 4> RowVector4I;
         Function f = cos(Parameter());
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
-        TS_ASSERT(result.isApprox(RowVector4d(1, 0, -1, 0)));
+        TS_ASSERT((result - RowVector4d(1, 0, -1, 0)).isZero());
         RowVector4I bounds = f(
             RowVector4I(
                 Interval(0, M_PI / 2),
@@ -150,8 +152,8 @@ public:
             Interval(-1, 0),
             Interval(-1, 1)
         );
-        TS_ASSERT(bounds.cwiseLower().isApprox(expected_bounds.cwiseLower()));
-        TS_ASSERT(bounds.cwiseUpper().isApprox(expected_bounds.cwiseUpper()));
+        TS_ASSERT((bounds.cwiseLower() - expected_bounds.cwiseLower()).isZero());
+        TS_ASSERT((bounds.cwiseUpper() - expected_bounds.cwiseUpper()).isZero());
     }
     
     void testComponent() {
@@ -166,8 +168,8 @@ public:
     
     void testTransformation() {
         Frame3d frame;
-        frame = frame.translatedBy(Vector3d(1, 1, 1));
-        frame = frame.rotatedBy(M_PI / 4, frame.zAxis());
+        frame = frame.translated(Vector3d(1, 1, 1));
+        frame = frame.rotated(M_PI / 4, frame.zAxis());
         Function linear = Vector3d::Ones() * Parameter();
         Function product = linear * frame;
         Function quotient = linear / frame;
@@ -217,18 +219,13 @@ public:
     }
 
     void testMirrored() {
-        Datum3d mirror = Frame3d().yzPlane().translatedBy(Vector3d(1, 0, 0)).mirror();
+        Plane3d plane = Frame3d().yzPlane().translated(Vector3d(1, 0, 0));
         Function f = Vector3d(1, 1, 1) + Parameter() * Vector3d(1, 1, 1);
-        Function mirrored1 = f * mirror;
-        Function mirrored2 = f / mirror;
-        TS_ASSERT((mirrored1(1) - Vector3d(0, 2, 2)).isZero());
-        TS_ASSERT((mirrored2(1) - Vector3d(0, 2, 2)).isZero());
-        Function derivative1 = mirrored1.derivative();
-        Function derivative2 = mirrored2.derivative();
-        TS_ASSERT(derivative1.isA<ConstantFunction>());
-        TS_ASSERT(derivative2.isA<ConstantFunction>());
-        TS_ASSERT((derivative1.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
-        TS_ASSERT((derivative2.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
+        Function mirrored = f.mirrored(plane);
+        TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
+        Function derivative = mirrored.derivative();
+        TS_ASSERT(derivative.isA<ConstantFunction>());
+        TS_ASSERT((derivative.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testNormal() {

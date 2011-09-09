@@ -25,13 +25,15 @@
 
 #include <boost/functional/hash.hpp>
 
+#include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
-    class Geometry
+    class Geometry : public Transformable<Geometry>
     {
     private:
         Function _function;
@@ -59,7 +61,8 @@ namespace OpenSolid
         
         Set<Geometry> boundaries() const;
 
-        Geometry reversed() const;
+        OPENSOLID_CORE_EXPORT Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+        OPENSOLID_CORE_EXPORT Geometry reversed() const;
         
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
@@ -92,6 +95,7 @@ namespace OpenSolid
     
     OPENSOLID_CORE_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
     OPENSOLID_CORE_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
+    OPENSOLID_CORE_EXPORT Geometry operator%(const Geometry& geometry, const DatumXd& datum);
 }
 
 namespace std
@@ -179,12 +183,6 @@ namespace OpenSolid
             results.inserter()
         );
         return results;
-    }
-
-    inline Geometry Geometry::reversed() const {
-        assert(parameters() == 1);
-        Function reversed_parameter = domain().lower() + domain().upper() - Parameter();
-        return Geometry(function()(reversed_parameter), domain());
     }
     
     template <class ArgumentType>

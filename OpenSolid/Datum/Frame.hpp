@@ -29,16 +29,14 @@ namespace OpenSolid
     class Frame : public Datum<dimensions_, dimensions_>
     {
     public:
-        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<double, dimensions_, dimensions_> Matrix;
-        
         Frame();
+
         explicit Frame(int size);
         
-        explicit Frame(const Vector& origin);
+        explicit Frame(const Matrix<double, dimensions_, 1>& origin);
         
-        template <class DerivedType>
-        Frame(const Vector& origin, const EigenBase<DerivedType>& vectors);
+        template <class VectorsType>
+        Frame(const Matrix<double, dimensions_, 1>& origin, const EigenBase<VectorsType>& vectors);
         
         template <int other_dimensions_, int other_axes_>
         Frame(const Datum<other_dimensions_, other_axes_>& other);
@@ -49,7 +47,6 @@ namespace OpenSolid
     
     typedef Frame<2> Frame2d;
     typedef Frame<3> Frame3d;
-    typedef Frame<4> Frame4d;
     typedef Frame<Dynamic> FrameXd;
 }
 
@@ -85,61 +82,69 @@ namespace boost
 
 namespace OpenSolid
 {
-    template <int dimensions_>
-    inline Frame<dimensions_>::Frame() {
-        if (dimensions_ != Dynamic) {
-            this->_origin.setZero();
-            this->_vectors.setIdentity();
-            this->_normalized = true;
+    namespace
+    {
+        template <int dimensions_>
+        inline Matrix<double, dimensions_, 1> defaultOrigin() {
+            Matrix<double, dimensions_, 1> result;
+            if (dimensions_ != Dynamic) {result.setZero();}
+            return result;
+        }
+
+        template <int dimensions_>
+        inline Matrix<double, dimensions_, dimensions_> defaultBasis() {
+            Matrix<double, dimensions_, dimensions_> result;
+            if (dimensions_ != Dynamic) {result.setIdentity();}
+            return result;
         }
     }
+
+    template <int dimensions_>
+    inline Frame<dimensions_>::Frame() :
+        Datum<dimensions_, dimensions_>(
+            defaultOrigin<dimensions_>(),
+            defaultBasis<dimensions_>()
+        ) {}
     
     template <int dimensions_>
-    inline Frame<dimensions_>::Frame(int size) {
-        assert(size == dimensions_ || dimensions_ == Dynamic);
-        this->_origin = Vector::Zero(size);
-        this->_vectors = Matrix::Identity(size, size);
-        this->_normalized = true;
-    }
+    inline Frame<dimensions_>::Frame(int size) :
+        Datum<dimensions_, dimensions_>(
+            Matrix<double, dimensions_, 1>::Zero(size),
+            Matrix<double, dimensions_, dimensions_>::Identity(size, size)
+        ) {assertCompatible<dimensions_>(size);}
         
     template <int dimensions_>
-    inline Frame<dimensions_>::Frame(const Vector& origin) {
-        assert(origin.size() == dimensions_ || dimensions_ == Dynamic);
-        this->_origin = origin;
-        this->_vectors = Matrix::Identity(origin.size(), origin.size());
-        this->_normalized = true;
-    }
+    inline Frame<dimensions_>::Frame(const Matrix<double, dimensions_, 1>& origin) :
+        Datum<dimensions_, dimensions_>(
+            origin,
+            Matrix<double, dimensions_, dimensions_>::Identity(origin.size(), origin.size())
+        ) {assertCompatible<dimensions_>(origin.size());}
     
-    template <int dimensions_> template <class DerivedType>
+    template <int dimensions_> template <class VectorsType>
     inline Frame<dimensions_>::Frame(
-        const Vector& origin,
-        const EigenBase<DerivedType>& vectors
-    ) {
-        this->_origin = origin;
-        this->_vectors = orthogonalBasis(vectors).leftCols(this->_origin.size());
-        this->_normalized = true;
-    }
+        const Matrix<double, dimensions_, 1>& origin,
+        const EigenBase<VectorsType>& vectors
+    ) : Datum<dimensions_, dimensions_>(
+            origin,
+            orthonormalBasis(vectors.derived()).leftCols(origin.size())
+        ) {}
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) {
-        assert(other._normalized);
-        assert(other.dimensions() == dimensions());
-        assert(other.axes() == dimensions());
-        this->_origin = other._origin;
-        this->_vectors = other._vectors;
-        this->_normalized = true;
+    inline Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) :
+        Datum<dimensions_, dimensions_>(other) {
+        assertCompatible<other_dimensions_, other_axes_>();
+        assert(other.dimensions() == other.axes());
+        assert(other.basis().isUnitary());
     }
 
     template <int dimensions_> template <int other_dimensions_, int other_axes_>
     inline Frame<dimensions_>& Frame<dimensions_>::operator=(
         const Datum<other_dimensions_, other_axes_>& other
     ) {
-        assert(other._normalized);
-        assert(other.dimensions() == dimensions());
-        assert(other.axes() == dimensions());
-        this->_origin = other._origin;
-        this->_vectors = other._vectors;
-        this->_normalized = true;
+        assertCompatible<other_dimensions_, other_axes_>();
+        assert(other.dimensions() == other.axes());
+        assert(other.basis().isUnitary());
+        Datum<dimensions_, dimensions_>::operator=(other);
         return *this;
     }
 }

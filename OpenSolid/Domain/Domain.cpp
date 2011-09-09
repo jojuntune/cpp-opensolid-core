@@ -71,4 +71,15 @@ namespace OpenSolid
         }
         return results;
     }
+
+    Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        Set<Geometry> transformed_boundaries;
+        boundaries().transform(
+            [&matrix, &vector] (const Geometry& boundary) {
+                return boundary.transformed(matrix, vector);
+            },
+            transformed_boundaries.inserter()
+        );
+        return Domain(transformed_boundaries);
+    }
 }

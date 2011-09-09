@@ -30,11 +30,17 @@ namespace OpenSolid
     class TransformedFunction : public UnaryOperation
     {
     private:
-        DatumXd _datum;
+        MatrixXd _matrix;
+        VectorXd _vector;
     public:
-        OPENSOLID_CORE_EXPORT TransformedFunction(const Function& function, const DatumXd& datum);
+        OPENSOLID_CORE_EXPORT TransformedFunction(
+            const Function& function,
+            const MatrixXd& matrix,
+            const VectorXd& vector
+        );
         
-        const DatumXd& datum() const;
+        const MatrixXd& matrix() const;
+        const VectorXd& vector() const;
         
         OPENSOLID_CORE_EXPORT int dimensions() const;
         
@@ -44,7 +50,12 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
         OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
-        OPENSOLID_CORE_EXPORT void getTransformed(const DatumXd& other, Function& result) const;
+
+        OPENSOLID_CORE_EXPORT void getTransformed(
+            const MatrixXd& matrix,
+            const VectorXd& vector,
+            Function& result
+        ) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
@@ -54,7 +65,9 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline const DatumXd& TransformedFunction::datum() const {return _datum;}
+    inline const MatrixXd& TransformedFunction::matrix() const {return _matrix;}
+
+    inline const VectorXd& TransformedFunction::vector() const {return _vector;}
 }
 
 #endif

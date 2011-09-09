@@ -26,13 +26,16 @@
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Datum/LocalOrigin.hpp>
+#include <OpenSolid/Datum/LocalAxis.hpp>
+#include <OpenSolid/Datum/LocalPlane.hpp>
+#include <OpenSolid/Datum/NormalAxis.hpp>
+#include <OpenSolid/Datum/NormalPlane.hpp>
 
 namespace OpenSolid
 {
-    template <int dimensions_, int axes_>
-    class Datum;
-    
     template <int dimensions_>
     class Axis;
     
@@ -44,45 +47,25 @@ namespace OpenSolid
 
     template <int dimensions_, int axes_>
     class CoordinateSystem;
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    class DatumProduct;
-    
-    template <class DerivedType, int dimensions_, int axes_>
-    class DatumQuotient;
 
     template <int dimensions_, int axes_>
-    class Datum
+    class Datum : public Transformable<Datum<dimensions_, axes_>>
     {
-    public:
-        typedef Eigen::Matrix<double, dimensions_, 1> Vector;
-        typedef Eigen::Matrix<double, dimensions_, axes_> Matrix;
-        typedef Eigen::Matrix<Interval, dimensions_, 1> Bounds;
+    private:
+        void checkValidSizes() const;
+
+        Matrix<double, dimensions_, 1> _origin;
+        Matrix<double, dimensions_, axes_> _basis;
+        Matrix<double, axes_, dimensions_> _inverse_matrix;
+        Matrix<double, dimensions_, dimensions_> _projection_matrix;
     protected:
-        Vector _origin;
-        Matrix _vectors;
-        bool _normalized;
-        
         template <int other_dimensions_, int other_axes_>
         friend class Datum;
-        
-        template <int other_dimensions_>
-        friend class Axis;
-        
-        template <int other_dimensions_>
-        friend class Plane;
-        
-        template <int other_dimensions_>
-        friend class Frame;
 
-        template <int other_dimensions_, int other_axes_>
-        friend class CoordinateSystem;
-        
-        template <class DerivedType, int other_dimensions_, int other_axes_>
-        friend class DatumProduct;
-        
-        template <class DerivedType, int other_dimensions_, int other_axes_>
-        friend class DatumQuotient;
+        Datum(
+            const Matrix<double, dimensions_, 1>& origin,
+            const Matrix<double, dimensions_, axes_>& basis
+        );
     public:
         Datum();
         
@@ -96,54 +79,65 @@ namespace OpenSolid
         template <int other_dimensions_, int other_axes_>
         Datum<dimensions_, axes_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
         
+        const Matrix<double, dimensions_, 1>& origin() const;
+        const Matrix<double, dimensions_, axes_>& basis() const;
+        const Matrix<double, axes_, dimensions_>& inverseMatrix() const;
+        const Matrix<double, dimensions_, dimensions_>& projectionMatrix() const;
+        
         int dimensions() const;
         int axes() const;
         
-        const Vector& origin() const;
-        const Matrix& vectors() const;
+        Matrix<double, dimensions_, 1> point(double x) const;
+        Matrix<double, dimensions_, 1> point(double x, double y) const;
+        Matrix<double, dimensions_, 1> point(double x, double y, double z) const;
         
-        template <int other_dimensions_, int other_axes_>
-        bool operator==(const Datum<other_dimensions_, other_axes_>& other) const;
+        Matrix<double, dimensions_, 1> vector(double x) const;
+        Matrix<double, dimensions_, 1> vector(double x, double y) const;
+        Matrix<double, dimensions_, 1> vector(double x, double y, double z) const;
+
+        Matrix<double, dimensions_, 1> direction() const;
+        Matrix<double, dimensions_, 1> normal() const;
         
-        Vector operator()(double x) const;
-        Vector operator()(double x, double y) const;
-        Vector operator()(double x, double y, double z) const;
-        Vector operator()(double x, double y, double z, double w) const;
-        
-        Vector vector() const;
-        Vector vector(int index) const;
-        Vector xVector() const;
-        Vector yVector() const;
-        Vector zVector() const;
-        Vector wVector() const;
-        Vector normalVector() const;
-        
-        Axis<dimensions_> axis(int index) const;
         Axis<dimensions_> xAxis() const;
         Axis<dimensions_> yAxis() const;
         Axis<dimensions_> zAxis() const;
-        Axis<dimensions_> wAxis() const;
-        
-        Plane<dimensions_> plane(int index) const;
-        Plane<3> yzPlane() const;
-        Plane<3> xzPlane() const;
-        Plane<3> xyPlane() const;
-        
+        Axis<dimensions_> axis(int index) const;
         Axis<dimensions_> normalAxis() const;
+
+        Plane<dimensions_> xyPlane() const;
+        Plane<dimensions_> xzPlane() const;
+        Plane<dimensions_> yxPlane() const;
+        Plane<dimensions_> yzPlane() const;
+        Plane<dimensions_> zxPlane() const;
+        Plane<dimensions_> zyPlane() const;
+        Plane<dimensions_> plane(int first_index, int second_index) const;
         Plane<dimensions_> normalPlane() const;
-        
-        Datum<dimensions_, axes_> flipped() const;
-        
-        Datum<dimensions_, axes_> translatedBy(const Vector& displacement) const;
-        Datum<dimensions_, axes_> translatedTo(const Vector& new_origin) const;
-        
-        Datum<dimensions_, axes_> rotatedBy(double angle, const Vector2d& point) const;
-        Datum<dimensions_, axes_> rotatedBy(double angle, const Axis<3>& axis) const;
-        
-        Datum<dimensions_, axes_> normalized() const;
-        Datum<dimensions_, axes_> linear() const;
-        Datum<dimensions_, dimensions_> inverse() const;
-        Datum<dimensions_, dimensions_> mirror() const;
+
+        Datum<dimensions_, axes_> transformed(
+            const Matrix<double, dimensions_, dimensions_>& matrix,
+            const Matrix<double, dimensions_, 1>& vector
+        ) const;
+
+        using Transformable<Datum<dimensions_, axes_>>::scaled;
+        Datum<dimensions_, axes_> scaled(double scale, const LocalOrigin&) const;
+
+        using Transformable<Datum<dimensions_, axes_>>::translated;
+        Datum<dimensions_, axes_> translated(double distance, const LocalAxis& local_axis) const;
+        Datum<dimensions_, axes_> translated(double distance, const NormalAxis&) const;
+
+        using Transformable<Datum<dimensions_, axes_>>::rotated;
+        Datum<dimensions_, axes_> rotated(double angle, const LocalOrigin&) const;
+        Datum<dimensions_, axes_> rotated(double angle, const LocalAxis& local_axis) const;
+        Datum<dimensions_, axes_> rotated(double angle, const NormalAxis&) const;
+
+        using Transformable<Datum<dimensions_, axes_>>::mirrored;
+        Datum<dimensions_, axes_> mirrored(const LocalPlane& local_plane) const;
+        Datum<dimensions_, axes_> mirrored(const NormalPlane&) const;
+
+        Datum<dimensions_, axes_> orthonormalized() const;
+        Datum<dimensions_, axes_> orientation() const;
+
+        Frame<dimensions_> frame() const;
     
         template <int base_dimensions_, int base_axes_>
         Datum<base_dimensions_, axes_> operator*(
@@ -154,14 +148,16 @@ namespace OpenSolid
         Datum<base_axes_, axes_> operator/(
             const Datum<base_dimensions_, base_axes_>& base
         ) const;
+        
+        template <int base_dimensions_, int base_axes_>
+        Datum<dimensions_, axes_> operator%(
+            const Datum<base_dimensions_, base_axes_>& base
+        ) const;
     };
-    
-    typedef Datum<2, 2> Datum2d;
-    typedef Datum<3, 3> Datum3d;
-    typedef Datum<4, 4> Datum4d;
+
     typedef Datum<Dynamic, Dynamic> DatumXd;
     
-    OPENSOLID_CORE_EXPORT MatrixXd orthogonalBasis(const MatrixXd& vectors);
+    OPENSOLID_CORE_EXPORT MatrixXd orthonormalBasis(const MatrixXd& vectors);
 }
 
 namespace std
@@ -207,30 +203,104 @@ namespace boost
 
 namespace OpenSolid
 {
+    template <class DerivedType> template <int dimensions_, int axes_>
+    inline DerivedType Transformable<DerivedType>::translated(
+        double distance,
+        const Datum<dimensions_, axes_>& axis
+    ) const {
+        Matrix<dimensions_, dimensions_> matrix(axis.dimensions(), axis.dimensions());
+        matrix.setIdentity();
+        return derived().transformed(matrix, distance * axis.direction());
+    }
+
+    template <class DerivedType>
+    inline DerivedType Transformable<DerivedType>::rotated(
+        double angle,
+        const Vector2d& point
+    ) const {
+        Matrix2d matrix(Rotation2Dd(angle));
+        return derived().transformed(matrix, point - matrix * point);
+    }
+
+    template <class DerivedType> template <int dimensions_, int axes_>
+    inline DerivedType Transformable<DerivedType>::rotated(
+        double angle,
+        const Datum<dimensions_, axes_>& axis
+    ) const {
+        Matrix3d matrix(AngleAxisd(angle, axis.direction()));
+        return derived().transformed(matrix, axis.origin() - matrix * axis.origin());
+    }
+
+    template <class DerivedType> template <int dimensions_, int axes_>
+    inline DerivedType Transformable<DerivedType>::mirrored(
+        const Datum<dimensions_, axes_>& datum
+    ) const {
+        Matrix<double, dimensions_, 1> normal = datum.normal();
+        typedef Eigen::Matrix<double, dimensions_, dimensions_> Matrix;
+        Matrix normal_matrix = 2 * normal * normal.transpose();
+        Matrix matrix = Matrix::Identity(datum.dimensions(), datum.dimensions()) - normal_matrix;
+        return derived().transformed(matrix, normal_matrix * datum.origin());
+    }
+
+    template <int dimensions_, int axes_>
+    inline void Datum<dimensions_, axes_>::checkValidSizes() const {
+        static_assert(
+            dimensions_ >= 1 || dimensions_ == Dynamic,
+            "Datum must have at least one dimension"
+        );
+        assert(dimensions() >= 1 && "Datum must have at least one dimension");
+        static_assert(
+            axes_ >= 1 || axes_ == Dynamic,
+            "Datum must have at least one axis"
+        );
+        assert(axes() >= 1 && "Datum must have at least one axis");
+    }
+
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::transformed(
+        const Matrix<double, dimensions_, dimensions_>& matrix,
+        const Matrix<double, dimensions_, 1>& vector
+    ) const {return Datum<dimensions_, axes_>(matrix * origin() + vector, matrix * basis());}
+
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_>::Datum(
+        const Matrix<double, dimensions_, 1>& origin,
+        const Matrix<double, dimensions_, axes_>& basis
+    ) : _origin(origin),
+        _basis(basis),
+        _inverse_matrix((_basis.transpose() * _basis).inverse() * _basis.transpose()),
+        _projection_matrix(_basis * _inverse_matrix) {checkValidSizes();}
+
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>::Datum() {}
     
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_>::Datum(const Datum<dimensions_, axes_>& other) {
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = other._normalized;
-    }
+    inline Datum<dimensions_, axes_>::Datum(const Datum<dimensions_, axes_>& other) :
+        _origin(other.origin()),
+        _basis(other.basis()),
+        _inverse_matrix(other.inverseMatrix()),
+        _projection_matrix(other.projectionMatrix()) {}
     
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline Datum<dimensions_, axes_>::Datum(const Datum<other_dimensions_, other_axes_>& other) {
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = other._normalized;
+        assertCompatible<dimensions_, other_dimensions_>();
+        assertCompatible<axes_, other_axes_>();
+        assertCompatible<dimensions_>(other.dimensions());
+        assertCompatible<axes_>(other.axes());
+        _origin = other.origin();
+        _basis = other.basis();
+        _inverse_matrix = other.inverseMatrix();
+        _projection_matrix = other.projectionMatrix();
     }
         
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<dimensions_, axes_>& other
     ) {
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = other._normalized;
+        _origin = other.origin();
+        _basis = other.basis();
+        _inverse_matrix = other.inverseMatrix();
+        _projection_matrix = other.projectionMatrix();
         return *this;
     }
     
@@ -238,323 +308,359 @@ namespace OpenSolid
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
         const Datum<other_dimensions_, other_axes_>& other
     ) {
-        _origin = other._origin;
-        _vectors = other._vectors;
-        _normalized = other._normalized;
+        assertCompatible<dimensions_, other_dimensions_>();
+        assertCompatible<axes_, other_axes_>();
+        assertCompatible<dimensions_>(other.dimensions());
+        assertCompatible<axes_>(other.axes());
+        _origin = other.origin();
+        _basis = other.basis();
+        _inverse_matrix = other.inverseMatrix();
+        _projection_matrix = other.projectionMatrix();
         return *this;
     }
-    
-    template <int dimensions_, int axes_>
-    inline int Datum<dimensions_, axes_>::dimensions() const {return vectors().rows();}
-    
-    template <int dimensions_, int axes_>
-    inline int Datum<dimensions_, axes_>::axes() const {return vectors().cols();}
         
     template <int dimensions_, int axes_>
-    inline const typename Datum<dimensions_, axes_>::Vector&
-    Datum<dimensions_, axes_>::origin() const {return _origin;}
-    
-    template <int dimensions_, int axes_>
-    inline const typename Datum<dimensions_, axes_>::Matrix&
-    Datum<dimensions_, axes_>::vectors() const {return _vectors;}
-        
-    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
-    inline bool Datum<dimensions_, axes_>::operator==(
-        const Datum<other_dimensions_, other_axes_>& other
-    ) const {
-        assert(dimensions() == other.dimensions());
-        assert(this->size() == other.size());
-        return origin() == other.origin() && vectors() == other.vectors();
+    inline const Matrix<double, dimensions_, 1>& Datum<dimensions_, axes_>::origin() const {
+        return _origin;
     }
+    
+    template <int dimensions_, int axes_>
+    inline const Matrix<double, dimensions_, axes_>& Datum<dimensions_, axes_>::basis() const {
+        return _basis;
+    }
+    
+    template <int dimensions_, int axes_>
+    inline const Matrix<double, axes_, dimensions_>&
+    Datum<dimensions_, axes_>::inverseMatrix() const {return _inverse_matrix;}
+    
+    template <int dimensions_, int axes_>
+    inline const Matrix<double, dimensions_, dimensions_>&
+    Datum<dimensions_, axes_>::projectionMatrix() const {return _projection_matrix;}
+    
+    template <int dimensions_, int axes_>
+    inline int Datum<dimensions_, axes_>::dimensions() const {return basis().rows();}
+    
+    template <int dimensions_, int axes_>
+    inline int Datum<dimensions_, axes_>::axes() const {return basis().cols();}
         
     template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector  Datum<dimensions_, axes_>::operator()(
-        double x
-    ) const {
+    inline Matrix<double, dimensions_, 1>  Datum<dimensions_, axes_>::point(double x) const {
+        assertCompatible<axes_, 1>();
         assert(axes() == 1);
-        return origin() + vectors() * x;
+        return origin() + basis() * x;
     }
         
     template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector  Datum<dimensions_, axes_>::operator()(
+    inline Matrix<double, dimensions_, 1>  Datum<dimensions_, axes_>::point(
         double x,
         double y
     ) const {
+        assertCompatible<axes_, 2>();
         assert(axes() == 2);
-        return origin() + vectors() * Vector2d(x, y);
+        return origin() + basis() * Vector2d(x, y);
     }
     
     template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::operator()(
+    inline Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::point(
         double x,
         double y,
         double z
     ) const {
+        assertCompatible<axes_, 3>();
         assert(axes() == 3);
-        return origin() + vectors() * Vector3d(x, y, z);
+        return origin() + basis() * Vector3d(x, y, z);
+    }
+        
+    template <int dimensions_, int axes_>
+    inline Matrix<double, dimensions_, 1>  Datum<dimensions_, axes_>::vector(double x) const {
+        assertCompatible<axes_, 1>();
+        assert(axes() == 1);
+        return basis() * x;
+    }
+        
+    template <int dimensions_, int axes_>
+    inline Matrix<double, dimensions_, 1>  Datum<dimensions_, axes_>::vector(
+        double x,
+        double y
+    ) const {
+        assertCompatible<axes_, 2>();
+        assert(axes() == 2);
+        return basis() * Vector2d(x, y);
     }
     
     template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::operator()(
+    inline Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::vector(
         double x,
         double y,
-        double z,
-        double w
+        double z
     ) const {
-        assert(axes() == 4);
-        return origin() + vectors() * Vector4d(x, y, z, w);
+        assertCompatible<axes_, 3>();
+        assert(axes() == 3);
+        return basis() * Vector3d(x, y, z);
     }
     
     template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::vector() const {
+    inline Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::direction() const {
+        assertCompatible<axes_, 1>();
         assert(axes() == 1);
-        return vectors();
+        assert(basis().squaredNorm() == One());
+        return basis();
+    }
+
+    namespace
+    {
+        template <int dimensions_, int axes_>
+        inline Matrix<double, dimensions_, 1, 0, dimensions_, 1>
+        datumNormal(const Datum<dimensions_, axes_>& datum) {
+            return orthonormalBasis(datum.basis()).col(datum.axes());
+        }
+
+        template <>
+        inline Matrix<double, 2, 1, 0, 2, 1> datumNormal(const Datum<2, 1>& datum) {
+            return datum.basis().unitOrthogonal();
+        }
+
+        template <>
+        inline Matrix<double, 3, 1, 0, 3, 1> datumNormal(const Datum<3, 1>& datum) {
+            return datum.basis().unitOrthogonal();
+        }
+
+        template <>
+        inline Matrix<double, Dynamic, 1, 0, Dynamic, 1> datumNormal(
+            const Datum<Dynamic, 1>& datum
+        ) {return datum.basis().unitOrthogonal();}
+
+        template <>
+        inline Matrix<double, 3, 1, 0, 3, 1> datumNormal(const Datum<3, 2>& datum) {
+            return datum.basis().col(0).cross(datum.basis().col(1)).normalized();
+        }
     }
     
     template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::vector(
-        int index
-    ) const {
-        assert(index >= 0 && index < axes());
-        return vectors().col(index);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::xVector() const {
-        return vectors().col(0);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::yVector() const {
-        assert(axes() >= 2);
-        return vectors().col(1);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::zVector() const {
-        assert(axes() >= 3);
-        return vectors().col(2);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector Datum<dimensions_, axes_>::wVector() const {
-        assert(axes() >= 4);
-        return vectors().col(3);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline typename Datum<dimensions_, axes_>::Vector
-    Datum<dimensions_, axes_>::normalVector() const {
-        assert(axes() == dimensions() - 1);
-        return orthogonalBasis(vectors()).col(axes());
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Axis<dimensions_> Datum<dimensions_, axes_>::axis(int index) const {
-        assert(index >= 0 && index < axes());
-        return Axis<dimensions_>(origin(), vector(index));
+    typename Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::normal() const {
+        static_assert(
+            axes_ < dimensions_ || axes_ == Dynamic || dimensions_ == Dynamic,
+            "Normal vector only exists for datums with fewer axes than dimensions"
+        );
+        assert(
+            axes() < dimensions() &&
+            "Normal vector only exists for datums with fewer axes than dimensions"
+        );
+        return datumNormal(*this);
     }
     
     template <int dimensions_, int axes_>
     inline Axis<dimensions_> Datum<dimensions_, axes_>::xAxis() const {
-        return Axis<dimensions_>(origin(), xVector());
+        assert(basis().isUnitary());
+        return Axis<dimensions_>(origin(), basis().col(0));
     }
     
     template <int dimensions_, int axes_>
     inline Axis<dimensions_> Datum<dimensions_, axes_>::yAxis() const {
-        return Axis<dimensions_>(origin(), yVector());
+        assert(basis().isUnitary());
+        static_assert(axes_ == Dynamic || axes_ >= 2, "No Y axis exists");
+        assert(axes() >= 2 && "No Y axis exists");
+        return Axis<dimensions_>(origin(), basis().col(1));
     }
     
     template <int dimensions_, int axes_>
     inline Axis<dimensions_> Datum<dimensions_, axes_>::zAxis() const {
-        return Axis<dimensions_>(origin(), zVector());
+        assert(basis().isUnitary());
+        static_assert(axes_ == Dynamic || axes_ >= 3, "No Z axis exists");
+        assert(axes() >= 3 && "No Z axis exists");
+        return Axis<dimensions_>(origin(), basis().col(2));
     }
     
     template <int dimensions_, int axes_>
-    inline Axis<dimensions_> Datum<dimensions_, axes_>::wAxis() const {
-        return Axis<dimensions_>(origin(), wVector());
-    }
-        
-    template <int dimensions_, int axes_>
-    inline Plane<dimensions_> Datum<dimensions_, axes_>::plane(int index) const {
-        assert(dimensions() == axes());
-        assert(index >= 0 && index < dimensions());
-        return Plane<dimensions_>(origin(), vector(index));
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Plane<3> Datum<dimensions_, axes_>::yzPlane() const {
-        assert(dimensions() == 3 && axes() == 3);
-        Plane<3>::Matrix plane_vectors;
-        plane_vectors << yVector(), zVector();
-        return Plane<3>(origin(), plane_vectors);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Plane<3> Datum<dimensions_, axes_>::xzPlane() const {
-        assert(dimensions() == 3 && axes() == 3);
-        Plane<3>::Matrix plane_vectors;
-        plane_vectors << xVector(), zVector();
-        return Plane<3>(origin(), plane_vectors);
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Plane<3> Datum<dimensions_, axes_>::xyPlane() const {
-        assert(dimensions() == 3 && axes() == 3);
-        Plane<3>::Matrix plane_vectors;
-        plane_vectors << xVector(), yVector();
-        return Plane<3>(origin(), plane_vectors);
+    inline Axis<dimensions_> Datum<dimensions_, axes_>::axis(int index) const {
+        assert(basis().isUnitary());
+        assert(index >= 0 && index < axes() && "Axis index out of range");
+        return Axis<dimensions_>(origin(), basis().col(index));
     }
         
     template <int dimensions_, int axes_>
     inline Axis<dimensions_> Datum<dimensions_, axes_>::normalAxis() const {
+        assertCompatible<axes_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>();
         assert(axes() == dimensions() - 1);
-        return Axis<dimensions_>(origin(), normalVector());
+        return Axis<dimensions_>(origin(), normal());
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::xyPlane() const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        return Plane<dimensions_>(origin(), basis().col(0), basis().col(1));
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::xzPlane() const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        return Plane<3>(origin(), basis().col(0), basis().col(2));
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::yxPlane() const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        return Plane<3>(origin(), basis().col(1), basis().col(0));
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::yzPlane() const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        return Plane<3>(origin(), basis().col(1), basis().col(2));
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::zxPlane() const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        return Plane<3>(origin(), basis().col(2), basis().col(0));
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::zyPlane() const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        return Plane<3>(origin(), basis().col(2), basis().col(1));
+    }
+
+    template <int dimensions_, int axes_>
+    inline Plane<dimensions_> Datum<dimensions_, axes_>::plane(
+        int first_index,
+        int second_index
+    ) const {
+        assertCompatible<dimensions_, 3>();
+        assertCompatible<axes_, 3>();
+        assert(dimensions() == 3 && axes() == 3);
+        assert(basis().isUnitary());
+        assert(first_index >= 0 && first_index < 3);
+        assert(second_index >= 0 && second_index < 3);
+        assert(first_index != second_index);
+        return Plane<3>(origin(), basis().col(first_index), basis().col(second_index));
     }
     
     template <int dimensions_, int axes_>
     inline Plane<dimensions_> Datum<dimensions_, axes_>::normalPlane() const {
+        assertCompatible<axes_, 1>();
         assert(axes() == 1);
-        return Plane<dimensions_>(origin(), vector());
+        return Plane<dimensions_>(origin(), direction());
     }
-        
+
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::flipped() const {
-        assert(axes() == 1 || axes() == dimensions() - 1);
-        Datum<dimensions_, axes_> result;
-        result._origin = origin();
-        if (axes() == 1) {
-            result._vectors = -vectors();
-            result._normalized = _normalized;
-        } else {
-            result._vectors = orthogonalBasis(normalVector()).rightCols(dimensions() - 1);
-            result._normalized = true;
-        }
-        return result;
-    }
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::scaled(
+        double scale,
+        const LocalOrigin&    
+    ) const {return this->scaled(scale, origin());}
     
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::translatedBy(
-        const Vector& displacement
-    ) const {
-        Datum result(*this);
-        result._origin += displacement;
-        return result;
-    }
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::translated(
+        double distance,
+        const LocalAxis& local_axis
+    ) const {return this->translated(distance, axis(local_axis.index()));}
     
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::translatedTo(
-        const Vector& new_origin
-    ) const {
-        Datum result(*this);
-        result._origin = new_origin;
-        return result;
-    }
-    
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::translated(
+        double distance,
+        const NormalAxis&
+    ) const {return this->translated(distance, normalAxis());}
+
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotatedBy(
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotated(
         double angle,
-        const Vector2d& point
-    ) const {
-        assert(dimensions() == 2);
-        Matrix2d rotation = Matrix2d(Rotation2D<double>(angle));
+        const LocalOrigin&
+    ) const {return this->rotated(angle, origin());}
+    
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotated(
+        double angle,
+        const LocalAxis& local_axis
+    ) const {return this->rotated(angle, axis(local_axis.index()));}
+    
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotated(
+        double angle,
+        const NormalAxis&
+    ) const {return this->rotated(angle, normalAxis());}
+
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::mirrored(
+        const LocalPlane& local_plane
+    ) const {return this->mirrored(plane(local_plane.index()));}
+    
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::mirrored(
+        const NormalPlane&
+    ) const {return this->mirrored(normalPlane());}
+    
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthonormalized() const {
         return Datum<dimensions_, axes_>(
-            point + rotation * (origin() - point),
-            rotation * vectors()
+            origin(),
+            orthonormalBasis(vectors()).leftCols(vectors().cols())
         );
     }
     
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotatedBy(
-        double angle,
-        const Axis<3>& axis
-    ) const {
-        assert(dimensions() == 3);
-        Matrix3d rotation = AngleAxis<double>(angle, axis.vector()).toRotationMatrix();
-        Datum<dimensions_, axes_> result;
-        result._origin = axis.origin() + rotation * (origin() - axis.origin());
-        result._vectors = rotation * vectors();
-        result._normalized = _normalized;
-        return result;
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::normalized() const {
-        if (_normalized) {
-            return *this;
-        } else {
-            Datum<dimensions_, axes_> result;
-            result._origin = origin();
-            result._vectors = orthogonalBasis(vectors()).leftCols(vectors().cols());
-            result._normalized = true;
-            return result;
-        }
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::linear() const {
-        Datum<dimensions_, axes_> result;
-        result._origin = Vector::Zero(origin().size());
-        result._vectors = vectors();
-        result._normalized = _normalized;
-        return result;
-    }
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, dimensions_> Datum<dimensions_, axes_>::inverse() const {
-        assert(axes() == dimensions());
-        Datum<dimensions_, dimensions_> result;
-        if (_normalized) {
-            result._origin = vectors().transpose() * -origin();
-            result._vectors = vectors().transpose();
-            result._normalized = true;
-        } else {
-            result._origin = -origin() / linear();
-            result._vectors = vectors().inverse();
-            result._normalized = false;
-        }
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orientation() const {
+        Datum<dimensions_, axes_> result(*this);
+        result._origin.setZero();
         return result;
     }
 
     template <int dimensions_, int axes_>
-    inline Datum<dimensions_, dimensions_> Datum<dimensions_, axes_>::mirror() const {
-        static_assert(
-            axes_ == dimensions_ - 1 || dimensions_ == Dynamic || axes_ == Dynamic,
-            "mirror() only valid for planes"
-        );
-        assert(axes() == dimensions() - 1 && "mirror() only valid for planes");
-        Vector normal_vector = normalVector();
-        typedef Eigen::Matrix<double, dimensions_, dimensions_> SquareMatrix;
-        SquareMatrix N = normal_vector * normal_vector.transpose();
-        Datum<dimensions_, dimensions_> result;
-        result._origin = 2 * N * origin();
-        result._vectors = SquareMatrix::Identity(dimensions(), dimensions()) - 2 * N;
-        result._normalized = false;
-        return result;
+    inline Frame<dimensions_> Datum<dimensions_, axes_>::frame() const {
+        return Frame<dimensions_>(origin(), orthonormalBasis(basis()));
     }
     
     template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>
     inline Datum<base_dimensions_, axes_> Datum<dimensions_, axes_>::operator*(
         const Datum<base_dimensions_, base_axes_>& base
     ) const {
+        assertCompatible<dimensions_, base_axes_>();
         assert(dimensions() == base.axes());
-        Datum<base_dimensions_, axes_> result;
-        result._origin = origin() * base;
-        result._vectors = base.vectors() * vectors();
-        result._normalized = result.vectors().isUnitary();
-        return result;
+        return Datum<base_dimensions_, axes_>(
+            base.basis() * origin() + base.origin(),
+            base.basis() * basis()
+        );
     }
     
     template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>
     inline Datum<base_axes_, axes_> Datum<dimensions_, axes_>::operator/(
         const Datum<base_dimensions_, base_axes_>& base
     ) const {
-        assert(dimensions() == base.axes());
-        Datum<base_axes_, axes_> result;
-        result._origin = origin() / base;
-        result._vectors = vectors() / base.linear();
-        result._normalized = result.vectors().isUnitary();
-        return result;
+        assertCompatible<dimensions_, base_dimensions_>();
+        assert(dimensions() == base.dimensions());
+        return Datum<base_axes_, axes_>(
+            base.inverseMatrix() * (origin() - base.origin()),
+            base.inverseMatrix() * basis()
+        );
+    }
+    
+    template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>
+    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::operator%(
+        const Datum<base_dimensions_, base_axes_>& base
+    ) const {
+        assertCompatible<dimensions_, base_dimensions_>();
+        assert(dimensions() == base.dimensions());
+        return Datum<dimensions_, axes_>(
+            base.projectionMatrix() * (origin() - base.origin()) + base.origin(),
+            base.projectionMatrix() * basis()
+        );
     }
 }
 
@@ -567,11 +673,11 @@ namespace std
         size_t result = 0;
         boost::hash_combine(
             result,
-            hash<typename OpenSolid::Datum<dimensions_, axes_>::Vector>()(argument.origin())
+            hash<Matrix<double, dimensions_, 1>>()(argument.origin())
         );
         boost::hash_combine(
             result,
-            hash<typename OpenSolid::Datum<dimensions_, axes_>::Matrix>()(argument.vectors())
+            hash<Matrix<double, dimensions_, axes_>>()(argument.basis())
         );
         return result;
     }
@@ -582,7 +688,7 @@ namespace std
         const OpenSolid::Datum<dimensions_, axes_>& second_argument
     ) const {
         return first_argument.origin() == second_argument.origin() &&
-            first_argument.vectors() == second_argument.vectors();
+            first_argument.basis() == second_argument.basis();
     }
 }
 

@@ -43,9 +43,11 @@ namespace OpenSolid
         result = _vectors.col(index);
     }
     
-    void LinearFunction::getTransformed(const DatumXd& datum, Function& result) const {
-        result = new LinearFunction(point() * datum, vectors() * datum);
-    }
+    void LinearFunction::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {result = new LinearFunction(matrix * point() + vector, matrix * vectors());}
     
     void LinearFunction::debug(std::ostream& stream, int indent) const {
         stream << "LinearFunction" << std::endl;

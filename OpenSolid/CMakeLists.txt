@@ -100,6 +100,7 @@
         Common/Error.hpp
         Common/ReferenceCounted.hpp
         Common/ReferenceCountedBase.hpp
+        Common/Transformable.hpp
     )
     
     SET(COMMON_SOURCES
@@ -113,6 +114,11 @@
         Datum/DatumTests.hpp
         Datum/DatumExpressions.hpp
         Datum/Frame.hpp
+        Datum/LocalAxis.hpp
+        Datum/LocalOrigin.hpp
+        Datum/LocalPlane.hpp
+        Datum/NormalAxis.hpp
+        Datum/NormalPlane.hpp
         Datum/Plane.hpp
     )
     
