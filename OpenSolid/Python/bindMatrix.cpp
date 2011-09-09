@@ -54,6 +54,26 @@ namespace OpenSolid
     
     template <class MatrixType>
     typename MatrixType::Scalar value(const MatrixType& argument) {return argument.value();}
+
+    template <class MatrixType>
+    typename MatrixType::Scalar xComponent(const MatrixType& argument) {
+        checkVectorValue(argument, __func__);
+        return argument(0, 0);
+    }
+
+    template <class MatrixType>
+    typename MatrixType::Scalar yComponent(const MatrixType& argument) {
+        checkVectorValue(argument, __func__);
+        checkComponentIndexInRange(1, argument.size(), __func__);
+        return argument(1, 0);
+    }
+
+    template <class MatrixType>
+    typename MatrixType::Scalar zComponent(const MatrixType& argument) {
+        checkVectorValue(argument, __func__);
+        checkComponentIndexInRange(2, argument.size(), __func__);
+        return argument(2, 0);
+    }
         
     int positiveIndex(int index, int size) {
         checkComponentIndexInRange(index, size, __func__);
@@ -665,6 +685,9 @@ namespace OpenSolid
             .def("cols", &cols<MatrixXd>)
             .def("size", &size<MatrixXd>)
             .def("value", &value<MatrixXd>)
+            .def("x", &xComponent<MatrixXd>)
+            .def("y", &yComponent<MatrixXd>)
+            .def("z", &zComponent<MatrixXd>)
             .def("get", &getI<MatrixXd>)
             .def("get", &getS<MatrixXd>, manage_new_matrix)
             .def("get", &getII<MatrixXd>)
@@ -730,6 +753,9 @@ namespace OpenSolid
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
             .def("value", &value<MatrixXI>)
+            .def("x", &xComponent<MatrixXI>)
+            .def("y", &yComponent<MatrixXI>)
+            .def("z", &zComponent<MatrixXI>)
             .def("get", &getI<MatrixXI>)
             .def("get", &getS<MatrixXI>, manage_new_matrix)
             .def("get", &getII<MatrixXI>)
