@@ -90,11 +90,10 @@ namespace OpenSolid
 {       
     template <int dimensions_>
     inline Plane<dimensions_>::Plane() {}
-
-    /*
+    
     namespace
     {
-        template <int dimensions_> template <class VectorsType>
+        template <int dimensions_, class VectorsType>
         Matrix<double, dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1> planeBasis(
             const EigenBase<VectorsType>& vectors
         ) {
@@ -106,7 +105,6 @@ namespace OpenSolid
             }
         }
     }
-    */
     
     template <int dimensions_> template <class VectorsType>
     Plane<dimensions_>::Plane(

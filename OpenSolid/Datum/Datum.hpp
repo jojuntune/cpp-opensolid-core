@@ -208,9 +208,9 @@ namespace OpenSolid
         double distance,
         const Datum<dimensions_, axes_>& axis
     ) const {
-        Matrix<dimensions_, dimensions_> matrix(axis.dimensions(), axis.dimensions());
-        matrix.setIdentity();
-        return derived().transformed(matrix, distance * axis.direction());
+        Matrix<double, dimensions_, dimensions_> identity(axis.dimensions(), axis.dimensions());
+        identity.setIdentity();
+        return derived().transformed(identity, distance * axis.direction());
     }
 
     template <class DerivedType>
@@ -437,7 +437,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int axes_>
-    typename Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::normal() const {
+    Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::normal() const {
         static_assert(
             axes_ < dimensions_ || axes_ == Dynamic || dimensions_ == Dynamic,
             "Normal vector only exists for datums with fewer axes than dimensions"
@@ -600,7 +600,7 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::mirrored(
         const LocalPlane& local_plane
-    ) const {return this->mirrored(plane(local_plane.index()));}
+    ) const {return this->mirrored(plane(local_plane.firstIndex(), local_plane.secondIndex()));}
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::mirrored(
@@ -611,7 +611,7 @@ namespace OpenSolid
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthonormalized() const {
         return Datum<dimensions_, axes_>(
             origin(),
-            orthonormalBasis(vectors()).leftCols(vectors().cols())
+            orthonormalBasis(basis()).leftCols(basis().cols())
         );
     }
     
@@ -673,11 +673,11 @@ namespace std
         size_t result = 0;
         boost::hash_combine(
             result,
-            hash<Matrix<double, dimensions_, 1>>()(argument.origin())
+            hash<Eigen::Matrix<double, dimensions_, 1>>()(argument.origin())
         );
         boost::hash_combine(
             result,
-            hash<Matrix<double, dimensions_, axes_>>()(argument.basis())
+            hash<Eigen::Matrix<double, dimensions_, axes_>>()(argument.basis())
         );
         return result;
     }
