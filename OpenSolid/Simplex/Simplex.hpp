@@ -123,20 +123,14 @@ namespace OpenSolid
     typedef Simplex<1, 2> LineSegment1d;
     typedef Simplex<2, 2> LineSegment2d;
     typedef Simplex<3, 2> LineSegment3d;
-    typedef Simplex<4, 2> LineSegment4d;
     typedef Simplex<Dynamic, 2> LineSegmentXd;
     
     typedef Simplex<2, 3> Triangle2d;
     typedef Simplex<3, 3> Triangle3d;
-    typedef Simplex<4, 3> Triangle4d;
     typedef Simplex<Dynamic, 3> TriangleXd;
     
     typedef Simplex<3, 4> Tetrahedron3d;
-    typedef Simplex<4, 4> Tetrahedron4d;
     typedef Simplex<Dynamic, 4> TetrahedronXd;
-    
-    typedef Simplex<4, 5> Pentachoron4d;
-    typedef Simplex<Dynamic, 5> PentachoronXd;
     
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
     
