@@ -211,9 +211,6 @@ namespace Eigen
     typedef Matrix<OpenSolid::Interval, 3, 1> Vector3I;
     typedef Matrix<OpenSolid::Interval, 1, 3> RowVector3I;
     typedef Matrix<OpenSolid::Interval, 3, 3> Matrix3I;
-    typedef Matrix<OpenSolid::Interval, 4, 1> Vector4I;
-    typedef Matrix<OpenSolid::Interval, 1, 4> RowVector4I;
-    typedef Matrix<OpenSolid::Interval, 4, 4> Matrix4I;
     typedef Matrix<OpenSolid::Interval, Dynamic, 1> VectorXI;
     typedef Matrix<OpenSolid::Interval, 1, Dynamic> RowVectorXI;
     typedef Matrix<OpenSolid::Interval, Dynamic, Dynamic> MatrixXI;
@@ -221,8 +218,6 @@ namespace Eigen
     typedef Matrix<OpenSolid::Interval, Dynamic, 2> MatrixX2I;
     typedef Matrix<OpenSolid::Interval, 3, Dynamic> Matrix3XI;
     typedef Matrix<OpenSolid::Interval, Dynamic, 3> MatrixX3I;
-    typedef Matrix<OpenSolid::Interval, 4, Dynamic> Matrix4XI;
-    typedef Matrix<OpenSolid::Interval, Dynamic, 4> MatrixX4I;
     
     typedef Matrix<bool, 2, 1> Vector2b;
     typedef Matrix<bool, 1, 2> RowVector2b;
@@ -230,9 +225,6 @@ namespace Eigen
     typedef Matrix<bool, 3, 1> Vector3b;
     typedef Matrix<bool, 1, 3> RowVector3b;
     typedef Matrix<bool, 3, 3> Matrix3b;
-    typedef Matrix<bool, 4, 1> Vector4b;
-    typedef Matrix<bool, 1, 4> RowVector4b;
-    typedef Matrix<bool, 4, 4> Matrix4b;
     typedef Matrix<bool, Dynamic, 1> VectorXb;
     typedef Matrix<bool, 1, Dynamic> RowVectorXb;
     typedef Matrix<bool, Dynamic, Dynamic> MatrixXb;
@@ -240,8 +232,6 @@ namespace Eigen
     typedef Matrix<bool, Dynamic, 2> MatrixX2b;
     typedef Matrix<bool, 3, Dynamic> Matrix3Xb;
     typedef Matrix<bool, Dynamic, 3> MatrixX3b;
-    typedef Matrix<bool, 4, Dynamic> Matrix4Xb;
-    typedef Matrix<bool, Dynamic, 4> MatrixX4b;
     
     typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXd;
     typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
@@ -275,10 +265,11 @@ namespace OpenSolid
         ) const;
     };
 
-    template <int first_argument_, int second_argument_>
-    void assertEqual();
+    template <int destination_size_, int source_size_>
+    void assertCompatible();
 
-    void assertEqual(int first_argument, int second_argument);
+    template <int destination_size_>
+    void assertCompatible(int source_size);
 }
 
 namespace std
@@ -640,20 +631,23 @@ namespace OpenSolid
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return argument.template cast<Interval>();}
 
-    template <int first_argument_, int second_argument_>
-    inline void assertEqual() {
-        static const bool equal = (first_argument_ == second_argument_);
-        static const bool first_dynamic = (first_argument_ == Dynamic);
-        static const bool second_dynamic = (second_argument_ == Dynamic);
+    template <int destination_size_, int source_size_>
+    void assertCompatible() {
         static_assert(
-            equal || first_dynamic || second_dynamic,
-            "Matrix sizes different at compile time"
+            destination_size_ == source_size_ ||
+            destination_size_ == Dynamic ||
+            source_size_ == Dynamic,
+            "Different sizes at compile time"
         );
     }
 
-    inline void assertEqual(int first_argument, int second_argument) {
-        assert(first_argument == second_argument && "Matrix sizes different");
+    template <int destination_size_>
+    void assertCompatible(int source_size) {
+        assert(source_size == destination_size_ && "Different sizes");
     }
+
+    template <>
+    inline void assertCompatible<Dynamic>(int) {}
 }
 
 namespace
