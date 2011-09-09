@@ -118,4 +118,12 @@ public:
         TS_ASSERT((Vector3d(1, 1, 1) * coordinate_system - Vector3d(4, 4, 4)).isZero());
         TS_ASSERT((Vector3d(4, 4, 4) / coordinate_system - Vector3d(1, 1, 1)).isZero());
     }
+
+    void testPlaneFromNormal() {
+        Plane3d plane(Vector3d(1, 1, 1), Vector3d::UnitZ());
+        Vector3d point(2, 2, 2);
+        Vector3d projected_point = point % plane;
+        Vector3d expected_projected(2, 2, 1);
+        TS_ASSERT((projected_point - expected_projected).isZero());
+    }
 };

@@ -93,10 +93,8 @@ namespace OpenSolid
     
     namespace
     {
-        template <int dimensions_, class VectorsType>
-        Matrix<double, dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1> planeBasis(
-            const EigenBase<VectorsType>& vectors
-        ) {
+        template <int dimensions_, int axes_, class VectorsType>
+        Matrix<double, dimensions_, axes_> planeBasis(const VectorsType& vectors) {
             if (vectors.cols() == 1) {
                 int sign = vectors.rows() % 2 == 0 ? -1 : 1;
                 return sign * orthonormalBasis(vectors).rightCols(vectors.rows() - 1);
@@ -110,7 +108,7 @@ namespace OpenSolid
     Plane<dimensions_>::Plane(
         const Matrix<double, dimensions_, 1>& origin,
         const EigenBase<VectorsType>& vectors
-    ) : Datum<dimensions_, static_axes>(origin, planeBasis<dimensions_>(vectors)) {}
+    ) : Datum<dimensions_, static_axes>(origin, planeBasis<dimensions_, static_axes>(vectors)) {}
 
     namespace
     {
