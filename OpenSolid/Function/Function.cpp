@@ -67,6 +67,7 @@ namespace OpenSolid
     }
     
     Function Function::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
         Function result;
         implementation()->getTransformed(matrix, vector, result);
         return result;
@@ -436,24 +437,6 @@ namespace OpenSolid
         } else {
             return new QuotientFunction(first_operand, second_operand);
         }
-    }
-    
-    Function operator*(const Function& function, const DatumXd& datum) {
-        return function.transformed(datum.basis(), datum.origin());
-    }
-    
-    Function operator/(const Function& function, const DatumXd& datum) {
-        return function.transformed(
-            datum.inverseMatrix(),
-            -datum.inverseMatrix() * datum.origin()
-        );
-    }
-    
-    Function operator%(const Function& function, const DatumXd& datum) {
-        return function.transformed(
-            datum.projectionMatrix(),
-            datum.origin() - datum.projectionMatrix() * datum.origin()
-        );
     }
     
     Function sin(const Function& operand) {

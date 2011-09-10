@@ -112,7 +112,6 @@
         Datum/CoordinateSystem.hpp
         Datum/Datum.hpp
         Datum/DatumTests.hpp
-        Datum/DatumExpressions.hpp
         Datum/Frame.hpp
         Datum/LocalAxis.hpp
         Datum/LocalOrigin.hpp

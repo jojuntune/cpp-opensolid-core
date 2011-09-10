@@ -18,30 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+template <class MatrixType, class VectorType>
+Matrix<
+    typename internal::traits<Derived>::Scalar,
+    MatrixType::RowsAtCompileTime,
+    internal::traits<Derived>::ColsAtCompileTime
+> transformed(
+    const MatrixType& matrix,
+    const VectorType& vector
+) const;
+
 inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const;
 inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const;
 inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
 inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
 
-template<class OtherDerivedType>
+template <class OtherDerivedType>
 bool overlaps(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
-template<class OtherDerivedType>
+template <class OtherDerivedType>
 bool strictlyOverlaps(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
-template<class OtherDerivedType>
+template <class OtherDerivedType>
 bool contains(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12
 ) const;
 
-template<class OtherDerivedType>
+template <class OtherDerivedType>
 bool strictlyContains(
     const DenseBase<OtherDerivedType>& other,
     double precision = 1e-12

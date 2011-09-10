@@ -113,9 +113,10 @@ namespace OpenSolid
         Plane<dimensions_> plane(int first_index, int second_index) const;
         Plane<dimensions_> normalPlane() const;
 
-        Datum<dimensions_, axes_> transformed(
-            const Matrix<double, dimensions_, dimensions_>& matrix,
-            const Matrix<double, dimensions_, 1>& vector
+        template <class MatrixType, class VectorType>
+        Datum<MatrixType::RowsAtCompileTime, axes_> transformed(
+            const MatrixType& matrix,
+            const VectorType& vector
         ) const;
 
         using Transformable<Datum<dimensions_, axes_>>::scaled;
@@ -138,24 +139,28 @@ namespace OpenSolid
         Datum<dimensions_, axes_> orientation() const;
 
         Frame<dimensions_> frame() const;
-    
-        template <int base_dimensions_, int base_axes_>
-        Datum<base_dimensions_, axes_> operator*(
-            const Datum<base_dimensions_, base_axes_>& base
-        ) const;
-        
-        template <int base_dimensions_, int base_axes_>
-        Datum<base_axes_, axes_> operator/(
-            const Datum<base_dimensions_, base_axes_>& base
-        ) const;
-        
-        template <int base_dimensions_, int base_axes_>
-        Datum<dimensions_, axes_> operator%(
-            const Datum<base_dimensions_, base_axes_>& base
-        ) const;
     };
 
     typedef Datum<Dynamic, Dynamic> DatumXd;
+
+    template <class TransformableType, int dimensions_, int axes_>
+    auto operator*(const TransformableType& argument, const Datum<dimensions_, axes_>& datum) ->
+        decltype(argument.transformed(datum.basis(), datum.origin()));
+
+    template <class TransformableType, int dimensions_, int axes_>
+    auto operator/(const TransformableType& argument, const Datum<dimensions_, axes_>& datum) ->
+        decltype(
+            argument.transformed(datum.inverseMatrix(), -datum.inverseMatrix() * datum.origin())
+        );
+
+    template <class TransformableType, int dimensions_, int axes_>
+    auto operator%(const TransformableType& argument, const Datum<dimensions_, axes_>& datum) ->
+        decltype(
+            argument.transformed(
+                datum.projectionMatrix(),
+                datum.origin() - datum.projectionMatrix() * datum.origin()
+            )
+        );
     
     OPENSOLID_CORE_EXPORT MatrixXd orthonormalBasis(const MatrixXd& vectors);
 }
@@ -195,7 +200,6 @@ namespace boost
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Datum/DatumExpressions.hpp>
 #include <OpenSolid/Datum/Axis.hpp>
 #include <OpenSolid/Datum/Plane.hpp>
 #include <OpenSolid/Datum/Frame.hpp>
@@ -255,12 +259,6 @@ namespace OpenSolid
         );
         assert(axes() >= 1 && "Datum must have at least one axis");
     }
-
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::transformed(
-        const Matrix<double, dimensions_, dimensions_>& matrix,
-        const Matrix<double, dimensions_, 1>& vector
-    ) const {return Datum<dimensions_, axes_>(matrix * origin() + vector, matrix * basis());}
 
     template <int dimensions_, int axes_>
     Datum<dimensions_, axes_>::Datum(
@@ -561,6 +559,18 @@ namespace OpenSolid
         return Plane<dimensions_>(origin(), direction());
     }
 
+    template <int dimensions_, int axes_> template <class MatrixType, class VectorType>
+    Datum<MatrixType::RowsAtCompileTime, axes_> Datum<dimensions_, axes_>::transformed(
+        const MatrixType& matrix,
+        const VectorType& vector
+    ) const {
+        assertValidTransform<dimensions_>(dimensions(), matrix, vector);
+        return Datum<MatrixType::RowsAtCompileTime, axes_>(
+            matrix * origin() + vector,
+            matrix * basis()
+        );
+    }
+
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::scaled(
         double scale,
@@ -626,40 +636,37 @@ namespace OpenSolid
     inline Frame<dimensions_> Datum<dimensions_, axes_>::frame() const {
         return Frame<dimensions_>(origin(), orthonormalBasis(basis()));
     }
-    
-    template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>
-    inline Datum<base_dimensions_, axes_> Datum<dimensions_, axes_>::operator*(
-        const Datum<base_dimensions_, base_axes_>& base
-    ) const {
-        assertCompatible<dimensions_, base_axes_>();
-        assert(dimensions() == base.axes());
-        return Datum<base_dimensions_, axes_>(
-            base.basis() * origin() + base.origin(),
-            base.basis() * basis()
+
+    template <class TransformableType, int dimensions_, int axes_>
+    inline auto operator*(const TransformableType& argument, const Datum<dimensions_, axes_>& datum) ->
+        decltype(argument.transformed(datum.basis(), datum.origin())) {
+        return argument.transformed(datum.basis(), datum.origin());
+    }
+
+    template <class TransformableType, int dimensions_, int axes_>
+    inline auto operator/(
+        const TransformableType& argument, const Datum<dimensions_, axes_>& datum
+    ) -> decltype(
+        argument.transformed(datum.inverseMatrix(), -datum.inverseMatrix() * datum.origin())
+    ) {
+        return argument.transformed(
+            datum.inverseMatrix(),
+            -datum.inverseMatrix() * datum.origin()
         );
     }
-    
-    template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>
-    inline Datum<base_axes_, axes_> Datum<dimensions_, axes_>::operator/(
-        const Datum<base_dimensions_, base_axes_>& base
-    ) const {
-        assertCompatible<dimensions_, base_dimensions_>();
-        assert(dimensions() == base.dimensions());
-        return Datum<base_axes_, axes_>(
-            base.inverseMatrix() * (origin() - base.origin()),
-            base.inverseMatrix() * basis()
-        );
-    }
-    
-    template <int dimensions_, int axes_> template <int base_dimensions_, int base_axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::operator%(
-        const Datum<base_dimensions_, base_axes_>& base
-    ) const {
-        assertCompatible<dimensions_, base_dimensions_>();
-        assert(dimensions() == base.dimensions());
-        return Datum<dimensions_, axes_>(
-            base.projectionMatrix() * (origin() - base.origin()) + base.origin(),
-            base.projectionMatrix() * basis()
+
+    template <class TransformableType, int dimensions_, int axes_>
+    inline auto operator%(
+        const TransformableType& argument, const Datum<dimensions_, axes_>& datum
+    ) -> decltype(
+        argument.transformed(
+            datum.projectionMatrix(),
+            datum.origin() - datum.projectionMatrix() * datum.origin()
+        )
+    ) {
+        return argument.transformed(
+            datum.projectionMatrix(),
+            datum.origin() - datum.projectionMatrix() * datum.origin()
         );
     }
 }

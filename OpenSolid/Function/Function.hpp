@@ -142,10 +142,6 @@ namespace OpenSolid
         const Function& second_operand
     );
     
-    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const DatumXd& datum);
-    OPENSOLID_CORE_EXPORT Function operator/(const Function& function, const DatumXd& datum);
-    OPENSOLID_CORE_EXPORT Function operator%(const Function& function, const DatumXd& datum);
-    
     OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function sin(const Function& argument);
     OPENSOLID_CORE_EXPORT Function tan(const Function& argument);

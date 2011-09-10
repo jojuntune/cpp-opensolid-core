@@ -270,6 +270,9 @@ namespace OpenSolid
 
     template <int destination_size_>
     void assertCompatible(int source_size);
+
+    template <int dimensions_, class MatrixType, class VectorType>
+    void assertValidTransform(int dimensions, const MatrixType& matrix, const VectorType& vector);
 }
 
 namespace std
@@ -295,8 +298,8 @@ namespace std
         >
     {
         bool operator()(
-            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
-            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
+            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first,
+            const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second
         ) const;
     };
 }
@@ -497,7 +500,8 @@ namespace Eigen
         const OpenSolid::Interval& second_argument
     ) const {return first_argument.overlaps(second_argument, _precision);}
 
-    inline StrictOverlapOperation::StrictOverlapOperation(double precision) : _precision(precision) {}
+    inline StrictOverlapOperation::StrictOverlapOperation(double precision)
+        : _precision(precision) {}
     
     inline bool StrictOverlapOperation::operator()(
         const OpenSolid::Interval& first_argument,
@@ -511,12 +515,27 @@ namespace Eigen
         const OpenSolid::Interval& second_argument
     ) const {return first_argument.contains(second_argument, _precision);}
 
-    inline StrictContainOperation::StrictContainOperation(double precision) : _precision(precision) {}
+    inline StrictContainOperation::StrictContainOperation(double precision)
+        : _precision(precision) {}
     
     inline bool StrictContainOperation::operator()(
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument
     ) const {return first_argument.strictlyContains(second_argument, _precision);}
+
+    template <class DerivedType> template <class MatrixType, class VectorType>
+    Matrix<
+        typename internal::traits<DerivedType>::Scalar,
+        MatrixType::RowsAtCompileTime,
+        internal::traits<DerivedType>::ColsAtCompileTime
+    > DenseBase<DerivedType>::transformed(
+        const MatrixType& matrix,
+        const VectorType& vector
+    ) const {
+        OpenSolid::assertValidTransform<RowsAtCompileTime>(derived().cols(), matrix, vector);
+        return (matrix.template cast<Scalar>() * derived()).colwise() +
+            vector.template cast<Scalar>();
+    }
 
     template <class DerivedType>
     inline CwiseUnaryOp<LowerOperation, const DerivedType>
@@ -626,13 +645,15 @@ namespace Eigen
 namespace OpenSolid
 {
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    inline typename Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::CastType
+    inline typename Bounds<
+        Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
+    >::CastType
     Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::operator()(
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return argument.template cast<Interval>();}
 
     template <int destination_size_, int source_size_>
-    void assertCompatible() {
+    inline void assertCompatible() {
         static_assert(
             destination_size_ == source_size_ ||
             destination_size_ == Dynamic ||
@@ -642,12 +663,26 @@ namespace OpenSolid
     }
 
     template <int destination_size_>
-    void assertCompatible(int source_size) {
+    inline void assertCompatible(int source_size) {
         assert(source_size == destination_size_ && "Different sizes");
     }
 
     template <>
     inline void assertCompatible<Dynamic>(int) {}
+
+    template <int dimensions_, class MatrixType, class VectorType>
+    inline void assertValidTransform(
+        int dimensions,
+        const MatrixType& matrix,
+        const VectorType& vector
+    ) {
+        assertCompatible<MatrixType::ColsAtCompileTime, dimensions_>();
+        assert(matrix.cols() == dimensions);
+        assertCompatible<VectorType::ColsAtCompileTime, 1>();
+        assert(vector.cols() == 1);
+        assertCompatible<MatrixType::RowsAtCompileTime, VectorType::SizeAtCompileTime>();
+        assert(matrix.rows() == vector.size());
+    }
 }
 
 namespace
@@ -697,9 +732,9 @@ namespace std
     inline bool equal_to<
         Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
     >::operator()(
-        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first_argument,
-        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second_argument
-    ) const {return first_argument.binaryExpr(second_argument, EqualVisitor()).all();}
+        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& first,
+        const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second
+    ) const {return first.binaryExpr(second, EqualVisitor()).all();}
 }
 
 namespace boost
@@ -709,24 +744,26 @@ namespace boost
         namespace traits
         {
             template<std::size_t dimension_>
-            inline double access<Eigen::Vector2d, dimension_>::get(const Eigen::Vector2d& argument) {
-                return argument(dimension_);
-            }
+            inline double access<Eigen::Vector2d, dimension_>::get(
+                const Eigen::Vector2d& argument
+            ) {return argument(dimension_);}
 
             template<std::size_t dimension_>
-            inline void access<Eigen::Vector2d, dimension_>::set(Eigen::Vector2d& argument, double value) {
-                argument(dimension_) = value;
-            }
+            inline void access<Eigen::Vector2d, dimension_>::set(
+                Eigen::Vector2d& argument,
+                double value
+            ) {argument(dimension_) = value;}
 
             template<std::size_t dimension_>
-            inline double access<Eigen::Vector3d, dimension_>::get(const Eigen::Vector3d& argument) {
-                return argument(dimension_);
-            }
+            inline double access<Eigen::Vector3d, dimension_>::get(
+                const Eigen::Vector3d& argument
+            ) {return argument(dimension_);}
 
             template<std::size_t dimension_>
-            inline void access<Eigen::Vector3d, dimension_>::set(Eigen::Vector3d& argument, double value) {
-                argument(dimension_) = value;
-            }
+            inline void access<Eigen::Vector3d, dimension_>::set(
+                Eigen::Vector3d& argument,
+                double value
+            ) {argument(dimension_) = value;}
 
             template <std::size_t dimension_>
             inline double indexed_access<Eigen::Vector2I, min_corner, dimension_>::get(

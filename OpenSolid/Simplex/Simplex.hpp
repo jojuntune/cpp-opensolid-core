@@ -27,13 +27,14 @@
 #include <boost/geometry.hpp>
 
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
     template <int dimensions_, int size_>
-    class Simplex
+    class Simplex : public Transformable<Simplex<dimensions_, size_>>
     {
     public:
         typedef Matrix<double, dimensions_, size_> Vertices;
@@ -98,6 +99,12 @@ namespace OpenSolid
 
         Vertex vertex(int index);
         ConstVertex vertex(int index) const;
+
+        template <class MatrixType, class VectorType>
+        Simplex<MatrixType::RowsAtCompileTime, size_> transformed(
+            const MatrixType& matrix,
+            const VectorType& vector
+        ) const;
         
         double length() const;
         double area() const;
@@ -133,18 +140,6 @@ namespace OpenSolid
     typedef Simplex<Dynamic, 4> TetrahedronXd;
     
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
-    
-    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
-    Simplex<datum_dimensions_, simplex_size_> operator*(
-        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
-        const Datum<datum_dimensions_, datum_axes_>& datum
-    );
-    
-    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
-    Simplex<datum_axes_, simplex_size_> operator/(
-        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
-        const Datum<datum_dimensions_, datum_axes_>& datum
-    );
 }
 
 namespace std
@@ -322,6 +317,17 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::ConstVertex
     Simplex<dimensions_, size_>::vertex(int index) const {return _vertices.col(index);}
+
+    template <int dimensions_, int size_> template <class MatrixType, class VectorType>
+    Simplex<MatrixType::RowsAtCompileTime, size_> Simplex<dimensions_, size_>::transformed(
+        const MatrixType& matrix,
+        const VectorType& vector
+    ) const {
+        assertValidTransform<dimensions_>(dimensions(), matrix, vector);
+        return Simplex<MatrixType::RowsAtCompileTime, size_>(
+            (matrix * vertices()).colwise() + vector
+        );
+    }
     
     template <int dimensions_, int size_>
     inline double Simplex<dimensions_, size_>::length() const {

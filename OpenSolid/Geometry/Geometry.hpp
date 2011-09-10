@@ -92,10 +92,6 @@ namespace OpenSolid
             const Interval& angle
         );
     };
-    
-    OPENSOLID_CORE_EXPORT Geometry operator*(const Geometry& geometry, const DatumXd& datum);
-    OPENSOLID_CORE_EXPORT Geometry operator/(const Geometry& geometry, const DatumXd& datum);
-    OPENSOLID_CORE_EXPORT Geometry operator%(const Geometry& geometry, const DatumXd& datum);
 }
 
 namespace std

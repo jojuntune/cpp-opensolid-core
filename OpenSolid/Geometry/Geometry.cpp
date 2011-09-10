@@ -24,6 +24,7 @@
 namespace OpenSolid
 {   
     Geometry Geometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
         return Geometry(function().transformed(matrix, vector), domain());
     }
 
@@ -95,17 +96,5 @@ namespace OpenSolid
             Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),
             angle
         );
-    }
-    
-    Geometry operator*(const Geometry& geometry, const DatumXd& datum) {
-        return Geometry(geometry.function() * datum, geometry.domain());
-    }
-    
-    Geometry operator/(const Geometry& geometry, const DatumXd& datum) {
-        return Geometry(geometry.function() / datum, geometry.domain());
-    }
-    
-    Geometry operator%(const Geometry& geometry, const DatumXd& datum) {
-        return Geometry(geometry.function() % datum, geometry.domain());
     }
 }

@@ -36,12 +36,6 @@ namespace OpenSolid
     private:
         const DerivedType& derived() const;
     public:
-        template <class MatrixType, class VectorType>
-        DerivedType transformed(
-            const EigenBase<MatrixType>& matrix,
-            const EigenBase<VectorType>& vector
-        ) const;
-
         template <class PointType>
         DerivedType scaled(double scale, const EigenBase<PointType>& point) const;
 
@@ -88,7 +82,7 @@ namespace OpenSolid
         static const int dimensions = VectorType::SizeAtCompileTime;
         Matrix<double, dimensions, dimensions> identity(vector.size(), vector.size());
         identity.setIdentity();
-        return derived().transformed(identity, vector);
+        return derived().transformed(identity, vector.derived());
     }
 }
 

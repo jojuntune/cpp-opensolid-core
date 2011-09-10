@@ -187,4 +187,23 @@ public:
         TS_ASSERT(intersection.cwiseLower().isApprox(Vector2d::Constant(2)));
         TS_ASSERT(intersection.cwiseUpper().isApprox(Vector2d::Constant(3)));
     }
+
+    void testTransformed() {
+        Matrix2I argument;
+        argument(0, 0) = Interval(1, 2);
+        argument(1, 0) = Interval(3, 4);
+        argument(0, 1) = Interval(5, 6);
+        argument(1, 1) = Interval(7, 8);
+        Matrix<double, 3, 2> matrix;
+        matrix.col(0) = Vector3d::UnitX();
+        matrix.col(1) = Vector3d::UnitY();
+        Vector3d vector(1, 1, 1);
+        Matrix<Interval, 3, 2> transformed = argument.transformed(matrix, vector);
+        Vector3I first_transformed = transformed.col(0);
+        TS_ASSERT((first_transformed.cwiseLower() - Vector3d(2, 4, 1)).isZero());
+        TS_ASSERT((first_transformed.cwiseUpper() - Vector3d(3, 5, 1)).isZero());
+        Vector3I second_transformed = transformed.col(1);
+        TS_ASSERT((second_transformed.cwiseLower() - Vector3d(6, 8, 1)).isZero());
+        TS_ASSERT((second_transformed.cwiseUpper() - Vector3d(7, 9, 1)).isZero());
+    }
 };

@@ -73,6 +73,7 @@ namespace OpenSolid
     }
 
     Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
         Set<Geometry> transformed_boundaries;
         boundaries().transform(
             [&matrix, &vector] (const Geometry& boundary) {
