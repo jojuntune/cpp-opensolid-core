@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__SCRIPTING__CHECK_HPP
 #define OPENSOLID__SCRIPTING__CHECK_HPP
 
-#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/config.hpp>
 
 #include <string>
 

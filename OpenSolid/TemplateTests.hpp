@@ -18,28 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <cxxtest/TestSuite.h>
 
-using namespace boost::python;
+#include <OpenSolid/Template.hpp>
 
-namespace OpenSolid
+using namespace OpenSolid;
+
+class TemplateTests : public CxxTest::TestSuite
 {
-    void bindError();
-    void bindInterval();
-    void bindDouble();
-    void bindComparison();
-    void bindMatrix();
-    void bindSpecificMatrixSizes();
-    void bindFunction();
-
-    BOOST_PYTHON_MODULE(opensolid) {
-        bindError();
-        bindInterval();
-        bindDouble();
-        bindComparison();
-        bindMatrix();
-        bindSpecificMatrixSizes();
-        bindFunction();
+public:
+    void test() {
     }
-}
+};

@@ -92,11 +92,18 @@
     ENDMACRO(ADD_CXXTEST)
     
 ########## Define lists of source files ##########
+
+    SET(OPENSOLID_FILES
+        bindTemplate.cpp
+        config.hpp
+        Template.cpp
+        Template.hpp
+        TemplateTests.hpp
+    )
     
     SET(COMMON_HEADERS
         Common/Bounds.hpp
         Common/BoundsTests.hpp
-        Common/config.hpp
         Common/Error.hpp
         Common/ReferenceCounted.hpp
         Common/Transformable.hpp
@@ -273,10 +280,19 @@
     
     SET(SIMPLEX_SOURCES
     )
+
+    SET(SUPPORT_HEADERS
+        Support/Boost.hpp
+        Support/STL.hpp
+    )
+
+    SET(SUPPORT_SOURCES
+    )
     
 ########## Set up source groups for Visual Studio ##########
 
     ADD_LIBRARY(ALL_SOURCES EXCLUDE_FROM_ALL
+        ${OPENSOLID_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
         ${DATUM_HEADERS}
@@ -301,23 +317,27 @@
         ${SET_SOURCES}
         ${SIMPLEX_HEADERS}
         ${SIMPLEX_SOURCES}
+        ${SUPPORT_HEADERS}
+        ${SUPPORT_SOURCES}
     )
     
-    SOURCE_GROUP(Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
-    SOURCE_GROUP(Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
-    SOURCE_GROUP(Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
-    SOURCE_GROUP(Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
-    SOURCE_GROUP(Function\\FunctionImplementation FILES
+    SOURCE_GROUP(OpenSolid FILES ${OPENSOLID_FILES})
+    SOURCE_GROUP(OpenSolid\\Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES
         ${FUNCTIONIMPLEMENTATION_HEADERS}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
     )
-    SOURCE_GROUP(Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
-    SOURCE_GROUP(Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
-    SOURCE_GROUP(Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
-    SOURCE_GROUP(Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
-    SOURCE_GROUP(Script FILES ${SCRIPT_HEADERS} ${SCRIPT_SOURCES})
-    SOURCE_GROUP(Set FILES ${SET_HEADERS} ${SET_SOURCES})
-    SOURCE_GROUP(Simplex FILES ${SIMPLEX_HEADERS} ${SIMPLEX_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Script FILES ${SCRIPT_HEADERS} ${SCRIPT_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Set FILES ${SET_HEADERS} ${SET_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Simplex FILES ${SIMPLEX_HEADERS} ${SIMPLEX_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Support FILES ${SUPPORT_HEADERS} ${SUPPORT_SOURCES})
     
 ######################################################################
 #                                                                    #

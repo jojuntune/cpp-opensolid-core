@@ -29,7 +29,7 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 
 namespace OpenSolid

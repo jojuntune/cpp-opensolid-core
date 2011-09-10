@@ -27,7 +27,7 @@
 #include <boost/intrusive_ptr.hpp>
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>

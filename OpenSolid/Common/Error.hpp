@@ -28,7 +28,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <OpenSolid/Common/config.hpp>
+#include <OpenSolid/config.hpp>
 
 namespace OpenSolid
 {
