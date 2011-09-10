@@ -20,12 +20,9 @@
  
 #ifndef OPENSOLID__DOMAIN_HPP
 #define OPENSOLID__DOMAIN_HPP
- 
-#include <functional>
-
-#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/config.hpp>
+#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Set/Set.hpp>
@@ -33,8 +30,6 @@
 
 namespace OpenSolid
 {
-    class Geometry;
-
     template <>
     struct Bounds<Geometry>
     {
@@ -69,33 +64,6 @@ namespace OpenSolid
         bool operator==(const Domain& other) const;
 
         OPENSOLID_CORE_EXPORT Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
-    };
-}
-
-namespace std
-{
-    template <>
-    struct hash<OpenSolid::Domain> : public unary_function<OpenSolid::Domain, size_t>
-    {
-        size_t operator()(const OpenSolid::Domain& argument) const;
-    };
-
-    template <>
-    struct equal_to<OpenSolid::Domain> :
-        public binary_function<OpenSolid::Domain, OpenSolid::Domain, bool>
-    {
-        bool operator()(
-            const OpenSolid::Domain& first_argument,
-            const OpenSolid::Domain& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <>
-    struct hash<OpenSolid::Domain> : public std::hash<OpenSolid::Domain>
-    {
     };
 }
 
@@ -147,23 +115,6 @@ namespace OpenSolid
         assert(!empty());
         assert(dimensions() == 1);
         return value().upper();
-    }
-}
-
-namespace std
-{
-    inline size_t hash<OpenSolid::Domain>::operator()(const OpenSolid::Domain& argument) const {
-        return hash<OpenSolid::Set<OpenSolid::Geometry>>()(argument.boundaries());
-    }
-
-    inline bool equal_to<OpenSolid::Domain>::operator()(
-        const OpenSolid::Domain& first_argument,
-        const OpenSolid::Domain& second_argument
-    ) const {
-        return equal_to<OpenSolid::Set<OpenSolid::Geometry>>()(
-            first_argument.boundaries(),
-            second_argument.boundaries()
-        );
     }
 }
 

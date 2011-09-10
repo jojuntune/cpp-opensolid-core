@@ -49,34 +49,6 @@ namespace OpenSolid
     typedef Plane<Dynamic> PlaneXd;
 }
 
-namespace std
-{
-    template <int dimensions_>
-    struct hash<OpenSolid::Plane<dimensions_>> :
-        public unary_function<OpenSolid::Plane<dimensions_>, size_t>
-    {
-        std::size_t operator()(const OpenSolid::Plane<dimensions_>& argument) const;
-    };
-
-    template <int dimensions_>
-    struct equal_to<OpenSolid::Plane<dimensions_>> :
-        public binary_function<OpenSolid::Plane<dimensions_>, OpenSolid::Plane<dimensions_>, bool>
-    {
-        bool operator()(
-            const OpenSolid::Plane<dimensions_>& first_argument,
-            const OpenSolid::Plane<dimensions_>& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <int dimensions_>
-    struct hash<OpenSolid::Plane<dimensions_>> : public std::hash<OpenSolid::Plane<dimensions_>>
-    {
-    };
-}
-
 ////////// Implementation //////////
 
 namespace OpenSolid
@@ -139,34 +111,6 @@ namespace OpenSolid
         assert(other.basis().isUnitary());
         Datum<dimensions_, static_axes>::operator=(other);
         return *this;
-    }
-}
-
-namespace std
-{
-    template <int dimensions_>
-    inline size_t hash<OpenSolid::Plane<dimensions_>>::operator()(
-        const OpenSolid::Plane<dimensions_>& argument
-    ) const {
-        return hash<
-            OpenSolid::Datum<
-                dimensions_,
-                dimensions_ == Eigen::Dynamic ? Eigen::Dynamic : dimensions_ - 1
-            >
-        >()(argument);
-    }
-
-    template <int dimensions_>
-    inline bool equal_to<OpenSolid::Plane<dimensions_>>::operator()(
-        const OpenSolid::Plane<dimensions_>& first_argument,
-        const OpenSolid::Plane<dimensions_>& second_argument
-    ) const {
-        return equal_to<
-            OpenSolid::Datum<
-                dimensions_,
-                dimensions_ == Eigen::Dynamic ? Eigen::Dynamic : dimensions_ - 1
-            >
-        >()(first_argument, second_argument);
     }
 }
 

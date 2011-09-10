@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
+#include <OpenSolid/Support/STL.hpp>
 
 using namespace OpenSolid;
 

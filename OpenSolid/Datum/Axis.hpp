@@ -48,34 +48,6 @@ namespace OpenSolid
     typedef Axis<Dynamic> AxisXd;
 }
 
-namespace std
-{
-    template <int dimensions_>
-    struct hash<OpenSolid::Axis<dimensions_>> :
-        public unary_function<OpenSolid::Axis<dimensions_>, size_t>
-    {
-        std::size_t operator()(const OpenSolid::Axis<dimensions_>& argument) const;
-    };
-
-    template <int dimensions_>
-    struct equal_to<OpenSolid::Axis<dimensions_>> :
-        public binary_function<OpenSolid::Axis<dimensions_>, OpenSolid::Axis<dimensions_>, bool>
-    {
-        bool operator()(
-            const OpenSolid::Axis<dimensions_>& first_argument,
-            const OpenSolid::Axis<dimensions_>& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <int dimensions_>
-    struct hash<OpenSolid::Axis<dimensions_>> : public std::hash<OpenSolid::Axis<dimensions_>>
-    {
-    };
-}
-
 ////////// Implementation //////////
 
 namespace OpenSolid
@@ -101,20 +73,6 @@ namespace OpenSolid
         Datum<dimensions_, 1>::operator=(other);
         return *this;
     }
-}
-
-namespace std
-{
-    template <int dimensions_>
-    inline size_t hash<OpenSolid::Axis<dimensions_>>::operator()(
-        const OpenSolid::Axis<dimensions_>& argument
-    ) const {return hash<OpenSolid::Datum<dimensions_, 1>>()(argument);}
-
-    template <int dimensions_>
-    inline bool equal_to<OpenSolid::Axis<dimensions_>>::operator()(
-        const OpenSolid::Axis<dimensions_>& first_argument,
-        const OpenSolid::Axis<dimensions_>& second_argument
-    ) const {return equal_to<OpenSolid::Datum<dimensions_, 1>>()(first_argument, second_argument);}
 }
 
 #endif

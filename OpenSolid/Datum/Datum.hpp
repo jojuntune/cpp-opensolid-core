@@ -21,28 +21,13 @@
 #ifndef OPENSOLID__DATUM_HPP
 #define OPENSOLID__DATUM_HPP
 
-#include <functional>
-
-#include <boost/functional/hash.hpp>
-
 #include <OpenSolid/config.hpp>
+#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {
-    template <int dimensions_>
-    class Axis;
-    
-    template <int dimensions_>
-    class Plane;
-    
-    template <int dimensions_>
-    class Frame;
-
-    template <int dimensions_, int axes_>
-    class CoordinateSystem;
-
     template <int dimensions_, int axes_>
     class Datum : public Transformable<Datum<dimensions_, axes_>>
     {
@@ -141,39 +126,6 @@ namespace OpenSolid
         );
     
     OPENSOLID_CORE_EXPORT MatrixXd orthonormalBasis(const MatrixXd& vectors);
-}
-
-namespace std
-{
-    template <int dimensions_, int axes_>
-    struct hash<OpenSolid::Datum<dimensions_, axes_>> :
-        public unary_function<OpenSolid::Datum<dimensions_, axes_>, size_t>
-    {
-        std::size_t operator()(const OpenSolid::Datum<dimensions_, axes_>& argument) const;
-    };
-
-    template <int dimensions_, int axes_>
-    struct equal_to<OpenSolid::Datum<dimensions_, axes_>> :
-        public binary_function<
-            OpenSolid::Datum<dimensions_, axes_>,
-            OpenSolid::Datum<dimensions_, axes_>,
-            bool
-        >
-    {
-        bool operator()(
-            const OpenSolid::Datum<dimensions_, axes_>& first_argument,
-            const OpenSolid::Datum<dimensions_, axes_>& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <int dimensions_, int axes_>
-    struct hash<OpenSolid::Datum<dimensions_, axes_>> :
-        public std::hash<OpenSolid::Datum<dimensions_, axes_>>
-    {
-    };
 }
 
 ////////// Implementation //////////
@@ -600,34 +552,6 @@ namespace OpenSolid
             datum.projectionMatrix(),
             datum.origin() - datum.projectionMatrix() * datum.origin()
         );
-    }
-}
-
-namespace std
-{
-    template <int dimensions_, int axes_>
-    inline size_t hash<OpenSolid::Datum<dimensions_, axes_>>::operator()(
-        const OpenSolid::Datum<dimensions_, axes_>& argument
-    ) const {
-        size_t result = 0;
-        boost::hash_combine(
-            result,
-            hash<Eigen::Matrix<double, dimensions_, 1>>()(argument.origin())
-        );
-        boost::hash_combine(
-            result,
-            hash<Eigen::Matrix<double, dimensions_, axes_>>()(argument.basis())
-        );
-        return result;
-    }
-
-    template <int dimensions_, int axes_>
-    inline bool equal_to<OpenSolid::Datum<dimensions_, axes_>>::operator()(
-        const OpenSolid::Datum<dimensions_, axes_>& first_argument,
-        const OpenSolid::Datum<dimensions_, axes_>& second_argument
-    ) const {
-        return first_argument.origin() == second_argument.origin() &&
-            first_argument.basis() == second_argument.basis();
     }
 }
 

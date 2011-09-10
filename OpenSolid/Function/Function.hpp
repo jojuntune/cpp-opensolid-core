@@ -22,12 +22,11 @@
 #define OPENSOLID__FUNCTION_HPP
 
 #include <typeinfo>
-#include <functional>
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/config.hpp>
+#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
@@ -39,9 +38,6 @@ namespace OpenSolid
 {
     template <class ArgumentType>
     class FunctionResult;
-    
-    class Domain;
-    class Geometry;
     
     class Function : public Transformable<Function>
     {
@@ -155,33 +151,6 @@ namespace OpenSolid
     );
 }
 
-namespace std
-{
-    template <>
-    struct hash<OpenSolid::Function> : public unary_function<OpenSolid::Function, size_t>
-    {
-        size_t operator()(const OpenSolid::Function& argument) const;
-    };
-
-    template <>
-    struct equal_to<OpenSolid::Function> :
-        public binary_function<OpenSolid::Function, OpenSolid::Function, bool>
-    {
-        bool operator()(
-            const OpenSolid::Function& first_argument,
-            const OpenSolid::Function& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <>
-    struct hash<OpenSolid::Function> : public std::hash<OpenSolid::Function>
-    {
-    };
-}
-
 ////////// Implementation //////////
 
 #include <boost/functional/hash.hpp>
@@ -233,18 +202,6 @@ namespace OpenSolid
     inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return FunctionResult<ArgumentType>(*this, argument);
     }
-}
-
-namespace std
-{
-    inline size_t hash<OpenSolid::Function>::operator()(const OpenSolid::Function& argument) const {
-        return boost::hash_value(argument.implementation());
-    }
-
-    inline bool equal_to<OpenSolid::Function>::operator()(
-        const OpenSolid::Function& first_argument,
-        const OpenSolid::Function& second_argument
-    ) const {return first_argument.implementation() == second_argument.implementation();}
 }
 
 #endif

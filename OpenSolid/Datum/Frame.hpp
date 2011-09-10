@@ -50,34 +50,6 @@ namespace OpenSolid
     typedef Frame<Dynamic> FrameXd;
 }
 
-namespace std
-{
-    template <int dimensions_>
-    struct hash<OpenSolid::Frame<dimensions_>> :
-        public unary_function<OpenSolid::Frame<dimensions_>, size_t>
-    {
-        std::size_t operator()(const OpenSolid::Frame<dimensions_>& argument) const;
-    };
-
-    template <int dimensions_>
-    struct equal_to<OpenSolid::Frame<dimensions_>> :
-        public binary_function<OpenSolid::Frame<dimensions_>, OpenSolid::Frame<dimensions_>, bool>
-    {
-        bool operator()(
-            const OpenSolid::Frame<dimensions_>& first_argument,
-            const OpenSolid::Frame<dimensions_>& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <int dimensions_>
-    struct hash<OpenSolid::Frame<dimensions_>> : public std::hash<OpenSolid::Frame<dimensions_>>
-    {
-    };
-}
-
 ////////// Implementation //////////
 
 namespace OpenSolid
@@ -146,25 +118,6 @@ namespace OpenSolid
         assert(other.basis().isUnitary());
         Datum<dimensions_, dimensions_>::operator=(other);
         return *this;
-    }
-}
-
-namespace std
-{
-    template <int dimensions_>
-    inline size_t hash<OpenSolid::Frame<dimensions_>>::operator()(
-        const OpenSolid::Frame<dimensions_>& argument
-    ) const {return hash<OpenSolid::Datum<dimensions_, dimensions_>>()(argument);}
-
-    template <int dimensions_>
-    inline bool equal_to<OpenSolid::Frame<dimensions_>>::operator()(
-        const OpenSolid::Frame<dimensions_>& first_argument,
-        const OpenSolid::Frame<dimensions_>& second_argument
-    ) const {
-        return equal_to<OpenSolid::Datum<dimensions_, dimensions_>>()(
-            first_argument,
-            second_argument
-        );
     }
 }
 

@@ -26,6 +26,7 @@
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Support/Boost.hpp>
 
 using namespace OpenSolid;
 

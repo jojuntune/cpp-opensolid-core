@@ -20,10 +20,12 @@
 
 #include <typeinfo>
 
+#include <boost/geometry.hpp>
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Support/Boost.hpp>
 
 using namespace OpenSolid;
 

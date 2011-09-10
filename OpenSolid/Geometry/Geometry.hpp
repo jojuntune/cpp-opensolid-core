@@ -21,10 +21,6 @@
 #ifndef OPENSOLID__GEOMETRY_HPP
 #define OPENSOLID__GEOMETRY_HPP
 
-#include <functional>
-
-#include <boost/functional/hash.hpp>
-
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
@@ -94,33 +90,6 @@ namespace OpenSolid
     };
 }
 
-namespace std
-{
-    template <>
-    struct hash<OpenSolid::Geometry> : public unary_function<OpenSolid::Geometry, size_t>
-    {
-        size_t operator()(const OpenSolid::Geometry& argument) const;
-    };
-
-    template <>
-    struct equal_to<OpenSolid::Geometry> :
-        public binary_function<OpenSolid::Geometry, OpenSolid::Geometry, bool>
-    {
-        bool operator()(
-            const OpenSolid::Geometry& first_argument,
-            const OpenSolid::Geometry& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <>
-    struct hash<OpenSolid::Geometry> : public std::hash<OpenSolid::Geometry>
-    {
-    };
-}
-
 ////////// Implementation //////////
 
 #include <OpenSolid/Domain/Domain.hpp>
@@ -179,25 +148,6 @@ namespace OpenSolid
 
 namespace std
 {
-    inline size_t hash<OpenSolid::Geometry>::operator()(const OpenSolid::Geometry& argument) const {
-        size_t result = 0;
-        boost::hash_combine(result, hash<OpenSolid::Function>()(argument.function()));
-        boost::hash_combine(result, hash<OpenSolid::Domain>()(argument.domain()));
-        return result;
-    }
-
-    inline bool equal_to<OpenSolid::Geometry>::operator()(
-        const OpenSolid::Geometry& first_argument,
-        const OpenSolid::Geometry& second_argument
-    ) const {
-        return equal_to<OpenSolid::Function>()(
-            first_argument.function(),
-            second_argument.function()
-        ) && equal_to<OpenSolid::Domain>()(
-            first_argument.domain(),
-            second_argument.domain()
-        );
-    }
 }
 
 #endif

@@ -21,12 +21,7 @@
 #ifndef OPENSOLID__BOUNDS_HPP
 #define OPENSOLID__BOUNDS_HPP
 
-#include <functional>
-#include <utility>
-#include <list>
-#include <vector>
 #include <type_traits>
-#include <iterator>
 
 namespace OpenSolid
 {
@@ -41,36 +36,6 @@ namespace OpenSolid
 
         auto operator()(const BoundedType& argument) const -> decltype(argument.bounds());
     };
-
-    template <class BoundedType>
-    struct Bounds<std::pair<BoundedType, BoundedType>>
-    {
-        typedef typename Bounds<BoundedType>::Type Type;
-
-        typename Bounds<BoundedType>::Type operator()(
-            const std::pair<BoundedType, BoundedType>& argument
-        ) const;
-    };
-
-    template <class BoundedType, class AllocatorType>
-    struct Bounds<std::list<BoundedType, AllocatorType>>
-    {
-        typedef typename Bounds<BoundedType>::Type Type;
-
-        typename Bounds<BoundedType>::Type operator()(
-            const std::list<BoundedType, AllocatorType>& argument
-        ) const;
-    };
-
-    template <class BoundedType, class AllocatorType>
-    struct Bounds<std::vector<BoundedType, AllocatorType>>
-    {
-        typedef typename Bounds<BoundedType>::Type Type;
-
-        typename Bounds<BoundedType>::Type operator()(
-            const std::vector<BoundedType, AllocatorType>& argument
-        ) const;
-    };
 }
 
 ////////// Implementation //////////
@@ -80,51 +45,6 @@ namespace OpenSolid
     template <class BoundedType>
     inline auto Bounds<BoundedType>::operator()(const BoundedType& argument) const ->
         decltype(argument.bounds()) {return argument.bounds();}
-
-    template <class BoundedType>
-    inline typename Bounds<BoundedType>::Type
-    Bounds<std::pair<BoundedType, BoundedType>>::operator()(
-        const std::pair<BoundedType, BoundedType>& argument
-    ) const {
-        Bounds<BoundedType> bounds_function;
-        typename Bounds<BoundedType>::Type result = bounds_function(argument.first);
-        result = result.hull(bounds_function(argument.second));
-        return result;
-    }
-
-    namespace
-    {
-        template <class IteratorType>
-        inline typename Bounds<typename IteratorType::value_type>::Type rangeBounds(
-            IteratorType begin,
-            IteratorType end
-        ) {
-            typedef typename std::iterator_traits<IteratorType>::value_type ValueType;
-            typedef typename Bounds<ValueType>::Type BoundsType;
-            if (begin == end) {
-                return BoundsType();
-            } else {
-                Bounds<ValueType> bounds_function;
-                BoundsType result = bounds_function(*begin);
-                while (++begin != end) {
-                    result = result.hull(bounds_function(*begin));
-                }
-                return result;
-            }
-        }
-    }
-    
-    template <class BoundedType, class AllocatorType>
-    inline typename Bounds<BoundedType>::Type
-    Bounds<std::list<BoundedType, AllocatorType>>::operator()(
-        const std::list<BoundedType, AllocatorType>& argument
-    ) const {return rangeBounds(argument.begin(), argument.end());}
-    
-    template <class BoundedType, class AllocatorType>
-    inline typename Bounds<BoundedType>::Type
-    Bounds<std::vector<BoundedType, AllocatorType>>::operator()(
-        const std::vector<BoundedType, AllocatorType>& argument
-    ) const {return rangeBounds(argument.begin(), argument.end());}
 }
 
 #endif

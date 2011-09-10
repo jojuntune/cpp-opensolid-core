@@ -241,39 +241,6 @@ namespace OpenSolid
     template <class Type, class BoundsFunctionType>
     std::ostream& operator<<(std::ostream& stream, const Set<Type, BoundsFunctionType>& set);
 }
-
-namespace std
-{
-    template <class Type, class BoundsFunctionType>
-    struct hash<OpenSolid::Set<Type, BoundsFunctionType>> :
-        public unary_function<OpenSolid::Set<Type, BoundsFunctionType>, size_t>
-    {
-        size_t operator()(const OpenSolid::Set<Type, BoundsFunctionType>& argument) const;
-    };
-
-    template <class Type, class BoundsFunctionType>
-    struct equal_to<OpenSolid::Set<Type, BoundsFunctionType>> :
-        public binary_function<
-            OpenSolid::Set<Type, BoundsFunctionType>,
-            OpenSolid::Set<Type, BoundsFunctionType>,
-            bool
-        >
-    {
-        bool operator()(
-            const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
-            const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
-        ) const;
-    };
-}
-
-namespace boost
-{
-    template <class Type, class BoundsFunctionType>
-    struct hash<OpenSolid::Set<Type, BoundsFunctionType>> :
-        public std::hash<OpenSolid::Set<Type, BoundsFunctionType>>
-    {
-    };
-}
     
 ////////// Implementation //////////
 
@@ -895,20 +862,6 @@ namespace OpenSolid
         }
         return stream;
     }
-}
-
-namespace std
-{
-    template <class Type, class BoundsFunctionType>
-    inline size_t hash<OpenSolid::Set<Type, BoundsFunctionType>>::operator()(
-        const OpenSolid::Set<Type, BoundsFunctionType>& argument
-    ) const {return boost::hash_value(argument.root());}
-
-    template <class Type, class BoundsFunctionType>
-    inline bool equal_to<OpenSolid::Set<Type, BoundsFunctionType>>::operator()(
-        const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
-        const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
-    ) const {return first_argument.root() == second_argument.root();}
 }
 
 #endif

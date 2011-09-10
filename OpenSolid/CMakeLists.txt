@@ -96,6 +96,7 @@
     SET(OPENSOLID_FILES
         bindTemplate.cpp
         config.hpp
+        declarations.hpp
         Template.cpp
         Template.hpp
         TemplateTests.hpp
