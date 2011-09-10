@@ -99,7 +99,6 @@
         Common/config.hpp
         Common/Error.hpp
         Common/ReferenceCounted.hpp
-        Common/ReferenceCountedBase.hpp
         Common/Transformable.hpp
     )
     

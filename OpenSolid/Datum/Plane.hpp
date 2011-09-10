@@ -26,10 +26,10 @@
 namespace OpenSolid
 {
     template <int dimensions_>
-    class Plane : public Datum<dimensions_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>
+    class Plane : public Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>
     {
     private:
-        static const int static_axes = dimensions_ == Dynamic ? Dynamic : dimensions_ - 1;
+        static const int static_axes = (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1);
     public:
         Plane();
 

@@ -478,7 +478,7 @@ namespace OpenSolid
         
     template <int dimensions_, int axes_>
     inline Axis<dimensions_> Datum<dimensions_, axes_>::normalAxis() const {
-        assertCompatible<axes_, dimensions_ == Dynamic ? Dynamic : dimensions_ - 1>();
+        assertCompatible<axes_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>();
         assert(axes() == dimensions() - 1);
         return Axis<dimensions_>(origin(), normal());
     }

@@ -53,35 +53,26 @@ namespace OpenSolid
         template <int other_dimensions_, int other_size_>
         Simplex(const Simplex<other_dimensions_, other_size_>& other);
         
-        template <class DerivedType>
-        explicit Simplex(const EigenBase<DerivedType>& vertices);
+        explicit Simplex(const Matrix<double, dimensions_, size_>& vertices);
         
         Simplex(double first_vertex, double second_vertex);
         
-        template <class FirstDerivedType, class SecondDerivedType>
         Simplex(
-            const EigenBase<FirstDerivedType>& first_vertex,
-            const EigenBase<SecondDerivedType>& second_vertex
+            const Matrix<double, dimensions_, 1>& first_vertex,
+            const Matrix<double, dimensions_, 1>& second_vertex
         );
         
-        template <class FirstDerivedType, class SecondDerivedType, class ThirdDerivedType>
         Simplex(
-            const EigenBase<FirstDerivedType>& first_vertex,
-            const EigenBase<SecondDerivedType>& second_vertex,
-            const EigenBase<ThirdDerivedType>& third_vertex
+            const Matrix<double, dimensions_, 1>& first_vertex,
+            const Matrix<double, dimensions_, 1>& second_vertex,
+            const Matrix<double, dimensions_, 1>& third_vertex
         );
         
-        template <
-            class FirstDerivedType,
-            class SecondDerivedType,
-            class ThirdDerivedType,
-            class FourthDerivedType
-        >
         Simplex(
-            const EigenBase<FirstDerivedType>& first_vertex,
-            const EigenBase<SecondDerivedType>& second_vertex,
-            const EigenBase<ThirdDerivedType>& third_vertex,
-            const EigenBase<FourthDerivedType>& fourth_vertex
+            const Matrix<double, dimensions_, 1>& first_vertex,
+            const Matrix<double, dimensions_, 1>& second_vertex,
+            const Matrix<double, dimensions_, 1>& third_vertex,
+            const Matrix<double, dimensions_, 1>& fourth_vertex
         );
         
         Simplex<dimensions_, size_>& operator=(const Simplex<dimensions_, size_>& other);
@@ -109,7 +100,6 @@ namespace OpenSolid
         double length() const;
         double area() const;
         double volume() const;
-        double hypervolume() const;
         
         Vector vector() const;
         Vector centroid() const;
@@ -221,63 +211,63 @@ namespace OpenSolid
         const Simplex<other_dimensions_, other_size_>& other
     ) : _vertices(other.vertices()) {}
         
-    template <int dimensions_, int size_> template <class DerivedType>
-    inline Simplex<dimensions_, size_>::Simplex(const EigenBase<DerivedType>& vertices) :
-        _vertices(vertices) {}
+    template <int dimensions_, int size_>
+    inline Simplex<dimensions_, size_>::Simplex(
+        const Matrix<double, dimensions_, size_>& vertices
+    ) : _vertices(vertices) {}
         
     template <int dimensions_, int size_>
     inline Simplex<dimensions_, size_>::Simplex(double first_vertex, double second_vertex) {
-        static_assert(
-            (dimensions_ == 1 || dimensions_ == Dynamic) && (size_ == 2 || size_ == Dynamic),
-            "Only 1D line segments can be constructed from two doubles"
-        );
+        assertCompatible<dimensions_, 1>();
+        assertCompatible<size_, 2>();
         _vertices.resize(1, 2);
         _vertices(0) = first_vertex;
         _vertices(1) = second_vertex;
     }
 
     template <int dimensions_, int size_>
-    template <class FirstDerivedType, class SecondDerivedType>
     inline Simplex<dimensions_, size_>::Simplex(
-        const EigenBase<FirstDerivedType>& first_vertex,
-        const EigenBase<SecondDerivedType>& second_vertex
+        const Matrix<double, dimensions_, 1>& first_vertex,
+        const Matrix<double, dimensions_, 1>& second_vertex
     ) {
+        assertCompatible<size_, 2>();
+        assert(first_vertex.size() == second_vertex.size());
         _vertices.resize(first_vertex.size(), 2);
-        _vertices.col(0) = first_vertex.derived();
-        _vertices.col(1) = second_vertex.derived();
+        _vertices.col(0) = first_vertex;
+        _vertices.col(1) = second_vertex;
     }
         
     template <int dimensions_, int size_>
-    template <class FirstDerivedType, class SecondDerivedType, class ThirdDerivedType>
     inline Simplex<dimensions_, size_>::Simplex(
-        const EigenBase<FirstDerivedType>& first_vertex,
-        const EigenBase<SecondDerivedType>& second_vertex,
-        const EigenBase<ThirdDerivedType>& third_vertex
+        const Matrix<double, dimensions_, 1>& first_vertex,
+        const Matrix<double, dimensions_, 1>& second_vertex,
+        const Matrix<double, dimensions_, 1>& third_vertex
     ) {
+        assertCompatible<size_, 3>();
+        assert(first_vertex.size() == second_vertex.size());
+        assert(first_vertex.size() == third_vertex.size());
         _vertices.resize(first_vertex.size(), 3);
-        _vertices.col(0) = first_vertex.derived();
-        _vertices.col(1) = second_vertex.derived();
-        _vertices.col(2) = third_vertex.derived();
+        _vertices.col(0) = first_vertex;
+        _vertices.col(1) = second_vertex;
+        _vertices.col(2) = third_vertex;
     }
         
     template <int dimensions_, int size_> 
-    template <
-        class FirstDerivedType,
-        class SecondDerivedType,
-        class ThirdDerivedType,
-        class FourthDerivedType
-    >
     inline Simplex<dimensions_, size_>::Simplex(
-        const EigenBase<FirstDerivedType>& first_vertex,
-        const EigenBase<SecondDerivedType>& second_vertex,
-        const EigenBase<ThirdDerivedType>& third_vertex,
-        const EigenBase<FourthDerivedType>& fourth_vertex
+        const Matrix<double, dimensions_, 1>& first_vertex,
+        const Matrix<double, dimensions_, 1>& second_vertex,
+        const Matrix<double, dimensions_, 1>& third_vertex,
+        const Matrix<double, dimensions_, 1>& fourth_vertex
     ) {
+        assertCompatible<size_, 4>();
+        assert(first_vertex.size() == second_vertex.size());
+        assert(first_vertex.size() == third_vertex.size());
+        assert(first_vertex.size() == fourth_vertex.size());
         _vertices.resize(first_vertex.size(), 4);
-        _vertices.col(0) = first_vertex.derived();
-        _vertices.col(1) = second_vertex.derived();
-        _vertices.col(2) = third_vertex.derived();
-        _vertices.col(3) = fourth_vertex.derived();
+        _vertices.col(0) = first_vertex;
+        _vertices.col(1) = second_vertex;
+        _vertices.col(2) = third_vertex;
+        _vertices.col(3) = fourth_vertex;
     }
         
     template <int dimensions_, int size_> 
@@ -324,9 +314,8 @@ namespace OpenSolid
         const VectorType& vector
     ) const {
         assertValidTransform<dimensions_>(dimensions(), matrix, vector);
-        return Simplex<MatrixType::RowsAtCompileTime, size_>(
-            (matrix * vertices()).colwise() + vector
-        );
+        static const int new_dimensions = MatrixType::RowsAtCompileTime;
+        return Simplex<new_dimensions, size_>((matrix * vertices()).colwise() + vector);
     }
     
     template <int dimensions_, int size_>
@@ -340,7 +329,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::area() const {
+    double Simplex<dimensions_, size_>::area() const {
         assert(size() == 3);
         if (dimensions() == 2) {
             return (
@@ -362,7 +351,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::volume() const {
+    double Simplex<dimensions_, size_>::volume() const {
         assert(size() == 4);
         if (dimensions() == 3) {
             return (
@@ -387,41 +376,10 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline double Simplex<dimensions_, size_>::hypervolume() const {
-        assert(size() == 5);
-        if (dimensions() == 4) {
-            return (
-                vertices().template rightCols<4>.colwise() - vertex(0)
-            ).determinant() / 24;
-        } else {
-            Matrix4d temp;
-            double squared_hypervolume = 0.0;
-            for (int i = 0; i < dimensions() - 3; ++i) {
-                for (int j = i + 1; j < dimensions() - 2; ++j) {
-                    for (int k = j + 1; k < dimensions() - 1; ++k) {
-                        for (int l = k + 1; l < dimensions(); ++l) {
-                            temp << vertices().row(i).tail(4).array() - vertices()(i, 0),
-                                vertices().row(j).tail(4).array() - vertices()(j, 0),
-                                vertices().row(k).tail(4).array() - vertices()(k, 0),
-                                vertices().row(l).tail(4).array() - vertices()(l, 0);
-                            double determinant = temp.determinant();
-                            squared_hypervolume += determinant * determinant / 576;
-                        }
-                    }
-                }
-            }
-            return sqrt(squared_hypervolume);
-        }
-    }
-    
-    template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::vector() const {
-        static_assert(
-            size_ == 2 || size_ == Dynamic,
-            "Simplex::vector() only valid for line segments"
-        );
-        assert(size() == 2 && "Simplex::vector() only valid for line segments");
+        assertCompatible<size_, 2>();
+        assert(size() == 2);
         return vertex(1) - vertex(0);
     }
     
@@ -480,6 +438,7 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::normal() const {
+        assertCompatible<size_, dimensions_>();
         assert(size() == dimensions());
         return simplexNormal(*this);
     }
@@ -524,22 +483,12 @@ namespace OpenSolid
     inline bool Simplex<dimensions_, size_>::operator==(
         const Simplex<other_dimensions_, other_size_>& other
     ) const {
+        assertCompatible<dimensions_, other_dimensions_>();
+        assertCompatible<size_, other_size_>();
         assert(dimensions() == other.dimensions());
         assert(size() == other.size());
         return vertices() == other.vertices();
     }
-    
-    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
-    inline Simplex<datum_dimensions_, simplex_size_> operator*(
-        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
-        const Datum<datum_dimensions_, datum_axes_>& datum
-    ) {return Simplex<datum_dimensions_, simplex_size_>(simplex.vertices() * datum);}
-    
-    template <int simplex_dimensions_, int simplex_size_, int datum_dimensions_, int datum_axes_>
-    inline Simplex<datum_axes_, simplex_size_> operator/(
-        const Simplex<simplex_dimensions_, simplex_size_>& simplex,
-        const Datum<datum_dimensions_, datum_axes_>& datum
-    ) {return Simplex<datum_axes_, simplex_size_>(simplex.vertices() / datum);}
 }
 
 namespace std

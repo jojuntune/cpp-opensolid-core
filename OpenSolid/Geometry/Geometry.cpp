@@ -22,7 +22,21 @@
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
-{   
+{
+    Set<Geometry> Geometry::boundaries() const {
+        Set<Geometry> results;
+        domain().boundaries().transform(
+            [this] (const Geometry& domain_boundary) {
+                return Geometry(
+                    this->function()(domain_boundary.function()),
+                    domain_boundary.domain()
+                );
+            },
+            results.inserter()
+        );
+        return results;
+    }
+
     Geometry Geometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         assertValidTransform<Dynamic>(dimensions(), matrix, vector);
         return Geometry(function().transformed(matrix, vector), domain());

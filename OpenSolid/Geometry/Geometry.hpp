@@ -59,7 +59,7 @@ namespace OpenSolid
         
         VectorXI bounds() const;
         
-        Set<Geometry> boundaries() const;
+        OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
 
         OPENSOLID_CORE_EXPORT Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
         OPENSOLID_CORE_EXPORT Geometry reversed() const;
@@ -165,20 +165,6 @@ namespace OpenSolid
         } else {
             return function()(domain().bounds());
         }
-    }
-    
-    inline Set<Geometry> Geometry::boundaries() const {
-        Set<Geometry> results;
-        domain().boundaries().transform(
-            [this] (const Geometry& domain_boundary) {
-                return Geometry(
-                    this->function()(domain_boundary.function()),
-                    domain_boundary.domain()
-                );
-            },
-            results.inserter()
-        );
-        return results;
     }
     
     template <class ArgumentType>

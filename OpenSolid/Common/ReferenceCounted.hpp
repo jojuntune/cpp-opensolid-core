@@ -21,20 +21,35 @@
 #ifndef OPENSOLID__REFERENCECOUNTED_HPP
 #define OPENSOLID__REFERENCECOUNTED_HPP
 
-#include "ReferenceCountedBase.hpp"
+#include <boost/intrusive_ptr.hpp>
+#include <boost/smart_ptr/detail/atomic_count.hpp>
 
 namespace OpenSolid
 {
-    template <class Type>
-    class ReferenceCounted : public ReferenceCountedBase<ReferenceCounted<Type>>
+    template <class DerivedType>
+    class ReferenceCounted;
+
+    template <class DerivedType>
+    void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument);
+    
+    template <class DerivedType>
+    void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument);
+
+    template <class DerivedType>
+    class ReferenceCounted
     {
     private:
-        Type* _object;
+        ReferenceCounted(const ReferenceCounted&);
+
+        mutable boost::detail::atomic_count _count;
+
+        template <class Type>
+        friend void intrusive_ptr_add_ref<Type>(const ReferenceCounted<Type>* argument);
+
+        template <class Type>
+        friend void intrusive_ptr_release<Type>(const ReferenceCounted<Type>* argument);
     public:
-        ReferenceCounted(Type* object);
-        ~ReferenceCounted();
-        
-        Type* object() const;
+        ReferenceCounted();
     };
 }
 
@@ -42,14 +57,20 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    template <class Type>
-    ReferenceCounted<Type>::ReferenceCounted(Type* object) : _object(object) {}
+    template <class DerivedType>
+    inline ReferenceCounted<DerivedType>::ReferenceCounted() : _count(0) {}
+        
+    template <class DerivedType>
+    inline void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument) {
+        ++argument->_count;
+    }
     
-    template <class Type>
-    ReferenceCounted<Type>::~ReferenceCounted() {delete _object;}
-    
-    template <class Type>
-    Type* ReferenceCounted<Type>::object() const {return _object;}
+    template <class DerivedType>
+    inline void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument) {
+        if (--argument->_count == 0) {
+            delete static_cast<const DerivedType*>(argument);
+        }
+    }
 }
 
 #endif

@@ -271,6 +271,9 @@ namespace OpenSolid
     template <int destination_size_>
     void assertCompatible(int source_size);
 
+    template <class VectorType>
+    void assertVector(const VectorType& vector);
+
     template <int dimensions_, class MatrixType, class VectorType>
     void assertValidTransform(int dimensions, const MatrixType& matrix, const VectorType& vector);
 }
@@ -670,6 +673,12 @@ namespace OpenSolid
     template <>
     inline void assertCompatible<Dynamic>(int) {}
 
+    template <class VectorType>
+    inline void assertVector(const VectorType& vector) {
+        assertCompatible<VectorType::ColsAtCompileTime, 1>();
+        assert(vector.cols() == 1);
+    }
+
     template <int dimensions_, class MatrixType, class VectorType>
     inline void assertValidTransform(
         int dimensions,
@@ -678,8 +687,7 @@ namespace OpenSolid
     ) {
         assertCompatible<MatrixType::ColsAtCompileTime, dimensions_>();
         assert(matrix.cols() == dimensions);
-        assertCompatible<VectorType::ColsAtCompileTime, 1>();
-        assert(vector.cols() == 1);
+        assertVector(vector);
         assertCompatible<MatrixType::RowsAtCompileTime, VectorType::SizeAtCompileTime>();
         assert(matrix.rows() == vector.size());
     }

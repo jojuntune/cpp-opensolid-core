@@ -79,9 +79,7 @@ namespace OpenSolid
 {
     template <class BoundedType>
     inline auto Bounds<BoundedType>::operator()(const BoundedType& argument) const ->
-        decltype(argument.bounds()) {
-        return argument.bounds();
-    }
+        decltype(argument.bounds()) {return argument.bounds();}
 
     template <class BoundedType>
     inline typename Bounds<BoundedType>::Type

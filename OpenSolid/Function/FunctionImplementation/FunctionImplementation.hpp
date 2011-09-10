@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 #define OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 
-#include <OpenSolid/Common/ReferenceCountedBase.hpp>
+#include <OpenSolid/Common/ReferenceCounted.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
@@ -29,7 +29,7 @@ namespace OpenSolid
 {
     class Function;
     
-    class FunctionImplementation : public ReferenceCountedBase<FunctionImplementation>
+    class FunctionImplementation : public ReferenceCounted<FunctionImplementation>
     {
     public:
         OPENSOLID_CORE_EXPORT virtual ~FunctionImplementation();
