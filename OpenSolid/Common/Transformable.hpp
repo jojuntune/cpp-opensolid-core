@@ -30,28 +30,47 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     class Datum;
 
-    template <class DerivedType>
+    template <class DerivedType, class ResultType = DerivedType>
     class Transformable
     {
     private:
         const DerivedType& derived() const;
     public:
         template <class PointType>
-        DerivedType scaled(double scale, const EigenBase<PointType>& point) const;
+        ResultType scaled(double scale, const EigenBase<PointType>& point) const;
 
         template <class VectorType>
-        DerivedType translated(const EigenBase<VectorType>& vector) const;
+        ResultType translated(const EigenBase<VectorType>& vector) const;
 
         template <int dimensions_, int axes_>
-        DerivedType translated(double distance, const Datum<dimensions_, axes_>& axis) const;
+        ResultType translated(double distance, const Datum<dimensions_, axes_>& axis) const;
 
-        DerivedType rotated(double angle, const Vector2d& point) const;
-
-        template <int dimensions_, int axes_>
-        DerivedType rotated(double angle, const Datum<dimensions_, axes_>& axis) const;
+        ResultType rotated(double angle, const Vector2d& point) const;
 
         template <int dimensions_, int axes_>
-        DerivedType mirrored(const Datum<dimensions_, axes_>& datum) const;
+        ResultType rotated(double angle, const Datum<dimensions_, axes_>& axis) const;
+
+        template <int dimensions_, int axes_>
+        ResultType mirrored(const Datum<dimensions_, axes_>& datum) const;
+    };
+
+    template <class ArgumentType>
+    class TransformableMatrix : public Transformable<
+        TransformableMatrix<ArgumentType>,
+        typename ArgumentType::PlainObject
+    >
+    {
+    private:
+        const ArgumentType& _argument;
+    public:
+        TransformableMatrix(const ArgumentType& argument);
+
+        template <class MatrixType, class VectorType>
+        Matrix<
+            typename ArgumentType::Scalar,
+            MatrixType::RowsAtCompileTime,
+            ArgumentType::ColsAtCompileTime
+        > transformed(const MatrixType& matrix, const VectorType& vector) const;
     };
 }
 
@@ -59,13 +78,13 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    template <class DerivedType>
-    inline const DerivedType& Transformable<DerivedType>::derived() const {
+    template <class DerivedType, class ResultType>
+    inline const DerivedType& Transformable<DerivedType, ResultType>::derived() const {
         return static_cast<const DerivedType&>(*this);
     }
 
-    template <class DerivedType> template <class PointType>
-    inline DerivedType Transformable<DerivedType>::scaled(
+    template <class DerivedType, class ResultType> template <class PointType>
+    inline ResultType Transformable<DerivedType, ResultType>::scaled(
         double scale,
         const EigenBase<PointType>& point
     ) const {
@@ -75,14 +94,36 @@ namespace OpenSolid
         return derived().transformed(scale * identity, point - scale * point);
     }
 
-    template <class DerivedType> template <class VectorType>
-    inline DerivedType Transformable<DerivedType>::translated(
+    template <class DerivedType, class ResultType> template <class VectorType>
+    inline ResultType Transformable<DerivedType, ResultType>::translated(
         const EigenBase<VectorType>& vector
     ) const {
         static const int dimensions = VectorType::SizeAtCompileTime;
         Matrix<double, dimensions, dimensions> identity(vector.size(), vector.size());
         identity.setIdentity();
         return derived().transformed(identity, vector.derived());
+    }
+
+    template <class ArgumentType>
+    TransformableMatrix<ArgumentType>::TransformableMatrix(const ArgumentType& argument) :
+        _argument(argument) {}
+
+    template <class ArgumentType> template <class MatrixType, class VectorType>
+    inline Matrix<
+        typename ArgumentType::Scalar,
+        MatrixType::RowsAtCompileTime,
+        ArgumentType::ColsAtCompileTime
+    > TransformableMatrix<ArgumentType>::transformed(
+        const MatrixType& matrix,
+        const VectorType& vector
+    ) const {
+        OpenSolid::assertValidTransform<ArgumentType::RowsAtCompileTime>(
+            _argument.rows(),
+            matrix,
+            vector
+        );
+        return (matrix.template cast<typename ArgumentType::Scalar>() * _argument).colwise() +
+            vector.template cast<typename ArgumentType::Scalar>();
     }
 }
 

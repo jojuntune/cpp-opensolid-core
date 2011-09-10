@@ -188,15 +188,23 @@ namespace Eigen
     };
 }
 
+namespace OpenSolid
+{
+    template <int dimensions_, int axes_>
+    class Datum;
+}
+
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
 
 #define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Matrix/DenseBasePlugin.hpp>
+#define EIGEN_MATRIXBASE_PLUGIN <OpenSolid/Matrix/MatrixBasePlugin.hpp>
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include "DenseBasePlugin.hpp"
+#include <OpenSolid/Matrix/DenseBasePlugin.hpp>
+#include <OpenSolid/Matrix/MatrixBasePlugin.hpp>
 #endif
 
 #include <Eigen/Core>
@@ -439,6 +447,7 @@ namespace boost
 #include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Matrix/MatrixIterator.hpp>
+#include <OpenSolid/Common/Transformable.hpp>
 
 namespace Eigen
 {
@@ -527,19 +536,53 @@ namespace Eigen
     ) const {return first_argument.strictlyContains(second_argument, _precision);}
 
     template <class DerivedType> template <class MatrixType, class VectorType>
-    Matrix<
+    inline Matrix<
         typename internal::traits<DerivedType>::Scalar,
         MatrixType::RowsAtCompileTime,
         internal::traits<DerivedType>::ColsAtCompileTime
-    > DenseBase<DerivedType>::transformed(
+    > MatrixBase<DerivedType>::transformed(
         const MatrixType& matrix,
         const VectorType& vector
     ) const {
-        OpenSolid::assertValidTransform<RowsAtCompileTime>(derived().cols(), matrix, vector);
-        return (matrix.template cast<Scalar>() * derived()).colwise() +
-            vector.template cast<Scalar>();
+        return OpenSolid::TransformableMatrix<DerivedType>(derived()).transformed(matrix, vector);
     }
 
+    template <class DerivedType> template <class PointType>
+    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::scaled(
+        double scale,
+        const EigenBase<PointType>& point
+    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).scaled(scale, point);}
+
+    template <class DerivedType> template <class VectorType>
+    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
+        const EigenBase<VectorType>& vector
+    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).translated(vector);}
+
+    template <class DerivedType> template <int dimensions_, int axes_>
+    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
+        double distance,
+        const OpenSolid::Datum<dimensions_, axes_>& axis
+    ) const {
+        return OpenSolid::TransformableMatrix<DerivedType>(derived()).translated(distance, axis);
+    }
+
+    template <class DerivedType>
+    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::rotated(
+        double angle,
+        const Vector2d& point
+    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, point);}
+
+    template <class DerivedType> template <int dimensions_, int axes_>
+    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::rotated(
+        double angle,
+        const OpenSolid::Datum<dimensions_, axes_>& axis
+    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, axis);}
+
+    template <class DerivedType> template <int dimensions_, int axes_>
+    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::mirrored(
+        const OpenSolid::Datum<dimensions_, axes_>& datum
+    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
+    
     template <class DerivedType>
     inline CwiseUnaryOp<LowerOperation, const DerivedType>
     DenseBase<DerivedType>::cwiseLower() const {return derived().unaryExpr(LowerOperation());}

@@ -185,8 +185,8 @@ namespace boost
 
 namespace OpenSolid
 {
-    template <class DerivedType> template <int dimensions_, int axes_>
-    inline DerivedType Transformable<DerivedType>::translated(
+    template <class DerivedType, class ResultType> template <int dimensions_, int axes_>
+    inline ResultType Transformable<DerivedType, ResultType>::translated(
         double distance,
         const Datum<dimensions_, axes_>& axis
     ) const {
@@ -195,8 +195,8 @@ namespace OpenSolid
         return derived().transformed(identity, distance * axis.direction());
     }
 
-    template <class DerivedType>
-    inline DerivedType Transformable<DerivedType>::rotated(
+    template <class DerivedType, class ResultType>
+    inline ResultType Transformable<DerivedType, ResultType>::rotated(
         double angle,
         const Vector2d& point
     ) const {
@@ -204,8 +204,8 @@ namespace OpenSolid
         return derived().transformed(matrix, point - matrix * point);
     }
 
-    template <class DerivedType> template <int dimensions_, int axes_>
-    inline DerivedType Transformable<DerivedType>::rotated(
+    template <class DerivedType, class ResultType> template <int dimensions_, int axes_>
+    inline ResultType Transformable<DerivedType, ResultType>::rotated(
         double angle,
         const Datum<dimensions_, axes_>& axis
     ) const {
@@ -213,8 +213,8 @@ namespace OpenSolid
         return derived().transformed(matrix, axis.origin() - matrix * axis.origin());
     }
 
-    template <class DerivedType> template <int dimensions_, int axes_>
-    inline DerivedType Transformable<DerivedType>::mirrored(
+    template <class DerivedType, class ResultType> template <int dimensions_, int axes_>
+    inline ResultType Transformable<DerivedType, ResultType>::mirrored(
         const Datum<dimensions_, axes_>& datum
     ) const {
         Matrix<double, dimensions_, 1> normal = datum.normal();

@@ -212,6 +212,7 @@
     SET(MATRIX_HEADERS
         Matrix/DenseBasePlugin.hpp
         Matrix/Matrix.hpp
+        Matrix/MatrixBasePlugin.hpp
         Matrix/MatrixTests.hpp
         Matrix/MatrixIterator.hpp
     )

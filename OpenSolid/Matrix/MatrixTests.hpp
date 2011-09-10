@@ -205,5 +205,12 @@ public:
         Vector3I second_transformed = transformed.col(1);
         TS_ASSERT((second_transformed.cwiseLower() - Vector3d(6, 8, 1)).isZero());
         TS_ASSERT((second_transformed.cwiseUpper() - Vector3d(7, 9, 1)).isZero());
+
+        Vector3d point(3, 2, 1);
+        TS_ASSERT((point.rotated(M_PI / 2, Frame3d().zAxis()) - Vector3d(-2, 3, 1)).isZero());
+        TS_ASSERT((point.rotated(M_PI / 2, Frame3d().xAxis()) - Vector3d(3, -1, 2)).isZero());
+        TS_ASSERT((point.translated(Vector3d(1, 1, 1)) - Vector3d(4, 3, 2)).isZero());
+        TS_ASSERT((point.mirrored(Frame3d().yzPlane()) - Vector3d(-3, 2, 1)).isZero());
+        TS_ASSERT(((2 * point).mirrored(Frame3d().xyPlane()) - Vector3d(6, 4, -2)).isZero());
     }
 };
