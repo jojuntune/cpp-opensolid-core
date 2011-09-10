@@ -44,10 +44,10 @@ namespace OpenSolid
         mutable boost::detail::atomic_count _count;
 
         template <class Type>
-        friend void intrusive_ptr_add_ref<Type>(const ReferenceCounted<Type>* argument);
+        friend void intrusive_ptr_add_ref(const ReferenceCounted<Type>* argument);
 
         template <class Type>
-        friend void intrusive_ptr_release<Type>(const ReferenceCounted<Type>* argument);
+        friend void intrusive_ptr_release(const ReferenceCounted<Type>* argument);
     public:
         ReferenceCounted();
     };
