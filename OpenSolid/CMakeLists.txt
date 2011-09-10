@@ -112,11 +112,6 @@
         Datum/Datum.hpp
         Datum/DatumTests.hpp
         Datum/Frame.hpp
-        Datum/LocalAxis.hpp
-        Datum/LocalOrigin.hpp
-        Datum/LocalPlane.hpp
-        Datum/NormalAxis.hpp
-        Datum/NormalPlane.hpp
         Datum/Plane.hpp
     )
     

@@ -60,7 +60,7 @@ public:
     
     void testDatumComposition() {
         Frame3d frame(Vector3d::UnitX(), Matrix3d::Identity());
-        frame = frame.rotated(-M_PI / 4, frame.yAxis()); // localXAxis(), localYAxis(), localAxis(int index)
+        frame = frame.rotated(-M_PI / 4, frame.yAxis());
         Frame3d product = frame * frame;
         Vector3d expected_product_origin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
         Frame3d quotient = frame / frame;

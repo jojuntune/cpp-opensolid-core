@@ -28,11 +28,6 @@
 #include <OpenSolid/Common/config.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Datum/LocalOrigin.hpp>
-#include <OpenSolid/Datum/LocalAxis.hpp>
-#include <OpenSolid/Datum/LocalPlane.hpp>
-#include <OpenSolid/Datum/NormalAxis.hpp>
-#include <OpenSolid/Datum/NormalPlane.hpp>
 
 namespace OpenSolid
 {
@@ -119,25 +114,8 @@ namespace OpenSolid
             const VectorType& vector
         ) const;
 
-        using Transformable<Datum<dimensions_, axes_>>::scaled;
-        Datum<dimensions_, axes_> scaled(double scale, const LocalOrigin&) const;
-
-        using Transformable<Datum<dimensions_, axes_>>::translated;
-        Datum<dimensions_, axes_> translated(double distance, const LocalAxis& local_axis) const;
-        Datum<dimensions_, axes_> translated(double distance, const NormalAxis&) const;
-
-        using Transformable<Datum<dimensions_, axes_>>::rotated;
-        Datum<dimensions_, axes_> rotated(double angle, const LocalOrigin&) const;
-        Datum<dimensions_, axes_> rotated(double angle, const LocalAxis& local_axis) const;
-        Datum<dimensions_, axes_> rotated(double angle, const NormalAxis&) const;
-
-        using Transformable<Datum<dimensions_, axes_>>::mirrored;
-        Datum<dimensions_, axes_> mirrored(const LocalPlane& local_plane) const;
-        Datum<dimensions_, axes_> mirrored(const NormalPlane&) const;
-
         Datum<dimensions_, axes_> orthonormalized() const;
         Datum<dimensions_, axes_> orientation() const;
-
         Frame<dimensions_> frame() const;
     };
 
@@ -570,52 +548,6 @@ namespace OpenSolid
             matrix * basis()
         );
     }
-
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::scaled(
-        double scale,
-        const LocalOrigin&    
-    ) const {return this->scaled(scale, origin());}
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::translated(
-        double distance,
-        const LocalAxis& local_axis
-    ) const {return this->translated(distance, axis(local_axis.index()));}
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::translated(
-        double distance,
-        const NormalAxis&
-    ) const {return this->translated(distance, normalAxis());}
-
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotated(
-        double angle,
-        const LocalOrigin&
-    ) const {return this->rotated(angle, origin());}
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotated(
-        double angle,
-        const LocalAxis& local_axis
-    ) const {return this->rotated(angle, axis(local_axis.index()));}
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::rotated(
-        double angle,
-        const NormalAxis&
-    ) const {return this->rotated(angle, normalAxis());}
-
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::mirrored(
-        const LocalPlane& local_plane
-    ) const {return this->mirrored(plane(local_plane.firstIndex(), local_plane.secondIndex()));}
-    
-    template <int dimensions_, int axes_>
-    inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::mirrored(
-        const NormalPlane&
-    ) const {return this->mirrored(normalPlane());}
     
     template <int dimensions_, int axes_>
     inline Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthonormalized() const {

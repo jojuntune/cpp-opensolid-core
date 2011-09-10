@@ -43,13 +43,6 @@ namespace OpenSolid
         
         template <int other_dimensions_, int other_axes_>
         Plane<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
-
-        static Plane<dimensions_> XY();
-        static Plane<dimensions_> XZ();
-        static Plane<dimensions_> YX();
-        static Plane<dimensions_> YZ();
-        static Plane<dimensions_> ZX();
-        static Plane<dimensions_> ZY();
     };
     
     typedef Plane<3> Plane3d;
@@ -146,42 +139,6 @@ namespace OpenSolid
         assert(other.basis().isUnitary());
         Datum<dimensions_, static_axes>::operator=(other);
         return *this;
-    }
-
-    template <int dimensions_>
-    inline Plane<dimensions_> Plane<dimensions_>::XY() {
-        assertCompatible<dimensions_, 3>();
-        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitY());
-    }
-    
-    template <int dimensions_>
-    inline Plane<dimensions_> Plane<dimensions_>::XZ() {
-        assertCompatible<dimensions_, 3>();
-        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitZ());
-    }
-    
-    template <int dimensions_>
-    inline Plane<dimensions_> Plane<dimensions_>::YX() {
-        assertCompatible<dimensions_, 3>();
-        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitY(), Vector3d::UnitX());
-    }
-    
-    template <int dimensions_>
-    inline Plane<dimensions_> Plane<dimensions_>::YZ() {
-        assertCompatible<dimensions_, 3>();
-        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitY(), Vector3d::UnitZ());
-    }
-    
-    template <int dimensions_>
-    inline Plane<dimensions_> Plane<dimensions_>::ZX() {
-        assertCompatible<dimensions_, 3>();
-        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitZ(), Vector3d::UnitX());
-    }
-    
-    template <int dimensions_>
-    inline Plane<dimensions_> Plane<dimensions_>::ZY() {
-        assertCompatible<dimensions_, 3>();
-        return Plane<dimensions_>(Vector3d::Zero(), Vector3d::UnitZ(), Vector3d::UnitY());
     }
 }
 

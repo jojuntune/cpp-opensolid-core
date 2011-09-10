@@ -41,13 +41,6 @@ namespace OpenSolid
         
         template <int other_dimensions_, int other_axes_>
         Axis<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
-
-        static Axis<dimensions_> X();
-        static Axis<dimensions_> X(int dimensions);
-        static Axis<dimensions_> Y();
-        static Axis<dimensions_> Y(int dimensions);
-        static Axis<dimensions_> Z();
-        static Axis<dimensions_> Z(int dimensions);
     };
     
     typedef Axis<2> Axis2d;
@@ -107,54 +100,6 @@ namespace OpenSolid
         assert(other.basis().squaredNorm() == One());
         Datum<dimensions_, 1>::operator=(other);
         return *this;
-    }
-
-    template <int dimensions_>
-    inline Axis<dimensions_> Axis<dimensions_>::X() {
-        return Axis<dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(),
-            Matrix<double, dimensions_, 1>::UnitX()
-        );
-    }
-
-    template <int dimensions_>
-    inline Axis<dimensions_> Axis<dimensions_>::X(int dimensions) {
-        return Axis<dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(dimensions),
-            Matrix<double, dimensions_, 1>::Unit(dimensions, 0)
-        );
-    }
-
-    template <int dimensions_>
-    inline Axis<dimensions_> Axis<dimensions_>::Y() {
-        return Axis<dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(),
-            Matrix<double, dimensions_, 1>::UnitY()
-        );
-    }
-
-    template <int dimensions_>
-    inline Axis<dimensions_> Axis<dimensions_>::Y(int dimensions) {
-        return Axis<dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(dimensions),
-            Matrix<double, dimensions_, 1>::Unit(dimensions, 1)
-        );
-    }
-
-    template <int dimensions_>
-    inline Axis<dimensions_> Axis<dimensions_>::Z() {
-        return Axis<dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(),
-            Matrix<double, dimensions_, 1>::UnitZ()
-        );
-    }
-
-    template <int dimensions_>
-    inline Axis<dimensions_> Axis<dimensions_>::Z(int dimensions) {
-        return Axis<dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(dimensions),
-            Matrix<double, dimensions_, 1>::Unit(dimensions, 2)
-        );
     }
 }
 
