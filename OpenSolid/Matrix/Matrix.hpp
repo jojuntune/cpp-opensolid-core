@@ -446,8 +446,11 @@ namespace boost
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Matrix/MatrixIterator.hpp>
-#include <OpenSolid/Common/Transformable.hpp>
+namespace OpenSolid
+{
+    template <class ArgumentType>
+    class TransformableMatrix;
+}
 
 namespace Eigen
 {
@@ -862,5 +865,8 @@ namespace boost
         }
     }
 }
+
+#include <OpenSolid/Matrix/MatrixIterator.hpp>
+#include <OpenSolid/Common/Transformable.hpp>
 
 #endif
