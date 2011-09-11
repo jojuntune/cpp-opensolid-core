@@ -29,38 +29,15 @@ namespace OpenSolid
     class CoordinateSystem : public Datum<dimensions_, axes_>
     {
     public:
-        template <class VectorsType>
-        CoordinateSystem(
+        OPENSOLID_CORE_EXPORT CoordinateSystem(
             const Matrix<double, dimensions_, 1>& origin,
-            const EigenBase<VectorsType>& vectors
+            const Matrix<double, dimensions_, axes_>& basis
         );
         
-        template <int other_dimensions_, int other_axes_>
-        CoordinateSystem(const Datum<other_dimensions_, other_axes_>& other);
+        OPENSOLID_CORE_EXPORT CoordinateSystem(const Datum<dimensions_, axes_>& other);
         
         using Datum<dimensions_, axes_>::operator=;
     };
-    
-    typedef CoordinateSystem<2, 2> CoordinateSystem2d;
-    typedef CoordinateSystem<3, 3> CoordinateSystem3d;
-    typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystemXd;
 }
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    template <int dimensions_, int axes_> template <class VectorsType>
-    inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
-        const Matrix<double, dimensions_, 1>& origin,
-        const EigenBase<VectorsType>& vectors
-    ) : Datum<dimensions_, axes_>(origin, vectors) {}
-
-    template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
-    inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
-        const Datum<other_dimensions_, other_axes_>& other
-    ) : Datum<dimensions_, axes_>(other) {}
-}
-
 
 #endif

@@ -111,7 +111,7 @@ public:
     }
     
     void testNonOrthogonal() {
-        CoordinateSystem3d coordinate_system(
+        CoordinateSystem<3, 3> coordinate_system(
             Vector3d(1, 2, 3),
             Matrix3d::Ones().triangularView<Upper>()
         );
