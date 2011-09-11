@@ -28,90 +28,31 @@ namespace OpenSolid
     template <int dimensions_>
     class Plane : public Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>
     {
-    private:
-        static const int static_axes = (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1);
     public:
-        Plane();
+        OPENSOLID_CORE_EXPORT Plane();
 
-        template <class VectorsType>
-        Plane(const Matrix<double, dimensions_, 1>& origin, const EigenBase<VectorsType>& vectors);
+        OPENSOLID_CORE_EXPORT Plane(
+            const Matrix<double, dimensions_, 1>& origin,
+            const Matrix<double, dimensions_, 1>& normal
+        );
 
-        Plane(const Vector3d& origin, const Vector3d& first_vector, const Vector3d& second_vector);
+        OPENSOLID_CORE_EXPORT Plane(
+            const Vector3d& origin,
+            const Vector3d& first_vector,
+            const Vector3d& second_vector
+        );
         
-        template <int other_dimensions_, int other_axes_>
-        Plane(const Datum<other_dimensions_, other_axes_>& other);
+        OPENSOLID_CORE_EXPORT Plane(
+            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
+        );
         
-        template <int other_dimensions_, int other_axes_>
-        Plane<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
+        OPENSOLID_CORE_EXPORT Plane<dimensions_>& operator=(
+            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
+        );
     };
     
     typedef Plane<3> Plane3d;
     typedef Plane<Dynamic> PlaneXd;
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{       
-    template <int dimensions_>
-    inline Plane<dimensions_>::Plane() {}
-    
-    namespace
-    {
-        template <int dimensions_, int axes_, class VectorsType>
-        Matrix<double, dimensions_, axes_> planeBasis(const VectorsType& vectors) {
-            if (vectors.cols() == 1) {
-                int sign = vectors.rows() % 2 == 0 ? -1 : 1;
-                return sign * orthonormalBasis(vectors).rightCols(vectors.rows() - 1);
-            } else {
-                return orthonormalBasis(vectors).leftCols(vectors.rows() - 1);
-            }
-        }
-    }
-    
-    template <int dimensions_> template <class VectorsType>
-    Plane<dimensions_>::Plane(
-        const Matrix<double, dimensions_, 1>& origin,
-        const EigenBase<VectorsType>& vectors
-    ) : Datum<dimensions_, static_axes>(origin, planeBasis<dimensions_, static_axes>(vectors)) {}
-
-    namespace
-    {
-        inline Matrix<double, 3, 2> planeBasis(Vector3d first_vector, Vector3d second_vector) {
-            first_vector.normalize();
-            second_vector -= second_vector.dot(first_vector) * first_vector;
-            second_vector.normalize();
-            Matrix<double, 3, 2> result;
-            result << first_vector, second_vector;
-            return result;
-        }
-    }
-    
-    template <int dimensions_>
-    Plane<dimensions_>::Plane(
-        const Vector3d& origin,
-        const Vector3d& first_vector,
-        const Vector3d& second_vector
-    ) : Datum<dimensions_, static_axes>(origin, planeBasis(first_vector, second_vector)) {
-        assertCompatible<dimensions_, 3>();
-    }
-
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<dimensions_, static_axes>(other) {
-        assert(other.axes() == other.dimensions() - 1);
-        assert(other.basis().isUnitary());
-    }
-
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Plane<dimensions_>& Plane<dimensions_>::operator=(
-        const Datum<other_dimensions_, other_axes_>& other
-    ) {
-        assert(other.axes() == other.dimensions() - 1);
-        assert(other.basis().isUnitary());
-        Datum<dimensions_, static_axes>::operator=(other);
-        return *this;
-    }
 }
 
 #endif
