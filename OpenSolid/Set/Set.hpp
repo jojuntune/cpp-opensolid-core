@@ -128,13 +128,13 @@ namespace OpenSolid
         template<class OutputIteratorType>
         void copyOverlapping(
             const Bounds& overlapping_bounds,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class BoundsPredicateType, class OutputIteratorType>
         void copyFiltered(
             const BoundsPredicateType& bounds_predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class PredicateType, class OutputIteratorType>
@@ -144,14 +144,14 @@ namespace OpenSolid
         void copyOverlappingIf(
             const Bounds& overlapping_bounds,
             const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class BoundsPredicateType, class PredicateType, class OutputIteratorType>
         void copyFilteredIf(
             const BoundsPredicateType& bounds_predicate,
             const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class FunctionType, class OutputIteratorType>
@@ -161,21 +161,21 @@ namespace OpenSolid
         void transformOverlapping(
             const FunctionType& function,
             const Bounds& overlapping_bounds,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class FunctionType, class BoundsPredicateType, class OutputIteratorType>
         void transformFiltered(
             const FunctionType& function,
             const BoundsPredicateType& bounds_predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class FunctionType, class PredicateType, class OutputIteratorType>
         void transformIf(
             const FunctionType& function,
             const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <class FunctionType, class PredicateType, class OutputIteratorType>
@@ -183,7 +183,7 @@ namespace OpenSolid
             const FunctionType& function,
             const Bounds& overlapping_bounds,
             const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
 
         template <
@@ -196,7 +196,7 @@ namespace OpenSolid
             const FunctionType& function,
             const BoundsPredicateType& bounds_predicate,
             const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            OutputIteratorType output_iterato
         ) const;
     };
     
@@ -222,7 +222,7 @@ namespace OpenSolid
     };
 
     template <class Type, class BoundsFunctionType>
-    class SetInserter
+    class SetInserte
     {
     private:
         Set<Type, BoundsFunctionType>* _set;
@@ -560,7 +560,7 @@ namespace OpenSolid
     template <class Type, class BoundsFunctionType> template<class OutputIteratorType>
     void Set<Type, BoundsFunctionType>::copyOverlapping(
         const Bounds& overlapping_bounds,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -580,7 +580,7 @@ namespace OpenSolid
     template <class BoundsPredicateType, class OutputIteratorType>
     void Set<Type, BoundsFunctionType>::copyFiltered(
         const BoundsPredicateType& bounds_predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -598,7 +598,7 @@ namespace OpenSolid
     template <class PredicateType, class OutputIteratorType>
     void Set<Type, BoundsFunctionType>::copyIf(
         const PredicateType& predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -619,7 +619,7 @@ namespace OpenSolid
     void Set<Type, BoundsFunctionType>::copyOverlappingIf(
         const Bounds& overlapping_bounds,
         const PredicateType& predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -642,7 +642,7 @@ namespace OpenSolid
     void Set<Type, BoundsFunctionType>::copyFilteredIf(
         const BoundsPredicateType& bounds_predicate,
         const PredicateType& predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -662,7 +662,7 @@ namespace OpenSolid
     template <class FunctionType, class OutputIteratorType>
     void Set<Type, BoundsFunctionType>::transform(
         const FunctionType& function,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -681,7 +681,7 @@ namespace OpenSolid
     void Set<Type, BoundsFunctionType>::transformOverlapping(
         const FunctionType& function,
         const Bounds& overlapping_bounds,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -702,7 +702,7 @@ namespace OpenSolid
     void Set<Type, BoundsFunctionType>::transformFiltered(
         const FunctionType& function,
         const BoundsPredicateType& bounds_predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -721,7 +721,7 @@ namespace OpenSolid
     void Set<Type, BoundsFunctionType>::transformIf(
         const FunctionType& function,
         const PredicateType& predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -743,7 +743,7 @@ namespace OpenSolid
         const FunctionType& function,
         const Bounds& overlapping_bounds,
         const PredicateType& predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -772,7 +772,7 @@ namespace OpenSolid
         const FunctionType& function,
         const BoundsPredicateType& bounds_predicate,
         const PredicateType& predicate,
-        OutputIteratorType output_iterator
+        OutputIteratorType output_iterato
     ) const {
         if (root()) {
             visitNode(
@@ -802,7 +802,7 @@ namespace OpenSolid
     
     template <class Type, class BoundsType>
     inline bool SetIterator<Type, BoundsType>::equal(
-        const SetIterator<Type, BoundsType>& other
+        const SetIterator<Type, BoundsType>& othe
     ) const {return _node == other._node;}
     
     template <class Type, class BoundsType>

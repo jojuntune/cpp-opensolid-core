@@ -49,12 +49,12 @@ bool strictlyContains(
 
 template <class OtherDerivedType>
 CwiseBinaryOp<HullOperation, const Derived, const OtherDerivedType> hull(
-    const DenseBase<OtherDerivedType>& other
+    const DenseBase<OtherDerivedType>& othe
 ) const;
 
 template <class OtherDerivedType>
 CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> intersection(
-    const DenseBase<OtherDerivedType>& other
+    const DenseBase<OtherDerivedType>& othe
 ) const;
 
 static const RandomAccessLinSpacedReturnType LinSpaced(

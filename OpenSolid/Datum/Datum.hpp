@@ -53,7 +53,7 @@ namespace OpenSolid
         Datum(const Datum<other_dimensions_, other_axes_>& other);
         
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_>& operator=(
-            const Datum<dimensions_, axes_>& other
+            const Datum<dimensions_, axes_>& othe
         );
         
         template <int other_dimensions_, int other_axes_>
@@ -106,7 +106,7 @@ namespace OpenSolid
         template <class MatrixType, class VectorType>
         Datum<MatrixType::RowsAtCompileTime, axes_> transformed(
             const MatrixType& matrix,
-            const VectorType& vector
+            const VectorType& vecto
         ) const;
 
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orthonormalized() const;
@@ -200,7 +200,7 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
-        const Datum<other_dimensions_, other_axes_>& other
+        const Datum<other_dimensions_, other_axes_>& othe
     ) {
         assertCompatible<dimensions_, other_dimensions_>();
         assertCompatible<axes_, other_axes_>();
@@ -240,7 +240,7 @@ namespace OpenSolid
     template <int dimensions_, int axes_> template <class MatrixType, class VectorType>
     Datum<MatrixType::RowsAtCompileTime, axes_> Datum<dimensions_, axes_>::transformed(
         const MatrixType& matrix,
-        const VectorType& vector
+        const VectorType& vecto
     ) const {
         assertValidTransform<dimensions_>(dimensions(), matrix, vector);
         return Datum<MatrixType::RowsAtCompileTime, axes_>(

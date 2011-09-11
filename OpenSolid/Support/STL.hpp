@@ -340,7 +340,7 @@ namespace std
 {
     namespace
     {
-        struct HashVisitor
+        struct HashVisito
         {
             std::size_t result;
         
@@ -370,7 +370,7 @@ namespace std
 
     namespace
     {
-        struct EqualVisitor
+        struct EqualVisito
         {
             typedef bool result_type;
 

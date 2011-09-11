@@ -370,7 +370,7 @@ namespace Eigen
         internal::traits<DerivedType>::ColsAtCompileTime
     > MatrixBase<DerivedType>::transformed(
         const MatrixType& matrix,
-        const VectorType& vector
+        const VectorType& vecto
     ) const {
         return OpenSolid::TransformableMatrix<DerivedType>(derived()).transformed(matrix, vector);
     }
@@ -383,7 +383,7 @@ namespace Eigen
 
     template <class DerivedType> template <class VectorType>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
-        const EigenBase<VectorType>& vector
+        const EigenBase<VectorType>& vecto
     ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).translated(vector);}
 
     template <class DerivedType> template <int dimensions_, int axes_>
@@ -554,7 +554,7 @@ namespace OpenSolid
     inline void assertValidTransform(
         int dimensions,
         const MatrixType& matrix,
-        const VectorType& vector
+        const VectorType& vecto
     ) {
         assertCompatible<MatrixType::ColsAtCompileTime, dimensions_>();
         assert(matrix.cols() == dimensions);

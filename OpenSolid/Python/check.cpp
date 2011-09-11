@@ -43,7 +43,7 @@ namespace OpenSolid
     void checkSameDimensions(
         int first_dimensions,
         int second_dimensions,
-        const std::string& caller
+        const std::string& calle
     ) {
         if (first_dimensions != second_dimensions) {
             Error error("SameDimensions", caller);
@@ -56,7 +56,7 @@ namespace OpenSolid
     void checkValidProductDimensions(
         int first_dimensions,
         int second_dimensions,
-        const std::string& caller
+        const std::string& calle
     ) {
         if (first_dimensions != 1u && second_dimensions != 1u) {
             Error error("ValidProductDimensions", caller);
@@ -69,7 +69,7 @@ namespace OpenSolid
     void checkComponentIndexInRange(
         int component_index,
         int size,
-        const std::string& caller
+        const std::string& calle
     ) {
         if (component_index < -size || component_index >= size) {
             Error error("ComponentIndexInRange", caller);
@@ -84,7 +84,7 @@ namespace OpenSolid
         int block_start,
         int block_size,
         int size,
-        const std::string& caller
+        const std::string& calle
     ) {
         bool valid;
         if (block_start < 0) {
@@ -106,17 +106,17 @@ namespace OpenSolid
     
     void checkNoMatrixIndexStep(
         boost::python::slice indices,
-        const std::string& caller
+        const std::string& calle
     ) {if (indices.step() != boost::python::object()) {throw Error("NoMatrixIndexStep", caller);}}
     
     void checkConstantFunction(
         const Function& function,
-        const std::string& caller
+        const std::string& calle
     ) {if (!function.isA<ConstantFunction>()) {throw Error("ConstantFunction", caller);}}
     
     void checkScalarFunction(
         const Function& function,
-        const std::string& caller
+        const std::string& calle
     ) {
         if (function.dimensions() > 1) {
             Error error("ScalarFunction", caller);
@@ -128,7 +128,7 @@ namespace OpenSolid
     void checkParameterIndexInRange(
         int index,
         const Function& function,
-        const std::string& caller
+        const std::string& calle
     ) {
         if (index < 0 || index > function.parameters()) {
             Error error("ParameterIndexInRange", caller);
@@ -141,7 +141,7 @@ namespace OpenSolid
     void checkConsistentFunctionParameters(
         const Function& first_function,
         const Function& second_function,
-        const std::string& caller
+        const std::string& calle
     ) {
         if (
             !first_function.isA<ConstantFunction>() &&

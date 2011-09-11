@@ -30,7 +30,7 @@ namespace OpenSolid
 
     template <int dimensions_, int axes_>
     inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
-        const Datum<dimensions_, axes_>& other
+        const Datum<dimensions_, axes_>& othe
     ) : Datum<dimensions_, axes_>(other) {}
 
     template class CoordinateSystem<1, 1>;

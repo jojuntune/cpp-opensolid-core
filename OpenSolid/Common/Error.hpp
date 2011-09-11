@@ -32,7 +32,7 @@
 
 namespace OpenSolid
 {
-    class Error
+    class Erro
     {
     private:
         std::string _expected;
@@ -41,7 +41,7 @@ namespace OpenSolid
 
         friend OPENSOLID_CORE_EXPORT std::ostream& operator<<(
             std::ostream& stream,
-            const Error& error
+            const Error& erro
         );
     public:
         OPENSOLID_CORE_EXPORT Error();

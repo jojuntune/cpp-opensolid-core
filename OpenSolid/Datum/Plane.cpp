@@ -62,7 +62,7 @@ namespace OpenSolid
     Plane<dimensions_>::Plane(
         const Vector3d& origin,
         const Vector3d& first_vector,
-        const Vector3d& second_vector
+        const Vector3d& second_vecto
     ) : Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>(
             origin,
             planeBasis(first_vector, second_vector)
@@ -73,7 +73,7 @@ namespace OpenSolid
 
     template <int dimensions_>
     Plane<dimensions_>::Plane(
-        const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
+        const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& othe
     ) : Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>(other) {
         assert(other.axes() == other.dimensions() - 1);
         assert(other.basis().isUnitary());
@@ -85,7 +85,7 @@ namespace OpenSolid
 
     template <int dimensions_>
     Plane<dimensions_>& Plane<dimensions_>::operator=(
-        const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
+        const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& othe
     ) {
         assert(other.axes() == other.dimensions() - 1);
         assert(other.basis().isUnitary());

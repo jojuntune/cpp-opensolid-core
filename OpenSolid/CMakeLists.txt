@@ -76,7 +76,7 @@
             ${PYTHON_EXECUTABLE}
             ARGS
             ${OpenSolid_SOURCE_DIR}/../External/cxxtest/cxxtestgen.py
-            --error-printer
+            --error-printe
             -o ${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/${source}
         )

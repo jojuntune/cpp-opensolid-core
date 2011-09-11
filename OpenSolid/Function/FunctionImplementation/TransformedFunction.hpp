@@ -36,7 +36,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT TransformedFunction(
             const Function& function,
             const MatrixXd& matrix,
-            const VectorXd& vector
+            const VectorXd& vecto
         );
         
         const MatrixXd& matrix() const;
