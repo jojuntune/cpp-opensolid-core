@@ -38,6 +38,8 @@ namespace OpenSolid
         
         using Datum<dimensions_, axes_>::operator=;
     };
+
+    typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystemXd;
 }
 
 #endif

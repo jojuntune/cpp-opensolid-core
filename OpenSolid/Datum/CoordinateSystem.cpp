@@ -34,9 +34,12 @@ namespace OpenSolid
     ) : Datum<dimensions_, axes_>(other) {}
 
     template class CoordinateSystem<1, 1>;
+    template class CoordinateSystem<1, 2>;
+    template class CoordinateSystem<1, 3>;
     template class CoordinateSystem<1, Dynamic>;
     template class CoordinateSystem<2, 1>;
     template class CoordinateSystem<2, 2>;
+    template class CoordinateSystem<2, 3>;
     template class CoordinateSystem<2, Dynamic>;
     template class CoordinateSystem<3, 1>;
     template class CoordinateSystem<3, 2>;

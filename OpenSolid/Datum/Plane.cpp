@@ -25,6 +25,10 @@ namespace OpenSolid
     template <int dimensions_>
     Plane<dimensions_>::Plane() {}
 
+    template Plane<2>::Plane();
+    template Plane<3>::Plane();
+    template Plane<Dynamic>::Plane();
+
     template <int dimensions_, class NormalType>
     inline Matrix<double, dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>
     normalBasis(NormalType normal) {
@@ -40,6 +44,10 @@ namespace OpenSolid
             origin,
             normalBasis<dimensions_>(normal)
         ) {assert(origin.size() == normal.size());}
+
+    template Plane<2>::Plane(const Matrix<double, 2, 1>&, const Matrix<double, 2, 1>&);
+    template Plane<3>::Plane(const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&);
+    template Plane<Dynamic>::Plane(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&);
 
     inline Matrix<double, 3, 2> planeBasis(Vector3d first_vector, Vector3d second_vector) {
         first_vector.normalize();
@@ -60,6 +68,9 @@ namespace OpenSolid
             planeBasis(first_vector, second_vector)
         ) {assertCompatible<dimensions_, 3>();}
 
+    template Plane<3>::Plane(const Vector3d&, const Vector3d&, const Vector3d&);
+    template Plane<Dynamic>::Plane(const Vector3d&, const Vector3d&, const Vector3d&);
+
     template <int dimensions_>
     Plane<dimensions_>::Plane(
         const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
@@ -67,6 +78,10 @@ namespace OpenSolid
         assert(other.axes() == other.dimensions() - 1);
         assert(other.basis().isUnitary());
     }
+
+    template Plane<2>::Plane(const Datum<2, 1>&);
+    template Plane<3>::Plane(const Datum<3, 2>&);
+    template Plane<Dynamic>::Plane(const Datum<Dynamic, Dynamic>&);
 
     template <int dimensions_>
     Plane<dimensions_>& Plane<dimensions_>::operator=(
@@ -77,7 +92,8 @@ namespace OpenSolid
         Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>::operator=(other);
         return *this;
     }
-    
-    template class Plane<3>;
-    template class Plane<Dynamic>;
+
+    template Plane<2>& Plane<2>::operator=(const Datum<2, 1>&);
+    template Plane<3>& Plane<3>::operator=(const Datum<3, 2>&);
+    template Plane<Dynamic>& Plane<Dynamic>::operator=(const Datum<Dynamic, Dynamic>&);
 }
