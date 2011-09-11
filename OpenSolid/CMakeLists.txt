@@ -124,7 +124,11 @@
     )
     
     SET(DATUM_SOURCES
+        Datum/Axis.cpp
+        Datum/CoordinateSystem.cpp
         Datum/Datum.cpp
+        Datum/Frame.cpp
+        Datum/Plane.cpp
     )
     
     SET(DOMAIN_HEADERS

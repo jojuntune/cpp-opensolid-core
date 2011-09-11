@@ -29,50 +29,22 @@ namespace OpenSolid
     class Axis : public Datum<dimensions_, 1>
     {
     public:
-        Axis();
+        OPENSOLID_CORE_EXPORT Axis();
 
-        Axis(
+        OPENSOLID_CORE_EXPORT Axis(
             const Matrix<double, dimensions_, 1>& origin,
             const Matrix<double, dimensions_, 1>& direction
         );
+
+        OPENSOLID_CORE_EXPORT Axis(const Datum<dimensions_, 1>& other);
         
-        template <int other_dimensions_, int other_axes_>
-        Axis(const Datum<other_dimensions_, other_axes_>& other);
-        
-        template <int other_dimensions_, int other_axes_>
-        Axis<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
+        OPENSOLID_CORE_EXPORT Axis<dimensions_>& operator=(const Datum<dimensions_, 1>& other);
     };
     
+    typedef Axis<1> Axis1d;
     typedef Axis<2> Axis2d;
     typedef Axis<3> Axis3d;
     typedef Axis<Dynamic> AxisXd;
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    template <int dimensions_>
-    inline Axis<dimensions_>::Axis() {}
-    
-    template <int dimensions_>
-    inline Axis<dimensions_>::Axis(
-        const Matrix<double, dimensions_, 1>& origin,
-        const Matrix<double, dimensions_, 1>& direction
-    ) : Datum<dimensions_, 1>(origin, direction.normalized()) {}
-
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Axis<dimensions_>::Axis(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<dimensions_, 1>(other) {assert(other.basis().squaredNorm() == One());}
-
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Axis<dimensions_>& Axis<dimensions_>::operator=(
-        const Datum<other_dimensions_, other_axes_>& other
-    ) {
-        assert(other.basis().squaredNorm() == One());
-        Datum<dimensions_, 1>::operator=(other);
-        return *this;
-    }
 }
 
 #endif
