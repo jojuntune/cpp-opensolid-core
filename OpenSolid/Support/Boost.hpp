@@ -287,6 +287,8 @@ namespace boost
 
 ////////// Implementation //////////
 
+#include <OpenSolid/Simplex/Simplex.hpp>
+
 namespace boost
 {
     namespace geometry
