@@ -29,22 +29,23 @@ namespace OpenSolid
     class Frame : public Datum<dimensions_, dimensions_>
     {
     public:
-        Frame();
+        OPENSOLID_CORE_EXPORT Frame();
 
-        explicit Frame(int size);
+        OPENSOLID_CORE_EXPORT explicit Frame(int size);
         
-        explicit Frame(const Matrix<double, dimensions_, 1>& origin);
+        OPENSOLID_CORE_EXPORT explicit Frame(const Matrix<double, dimensions_, 1>& origin);
         
         template <class VectorsType>
         Frame(const Matrix<double, dimensions_, 1>& origin, const EigenBase<VectorsType>& vectors);
         
-        template <int other_dimensions_, int other_axes_>
-        Frame(const Datum<other_dimensions_, other_axes_>& other);
+        OPENSOLID_CORE_EXPORT Frame(const Datum<dimensions_, dimensions_>& other);
         
-        template <int other_dimensions_, int other_axes_>
-        Frame<dimensions_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
+        OPENSOLID_CORE_EXPORT Frame<dimensions_>& operator=(
+            const Datum<dimensions_, dimensions_>& other
+        );
     };
     
+    typedef Frame<1> Frame1d;
     typedef Frame<2> Frame2d;
     typedef Frame<3> Frame3d;
     typedef Frame<Dynamic> FrameXd;
@@ -54,44 +55,6 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    namespace
-    {
-        template <int dimensions_>
-        inline Matrix<double, dimensions_, 1> defaultOrigin() {
-            Matrix<double, dimensions_, 1> result;
-            if (dimensions_ != Dynamic) {result.setZero();}
-            return result;
-        }
-
-        template <int dimensions_>
-        inline Matrix<double, dimensions_, dimensions_> defaultBasis() {
-            Matrix<double, dimensions_, dimensions_> result;
-            if (dimensions_ != Dynamic) {result.setIdentity();}
-            return result;
-        }
-    }
-
-    template <int dimensions_>
-    inline Frame<dimensions_>::Frame() :
-        Datum<dimensions_, dimensions_>(
-            defaultOrigin<dimensions_>(),
-            defaultBasis<dimensions_>()
-        ) {}
-    
-    template <int dimensions_>
-    inline Frame<dimensions_>::Frame(int size) :
-        Datum<dimensions_, dimensions_>(
-            Matrix<double, dimensions_, 1>::Zero(size),
-            Matrix<double, dimensions_, dimensions_>::Identity(size, size)
-        ) {assertCompatible<dimensions_>(size);}
-        
-    template <int dimensions_>
-    inline Frame<dimensions_>::Frame(const Matrix<double, dimensions_, 1>& origin) :
-        Datum<dimensions_, dimensions_>(
-            origin,
-            Matrix<double, dimensions_, dimensions_>::Identity(origin.size(), origin.size())
-        ) {assertCompatible<dimensions_>(origin.size());}
-    
     template <int dimensions_> template <class VectorsType>
     inline Frame<dimensions_>::Frame(
         const Matrix<double, dimensions_, 1>& origin,
@@ -100,25 +63,6 @@ namespace OpenSolid
             origin,
             orthonormalBasis(vectors.derived()).leftCols(origin.size())
         ) {}
-
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<dimensions_, dimensions_>(other) {
-        assertCompatible<other_dimensions_, other_axes_>();
-        assert(other.dimensions() == other.axes());
-        assert(other.basis().isUnitary());
-    }
-
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    inline Frame<dimensions_>& Frame<dimensions_>::operator=(
-        const Datum<other_dimensions_, other_axes_>& other
-    ) {
-        assertCompatible<other_dimensions_, other_axes_>();
-        assert(other.dimensions() == other.axes());
-        assert(other.basis().isUnitary());
-        Datum<dimensions_, dimensions_>::operator=(other);
-        return *this;
-    }
 }
 
 #endif
