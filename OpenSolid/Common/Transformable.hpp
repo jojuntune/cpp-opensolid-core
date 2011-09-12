@@ -94,7 +94,7 @@ namespace OpenSolid
 
     template <class DerivedType, class ResultType> template <class VectorType>
     inline ResultType Transformable<DerivedType, ResultType>::translated(
-        const EigenBase<VectorType>& vecto
+        const EigenBase<VectorType>& vector
     ) const {
         static const int dimensions = VectorType::SizeAtCompileTime;
         Matrix<double, dimensions, dimensions> identity(vector.size(), vector.size());
@@ -113,12 +113,12 @@ namespace OpenSolid
         ArgumentType::ColsAtCompileTime
     > TransformableMatrix<ArgumentType>::transformed(
         const MatrixType& matrix,
-        const VectorType& vecto
+        const VectorType& vector
     ) const {
         OpenSolid::assertValidTransform<ArgumentType::RowsAtCompileTime>(
             _argument.rows(),
             matrix,
-            vecto
+            vector
         );
         return (matrix.template cast<typename ArgumentType::Scalar>() * _argument).colwise() +
             vector.template cast<typename ArgumentType::Scalar>();

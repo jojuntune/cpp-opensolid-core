@@ -26,7 +26,7 @@ namespace OpenSolid
     TransformedFunction::TransformedFunction(
         const Function& operand,
         const MatrixXd& matrix,
-        const VectorXd& vecto
+        const VectorXd& vector
     ) : UnaryOperation(operand), _matrix(matrix), _vector(vector) {
         assert(operand.dimensions() == matrix.cols());
         assert(vector.size() == matrix.rows());

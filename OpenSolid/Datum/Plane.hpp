@@ -39,15 +39,15 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Plane(
             const Vector3d& origin,
             const Vector3d& first_vector,
-            const Vector3d& second_vecto
+            const Vector3d& second_vector
         );
         
         OPENSOLID_CORE_EXPORT Plane(
-            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& othe
+            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
         );
         
         OPENSOLID_CORE_EXPORT Plane<dimensions_>& operator=(
-            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& othe
+            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
         );
     };
     

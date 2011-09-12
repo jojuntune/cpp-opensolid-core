@@ -41,7 +41,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Frame(const Datum<dimensions_, dimensions_>& other);
         
         OPENSOLID_CORE_EXPORT Frame<dimensions_>& operator=(
-            const Datum<dimensions_, dimensions_>& othe
+            const Datum<dimensions_, dimensions_>& other
         );
     };
     

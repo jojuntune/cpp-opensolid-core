@@ -74,7 +74,7 @@ namespace OpenSolid
         
         template <int other_dimensions_, int other_size_>
         Simplex<dimensions_, size_>& operator=(
-            const Simplex<other_dimensions_, other_size_>& othe
+            const Simplex<other_dimensions_, other_size_>& other
         );
         
         int dimensions() const;
@@ -89,7 +89,7 @@ namespace OpenSolid
         template <class MatrixType, class VectorType>
         Simplex<MatrixType::RowsAtCompileTime, size_> transformed(
             const MatrixType& matrix,
-            const VectorType& vecto
+            const VectorType& vector
         ) const;
         
         double length() const;
@@ -140,7 +140,7 @@ namespace OpenSolid
     
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
     inline Simplex<dimensions_, size_>::Simplex(
-        const Simplex<other_dimensions_, other_size_>& othe
+        const Simplex<other_dimensions_, other_size_>& other
     ) : _vertices(other.vertices()) {}
         
     template <int dimensions_, int size_>
@@ -204,7 +204,7 @@ namespace OpenSolid
         
     template <int dimensions_, int size_> 
     inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
-        const Simplex<dimensions_, size_>& othe
+        const Simplex<dimensions_, size_>& other
     ) {
         _vertices = other.vertices();
         return *this;
@@ -212,7 +212,7 @@ namespace OpenSolid
     
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
     inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
-        const Simplex<other_dimensions_, other_size_>& othe
+        const Simplex<other_dimensions_, other_size_>& other
     ) {
         _vertices = other.vertices();
         return *this;
@@ -243,7 +243,7 @@ namespace OpenSolid
     template <int dimensions_, int size_> template <class MatrixType, class VectorType>
     Simplex<MatrixType::RowsAtCompileTime, size_> Simplex<dimensions_, size_>::transformed(
         const MatrixType& matrix,
-        const VectorType& vecto
+        const VectorType& vector
     ) const {
         assertValidTransform<dimensions_>(dimensions(), matrix, vector);
         static const int new_dimensions = MatrixType::RowsAtCompileTime;
@@ -308,7 +308,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::Vecto
+    inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::vector() const {
         assertCompatible<size_, 2>();
         assert(size() == 2);
@@ -316,7 +316,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::Vecto
+    inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::centroid() const {return vertices().rowwise().mean();}
     
     namespace
@@ -368,7 +368,7 @@ namespace OpenSolid
     }
     
     template <int dimensions_, int size_>
-    inline typename Simplex<dimensions_, size_>::Vecto
+    inline typename Simplex<dimensions_, size_>::Vector
     Simplex<dimensions_, size_>::normal() const {
         assertCompatible<size_, dimensions_>();
         assert(size() == dimensions());
@@ -413,7 +413,7 @@ namespace OpenSolid
         
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
     inline bool Simplex<dimensions_, size_>::operator==(
-        const Simplex<other_dimensions_, other_size_>& othe
+        const Simplex<other_dimensions_, other_size_>& other
     ) const {
         assertCompatible<dimensions_, other_dimensions_>();
         assertCompatible<size_, other_size_>();

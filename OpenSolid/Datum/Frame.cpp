@@ -66,7 +66,7 @@ namespace OpenSolid
 
     template <int dimensions_>
     Frame<dimensions_>& Frame<dimensions_>::operator=(
-        const Datum<dimensions_, dimensions_>& othe
+        const Datum<dimensions_, dimensions_>& other
     ) {
         assert(other.dimensions() == other.axes());
         assert(other.basis().isUnitary());

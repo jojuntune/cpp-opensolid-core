@@ -98,7 +98,7 @@ namespace OpenSolid
         
     template <int dimensions_, int axes_>
     Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
-        const Datum<dimensions_, axes_>& othe
+        const Datum<dimensions_, axes_>& other
     ) {
         _origin = other.origin();
         _basis = other.basis();

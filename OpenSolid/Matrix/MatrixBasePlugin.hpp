@@ -25,7 +25,7 @@ Matrix<
     internal::traits<Derived>::ColsAtCompileTime
 > transformed(
     const MatrixType& matrix,
-    const VectorType& vecto
+    const VectorType& vector
 ) const;
 
 template <class PointType>

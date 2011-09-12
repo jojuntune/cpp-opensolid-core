@@ -29,7 +29,7 @@ using namespace boost::python;
 namespace OpenSolid
 {
     template <class ExpressionType>
-    struct ExpressionConverte
+    struct ExpressionConverter
     {
         static inline PyObject* convert(const ExpressionType& expression) {
             typedef Matrix<typename ExpressionType::Scalar, Dynamic, Dynamic> MatrixType;

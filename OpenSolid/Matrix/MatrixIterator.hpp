@@ -126,12 +126,12 @@ namespace Eigen
         
         template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
         bool equal(
-            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& othe
+            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
         ) const;
         
         template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
         Index distance_to(
-            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& othe
+            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
         ) const;
         
         void increment();
@@ -142,7 +142,7 @@ namespace Eigen
         
         template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
         MatrixBlockIterator(
-            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& othe
+            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
         );
     };
 
@@ -154,7 +154,7 @@ namespace Eigen
         public MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstRowXp
+            typename MatrixType::ConstRowXpr
         >
     {
     public:
@@ -172,7 +172,7 @@ namespace Eigen
         public MatrixBlockIterator<
             MatrixRowIterator<MatrixType>,
             MatrixType,
-            typename MatrixType::RowXp
+            typename MatrixType::RowXpr
         >
     {
     public:
@@ -192,7 +192,7 @@ namespace Eigen
         public MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstColXp
+            typename MatrixType::ConstColXpr
         >
     {
     public:
@@ -210,7 +210,7 @@ namespace Eigen
         public MatrixBlockIterator<
             MatrixColIterator<MatrixType>,
             MatrixType,
-            typename MatrixType::ColXp
+            typename MatrixType::ColXpr
         >
     {
     public:
@@ -278,22 +278,22 @@ namespace Eigen
     
     template <class MatrixType>
     inline bool ConstMatrixIterator<MatrixType>::equal(
-        const ConstMatrixIterator<MatrixType>& othe
+        const ConstMatrixIterator<MatrixType>& other
     ) const {return _index == other._index;}
     
     template <class MatrixType>
     inline bool ConstMatrixIterator<MatrixType>::equal(
-        const MatrixIterator<MatrixType>& othe
+        const MatrixIterator<MatrixType>& other
     ) const {return _index == other._index;}
     
     template <class MatrixType>
     inline typename MatrixType::Index ConstMatrixIterator<MatrixType>::distance_to(
-        const ConstMatrixIterator<MatrixType>& othe
+        const ConstMatrixIterator<MatrixType>& other
     ) const {return other._index - _index;}
     
     template <class MatrixType>
     inline typename MatrixType::Index ConstMatrixIterator<MatrixType>::distance_to(
-        const MatrixIterator<MatrixType>& othe
+        const MatrixIterator<MatrixType>& other
     ) const {return other._index - _index;}
     
     template <class MatrixType>
@@ -315,12 +315,12 @@ namespace Eigen
     
     template <class MatrixType>
     inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const ConstMatrixIterator<MatrixType>& othe
+        const ConstMatrixIterator<MatrixType>& other
     ) : _matrix(other._matrix), _index(other._index) {}
     
     template <class MatrixType>
     inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const MatrixIterator<MatrixType>& othe
+        const MatrixIterator<MatrixType>& other
     ) : _matrix(other._matrix), _index(other._index) {}
     
     template <class MatrixType>
@@ -330,22 +330,22 @@ namespace Eigen
     
     template <class MatrixType>
     inline bool MatrixIterator<MatrixType>::equal(
-        const MatrixIterator<MatrixType>& othe
+        const MatrixIterator<MatrixType>& other
     ) const {return _index == other._index;}
     
     template <class MatrixType>
     inline bool MatrixIterator<MatrixType>::equal(
-        const ConstMatrixIterator<MatrixType>& othe
+        const ConstMatrixIterator<MatrixType>& other
     ) const {return _index == other._index;}
     
     template <class MatrixType>
     inline typename MatrixType::Index MatrixIterator<MatrixType>::distance_to(
-        const MatrixIterator<MatrixType>& othe
+        const MatrixIterator<MatrixType>& other
     ) const {return other._index - _index;}
     
     template <class MatrixType>
     inline typename MatrixType::Index MatrixIterator<MatrixType>::distance_to(
-        const ConstMatrixIterator<MatrixType>& othe
+        const ConstMatrixIterator<MatrixType>& other
     ) const {return other._index - _index;}
     
     template <class MatrixType>
@@ -377,14 +377,14 @@ namespace Eigen
     template <class DerivedType, class MatrixType, class BlockType>
     template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
     inline bool MatrixBlockIterator<DerivedType, MatrixType, BlockType>::equal(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& othe
+        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
     ) const {return _index == other._index;}
     
     template <class DerivedType, class MatrixType, class BlockType>
     template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
     inline typename MatrixType::Index
     MatrixBlockIterator<DerivedType, MatrixType, BlockType>::distance_to(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& othe
+        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
     ) const {return other._index - _index;}
     
     template <class DerivedType, class MatrixType, class BlockType>
@@ -407,7 +407,7 @@ namespace Eigen
     template <class DerivedType, class MatrixType, class BlockType>
     template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
     inline MatrixBlockIterator<DerivedType, MatrixType, BlockType>::MatrixBlockIterator(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& othe
+        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
     ) : _matrix(other._matrix), _index(other._index) {}
     
     template <class MatrixType>
@@ -417,25 +417,25 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstRowXp
+            typename MatrixType::ConstRowXpr
         >(matrix, index) {}
     
     template <class MatrixType>
     inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const ConstMatrixRowIterator<MatrixType>& othe
+        const ConstMatrixRowIterator<MatrixType>& other
     ) : MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstRowXp
+            typename MatrixType::ConstRowXpr
         >(other) {}
     
     template <class MatrixType>
     inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const MatrixRowIterator<MatrixType>& othe
+        const MatrixRowIterator<MatrixType>& other
     ) : MatrixBlockIterator<
             ConstMatrixRowIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstRowXp
+            typename MatrixType::ConstRowXpr
         >(other) {}
     
     template <class MatrixType>
@@ -451,16 +451,16 @@ namespace Eigen
     ) : MatrixBlockIterator<
             MatrixRowIterator<MatrixType>,
             MatrixType,
-            typename MatrixType::RowXp
+            typename MatrixType::RowXpr
         >(matrix, index) {}
     
     template <class MatrixType>
     inline MatrixRowIterator<MatrixType>::MatrixRowIterator(
-        const MatrixRowIterator<MatrixType>& othe
+        const MatrixRowIterator<MatrixType>& other
     ) : MatrixBlockIterator<
             MatrixRowIterator<MatrixType>,
             MatrixType,
-            typename MatrixType::RowXp
+            typename MatrixType::RowXpr
         >(other) {}
     
     template <class MatrixType>
@@ -476,25 +476,25 @@ namespace Eigen
     ) : MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstColXp
+            typename MatrixType::ConstColXpr
         >(matrix, index) {}
     
     template <class MatrixType>
     inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const ConstMatrixColIterator<MatrixType>& othe
+        const ConstMatrixColIterator<MatrixType>& other
     ) : MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstColXp
+            typename MatrixType::ConstColXpr
         >(other) {}
     
     template <class MatrixType>
     inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const MatrixColIterator<MatrixType>& othe
+        const MatrixColIterator<MatrixType>& other
     ) : MatrixBlockIterator<
             ConstMatrixColIterator<MatrixType>,
             const MatrixType,
-            typename MatrixType::ConstColXp
+            typename MatrixType::ConstColXpr
         >(other) {}
     
     template <class MatrixType>
@@ -510,16 +510,16 @@ namespace Eigen
     ) : MatrixBlockIterator<
             MatrixColIterator<MatrixType>,
             MatrixType,
-            typename MatrixType::ColXp
+            typename MatrixType::ColXpr
         >(matrix, index) {}
     
     template <class MatrixType>
     inline MatrixColIterator<MatrixType>::MatrixColIterator(
-        const MatrixColIterator<MatrixType>& othe
+        const MatrixColIterator<MatrixType>& other
     ) : MatrixBlockIterator<
             MatrixColIterator<MatrixType>,
             MatrixType,
-            typename MatrixType::ColXp
+            typename MatrixType::ColXpr
         >(other) {}
     
     template <class MatrixType>

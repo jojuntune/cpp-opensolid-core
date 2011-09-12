@@ -191,7 +191,7 @@ namespace OpenSolid
     double getZero(
         const std::vector<Function>& derivatives,
         const Interval& domain_interval,
-        int& orde
+        int& order
     ) {
         double x = domain_interval.median();
         double y = derivatives[order](x).value();

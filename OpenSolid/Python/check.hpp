@@ -48,13 +48,13 @@ namespace OpenSolid
     OPENSOLID_PYTHON_EXPORT void checkSameSize(
         int first_size,
         int second_size,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkSameDimensions(
         int first_dimensions,
         int second_dimensions,
-        const std::string& calle
+        const std::string& caller
     );
     
     template <class MatrixType>
@@ -73,7 +73,7 @@ namespace OpenSolid
     void checkSameSizeMatrices(
         const FirstMatrixType& first_matrix,
         const SecondMatrixType& second_matrix,
-        const std::string& calle
+        const std::string& caller
     );
     
     template <class MatrixType>
@@ -84,60 +84,60 @@ namespace OpenSolid
         const MatrixType& matrix,
         int expected_rows,
         int expected_cols,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkValidProductDimensions(
         int first_dimensions,
         int second_dimensions,
-        const std::string& calle
+        const std::string& caller
     );
     
     template <class FirstMatrixType, class SecondMatrixType>
     void checkValidMatrixProduct(
         const FirstMatrixType& first_matrix,
         const SecondMatrixType& second_matrix,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkComponentIndexInRange(
         int component_index,
         int size,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkComponentBlockInRange(
         int block_start,
         int block_size,
         int size,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkNoMatrixIndexStep(
         boost::python::slice indices,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkConstantFunction(
         const Function& function,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkScalarFunction(
         const Function& function,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkParameterIndexInRange(
         int index,
         const Function& function,
-        const std::string& calle
+        const std::string& caller
     );
     
     OPENSOLID_PYTHON_EXPORT void checkConsistentFunctionParameters(
         const Function& first_function,
         const Function& second_function,
-        const std::string& calle
+        const std::string& caller
     );
 }
 
@@ -234,7 +234,7 @@ namespace OpenSolid
     void checkSameSizeMatrices(
         const FirstMatrixType& first_matrix,
         const SecondMatrixType& second_matrix,
-        const std::string& calle
+        const std::string& caller
     ) {
         if (
             first_matrix.rows() != second_matrix.rows() ||
@@ -264,7 +264,7 @@ namespace OpenSolid
         const MatrixType& matrix,
         int expected_rows,
         int expected_cols,
-        const std::string& calle
+        const std::string& caller
     ) {
         if (matrix.rows() != expected_rows || matrix.cols() != expected_cols) {
             Error error("SpecificMatrixSize", caller);
