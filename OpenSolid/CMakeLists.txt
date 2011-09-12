@@ -105,6 +105,7 @@
     SET(COMMON_HEADERS
         Common/Bounds.hpp
         Common/BoundsTests.hpp
+        Common/Convertible.hpp
         Common/Error.hpp
         Common/ReferenceCounted.hpp
         Common/Transformable.hpp
