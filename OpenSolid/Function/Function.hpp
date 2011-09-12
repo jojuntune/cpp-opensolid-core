@@ -22,6 +22,7 @@
 #define OPENSOLID__FUNCTION_HPP
 
 #include <typeinfo>
+#include <type_traits>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -39,34 +40,28 @@ namespace OpenSolid
     template <class ArgumentType>
     class FunctionResult;
     
-    class Function : public Transformable<Function>
+    class Function : public Convertible<Function>, public Transformable<Function>
     {
     private:
         boost::intrusive_ptr<const FunctionImplementation> _implementation;
         const std::type_info* _type;
     public:
-        Function();
-        Function(const FunctionImplementation* function);
-
-        Function(int value);
-        Function(double value);
-        
-        template <class DerivedType>
-        Function(const EigenBase<DerivedType>& vector);
-        
+        OPENSOLID_CORE_EXPORT Function();
+        OPENSOLID_CORE_EXPORT Function(const FunctionImplementation* function);
+        OPENSOLID_CORE_EXPORT Function(int value);
+        OPENSOLID_CORE_EXPORT Function(double value);
+        OPENSOLID_CORE_EXPORT Function(const VectorXd& vector);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y, const Function& z);
         
-        const FunctionImplementation* implementation() const;
+        OPENSOLID_CORE_EXPORT const FunctionImplementation* implementation() const;
         
         template <class Type>
         bool isA() const;
         
-        template <class Type>
-        const Type& as() const;
-        
-        int parameters() const;
-        int dimensions() const;
+        OPENSOLID_CORE_EXPORT int parameters() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT bool isConstant() const;
         
         template <class ArgumentType>
         FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
@@ -115,6 +110,21 @@ namespace OpenSolid
             const VectorXb& convention
         );
     };
+    
+    template <>
+    OPENSOLID_CORE_EXPORT double convertFromTo<Function, double>(const Function& argument);
+    
+    template <>
+    OPENSOLID_CORE_EXPORT Vector2d convertFromTo<Function, Vector2d>(const Function& argument);
+    
+    template <>
+    OPENSOLID_CORE_EXPORT Vector3d convertFromTo<Function, Vector3d>(const Function& argument);
+    
+    template <>
+    OPENSOLID_CORE_EXPORT VectorXd convertFromTo<Function, VectorXd>(const Function& argument);
+    
+    template <class FunctionType>
+    const FunctionType& convertFromTo<Function, FunctionType>(const Function& argument) const;
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
     
@@ -153,54 +163,32 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include <boost/functional/hash.hpp>
-
 #include <OpenSolid/Function/Parameter.hpp>
 #include <OpenSolid/Function/Parameters.hpp>
 #include <OpenSolid/Function/FunctionResult.hpp>
 
 namespace OpenSolid
 {
-    inline Function::Function() : _implementation(0), _type(0) {}
-    
-    inline Function::Function(const FunctionImplementation* implementation) :
-        _implementation(implementation), _type(&typeid(implementation)) {}
-    
-    inline Function::Function(int value) :
-        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantFunction)) {}
-    
-    inline Function::Function(double value) :
-        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantFunction)) {}
-
-    template <class DerivedType>
-    inline Function::Function(const EigenBase<DerivedType>& vector) :
-        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
-    
-    inline const FunctionImplementation* Function::implementation() const {
-        return _implementation.get();
-    }
-    
     template <class Type>
     inline bool Function::isA() const {
         assert(_type);
         return *_type == typeid(Type);
     }
     
-    template <class Type>
-    inline const Type& Function::as() const {
-        assert(isA<Type>());
-        return static_cast<const Type&>(*implementation());
-    }
-    
-    inline int Function::parameters() const {return implementation()->parameters();}
-    
-    inline int Function::dimensions() const {return implementation()->dimensions();}
-    
     template <class ArgumentType>
     inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return FunctionResult<ArgumentType>(*this, argument);
+    }
+    
+    template <class FunctionType>
+    inline const FunctionType& convertFromTo<Function, FunctionType>(const Function& argument) {
+        static_assert(
+            std::is_base_of<FunctionImplementation, FunctionType>,
+            "Function can only be converted to double, Vector2d, Vector3d, VectorXd, "
+            "or a FunctionImplementation subclass"
+        );
+        assert(argument.isA<Type>());
+        return static_cast<const Type&>(*argument.implementation());
     }
 }
 

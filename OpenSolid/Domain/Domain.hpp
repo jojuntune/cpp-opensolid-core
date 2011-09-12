@@ -23,6 +23,7 @@
 
 #include <OpenSolid/config.hpp>
 #include <OpenSolid/declarations.hpp>
+#include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Set/Set.hpp>
@@ -35,87 +36,32 @@ namespace OpenSolid
     {
         typedef VectorXI Type;
 
-        VectorXI operator()(const Geometry& geometry) const;
+        OPENSOLID_CORE_EXPORT VectorXI operator()(const Geometry& geometry) const;
     };
     
-    class Domain : public Transformable<Domain>
+    class Domain : public Convertible<Domain>, public Transformable<Domain>
     {
     private:
         Set<Geometry> _boundaries;
-        
-        OPENSOLID_CORE_EXPORT static Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
     public:
-        Domain();
-        Domain(const Set<Geometry>& boundaries);
-        Domain(const Interval& bounds);
+        OPENSOLID_CORE_EXPORT Domain();
+        OPENSOLID_CORE_EXPORT Domain(const Set<Geometry>& boundaries);
+        OPENSOLID_CORE_EXPORT Domain(const Interval& bounds);
+        OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
         
-        template <class DerivedType>
-        Domain(const EigenBase<DerivedType>& bounds);
-        
-        const Set<Geometry>& boundaries() const;
-        bool empty() const;
-        int dimensions() const;
+        OPENSOLID_CORE_EXPORT const Set<Geometry>& boundaries() const;
+        OPENSOLID_CORE_EXPORT bool isEmpty() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT VectorXI bounds() const;
 
-        const VectorXI& bounds() const;
-        Interval value() const;
-        double lower() const;
-        double upper() const;
-        
-        bool operator==(const Domain& other) const;
-
-        OPENSOLID_CORE_EXPORT Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+        OPENSOLID_CORE_EXPORT Domain transformed(
+            const MatrixXd& matrix,
+            const VectorXd& vector
+        ) const;
     };
-}
-
-////////// Implementation //////////
-
-#include <boost/functional/hash.hpp>
-
-#include <OpenSolid/Geometry/Geometry.hpp>
-
-namespace OpenSolid
-{
-    inline Domain::Domain() : _boundaries() {}
     
-    inline Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
-    
-    inline Domain::Domain(const Interval& bounds) {
-        _boundaries = rectangularBoundaries(VectorXI::Constant(1, bounds));
-    }
-    
-    template <class DerivedType>
-    inline Domain::Domain(const EigenBase<DerivedType>& bounds) {
-        _boundaries = rectangularBoundaries(bounds);
-    }
-    
-    inline const Set<Geometry>& Domain::boundaries() const {return _boundaries;}
-    
-    inline bool Domain::empty() const {return boundaries().empty();}
-    
-    inline int Domain::dimensions() const {return bounds().size();}
-    
-    inline const VectorXI& Domain::bounds() const {
-        assert(!empty());
-        return boundaries().bounds();
-    }
-
-    inline Interval Domain::value() const {
-        assert(!empty());
-        assert(dimensions() == 1);
-        return bounds().value();
-    }
-
-    inline double Domain::lower() const {
-        assert(!empty());
-        assert(dimensions() == 1);
-        return value().lower();
-    }
-
-    inline double Domain::upper() const {
-        assert(!empty());
-        assert(dimensions() == 1);
-        return value().upper();
-    }
+    template <>
+    OPENSOLID_CORE_EXPORT Interval convertFromTo<Domain, Interval>(const Domain& argument);
 }
 
 #endif

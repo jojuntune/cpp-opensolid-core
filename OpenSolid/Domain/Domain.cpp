@@ -20,10 +20,11 @@
 
 #include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {
-    Set<Geometry> Domain::rectangularBoundaries(const VectorXI& bounds) {
+    Set<Geometry> rectangularBoundaries(const VectorXI& bounds) {
         int dims = bounds.size();
         Set<Geometry> results;
         if (dims == 1) {
@@ -71,6 +72,27 @@ namespace OpenSolid
         }
         return results;
     }
+    
+    Domain::Domain() : _boundaries() {}
+    
+    Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
+    
+    Domain::Domain(const Interval& bounds) {
+        _boundaries = rectangularBoundaries(VectorXI::Constant(1, bounds));
+    }
+    
+    Domain::Domain(const VectorXI& bounds) {_boundaries = rectangularBoundaries(bounds);}
+    
+    const Set<Geometry>& Domain::boundaries() const {return _boundaries;}
+    
+    bool Domain::isEmpty() const {return boundaries().isEmpty();}
+    
+    int Domain::dimensions() const {return bounds().size();}
+    
+    VectorXI Domain::bounds() const {
+        assert(!isEmpty());
+        return boundaries().bounds();
+    }
 
     Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         assertValidTransform<Dynamic>(dimensions(), matrix, vector);
@@ -82,5 +104,13 @@ namespace OpenSolid
             transformed_boundaries.inserter()
         );
         return Domain(transformed_boundaries);
+    }
+    
+    template <>
+    Interval convertFromTo<Domain, Interval>(const Domain& argument) {
+        assert(!argument.isEmpty());
+        assert(argument.dimensions() == 1);
+        assert(argument.boundaries().size() == 2);
+        return argument.bounds().value();
     }
 }

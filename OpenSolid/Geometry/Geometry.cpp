@@ -18,11 +18,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {
+    VectorXI Bounds<Geometry>::operator()(const Geometry& argument) const {
+        return argument.bounds();
+    }
+    
+    Geometry::Geometry() : _function(), _domain() {}
+    
+    Geometry::Geometry(const Function& function, const Domain& domain) :
+        _function(function), _domain(domain) {
+        assert(function.isA<ConstantFunction>() || domain.dimensions() == function.parameters());
+    }
+    
+    Geometry::Geometry(double value) : _function(value), _domain() {}
+    
+    Geometry::Geometry(const VectorXd& value) : _function(value), _domain() {}
+    
+    const Function& Geometry::function() const {return _function;}
+    
+    const Domain& Geometry::domain() const {return _domain;}
+    
+    int Geometry::parameters() const {return function().parameters();}
+    
+    int Geometry::dimensions() const {return function().dimensions();}
+    
+    bool Geometry::isConstant() const {return function().isConstant();}
+    
+    VectorXI Geometry::bounds() const {
+        if (function().isA<ConstantFunction>()) {
+            return function().as<ConstantFunction>().vector().cast<Interval>();
+        } else {
+            return function()(domain().bounds());
+        }
+    }
+    
     Set<Geometry> Geometry::boundaries() const {
         Set<Geometry> results;
         domain().boundaries().transform(
@@ -110,5 +144,32 @@ namespace OpenSolid
             Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),
             angle
         );
+    }
+    
+    template <>
+    double convertFromTo<Geometry, double>(const Geometry& argument) {
+        assert(isConstant());
+        assert(dimensions() == 1);
+        return function().to<double>();
+    }
+    
+    template <>
+    Vector2d convertFromTo<Geometry, Vector2d>(const Geometry& argument) {
+        assert(isConstant());
+        assert(dimensions() == 2);
+        return function().to<Vector2d>();
+    }
+    
+    template <>
+    Vector3d convertFromTo<Geometry, Vector3d>(const Geometry& argument) {
+        assert(isConstant());
+        assert(dimensions() == 3);
+        return function().to<Vector3d>();
+    }
+    
+    template <>
+    VectorXd convertFromTo<Geometry, VectorXd>(const Geometry& argument) {
+        assert(isConstant());
+        return function().to<VectorXd>();
     }
 }

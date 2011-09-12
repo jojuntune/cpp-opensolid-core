@@ -50,6 +50,22 @@
 
 namespace OpenSolid
 {
+    Function::Function() : _implementation(0), _type(0) {}
+    
+    Function::Function(const FunctionImplementation* implementation) :
+        _implementation(implementation), _type(&typeid(implementation)) {}
+    
+    Function::Function(int value) :
+        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
+        _type(&typeid(ConstantFunction)) {}
+    
+    Function::Function(double value) :
+        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
+        _type(&typeid(ConstantFunction)) {}
+
+    Function::Function(const VectorXd& vector) :
+        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
+    
     Function::Function(const Function& x, const Function& y) {
         _implementation = x.concatenate(y).implementation();
         _type = &typeid(implementation());
@@ -60,7 +76,27 @@ namespace OpenSolid
         _type = &typeid(implementation());
     }
     
+    const FunctionImplementation* Function::implementation() const {
+        return _implementation.get();
+    }
+    
+    int Function::parameters() const {
+        assert(implementation());
+        return implementation()->parameters();
+    }
+    
+    int Function::dimensions() const {
+        assert(implementation());
+        return implementation()->dimensions();
+    }
+    
+    bool Function::isConstant() const {
+        assert(implementation());
+        return isA<ConstantFunction>();
+    }
+    
     Function Function::derivative(int index) const {
+        assert(implementation());
         Function result;
         implementation()->getDerivative(index, result);
         return result;
@@ -68,52 +104,71 @@ namespace OpenSolid
     
     Function Function::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         assertValidTransform<Dynamic>(dimensions(), matrix, vector);
+        assert(implementation());
         Function result;
         implementation()->getTransformed(matrix, vector, result);
         return result;
     }
     
     Function Function::norm() const {
+        assert(implementation());
         Function result;
         implementation()->getNorm(result);
         return result;
     }
     
     Function Function::normalized() const {
+        assert(implementation());
         Function result;
         implementation()->getNormalized(result);
         return result;
     }
     
     Function Function::squaredNorm() const {
+        assert(implementation());
         Function result;
         implementation()->getSquaredNorm(result);
         return result;
     }
 
-    Function Function::x() const {return component(0);}
+    Function Function::x() const {
+        assert(implementation());
+        return component(0);
+    }
 
-    Function Function::y() const {return component(1);}
+    Function Function::y() const {
+        assert(implementation());
+        return component(1);
+    }
 
-    Function Function::z() const {return component(2);}
+    Function Function::z() const {
+        assert(implementation());
+        return component(2);
+    }
     
     Function Function::component(int index) const {
+        assert(implementation());
         Function result;
         implementation()->getComponents(index, 1, result);
         return result;
     }
     
     Function Function::components(int index, int num) const {
+        assert(implementation());
         Function result;
         implementation()->getComponents(index, num, result);
         return result;
     }
     
     Function Function::concatenate(const Function& other) const {
+        assert(implementation());
+        assert(other.implementation());
         return new ConcatenationFunction(*this, other);
     }
     
     Function Function::dot(const Function& other) const {
+        assert(implementation());
+        assert(other.implementation());
         if (isA<ConstantFunction>() && other.isA<ConstantFunction>()) {
             return as<ConstantFunction>().vector().dot(other.as<ConstantFunction>().vector());
         } else if (
@@ -127,6 +182,8 @@ namespace OpenSolid
     }
     
     Function Function::cross(const Function& other) const {
+        assert(implementation());
+        assert(other.implementation());
         assert(dimensions() == 3 && other.dimensions() == 3);
         if (isA<ConstantFunction>() && other.isA<ConstantFunction>()) {
             return as<ConstantFunction>().vector().head<3>().cross(
@@ -144,6 +201,7 @@ namespace OpenSolid
     }
     
     Function Function::tangent() const {
+        assert(implementation());
         assert(parameters() == 1);
         Function result;
         implementation()->getTangent(result);
@@ -151,6 +209,7 @@ namespace OpenSolid
     }
     
     Function Function::curvature() const {
+        assert(implementation());
         assert(parameters() == 1);
         Function result;
         implementation()->getCurvature(result);
@@ -159,6 +218,7 @@ namespace OpenSolid
     }
     
     Function Function::normal() const {
+        assert(implementation());
         assert(parameters() == 1 || parameters() == 2);
         Function result;
         implementation()->getNormal(result);
@@ -166,6 +226,7 @@ namespace OpenSolid
     }
     
     Function Function::binormal() const {
+        assert(implementation());
         assert(parameters() == 1);
         Function result;
         implementation()->getBinormal(result);
@@ -173,6 +234,8 @@ namespace OpenSolid
     }
      
     Function Function::operator()(const Function& inner) const {
+        assert(implementation());
+        assert(inner.implementation());
         assert(parameters() == inner.dimensions());
         if (inner.isA<ConstantFunction>()) {
             return operator()(inner.as<ConstantFunction>().vector());
@@ -182,9 +245,14 @@ namespace OpenSolid
         return result;
     }
     
-    Geometry Function::operator()(const Domain& domain) const {return Geometry(*this, domain);}
+    Geometry Function::operator()(const Domain& domain) const {
+        assert(implementation());
+        assert(!domain.isEmpty() || isConstant());
+        return Geometry(*this, domain);
+    }
     
     Geometry Function::operator()(const Geometry& geometry) const {
+        assert(implementation());
         return Geometry(operator()(geometry.function()), geometry.domain());
     }
     
@@ -243,6 +311,9 @@ namespace OpenSolid
     }
     
     RowVectorXd Function::roots(const Interval& domain) const {
+        assert(implementation());
+        assert(parameters() == 1);
+        assert(dimensions() == 1);
         int order = 4;
         std::vector<Function> derivatives(order + 1);
         derivatives[0] = *this;
@@ -303,11 +374,13 @@ namespace OpenSolid
     }
     
     std::ostream& operator<<(std::ostream& stream, const Function& function) {
+        assert(function.implementation());
         function.debug(stream);
         return stream;
     }
     
     void Function::debug(std::ostream& stream, int indent) const {
+        assert(implementation());
         for (int i = 0; i < indent; ++i) {stream << "  ";}
         stream << "R" << parameters() << " -> R" << dimensions() << " | ";
         stream << implementation() << " | ";
@@ -342,6 +415,33 @@ namespace OpenSolid
     Function operator-(const Function& operand) {
         if (operand.isA<ConstantFunction>()) {return -operand.as<ConstantFunction>().vector();}
         return new NegationFunction(operand);
+    }
+    
+    template <>
+    double convertFromTo<Function, double>(const Function& argument) {
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 1);
+        return argument.to<ConstantFunction>().vector().value();
+    }
+    
+    template <>
+    Vector2d convertFromTo<Function, Vector2d>(const Function& argument) {
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 2);
+        return argument.to<ConstantFunction>().vector();
+    }
+    
+    template <>
+    Vector3d convertFromTo<Function, Vector3d>(const Function& argument) {
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 3);
+        return argument.to<ConstantFunction>().vector();
+    }
+    
+    template <>
+    VectorXd convertFromTo<Function, VectorXd>(const Function& argument) {
+        assert(argument.isConstant());
+        return argument.to<ConstantFunction>().vector();
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {

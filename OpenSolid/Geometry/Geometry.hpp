@@ -21,6 +21,7 @@
 #ifndef OPENSOLID__GEOMETRY_HPP
 #define OPENSOLID__GEOMETRY_HPP
 
+#include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
@@ -29,32 +30,24 @@
 
 namespace OpenSolid
 {
-    class Geometry : public Transformable<Geometry>
+    class Geometry : public Convertible<Geometry>, public Transformable<Geometry>
     {
     private:
         Function _function;
         Domain _domain;
     public:
-        typedef VectorXI Bounds;
+        OPENSOLID_CORE_EXPORT Geometry();
+        OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
+        OPENSOLID_CORE_EXPORT Geometry(double value);
+        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& value);
         
-        Geometry();
-        Geometry(const Function& function, const Domain& domain);
-        Geometry(double value);
+        OPENSOLID_CORE_EXPORT const Function& function() const;
+        OPENSOLID_CORE_EXPORT const Domain& domain() const;
         
-        template <class DerivedType>
-        Geometry(const EigenBase<DerivedType>& value);
-        
-        const Function& function() const;
-        const Domain& domain() const;
-        
-        const VectorXd& vector() const;
-        double value() const;
-        
-        int parameters() const;
-        int dimensions() const;
-        
-        VectorXI bounds() const;
-        
+        OPENSOLID_CORE_EXPORT int parameters() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT bool isConstant() const;
+        OPENSOLID_CORE_EXPORT VectorXI bounds() const;
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
 
         OPENSOLID_CORE_EXPORT Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
@@ -88,6 +81,18 @@ namespace OpenSolid
             const Interval& angle
         );
     };
+    
+    template <>
+    OPENSOLID_CORE_EXPORT double convertFromTo<Geometry, double>(const Geometry& argument);
+    
+    template <>
+    OPENSOLID_CORE_EXPORT Vector2d convertFromTo<Geometry, Vector2d>(const Geometry& argument);
+    
+    template <>
+    OPENSOLID_CORE_EXPORT Vector3d convertFromTo<Geometry, Vector3d>(const Geometry& argument);
+    
+    template <>
+    OPENSOLID_CORE_EXPORT VectorXd convertFromTo<Geometry, VectorXd>(const Geometry& argument);
 }
 
 ////////// Implementation //////////
@@ -95,59 +100,11 @@ namespace OpenSolid
 #include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
-{
-    inline Geometry::Geometry() : _function(), _domain() {}
-    
-    inline Geometry::Geometry(const Function& function, const Domain& domain) :
-        _function(function), _domain(domain) {
-        assert(function.isA<ConstantFunction>() || domain.dimensions() == function.parameters());
-    }
-    
-    inline Geometry::Geometry(double value) : _function(value), _domain() {}
-    
-    template <class DerivedType>
-    inline Geometry::Geometry(const EigenBase<DerivedType>& value) :
-        _function(value), _domain() {}
-    
-    inline const Function& Geometry::function() const {return _function;}
-    
-    inline const Domain& Geometry::domain() const {return _domain;}
-    
-    inline const VectorXd& Geometry::vector() const {
-        assert(function().isA<ConstantFunction>());
-        return function().as<ConstantFunction>().vector();
-    }
-
-    inline double Geometry::value() const {
-        assert(function().isA<ConstantFunction>());
-        assert(dimensions() == 1);
-        return vector().value();
-    }
-    
-    inline int Geometry::parameters() const {return function().parameters();}
-    
-    inline int Geometry::dimensions() const {return function().dimensions();}
-    
-    inline VectorXI Geometry::bounds() const {
-        if (function().isA<ConstantFunction>()) {
-            return function().as<ConstantFunction>().vector().cast<Interval>();
-        } else {
-            return function()(domain().bounds());
-        }
-    }
-    
+{   
     template <class ArgumentType>
     inline FunctionResult<ArgumentType> Geometry::operator()(const ArgumentType& argument) const {
         return function()(argument);
     }
-
-    inline VectorXI Bounds<Geometry>::operator()(const Geometry& argument) const {
-        return argument.bounds();
-    }
-}
-
-namespace std
-{
 }
 
 #endif
