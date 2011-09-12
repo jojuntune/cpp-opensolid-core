@@ -71,7 +71,7 @@ namespace OpenSolid
         void operator=(const Set<Type, BoundsFunctionType>& other);
         
         int size() const;
-        bool empty() const;
+        bool isEmpty() const;
         const Bounds& bounds() const;
         
         const Type& front() const;
@@ -308,11 +308,11 @@ namespace OpenSolid
     
     template <class Type, class BoundsFunctionType>
     inline int Set<Type, BoundsFunctionType>::size() const {
-        return empty() ? 0 : root()->size();
+        return isEmpty() ? 0 : root()->size();
     }
     
     template <class Type, class BoundsFunctionType>
-    inline bool Set<Type, BoundsFunctionType>::empty() const {return !root();}
+    inline bool Set<Type, BoundsFunctionType>::isEmpty() const {return !root();}
     
     template <class Type, class BoundsFunctionType>
     inline const typename Set<Type, BoundsFunctionType>::Node*
@@ -334,7 +334,7 @@ namespace OpenSolid
     template <class Type, class BoundsFunctionType>
     inline SetIterator<Type, typename Set<Type, BoundsFunctionType>::Bounds>
     Set<Type, BoundsFunctionType>::begin() const {
-        if (empty()) {
+        if (isEmpty()) {
             return nullptr;
         } else {
             const Node* node = root();
@@ -350,13 +350,13 @@ namespace OpenSolid
     template <class Type, class BoundsFunctionType>
     inline const typename Set<Type, BoundsFunctionType>::Bounds&
     Set<Type, BoundsFunctionType>::bounds() const {
-        assert(!empty());
+        assert(!isEmpty());
         return root()->bounds();
     }
     
     template <class Type, class BoundsFunctionType>
     inline const Type& Set<Type, BoundsFunctionType>::front() const {
-        assert(!empty());
+        assert(!isEmpty());
         const Node* node = root();
         while (node->left()) {node = node->left();}
         return *node->object();
@@ -364,7 +364,7 @@ namespace OpenSolid
     
     template <class Type, class BoundsFunctionType>
     inline const Type& Set<Type, BoundsFunctionType>::back() const {
-        assert(!empty());
+        assert(!isEmpty());
         const Node* node = root();
         while (node->right()) {node = node->right();}
         return *node->object();
@@ -373,7 +373,7 @@ namespace OpenSolid
     template <class Type, class BoundsFunctionType>
     inline void Set<Type, BoundsFunctionType>::insert(const Type& object) {
         Bounds bounds = _bounds_function(object);
-        if (empty()) {
+        if (isEmpty()) {
             _root = new Node(object, bounds);
             _shared_count = new boost::detail::atomic_count(1);
         } else {
@@ -388,7 +388,7 @@ namespace OpenSolid
     
     template <class Type, class BoundsFunctionType>
     inline int Set<Type, BoundsFunctionType>::erase(const Type& object) {
-        if (empty()) {
+        if (isEmpty()) {
             return 0;
         } else {
             if (*_shared_count > 1) {
@@ -855,7 +855,7 @@ namespace OpenSolid
     
     template <class Type, class BoundsFunctionType>
     std::ostream& operator<<(std::ostream& stream, const Set<Type, BoundsFunctionType>& set) {
-        if (set.empty()) {
+        if (set.isEmpty()) {
             stream << "{}";
         } else {
             stream << *set.root();
