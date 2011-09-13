@@ -95,7 +95,12 @@ namespace OpenSolid
             double z
         ) const;
 
+        OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> xDirection() const;
+        OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> yDirection() const;
+        OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> zDirection() const;
+        OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> direction(int index) const;
         OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> direction() const;
+
         OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> normal() const;
         
         OPENSOLID_CORE_EXPORT AxisType xAxis() const;
@@ -118,6 +123,12 @@ namespace OpenSolid
             const MatrixType& matrix,
             const VectorType& vector
         ) const;
+        
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> xReversed() const;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> yReversed() const;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> zReversed() const;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> reversed(int index) const;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> reversed() const;
 
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orthonormalized() const;
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orientation() const;

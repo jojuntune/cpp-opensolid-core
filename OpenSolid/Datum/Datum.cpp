@@ -175,6 +175,57 @@ namespace OpenSolid
     
     template Matrix<double, 3, 1> Datum<3, 3>::vector(double, double, double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::vector(double, double, double) const;
+
+    template<int dimensions_, int axes_>
+    Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::xDirection() const {
+        assert(basis().isUnitary());
+        return basis().col(0);
+    }
+
+    template Matrix<double, 1, 1> Datum<1, 1>::xDirection() const;
+    template Matrix<double, 2, 1> Datum<2, 1>::xDirection() const;
+    template Matrix<double, 2, 1> Datum<2, 2>::xDirection() const;
+    template Matrix<double, 3, 1> Datum<3, 1>::xDirection() const;
+    template Matrix<double, 3, 1> Datum<3, 2>::xDirection() const;
+    template Matrix<double, 3, 1> Datum<3, 3>::xDirection() const;
+    template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::xDirection() const;
+    
+    template <int dimensions_, int axes_>
+    Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::yDirection() const {
+        assert(basis().isUnitary());
+        assert(axes() >= 2);
+        return basis().col(1);
+    }
+
+    template Matrix<double, 2, 1> Datum<2, 2>::yDirection() const;
+    template Matrix<double, 3, 1> Datum<3, 2>::yDirection() const;
+    template Matrix<double, 3, 1> Datum<3, 3>::yDirection() const;
+    template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::yDirection() const;
+    
+    template <int dimensions_, int axes_>
+    Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::zDirection() const {
+        assert(basis().isUnitary());
+        assert(axes() >= 3);
+        return basis().col(2);
+    }
+
+    template Matrix<double, 3, 1> Datum<3, 3>::zDirection() const;
+    template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::yDirection() const;
+    
+    template <int dimensions_, int axes_>
+    Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::direction(int index) const {
+        assert(basis().isUnitary());
+        assert(index >= 0 && index < axes());
+        return basis().col(index);
+    }
+
+    template Matrix<double, 1, 1> Datum<1, 1>::direction(int) const;
+    template Matrix<double, 2, 1> Datum<2, 1>::direction(int) const;
+    template Matrix<double, 2, 1> Datum<2, 2>::direction(int) const;
+    template Matrix<double, 3, 1> Datum<3, 1>::direction(int) const;
+    template Matrix<double, 3, 1> Datum<3, 2>::direction(int) const;
+    template Matrix<double, 3, 1> Datum<3, 3>::direction(int) const;
+    template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::direction(int) const;
     
     template <int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::direction() const {
@@ -371,6 +422,88 @@ namespace OpenSolid
 
     template Datum<3, 1>::PlaneType Datum<3, 1>::normalPlane() const;
     template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::normalPlane() const;
+        
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::xReversed() const {
+        Datum<dimensions_, axes_> result(*this);
+        result._basis.col(0) = -result._basis.col(0);
+        return result;
+    }
+    
+    template Datum<1, 1> Datum<1, 1>::xReversed() const;
+    template Datum<1, 2> Datum<1, 2>::xReversed() const;
+    template Datum<1, 3> Datum<1, 3>::xReversed() const;
+    template Datum<2, 1> Datum<2, 1>::xReversed() const;
+    template Datum<2, 2> Datum<2, 2>::xReversed() const;
+    template Datum<2, 3> Datum<2, 3>::xReversed() const;
+    template Datum<3, 1> Datum<3, 1>::xReversed() const;
+    template Datum<3, 2> Datum<3, 2>::xReversed() const;
+    template Datum<3, 3> Datum<3, 3>::xReversed() const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::xReversed() const;
+
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::yReversed() const {
+        assert(axes() >= 2);
+        Datum<dimensions_, axes_> result(*this);
+        result._basis.col(1) = -result._basis.col(1);
+        return result;
+    }
+    
+    template Datum<1, 2> Datum<1, 2>::yReversed() const;
+    template Datum<1, 3> Datum<1, 3>::yReversed() const;
+    template Datum<2, 2> Datum<2, 2>::yReversed() const;
+    template Datum<2, 3> Datum<2, 3>::yReversed() const;
+    template Datum<3, 2> Datum<3, 2>::yReversed() const;
+    template Datum<3, 3> Datum<3, 3>::yReversed() const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::yReversed() const;
+
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::zReversed() const {
+        assert(axes() >= 3);
+        Datum<dimensions_, axes_> result(*this);
+        result._basis.col(2) = -result._basis.col(2);
+        return result;
+    }
+    
+    template Datum<1, 3> Datum<1, 3>::zReversed() const;
+    template Datum<2, 3> Datum<2, 3>::zReversed() const;
+    template Datum<3, 3> Datum<3, 3>::zReversed() const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::zReversed() const;
+
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::reversed(int index) const {
+        assert(index >= 0 && index < axes());
+        Datum<dimensions_, axes_> result(*this);
+        result._basis.col(index) = -result._basis.col(index);
+        return result;
+    }
+    
+    template Datum<1, 1> Datum<1, 1>::reversed(int) const;
+    template Datum<1, 2> Datum<1, 2>::reversed(int) const;
+    template Datum<1, 3> Datum<1, 3>::reversed(int) const;
+    template Datum<2, 1> Datum<2, 1>::reversed(int) const;
+    template Datum<2, 2> Datum<2, 2>::reversed(int) const;
+    template Datum<2, 3> Datum<2, 3>::reversed(int) const;
+    template Datum<3, 1> Datum<3, 1>::reversed(int) const;
+    template Datum<3, 2> Datum<3, 2>::reversed(int) const;
+    template Datum<3, 3> Datum<3, 3>::reversed(int) const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::reversed(int) const;
+
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::reversed() const {
+        return Datum(origin(), -basis());
+    }
+    
+    template Datum<1, 1> Datum<1, 1>::reversed() const;
+    template Datum<1, 2> Datum<1, 2>::reversed() const;
+    template Datum<1, 3> Datum<1, 3>::reversed() const;
+    template Datum<2, 1> Datum<2, 1>::reversed() const;
+    template Datum<2, 2> Datum<2, 2>::reversed() const;
+    template Datum<2, 3> Datum<2, 3>::reversed() const;
+    template Datum<3, 1> Datum<3, 1>::reversed() const;
+    template Datum<3, 2> Datum<3, 2>::reversed() const;
+    template Datum<3, 3> Datum<3, 3>::reversed() const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::reversed() const;
     
     template <int dimensions_, int axes_>
     Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthonormalized() const {

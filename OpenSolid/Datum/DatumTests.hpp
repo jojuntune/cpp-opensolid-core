@@ -132,4 +132,12 @@ public:
         Vector3d expected_projected(2, 2, 1);
         TS_ASSERT((projected_point - expected_projected).isZero());
     }
+
+    void testReversed() {
+        TS_ASSERT((Frame3d().xAxis().reversed().point(1) - Vector3d(-1, 0, 0)).isZero());
+        TS_ASSERT((Frame3d().reversed(2).point(1, 2, 3) - Vector3d(1, 2, -3)).isZero());
+        Vector3d point = Frame3d().translated(Vector3d(1, 1, 1)).yReversed().point(1, 2, 3);
+        Vector3d expected(2, -1, 4);
+        TS_ASSERT((point - expected).isZero());
+    }
 };
