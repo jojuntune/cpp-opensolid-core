@@ -77,5 +77,4 @@ namespace OpenSolid
     template class Frame<1>;
     template class Frame<2>;
     template class Frame<3>;
-    template class Frame<Dynamic>;
 }

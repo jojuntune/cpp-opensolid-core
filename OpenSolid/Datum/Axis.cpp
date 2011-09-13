@@ -45,5 +45,4 @@ namespace OpenSolid
     template class Axis<1>;
     template class Axis<2>;
     template class Axis<3>;
-    template class Axis<Dynamic>;
 }

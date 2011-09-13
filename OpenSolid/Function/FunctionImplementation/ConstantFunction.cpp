@@ -44,13 +44,6 @@ namespace OpenSolid
     void ConstantFunction::getComponents(int index, int num, Function& result) const {
         result = vector().middleRows(index, num);
     }
-
-    void ConstantFunction::getMirrored(const PlaneXd& plane, Function& result) const {
-        std::cout << "vector(): " << vector().transpose() << std::endl;
-        VectorXd normal = plane.normal();
-        result = vector() - 2 * normal * (vector() - plane.origin()).dot(normal);
-        std::cout << "result: " << result.as<ConstantFunction>().vector().transpose() << std::endl;
-    }
     
     void ConstantFunction::getComposition(const Function& inner, Function& result) const {
         result = vector();

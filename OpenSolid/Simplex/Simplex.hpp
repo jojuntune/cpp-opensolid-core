@@ -25,7 +25,6 @@
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
@@ -118,12 +117,9 @@ namespace OpenSolid
     typedef Simplex<1, 2> LineSegment1d;
     typedef Simplex<2, 2> LineSegment2d;
     typedef Simplex<3, 2> LineSegment3d;
-    
     typedef Simplex<2, 3> Triangle2d;
     typedef Simplex<3, 3> Triangle3d;
-    
     typedef Simplex<3, 4> Tetrahedron3d;
-    
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
 }
 

@@ -23,6 +23,7 @@
 #include <boost/geometry.hpp>
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Datum/Frame.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Support/Boost.hpp>

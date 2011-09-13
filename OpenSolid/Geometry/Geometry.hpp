@@ -26,7 +26,7 @@
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Datum/Axis.hpp>
 
 namespace OpenSolid
 {
@@ -83,16 +83,32 @@ namespace OpenSolid
     };
     
     template <>
-    OPENSOLID_CORE_EXPORT double convertFromTo<Geometry, double>(const Geometry& argument);
+    class Conversion<Geometry, double>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT double operator()(const Geometry& argument) const;
+    };
     
     template <>
-    OPENSOLID_CORE_EXPORT Vector2d convertFromTo<Geometry, Vector2d>(const Geometry& argument);
+    class Conversion<Geometry, Vector2d>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT Vector2d operator()(const Geometry& argument) const;
+    };
     
     template <>
-    OPENSOLID_CORE_EXPORT Vector3d convertFromTo<Geometry, Vector3d>(const Geometry& argument);
+    class Conversion<Geometry, Vector3d>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT Vector3d operator()(const Geometry& argument) const;
+    };
     
     template <>
-    OPENSOLID_CORE_EXPORT VectorXd convertFromTo<Geometry, VectorXd>(const Geometry& argument);
+    class Conversion<Geometry, VectorXd>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& argument) const;
+    };
 }
 
 ////////// Implementation //////////

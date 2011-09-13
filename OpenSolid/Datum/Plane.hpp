@@ -51,9 +51,7 @@ namespace OpenSolid
         );
     };
     
-    typedef Plane<2> Plane2d;
     typedef Plane<3> Plane3d;
-    typedef Plane<Dynamic> PlaneXd;
 }
 
 #endif

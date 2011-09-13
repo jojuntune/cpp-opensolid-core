@@ -51,7 +51,7 @@ namespace OpenSolid
     
     VectorXI Geometry::bounds() const {
         if (function().isA<ConstantFunction>()) {
-            return function().as<ConstantFunction>().vector().cast<Interval>();
+            return function().to<VectorXd>().cast<Interval>();
         } else {
             return function()(domain().bounds());
         }
@@ -78,7 +78,8 @@ namespace OpenSolid
 
     Geometry Geometry::reversed() const {
         assert(parameters() == 1);
-        Function reversed_parameter = domain().lower() + domain().upper() - Parameter();
+        Interval interval = domain().to<Interval>();
+        Function reversed_parameter = interval.lower() + interval.upper() - Parameter();
         return Geometry(function()(reversed_parameter), domain());
     }
 
@@ -146,30 +147,26 @@ namespace OpenSolid
         );
     }
     
-    template <>
-    double convertFromTo<Geometry, double>(const Geometry& argument) {
+    double Conversion<Geometry, double>::operator()(const Geometry& argument) const {
         assert(isConstant());
         assert(dimensions() == 1);
-        return function().to<double>();
+        return argument.function().to<double>();
     }
     
-    template <>
-    Vector2d convertFromTo<Geometry, Vector2d>(const Geometry& argument) {
+    Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& argument) const {
         assert(isConstant());
         assert(dimensions() == 2);
-        return function().to<Vector2d>();
+        return argument.function().to<Vector2d>();
     }
     
-    template <>
-    Vector3d convertFromTo<Geometry, Vector3d>(const Geometry& argument) {
+    Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& argument) const {
         assert(isConstant());
         assert(dimensions() == 3);
-        return function().to<Vector3d>();
+        return argument.function().to<Vector3d>();
     }
     
-    template <>
-    VectorXd convertFromTo<Geometry, VectorXd>(const Geometry& argument) {
+    VectorXd Conversion<Geometry, VectorXd>::operator()(const Geometry& argument) const {
         assert(isConstant());
-        return function().to<VectorXd>();
+        return argument.function().to<VectorXd>();
     }
 }

@@ -17,7 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
+ 
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 
 namespace OpenSolid
@@ -215,7 +216,7 @@ namespace OpenSolid
     double Simplex<dimensions_, size_>::length() const {
         assert(size() == 2);
         if (dimensions() == 1) {
-            return abs(vertices()(0, 1) - vertices()(0, 0));
+            return vertices()(0, 1) - vertices()(0, 0);
         } else {
             return (vertex(1) - vertex(0)).norm();
         }
@@ -228,74 +229,25 @@ namespace OpenSolid
 
     template <class SimplexType>
     inline double triangleArea2d(const SimplexType& triangle) {
-        Matrix<double, 2, 3> edges;
+        Matrix2d edges;
         edges.col(0) = triangle.vertex(1) - triangle.vertex(0);
-        edges.col(1) = triangle.vertex(2) - triangle.vertex(1);
-        edges.col(2) = triangle.vertex(0) - triangle.vertex(2);
-        Matrix<double, 2, 3>::Index longest_edge_index;
-        edges.colwise().squaredNorm().maxCoeff(&longest_edge_index);
-        Matrix<double, 2, 3>::Index first_index = (longest_edge_index + 1) % 3;
-        Matrix<double, 2, 3>::Index second_index = (longest_edge_index + 2) % 3;
-        Matrix2d shortest_edges;
-        shortest_edges << edges.col(first_index), edges.col(second_index);
-        return shortest_edges.determinant() / 2;
+        edges.col(1) = triangle.vertex(2) - triangle.vertex(0);
+        return edges.determinant() / 2;
     }
 
     template <class SimplexType>
     inline double triangleArea3d(const SimplexType& triangle) {
-        Matrix3d edges;
-        edges.col(0) = triangle.vertex(1) - triangle.vertex(0);
-        edges.col(1) = triangle.vertex(2) - triangle.vertex(1);
-        edges.col(2) = triangle.vertex(0) - triangle.vertex(2);
-        Matrix3d::Index longest_edge_index;
-        edges.colwise().squaredNorm().maxCoeff(&longest_edge_index);
-        Matrix3d::Index first_index = (longest_edge_index + 1) % 3;
-        Matrix3d::Index second_index = (longest_edge_index + 2) % 3;
-        return edges.col(first_index).cross(edges.col(second_index)).norm() / 2;
+        Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
+        Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+        return first_edge.cross(second_edge).norm() / 2;
     }
 
-    template <class SimplexType>
-    inline double triangleAreaXd(const SimplexType& triangle) {
-        Matrix2d temp;
-        double squared_area = 0.0;
-        for (int i = 0; i < triangle.dimensions() - 1; ++i) {
-            for (int j = i + 1; j < triangle.dimensions(); ++j) {
-                temp << vertices().row(i).tail(2).array() - vertices()(i, 0),
-                    vertices().row(j).tail(2).array() - vertices()(j, 0);
-                double determinant = temp.determinant();
-                squared_area += determinant * determinant / 4;
-            }
-        }
-        return sqrt(squared_area);
-    }
-
-    template <int dimensions_, int size_>
-    inline double triangleArea(const Simplex<dimensions_, size_>& triangle);
-
-    template <>
     inline double triangleArea(const Simplex<2, 3>& triangle) {return triangleArea2d(triangle);}
 
-    template <>
     inline double triangleArea(const Simplex<3, 3>& triangle) {return triangleArea3d(triangle);}
 
-    template <>
-    inline double triangleArea(const Simplex<Dynamic, 3>& triangle) {
-        switch (triangle.dimensions())
-        {
-            case 2: return triangleArea2d(triangle);
-            case 3: return triangleArea3d(triangle);
-            default: return triangleAreaXd(triangle);
-        }
-    }
-
-    template <>
     inline double triangleArea(const Simplex<Dynamic, Dynamic>& triangle) {
-        switch (triangle.dimensions())
-        {
-            case 2: return triangleArea2d(triangle);
-            case 3: return triangleArea3d(triangle);
-            default: return triangleAreaXd(triangle);
-        }
+        return triangle.dimensions() == 2 ? triangleArea2d(triangle) : triangleArea3d(triangle);
     }
     
     template <int dimensions_, int size_>
@@ -312,27 +264,8 @@ namespace OpenSolid
     template <int dimensions_, int size_>
     double Simplex<dimensions_, size_>::volume() const {
         assert(size() == 4);
-        assert(dimensions() >= 3);
-        if (dimensions() == 3) {
-            return (
-                vertices().template rightCols<3>().colwise() - vertex(0)
-            ).determinant() / 6;
-        } else {
-            Matrix3d temp;
-            double squared_volume = 0.0;
-            for (int i = 0; i < dimensions() - 2; ++i) {
-                for (int j = i + 1; j < dimensions() - 1; ++j) {
-                    for (int k = j + 1; k < dimensions(); ++k) {
-                        temp << vertices().row(i).tail(3).array() - vertices()(i, 0),
-                            vertices().row(j).tail(3).array() - vertices()(j, 0),
-                            vertices().row(k).tail(3).array() - vertices()(k, 0);
-                        double determinant = temp.determinant();
-                        squared_volume += determinant * determinant / 36;
-                    }
-                }
-            }
-            return sqrt(squared_volume);
-        }
+        assert(dimensions() == 3);
+        return (vertices().template rightCols<3>().colwise() - vertex(0)).determinant() / 6;
     }
     
     template double Simplex<3, 4>::volume() const;
@@ -340,7 +273,6 @@ namespace OpenSolid
     
     template <int dimensions_, int size_>
     typename Simplex<dimensions_, size_>::Vector Simplex<dimensions_, size_>::vector() const {
-        assertCompatible<size_, 2>();
         assert(size() == 2);
         return vertex(1) - vertex(0);
     }
@@ -377,11 +309,22 @@ namespace OpenSolid
         int start_index,
         int end_index
     ) const {
+        assert(0 <= start_index && start_index < size());
+        assert(0 <= end_index && end_index < size());
+        assert(start_index != end_index);
         typename Edge::Vertices edge_vertices;
         edge_vertices.col(0) = vertex(start_index);
         edge_vertices.col(1) = vertex(end_index);
         return Edge(edge_vertices);
     }
+    
+    template Simplex<1, 2>::Edge Simplex<1, 2>::edge(int, int) const;
+    template Simplex<2, 2>::Edge Simplex<2, 2>::edge(int, int) const;
+    template Simplex<3, 2>::Edge Simplex<3, 2>::edge(int, int) const;
+    template Simplex<2, 3>::Edge Simplex<2, 3>::edge(int, int) const;
+    template Simplex<3, 3>::Edge Simplex<3, 3>::edge(int, int) const;
+    template Simplex<3, 4>::Edge Simplex<3, 4>::edge(int, int) const;
+    template Simplex<Dynamic, Dynamic>::Edge Simplex<Dynamic, Dynamic>::edge(int, int) const;
     
     template <int dimensions_, int size_>
     typename Simplex<dimensions_, size_>::Face Simplex<dimensions_, size_>::face(int index) const {
@@ -394,6 +337,11 @@ namespace OpenSolid
         }
         return Face(face_vertices);
     }
+    
+    template Simplex<2, 3>::Face Simplex<2, 3>::face(int) const;
+    template Simplex<3, 3>::Face Simplex<3, 3>::face(int) const;
+    template Simplex<3, 4>::Face Simplex<3, 4>::face(int) const;
+    template Simplex<Dynamic, Dynamic>::Face Simplex<Dynamic, Dynamic>::face(int) const;
 
     template <int dimensions_, int size_>
     CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>
@@ -404,17 +352,39 @@ namespace OpenSolid
         );
     }
     
+    template CoordinateSystem<1, 1> Simplex<1, 2>::coordinateSystem() const;
+    template CoordinateSystem<2, 1> Simplex<2, 2>::coordinateSystem() const;
+    template CoordinateSystem<3, 1> Simplex<3, 2>::coordinateSystem() const;
+    template CoordinateSystem<2, 2> Simplex<2, 3>::coordinateSystem() const;
+    template CoordinateSystem<3, 2> Simplex<3, 3>::coordinateSystem() const;
+    template CoordinateSystem<3, 3> Simplex<3, 4>::coordinateSystem() const;
+    template CoordinateSystem<Dynamic, Dynamic> Simplex<Dynamic, Dynamic>::coordinateSystem() const;
+    
     template <int dimensions_, int size_>
     Matrix<Interval, dimensions_, 1> Simplex<dimensions_, size_>::bounds() const {
         return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
     }
+    
+    template Matrix<Interval, 1, 1> Simplex<1, 2>::bounds() const;
+    template Matrix<Interval, 2, 1> Simplex<2, 2>::bounds() const;
+    template Matrix<Interval, 3, 1> Simplex<3, 2>::bounds() const;
+    template Matrix<Interval, 2, 1> Simplex<2, 3>::bounds() const;
+    template Matrix<Interval, 3, 1> Simplex<3, 3>::bounds() const;
+    template Matrix<Interval, 3, 1> Simplex<3, 4>::bounds() const;
+    template Matrix<Interval, Dynamic, 1> Simplex<Dynamic, Dynamic>::bounds() const;
         
     template <int dimensions_, int size_>
     bool Simplex<dimensions_, size_>::operator==(const Simplex<dimensions_, size_>& other) const {
-        assertCompatible<dimensions_, other_dimensions_>();
-        assertCompatible<size_, other_size_>();
         assert(dimensions() == other.dimensions());
         assert(size() == other.size());
         return vertices() == other.vertices();
     }
+    
+    template bool Simplex<1, 2>::operator==(const Simplex<1, 2>&) const;
+    template bool Simplex<2, 2>::operator==(const Simplex<2, 2>&) const;
+    template bool Simplex<3, 2>::operator==(const Simplex<3, 2>&) const;
+    template bool Simplex<2, 3>::operator==(const Simplex<2, 3>&) const;
+    template bool Simplex<3, 3>::operator==(const Simplex<3, 3>&) const;
+    template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
+    template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
 }

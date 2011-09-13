@@ -21,6 +21,8 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Datum/Frame.hpp>
+#include <OpenSolid/Datum/Plane.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Function/Function.hpp>
 
@@ -33,7 +35,7 @@ public:
         Function f = 3.0;
         TS_ASSERT(f.isA<ConstantFunction>());
         TS_ASSERT(f(0.0).value() == Approx(3.0));
-        TS_ASSERT(f.as<ConstantFunction>().vector().value() == Approx(3.0));
+        TS_ASSERT(f.to<double>() == Approx(3.0));
     }
     
     void testArithmetic() {
@@ -99,8 +101,8 @@ public:
     void testVector() {
         Function f = Vector3d(1, 2, 3);
         TS_ASSERT(f.isA<ConstantFunction>());
-        TS_ASSERT(f.as<ConstantFunction>().vector() == Vector3d(1, 2, 3));
-        TS_ASSERT(f.as<ConstantFunction>().vector().transpose() == RowVector3d(1, 2, 3));
+        TS_ASSERT(f.to<Vector3d>() == Vector3d(1, 2, 3));
+        TS_ASSERT(f.to<Vector3d>().transpose() == RowVector3d(1, 2, 3));
     }
     
     void testConversion() {
@@ -225,7 +227,7 @@ public:
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
         TS_ASSERT(derivative.isA<ConstantFunction>());
-        TS_ASSERT((derivative.as<ConstantFunction>().vector() - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((derivative.to<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testNormal() {

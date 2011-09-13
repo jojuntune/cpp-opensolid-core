@@ -20,7 +20,11 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Datum/Axis.hpp>
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Datum/Frame.hpp>
+#include <OpenSolid/Datum/Plane.hpp>
 
 using namespace OpenSolid;
 

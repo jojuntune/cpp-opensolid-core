@@ -29,6 +29,13 @@
 namespace OpenSolid
 {
     template <int dimensions_, int axes_>
+    struct TransformedDatum
+    {
+        static const bool dynamic = (dimensions_ == Dynamic || axes_ == Dynamic);
+        typedef Datum<(dynamic ? Dynamic : dimensions_), (dynamic ? Dynamic : axes_)> Type;
+    };
+
+    template <int dimensions_, int axes_>
     class Datum : public Transformable<Datum<dimensions_, axes_>>
     {
     private:
@@ -45,6 +52,9 @@ namespace OpenSolid
             const Matrix<double, dimensions_, axes_>& basis
         );
     public:
+        typedef Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : 1)> AxisType;
+        typedef Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)> PlaneType;
+
         OPENSOLID_CORE_EXPORT Datum();
         
         OPENSOLID_CORE_EXPORT Datum(const Datum<dimensions_, axes_>& other);
@@ -88,30 +98,30 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> direction() const;
         OPENSOLID_CORE_EXPORT Matrix<double, dimensions_, 1> normal() const;
         
-        OPENSOLID_CORE_EXPORT Axis<dimensions_> xAxis() const;
-        OPENSOLID_CORE_EXPORT Axis<dimensions_> yAxis() const;
-        OPENSOLID_CORE_EXPORT Axis<dimensions_> zAxis() const;
-        OPENSOLID_CORE_EXPORT Axis<dimensions_> axis(int index) const;
-        OPENSOLID_CORE_EXPORT Axis<dimensions_> normalAxis() const;
+        OPENSOLID_CORE_EXPORT AxisType xAxis() const;
+        OPENSOLID_CORE_EXPORT AxisType yAxis() const;
+        OPENSOLID_CORE_EXPORT AxisType zAxis() const;
+        OPENSOLID_CORE_EXPORT AxisType axis(int index) const;
+        OPENSOLID_CORE_EXPORT AxisType normalAxis() const;
 
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> xyPlane() const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> xzPlane() const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> yxPlane() const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> yzPlane() const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> zxPlane() const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> zyPlane() const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> plane(int first_index, int second_index) const;
-        OPENSOLID_CORE_EXPORT Plane<dimensions_> normalPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType xyPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType xzPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType yxPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType yzPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType zxPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType zyPlane() const;
+        OPENSOLID_CORE_EXPORT PlaneType plane(int first_index, int second_index) const;
+        OPENSOLID_CORE_EXPORT PlaneType normalPlane() const;
 
         template <class MatrixType, class VectorType>
-        Datum<MatrixType::RowsAtCompileTime, axes_> transformed(
+        typename TransformedDatum<MatrixType::RowsAtCompileTime, axes_>::Type transformed(
             const MatrixType& matrix,
             const VectorType& vector
         ) const;
 
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orthonormalized() const;
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orientation() const;
-        OPENSOLID_CORE_EXPORT Frame<dimensions_> frame() const;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, dimensions_> frame() const;
     };
 
     typedef Datum<Dynamic, Dynamic> DatumXd;
@@ -139,11 +149,6 @@ namespace OpenSolid
 }
 
 ////////// Implementation //////////
-
-#include <OpenSolid/Datum/Axis.hpp>
-#include <OpenSolid/Datum/Plane.hpp>
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
 
 namespace OpenSolid
 {
@@ -238,12 +243,13 @@ namespace OpenSolid
     inline int Datum<dimensions_, axes_>::axes() const {return basis().cols();}
 
     template <int dimensions_, int axes_> template <class MatrixType, class VectorType>
-    Datum<MatrixType::RowsAtCompileTime, axes_> Datum<dimensions_, axes_>::transformed(
+    typename TransformedDatum<MatrixType::RowsAtCompileTime, axes_>::Type
+    Datum<dimensions_, axes_>::transformed(
         const MatrixType& matrix,
         const VectorType& vector
     ) const {
         assertValidTransform<dimensions_>(dimensions(), matrix, vector);
-        return Datum<MatrixType::RowsAtCompileTime, axes_>(
+        return typename TransformedDatum<MatrixType::RowsAtCompileTime, axes_>::Type(
             matrix * origin() + vector,
             matrix * basis()
         );

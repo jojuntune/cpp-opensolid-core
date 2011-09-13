@@ -44,7 +44,6 @@ namespace OpenSolid
     typedef Axis<1> Axis1d;
     typedef Axis<2> Axis2d;
     typedef Axis<3> Axis3d;
-    typedef Axis<Dynamic> AxisXd;
 }
 
 #endif

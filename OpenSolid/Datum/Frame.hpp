@@ -48,7 +48,6 @@ namespace OpenSolid
     typedef Frame<1> Frame1d;
     typedef Frame<2> Frame2d;
     typedef Frame<3> Frame3d;
-    typedef Frame<Dynamic> FrameXd;
 }
 
 ////////// Implementation //////////

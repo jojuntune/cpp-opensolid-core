@@ -43,7 +43,6 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
         OPENSOLID_CORE_EXPORT void getComponents(int index, int num, Function& result) const;
-        OPENSOLID_CORE_EXPORT void getMirrored(const PlaneXd& plane, Function& result) const;
         OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
 
         OPENSOLID_CORE_EXPORT void getTransformed(

@@ -36,17 +36,11 @@ namespace OpenSolid
     template class CoordinateSystem<1, 1>;
     template class CoordinateSystem<1, 2>;
     template class CoordinateSystem<1, 3>;
-    template class CoordinateSystem<1, Dynamic>;
     template class CoordinateSystem<2, 1>;
     template class CoordinateSystem<2, 2>;
     template class CoordinateSystem<2, 3>;
-    template class CoordinateSystem<2, Dynamic>;
     template class CoordinateSystem<3, 1>;
     template class CoordinateSystem<3, 2>;
     template class CoordinateSystem<3, 3>;
-    template class CoordinateSystem<3, Dynamic>;
-    template class CoordinateSystem<Dynamic, 1>;
-    template class CoordinateSystem<Dynamic, 2>;
-    template class CoordinateSystem<Dynamic, 3>;
     template class CoordinateSystem<Dynamic, Dynamic>;
 }

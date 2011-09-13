@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Datum/Plane.hpp>
 
 namespace OpenSolid
 {
@@ -38,18 +39,12 @@ namespace OpenSolid
     template Datum<1, 1>::Datum(const Matrix<double, 1, 1>&, const Matrix<double, 1, 1>&);
     template Datum<1, 2>::Datum(const Matrix<double, 1, 1>&, const Matrix<double, 1, 2>&);
     template Datum<1, 3>::Datum(const Matrix<double, 1, 1>&, const Matrix<double, 1, 3>&);
-    template Datum<1, Dynamic>::Datum(const Matrix<double, 1, 1>&, const Matrix<double, 1, Dynamic>&);
     template Datum<2, 1>::Datum(const Matrix<double, 2, 1>&, const Matrix<double, 2, 1>&);
     template Datum<2, 2>::Datum(const Matrix<double, 2, 1>&, const Matrix<double, 2, 2>&);
     template Datum<2, 3>::Datum(const Matrix<double, 2, 1>&, const Matrix<double, 2, 3>&);
-    template Datum<2, Dynamic>::Datum(const Matrix<double, 2, 1>&, const Matrix<double, 2, Dynamic>&);
     template Datum<3, 1>::Datum(const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&);
     template Datum<3, 2>::Datum(const Matrix<double, 3, 1>&, const Matrix<double, 3, 2>&);
     template Datum<3, 3>::Datum(const Matrix<double, 3, 1>&, const Matrix<double, 3, 3>&);
-    template Datum<3, Dynamic>::Datum(const Matrix<double, 3, 1>&, const Matrix<double, 3, Dynamic>&);
-    template Datum<Dynamic, 1>::Datum(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&);
-    template Datum<Dynamic, 2>::Datum(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 2>&);
-    template Datum<Dynamic, 3>::Datum(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 3>&);
     template Datum<Dynamic, Dynamic>::Datum(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, Dynamic>&);
 
     template <int dimensions_, int axes_>
@@ -58,18 +53,12 @@ namespace OpenSolid
     template Datum<1, 1>::Datum();
     template Datum<1, 2>::Datum();
     template Datum<1, 3>::Datum();
-    template Datum<1, Dynamic>::Datum();
     template Datum<2, 1>::Datum();
     template Datum<2, 2>::Datum();
     template Datum<2, 3>::Datum();
-    template Datum<2, Dynamic>::Datum();
     template Datum<3, 1>::Datum();
     template Datum<3, 2>::Datum();
     template Datum<3, 3>::Datum();
-    template Datum<3, Dynamic>::Datum();
-    template Datum<Dynamic, 1>::Datum();
-    template Datum<Dynamic, 2>::Datum();
-    template Datum<Dynamic, 3>::Datum();
     template Datum<Dynamic, Dynamic>::Datum();
     
     template <int dimensions_, int axes_>
@@ -82,18 +71,12 @@ namespace OpenSolid
     template Datum<1, 1>::Datum(const Datum<1, 1>&);
     template Datum<1, 2>::Datum(const Datum<1, 2>&);
     template Datum<1, 3>::Datum(const Datum<1, 3>&);
-    template Datum<1, Dynamic>::Datum(const Datum<1, Dynamic>&);
     template Datum<2, 1>::Datum(const Datum<2, 1>&);
     template Datum<2, 2>::Datum(const Datum<2, 2>&);
     template Datum<2, 3>::Datum(const Datum<2, 3>&);
-    template Datum<2, Dynamic>::Datum(const Datum<2, Dynamic>&);
     template Datum<3, 1>::Datum(const Datum<3, 1>&);
     template Datum<3, 2>::Datum(const Datum<3, 2>&);
     template Datum<3, 3>::Datum(const Datum<3, 3>&);
-    template Datum<3, Dynamic>::Datum(const Datum<3, Dynamic>&);
-    template Datum<Dynamic, 1>::Datum(const Datum<Dynamic, 1>&);
-    template Datum<Dynamic, 2>::Datum(const Datum<Dynamic, 2>&);
-    template Datum<Dynamic, 3>::Datum(const Datum<Dynamic, 3>&);
     template Datum<Dynamic, Dynamic>::Datum(const Datum<Dynamic, Dynamic>&);
         
     template <int dimensions_, int axes_>
@@ -110,18 +93,12 @@ namespace OpenSolid
     template Datum<1, 1>& Datum<1, 1>::operator=(const Datum<1, 1>&);
     template Datum<1, 2>& Datum<1, 2>::operator=(const Datum<1, 2>&);
     template Datum<1, 3>& Datum<1, 3>::operator=(const Datum<1, 3>&);
-    template Datum<1, Dynamic>& Datum<1, Dynamic>::operator=(const Datum<1, Dynamic>&);
     template Datum<2, 1>& Datum<2, 1>::operator=(const Datum<2, 1>&);
     template Datum<2, 2>& Datum<2, 2>::operator=(const Datum<2, 2>&);
     template Datum<2, 3>& Datum<2, 3>::operator=(const Datum<2, 3>&);
-    template Datum<2, Dynamic>& Datum<2, Dynamic>::operator=(const Datum<2, Dynamic>&);
     template Datum<3, 1>& Datum<3, 1>::operator=(const Datum<3, 1>&);
     template Datum<3, 2>& Datum<3, 2>::operator=(const Datum<3, 2>&);
     template Datum<3, 3>& Datum<3, 3>::operator=(const Datum<3, 3>&);
-    template Datum<3, Dynamic>& Datum<3, Dynamic>::operator=(const Datum<3, Dynamic>&);
-    template Datum<Dynamic, 1>& Datum<Dynamic, 1>::operator=(const Datum<Dynamic, 1>&);
-    template Datum<Dynamic, 2>& Datum<Dynamic, 2>::operator=(const Datum<Dynamic, 2>&);
-    template Datum<Dynamic, 3>& Datum<Dynamic, 3>::operator=(const Datum<Dynamic, 3>&);
     template Datum<Dynamic, Dynamic>& Datum<Dynamic, Dynamic>::operator=(const Datum<Dynamic, Dynamic>&);
         
     template <int dimensions_, int axes_>
@@ -131,12 +108,8 @@ namespace OpenSolid
     }
 
     template Matrix<double, 1, 1> Datum<1, 1>::point(double) const;
-    template Matrix<double, 1, 1> Datum<1, Dynamic>::point(double) const;
     template Matrix<double, 2, 1> Datum<2, 1>::point(double) const;
-    template Matrix<double, 2, 1> Datum<2, Dynamic>::point(double) const;
     template Matrix<double, 3, 1> Datum<3, 1>::point(double) const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::point(double) const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 1>::point(double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::point(double) const;
         
     template <int dimensions_, int axes_>
@@ -149,10 +122,7 @@ namespace OpenSolid
     }
     
     template Matrix<double, 2, 1> Datum<2, 2>::point(double, double) const;
-    template Matrix<double, 2, 1> Datum<2, Dynamic>::point(double, double) const;
     template Matrix<double, 3, 1> Datum<3, 2>::point(double, double) const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::point(double, double) const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 2>::point(double, double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::point(double, double) const;
     
     template <int dimensions_, int axes_>
@@ -166,8 +136,6 @@ namespace OpenSolid
     }
     
     template Matrix<double, 3, 1> Datum<3, 3>::point(double, double, double) const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::point(double, double, double) const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 3>::point(double, double, double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::point(double, double, double) const;
         
     template <int dimensions_, int axes_>
@@ -177,12 +145,8 @@ namespace OpenSolid
     }
     
     template Matrix<double, 1, 1> Datum<1, 1>::vector(double) const;
-    template Matrix<double, 1, 1> Datum<1, Dynamic>::vector(double) const;
     template Matrix<double, 2, 1> Datum<2, 1>::vector(double) const;
-    template Matrix<double, 2, 1> Datum<2, Dynamic>::vector(double) const;
     template Matrix<double, 3, 1> Datum<3, 1>::vector(double) const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::vector(double) const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 1>::vector(double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::vector(double) const;
         
     template <int dimensions_, int axes_>
@@ -195,10 +159,7 @@ namespace OpenSolid
     }
     
     template Matrix<double, 2, 1> Datum<2, 2>::vector(double, double) const;
-    template Matrix<double, 2, 1> Datum<2, Dynamic>::vector(double, double) const;
     template Matrix<double, 3, 1> Datum<3, 2>::vector(double, double) const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::vector(double, double) const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 2>::vector(double, double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::vector(double, double) const;
     
     template <int dimensions_, int axes_>
@@ -213,8 +174,6 @@ namespace OpenSolid
     }
     
     template Matrix<double, 3, 1> Datum<3, 3>::vector(double, double, double) const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::vector(double, double, double) const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 3>::vector(double, double, double) const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::vector(double, double, double) const;
     
     template <int dimensions_, int axes_>
@@ -225,12 +184,8 @@ namespace OpenSolid
     }
 
     template Matrix<double, 1, 1> Datum<1, 1>::direction() const;
-    template Matrix<double, 1, 1> Datum<1, Dynamic>::direction() const;
     template Matrix<double, 2, 1> Datum<2, 1>::direction() const;
-    template Matrix<double, 2, 1> Datum<2, Dynamic>::direction() const;
     template Matrix<double, 3, 1> Datum<3, 1>::direction() const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::direction() const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 1>::direction() const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::direction() const;
 
     template <int dimensions_, int axes_>
@@ -266,172 +221,134 @@ namespace OpenSolid
     }
 
     template Matrix<double, 2, 1> Datum<2, 1>::normal() const;
-    template Matrix<double, 2, 1> Datum<2, Dynamic>::normal() const;
     template Matrix<double, 3, 1> Datum<3, 1>::normal() const;
     template Matrix<double, 3, 1> Datum<3, 2>::normal() const;
-    template Matrix<double, 3, 1> Datum<3, Dynamic>::normal() const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 1>::normal() const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, 2>::normal() const;
     template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::normal() const;
     
     template <int dimensions_, int axes_>
-    Axis<dimensions_> Datum<dimensions_, axes_>::xAxis() const {
+    typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::xAxis() const {
         assert(basis().isUnitary());
-        return Axis<dimensions_>(origin(), basis().col(0));
+        return AxisType(origin(), basis().col(0));
     }
 
-    template Axis<1> Datum<1, 1>::xAxis() const;
-    template Axis<1> Datum<1, Dynamic>::xAxis() const;
-    template Axis<2> Datum<2, 1>::xAxis() const;
-    template Axis<2> Datum<2, 2>::xAxis() const;
-    template Axis<2> Datum<2, Dynamic>::xAxis() const;
-    template Axis<3> Datum<3, 1>::xAxis() const;
-    template Axis<3> Datum<3, 2>::xAxis() const;
-    template Axis<3> Datum<3, 3>::xAxis() const;
-    template Axis<3> Datum<3, Dynamic>::xAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 1>::xAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 2>::xAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 3>::xAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, Dynamic>::xAxis() const;
+    template Datum<1, 1>::AxisType Datum<1, 1>::xAxis() const;
+    template Datum<2, 1>::AxisType Datum<2, 1>::xAxis() const;
+    template Datum<2, 2>::AxisType Datum<2, 2>::xAxis() const;
+    template Datum<3, 1>::AxisType Datum<3, 1>::xAxis() const;
+    template Datum<3, 2>::AxisType Datum<3, 2>::xAxis() const;
+    template Datum<3, 3>::AxisType Datum<3, 3>::xAxis() const;
+    template Datum<Dynamic, Dynamic>::AxisType Datum<Dynamic, Dynamic>::xAxis() const;
     
     template <int dimensions_, int axes_>
-    Axis<dimensions_> Datum<dimensions_, axes_>::yAxis() const {
+    typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::yAxis() const {
         assert(basis().isUnitary());
         assert(axes() >= 2);
-        return Axis<dimensions_>(origin(), basis().col(1));
+        return AxisType(origin(), basis().col(1));
     }
 
-    template Axis<2> Datum<2, 2>::yAxis() const;
-    template Axis<2> Datum<2, Dynamic>::yAxis() const;
-    template Axis<3> Datum<3, 2>::yAxis() const;
-    template Axis<3> Datum<3, 3>::yAxis() const;
-    template Axis<3> Datum<3, Dynamic>::yAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 2>::yAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 3>::yAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, Dynamic>::yAxis() const;
+    template Datum<2, 2>::AxisType Datum<2, 2>::yAxis() const;
+    template Datum<3, 2>::AxisType Datum<3, 2>::yAxis() const;
+    template Datum<3, 3>::AxisType Datum<3, 3>::yAxis() const;
+    template Datum<Dynamic, Dynamic>::AxisType Datum<Dynamic, Dynamic>::yAxis() const;
     
     template <int dimensions_, int axes_>
-    Axis<dimensions_> Datum<dimensions_, axes_>::zAxis() const {
+    typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::zAxis() const {
         assert(basis().isUnitary());
         assert(axes() >= 3);
-        return Axis<dimensions_>(origin(), basis().col(2));
+        return AxisType(origin(), basis().col(2));
     }
 
-    template Axis<3> Datum<3, 3>::zAxis() const;
-    template Axis<3> Datum<3, Dynamic>::zAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 3>::zAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, Dynamic>::zAxis() const;
+    template Datum<3, 3>::AxisType Datum<3, 3>::zAxis() const;
+    template Datum<Dynamic, Dynamic>::AxisType Datum<Dynamic, Dynamic>::zAxis() const;
     
     template <int dimensions_, int axes_>
-    Axis<dimensions_> Datum<dimensions_, axes_>::axis(int index) const {
+    typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::axis(int index) const {
         assert(basis().isUnitary());
         assert(index >= 0 && index < axes());
-        return Axis<dimensions_>(origin(), basis().col(index));
+        return AxisType(origin(), basis().col(index));
     }
 
-    template Axis<1> Datum<1, 1>::axis(int) const;
-    template Axis<1> Datum<1, Dynamic>::axis(int) const;
-    template Axis<2> Datum<2, 1>::axis(int) const;
-    template Axis<2> Datum<2, 2>::axis(int) const;
-    template Axis<2> Datum<2, Dynamic>::axis(int) const;
-    template Axis<3> Datum<3, 1>::axis(int) const;
-    template Axis<3> Datum<3, 2>::axis(int) const;
-    template Axis<3> Datum<3, 3>::axis(int) const;
-    template Axis<3> Datum<3, Dynamic>::axis(int) const;
-    template Axis<Dynamic> Datum<Dynamic, 1>::axis(int) const;
-    template Axis<Dynamic> Datum<Dynamic, 2>::axis(int) const;
-    template Axis<Dynamic> Datum<Dynamic, 3>::axis(int) const;
-    template Axis<Dynamic> Datum<Dynamic, Dynamic>::axis(int) const;
+    template Datum<1, 1>::AxisType Datum<1, 1>::axis(int) const;
+    template Datum<2, 1>::AxisType Datum<2, 1>::axis(int) const;
+    template Datum<2, 2>::AxisType Datum<2, 2>::axis(int) const;
+    template Datum<3, 1>::AxisType Datum<3, 1>::axis(int) const;
+    template Datum<3, 2>::AxisType Datum<3, 2>::axis(int) const;
+    template Datum<3, 3>::AxisType Datum<3, 3>::axis(int) const;
+    template Datum<Dynamic, Dynamic>::AxisType Datum<Dynamic, Dynamic>::axis(int) const;
         
     template <int dimensions_, int axes_>
-    Axis<dimensions_> Datum<dimensions_, axes_>::normalAxis() const {
+    typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::normalAxis() const {
         assert(axes() < dimensions());
-        return Axis<dimensions_>(origin(), normal());
+        return AxisType(origin(), normal());
     }
 
-    template Axis<2> Datum<2, 1>::normalAxis() const;
-    template Axis<2> Datum<2, Dynamic>::normalAxis() const;
-    template Axis<3> Datum<3, 1>::normalAxis() const;
-    template Axis<3> Datum<3, 2>::normalAxis() const;
-    template Axis<3> Datum<3, Dynamic>::normalAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 1>::normalAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, 2>::normalAxis() const;
-    template Axis<Dynamic> Datum<Dynamic, Dynamic>::normalAxis() const;
+    template Datum<2, 1>::AxisType Datum<2, 1>::normalAxis() const;
+    template Datum<3, 1>::AxisType Datum<3, 1>::normalAxis() const;
+    template Datum<3, 2>::AxisType Datum<3, 2>::normalAxis() const;
+    template Datum<Dynamic, Dynamic>::AxisType Datum<Dynamic, Dynamic>::normalAxis() const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::xyPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::xyPlane() const {
         assert(dimensions() == 3 && axes() == 3);
         assert(basis().isUnitary());
-        return Plane<dimensions_>(origin(), basis().col(0), basis().col(1));
+        return Plane3d(origin(), basis().col(0), basis().col(1));
     }
 
-    template Plane<3> Datum<3, 3>::xyPlane() const;
-    template Plane<3> Datum<3, Dynamic>::xyPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::xyPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::xyPlane() const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::xyPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::xyPlane() const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::xzPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::xzPlane() const {
         assert(dimensions() == 3 && axes() == 3);
         assert(basis().isUnitary());
-        return Plane<3>(origin(), basis().col(0), basis().col(2));
+        return Plane3d(origin(), basis().col(0), basis().col(2));
     }
 
-    template Plane<3> Datum<3, 3>::xzPlane() const;
-    template Plane<3> Datum<3, Dynamic>::xzPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::xzPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::xzPlane() const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::xzPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::xzPlane() const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::yxPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::yxPlane() const {
         assert(dimensions() == 3 && axes() == 3);
         assert(basis().isUnitary());
-        return Plane<3>(origin(), basis().col(1), basis().col(0));
+        return Plane3d(origin(), basis().col(1), basis().col(0));
     }
 
-    template Plane<3> Datum<3, 3>::yxPlane() const;
-    template Plane<3> Datum<3, Dynamic>::yxPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::yxPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::yxPlane() const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::yxPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::yxPlane() const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::yzPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::yzPlane() const {
         assert(dimensions() == 3 && axes() == 3);
         assert(basis().isUnitary());
-        return Plane<3>(origin(), basis().col(1), basis().col(2));
+        return Plane3d(origin(), basis().col(1), basis().col(2));
     }
 
-    template Plane<3> Datum<3, 3>::yzPlane() const;
-    template Plane<3> Datum<3, Dynamic>::yzPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::yzPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::yzPlane() const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::yzPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::yzPlane() const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::zxPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::zxPlane() const {
         assert(dimensions() == 3 && axes() == 3);
         assert(basis().isUnitary());
-        return Plane<3>(origin(), basis().col(2), basis().col(0));
+        return Plane3d(origin(), basis().col(2), basis().col(0));
     }
 
-    template Plane<3> Datum<3, 3>::zxPlane() const;
-    template Plane<3> Datum<3, Dynamic>::zxPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::zxPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::zxPlane() const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::zxPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::zxPlane() const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::zyPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::zyPlane() const {
         assert(dimensions() == 3 && axes() == 3);
         assert(basis().isUnitary());
-        return Plane<3>(origin(), basis().col(2), basis().col(1));
+        return Plane3d(origin(), basis().col(2), basis().col(1));
     }
 
-    template Plane<3> Datum<3, 3>::zyPlane() const;
-    template Plane<3> Datum<3, Dynamic>::zyPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::zyPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::zyPlane() const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::zyPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::zyPlane() const;
 
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::plane(
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::plane(
         int first_index,
         int second_index
     ) const {
@@ -440,26 +357,20 @@ namespace OpenSolid
         assert(first_index >= 0 && first_index < 3);
         assert(second_index >= 0 && second_index < 3);
         assert(first_index != second_index);
-        return Plane<3>(origin(), basis().col(first_index), basis().col(second_index));
+        return Plane3d(origin(), basis().col(first_index), basis().col(second_index));
     }
 
-    template Plane<3> Datum<3, 3>::plane(int, int) const;
-    template Plane<3> Datum<3, Dynamic>::plane(int, int) const;
-    template Plane<Dynamic> Datum<Dynamic, 3>::plane(int, int) const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::plane(int, int) const;
+    template Datum<3, 3>::PlaneType Datum<3, 3>::plane(int, int) const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::plane(int, int) const;
     
     template <int dimensions_, int axes_>
-    Plane<dimensions_> Datum<dimensions_, axes_>::normalPlane() const {
+    typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::normalPlane() const {
         assert(axes() == 1);
-        return Plane<dimensions_>(origin(), direction());
+        return Plane3d(origin(), direction());
     }
 
-    template Plane<2> Datum<2, 1>::normalPlane() const;
-    template Plane<2> Datum<2, Dynamic>::normalPlane() const;
-    template Plane<3> Datum<3, 1>::normalPlane() const;
-    template Plane<3> Datum<3, Dynamic>::normalPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, 1>::normalPlane() const;
-    template Plane<Dynamic> Datum<Dynamic, Dynamic>::normalPlane() const;
+    template Datum<3, 1>::PlaneType Datum<3, 1>::normalPlane() const;
+    template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::normalPlane() const;
     
     template <int dimensions_, int axes_>
     Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthonormalized() const {
@@ -472,18 +383,12 @@ namespace OpenSolid
     template Datum<1, 1> Datum<1, 1>::orthonormalized() const;
     template Datum<1, 2> Datum<1, 2>::orthonormalized() const;
     template Datum<1, 3> Datum<1, 3>::orthonormalized() const;
-    template Datum<1, Dynamic> Datum<1, Dynamic>::orthonormalized() const;
     template Datum<2, 1> Datum<2, 1>::orthonormalized() const;
     template Datum<2, 2> Datum<2, 2>::orthonormalized() const;
     template Datum<2, 3> Datum<2, 3>::orthonormalized() const;
-    template Datum<2, Dynamic> Datum<2, Dynamic>::orthonormalized() const;
     template Datum<3, 1> Datum<3, 1>::orthonormalized() const;
     template Datum<3, 2> Datum<3, 2>::orthonormalized() const;
     template Datum<3, 3> Datum<3, 3>::orthonormalized() const;
-    template Datum<3, Dynamic> Datum<3, Dynamic>::orthonormalized() const;
-    template Datum<Dynamic, 1> Datum<Dynamic, 1>::orthonormalized() const;
-    template Datum<Dynamic, 2> Datum<Dynamic, 2>::orthonormalized() const;
-    template Datum<Dynamic, 3> Datum<Dynamic, 3>::orthonormalized() const;
     template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::orthonormalized() const;
     
     template <int dimensions_, int axes_>
@@ -496,41 +401,29 @@ namespace OpenSolid
     template Datum<1, 1> Datum<1, 1>::orientation() const;
     template Datum<1, 2> Datum<1, 2>::orientation() const;
     template Datum<1, 3> Datum<1, 3>::orientation() const;
-    template Datum<1, Dynamic> Datum<1, Dynamic>::orientation() const;
     template Datum<2, 1> Datum<2, 1>::orientation() const;
     template Datum<2, 2> Datum<2, 2>::orientation() const;
     template Datum<2, 3> Datum<2, 3>::orientation() const;
-    template Datum<2, Dynamic> Datum<2, Dynamic>::orientation() const;
     template Datum<3, 1> Datum<3, 1>::orientation() const;
     template Datum<3, 2> Datum<3, 2>::orientation() const;
     template Datum<3, 3> Datum<3, 3>::orientation() const;
-    template Datum<3, Dynamic> Datum<3, Dynamic>::orientation() const;
-    template Datum<Dynamic, 1> Datum<Dynamic, 1>::orientation() const;
-    template Datum<Dynamic, 2> Datum<Dynamic, 2>::orientation() const;
-    template Datum<Dynamic, 3> Datum<Dynamic, 3>::orientation() const;
     template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::orientation() const;
 
     template <int dimensions_, int axes_>
-    Frame<dimensions_> Datum<dimensions_, axes_>::frame() const {
-        return Frame<dimensions_>(origin(), orthonormalBasis(basis()));
+    Datum<dimensions_, dimensions_> Datum<dimensions_, axes_>::frame() const {
+        return Datum<dimensions_, dimensions_>(origin(), orthonormalBasis(basis()));
     }
     
-    template Frame<1> Datum<1, 1>::frame() const;
-    template Frame<1> Datum<1, 2>::frame() const;
-    template Frame<1> Datum<1, 3>::frame() const;
-    template Frame<1> Datum<1, Dynamic>::frame() const;
-    template Frame<2> Datum<2, 1>::frame() const;
-    template Frame<2> Datum<2, 2>::frame() const;
-    template Frame<2> Datum<2, 3>::frame() const;
-    template Frame<2> Datum<2, Dynamic>::frame() const;
-    template Frame<3> Datum<3, 1>::frame() const;
-    template Frame<3> Datum<3, 2>::frame() const;
-    template Frame<3> Datum<3, 3>::frame() const;
-    template Frame<3> Datum<3, Dynamic>::frame() const;
-    template Frame<Dynamic> Datum<Dynamic, 1>::frame() const;
-    template Frame<Dynamic> Datum<Dynamic, 2>::frame() const;
-    template Frame<Dynamic> Datum<Dynamic, 3>::frame() const;
-    template Frame<Dynamic> Datum<Dynamic, Dynamic>::frame() const;
+    template Datum<1, 1> Datum<1, 1>::frame() const;
+    template Datum<1, 1> Datum<1, 2>::frame() const;
+    template Datum<1, 1> Datum<1, 3>::frame() const;
+    template Datum<2, 2> Datum<2, 1>::frame() const;
+    template Datum<2, 2> Datum<2, 2>::frame() const;
+    template Datum<2, 2> Datum<2, 3>::frame() const;
+    template Datum<3, 3> Datum<3, 1>::frame() const;
+    template Datum<3, 3> Datum<3, 2>::frame() const;
+    template Datum<3, 3> Datum<3, 3>::frame() const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::frame() const;
 
     MatrixXd orthonormalBasis(const MatrixXd& vectors) {
         MatrixXd result = vectors.householderQr().householderQ();

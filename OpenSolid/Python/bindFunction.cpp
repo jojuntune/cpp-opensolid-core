@@ -26,7 +26,7 @@ using namespace boost::python;
 namespace OpenSolid
 {
     MatrixXd* vector(const Function& function) {
-        return new MatrixXd(function.as<ConstantFunction>().vector());
+        return new MatrixXd(function.to<VectorXd>());
     }
     
     MatrixXd* callDouble(const Function& function, double argument) {

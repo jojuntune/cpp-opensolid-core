@@ -23,6 +23,8 @@
 #include <boost/geometry.hpp>
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Datum/Frame.hpp>
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Set/Set.hpp>

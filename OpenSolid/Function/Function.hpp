@@ -28,6 +28,7 @@
 
 #include <OpenSolid/config.hpp>
 #include <OpenSolid/declarations.hpp>
+#include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
@@ -50,9 +51,11 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Function(const FunctionImplementation* function);
         OPENSOLID_CORE_EXPORT Function(int value);
         OPENSOLID_CORE_EXPORT Function(double value);
-        OPENSOLID_CORE_EXPORT Function(const VectorXd& vector);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y, const Function& z);
+
+        template <class VectorType>
+        Function(const EigenBase<VectorType>& vector);
         
         OPENSOLID_CORE_EXPORT const FunctionImplementation* implementation() const;
         
@@ -112,19 +115,44 @@ namespace OpenSolid
     };
     
     template <>
-    OPENSOLID_CORE_EXPORT double convertFromTo<Function, double>(const Function& argument);
+    class Conversion<Function, double>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT double operator()(const Function& argument) const;
+    };
     
     template <>
-    OPENSOLID_CORE_EXPORT Vector2d convertFromTo<Function, Vector2d>(const Function& argument);
+    class Conversion<Function, Vector2d>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT Vector2d operator()(const Function& argument) const;
+    };
     
     template <>
-    OPENSOLID_CORE_EXPORT Vector3d convertFromTo<Function, Vector3d>(const Function& argument);
+    class Conversion<Function, Vector3d>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT Vector3d operator()(const Function& argument) const;
+    };
     
     template <>
-    OPENSOLID_CORE_EXPORT VectorXd convertFromTo<Function, VectorXd>(const Function& argument);
+    class Conversion<Function, VectorXd>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT VectorXd operator()(const Function& argument) const;
+    };
     
     template <class FunctionType>
-    const FunctionType& convertFromTo<Function, FunctionType>(const Function& argument) const;
+    class Conversion<Function, FunctionType>
+    {
+    static_assert(
+        std::is_base_of<FunctionImplementation, FunctionType>::value,
+        "Function can only be converted to double, Vector2d, Vector3d, VectorXd, "
+        "or a FunctionImplementation subclass"
+    );
+    public:
+        const FunctionType& operator()(const Function& argument) const;
+    };
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
     
@@ -169,6 +197,10 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <class VectorType>
+    Function::Function(const EigenBase<VectorType>& vector) :
+        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
+
     template <class Type>
     inline bool Function::isA() const {
         assert(_type);
@@ -181,14 +213,11 @@ namespace OpenSolid
     }
     
     template <class FunctionType>
-    inline const FunctionType& convertFromTo<Function, FunctionType>(const Function& argument) {
-        static_assert(
-            std::is_base_of<FunctionImplementation, FunctionType>,
-            "Function can only be converted to double, Vector2d, Vector3d, VectorXd, "
-            "or a FunctionImplementation subclass"
-        );
-        assert(argument.isA<Type>());
-        return static_cast<const Type&>(*argument.implementation());
+    inline const FunctionType& Conversion<Function, FunctionType>::operator()(
+        const Function& argument
+    ) const {
+        assert(argument.isA<FunctionType>());
+        return static_cast<const FunctionType&>(*argument.implementation());
     }
 }
 

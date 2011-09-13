@@ -106,8 +106,7 @@ namespace OpenSolid
         return Domain(transformed_boundaries);
     }
     
-    template <>
-    Interval convertFromTo<Domain, Interval>(const Domain& argument) {
+    Interval Conversion<Domain, Interval>::operator()(const Domain& argument) const {
         assert(!argument.isEmpty());
         assert(argument.dimensions() == 1);
         assert(argument.boundaries().size() == 2);

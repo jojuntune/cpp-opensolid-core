@@ -61,7 +61,11 @@ namespace OpenSolid
     };
     
     template <>
-    OPENSOLID_CORE_EXPORT Interval convertFromTo<Domain, Interval>(const Domain& argument);
+    class Conversion<Domain, Interval>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
+    };
 }
 
 #endif
