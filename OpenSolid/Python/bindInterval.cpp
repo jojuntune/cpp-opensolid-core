@@ -95,6 +95,13 @@ namespace OpenSolid
         const Interval& second_argument,
         double precision
     ) {return first_argument.strictlyContains(second_argument, precision);}
+
+    struct IntervalPickleSuite : public pickle_suite
+    {
+        static tuple getinitargs(const Interval& argument) {
+            return make_tuple(argument.lower(), argument.upper());
+        }
+    };
     
     void bindInterval() {
         class_<Interval>("Interval")
@@ -158,7 +165,8 @@ namespace OpenSolid
             .def(self / self)
             .def(self / double())
             .def(double() / self)
-            .def(self_ns::str(self));
+            .def(self_ns::str(self))
+            .def_pickle(IntervalPickleSuite());
         
         implicitly_convertible<double, Interval>();
         

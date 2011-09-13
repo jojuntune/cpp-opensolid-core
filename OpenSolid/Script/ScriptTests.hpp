@@ -484,4 +484,39 @@ public:
         TS_ASSERT(script.get<bool>("a1 != 2 * b1"));
         TS_ASSERT(script.get<bool>("not (a1 - 2 * b1).isZero()"));
     }
+
+    void testPickling() {
+        Script script;
+        double a = 3;
+        Interval b(4, 5);
+        Matrix2d c;
+        c(0, 0) = 6;
+        c(0, 1) = 7;
+        c(1, 0) = 8;
+        c(1, 1) = 9;
+        Vector2I d(Interval(10, 11), Interval(12, 13));
+        script.run("import pickle");
+        script.set("a", a);
+        script.set("b", b);
+        script.set<MatrixXd>("c", c);
+        script.set<MatrixXI>("d", d);
+        script.run("a_pickled = pickle.dumps(a)");
+        script.run("b_pickled = pickle.dumps(b)");
+        script.run("c_pickled = pickle.dumps(c)");
+        script.run("d_pickled = pickle.dumps(d)");
+        script.run("a_unpickled = pickle.loads(a_pickled)");
+        script.run("b_unpickled = pickle.loads(b_pickled)");
+        script.run("c_unpickled = pickle.loads(c_pickled)");
+        script.run("d_unpickled = pickle.loads(d_pickled)");
+        double a_extracted = script.get<double>("a_unpickled");
+        Interval b_extracted = script.get<Interval>("b_unpickled");
+        Matrix2d c_extracted = script.get<MatrixXd>("c_unpickled");
+        Vector2I d_extracted = script.get<MatrixXI>("d_unpickled");
+        TS_ASSERT(a - a_extracted == Zero());
+        TS_ASSERT(b.lower() - b_extracted.lower() == Zero());
+        TS_ASSERT(b.upper() - b_extracted.upper() == Zero());
+        TS_ASSERT((c - c_extracted).isZero());
+        TS_ASSERT((d.cwiseLower() - d_extracted.cwiseLower()).isZero());
+        TS_ASSERT((d.cwiseUpper() - d_extracted.cwiseUpper()).isZero());
+    }
 };

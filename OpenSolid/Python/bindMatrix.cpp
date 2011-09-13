@@ -671,6 +671,34 @@ namespace OpenSolid
         checkSameSizeMatrices(first_argument, second_argument, __func__);
         return first_argument != second_argument;
     }
+
+    template <class MatrixType>
+    struct MatrixPickleSuite : public pickle_suite
+    {
+        static tuple getinitargs(const MatrixType& argument) {
+            return make_tuple(argument.rows(), argument.cols());
+        }
+
+        static tuple getstate(const MatrixType& argument) {
+            list components;
+            for (int j = 0; j < argument.cols(); ++j) {
+                for (int i = 0; i < argument.rows(); ++i) {
+                    components.append(argument(i, j));
+                }
+            }
+            return tuple(components);
+        }
+
+        static void setstate(MatrixType& argument, tuple state) {
+            for (int j = 0; j < argument.cols(); ++j) {
+                for (int i = 0; i < argument.rows(); ++i) {
+                    argument(i, j) = extract<typename MatrixType::Scalar>(
+                        state[j * argument.rows() + i]
+                    );
+                }
+            }
+        }
+    };
     
     void bindMatrix() {
         registerExpressionConverter<MatrixXd::ConstColXpr>();
@@ -746,7 +774,8 @@ namespace OpenSolid
             .def("__eq__", &eqXdXI)
             .def("__ne__", &neXdXd)
             .def("__ne__", &neXdXI)
-            .def(self_ns::str(self));
+            .def(self_ns::str(self))
+            .def_pickle(MatrixPickleSuite<MatrixXd>());
 
         class_<MatrixXI>("MatrixXI", init<int, int>())
             .def("rows", &rows<MatrixXI>)
@@ -831,6 +860,7 @@ namespace OpenSolid
             .def("__eq__", &eqXIXI)
             .def("__ne__", &neXIXd)
             .def("__ne__", &neXIXI)
-            .def(self_ns::str(self));
+            .def(self_ns::str(self))
+            .def_pickle(MatrixPickleSuite<MatrixXI>());
     }
 }
