@@ -37,8 +37,6 @@ namespace OpenSolid
     
     Geometry::Geometry(double value) : _function(value), _domain() {}
     
-    Geometry::Geometry(const VectorXd& value) : _function(value), _domain() {}
-    
     const Function& Geometry::function() const {return _function;}
     
     const Domain& Geometry::domain() const {return _domain;}

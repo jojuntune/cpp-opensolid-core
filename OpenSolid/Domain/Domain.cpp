@@ -81,8 +81,6 @@ namespace OpenSolid
         _boundaries = rectangularBoundaries(VectorXI::Constant(1, bounds));
     }
     
-    Domain::Domain(const VectorXI& bounds) {_boundaries = rectangularBoundaries(bounds);}
-    
     const Set<Geometry>& Domain::boundaries() const {return _boundaries;}
     
     bool Domain::isEmpty() const {return boundaries().isEmpty();}

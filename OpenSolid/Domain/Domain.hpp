@@ -47,7 +47,9 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Domain();
         OPENSOLID_CORE_EXPORT Domain(const Set<Geometry>& boundaries);
         OPENSOLID_CORE_EXPORT Domain(const Interval& bounds);
-        OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
+
+        template <class BoundsType>
+        Domain(const EigenBase<BoundsType>& bounds);
         
         OPENSOLID_CORE_EXPORT const Set<Geometry>& boundaries() const;
         OPENSOLID_CORE_EXPORT bool isEmpty() const;
@@ -66,6 +68,17 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
     };
+
+    OPENSOLID_CORE_EXPORT Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
+}
+
+////////// Implementation //////////
+
+namespace OpenSolid
+{
+    template <class BoundsType>
+    Domain::Domain(const EigenBase<BoundsType>& bounds) :
+        _boundaries(rectangularBoundaries(bounds)) {}
 }
 
 #endif

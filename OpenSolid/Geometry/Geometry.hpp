@@ -39,7 +39,9 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry();
         OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
         OPENSOLID_CORE_EXPORT Geometry(double value);
-        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& value);
+
+        template <class VectorType>
+        Geometry(const EigenBase<VectorType>& vector);
         
         OPENSOLID_CORE_EXPORT const Function& function() const;
         OPENSOLID_CORE_EXPORT const Domain& domain() const;
@@ -116,7 +118,10 @@ namespace OpenSolid
 #include <OpenSolid/Domain/Domain.hpp>
 
 namespace OpenSolid
-{   
+{
+    template <class VectorType>
+    Geometry::Geometry(const EigenBase<VectorType>& vector) : _function(vector), _domain() {}
+
     template <class ArgumentType>
     inline FunctionResult<ArgumentType> Geometry::operator()(const ArgumentType& argument) const {
         return function()(argument);
