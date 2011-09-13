@@ -285,6 +285,7 @@
     )
     
     SET(SIMPLEX_SOURCES
+        Simplex/Simplex.cpp
     )
 
     SET(SUPPORT_HEADERS
