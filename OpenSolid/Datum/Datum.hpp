@@ -57,12 +57,12 @@ namespace OpenSolid
 
         OPENSOLID_CORE_EXPORT Datum();
         
-        OPENSOLID_CORE_EXPORT Datum(const Datum<dimensions_, axes_>& other);
+        Datum(const Datum<dimensions_, axes_>& other);
         
         template <int other_dimensions_, int other_axes_>
         Datum(const Datum<other_dimensions_, other_axes_>& other);
         
-        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_>& operator=(
+        Datum<dimensions_, axes_>& operator=(
             const Datum<dimensions_, axes_>& other
         );
         
@@ -202,6 +202,13 @@ namespace OpenSolid
         return derived().transformed(matrix, normal_matrix * datum.origin());
     }
     
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_>::Datum(const Datum<dimensions_, axes_>& other) :
+        _origin(other.origin()),
+        _basis(other.basis()),
+        _inverse_matrix(other.inverseMatrix()),
+        _projection_matrix(other.projectionMatrix()) {}
+    
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>
     inline Datum<dimensions_, axes_>::Datum(const Datum<other_dimensions_, other_axes_>& other) {
         assertCompatible<dimensions_, other_dimensions_>();
@@ -212,6 +219,17 @@ namespace OpenSolid
         _basis = other.basis();
         _inverse_matrix = other.inverseMatrix();
         _projection_matrix = other.projectionMatrix();
+    }
+    
+    template <int dimensions_, int axes_>
+    inline Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
+        const Datum<dimensions_, axes_>& other
+    ) {
+        _origin = other.origin();
+        _basis = other.basis();
+        _inverse_matrix = other.inverseMatrix();
+        _projection_matrix = other.projectionMatrix();
+        return *this;
     }
     
     template <int dimensions_, int axes_> template <int other_dimensions_, int other_axes_>

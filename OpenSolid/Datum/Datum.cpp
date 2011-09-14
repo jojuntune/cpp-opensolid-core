@@ -60,46 +60,6 @@ namespace OpenSolid
     template Datum<3, 2>::Datum();
     template Datum<3, 3>::Datum();
     template Datum<Dynamic, Dynamic>::Datum();
-    
-    template <int dimensions_, int axes_>
-    Datum<dimensions_, axes_>::Datum(const Datum<dimensions_, axes_>& other) :
-        _origin(other.origin()),
-        _basis(other.basis()),
-        _inverse_matrix(other.inverseMatrix()),
-        _projection_matrix(other.projectionMatrix()) {}
-    
-    template Datum<1, 1>::Datum(const Datum<1, 1>&);
-    template Datum<1, 2>::Datum(const Datum<1, 2>&);
-    template Datum<1, 3>::Datum(const Datum<1, 3>&);
-    template Datum<2, 1>::Datum(const Datum<2, 1>&);
-    template Datum<2, 2>::Datum(const Datum<2, 2>&);
-    template Datum<2, 3>::Datum(const Datum<2, 3>&);
-    template Datum<3, 1>::Datum(const Datum<3, 1>&);
-    template Datum<3, 2>::Datum(const Datum<3, 2>&);
-    template Datum<3, 3>::Datum(const Datum<3, 3>&);
-    template Datum<Dynamic, Dynamic>::Datum(const Datum<Dynamic, Dynamic>&);
-        
-    template <int dimensions_, int axes_>
-    Datum<dimensions_, axes_>& Datum<dimensions_, axes_>::operator=(
-        const Datum<dimensions_, axes_>& other
-    ) {
-        _origin = other.origin();
-        _basis = other.basis();
-        _inverse_matrix = other.inverseMatrix();
-        _projection_matrix = other.projectionMatrix();
-        return *this;
-    }
-    
-    template Datum<1, 1>& Datum<1, 1>::operator=(const Datum<1, 1>&);
-    template Datum<1, 2>& Datum<1, 2>::operator=(const Datum<1, 2>&);
-    template Datum<1, 3>& Datum<1, 3>::operator=(const Datum<1, 3>&);
-    template Datum<2, 1>& Datum<2, 1>::operator=(const Datum<2, 1>&);
-    template Datum<2, 2>& Datum<2, 2>::operator=(const Datum<2, 2>&);
-    template Datum<2, 3>& Datum<2, 3>::operator=(const Datum<2, 3>&);
-    template Datum<3, 1>& Datum<3, 1>::operator=(const Datum<3, 1>&);
-    template Datum<3, 2>& Datum<3, 2>::operator=(const Datum<3, 2>&);
-    template Datum<3, 3>& Datum<3, 3>::operator=(const Datum<3, 3>&);
-    template Datum<Dynamic, Dynamic>& Datum<Dynamic, Dynamic>::operator=(const Datum<Dynamic, Dynamic>&);
         
     template <int dimensions_, int axes_>
     inline Matrix<double, dimensions_, 1>  Datum<dimensions_, axes_>::point(double x) const {
@@ -210,7 +170,7 @@ namespace OpenSolid
     }
 
     template Matrix<double, 3, 1> Datum<3, 3>::zDirection() const;
-    template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::yDirection() const;
+    template Matrix<double, Dynamic, 1> Datum<Dynamic, Dynamic>::zDirection() const;
     
     template <int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::direction(int index) const {

@@ -35,18 +35,6 @@ namespace OpenSolid
     template Simplex<Dynamic, Dynamic>::Simplex();
         
     template <int dimensions_, int size_>
-    Simplex<dimensions_, size_>::Simplex(const Simplex<dimensions_, size_>& other) :
-        _vertices(other.vertices()) {}
-    
-    template Simplex<1, 2>::Simplex(const Simplex<1, 2>&);
-    template Simplex<2, 2>::Simplex(const Simplex<2, 2>&);
-    template Simplex<3, 2>::Simplex(const Simplex<3, 2>&);
-    template Simplex<2, 3>::Simplex(const Simplex<2, 3>&);
-    template Simplex<3, 3>::Simplex(const Simplex<3, 3>&);
-    template Simplex<3, 4>::Simplex(const Simplex<3, 4>&);
-    template Simplex<Dynamic, Dynamic>::Simplex(const Simplex<Dynamic, Dynamic>&);
-        
-    template <int dimensions_, int size_>
     Simplex<dimensions_, size_>::Simplex(const Matrix<double, dimensions_, size_>& vertices) :
         _vertices(vertices) {}
     
@@ -123,22 +111,6 @@ namespace OpenSolid
     
     template Simplex<3, 4>::Simplex(const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&);
     template Simplex<Dynamic, Dynamic>::Simplex(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&);
-    
-    template <int dimensions_, int size_> 
-    Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
-        const Simplex<dimensions_, size_>& other
-    ) {
-        _vertices = other.vertices();
-        return *this;
-    }
-    
-    template Simplex<1, 2>& Simplex<1, 2>::operator=(const Simplex<1, 2>&);
-    template Simplex<2, 2>& Simplex<2, 2>::operator=(const Simplex<2, 2>&);
-    template Simplex<3, 2>& Simplex<3, 2>::operator=(const Simplex<3, 2>&);
-    template Simplex<2, 3>& Simplex<2, 3>::operator=(const Simplex<2, 3>&);
-    template Simplex<3, 3>& Simplex<3, 3>::operator=(const Simplex<3, 3>&);
-    template Simplex<3, 4>& Simplex<3, 4>::operator=(const Simplex<3, 4>&);
-    template Simplex<Dynamic, Dynamic>& Simplex<Dynamic, Dynamic>::operator=(const Simplex<Dynamic, Dynamic>&);
     
     template <int dimensions_, int size_>
     int Simplex<dimensions_, size_>::dimensions() const {return _vertices.rows();}

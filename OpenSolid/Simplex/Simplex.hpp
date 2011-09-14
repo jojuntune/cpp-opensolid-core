@@ -43,7 +43,7 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT Simplex();
         
-        OPENSOLID_CORE_EXPORT Simplex(const Simplex<dimensions_, size_>& other);
+        Simplex(const Simplex<dimensions_, size_>& other);
         
         template <int other_dimensions_, int other_size_>
         Simplex(const Simplex<other_dimensions_, other_size_>& other);
@@ -70,7 +70,7 @@ namespace OpenSolid
             const Matrix<double, dimensions_, 1>& fourth_vertex
         );
             
-        OPENSOLID_CORE_EXPORT Simplex<dimensions_, size_>& operator=(
+        Simplex<dimensions_, size_>& operator=(
             const Simplex<dimensions_, size_>& other
         );
         
@@ -127,10 +127,22 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <int dimensions_, int size_>
+    inline Simplex<dimensions_, size_>::Simplex(const Simplex<dimensions_, size_>& other) :
+        _vertices(other.vertices()) {}
+        
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
     inline Simplex<dimensions_, size_>::Simplex(
         const Simplex<other_dimensions_, other_size_>& other
     ) : _vertices(other.vertices()) {}
+    
+    template <int dimensions_, int size_> 
+    inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
+        const Simplex<dimensions_, size_>& other
+    ) {
+        _vertices = other.vertices();
+        return *this;
+    }
     
     template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
     inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
