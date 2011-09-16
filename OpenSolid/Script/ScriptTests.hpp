@@ -519,4 +519,9 @@ public:
         TS_ASSERT((d.cwiseLower() - d_extracted.cwiseLower()).isZero());
         TS_ASSERT((d.cwiseUpper() - d_extracted.cwiseUpper()).isZero());
     }
+
+    void testOverloadOrder() {
+        Script script;
+        TS_ASSERT(script.get<double>("sqrt(4)") - 2 == Zero());
+    }
 };

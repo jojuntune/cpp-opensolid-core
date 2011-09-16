@@ -25,21 +25,21 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    void bindError();
+    void bindFunction();
+    void bindMatrix();
+    void bindSpecificMatrixSizes();
     void bindInterval();
     void bindDouble();
     void bindComparison();
-    void bindMatrix();
-    void bindSpecificMatrixSizes();
-    void bindFunction();
+    void bindError();
 
     BOOST_PYTHON_MODULE(opensolid) {
-        bindError();
+        bindFunction();
+        bindMatrix();
+        bindSpecificMatrixSizes();
         bindInterval();
         bindDouble();
         bindComparison();
-        bindMatrix();
-        bindSpecificMatrixSizes();
-        bindFunction();
+        bindError();
     }
 }
