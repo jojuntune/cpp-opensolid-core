@@ -22,10 +22,10 @@
 
 #include <boost/numeric/interval.hpp>
 
-#include "Interval.hpp"
+#include <OpenSolid/Scalar/Interval.hpp>
 
 namespace OpenSolid
-{           
+{
     Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 
     Interval cos(const Interval& argument) {return boost::numeric::cos(argument.value());}
