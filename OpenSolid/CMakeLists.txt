@@ -153,7 +153,7 @@
         Function/Function.cpp
     )
     
-    SET(FUNCTIONIMPLEMENTATION_HEADERS
+    SET(FI_HEADERS
         Function/FunctionImplementation/ArccosineFunction.hpp
         Function/FunctionImplementation/ArcsineFunction.hpp
         Function/FunctionImplementation/BinaryOperation.hpp
@@ -183,7 +183,7 @@
         Function/FunctionImplementation/UnaryOperation.hpp
     )
     
-    SET(FUNCTIONIMPLEMENTATION_SOURCES
+    SET(FI_SOURCES
         Function/FunctionImplementation/ArccosineFunction.cpp
         Function/FunctionImplementation/ArcsineFunction.cpp
         Function/FunctionImplementation/BinaryOperation.cpp
@@ -308,8 +308,8 @@
         ${DOMAIN_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
-        ${FUNCTIONIMPLEMENTATION_HEADERS}
-        ${FUNCTIONIMPLEMENTATION_SOURCES}
+        ${FI_HEADERS}
+        ${FI_SOURCES}
         ${GEOMETRY_HEADERS}
         ${GEOMETRY_SOURCES}
         ${MATRIX_HEADERS}
@@ -333,10 +333,7 @@
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES
-        ${FUNCTIONIMPLEMENTATION_HEADERS}
-        ${FUNCTIONIMPLEMENTATION_SOURCES}
-    )
+    SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FI_HEADERS} ${FI_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
     SOURCE_GROUP(OpenSolid\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
     SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
@@ -359,7 +356,7 @@
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${FUNCTION_SOURCES}
-        ${FUNCTIONIMPLEMENTATION_SOURCES}
+        ${FI_SOURCES}
         ${GEOMETRY_SOURCES}
         ${MATRIX_SOURCES}
         ${SCALAR_SOURCES}
