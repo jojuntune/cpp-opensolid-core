@@ -20,6 +20,7 @@
 
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/check.hpp>
 
 using namespace boost::python;
 
@@ -33,11 +34,15 @@ namespace OpenSolid
 
         static void* convertible(PyObject* object_pointer) {
             if (!PyTuple_Check(object_pointer)) {return 0;}
-            if (PyTuple_Size(object_pointer) != 2) {return 0;}
-            extract<double> first(PyTuple_GetItem(object_pointer, 0));
-            if (!first.check()) {return 0;}
-            extract<double> second(PyTuple_GetItem(object_pointer, 1));
-            if (!second.check()) {return 0;}
+            checkSameSize(PyTuple_Size(object_pointer), 2, __func__);
+            checkCompatiblePythonType<double>(
+                object(handle<>(borrowed(PyTuple_GetItem(object_pointer, 0)))),
+                __func__
+            );
+            checkCompatiblePythonType<double>(
+                object(handle<>(borrowed(PyTuple_GetItem(object_pointer, 1)))),
+                __func__
+            );
             return object_pointer;
         }
 
