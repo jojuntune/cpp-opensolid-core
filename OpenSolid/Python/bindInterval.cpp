@@ -25,6 +25,35 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    struct ConvertTupleToInterval
+    {
+        ConvertTupleToInterval() {
+            converter::registry::push_back(&convertible, &construct, type_id<Interval>());
+        }
+
+        static void* convertible(PyObject* object_pointer) {
+            if (!PyTuple_Check(object_pointer)) {return 0;}
+            if (PyTuple_Size(object_pointer) != 2) {return 0;}
+            extract<double> first(PyTuple_GetItem(object_pointer, 0));
+            if (!first.check()) {return 0;}
+            extract<double> second(PyTuple_GetItem(object_pointer, 1));
+            if (!second.check()) {return 0;}
+            return object_pointer;
+        }
+
+        static void construct(
+            PyObject* object_pointer,
+            converter::rvalue_from_python_stage1_data* data
+        ) {
+            void* storage = ((converter::rvalue_from_python_storage<Interval>*) data)->storage.bytes;
+            new (storage) Interval(
+                extract<double>(PyTuple_GetItem(object_pointer, 0)),
+                extract<double>(PyTuple_GetItem(object_pointer, 1))
+            );
+            data->convertible = storage;
+        }
+    };
+
     tuple bisected(const Interval& argument) {
         std::pair<Interval, Interval> bisected = argument.bisected();
         return make_tuple(bisected.first, bisected.second);
@@ -106,7 +135,6 @@ namespace OpenSolid
     void bindInterval() {
         class_<Interval>("Interval")
             .def(init<Interval>())
-            .def(init<double>())
             .def(init<double, double>())
             .def("lower", &Interval::lower)
             .def("upper", &Interval::upper)
@@ -169,6 +197,7 @@ namespace OpenSolid
             .def_pickle(IntervalPickleSuite());
         
         implicitly_convertible<double, Interval>();
+        ConvertTupleToInterval();
         
         def("abs", (Interval (*)(const Interval&)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);

@@ -251,7 +251,7 @@ public:
     
     void testExtraction() {
         Script script;
-        std::string expression = "Vector2d(1, 2) + Vector2I(Interval(1, 2), Interval(2, 3))";
+        std::string expression = "Vector2d(1, 2) + Vector2I((1, 2), (2, 3))";
         TS_ASSERT_THROWS(script.get<MatrixXd>(expression), Error);
         try {
             script.get<MatrixXd>(expression);
@@ -272,7 +272,7 @@ public:
         result = script.get<double>("f.derivative(1).derivative(1)(Vector2d(5, 6)).value()");
         TS_ASSERT_EQUALS(result, 2.0);
         std::string expression =
-            "f.derivative(0)(Vector2I(Interval(1, 2), Interval(3, 4))).value()";
+            "f.derivative(0)(Vector2I((1, 2), (3, 4))).value()";
         TS_ASSERT_EQUALS(script.get<Interval>(expression).lower(), 2);
         TS_ASSERT_EQUALS(script.get<Interval>(expression).upper(), 4);
     }
@@ -292,7 +292,7 @@ public:
     void testMatrixOverlap() {
         Script script;
         script.run("u = Vector3d(1, 2, 3)");
-        script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
+        script.run("v = Vector3I((1, 2), (2, 3), (3, 4))");
         TS_ASSERT(script.get<bool>("v.contains(u)"));
         TS_ASSERT(!script.get<bool>("v.contains(3 * u)"));
     }
@@ -300,7 +300,7 @@ public:
     void testMatrixHull() {
         Script script;
         script.run("u = Vector3d(1, 2, 3)");
-        script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
+        script.run("v = Vector3I((1, 2), (2, 3), (3, 4))");
         script.run("result = (3 * u).hull(v)");
         TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseLower()"), Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseUpper()"), Vector3d(3, 6, 9));
@@ -311,9 +311,9 @@ public:
     
     void testMatrixIntersection() {
         Script script;
-        script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
-        script.run("x = (v + Vector3I.Constant(Interval(0.5))).intersection(v)");
-        script.run("y = Vector3I(Interval(1.5, 2), Interval(2.5, 3), Interval(3.5, 4))");
+        script.run("v = Vector3I((1, 2), (2, 3), (3, 4))");
+        script.run("x = (v + Vector3I.Constant(0.5)).intersection(v)");
+        script.run("y = Vector3I((1.5, 2), (2.5, 3), (3.5, 4))");
         TS_ASSERT_EQUALS(
             script.get<MatrixXd>("x.cwiseLower()"),
             script.get<MatrixXd>("y.cwiseLower()")
@@ -445,7 +445,7 @@ public:
         );
         script.run("f = opensolid.Parameter() * opensolid.Vector3d(1, 2, 3)");
         MatrixXI bounds = script.get<MatrixXI>(
-            "f(opensolid.Vector2I(opensolid.Interval(1, 2), 0))"
+            "f(opensolid.Vector2I((1, 2), 0))"
         );
         TS_ASSERT((bounds.cwiseLower() - Vector3d(1, 2, 3)).isZero());
         TS_ASSERT((bounds.cwiseUpper() - Vector3d(2, 4, 6)).isZero());
