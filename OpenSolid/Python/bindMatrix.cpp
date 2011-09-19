@@ -28,6 +28,74 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    template <class MatrixType>
+    struct ConvertTupleToMatrix
+    {
+        ConvertTupleToMatrix() {
+            converter::registry::push_back(&convertible, &construct, type_id<MatrixType>());
+        }
+
+        static void* convertible(PyObject* argument) {
+            return PyTuple_Check(argument) || PyGen_Check(argument) ? argument : nullptr;
+        }
+
+        static void construct(
+            PyObject* argument_pointer,
+            converter::rvalue_from_python_stage1_data* data
+        ) {
+            typedef typename MatrixType::Scalar Scalar;
+            void* storage =
+                ((converter::rvalue_from_python_storage<MatrixType>*) data)->storage.bytes;
+            new (storage) MatrixType();
+            MatrixType& matrix(*(MatrixType*) storage);
+            object argument(handle<>(borrowed(argument_pointer)));
+            int size = len(argument);
+            checkNonZeroValue(size, __func__);
+            object first_item = argument[0];
+            if (extract<Scalar>(first_item).check()) {
+                matrix.resize(size, 1);
+                matrix(0, 0) = extract<Scalar>(first_item);
+                for (int i = 1; i < size; ++i) {
+                    object item = argument[i];
+                    checkCompatiblePythonType<Scalar>(item, __func__);
+                    matrix(i, 0) = extract<Scalar>(item);
+                }
+            } else if (extract<MatrixType>(first_item).check()) {
+                MatrixType first_col = extract<MatrixType>(first_item);
+                checkVectorValue(first_col, __func__);
+                int rows = first_col.size();
+                matrix.resize(rows, size);
+                matrix.col(0) = first_col;
+                for (int j = 1; j < size; ++j) {
+                    object item = argument[j];
+                    checkCompatiblePythonType<MatrixType>(item, __func__);
+                    MatrixType col = extract<MatrixType>(item);
+                    checkVectorValue(col, __func__);
+                    checkSameSize(col.size(), rows, __func__);
+                    matrix.col(j) = col;
+                }
+            } else if (extract<tuple>(first_item).check()) {
+                int rows = len(first_item);
+                checkNonZeroValue(rows, __func__);
+                matrix.resize(rows, size);
+                for (int j = 0; j < size; ++j) {
+                    object item = argument[j];
+                    checkCompatiblePythonType<tuple>(item, __func__);
+                    tuple col = extract<tuple>(item);
+                    checkSameSize(len(col), rows, __func__);
+                    for (int i = 0; i < rows; ++i) {
+                        object coeff = col[i];
+                        checkCompatiblePythonType<Scalar>(coeff, __func__);
+                        matrix(i, j) = extract<Scalar>(coeff);
+                    }
+                }
+            } else {
+                throw Error("ValidNestedListForMatrixConstruction", __func__);
+            }
+            data->convertible = storage;
+        }
+    };
+
     template <class ExpressionType>
     struct ExpressionConverter
     {
@@ -708,7 +776,9 @@ namespace OpenSolid
 
         return_value_policy<manage_new_object> manage_new_matrix;
 
-        class_<MatrixXd>("MatrixXd", init<int, int>())
+        class_<MatrixXd>("MatrixXd")
+            .def(init<int, int>())
+            .def(init<MatrixXd>())
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)
             .def("size", &size<MatrixXd>)
@@ -777,7 +847,11 @@ namespace OpenSolid
             .def(self_ns::str(self))
             .def_pickle(MatrixPickleSuite<MatrixXd>());
 
-        class_<MatrixXI>("MatrixXI", init<int, int>())
+        ConvertTupleToMatrix<MatrixXd>();
+
+        class_<MatrixXI>("MatrixXI")
+            .def(init<int, int>())
+            .def(init<MatrixXI>())
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
@@ -862,5 +936,7 @@ namespace OpenSolid
             .def("__ne__", &neXIXI)
             .def(self_ns::str(self))
             .def_pickle(MatrixPickleSuite<MatrixXI>());
+
+        ConvertTupleToMatrix<MatrixXI>();
     }
 }

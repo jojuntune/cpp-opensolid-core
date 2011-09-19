@@ -26,35 +26,33 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    struct ConvertTupleToInterval
+    struct ConvertListToInterval
     {
-        ConvertTupleToInterval() {
+        ConvertListToInterval() {
             converter::registry::push_back(&convertible, &construct, type_id<Interval>());
         }
 
-        static void* convertible(PyObject* object_pointer) {
-            if (!PyTuple_Check(object_pointer)) {return 0;}
-            checkSameSize(PyTuple_Size(object_pointer), 2, __func__);
-            checkCompatiblePythonType<double>(
-                object(handle<>(borrowed(PyTuple_GetItem(object_pointer, 0)))),
-                __func__
-            );
-            checkCompatiblePythonType<double>(
-                object(handle<>(borrowed(PyTuple_GetItem(object_pointer, 1)))),
-                __func__
-            );
-            return object_pointer;
+        static void* convertible(PyObject* argument) {
+            return PyList_Check(argument) ? argument : nullptr;
         }
 
         static void construct(
-            PyObject* object_pointer,
+            PyObject* argument_pointer,
             converter::rvalue_from_python_stage1_data* data
         ) {
-            void* storage = ((converter::rvalue_from_python_storage<Interval>*) data)->storage.bytes;
-            new (storage) Interval(
-                extract<double>(PyTuple_GetItem(object_pointer, 0)),
-                extract<double>(PyTuple_GetItem(object_pointer, 1))
-            );
+            object argument(handle<>(borrowed(argument_pointer)));
+            void* storage =
+                ((converter::rvalue_from_python_storage<Interval>*) data)->storage.bytes;
+            if (len(argument) == 1) {
+                checkCompatiblePythonType<double>(argument[0], __func__);
+                double value = extract<double>(argument[0]);
+                new (storage) Interval(value);
+            } else {
+                checkSameSize(len(argument), 2, __func__);
+                checkCompatiblePythonType<double>(argument[0], __func__);
+                checkCompatiblePythonType<double>(argument[1], __func__);
+                new (storage) Interval(extract<double>(argument[0]), extract<double>(argument[1]));
+            }
             data->convertible = storage;
         }
     };
@@ -202,7 +200,7 @@ namespace OpenSolid
             .def_pickle(IntervalPickleSuite());
         
         implicitly_convertible<double, Interval>();
-        ConvertTupleToInterval();
+        ConvertListToInterval();
         
         def("abs", (Interval (*)(const Interval&)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);

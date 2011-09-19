@@ -149,6 +149,18 @@ namespace OpenSolid
     {
         template <class Type>
         std::string typeName();
+
+        template <>
+        inline std::string typeName<boost::python::object>() {return "object";}
+
+        template <>
+        inline std::string typeName<boost::python::list>() {return "list";}
+
+        template <>
+        inline std::string typeName<boost::python::tuple>() {return "tuple";}
+
+        template <>
+        inline std::string typeName<boost::python::str>() {return "str";}
         
         template <>
         inline std::string typeName<bool>() {return "bool";}
