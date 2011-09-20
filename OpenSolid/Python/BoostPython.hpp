@@ -27,5 +27,6 @@
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/manage_new_object.hpp>
 #include <boost/python/raw_function.hpp>
+#include <boost/python/converter/pytype_function.hpp>
 
 #endif

@@ -28,6 +28,54 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    template <class ScalarType>
+    bool checkCoeffs(PyObject* argument);
+
+    inline bool convertibleToDouble(PyObject* argument) {
+        return PyInt_Check(argument) || PyLong_Check(argument) || PyFloat_Check(argument);
+    }
+
+    template <>
+    bool checkCoeffs<double>(PyObject* argument) {
+        if (PyTuple_Check(argument) || PyGen_Check(argument)) {
+            int size = PySequence_Size(argument);
+            for (int i = 0; i < size; ++i) {
+                if (!checkCoeffs<double>(PySequence_GetItem(argument, i))) {return false;}
+            }
+            return true;
+        } else {
+            return convertibleToDouble(argument);
+        }
+    }
+    
+    // result.first: any coefficient *is* an Interval
+    // result.second: all coefficients are convertible to Interval
+    std::pair<bool, bool> checkIntervalCoeffs(PyObject* argument, PyTypeObject* type) {
+        if (PyTuple_Check(argument) || PyGen_Check(argument)) {
+            int size = PySequence_Size(argument);
+            std::pair<bool, bool> result(false, true);
+            for (int i = 0; i < size; ++i) {
+                std::pair<bool, bool> subsequence_result;
+                subsequence_result = checkIntervalCoeffs(PySequence_GetItem(argument, i), type);
+                result.first = result.first || subsequence_result.first;
+                result.second = result.second && subsequence_result.second;
+            }
+            return result;
+        } else {
+            std::pair<bool, bool> result(false, false);
+            result.first = PyObject_TypeCheck(argument, type) || PyList_Check(argument);
+            result.second = convertibleToDouble(argument) || result.first;
+            return result;
+        }
+    }
+
+    template <>
+    bool checkCoeffs<Interval>(PyObject* argument) {
+        PyTypeObject* type = (PyTypeObject*) converter::registered_pytype<Interval>::get_pytype();
+        std::pair<bool, bool> result = checkIntervalCoeffs(argument, type);
+        return result.first && result.second;
+    }
+
     template <class MatrixType>
     struct ConvertTupleToMatrix
     {
@@ -36,7 +84,9 @@ namespace OpenSolid
         }
 
         static void* convertible(PyObject* argument) {
-            return PyTuple_Check(argument) || PyGen_Check(argument) ? argument : nullptr;
+            if (!(PyTuple_Check(argument) || PyGen_Check(argument))) {return nullptr;}
+            if (!checkCoeffs<typename MatrixType::Scalar>(argument)) {return nullptr;}
+            return argument;
         }
 
         static void construct(
