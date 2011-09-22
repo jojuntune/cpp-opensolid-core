@@ -309,7 +309,7 @@ namespace OpenSolid
     
     RowVectorXd Function::roots(const Interval& domain) const {
         assert(implementation());
-        assert(parameters() == 1);
+        assert(parameters() == 1 || isConstant());
         assert(dimensions() == 1);
         int order = 4;
         std::vector<Function> derivatives(order + 1);
