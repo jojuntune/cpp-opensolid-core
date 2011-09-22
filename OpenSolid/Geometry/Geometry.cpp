@@ -146,25 +146,25 @@ namespace OpenSolid
     }
     
     double Conversion<Geometry, double>::operator()(const Geometry& argument) const {
-        assert(isConstant());
-        assert(dimensions() == 1);
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 1);
         return argument.function().to<double>();
     }
     
     Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& argument) const {
-        assert(isConstant());
-        assert(dimensions() == 2);
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 2);
         return argument.function().to<Vector2d>();
     }
     
     Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& argument) const {
-        assert(isConstant());
-        assert(dimensions() == 3);
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 3);
         return argument.function().to<Vector3d>();
     }
     
     VectorXd Conversion<Geometry, VectorXd>::operator()(const Geometry& argument) const {
-        assert(isConstant());
+        assert(argument.isConstant());
         return argument.function().to<VectorXd>();
     }
 }
