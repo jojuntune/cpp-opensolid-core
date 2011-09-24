@@ -93,6 +93,7 @@
     
 ########## Define lists of source files ##########
 
+    # OpenSolid directory files
     SET(OPENSOLID_FILES
         bindTemplate.cpp
         config.hpp
@@ -102,6 +103,7 @@
         TemplateTests.hpp
     )
     
+    # Common directory files
     SET(COMMON_HEADERS
         Common/Bounds.hpp
         Common/BoundsTests.hpp
@@ -110,11 +112,9 @@
         Common/ReferenceCounted.hpp
         Common/Transformable.hpp
     )
+    SET(COMMON_SOURCES Common/Error.cpp)
     
-    SET(COMMON_SOURCES
-        Common/Error.cpp
-    )
-    
+    # Datum directory files
     SET(DATUM_HEADERS
         Datum/Axis.hpp
         Datum/CoordinateSystem.hpp
@@ -123,7 +123,6 @@
         Datum/Frame.hpp
         Datum/Plane.hpp
     )
-    
     SET(DATUM_SOURCES
         Datum/Axis.cpp
         Datum/CoordinateSystem.cpp
@@ -132,14 +131,11 @@
         Datum/Plane.cpp
     )
     
-    SET(DOMAIN_HEADERS
-        Domain/Domain.hpp
-    )
+    # Domain directory files
+    SET(DOMAIN_HEADERS Domain/Domain.hpp)
+    SET(DOMAIN_SOURCES Domain/Domain.cpp)
     
-    SET(DOMAIN_SOURCES
-        Domain/Domain.cpp
-    )
-    
+    # Function directory files
     SET(FUNCTION_HEADERS
         Function/Function.hpp
         Function/FunctionTests.hpp
@@ -148,11 +144,9 @@
         Function/Parameter.hpp
         Function/Parameters.hpp
     )
+    SET(FUNCTION_SOURCES Function/Function.cpp)
     
-    SET(FUNCTION_SOURCES
-        Function/Function.cpp
-    )
-    
+    # Function/FunctionImplementation directory files
     SET(FI_HEADERS
         Function/FunctionImplementation/ArccosineFunction.hpp
         Function/FunctionImplementation/ArcsineFunction.hpp
@@ -182,7 +176,6 @@
         Function/FunctionImplementation/TransformedFunction.hpp
         Function/FunctionImplementation/UnaryOperation.hpp
     )
-    
     SET(FI_SOURCES
         Function/FunctionImplementation/ArccosineFunction.cpp
         Function/FunctionImplementation/ArcsineFunction.cpp
@@ -213,15 +206,11 @@
         Function/FunctionImplementation/UnaryOperation.cpp
     )
     
-    SET(GEOMETRY_HEADERS
-        Geometry/Geometry.hpp
-        Geometry/GeometryTests.hpp
-    )
+    # Geometry directory files
+    SET(GEOMETRY_HEADERS Geometry/Geometry.hpp Geometry/GeometryTests.hpp)
+    SET(GEOMETRY_SOURCES Geometry/Geometry.cpp)
     
-    SET(GEOMETRY_SOURCES
-        Geometry/Geometry.cpp
-    )
-    
+    # Matrix directory files
     SET(MATRIX_HEADERS
         Matrix/DenseBasePlugin.hpp
         Matrix/Matrix.hpp
@@ -229,15 +218,14 @@
         Matrix/MatrixTests.hpp
         Matrix/MatrixIterator.hpp
     )
+    SET(MATRIX_SOURCES)
+
+    # Model directory files
+    SET(MODEL_HEADERS Model/Model.hpp)
+    SET(MODEL_SOURCES Model/Model.cpp)
     
-    SET(MATRIX_SOURCES
-    )
-    
-    SET(PYTHON_HEADERS
-        Python/BoostPython.hpp
-        Python/check.hpp
-    )
-    
+    # Python directory files
+    SET(PYTHON_HEADERS Python/BoostPython.hpp Python/check.hpp)
     SET(PYTHON_SOURCES
         Python/bindComparison.cpp
         Python/bindError.cpp
@@ -250,51 +238,30 @@
         Python/module.cpp
     )
 
+    # Scalar directory files
     SET(SCALAR_HEADERS
         Scalar/Comparison.hpp
         Scalar/double.hpp
         Scalar/Interval.hpp
         Scalar/IntervalTests.hpp
     )
+    SET(SCALAR_SOURCES Scalar/Interval.cpp)
+    
+    # Script directory files
+    SET(SCRIPT_HEADERS Script/Script.hpp Script/ScriptTests.hpp)
+    SET(SCRIPT_SOURCES Script/Script.cpp)
+    
+    # Set directory files
+    SET(SET_HEADERS Set/Set.hpp Set/SetTests.hpp Set/SetNode.hpp)
+    SET(SET_SOURCES)
+    
+    # Simplex directory files
+    SET(SIMPLEX_HEADERS Simplex/Simplex.hpp Simplex/SimplexTests.hpp)
+    SET(SIMPLEX_SOURCES Simplex/Simplex.cpp)
 
-    SET(SCALAR_SOURCES
-        Scalar/Interval.cpp
-    )
-    
-    SET(SCRIPT_HEADERS
-        Script/Script.hpp
-        Script/ScriptTests.hpp
-    )
-    
-    SET(SCRIPT_SOURCES
-        Script/Script.cpp
-    )
-    
-    SET(SET_HEADERS
-        Set/Set.hpp
-        Set/SetTests.hpp
-        Set/SetNode.hpp
-    )
-    
-    SET(SET_SOURCES
-    )
-    
-    SET(SIMPLEX_HEADERS
-        Simplex/Simplex.hpp
-        Simplex/SimplexTests.hpp
-    )
-    
-    SET(SIMPLEX_SOURCES
-        Simplex/Simplex.cpp
-    )
-
-    SET(SUPPORT_HEADERS
-        Support/Boost.hpp
-        Support/STL.hpp
-    )
-
-    SET(SUPPORT_SOURCES
-    )
+    # Support directory files
+    SET(SUPPORT_HEADERS Support/Boost.hpp Support/STL.hpp)
+    SET(SUPPORT_SOURCES)
     
 ########## Set up source groups for Visual Studio ##########
 
@@ -314,6 +281,8 @@
         ${GEOMETRY_SOURCES}
         ${MATRIX_HEADERS}
         ${MATRIX_SOURCES}
+        ${MODEL_HEADERS}
+        ${MODEL_SOURCES}
         ${PYTHON_HEADERS}
         ${PYTHON_SOURCES}
         ${SCALAR_HEADERS}
@@ -336,6 +305,7 @@
     SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FI_HEADERS} ${FI_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
     SOURCE_GROUP(OpenSolid\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Model FILES ${MODEL_HEADERS} ${MODEL_SOURCES})
     SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
     SOURCE_GROUP(OpenSolid\\Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
     SOURCE_GROUP(OpenSolid\\Script FILES ${SCRIPT_HEADERS} ${SCRIPT_SOURCES})
@@ -359,6 +329,7 @@
         ${FI_SOURCES}
         ${GEOMETRY_SOURCES}
         ${MATRIX_SOURCES}
+        ${MODEL_SOURCES}
         ${SCALAR_SOURCES}
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
