@@ -305,71 +305,72 @@ namespace OpenSolid
     }
 
     inline bool operator==(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() == second_argument.upper() &&
-            first_argument.upper() == second_argument.lower();
+        return first_argument.lower() == second_argument.lower() &&
+            first_argument.upper() == second_argument.upper();
     }
 
     inline bool operator!=(double first_argument, const Interval& second_argument) {
-        return first_argument > second_argument.upper() ||
-            first_argument < second_argument.lower();
+        return !(first_argument == second_argument);
     }
 
     inline bool operator!=(const Interval& first_argument, double second_argument) {
-        return first_argument.lower() > second_argument ||
-            first_argument.upper() < second_argument;
+        return !(first_argument == second_argument);
     }
 
     inline bool operator!=(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() > second_argument.upper() ||
-            first_argument.upper() < second_argument.lower();
+        return !(first_argument == second_argument);
     }
 
     inline bool operator<(double first_argument, const Interval& second_argument) {
-        return first_argument < second_argument.lower();
+        return first_argument < second_argument.lower() ||
+            (first_argument == second_argument.lower() &&
+            first_argument < second_argument.upper());
     }
 
     inline bool operator<(const Interval& first_argument, double second_argument) {
-        return first_argument.upper() < second_argument;
+        return first_argument.lower() < second_argument;
     }
 
     inline bool operator<(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.upper() < second_argument.lower();
+        return first_argument.lower() < second_argument.lower() ||
+            (first_argument.lower() == second_argument.lower() &&
+            first_argument.upper() < second_argument.upper());
     }
 
     inline bool operator>(double first_argument, const Interval& second_argument) {
-        return first_argument > second_argument.upper();
+        return second_argument < first_argument;
     }
 
     inline bool operator>(const Interval& first_argument, double second_argument) {
-        return first_argument.lower() > second_argument;
+        return second_argument < first_argument;
     }
 
     inline bool operator>(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() > second_argument.upper();
+        return second_argument < first_argument;
     }
 
     inline bool operator<=(double first_argument, const Interval& second_argument) {
-        return first_argument <= second_argument.lower();
+        return !(second_argument < first_argument);
     }
 
     inline bool operator<=(const Interval& first_argument, double second_argument) {
-        return first_argument.upper() <= second_argument;
+        return !(second_argument < first_argument);
     }
 
     inline bool operator<=(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.upper() <= second_argument.lower();
+        return !(second_argument < first_argument);
     }
 
     inline bool operator>=(double first_argument, const Interval& second_argument) {
-        return first_argument >= second_argument.upper();
+        return !(first_argument < second_argument);
     }
 
     inline bool operator>=(const Interval& first_argument, double second_argument) {
-        return first_argument.lower() >= second_argument;
+        return !(first_argument < second_argument);
     }
 
     inline bool operator>=(const Interval& first_argument, const Interval& second_argument) {
-        return first_argument.lower() >= second_argument.upper();
+        return !(first_argument < second_argument);
     }
 
     inline Interval operator-(const Interval& argument) {return -argument.value();}
