@@ -33,11 +33,14 @@
 #include <OpenSolid/Function/FunctionImplementation/DifferenceFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/DotProductFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ExponentialFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/LogarithmFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/NegationFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/NormFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/NormalizedFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/ParametersFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/PowerFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/ProductFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/QuotientFunction.hpp>
 #include <OpenSolid/Function/FunctionImplementation/SineFunction.hpp>
@@ -577,6 +580,30 @@ namespace OpenSolid
             return acos(operand.to<ConstantFunction>().vector().value());
         } else {
             return new ArccosineFunction(operand);
+        }
+    }
+
+    Function exp(const Function& argument) {
+        if (argument.isConstant()) {
+            return exp(argument.to<double>());
+        } else {
+            return new ExponentialFunction(argument);
+        }
+    }
+
+    Function log(const Function& argument) {
+        if (argument.isConstant()) {
+            return log(argument.to<double>());
+        } else {
+            return new LogarithmFunction(argument);
+        }
+    }
+
+    Function pow(const Function& base, const Function& exponent) {
+        if (base.isConstant() && exponent.isConstant()) {
+            return pow(base.to<double>(), exponent.to<double>());
+        } else {
+            return new PowerFunction(base, exponent);
         }
     }
 }

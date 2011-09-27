@@ -54,6 +54,12 @@ namespace OpenSolid
 
     Interval log(const Interval& argument) {return boost::numeric::log(argument.value());}
     
+    Interval pow(const Interval& base, int exponent) {
+        return boost::numeric::pow(base.value(), exponent);
+    }
+    
+    Interval pow(const Interval& base, double exponent) {return exp(log(base) * exponent);}
+    
     Interval pow(const Interval& base, const Interval& exponent) {return exp(log(base) * exponent);}
     
     std::ostream& operator<<(std::ostream& stream, const Interval& argument) {

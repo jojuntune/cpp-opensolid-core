@@ -520,4 +520,19 @@ public:
         Script script;
         TS_ASSERT(script.get<double>("sqrt(4)") - 2 == Zero());
     }
+
+    void testFunctionRoots() {
+        Script script;
+        std::string text =
+            "x = Parameter() \n"
+            "f = x * x * x - 4 * x * x + 5 * x - 2\n"
+            "roots = f.roots([0, 3])\n"
+            "derivative_roots = f.derivative().roots([0, 3])\n"
+            "second_derivative_roots = f.derivative().derivative().roots([0, 3])\n"
+        ;
+        script.run(text);
+        TS_ASSERT((script.get<MatrixXd>("roots") - RowVector2d(1, 2)).isZero());
+        TS_ASSERT((script.get<MatrixXd>("derivative_roots") - RowVector2d(1, 5.0 / 3.0)).isZero());
+        TS_ASSERT(script.get<MatrixXd>("second_derivative_roots").value() - 4.0 / 3.0 == Zero());
+    }
 };

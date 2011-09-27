@@ -48,6 +48,10 @@ namespace OpenSolid
     Function callFunction(const Function& function, const Function& argument) {
         return function(argument);
     }
+
+    Function derivative1(const Function& function, int index) {return function.derivative(index);}
+
+    Function derivative2(const Function& function) {return function.derivative();}
     
     Function crossMatrix(const Function& function, const MatrixXd& argument) {
         return function.cross(argument);
@@ -55,6 +59,10 @@ namespace OpenSolid
     
     Function dotMatrix(const Function& function, const MatrixXd& argument) {
         return function.dot(argument);
+    }
+
+    MatrixXd roots(const Function& function, const Interval& domain) {
+        return function.roots(domain);
     }
 
     Function parameter1() {return Parameter();}
@@ -80,7 +88,8 @@ namespace OpenSolid
             .def("__call__", &callMatrixXd, return_value_policy<manage_new_object>())
             .def("__call__", &callInterval, return_value_policy<manage_new_object>())
             .def("__call__", &callDouble, return_value_policy<manage_new_object>())
-            .def("derivative", &Function::derivative)
+            .def("derivative", &derivative1)
+            .def("derivative", &derivative2)
             .def("norm", &Function::norm)
             .def("normalized", &Function::normalized)
             .def("squaredNorm", &Function::squaredNorm)
@@ -96,6 +105,7 @@ namespace OpenSolid
             .def("curvature", &Function::curvature)
             .def("normal", &Function::normal)
             .def("binormal", &Function::binormal)
+            .def("roots", &roots)
             .def(-self)
             .def(double() + self)
             .def(self + double())

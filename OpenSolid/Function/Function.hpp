@@ -182,6 +182,9 @@ namespace OpenSolid
     OPENSOLID_CORE_EXPORT Function sqrt(const Function& argument);
     OPENSOLID_CORE_EXPORT Function acos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function asin(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function exp(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function log(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function pow(const Function& base, const Function& exponent);
     
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(
         std::ostream& stream,

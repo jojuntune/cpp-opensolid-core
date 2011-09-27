@@ -232,6 +232,8 @@ namespace OpenSolid
         def("atan2", (Interval (*)(const Interval&, const Interval&)) &atan2);
         def("exp", (Interval (*)(const Interval&))  &exp);
         def("log", (Interval (*)(const Interval&)) &log);
+        def("pow", (Interval (*)(const Interval&, int)) &pow);
+        def("pow", (Interval (*)(const Interval&, double)) &pow);
         def("pow", (Interval (*)(const Interval&, const Interval&)) &pow);
     }
 }

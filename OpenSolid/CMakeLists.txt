@@ -160,12 +160,15 @@
         Function/FunctionImplementation/DifferenceFunction.hpp
         Function/FunctionImplementation/DotProductFunction.hpp
         Function/FunctionImplementation/EllipticalFunction.hpp
+        Function/FunctionImplementation/ExponentialFunction.hpp
         Function/FunctionImplementation/FunctionImplementation.hpp
         Function/FunctionImplementation/LinearFunction.hpp
+        Function/FunctionImplementation/LogarithmFunction.hpp
         Function/FunctionImplementation/NegationFunction.hpp
         Function/FunctionImplementation/NormalizedFunction.hpp
         Function/FunctionImplementation/NormFunction.hpp
         Function/FunctionImplementation/ParametersFunction.hpp
+        Function/FunctionImplementation/PowerFunction.hpp
         Function/FunctionImplementation/ProductFunction.hpp
         Function/FunctionImplementation/QuotientFunction.hpp
         Function/FunctionImplementation/SineFunction.hpp
@@ -189,12 +192,15 @@
         Function/FunctionImplementation/DifferenceFunction.cpp
         Function/FunctionImplementation/DotProductFunction.cpp
         Function/FunctionImplementation/EllipticalFunction.cpp
+        Function/FunctionImplementation/ExponentialFunction.cpp
         Function/FunctionImplementation/FunctionImplementation.cpp
         Function/FunctionImplementation/LinearFunction.cpp
+        Function/FunctionImplementation/LogarithmFunction.cpp
         Function/FunctionImplementation/NegationFunction.cpp
         Function/FunctionImplementation/NormalizedFunction.cpp
         Function/FunctionImplementation/NormFunction.cpp
         Function/FunctionImplementation/ParametersFunction.cpp
+        Function/FunctionImplementation/PowerFunction.cpp
         Function/FunctionImplementation/ProductFunction.cpp
         Function/FunctionImplementation/QuotientFunction.cpp
         Function/FunctionImplementation/SineFunction.cpp

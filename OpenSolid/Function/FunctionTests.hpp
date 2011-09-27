@@ -244,7 +244,7 @@ public:
         TS_ASSERT((f(M_PI / 2) + 2 * normal(M_PI / 2) - Vector2d(1, 1)).isZero());
     }
     
-    void testZeros() {
+    void testRoots() {
         std::vector<Function> functions(7);
         std::vector<Interval> domains(7);
         std::vector<RowVectorXd> expected_function_zeros(7);
