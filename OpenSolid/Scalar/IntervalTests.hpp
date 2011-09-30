@@ -21,6 +21,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
 
 using namespace OpenSolid;
 
@@ -86,5 +87,16 @@ public:
         Interval interpolated = x.interpolated(Interval(0.25, 0.75));
         TS_ASSERT(interpolated.lower() == Approx(7));
         TS_ASSERT(interpolated.upper() == Approx(9));
+    }
+
+    void testConversion() {
+        Interval interval(2, 3);
+        Domain domain(interval);
+        Interval first = Interval::from<Domain>(domain);
+        Interval second = domain.to<Interval>();
+        TS_ASSERT_EQUALS(first.lower(), 2);
+        TS_ASSERT_EQUALS(first.upper(), 3);
+        TS_ASSERT_EQUALS(second.lower(), 2);
+        TS_ASSERT_EQUALS(second.upper(), 3);
     }
 };

@@ -29,6 +29,7 @@
 
 #include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Common/Convertible.hpp>
 
 namespace OpenSolid
 {
@@ -43,7 +44,7 @@ namespace OpenSolid
     
     typedef boost::numeric::interval<double, IntervalPolicies> BoostInterval;
 
-    class Interval
+    class Interval : public Convertible<Interval>
     {
     private:
         BoostInterval _value;
