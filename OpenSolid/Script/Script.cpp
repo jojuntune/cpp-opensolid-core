@@ -87,16 +87,18 @@ namespace OpenSolid
     extern "C" OPENSOLID_PYTHON_EXPORT void initopensolid();
 
     Script::Script() {
+        if (!Py_IsInitialized()) {Py_Initialize();}
+        static bool script_initialized = false;
         static object global;
         static object hidden;
-        if (!Py_IsInitialized()) {
-            Py_Initialize();
+        if (!script_initialized) {
             initopensolid();
             global = import("__main__").attr("__dict__");
             hidden = dict(global);
             exec("import opensolid", global, global);
             exec("from opensolid import *", global, global);
             exec("class Environment: pass", hidden, hidden);
+            script_initialized = true;
         }
         _environment_dict = dict(global);
         _environment = eval("Environment()", hidden, hidden);
