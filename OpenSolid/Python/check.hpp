@@ -161,6 +161,9 @@ namespace OpenSolid
 
         template <>
         inline std::string typeName<boost::python::str>() {return "str";}
+
+        template <>
+        inline std::string typeName<boost::python::dict>() {return "dict";}
         
         template <>
         inline std::string typeName<bool>() {return "bool";}
