@@ -132,8 +132,8 @@
     )
     
     # Domain directory files
-    SET(DOMAIN_HEADERS Domain/Domain.hpp)
-    SET(DOMAIN_SOURCES Domain/Domain.cpp)
+    SET(DOMAIN_HEADERS Domain/Domain.hpp Domain/DomainImplementation.hpp)
+    SET(DOMAIN_SOURCES Domain/Domain.cpp Domain/DomainImplementation.cpp)
     
     # Function directory files
     SET(FUNCTION_HEADERS
@@ -213,8 +213,12 @@
     )
     
     # Geometry directory files
-    SET(GEOMETRY_HEADERS Geometry/Geometry.hpp Geometry/GeometryTests.hpp)
-    SET(GEOMETRY_SOURCES Geometry/Geometry.cpp)
+    SET(GEOMETRY_HEADERS
+        Geometry/Geometry.hpp
+        Geometry/GeometryImplementation.hpp
+        Geometry/GeometryTests.hpp
+    )
+    SET(GEOMETRY_SOURCES Geometry/Geometry.cpp Geometry/GeometryImplementation.cpp)
     
     # Matrix directory files
     SET(MATRIX_HEADERS
