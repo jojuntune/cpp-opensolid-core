@@ -75,6 +75,8 @@ namespace OpenSolid
     
     Domain::Domain() : _boundaries() {}
     
+    Domain::Domain(const DomainImplementation* implementation) : _implementation(implementation) {}
+    
     Domain::Domain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
     
     Domain::Domain(const Interval& bounds) {
@@ -93,16 +95,6 @@ namespace OpenSolid
     }
 
     Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
-        Set<Geometry> transformed_boundaries;
-        boundaries().transform(
-            [&matrix, &vector] (const Geometry& boundary) {
-                return boundary.transformed(matrix, vector);
-            },
-            transformed_boundaries.inserter()
-        );
-        return Domain(transformed_boundaries);
-    }
     
     Interval Conversion<Domain, Interval>::operator()(const Domain& argument) const {
         assert(!argument.isEmpty());

@@ -18,29 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOMAINIMPLEMENTATION_HPP
-#define OPENSOLID__DOMAINIMPLEMENTATION_HPP
+#ifndef OPENSOLID__VECTOR2IDOMAIN_HPP
+#define OPENSOLID__VECTOR2IDOMAIN_HPP
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
-
-    class DomainImplementation : public ReferenceCounted<DomainImplementation>
+    class Vector2IDomain : public DomainImplementation
     {
+    private:
+        Vector2I _bounds;
     public:
-        OPENSOLID_CORE_EXPORT virtual ~DomainImplementation();
+        OPENSOLID_CORE_EXPORT Vector2IDomain(const Vector2I& bounds);
 
-        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const = 0;
-        OPENSOLID_CORE_EXPORT virtual bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
+        OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
+        OPENSOLID_CORE_EXPORT bool isEmpty() const;
+        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT VectorXI bounds() const;
 
-        OPENSOLID_CORE_EXPORT virtual Domain transformed(
+        OPENSOLID_CORE_EXPORT Domain transformed(
             const MatrixXd& matrix,
             const VectorXd& vector
         ) const;

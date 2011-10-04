@@ -18,33 +18,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOMAINIMPLEMENTATION_HPP
-#define OPENSOLID__DOMAINIMPLEMENTATION_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Domain/DomainImplementation/Vector2IDomain.hpp>
+#include <OpenSolid/Geometry/Line.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
+    Vector2IDomain::Vector2IDomain(const Vector2I& bounds) : _bounds(bounds) {}
 
-    class DomainImplementation : public ReferenceCounted<DomainImplementation>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT virtual ~DomainImplementation();
+    Set<Geometry> Vector2IDomain::boundaries() const {
+        double x_lower = _bounds.x().lower();
+        double y_lower = _bounds.y().lower();
+        double x_upper = _bounds.x().upper();
+        double y_upper = _bounds.y().upper();
+        Vector2d p0(x_lower, y_lower);
+        Vector2d p1(x_lower, y_upper);
+        Vector2d p2(x_upper, y_upper);
+        Vector2d p3(x_upper, y_lower);
+        Set<Geometry> results;
+        results.insert(Line2d(p0, p1));
+        results.insert(Line2d(p1, p2));
+        results.insert(Line2d(p2, p3));
+        results.insert(Line2d(p3, p0));
+        return results;
+    }
 
-        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const = 0;
-        OPENSOLID_CORE_EXPORT virtual bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
+    bool Vector2IDomain::isEmpty() const {return _bounds.isEmpty();}
 
-        OPENSOLID_CORE_EXPORT virtual Domain transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
-    };
+    int Vector2IDomain::dimensions() const {return 2;}
+
+    VectorXI Vector2IDomain::bounds() const {return _bounds;}
+
+    Domain Vector2IDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        if (matrix.isDiagonal()) {
+            Interval x_interval = matrix(0, 0) * _bounds.x() + vector.x();
+            Interval y_interval = matrix(1, 1) * _bounds.y() + vector.y();
+            return new Vector2IDomain(Vector2I(x_interval, y_interval));
+        } else {
+            return DomainImplementation::transformed(matrix, vector);
+        }
+    }
 }
-
-#endif

@@ -18,33 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOMAINIMPLEMENTATION_HPP
-#define OPENSOLID__DOMAINIMPLEMENTATION_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Domain/DomainImplementation/VectorXIDomain.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
+    VectorXIDomain::VectorXIDomain(const VectorXI& bounds) : _bounds(bounds) {}
 
-    class DomainImplementation : public ReferenceCounted<DomainImplementation>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT virtual ~DomainImplementation();
+    Set<Geometry> VectorXIDomain::boundaries() const {
+        Set<Geometry> results;
+        return results;
+    }
 
-        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const = 0;
-        OPENSOLID_CORE_EXPORT virtual bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
+    bool VectorXIDomain::isEmpty() const {return _bounds.isEmpty();}
 
-        OPENSOLID_CORE_EXPORT virtual Domain transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
-    };
+    int VectorXIDomain::dimensions() const {return _bounds.size();}
+
+    VectorXI VectorXIDomain::bounds() const {return _bounds;}
+
+    Domain VectorXIDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        if (matrix.isDiagonal()) {
+            VectorXI result(_bounds.size());
+            for (int i = 0; i < _bounds.size(); ++i) {
+                result(i) = matrix(i, i) * _bounds(i) + vector(i);
+            }
+            return new VectorXIDomain(result);
+        } else {
+            return DomainImplementation::transformed(matrix, vector);
+        }
+    }
 }
-
-#endif

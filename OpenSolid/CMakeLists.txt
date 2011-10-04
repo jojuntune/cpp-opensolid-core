@@ -139,10 +139,18 @@
     SET(DI_HEADERS
         Domain/DomainImplementation/DomainImplementation.hpp
         Domain/DomainImplementation/GenericDomain.hpp
+        Domain/DomainImplementation/IntervalDomain.hpp
+        Domain/DomainImplementation/Vector2IDomain.hpp
+        Domain/DomainImplementation/Vector3IDomain.hpp
+        Domain/DomainImplementation/VectorXIDomain.hpp
     )
     SET(DI_SOURCES
         Domain/DomainImplementation/DomainImplementation.cpp
         Domain/DomainImplementation/GenericDomain.cpp
+        Domain/DomainImplementation/IntervalDomain.cpp
+        Domain/DomainImplementation/Vector2IDomain.cpp
+        Domain/DomainImplementation/Vector3IDomain.cpp
+        Domain/DomainImplementation/VectorXIDomain.cpp
     )
     
     # Evaluation directory files

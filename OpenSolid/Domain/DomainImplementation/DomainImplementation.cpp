@@ -18,9 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
 
 namespace OpenSolid
 {
-    
+    DomainImplementation::~DomainImplementation() {}
+
+    bool DomainImplementation::isEmpty() const {return boundaries().isEmpty();}
+
+    int DomainImplementation::dimensions() const {return bounds().size();}
+
+    VectorXI DomainImplementation::bounds() const {return boundaries().bounds();}
+
+    Domain DomainImplementation::transformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector
+    ) const {
+        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
+        Set<Geometry> transformed_boundaries;
+        boundaries().transform(
+            [&matrix, &vector] (const Geometry& boundary) {
+                return boundary.transformed(matrix, vector);
+            },
+            transformed_boundaries.inserter()
+        );
+        return Domain(transformed_boundaries);
+    }
 }

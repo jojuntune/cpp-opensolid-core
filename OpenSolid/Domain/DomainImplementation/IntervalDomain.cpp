@@ -18,33 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOMAINIMPLEMENTATION_HPP
-#define OPENSOLID__DOMAINIMPLEMENTATION_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Domain/DomainImplementation/IntervalDomain.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
+    IntervalDomain::IntervalDomain(const Interval& interval) : _interval(interval) {}
 
-    class DomainImplementation : public ReferenceCounted<DomainImplementation>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT virtual ~DomainImplementation();
+    Set<Geometry> IntervalDomain::boundaries() const {
+        Set<Geometry> result;
+        result.insert(_interval.lower());
+        result.insert(_interval.upper());
+        return result;
+    }
 
-        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const = 0;
-        OPENSOLID_CORE_EXPORT virtual bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
+    bool IntervalDomain::isEmpty() const {return _interval.isEmpty();}
 
-        OPENSOLID_CORE_EXPORT virtual Domain transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
-    };
+    int IntervalDomain::dimensions() const {return 1;}
+
+    VectorXI IntervalDomain::bounds() const {return _interval.to<VectorXI>();}
+
+    Domain IntervalDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        return new IntervalDomain(matrix.value() + vector.value() * _interval);
+    }
 }
-
-#endif

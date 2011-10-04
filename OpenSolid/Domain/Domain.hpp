@@ -42,6 +42,7 @@ namespace OpenSolid
         const std::type_info* _type;
     public:
         OPENSOLID_CORE_EXPORT Domain();
+        OPENSOLID_CORE_EXPORT Domain(const DomainImplementation* implementation);
         OPENSOLID_CORE_EXPORT Domain(const Set<Geometry>& boundaries);
         OPENSOLID_CORE_EXPORT Domain(const Interval& bounds);
         OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
