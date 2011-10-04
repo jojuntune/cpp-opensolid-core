@@ -38,8 +38,6 @@ namespace OpenSolid
         result = new CompositionFunction(inner, this);
     }
         
-    
-        
     void FunctionImplementation::getTransformed(
         const MatrixXd& matrix,
         const VectorXd& vector,

@@ -18,45 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINEARFUNCTION_HPP
-#define OPENSOLID__LINEARFUNCTION_HPP
+#ifndef OPENSOLID__GENERICDOMAIN_HPP
+#define OPENSOLID__GENERICDOMAIN_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
 
 namespace OpenSolid
 {
-    class LinearFunction : public FunctionImplementation
+    class GenericDomain : public DomainImplementation
     {
     private:
-        DatumXd& _datum;
+        Set<Geometry> _boundaries;
     public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const DatumXd& datum);
-        
-        const DatumXd& datum() const;
-        
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        GenericDomain(const Set<Geometry>& boundaries);
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        Set<Geometry> boundaries() const override;
     };
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    inline const DatumXd& LinearFunction::datum() const {return _datum;}
 }
 
 #endif

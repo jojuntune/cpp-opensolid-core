@@ -18,45 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINEARFUNCTION_HPP
-#define OPENSOLID__LINEARFUNCTION_HPP
+#ifndef OPENSOLID__GENERICGEOMETRY_HPP
+#define OPENSOLID__GENERICGEOMETRY_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/config.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 
 namespace OpenSolid
 {
-    class LinearFunction : public FunctionImplementation
+    class GenericGeometry : public GeometryImplementation
     {
     private:
-        DatumXd& _datum;
+        Function _function;
+        Domain _domain;
     public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const DatumXd& datum);
-        
-        const DatumXd& datum() const;
-        
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_KERNEL_EXPORT GenericGeometry(const Function& function, const Domain& domain);
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_KERNEL_EXPORT Function function() const;
+        OPENSOLID_KERNEL_EXPORT Domain domain() const;
     };
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    inline const DatumXd& LinearFunction::datum() const {return _datum;}
 }
 
 #endif

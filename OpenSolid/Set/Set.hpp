@@ -35,50 +35,44 @@
 
 namespace OpenSolid
 {
-    template <class Type, class BoundsType>
+    template <class Type>
     class SetIterator;
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     class SetInserter;
 
-    template <class Type, class BoundsFunctionType = Bounds<Type>>
+    template <class Type>
     class Set
     {
     public:
-        typedef typename BoundsFunctionType::Type Bounds;
-        typedef SetNode<Type, Bounds> Node;
-        typedef SetIterator<Type, Bounds> Iterator;
+        typedef SetNode<Type, typename Bounds<Type>::Type> Node;
+        typedef SetIterator<Type> Iterator;
     private:
         Node* _root;
         boost::detail::atomic_count* _shared_count;
-        BoundsFunctionType _bounds_function;
     public:
-        Set(const BoundsFunctionType& bounds_function = BoundsFunctionType());
+        Set();
         
-        Set(const Set<Type, BoundsFunctionType>& other);
+        Set(const Set<Type>& other);
         
         template <class IteratorType>
-        Set(
-            IteratorType begin,
-            IteratorType end,
-            const BoundsFunctionType& bounds_function = BoundsFunctionType()
-        );
+        Set(IteratorType begin, IteratorType end);
         
         ~Set();
         
         const Node* root() const;
         
-        void operator=(const Set<Type, BoundsFunctionType>& other);
+        void operator=(const Set<Type>& other);
         
         int size() const;
         bool isEmpty() const;
-        const Bounds& bounds() const;
+        const typename Bounds<Type>::Type& bounds() const;
         
         const Type& front() const;
         const Type& back() const;
         
-        SetIterator<Type, Bounds> begin() const;
-        SetIterator<Type, Bounds> end() const;
+        SetIterator<Type> begin() const;
+        SetIterator<Type> end() const;
         
         void insert(const Type& object);
         int erase(const Type& object);
@@ -91,13 +85,16 @@ namespace OpenSolid
         
         void clear();
 
-        SetInserter<Type, BoundsFunctionType> inserter();
+        SetInserter<Type> inserter();
 
         template <class VisitorType>
         void visit(const VisitorType& visitor) const;
 
         template <class VisitorType>
-        void visitOverlapping(const VisitorType& visitor, const Bounds& overlapping_bounds) const;
+        void visitOverlapping(
+            const VisitorType& visitor,
+            const typename Bounds<Type>::Type& overlapping_bounds
+        ) const;
 
         template <class VisitorType, class BoundsPredicateType>
         void visitFiltered(
@@ -111,7 +108,7 @@ namespace OpenSolid
         template <class VisitorType, class PredicateType>
         void visitOverlappingIf(
             const VisitorType& visitor,
-            const Bounds& overlapping_bounds,
+            const typename Bounds<Type>::Type& overlapping_bounds,
             const PredicateType& predicate
         ) const;
 
@@ -127,7 +124,7 @@ namespace OpenSolid
 
         template<class OutputIteratorType>
         void copyOverlapping(
-            const Bounds& overlapping_bounds,
+            const typename Bounds<Type>::Type& overlapping_bounds,
             OutputIteratorType output_iterator
         ) const;
 
@@ -142,7 +139,7 @@ namespace OpenSolid
 
         template <class PredicateType, class OutputIteratorType>
         void copyOverlappingIf(
-            const Bounds& overlapping_bounds,
+            const typename Bounds<Type>::Type& overlapping_bounds,
             const PredicateType& predicate,
             OutputIteratorType output_iterator
         ) const;
@@ -160,7 +157,7 @@ namespace OpenSolid
         template <class FunctionType, class OutputIteratorType>
         void transformOverlapping(
             const FunctionType& function,
-            const Bounds& overlapping_bounds,
+            const typename Bounds<Type>::Type& overlapping_bounds,
             OutputIteratorType output_iterator
         ) const;
 
@@ -181,7 +178,7 @@ namespace OpenSolid
         template <class FunctionType, class PredicateType, class OutputIteratorType>
         void transformOverlappingIf(
             const FunctionType& function,
-            const Bounds& overlapping_bounds,
+            const typename Bounds<Type>::Type& overlapping_bounds,
             const PredicateType& predicate,
             OutputIteratorType output_iterator
         ) const;
@@ -200,46 +197,42 @@ namespace OpenSolid
         ) const;
     };
     
-    template <class Type, class BoundsType>
+    template <class Type>
     class SetIterator :
-        public boost::iterator_facade<
-            SetIterator<Type, BoundsType>,
-            const Type,
-            std::forward_iterator_tag
-        >
+        public boost::iterator_facade<SetIterator<Type>, const Type, std::forward_iterator_tag>
     {
     private:
-        const SetNode<Type, BoundsType>* _node;
+        const typename Set<Type>::Node* _node;
         
         friend class boost::iterator_core_access;
         
         void increment();
-        bool equal(const SetIterator<Type, BoundsType>& other) const;
+        bool equal(const SetIterator<Type>& other) const;
         const Type& dereference() const;
     public:
         SetIterator();
-        SetIterator(const SetNode<Type, BoundsType>* node);
+        SetIterator(const typename Set<Type>::Node* node);
     };
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     class SetInserter
     {
     private:
-        Set<Type, BoundsFunctionType>* _set;
+        Set<Type>* _set;
     public:
-        SetInserter(Set<Type, BoundsFunctionType>* set);
+        SetInserter(Set<Type>* set);
 
-        SetInserter<Type, BoundsFunctionType>& operator*();
+        SetInserter<Type>& operator*();
         void operator=(const Type& item);
-        SetInserter<Type, BoundsFunctionType>& operator++();
-        SetInserter<Type, BoundsFunctionType>& operator++(int);
+        SetInserter<Type>& operator++();
+        SetInserter<Type>& operator++(int);
     };
     
     template <class Type, class BoundsType>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type, BoundsType>& node);
     
-    template <class Type, class BoundsFunctionType>
-    std::ostream& operator<<(std::ostream& stream, const Set<Type, BoundsFunctionType>& set);
+    template <class Type>
+    std::ostream& operator<<(std::ostream& stream, const Set<Type>& set);
 }
     
 ////////// Implementation //////////
@@ -248,13 +241,11 @@ namespace OpenSolid
     
 namespace OpenSolid
 {   
-    template <class Type, class BoundsFunctionType>
-    inline Set<Type, BoundsFunctionType>::Set(const BoundsFunctionType& bounds_function) :
-        _root(nullptr), _shared_count(nullptr), _bounds_function(bounds_function) {}
+    template <class Type>
+    inline Set<Type>::Set() : _root(nullptr), _shared_count(nullptr) {}
     
-    template <class Type, class BoundsFunctionType>
-    inline Set<Type, BoundsFunctionType>::Set(const Set<Type, BoundsFunctionType>& other) :
-        _bounds_function(other._bounds_function) {
+    template <class Type>
+    inline Set<Type>::Set(const Set<Type>& other) {
         if (other._root) {
             _root = other._root;
             _shared_count = other._shared_count;
@@ -265,18 +256,15 @@ namespace OpenSolid
         }
     }
         
-    template <class Type, class BoundsFunctionType> template <class IteratorType>
-    inline Set<Type, BoundsFunctionType>::Set(
-        IteratorType begin,
-        IteratorType end,
-        const BoundsFunctionType& bounds_function
-    ) : _bounds_function(bounds_function) {
+    template <class Type> template <class IteratorType>
+    inline Set<Type>::Set(IteratorType begin, IteratorType end) {
+        Bounds<Type> bounds_function;
         std::vector<Node*> nodes;
         std::transform(
             begin,
             end,
             std::back_inserter(nodes), 
-            [bounds_function] (const Type& item) {return new Node(item, bounds_function(item));}
+            [&bounds_function] (const Type& item) {return new Node(item, bounds_function(item));}
         );
         if (nodes.empty()) {
             _root = nullptr;
@@ -285,7 +273,7 @@ namespace OpenSolid
             _root = nodes[0];
             _shared_count = new boost::detail::atomic_count(1);
         } else {
-            Bounds overall_bounds = nodes.front()->bounds();
+            typename Bounds<Type>::Type overall_bounds = nodes.front()->bounds();
             std::for_each(
                 nodes.begin() + 1,
                 nodes.end(),
@@ -298,29 +286,25 @@ namespace OpenSolid
         }
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline Set<Type, BoundsFunctionType>::~Set() {
+    template <class Type>
+    inline Set<Type>::~Set() {
         if (_root && !--*_shared_count) {
             delete _root;
             delete _shared_count;
         }
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline int Set<Type, BoundsFunctionType>::size() const {
-        return isEmpty() ? 0 : root()->size();
-    }
+    template <class Type>
+    inline int Set<Type>::size() const {return isEmpty() ? 0 : root()->size();}
     
-    template <class Type, class BoundsFunctionType>
-    inline bool Set<Type, BoundsFunctionType>::isEmpty() const {return !root();}
+    template <class Type>
+    inline bool Set<Type>::isEmpty() const {return !root();}
     
-    template <class Type, class BoundsFunctionType>
-    inline const typename Set<Type, BoundsFunctionType>::Node*
-    Set<Type, BoundsFunctionType>::root() const {return _root;}
+    template <class Type>
+    inline const typename Set<Type>::Node* Set<Type>::root() const {return _root;}
         
-    template <class Type, class BoundsFunctionType>
-    void Set<Type, BoundsFunctionType>::operator=(const Set<Type, BoundsFunctionType>& other) {
-        _bounds_function = other._bounds_function;
+    template <class Type>
+    void Set<Type>::operator=(const Set<Type>& other) {
         if (other._root) {
             _root = other._root;
             _shared_count = other._shared_count;
@@ -331,9 +315,8 @@ namespace OpenSolid
         }
     }
         
-    template <class Type, class BoundsFunctionType>
-    inline SetIterator<Type, typename Set<Type, BoundsFunctionType>::Bounds>
-    Set<Type, BoundsFunctionType>::begin() const {
+    template <class Type>
+    inline SetIterator<Type> Set<Type>::begin() const {
         if (isEmpty()) {
             return nullptr;
         } else {
@@ -343,36 +326,35 @@ namespace OpenSolid
         }
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline SetIterator<Type, typename Set<Type, BoundsFunctionType>::Bounds>
-    Set<Type, BoundsFunctionType>::end() const {return nullptr;}
+    template <class Type>
+    inline SetIterator<Type> Set<Type>::end() const {return nullptr;}
     
-    template <class Type, class BoundsFunctionType>
-    inline const typename Set<Type, BoundsFunctionType>::Bounds&
-    Set<Type, BoundsFunctionType>::bounds() const {
+    template <class Type>
+    inline const typename Bounds<Type>::Type&
+    Set<Type>::bounds() const {
         assert(!isEmpty());
         return root()->bounds();
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline const Type& Set<Type, BoundsFunctionType>::front() const {
+    template <class Type>
+    inline const Type& Set<Type>::front() const {
         assert(!isEmpty());
         const Node* node = root();
         while (node->left()) {node = node->left();}
         return *node->object();
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline const Type& Set<Type, BoundsFunctionType>::back() const {
+    template <class Type>
+    inline const Type& Set<Type>::back() const {
         assert(!isEmpty());
         const Node* node = root();
         while (node->right()) {node = node->right();}
         return *node->object();
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline void Set<Type, BoundsFunctionType>::insert(const Type& object) {
-        Bounds bounds = _bounds_function(object);
+    template <class Type>
+    inline void Set<Type>::insert(const Type& object) {
+        typename Bounds<Type>::Type bounds = Bounds<Type>()(object);
         if (isEmpty()) {
             _root = new Node(object, bounds);
             _shared_count = new boost::detail::atomic_count(1);
@@ -386,8 +368,8 @@ namespace OpenSolid
         }
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline int Set<Type, BoundsFunctionType>::erase(const Type& object) {
+    template <class Type>
+    inline int Set<Type>::erase(const Type& object) {
         if (isEmpty()) {
             return 0;
         } else {
@@ -396,20 +378,19 @@ namespace OpenSolid
                 _root = new Node(*_root);
                 _shared_count = new boost::detail::atomic_count(1);
             }
-            Bounds bounds = _bounds_function(object);
             int previous_size = size();
-            _root = _root->erase(object, bounds);
+            _root = _root->erase(object, Bounds<Type>()(object));
             return previous_size - size();
         }
     }
     
-    template <class Type, class BoundsFunctionType> template <class IteratorType>
-    inline void Set<Type, BoundsFunctionType>::insert(IteratorType begin, IteratorType end) {
+    template <class Type> template <class IteratorType>
+    inline void Set<Type>::insert(IteratorType begin, IteratorType end) {
         std::for_each(begin, end, [this] (const Type& object) {this->insert(object);});
     }
     
-    template <class Type, class BoundsFunctionType> template <class IteratorType>
-    inline int Set<Type, BoundsFunctionType>::erase(IteratorType begin, IteratorType end) {
+    template <class Type> template <class IteratorType>
+    inline int Set<Type>::erase(IteratorType begin, IteratorType end) {
         return std::accumulate(
             begin,
             end,
@@ -418,8 +399,8 @@ namespace OpenSolid
         );
     }
     
-    template <class Type, class BoundsFunctionType>
-    inline void Set<Type, BoundsFunctionType>::clear() {
+    template <class Type>
+    inline void Set<Type>::clear() {
         if (_root) {
             if (!--*_shared_count) {
                 delete _root;
@@ -430,10 +411,8 @@ namespace OpenSolid
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    inline SetInserter<Type, BoundsFunctionType> Set<Type, BoundsFunctionType>::inserter() {
-        return SetInserter<Type, BoundsFunctionType>(this);
-    }
+    template <class Type>
+    inline SetInserter<Type> Set<Type>::inserter() {return SetInserter<Type>(this);}
 
     namespace
     {
@@ -454,35 +433,36 @@ namespace OpenSolid
         }
     }
 
-    template <class Type, class BoundsFunctionType> template <class VisitorType>
-    void Set<Type, BoundsFunctionType>::visit(const VisitorType& visitor) const {
-        if (root()) {visitNode(root(), visitor, [] (const Bounds&) {return true;});}
+    template <class Type> template <class VisitorType>
+    void Set<Type>::visit(const VisitorType& visitor) const {
+        if (root()) {
+            visitNode(root(), visitor, [] (const typename Bounds<Type>::Type&) {return true;});
+        }
     }
 
-    template <class Type, class BoundsFunctionType> template <class VisitorType>
-    void Set<Type, BoundsFunctionType>::visitOverlapping(
+    template <class Type> template <class VisitorType>
+    void Set<Type>::visitOverlapping(
         const VisitorType& visitor,
-        const Bounds& overlapping_bounds
+        const typename Bounds<Type>::Type& overlapping_bounds
     ) const {
         if (root()) {
             visitNode(
                 root(),
                 visitor,
-                [&overlapping_bounds] (const Bounds& bounds) {
+                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
                     return bounds.overlaps(overlapping_bounds);
                 }
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    template <class VisitorType, class BoundsPredicateType>
-    inline void Set<Type, BoundsFunctionType>::visitFiltered(
+    template <class Type> template <class VisitorType, class BoundsPredicateType>
+    inline void Set<Type>::visitFiltered(
         const VisitorType& visitor,
         const BoundsPredicateType& bounds_predicate
     ) const {if (root()) {visitNode(root(), visitor, bounds_predicate);}}
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class VisitorType, class PredicateType>
     void Set<Type, BoundsFunctionType>::visitIf(
         const VisitorType& visitor,
@@ -492,40 +472,35 @@ namespace OpenSolid
             visitNode(
                 root(),
                 [&visitor, &predicate] (const Type& item) {
-                    if (predicate(item)) {
-                        const_cast<VisitorType&>(visitor)(item);
-                    }
+                    if (predicate(item)) {const_cast<VisitorType&>(visitor)(item);}
                 },
-                [] (const Bounds&) {return true;}
+                [] (const typename Bounds<Type>::Type&) {return true;}
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    template <class VisitorType, class PredicateType>
+    template <class Type> template <class VisitorType, class PredicateType>
     void Set<Type, BoundsFunctionType>::visitOverlappingIf(
         const VisitorType& visitor,
-        const Bounds& overlapping_bounds,
+        const typename Bounds<Type>::Type& overlapping_bounds,
         const PredicateType& predicate
     ) const {
         if (root()) {
             visitNode(
                 root(),
                 [&visitor, &predicate] (const Type& item) {
-                    if (predicate(item)) {
-                        const_cast<VisitorType&>(visitor)(item);
-                    }
+                    if (predicate(item)) {const_cast<VisitorType&>(visitor)(item);}
                 },
-                [&overlapping_bounds] (const Bounds& bounds) {
+                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
                     return bounds.overlaps(overlapping_bounds);
                 }
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class VisitorType, class BoundsPredicateType, class PredicateType>
-    void Set<Type, BoundsFunctionType>::visitFilteredIf(
+    void Set<Type>::visitFilteredIf(
         const VisitorType& visitor,
         const BoundsPredicateType& bounds_predicate,
         const PredicateType& predicate
@@ -534,17 +509,15 @@ namespace OpenSolid
             visitNode(
                 root(),
                 [&visitor, &predicate] (const Type& item) {
-                    if (predicate(item)) {
-                        const_cast<VisitorType&>(visitor)(item);
-                    }
+                    if (predicate(item)) {const_cast<VisitorType&>(visitor)(item);}
                 },
                 bounds_predicate
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType> template<class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::copy(OutputIteratorType output_iterator) const {
+    template <class Type> template<class OutputIteratorType>
+    void Set<Type>::copy(OutputIteratorType output_iterator) const {
         if (root()) {
             visitNode(
                 root(),
@@ -552,14 +525,14 @@ namespace OpenSolid
                     *output_iterator = item;
                     ++output_iterator;
                 },
-                [] (const Bounds&) {return true;}
+                [] (const typename Bounds<Type>::Type&) {return true;}
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType> template<class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::copyOverlapping(
-        const Bounds& overlapping_bounds,
+    template <class Type> template<class OutputIteratorType>
+    void Set<Type>::copyOverlapping(
+        const typename Bounds<Type>::Type& overlapping_bounds,
         OutputIteratorType output_iterator
     ) const {
         if (root()) {
@@ -569,16 +542,15 @@ namespace OpenSolid
                     *output_iterator = item;
                     ++output_iterator;
                 },
-                [&overlapping_bounds] (const Bounds& bounds) {
+                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
                     return bounds.overlaps(overlapping_bounds);
                 }
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    template <class BoundsPredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::copyFiltered(
+    template <class Type> template <class BoundsPredicateType, class OutputIteratorType>
+    void Set<Type>::copyFiltered(
         const BoundsPredicateType& bounds_predicate,
         OutputIteratorType output_iterator
     ) const {
@@ -594,9 +566,8 @@ namespace OpenSolid
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    template <class PredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::copyIf(
+    template <class Type> template <class PredicateType, class OutputIteratorType>
+    void Set<Type>::copyIf(
         const PredicateType& predicate,
         OutputIteratorType output_iterator
     ) const {
@@ -609,15 +580,14 @@ namespace OpenSolid
                         ++output_iterator;
                     }
                 },
-                [] (const Bounds&) {return true;}
+                [] (const typename Bounds<Type>::Type&) {return true;}
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    template <class PredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::copyOverlappingIf(
-        const Bounds& overlapping_bounds,
+    template <class Type> template <class PredicateType, class OutputIteratorType>
+    void Set<Type>::copyOverlappingIf(
+        const typename Bounds<Type>::Type& overlapping_bounds,
         const PredicateType& predicate,
         OutputIteratorType output_iterator
     ) const {
@@ -630,16 +600,16 @@ namespace OpenSolid
                         ++output_iterator;
                     }
                 },
-                [&overlapping_bounds] (const Bounds& bounds) {
+                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
                     return bounds.overlaps(overlapping_bounds);
                 }
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class BoundsPredicateType, class PredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::copyFilteredIf(
+    void Set<Type>::copyFilteredIf(
         const BoundsPredicateType& bounds_predicate,
         const PredicateType& predicate,
         OutputIteratorType output_iterator
@@ -658,9 +628,9 @@ namespace OpenSolid
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class FunctionType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::transform(
+    void Set<Type>::transform(
         const FunctionType& function,
         OutputIteratorType output_iterator
     ) const {
@@ -671,16 +641,15 @@ namespace OpenSolid
                     *output_iterator = function(item);
                     ++output_iterator;
                 },
-                [] (const Bounds&) {return true;}
+                [] (const typename Bounds<Type>::Type&) {return true;}
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
-    template <class FunctionType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::transformOverlapping(
+    template <class Type> template <class FunctionType, class OutputIteratorType>
+    void Set<Type>::transformOverlapping(
         const FunctionType& function,
-        const Bounds& overlapping_bounds,
+        const typename Bounds<Type>::Type& overlapping_bounds,
         OutputIteratorType output_iterator
     ) const {
         if (root()) {
@@ -690,16 +659,16 @@ namespace OpenSolid
                     *output_iterator = function(item);
                     ++output_iterator;
                 },
-                [&overlapping_bounds] (const Bounds& bounds) {
+                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
                     return bounds.overlaps(overlapping_bounds);
                 }
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class FunctionType, class BoundsPredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::transformFiltered(
+    void Set<Type>::transformFiltered(
         const FunctionType& function,
         const BoundsPredicateType& bounds_predicate,
         OutputIteratorType output_iterator
@@ -716,9 +685,9 @@ namespace OpenSolid
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class FunctionType, class PredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::transformIf(
+    void Set<Type>::transformIf(
         const FunctionType& function,
         const PredicateType& predicate,
         OutputIteratorType output_iterator
@@ -732,16 +701,16 @@ namespace OpenSolid
                         ++output_iterator;
                     }
                 },
-                [] (const Bounds&) {return true;}
+                [] (const typename Bounds<Type>::Type&) {return true;}
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <class FunctionType, class PredicateType, class OutputIteratorType>
-    void Set<Type, BoundsFunctionType>::transformOverlappingIf(
+    void Set<Type>::transformOverlappingIf(
         const FunctionType& function,
-        const Bounds& overlapping_bounds,
+        const typename Bounds<Type>::Type& overlapping_bounds,
         const PredicateType& predicate,
         OutputIteratorType output_iterator
     ) const {
@@ -754,21 +723,21 @@ namespace OpenSolid
                         ++output_iterator;
                     }
                 },
-                [&overlapping_bounds] (const Bounds& bounds) {
+                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
                     return bounds.overlaps(overlapping_bounds);
                 }
             );
         }
     }
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     template <
         class FunctionType,
         class BoundsPredicateType,
         class PredicateType,
         class OutputIteratorType
     >
-    void Set<Type, BoundsFunctionType>::transformFilteredIf(
+    void Set<Type>::transformFilteredIf(
         const FunctionType& function,
         const BoundsPredicateType& bounds_predicate,
         const PredicateType& predicate,
@@ -788,8 +757,8 @@ namespace OpenSolid
         }
     }
     
-    template <class Type, class BoundsType>
-    inline void SetIterator<Type, BoundsType>::increment() {
+    template <class Type>
+    inline void SetIterator<Type>::increment() {
         while (_node->parent() && _node->parent()->right() == _node) {_node = _node->parent();}
         if (!_node->parent()) {
             _node = nullptr;
@@ -800,44 +769,34 @@ namespace OpenSolid
         }
     }
     
-    template <class Type, class BoundsType>
-    inline bool SetIterator<Type, BoundsType>::equal(
-        const SetIterator<Type, BoundsType>& other
-    ) const {return _node == other._node;}
-    
-    template <class Type, class BoundsType>
-    inline const Type& SetIterator<Type, BoundsType>::dereference() const {
-        return *_node->object();
+    template <class Type>
+    inline bool SetIterator<Type>::equal(const SetIterator<Type>& other) const {
+        return _node == other._node;
     }
     
-    template <class Type, class BoundsType>
-    inline SetIterator<Type, BoundsType>::SetIterator() : _node(nullptr) {}
+    template <class Type>
+    inline const Type& SetIterator<Type>::dereference() const {return *_node->object();}
     
-    template <class Type, class BoundsType>
-    inline SetIterator<Type, BoundsType>::SetIterator(
-        const SetNode<Type, BoundsType>* node
-    ) : _node(node) {}
+    template <class Type>
+    inline SetIterator<Type>::SetIterator() : _node(nullptr) {}
+    
+    template <class Type>
+    inline SetIterator<Type>::SetIterator(const typename Set<Type>::Node* node) : _node(node) {}
 
-    template <class Type, class BoundsFunctionType>
-    inline SetInserter<Type, BoundsFunctionType>::SetInserter(Set<Type, BoundsFunctionType>* set) :
-        _set(set) {}
+    template <class Type>
+    inline SetInserter<Type>::SetInserter(Set<Type>* set) : _set(set) {}
 
-    template <class Type, class BoundsFunctionType>
-    inline SetInserter<Type, BoundsFunctionType>&
-    SetInserter<Type, BoundsFunctionType>::operator*() {return *this;}
+    template <class Type>
+    inline SetInserter<Type>& SetInserter<Type>::operator*() {return *this;}
     
-    template <class Type, class BoundsFunctionType>
-    inline void SetInserter<Type, BoundsFunctionType>::operator=(const Type& item) {
-        _set->insert(item);
-    }
+    template <class Type>
+    inline void SetInserter<Type>::operator=(const Type& item) {_set->insert(item);}
     
-    template <class Type, class BoundsFunctionType>
-    inline SetInserter<Type, BoundsFunctionType>&
-    SetInserter<Type, BoundsFunctionType>::operator++() {return *this;}
+    template <class Type>
+    inline SetInserter<Type>& SetInserter<Type>::operator++() {return *this;}
     
-    template <class Type, class BoundsFunctionType>
-    inline SetInserter<Type, BoundsFunctionType>&
-    SetInserter<Type, BoundsFunctionType>::operator++(int) {return *this;}
+    template <class Type>
+    inline SetInserter<Type>& SetInserter<Type>::operator++(int) {return *this;}
 
     template <class Type, class BoundsType>
     std::ostream& operator<<(std::ostream& stream, const SetNode<Type, BoundsType>& node) {
@@ -853,8 +812,8 @@ namespace OpenSolid
         return stream;
     }
     
-    template <class Type, class BoundsFunctionType>
-    std::ostream& operator<<(std::ostream& stream, const Set<Type, BoundsFunctionType>& set) {
+    template <class Type>
+    std::ostream& operator<<(std::ostream& stream, const Set<Type>& set) {
         if (set.isEmpty()) {
             stream << "{}";
         } else {

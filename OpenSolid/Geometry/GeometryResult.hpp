@@ -18,15 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FUNCTIONRESULT_HPP
-#define OPENSOLID__FUNCTIONRESULT_HPP
+#ifndef OPENSOLID__GEOMETRYEVALUATION_HPP
+#define OPENSOLID__GEOMETRYEVALUATION_HPP
 
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Evaluation/Evaluation.hpp>
+#include <OpenSolid/Scalar/double.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Function/FunctionArgument.hpp>
 
 namespace OpenSolid
 {
-    class FunctionResult;
+    template<class ArgumentType>
+    class GeometryEvaluation;
 }
 
 namespace Eigen
@@ -34,7 +37,7 @@ namespace Eigen
     namespace internal
     {
         template <class ArgumentType>
-        struct traits<OpenSolid::FunctionResult<ArgumentType>>
+        struct traits<OpenSolid::GeometryEvaluation<ArgumentType>>
         {
             typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime>
                 ReturnType;
@@ -43,7 +46,7 @@ namespace Eigen
         };
         
         template <>
-        struct traits<OpenSolid::FunctionResult<int>>
+        struct traits<OpenSolid::GeometryEvaluation<int>>
         {
             typedef VectorXd ReturnType;
             static const int Flags =
@@ -51,7 +54,7 @@ namespace Eigen
         };
         
         template<>
-        struct traits<OpenSolid::FunctionResult<double>>
+        struct traits<OpenSolid::GeometryEvaluation<double>>
         {
             typedef VectorXd ReturnType;
             static const int Flags =
@@ -59,7 +62,7 @@ namespace Eigen
         };
         
         template<>
-        struct traits<OpenSolid::FunctionResult<OpenSolid::Interval>>
+        struct traits<OpenSolid::GeometryEvaluation<OpenSolid::Interval>>
         {
             typedef VectorXI ReturnType;
             static const int Flags =
@@ -71,13 +74,13 @@ namespace Eigen
 namespace OpenSolid
 {
     template<class ArgumentType>
-    class FunctionResult : public ReturnByValue<FunctionResult<ArgumentType>>
+    class GeometryEvaluation : public ReturnByValue<GeometryEvaluation<ArgumentType>>
     {
     private:
-        const Function& _function;
+        const Geometry& _geometry;
         const ArgumentType& _argument;
     public:
-        FunctionResult(const Function& function, const ArgumentType& argument);
+        GeometryEvaluation(const Geometry& geometry, const ArgumentType& argument);
         
         int rows() const;
         int cols() const;
@@ -90,13 +93,13 @@ namespace OpenSolid
     };
     
     template<>
-    class FunctionResult<int> : public ReturnByValue<FunctionResult<int>>
+    class GeometryEvaluation<int> : public ReturnByValue<GeometryEvaluation<int>>
     {
     private:
-        const Function& _function;
+        const Geometry& _geometry;
         double _argument;
     public:
-        FunctionResult(const Function& function, int argument);
+        GeometryEvaluation(const Geometry& geometry, int argument);
         
         int rows() const;
         int cols() const;
@@ -109,13 +112,13 @@ namespace OpenSolid
     };
     
     template<>
-    class FunctionResult<double> : public ReturnByValue<FunctionResult<double>>
+    class GeometryEvaluation<double> : public ReturnByValue<GeometryEvaluation<double>>
     {
     private:
-        const Function& _function;
+        const Geometry& _geometry;
         double _argument;
     public:
-        FunctionResult(const Function& function, double argument);
+        GeometryEvaluation(const Geometry& geometry, double argument);
         
         int rows() const;
         int cols() const;
@@ -128,13 +131,13 @@ namespace OpenSolid
     };
     
     template<>
-    class FunctionResult<Interval> : public ReturnByValue<FunctionResult<Interval>>
+    class GeometryEvaluation<Interval> : public ReturnByValue<GeometryEvaluation<Interval>>
     {
     private:
-        const Function& _function;
+        const Geometry& _geometry;
         Interval _argument;
     public:
-        FunctionResult(const Function& function, Interval argument);
+        GeometryEvaluation(const Geometry& geometry, Interval argument);
         
         int rows() const;
         int cols() const;
@@ -152,19 +155,19 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template<class ArgumentType>
-    inline FunctionResult<ArgumentType>::FunctionResult(
-        const Function& function,
+    inline GeometryEvaluation<ArgumentType>::GeometryEvaluation(
+        const Geometry& geometry,
         const ArgumentType& argument
-    ) : _function(function), _argument(argument) {}
+    ) : _geometry(geometry), _argument(argument) {}
     
     template<class ArgumentType>
-    inline int FunctionResult<ArgumentType>::rows() const {return _function.dimensions();}
+    inline int GeometryEvaluation<ArgumentType>::rows() const {return _geometry.dimensions();}
     
     template<class ArgumentType>
-    inline int FunctionResult<ArgumentType>::cols() const {return _argument.cols();}
+    inline int GeometryEvaluation<ArgumentType>::cols() const {return _argument.cols();}
     
     template<class ArgumentType> template<class ResultType>
-    inline void FunctionResult<ArgumentType>::evalTo(ResultType& result) const {
+    inline void GeometryEvaluation<ArgumentType>::evalTo(ResultType& result) const {
         FunctionArgument<ArgumentType> argument(_argument);
         
         // Common typedefs
@@ -191,31 +194,31 @@ namespace OpenSolid
             ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
-        // Evaluate function
-        _function.implementation()->evaluate(argument_map, result_map);
+        // Evaluate geometry
+        _geometry.implementation()->evaluate(argument_map, result_map);
     }
     
     template<class ArgumentType>
-    inline typename ArgumentType::Scalar FunctionResult<ArgumentType>::value() const {
+    inline typename ArgumentType::Scalar GeometryEvaluation<ArgumentType>::value() const {
         Matrix<typename ArgumentType::Scalar, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
     template <class ArgumentType>
-    inline bool FunctionResult<ArgumentType>::isZero(double precision) const {
+    inline bool GeometryEvaluation<ArgumentType>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    inline FunctionResult<int>::FunctionResult(const Function& function, int argument) :
-        _function(function), _argument(argument) {}
+    inline GeometryEvaluation<int>::GeometryEvaluation(const Geometry& geometry, int argument) :
+        _geometry(geometry), _argument(argument) {}
     
-    inline int FunctionResult<int>::rows() const {return _function.dimensions();}
+    inline int GeometryEvaluation<int>::rows() const {return _geometry.dimensions();}
     
-    inline int FunctionResult<int>::cols() const {return 1;}
+    inline int GeometryEvaluation<int>::cols() const {return 1;}
     
     template<class ResultType>
-    inline void FunctionResult<int>::evalTo(ResultType& result) const {
+    inline void GeometryEvaluation<int>::evalTo(ResultType& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -229,29 +232,29 @@ namespace OpenSolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
-        // Evaluate function
-        _function.implementation()->evaluate(argument_map, result_map);
+        // Evaluate geometry
+        _geometry.implementation()->evaluate(argument_map, result_map);
     }
     
-    inline double FunctionResult<int>::value() const {
+    inline double GeometryEvaluation<int>::value() const {
         Matrix<double, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
-    inline bool FunctionResult<int>::isZero(double precision) const {
+    inline bool GeometryEvaluation<int>::isZero(double precision) const {
         return eval().isZero(precision);
     }
     
-    inline FunctionResult<double>::FunctionResult(const Function& function, double argument) :
-        _function(function), _argument(argument) {}
+    inline GeometryEvaluation<double>::GeometryEvaluation(const Geometry& geometry, double argument) :
+        _geometry(geometry), _argument(argument) {}
     
-    inline int FunctionResult<double>::rows() const {return _function.dimensions();}
+    inline int GeometryEvaluation<double>::rows() const {return _geometry.dimensions();}
     
-    inline int FunctionResult<double>::cols() const {return 1;}
+    inline int GeometryEvaluation<double>::cols() const {return 1;}
     
     template<class ResultType>
-    inline void FunctionResult<double>::evalTo(ResultType& result) const {
+    inline void GeometryEvaluation<double>::evalTo(ResultType& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -265,29 +268,29 @@ namespace OpenSolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
-        // Evaluate function
-        _function.implementation()->evaluate(argument_map, result_map);
+        // Evaluate geometry
+        _geometry.implementation()->evaluate(argument_map, result_map);
     }
     
-    inline double FunctionResult<double>::value() const {
+    inline double GeometryEvaluation<double>::value() const {
         Matrix<double, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
-    inline bool FunctionResult<double>::isZero(double precision) const {
+    inline bool GeometryEvaluation<double>::isZero(double precision) const {
         return eval().isZero(precision);
     }
     
-    inline FunctionResult<Interval>::FunctionResult(const Function& function, Interval argument) :
-        _function(function), _argument(argument) {}
+    inline GeometryEvaluation<Interval>::GeometryEvaluation(const Geometry& geometry, Interval argument) :
+        _geometry(geometry), _argument(argument) {}
     
-    inline int FunctionResult<Interval>::rows() const {return _function.dimensions();}
+    inline int GeometryEvaluation<Interval>::rows() const {return _geometry.dimensions();}
     
-    inline int FunctionResult<Interval>::cols() const {return 1;}
+    inline int GeometryEvaluation<Interval>::cols() const {return 1;}
     
     template<class ResultType>
-    inline void FunctionResult<Interval>::evalTo(ResultType& result) const {
+    inline void GeometryEvaluation<Interval>::evalTo(ResultType& result) const {
         // Create argument map
         typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -301,17 +304,17 @@ namespace OpenSolid
         typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
-        // Evaluate function
-        _function.implementation()->evaluate(argument_map, result_map);
+        // Evaluate geometry
+        _geometry.implementation()->evaluate(argument_map, result_map);
     }
     
-    inline Interval FunctionResult<Interval>::value() const {
+    inline Interval GeometryEvaluation<Interval>::value() const {
         Matrix<Interval, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
-    inline bool FunctionResult<Interval>::isZero(double precision) const {
+    inline bool GeometryEvaluation<Interval>::isZero(double precision) const {
         return eval().isZero(precision);
     }
 }

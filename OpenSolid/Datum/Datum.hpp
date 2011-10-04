@@ -135,6 +135,8 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Datum<dimensions_, dimensions_> frame() const;
     };
 
+    typedef Datum<2, 2> Datum2d;
+    typedef Datum<3, 3> Datum3d;
     typedef Datum<Dynamic, Dynamic> DatumXd;
 
     template <class TransformableType, int dimensions_, int axes_>

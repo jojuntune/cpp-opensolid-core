@@ -31,7 +31,7 @@ namespace OpenSolid
 {
     class Interval;
 
-    template <class Type, class BoundsFunctionType>
+    template <class Type>
     class Set;
 
     template <class DerivedType, class ResultType>

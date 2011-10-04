@@ -18,45 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINEARFUNCTION_HPP
-#define OPENSOLID__LINEARFUNCTION_HPP
+#ifndef OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
+#define OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/config.hpp>
+#include <OpenSolid/Common/ReferenceCounted.hpp>
+#include <OpenSolid/Function/Function.hpp>
 
 namespace OpenSolid
 {
-    class LinearFunction : public FunctionImplementation
+    class Domain;
+    class Geometry;
+
+    class GeometryImplementation : public ReferenceCounted<GeometryImplementation>
     {
-    private:
-        DatumXd& _datum;
     public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const DatumXd& datum);
+        OPENSOLID_CORE_EXPORT virtual ~GeometryImplementation();
         
-        const DatumXd& datum() const;
+        OPENSOLID_CORE_EXPORT virtual Function function() const = 0;
+        OPENSOLID_CORE_EXPORT virtual Domain domain() const = 0;
         
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT virtual int parameters() const;
+        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
+        OPENSOLID_CORE_EXPORT virtual bool isConstant() const;
+        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
+        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const;
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(
+        OPENSOLID_CORE_EXPORT virtual Geometry transformed(
             const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
+            const VectorXd& vector
         ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+
+        OPENSOLID_CORE_EXPORT virtual Geometry reversed() const;
     };
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    inline const DatumXd& LinearFunction::datum() const {return _datum;}
 }
 
 #endif

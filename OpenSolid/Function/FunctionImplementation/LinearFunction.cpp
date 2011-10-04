@@ -23,31 +23,29 @@
 
 namespace OpenSolid
 {
-    LinearFunction::LinearFunction(const VectorXd& point, const MatrixXd& vectors) :
-        _point(point), _vectors(vectors) {assert(point.rows() == _vectors.rows());}
+    LinearFunction::LinearFunction(const DatumXd& datum) : _datum(datum) {}
     
-    int LinearFunction::parameters() const {return _vectors.cols();}
+    int LinearFunction::parameters() const {return datum().axes();}
     
-    int LinearFunction::dimensions() const {return _vectors.rows();}
+    int LinearFunction::dimensions() const {return datum().dimensions();}
     
     void LinearFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = _point.replicate(1, parameter_values.cols()) + _vectors * parameter_values;
+        results = parameter_values * datum();
     }
     
     void LinearFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = _point.cast<Interval>().replicate(1, parameter_bounds.cols())
-            + _vectors.cast<Interval>() * parameter_bounds;
+        results = parameter_bounds * datum();
     }
 
     void LinearFunction::getDerivative(int index, Function& result) const {
-        result = _vectors.col(index);
+        result = datum().direction(index);
     }
     
     void LinearFunction::getTransformed(
         const MatrixXd& matrix,
         const VectorXd& vector,
         Function& result
-    ) const {result = new LinearFunction(matrix * point() + vector, matrix * vectors());}
+    ) const {result = new LinearFunction(datum().transformed(matrix, vector));}
     
     void LinearFunction::debug(std::ostream& stream, int indent) const {
         stream << "LinearFunction" << std::endl;

@@ -18,29 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOMAINIMPLEMENTATION_HPP
-#define OPENSOLID__DOMAINIMPLEMENTATION_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GenericGeometry.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
+    GenericGeometry::GenericGeometry(const Function& function, const Domain& domain) :
+        _function(function), _domain(domain) {}
 
-    class DomainImplementation : public ReferenceCounted<DomainImplementation>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT virtual ~DomainImplementation();
-    };
+    Function GenericGeometry::function() const {return _function;}
+
+    Domain GenericGeometry::domain() const {return _domain;}
 }
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    
-}
-
-#endif

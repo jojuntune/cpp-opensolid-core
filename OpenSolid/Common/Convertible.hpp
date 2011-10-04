@@ -31,8 +31,7 @@ namespace OpenSolid
     {
     public:
         template <class OtherType>
-        auto to() const ->
-            decltype(Conversion<DerivedType, OtherType>()(*((DerivedType*) nullptr)));
+        OtherType to() const;
 
         template <class OtherType>
         static DerivedType from(const OtherType& argument);
@@ -44,8 +43,7 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class DerivedType> template <class OtherType>
-    inline auto Convertible<DerivedType>::to() const ->
-        decltype(Conversion<DerivedType, OtherType>()(*((DerivedType*) nullptr))) {
+    inline OtherType Convertible<DerivedType>::to() const {
         return Conversion<DerivedType, OtherType>()(static_cast<const DerivedType&>(*this));
     }
 

@@ -92,7 +92,8 @@ namespace OpenSolid
     
     bool Function::isConstant() const {
         assert(implementation());
-        return isA<ConstantFunction>();
+        assert(_type);
+        return *_type == typeid(ConstantFunction);
     }
     
     Function Function::derivative(int index) const {
@@ -169,11 +170,11 @@ namespace OpenSolid
     Function Function::dot(const Function& other) const {
         assert(implementation());
         assert(other.implementation());
-        if (isA<ConstantFunction>() && other.isA<ConstantFunction>()) {
-            return to<ConstantFunction>().vector().dot(other.to<ConstantFunction>().vector());
+        if (isConstant() && other.isConstant()) {
+            return to<VectorXd>().dot(other.to<VectorXd>());
         } else if (
-            (isA<ConstantFunction>() && to<ConstantFunction>().vector().isZero()) ||
-            (other.isA<ConstantFunction>() && other.to<ConstantFunction>().vector().isZero())
+            (isConstant() && to<VectorXd>().isZero()) ||
+            (other.isConstant() && other.to<VectorXd>().isZero())
         ) {
             return 0.0;
         } else {
@@ -185,14 +186,12 @@ namespace OpenSolid
         assert(implementation());
         assert(other.implementation());
         assert(dimensions() == 3 && other.dimensions() == 3);
-        if (isA<ConstantFunction>() && other.isA<ConstantFunction>()) {
-            return to<ConstantFunction>().vector().head<3>().cross(
-                other.to<ConstantFunction>().vector().head<3>()
-            );
+        if (isConstant() && other.isConstant()) {
+            return to<VectorXd>().head<3>().cross(other.to<VectorXd>().head<3>());
         }
         else if (
-            (isA<ConstantFunction>() && to<ConstantFunction>().vector().isZero()) ||
-            (other.isA<ConstantFunction>() && other.to<ConstantFunction>().vector().isZero())
+            (isConstant() && to<VectorXd>().isZero()) ||
+            (other.isConstant() && other.to<VectorXd>().isZero())
         ) {
             return Vector3d::Zero();
         } else {
@@ -237,9 +236,7 @@ namespace OpenSolid
         assert(implementation());
         assert(inner.implementation());
         assert(parameters() == inner.dimensions());
-        if (inner.isA<ConstantFunction>()) {
-            return operator()(inner.to<ConstantFunction>().vector());
-        }
+        if (inner.isConstant()) {return operator()(inner.to<VectorXd>());}
         Function result;
         implementation()->getComposition(inner, result);
         return result;
@@ -247,7 +244,7 @@ namespace OpenSolid
     
     Geometry Function::operator()(const Domain& domain) const {
         assert(implementation());
-        assert(!domain.isEmpty() || isConstant());
+        assert(isConstant() || !domain.isEmpty());
         return Geometry(*this, domain);
     }
     
@@ -391,68 +388,50 @@ namespace OpenSolid
         return new ParametersFunction(dimensions, 0, dimensions);
     }
     
-    Function Function::Linear(const VectorXd& point, const MatrixXd& vectors) {
-        return new LinearFunction(point, vectors);
+    Function Function::Linear(const DatumXd& datum) {return new LinearFunction(datum);}
+    
+    Function Function::Elliptical(const DatumXd& datum) {
+        return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, false));
     }
     
-    Function Function::Elliptical(
-        const VectorXd& point,
-        const MatrixXd& vectors
-    ) {
-        return new EllipticalFunction(
-            point,
-            vectors,
-            VectorXb::Constant(vectors.cols() - 1, false)
-        );
+    Function Function::Elliptical(const DatumXd& datum, const VectorXb& convention) {
+        return new EllipticalFunction(datum, convention);
     }
-    
-    Function Function::Elliptical(
-        const VectorXd& point,
-        const MatrixXd& vectors,
-        const VectorXb& convention
-    ) {return new EllipticalFunction(point, vectors, convention);}
     
     Function operator-(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {return -operand.to<ConstantFunction>().vector();}
+        if (operand.isConstant()) {return -operand.to<VectorXd>();}
         return new NegationFunction(operand);
     }
     
     double Conversion<Function, double>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 1);
-        return argument.to<ConstantFunction>().vector().value();
+        return argument.to<VectorXd>().value();
     }
     
     Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 2);
-        return argument.to<ConstantFunction>().vector();
+        return argument.to<VectorXd>();
     }
     
     Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 3);
-        return argument.to<ConstantFunction>().vector();
+        return argument.to<VectorXd>();
     }
     
     VectorXd Conversion<Function, VectorXd>::operator()(const Function& argument) const {
         assert(argument.isConstant());
-        return argument.to<ConstantFunction>().vector();
+        return argument.to<VectorXd>();
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {
-        if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
-            return first_operand.to<ConstantFunction>().vector() +
-                second_operand.to<ConstantFunction>().vector();
-        } else if (
-            first_operand.isA<ConstantFunction>() &&
-            first_operand.to<ConstantFunction>().vector().isZero()
-        ) {
+        if (first_operand.isConstant() && second_operand.isConstant()) {
+            return first_operand.to<VectorXd>() + second_operand.to<VectorXd>();
+        } else if (first_operand.isConstant() && first_operand.to<VectorXd>().isZero()) {
             return second_operand;
-        } else if (
-            second_operand.isA<ConstantFunction>() &&
-            second_operand.to<ConstantFunction>().vector().isZero()
-        ) {
+        } else if (second_operand.isConstant() && second_operand.to<VectorXd>().isZero()) {
             return first_operand;
         } else {
             return new SumFunction(first_operand, second_operand);
@@ -460,18 +439,11 @@ namespace OpenSolid
     }
     
     Function operator-(const Function& first_operand, const Function& second_operand) {
-        if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
-            return first_operand.to<ConstantFunction>().vector() -
-                second_operand.to<ConstantFunction>().vector();
-        } else if (
-            first_operand.isA<ConstantFunction>() &&
-            first_operand.to<ConstantFunction>().vector().isZero()
-        ) {
+        if (first_operand.isConstant() && second_operand.isConstant()) {
+            return first_operand.to<VectorXd>() - second_operand.to<VectorXd>();
+        } else if (first_operand.isConstant() && first_operand.to<VectorXd>().isZero()) {
             return -second_operand;
-        } else if (
-            second_operand.isA<ConstantFunction>() &&
-            second_operand.to<ConstantFunction>().vector().isZero()
-        ) {
+        } else if (second_operand.isConstant() && second_operand.to<VectorXd>().isZero()) {
             return first_operand;
         } else {
             return new DifferenceFunction(first_operand, second_operand);
@@ -488,16 +460,13 @@ namespace OpenSolid
             multiplicand = second_operand;
             multiplier = first_operand;
         }
-        if (multiplicand.isA<ConstantFunction>() && multiplier.isA<ConstantFunction>()) {
-            double multiplier_value = multiplier.to<ConstantFunction>().vector().value();
-            return multiplicand.to<ConstantFunction>().vector() * multiplier_value;
-        } else if (
-            multiplicand.isA<ConstantFunction>() &&
-            multiplicand.to<ConstantFunction>().vector().isZero()
-        ) {
+        if (multiplicand.isConstant() && multiplier.isConstant()) {
+            double multiplier_value = multiplier.to<VectorXd>().value();
+            return multiplicand.to<VectorXd>() * multiplier_value;
+        } else if (multiplicand.isConstant() && multiplicand.to<VectorXd>().isZero()) {
             return multiplicand;
-        } else if (multiplier.isA<ConstantFunction>()) {
-            double multiplier_value = multiplier.to<ConstantFunction>().vector().value();
+        } else if (multiplier.isConstant()) {
+            double multiplier_value = multiplier.to<VectorXd>().value();
             if (multiplier_value == Zero()) {
                 return VectorXd::Zero(multiplicand.dimensions());
             } else if (multiplier_value == One()) {
@@ -513,16 +482,16 @@ namespace OpenSolid
     }
     
     Function operator/(const Function& first_operand, const Function& second_operand) {
-        if (first_operand.isA<ConstantFunction>() && second_operand.isA<ConstantFunction>()) {
-            double divisor_value = second_operand.to<ConstantFunction>().vector().value();
-            return first_operand.to<ConstantFunction>().vector() / divisor_value;
+        if (first_operand.isConstant() && second_operand.isConstant()) {
+            double divisor_value = second_operand.to<VectorXd>().value();
+            return first_operand.to<VectorXd>() / divisor_value;
         } else if (
-            first_operand.isA<ConstantFunction>() &&
-            first_operand.to<ConstantFunction>().vector().isZero()
+            first_operand.isConstant() &&
+            first_operand.to<VectorXd>().isZero()
         ) {
             return first_operand;
-        } else if (second_operand.isA<ConstantFunction>()) {
-            double second_value = second_operand.to<ConstantFunction>().vector().value();
+        } else if (second_operand.isConstant()) {
+            double second_value = second_operand.to<VectorXd>().value();
             if (second_value == One()) {
                 return first_operand;
             } else if (second_value == -One()) {
@@ -536,48 +505,48 @@ namespace OpenSolid
     }
     
     Function sin(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {
-            return sin(operand.to<ConstantFunction>().vector().value());
+        if (operand.isConstant()) {
+            return sin(operand.to<VectorXd>().value());
         } else {
             return new SineFunction(operand);
         }
     }
     
     Function cos(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {
-            return cos(operand.to<ConstantFunction>().vector().value());
+        if (operand.isConstant()) {
+            return cos(operand.to<VectorXd>().value());
         } else {
             return new CosineFunction(operand);
         }
     }
     
     Function tan(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {
-            return tan(operand.to<ConstantFunction>().vector().value());
+        if (operand.isConstant()) {
+            return tan(operand.to<VectorXd>().value());
         } else {
             return new TangentFunction(operand);
         }
     }
     
     Function sqrt(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {
-            return sqrt(operand.to<ConstantFunction>().vector().value());
+        if (operand.isConstant()) {
+            return sqrt(operand.to<VectorXd>().value());
         } else {
             return new SquareRootFunction(operand);
         }
     }
     
     Function asin(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {
-            return asin(operand.to<ConstantFunction>().vector().value());
+        if (operand.isConstant()) {
+            return asin(operand.to<VectorXd>().value());
         } else {
             return new ArcsineFunction(operand);
         }
     }
     
     Function acos(const Function& operand) {
-        if (operand.isA<ConstantFunction>()) {
-            return acos(operand.to<ConstantFunction>().vector().value());
+        if (operand.isConstant()) {
+            return acos(operand.to<VectorXd>().value());
         } else {
             return new ArccosineFunction(operand);
         }
