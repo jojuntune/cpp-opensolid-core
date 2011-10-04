@@ -26,30 +26,27 @@
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {
-    template <>
-    struct Bounds<Geometry>
-    {
-        typedef VectorXI Type;
+    class Geometry;
+    class DomainImplementation;
 
-        OPENSOLID_CORE_EXPORT VectorXI operator()(const Geometry& geometry) const;
-    };
-    
     class Domain : public Convertible<Domain>, public Transformable<Domain>
     {
     private:
-        Set<Geometry> _boundaries;
+        boost::intrusive_ptr<const DomainImplementation> _implementation;
+        const std::type_info* _type;
     public:
         OPENSOLID_CORE_EXPORT Domain();
         OPENSOLID_CORE_EXPORT Domain(const Set<Geometry>& boundaries);
         OPENSOLID_CORE_EXPORT Domain(const Interval& bounds);
+        OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
 
-        template <class BoundsType>
-        Domain(const EigenBase<BoundsType>& bounds);
+        const DomainImplementation* implementation() const;
         
         OPENSOLID_CORE_EXPORT const Set<Geometry>& boundaries() const;
         OPENSOLID_CORE_EXPORT bool isEmpty() const;
@@ -68,17 +65,16 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
     };
-
-    OPENSOLID_CORE_EXPORT Set<Geometry> rectangularBoundaries(const VectorXI& bounds);
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    template <class BoundsType>
-    Domain::Domain(const EigenBase<BoundsType>& bounds) :
-        _boundaries(rectangularBoundaries(bounds)) {}
+    inline const DomainImplementation* Domain::implementation() const {
+        assert(_implementation);
+        return _implementation.get();
+    }
 }
 
 #endif

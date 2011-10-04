@@ -18,69 +18,72 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  **************************************************************************/
 
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
 
 namespace OpenSolid
 {
-    EllipticalFunction::EllipticalFunction(
-        const VectorXd& point,
-        const MatrixXd& vectors,
-        const VectorXb& convention
-    ) : _point(point), _vectors(vectors), _convention(convention) {
-        assert(point.rows() == _vectors.rows());
-        assert(convention.size() == vectors.cols() - 1);
+    EllipticalFunction::EllipticalFunction(const DatumXd& datum, const VectorXb& convention) :
+        _datum(datum), _convention(convention) {
+        assert(convention.size() == _datum.axes() - 1);
     }
     
-    int EllipticalFunction::parameters() const {return vectors().cols() - 1;}
+    int EllipticalFunction::parameters() const {return datum().axes() - 1;}
     
-    int EllipticalFunction::dimensions() const {return point().size();}
+    int EllipticalFunction::dimensions() const {return datum().dimensions();}
     
     void EllipticalFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd temp = MatrixXd::Ones(parameters() + 1, parameter_values.cols());
+        MatrixXd local = MatrixXd::Ones(parameters() + 1, parameter_values.cols());
         for (int i = 0; i < parameters(); ++i) {
             if (convention()(i)) {
-                temp.row(i).array() *= cos(parameter_values.row(i).array());
-                temp.bottomRows(parameters() - i).array() *=
+                local.row(i).array() *= cos(parameter_values.row(i).array());
+                local.bottomRows(parameters() - i).array() *=
                     sin(parameter_values.row(i).array()).replicate(parameters() - i, 1);
             } else {
-                temp.row(i).array() *= sin(parameter_values.row(i).array());
-                temp.bottomRows(parameters() - i).array() *=
+                local.row(i).array() *= sin(parameter_values.row(i).array());
+                local.bottomRows(parameters() - i).array() *=
                     cos(parameter_values.row(i).array()).replicate(parameters() - i, 1);
             }
         }
-        results = (vectors() * temp).colwise() + point();
+        results = local * datum();
     }
     
     void EllipticalFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        MatrixXI temp = MatrixXI::Ones(parameters() + 1, parameter_bounds.cols());
+        MatrixXI local = MatrixXI::Ones(parameters() + 1, parameter_bounds.cols());
         for (int i = 0; i < parameters(); ++i) {
             if (convention()(i)) {
-                temp.row(i).array() *= cos(parameter_bounds.row(i).array());
-                temp.bottomRows(parameters() - i).array() *=
+                local.row(i).array() *= cos(parameter_bounds.row(i).array());
+                local.bottomRows(parameters() - i).array() *=
                     sin(parameter_bounds.row(i).array()).replicate(parameters() - i, 1);
             } else {
-                temp.row(i).array() *= sin(parameter_bounds.row(i).array());
-                temp.bottomRows(parameters() - i).array() *=
+                local.row(i).array() *= sin(parameter_bounds.row(i).array());
+                local.bottomRows(parameters() - i).array() *=
                     cos(parameter_bounds.row(i).array()).replicate(parameters() - i, 1);
             }
         }
-        results = (vectors().cast<Interval>() * temp).colwise() + point().cast<Interval>();
+        results = local * datum();
     }
 
     void EllipticalFunction::getDerivative(int index, Function& result) const {
-        VectorXd new_point = VectorXd::Zero(dimensions());
-        MatrixXd new_vectors = vectors();
+        VectorXd new_origin = VectorXd::Zero(dimensions());
+        MatrixXd new_basis = datum().basis();
         VectorXb new_convention = convention();
         new_convention(index) = !new_convention(index);
         if (convention()(index)) {
-            new_vectors.col(index) = -new_vectors.col(index);
+            new_basis.col(index) = -new_basis.col(index);
         } else {
             int num_flipped = parameters() - index;
-            new_vectors.rightCols(num_flipped) = -new_vectors.rightCols(num_flipped);
+            new_basis.rightCols(num_flipped) = -new_basis.rightCols(num_flipped);
         }
-        result = new EllipticalFunction(new_point, new_vectors, new_convention);
+        result = new EllipticalFunction(CoordinateSystemXd(new_origin, new_basis), new_convention);
     }
+    
+    void EllipticalFunction::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {result = new EllipticalFunction(datum().transformed(matrix, vector), convention());}
     
     void EllipticalFunction::debug(std::ostream& stream, int indent) const {
         stream << "EllipticalFunction" << std::endl;

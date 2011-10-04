@@ -132,14 +132,27 @@
     )
     
     # Domain directory files
-    SET(DOMAIN_HEADERS Domain/Domain.hpp Domain/DomainImplementation.hpp)
-    SET(DOMAIN_SOURCES Domain/Domain.cpp Domain/DomainImplementation.cpp)
+    SET(DOMAIN_HEADERS Domain/Domain.hpp)
+    SET(DOMAIN_SOURCES Domain/Domain.cpp)
+
+    # Domain/DomainImplementation directory files
+    SET(DI_HEADERS
+        Domain/DomainImplementation/DomainImplementation.hpp
+        Domain/DomainImplementation/GenericDomain.hpp
+    )
+    SET(DI_SOURCES
+        Domain/DomainImplementation/DomainImplementation.cpp
+        Domain/DomainImplementation/GenericDomain.cpp
+    )
+    
+    # Evaluation directory files
+    SET(EVALUATION_HEADERS Evaluation/Evaluation.hpp Evaluation/MatrixArgument.hpp)
+    SET(EVALUATION_SOURCES)
     
     # Function directory files
     SET(FUNCTION_HEADERS
         Function/Function.hpp
         Function/FunctionTests.hpp
-        Function/FunctionArgument.hpp
         Function/FunctionResult.hpp
         Function/Parameter.hpp
         Function/Parameters.hpp
@@ -214,11 +227,31 @@
     
     # Geometry directory files
     SET(GEOMETRY_HEADERS
+        Geometry/Arc.hpp
+        Geometry/Circle.hpp
         Geometry/Geometry.hpp
-        Geometry/GeometryImplementation.hpp
+        Geometry/GeometryResult.hpp
         Geometry/GeometryTests.hpp
+        Geometry/Helix.hpp
+        Geometry/Line.hpp
     )
-    SET(GEOMETRY_SOURCES Geometry/Geometry.cpp Geometry/GeometryImplementation.cpp)
+    SET(GEOMETRY_SOURCES
+        Geometry/Arc.cpp
+        Geometry/Circle.cpp
+        Geometry/Geometry.cpp
+        Geometry/Helix.cpp
+        Geometry/Line.cpp
+    )
+
+    # Geometry/GeometryImplementation directory files
+    SET(GI_HEADERS
+        Geometry/GeometryImplementation/GenericGeometry.hpp
+        Geometry/GeometryImplementation/GeometryImplementation.hpp
+    )
+    SET(GI_SOURCES
+        Geometry/GeometryImplementation/GenericGeometry.cpp
+        Geometry/GeometryImplementation/GeometryImplementation.cpp
+    )
     
     # Matrix directory files
     SET(MATRIX_HEADERS
@@ -283,12 +316,18 @@
         ${DATUM_SOURCES}
         ${DOMAIN_HEADERS}
         ${DOMAIN_SOURCES}
+        ${DI_HEADERS}
+        ${DI_SOURCES}
+        ${EVALUATION_HEADERS}
+        ${EVALUATION_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
         ${FI_HEADERS}
         ${FI_SOURCES}
         ${GEOMETRY_HEADERS}
         ${GEOMETRY_SOURCES}
+        ${GI_HEADERS}
+        ${GI_SOURCES}
         ${MATRIX_HEADERS}
         ${MATRIX_SOURCES}
         ${MODEL_HEADERS}
@@ -311,9 +350,12 @@
     SOURCE_GROUP(OpenSolid\\Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Domain\\DomainImplementation FILES ${DI_HEADERS} ${DI_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Evaluation FILES ${EVALUATION_HEADERS} ${EVALUATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FI_HEADERS} ${FI_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Geometry\\GeometryImplementation FILES ${GI_HEADERS} ${GI_SOURCES})
     SOURCE_GROUP(OpenSolid\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
     SOURCE_GROUP(OpenSolid\\Model FILES ${MODEL_HEADERS} ${MODEL_SOURCES})
     SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
@@ -335,9 +377,12 @@
         ${COMMON_SOURCES}
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
+        ${DI_SOURCES}
+        ${EVALUATION_SOURCES}
         ${FUNCTION_SOURCES}
         ${FI_SOURCES}
         ${GEOMETRY_SOURCES}
+        ${GI_SOURCES}
         ${MATRIX_SOURCES}
         ${MODEL_SOURCES}
         ${SCALAR_SOURCES}

@@ -18,39 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
-#define OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
+#include <OpenSolid/Geometry/Line.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
+    Geometry Line2d(const Vector2d& start, const Vector2d& end) {return Line(start, end);}
 
-    class GeometryImplementation : public ReferenceCounted<GeometryImplementation>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT virtual ~GeometryImplementation();
-        
-        OPENSOLID_CORE_EXPORT virtual Function function() const = 0;
-        OPENSOLID_CORE_EXPORT virtual Domain domain() const = 0;
-        
-        OPENSOLID_CORE_EXPORT virtual int parameters() const;
-        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
-        OPENSOLID_CORE_EXPORT virtual bool isConstant() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
-        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const;
-    };
+    Geometry Line3d(const Vector3d& start, const Vector3d& end) {return Line(start, end);}
+
+    Geometry Line(const VectorXd& start, const VectorXd& end) {
+        return Geometry(Function::Linear(CoordinateSystemXd(start, end - start)), Interval(0, 1));
+    }
 }
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    
-}
-
-#endif

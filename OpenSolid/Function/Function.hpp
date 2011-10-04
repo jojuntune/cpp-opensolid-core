@@ -22,7 +22,6 @@
 #define OPENSOLID__FUNCTION_HPP
 
 #include <typeinfo>
-#include <type_traits>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -30,6 +29,7 @@
 #include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
+#include <OpenSolid/Evaluation/Evaluation.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -38,9 +38,6 @@
 
 namespace OpenSolid
 {
-    template <class ArgumentType>
-    class FunctionResult;
-    
     class Function : public Convertible<Function>, public Transformable<Function>
     {
     private:
@@ -59,15 +56,12 @@ namespace OpenSolid
         
         OPENSOLID_CORE_EXPORT const FunctionImplementation* implementation() const;
         
-        template <class Type>
-        bool isA() const;
-        
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         OPENSOLID_CORE_EXPORT bool isConstant() const;
         
         template <class ArgumentType>
-        FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
+        Evaluation<Function, ArgumentType> operator()(const ArgumentType& argument) const;
         
         OPENSOLID_CORE_EXPORT Function derivative(int index = 0) const;
         OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& matrix, const VectorXd& vector) const;
@@ -97,19 +91,12 @@ namespace OpenSolid
 
         OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
         
-        OPENSOLID_CORE_EXPORT static Function Linear(
-            const VectorXd& point,
-            const MatrixXd& vectors
-        );
+        OPENSOLID_CORE_EXPORT static Function Linear(const DatumXd& datum);
+        
+        OPENSOLID_CORE_EXPORT static Function Elliptical(const DatumXd& datum);
         
         OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const VectorXd& point,
-            const MatrixXd& vectors
-        );
-        
-        OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const VectorXd& point,
-            const MatrixXd& vectors,
+            const DatumXd& datum,
             const VectorXb& convention
         );
     };
@@ -140,18 +127,6 @@ namespace OpenSolid
     {
     public:
         OPENSOLID_CORE_EXPORT VectorXd operator()(const Function& argument) const;
-    };
-    
-    template <class FunctionType>
-    class Conversion<Function, FunctionType>
-    {
-    static_assert(
-        std::is_base_of<FunctionImplementation, FunctionType>::value,
-        "Function can only be converted to double, Vector2d, Vector3d, VectorXd, "
-        "or a FunctionImplementation subclass"
-    );
-    public:
-        const FunctionType& operator()(const Function& argument) const;
     };
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
@@ -203,24 +178,10 @@ namespace OpenSolid
     template <class VectorType>
     Function::Function(const EigenBase<VectorType>& vector) :
         _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
-
-    template <class Type>
-    inline bool Function::isA() const {
-        assert(_type);
-        return *_type == typeid(Type);
-    }
     
     template <class ArgumentType>
-    inline FunctionResult<ArgumentType> Function::operator()(const ArgumentType& argument) const {
-        return FunctionResult<ArgumentType>(*this, argument);
-    }
-    
-    template <class FunctionType>
-    inline const FunctionType& Conversion<Function, FunctionType>::operator()(
-        const Function& argument
-    ) const {
-        assert(argument.isA<FunctionType>());
-        return static_cast<const FunctionType&>(*argument.implementation());
+    inline Evaluation<Function, ArgumentType> Function::operator()(const ArgumentType& argument) const {
+        return Evaluation<Function, ArgumentType>(*this, argument);
     }
 }
 

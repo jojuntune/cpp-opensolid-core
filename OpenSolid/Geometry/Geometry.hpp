@@ -21,67 +21,48 @@
 #ifndef OPENSOLID__GEOMETRY_HPP
 #define OPENSOLID__GEOMETRY_HPP
 
+#include <boost/intrusive_ptr.hpp>
+
+#include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Evaluation/Evaluation.hpp>
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Datum/Axis.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Set/Set.hpp>
 
 namespace OpenSolid
 {
+    class Domain;
+    class GeometryImplementation;
+
     class Geometry : public Convertible<Geometry>, public Transformable<Geometry>
     {
     private:
-        Function _function;
-        Domain _domain;
+        boost::intrusive_ptr<const GeometryImplementation> _implementation;
+        const std::type_info* _type;
     public:
         OPENSOLID_CORE_EXPORT Geometry();
+        OPENSOLID_CORE_EXPORT Geometry(const GeometryImplementation* implementation);
         OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
         OPENSOLID_CORE_EXPORT Geometry(double value);
+        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
 
-        template <class VectorType>
-        Geometry(const EigenBase<VectorType>& vector);
+        const GeometryImplementation* implementation() const;
         
-        OPENSOLID_CORE_EXPORT const Function& function() const;
-        OPENSOLID_CORE_EXPORT const Domain& domain() const;
+        OPENSOLID_CORE_EXPORT Function function() const;
+        OPENSOLID_CORE_EXPORT Domain domain() const;
+        
+        template <class ArgumentType>
+        GeometryResult<ArgumentType> operator()(const ArgumentType& argument) const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         OPENSOLID_CORE_EXPORT bool isConstant() const;
         OPENSOLID_CORE_EXPORT VectorXI bounds() const;
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
-
         OPENSOLID_CORE_EXPORT Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
         OPENSOLID_CORE_EXPORT Geometry reversed() const;
-        
-        template <class ArgumentType>
-        FunctionResult<ArgumentType> operator()(const ArgumentType& argument) const;
-        
-        OPENSOLID_CORE_EXPORT static Geometry Line(const VectorXd& start, const VectorXd& end);
-        
-        OPENSOLID_CORE_EXPORT static Geometry Arc(double radius, const Interval& angle);
-        
-        OPENSOLID_CORE_EXPORT static Geometry Arc(
-            const Vector2d& center,
-            const Vector2d& start,
-            const Vector2d& end,
-            bool counterclockwise
-        );
-        
-        OPENSOLID_CORE_EXPORT static Geometry Arc(
-            const Axis3d& axis,
-            const Vector3d& start,
-            const Vector3d& end
-        );
-        
-        OPENSOLID_CORE_EXPORT static Geometry Circle(double radius);
-        
-        OPENSOLID_CORE_EXPORT static Geometry Helix(
-            double radius,
-            double pitch,
-            const Interval& angle
-        );
     };
     
     template <>
@@ -119,12 +100,14 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    template <class VectorType>
-    Geometry::Geometry(const EigenBase<VectorType>& vector) : _function(vector), _domain() {}
+    inline const GeometryImplementation* Geometry::implementation() const {
+        assert(_implementation);
+        return _implementation.get();
+    }
 
     template <class ArgumentType>
-    inline FunctionResult<ArgumentType> Geometry::operator()(const ArgumentType& argument) const {
-        return function()(argument);
+    inline Evaluation<Geometry, ArgumentType> Geometry::operator()(const ArgumentType& argument) const {
+        return Evaluation<Geometry, ArgumentType>(*this, argument);
     }
 }
 

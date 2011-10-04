@@ -21,6 +21,7 @@
 #include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GenericGeometry.hpp>
 
 namespace OpenSolid
 {
@@ -28,122 +29,40 @@ namespace OpenSolid
         return argument.bounds();
     }
     
-    Geometry::Geometry() : _function(), _domain() {}
+    Geometry::Geometry() : _implementation() {}
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
-        _function(function), _domain(domain) {
-        assert(function.isA<ConstantFunction>() || domain.dimensions() == function.parameters());
+        _implementation(new GenericGeometry(function, domain) {
+        assert(function.isConstant() || domain.dimensions() == function.parameters());
     }
     
-    Geometry::Geometry(double value) : _function(value), _domain() {}
+    Geometry::Geometry(double value) :
+        _implementation(new GenericGeometry(value, Domain()) {}
     
-    const Function& Geometry::function() const {return _function;}
+    Geometry::Geometry(const VectorXd& vector) :
+        _implementation(new GenericGeometry(vector, Domain()) {}
+
+    const GeometryImplementation* Geometry::implementation() const {return _implementation;}
     
-    const Domain& Geometry::domain() const {return _domain;}
+    Function Geometry::function() const {return implementation()->function();}
     
-    int Geometry::parameters() const {return function().parameters();}
+    Domain Geometry::domain() const {return implementation()->domain();}
     
-    int Geometry::dimensions() const {return function().dimensions();}
+    int Geometry::parameters() const {return implementation()->parameters();}
     
-    bool Geometry::isConstant() const {return function().isConstant();}
+    int Geometry::dimensions() const {return implementation()->dimensions();}
     
-    VectorXI Geometry::bounds() const {
-        if (function().isA<ConstantFunction>()) {
-            return function().to<VectorXd>().cast<Interval>();
-        } else {
-            return function()(domain().bounds());
-        }
-    }
+    bool Geometry::isConstant() const {return implementation()->isConstant();}
     
-    Set<Geometry> Geometry::boundaries() const {
-        Set<Geometry> results;
-        domain().boundaries().transform(
-            [this] (const Geometry& domain_boundary) {
-                return Geometry(
-                    this->function()(domain_boundary.function()),
-                    domain_boundary.domain()
-                );
-            },
-            results.inserter()
-        );
-        return results;
-    }
+    VectorXI Geometry::bounds() const {return implementation()->bounds();}
+    
+    Set<Geometry> Geometry::boundaries() const {return implementation->boundaries();}
 
     Geometry Geometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
-        return Geometry(function().transformed(matrix, vector), domain());
+        return implementation()->transformed(matrix, vector);
     }
 
-    Geometry Geometry::reversed() const {
-        assert(parameters() == 1);
-        Interval interval = domain().to<Interval>();
-        Function reversed_parameter = interval.lower() + interval.upper() - Parameter();
-        return Geometry(function()(reversed_parameter), domain());
-    }
-
-    Geometry Geometry::Line(const VectorXd& start, const VectorXd& end) {
-        return Geometry(start + Parameter() * (end - start), Interval(0, 1));
-    }
-    
-    Geometry Geometry::Arc(double radius, const Interval& angle) {
-        Vector2d x_vector = radius * Vector2d::UnitX();
-        Vector2d y_vector = radius * Vector2d::UnitY();
-        return Geometry(cos(Parameter()) * x_vector + sin(Parameter()) * y_vector, angle);
-    }
-    
-    Geometry Geometry::Arc(
-        const Vector2d& center,
-        const Vector2d& start,
-        const Vector2d& end,
-        bool counterclockwise
-    ) {
-        Vector2d start_radial = start - center;
-        double radius = start_radial.norm();
-        Vector2d end_radial = end - center;
-        assert(end_radial.norm() == Approx(radius));
-        Vector2d perpendicular = start_radial.unitOrthogonal() * radius;
-        if (!counterclockwise) {perpendicular = -perpendicular;}
-        double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
-        if (angle <= Zero()) {angle += 2 * M_PI;}
-        return Geometry(
-            center + cos(Parameter()) * start_radial + sin(Parameter()) * perpendicular,
-            Interval(0, angle)
-        );
-    }
-    
-    Geometry Geometry::Arc(
-        const Axis3d& axis,
-        const Vector3d& start,
-        const Vector3d& end
-    ) {
-        Vector3d center = (start / axis) * axis;
-        Vector3d start_radial = start - center;
-        Vector3d end_radial = end - center;
-        assert(end_radial.isOrthogonal(axis.direction()));
-        double radius = start_radial.norm();
-        assert(end_radial.norm() == Approx(radius));
-        Vector3d perpendicular = axis.direction().cross(start_radial).normalized() * radius;
-        double angle = atan2(end_radial.dot(perpendicular), end_radial.dot(start_radial));
-        if (angle <= Zero()) {angle += 2 * M_PI;}
-        return Geometry(
-            center + cos(Parameter()) * start_radial + sin(Parameter()) * perpendicular,
-            Interval(0, angle)
-        );
-    }
-    
-    Geometry Geometry::Circle(double radius) {
-        Interval angle(0, 2 * M_PI);
-        Parameter theta;
-        return Geometry(Function(radius * cos(theta), radius * sin(theta)), angle);
-    }
-    
-    Geometry Geometry::Helix(double radius, double pitch, const Interval& angle) {
-        Parameter theta;
-        return Geometry(
-            Function(radius * cos(theta), radius * sin(theta), theta * (pitch / (2 * M_PI))),
-            angle
-        );
-    }
+    Geometry Geometry::reversed() const {return implementation()->reversed();}
     
     double Conversion<Geometry, double>::operator()(const Geometry& argument) const {
         assert(argument.isConstant());

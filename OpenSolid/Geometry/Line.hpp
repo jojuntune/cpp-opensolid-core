@@ -18,49 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__ELLIPTICALFUNCTION_HPP
-#define OPENSOLID__ELLIPTICALFUNCTION_HPP
+#ifndef OPENSOLID__LINE_HPP
+#define OPENSOLID__LINE_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
-
-namespace OpenSolid
-{
-    class EllipticalFunction : public FunctionImplementation
-    {
-    private:
-        DatumXd _datum;
-        VectorXb _convention;
-    public:
-        OPENSOLID_CORE_EXPORT EllipticalFunction(const DatumXd& datum, const VectorXb& convention);
-        
-        const DatumXd& datum() const;
-        const VectorXb& convention() const;
-        
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
-
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
-    };
-}
-
-////////// Implementation //////////
+#include <OpenSolid/config.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {
-    inline const DatumXd& EllipticalFunction::datum() const {return _datum;}
-    
-    inline const VectorXb& EllipticalFunction::convention() const {return _convention;}
+    OPENSOLID_CORE_EXPORT Geometry Line2d(const Vector2d& start, const Vector2d& end);
+    OPENSOLID_CORE_EXPORT Geometry Line3d(const Vector3d& start, const Vector3d& end);
+    OPENSOLID_CORE_EXPORT Geometry Line(const VectorXd& start, const VectorXd& end);
 }
 
 #endif
