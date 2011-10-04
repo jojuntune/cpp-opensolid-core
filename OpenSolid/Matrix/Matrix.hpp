@@ -22,6 +22,7 @@
 #define OPENSOLID__MATRIX_HPP
 
 #include <OpenSolid/declarations.hpp>
+#include <OpenSolid/Common/Conversion.hpp>
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
@@ -70,6 +71,13 @@ namespace Eigen
         static OpenSolid::Interval dummy_precision();
         static OpenSolid::Interval lowest();
         static OpenSolid::Interval highest();  
+    };
+
+    struct EmptyOperation
+    {
+        typedef bool result_type;
+
+        bool operator()(const OpenSolid::Interval& argument) const;
     };
     
     struct LowerOperation
@@ -262,6 +270,13 @@ namespace OpenSolid
         ) const;
     };
 
+    template<>
+    class Conversion<Interval, VectorXI>
+    {
+    public:
+        VectorXI operator()(const Interval& interval) const;
+    };
+
     template <int destination_size_, int source_size_>
     void assertCompatible();
 
@@ -300,6 +315,10 @@ namespace Eigen
     
     inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::highest() {
         return NumTraits<double>::highest();
+    }
+
+    inline bool EmptyOperation::operator()(const OpenSolid::Interval& argument) const {
+        return argument.isEmpty();
     }
         
     inline double LowerOperation::operator()(const OpenSolid::Interval& argument) const {
@@ -410,6 +429,11 @@ namespace Eigen
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::mirrored(
         const OpenSolid::Datum<dimensions_, axes_>& datum
     ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
+
+    template <class DerivedType>
+    inline bool DenseBase<DerivedType>::isEmpty() const {
+        return derived().unaryExpr(EmptyOperation()).any();
+    }
     
     template <class DerivedType>
     inline CwiseUnaryOp<LowerOperation, const DerivedType>
@@ -525,6 +549,11 @@ namespace OpenSolid
     Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::operator()(
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return argument.template cast<Interval>();}
+
+    template <>
+    inline VectorXI Conversion<Interval, VectorXI>::operator()(const Interval& interval) const {
+        return VectorXI::Constant(1, interval);
+    }
 
     template <int destination_size_, int source_size_>
     inline void assertCompatible() {

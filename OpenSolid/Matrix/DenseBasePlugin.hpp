@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+bool isEmpty() const;
+
 inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const;
 inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const;
 inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
