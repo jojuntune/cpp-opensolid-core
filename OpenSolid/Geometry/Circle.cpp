@@ -20,14 +20,14 @@
 
 #include <OpenSolid/Datum/Frame.hpp>
 #include <OpenSolid/Geometry/Circle.hpp>
+#include <OpenSolid/Geometry/Arc.hpp>
 
 namespace OpenSolid
 {
     Geometry Circle2d(const Vector2d& center, double radius) {
-        return Geometry(
-            Function::Elliptical(Frame2d(center).scaled(radius, center)),
-            Interval(0, 2 * M_PI)
-        );
+        Set<Geometry> boundary;
+        boundary.insert(Arc2d(center, radius, 2 * M_PI, 0));
+        return Geometry(Function::Identity(2), Domain(boundary));
     }
 
     Geometry Circle3d(const Axis3d& axis, double radius) {

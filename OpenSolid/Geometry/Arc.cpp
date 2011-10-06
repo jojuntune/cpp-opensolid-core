@@ -24,7 +24,12 @@
 namespace OpenSolid
 {
     Geometry Arc2d(const Vector2d& center, double radius, double start_angle, double end_angle) {
-        if (end_angle - start_angle >= Zero()) {
+        if (end_angle - start_angle == Zero()) {
+            return Geometry(
+                Function::Elliptical(Frame2d(center).scaled(radius, center)),
+                Interval(0, 2 * M_PI)
+            );
+        } else if (end_angle > start_angle) {
             return Geometry(
                 Function::Elliptical(Frame2d(center).scaled(radius, center)),
                 Interval(start_angle, end_angle)
@@ -49,7 +54,7 @@ namespace OpenSolid
         if (!counterclockwise) {datum = datum.yReversed();}
         Vector2d local_end = end / datum;
         double angle = atan2(local_end.y(), local_end.x());
-        if (angle < Zero()) {angle += 2 * M_PI;}
+        if (angle <= Zero()) {angle += 2 * M_PI;}
         return Geometry(Function::Elliptical(datum), Interval(0, angle));
     }
     
