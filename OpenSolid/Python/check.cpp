@@ -112,7 +112,7 @@ namespace OpenSolid
     void checkConstantFunction(
         const Function& function,
         const std::string& caller
-    ) {if (!function.isA<ConstantFunction>()) {throw Error("ConstantFunction", caller);}}
+    ) {if (!function.isConstant()) {throw Error("ConstantFunction", caller);}}
     
     void checkScalarFunction(
         const Function& function,
@@ -144,8 +144,8 @@ namespace OpenSolid
         const std::string& caller
     ) {
         if (
-            !first_function.isA<ConstantFunction>() &&
-            !second_function.isA<ConstantFunction>() &&
+            !first_function.isConstant() &&
+            !second_function.isConstant() &&
             first_function.parameters() != second_function.parameters()
         ) {
             Error error("ConsistentFunctionParameters", caller);

@@ -29,6 +29,14 @@
 namespace OpenSolid
 {
     FunctionImplementation::~FunctionImplementation() {}
+
+    void FunctionImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        getValues(parameter_values, results);
+    }
+    
+    void FunctionImplementation::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        getBounds(parameter_bounds, results);
+    }
     
     void FunctionImplementation::getComponents(int index, int num, Function& result) const {
         result = new ComponentsFunction(this, index, num);

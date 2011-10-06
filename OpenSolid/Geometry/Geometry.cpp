@@ -25,24 +25,19 @@
 
 namespace OpenSolid
 {
-    VectorXI Bounds<Geometry>::operator()(const Geometry& argument) const {
-        return argument.bounds();
-    }
-    
     Geometry::Geometry() : _implementation() {}
+
+    Geometry::Geometry(const GeometryImplementation* implementation)
+        : _implementation(implementation) {}
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
-        _implementation(new GenericGeometry(function, domain) {
+        _implementation(new GenericGeometry(function, domain)), _type(&typeid(GenericGeometry)) {
         assert(function.isConstant() || domain.dimensions() == function.parameters());
     }
     
     Geometry::Geometry(double value) :
-        _implementation(new GenericGeometry(value, Domain()) {}
-    
-    Geometry::Geometry(const VectorXd& vector) :
-        _implementation(new GenericGeometry(vector, Domain()) {}
-
-    const GeometryImplementation* Geometry::implementation() const {return _implementation;}
+        _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
+        _type(&typeid(ConstantGeometry)) {}
     
     Function Geometry::function() const {return implementation()->function();}
     
@@ -56,7 +51,7 @@ namespace OpenSolid
     
     VectorXI Geometry::bounds() const {return implementation()->bounds();}
     
-    Set<Geometry> Geometry::boundaries() const {return implementation->boundaries();}
+    Set<Geometry> Geometry::boundaries() const {return implementation()->boundaries();}
 
     Geometry Geometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return implementation()->transformed(matrix, vector);

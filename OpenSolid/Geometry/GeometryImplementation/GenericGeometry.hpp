@@ -34,10 +34,10 @@ namespace OpenSolid
         Function _function;
         Domain _domain;
     public:
-        OPENSOLID_KERNEL_EXPORT GenericGeometry(const Function& function, const Domain& domain);
+        GenericGeometry(const Function& function, const Domain& domain);
 
-        OPENSOLID_KERNEL_EXPORT Function function() const;
-        OPENSOLID_KERNEL_EXPORT Domain domain() const;
+        Function function() const;
+        Domain domain() const;
     };
 }
 

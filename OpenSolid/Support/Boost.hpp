@@ -40,9 +40,8 @@ namespace boost
     {
     };
 
-    template <class Type, class BoundsFunctionType>
-    struct hash<OpenSolid::Set<Type, BoundsFunctionType>> :
-        public std::hash<OpenSolid::Set<Type, BoundsFunctionType>>
+    template <class Type>
+    struct hash<OpenSolid::Set<Type>> : public std::hash<OpenSolid::Set<Type>>
     {
     };
 

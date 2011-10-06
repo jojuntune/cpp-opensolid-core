@@ -22,6 +22,7 @@
 #define OPENSOLID__GENERICDOMAIN_HPP
 
 #include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {

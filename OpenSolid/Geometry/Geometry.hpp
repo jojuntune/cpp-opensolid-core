@@ -30,6 +30,7 @@
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Simplex/Simplex.hpp>
 
 namespace OpenSolid
 {
@@ -46,7 +47,8 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry(const GeometryImplementation* implementation);
         OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
         OPENSOLID_CORE_EXPORT Geometry(double value);
-        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
+        template <class DerivedType> Geometry(const EigenBase<DerivedType>& vector);
+        template <int dimensions_, int size_> Geometry(const Simplex<dimensions_, size_>& simplex);
 
         const GeometryImplementation* implementation() const;
         
@@ -54,7 +56,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Domain domain() const;
         
         template <class ArgumentType>
-        GeometryResult<ArgumentType> operator()(const ArgumentType& argument) const;
+        Evaluation<Geometry, ArgumentType> operator()(const ArgumentType& argument) const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
@@ -97,9 +99,19 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 #include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/ConstantGeometry.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/SimplexGeometry.hpp>
 
 namespace OpenSolid
 {
+    template <class DerivedType>
+    Geometry::Geometry(const EigenBase<DerivedType>& vector) :
+        _implementation(new ConstantGeometry(vector)), _type(&typeid(ConstantGeometry)) {}
+
+    template <int dimensions_, int size_>
+    Geometry::Geometry(const Simplex<dimensions_, size_>& simplex) :
+        _implementation(new SimplexGeometry(simplex)), _type(&typeid(SimplexGeometry)) {}
+
     inline const GeometryImplementation* Geometry::implementation() const {
         assert(_implementation);
         return _implementation.get();

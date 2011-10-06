@@ -18,16 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
-#include <OpenSolid/Geometry/Line.hpp>
+#ifndef OPENSOLID__CONSTANTGEOMETRY_HPP
+#define OPENSOLID__CONSTANTGEOMETRY_HPP
+
+#include <OpenSolid/config.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 
 namespace OpenSolid
 {
-    Geometry Line2d(const Vector2d& start, const Vector2d& end) {return Line(start, end);}
+    class ConstantGeometry : public GeometryImplementation
+    {
+    private:
+        VectorXd _vector;
+    public:
+        OPENSOLID_CORE_EXPORT ConstantGeometry(const VectorXd& vector);
 
-    Geometry Line3d(const Vector3d& start, const Vector3d& end) {return Line(start, end);}
-
-    Geometry Line(const VectorXd& start, const VectorXd& end) {
-        return Geometry(Function::Linear(CoordinateSystemXd(start, end - start)), Interval(0, 1));
-    }
+        Function function() const;
+        Domain domain() const;
+        
+        int parameters() const;
+        int dimensions() const;
+        bool isConstant() const;
+        VectorXI bounds() const;
+        Set<Geometry> boundaries() const;
+        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+        Geometry reversed() const;
+    };
 }
+
+#endif

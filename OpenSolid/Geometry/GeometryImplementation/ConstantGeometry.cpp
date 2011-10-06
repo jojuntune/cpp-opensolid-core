@@ -17,42 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-#ifndef OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
-#define OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Function/Function.hpp>
+ 
+#include <OpenSolid/Geometry/GeometryImplementation/ConstantGeometry.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class Geometry;
+    ConstantGeometry::ConstantGeometry(const VectorXd& vector) : _vector(vector) {}
 
-    class GeometryImplementation : public ReferenceCounted<GeometryImplementation>
-    {
-    public:
-        virtual ~GeometryImplementation();
-        
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
-        
-        virtual Function function() const = 0;
-        virtual Domain domain() const = 0;
-        
-        virtual int parameters() const;
-        virtual int dimensions() const;
+    Function ConstantGeometry::function() const {return _vector;}
 
-        virtual void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+    Domain ConstantGeometry::domain() const {return Domain();}
+        
+    int ConstantGeometry::parameters() const {return 0;}
 
-        virtual bool isConstant() const;
-        virtual VectorXI bounds() const;
-        virtual Set<Geometry> boundaries() const;
-        virtual Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
-        virtual Geometry reversed() const;
-    };
+    int ConstantGeometry::dimensions() const {return _vector.size();}
+
+    bool ConstantGeometry::isConstant() const {return true;}
+
+    VectorXI ConstantGeometry::bounds() const {return _vector.cast<Interval>();}
+
+    Set<Geometry> ConstantGeometry::boundaries() const {return Set<Geometry>();}
+
+    Geometry ConstantGeometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        return new ConstantGeometry(_vector.transformed(matrix, vector));
+    }
+
+    Geometry ConstantGeometry::reversed() const {return this;}
 }
-
-#endif

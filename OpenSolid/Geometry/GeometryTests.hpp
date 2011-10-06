@@ -22,8 +22,11 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Geometry/Arc.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
+#include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Support/STL.hpp>
 
 using namespace OpenSolid;
@@ -34,7 +37,7 @@ public:
     void testLine() {
         Vector3d start(1, 2, 3);
         Vector3d end(4, 5, 6);
-        Geometry line = Geometry::Line(start, end);
+        Geometry line = LineSegment3d(start, end);
         std::cout << line(0.5) << std::endl;
         TS_ASSERT(line(0.5).isApprox(Vector3d(2.5, 3.5, 4.5)));
     }
@@ -43,55 +46,37 @@ public:
         Vector3d center(1, 1, 1);
         Vector3d start(3, 1, 1);
         Vector3d end(1, -1, 1);
-        Geometry arc = Geometry::Arc(Axis3d(center, Vector3d::UnitZ()), start, end);
+        Geometry arc = Arc3d(Axis3d(center, Vector3d::UnitZ()), start, end);
+
         Interval domain = arc.domain().bounds().value();
-        std::cout << "Domain interval: " << domain << std::endl;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, domain);
-        std::cout << "Parameter values:" << std::endl;
-        std::cout << parameter_values << std::endl << std::endl;
-        std::cout << "Values:" << std::endl;
-        std::cout << arc(parameter_values) << std::endl;
-        TS_ASSERT(arc(M_PI / 2).isApprox(Vector3d(1, 3, 1)));
-        TS_ASSERT(arc(3 * M_PI / 2).isApprox(Vector3d(1, -1, 1)));
+        TS_ASSERT((arc(0.0) - Vector3d(3, 1, 1)).isZero());
+        TS_ASSERT((arc(M_PI / 2) - Vector3d(1, 3, 1)).isZero());
+        TS_ASSERT((arc(3 * M_PI / 2) - Vector3d(1, -1, 1)).isZero());
         
         Function derivative = arc.function().derivative();
-        std::cout << "Derivative function: " << std::endl << derivative << std::endl;
-        std::cout << "Derivative values:" << std::endl;
-        std::cout << derivative(parameter_values) << std::endl;
-        TS_ASSERT(derivative(0.0).isApprox(Vector3d(0, 2, 0)));
-        TS_ASSERT(derivative(M_PI / 2).isApprox(Vector3d(-2, 0, 0)));
-        TS_ASSERT(derivative(M_PI).isApprox(Vector3d(0, -2, 0)));
-        TS_ASSERT(derivative(3 * M_PI / 2).isApprox(Vector3d(2, 0, 0)));
+        TS_ASSERT((derivative(0.0) - Vector3d(0, 2, 0)).isZero());
+        TS_ASSERT((derivative(M_PI / 2) - Vector3d(-2, 0, 0)).isZero());
+        TS_ASSERT((derivative(M_PI) - Vector3d(0, -2, 0)).isZero());
+        TS_ASSERT((derivative(3 * M_PI / 2) - Vector3d(2, 0, 0)).isZero());
         
         Function tangent = arc.function().tangent();
-        std::cout << "Tangent function: " << std::endl << tangent << std::endl;
-        std::cout << "Tangent values:" << std::endl;
-        std::cout << tangent(parameter_values) << std::endl;
-        TS_ASSERT(tangent(0.0).isApprox(Vector3d(0, 1, 0)));
-        TS_ASSERT(tangent(M_PI / 2).isApprox(Vector3d(-1, 0, 0)));
-        TS_ASSERT(tangent(M_PI).isApprox(Vector3d(0, -1, 0)));
-        TS_ASSERT(tangent(3 * M_PI / 2).isApprox(Vector3d(1, 0, 0)));
+        TS_ASSERT((tangent(0.0) - Vector3d(0, 1, 0)).isZero());
+        TS_ASSERT((tangent(M_PI / 2) - Vector3d(-1, 0, 0)).isZero());
+        TS_ASSERT((tangent(M_PI) - Vector3d(0, -1, 0)).isZero());
+        TS_ASSERT((tangent(3 * M_PI / 2) - Vector3d(1, 0, 0)).isZero());
         
         Function second_derivative = arc.function().derivative().derivative();
-        std::cout << "Second derivative function: " << std::endl;
-        std::cout << second_derivative << std::endl;
-        std::cout << "Second derivative values:" << std::endl;
-        std::cout << second_derivative(parameter_values) << std::endl;
-        
-        TS_ASSERT(second_derivative(0.0).isApprox(Vector3d(-2, 0, 0)));
-        TS_ASSERT(second_derivative(M_PI / 2).isApprox(Vector3d(0, -2, 0)));
-        TS_ASSERT(second_derivative(M_PI).isApprox(Vector3d(2, 0, 0)));
-        TS_ASSERT(second_derivative(M_PI * 3 / 2).isApprox(Vector3d(0, 2, 0)));
+        TS_ASSERT((second_derivative(0.0) - Vector3d(-2, 0, 0)).isZero());
+        TS_ASSERT((second_derivative(M_PI / 2) - Vector3d(0, -2, 0)).isZero());
+        TS_ASSERT((second_derivative(M_PI) - Vector3d(2, 0, 0)).isZero());
+        TS_ASSERT((second_derivative(M_PI * 3 / 2) - Vector3d(0, 2, 0)).isZero());
         
         Function normal = arc.function().tangent().tangent();
-        std::cout << "Normal function: " << std::endl << normal << std::endl;
-        std::cout << "Normal values:" << std::endl;
-        std::cout << normal(parameter_values) << std::endl;
-        
-        TS_ASSERT(normal(0.0).isApprox(Vector3d(-1, 0, 0)));
-        TS_ASSERT(normal(M_PI / 2).isApprox(Vector3d(0, -1, 0)));
-        TS_ASSERT(normal(M_PI).isApprox(Vector3d(1, 0, 0)));
-        TS_ASSERT(normal(3 * M_PI / 2).isApprox(Vector3d(0, 1, 0)));
+        TS_ASSERT((normal(0.0) - Vector3d(-1, 0, 0)).isZero());
+        TS_ASSERT((normal(M_PI / 2) - Vector3d(0, -1, 0)).isZero());
+        TS_ASSERT((normal(M_PI) - Vector3d(1, 0, 0)).isZero());
+        TS_ASSERT((normal(3 * M_PI / 2) - Vector3d(0, 1, 0)).isZero());
     }
     
     void testCurveOperations() {
@@ -110,7 +95,7 @@ public:
     }
     
     void testHashing() {
-        Geometry line = Geometry::Line(Vector2d::Zero(), Vector2d::Ones());
+        Geometry line = LineSegment2d(Vector2d::Zero(), Vector2d::Ones());
         std::unordered_map<Geometry, std::string> colors;
         colors[line] = "red";
         Geometry line_copy = line;

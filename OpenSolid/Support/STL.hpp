@@ -109,24 +109,19 @@ namespace std
         ) const;
     };
 
-    template <class Type, class BoundsFunctionType>
-    struct hash<OpenSolid::Set<Type, BoundsFunctionType>> :
-        public unary_function<OpenSolid::Set<Type, BoundsFunctionType>, size_t>
+    template <class Type>
+    struct hash<OpenSolid::Set<Type>> : public unary_function<OpenSolid::Set<Type>, size_t>
     {
-        size_t operator()(const OpenSolid::Set<Type, BoundsFunctionType>& argument) const;
+        size_t operator()(const OpenSolid::Set<Type>& argument) const;
     };
 
-    template <class Type, class BoundsFunctionType>
-    struct equal_to<OpenSolid::Set<Type, BoundsFunctionType>> :
-        public binary_function<
-            OpenSolid::Set<Type, BoundsFunctionType>,
-            OpenSolid::Set<Type, BoundsFunctionType>,
-            bool
-        >
+    template <class Type>
+    struct equal_to<OpenSolid::Set<Type>> :
+        public binary_function<OpenSolid::Set<Type>, OpenSolid::Set<Type>, bool>
     {
         bool operator()(
-            const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
-            const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
+            const OpenSolid::Set<Type>& first_argument,
+            const OpenSolid::Set<Type>& second_argument
         ) const;
     };
 
@@ -407,15 +402,15 @@ namespace std
             first_argument.upper() == second_argument.upper();
     }
 
-    template <class Type, class BoundsFunctionType>
-    inline size_t hash<OpenSolid::Set<Type, BoundsFunctionType>>::operator()(
-        const OpenSolid::Set<Type, BoundsFunctionType>& argument
+    template <class Type>
+    inline size_t hash<OpenSolid::Set<Type>>::operator()(
+        const OpenSolid::Set<Type>& argument
     ) const {return boost::hash_value(argument.root());}
 
-    template <class Type, class BoundsFunctionType>
-    inline bool equal_to<OpenSolid::Set<Type, BoundsFunctionType>>::operator()(
-        const OpenSolid::Set<Type, BoundsFunctionType>& first_argument,
-        const OpenSolid::Set<Type, BoundsFunctionType>& second_argument
+    template <class Type>
+    inline bool equal_to<OpenSolid::Set<Type>>::operator()(
+        const OpenSolid::Set<Type>& first_argument,
+        const OpenSolid::Set<Type>& second_argument
     ) const {return first_argument.root() == second_argument.root();}
 
     template <int dimensions_>
@@ -527,38 +522,22 @@ namespace std
     ) const {return first_argument.implementation() == second_argument.implementation();}
     
     inline size_t hash<OpenSolid::Domain>::operator()(const OpenSolid::Domain& argument) const {
-        return hash<OpenSolid::Set<OpenSolid::Geometry>>()(argument.boundaries());
+        return boost::hash_value(argument.implementation());
     }
 
     inline bool equal_to<OpenSolid::Domain>::operator()(
         const OpenSolid::Domain& first_argument,
         const OpenSolid::Domain& second_argument
-    ) const {
-        return equal_to<OpenSolid::Set<OpenSolid::Geometry>>()(
-            first_argument.boundaries(),
-            second_argument.boundaries()
-        );
-    }
+    ) const {return first_argument.implementation() == second_argument.implementation();}
     
     inline size_t hash<OpenSolid::Geometry>::operator()(const OpenSolid::Geometry& argument) const {
-        size_t result = 0;
-        boost::hash_combine(result, hash<OpenSolid::Function>()(argument.function()));
-        boost::hash_combine(result, hash<OpenSolid::Domain>()(argument.domain()));
-        return result;
+        return boost::hash_value(argument.implementation());
     }
 
     inline bool equal_to<OpenSolid::Geometry>::operator()(
         const OpenSolid::Geometry& first_argument,
         const OpenSolid::Geometry& second_argument
-    ) const {
-        return equal_to<OpenSolid::Function>()(
-            first_argument.function(),
-            second_argument.function()
-        ) && equal_to<OpenSolid::Domain>()(
-            first_argument.domain(),
-            second_argument.domain()
-        );
-    }
+    ) const {return first_argument.implementation() == second_argument.implementation();}
 }
 
 #endif

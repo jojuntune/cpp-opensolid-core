@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <OpenSolid/Domain/DomainImplementation/Vector2IDomain.hpp>
-#include <OpenSolid/Geometry/Line.hpp>
 
 namespace OpenSolid
 {
@@ -35,10 +34,10 @@ namespace OpenSolid
         Vector2d p2(x_upper, y_upper);
         Vector2d p3(x_upper, y_lower);
         Set<Geometry> results;
-        results.insert(Line2d(p0, p1));
-        results.insert(Line2d(p1, p2));
-        results.insert(Line2d(p2, p3));
-        results.insert(Line2d(p3, p0));
+        results.insert(LineSegment2d(p0, p1));
+        results.insert(LineSegment2d(p1, p2));
+        results.insert(LineSegment2d(p2, p3));
+        results.insert(LineSegment2d(p3, p0));
         return results;
     }
 

@@ -44,12 +44,12 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Domain();
         OPENSOLID_CORE_EXPORT Domain(const DomainImplementation* implementation);
         OPENSOLID_CORE_EXPORT Domain(const Set<Geometry>& boundaries);
-        OPENSOLID_CORE_EXPORT Domain(const Interval& bounds);
-        OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
+        OPENSOLID_CORE_EXPORT Domain(const Interval& interval);
+        template <class DerivedType> Domain(const EigenBase<DerivedType>& bounds);
 
         const DomainImplementation* implementation() const;
         
-        OPENSOLID_CORE_EXPORT const Set<Geometry>& boundaries() const;
+        OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
         OPENSOLID_CORE_EXPORT bool isEmpty() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         OPENSOLID_CORE_EXPORT VectorXI bounds() const;
@@ -70,8 +70,30 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
+#include <OpenSolid/Domain/DomainImplementation/IntervalDomain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/Vector2IDomain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/Vector3IDomain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/VectorXIDomain.hpp>
+
 namespace OpenSolid
 {
+    template <class DerivedType>
+    Domain::Domain(const EigenBase<DerivedType>& bounds) {
+        if (bounds.size() == 1) {
+            _implementation = new IntervalDomain(bounds.value());
+            _type = &typeid(IntervalDomain);
+        } else if (bounds.size() == 2) {
+            _implementataion = new Vector2IDomain(bounds);
+            _type = &typeid(Vector2IDomain);
+        } else if (bounds.size() == 3) {
+            _implementataion = new Vector3IDomain(bounds);
+            _type = &typeid(Vector3IDomain);
+        } else {
+            _implementataion = new VectorXIDomain(bounds);
+            _type = &typeid(VectorXIDomain);
+        }
+    }
+
     inline const DomainImplementation* Domain::implementation() const {
         assert(_implementation);
         return _implementation.get();

@@ -18,17 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINE_HPP
-#define OPENSOLID__LINE_HPP
+#ifndef OPENSOLID__SIMPLEXGEOMETRY_HPP
+#define OPENSOLID__SIMPLEXGEOMETRY_HPP
 
 #include <OpenSolid/config.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
+#include <OpenSolid/Simplex/Simplex.hpp>
 
 namespace OpenSolid
 {
-    OPENSOLID_CORE_EXPORT Geometry Line2d(const Vector2d& start, const Vector2d& end);
-    OPENSOLID_CORE_EXPORT Geometry Line3d(const Vector3d& start, const Vector3d& end);
-    OPENSOLID_CORE_EXPORT Geometry Line(const VectorXd& start, const VectorXd& end);
+    class SimplexGeometry : public GeometryImplementation
+    {
+    private:
+        SimplexXd _simplex;
+    public:
+        OPENSOLID_CORE_EXPORT SimplexGeometry(const SimplexXd& simplex);
+
+        Function function() const;
+        Domain domain() const;
+        
+        int parameters() const;
+        int dimensions() const;
+        bool isConstant() const;
+        VectorXI bounds() const;
+        Set<Geometry> boundaries() const;
+        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+        Geometry reversed() const;
+    };
 }
 
 #endif

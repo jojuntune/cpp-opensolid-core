@@ -22,5 +22,7 @@
 
 namespace OpenSolid
 {
-    
+    GenericDomain::GenericDomain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
+
+    Set<Geometry> GenericDomain::boundaries() const {return _boundaries;}
 }

@@ -23,6 +23,7 @@
 
 #include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/ReferenceCounted.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Set/Set.hpp>
 
 namespace OpenSolid
@@ -33,17 +34,13 @@ namespace OpenSolid
     class DomainImplementation : public ReferenceCounted<DomainImplementation>
     {
     public:
-        OPENSOLID_CORE_EXPORT virtual ~DomainImplementation();
+        virtual ~DomainImplementation();
 
-        OPENSOLID_CORE_EXPORT virtual Set<Geometry> boundaries() const = 0;
-        OPENSOLID_CORE_EXPORT virtual bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT virtual int dimensions() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXI bounds() const;
-
-        OPENSOLID_CORE_EXPORT virtual Domain transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
+        virtual Set<Geometry> boundaries() const = 0;
+        virtual bool isEmpty() const;
+        virtual int dimensions() const;
+        virtual VectorXI bounds() const;
+        virtual Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };
 }
 

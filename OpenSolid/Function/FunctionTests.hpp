@@ -33,7 +33,7 @@ class FunctionTests : public CxxTest::TestSuite
 public:
     void testConstant() {
         Function f = 3.0;
-        TS_ASSERT(f.isA<ConstantFunction>());
+        TS_ASSERT(f.isConstant());
         TS_ASSERT(f(0.0).value() == Approx(3.0));
         TS_ASSERT(f.to<double>() == Approx(3.0));
     }
@@ -100,7 +100,7 @@ public:
     
     void testVector() {
         Function f = Vector3d(1, 2, 3);
-        TS_ASSERT(f.isA<ConstantFunction>());
+        TS_ASSERT(f.isConstant());
         TS_ASSERT(f.to<Vector3d>() == Vector3d(1, 2, 3));
         TS_ASSERT(f.to<Vector3d>().transpose() == RowVector3d(1, 2, 3));
     }
@@ -226,7 +226,7 @@ public:
         Function mirrored = f.mirrored(plane);
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
-        TS_ASSERT(derivative.isA<ConstantFunction>());
+        TS_ASSERT(derivative.isConstant());
         TS_ASSERT((derivative.to<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 

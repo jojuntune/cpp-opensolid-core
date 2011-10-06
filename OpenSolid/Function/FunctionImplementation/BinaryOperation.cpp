@@ -25,9 +25,7 @@ namespace OpenSolid
     BinaryOperation::BinaryOperation(const Function& first_operand, const Function& second_operand) :
         _first_operand(first_operand), _second_operand(second_operand) {
         bool equal_parameters = first_operand.parameters() == second_operand.parameters();
-        bool first_is_constant = first_operand.isA<ConstantFunction>();
-        bool second_is_constant = second_operand.isA<ConstantFunction>();
-        assert(equal_parameters || first_is_constant || second_is_constant);
+        assert(equal_parameters || first_operand.isConstant() || second_operand.isConstant());
     }
     
     int BinaryOperation::parameters() const {

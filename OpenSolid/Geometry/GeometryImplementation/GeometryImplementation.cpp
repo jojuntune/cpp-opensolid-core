@@ -27,9 +27,25 @@ namespace OpenSolid
 {
     GeometryImplementation::~GeometryImplementation() {}
         
+    void GeometryImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        getValues(parameter_values, results);
+    }
+        
+    void GeometryImplementation::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        getBounds(parameter_bounds, results);
+    }
+        
     int GeometryImplementation::parameters() const {return function().parameters();}
 
     int GeometryImplementation::dimensions() const {return function().dimensions();}
+        
+    void GeometryImplementation::getValues(const MapXcd& parameter_values, MapXd& results) const {
+        results = function()(parameter_values);
+    }
+        
+    void GeometryImplementation::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
+        results = function()(parameter_bounds);
+    }
 
     bool GeometryImplementation::isConstant() const {return function().isConstant();}
 

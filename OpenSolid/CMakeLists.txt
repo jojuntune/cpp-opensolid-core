@@ -142,7 +142,6 @@
         Domain/DomainImplementation/IntervalDomain.hpp
         Domain/DomainImplementation/Vector2IDomain.hpp
         Domain/DomainImplementation/Vector3IDomain.hpp
-        Domain/DomainImplementation/VectorXIDomain.hpp
     )
     SET(DI_SOURCES
         Domain/DomainImplementation/DomainImplementation.cpp
@@ -150,7 +149,6 @@
         Domain/DomainImplementation/IntervalDomain.cpp
         Domain/DomainImplementation/Vector2IDomain.cpp
         Domain/DomainImplementation/Vector3IDomain.cpp
-        Domain/DomainImplementation/VectorXIDomain.cpp
     )
     
     # Evaluation directory files
@@ -241,24 +239,26 @@
         Geometry/GeometryResult.hpp
         Geometry/GeometryTests.hpp
         Geometry/Helix.hpp
-        Geometry/Line.hpp
     )
     SET(GEOMETRY_SOURCES
         Geometry/Arc.cpp
         Geometry/Circle.cpp
         Geometry/Geometry.cpp
         Geometry/Helix.cpp
-        Geometry/Line.cpp
     )
 
     # Geometry/GeometryImplementation directory files
     SET(GI_HEADERS
+        Geometry/GeometryImplementation/ConstantGeometry.hpp
         Geometry/GeometryImplementation/GenericGeometry.hpp
         Geometry/GeometryImplementation/GeometryImplementation.hpp
+        Geometry/GeometryImplementation/SimplexGeometry.hpp
     )
     SET(GI_SOURCES
+        Geometry/GeometryImplementation/ConstantGeometry.cpp
         Geometry/GeometryImplementation/GenericGeometry.cpp
         Geometry/GeometryImplementation/GeometryImplementation.cpp
+        Geometry/GeometryImplementation/SimplexGeometry.cpp
     )
     
     # Matrix directory files
