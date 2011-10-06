@@ -111,7 +111,7 @@ namespace OpenSolid
     };
     
     template<class EvaluatedType>
-    class Evaluation<double> : public ReturnByValue<Evaluation<EvaluatedType, double>>
+    class Evaluation<EvaluatedType, double> : public ReturnByValue<Evaluation<EvaluatedType, double>>
     {
     private:
         const EvaluatedType& _evaluated;
@@ -130,7 +130,7 @@ namespace OpenSolid
     };
     
     template<class EvaluatedType>
-    class Evaluation<Interval> : public ReturnByValue<Evaluation<EvaluatedType, Interval>>
+    class Evaluation<EvaluatedType, Interval> : public ReturnByValue<Evaluation<EvaluatedType, Interval>>
     {
     private:
         const EvaluatedType& _evaluated;
@@ -154,19 +154,19 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template<class EvaluatedType, class ArgumentType>
-    inline Evaluation<ArgumentType>::Evaluation(
+    inline Evaluation<EvaluatedType, ArgumentType>::Evaluation(
         const EvaluatedType& evaluated,
         const ArgumentType& argument
     ) : _evaluated(evaluated), _argument(argument) {}
     
     template<class EvaluatedType, class ArgumentType>
-    inline int Evaluation<ArgumentType>::rows() const {return _evaluated.dimensions();}
+    inline int Evaluation<EvaluatedType, ArgumentType>::rows() const {return _evaluated.dimensions();}
     
     template<class EvaluatedType, class ArgumentType>
-    inline int Evaluation<ArgumentType>::cols() const {return _argument.cols();}
+    inline int Evaluation<EvaluatedType, ArgumentType>::cols() const {return _argument.cols();}
     
     template<class EvaluatedType, class ArgumentType> template<class ResultType>
-    inline void Evaluation<ArgumentType>::evalTo(ResultType& result) const {
+    inline void Evaluation<EvaluatedType, ArgumentType>::evalTo(ResultType& result) const {
         MatrixArgument<ArgumentType> argument(_argument);
         
         // Common typedefs
@@ -198,14 +198,14 @@ namespace OpenSolid
     }
     
     template<class EvaluatedType, class ArgumentType>
-    inline typename ArgumentType::Scalar Evaluation<ArgumentType>::value() const {
+    inline typename ArgumentType::Scalar Evaluation<EvaluatedType, ArgumentType>::value() const {
         Matrix<typename ArgumentType::Scalar, 1, 1> result;
         evalTo(result);
         return result.value();
     }
     
     template <class EvaluatedType, class ArgumentType>
-    inline bool Evaluation<ArgumentType>::isZero(double precision) const {
+    inline bool Evaluation<EvaluatedType, ArgumentType>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
