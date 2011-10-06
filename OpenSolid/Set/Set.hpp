@@ -464,10 +464,7 @@ namespace OpenSolid
 
     template <class Type>
     template <class VisitorType, class PredicateType>
-    void Set<Type, BoundsFunctionType>::visitIf(
-        const VisitorType& visitor,
-        const PredicateType& predicate
-    ) const {
+    void Set<Type>::visitIf(const VisitorType& visitor, const PredicateType& predicate) const {
         if (root()) {
             visitNode(
                 root(),
@@ -480,7 +477,7 @@ namespace OpenSolid
     }
 
     template <class Type> template <class VisitorType, class PredicateType>
-    void Set<Type, BoundsFunctionType>::visitOverlappingIf(
+    void Set<Type>::visitOverlappingIf(
         const VisitorType& visitor,
         const typename Bounds<Type>::Type& overlapping_bounds,
         const PredicateType& predicate
