@@ -53,7 +53,7 @@
 
 namespace OpenSolid
 {
-    Function::Function() : _implementation(0), _type(0) {}
+    Function::Function() : _implementation(), _type(nullptr) {}
     
     Function::Function(const FunctionImplementation* implementation) :
         _implementation(implementation), _type(&typeid(implementation)) {}
@@ -75,6 +75,8 @@ namespace OpenSolid
         _implementation = x.concatenate(y).concatenate(z).implementation();
         _type = &typeid(implementation());
     }
+
+    Function::~Function() {}
     
     const FunctionImplementation* Function::implementation() const {
         return _implementation.get();
@@ -391,7 +393,7 @@ namespace OpenSolid
     Function Function::Linear(const DatumXd& datum) {return new LinearFunction(datum);}
     
     Function Function::Elliptical(const DatumXd& datum) {
-        return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, false));
+        return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, true));
     }
     
     Function Function::Elliptical(const DatumXd& datum, const VectorXb& convention) {
@@ -421,9 +423,9 @@ namespace OpenSolid
         return argument.to<VectorXd>();
     }
     
-    VectorXd Conversion<Function, VectorXd>::operator()(const Function& argument) const {
+    const VectorXd& Conversion<Function, VectorXd>::operator()(const Function& argument) const {
         assert(argument.isConstant());
-        return argument.to<VectorXd>();
+        return static_cast<const ConstantFunction*>(argument.implementation())->vector();
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {

@@ -50,9 +50,8 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Function(double value);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y, const Function& z);
-
-        template <class VectorType>
-        Function(const EigenBase<VectorType>& vector);
+        template <class DerivedType> Function(const EigenBase<DerivedType>& vector);
+        OPENSOLID_CORE_EXPORT ~Function();
         
         OPENSOLID_CORE_EXPORT const FunctionImplementation* implementation() const;
         
@@ -126,7 +125,7 @@ namespace OpenSolid
     class Conversion<Function, VectorXd>
     {
     public:
-        OPENSOLID_CORE_EXPORT VectorXd operator()(const Function& argument) const;
+        OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
     };
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
@@ -171,12 +170,11 @@ namespace OpenSolid
 
 #include <OpenSolid/Function/Parameter.hpp>
 #include <OpenSolid/Function/Parameters.hpp>
-#include <OpenSolid/Function/FunctionResult.hpp>
 
 namespace OpenSolid
 {
-    template <class VectorType>
-    Function::Function(const EigenBase<VectorType>& vector) :
+    template <class DerivedType>
+    Function::Function(const EigenBase<DerivedType>& vector) :
         _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
     
     template <class ArgumentType>
