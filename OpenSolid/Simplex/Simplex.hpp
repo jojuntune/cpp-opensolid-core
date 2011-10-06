@@ -24,6 +24,7 @@
 #include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
+#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
