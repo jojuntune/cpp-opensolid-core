@@ -29,6 +29,8 @@ namespace OpenSolid
     class CoordinateSystem : public Datum<dimensions_, axes_>
     {
     public:
+        OPENSOLID_CORE_EXPORT CoordinateSystem();
+
         OPENSOLID_CORE_EXPORT CoordinateSystem(
             const Matrix<double, dimensions_, 1>& origin,
             const Matrix<double, dimensions_, axes_>& basis

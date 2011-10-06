@@ -23,6 +23,9 @@
 namespace OpenSolid
 {
     template <int dimensions_, int axes_>
+    inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem() {}
+
+    template <int dimensions_, int axes_>
     inline CoordinateSystem<dimensions_, axes_>::CoordinateSystem(
         const Matrix<double, dimensions_, 1>& origin,
         const Matrix<double, dimensions_, axes_>& basis
