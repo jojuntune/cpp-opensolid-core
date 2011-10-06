@@ -28,7 +28,7 @@ namespace OpenSolid
     class LinearFunction : public FunctionImplementation
     {
     private:
-        DatumXd& _datum;
+        DatumXd _datum;
     public:
         OPENSOLID_CORE_EXPORT LinearFunction(const DatumXd& datum);
         
