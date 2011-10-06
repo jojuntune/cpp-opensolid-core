@@ -51,10 +51,16 @@ public:
             Vector3d(1, 2, 0),
             Vector3d(1, 1, 2)
         );
-        std::cout << "FACES" << std::endl;
         for (int i = 0; i < 4; ++i) {
-            std::cout << i << ":" << std::endl;
-            std::cout << tetrahedron.face(i).vertices() << std::endl;
+            Vector3d vertex = tetrahedron.vertex(i);
+            Triangle3d face = tetrahedron.face(i);
+            TS_ASSERT((vertex - face.centroid()).dot(face.normal()) < Zero());
+        }
+        Triangle2d triangle(Vector2d::Zero(), Vector2d(2, 1), Vector2d(1, 2));
+        for (int i = 0; i < 3; ++i) {
+            Vector2d vertex = triangle.vertex(i);
+            LineSegment2d edge = triangle.face(i);
+            TS_ASSERT((vertex - edge.centroid()).dot(edge.normal()) < Zero());
         }
     }
     

@@ -303,10 +303,8 @@ namespace OpenSolid
         typename Face::Vertices face_vertices;
         Matrix<int, 1, (size_ == Dynamic ? Dynamic : size_ - 1)> indices(size() - 1);
         for (int i = 0; i < indices.size(); ++i) {indices(i) = (index + 1 + i) % size();}
-        if (size() % 2 == 0 && index % 2 != 0) {indices.tail(2).reverseInPlace();}
-        for (int i = 0; i < indices.size(); ++i) {
-            face_vertices.col(i) = vertex(indices(i));
-        }
+        if (size() % 2 != 0 || index % 2 != 0) {indices.tail(2).reverseInPlace();}
+        for (int i = 0; i < indices.size(); ++i) {face_vertices.col(i) = vertex(indices(i));}
         return Face(face_vertices);
     }
     
