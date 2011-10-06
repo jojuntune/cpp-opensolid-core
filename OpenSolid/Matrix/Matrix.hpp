@@ -22,7 +22,7 @@
 #define OPENSOLID__MATRIX_HPP
 
 #include <OpenSolid/declarations.hpp>
-#include <OpenSolid/Common/Conversion.hpp>
+#include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
@@ -550,7 +550,6 @@ namespace OpenSolid
         const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
     ) const {return argument.template cast<Interval>();}
 
-    template <>
     inline VectorXI Conversion<Interval, VectorXI>::operator()(const Interval& interval) const {
         return VectorXI::Constant(1, interval);
     }
