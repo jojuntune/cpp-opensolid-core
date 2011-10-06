@@ -89,7 +89,7 @@ namespace OpenSolid
         static const int static_dimensions = PointType::SizeAtCompileTime;
         Matrix<double, static_dimensions, static_dimensions> identity(point.size(), point.size());
         identity.setIdentity();
-        return derived().transformed(scale * identity, point - scale * point);
+        return derived().transformed(scale * identity, point.derived() - scale * point.derived());
     }
 
     template <class DerivedType, class ResultType> template <class VectorType>
