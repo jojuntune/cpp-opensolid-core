@@ -62,9 +62,7 @@ namespace OpenSolid
         template <int other_dimensions_, int other_axes_>
         Datum(const Datum<other_dimensions_, other_axes_>& other);
         
-        Datum<dimensions_, axes_>& operator=(
-            const Datum<dimensions_, axes_>& other
-        );
+        Datum<dimensions_, axes_>& operator=(const Datum<dimensions_, axes_>& other);
         
         template <int other_dimensions_, int other_axes_>
         Datum<dimensions_, axes_>& operator=(const Datum<other_dimensions_, other_axes_>& other);
@@ -123,6 +121,9 @@ namespace OpenSolid
             const MatrixType& matrix,
             const VectorType& vector
         ) const;
+
+        using Transformable<Datum<dimensions_, axes_>>::scaled;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> scaled(double scale) const;
         
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> xReversed() const;
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> yReversed() const;

@@ -382,6 +382,22 @@ namespace OpenSolid
 
     template Datum<3, 1>::PlaneType Datum<3, 1>::normalPlane() const;
     template Datum<Dynamic, Dynamic>::PlaneType Datum<Dynamic, Dynamic>::normalPlane() const;
+
+    template <int dimensions_, int axes_>
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::scaled(double scale) const {
+        return this->scaled(scale, origin());
+    }
+    
+    template Datum<1, 1> Datum<1, 1>::scaled(double) const;
+    template Datum<1, 2> Datum<1, 2>::scaled(double) const;
+    template Datum<1, 3> Datum<1, 3>::scaled(double) const;
+    template Datum<2, 1> Datum<2, 1>::scaled(double) const;
+    template Datum<2, 2> Datum<2, 2>::scaled(double) const;
+    template Datum<2, 3> Datum<2, 3>::scaled(double) const;
+    template Datum<3, 1> Datum<3, 1>::scaled(double) const;
+    template Datum<3, 2> Datum<3, 2>::scaled(double) const;
+    template Datum<3, 3> Datum<3, 3>::scaled(double) const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::scaled(double) const;
         
     template <int dimensions_, int axes_>
     Datum<dimensions_, axes_> Datum<dimensions_, axes_>::xReversed() const {
