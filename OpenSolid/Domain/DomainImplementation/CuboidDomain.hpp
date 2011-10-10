@@ -18,31 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Domain/DomainImplementation/Vector3IDomain.hpp>
+#ifndef OPENSOLID__CUBOIDDOMAIN_HPP
+#define OPENSOLID__CUBOIDDOMAIN_HPP
+
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
 
 namespace OpenSolid
 {
-    Vector3IDomain::Vector3IDomain(const Vector3I& bounds) : _bounds(bounds) {}
+    class CuboidDomain : public DomainImplementation
+    {
+    private:
+        Vector3I _bounds;
+    public:
+        CuboidDomain(const Vector3I& bounds);
 
-    Set<Geometry> Vector3IDomain::boundaries() const {
-        Set<Geometry> results;
-        return results;
-    }
+        Set<Geometry> boundaries() const override;
 
-    bool Vector3IDomain::isEmpty() const {return _bounds.isEmpty();}
-
-    int Vector3IDomain::dimensions() const {return 3;}
-
-    VectorXI Vector3IDomain::bounds() const {return _bounds;}
-
-    Domain Vector3IDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        if (matrix.isDiagonal()) {
-            Interval x_interval = matrix(0, 0) * _bounds.x() + vector.x();
-            Interval y_interval = matrix(1, 1) * _bounds.y() + vector.y();
-            Interval z_interval = matrix(2, 2) * _bounds.z() + vector.z();
-            return new Vector3IDomain(Vector3I(x_interval, y_interval, z_interval));
-        } else {
-            return DomainImplementation::transformed(matrix, vector);
-        }
-    }
+        bool isEmpty() const override;
+        int dimensions() const override;
+        VectorXI bounds() const override;
+        Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
+    };
 }
+
+#endif

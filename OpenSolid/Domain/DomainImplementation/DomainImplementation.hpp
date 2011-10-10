@@ -37,6 +37,7 @@ namespace OpenSolid
         virtual ~DomainImplementation();
 
         virtual Set<Geometry> boundaries() const = 0;
+
         virtual bool isEmpty() const;
         virtual int dimensions() const;
         virtual VectorXI bounds() const;

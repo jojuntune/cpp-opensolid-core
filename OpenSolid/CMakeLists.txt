@@ -132,23 +132,25 @@
     )
     
     # Domain directory files
-    SET(DOMAIN_HEADERS Domain/Domain.hpp)
-    SET(DOMAIN_SOURCES Domain/Domain.cpp)
+    SET(DOMAIN_HEADERS Domain/Domain.hpp Domain/DomainConstructors.hpp)
+    SET(DOMAIN_SOURCES Domain/Domain.cpp Domain/DomainConstructors.cpp)
 
     # Domain/DomainImplementation directory files
     SET(DI_HEADERS
         Domain/DomainImplementation/DomainImplementation.hpp
         Domain/DomainImplementation/GenericDomain.hpp
         Domain/DomainImplementation/IntervalDomain.hpp
-        Domain/DomainImplementation/Vector2IDomain.hpp
-        Domain/DomainImplementation/Vector3IDomain.hpp
+        Domain/DomainImplementation/RectangleDomain.hpp
+        Domain/DomainImplementation/CuboidDomain.hpp
+        Domain/DomainImplementation/SimplexDomain.hpp
     )
     SET(DI_SOURCES
         Domain/DomainImplementation/DomainImplementation.cpp
         Domain/DomainImplementation/GenericDomain.cpp
         Domain/DomainImplementation/IntervalDomain.cpp
-        Domain/DomainImplementation/Vector2IDomain.cpp
-        Domain/DomainImplementation/Vector3IDomain.cpp
+        Domain/DomainImplementation/RectangleDomain.cpp
+        Domain/DomainImplementation/CuboidDomain.cpp
+        Domain/DomainImplementation/SimplexDomain.cpp
     )
     
     # Evaluation directory files
@@ -158,12 +160,11 @@
     # Function directory files
     SET(FUNCTION_HEADERS
         Function/Function.hpp
+        Function/FunctionConstructors.hpp
         Function/FunctionTests.hpp
         Function/FunctionResult.hpp
-        Function/Parameter.hpp
-        Function/Parameters.hpp
     )
-    SET(FUNCTION_SOURCES Function/Function.cpp)
+    SET(FUNCTION_SOURCES Function/Function.cpp Function/FunctionConstructors.cpp)
     
     # Function/FunctionImplementation directory files
     SET(FI_HEADERS
@@ -233,18 +234,14 @@
     
     # Geometry directory files
     SET(GEOMETRY_HEADERS
-        Geometry/Arc.hpp
-        Geometry/Circle.hpp
         Geometry/Geometry.hpp
+        Geometry/GeometryConstructors.hpp
         Geometry/GeometryResult.hpp
         Geometry/GeometryTests.hpp
-        Geometry/Helix.hpp
     )
     SET(GEOMETRY_SOURCES
-        Geometry/Arc.cpp
-        Geometry/Circle.cpp
         Geometry/Geometry.cpp
-        Geometry/Helix.cpp
+        Geometry/GeometryConstructors.cpp
     )
 
     # Geometry/GeometryImplementation directory files
@@ -393,6 +390,7 @@
         ${GI_SOURCES}
         ${MATRIX_SOURCES}
         ${MODEL_SOURCES}
+        ${PRIMITIVE_SOURCES}
         ${SCALAR_SOURCES}
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}

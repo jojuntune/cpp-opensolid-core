@@ -19,11 +19,12 @@
  ***************************************************************************/
 
 #include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
 #include <OpenSolid/Domain/DomainImplementation/GenericDomain.hpp>
 #include <OpenSolid/Domain/DomainImplementation/IntervalDomain.hpp>
-#include <OpenSolid/Domain/DomainImplementation/Vector2IDomain.hpp>
-#include <OpenSolid/Domain/DomainImplementation/Vector3IDomain.hpp>
-#include <OpenSolid/Domain/DomainImplementation/VectorXIDomain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/RectangleDomain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/CuboidDomain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/SimplexDomain.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 
@@ -39,6 +40,31 @@ namespace OpenSolid
     
     Domain::Domain(const Interval& interval) :
         _implementation(new IntervalDomain(interval)), _type(&typeid(IntervalDomain)) {}
+    
+    Domain::Domain(const Interval& u, const Interval& v) :
+        _implementation(new RectangleDomain(Vector2I(u, v))), _type(&typeid(RectangleDomain)) {}
+    
+    Domain::Domain(const Interval& u, const Interval& v, const Interval& w) :
+        _implementation(new CuboidDomain(Vector3I(u, v, w))), _type(&typeid(CuboidDomain)) {}
+    
+    Domain::Domain(const VectorXI& bounds) {
+        assert(bounds.size() == 1 || bounds.size() == 2 || bounds.size() == 3);
+        if (bounds.size() == 1) {
+            _implementation = new IntervalDomain(bounds.value());
+            _type = &typeid(IntervalDomain);
+        } else if (bounds.size() == 2) {
+            _implementation = new RectangleDomain(bounds);
+            _type = &typeid(RectangleDomain);
+        } else {
+            _implementation = new CuboidDomain(bounds);
+            _type = &typeid(CuboidDomain);
+        }
+    }
+
+    Domain::Domain(const SimplexXd& simplex) :
+        _implementation(new SimplexDomain(simplex)), _type(&typeid(SimplexDomain)) {}
+
+    const DomainImplementation* Domain::implementation() const {return _implementation.get();}
     
     Set<Geometry> Domain::boundaries() const {return implementation()->boundaries();}
     

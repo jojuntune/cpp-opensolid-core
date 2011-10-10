@@ -27,24 +27,16 @@ namespace OpenSolid
 {
     GeometryImplementation::~GeometryImplementation() {}
         
-    void GeometryImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        getValues(parameter_values, results);
-    }
-        
-    void GeometryImplementation::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        getBounds(parameter_bounds, results);
-    }
-        
     int GeometryImplementation::parameters() const {return function().parameters();}
 
     int GeometryImplementation::dimensions() const {return function().dimensions();}
         
-    void GeometryImplementation::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = function()(parameter_values);
+    void GeometryImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        function().evaluate(parameter_values, results);
     }
         
-    void GeometryImplementation::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = function()(parameter_bounds);
+    void GeometryImplementation::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        function().evaluate(parameter_bounds, results);
     }
 
     bool GeometryImplementation::isConstant() const {return function().isConstant();}
@@ -84,7 +76,7 @@ namespace OpenSolid
     Geometry GeometryImplementation::reversed() const {
         assert(parameters() == 1);
         Interval interval = domain().to<Interval>();
-        Function reversed_parameter = interval.lower() + interval.upper() - Parameter();
+        Function reversed_parameter = interval.lower() + interval.upper() - Function::Parameter();
         return new GenericGeometry(function()(reversed_parameter), domain());
     }
 }

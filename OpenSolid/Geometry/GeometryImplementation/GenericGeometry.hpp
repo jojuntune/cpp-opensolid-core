@@ -36,8 +36,13 @@ namespace OpenSolid
     public:
         GenericGeometry(const Function& function, const Domain& domain);
 
-        Function function() const;
-        Domain domain() const;
+        Function function() const override;
+        Domain domain() const override;
+
+        int parameters() const override;
+        int dimensions() const override;
+        void evaluate(const MapXcd& parameter_values, MapXd& results) const override;
+        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const override;
     };
 }
 

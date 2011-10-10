@@ -18,31 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__VECTOR3IDOMAIN_HPP
-#define OPENSOLID__VECTOR3IDOMAIN_HPP
-
-#include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
+#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Function/FunctionConstructors.hpp>
+#include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Function/FunctionImplementation/ParametersFunction.hpp>
 
 namespace OpenSolid
 {
-    class Vector3IDomain : public DomainImplementation
-    {
-    private:
-        Vector3I _bounds;
-    public:
-        OPENSOLID_CORE_EXPORT Vector3IDomain(const Vector3I& bounds);
+    Function FunctionConstructors::Identity(int dimensions) {
+        return new ParametersFunction(dimensions, 0, dimensions);
+    }
 
-        OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
-        OPENSOLID_CORE_EXPORT bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        OPENSOLID_CORE_EXPORT VectorXI bounds() const;
+    Function FunctionConstructors::Parameter() {return new ParametersFunction(1, 0, 1);}
 
-        OPENSOLID_CORE_EXPORT Domain transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
-    };
+    Function FunctionConstructors::Parameter(int total, int index) {
+        return new ParametersFunction(total, index, 1);
+    }
+
+    Function FunctionConstructors::Parameters(int total) {
+        return new ParametersFunction(total, 0, total);
+    }
+
+    Function FunctionConstructors::Parameters(int total, int index, int num) {
+        return new ParametersFunction(total, index, num);
+    }
+        
+    Function FunctionConstructors::Linear(const DatumXd& datum) {return new LinearFunction(datum);}
+        
+    Function FunctionConstructors::Elliptical(const DatumXd& datum) {
+        return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, true));
+    }
+        
+    Function FunctionConstructors::Elliptical(const DatumXd& datum, const VectorXb& convention) {
+        return new EllipticalFunction(datum, convention);
+    }
 }
-
-#endif

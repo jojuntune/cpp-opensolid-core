@@ -18,42 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Domain/DomainImplementation/Vector2IDomain.hpp>
+#ifndef OPENSOLID__FUNCTIONCONSTRUCTORS_HPP
+#define OPENSOLID__FUNCTIONCONSTRUCTORS_HPP
+
+#include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {
-    Vector2IDomain::Vector2IDomain(const Vector2I& bounds) : _bounds(bounds) {}
+    class Function;
 
-    Set<Geometry> Vector2IDomain::boundaries() const {
-        double x_lower = _bounds.x().lower();
-        double y_lower = _bounds.y().lower();
-        double x_upper = _bounds.x().upper();
-        double y_upper = _bounds.y().upper();
-        Vector2d p0(x_lower, y_lower);
-        Vector2d p1(x_lower, y_upper);
-        Vector2d p2(x_upper, y_upper);
-        Vector2d p3(x_upper, y_lower);
-        Set<Geometry> results;
-        results.insert(LineSegment2d(p0, p1));
-        results.insert(LineSegment2d(p1, p2));
-        results.insert(LineSegment2d(p2, p3));
-        results.insert(LineSegment2d(p3, p0));
-        return results;
-    }
+    class FunctionConstructors
+    {
+    public:
+        OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
 
-    bool Vector2IDomain::isEmpty() const {return _bounds.isEmpty();}
+        OPENSOLID_CORE_EXPORT static Function Parameter();
 
-    int Vector2IDomain::dimensions() const {return 2;}
+        OPENSOLID_CORE_EXPORT static Function Parameter(int total, int index);
 
-    VectorXI Vector2IDomain::bounds() const {return _bounds;}
+        OPENSOLID_CORE_EXPORT static Function Parameters(int total);
 
-    Domain Vector2IDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        if (matrix.isDiagonal()) {
-            Interval x_interval = matrix(0, 0) * _bounds.x() + vector.x();
-            Interval y_interval = matrix(1, 1) * _bounds.y() + vector.y();
-            return new Vector2IDomain(Vector2I(x_interval, y_interval));
-        } else {
-            return DomainImplementation::transformed(matrix, vector);
-        }
-    }
+        OPENSOLID_CORE_EXPORT static Function Parameters(int total, int index, int num);
+        
+        OPENSOLID_CORE_EXPORT static Function Linear(const DatumXd& datum);
+        
+        OPENSOLID_CORE_EXPORT static Function Elliptical(const DatumXd& datum);
+        
+        OPENSOLID_CORE_EXPORT static Function Elliptical(
+            const DatumXd& datum,
+            const VectorXb& convention
+        );
+    };
 }
+
+#endif

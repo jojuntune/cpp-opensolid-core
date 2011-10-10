@@ -21,24 +21,29 @@
 #ifndef OPENSOLID__FUNCTION_HPP
 #define OPENSOLID__FUNCTION_HPP
 
+#include <OpenSolid/config.hpp>
+
 #include <typeinfo>
 
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Evaluation/Evaluation.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Evaluation/Evaluation.hpp>
+#include <OpenSolid/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
-#include <OpenSolid/Function/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 
 namespace OpenSolid
 {
-    class Function : public Convertible<Function>, public Transformable<Function>
+    class FunctionImplementation;
+
+    class Function :
+        public FunctionConstructors,
+        public Convertible<Function>,
+        public Transformable<Function>
     {
     private:
         boost::intrusive_ptr<const FunctionImplementation> _implementation;
@@ -46,24 +51,35 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT Function();
         OPENSOLID_CORE_EXPORT Function(const FunctionImplementation* function);
+
         OPENSOLID_CORE_EXPORT Function(int value);
         OPENSOLID_CORE_EXPORT Function(double value);
+        OPENSOLID_CORE_EXPORT Function(const VectorXd& vector);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y);
         OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y, const Function& z);
-        template <class DerivedType> Function(const EigenBase<DerivedType>& vector);
-        OPENSOLID_CORE_EXPORT ~Function();
+
+        template <class DerivedType>
+        Function(const EigenBase<DerivedType>& vector);
         
         OPENSOLID_CORE_EXPORT const FunctionImplementation* implementation() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         OPENSOLID_CORE_EXPORT bool isConstant() const;
+
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         
         template <class ArgumentType>
         Evaluation<Function, ArgumentType> operator()(const ArgumentType& argument) const;
         
         OPENSOLID_CORE_EXPORT Function derivative(int index = 0) const;
-        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+
+        OPENSOLID_CORE_EXPORT Function transformed(
+            const MatrixXd& matrix,
+            const VectorXd& vector
+        ) const;
+        
         OPENSOLID_CORE_EXPORT Function norm() const;
         OPENSOLID_CORE_EXPORT Function normalized() const;
         OPENSOLID_CORE_EXPORT Function squaredNorm() const;
@@ -87,44 +103,29 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT RowVectorXd roots(const Interval& domain) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
-
-        OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
-        
-        OPENSOLID_CORE_EXPORT static Function Linear(const DatumXd& datum);
-        
-        OPENSOLID_CORE_EXPORT static Function Elliptical(const DatumXd& datum);
-        
-        OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const DatumXd& datum,
-            const VectorXb& convention
-        );
     };
     
     template <>
-    class Conversion<Function, double>
+    struct Conversion<Function, double>
     {
-    public:
         OPENSOLID_CORE_EXPORT double operator()(const Function& argument) const;
     };
     
     template <>
-    class Conversion<Function, Vector2d>
+    struct Conversion<Function, Vector2d>
     {
-    public:
         OPENSOLID_CORE_EXPORT Vector2d operator()(const Function& argument) const;
     };
     
     template <>
-    class Conversion<Function, Vector3d>
+    struct Conversion<Function, Vector3d>
     {
-    public:
         OPENSOLID_CORE_EXPORT Vector3d operator()(const Function& argument) const;
     };
     
     template <>
-    class Conversion<Function, VectorXd>
+    struct Conversion<Function, VectorXd>
     {
-    public:
         OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
     };
 
@@ -168,14 +169,12 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Function/Parameter.hpp>
-#include <OpenSolid/Function/Parameters.hpp>
-
 namespace OpenSolid
 {
     template <class DerivedType>
-    Function::Function(const EigenBase<DerivedType>& vector) :
-        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
+    Function::Function(const EigenBase<DerivedType>& vector) {
+        *this = Function(VectorXd(vector));
+    }
     
     template <class ArgumentType>
     inline Evaluation<Function, ArgumentType> Function::operator()(const ArgumentType& argument) const {

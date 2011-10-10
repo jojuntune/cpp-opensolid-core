@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Geometry/GeometryImplementation/GenericGeometry.hpp>
 
 namespace OpenSolid
@@ -28,4 +29,16 @@ namespace OpenSolid
     Function GenericGeometry::function() const {return _function;}
 
     Domain GenericGeometry::domain() const {return _domain;}
+
+    int GenericGeometry::parameters() const {return _function.parameters();}
+
+    int GenericGeometry::dimensions() const {return _function.dimensions();}
+
+    void GenericGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        _function.evaluate(parameter_values, results);
+    }
+
+    void GenericGeometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        _function.evaluate(parameter_bounds, results);
+    }
 }

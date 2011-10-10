@@ -24,12 +24,11 @@
 namespace OpenSolid
 {
     template <class Type, class OtherType>
-    class Conversion;
+    struct Conversion;
 
     template <class DerivedType>
-    class Convertible
+    struct Convertible
     {
-    public:
         template <class OtherType>
         OtherType to() const;
 

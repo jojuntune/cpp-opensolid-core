@@ -58,13 +58,12 @@ namespace OpenSolid
     Function::Function(const FunctionImplementation* implementation) :
         _implementation(implementation), _type(&typeid(implementation)) {}
     
-    Function::Function(int value) :
-        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantFunction)) {}
-    
-    Function::Function(double value) :
-        _implementation(new ConstantFunction(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantFunction)) {}
+    Function::Function(int value) {*this = Function(VectorXd::Constant(1, value));}
+
+    Function::Function(double value) {*this = Function(VectorXd::Constant(1, value));}
+
+    Function::Function(const VectorXd& vector) :
+        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
     
     Function::Function(const Function& x, const Function& y) {
         _implementation = x.concatenate(y).implementation();
@@ -75,8 +74,6 @@ namespace OpenSolid
         _implementation = x.concatenate(y).concatenate(z).implementation();
         _type = &typeid(implementation());
     }
-
-    Function::~Function() {}
     
     const FunctionImplementation* Function::implementation() const {
         return _implementation.get();
@@ -96,6 +93,14 @@ namespace OpenSolid
         assert(implementation());
         assert(_type);
         return *_type == typeid(ConstantFunction);
+    }
+
+    void Function::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        implementation()->evaluate(parameter_values, results);
+    }
+
+    void Function::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        implementation()->evaluate(parameter_bounds, results);
     }
     
     Function Function::derivative(int index) const {
@@ -386,20 +391,6 @@ namespace OpenSolid
         implementation()->debug(stream, indent);
     }
     
-    Function Function::Identity(int dimensions) {
-        return new ParametersFunction(dimensions, 0, dimensions);
-    }
-    
-    Function Function::Linear(const DatumXd& datum) {return new LinearFunction(datum);}
-    
-    Function Function::Elliptical(const DatumXd& datum) {
-        return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, true));
-    }
-    
-    Function Function::Elliptical(const DatumXd& datum, const VectorXb& convention) {
-        return new EllipticalFunction(datum, convention);
-    }
-    
     Function operator-(const Function& operand) {
         if (operand.isConstant()) {return -operand.to<VectorXd>();}
         return new NegationFunction(operand);
@@ -431,10 +422,12 @@ namespace OpenSolid
     Function operator+(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
             return first_operand.to<VectorXd>() + second_operand.to<VectorXd>();
-        } else if (first_operand.isConstant() && first_operand.to<VectorXd>().isZero()) {
-            return second_operand;
-        } else if (second_operand.isConstant() && second_operand.to<VectorXd>().isZero()) {
-            return first_operand;
+        } else if (first_operand.isConstant()) {
+            VectorXd vector = first_operand.to<VectorXd>();
+            return vector.isZero() ? second_operand : second_operand.translated(vector);
+        } else if (second_operand.isConstant()) {
+            VectorXd vector = second_operand.to<VectorXd>();
+            return vector.isZero() ? first_operand : first_operand.translated(vector);
         } else {
             return new SumFunction(first_operand, second_operand);
         }
@@ -443,10 +436,13 @@ namespace OpenSolid
     Function operator-(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
             return first_operand.to<VectorXd>() - second_operand.to<VectorXd>();
-        } else if (first_operand.isConstant() && first_operand.to<VectorXd>().isZero()) {
-            return -second_operand;
-        } else if (second_operand.isConstant() && second_operand.to<VectorXd>().isZero()) {
-            return first_operand;
+        } else if (first_operand.isConstant()) {
+            VectorXd vector = first_operand.to<VectorXd>();
+            Function negated = -second_operand;
+            return vector.isZero() ? negated : negated.translated(vector);
+        } else if (second_operand.isConstant()) {
+            VectorXd vector = second_operand.to<VectorXd>();
+            return vector.isZero() ? first_operand : first_operand.translated(-vector);
         } else {
             return new DifferenceFunction(first_operand, second_operand);
         }

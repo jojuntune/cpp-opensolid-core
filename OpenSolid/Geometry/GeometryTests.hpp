@@ -24,7 +24,6 @@
 
 #include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
-#include <OpenSolid/Geometry/Arc.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Support/STL.hpp>
@@ -37,7 +36,7 @@ public:
     void testLine() {
         Vector3d start(1, 2, 3);
         Vector3d end(4, 5, 6);
-        Geometry line = LineSegment3d(start, end);
+        Geometry line = Line3d(start, end);
         std::cout << line(0.5) << std::endl;
         TS_ASSERT(line(0.5).isApprox(Vector3d(2.5, 3.5, 4.5)));
     }
@@ -46,7 +45,7 @@ public:
         Vector3d center(1, 1, 1);
         Vector3d start(3, 1, 1);
         Vector3d end(1, -1, 1);
-        Geometry arc = Arc3d(Axis3d(center, Vector3d::UnitZ()), start, end);
+        Geometry arc = Geometry::Arc3d(Axis3d(center, Vector3d::UnitZ()), start, end);
 
         Interval domain = arc.domain().bounds().value();
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, domain);
@@ -80,10 +79,8 @@ public:
     }
     
     void testCurveOperations() {
-        Geometry parabola(
-            Parameter() * Vector3d::UnitX() + Parameter().squaredNorm() * Vector3d::UnitY(),
-            Interval(-2, 2)
-        );
+        Function t = Function::Parameter();
+        Geometry parabola(Function(t, t.squaredNorm(), 0), Interval(-2, 2));
         TS_ASSERT((parabola.function().tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());
         TS_ASSERT(parabola.function().curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
         TS_ASSERT((parabola.function().normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
@@ -95,7 +92,7 @@ public:
     }
     
     void testHashing() {
-        Geometry line = LineSegment2d(Vector2d::Zero(), Vector2d::Ones());
+        Geometry line = Line2d(Vector2d::Zero(), Vector2d::Ones());
         std::unordered_map<Geometry, std::string> colors;
         colors[line] = "red";
         Geometry line_copy = line;

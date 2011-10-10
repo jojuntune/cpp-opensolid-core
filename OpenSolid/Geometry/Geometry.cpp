@@ -21,27 +21,50 @@
 #include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/ConstantGeometry.hpp>
 #include <OpenSolid/Geometry/GeometryImplementation/GenericGeometry.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/SimplexGeometry.hpp>
 
 namespace OpenSolid
 {
-    Geometry::Geometry() : _implementation() {}
+    Geometry::Geometry() : _implementation(), _type(nullptr) {}
 
-    Geometry::Geometry(const GeometryImplementation* implementation)
-        : _implementation(implementation) {}
+    Geometry::Geometry(const GeometryImplementation* implementation) :
+        _implementation(implementation), _type(&typeid(implementation)) {}
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
         _implementation(new GenericGeometry(function, domain)), _type(&typeid(GenericGeometry)) {
         assert(function.isConstant() || domain.dimensions() == function.parameters());
     }
     
+    Geometry::Geometry(int value) :
+        _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
+        _type(&typeid(ConstantGeometry)) {}
+    
     Geometry::Geometry(double value) :
         _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
         _type(&typeid(ConstantGeometry)) {}
     
+    Geometry::Geometry(const VectorXd& vector) :
+        _implementation(new ConstantGeometry(vector)), _type(&typeid(ConstantGeometry)) {}
+    
+    Geometry::Geometry(const SimplexXd& simplex) :
+        _implementation(new SimplexGeometry(simplex)), _type(&typeid(SimplexGeometry)) {}
+
+    const GeometryImplementation* Geometry::implementation() const {return _implementation.get();}
+    
     Function Geometry::function() const {return implementation()->function();}
     
     Domain Geometry::domain() const {return implementation()->domain();}
+
+    void Geometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        implementation()->evaluate(parameter_values, results);
+    }
+
+    void Geometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        implementation()->evaluate(parameter_bounds, results);
+    }
     
     int Geometry::parameters() const {return implementation()->parameters();}
     

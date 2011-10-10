@@ -18,36 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CONSTANTGEOMETRY_HPP
-#define OPENSOLID__CONSTANTGEOMETRY_HPP
-
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Datum/Frame.hpp>
+#include <OpenSolid/Datum/Plane.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
+#include <OpenSolid/Domain/DomainImplementation/CuboidDomain.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {
-    class ConstantGeometry : public GeometryImplementation
-    {
-    private:
-        VectorXd _vector;
-    public:
-        OPENSOLID_CORE_EXPORT ConstantGeometry(const VectorXd& vector);
+    CuboidDomain::CuboidDomain(const Vector3I& bounds) : _bounds(bounds) {}
 
-        Function function() const override;
-        Domain domain() const override;
-        
-        int parameters() const override;
-        int dimensions() const override;
-        void evaluate(const MapXcd& parameter_values, MapXd& results) const override;
-        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const override;
-        bool isConstant() const override;
-        VectorXI bounds() const override;
-        Set<Geometry> boundaries() const;
-        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
-        Geometry reversed() const override;
-    };
+    Set<Geometry> CuboidDomain::boundaries() const {
+        Vector3d lower = _bounds.cwiseLower();
+        Vector3d upper = _bounds.cwiseUpper();
+        Set<Geometry> results;
+        // TODO - boundary construction
+        return results;
+    }
+
+    bool CuboidDomain::isEmpty() const {return _bounds.isEmpty();}
+
+    int CuboidDomain::dimensions() const {return 3;}
+
+    VectorXI CuboidDomain::bounds() const {return _bounds;}
+
+    Domain CuboidDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        if (matrix.isDiagonal()) {
+            Interval x_interval = matrix(0, 0) * _bounds.x() + vector.x();
+            Interval y_interval = matrix(1, 1) * _bounds.y() + vector.y();
+            Interval z_interval = matrix(2, 2) * _bounds.z() + vector.z();
+            return new CuboidDomain(Vector3I(x_interval, y_interval, z_interval));
+        } else {
+            return DomainImplementation::transformed(matrix, vector);
+        }
+    }
 }
-
-#endif

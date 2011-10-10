@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
+#include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Geometry/GeometryImplementation/ConstantGeometry.hpp>
 
 namespace OpenSolid
@@ -31,6 +32,14 @@ namespace OpenSolid
     int ConstantGeometry::parameters() const {return 0;}
 
     int ConstantGeometry::dimensions() const {return _vector.size();}
+
+    void ConstantGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        results.colwise() = _vector;
+    }
+
+    void ConstantGeometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        results.colwise() = _vector.cast<Interval>();
+    }
 
     bool ConstantGeometry::isConstant() const {return true;}
 

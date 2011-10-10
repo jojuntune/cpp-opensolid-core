@@ -44,6 +44,7 @@ namespace OpenSolid
         virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const = 0;
         
         virtual void getDerivative(int index, Function& result) const = 0;
+
         virtual void getComponents(int index, int num, Function& result) const;
         virtual void getComposition(const Function& inner, Function& result) const;
         

@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
+#include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Geometry/GeometryImplementation/SimplexGeometry.hpp>
 
 namespace OpenSolid
@@ -28,21 +29,19 @@ namespace OpenSolid
         return Function::Linear(_simplex.coordinateSystem());
     }
     
-    Domain SimplexGeometry::domain() const {
-        MatrixXd unit_vertices(_simplex.size() - 1, _simplex.size());
-        unit_vertices.col(0).setZero();
-        unit_vertices.rightCols(_simplex.size() - 1).setIdentity();
-        SimplexXd domain_simplex(unit_vertices);
-        Set<Geometry> domain_boundaries;
-        for (int i = 0; i < _simplex.size(); ++i) {
-            domain_boundaries.insert(new SimplexGeometry(domain_simplex.face(i)));
-        }
-        return Domain(domain_boundaries);
-    }
+    Domain SimplexGeometry::domain() const {return Domain::UnitSimplex(parameters());}
         
     int SimplexGeometry::parameters() const {return _simplex.size() - 1;}
     
     int SimplexGeometry::dimensions() const {return _simplex.dimensions();}
+
+    void SimplexGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
+        results = parameter_values * _simplex.coordinateSystem();
+    }
+
+    void SimplexGeometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
+        results = parameter_bounds * _simplex.coordinateSystem();
+    }
     
     bool SimplexGeometry::isConstant() const {return false;}
     

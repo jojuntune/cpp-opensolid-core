@@ -18,21 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__HELIX_HPP
-#define OPENSOLID__HELIX_HPP
+#ifndef OPENSOLID__SIMPLEXDOMAIN_HPP
+#define OPENSOLID__SIMPLEXDOMAIN_HPP
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
 
 namespace OpenSolid
 {
-    OPENSOLID_CORE_EXPORT Geometry Helix3d(
-        const Frame3d& frame,
-        double radius,
-        double pitch,
-        const Interval& angle
-    );
+    class SimplexDomain : public DomainImplementation
+    {
+    private:
+        SimplexXd _simplex;
+    public:
+        SimplexDomain(const SimplexXd& simplex);
+
+        Set<Geometry> boundaries() const override;
+
+        bool isEmpty() const override;
+        int dimensions() const override;
+        VectorXI bounds() const override;
+        Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
+    };
 }
 
 #endif

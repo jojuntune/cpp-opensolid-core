@@ -20,6 +20,7 @@
 
 #include <OpenSolid/Domain/Domain.hpp>
 #include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {

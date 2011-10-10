@@ -35,18 +35,13 @@ namespace OpenSolid
     public:
         virtual ~GeometryImplementation();
         
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
-        
         virtual Function function() const = 0;
         virtual Domain domain() const = 0;
         
         virtual int parameters() const;
         virtual int dimensions() const;
-
-        virtual void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
-
+        virtual void evaluate(const MapXcd& parameter_values, MapXd& results) const;
+        virtual void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         virtual bool isConstant() const;
         virtual VectorXI bounds() const;
         virtual Set<Geometry> boundaries() const;

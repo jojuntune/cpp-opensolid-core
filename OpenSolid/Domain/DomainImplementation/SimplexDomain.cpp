@@ -18,23 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Geometry/Circle.hpp>
-#include <OpenSolid/Geometry/Arc.hpp>
+#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Domain/DomainImplementation/SimplexDomain.hpp>
+#include <OpenSolid/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {
-    Geometry Circle2d(const Vector2d& center, double radius) {
-        Set<Geometry> boundary;
-        boundary.insert(Arc2d(center, radius, 2 * M_PI, 0));
-        return Geometry(Function::Identity(2), Domain(boundary));
+    SimplexDomain::SimplexDomain(const SimplexXd& simplex) : _simplex(simplex) {
+        assert(simplex.dimensions() == simplex.size() - 1);
     }
 
-    Geometry Circle3d(const Axis3d& axis, double radius) {
-        return Circle2d(Vector2d::Zero(), radius) * axis.normalPlane();
+    Set<Geometry> SimplexDomain::boundaries() const {
+        Set<Geometry> results;
+        for (int i = 0; i < _simplex.size(); ++i) {results.insert(_simplex.face(i));}
+        return results;
     }
 
-    Geometry Circle3d(const Plane3d& plane, double radius) {
-        return Circle2d(Vector2d::Zero(), radius) * plane;
+    bool SimplexDomain::isEmpty() const {return false;}
+
+    int SimplexDomain::dimensions() const {return _simplex.dimensions();}
+
+    VectorXI SimplexDomain::bounds() const {return _simplex.bounds();}
+
+    Domain SimplexDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        return new SimplexDomain(_simplex.transformed(matrix, vector));
     }
 }

@@ -65,13 +65,21 @@ namespace OpenSolid
         return function.roots(domain);
     }
 
-    Function parameter1() {return Parameter();}
+    Function parameter1() {
+        return Function::Parameter();
+    }
 
-    Function parameter2(int total, int index) {return Parameter(total, index);}
+    Function parameter2(int total, int index) {
+        return Function::Parameter(total, index);
+    }
 
-    Function parameters1(int total) {return Parameters(total);}
+    Function parameters1(int total) {
+        return Function::Parameters(total);
+    }
 
-    Function parameters2(int total, int index, int num) {return Parameters(total, index, num);}
+    Function parameters2(int total, int index, int num) {
+        return Function::Parameters(total, index, num);
+    }
         
     void bindFunction() {
         class_<Function> function_class("Function");
@@ -125,12 +133,15 @@ namespace OpenSolid
             .def(double() / self)
             .def(self / double())
             .def(MatrixXd() / self)
-            .def(self / self);
-
-        def("Parameter", &parameter1);
-        def("Parameter", &parameter2);
-        def("Parameters", &parameters1);
-        def("Parameters", &parameters2);
+            .def(self / self)
+            .def("Identity", &Function::Identity)
+                .staticmethod("Identity")
+            .def("Parameter", &parameter1)
+            .def("Parameter", &parameter2)
+                .staticmethod("Parameter")
+            .def("Parameters", &parameters1)
+            .def("Parameters", &parameters2)
+                .staticmethod("Parameters");
             
         implicitly_convertible<MatrixXd, Function>();
         implicitly_convertible<double, Function>();

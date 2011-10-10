@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__GEOMETRY_HPP
 #define OPENSOLID__GEOMETRY_HPP
 
+#include <OpenSolid/config.hpp>
+
 #include <boost/intrusive_ptr.hpp>
 
 #include <OpenSolid/Common/Bounds.hpp>
@@ -28,16 +30,18 @@
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Evaluation/Evaluation.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Geometry/GeometryConstructors.hpp>
+#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 
 namespace OpenSolid
 {
-    class Domain;
-    class GeometryImplementation;
-
-    class Geometry : public Convertible<Geometry>, public Transformable<Geometry>
+    class Geometry :
+        public GeometryConstructors,
+        public Convertible<Geometry>,
+        public Transformable<Geometry>
     {
     private:
         boost::intrusive_ptr<const GeometryImplementation> _implementation;
@@ -45,18 +49,29 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT Geometry();
         OPENSOLID_CORE_EXPORT Geometry(const GeometryImplementation* implementation);
-        OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
-        OPENSOLID_CORE_EXPORT Geometry(double value);
-        template <class DerivedType> Geometry(const EigenBase<DerivedType>& vector);
-        template <int dimensions_, int size_> Geometry(const Simplex<dimensions_, size_>& simplex);
 
-        const GeometryImplementation* implementation() const;
+        OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
+        OPENSOLID_CORE_EXPORT Geometry(int value);
+        OPENSOLID_CORE_EXPORT Geometry(double value);
+        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
+        OPENSOLID_CORE_EXPORT Geometry(const SimplexXd& simplex);
+
+        template <class DerivedType>
+        Geometry(const EigenBase<DerivedType>& vector);
+
+        template <int dimensions_, int size_>
+        Geometry(const Simplex<dimensions_, size_>& simplex);
+
+        OPENSOLID_CORE_EXPORT const GeometryImplementation* implementation() const;
         
         OPENSOLID_CORE_EXPORT Function function() const;
         OPENSOLID_CORE_EXPORT Domain domain() const;
         
         template <class ArgumentType>
         Evaluation<Geometry, ArgumentType> operator()(const ArgumentType& argument) const;
+
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
@@ -68,30 +83,26 @@ namespace OpenSolid
     };
     
     template <>
-    class Conversion<Geometry, double>
+    struct Conversion<Geometry, double>
     {
-    public:
         OPENSOLID_CORE_EXPORT double operator()(const Geometry& argument) const;
     };
     
     template <>
-    class Conversion<Geometry, Vector2d>
+    struct Conversion<Geometry, Vector2d>
     {
-    public:
         OPENSOLID_CORE_EXPORT Vector2d operator()(const Geometry& argument) const;
     };
     
     template <>
-    class Conversion<Geometry, Vector3d>
+    struct Conversion<Geometry, Vector3d>
     {
-    public:
         OPENSOLID_CORE_EXPORT Vector3d operator()(const Geometry& argument) const;
     };
     
     template <>
-    class Conversion<Geometry, VectorXd>
+    struct Conversion<Geometry, VectorXd>
     {
-    public:
         OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& argument) const;
     };
 }
@@ -99,28 +110,23 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 #include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Geometry/GeometryImplementation/ConstantGeometry.hpp>
-#include <OpenSolid/Geometry/GeometryImplementation/SimplexGeometry.hpp>
 
 namespace OpenSolid
 {
     template <class DerivedType>
-    Geometry::Geometry(const EigenBase<DerivedType>& vector) :
-        _implementation(new ConstantGeometry(vector)), _type(&typeid(ConstantGeometry)) {}
+    Geometry::Geometry(const EigenBase<DerivedType>& vector) {
+        *this = Geometry::(VectorXd(vector));
+    }
 
     template <int dimensions_, int size_>
-    Geometry::Geometry(const Simplex<dimensions_, size_>& simplex) :
-        _implementation(new SimplexGeometry(simplex)), _type(&typeid(SimplexGeometry)) {}
-
-    inline const GeometryImplementation* Geometry::implementation() const {
-        assert(_implementation);
-        return _implementation.get();
+    Geometry::Geometry(const Simplex<dimensions_, size_>& simplex) {
+        *this = Geometry(SimplexXd(simplex));
     }
 
     template <class ArgumentType>
-    inline Evaluation<Geometry, ArgumentType> Geometry::operator()(const ArgumentType& argument) const {
-        return Evaluation<Geometry, ArgumentType>(*this, argument);
-    }
+    inline Evaluation<Geometry, ArgumentType> Geometry::operator()(
+        const ArgumentType& argument
+    ) const {return Evaluation<Geometry, ArgumentType>(*this, argument);}
 }
 
 #endif

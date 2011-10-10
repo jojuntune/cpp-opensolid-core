@@ -59,7 +59,7 @@ public:
         Triangle2d triangle(Vector2d::Zero(), Vector2d(2, 1), Vector2d(1, 2));
         for (int i = 0; i < 3; ++i) {
             Vector2d vertex = triangle.vertex(i);
-            LineSegment2d edge = triangle.face(i);
+            Line2d edge = triangle.face(i);
             TS_ASSERT((vertex - edge.centroid()).dot(edge.normal()) < Zero());
         }
     }
@@ -114,8 +114,8 @@ public:
     }
     
     void testNormal() {
-        LineSegment2d line_segment(Vector2d(1, 1), Vector2d(3, 2));
-        TS_ASSERT((line_segment.normal() - Vector2d(-1, 2).normalized()).isZero());
+        Line2d line(Vector2d(1, 1), Vector2d(3, 2));
+        TS_ASSERT((line.normal() - Vector2d(-1, 2).normalized()).isZero());
         Triangle3d triangle(Vector3d(1, 1, 1), Vector3d(3, 1, 2), Vector3d(2, 2, 4));
         Vector3d expected_normal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
         TS_ASSERT((triangle.normal() - expected_normal).isZero());
@@ -123,25 +123,25 @@ public:
     
     void testCopyingAndEquality() {
         Triangle2d triangle(Vector2d::Zero(), Vector2d::UnitX(), Vector2d::UnitY());
-        LineSegment2d line_segment = triangle.edge(1, 2);
+        Line2d line = triangle.edge(1, 2);
         SimplexXd simplex = triangle;
         simplex = triangle.edge(1, 2);
-        TS_ASSERT_EQUALS(line_segment, simplex);
+        TS_ASSERT_EQUALS(line, simplex);
     }
     
     void testHashing() {
-        LineSegment2d first_line(Vector2d::Zero(), Vector2d::Ones());
-        LineSegment2d second_line(Vector2d::Zero(), Vector2d::Ones());
+        Line2d first_line(Vector2d::Zero(), Vector2d::Ones());
+        Line2d second_line(Vector2d::Zero(), Vector2d::Ones());
         TS_ASSERT_EQUALS(
-            std::hash<LineSegment2d>()(first_line),
-            std::hash<LineSegment2d>()(second_line)
+            std::hash<Line2d>()(first_line),
+            std::hash<Line2d>()(second_line)
         );
     }
     
     void testBoostHashing() {
-        boost::unordered_map<LineSegment2d, std::string> map;
-        LineSegment2d first_line(Vector2d::Zero(), Vector2d::Ones());
-        LineSegment2d second_line(Vector2d::Zero(), Vector2d::Ones());
+        boost::unordered_map<Line2d, std::string> map;
+        Line2d first_line(Vector2d::Zero(), Vector2d::Ones());
+        Line2d second_line(Vector2d::Zero(), Vector2d::Ones());
         map[first_line] = "value";
         TS_ASSERT_EQUALS(map[second_line], "value");
     }
@@ -159,13 +159,13 @@ public:
         TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero());
     }
     
-    void testLineSegment1d() {
-        LineSegment3d segment_3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
-        LineSegment1d quotient = segment_3d / Frame3d().yAxis();
-        LineSegment1d segment_1d(2, 5);
-        TS_ASSERT((quotient.vertices() - segment_1d.vertices()).isZero());
-        LineSegment3d product =
-            LineSegment1d(1.0 / 3.0, 2.0 / 3.0) * segment_3d.coordinateSystem();
+    void testLine1d() {
+        Line3d line3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+        Line1d quotient = line3d / Frame3d().yAxis();
+        Line1d line1d(2, 5);
+        TS_ASSERT((quotient.vertices() - line1d.vertices()).isZero());
+        Line3d product =
+            Line1d(1.0 / 3.0, 2.0 / 3.0) * line3d.coordinateSystem();
         TS_ASSERT((product.vertex(0) - Vector3d(2, 3, 4)).isZero());
         TS_ASSERT((product.vertex(1) - Vector3d(3, 4, 5)).isZero());
     }
@@ -197,17 +197,17 @@ public:
     }
 
     void testVector() {
-        LineSegment3d line_segment(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
-        TS_ASSERT((line_segment.vector() - Vector3d::Constant(3)).isZero());
+        Line3d line(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+        TS_ASSERT((line.vector() - Vector3d::Constant(3)).isZero());
     }
 
     void testBoostGeometry() {
-        LineSegment3d segment3d(Vector3d(1, 1, 1), Vector3d(4, 5, 6));
-        TS_ASSERT(boost::geometry::length(segment3d) - segment3d.length() == Zero());
-        //LineSegment2d segment1(Vector2d::Zero(), Vector2d(2, 0));
-        //LineSegment2d segment2(Vector2d(1, 1), Vector2d(1, 3));
-        //LineSegment2d segment3(Vector2d(0, 1), Vector2d(2, 3));
-        //TS_ASSERT(!boost::geometry::intersects(segment1, segment2));
-        //TS_ASSERT(boost::geometry::intersects(segment2, segment3));
+        Line3d line(Vector3d(1, 1, 1), Vector3d(4, 5, 6));
+        TS_ASSERT(boost::geometry::length(line) - line.length() == Zero());
+        //Line2d line1(Vector2d::Zero(), Vector2d(2, 0));
+        //Line2d line2(Vector2d(1, 1), Vector2d(1, 3));
+        //Line2d line3(Vector2d(0, 1), Vector2d(2, 3));
+        //TS_ASSERT(!boost::geometry::intersects(line1, line2));
+        //TS_ASSERT(boost::geometry::intersects(line2, line3));
     }
 };

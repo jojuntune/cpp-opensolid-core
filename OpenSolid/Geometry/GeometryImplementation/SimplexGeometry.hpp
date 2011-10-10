@@ -36,16 +36,18 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT SimplexGeometry(const SimplexXd& simplex);
 
-        Function function() const;
-        Domain domain() const;
+        Function function() const override;
+        Domain domain() const override;
         
-        int parameters() const;
-        int dimensions() const;
-        bool isConstant() const;
-        VectorXI bounds() const;
-        Set<Geometry> boundaries() const;
-        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
-        Geometry reversed() const;
+        int parameters() const override;
+        int dimensions() const override;
+        void evaluate(const MapXcd& parameter_values, MapXd& results) const override;
+        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const override;
+        bool isConstant() const override;
+        VectorXI bounds() const override;
+        Set<Geometry> boundaries() const override;
+        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
+        Geometry reversed() const override;
     };
 }
 

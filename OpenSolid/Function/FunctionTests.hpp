@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <vector>
+
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
@@ -30,7 +32,17 @@ using namespace OpenSolid;
 
 class FunctionTests : public CxxTest::TestSuite
 {
+private:
+    Function t;
+    Function u;
+    Function v;
 public:
+    void setUp() {
+        t = Function::Parameter();
+        u = Function::Parameter(2, 0);
+        v = Function::Parameter(2, 1);
+    }
+
     void testConstant() {
         Function f = 3.0;
         TS_ASSERT(f.isConstant());
@@ -39,7 +51,7 @@ public:
     }
     
     void testArithmetic() {
-        Function function = 2.0 + Parameter(2, 0) * 1.0 - 1.0 * Parameter(2, 1);
+        Function function = 2.0 + u * 1.0 - 1.0 * v;
         
         TS_ASSERT(function(Vector2d(0, 0)).value() == Approx(2.0));
         TS_ASSERT(function(Vector2d(1, 0)).value() == Approx(3.0));
@@ -59,7 +71,7 @@ public:
     }
 
     void testMultiplication() {
-        Function function = 1.0 + Parameter(2, 0) / 1.0 * Parameter(2, 1) / 1.0;
+        Function function = 1.0 + u / 1.0 * v / 1.0;
     
         TS_ASSERT(function(Vector2d(0, 0)).value() == One());
         TS_ASSERT(function(Vector2d(1, 0)).value() == One());
@@ -82,8 +94,6 @@ public:
     }
     
     void testSquare() {
-        Parameter u(2, 0);
-        Parameter v(2, 1);
         Function function = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0;
         TS_ASSERT(function(Vector2d(1, 2)).value() == Approx(5.0));
         Function u_derivative = function.derivative(0);
@@ -93,8 +103,7 @@ public:
     }
 
     void testNorm() {
-        Function arc = 3 * (cos(Parameter()) * Vector2d(1, 0) +
-            Vector2d::UnitY() * sin(Parameter()));
+        Function arc = 3 * (cos(t) * Vector2d(1, 0) + Vector2d::UnitY() * sin(t));
         TS_ASSERT(arc.normalized()(M_PI / 4).isApprox(Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))));
     }
     
@@ -106,7 +115,7 @@ public:
     }
     
     void testConversion() {
-        Function function = Parameter(2, 0) * Parameter(2, 1);
+        Function function = u * v;
         TS_ASSERT(function(Vector2d(2, 3)).value() == Approx(6.0));
         function = Function(2);
         TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
@@ -114,7 +123,7 @@ public:
     
     void testSine() {
         typedef Matrix<Interval, 1, 4> RowVector4I;
-        Function f = sin(Parameter());
+        Function f = sin(t);
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT((result - RowVector4d(0, 1, 0, -1)).isZero());
         RowVector4I bounds = f(
@@ -137,7 +146,7 @@ public:
     
     void testCosine() {
         typedef Matrix<Interval, 1, 4> RowVector4I;
-        Function f = cos(Parameter());
+        Function f = cos(t);
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT((result - RowVector4d(1, 0, -1, 0)).isZero());
         RowVector4I bounds = f(
@@ -159,7 +168,7 @@ public:
     }
     
     void testComponent() {
-        Function f = Vector3d(1, 2, 3) + Parameter() * Vector3d(1, 2, 3);
+        Function f = Vector3d(1, 2, 3) + t * Vector3d(1, 2, 3);
         RowVector3d result = f.component(1)(RowVector3d(0, 0.5, 1));
         TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
         result = f(RowVector3d(0, 0.5, 1)).row(1);
@@ -172,7 +181,7 @@ public:
         Frame3d frame;
         frame = frame.translated(Vector3d(1, 1, 1));
         frame = frame.rotated(M_PI / 4, frame.zAxis());
-        Function linear = Vector3d::Ones() * Parameter();
+        Function linear = Vector3d::Ones() * t;
         Function product = linear * frame;
         Function quotient = linear / frame;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval(0, 1));
@@ -185,15 +194,15 @@ public:
     }
     
     void testConcatenation() {
-        Function x = Parameter();
+        Function x = t;
         double y = 3;
-        Function z = Parameter().squaredNorm();
+        Function z = t.squaredNorm();
         Function concatenated(x, y, z);
         TS_ASSERT(concatenated(2.0).isApprox(Vector3d(2.0, 3.0, 4.0)));
     }
 
     void testArccosine() {
-        Function f = acos(Parameter());
+        Function f = acos(t);
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
@@ -207,7 +216,7 @@ public:
     }
 
     void testArcsine() {
-        Function f = asin(Parameter());
+        Function f = asin(t);
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lower() + M_PI / 2 == Zero());
@@ -222,7 +231,7 @@ public:
 
     void testMirrored() {
         Plane3d plane = Frame3d().yzPlane().translated(Vector3d(1, 0, 0));
-        Function f = Vector3d(1, 1, 1) + Parameter() * Vector3d(1, 1, 1);
+        Function f = Vector3d(1, 1, 1) + t * Vector3d(1, 1, 1);
         Function mirrored = f.mirrored(plane);
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
@@ -231,8 +240,7 @@ public:
     }
 
     void testNormal() {
-        Parameter theta;
-        Function f = Vector2d(1, 1) + Function(2 * cos(theta), 2 * sin(theta));
+        Function f = Vector2d(1, 1) + Function(2 * cos(t), 2 * sin(t));
         TS_ASSERT((f(-M_PI / 2) - Vector2d(1, -1)).isZero());
         TS_ASSERT((f(0) - Vector2d(3, 1)).isZero());
         TS_ASSERT((f(M_PI / 2) - Vector2d(1, 3)).isZero());
@@ -251,7 +259,7 @@ public:
         std::vector<RowVectorXd> expected_derivative_zeros(7);
         std::vector<RowVectorXd> expected_second_derivative_zeros(7);
         
-        Parameter x;
+        Function x = Function::Parameter();
 
         functions[0] = x - 1;
         domains[0] = Interval(0, 2);
@@ -343,7 +351,7 @@ public:
     }
     
     void xtestCircleDerivativeZeros() {
-        Parameter x;
+        Function x = Function::Parameter();
         double R = 1;
         double r = 0.5;
         double slope = 0.5;

@@ -18,42 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__ARC_HPP
-#define OPENSOLID__ARC_HPP
-
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Datum/Axis.hpp>
-#include <OpenSolid/Datum/Plane.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
+#ifndef OPENSOLID__DOMAINCONSTRUCTORS_HPP
+#define OPENSOLID__DOMAINCONSTRUCTORS_HPP
 
 namespace OpenSolid
 {
-    OPENSOLID_CORE_EXPORT Geometry Arc2d(
-        const Vector2d& center,
-        double radius,
-        double start_angle,
-        double end_angle
-    );
-        
-    OPENSOLID_CORE_EXPORT Geometry Arc2d(
-        const Vector2d& center,
-        const Vector2d& start,
-        const Vector2d& end,
-        bool counterclockwise
-    );
-
-    OPENSOLID_CORE_EXPORT Geometry Arc3d(
-        const Plane3d& plane,
-        double radius,
-        double start_angle,
-        double end_angle
-    );
-
-    OPENSOLID_CORE_EXPORT Geometry Arc3d(
-        const Axis3d& axis,
-        const Vector3d& start,
-        const Vector3d& end
-    );
+    class DomainConstructors
+    {
+    public:
+        OPENSOLID_CORE_EXPORT static Domain UnitInterval();
+        OPENSOLID_CORE_EXPORT static Domain UnitSquare();
+        OPENSOLID_CORE_EXPORT static Domain UnitCube();
+        OPENSOLID_CORE_EXPORT static Domain UnitTriangle();
+        OPENSOLID_CORE_EXPORT static Domain UnitTetrahedron();
+        OPENSOLID_CORE_EXPORT static Domain UnitOrthotope(int dimensions);
+        OPENSOLID_CORE_EXPORT static Domain UnitSimplex(int dimensions);
+    };
 }
 
 #endif

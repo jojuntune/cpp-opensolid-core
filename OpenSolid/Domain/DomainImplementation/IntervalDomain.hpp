@@ -31,17 +31,14 @@ namespace OpenSolid
     private:
         Interval _interval;
     public:
-        OPENSOLID_CORE_EXPORT IntervalDomain(const Interval& interval);
+        IntervalDomain(const Interval& interval);
 
-        OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
-        OPENSOLID_CORE_EXPORT bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        OPENSOLID_CORE_EXPORT VectorXI bounds() const;
+        Set<Geometry> boundaries() const override;
 
-        OPENSOLID_CORE_EXPORT Domain transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
+        bool isEmpty() const override;
+        int dimensions() const override;
+        VectorXI bounds() const override;
+        Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
     };
 }
 

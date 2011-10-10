@@ -194,7 +194,7 @@ namespace OpenSolid
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate evaluated
-        _evaluated.implementation()->evaluate(argument_map, result_map);
+        _evaluated.evaluate(argument_map, result_map);
     }
     
     template<class EvaluatedType, class ArgumentType>
@@ -235,7 +235,7 @@ namespace OpenSolid
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate evaluated
-        _evaluated.implementation()->evaluate(argument_map, result_map);
+        _evaluated.evaluate(argument_map, result_map);
     }
     
     template <class EvaluatedType>
@@ -276,7 +276,7 @@ namespace OpenSolid
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate evaluated
-        _evaluated.implementation()->evaluate(argument_map, result_map);
+        _evaluated.evaluate(argument_map, result_map);
     }
     
     template <class EvaluatedType>
@@ -317,7 +317,7 @@ namespace OpenSolid
         ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
         
         // Evaluate evaluated
-        _evaluated.implementation()->evaluate(argument_map, result_map);
+        _evaluated.evaluate(argument_map, result_map);
     }
     
     template <class EvaluatedType>

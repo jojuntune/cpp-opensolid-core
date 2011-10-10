@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__TEMPLATE_HPP
 #define OPENSOLID__TEMPLATE_HPP
 
+#include <OpenSolid/config.hpp>
+
 namespace OpenSolid
 {
     class Template

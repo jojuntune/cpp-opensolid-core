@@ -271,9 +271,8 @@ namespace OpenSolid
     };
 
     template<>
-    class Conversion<Interval, VectorXI>
+    struct Conversion<Interval, VectorXI>
     {
-    public:
         VectorXI operator()(const Interval& interval) const;
     };
 

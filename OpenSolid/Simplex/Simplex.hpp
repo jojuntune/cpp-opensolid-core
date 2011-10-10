@@ -115,9 +115,9 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT bool operator==(const Simplex<dimensions_, size_>& other) const;
     };
     
-    typedef Simplex<1, 2> LineSegment1d;
-    typedef Simplex<2, 2> LineSegment2d;
-    typedef Simplex<3, 2> LineSegment3d;
+    typedef Simplex<1, 2> Line1d;
+    typedef Simplex<2, 2> Line2d;
+    typedef Simplex<3, 2> Line3d;
     typedef Simplex<2, 3> Triangle2d;
     typedef Simplex<3, 3> Triangle3d;
     typedef Simplex<3, 4> Tetrahedron3d;
