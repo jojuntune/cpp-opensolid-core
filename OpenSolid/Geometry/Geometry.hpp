@@ -115,7 +115,7 @@ namespace OpenSolid
 {
     template <class DerivedType>
     Geometry::Geometry(const EigenBase<DerivedType>& vector) {
-        *this = Geometry::(VectorXd(vector));
+        *this = Geometry(VectorXd(vector));
     }
 
     template <int dimensions_, int size_>

@@ -35,18 +35,18 @@ namespace OpenSolid
     public:
         OPENSOLID_CORE_EXPORT ConstantGeometry(const VectorXd& vector);
 
-        Function function() const override;
-        Domain domain() const override;
+        Function function() const;
+        Domain domain() const;
         
-        int parameters() const override;
-        int dimensions() const override;
-        void evaluate(const MapXcd& parameter_values, MapXd& results) const override;
-        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const override;
-        bool isConstant() const override;
-        VectorXI bounds() const override;
+        int parameters() const;
+        int dimensions() const;
+        void evaluate(const MapXcd& parameter_values, MapXd& results) const;
+        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
+        bool isConstant() const;
+        VectorXI bounds() const;
         Set<Geometry> boundaries() const;
-        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
-        Geometry reversed() const override;
+        Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+        Geometry reversed() const;
     };
 }
 

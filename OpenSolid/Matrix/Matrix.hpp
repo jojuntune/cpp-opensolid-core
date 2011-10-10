@@ -192,6 +192,9 @@ namespace Eigen
 
 namespace OpenSolid
 {
+    template <class ArgumentType>
+    class TransformableMatrix;
+
     template <int dimensions_, int size_>
     class Datum;
 };
