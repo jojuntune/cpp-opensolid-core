@@ -33,7 +33,7 @@ namespace OpenSolid
     public:
         GenericDomain(const Set<Geometry>& boundaries);
 
-        Set<Geometry> boundaries() const override;
+        Set<Geometry> boundaries() const;
     };
 }
 

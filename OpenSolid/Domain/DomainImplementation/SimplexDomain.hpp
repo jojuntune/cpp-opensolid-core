@@ -33,12 +33,12 @@ namespace OpenSolid
     public:
         SimplexDomain(const SimplexXd& simplex);
 
-        Set<Geometry> boundaries() const override;
+        Set<Geometry> boundaries() const;
 
-        bool isEmpty() const override;
-        int dimensions() const override;
-        VectorXI bounds() const override;
-        Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const override;
+        bool isEmpty() const;
+        int dimensions() const;
+        VectorXI bounds() const;
+        Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };
 }
 

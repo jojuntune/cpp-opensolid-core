@@ -200,7 +200,7 @@ namespace OpenSolid
     template<class EvaluatedType, class ArgumentType>
     inline typename ArgumentType::Scalar Evaluation<EvaluatedType, ArgumentType>::value() const {
         Matrix<typename ArgumentType::Scalar, 1, 1> result;
-        evalTo(result);
+        this->evalTo(result);
         return result.value();
     }
     
@@ -241,13 +241,13 @@ namespace OpenSolid
     template <class EvaluatedType>
     inline double Evaluation<EvaluatedType, int>::value() const {
         Matrix<double, 1, 1> result;
-        evalTo(result);
+        this->evalTo(result);
         return result.value();
     }
     
     template <class EvaluatedType>
     inline bool Evaluation<EvaluatedType, int>::isZero(double precision) const {
-        return eval().isZero(precision);
+        return this->eval().isZero(precision);
     }
     
     template <class EvaluatedType>
@@ -282,13 +282,13 @@ namespace OpenSolid
     template <class EvaluatedType>
     inline double Evaluation<EvaluatedType, double>::value() const {
         Matrix<double, 1, 1> result;
-        evalTo(result);
+        this->evalTo(result);
         return result.value();
     }
     
     template <class EvaluatedType>
     inline bool Evaluation<EvaluatedType, double>::isZero(double precision) const {
-        return eval().isZero(precision);
+        return this->eval().isZero(precision);
     }
     
     template <class EvaluatedType>
@@ -323,13 +323,13 @@ namespace OpenSolid
     template <class EvaluatedType>
     inline Interval Evaluation<EvaluatedType, Interval>::value() const {
         Matrix<Interval, 1, 1> result;
-        evalTo(result);
+        this->evalTo(result);
         return result.value();
     }
     
     template <class EvaluatedType>
     inline bool Evaluation<EvaluatedType, Interval>::isZero(double precision) const {
-        return eval().isZero(precision);
+        return this->eval().isZero(precision);
     }
 }
 
