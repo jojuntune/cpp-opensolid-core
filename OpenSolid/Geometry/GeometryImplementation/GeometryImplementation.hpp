@@ -22,8 +22,11 @@
 #define OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
 
 #include <OpenSolid/config.hpp>
+
 #include <OpenSolid/Common/ReferenceCounted.hpp>
 #include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Set/Set.hpp>
 
 namespace OpenSolid
 {

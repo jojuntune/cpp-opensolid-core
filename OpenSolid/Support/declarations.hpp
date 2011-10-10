@@ -33,12 +33,6 @@ namespace OpenSolid
 
     template <class Type>
     class Set;
-
-    template <class DerivedType, class ResultType>
-    class Transformable;
-    
-    template <class ArgumentType>
-    class TransformableMatrix;
     
     template <int dimensions_>
     class Axis;

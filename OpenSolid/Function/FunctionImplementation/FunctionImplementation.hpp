@@ -21,9 +21,10 @@
 #ifndef OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 #define OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 
+#include <OpenSolid/config.hpp>
+
 #include <OpenSolid/Common/ReferenceCounted.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
 {

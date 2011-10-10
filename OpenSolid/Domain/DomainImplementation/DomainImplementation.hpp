@@ -22,6 +22,7 @@
 #define OPENSOLID__DOMAINIMPLEMENTATION_HPP
 
 #include <OpenSolid/config.hpp>
+
 #include <OpenSolid/Common/ReferenceCounted.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Set/Set.hpp>

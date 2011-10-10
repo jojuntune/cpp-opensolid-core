@@ -29,8 +29,8 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
+#include <OpenSolid/Support/declarations.hpp>
 
 namespace OpenSolid
 {

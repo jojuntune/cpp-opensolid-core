@@ -24,7 +24,7 @@
 #include <boost/functional/hash.hpp>
 #include <boost/geometry.hpp>
 
-#include <OpenSolid/declarations.hpp>
+#include <OpenSolid/Support/declarations.hpp>
 #include <OpenSolid/Support/STL.hpp>
 
 namespace boost

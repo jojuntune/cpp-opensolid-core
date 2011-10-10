@@ -21,8 +21,12 @@
 #ifndef OPENSOLID__DOMAINCONSTRUCTORS_HPP
 #define OPENSOLID__DOMAINCONSTRUCTORS_HPP
 
+#include <OpenSolid/config.hpp>
+
 namespace OpenSolid
 {
+    class Domain;
+
     class DomainConstructors
     {
     public:

@@ -38,7 +38,8 @@
 
 namespace OpenSolid
 {
-    class FunctionImplementation;
+    class Domain;
+    class Geometry;
 
     class Function :
         public FunctionConstructors,

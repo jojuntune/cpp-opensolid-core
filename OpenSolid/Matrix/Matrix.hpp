@@ -21,7 +21,6 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
@@ -190,6 +189,12 @@ namespace Eigen
         ) const;
     };
 }
+
+namespace OpenSolid
+{
+    template <int dimensions_, int size_>
+    class Datum;
+};
 
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0

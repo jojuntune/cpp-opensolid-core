@@ -21,13 +21,15 @@
 #ifndef OPENSOLID__TRANSFORMABLE_HPP
 #define OPENSOLID__TRANSFORMABLE_HPP
 
-#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
+    template <int dimensions_, int axes_>
+    class Datum;
+
     template <class DerivedType, class ResultType = DerivedType>
     class Transformable
     {

@@ -97,7 +97,6 @@
     SET(OPENSOLID_FILES
         bindTemplate.cpp
         config.hpp
-        declarations.hpp
         Template.cpp
         Template.hpp
         TemplateTests.hpp
@@ -308,7 +307,7 @@
     SET(SIMPLEX_SOURCES Simplex/Simplex.cpp)
 
     # Support directory files
-    SET(SUPPORT_HEADERS Support/Boost.hpp Support/STL.hpp)
+    SET(SUPPORT_HEADERS Support/declarations.hpp Support/Boost.hpp Support/STL.hpp)
     SET(SUPPORT_SOURCES)
     
 ########## Set up source groups for Visual Studio ##########

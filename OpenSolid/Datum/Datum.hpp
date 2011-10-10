@@ -22,7 +22,6 @@
 #define OPENSOLID__DATUM_HPP
 
 #include <OpenSolid/config.hpp>
-#include <OpenSolid/declarations.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
