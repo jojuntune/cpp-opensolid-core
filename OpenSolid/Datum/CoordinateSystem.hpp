@@ -41,8 +41,8 @@ namespace OpenSolid
         using Datum<dimensions_, axes_>::operator=;
     };
     
-    typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystem2d;
-    typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystem3d;
+    typedef CoordinateSystem<2, 2> CoordinateSystem2d;
+    typedef CoordinateSystem<3, 3> CoordinateSystem3d;
     typedef CoordinateSystem<Dynamic, Dynamic> CoordinateSystemXd;
 }
 
