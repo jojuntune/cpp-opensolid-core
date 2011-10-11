@@ -275,6 +275,7 @@
     SET(PYTHON_HEADERS Python/BoostPython.hpp Python/check.hpp)
     SET(PYTHON_SOURCES
         Python/bindComparison.cpp
+        Python/bindDatum.cpp
         Python/bindError.cpp
         Python/bindFunction.cpp
         Python/bindDouble.cpp

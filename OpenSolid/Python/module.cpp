@@ -26,6 +26,7 @@ using namespace boost::python;
 namespace OpenSolid
 {
     void bindFunction();
+    void bindDatum();
     void bindMatrix();
     void bindSpecificMatrixSizes();
     void bindInterval();
@@ -35,6 +36,7 @@ namespace OpenSolid
 
     BOOST_PYTHON_MODULE(opensolid) {
         bindFunction();
+        bindDatum();
         bindMatrix();
         bindSpecificMatrixSizes();
         bindInterval();

@@ -18,9 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Scalar/Interval.hpp>
 
 #include "check.hpp"
 
@@ -49,7 +50,7 @@ namespace OpenSolid
     }
     
     // result.first: any coefficient *is* an Interval
-    // result.second: all coefficients are convertible to Interval
+    // result.second: all coefficients are *convertible* to Interval
     std::pair<bool, bool> checkIntervalCoeffs(PyObject* argument, PyTypeObject* type) {
         if (PyTuple_Check(argument) || PyGen_Check(argument)) {
             int size = PySequence_Size(argument);
@@ -790,6 +791,30 @@ namespace OpenSolid
         return first_argument != second_argument;
     }
 
+    MatrixXd* mulXdDatum(const MatrixXd& matrix, const DatumXd& datum) {
+        return new MatrixXd(matrix * datum);
+    }
+
+    MatrixXI* mulXIDatum(const MatrixXI& matrix, const DatumXd& datum) {
+        return new MatrixXI(matrix * datum);
+    }
+
+    MatrixXd* divXdDatum(const MatrixXd& matrix, const DatumXd& datum) {
+        return new MatrixXd(matrix / datum);
+    }
+
+    MatrixXI* divXIDatum(const MatrixXI& matrix, const DatumXd& datum) {
+        return new MatrixXI(matrix / datum);
+    }
+
+    MatrixXd* modXdDatum(const MatrixXd& matrix, const DatumXd& datum) {
+        return new MatrixXd(matrix % datum);
+    }
+
+    MatrixXI* modXIDatum(const MatrixXI& matrix, const DatumXd& datum) {
+        return new MatrixXI(matrix % datum);
+    }
+
     template <class MatrixType>
     struct MatrixPickleSuite : public pickle_suite
     {
@@ -886,14 +911,19 @@ namespace OpenSolid
             .def("__mul__", &mulXdd, manage_new_matrix)
             .def("__rmul__", &rmulXdI, manage_new_matrix)
             .def("__rmul__", &rmulXdd, manage_new_matrix)
+            .def("__div__", &divXdDatum, manage_new_matrix)
             .def("__div__", &divXdI, manage_new_matrix)
             .def("__div__", &divXdd, manage_new_matrix)
+            .def("__mul__", &mulXdDatum, manage_new_matrix)
             .def("__mul__", &mulXdXI, manage_new_matrix)
             .def("__mul__", &mulXdXd, manage_new_matrix)
+            .def("__mod__", &modXdDatum, manage_new_matrix)
             .def("__eq__", &eqXdXd)
             .def("__eq__", &eqXdXI)
             .def("__ne__", &neXdXd)
             .def("__ne__", &neXdXI)
+            .def(self * DatumXd())
+            .def(self / DatumXd())
             .def(self_ns::str(self))
             .def_pickle(MatrixPickleSuite<MatrixXd>());
 
@@ -976,10 +1006,13 @@ namespace OpenSolid
             .def("__mul__", &mulXId, manage_new_matrix)
             .def("__rmul__", &rmulXII, manage_new_matrix)
             .def("__rmul__", &rmulXId, manage_new_matrix)
+            .def("__div__", &divXIDatum, manage_new_matrix)
             .def("__div__", &divXII, manage_new_matrix)
             .def("__div__", &divXId, manage_new_matrix)
+            .def("__mul__", &mulXIDatum, manage_new_matrix)
             .def("__mul__", &mulXIXI, manage_new_matrix)
             .def("__mul__", &mulXIXd, manage_new_matrix)
+            .def("__mod__", &modXIDatum, manage_new_matrix)
             .def("__eq__", &eqXIXd)
             .def("__eq__", &eqXIXI)
             .def("__ne__", &neXIXd)
