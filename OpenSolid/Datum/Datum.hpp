@@ -180,7 +180,8 @@ namespace OpenSolid
         double angle,
         const Vector2d& point
     ) const {
-        Matrix2d matrix(Rotation2Dd(angle));
+        Matrix2d matrix;
+        matrix = Rotation2Dd(angle);
         return derived().transformed(matrix, point - matrix * point);
     }
 
@@ -189,19 +190,20 @@ namespace OpenSolid
         double angle,
         const Datum<dimensions_, axes_>& axis
     ) const {
-        Matrix3d matrix(AngleAxisd(angle, axis.direction()));
+        Matrix3d matrix;
+        matrix = AngleAxisd(angle, axis.direction());
         return derived().transformed(matrix, axis.origin() - matrix * axis.origin());
     }
 
     template <class DerivedType, class ResultType> template <int dimensions_, int axes_>
     inline ResultType Transformable<DerivedType, ResultType>::mirrored(
-        const Datum<dimensions_, axes_>& datum
+        const Datum<dimensions_, axes_>& plane
     ) const {
-        Matrix<double, dimensions_, 1> normal = datum.normal();
+        Matrix<double, dimensions_, 1> normal = plane.normal();
         typedef Eigen::Matrix<double, dimensions_, dimensions_> Matrix;
         Matrix normal_matrix = 2 * normal * normal.transpose();
-        Matrix matrix = Matrix::Identity(datum.dimensions(), datum.dimensions()) - normal_matrix;
-        return derived().transformed(matrix, normal_matrix * datum.origin());
+        Matrix matrix = Matrix::Identity(plane.dimensions(), plane.dimensions()) - normal_matrix;
+        return derived().transformed(matrix, normal_matrix * plane.origin());
     }
     
     template <int dimensions_, int axes_>

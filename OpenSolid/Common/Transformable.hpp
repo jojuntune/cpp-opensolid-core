@@ -51,7 +51,7 @@ namespace OpenSolid
         ResultType rotated(double angle, const Datum<dimensions_, axes_>& axis) const;
 
         template <int dimensions_, int axes_>
-        ResultType mirrored(const Datum<dimensions_, axes_>& datum) const;
+        ResultType mirrored(const Datum<dimensions_, axes_>& plane) const;
     };
 
     template <class ArgumentType>
