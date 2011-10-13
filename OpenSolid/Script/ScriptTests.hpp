@@ -493,29 +493,36 @@ public:
         c(1, 0) = 8;
         c(1, 1) = 9;
         Vector2I d(Interval(10, 11), Interval(12, 13));
+        Frame3d e = Frame3d().rotated(M_PI / 4, Frame3d().zAxis()).translated(Vector3d(0, 1, 0));
         script.run("import pickle");
         script.set("a", a);
         script.set("b", b);
         script.set<MatrixXd>("c", c);
         script.set<MatrixXI>("d", d);
+        script.set<DatumXd>("e", e);
         script.run("a_pickled = pickle.dumps(a)");
         script.run("b_pickled = pickle.dumps(b)");
         script.run("c_pickled = pickle.dumps(c)");
         script.run("d_pickled = pickle.dumps(d)");
+        script.run("e_pickled = pickle.dumps(e)");
         script.run("a_unpickled = pickle.loads(a_pickled)");
         script.run("b_unpickled = pickle.loads(b_pickled)");
         script.run("c_unpickled = pickle.loads(c_pickled)");
         script.run("d_unpickled = pickle.loads(d_pickled)");
+        script.run("e_unpickled = pickle.loads(e_pickled)");
         double a_extracted = script.get<double>("a_unpickled");
         Interval b_extracted = script.get<Interval>("b_unpickled");
         Matrix2d c_extracted = script.get<MatrixXd>("c_unpickled");
         Vector2I d_extracted = script.get<MatrixXI>("d_unpickled");
+        Frame3d e_extracted = script.get<DatumXd>("e_unpickled");
         TS_ASSERT(a - a_extracted == Zero());
         TS_ASSERT(b.lower() - b_extracted.lower() == Zero());
         TS_ASSERT(b.upper() - b_extracted.upper() == Zero());
         TS_ASSERT((c - c_extracted).isZero());
         TS_ASSERT((d.cwiseLower() - d_extracted.cwiseLower()).isZero());
         TS_ASSERT((d.cwiseUpper() - d_extracted.cwiseUpper()).isZero());
+        TS_ASSERT((e.origin() - e_extracted.origin()).isZero());
+        TS_ASSERT((e.basis() - e_extracted.basis()).isZero());
     }
 
     void testOverloadOrder() {

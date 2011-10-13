@@ -180,6 +180,21 @@ namespace OpenSolid
         const MatrixXd& second_vector
     ) {return Plane3d(origin, first_vector, second_vector);}
 
+    struct DatumPickleSuite : public pickle_suite
+    {
+        static tuple getinitargs(const DatumXd&) {return tuple();}
+
+        static tuple getstate(const DatumXd& datum) {
+            return make_tuple(MatrixXd(datum.origin()), MatrixXd(datum.basis()));
+        }
+
+        static void setstate(DatumXd& datum, tuple state) {
+            VectorXd origin = MatrixXd(extract<MatrixXd>(state[0]));
+            MatrixXd basis = extract<MatrixXd>(state[1]);
+            datum = CoordinateSystemXd(origin, basis);
+        }
+    };
+
     void bindDatum() {
         class_<DatumXd>("DatumXd")
             .def("origin", &origin)
@@ -231,7 +246,8 @@ namespace OpenSolid
             .def("frame", &DatumXd::frame)
             .def(self * self)
             .def(self / self)
-            .def(self % self);
+            .def(self % self)
+            .def_pickle(DatumPickleSuite());
         def("Axis2d", &axis2d);
         def("Axis3d", &axis3d);
         def("CoordinateSystem2d", &coordinateSystem2d);

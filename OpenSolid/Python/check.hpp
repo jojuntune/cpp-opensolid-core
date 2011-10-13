@@ -185,6 +185,9 @@ namespace OpenSolid
         
         template <>
         inline std::string typeName<MatrixXI>() {return "MatrixXI";}
+
+        template <>
+        inline std::string typeName<DatumXd>() {return "DatumXd";}
         
         template <>
         inline std::string typeName<Function>() {return "Function";}
