@@ -27,37 +27,6 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    struct ConvertListToInterval
-    {
-        ConvertListToInterval() {
-            converter::registry::push_back(&convertible, &construct, type_id<Interval>());
-        }
-
-        static void* convertible(PyObject* argument) {
-            return PyList_Check(argument) ? argument : nullptr;
-        }
-
-        static void construct(
-            PyObject* argument_pointer,
-            converter::rvalue_from_python_stage1_data* data
-        ) {
-            object argument(handle<>(borrowed(argument_pointer)));
-            void* storage =
-                ((converter::rvalue_from_python_storage<Interval>*) data)->storage.bytes;
-            if (len(argument) == 1) {
-                checkCompatiblePythonType<double>(argument[0], __func__);
-                double value = extract<double>(argument[0]);
-                new (storage) Interval(value);
-            } else {
-                checkSameSize(len(argument), 2, __func__);
-                checkCompatiblePythonType<double>(argument[0], __func__);
-                checkCompatiblePythonType<double>(argument[1], __func__);
-                new (storage) Interval(extract<double>(argument[0]), extract<double>(argument[1]));
-            }
-            data->convertible = storage;
-        }
-    };
-
     tuple bisected(const Interval& argument) {
         std::pair<Interval, Interval> bisected = argument.bisected();
         return make_tuple(bisected.first, bisected.second);
@@ -219,7 +188,6 @@ namespace OpenSolid
             .def_pickle(IntervalPickleSuite());
         
         implicitly_convertible<double, Interval>();
-        ConvertListToInterval();
         
         def("abs", (Interval (*)(const Interval&)) &abs);
         def("sqrt", (Interval (*)(const Interval&)) &sqrt);

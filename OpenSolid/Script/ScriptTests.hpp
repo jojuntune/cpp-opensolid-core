@@ -143,7 +143,7 @@ public:
         script.set("v", MatrixXd(Vector3d(1, 2, 3)));
         script.set("a", 4.0);
         script.set("b", 5.0);
-        Vector3d result = script.get<MatrixXd>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
+        Vector3d result = script.get<MatrixXd>("v + a * Vector([1, 0, 0]) + b * Vector([0, 1, 0])");
         TS_ASSERT((result - Vector3d(5, 7, 3)).isZero());
     }
     
@@ -153,7 +153,7 @@ public:
         script.set("v", MatrixXI(vector));
         script.set("a", Interval(4.0, 5.0));
         script.set("b", Interval(5.0, 6.0));
-        Vector3I result = script.get<MatrixXI>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
+        Vector3I result = script.get<MatrixXI>("v + a * Vector([1, 0, 0]) + b * Vector([0, 1, 0])");
         TS_ASSERT_EQUALS(result.x().lower(), 5.0);
         TS_ASSERT_EQUALS(result.x().upper(), 7.0);
         TS_ASSERT_EQUALS(result.y().lower(), 7.0);
@@ -166,7 +166,7 @@ public:
         Script script;
         std::string text =
             "a = Interval(1)                    \n"
-            "result = Vector3d(1, 0, 0).dot(a)  \n"
+            "result = Vector([1, 0, 0]).dot(a)  \n"
         ;
         TS_ASSERT_THROWS(script.run(text), Error);
         try {
@@ -198,8 +198,8 @@ public:
     void testMultilineEvaluate() {
         Script script;
         std::string text =
-            "a = Vector3d(1, 2, 3)  \n"
-            "b = Vector3d(4, 5, 6)  \n"
+            "a = Vector([1, 2, 3])  \n"
+            "b = Vector([4, 5, 6])  \n"
             "a.dot(b)               \n"
         ;
         TS_ASSERT_EQUALS(script.get<double>(text), 32.0);
@@ -215,8 +215,8 @@ public:
     void testErrorTranslation() {
         Script script;
         std::string text =
-            "a = Vector2d(1, 2)    \n"
-            "b = Vector3d(1, 2, 3) \n"
+            "a = Vector([1, 2])    \n"
+            "b = Vector([1, 2, 3]) \n"
             "c = a + b             \n"
         ;
         TS_ASSERT_THROWS(script.run(text), Error);
@@ -231,7 +231,7 @@ public:
     
     void testLinSpaced() {
         Script script;
-        MatrixXd result = script.get<MatrixXd>("RowVectorXd.LinSpaced(3, Interval(0, 1))");
+        MatrixXd result = script.get<MatrixXd>("RowVector.LinSpaced(3, Interval(0, 1))");
         TS_ASSERT_EQUALS(result, RowVectorXd::LinSpaced(3, Interval(0, 1)));
         TS_ASSERT_EQUALS(result, RowVector3d(0, 0.5, 1));
     }
@@ -251,7 +251,7 @@ public:
     
     void testExtraction() {
         Script script;
-        std::string expression = "Vector2d(1, 2) + Vector2I([1, 2], [2, 3])";
+        std::string expression = "Vector([1, 2]) + Vector([Interval(1, 2), Interval(2, 3)])";
         TS_ASSERT_THROWS(script.get<MatrixXd>(expression), Error);
         try {
             script.get<MatrixXd>(expression);
@@ -267,14 +267,14 @@ public:
         script.run("u = Function.Parameter(2, 0)");
         script.run("v = Function.Parameter(2 ,1)");
         script.run("f = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0");
-        double result = script.get<double>("f((1, 2))[0]");
+        double result = script.get<double>("f(Vector([1, 2]))[0]");
         TS_ASSERT_EQUALS(result, 5.0);
-        result = script.get<double>("f.derivative(0)((3, 4)).value()");
+        result = script.get<double>("f.derivative(0)(Vector([3, 4])).value()");
         TS_ASSERT_EQUALS(result, 6.0);
-        result = script.get<double>("f.derivative(1).derivative(1)((5, 6)).value()");
+        result = script.get<double>("f.derivative(1).derivative(1)(Vector([5, 6])).value()");
         TS_ASSERT_EQUALS(result, 2.0);
         std::string expression =
-            "f.derivative(0)(([1, 2], [3, 4])).value()";
+            "f.derivative(0)(Vector([Interval(1, 2), Interval(3, 4)])).value()";
         TS_ASSERT_EQUALS(script.get<Interval>(expression).lower(), 2);
         TS_ASSERT_EQUALS(script.get<Interval>(expression).upper(), 4);
     }
@@ -293,16 +293,16 @@ public:
     
     void testMatrixOverlap() {
         Script script;
-        script.run("u = Vector3d(1, 2, 3)");
-        script.run("v = Vector3I([1, 2], [2, 3], [3, 4])");
+        script.run("u = Vector([1, 2, 3])");
+        script.run("v = Vector([Interval(1, 2), Interval(2, 3), Interval(3, 4)])");
         TS_ASSERT(script.get<bool>("v.contains(u)"));
         TS_ASSERT(!script.get<bool>("v.contains(3 * u)"));
     }
     
     void testMatrixHull() {
         Script script;
-        script.run("u = Vector3d(1, 2, 3)");
-        script.run("v = Vector3I([1, 2], [2, 3], [3, 4])");
+        script.run("u = Vector([1, 2, 3])");
+        script.run("v = Vector([Interval(1, 2), Interval(2, 3), Interval(3, 4)])");
         script.run("result = (3 * u).hull(v)");
         TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseLower()"), Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseUpper()"), Vector3d(3, 6, 9));
@@ -313,9 +313,9 @@ public:
     
     void testMatrixIntersection() {
         Script script;
-        script.run("v = Vector3I([1, 2], [2, 3], [3, 4])");
-        script.run("x = (v + Vector3I.Constant(0.5)).intersection(v)");
-        script.run("y = Vector3I([1.5, 2], [2.5, 3], [3.5, 4])");
+        script.run("v = Vector([Interval(1, 2), Interval(2, 3), Interval(3, 4)])");
+        script.run("x = (v + Vector.Constant(3, 0.5)).intersection(v)");
+        script.run("y = Vector([Interval(1.5, 2), Interval(2.5, 3), Interval(3.5, 4)])");
         TS_ASSERT_EQUALS(
             script.get<MatrixXd>("x.cwiseLower()"),
             script.get<MatrixXd>("y.cwiseLower()")
@@ -350,8 +350,8 @@ public:
         scope s = script1.environment();
         def("twice", twice);
 
-        TS_ASSERT_EQUALS(script1.get<MatrixXd>("twice((1, 2, 3))"), Vector3d(2, 4, 6));
-        TS_ASSERT_THROWS(script2.run("twice((1, 2, 3))"), Error);
+        TS_ASSERT_EQUALS(script1.get<MatrixXd>("twice(Vector([1, 2, 3]))"), Vector3d(2, 4, 6));
+        TS_ASSERT_THROWS(script2.run("twice(Vector([1, 2, 3]))"), Error);
     }
     
     void testCustomClass() {
@@ -378,15 +378,15 @@ public:
     
     void testTranspose() {
         Script script;
-        MatrixXd a = script.get<MatrixXd>("Vector3d(1, 2, 3).transpose()");
-        MatrixXd b = script.get<MatrixXd>("RowVector3d(1, 2, 3)");
+        MatrixXd a = script.get<MatrixXd>("Vector([1, 2, 3]).transpose()");
+        MatrixXd b = script.get<MatrixXd>("RowVector([1, 2, 3])");
         TS_ASSERT_EQUALS(a, b);
     }
     
     void testMatrixIndexing() {
         Script script;
-        script.run("a = MatrixXd(((1, 2, 3), (4, 5, 6), (7, 8, 9))).transpose()");
-        script.run("b = Vector3d(10, 11, 12)");
+        script.run("a = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).transpose()");
+        script.run("b = Vector([10, 11, 12])");
         TS_ASSERT_EQUALS(script.get<double>("b[-1]"), 12.0);
         TS_ASSERT_EQUALS(script.get<MatrixXd>("b[:]"), Vector3d(10, 11, 12));
         TS_ASSERT_EQUALS(script.get<MatrixXd>("b[-2:]"), Vector2d(11, 12));
@@ -405,10 +405,10 @@ public:
     
     void testMatrixEquality() {
         Script script;
-        script.run("a1 = Vector2d(1, 2)");
-        script.run("a2 = Vector2d(1, 2)");
-        script.run("b1 = Vector2I(1, 2)");
-        script.run("b2 = Vector2I(1, 2)");
+        script.run("a1 = Vector([1, 2])");
+        script.run("a2 = Vector([1, 2])");
+        script.run("b1 = Vector([Interval(1), Interval(2)])");
+        script.run("b2 = Vector([Interval(1), Interval(2)])");
         TS_ASSERT(script.get<bool>("(a1 - a2).isZero()"));
         TS_ASSERT(script.get<bool>("not (a1 - 2 * a2).isZero()"));
         TS_ASSERT(script.get<bool>("(b1 - b2).isZero()"));
@@ -426,11 +426,13 @@ public:
             Vector3d(0, 0.5, 0) * Function::Parameter(2, 1);
         script.set("f2", f2);
         TS_ASSERT(script.get<double>("f1(2).value()") - 6 == Zero());
-        Interval interval_bounds = script.get<Interval>("f1([2, 3]).value()");
+        Interval interval_bounds = script.get<Interval>("f1(Interval(2, 3)).value()");
         TS_ASSERT(interval_bounds.lower() - 6 == Zero());
         TS_ASSERT(interval_bounds.upper() - 9 == Zero());
-        TS_ASSERT((script.get<MatrixXd>("f2((1, 1))") - Vector3d(2, 0.5, 0)).isZero());
-        MatrixXI matrix_bounds = script.get<MatrixXI>("f2(([1, 2], [2, 3]))");
+        TS_ASSERT((script.get<MatrixXd>("f2(Vector([1, 1]))") - Vector3d(2, 0.5, 0)).isZero());
+        MatrixXI matrix_bounds = script.get<MatrixXI>(
+            "f2(Vector([Interval(1, 2), Interval(2, 3)]))"
+        );
         TS_ASSERT((matrix_bounds.cwiseLower() - Vector3d(2, 1, 0)).isZero());
         TS_ASSERT((matrix_bounds.cwiseUpper() - Vector3d(4, 1.5, 0)).isZero());
     }
@@ -441,9 +443,9 @@ public:
             script.get<std::string>("str(opensolid)"),
             "<module 'opensolid' (built-in)>"
         );
-        script.run("f = opensolid.Function.Parameter() * opensolid.Vector3d(1, 2, 3)");
+        script.run("f = opensolid.Function.Parameter() * opensolid.Vector([1, 2, 3])");
         MatrixXI bounds = script.get<MatrixXI>(
-            "f(opensolid.Vector2I([1, 2], 0))"
+            "f(opensolid.Vector([opensolid.Interval(1, 2), 0]))"
         );
         TS_ASSERT((bounds.cwiseLower() - Vector3d(1, 2, 3)).isZero());
         TS_ASSERT((bounds.cwiseUpper() - Vector3d(2, 4, 6)).isZero());
@@ -462,10 +464,10 @@ public:
 
     void testComparisons() {
         Script script;
-        script.run("a1 = Vector3d(1, 2, 3)");
-        script.run("a2 = Vector3d(1, 2, 3)");
-        script.run("b1 = Vector3I(1, 2, 3)");
-        script.run("b2 = Vector3I(1, 2, 3)");
+        script.run("a1 = Vector([1, 2, 3])");
+        script.run("a2 = Vector([1, 2, 3])");
+        script.run("b1 = Vector([Interval(1), 2, 3])");
+        script.run("b2 = Vector([1, Interval(2), 3])");
 
         TS_ASSERT(script.get<bool>("a1 == a2"));
         TS_ASSERT(script.get<bool>("(a1 - a2).isZero()"));
@@ -535,9 +537,9 @@ public:
         std::string text =
             "x = Function.Parameter() \n"
             "f = x * x * x - 4 * x * x + 5 * x - 2\n"
-            "roots = f.roots([0, 3])\n"
-            "derivative_roots = f.derivative().roots([0, 3])\n"
-            "second_derivative_roots = f.derivative().derivative().roots([0, 3])\n"
+            "roots = f.roots(Interval(0, 3))\n"
+            "derivative_roots = f.derivative().roots(Interval(0, 3))\n"
+            "second_derivative_roots = f.derivative().derivative().roots(Interval(0, 3))\n"
         ;
         script.run(text);
         TS_ASSERT((script.get<MatrixXd>("roots") - RowVector2d(1, 2)).isZero());
@@ -548,25 +550,24 @@ public:
     void testDatum() {
         Script script;
         script.run("import math");
-        script.run("vectors = MatrixXd(((1, 1, 0), (-1, 1, 0)))");
-        script.run("frame = Frame3d((1, 1, 1), ((1, 1, 0), (-1, 1, 0)))");
-        script.run("product = Vector3d(1, 1, 1) * frame");
-        TS_ASSERT(script.get<bool>("(product - Vector3d(1, 1 + sqrt(2), 2)).isZero()"));
-        script.run("product = Vector3d(1, 1, 1) * frame.orientation()");
-        TS_ASSERT(script.get<bool>("(product - Vector3d(0, sqrt(2), 1)).isZero()"));
-        script.run("quotient = Vector3d(1, 0, 0) / frame");
+        script.run("frame = Frame3d(Vector([1, 1, 1]), Matrix([[1, 1, 0], [-1, 1, 0]]))");
+        script.run("product = Vector([1, 1, 1]) * frame");
+        TS_ASSERT(script.get<bool>("(product - Vector([1, 1 + sqrt(2), 2])).isZero()"));
+        script.run("product = Vector([1, 1, 1]) * frame.orientation()");
+        TS_ASSERT(script.get<bool>("(product - Vector([0, sqrt(2), 1])).isZero()"));
+        script.run("quotient = Vector([1, 0, 0]) / frame");
         TS_ASSERT(
-            script.get<bool>("(quotient - Vector3d(-1 / sqrt(2), -1 / sqrt(2), -1)).isZero()")
+            script.get<bool>("(quotient - Vector([-1 / sqrt(2), -1 / sqrt(2), -1])).isZero()")
         );
-        script.run("linear_quotient = Vector3d(1, 0, 0) / frame.orientation()");
+        script.run("linear_quotient = Vector([1, 0, 0]) / frame.orientation()");
         TS_ASSERT(
-            script.get<bool>("(linear_quotient - Vector3d(1 / sqrt(2), -1 / sqrt(2), 0)).isZero()")
+            script.get<bool>("(linear_quotient - Vector([1 / sqrt(2), -1 / sqrt(2), 0])).isZero()")
         );
         script.run("global_frame = Frame3d()");
         script.run(
-            "frame = global_frame.translated((1, 1, 1)).rotated(-math.pi / 2, global_frame.xAxis())"
+            "frame = global_frame.translated(Vector([1, 1, 1])).rotated(-math.pi / 2, global_frame.xAxis())"
         );
-        TS_ASSERT(script.get<bool>("(Vector3d(1, 2, 3) * frame - Vector3d(2, 4, -3)).isZero()"));
+        TS_ASSERT(script.get<bool>("(Vector([1, 2, 3]) * frame - Vector([2, 4, -3])).isZero()"));
     }
 
     /*

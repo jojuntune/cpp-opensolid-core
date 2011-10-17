@@ -55,6 +55,14 @@
     FIND_PACKAGE(PythonLibs REQUIRED)
     INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 
+    # Get site packages directory
+    EXECUTE_PROCESS(
+        COMMAND ${PYTHON_EXECUTABLE}
+        -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"
+        OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
 ########## Set up Boost ##########
 
     FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
@@ -281,7 +289,7 @@
         Python/bindDouble.cpp
         Python/bindInterval.cpp
         Python/bindMatrix.cpp
-        Python/bindSpecificMatrixSizes.cpp
+        Python/bindMatrixConstructors.cpp
         Python/check.cpp
         Python/module.cpp
     )
@@ -408,8 +416,7 @@
 ########## Compile OpenSolidScript library ##########
     
     ADD_LIBRARY(OpenSolidScript SHARED ${SCRIPT_SOURCES})
-    TARGET_LINK_LIBRARIES(
-        OpenSolidScript
+    TARGET_LINK_LIBRARIES(OpenSolidScript
         OpenSolidCore
         opensolid
         ${Boost_LIBRARIES}
@@ -436,16 +443,14 @@
     
 ########## Install Eigen headers ##########
 
-    INSTALL(
-        DIRECTORY ../External/Eigen
+    INSTALL(DIRECTORY ../External/Eigen
         DESTINATION include
         PATTERN "CMakeLists.txt" EXCLUDE
     )
     
 ########## Install OpenSolid headers ##########
     
-    INSTALL(
-        DIRECTORY ../OpenSolid
+    INSTALL(DIRECTORY ../OpenSolid
         DESTINATION include
         FILES_MATCHING PATTERN "*.hpp"
         PATTERN "*Tests.hpp" EXCLUDE
@@ -453,9 +458,12 @@
     
 ########## Install libraries ##########
         
-    INSTALL(
-        TARGETS OpenSolidCore opensolid OpenSolidScript
+    # Install C++ shared libraries
+    INSTALL(TARGETS OpenSolidCore OpenSolidScript opensolid
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
     )
+
+    # Install Python extension module
+    INSTALL(TARGETS opensolid DESTINATION ${PYTHON_SITE_PACKAGES})

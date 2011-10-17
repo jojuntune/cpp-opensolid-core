@@ -29,124 +29,6 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    template <class ScalarType>
-    bool checkCoeffs(PyObject* argument);
-
-    inline bool convertibleToDouble(PyObject* argument) {
-        return PyInt_Check(argument) || PyLong_Check(argument) || PyFloat_Check(argument);
-    }
-
-    template <>
-    bool checkCoeffs<double>(PyObject* argument) {
-        if (PyTuple_Check(argument) || PyGen_Check(argument)) {
-            int size = PySequence_Size(argument);
-            for (int i = 0; i < size; ++i) {
-                if (!checkCoeffs<double>(PySequence_GetItem(argument, i))) {return false;}
-            }
-            return true;
-        } else {
-            return convertibleToDouble(argument);
-        }
-    }
-    
-    // result.first: any coefficient *is* an Interval
-    // result.second: all coefficients are *convertible* to Interval
-    std::pair<bool, bool> checkIntervalCoeffs(PyObject* argument, PyTypeObject* type) {
-        if (PyTuple_Check(argument) || PyGen_Check(argument)) {
-            int size = PySequence_Size(argument);
-            std::pair<bool, bool> result(false, true);
-            for (int i = 0; i < size; ++i) {
-                std::pair<bool, bool> subsequence_result;
-                subsequence_result = checkIntervalCoeffs(PySequence_GetItem(argument, i), type);
-                result.first = result.first || subsequence_result.first;
-                result.second = result.second && subsequence_result.second;
-            }
-            return result;
-        } else {
-            std::pair<bool, bool> result(false, false);
-            result.first = PyObject_TypeCheck(argument, type) || PyList_Check(argument);
-            result.second = convertibleToDouble(argument) || result.first;
-            return result;
-        }
-    }
-
-    template <>
-    bool checkCoeffs<Interval>(PyObject* argument) {
-        PyTypeObject* type = (PyTypeObject*) converter::registered_pytype<Interval>::get_pytype();
-        std::pair<bool, bool> result = checkIntervalCoeffs(argument, type);
-        return result.first && result.second;
-    }
-
-    template <class MatrixType>
-    struct ConvertTupleToMatrix
-    {
-        ConvertTupleToMatrix() {
-            converter::registry::push_back(&convertible, &construct, type_id<MatrixType>());
-        }
-
-        static void* convertible(PyObject* argument) {
-            if (!(PyTuple_Check(argument) || PyGen_Check(argument))) {return nullptr;}
-            if (!checkCoeffs<typename MatrixType::Scalar>(argument)) {return nullptr;}
-            return argument;
-        }
-
-        static void construct(
-            PyObject* argument_pointer,
-            converter::rvalue_from_python_stage1_data* data
-        ) {
-            typedef typename MatrixType::Scalar Scalar;
-            void* storage =
-                ((converter::rvalue_from_python_storage<MatrixType>*) data)->storage.bytes;
-            new (storage) MatrixType();
-            MatrixType& matrix(*(MatrixType*) storage);
-            object argument(handle<>(borrowed(argument_pointer)));
-            int size = len(argument);
-            checkNonZeroValue(size, __func__);
-            object first_item = argument[0];
-            if (extract<Scalar>(first_item).check()) {
-                matrix.resize(size, 1);
-                matrix(0, 0) = extract<Scalar>(first_item);
-                for (int i = 1; i < size; ++i) {
-                    object item = argument[i];
-                    checkCompatiblePythonType<Scalar>(item, __func__);
-                    matrix(i, 0) = extract<Scalar>(item);
-                }
-            } else if (extract<MatrixType>(first_item).check()) {
-                MatrixType first_col = extract<MatrixType>(first_item);
-                checkVectorValue(first_col, __func__);
-                int rows = first_col.size();
-                matrix.resize(rows, size);
-                matrix.col(0) = first_col;
-                for (int j = 1; j < size; ++j) {
-                    object item = argument[j];
-                    checkCompatiblePythonType<MatrixType>(item, __func__);
-                    MatrixType col = extract<MatrixType>(item);
-                    checkVectorValue(col, __func__);
-                    checkSameSize(col.size(), rows, __func__);
-                    matrix.col(j) = col;
-                }
-            } else if (extract<tuple>(first_item).check()) {
-                int rows = len(first_item);
-                checkNonZeroValue(rows, __func__);
-                matrix.resize(rows, size);
-                for (int j = 0; j < size; ++j) {
-                    object item = argument[j];
-                    checkCompatiblePythonType<tuple>(item, __func__);
-                    tuple col = extract<tuple>(item);
-                    checkSameSize(len(col), rows, __func__);
-                    for (int i = 0; i < rows; ++i) {
-                        object coeff = col[i];
-                        checkCompatiblePythonType<Scalar>(coeff, __func__);
-                        matrix(i, j) = extract<Scalar>(coeff);
-                    }
-                }
-            } else {
-                throw Error("ValidNestedListForMatrixConstruction", __func__);
-            }
-            data->convertible = storage;
-        }
-    };
-
     template <class ExpressionType>
     struct ExpressionConverter
     {
@@ -449,6 +331,8 @@ namespace OpenSolid
     
     template <class MatrixType>
     MatrixType* transpose(const MatrixType& argument) {return new MatrixType(argument.transpose());}
+
+    MatrixXd* inverse(const MatrixXd& argument) {return new MatrixXd(argument.inverse());}
     
     double dotXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkVectorValue(first_argument, __func__);
@@ -884,6 +768,7 @@ namespace OpenSolid
             .def("determinant", &determinant<MatrixXd>)
             .def("trace", &trace<MatrixXd>)
             .def("transpose", &transpose<MatrixXd>, manage_new_matrix)
+            .def("inverse", &inverse, manage_new_matrix)
             .def("dot", &dotXdXI)
             .def("dot", &dotXdXd)
             .def("cross", &crossXdXI, manage_new_matrix)
@@ -926,8 +811,6 @@ namespace OpenSolid
             .def(self / DatumXd())
             .def(self_ns::str(self))
             .def_pickle(MatrixPickleSuite<MatrixXd>());
-
-        ConvertTupleToMatrix<MatrixXd>();
 
         class_<MatrixXI>("MatrixXI")
             .def(init<int, int>())
@@ -1019,7 +902,5 @@ namespace OpenSolid
             .def("__ne__", &neXIXI)
             .def(self_ns::str(self))
             .def_pickle(MatrixPickleSuite<MatrixXI>());
-
-        ConvertTupleToMatrix<MatrixXI>();
     }
 }
