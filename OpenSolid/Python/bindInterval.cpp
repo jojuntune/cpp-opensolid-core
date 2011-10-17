@@ -98,12 +98,6 @@ namespace OpenSolid
         double precision
     ) {return first_argument.strictlyContains(second_argument, precision);}
 
-    std::string str(const Interval& argument) {
-        std::stringstream stream;
-        stream << argument;
-        return stream.str();
-    }
-
     std::string repr(const Interval& argument) {
         std::stringstream stream;
         stream << "Interval(" << argument.lower();
@@ -111,6 +105,8 @@ namespace OpenSolid
         stream << ")";
         return stream.str();
     }
+
+    std::string str(const Interval& argument) {return repr(argument);}
 
     std::size_t hash(const Interval& argument) {return std::hash<Interval>()(argument);}
 
@@ -182,8 +178,8 @@ namespace OpenSolid
             .def(self / self)
             .def(self / double())
             .def(double() / self)
-            .def("__str__", &str)
             .def("__repr__", &repr)
+            .def("__str__", &str)
             .def("__hash__", &hash)
             .def_pickle(IntervalPickleSuite());
         
