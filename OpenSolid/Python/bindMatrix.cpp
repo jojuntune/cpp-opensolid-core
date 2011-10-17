@@ -742,9 +742,7 @@ namespace OpenSolid
     template <class MatrixType>
     struct MatrixPickleSuite : public pickle_suite
     {
-        static tuple getinitargs(const MatrixType& argument) {
-            return make_tuple(argument.rows(), argument.cols());
-        }
+        static tuple getinitargs(const MatrixType&) {return tuple();}
 
         static tuple getstate(const MatrixType& argument) {
             list components;
@@ -753,14 +751,16 @@ namespace OpenSolid
                     components.append(argument(i, j));
                 }
             }
-            return tuple(components);
+            return make_tuple(argument.rows(), argument.cols(), components);
         }
 
         static void setstate(MatrixType& argument, tuple state) {
+            argument.resize(extract<int>(state[0]), extract<int>(state[1]));
+            object components = state[2];
             for (int j = 0; j < argument.cols(); ++j) {
                 for (int i = 0; i < argument.rows(); ++i) {
                     argument(i, j) = extract<typename MatrixType::Scalar>(
-                        state[j * argument.rows() + i]
+                        components[j * argument.rows() + i]
                     );
                 }
             }
@@ -776,8 +776,6 @@ namespace OpenSolid
         return_value_policy<manage_new_object> manage_new_matrix;
 
         class_<MatrixXd>("MatrixXd")
-            .def(init<int, int>())
-            .def(init<MatrixXd>())
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)
             .def("size", &size<MatrixXd>)
@@ -852,8 +850,6 @@ namespace OpenSolid
             .def_pickle(MatrixPickleSuite<MatrixXd>());
 
         class_<MatrixXI>("MatrixXI")
-            .def(init<int, int>())
-            .def(init<MatrixXI>())
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
