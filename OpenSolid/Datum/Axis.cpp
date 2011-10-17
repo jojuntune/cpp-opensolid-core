@@ -30,17 +30,6 @@ namespace OpenSolid
         const Matrix<double, dimensions_, 1>& origin,
         const Matrix<double, dimensions_, 1>& direction
     ) : Datum<dimensions_, 1>(origin, direction.normalized()) {}
-
-    template <int dimensions_>
-    Axis<dimensions_>::Axis(const Datum<dimensions_, 1>& other) :
-        Datum<dimensions_, 1>(other) {assert(other.basis().squaredNorm() == One());}
-
-    template <int dimensions_>
-    Axis<dimensions_>& Axis<dimensions_>::operator=(const Datum<dimensions_, 1>& other) {
-        assert(other.basis().squaredNorm() == One());
-        Datum<dimensions_, 1>::operator=(other);
-        return *this;
-    }
     
     template class Axis<1>;
     template class Axis<2>;

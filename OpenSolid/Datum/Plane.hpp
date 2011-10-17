@@ -42,16 +42,30 @@ namespace OpenSolid
             const Vector3d& second_vector
         );
         
-        OPENSOLID_CORE_EXPORT Plane(
-            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
-        );
-        
-        OPENSOLID_CORE_EXPORT Plane<dimensions_>& operator=(
-            const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
-        );
+        template <int other_dimensions_, int other_axes_>
+        Plane(const Datum<other_dimensions_, other_axes_>& other);
     };
     
     typedef Plane<3> Plane3d;
+}
+
+////////// Implementation //////////
+
+namespace OpenSolid
+{
+    template <int dimensions_> template <int other_dimensions_, int other_axes_>
+    Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) :
+        Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>(
+            other.origin(),
+            orthonormalBasis(other.basis()).leftCols(other.axes())
+        ) {
+        assertCompatible<other_dimensions_, dimensions_>();
+        assertCompatible<
+            other_axes_,
+            (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)
+        >();
+        assert(other.axes() == other.dimensions() - 1);
+    }
 }
 
 #endif

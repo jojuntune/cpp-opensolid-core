@@ -38,11 +38,8 @@ namespace OpenSolid
         template <class VectorsType>
         Frame(const Matrix<double, dimensions_, 1>& origin, const EigenBase<VectorsType>& vectors);
         
-        OPENSOLID_CORE_EXPORT Frame(const Datum<dimensions_, dimensions_>& other);
-        
-        OPENSOLID_CORE_EXPORT Frame<dimensions_>& operator=(
-            const Datum<dimensions_, dimensions_>& other
-        );
+        template <int other_dimensions_, int other_axes_>
+        Frame(const Datum<other_dimensions_, other_axes_>& other);
     };
     
     typedef Frame<1> Frame1d;
@@ -55,13 +52,14 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <int dimensions_> template <class VectorsType>
-    inline Frame<dimensions_>::Frame(
+    Frame<dimensions_>::Frame(
         const Matrix<double, dimensions_, 1>& origin,
         const EigenBase<VectorsType>& vectors
-    ) : Datum<dimensions_, dimensions_>(
-            origin,
-            orthonormalBasis(vectors.derived()).leftCols(origin.size())
-        ) {}
+    ) : Datum<dimensions_, dimensions_>(origin, orthonormalBasis(vectors.derived())) {}
+        
+    template <int dimensions_>template <int other_dimensions_, int other_axes_>
+    Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) :
+        Datum<dimensions_, dimensions_>(other.origin(), orthonormalBasis(other.basis())) {}
 }
 
 #endif

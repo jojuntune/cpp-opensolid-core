@@ -35,15 +35,27 @@ namespace OpenSolid
             const Matrix<double, dimensions_, 1>& origin,
             const Matrix<double, dimensions_, 1>& direction
         );
-
-        OPENSOLID_CORE_EXPORT Axis(const Datum<dimensions_, 1>& other);
         
-        OPENSOLID_CORE_EXPORT Axis<dimensions_>& operator=(const Datum<dimensions_, 1>& other);
+        template <int other_dimensions_, int other_axes_>
+        Axis(const Datum<other_dimensions_, other_axes_>& other);
     };
     
     typedef Axis<1> Axis1d;
     typedef Axis<2> Axis2d;
     typedef Axis<3> Axis3d;
+}
+
+////////// Implementation //////////
+
+namespace OpenSolid
+{
+    template <int dimensions_> template <int other_dimensions_, int other_axes_>
+    Axis<dimensions_>::Axis(const Datum<other_dimensions_, other_axes_>& other) :
+        Datum<dimensions_, 1>(other.origin(), other.basis().normalized()) {
+        assertCompatible<other_dimensions_, dimensions_>();
+        assertCompatible<other_axes_, 1>();
+        assert(other.axes() == 1);
+    }
 }
 
 #endif

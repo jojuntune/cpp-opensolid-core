@@ -56,23 +56,6 @@ namespace OpenSolid
             origin,
             Matrix<double, dimensions_, dimensions_>::Identity(origin.size(), origin.size())
         ) {assertCompatible<dimensions_>(origin.size());}
-
-    template <int dimensions_>
-    Frame<dimensions_>::Frame(const Datum<dimensions_, dimensions_>& other) :
-        Datum<dimensions_, dimensions_>(other) {
-        assert(other.dimensions() == other.axes());
-        assert(other.basis().isUnitary());
-    }
-
-    template <int dimensions_>
-    Frame<dimensions_>& Frame<dimensions_>::operator=(
-        const Datum<dimensions_, dimensions_>& other
-    ) {
-        assert(other.dimensions() == other.axes());
-        assert(other.basis().isUnitary());
-        Datum<dimensions_, dimensions_>::operator=(other);
-        return *this;
-    }
     
     template class Frame<1>;
     template class Frame<2>;

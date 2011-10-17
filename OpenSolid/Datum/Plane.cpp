@@ -67,28 +67,4 @@ namespace OpenSolid
         ) {assertCompatible<dimensions_, 3>();}
 
     template Plane<3>::Plane(const Vector3d&, const Vector3d&, const Vector3d&);
-
-    template <int dimensions_>
-    Plane<dimensions_>::Plane(
-        const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
-    ) : Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>(other) {
-        assert(other.axes() == other.dimensions() - 1);
-        assert(other.basis().isUnitary());
-    }
-
-    template Plane<2>::Plane(const Datum<2, 1>&);
-    template Plane<3>::Plane(const Datum<3, 2>&);
-
-    template <int dimensions_>
-    Plane<dimensions_>& Plane<dimensions_>::operator=(
-        const Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>& other
-    ) {
-        assert(other.axes() == other.dimensions() - 1);
-        assert(other.basis().isUnitary());
-        Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>::operator=(other);
-        return *this;
-    }
-
-    template Plane<2>& Plane<2>::operator=(const Datum<2, 1>&);
-    template Plane<3>& Plane<3>::operator=(const Datum<3, 2>&);
 }
