@@ -700,6 +700,46 @@ namespace OpenSolid
     }
 
     template <class MatrixType>
+    std::string str(const MatrixType& argument) {
+        std::stringstream stream;
+        stream << argument;
+        return stream.str();
+    }
+
+    template <class MatrixType>
+    std::string repr(const MatrixType& argument) {
+        std::stringstream stream;
+        if (argument.cols() == 1) {
+            stream << "Vector([";
+            for (int i = 0; i < argument.rows(); ++i) {
+                stream << argument(i, 0);
+                if (i < argument.rows() - 1) {stream << ", ";}
+            }
+            stream << "])";
+        } else if (argument.rows() == 1) {
+            stream << "RowVector([";
+            for (int i = 0; i < argument.cols(); ++i) {
+                stream << argument(0, i);
+                if (i < argument.cols() - 1) {stream << ", ";}
+            }
+            stream << "])";
+        } else {
+            stream << "Matrix([";
+            for (int j = 0; j < argument.cols(); ++j) {
+                stream << "[";
+                for (int i = 0; i < argument.rows(); ++i) {
+                    stream << argument(i, j);
+                    if (i < argument.rows() - 1) {stream << ", ";}
+                }
+                stream << "]";
+                if (j < argument.cols() - 1) {stream << ", ";}
+            }
+            stream << "])";
+        }
+        return stream.str();
+    }
+
+    template <class MatrixType>
     struct MatrixPickleSuite : public pickle_suite
     {
         static tuple getinitargs(const MatrixType& argument) {
@@ -807,9 +847,8 @@ namespace OpenSolid
             .def("__eq__", &eqXdXI)
             .def("__ne__", &neXdXd)
             .def("__ne__", &neXdXI)
-            .def(self * DatumXd())
-            .def(self / DatumXd())
-            .def(self_ns::str(self))
+            .def("__str__", &str<MatrixXd>)
+            .def("__repr__", &repr<MatrixXd>)
             .def_pickle(MatrixPickleSuite<MatrixXd>());
 
         class_<MatrixXI>("MatrixXI")
@@ -900,7 +939,8 @@ namespace OpenSolid
             .def("__eq__", &eqXIXI)
             .def("__ne__", &neXIXd)
             .def("__ne__", &neXIXI)
-            .def(self_ns::str(self))
+            .def("__str__", &str<MatrixXI>)
+            .def("__repr__", &repr<MatrixXI>)
             .def_pickle(MatrixPickleSuite<MatrixXI>());
     }
 }
