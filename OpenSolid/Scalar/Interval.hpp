@@ -61,6 +61,7 @@ namespace OpenSolid
         double median() const;
         double width() const;
 
+        double clamp(double argument) const;
         double interpolated(double argument) const;
         Interval interpolated(const Interval& argument) const;
         
@@ -193,6 +194,10 @@ namespace OpenSolid
     inline double Interval::median() const {return boost::numeric::median(value());}
     
     inline double Interval::width() const {return boost::numeric::width(value());}
+
+    inline double Interval::clamp(double argument) const {
+        return argument <= lower() ? lower() : (argument <= upper() ? argument : upper());
+    }
 
     inline double Interval::interpolated(double argument) const {
         return lower() + argument * width();

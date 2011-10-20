@@ -89,6 +89,15 @@ public:
         TS_ASSERT(interpolated.upper() == Approx(9));
     }
 
+    void testClamp() {
+        Interval interval(2, 4);
+        TS_ASSERT_EQUALS(interval.clamp(1), 2);
+        TS_ASSERT_EQUALS(interval.clamp(2), 2);
+        TS_ASSERT_EQUALS(interval.clamp(3), 3);
+        TS_ASSERT_EQUALS(interval.clamp(4), 4);
+        TS_ASSERT_EQUALS(interval.clamp(5), 4);
+    }
+
     void testConversion() {
         Interval interval(2, 3);
         Domain domain(interval);

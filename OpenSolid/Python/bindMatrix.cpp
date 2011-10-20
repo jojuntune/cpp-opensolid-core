@@ -298,10 +298,7 @@ namespace OpenSolid
     }
     
     template <class MatrixType>
-    typename MatrixType::Scalar norm(const MatrixType& argument) {
-        checkVectorValue(argument, __func__);
-        return argument.col(0).norm();
-    }
+    typename MatrixType::Scalar norm(const MatrixType& argument) {return argument.norm();}
     
     template <class MatrixType>
     MatrixType* normalized(const MatrixType& argument);
