@@ -270,27 +270,11 @@ namespace OpenSolid
     ConstMatrixIterator<MatrixType> matrixEnd(const MatrixType& argument) {
         return end(argument);
     }
-
-    template <class MatrixType>
-    ConstMatrixColIterator<MatrixType> matrixColBegin(const MatrixType& argument) {
-        return begin(argument.colwise());
-    }
-
-    template <class MatrixType>
-    ConstMatrixColIterator<MatrixType> matrixColEnd(const MatrixType& argument) {
-        return end(argument.colwise());
-    }
-
-    template <class MatrixType>
-    ConstMatrixRowIterator<MatrixType> matrixRowBegin(const MatrixType& argument) {
-        return begin(argument.rowwise());
-    }
-
-    template <class MatrixType>
-    ConstMatrixRowIterator<MatrixType> matrixRowEnd(const MatrixType& argument) {
-        return end(argument.rowwise());
-    }
     
+    double minCoeff(const MatrixXd& argument) {return argument.minCoeff();}
+    
+    double maxCoeff(const MatrixXd& argument) {return argument.maxCoeff();}
+
     template <class MatrixType>
     typename MatrixType::Scalar squaredNorm(const MatrixType& argument) {
         checkVectorValue(argument, __func__);
@@ -330,6 +314,11 @@ namespace OpenSolid
     MatrixType* transpose(const MatrixType& argument) {return new MatrixType(argument.transpose());}
 
     MatrixXd* inverse(const MatrixXd& argument) {return new MatrixXd(argument.inverse());}
+    
+    template <class MatrixType>
+    MatrixType* replicate(const MatrixType& argument, int row_factor, int col_factor) {
+        return new MatrixType(argument.replicate(row_factor, col_factor));
+    }
     
     double dotXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         checkVectorValue(first_argument, __func__);
@@ -697,6 +686,72 @@ namespace OpenSolid
     }
 
     template <class MatrixType>
+    struct Colwise
+    {
+        MatrixType* matrix;
+    };
+
+    template <class MatrixType>
+    struct Rowwise
+    {
+        MatrixType* matrix;
+    };
+
+    template <class MatrixType>
+    Colwise<MatrixType> colwise(MatrixType& matrix) {
+        Colwise<MatrixType> result;
+        result.matrix = &matrix;
+        return result;
+    }
+
+    template <class MatrixType>
+    Rowwise<MatrixType> rowwise(MatrixType& matrix) {
+        Rowwise<MatrixType> result;
+        result.matrix = &matrix;
+        return result;
+    }
+
+    template <class MatrixType>
+    ConstMatrixColIterator<MatrixType> colwiseBegin(const Colwise<MatrixType>& colwise) {
+        return begin(colwise.matrix->colwise());
+    }
+
+    template <class MatrixType>
+    ConstMatrixColIterator<MatrixType> colwiseEnd(const Colwise<MatrixType>& colwise) {
+        return end(colwise.matrix->colwise());
+    }
+
+    template <class MatrixType>
+    ConstMatrixRowIterator<MatrixType> rowwiseBegin(const Rowwise<MatrixType>& rowwise) {
+        return begin(rowwise.matrix->rowwise());
+    }
+
+    template <class MatrixType>
+    ConstMatrixRowIterator<MatrixType> rowwiseEnd(const Rowwise<MatrixType>& rowwise) {
+        return end(rowwise.matrix->rowwise());
+    }
+
+    template <class MatrixType>
+    MatrixType* colwiseSquaredNorm(const Colwise<MatrixType>& colwise) {
+        return new MatrixType(colwise.matrix->colwise().squaredNorm());
+    }
+
+    template <class MatrixType>
+    MatrixType* colwiseNorm(const Colwise<MatrixType>& colwise) {
+        return new MatrixType(colwise.matrix->colwise().norm());
+    }
+
+    template <class MatrixType>
+    MatrixType* rowwiseSquaredNorm(const Rowwise<MatrixType>& rowwise) {
+        return new MatrixType(rowwise.matrix->rowwise().squaredNorm());
+    }
+
+    template <class MatrixType>
+    MatrixType* rowwiseNorm(const Rowwise<MatrixType>& rowwise) {
+        return new MatrixType(rowwise.matrix->rowwise().norm());
+    }
+
+    template <class MatrixType>
     std::string str(const MatrixType& argument) {
         std::stringstream stream;
         stream << argument;
@@ -771,6 +826,7 @@ namespace OpenSolid
         registerExpressionConverter<MatrixXI::ConstRowXpr>();
 
         return_value_policy<manage_new_object> manage_new_matrix;
+        with_custodian_and_ward_postcall<0, 1> manage_matrix_expression;
 
         class_<MatrixXd>("MatrixXd")
             .def("rows", &rows<MatrixXd>)
@@ -795,8 +851,10 @@ namespace OpenSolid
             .def("set", &setSS<MatrixXd>)
             .def("__setitem__", raw_function(&setItem))
             .def("__iter__", range(&matrixBegin<MatrixXd>, &matrixEnd<MatrixXd>))
-            .def("colwise", range(&matrixColBegin<MatrixXd>, &matrixColEnd<MatrixXd>))
-            .def("rowwise", range(&matrixRowBegin<MatrixXd>, &matrixRowEnd<MatrixXd>))
+            .def("minCoeff", &minCoeff)
+            .def("maxCoeff", &maxCoeff)
+            .def("colwise", &colwise<MatrixXd>, manage_matrix_expression)
+            .def("rowwise", &rowwise<MatrixXd>, manage_matrix_expression)
             .def("squaredNorm", &squaredNorm<MatrixXd>)
             .def("norm", &norm<MatrixXd>)
             .def("normalized", &normalized<MatrixXd>, manage_new_matrix)
@@ -804,6 +862,7 @@ namespace OpenSolid
             .def("trace", &trace<MatrixXd>)
             .def("transpose", &transpose<MatrixXd>, manage_new_matrix)
             .def("inverse", &inverse, manage_new_matrix)
+            .def("replicate", &replicate<MatrixXd>, manage_new_matrix)
             .def("dot", &dotXdXI)
             .def("dot", &dotXdXd)
             .def("cross", &crossXdXI, manage_new_matrix)
@@ -846,6 +905,16 @@ namespace OpenSolid
             .def("__repr__", &repr<MatrixXd>)
             .def_pickle(MatrixPickleSuite<MatrixXd>());
 
+        class_<Colwise<MatrixXd>>("ColwiseMatrixXd", no_init)
+            .def("__iter__", range(&colwiseBegin<MatrixXd>, &colwiseEnd<MatrixXd>))
+            .def("squaredNorm", &colwiseSquaredNorm<MatrixXd>, manage_new_matrix)
+            .def("norm", &colwiseNorm<MatrixXd>, manage_new_matrix);
+
+        class_<Rowwise<MatrixXd>>("RowwiseMatrixXd", no_init)
+            .def("__iter__", range(&rowwiseBegin<MatrixXd>, &rowwiseEnd<MatrixXd>))
+            .def("squaredNorm", &rowwiseSquaredNorm<MatrixXd>, manage_new_matrix)
+            .def("norm", &rowwiseNorm<MatrixXd>, manage_new_matrix);
+
         class_<MatrixXI>("MatrixXI")
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
@@ -869,14 +938,15 @@ namespace OpenSolid
             .def("set", &setSS<MatrixXI>)
             .def("__setitem__", raw_function(&setItem))
             .def("__iter__", range(&matrixBegin<MatrixXI>, &matrixEnd<MatrixXI>))
-            .def("colwise", range(&matrixColBegin<MatrixXI>, &matrixColEnd<MatrixXI>))
-            .def("rowwise", range(&matrixRowBegin<MatrixXI>, &matrixRowEnd<MatrixXI>))
+            .def("colwise", &colwise<MatrixXI>, manage_matrix_expression)
+            .def("rowwise", &rowwise<MatrixXI>, manage_matrix_expression)
             .def("squaredNorm", &squaredNorm<MatrixXI>)
             .def("norm", &norm<MatrixXI>)
             .def("normalized", &normalized<MatrixXI>, manage_new_matrix)
             .def("determinant", &determinant<MatrixXI>)
             .def("trace", &trace<MatrixXI>)
             .def("transpose", &transpose<MatrixXI>, manage_new_matrix)
+            .def("replicate", &replicate<MatrixXI>, manage_new_matrix)
             .def("dot", &dotXIXI)
             .def("dot", &dotXIXd)
             .def("cross", &crossXIXI, manage_new_matrix)
@@ -935,5 +1005,15 @@ namespace OpenSolid
             .def("__str__", &str<MatrixXI>)
             .def("__repr__", &repr<MatrixXI>)
             .def_pickle(MatrixPickleSuite<MatrixXI>());
+
+        class_<Colwise<MatrixXI>>("ColwiseMatrixXI", no_init)
+            .def("__iter__", range(&colwiseBegin<MatrixXI>, &colwiseEnd<MatrixXI>))
+            .def("squaredNorm", &colwiseSquaredNorm<MatrixXI>, manage_new_matrix)
+            .def("norm", &colwiseNorm<MatrixXI>, manage_new_matrix);
+
+        class_<Rowwise<MatrixXI>>("RowwiseMatrixXI", no_init)
+            .def("__iter__", range(&rowwiseBegin<MatrixXI>, &rowwiseEnd<MatrixXI>))
+            .def("squaredNorm", &rowwiseSquaredNorm<MatrixXI>, manage_new_matrix)
+            .def("norm", &rowwiseNorm<MatrixXI>, manage_new_matrix);
     }
 }

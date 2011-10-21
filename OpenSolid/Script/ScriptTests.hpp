@@ -161,6 +161,13 @@ public:
         TS_ASSERT_EQUALS(result.z().lower(), 3.0);
         TS_ASSERT_EQUALS(result.z().upper(), 4.0);
     }
+
+    void testColwise() {
+        Script script;
+        script.run("matrix = Matrix([[1, 2], [3, 4], [5, 6]])");
+        RowVectorXd squared_norms = script.get<MatrixXd>("matrix.colwise().squaredNorm()");
+        TS_ASSERT_EQUALS(squared_norms, RowVector3d(5, 25, 61));
+    }
     
     void testInternalConversionError() {
         Script script;
