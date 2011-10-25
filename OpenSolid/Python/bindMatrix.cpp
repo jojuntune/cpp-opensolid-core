@@ -961,6 +961,8 @@ namespace OpenSolid
             .def("contains", &containsXIP)
             .def("contains", &containsXd)
             .def("contains", &containsXdP)
+            .def("__contains__", &containsXI)
+            .def("__contains__", &containsXd)
             .def("strictlyContains", &strictlyContainsXI)
             .def("strictlyContains", &strictlyContainsXIP)
             .def("strictlyContains", &strictlyContainsXd)

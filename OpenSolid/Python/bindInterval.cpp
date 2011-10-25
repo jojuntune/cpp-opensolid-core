@@ -139,6 +139,8 @@ namespace OpenSolid
             .def("contains", &containsIP)
             .def("contains", &containsD)
             .def("contains", &containsDP)
+            .def("__contains__", &containsI)
+            .def("__contains__", &containsD)
             .def("strictlyContains", &strictlyContainsI)
             .def("strictlyContains", &strictlyContainsIP)
             .def("strictlyContains", &strictlyContainsD)

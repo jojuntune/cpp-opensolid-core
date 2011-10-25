@@ -297,6 +297,13 @@ public:
         TS_ASSERT_EQUALS(b.lower(), 4.5);
         TS_ASSERT_EQUALS(b.upper(), 5);
     }
+
+    void testIntervalContainment() {
+        Script script;
+        TS_ASSERT(script.get<bool>("4 in Interval(3, 5)"));
+        TS_ASSERT(script.get<bool>("Interval(3, 4) in Interval(2, 5)"));
+        TS_ASSERT(!script.get<bool>("Interval(2, 4) in Interval(3, 5)"));
+    }
     
     void testMatrixOverlap() {
         Script script;
@@ -304,6 +311,7 @@ public:
         script.run("v = Vector([Interval(1, 2), Interval(2, 3), Interval(3, 4)])");
         TS_ASSERT(script.get<bool>("v.contains(u)"));
         TS_ASSERT(!script.get<bool>("v.contains(3 * u)"));
+        TS_ASSERT(script.get<bool>("u in v"));
     }
     
     void testMatrixHull() {
