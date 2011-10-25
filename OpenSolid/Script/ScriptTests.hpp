@@ -168,6 +168,23 @@ public:
         RowVectorXd squared_norms = script.get<MatrixXd>("matrix.colwise().squaredNorm()");
         TS_ASSERT_EQUALS(squared_norms, RowVector3d(5, 25, 61));
     }
+
+    void testMatrixTransformation() {
+        Script script;
+        script.run("from math import pi");
+        script.run("point = Vector([3, 2, 1])");
+        Vector3d transformed;
+        transformed = script.get<MatrixXd>("point.rotated(pi / 2, Frame3d().zAxis())");
+        TS_ASSERT((transformed - Vector3d(-2, 3, 1)).isZero());
+        transformed = script.get<MatrixXd>("point.rotated(pi / 2, Frame3d().xAxis())");
+        TS_ASSERT((transformed - Vector3d(3, -1, 2)).isZero());
+        transformed = script.get<MatrixXd>("point.translated(Vector([1, 1, 1]))");
+        TS_ASSERT((transformed - Vector3d(4, 3, 2)).isZero());
+        transformed = script.get<MatrixXd>("point.mirrored(Frame3d().yzPlane())");
+        TS_ASSERT((transformed - Vector3d(-3, 2, 1)).isZero());
+        transformed = script.get<MatrixXd>("(2 * point).mirrored(Frame3d().xyPlane())");
+        TS_ASSERT((transformed - Vector3d(6, 4, -2)).isZero());
+    }
     
     void testInternalConversionError() {
         Script script;

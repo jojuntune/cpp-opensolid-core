@@ -686,6 +686,36 @@ namespace OpenSolid
     }
 
     template <class MatrixType>
+    inline MatrixType scaled(const MatrixType& matrix, double scale, const MatrixXd& point) {
+        return matrix.scaled(scale, point.col(0));
+    }
+
+    template <class MatrixType>
+    inline MatrixType translated1(const MatrixType& matrix, const MatrixXd& vector) {
+        return matrix.translated(vector.col(0));
+    }
+
+    template <class MatrixType>
+    inline MatrixType translated2(const MatrixType& matrix, double distance, const DatumXd& axis) {
+        return matrix.translated(distance, axis);
+    }
+
+    template <class MatrixType>
+    inline MatrixType rotated1(const MatrixType& matrix, double angle, const MatrixXd& point) {
+        return matrix.rotated(angle, point.col(0));
+    }
+
+    template <class MatrixType>
+    inline MatrixType rotated2(const MatrixType& matrix, double angle, const DatumXd& axis) {
+        return matrix.rotated(angle, axis);
+    }
+
+    template <class MatrixType>
+    inline MatrixType mirrored(const MatrixType& matrix, const DatumXd& plane) {
+        return matrix.mirrored(plane);
+    }
+
+    template <class MatrixType>
     struct Colwise
     {
         MatrixType* matrix;
@@ -897,6 +927,12 @@ namespace OpenSolid
             .def("__mul__", &mulXdXI, manage_new_matrix)
             .def("__mul__", &mulXdXd, manage_new_matrix)
             .def("__mod__", &modXdDatum, manage_new_matrix)
+            .def("scaled", &scaled<MatrixXd>)
+            .def("translated", &translated1<MatrixXd>)
+            .def("translated", &translated2<MatrixXd>)
+            .def("rotated", &rotated1<MatrixXd>)
+            .def("rotated", &rotated2<MatrixXd>)
+            .def("mirrored", &mirrored<MatrixXd>)
             .def("__eq__", &eqXdXd)
             .def("__eq__", &eqXdXI)
             .def("__ne__", &neXdXd)
@@ -1000,6 +1036,12 @@ namespace OpenSolid
             .def("__mul__", &mulXIXI, manage_new_matrix)
             .def("__mul__", &mulXIXd, manage_new_matrix)
             .def("__mod__", &modXIDatum, manage_new_matrix)
+            .def("scaled", &scaled<MatrixXI>)
+            .def("translated", &translated1<MatrixXI>)
+            .def("translated", &translated2<MatrixXI>)
+            .def("rotated", &rotated1<MatrixXI>)
+            .def("rotated", &rotated2<MatrixXI>)
+            .def("mirrored", &mirrored<MatrixXI>)
             .def("__eq__", &eqXIXd)
             .def("__eq__", &eqXIXI)
             .def("__ne__", &neXIXd)
