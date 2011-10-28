@@ -77,6 +77,14 @@ public:
         TS_ASSERT((normal(M_PI) - Vector3d(1, 0, 0)).isZero());
         TS_ASSERT((normal(3 * M_PI / 2) - Vector3d(0, 1, 0)).isZero());
     }
+
+    void testFullArc() {
+        Axis3d axis(Vector3d(0, 3, 3), Vector3d::UnitX());
+        Vector3d point(1, 3, 1);
+        Geometry arc = Geometry::Arc3d(axis, point, point);
+        TS_ASSERT((arc(M_PI / 2) - Vector3d(1, 5, 3)).isZero());
+        TS_ASSERT((arc(3 * M_PI / 2) - Vector3d(1, 1, 3)).isZero());
+    }
     
     void testCurveOperations() {
         Function t = Function::Parameter();
