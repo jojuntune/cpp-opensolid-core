@@ -148,7 +148,7 @@ namespace OpenSolid
     namespace
     {
         template <class Type>
-        std::string typeName();
+        std::string typeName() {return typeid(Type).name();}
 
         template <>
         inline std::string typeName<boost::python::object>() {return "object";}
