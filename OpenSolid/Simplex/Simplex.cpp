@@ -277,6 +277,23 @@ namespace OpenSolid
     template Simplex<Dynamic, Dynamic>::Vector Simplex<Dynamic, Dynamic>::normal() const;
     
     template <int dimensions_, int size_>
+    typename Simplex<dimensions_, size_>::Edge Simplex<dimensions_, size_>::edge(int index) const {
+        assert(0 <= index && index < size());
+        typename Edge::Vertices edge_vertices;
+        edge_vertices.col(0) = vertex(index);
+        edge_vertices.col(1) = vertex((index + 1) % size());
+        return Edge(edge_vertices);
+    }
+    
+    template Simplex<1, 2>::Edge Simplex<1, 2>::edge(int) const;
+    template Simplex<2, 2>::Edge Simplex<2, 2>::edge(int) const;
+    template Simplex<3, 2>::Edge Simplex<3, 2>::edge(int) const;
+    template Simplex<2, 3>::Edge Simplex<2, 3>::edge(int) const;
+    template Simplex<3, 3>::Edge Simplex<3, 3>::edge(int) const;
+    template Simplex<3, 4>::Edge Simplex<3, 4>::edge(int) const;
+    template Simplex<Dynamic, Dynamic>::Edge Simplex<Dynamic, Dynamic>::edge(int, int) const;
+    
+    template <int dimensions_, int size_>
     typename Simplex<dimensions_, size_>::Edge Simplex<dimensions_, size_>::edge(
         int start_index,
         int end_index

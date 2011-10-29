@@ -103,6 +103,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Vector centroid() const;
         OPENSOLID_CORE_EXPORT Vector normal() const;
         
+        OPENSOLID_CORE_EXPORT Edge edge(int index) const;
         OPENSOLID_CORE_EXPORT Edge edge(int start_index, int end_index) const;
         OPENSOLID_CORE_EXPORT Face face(int index) const;
         
