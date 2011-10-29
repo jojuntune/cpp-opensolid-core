@@ -10,6 +10,9 @@
     CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
     ENABLE_TESTING()
 
+    # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
+    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
+
     # GCC-specific compiler flags
     IF (CMAKE_COMPILER_IS_GNUCXX)
         # Enable C++0x and add extra warning flags
