@@ -21,13 +21,13 @@
 #ifndef OPENSOLID__INTERVAL_HPP
 #define OPENSOLID__INTERVAL_HPP
 
-#include <iostream>
+#include <OpenSolid/config.hpp>
+
 #include <cassert>
+#include <iostream>
 #include <utility>
 
 #include <boost/numeric/interval.hpp>
-
-#include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 
@@ -62,6 +62,7 @@ namespace OpenSolid
         double width() const;
 
         double clamp(double argument) const;
+        Interval clamp(const Interval& argument) const;
         double interpolated(double argument) const;
         Interval interpolated(const Interval& argument) const;
         
@@ -197,6 +198,10 @@ namespace OpenSolid
 
     inline double Interval::clamp(double argument) const {
         return argument <= lower() ? lower() : (argument <= upper() ? argument : upper());
+    }
+
+    inline Interval Interval::clamp(const Interval& argument) const {
+        return Interval(clamp(argument.lower()), clamp(argument.upper()));
     }
 
     inline double Interval::interpolated(double argument) const {

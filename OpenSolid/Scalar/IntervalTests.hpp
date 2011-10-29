@@ -96,6 +96,16 @@ public:
         TS_ASSERT_EQUALS(interval.clamp(3), 3);
         TS_ASSERT_EQUALS(interval.clamp(4), 4);
         TS_ASSERT_EQUALS(interval.clamp(5), 4);
+        Interval clamped;
+        clamped = interval.clamp(Interval(0, 1));
+        TS_ASSERT_EQUALS(clamped.lower(), 2);
+        TS_ASSERT_EQUALS(clamped.upper(), 2);
+        clamped = interval.clamp(Interval(1, 3));
+        TS_ASSERT_EQUALS(clamped.lower(), 2);
+        TS_ASSERT_EQUALS(clamped.upper(), 3);
+        clamped = interval.clamp(Interval(2.5, 3.5));
+        TS_ASSERT_EQUALS(clamped.lower(), 2.5);
+        TS_ASSERT_EQUALS(clamped.upper(), 3.5);
     }
 
     void testConversion() {
