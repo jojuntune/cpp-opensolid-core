@@ -20,7 +20,6 @@
 
 #include <boost/functional/hash.hpp>
 #include <boost/unordered_map.hpp>
-#include <boost/geometry.hpp>
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Datum/Frame.hpp>
@@ -202,6 +201,7 @@ public:
     }
 
     void testBoostGeometry() {
+        #if BOOST_VERSION >= 104700
         Line3d line(Vector3d(1, 1, 1), Vector3d(4, 5, 6));
         TS_ASSERT(boost::geometry::length(line) - line.length() == Zero());
         //Line2d line1(Vector2d::Zero(), Vector2d(2, 0));
@@ -209,5 +209,6 @@ public:
         //Line2d line3(Vector2d(0, 1), Vector2d(2, 3));
         //TS_ASSERT(!boost::geometry::intersects(line1, line2));
         //TS_ASSERT(boost::geometry::intersects(line2, line3));
+        #endif
     }
 };

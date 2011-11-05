@@ -22,7 +22,10 @@
 #define OPENSOLID__BOOST_HPP
 
 #include <boost/functional/hash.hpp>
+
+#if BOOST_VERSION >= 104700
 #include <boost/geometry.hpp>
+#endif
 
 #include <OpenSolid/Support/declarations.hpp>
 #include <OpenSolid/Support/STL.hpp>
@@ -93,6 +96,7 @@ namespace boost
     {
     };
 
+    #if BOOST_VERSION >= 104700
     namespace geometry
     {
         namespace traits
@@ -282,12 +286,14 @@ namespace boost
             };
         }
     }
+    #endif
 }
 
 ////////// Implementation //////////
 
 #include <OpenSolid/Simplex/Simplex.hpp>
 
+#if BOOST_VERSION >= 104700
 namespace boost
 {
     namespace geometry
@@ -412,5 +418,6 @@ namespace boost
         }
     }
 }
+#endif
 
 #endif
