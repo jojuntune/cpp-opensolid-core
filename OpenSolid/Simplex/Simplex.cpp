@@ -291,7 +291,7 @@ namespace OpenSolid
     template Simplex<2, 3>::Edge Simplex<2, 3>::edge(int) const;
     template Simplex<3, 3>::Edge Simplex<3, 3>::edge(int) const;
     template Simplex<3, 4>::Edge Simplex<3, 4>::edge(int) const;
-    template Simplex<Dynamic, Dynamic>::Edge Simplex<Dynamic, Dynamic>::edge(int, int) const;
+    template Simplex<Dynamic, Dynamic>::Edge Simplex<Dynamic, Dynamic>::edge(int) const;
     
     template <int dimensions_, int size_>
     typename Simplex<dimensions_, size_>::Edge Simplex<dimensions_, size_>::edge(
