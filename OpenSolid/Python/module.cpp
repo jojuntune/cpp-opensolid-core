@@ -27,21 +27,23 @@ namespace OpenSolid
 {
     void bindFunction();
     void bindDatum();
-    void bindMatrix();
+    void bindSimplex();
     void bindMatrixConstructors();
+    void bindMatrix();
+    void bindComparison();
     void bindInterval();
     void bindDouble();
-    void bindComparison();
     void bindError();
 
     BOOST_PYTHON_MODULE(opensolid) {
         bindFunction();
         bindDatum();
-        bindMatrix();
+        bindSimplex();
         bindMatrixConstructors();
+        bindMatrix();
+        bindComparison();
         bindInterval();
         bindDouble();
-        bindComparison();
         bindError();
     }
 }

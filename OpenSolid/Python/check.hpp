@@ -197,6 +197,9 @@ namespace OpenSolid
         
         template <>
         inline std::string typeName<Geometry>() {return "Geometry";}
+
+        template <>
+        inline std::string typeName<SimplexXd>() {return "SimplexXd";}
     }
     
     template <class ExpectedType>

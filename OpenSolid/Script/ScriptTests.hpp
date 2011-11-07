@@ -528,35 +528,41 @@ public:
         c(1, 1) = 9;
         Vector2I d(Interval(10, 11), Interval(12, 13));
         Frame3d e = Frame3d().rotated(M_PI / 4, Frame3d().zAxis()).translated(Vector3d(0, 1, 0));
+        Triangle3d f(Vector3d(1, 1, 1), Vector3d(2, 1, 1), Vector3d(1, 2, 1));
         script.run("import pickle");
         script.set("a", a);
         script.set("b", b);
         script.set<MatrixXd>("c", c);
         script.set<MatrixXI>("d", d);
         script.set<DatumXd>("e", e);
+        script.set<SimplexXd>("f", f);
         script.run("a_pickled = pickle.dumps(a)");
         script.run("b_pickled = pickle.dumps(b)");
         script.run("c_pickled = pickle.dumps(c)");
         script.run("d_pickled = pickle.dumps(d)");
         script.run("e_pickled = pickle.dumps(e)");
+        script.run("f_pickled = pickle.dumps(f)");
         script.run("a_unpickled = pickle.loads(a_pickled)");
         script.run("b_unpickled = pickle.loads(b_pickled)");
         script.run("c_unpickled = pickle.loads(c_pickled)");
         script.run("d_unpickled = pickle.loads(d_pickled)");
         script.run("e_unpickled = pickle.loads(e_pickled)");
+        script.run("f_unpickled = pickle.loads(f_pickled)");
         double a_extracted = script.get<double>("a_unpickled");
         Interval b_extracted = script.get<Interval>("b_unpickled");
         Matrix2d c_extracted = script.get<MatrixXd>("c_unpickled");
         Vector2I d_extracted = script.get<MatrixXI>("d_unpickled");
         Frame3d e_extracted = script.get<DatumXd>("e_unpickled");
-        TS_ASSERT(a - a_extracted == Zero());
-        TS_ASSERT(b.lower() - b_extracted.lower() == Zero());
-        TS_ASSERT(b.upper() - b_extracted.upper() == Zero());
-        TS_ASSERT((c - c_extracted).isZero());
-        TS_ASSERT((d.cwiseLower() - d_extracted.cwiseLower()).isZero());
-        TS_ASSERT((d.cwiseUpper() - d_extracted.cwiseUpper()).isZero());
-        TS_ASSERT((e.origin() - e_extracted.origin()).isZero());
+        Triangle3d f_extracted = script.get<SimplexXd>("f_unpickled");
+        TS_ASSERT_EQUALS(a, a_extracted);
+        TS_ASSERT_EQUALS(b.lower(), b_extracted.lower());
+        TS_ASSERT_EQUALS(b.upper(), b_extracted.upper());
+        TS_ASSERT_EQUALS(c, c_extracted);
+        TS_ASSERT_EQUALS(d.cwiseLower(), d_extracted.cwiseLower());
+        TS_ASSERT_EQUALS(d.cwiseUpper(), d_extracted.cwiseUpper());
+        TS_ASSERT_EQUALS(e.origin(), e_extracted.origin());
         TS_ASSERT((e.basis() - e_extracted.basis()).isZero());
+        TS_ASSERT_EQUALS(f, f_extracted);
     }
 
     void testOverloadOrder() {
@@ -600,6 +606,28 @@ public:
             "frame = global_frame.translated(Vector([1, 1, 1])).rotated(-math.pi / 2, global_frame.xAxis())"
         );
         TS_ASSERT(script.get<bool>("(Vector([1, 2, 3]) * frame - Vector([2, 4, -3])).isZero()"));
+    }
+
+    void testSimplex() {
+        Script script;
+        script.run("import math");
+        script.run(
+            "triangle = Triangle3d(Vector([1, 1, 1]), Vector([2, 1, 1]), Vector([1, 2, 1]))"
+        );
+        TS_ASSERT(script.get<double>("triangle.area()") - 0.5 == Zero());
+        TS_ASSERT((script.get<MatrixXd>("triangle.normal()") - Vector3d::UnitZ()).isZero());
+        std::cout << "edge first vertex:" << std::endl << script.get<MatrixXd>("triangle.edge(1).vertex(0)") << std::endl;
+        std::cout << "edge second vertex:" << std::endl << script.get<MatrixXd>("triangle.edge(1).vertex(1)") << std::endl;
+        TS_ASSERT(
+            (script.get<MatrixXd>("triangle.edge(1).vector()") - Vector3d(-1, 1, 0)).isZero()
+        );
+        TS_ASSERT(  
+            script.get<bool>(
+                "(triangle.mirrored(Frame3d().yzPlane()).vertex(0) - Vector([-1, 1, 1])).isZero()"
+            )
+        );
+        SimplexXd projected = script.get<SimplexXd>("triangle % Frame3d().xyPlane()");
+        TS_ASSERT((projected.vertex(0) - Vector3d(1, 1, 0)).isZero());
     }
 
     /*

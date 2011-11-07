@@ -293,6 +293,7 @@
         Python/bindInterval.cpp
         Python/bindMatrix.cpp
         Python/bindMatrixConstructors.cpp
+        Python/bindSimplex.cpp
         Python/check.cpp
         Python/module.cpp
     )
