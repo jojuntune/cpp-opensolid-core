@@ -30,13 +30,29 @@
 namespace OpenSolid
 {
     template <int dimensions_, int size_>
+    class Simplex;
+
+    template <int dimensions_, int size_, class MatrixType>
+    struct TransformedSimplex
+    {
+        typedef Simplex<
+            (dimensions_ == Dynamic ? Dynamic : MatrixType::RowsAtCompileTime),
+            size_
+        > Type;
+    };
+
+    template <int dimensions_, int size_>
     class Simplex : public Transformable<Simplex<dimensions_, size_>>
     {
+    static_assert(
+        (dimensions_ == Dynamic) == (size_ == Dynamic),
+        "Mixing static and dynamic simplex dimensions and sizes is not supported"
+    );
     public:
         typedef Matrix<double, dimensions_, size_> Vertices;
         typedef typename Vertices::ColXpr Vertex;
         typedef typename Vertices::ConstColXpr ConstVertex;
-        typedef Simplex<dimensions_, 2> Edge;
+        typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : 2)> Edge;
         typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> Face;
         typedef Matrix<double, dimensions_, 1> Vector;
     private:
@@ -90,10 +106,8 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT ConstVertex vertex(int index) const;
 
         template <class MatrixType, class VectorType>
-        Simplex<MatrixType::RowsAtCompileTime, size_> transformed(
-            const MatrixType& matrix,
-            const VectorType& vector
-        ) const;
+        typename TransformedSimplex<dimensions_, size_, MatrixType>::Type
+        transformed(const MatrixType& matrix, const VectorType& vector) const;
         
         OPENSOLID_CORE_EXPORT double length() const;
         OPENSOLID_CORE_EXPORT double area() const;
@@ -155,13 +169,15 @@ namespace OpenSolid
     }
 
     template <int dimensions_, int size_> template <class MatrixType, class VectorType>
-    Simplex<MatrixType::RowsAtCompileTime, size_> Simplex<dimensions_, size_>::transformed(
+    typename TransformedSimplex<dimensions_, size_, MatrixType>::Type
+    Simplex<dimensions_, size_>::transformed(
         const MatrixType& matrix,
         const VectorType& vector
     ) const {
         assertValidTransform<dimensions_>(dimensions(), matrix, vector);
-        static const int new_dimensions = MatrixType::RowsAtCompileTime;
-        return Simplex<new_dimensions, size_>((matrix * vertices()).colwise() + vector);
+        return Simplex<(dimensions_ == Dynamic ? Dynamic : MatrixType::RowsAtCompileTime), size_>(
+            (matrix * vertices()).colwise() + vector
+        );
     }
 }
 
