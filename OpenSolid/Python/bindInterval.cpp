@@ -27,6 +27,22 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    double clampD(const Interval& interval, double argument) {
+        return interval.clamp(argument);
+    }
+
+    Interval clampI(const Interval& interval, const Interval& argument) {
+        return interval.clamp(argument);
+    }
+
+    double interpolatedD(const Interval& interval, double argument) {
+        return interval.interpolated(argument);
+    }
+
+    Interval interpolatedI(const Interval& interval, const Interval& argument) {
+        return interval.interpolated(argument);
+    }
+
     tuple bisected(const Interval& argument) {
         std::pair<Interval, Interval> bisected = argument.bisected();
         return make_tuple(bisected.first, bisected.second);
@@ -125,6 +141,11 @@ namespace OpenSolid
             .def("upper", &Interval::upper)
             .def("median", &Interval::median)
             .def("width", &Interval::width)
+            .def("clamp", &clampI)
+            .def("clamp", &clampD)
+            .def("interpolated", &interpolatedI)
+            .def("interpoloated", &interpolatedD)
+            .def("random", &Interval::random)
             .def("squared", &Interval::squared)
             .def("isEmpty", &Interval::isEmpty)
             .def("isSingleton", &Interval::isSingleton)
