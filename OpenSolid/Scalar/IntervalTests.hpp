@@ -118,4 +118,13 @@ public:
         TS_ASSERT_EQUALS(second.lower(), 2);
         TS_ASSERT_EQUALS(second.upper(), 3);
     }
+
+    void testRandom() {
+        Interval interval(-2, 3);
+        for (int i = 0; i < 100; ++i) {
+            double random = interval.random();
+            TS_ASSERT_LESS_THAN_EQUALS(interval.lower(), random);
+            TS_ASSERT_LESS_THAN_EQUALS(random, interval.upper());
+        }
+    }
 };

@@ -24,6 +24,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <utility>
 
@@ -65,6 +66,7 @@ namespace OpenSolid
         Interval clamp(const Interval& argument) const;
         double interpolated(double argument) const;
         Interval interpolated(const Interval& argument) const;
+        double random() const;
         
         Interval squared() const;
         
@@ -211,6 +213,8 @@ namespace OpenSolid
     inline Interval Interval::interpolated(const Interval& argument) const {
         return lower() + argument * width();
     }
+
+    inline double Interval::random() const {return lower() + rand() * width() / RAND_MAX;}
 
     inline Interval Interval::squared() const {return boost::numeric::square(value());}
     
