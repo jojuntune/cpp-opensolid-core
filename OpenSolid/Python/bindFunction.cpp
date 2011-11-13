@@ -52,6 +52,34 @@ namespace OpenSolid
     Function derivative1(const Function& function, int index) {return function.derivative(index);}
 
     Function derivative2(const Function& function) {return function.derivative();}
+            
+    Function transformed(const Function& function, const MatrixXd& matrix, const MatrixXd& vector) {
+        return function.transformed(matrix, VectorXd(vector));
+    }
+    
+    Function scaled(const Function& function, double scale, const MatrixXd& point) {
+        return function.scaled(scale, VectorXd(point));
+    }
+    
+    Function translated1(const Function& function, const MatrixXd& vector) {
+        return function.translated(VectorXd(vector));
+    }
+    
+    Function translated2(const Function& function, double distance, const DatumXd& axis) {
+        return function.translated(distance, axis);
+    }
+    
+    Function rotated1(const Function& function, double angle, const MatrixXd& point) {
+        return function.rotated(angle, Vector2d(point));
+    }
+    
+    Function rotated2(const Function& function, double angle, const DatumXd& axis) {
+        return function.rotated(angle, axis);
+    }
+    
+    Function mirrored(const Function& function, const DatumXd& plane) {
+        return function.mirrored(plane);
+    }
     
     Function crossMatrix(const Function& function, const MatrixXd& argument) {
         return function.cross(argument);
@@ -91,6 +119,7 @@ namespace OpenSolid
             .def(init<Function, Function, Function>())
             .def("parameters", &Function::parameters)
             .def("dimensions", &Function::dimensions)
+            .def("isConstant", &Function::isConstant)
             .def("__call__", &callFunction)
             .def("__call__", &callMatrixXI, return_value_policy<manage_new_object>())
             .def("__call__", &callMatrixXd, return_value_policy<manage_new_object>())
@@ -98,6 +127,13 @@ namespace OpenSolid
             .def("__call__", &callDouble, return_value_policy<manage_new_object>())
             .def("derivative", &derivative1)
             .def("derivative", &derivative2)
+            .def("transformed", &transformed)
+            .def("scaled", &scaled)
+            .def("translated", &translated1)
+            .def("translated", &translated2)
+            .def("rotated", &rotated1)
+            .def("rotated", &rotated2)
+            .def("mirrored", &mirrored)
             .def("norm", &Function::norm)
             .def("normalized", &Function::normalized)
             .def("squaredNorm", &Function::squaredNorm)
