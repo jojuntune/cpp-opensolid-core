@@ -43,7 +43,7 @@ namespace OpenSolid
         const MatrixXd& matrix,
         const VectorXd& vector,
         Function& result
-    ) const {result = -(operand().transformed(matrix, vector));}
+    ) const {result = operand().transformed(-matrix, vector);}
     
     void NegationFunction::getNorm(Function& result) const {result = operand().norm();}
     
