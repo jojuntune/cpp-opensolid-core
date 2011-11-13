@@ -171,13 +171,23 @@ namespace OpenSolid
     Function Function::concatenate(const Function& other) const {
         assert(implementation());
         assert(other.implementation());
-        return new ConcatenationFunction(*this, other);
+        if (isConstant() && other.isConstant()) {
+            VectorXd result(dimensions() + other.dimensions());
+            result.head(dimensions()) = to<VectorXd>();
+            result.tail(other.dimensions()) = other.to<VectorXd>();
+            return result;
+        } else {
+            return new ConcatenationFunction(*this, other);
+        }
     }
     
     Function Function::dot(const Function& other) const {
         assert(implementation());
         assert(other.implementation());
-        if (isConstant() && other.isConstant()) {
+        if (dimensions() == 1) {
+            assert(other.dimensions() == 1);
+            return (*this) * other;
+        } else if (isConstant() && other.isConstant()) {
             return to<VectorXd>().dot(other.to<VectorXd>());
         } else if (
             (isConstant() && to<VectorXd>().isZero()) ||
