@@ -37,7 +37,6 @@ public:
         Vector3d start(1, 2, 3);
         Vector3d end(4, 5, 6);
         Geometry line = Line3d(start, end);
-        std::cout << line(0.5) << std::endl;
         TS_ASSERT(line(0.5).isApprox(Vector3d(2.5, 3.5, 4.5)));
     }
     
@@ -96,7 +95,6 @@ public:
         Geometry reversed = parabola.reversed();
         TS_ASSERT((reversed(-1) - Vector3d(1, 1, 0)).isZero());
         TS_ASSERT((reversed(1) - Vector3d(-1, 1, 0)).isZero());
-
     }
     
     void testHashing() {
