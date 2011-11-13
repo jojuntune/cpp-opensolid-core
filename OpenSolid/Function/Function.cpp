@@ -252,6 +252,7 @@ namespace OpenSolid
     Function Function::operator()(const Function& inner) const {
         assert(implementation());
         assert(inner.implementation());
+        if (isConstant()) {return *this;}
         assert(parameters() == inner.dimensions());
         if (inner.isConstant()) {return operator()(inner.to<VectorXd>());}
         Function result;
@@ -432,12 +433,10 @@ namespace OpenSolid
     Function operator+(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
             return first_operand.to<VectorXd>() + second_operand.to<VectorXd>();
-        } else if (first_operand.isConstant()) {
-            VectorXd vector = first_operand.to<VectorXd>();
-            return vector.isZero() ? second_operand : second_operand.translated(vector);
-        } else if (second_operand.isConstant()) {
-            VectorXd vector = second_operand.to<VectorXd>();
-            return vector.isZero() ? first_operand : first_operand.translated(vector);
+        } else if (first_operand.isConstant() && first_operand.to<VectorXd>().isZero()) {
+            return second_operand;
+        } else if (second_operand.isConstant() && second_operand.to<VectorXd>().isZero()) {
+            return first_operand;
         } else {
             return new SumFunction(first_operand, second_operand);
         }
@@ -446,13 +445,10 @@ namespace OpenSolid
     Function operator-(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
             return first_operand.to<VectorXd>() - second_operand.to<VectorXd>();
-        } else if (first_operand.isConstant()) {
-            VectorXd vector = first_operand.to<VectorXd>();
-            Function negated = -second_operand;
-            return vector.isZero() ? negated : negated.translated(vector);
-        } else if (second_operand.isConstant()) {
-            VectorXd vector = second_operand.to<VectorXd>();
-            return vector.isZero() ? first_operand : first_operand.translated(-vector);
+        } else if (first_operand.isConstant() && first_operand.to<VectorXd>().isZero()) {
+            return -second_operand;
+        } else if (second_operand.isConstant() && second_operand.to<VectorXd>().isZero()) {
+            return first_operand;
         } else {
             return new DifferenceFunction(first_operand, second_operand);
         }
