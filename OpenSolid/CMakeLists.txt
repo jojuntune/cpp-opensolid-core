@@ -17,6 +17,7 @@
     IF (CMAKE_COMPILER_IS_GNUCXX)
         # Enable C++0x and add extra warning flags
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -Wno-unused-variable")
+        SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
         # Enable -fPIC on 64-bit systems where it is required
         IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
