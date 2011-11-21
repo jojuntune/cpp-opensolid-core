@@ -311,7 +311,7 @@ namespace OpenSolid
     
     template <int dimensions_, int size_>
     typename Simplex<dimensions_, size_>::Face Simplex<dimensions_, size_>::face(int index) const {
-        typename Face::Vertices face_vertices;
+        typename Face::Vertices face_vertices(dimensions(), size() - 1);
         Matrix<int, 1, (size_ == Dynamic ? Dynamic : size_ - 1)> indices(size() - 1);
         for (int i = 0; i < indices.size(); ++i) {indices(i) = (index + 1 + i) % size();}
         if (size() % 2 != 0 || index % 2 != 0) {indices.tail(2).reverseInPlace();}
