@@ -41,7 +41,7 @@ namespace OpenSolid
         SetNode<Type, BoundsType>* _left;
         SetNode<Type, BoundsType>* _right;
         const SetNode<Type, BoundsType>* _parent;
-        int _size;
+        std::size_t _size;
         
         void getLeaves(std::vector<SetNode<Type, BoundsType>*>& leaves);
     public:
@@ -72,7 +72,7 @@ namespace OpenSolid
         const SetNode<Type, BoundsType>* left() const;
         const SetNode<Type, BoundsType>* right() const;
         const SetNode<Type, BoundsType>* parent() const;
-        int size() const;
+        std::size_t size() const;
         
         SetNode<Type, BoundsType>* insert(const Type& argument, const BoundsType& argument_bounds);
         SetNode<Type, BoundsType>* erase(const Type& argument, const BoundsType& argument_bounds);
@@ -248,8 +248,8 @@ namespace OpenSolid
             double left_median = median(_left->_bounds, _split_direction);
             if (right_median < left_median) {std::swap(_left, _right);}
         } else {
-            int left_size = 0;
-            int right_size = 0;
+            std::size_t left_size = 0;
+            std::size_t right_size = 0;
             BoundsType left_bounds;
             BoundsType right_bounds;
             SetNode<Type, BoundsType>** lower = begin;
@@ -350,7 +350,7 @@ namespace OpenSolid
     }
     
     template <class Type, class BoundsType>
-    inline int SetNode<Type, BoundsType>::size() const {return _size;}
+    inline std::size_t SetNode<Type, BoundsType>::size() const {return _size;}
     
     template <class Type, class BoundsType>
     SetNode<Type, BoundsType>* SetNode<Type, BoundsType>::insert(

@@ -64,7 +64,7 @@ namespace OpenSolid
         
         void operator=(const Set<Type>& other);
         
-        int size() const;
+        std::size_t size() const;
         bool isEmpty() const;
         const typename Bounds<Type>::Type& bounds() const;
         
@@ -75,13 +75,13 @@ namespace OpenSolid
         SetIterator<Type> end() const;
         
         void insert(const Type& object);
-        int erase(const Type& object);
+        std::size_t erase(const Type& object);
         
         template <class IteratorType>
         void insert(IteratorType begin, IteratorType end);
         
         template <class IteratorType>
-        int erase(IteratorType begin, IteratorType end);
+        std::size_t erase(IteratorType begin, IteratorType end);
         
         void clear();
 
@@ -295,7 +295,7 @@ namespace OpenSolid
     }
     
     template <class Type>
-    inline int Set<Type>::size() const {return isEmpty() ? 0 : root()->size();}
+    inline std::size_t Set<Type>::size() const {return isEmpty() ? 0 : root()->size();}
     
     template <class Type>
     inline bool Set<Type>::isEmpty() const {return !root();}
@@ -369,7 +369,7 @@ namespace OpenSolid
     }
     
     template <class Type>
-    inline int Set<Type>::erase(const Type& object) {
+    inline std::size_t Set<Type>::erase(const Type& object) {
         if (isEmpty()) {
             return 0;
         } else {
@@ -378,7 +378,7 @@ namespace OpenSolid
                 _root = new Node(*_root);
                 _shared_count = new boost::detail::atomic_count(1);
             }
-            int previous_size = size();
+            std::size_t previous_size = size();
             _root = _root->erase(object, Bounds<Type>()(object));
             return previous_size - size();
         }
@@ -390,12 +390,12 @@ namespace OpenSolid
     }
     
     template <class Type> template <class IteratorType>
-    inline int Set<Type>::erase(IteratorType begin, IteratorType end) {
+    inline std::size_t Set<Type>::erase(IteratorType begin, IteratorType end) {
         return std::accumulate(
             begin,
             end,
             0,
-            [this] (int result, const Type& object) {return result + this->erase(object);}
+            [this] (std::size_t result, const Type& object) {return result + this->erase(object);}
         );
     }
     
