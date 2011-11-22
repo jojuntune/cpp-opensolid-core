@@ -28,10 +28,13 @@ namespace OpenSolid
     class Comparison
     {
     private:
-        Interval _interval;
+        double _lower;
+        double _upper;
     public:
         Comparison(double lower, double upper);
-        const Interval& interval() const;
+
+        double lower() const;
+        double upper() const;
     };
 
     class Zero : public Comparison
@@ -74,9 +77,11 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    inline Comparison::Comparison(double lower, double upper) : _interval(lower, upper) {}
+    inline Comparison::Comparison(double lower, double upper) : _lower(lower), _upper(upper) {}
 
-    inline const Interval& Comparison::interval() const {return _interval;}
+    inline double Comparison::lower() const {return _lower;}
+
+    inline double Comparison::upper() const {return _upper;}
 
     inline Zero::Zero(double precision) : Comparison(-precision, precision) {}
 
@@ -89,55 +94,55 @@ namespace OpenSolid
         Comparison(value.lower() - precision, value.upper() + precision) {}
 
     inline bool operator==(double value, const Comparison& comparison) {
-        return comparison.interval().contains(value);
+        return value >= comparison.lower() && value <= comparison.upper();
     }
 
     inline bool operator!=(double value, const Comparison& comparison) {
-        return !comparison.interval().contains(value);
+        return value > comparison.upper() || value < comparison.lower();
     }
 
     inline bool operator<(double value, const Comparison& comparison) {
-        return value < comparison.interval().lower();
+        return value < comparison.lower();
     }
 
     inline bool operator>(double value, const Comparison& comparison) {
-        return value > comparison.interval().upper();
+        return value > comparison.upper();
     }
 
     inline bool operator<=(double value, const Comparison& comparison) {
-        return value <= comparison.interval().upper();
+        return value <= comparison.upper();
     }
 
     inline bool operator>=(double value, const Comparison& comparison) {
-        return value >= comparison.interval().lower();
+        return value >= comparison.lower();
     }
 
     inline bool operator==(const Interval& value, const Comparison& comparison) {
-        return comparison.interval().contains(value);
+        return value.lower() >= comparison.lower() && value.upper() <= comparison.upper();
     }
 
     inline bool operator!=(const Interval& value, const Comparison& comparison) {
-        return !comparison.interval().overlaps(value);
+        return value.lower() > comparison.upper() || value.upper() < comparison.lower();
     }
 
     inline bool operator<(const Interval& value, const Comparison& comparison) {
-        return value.upper() < comparison.interval().lower();
+        return value.upper() < comparison.lower();
     }
 
     inline bool operator>(const Interval& value, const Comparison& comparison) {
-        return value.lower() > comparison.interval().upper();
+        return value.lower() > comparison.upper();
     }
 
     inline bool operator<=(const Interval& value, const Comparison& comparison) {
-        return value.upper() <= comparison.interval().upper();
+        return value.upper() <= comparison.upper();
     }
 
     inline bool operator>=(const Interval& value, const Comparison& comparison) {
-        return value.lower() >= comparison.interval().lower();
+        return value.lower() >= comparison.lower();
     }
 
     inline Comparison operator-(const Comparison& argument) {
-        return Comparison(-argument.interval().upper(), -argument.interval().lower());
+        return Comparison(-argument.upper(), -argument.lower());
     }
 }
 
