@@ -31,15 +31,15 @@
 
 using namespace OpenSolid;
 
-template <class Type, class BoundsType>
-void testSet(const SetNode<Type, BoundsType>* node) {
+template <class Type>
+void testSet(const SetNode<Type>* node) {
     if (!node) {
         return;
     } else if (node->object()) {
         TS_ASSERT(node->size() == 1u);
     } else {
-        const SetNode<Type, BoundsType>* left = node->left();
-        const SetNode<Type, BoundsType>* right = node->right();
+        const SetNode<Type>* left = node->left();
+        const SetNode<Type>* right = node->right();
         TS_ASSERT(node->bounds().contains(left->bounds()));
         TS_ASSERT(node->bounds().contains(right->bounds()));
         TS_ASSERT_EQUALS(node->size(), left->size() + right->size());
@@ -258,7 +258,7 @@ public:
         std::cout << set1 << std::endl;
         std::cout << set2 << std::endl;
         
-        const Set<double>::Node* root;
+        const SetNode<double>* root;
         {
             std::vector<double> list2(3);
             list2[0] = 10;

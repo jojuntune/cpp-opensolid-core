@@ -45,10 +45,9 @@ namespace OpenSolid
     class Set
     {
     public:
-        typedef SetNode<Type, typename Bounds<Type>::Type> Node;
         typedef SetIterator<Type> Iterator;
     private:
-        Node* _root;
+        SetNode<Type>* _root;
         boost::detail::atomic_count* _shared_count;
     public:
         Set();
@@ -60,7 +59,7 @@ namespace OpenSolid
         
         ~Set();
         
-        const Node* root() const;
+        const SetNode<Type>* root() const;
         
         void operator=(const Set<Type>& other);
         
@@ -202,7 +201,7 @@ namespace OpenSolid
         public boost::iterator_facade<SetIterator<Type>, const Type, std::forward_iterator_tag>
     {
     private:
-        const typename Set<Type>::Node* _node;
+        const typename SetNode<Type>* _node;
         
         friend class boost::iterator_core_access;
         
@@ -211,7 +210,7 @@ namespace OpenSolid
         const Type& dereference() const;
     public:
         SetIterator();
-        SetIterator(const typename Set<Type>::Node* node);
+        SetIterator(const SetNode<Type>* node);
     };
 
     template <class Type>
@@ -228,8 +227,8 @@ namespace OpenSolid
         SetInserter<Type>& operator++(int);
     };
     
-    template <class Type, class BoundsType>
-    std::ostream& operator<<(std::ostream& stream, const SetNode<Type, BoundsType>& node);
+    template <class Type>
+    std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node);
     
     template <class Type>
     std::ostream& operator<<(std::ostream& stream, const Set<Type>& set);
@@ -259,12 +258,14 @@ namespace OpenSolid
     template <class Type> template <class IteratorType>
     inline Set<Type>::Set(IteratorType begin, IteratorType end) {
         Bounds<Type> bounds_function;
-        std::vector<Node*> nodes;
+        std::vector<SetNode<Type>*> nodes;
         std::transform(
             begin,
             end,
             std::back_inserter(nodes), 
-            [&bounds_function] (const Type& item) {return new Node(item, bounds_function(item));}
+            [&bounds_function] (const Type& item) {
+                return new SetNode<Type>(item, bounds_function(item));
+            }
         );
         if (nodes.empty()) {
             _root = nullptr;
@@ -277,11 +278,11 @@ namespace OpenSolid
             std::for_each(
                 nodes.begin() + 1,
                 nodes.end(),
-                [&overall_bounds] (Node* node) {
+                [&overall_bounds] (SetNode<Type>* node) {
                     overall_bounds = overall_bounds.hull(node->bounds());
                 }
             );
-            _root = new Node(overall_bounds, &nodes.front(), &nodes.back() + 1);
+            _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
             _shared_count = new boost::detail::atomic_count(1);
         }
     }
@@ -301,7 +302,7 @@ namespace OpenSolid
     inline bool Set<Type>::isEmpty() const {return !root();}
     
     template <class Type>
-    inline const typename Set<Type>::Node* Set<Type>::root() const {return _root;}
+    inline const typename SetNode<Type>* Set<Type>::root() const {return _root;}
         
     template <class Type>
     void Set<Type>::operator=(const Set<Type>& other) {
@@ -320,7 +321,7 @@ namespace OpenSolid
         if (isEmpty()) {
             return nullptr;
         } else {
-            const Node* node = root();
+            const SetNode<Type>* node = root();
             while (node->left()) {node = node->left();}
             return node;
         }
@@ -339,7 +340,7 @@ namespace OpenSolid
     template <class Type>
     inline const Type& Set<Type>::front() const {
         assert(!isEmpty());
-        const Node* node = root();
+        const SetNode<Type>* node = root();
         while (node->left()) {node = node->left();}
         return *node->object();
     }
@@ -347,7 +348,7 @@ namespace OpenSolid
     template <class Type>
     inline const Type& Set<Type>::back() const {
         assert(!isEmpty());
-        const Node* node = root();
+        const SetNode<Type>* node = root();
         while (node->right()) {node = node->right();}
         return *node->object();
     }
@@ -356,12 +357,12 @@ namespace OpenSolid
     inline void Set<Type>::insert(const Type& object) {
         typename Bounds<Type>::Type bounds = Bounds<Type>()(object);
         if (isEmpty()) {
-            _root = new Node(object, bounds);
+            _root = new SetNode<Type>(object, bounds);
             _shared_count = new boost::detail::atomic_count(1);
         } else {
             if (*_shared_count > 1) {
                 --*_shared_count;
-                _root = new Node(*_root);
+                _root = new SetNode<Type>(*_root);
                 _shared_count = new boost::detail::atomic_count(1);
             }
             _root = _root->insert(object, bounds);
@@ -375,7 +376,7 @@ namespace OpenSolid
         } else {
             if (*_shared_count > 1) {
                 --*_shared_count;
-                _root = new Node(*_root);
+                _root = new SetNode<Type>(*_root);
                 _shared_count = new boost::detail::atomic_count(1);
             }
             std::size_t previous_size = size();
@@ -416,9 +417,9 @@ namespace OpenSolid
 
     namespace
     {
-        template <class Type, class BoundsType, class VisitorType, class BoundsPredicateType>
+        template <class Type, class VisitorType, class BoundsPredicateType>
         void visitNode(
-            const SetNode<Type, BoundsType>* node,
+            const SetNode<Type>* node,
             const VisitorType& visitor,
             const BoundsPredicateType& bounds_predicate
         ) {
@@ -778,7 +779,7 @@ namespace OpenSolid
     inline SetIterator<Type>::SetIterator() : _node(nullptr) {}
     
     template <class Type>
-    inline SetIterator<Type>::SetIterator(const typename Set<Type>::Node* node) : _node(node) {}
+    inline SetIterator<Type>::SetIterator(const SetNode<Type>* node) : _node(node) {}
 
     template <class Type>
     inline SetInserter<Type>::SetInserter(Set<Type>* set) : _set(set) {}
@@ -795,8 +796,8 @@ namespace OpenSolid
     template <class Type>
     inline SetInserter<Type>& SetInserter<Type>::operator++(int) {return *this;}
 
-    template <class Type, class BoundsType>
-    std::ostream& operator<<(std::ostream& stream, const SetNode<Type, BoundsType>& node) {
+    template <class Type>
+    std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node) {
         stream << "{";
         if (node.object()) {
             stream << *node.object();
