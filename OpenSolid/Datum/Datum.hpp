@@ -130,9 +130,8 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> reversed(int index) const;
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> reversed() const;
 
-        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orthonormalized() const;
+        OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> normalized() const;
         OPENSOLID_CORE_EXPORT Datum<dimensions_, axes_> orientation() const;
-        OPENSOLID_CORE_EXPORT Datum<dimensions_, dimensions_> frame() const;
     };
 
     typedef Datum<2, 2> Datum2d;

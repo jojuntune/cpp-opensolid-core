@@ -138,7 +138,6 @@ namespace OpenSolid
 
     template<int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::xDirection() const {
-        assert(basis().isUnitary());
         return basis().col(0);
     }
 
@@ -152,7 +151,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::yDirection() const {
-        assert(basis().isUnitary());
         assert(axes() >= 2);
         return basis().col(1);
     }
@@ -164,7 +162,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::zDirection() const {
-        assert(basis().isUnitary());
         assert(axes() >= 3);
         return basis().col(2);
     }
@@ -174,7 +171,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::direction(int index) const {
-        assert(basis().isUnitary());
         assert(index >= 0 && index < axes());
         return basis().col(index);
     }
@@ -190,7 +186,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     Matrix<double, dimensions_, 1> Datum<dimensions_, axes_>::direction() const {
         assert(axes() == 1);
-        assert(basis().squaredNorm() == One());
         return basis();
     }
 
@@ -238,7 +233,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::xAxis() const {
-        assert(basis().isUnitary());
         return AxisType(origin(), basis().col(0));
     }
 
@@ -252,7 +246,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::yAxis() const {
-        assert(basis().isUnitary());
         assert(axes() >= 2);
         return AxisType(origin(), basis().col(1));
     }
@@ -264,7 +257,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::zAxis() const {
-        assert(basis().isUnitary());
         assert(axes() >= 3);
         return AxisType(origin(), basis().col(2));
     }
@@ -274,7 +266,6 @@ namespace OpenSolid
     
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::AxisType Datum<dimensions_, axes_>::axis(int index) const {
-        assert(basis().isUnitary());
         assert(index >= 0 && index < axes());
         return AxisType(origin(), basis().col(index));
     }
@@ -301,7 +292,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::xyPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         return Plane3d(origin(), basis().col(0), basis().col(1));
     }
 
@@ -311,7 +301,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::xzPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         return Plane3d(origin(), basis().col(0), basis().col(2));
     }
 
@@ -321,7 +310,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::yxPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         return Plane3d(origin(), basis().col(1), basis().col(0));
     }
 
@@ -331,7 +319,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::yzPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         return Plane3d(origin(), basis().col(1), basis().col(2));
     }
 
@@ -341,7 +328,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::zxPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         return Plane3d(origin(), basis().col(2), basis().col(0));
     }
 
@@ -351,7 +337,6 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     typename Datum<dimensions_, axes_>::PlaneType Datum<dimensions_, axes_>::zyPlane() const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         return Plane3d(origin(), basis().col(2), basis().col(1));
     }
 
@@ -364,7 +349,6 @@ namespace OpenSolid
         int second_index
     ) const {
         assert(dimensions() == 3 && axes() == 3);
-        assert(basis().isUnitary());
         assert(first_index >= 0 && first_index < 3);
         assert(second_index >= 0 && second_index < 3);
         assert(first_index != second_index);
@@ -482,23 +466,23 @@ namespace OpenSolid
     template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::reversed() const;
     
     template <int dimensions_, int axes_>
-    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orthonormalized() const {
+    Datum<dimensions_, axes_> Datum<dimensions_, axes_>::normalized() const {
         return Datum<dimensions_, axes_>(
             origin(),
             orthonormalBasis(basis()).leftCols(basis().cols())
         );
     }
     
-    template Datum<1, 1> Datum<1, 1>::orthonormalized() const;
-    template Datum<1, 2> Datum<1, 2>::orthonormalized() const;
-    template Datum<1, 3> Datum<1, 3>::orthonormalized() const;
-    template Datum<2, 1> Datum<2, 1>::orthonormalized() const;
-    template Datum<2, 2> Datum<2, 2>::orthonormalized() const;
-    template Datum<2, 3> Datum<2, 3>::orthonormalized() const;
-    template Datum<3, 1> Datum<3, 1>::orthonormalized() const;
-    template Datum<3, 2> Datum<3, 2>::orthonormalized() const;
-    template Datum<3, 3> Datum<3, 3>::orthonormalized() const;
-    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::orthonormalized() const;
+    template Datum<1, 1> Datum<1, 1>::normalized() const;
+    template Datum<1, 2> Datum<1, 2>::normalized() const;
+    template Datum<1, 3> Datum<1, 3>::normalized() const;
+    template Datum<2, 1> Datum<2, 1>::normalized() const;
+    template Datum<2, 2> Datum<2, 2>::normalized() const;
+    template Datum<2, 3> Datum<2, 3>::normalized() const;
+    template Datum<3, 1> Datum<3, 1>::normalized() const;
+    template Datum<3, 2> Datum<3, 2>::normalized() const;
+    template Datum<3, 3> Datum<3, 3>::normalized() const;
+    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::normalized() const;
     
     template <int dimensions_, int axes_>
     Datum<dimensions_, axes_> Datum<dimensions_, axes_>::orientation() const {
@@ -517,22 +501,6 @@ namespace OpenSolid
     template Datum<3, 2> Datum<3, 2>::orientation() const;
     template Datum<3, 3> Datum<3, 3>::orientation() const;
     template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::orientation() const;
-
-    template <int dimensions_, int axes_>
-    Datum<dimensions_, dimensions_> Datum<dimensions_, axes_>::frame() const {
-        return Datum<dimensions_, dimensions_>(origin(), orthonormalBasis(basis()));
-    }
-    
-    template Datum<1, 1> Datum<1, 1>::frame() const;
-    template Datum<1, 1> Datum<1, 2>::frame() const;
-    template Datum<1, 1> Datum<1, 3>::frame() const;
-    template Datum<2, 2> Datum<2, 1>::frame() const;
-    template Datum<2, 2> Datum<2, 2>::frame() const;
-    template Datum<2, 2> Datum<2, 3>::frame() const;
-    template Datum<3, 3> Datum<3, 1>::frame() const;
-    template Datum<3, 3> Datum<3, 2>::frame() const;
-    template Datum<3, 3> Datum<3, 3>::frame() const;
-    template Datum<Dynamic, Dynamic> Datum<Dynamic, Dynamic>::frame() const;
 
     MatrixXd orthonormalBasis(const MatrixXd& vectors) {
         MatrixXd result = vectors.householderQr().householderQ();
