@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 FIND_PACKAGE(Doxygen)
 
-SET(SOURCE_DIR ../OpenSolid)
+SET(SOURCE_DIR ${Documentation_SOURCE_DIR}/../OpenSolid)
 
 # Copy logo image to build directory
 CONFIGURE_FILE(Images/logo-small.png ${Documentation_BINARY_DIR}/logo-small.png COPYONLY)
