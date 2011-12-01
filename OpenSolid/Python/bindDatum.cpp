@@ -20,7 +20,6 @@
 
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Datum/Axis.hpp>
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Datum/Frame.hpp>
 #include <OpenSolid/Datum/Plane.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
@@ -142,33 +141,23 @@ namespace OpenSolid
         return Axis3d(origin, direction);
     }
 
-    DatumXd coordinateSystem2d(const MatrixXd& origin, const MatrixXd& basis) {
-        return CoordinateSystem2d(origin, basis);
-    }
-
-    DatumXd coordinateSystem3d(const MatrixXd& origin, const MatrixXd& basis) {
-        return CoordinateSystem3d(origin, basis);
-    }
-
-    DatumXd coordinateSystemXd(const MatrixXd& origin, const MatrixXd& basis) {
-        return CoordinateSystemXd(origin, basis);
-    }
-
     DatumXd frame2d1() {return Frame2d();}
 
     DatumXd frame2d2(const MatrixXd& origin) {return Frame2d(origin);}
 
-    DatumXd frame2d3(const MatrixXd& origin, const MatrixXd& vectors) {
-        return Frame2d(origin, vectors);
+    DatumXd frame2d3(const MatrixXd& origin, const MatrixXd& x_direction) {
+        return Frame2d(origin, x_direction);
     }
-
+    
     DatumXd frame3d1() {return Frame3d();}
 
     DatumXd frame3d2(const MatrixXd& origin) {return Frame3d(origin);}
 
-    DatumXd frame3d3(const MatrixXd& origin, const MatrixXd& vectors) {
-        return Frame3d(origin, vectors);
-    }
+    DatumXd frame3d3(
+        const MatrixXd& origin,
+        const MatrixXd& x_direction,
+        const MatrixXd& y_direction
+    ) {return Frame3d(origin, x_direction, y_direction);}
 
     DatumXd plane3d1(const MatrixXd& origin, const MatrixXd& normal) {
         return Plane3d(origin, normal);
@@ -176,9 +165,33 @@ namespace OpenSolid
 
     DatumXd plane3d2(
         const MatrixXd& origin,
-        const MatrixXd& first_vector,
-        const MatrixXd& second_vector
-    ) {return Plane3d(origin, first_vector, second_vector);}
+        const MatrixXd& x_direction,
+        const MatrixXd& y_direction
+    ) {return Plane3d(origin, x_direction, y_direction);}
+
+    DatumXd datum2d1(
+        const MatrixXd& origin,
+        const MatrixXd& basis
+    ) {return Datum2d(origin, basis);}
+
+    DatumXd datum2d2(
+        const MatrixXd& origin,
+        const MatrixXd& x_direction,
+        const MatrixXd& y_direction
+    ) {return Datum2d(origin, x_direction, y_direction);}
+
+    DatumXd datum3d1(
+        const MatrixXd& origin,
+        const MatrixXd& basis
+    ) {return Datum3d(origin, basis);}
+
+    DatumXd datum3d2(
+        const MatrixXd& origin,
+        const MatrixXd& x_direction,
+        const MatrixXd& y_direction,
+        const MatrixXd& z_direction
+    ) {return Datum3d(origin, x_direction, y_direction, z_direction);}
+
 
     struct DatumPickleSuite : public pickle_suite
     {
@@ -191,12 +204,13 @@ namespace OpenSolid
         static void setstate(DatumXd& datum, tuple state) {
             VectorXd origin = MatrixXd(extract<MatrixXd>(state[0]));
             MatrixXd basis = extract<MatrixXd>(state[1]);
-            datum = CoordinateSystemXd(origin, basis);
+            datum = DatumXd(origin, basis);
         }
     };
 
     void bindDatum() {
         class_<DatumXd>("DatumXd")
+            .def(init<MatrixXd, MatrixXd>())
             .def("origin", &origin)
             .def("basis", &basis)
             .def("inverseMatrix", &inverseMatrix)
@@ -241,18 +255,17 @@ namespace OpenSolid
             .def("zReversed", &DatumXd::zReversed)
             .def("reversed", &reversed1)
             .def("reversed", &reversed2)
-            .def("orthonormalized", &DatumXd::orthonormalized)
             .def("orientation", &DatumXd::orientation)
-            .def("frame", &DatumXd::frame)
             .def(self * self)
             .def(self / self)
             .def(self % self)
             .def_pickle(DatumPickleSuite());
         def("Axis2d", &axis2d);
         def("Axis3d", &axis3d);
-        def("CoordinateSystem2d", &coordinateSystem2d);
-        def("CoordinateSystem2d", &coordinateSystem3d);
-        def("CoordinateSystemXd", &coordinateSystemXd);
+        def("Datum2d", &datum2d1);
+        def("Datum2d", &datum2d2);
+        def("Datum3d", &datum3d1);
+        def("Datum3d", &datum3d2);
         def("Frame2d", &frame2d1);
         def("Frame2d", &frame2d2);
         def("Frame2d", &frame2d3);

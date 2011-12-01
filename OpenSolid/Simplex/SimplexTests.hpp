@@ -23,7 +23,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Scalar/Comparison.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Set/Set.hpp>
@@ -147,7 +147,7 @@ public:
     
     void testCoordinateSystem() {
         Triangle3d triangle(Vector3d::Zero(), Vector3d(2, 0, 0), Vector3d(1, 2, 0));
-        CoordinateSystem<3, 2> coordinate_system = triangle.coordinateSystem();
+        Datum<3, 2> coordinate_system = triangle.coordinateSystem();
         Vector3d product = Vector2d(0.5, 0.5) * coordinate_system;
         TS_ASSERT((product - Vector3d(1.5, 1, 0)).isZero());
         Vector2d quotient = Vector3d(1, 0, 0) / coordinate_system;

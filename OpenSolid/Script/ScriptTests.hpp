@@ -588,7 +588,7 @@ public:
     void testDatum() {
         Script script;
         script.run("import math");
-        script.run("frame = Frame3d(Vector([1, 1, 1]), Matrix([[1, 1, 0], [-1, 1, 0]]))");
+        script.run("frame = Frame3d(Vector([1, 1, 1]), Vector([1, 1, 0]), Vector([-1, 1, 0]))");
         script.run("product = Vector([1, 1, 1]) * frame");
         TS_ASSERT(script.get<bool>("(product - Vector([1, 1 + sqrt(2), 2])).isZero()"));
         script.run("product = Vector([1, 1, 1]) * frame.orientation()");
@@ -616,8 +616,6 @@ public:
         );
         TS_ASSERT(script.get<double>("triangle.area()") - 0.5 == Zero());
         TS_ASSERT((script.get<MatrixXd>("triangle.normal()") - Vector3d::UnitZ()).isZero());
-        std::cout << "edge first vertex:" << std::endl << script.get<MatrixXd>("triangle.edge(1).vertex(0)") << std::endl;
-        std::cout << "edge second vertex:" << std::endl << script.get<MatrixXd>("triangle.edge(1).vertex(1)") << std::endl;
         TS_ASSERT(
             (script.get<MatrixXd>("triangle.edge(1).vector()") - Vector3d(-1, 1, 0)).isZero()
         );
@@ -655,7 +653,7 @@ public:
         Plane3d plane(Vector3d(1, 1, 1), Vector3d(1, 0, 1), Vector3d(0, 1, 0));
         TS_ASSERT(plane.basis().col(0).norm() == One());
         TS_ASSERT(plane.basis().col(1).norm() == One());
-        CoordinateSystem<3, 2> projected = plane % Frame3d().xyPlane();
+        Datum<3, 2> projected = plane % Frame3d().xyPlane();
         TS_ASSERT((projected.basis().col(0) - Vector3d(1 / sqrt(2.0), 0, 0)).isZero());
         TS_ASSERT((projected.basis().col(1) - Vector3d(0, 1, 0)).isZero());
         Axis3d axis = Axis2d(Vector2d::Zero(), Vector2d(1, 1)) * plane;
@@ -690,10 +688,7 @@ public:
     }
     
     void xtestNonOrthogonal() {
-        CoordinateSystem<3, 3> coordinate_system(
-            Vector3d(1, 2, 3),
-            Matrix3d::Ones().triangularView<Upper>()
-        );
+        Datum3d coordinate_system(Vector3d(1, 2, 3), Matrix3d::Ones().triangularView<Upper>());
         TS_ASSERT((Vector3d(1, 1, 1) * coordinate_system - Vector3d(4, 4, 4)).isZero());
         TS_ASSERT((Vector3d(4, 4, 4) / coordinate_system - Vector3d(1, 1, 1)).isZero());
     }

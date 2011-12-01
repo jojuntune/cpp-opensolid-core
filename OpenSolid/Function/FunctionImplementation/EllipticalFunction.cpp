@@ -18,7 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  **************************************************************************/
 
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
 
@@ -76,7 +75,7 @@ namespace OpenSolid
             int num_flipped = parameters() - index;
             new_basis.rightCols(num_flipped) = -new_basis.rightCols(num_flipped);
         }
-        result = new EllipticalFunction(CoordinateSystemXd(new_origin, new_basis), new_convention);
+        result = new EllipticalFunction(DatumXd(new_origin, new_basis), new_convention);
     }
     
     void EllipticalFunction::getTransformed(

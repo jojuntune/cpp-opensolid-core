@@ -52,12 +52,6 @@ namespace boost
     struct hash<OpenSolid::Axis<dimensions_>> : public std::hash<OpenSolid::Axis<dimensions_>>
     {
     };
-
-    template <int dimensions_, int axes_>
-    struct hash<OpenSolid::CoordinateSystem<dimensions_, axes_>> :
-        public std::hash<OpenSolid::CoordinateSystem<dimensions_, axes_>>
-    {
-    };
     
     template <int dimensions_, int axes_>
     struct hash<OpenSolid::Datum<dimensions_, axes_>> :

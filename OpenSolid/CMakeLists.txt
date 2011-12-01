@@ -128,18 +128,12 @@
     # Datum directory files
     SET(DATUM_HEADERS
         Datum/Axis.hpp
-        Datum/CoordinateSystem.hpp
         Datum/Datum.hpp
         Datum/DatumTests.hpp
         Datum/Frame.hpp
         Datum/Plane.hpp
     )
     SET(DATUM_SOURCES
-        Datum/Axis.cpp
-        Datum/CoordinateSystem.cpp
-        Datum/Datum.cpp
-        Datum/Frame.cpp
-        Datum/Plane.cpp
     )
     
     # Domain directory files

@@ -25,46 +25,50 @@
 
 namespace OpenSolid
 {
-    template <int dimensions_>
-    class Plane : public Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>
+    class Plane3d : public Datum<3, 2>
     {
     public:
-        OPENSOLID_CORE_EXPORT Plane();
+        Plane3d();
+        Plane3d(const Vector3d& origin, const Vector3d& normal);
+        Plane3d(const Vector3d& origin, const Vector3d& x_direction, const Vector3d& y_direction);
 
-        OPENSOLID_CORE_EXPORT Plane(
-            const Matrix<double, dimensions_, 1>& origin,
-            const Matrix<double, dimensions_, 1>& normal
-        );
-
-        OPENSOLID_CORE_EXPORT Plane(
-            const Vector3d& origin,
-            const Vector3d& first_vector,
-            const Vector3d& second_vector
-        );
-        
-        template <int other_dimensions_, int other_axes_>
-        Plane(const Datum<other_dimensions_, other_axes_>& other);
+        template <int dimensions_, int axes_>
+        Plane3d(const Datum<dimensions_, axes_>& datum);
     };
-    
-    typedef Plane<3> Plane3d;
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    Plane<dimensions_>::Plane(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<dimensions_, (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)>(
-            other.origin(),
-            orthonormalBasis(other.basis()).leftCols(other.axes())
-        ) {
-        assertCompatible<other_dimensions_, dimensions_>();
-        assertCompatible<
-            other_axes_,
-            (dimensions_ == Dynamic ? Dynamic : dimensions_ - 1)
-        >();
-        assert(other.axes() == other.dimensions() - 1);
+    inline Plane3d::Plane3d() {initialize(Vector3d::Zero(), Matrix<double, 3, 2>::Identity());}
+
+    inline Plane3d::Plane3d(const Vector3d& origin, const Vector3d& normal) {
+        Matrix<double, 3, 2> basis;
+        basis.col(0) = normal.unitOrthogonal();
+        basis.col(1) = normal.cross(basis.col(0)).normalized();
+        initialize(origin, basis);
+    }
+
+    inline Plane3d::Plane3d(
+        const Vector3d& origin,
+        const Vector3d& x_direction,
+        const Vector3d& y_direction
+    ) {
+        Matrix<double, 3, 2> basis;
+        basis.col(0) = x_direction.normalized();
+        basis.col(1) = (y_direction - y_direction.dot(basis.col(0)) * basis.col(0)).normalized();
+        initialize(origin, basis);
+    }
+
+    template <int dimensions_, int axes_>
+    inline Plane3d::Plane3d(const Datum<dimensions_, axes_>& datum) {
+        assertCompatible<dimensions_, 3>();
+        assert(datum.dimensions() == 3);
+        assertCompatible<axes_, 2>();
+        assert(datum.axes() == 2);
+        assert(datum.basis().isUnitary());
+        initialize(datum);
     }
 }
 

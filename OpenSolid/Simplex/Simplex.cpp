@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 
 namespace OpenSolid
@@ -325,21 +325,21 @@ namespace OpenSolid
     template Simplex<Dynamic, Dynamic>::Face Simplex<Dynamic, Dynamic>::face(int) const;
 
     template <int dimensions_, int size_>
-    CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>
+    Datum<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>
     Simplex<dimensions_, size_>::coordinateSystem() const {
-        return CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>(
+        return Datum<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>(
             vertex(0),
             vertices().rightCols(size() - 1).colwise() - vertex(0)
         );
     }
     
-    template CoordinateSystem<1, 1> Simplex<1, 2>::coordinateSystem() const;
-    template CoordinateSystem<2, 1> Simplex<2, 2>::coordinateSystem() const;
-    template CoordinateSystem<3, 1> Simplex<3, 2>::coordinateSystem() const;
-    template CoordinateSystem<2, 2> Simplex<2, 3>::coordinateSystem() const;
-    template CoordinateSystem<3, 2> Simplex<3, 3>::coordinateSystem() const;
-    template CoordinateSystem<3, 3> Simplex<3, 4>::coordinateSystem() const;
-    template CoordinateSystem<Dynamic, Dynamic> Simplex<Dynamic, Dynamic>::coordinateSystem() const;
+    template Datum<1, 1> Simplex<1, 2>::coordinateSystem() const;
+    template Datum<2, 1> Simplex<2, 2>::coordinateSystem() const;
+    template Datum<3, 1> Simplex<3, 2>::coordinateSystem() const;
+    template Datum<2, 2> Simplex<2, 3>::coordinateSystem() const;
+    template Datum<3, 2> Simplex<3, 3>::coordinateSystem() const;
+    template Datum<3, 3> Simplex<3, 4>::coordinateSystem() const;
+    template Datum<Dynamic, Dynamic> Simplex<Dynamic, Dynamic>::coordinateSystem() const;
     
     template <int dimensions_, int size_>
     Matrix<Interval, dimensions_, 1> Simplex<dimensions_, size_>::bounds() const {

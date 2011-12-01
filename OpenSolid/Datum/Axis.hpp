@@ -25,36 +25,61 @@
 
 namespace OpenSolid
 {
-    template <int dimensions_>
-    class Axis : public Datum<dimensions_, 1>
+    class Axis2d : public Datum<2, 1>
     {
     public:
-        OPENSOLID_CORE_EXPORT Axis();
+        Axis2d();
+        Axis2d(const Vector2d& origin, const Vector2d& direction);
 
-        OPENSOLID_CORE_EXPORT Axis(
-            const Matrix<double, dimensions_, 1>& origin,
-            const Matrix<double, dimensions_, 1>& direction
-        );
-        
-        template <int other_dimensions_, int other_axes_>
-        Axis(const Datum<other_dimensions_, other_axes_>& other);
+        template <int dimensions_, int axes_>
+        Axis2d(const Datum<dimensions_, axes_>& datum);
     };
-    
-    typedef Axis<1> Axis1d;
-    typedef Axis<2> Axis2d;
-    typedef Axis<3> Axis3d;
+
+    class Axis3d : public Datum<3, 1>
+    {
+    public:
+        Axis3d();
+        Axis3d(const Vector3d& origin, const Vector3d& direction);
+
+        template <int dimensions_, int axes_>
+        Axis3d(const Datum<dimensions_, axes_>& datum);
+    };
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    template <int dimensions_> template <int other_dimensions_, int other_axes_>
-    Axis<dimensions_>::Axis(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<dimensions_, 1>(other.origin(), other.basis().normalized()) {
-        assertCompatible<other_dimensions_, dimensions_>();
-        assertCompatible<other_axes_, 1>();
-        assert(other.axes() == 1);
+    inline Axis2d::Axis2d() {initialize(Vector2d::Zero(), Vector2d::UnitX());}
+
+    inline Axis2d::Axis2d(const Vector2d& origin, const Vector2d& direction) {
+        initialize(origin, direction.normalized());
+    }
+
+    template <int dimensions_, int axes_>
+    inline Axis2d::Axis2d(const Datum<dimensions_, axes_>& datum) {
+        assertCompatible<dimensions_, 2>();
+        assert(datum.dimensions() == 2);
+        assertCompatible<axes_, 1>();
+        assert(datum.axes() == 1);
+        assert(datum.direction().norm() == One());
+        initialize(datum);
+    }
+
+    inline Axis3d::Axis3d() {initialize(Vector3d::Zero(), Vector3d::UnitX());}
+
+    inline Axis3d::Axis3d(const Vector3d& origin, const Vector3d& direction) {
+        initialize(origin, direction.normalized());
+    }
+
+    template <int dimensions_, int axes_>
+    inline Axis3d::Axis3d(const Datum<dimensions_, axes_>& datum) {
+        assertCompatible<dimensions_, 3>();
+        assert(datum.dimensions() == 3);
+        assertCompatible<axes_, 1>();
+        assert(datum.axes() == 1);
+        assert(datum.direction().norm() == One());
+        initialize(datum);
     }
 }
 

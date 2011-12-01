@@ -21,7 +21,6 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Datum/Axis.hpp>
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Datum/Frame.hpp>
 #include <OpenSolid/Datum/Plane.hpp>
@@ -33,8 +32,7 @@ class DatumTests : public CxxTest::TestSuite
 public:
     void testProduct() {
         MatrixXd vectors(3, 2);
-        vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
-        Frame3d frame(Vector3d(1, 1, 1), vectors);
+        Frame3d frame(Vector3d(1, 1, 1), Vector3d(1, 1, 0), Vector3d(-1, 1, 0));
         std::cout << frame.basis() << std::endl;
         Vector3d product = Vector3d(1, 1, 1) * frame;
         std::cout << product << std::endl;
@@ -46,8 +44,7 @@ public:
     
     void testQuotient() {
         MatrixXd vectors(3, 2);
-        vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
-        Frame3d frame(Vector3d(1, 1, 1), vectors);
+        Frame3d frame(Vector3d(1, 1, 1), Vector3d(1, 1, 0), Vector3d(-1, 1, 0));
         Vector3d quotient = Vector3d(1, 0, 0) / frame;
         std::cout << quotient.transpose() << std::endl;
         TS_ASSERT((quotient - Vector3d(-1 / sqrt(2.0), -1 / sqrt(2.0), -1)).isZero());
@@ -63,7 +60,7 @@ public:
     }
     
     void testDatumComposition() {
-        Frame3d frame(Vector3d::UnitX(), Matrix3d::Identity());
+        Frame3d frame(Vector3d::UnitX());
         frame = frame.rotated(-M_PI / 4, frame.yAxis());
         Frame3d product = frame * frame;
         Vector3d expected_product_origin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
@@ -80,7 +77,7 @@ public:
         Plane3d plane(Vector3d(1, 1, 1), Vector3d(1, 0, 1), Vector3d(0, 1, 0));
         TS_ASSERT(plane.basis().col(0).norm() == One());
         TS_ASSERT(plane.basis().col(1).norm() == One());
-        CoordinateSystem<3, 2> projected = plane % Frame3d().xyPlane();
+        Datum<3, 2> projected = plane % Frame3d().xyPlane();
         TS_ASSERT((projected.basis().col(0) - Vector3d(1 / sqrt(2.0), 0, 0)).isZero());
         TS_ASSERT((projected.basis().col(1) - Vector3d(0, 1, 0)).isZero());
         Axis3d axis = Axis2d(Vector2d::Zero(), Vector2d(1, 1)) * plane;
@@ -100,25 +97,23 @@ public:
     }
     
     void testAccuracy() {
-        Matrix3d vectors;
         Frame3d frame;
         for (int i = 0; i < 3; ++i) {
-            vectors = Matrix3d::Random();
-            frame = Frame3d(Vector3d::Ones(), vectors);
+            Vector3d x_direction = Vector3d::Random();
+            Vector3d y_direction = Vector3d::Random();
+            frame = Frame3d(Vector3d::Ones(), x_direction, y_direction);
             std::cout << frame.basis() << std::endl;
             std::cout << std::endl;
             std::cout << frame.basis() * frame.basis().transpose() << std::endl;
             std::cout << std::endl;
-            std::cout << vectors / frame.orientation() << std::endl;
+            std::cout << x_direction / frame.orientation() << std::endl;
+            std::cout << y_direction / frame.orientation() << std::endl;
             std::cout << std::endl;
         }
     }
     
     void testNonOrthogonal() {
-        CoordinateSystem<3, 3> coordinate_system(
-            Vector3d(1, 2, 3),
-            Matrix3d::Ones().triangularView<Upper>()
-        );
+        Datum3d coordinate_system(Vector3d(1, 2, 3), Matrix3d::Ones().triangularView<Upper>());
         TS_ASSERT((Vector3d(1, 1, 1) * coordinate_system - Vector3d(4, 4, 4)).isZero());
         TS_ASSERT((Vector3d(4, 4, 4) / coordinate_system - Vector3d(1, 1, 1)).isZero());
     }

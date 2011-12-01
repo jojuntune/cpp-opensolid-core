@@ -24,7 +24,7 @@
 #include <OpenSolid/config.hpp>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Datum/CoordinateSystem.hpp>
+#include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 
 namespace OpenSolid
@@ -122,8 +122,7 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Face face(int index) const;
         
         OPENSOLID_CORE_EXPORT
-        CoordinateSystem<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)>
-        coordinateSystem() const;
+        Datum<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> coordinateSystem() const;
         
         OPENSOLID_CORE_EXPORT Matrix<Interval, dimensions_, 1> bounds() const;
         

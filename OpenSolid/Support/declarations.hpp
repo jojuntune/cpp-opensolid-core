@@ -34,9 +34,6 @@ namespace OpenSolid
     
     template <int dimensions_>
     class Axis;
-
-    template <int dimensions_, int axes_>
-    class CoordinateSystem;
     
     template <int dimensions_>
     class Frame;

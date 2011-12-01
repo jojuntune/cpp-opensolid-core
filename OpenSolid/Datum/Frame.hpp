@@ -25,41 +25,80 @@
 
 namespace OpenSolid
 {
-    template <int dimensions_>
-    class Frame : public Datum<dimensions_, dimensions_>
+    class Frame2d : public Datum<2, 2>
     {
     public:
-        OPENSOLID_CORE_EXPORT Frame();
-
-        OPENSOLID_CORE_EXPORT explicit Frame(int size);
+        Frame2d();
+        explicit Frame2d(const Vector2d& origin);
+        Frame2d(const Vector2d& origin, const Vector2d& x_direction);
         
-        OPENSOLID_CORE_EXPORT explicit Frame(const Matrix<double, dimensions_, 1>& origin);
-        
-        template <class VectorsType>
-        Frame(const Matrix<double, dimensions_, 1>& origin, const EigenBase<VectorsType>& vectors);
-        
-        template <int other_dimensions_, int other_axes_>
-        Frame(const Datum<other_dimensions_, other_axes_>& other);
+        template <int dimensions_, int axes_>
+        Frame2d(const Datum<dimensions_, axes_>& datum);
     };
+
     
-    typedef Frame<1> Frame1d;
-    typedef Frame<2> Frame2d;
-    typedef Frame<3> Frame3d;
+    class Frame3d : public Datum<3, 3>
+    {
+    public:
+        Frame3d();
+        explicit Frame3d(const Vector3d& origin);
+        Frame3d(const Vector3d& origin, const Vector3d& x_direction, const Vector3d& y_direction);
+        
+        template <int dimensions_, int axes_>
+        Frame3d(const Datum<dimensions_, axes_>& datum);
+    };
 }
 
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    template <int dimensions_> template <class VectorsType>
-    Frame<dimensions_>::Frame(
-        const Matrix<double, dimensions_, 1>& origin,
-        const EigenBase<VectorsType>& vectors
-    ) : Datum<dimensions_, dimensions_>(origin, orthonormalBasis(vectors.derived())) {}
-        
-    template <int dimensions_>template <int other_dimensions_, int other_axes_>
-    Frame<dimensions_>::Frame(const Datum<other_dimensions_, other_axes_>& other) :
-        Datum<dimensions_, dimensions_>(other.origin(), orthonormalBasis(other.basis())) {}
+    inline Frame2d::Frame2d() {initialize(Vector2d::Zero(), Matrix2d::Identity());}
+
+    inline Frame2d::Frame2d(const Vector2d& origin) {initialize(origin, Matrix2d::Identity());}
+
+    inline Frame2d::Frame2d(const Vector2d& origin, const Vector2d& x_direction) {
+        Matrix2d basis;
+        basis.col(0) = x_direction.normalized();
+        basis.col(1) = x_direction.unitOrthogonal();
+        initialize(origin, basis);
+    }
+
+    template <int dimensions_, int axes_>
+    inline Frame2d::Frame2d(const Datum<dimensions_, axes_>& datum) {
+        assertCompatible<2, dimensions_>();
+        assert(datum.dimensions() == 2);
+        assertCompatible<2, axes_>();
+        assert(datum.axes() == 2);
+        assert(datum.basis().isUnitary());
+        initialize(datum);
+    }
+
+    inline Frame3d::Frame3d() {initialize(Vector3d::Zero(), Matrix3d::Identity());}
+
+    inline Frame3d::Frame3d(const Vector3d& origin) {initialize(origin, Matrix3d::Identity());}
+
+    inline Frame3d::Frame3d(
+        const Vector3d& origin,
+        const Vector3d& x_direction,
+        const Vector3d& y_direction
+    ) {
+        Matrix3d basis;
+        basis.col(0) = x_direction.normalized();
+        basis.col(1) = (y_direction - y_direction.dot(basis.col(0)) * basis.col(0)).normalized();
+        basis.col(2) = basis.col(0).cross(basis.col(1));
+        initialize(origin, basis);
+    }
+
+    template <int dimensions_, int axes_>
+    inline Frame3d::Frame3d(const Datum<dimensions_, axes_>& datum) {
+        assertCompatible<3, dimensions_>();
+        assert(datum.dimensions() == 3);
+        assertCompatible<3, axes_>();
+        assert(datum.axes() == 3);
+        assert(datum.basis().isUnitary());
+        initialize(datum);
+    }
 }
 
 #endif
