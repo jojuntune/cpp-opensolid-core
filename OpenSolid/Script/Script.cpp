@@ -33,7 +33,9 @@ namespace OpenSolid
 {
     OPENSOLID_PYTHON_EXPORT extern PyObject* error_class_ptr;
     
-    inline object wrap(PyObject* pointer) {return object(handle<>(borrowed(pointer)));}
+    inline object wrap(PyObject* pointer) {
+        return pointer ? object(handle<>(borrowed(pointer))) : object();
+    }
     
     std::string formattedTraceback(object type, object value, object traceback) {
         object traceback_module = import("traceback");
@@ -45,9 +47,9 @@ namespace OpenSolid
     }
     
     Error Script::error() {
-        PyObject* type;
-        PyObject* value;
-        PyObject* traceback;
+        PyObject* type = nullptr;
+        PyObject* value = nullptr;
+        PyObject* traceback = nullptr;
         PyErr_Fetch(&type, &value, &traceback);
         Error result;
         if (PyErr_GivenExceptionMatches(type, error_class_ptr)) {
