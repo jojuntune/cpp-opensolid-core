@@ -101,9 +101,9 @@ public:
         Script script;
         script.set("a", Interval(1));
         script.set("b", MatrixXd(Vector3d(2, 3, 4)));
-        TS_ASSERT_THROWS(script.get<MatrixXd>("a.cross(b)"), Error);
+        TS_ASSERT_THROWS(script.get<Vector3d>("a.cross(b)"), Error);
         try {
-            script.get<MatrixXd>("a.cross(b)");
+            script.get<Vector3d>("a.cross(b)");
         } catch (const Error& error) {
             TS_ASSERT_EQUALS(error.expected(), "NoPythonExceptions");
         }
@@ -143,7 +143,7 @@ public:
         script.set("v", MatrixXd(Vector3d(1, 2, 3)));
         script.set("a", 4.0);
         script.set("b", 5.0);
-        Vector3d result = script.get<MatrixXd>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
+        Vector3d result = script.get<Vector3d>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
         TS_ASSERT((result - Vector3d(5, 7, 3)).isZero());
     }
     
@@ -153,7 +153,7 @@ public:
         script.set("v", MatrixXI(vector));
         script.set("a", Interval(4.0, 5.0));
         script.set("b", Interval(5.0, 6.0));
-        Vector3I result = script.get<MatrixXI>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
+        Vector3I result = script.get<VectorXI>("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
         TS_ASSERT_EQUALS(result.x().lower(), 5.0);
         TS_ASSERT_EQUALS(result.x().upper(), 7.0);
         TS_ASSERT_EQUALS(result.y().lower(), 7.0);
@@ -174,15 +174,15 @@ public:
         script.run("from math import pi");
         script.run("point = Vector3d(3, 2, 1)");
         Vector3d transformed;
-        transformed = script.get<MatrixXd>("point.rotated(pi / 2, Frame3d().zAxis())");
+        transformed = script.get<Vector3d>("point.rotated(pi / 2, Frame3d().zAxis())");
         TS_ASSERT((transformed - Vector3d(-2, 3, 1)).isZero());
-        transformed = script.get<MatrixXd>("point.rotated(pi / 2, Frame3d().xAxis())");
+        transformed = script.get<Vector3d>("point.rotated(pi / 2, Frame3d().xAxis())");
         TS_ASSERT((transformed - Vector3d(3, -1, 2)).isZero());
-        transformed = script.get<MatrixXd>("point.translated(Vector3d.Ones())");
+        transformed = script.get<Vector3d>("point.translated(Vector3d.Ones())");
         TS_ASSERT((transformed - Vector3d(4, 3, 2)).isZero());
-        transformed = script.get<MatrixXd>("point.mirrored(Frame3d().yzPlane())");
+        transformed = script.get<Vector3d>("point.mirrored(Frame3d().yzPlane())");
         TS_ASSERT((transformed - Vector3d(-3, 2, 1)).isZero());
-        transformed = script.get<MatrixXd>("(2 * point).mirrored(Frame3d().xyPlane())");
+        transformed = script.get<Vector3d>("(2 * point).mirrored(Frame3d().xyPlane())");
         TS_ASSERT((transformed - Vector3d(6, 4, -2)).isZero());
     }
     
@@ -255,7 +255,7 @@ public:
     
     void testLinSpaced() {
         Script script;
-        MatrixXd result = script.get<MatrixXd>("RowVector3d.LinSpaced(Interval(0, 1))");
+        RowVector3d result = script.get<RowVector3d>("RowVector3d.LinSpaced(Interval(0, 1))");
         TS_ASSERT_EQUALS(result, RowVector3d::LinSpaced(Interval(0, 1)));
         TS_ASSERT_EQUALS(result, RowVector3d(0, 0.5, 1));
     }
@@ -265,23 +265,23 @@ public:
         script.set<MatrixXd>("a", Vector3d(1, 2, 3));
         script.set<MatrixXd>("b", Vector3d(1, 2, 3));
         TS_ASSERT(script.get<bool>("(a - b).isZero()"));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("-a"), Vector3d(-1, -2, -3));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a + b"), Vector3d(2, 4, 6));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a - b"), Vector3d(0, 0, 0));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a * 2"), Vector3d(2, 4, 6));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("3 * a"), Vector3d(3, 6, 9));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a / 2"), Vector3d(0.5, 1, 1.5));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("-a"), Vector3d(-1, -2, -3));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("a + b"), Vector3d(2, 4, 6));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("a - b"), Vector3d(0, 0, 0));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("a * 2"), Vector3d(2, 4, 6));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("3 * a"), Vector3d(3, 6, 9));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("a / 2"), Vector3d(0.5, 1, 1.5));
     }
     
     void testExtraction() {
         Script script;
         std::string expression = "Vector2d(1, 2) + Vector2I(Interval(1, 2), Interval(2, 3))";
-        TS_ASSERT_THROWS(script.get<MatrixXd>(expression), Error);
+        TS_ASSERT_THROWS(script.get<Vector2d>(expression), Error);
         try {
-            script.get<MatrixXd>(expression);
+            script.get<Vector2d>(expression);
         } catch (const Error& error) {
             TS_ASSERT_EQUALS(error.expected(), "CompatiblePythonType");
-            TS_ASSERT_EQUALS(error.get<std::string>("expected_type"), "MatrixXd");
+            TS_ASSERT_EQUALS(error.get<std::string>("expected_type"), "Vector2d");
             TS_ASSERT_EQUALS(error.get<std::string>("type"), "MatrixXI");
         }
     }
@@ -336,11 +336,11 @@ public:
         script.run("u = Vector3d(1, 2, 3)");
         script.run("v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4))");
         script.run("result = (3 * u).hull(v)");
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseLower()"), Vector3d(1, 2, 3));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseUpper()"), Vector3d(3, 6, 9));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("result.cwiseLower()"), Vector3d(1, 2, 3));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("result.cwiseUpper()"), Vector3d(3, 6, 9));
         script.run("result = v.hull(3 * u)");
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseLower()"), Vector3d(1, 2, 3));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("result.cwiseUpper()"), Vector3d(3, 6, 9));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("result.cwiseLower()"), Vector3d(1, 2, 3));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("result.cwiseUpper()"), Vector3d(3, 6, 9));
     }
     
     void testMatrixIntersection() {
@@ -349,12 +349,12 @@ public:
         script.run("x = (v + Vector3d.Constant(0.5)).intersection(v)");
         script.run("y = Vector3I(Interval(1.5, 2), Interval(2.5, 3), Interval(3.5, 4))");
         TS_ASSERT_EQUALS(
-            script.get<MatrixXd>("x.cwiseLower()"),
-            script.get<MatrixXd>("y.cwiseLower()")
+            script.get<Vector3d>("x.cwiseLower()"),
+            script.get<Vector3d>("y.cwiseLower()")
         );
         TS_ASSERT_EQUALS(
-            script.get<MatrixXd>("x.cwiseUpper()"),
-            script.get<MatrixXd>("y.cwiseUpper()")
+            script.get<Vector3d>("x.cwiseUpper()"),
+            script.get<Vector3d>("y.cwiseUpper()")
         );
     }
 
@@ -382,7 +382,7 @@ public:
         scope s = script1.environment();
         def("twice", twice);
 
-        TS_ASSERT_EQUALS(script1.get<MatrixXd>("twice(Vector3d(1, 2, 3))"), Vector3d(2, 4, 6));
+        TS_ASSERT_EQUALS(script1.get<Vector3d>("twice(Vector3d(1, 2, 3))"), Vector3d(2, 4, 6));
         TS_ASSERT_THROWS(script2.run("twice(Vector3d(1, 2, 3))"), Error);
     }
     
@@ -403,15 +403,15 @@ public:
         script1.run("a = CustomClass()");
         script1.run("a.setValue(10)");
         TS_ASSERT_EQUALS(script1.get<double>("a.value()"), 10.0);
-        TS_ASSERT((script1.get<MatrixXd>("a.function()(3.0)") - Vector3d(3, 3, 3)).isZero());
-        TS_ASSERT_EQUALS(script1.get<MatrixXd>("a.vector()"), Vector3d(1, 2, 3));
+        TS_ASSERT((script1.get<Vector3d>("a.function()(3.0)") - Vector3d(3, 3, 3)).isZero());
+        TS_ASSERT_EQUALS(script1.get<Vector3d>("a.vector()"), Vector3d(1, 2, 3));
         TS_ASSERT_THROWS(script2.run("b = CustomClass()"), Error);
     }
     
     void testTranspose() {
         Script script;
-        MatrixXd a = script.get<MatrixXd>("Vector3d(1, 2, 3).transpose()");
-        MatrixXd b = script.get<MatrixXd>("RowVector3d(1, 2, 3)");
+        RowVector3d a = script.get<RowVector3d>("Vector3d(1, 2, 3).transpose()");
+        RowVector3d b = script.get<RowVector3d>("RowVector3d(1, 2, 3)");
         TS_ASSERT_EQUALS(a, b);
     }
     
@@ -420,19 +420,19 @@ public:
         script.run("a = Matrix3d([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).transpose()");
         script.run("b = Vector3d(10, 11, 12)");
         TS_ASSERT_EQUALS(script.get<double>("b[-1]"), 12.0);
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("b[:]"), Vector3d(10, 11, 12));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("b[-2:]"), Vector2d(11, 12));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("b[:]"), Vector3d(10, 11, 12));
+        TS_ASSERT_EQUALS(script.get<Vector2d>("b[-2:]"), Vector2d(11, 12));
         TS_ASSERT_EQUALS(script.get<double>("a[1, 1]"), 5.0);
         TS_ASSERT_EQUALS(script.get<double>("a[-2, -1]"), 6.0);
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a[:, 0]"), Vector3d(1, 4, 7));
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a[2, :]"), RowVector3d(7, 8, 9));
+        TS_ASSERT_EQUALS(script.get<Vector3d>("a[:, 0]"), Vector3d(1, 4, 7));
+        TS_ASSERT_EQUALS(script.get<RowVector3d>("a[2, :]"), RowVector3d(7, 8, 9));
         MatrixXd test(2, 3);
         test << RowVector3d(4, 5, 6), RowVector3d(7, 8, 9);
         TS_ASSERT_EQUALS(script.get<MatrixXd>("a[1:2, :]"), test);
         script.run("a[1,1:] = b[1:].transpose()");
         test.resize(3, 3);
         test << RowVector3d(1, 2, 3), RowVector3d(4, 11, 12), RowVector3d(7, 8, 9);
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a"), test);
+        TS_ASSERT_EQUALS(script.get<Matrix3d>("a"), test);
     }
     
     void testMatrixEquality() {
@@ -461,12 +461,12 @@ public:
         Interval interval_bounds = script.get<Interval>("f1(Interval(2, 3)).value()");
         TS_ASSERT(interval_bounds.lower() - 6 == Zero());
         TS_ASSERT(interval_bounds.upper() - 9 == Zero());
-        TS_ASSERT((script.get<MatrixXd>("f2(Vector2d.Ones())") - Vector3d(2, 0.5, 0)).isZero());
-        MatrixXI matrix_bounds = script.get<MatrixXI>(
+        TS_ASSERT((script.get<Vector3d>("f2(Vector2d.Ones())") - Vector3d(2, 0.5, 0)).isZero());
+        Vector3I vector_bounds = script.get<Vector3I>(
             "f2(Vector2I(Interval(1, 2), Interval(2, 3)))"
         );
-        TS_ASSERT((matrix_bounds.cwiseLower() - Vector3d(2, 1, 0)).isZero());
-        TS_ASSERT((matrix_bounds.cwiseUpper() - Vector3d(4, 1.5, 0)).isZero());
+        TS_ASSERT((vector_bounds.cwiseLower() - Vector3d(2, 1, 0)).isZero());
+        TS_ASSERT((vector_bounds.cwiseUpper() - Vector3d(4, 1.5, 0)).isZero());
     }
 
     void testExplicitModule() {
@@ -532,8 +532,8 @@ public:
         script.run("import pickle");
         script.set("a", a);
         script.set("b", b);
-        script.set<MatrixXd>("c", c);
-        script.set<MatrixXI>("d", d);
+        script.set("c", c);
+        script.set("d", d);
         script.set<DatumXd>("e", e);
         script.set<SimplexXd>("f", f);
         script.run("a_pickled = pickle.dumps(a)");
@@ -550,8 +550,8 @@ public:
         script.run("f_unpickled = pickle.loads(f_pickled)");
         double a_extracted = script.get<double>("a_unpickled");
         Interval b_extracted = script.get<Interval>("b_unpickled");
-        Matrix2d c_extracted = script.get<MatrixXd>("c_unpickled");
-        Vector2I d_extracted = script.get<MatrixXI>("d_unpickled");
+        Matrix2d c_extracted = script.get<Matrix2d>("c_unpickled");
+        Vector2I d_extracted = script.get<Vector2I>("d_unpickled");
         Frame3d e_extracted = script.get<DatumXd>("e_unpickled");
         Triangle3d f_extracted = script.get<SimplexXd>("f_unpickled");
         TS_ASSERT_EQUALS(a, a_extracted);
@@ -580,9 +580,9 @@ public:
             "second_derivative_roots = f.derivative().derivative().roots(Interval(0, 3))\n"
         ;
         script.run(text);
-        TS_ASSERT((script.get<MatrixXd>("roots") - RowVector2d(1, 2)).isZero());
-        TS_ASSERT((script.get<MatrixXd>("derivative_roots") - RowVector2d(1, 5.0 / 3.0)).isZero());
-        TS_ASSERT(script.get<MatrixXd>("second_derivative_roots").value() - 4.0 / 3.0 == Zero());
+        TS_ASSERT((script.get<RowVectorXd>("roots") - RowVector2d(1, 2)).isZero());
+        TS_ASSERT((script.get<RowVectorXd>("derivative_roots") - RowVector2d(1, 5.0 / 3.0)).isZero());
+        TS_ASSERT(script.get<RowVectorXd>("second_derivative_roots").value() - 4.0 / 3.0 == Zero());
     }
 
     void testDatum() {
@@ -615,9 +615,9 @@ public:
             "triangle = Triangle3d(Vector3d(1, 1, 1), Vector3d(2, 1, 1), Vector3d(1, 2, 1))"
         );
         TS_ASSERT(script.get<double>("triangle.area()") - 0.5 == Zero());
-        TS_ASSERT((script.get<MatrixXd>("triangle.normal()") - Vector3d::UnitZ()).isZero());
+        TS_ASSERT((script.get<Vector3d>("triangle.normal()") - Vector3d::UnitZ()).isZero());
         TS_ASSERT(
-            (script.get<MatrixXd>("triangle.edge(1).vector()") - Vector3d(-1, 1, 0)).isZero()
+            (script.get<Vector3d>("triangle.edge(1).vector()") - Vector3d(-1, 1, 0)).isZero()
         );
         TS_ASSERT(  
             script.get<bool>(
@@ -637,9 +637,9 @@ public:
         script.run("b1[1, 1] = 5");
         script.run("b2[1, 1] = 5");
         TS_ASSERT_EQUALS(script.get<MatrixXd>("a1")(1, 1), 4.0);
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("a2")(1, 1), 4.0);
+        TS_ASSERT_EQUALS(script.get<Matrix2d>("a2")(1, 1), 4.0);
         TS_ASSERT_EQUALS(script.get<MatrixXd>("b1")(1, 1), 5.0);
-        TS_ASSERT_EQUALS(script.get<MatrixXd>("b2")(1, 1), 5.0);
+        TS_ASSERT_EQUALS(script.get<Matrix2d>("b2")(1, 1), 5.0);
     }
 
     /*

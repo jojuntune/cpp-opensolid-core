@@ -181,7 +181,55 @@ namespace OpenSolid
         inline std::string typeName<Interval>() {return "Interval";}
         
         template <>
+        inline std::string typeName<Vector2d>() {return "Vector2d";}
+        
+        template <>
+        inline std::string typeName<Vector3d>() {return "Vector3d";}
+        
+        template <>
+        inline std::string typeName<VectorXd>() {return "VectorXd";}
+        
+        template <>
+        inline std::string typeName<RowVector2d>() {return "RowVector2d";}
+        
+        template <>
+        inline std::string typeName<RowVector3d>() {return "RowVector3d";}
+        
+        template <>
+        inline std::string typeName<RowVectorXd>() {return "RowVectorXd";}
+        
+        template <>
+        inline std::string typeName<Vector2I>() {return "Vector2I";}
+        
+        template <>
+        inline std::string typeName<Vector3I>() {return "Vector3I";}
+        
+        template <>
+        inline std::string typeName<VectorXI>() {return "VectorXI";}
+        
+        template <>
+        inline std::string typeName<RowVector2I>() {return "RowVector2I";}
+        
+        template <>
+        inline std::string typeName<RowVector3I>() {return "RowVector3I";}
+        
+        template <>
+        inline std::string typeName<RowVectorXI>() {return "RowVectorXI";}
+        
+        template <>
+        inline std::string typeName<Matrix2d>() {return "Matrix2d";}
+        
+        template <>
+        inline std::string typeName<Matrix3d>() {return "Matrix3d";}
+        
+        template <>
         inline std::string typeName<MatrixXd>() {return "MatrixXd";}
+        
+        template <>
+        inline std::string typeName<Matrix2I>() {return "Matrix2I";}
+        
+        template <>
+        inline std::string typeName<Matrix3I>() {return "Matrix3I";}
         
         template <>
         inline std::string typeName<MatrixXI>() {return "MatrixXI";}

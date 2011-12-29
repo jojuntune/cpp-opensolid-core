@@ -609,6 +609,8 @@ namespace OpenSolid
             .def("Unit", &Vector2dConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
 
+        implicitly_convertible<MatrixXd, Vector2d>();
+
         class_<Vector3dConstructors>("Vector3d", no_init)
             .def("__new__", &vectorFromList<Vector3d>, manage_new_matrix)
             .def("__new__", &Vector3dConstructors::components, manage_new_matrix)
@@ -633,6 +635,8 @@ namespace OpenSolid
             .def("Unit", &Vector3dConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
 
+        implicitly_convertible<MatrixXd, Vector3d>();
+
         class_<VectorXdConstructors>("VectorXd", no_init)
             .def("__new__", &vectorFromList<VectorXd>, manage_new_matrix)
             .def("__new__", &VectorXdConstructors::copy, manage_new_matrix)
@@ -649,6 +653,8 @@ namespace OpenSolid
                 .staticmethod("Zero")
             .def("Unit", &VectorXdConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
+
+        implicitly_convertible<MatrixXd, VectorXd>();
 
         class_<RowVector2dConstructors>("RowVector2d", no_init)
             .def("__new__", &vectorFromList<RowVector2d>, manage_new_matrix)
@@ -671,6 +677,8 @@ namespace OpenSolid
                 .staticmethod("UnitY")
             .def("Unit", &RowVector2dConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
+
+        implicitly_convertible<MatrixXd, RowVector2d>();
 
         class_<RowVector3dConstructors>("RowVector3d", no_init)
             .def("__new__", &vectorFromList<RowVector3d>, manage_new_matrix)
@@ -696,6 +704,8 @@ namespace OpenSolid
             .def("Unit", &RowVector3dConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
 
+        implicitly_convertible<MatrixXd, RowVector3d>();
+
         class_<RowVectorXdConstructors>("RowVectorXd", no_init)
             .def("__new__", &vectorFromList<RowVectorXd>, manage_new_matrix)
             .def("__new__", &RowVectorXdConstructors::copy, manage_new_matrix)
@@ -712,6 +722,8 @@ namespace OpenSolid
                 .staticmethod("Zero")
             .def("Unit", &RowVectorXdConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
+
+        implicitly_convertible<MatrixXd, RowVectorXd>();
 
         class_<Vector2IConstructors>("Vector2I", no_init)
             .def("__new__", &vectorFromList<Vector2I>, manage_new_matrix)
@@ -734,6 +746,8 @@ namespace OpenSolid
                 .staticmethod("UnitY")
             .def("Unit", &Vector2IConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
+
+        implicitly_convertible<MatrixXI, Vector2I>();
 
         class_<Vector3IConstructors>("Vector3I", no_init)
             .def("__new__", &vectorFromList<Vector3I>, manage_new_matrix)
@@ -759,6 +773,8 @@ namespace OpenSolid
             .def("Unit", &Vector3IConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
 
+        implicitly_convertible<MatrixXI, Vector3I>();
+
         class_<VectorXIConstructors>("VectorXI", no_init)
             .def("__new__", &vectorFromList<VectorXI>, manage_new_matrix)
             .def("__new__", &VectorXIConstructors::copy, manage_new_matrix)
@@ -775,6 +791,8 @@ namespace OpenSolid
                 .staticmethod("Zero")
             .def("Unit", &VectorXIConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
+
+        implicitly_convertible<MatrixXI, VectorXI>();
 
         class_<RowVector2IConstructors>("RowVector2I", no_init)
             .def("__new__", &vectorFromList<RowVector2I>, manage_new_matrix)
@@ -797,6 +815,8 @@ namespace OpenSolid
                 .staticmethod("UnitY")
             .def("Unit", &RowVector2IConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
+
+        implicitly_convertible<MatrixXI, RowVector2I>();
 
         class_<RowVector3IConstructors>("RowVector3I", no_init)
             .def("__new__", &vectorFromList<RowVector3I>, manage_new_matrix)
@@ -822,6 +842,8 @@ namespace OpenSolid
             .def("Unit", &RowVector3IConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
 
+        implicitly_convertible<MatrixXI, RowVector3I>();
+
         class_<RowVectorXIConstructors>("RowVectorXI", no_init)
             .def("__new__", &vectorFromList<RowVectorXI>, manage_new_matrix)
             .def("__new__", &RowVectorXIConstructors::copy, manage_new_matrix)
@@ -839,6 +861,8 @@ namespace OpenSolid
             .def("Unit", &RowVectorXIConstructors::Unit, manage_new_matrix)
                 .staticmethod("Unit");
 
+        implicitly_convertible<MatrixXI, RowVectorXI>();
+
         class_<Matrix2dConstructors>("Matrix2d", no_init)
             .def("__new__", &newMatrixFromList<Matrix2d>, manage_new_matrix)
             .def("__new__", &Matrix2dConstructors::copy, manage_new_matrix)
@@ -854,6 +878,8 @@ namespace OpenSolid
             .def("Zero", &Matrix2dConstructors::Zero, manage_new_matrix)
                 .staticmethod("Zero");
 
+        implicitly_convertible<MatrixXd, Matrix2d>();
+
         class_<Matrix3dConstructors>("Matrix3d", no_init)
             .def("__new__", &newMatrixFromList<Matrix3d>, manage_new_matrix)
             .def("__new__", &Matrix3dConstructors::copy, manage_new_matrix)
@@ -868,6 +894,8 @@ namespace OpenSolid
                 .staticmethod("Random")
             .def("Zero", &Matrix3dConstructors::Zero, manage_new_matrix)
                 .staticmethod("Zero");
+
+        implicitly_convertible<MatrixXd, Matrix3d>();
 
         pythonMatrixXd()
             .def("__init__", make_constructor(&initMatrixFromList<MatrixXd>))
@@ -898,6 +926,8 @@ namespace OpenSolid
             .def("Zero", &Matrix2IConstructors::Zero, manage_new_matrix)
                 .staticmethod("Zero");
 
+        implicitly_convertible<MatrixXI, Matrix2I>();
+
         class_<Matrix3IConstructors>("Matrix3I", no_init)
             .def("__new__", &newMatrixFromList<Matrix3I>, manage_new_matrix)
             .def("__new__", &Matrix3IConstructors::copy, manage_new_matrix)
@@ -912,6 +942,8 @@ namespace OpenSolid
                 .staticmethod("Random")
             .def("Zero", &Matrix3IConstructors::Zero, manage_new_matrix)
                 .staticmethod("Zero");
+
+        implicitly_convertible<MatrixXI, Matrix3I>();
 
         pythonMatrixXI()
             .def("__init__", make_constructor(&initMatrixFromList<MatrixXI>))
