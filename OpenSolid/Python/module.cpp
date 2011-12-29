@@ -39,8 +39,8 @@ namespace OpenSolid
         bindFunction();
         bindDatum();
         bindSimplex();
-        bindMatrixConstructors();
         bindMatrix();
+        bindMatrixConstructors();
         bindComparison();
         bindInterval();
         bindDouble();

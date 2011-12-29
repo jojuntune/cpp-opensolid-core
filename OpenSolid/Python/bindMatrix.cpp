@@ -29,19 +29,18 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    template <class ExpressionType>
+    template <class ExpressionType, class MatrixType>
     struct ExpressionConverter
     {
         static inline PyObject* convert(const ExpressionType& expression) {
-            typedef Matrix<typename ExpressionType::Scalar, Dynamic, Dynamic> MatrixType;
             typedef typename manage_new_object::apply<MatrixType*>::type ConverterType;
             return ConverterType()(new MatrixType(expression));
         }
     };
 
-    template <class ExpressionType>
+    template <class ExpressionType, class MatrixType>
     void registerExpressionConverter() {
-        to_python_converter<ExpressionType, ExpressionConverter<ExpressionType>>();
+        to_python_converter<ExpressionType, ExpressionConverter<ExpressionType, MatrixType>>();
     }
 
     template <class MatrixType>
@@ -848,17 +847,33 @@ namespace OpenSolid
             }
         }
     };
+
+    class_<MatrixXd>& pythonMatrixXd() {
+        static class_<MatrixXd> result("MatrixXd");
+        return result;
+    }
+
+    class_<MatrixXI>& pythonMatrixXI() {
+        static class_<MatrixXI> result("MatrixXI");
+        return result;
+    }
     
     void bindMatrix() {
-        registerExpressionConverter<MatrixXd::ConstColXpr>();
-        registerExpressionConverter<MatrixXd::ConstRowXpr>();
-        registerExpressionConverter<MatrixXI::ConstColXpr>();
-        registerExpressionConverter<MatrixXI::ConstRowXpr>();
-
         return_value_policy<manage_new_object> manage_new_matrix;
         with_custodian_and_ward_postcall<0, 1> manage_matrix_expression;
+        
+        registerExpressionConverter<Vector2d, MatrixXd>();
+        registerExpressionConverter<Vector3d, MatrixXd>();
+        registerExpressionConverter<VectorXd, MatrixXd>();
+        registerExpressionConverter<RowVector2d, MatrixXd>();
+        registerExpressionConverter<RowVector3d, MatrixXd>();
+        registerExpressionConverter<RowVectorXd, MatrixXd>();
+        registerExpressionConverter<Matrix2d, MatrixXd>();
+        registerExpressionConverter<Matrix3d, MatrixXd>();
+        registerExpressionConverter<MatrixXd::ConstColXpr, MatrixXd>();
+        registerExpressionConverter<MatrixXd::ConstRowXpr, MatrixXd>();
 
-        class_<MatrixXd>("MatrixXd")
+        pythonMatrixXd()
             .def("rows", &rows<MatrixXd>)
             .def("cols", &cols<MatrixXd>)
             .def("size", &size<MatrixXd>)
@@ -901,16 +916,6 @@ namespace OpenSolid
             .def("isZero", &isZeroP<MatrixXd>)
             .def("hull", &hullXdXI, manage_new_matrix)
             .def("hull", &hullXdXd, manage_new_matrix)
-            .def("Constant", &constant<MatrixXd>, manage_new_matrix)
-                .staticmethod("Constant")
-            .def("Zero", &zero<MatrixXd>, manage_new_matrix)
-                .staticmethod("Zero")
-            .def("Ones", &ones<MatrixXd>, manage_new_matrix)
-                .staticmethod("Ones")
-            .def("Random", &random<MatrixXd>, manage_new_matrix)
-                .staticmethod("Random")
-            .def("Identity", &identity<MatrixXd>, manage_new_matrix)
-                .staticmethod("Identity")
             .def("__neg__", &negXd, manage_new_matrix) 
             .def("__add__", &addXdXI, manage_new_matrix)
             .def("__add__", &addXdXd, manage_new_matrix)
@@ -950,8 +955,19 @@ namespace OpenSolid
             .def("__iter__", range(&rowwiseBegin<MatrixXd>, &rowwiseEnd<MatrixXd>))
             .def("squaredNorm", &rowwiseSquaredNorm<MatrixXd>, manage_new_matrix)
             .def("norm", &rowwiseNorm<MatrixXd>, manage_new_matrix);
+        
+        registerExpressionConverter<Vector2I, MatrixXI>();
+        registerExpressionConverter<Vector3I, MatrixXI>();
+        registerExpressionConverter<VectorXI, MatrixXI>();
+        registerExpressionConverter<RowVector2I, MatrixXI>();
+        registerExpressionConverter<RowVector3I, MatrixXI>();
+        registerExpressionConverter<RowVectorXI, MatrixXI>();
+        registerExpressionConverter<Matrix2I, MatrixXI>();
+        registerExpressionConverter<Matrix3I, MatrixXI>();
+        registerExpressionConverter<MatrixXI::ConstColXpr, MatrixXI>();
+        registerExpressionConverter<MatrixXI::ConstRowXpr, MatrixXI>();
 
-        class_<MatrixXI>("MatrixXI")
+        pythonMatrixXI()
             .def("rows", &rows<MatrixXI>)
             .def("cols", &cols<MatrixXI>)
             .def("size", &size<MatrixXI>)
@@ -1010,16 +1026,6 @@ namespace OpenSolid
             .def("hull", &hullXIXI, manage_new_matrix)
             .def("hull", &hullXIXd, manage_new_matrix)
             .def("intersection", &intersection, manage_new_matrix)
-            .def("Constant", &constant<MatrixXI>, manage_new_matrix)
-                .staticmethod("Constant")
-            .def("Zero", &zero<MatrixXI>, manage_new_matrix)
-                .staticmethod("Zero")
-            .def("Ones", &ones<MatrixXI>, manage_new_matrix)
-                .staticmethod("Ones")
-            .def("Random", &random<MatrixXI>, manage_new_matrix)
-                .staticmethod("Random")
-            .def("Identity", &identity<MatrixXI>, manage_new_matrix)
-                .staticmethod("Identity")
             .def("__neg__", &negXI, manage_new_matrix)
             .def("__add__", &addXIXI, manage_new_matrix)
             .def("__add__", &addXIXd, manage_new_matrix)

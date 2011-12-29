@@ -39,6 +39,9 @@
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
         ADD_DEFINITIONS(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS)
+
+        # Add /MP flag for parallel compilation within projects
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
     ENDIF (WIN32)
 
     # Collect compiled binaries in single directory

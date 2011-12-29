@@ -306,6 +306,28 @@ namespace Eigen
         inline int significant_decimals_default_impl<OpenSolid::Interval, false>::run() {
             return significant_decimals_default_impl<double, false>::run();
         }
+
+        template <>
+        struct random_impl<OpenSolid::Interval>
+        {
+            static OpenSolid::Interval run(
+                const OpenSolid::Interval& lower,
+                const OpenSolid::Interval& upper
+            ) {
+                OpenSolid::Interval range(lower.lower(), upper.upper());
+                double first_ratio = double(std::rand()) / RAND_MAX;
+                double second_ratio = double(std::rand()) / RAND_MAX;
+                if (first_ratio > second_ratio) {std::swap(first_ratio, second_ratio);}
+                return range.interpolated(OpenSolid::Interval(first_ratio, second_ratio));
+            }
+
+            static OpenSolid::Interval run() {
+                double lower = -1 + 2 * double(std::rand()) / RAND_MAX;
+                double upper = -1 + 2 * double(std::rand()) / RAND_MAX;
+                if (lower > upper) {std::swap(lower, upper);}
+                return OpenSolid::Interval(lower, upper);
+            }
+        };
     }
 
     inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::epsilon() {
