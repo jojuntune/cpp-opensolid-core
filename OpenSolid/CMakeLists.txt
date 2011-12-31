@@ -281,11 +281,13 @@
     SET(MODEL_SOURCES Model/Model.cpp)
     
     # Python directory files
-    SET(PYTHON_HEADERS Python/BoostPython.hpp Python/check.hpp)
+    SET(PYTHON_HEADERS
+        Python/check.hpp
+        Python/PythonModule.hpp
+    )
     SET(PYTHON_SOURCES
         Python/bindComparison.cpp
         Python/bindDatum.cpp
-        Python/bindError.cpp
         Python/bindFunction.cpp
         Python/bindDouble.cpp
         Python/bindInterval.cpp
@@ -293,7 +295,7 @@
         Python/bindMatrixConstructors.cpp
         Python/bindSimplex.cpp
         Python/check.cpp
-        Python/module.cpp
+        Python/PythonModule.cpp
     )
 
     # Scalar directory files

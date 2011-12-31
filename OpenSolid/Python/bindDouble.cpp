@@ -19,7 +19,7 @@
  *****************************************************************************/
 
 #include <OpenSolid/Scalar/double.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
 

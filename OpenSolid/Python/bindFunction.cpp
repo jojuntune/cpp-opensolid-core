@@ -19,7 +19,7 @@
  *****************************************************************************/
 
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
 
@@ -110,8 +110,7 @@ namespace OpenSolid
     }
         
     void bindFunction() {
-        class_<Function> function_class("Function");
-        function_class
+        class_<Function>("Function")
             .def(init<Function>())
             .def(init<MatrixXd>())
             .def(init<double>())

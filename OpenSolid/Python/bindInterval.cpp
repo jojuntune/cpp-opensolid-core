@@ -19,7 +19,7 @@
  *****************************************************************************/
 
 #include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/check.hpp>
 #include <OpenSolid/Support/STL.hpp>
 

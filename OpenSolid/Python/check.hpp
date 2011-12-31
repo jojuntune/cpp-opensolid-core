@@ -34,9 +34,7 @@
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Geometry/Geometry.hpp>
 #include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
-
-using namespace boost::python;
+#include <OpenSolid/Python/PythonModule.hpp>
 
 namespace OpenSolid
 {   

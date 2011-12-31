@@ -52,12 +52,14 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT std::string caller() const;
         
         template <class Type>
-        Error& set(const std::string& name, const Type& argument);
+        Error& set(const std::string& key, const Type& value);
         
-        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
+        OPENSOLID_CORE_EXPORT bool has(const std::string& key) const;
         
         template <class Type>
-        Type get(const std::string& name) const;
+        Type get(const std::string& key) const;
+
+        OPENSOLID_CORE_EXPORT const std::map<std::string, std::string>& data() const;
     };
     
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
@@ -68,14 +70,14 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    Error& Error::set(const std::string& name, const Type& argument) {
-        _data[name] = boost::lexical_cast<std::string>(argument);
+    Error& Error::set(const std::string& key, const Type& value) {
+        _data[key] = boost::lexical_cast<std::string>(value);
         return *this;
     }
     
     template <class Type>
-    Type Error::get(const std::string& name) const {
-        std::map<std::string, std::string>::const_iterator position = _data.find(name);
+    Type Error::get(const std::string& key) const {
+        std::map<std::string, std::string>::const_iterator position = _data.find(key);
         assert(position != _data.end());
         return boost::lexical_cast<Type>(position->second);
     }

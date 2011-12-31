@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
 #include "check.hpp"

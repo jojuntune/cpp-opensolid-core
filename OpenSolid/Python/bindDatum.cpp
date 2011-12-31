@@ -23,7 +23,7 @@
 #include <OpenSolid/Datum/Frame.hpp>
 #include <OpenSolid/Datum/Plane.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
 

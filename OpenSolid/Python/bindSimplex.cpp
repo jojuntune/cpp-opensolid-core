@@ -21,7 +21,7 @@
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Python/BoostPython.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
 

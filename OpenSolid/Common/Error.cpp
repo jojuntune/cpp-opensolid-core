@@ -35,17 +35,19 @@ namespace OpenSolid
     
     std::string Error::caller() const {return _caller;}
 
-    bool Error::has(const std::string& name) const {return _data.find(name) != _data.end();}
+    bool Error::has(const std::string& key) const {return _data.find(key) != _data.end();}
     
     std::ostream& operator<<(std::ostream& stream, const Error& error) {
         stream << "Error(\"" << error.expected() << "\", \"" << error.caller() << "\")";
         std::for_each(
             error._data.begin(),
             error._data.end(),
-            [&stream] (const std::pair<std::string, std::string>& key_value) {
-                stream << ".set(\"" << key_value.first << "\", \"" << key_value.second << "\")";
+            [&stream] (const std::pair<std::string, std::string>& key_value_pair) {
+                stream << ".set(\"" << key_value_pair.first << "\", \"" << key_value_pair.second << "\")";
             }
         );
         return stream;
     }
+
+    const std::map<std::string, std::string>& Error::data() const {return _data;}
 }

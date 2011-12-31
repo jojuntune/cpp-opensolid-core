@@ -31,8 +31,6 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    OPENSOLID_PYTHON_EXPORT extern PyObject* error_class_ptr;
-    
     inline object wrap(PyObject* pointer) {
         return pointer ? object(handle<>(borrowed(pointer))) : object();
     }
@@ -52,8 +50,20 @@ namespace OpenSolid
         PyObject* traceback = nullptr;
         PyErr_Fetch(&type, &value, &traceback);
         Error result;
-        if (PyErr_GivenExceptionMatches(type, error_class_ptr)) {
-            result = extract<Error>(wrap(value));
+        if (PyErr_GivenExceptionMatches(type, PythonModule::errorClass().ptr())) {
+            object error_object = wrap(value);
+            std::string expected = extract<std::string>(error_object.attr("_expected"));
+            std::string caller = extract<std::string>(error_object.attr("_caller"));
+            result = Error(expected, caller);
+            dict data = extract<dict>(error_object.attr("_data"));
+            list items = data.items();
+            int num_items = len(items);
+            for (int i = 0; i < num_items; ++i) {
+                object pair = items[i];
+                std::string key = extract<std::string>(pair[0]);
+                std::string value = extract<std::string>(pair[1]);
+                result.set(key, value);
+            }
         } else if (PyErr_GivenExceptionMatches(type, PyExc_SyntaxError)) {
             result = Error("ValidPythonSyntax", __func__);
         } else {
