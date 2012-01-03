@@ -87,35 +87,35 @@ namespace OpenSolid
         SetInserter<Type> inserter();
 
         template <class VisitorType>
-        void visit(const VisitorType& visitor) const;
+        void forEach(const VisitorType& visitor) const;
 
         template <class VisitorType>
-        void visitOverlapping(
-            const VisitorType& visitor,
-            const typename Bounds<Type>::Type& overlapping_bounds
+        void forEachOverlapping(
+            const typename Bounds<Type>::Type& overlapping_bounds,
+            const VisitorType& visitor
         ) const;
 
         template <class VisitorType, class BoundsPredicateType>
-        void visitFiltered(
-            const VisitorType& visitor,
-            const BoundsPredicateType& bounds_predicate
+        void forEachFiltered(
+            const BoundsPredicateType& bounds_predicate,
+            const VisitorType& visitor
         ) const;
 
         template <class VisitorType, class PredicateType>
-        void visitIf(const VisitorType& visitor, const PredicateType& predicate) const;
+        void forEachIf(const PredicateType& predicate, const VisitorType& visitor) const;
 
         template <class VisitorType, class PredicateType>
-        void visitOverlappingIf(
-            const VisitorType& visitor,
+        void forEachOverlappingIf(
             const typename Bounds<Type>::Type& overlapping_bounds,
-            const PredicateType& predicate
+            const PredicateType& predicate,
+            const VisitorType& visitor
         ) const;
 
         template <class VisitorType, class BoundsPredicateType, class PredicateType>
-        void visitFilteredIf(
-            const VisitorType& visitor,
+        void forEachFilteredIf(
             const BoundsPredicateType& bounds_predicate,
-            const PredicateType& predicate
+            const PredicateType& predicate,
+            const VisitorType& visitor
         ) const;
 
         template <class OutputIteratorType>
@@ -435,16 +435,16 @@ namespace OpenSolid
     }
 
     template <class Type> template <class VisitorType>
-    void Set<Type>::visit(const VisitorType& visitor) const {
+    void Set<Type>::forEach(const VisitorType& visitor) const {
         if (root()) {
             visitNode(root(), visitor, [] (const typename Bounds<Type>::Type&) {return true;});
         }
     }
 
     template <class Type> template <class VisitorType>
-    void Set<Type>::visitOverlapping(
-        const VisitorType& visitor,
-        const typename Bounds<Type>::Type& overlapping_bounds
+    void Set<Type>::forEachOverlapping(
+        const typename Bounds<Type>::Type& overlapping_bounds,
+        const VisitorType& visitor
     ) const {
         if (root()) {
             visitNode(
@@ -458,14 +458,14 @@ namespace OpenSolid
     }
 
     template <class Type> template <class VisitorType, class BoundsPredicateType>
-    inline void Set<Type>::visitFiltered(
-        const VisitorType& visitor,
-        const BoundsPredicateType& bounds_predicate
+    inline void Set<Type>::forEachFiltered(
+        const BoundsPredicateType& bounds_predicate,
+        const VisitorType& visitor
     ) const {if (root()) {visitNode(root(), visitor, bounds_predicate);}}
 
     template <class Type>
     template <class VisitorType, class PredicateType>
-    void Set<Type>::visitIf(const VisitorType& visitor, const PredicateType& predicate) const {
+    void Set<Type>::forEachIf(const PredicateType& predicate, const VisitorType& visitor) const {
         if (root()) {
             visitNode(
                 root(),
@@ -478,10 +478,10 @@ namespace OpenSolid
     }
 
     template <class Type> template <class VisitorType, class PredicateType>
-    void Set<Type>::visitOverlappingIf(
-        const VisitorType& visitor,
+    void Set<Type>::forEachOverlappingIf(
         const typename Bounds<Type>::Type& overlapping_bounds,
-        const PredicateType& predicate
+        const PredicateType& predicate,
+        const VisitorType& visitor
     ) const {
         if (root()) {
             visitNode(
@@ -498,10 +498,10 @@ namespace OpenSolid
 
     template <class Type>
     template <class VisitorType, class BoundsPredicateType, class PredicateType>
-    void Set<Type>::visitFilteredIf(
-        const VisitorType& visitor,
+    void Set<Type>::forEachFilteredIf(
         const BoundsPredicateType& bounds_predicate,
-        const PredicateType& predicate
+        const PredicateType& predicate,
+        const VisitorType& visitor
     ) const {
         if (root()) {
             visitNode(
