@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__PYTHON__MODULE_HPP
-#define OPENSOLID__PYTHON__MODULE_HPP
+#ifndef OPENSOLID__PYTHON__PYTHONMODULE_HPP
+#define OPENSOLID__PYTHON__PYTHONMODULE_HPP
 
 #include <OpenSolid/config.hpp>
 
@@ -36,11 +36,11 @@ namespace OpenSolid
     class PythonModule
     {
     public:
-        OPENSOLID_PYTHON_EXPORT static void initialize();
+        OPENSOLID_PYTHON_MODULE_EXPORT static void initialize();
 
-        OPENSOLID_PYTHON_EXPORT static boost::python::object object();
-        OPENSOLID_PYTHON_EXPORT static boost::python::object dictionary();
-        OPENSOLID_PYTHON_EXPORT static boost::python::object errorClass();
+        OPENSOLID_PYTHON_MODULE_EXPORT static boost::python::object object();
+        OPENSOLID_PYTHON_MODULE_EXPORT static boost::python::object dictionary();
+        OPENSOLID_PYTHON_MODULE_EXPORT static boost::python::object errorClass();
     };
 }
 

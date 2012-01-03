@@ -25,13 +25,13 @@
 #include <boost/algorithm/string/classification.hpp>
 
 #include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Script/Script.hpp>
+#include <OpenSolid/Python/PythonEnvironment.hpp>
 
 using namespace boost::python;
 
 namespace OpenSolid
 {   
-    object Script::_get(const std::string& argument) {
+    object PythonEnvironment::_get(const std::string& argument) {
         std::vector<std::string> lines;
         boost::algorithm::split(
             lines,
@@ -52,28 +52,28 @@ namespace OpenSolid
     
     extern "C" OPENSOLID_PYTHON_EXPORT void initopensolid();
 
-    Script::Script() {
+    PythonEnvironment::PythonEnvironment() {
         if (!Py_IsInitialized()) {Py_Initialize();}
-        static bool script_initialized = false;
+        static bool PythonEnvironment_initialized = false;
         static object global;
         static object hidden;
-        if (!script_initialized) {
+        if (!PythonEnvironment_initialized) {
             initopensolid();
             global = import("__main__").attr("__dict__");
             hidden = dict(global);
             exec("import opensolid", global, global);
             exec("from opensolid import *", global, global);
             exec("class Environment: pass", hidden, hidden);
-            script_initialized = true;
+            PythonEnvironment_initialized = true;
         }
         _environment_dict = dict(global);
         _environment = eval("Environment()", hidden, hidden);
         _environment.attr("__dict__") = _environment_dict;
     }
 
-    object& Script::environment() {return _environment;}
+    object& PythonEnvironment::environment() {return _environment;}
     
-    Script& Script::run(const std::string& argument) {
+    PythonEnvironment& PythonEnvironment::run(const std::string& argument) {
         try {
             exec(str(argument), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
@@ -82,7 +82,7 @@ namespace OpenSolid
         return *this;
     }
     
-    Script& Script::runFile(const std::string& filename) {
+    PythonEnvironment& PythonEnvironment::runFile(const std::string& filename) {
         try {
             exec_file(str(filename), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {

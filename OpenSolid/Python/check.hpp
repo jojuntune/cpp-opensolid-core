@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__SCRIPTING__CHECK_HPP
-#define OPENSOLID__SCRIPTING__CHECK_HPP
+#ifndef OPENSOLID__PYTHON__CHECK_HPP
+#define OPENSOLID__PYTHON__CHECK_HPP
 
 #include <OpenSolid/config.hpp>
 
@@ -54,7 +54,7 @@ namespace OpenSolid
     struct Check<2>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void NonZero(double value);
+        OPENSOLID_PYTHON_MODULE_EXPORT static void NonZero(double value);
     };
     
     /// Check that two generic sizes are equal.
@@ -62,7 +62,7 @@ namespace OpenSolid
     struct Check<3>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void EqualSizes(int first_size, int second_size);
+        OPENSOLID_PYTHON_MODULE_EXPORT static void EqualSizes(int first_size, int second_size);
     };
     
     /// Check that two dimensions (e.g., of two  vectors to be added) are equal.
@@ -70,7 +70,7 @@ namespace OpenSolid
     struct Check<4>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void EqualDimensions(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void EqualDimensions(
             int first_dimensions,
             int second_dimensions
         );
@@ -155,7 +155,7 @@ namespace OpenSolid
     struct Check<12>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void ValidProductDimensions(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void ValidProductDimensions(
             int first_dimensions,
             int second_dimensions
         );
@@ -178,7 +178,7 @@ namespace OpenSolid
     struct Check<14>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void ComponentIndexInRange(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void ComponentIndexInRange(
             int component_index,
             int size
         );
@@ -189,7 +189,7 @@ namespace OpenSolid
     struct Check<15>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void ComponentBlockInRange(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void ComponentBlockInRange(
             int block_start,
             int block_size,
             int size
@@ -201,7 +201,7 @@ namespace OpenSolid
     struct Check<16>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void NoMatrixIndexStep(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void NoMatrixIndexStep(
             const boost::python::slice& indices
         );
     };
@@ -211,7 +211,7 @@ namespace OpenSolid
     struct Check<17>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void ConstantFunction(const Function& function);
+        OPENSOLID_PYTHON_MODULE_EXPORT static void ConstantFunction(const Function& function);
     };
     
     /// Check that a function is a scalar function (produces scalar values).
@@ -219,7 +219,7 @@ namespace OpenSolid
     struct Check<18>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT void ScalarFunction(const Function& function);
+        OPENSOLID_PYTHON_MODULE_EXPORT void ScalarFunction(const Function& function);
     };
     
     /// Check that an index is a valid parameter index for a function.
@@ -227,7 +227,7 @@ namespace OpenSolid
     struct Check<19>
     {
         /// Perform the actual check.
-        OPENSOLID_PYTHON_EXPORT static void ParameterIndexInRange(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void ParameterIndexInRange(
             int index,
             const Function& function
         );
@@ -243,7 +243,7 @@ namespace OpenSolid
     template <>
     struct Check<20>
     {
-        OPENSOLID_PYTHON_EXPORT static void ConsistentFunctionParameters(
+        OPENSOLID_PYTHON_MODULE_EXPORT static void ConsistentFunctionParameters(
             const Function& first_function,
             const Function& second_function
         );

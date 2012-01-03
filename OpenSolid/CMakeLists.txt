@@ -144,7 +144,7 @@
     SET(DOMAIN_SOURCES Domain/Domain.cpp Domain/DomainConstructors.cpp)
 
     # Domain/DomainImplementation directory files
-    SET(DI_HEADERS
+    SET(DOMAINIMPLEMENTATION_HEADERS
         Domain/DomainImplementation/DomainImplementation.hpp
         Domain/DomainImplementation/GenericDomain.hpp
         Domain/DomainImplementation/IntervalDomain.hpp
@@ -152,7 +152,7 @@
         Domain/DomainImplementation/CuboidDomain.hpp
         Domain/DomainImplementation/SimplexDomain.hpp
     )
-    SET(DI_SOURCES
+    SET(DOMAINIMPLEMENTATION_SOURCES
         Domain/DomainImplementation/DomainImplementation.cpp
         Domain/DomainImplementation/GenericDomain.cpp
         Domain/DomainImplementation/IntervalDomain.cpp
@@ -175,7 +175,7 @@
     SET(FUNCTION_SOURCES Function/Function.cpp Function/FunctionConstructors.cpp)
     
     # Function/FunctionImplementation directory files
-    SET(FI_HEADERS
+    SET(FUNCTIONIMPLEMENTATION_HEADERS
         Function/FunctionImplementation/ArccosineFunction.hpp
         Function/FunctionImplementation/ArcsineFunction.hpp
         Function/FunctionImplementation/BinaryOperation.hpp
@@ -207,7 +207,7 @@
         Function/FunctionImplementation/TransformedFunction.hpp
         Function/FunctionImplementation/UnaryOperation.hpp
     )
-    SET(FI_SOURCES
+    SET(FUNCTIONIMPLEMENTATION_SOURCES
         Function/FunctionImplementation/ArccosineFunction.cpp
         Function/FunctionImplementation/ArcsineFunction.cpp
         Function/FunctionImplementation/BinaryOperation.cpp
@@ -253,13 +253,13 @@
     )
 
     # Geometry/GeometryImplementation directory files
-    SET(GI_HEADERS
+    SET(GEOMETRYIMPLEMENTATION_HEADERS
         Geometry/GeometryImplementation/ConstantGeometry.hpp
         Geometry/GeometryImplementation/GenericGeometry.hpp
         Geometry/GeometryImplementation/GeometryImplementation.hpp
         Geometry/GeometryImplementation/SimplexGeometry.hpp
     )
-    SET(GI_SOURCES
+    SET(GEOMETRYIMPLEMENTATION_SOURCES
         Geometry/GeometryImplementation/ConstantGeometry.cpp
         Geometry/GeometryImplementation/GenericGeometry.cpp
         Geometry/GeometryImplementation/GeometryImplementation.cpp
@@ -283,9 +283,11 @@
     # Python directory files
     SET(PYTHON_HEADERS
         Python/check.hpp
+        Python/PythonEnvironment.hpp
         Python/PythonModule.hpp
+        Python/PythonTests.hpp
     )
-    SET(PYTHON_SOURCES
+    SET(PYTHON_MODULE_SOURCES
         Python/bindComparison.cpp
         Python/bindDatum.cpp
         Python/bindFunction.cpp
@@ -297,6 +299,9 @@
         Python/check.cpp
         Python/PythonModule.cpp
     )
+    SET(PYTHON_ENVIRONMENT_SOURCES
+        Python/PythonEnvironment.cpp
+    )
 
     # Scalar directory files
     SET(SCALAR_HEADERS
@@ -306,10 +311,6 @@
         Scalar/IntervalTests.hpp
     )
     SET(SCALAR_SOURCES Scalar/Interval.cpp)
-    
-    # Script directory files
-    SET(SCRIPT_HEADERS Script/Script.hpp Script/ScriptTests.hpp)
-    SET(SCRIPT_SOURCES Script/Script.cpp)
     
     # Set directory files
     SET(SET_HEADERS Set/Set.hpp Set/SetTests.hpp Set/SetNode.hpp)
@@ -333,28 +334,27 @@
         ${DATUM_SOURCES}
         ${DOMAIN_HEADERS}
         ${DOMAIN_SOURCES}
-        ${DI_HEADERS}
-        ${DI_SOURCES}
+        ${DOMAINIMPLEMENTATION_HEADERS}
+        ${DOMAINIMPLEMENTATION_SOURCES}
         ${EVALUATION_HEADERS}
         ${EVALUATION_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
-        ${FI_HEADERS}
-        ${FI_SOURCES}
+        ${FUNCTIONIMPLEMENTATION_HEADERS}
+        ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_HEADERS}
         ${GEOMETRY_SOURCES}
-        ${GI_HEADERS}
-        ${GI_SOURCES}
+        ${GEOMETRYIMPLEMENTATION_HEADERS}
+        ${GEOMETRYIMPLEMENTATION_SOURCES}
         ${MATRIX_HEADERS}
         ${MATRIX_SOURCES}
         ${MODEL_HEADERS}
         ${MODEL_SOURCES}
         ${PYTHON_HEADERS}
-        ${PYTHON_SOURCES}
+        ${PYTHON_MODULE_SOURCES}
+        ${PYTHON_ENVIRONMENT_SOURCES}
         ${SCALAR_HEADERS}
         ${SCALAR_SOURCES}
-        ${SCRIPT_HEADERS}
-        ${SCRIPT_SOURCES}
         ${SET_HEADERS}
         ${SET_SOURCES}
         ${SIMPLEX_HEADERS}
@@ -367,17 +367,16 @@
     SOURCE_GROUP(OpenSolid\\Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Domain\\DomainImplementation FILES ${DI_HEADERS} ${DI_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Domain\\DomainImplementation FILES ${DOMAINIMPLEMENTATION_HEADERS} ${DOMAINIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Evaluation FILES ${EVALUATION_HEADERS} ${EVALUATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FI_HEADERS} ${FI_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FUNCTIONIMPLEMENTATION_HEADERS} ${FUNCTIONIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Geometry\\GeometryImplementation FILES ${GI_HEADERS} ${GI_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Geometry\\GeometryImplementation FILES ${GEOMETRYIMPLEMENTATION_HEADERS} ${GEOMETRYIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
     SOURCE_GROUP(OpenSolid\\Model FILES ${MODEL_HEADERS} ${MODEL_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_MODULE_SOURCES} ${PYTHON_ENVIRONMENT_SOURCES})
     SOURCE_GROUP(OpenSolid\\Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Script FILES ${SCRIPT_HEADERS} ${SCRIPT_SOURCES})
     SOURCE_GROUP(OpenSolid\\Set FILES ${SET_HEADERS} ${SET_SOURCES})
     SOURCE_GROUP(OpenSolid\\Simplex FILES ${SIMPLEX_HEADERS} ${SIMPLEX_SOURCES})
     SOURCE_GROUP(OpenSolid\\Support FILES ${SUPPORT_HEADERS} ${SUPPORT_SOURCES})
@@ -394,12 +393,12 @@
         ${COMMON_SOURCES}
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
-        ${DI_SOURCES}
+        ${DOMAINIMPLEMENTATION_SOURCES}
         ${EVALUATION_SOURCES}
         ${FUNCTION_SOURCES}
-        ${FI_SOURCES}
+        ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}
-        ${GI_SOURCES}
+        ${GEOMETRYIMPLEMENTATION_SOURCES}
         ${MATRIX_SOURCES}
         ${MODEL_SOURCES}
         ${PRIMITIVE_SOURCES}
@@ -410,17 +409,17 @@
     
 ########## Compile Python extension module ##########
     
-    ADD_LIBRARY(opensolid SHARED ${PYTHON_SOURCES})
+    ADD_LIBRARY(opensolid SHARED ${PYTHON_MODULE_SOURCES})
     SET_TARGET_PROPERTIES(opensolid PROPERTIES PREFIX "")
     IF(WIN32)
         SET_TARGET_PROPERTIES(opensolid PROPERTIES SUFFIX ".pyd")
     ENDIF(WIN32)
     TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
-########## Compile OpenSolidScript library ##########
+########## Compile OpenSolidPython library ##########
     
-    ADD_LIBRARY(OpenSolidScript SHARED ${SCRIPT_SOURCES})
-    TARGET_LINK_LIBRARIES(OpenSolidScript
+    ADD_LIBRARY(OpenSolidPython SHARED ${PYTHON_ENVIRONMENT_SOURCES})
+    TARGET_LINK_LIBRARIES(OpenSolidPython
         OpenSolidCore
         opensolid
         ${Boost_LIBRARIES}
@@ -436,7 +435,7 @@
     ADD_CXXTEST(FunctionTests Function/FunctionTests.hpp OpenSolidCore)
     ADD_CXXTEST(GeometryTests Geometry/GeometryTests.hpp OpenSolidCore)
     ADD_CXXTEST(SimplexTests Simplex/SimplexTests.hpp OpenSolidCore)
-    ADD_CXXTEST(ScriptTests Script/ScriptTests.hpp OpenSolidScript OpenSolidCore)
+    ADD_CXXTEST(PythonTests Python/PythonTests.hpp OpenSolidPython OpenSolidCore)
     ADD_CXXTEST(BoundsTests Common/BoundsTests.hpp OpenSolidCore)
     
 ######################################################################
@@ -463,7 +462,7 @@
 ########## Install libraries ##########
         
     # Install C++ shared libraries
-    INSTALL(TARGETS OpenSolidCore OpenSolidScript opensolid
+    INSTALL(TARGETS OpenSolidCore OpenSolidPython opensolid
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
