@@ -21,35 +21,39 @@
 #ifndef OPENSOLID__ERROR_HPP
 #define OPENSOLID__ERROR_HPP
 
+#include <OpenSolid/config.hpp>
+
 #include <string>
 #include <iostream>
 #include <map>
 #include <cassert>
+#include <exception>
 
 #include <boost/lexical_cast.hpp>
 
-#include <OpenSolid/config.hpp>
-
 namespace OpenSolid
 {
-    class Error
+    template <int id_>
+    struct Check;
+
+    class Error : public std::exception
     {
     private:
-        std::string _expected;
-        std::string _caller;
-        std::map<std::string, std::string> _data;
+        /// ID specifying the type of error.
+        int _id;
 
-        friend OPENSOLID_CORE_EXPORT std::ostream& operator<<(
-            std::ostream& stream,
-            const Error& error
-        );
+        /// Additional data about the cause of the error.
+        std::map<std::string, std::string> _data;
+        mutable std::string _what;
     public:
         OPENSOLID_CORE_EXPORT Error();
-        OPENSOLID_CORE_EXPORT Error(const std::string& expected, const std::string& caller);
+
+        template <int id_>
+        explicit Error(const Check<id_>&);
+        
         OPENSOLID_CORE_EXPORT ~Error() throw ();
 
-        OPENSOLID_CORE_EXPORT std::string expected() const;
-        OPENSOLID_CORE_EXPORT std::string caller() const;
+        OPENSOLID_CORE_EXPORT int id() const;
         
         template <class Type>
         Error& set(const std::string& key, const Type& value);
@@ -59,7 +63,25 @@ namespace OpenSolid
         template <class Type>
         Type get(const std::string& key) const;
 
-        OPENSOLID_CORE_EXPORT const std::map<std::string, std::string>& data() const;
+        OPENSOLID_CORE_EXPORT const char* what() const override;
+    };
+
+    /// Check that an object can be converted to a string.
+    template <>
+    struct Check<23>
+    {
+        /// Perform the actual check.
+        template <class Type>
+        static std::string ValidConversionToString(const Type& value);
+    };
+    
+    /// Check that a string can be converted to an object of specified type.
+    template <>
+    struct Check<24>
+    {
+        /// Perform the actual check.
+        template <class Type>
+        static Type ValidConversionFromString(const std::string& value);
     };
     
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
@@ -69,17 +91,42 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <int id_>
+    Error::Error(const Check<id_>&) : _id(id_), _data(), _what() {}
+
     template <class Type>
     Error& Error::set(const std::string& key, const Type& value) {
-        _data[key] = boost::lexical_cast<std::string>(value);
+        std::string string = Check<23>::ValidConversionToString(value);
+        _data[key] = string;
         return *this;
     }
     
     template <class Type>
     Type Error::get(const std::string& key) const {
-        std::map<std::string, std::string>::const_iterator position = _data.find(key);
-        assert(position != _data.end());
-        return boost::lexical_cast<Type>(position->second);
+        auto position = _data.find(key);
+        if (position == _data.end()) {
+            return Type();
+        } else {
+            return Check<24>::ValidConversionFromString<Type>(position->second);
+        }
+    }
+
+    template <class Type>
+    std::string Check<23>::ValidConversionToString(const Type& value) {
+        try {
+            return boost::lexical_cast<std::string>(value);
+        } catch (const boost::bad_lexical_cast&) {
+            throw Error(Check());
+        }
+    }
+
+    template <class Type>
+    Type Check<24>::ValidConversionFromString(const std::string& string) {
+        try {
+            return boost::lexical_cast<Type>(string);
+        } catch (const boost::bad_lexical_cast&) {
+            throw Error(Check()).set("string", string);
+        }
     }
 }
 

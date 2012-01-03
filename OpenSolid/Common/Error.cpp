@@ -24,30 +24,35 @@
 
 namespace OpenSolid
 {
-    Error::Error() : _expected(""), _caller("") {}
-    
-    Error::Error(const std::string& expected, const std::string& caller) :
-        _expected(expected), _caller(caller) {}
+    Error::Error() : _id(0), _data(), _what() {}
 
     Error::~Error() throw () {}
 
-    std::string Error::expected() const {return _expected;}
-    
-    std::string Error::caller() const {return _caller;}
+    int Error::id() const {return _id;}
 
     bool Error::has(const std::string& key) const {return _data.find(key) != _data.end();}
+
+    const char* Error::what() const {
+        std::stringstream stream;
+        stream << "Error " << id();
+        if (!_data.empty()) {
+            auto iterator = _data.begin();
+            stream << ": " << iterator->first << " = " << iterator->second;
+            ++iterator;
+            std::for_each(
+                iterator,
+                _data.end(),
+                [&] (const std::pair<std::string, std::string>& key_value_pair) {
+                    stream << ", " << key_value_pair.first << " = " << key_value_pair.second;
+                }
+            );
+        }
+        _what = stream.str();
+        return _what.c_str();
+    }
     
     std::ostream& operator<<(std::ostream& stream, const Error& error) {
-        stream << "Error(\"" << error.expected() << "\", \"" << error.caller() << "\")";
-        std::for_each(
-            error._data.begin(),
-            error._data.end(),
-            [&stream] (const std::pair<std::string, std::string>& key_value_pair) {
-                stream << ".set(\"" << key_value_pair.first << "\", \"" << key_value_pair.second << "\")";
-            }
-        );
+        stream << error.what();
         return stream;
     }
-
-    const std::map<std::string, std::string>& Error::data() const {return _data;}
 }

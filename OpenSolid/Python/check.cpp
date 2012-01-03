@@ -23,69 +23,51 @@
 
 namespace OpenSolid
 {
-    void checkNonZeroValue(double value, const std::string& caller) {
+    void Check<2>::NonZero(double value) {
         if (value == Zero()) {
-            Error error("NonZeroValue", caller);
+            Error error((Check()));
             error.set("value", value);
             throw error;
         }
     }
     
-    void checkSameSize(int first_size, int second_size, const std::string& caller) {
+    void Check<3>::EqualSizes(int first_size, int second_size) {
         if (first_size != second_size) {
-            Error error("SameSize", caller);
+            Error error((Check()));
             error.set("first_size", first_size);
             error.set("second_size", second_size);
             throw error;
         }
     }
     
-    void checkSameDimensions(
-        int first_dimensions,
-        int second_dimensions,
-        const std::string& caller
-    ) {
+    void Check<4>::EqualDimensions(int first_dimensions, int second_dimensions) {
         if (first_dimensions != second_dimensions) {
-            Error error("SameDimensions", caller);
+            Error error((Check()));
             error.set("first_dimensions", first_dimensions);
             error.set("second_dimensions", second_dimensions);
             throw error;
         }
     }
     
-    void checkValidProductDimensions(
-        int first_dimensions,
-        int second_dimensions,
-        const std::string& caller
-    ) {
-        if (first_dimensions != 1u && second_dimensions != 1u) {
-            Error error("ValidProductDimensions", caller);
+    void Check<12>::ValidProductDimensions(int first_dimensions, int second_dimensions) {
+        if (first_dimensions != 1 && second_dimensions != 1) {
+            Error error((Check()));
             error.set("first_dimensions", first_dimensions);
             error.set("second_dimensions", second_dimensions);
             throw error;
         }
     }
     
-    void checkComponentIndexInRange(
-        int component_index,
-        int size,
-        const std::string& caller
-    ) {
+    void Check<14>::ComponentIndexInRange(int component_index, int size) {
         if (component_index < -size || component_index >= size) {
-            Error error("ComponentIndexInRange", caller);
+            Error error((Check()));
             error.set("component_index", component_index);
             error.set("size", size);
-            std::cout << error << std::endl;
             throw error;
         }
     }
     
-    void checkComponentBlockInRange(
-        int block_start,
-        int block_size,
-        int size,
-        const std::string& caller
-    ) {
+    void Check<15>::ComponentBlockInRange(int block_start, int block_size, int size) {
         bool valid;
         if (block_start < 0) {
             valid =
@@ -96,7 +78,7 @@ namespace OpenSolid
             valid = block_size > 0 && block_start + block_size <= size;
         }
         if (!valid) {
-            Error error("ComponentBlockInRange", caller);
+            Error error((Check()));
             error.set("block_start", block_start);
             error.set("block_size", block_size);
             error.set("size", size);
@@ -104,51 +86,41 @@ namespace OpenSolid
         }
     }
     
-    void checkNoMatrixIndexStep(
-        boost::python::slice indices,
-        const std::string& caller
-    ) {if (indices.step() != boost::python::object()) {throw Error("NoMatrixIndexStep", caller);}}
+    void Check<16>::NoMatrixIndexStep(const boost::python::slice& indices) {
+        if (indices.step() != boost::python::object()) {throw Error((Check()));}
+    }
     
-    void checkConstantFunction(
-        const Function& function,
-        const std::string& caller
-    ) {if (!function.isConstant()) {throw Error("ConstantFunction", caller);}}
+    void Check<17>::ConstantFunction(const Function& function) {
+        if (!function.isConstant()) {throw Error((Check()));}
+    }
     
-    void checkScalarFunction(
-        const Function& function,
-        const std::string& caller
-    ) {
+    void Check<18>::ScalarFunction(const Function& function) {
         if (function.dimensions() > 1) {
-            Error error("ScalarFunction", caller);
+            Error error((Check()));
             error.set("dimensions", function.dimensions());
             throw error;
         }
     }
     
-    void checkParameterIndexInRange(
-        int index,
-        const Function& function,
-        const std::string& caller
-    ) {
+    void Check<19>::ParameterIndexInRange(int index, const Function& function) {
         if (index < 0 || index > function.parameters()) {
-            Error error("ParameterIndexInRange", caller);
+            Error error((Check()));
             error.set("index", index);
             error.set("parameters", function.parameters());
             throw error;
         }
     }
     
-    void checkConsistentFunctionParameters(
+    void Check<20>::ConsistentFunctionParameters(
         const Function& first_function,
-        const Function& second_function,
-        const std::string& caller
+        const Function& second_function
     ) {
         if (
             !first_function.isConstant() &&
             !second_function.isConstant() &&
             first_function.parameters() != second_function.parameters()
         ) {
-            Error error("ConsistentFunctionParameters", caller);
+            Error error((Check()));
             error.set("first_parameters", first_function.parameters());
             error.set("second_parameters", second_function.parameters());
             throw error;

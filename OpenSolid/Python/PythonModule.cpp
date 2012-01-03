@@ -59,52 +59,22 @@ namespace OpenSolid
         dictionary()["Exception"] = exceptions.attr("Exception");
         exec(
             "class Error(Exception):\n"
-            "    def __init__(self, expected, caller):\n"
-            "        self._expected = expected\n"
-            "        self._caller = caller\n"
-            "        self._data = {}\n"
+            "    def __init__(self):\n"
+            "        self._error = None\n"
+            "        self._message = None"
             "\n"
-            "    def expected(self): return self._expected\n"
-            "\n"
-            "    def caller(self): return self._caller\n"
-            "\n"
-            "    def set(self, name, argument):\n"
-            "        self._data[name] = argument\n"
-            "        return self\n"
-            "\n"
-            "    def has(self, name): return self._data.has_key(name)\n"
-            "\n"
-            "    def get(self, name): return self._data[name]\n"
-            "\n"
-            "    def __repr__(self):\n"
-            "        result = 'Error(\\'%s\\', \\'%s\\')' % (self.expected(), self.caller())\n"
-            "        for (key, value) in self._data.iteritems():\n"
-            "            result += '.set(\\'%s\\', \\'%s\\')' % (key, value)\n"
-            "        return result\n"
-            "\n"
-            "    def __str__(self): return self.__repr__()\n"
+            "    def __str__(self): return self._message\n"
             "\n",
             dictionary(),
             dictionary()
         );
         _errorClass() = eval("Error", dictionary(), dictionary());
+        boost::python::class_<Error>("_Error", no_init);
         register_exception_translator<Error>(
             [] (const Error& error) {
-                std::stringstream constructor;
-                constructor << "Error(";
-                constructor << "'" << error.expected() << "'";
-                constructor << ", ";
-                constructor << "'" << error.caller() << "'";
-                constructor << ")";
-                boost::python::object error_object = eval(
-                    constructor.str().c_str(),
-                    dictionary(),
-                    dictionary()
-                );
-                boost::python::object error_data = error_object.attr("_data");
-                for (auto i = error.data().begin(); i != error.data().end(); ++i) {
-                    error_data[str(i->first.c_str())] = str(i->second.c_str());
-                }
+                boost::python::object error_object = eval("Error()", dictionary(), dictionary());
+                error_object.attr("_error") = error;
+                error_object.attr("_message") = error.what();
                 PyErr_SetObject(errorClass().ptr(), error_object.ptr());
             }
         );

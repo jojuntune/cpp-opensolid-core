@@ -30,53 +30,7 @@
 using namespace boost::python;
 
 namespace OpenSolid
-{
-    inline object wrap(PyObject* pointer) {
-        return pointer ? object(handle<>(borrowed(pointer))) : object();
-    }
-    
-    std::string formattedTraceback(object type, object value, object traceback) {
-        object traceback_module = import("traceback");
-        object format_tb = traceback_module.attr("format_tb");
-        object format_exception_only = traceback_module.attr("format_exception_only");
-        list strings(format_tb(traceback));
-        strings.extend(format_exception_only(type, value));
-        return extract<std::string>(str("").join(strings));
-    }
-    
-    Error Script::error() {
-        PyObject* type = nullptr;
-        PyObject* value = nullptr;
-        PyObject* traceback = nullptr;
-        PyErr_Fetch(&type, &value, &traceback);
-        Error result;
-        if (PyErr_GivenExceptionMatches(type, PythonModule::errorClass().ptr())) {
-            object error_object = wrap(value);
-            std::string expected = extract<std::string>(error_object.attr("_expected"));
-            std::string caller = extract<std::string>(error_object.attr("_caller"));
-            result = Error(expected, caller);
-            dict data = extract<dict>(error_object.attr("_data"));
-            list items = data.items();
-            int num_items = len(items);
-            for (int i = 0; i < num_items; ++i) {
-                object pair = items[i];
-                std::string key = extract<std::string>(pair[0]);
-                std::string value = extract<std::string>(pair[1]);
-                result.set(key, value);
-            }
-        } else if (PyErr_GivenExceptionMatches(type, PyExc_SyntaxError)) {
-            result = Error("ValidPythonSyntax", __func__);
-        } else {
-            result = Error("NoPythonExceptions", __func__);
-        }
-        if (traceback) {
-            result.set("traceback", formattedTraceback(wrap(type), wrap(value), wrap(traceback)));
-        }
-        PyErr_Restore(type, value, traceback);
-        PyErr_Clear();
-        return result;
-    }
-    
+{   
     object Script::_get(const std::string& argument) {
         std::vector<std::string> lines;
         boost::algorithm::split(
@@ -92,7 +46,7 @@ namespace OpenSolid
         try {
             return eval(str(last_line), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
-            throw error();
+            Check<25>::PythonError();
         }
     }
     
@@ -123,7 +77,7 @@ namespace OpenSolid
         try {
             exec(str(argument), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
-            throw error();
+            Check<25>::PythonError();
         }
         return *this;
     }
@@ -132,8 +86,38 @@ namespace OpenSolid
         try {
             exec_file(str(filename), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
-            throw error();
+            Check<25>::PythonError();
         }
         return *this;
+    }
+    
+    void Check<25>::PythonError() {
+        PyObject* type_pointer = nullptr;
+        PyObject* value_pointer = nullptr;
+        PyObject* traceback_pointer = nullptr;
+        PyErr_Fetch(&type_pointer, &value_pointer, &traceback_pointer);
+        auto wrap = [] (PyObject* pointer) -> object {
+            return pointer ? object(handle<>(borrowed(pointer))) : object();
+        };
+        object type = wrap(type_pointer);
+        object value = wrap(value_pointer);
+        object traceback = wrap(traceback_pointer);
+        Error result;
+        if (PyErr_GivenExceptionMatches(type_pointer, PythonModule::errorClass().ptr())) {
+            result = extract<Error>(value.attr("_error"));
+        } else {
+            result = Error((Check()));
+        }
+        if (traceback) {
+            object traceback_module = import("traceback");
+            object format_tb = traceback_module.attr("format_tb");
+            object format_exception_only = traceback_module.attr("format_exception_only");
+            list strings(format_tb(traceback));
+            strings.extend(format_exception_only(type, value));
+            result.set("traceback", std::string(extract<std::string>(str("").join(strings))));
+        }
+        PyErr_Restore(type_pointer, value_pointer, traceback_pointer);
+        PyErr_Clear();
+        throw result;
     }
 }

@@ -27,6 +27,7 @@
 
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/check.hpp>
+#include <OpenSolid/Common/Error.hpp>
 
 namespace OpenSolid
 {
@@ -63,6 +64,12 @@ namespace OpenSolid
         template <class Type>
         static Type cast(boost::python::object argument);
     };
+
+    template <>
+    struct Check<25>
+    {
+        OPENSOLID_SCRIPT_EXPORT static void PythonError();
+    };
 }
 
 ////////// Implementation //////////
@@ -80,7 +87,7 @@ namespace OpenSolid
     
     template <class Type>
     inline Type Script::cast(boost::python::object argument) {
-        checkCompatiblePythonType<Type>(argument, __func__);
+        Check<1>::CompatibleType<Type>(argument);
         return boost::python::extract<Type>(argument);
     }
 }

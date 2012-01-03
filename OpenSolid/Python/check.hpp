@@ -37,106 +37,217 @@
 #include <OpenSolid/Python/PythonModule.hpp>
 
 namespace OpenSolid
-{   
-    template <class ExpectedType>
-    void checkCompatiblePythonType(boost::python::object argument, const std::string& caller);
+{
+    /// Check that a Python object is convertible to a desired type.
+    template <>
+    struct Check<1>
+    {
+        /// Perform the actual check.
+        template <class ExpectedType>
+        static void CompatibleType(const boost::python::object& python_object);
+    };
+
+    typedef Check<1> CheckConvertible;
     
-    OPENSOLID_PYTHON_EXPORT void checkNonZeroValue(double value, const std::string& caller);
+    /// Check that a scalar value is non-zero.
+    template <>
+    struct Check<2>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void NonZero(double value);
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkSameSize(
-        int first_size,
-        int second_size,
-        const std::string& caller
-    );
+    /// Check that two generic sizes are equal.
+    template <>
+    struct Check<3>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void EqualSizes(int first_size, int second_size);
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkSameDimensions(
-        int first_dimensions,
-        int second_dimensions,
-        const std::string& caller
-    );
+    /// Check that two dimensions (e.g., of two  vectors to be added) are equal.
+    template <>
+    struct Check<4>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void EqualDimensions(
+            int first_dimensions,
+            int second_dimensions
+        );
+    };
     
-    template <class MatrixType>
-    void checkScalarValue(const MatrixType& argument, const std::string& caller);
+    /// Check that a matrix is actually a single scalar value.
+    template <>
+    struct Check<5>
+    {
+        /// Perform the actual check.
+        template <class MatrixType>
+        static void ScalarValue(const MatrixType& matrix);
+    };
     
-    template <class MatrixType>
-    void checkVectorValue(const MatrixType& argument, const std::string& caller);
+    /// Check that a matrix is actually a vector, i.e., has one column.
+    template <>
+    struct Check<6>
+    {
+        /// Perform the actual check.
+        template <class MatrixType>
+        static void VectorValue(const MatrixType& matrix);
+    };
     
-    template <class MatrixType>
-    void checkRowVectorValue(const MatrixType& matrix, const std::string& caller);
+    /// Check that a matrix is actually a row vector.
+    template<>
+    struct Check<7>
+    {
+        /// Perform the actual check.
+        template <class MatrixType>
+        static void RowVectorValue(const MatrixType& matrix);
+    };
     
-    template <class MatrixType>
-    void checkVectorOrRowVectorValue(const MatrixType& matrix, const std::string& caller);
+    /// Check that a matrix is actually a vector or row vector.
+    template <>
+    struct Check<8>
+    {
+        /// Perform the actual check.
+        template <class MatrixType>
+        static void VectorOrRowVectorValue(const MatrixType& matrix);
+    };
     
-    template <class FirstMatrixType, class SecondMatrixType>
-    void checkSameSizeMatrices(
-        const FirstMatrixType& first_matrix,
-        const SecondMatrixType& second_matrix,
-        const std::string& caller
-    );
+    /// Check that two matrices are the same size.
+    template <>
+    struct Check<9>
+    {
+        /// Perform the actual check.
+        template <class FirstMatrixType, class SecondMatrixType>
+        static void SameSizeMatrices(
+            const FirstMatrixType& first_matrix,
+            const SecondMatrixType& second_matrix
+        );
+    };
     
-    template <class MatrixType>
-    void checkSquareMatrix(const MatrixType& matrix, const std::string& caller);
+    /// Check that a matrix is square.
+    template <>
+    struct Check<10>
+    {
+        /// Perform the actual check.
+        template <class MatrixType>
+        static void SquareMatrix(const MatrixType& matrix);
+    };
+
+    /// Check that a matrix has a specific size.
+    template <>
+    struct Check<11>
+    {
+        /// Perform the actual check.
+        template <class MatrixType>
+        static void SpecificMatrixSize(
+            const MatrixType& matrix,
+            int expected_rows,
+            int expected_cols
+        );
+    };
     
-    template <class MatrixType>
-    void checkSpecificMatrixSize(
-        const MatrixType& matrix,
-        int expected_rows,
-        int expected_cols,
-        const std::string& caller
-    );
+    /// Check two dimensions to ensure they form a valid product.
+    /**
+     * The product of two objects is valid if at least one of them is a scalar,
+     * i.e., has dimension 1.
+     */
+    template <>
+    struct Check<12>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void ValidProductDimensions(
+            int first_dimensions,
+            int second_dimensions
+        );
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkValidProductDimensions(
-        int first_dimensions,
-        int second_dimensions,
-        const std::string& caller
-    );
+    /// Check that two matrices can be multiplied together.
+    template <>
+    struct Check<13>
+    {
+        /// Perform the actual check.
+        template <class FirstMatrixType, class SecondMatrixType>
+        static void ValidMatrixProduct(
+            const FirstMatrixType& first_matrix,
+            const SecondMatrixType& second_matrix
+        );
+    };
     
-    template <class FirstMatrixType, class SecondMatrixType>
-    void checkValidMatrixProduct(
-        const FirstMatrixType& first_matrix,
-        const SecondMatrixType& second_matrix,
-        const std::string& caller
-    );
+    /// Check that a matrix component index is in range.
+    template <>
+    struct Check<14>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void ComponentIndexInRange(
+            int component_index,
+            int size
+        );
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkComponentIndexInRange(
-        int component_index,
-        int size,
-        const std::string& caller
-    );
+    /// Check that a matrix component block is in range.
+    template <>
+    struct Check<15>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void ComponentBlockInRange(
+            int block_start,
+            int block_size,
+            int size
+        );
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkComponentBlockInRange(
-        int block_start,
-        int block_size,
-        int size,
-        const std::string& caller
-    );
+    /// Check that no step size is given when indexing into a matrix.
+    template <>
+    struct Check<16>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void NoMatrixIndexStep(
+            const boost::python::slice& indices
+        );
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkNoMatrixIndexStep(
-        boost::python::slice indices,
-        const std::string& caller
-    );
+    /// Check that a function is actually a constant value.
+    template <>
+    struct Check<17>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void ConstantFunction(const Function& function);
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkConstantFunction(
-        const Function& function,
-        const std::string& caller
-    );
+    /// Check that a function is a scalar function (produces scalar values).
+    template <>
+    struct Check<18>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT void ScalarFunction(const Function& function);
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkScalarFunction(
-        const Function& function,
-        const std::string& caller
-    );
+    /// Check that an index is a valid parameter index for a function.
+    template <>
+    struct Check<19>
+    {
+        /// Perform the actual check.
+        OPENSOLID_PYTHON_EXPORT static void ParameterIndexInRange(
+            int index,
+            const Function& function
+        );
+    };
     
-    OPENSOLID_PYTHON_EXPORT void checkParameterIndexInRange(
-        int index,
-        const Function& function,
-        const std::string& caller
-    );
-    
-    OPENSOLID_PYTHON_EXPORT void checkConsistentFunctionParameters(
-        const Function& first_function,
-        const Function& second_function,
-        const std::string& caller
-    );
+    /// Check that two functions have 'consistent' numbers of parameters.
+    /**
+     * In order for two functions to be combined (added together, multiplied,
+     * etc.), they must have consistent numbers of parameters - either both
+     * functions must have the same number of parameters, or one of them must
+     * be constant (have zero parameters).
+     */
+    template <>
+    struct Check<20>
+    {
+        OPENSOLID_PYTHON_EXPORT static void ConsistentFunctionParameters(
+            const Function& first_function,
+            const Function& second_function
+        );
+    };
 }
 
 ////////// Implementation //////////
@@ -249,20 +360,20 @@ namespace OpenSolid
     }
     
     template <class ExpectedType>
-    void checkCompatiblePythonType(boost::python::object argument, const std::string& caller) {
-        boost::python::extract<ExpectedType> extracted(argument);
+    void Check<1>::CompatibleType(const boost::python::object& python_object) {
+        boost::python::extract<ExpectedType> extracted(python_object);
         if (!extracted.check()) {
-            Error error("CompatiblePythonType", caller);
+            Error error((Check()));
             error.set("expected_type", typeName<ExpectedType>());
-            error.set("type", argument.ptr()->ob_type->tp_name);
+            error.set("type", python_object.ptr()->ob_type->tp_name);
             throw error;
         }
     }
     
     template <class MatrixType>
-    void checkScalarValue(const MatrixType& matrix, const std::string& caller) {
+    void Check<5>::ScalarValue(const MatrixType& matrix) {
         if (matrix.rows() != 1 || matrix.cols() != 1) {
-            Error error("ScalarValue", caller);
+            Error error((Check()));
             error.set("rows", matrix.rows());
             error.set("cols", matrix.cols());
             throw error;
@@ -270,27 +381,27 @@ namespace OpenSolid
     }
     
     template <class MatrixType>
-    void checkVectorValue(const MatrixType& matrix, const std::string& caller) {
+    void Check<6>::VectorValue(const MatrixType& matrix) {
         if (matrix.cols() != 1) {
-            Error error("VectorValue", caller);
+            Error error((Check()));
             error.set("cols", matrix.cols());
             throw error;
         }
     }
     
     template <class MatrixType>
-    void checkRowVectorValue(const MatrixType& matrix, const std::string& caller) {
+    void Check<7>::RowVectorValue(const MatrixType& matrix) {
         if (matrix.rows() != 1) {
-            Error error("RowVectorValue", caller);
+            Error error((Check()));
             error.set("rows", matrix.rows());
             throw error;
         }
     }
     
     template <class MatrixType>
-    void checkVectorOrRowVectorValue(const MatrixType& matrix, const std::string& caller) {
+    void Check<8>::VectorOrRowVectorValue(const MatrixType& matrix) {
         if (matrix.rows() != 1 && matrix.cols() != 1) {
-            Error error("VectorOrRowVectorValue", caller);
+            Error error((Check()));
             error.set("rows", matrix.rows());
             error.set("cols", matrix.cols());
             throw error;
@@ -298,16 +409,15 @@ namespace OpenSolid
     }
     
     template <class FirstMatrixType, class SecondMatrixType>
-    void checkSameSizeMatrices(
+    void Check<9>::SameSizeMatrices(
         const FirstMatrixType& first_matrix,
-        const SecondMatrixType& second_matrix,
-        const std::string& caller
+        const SecondMatrixType& second_matrix
     ) {
         if (
             first_matrix.rows() != second_matrix.rows() ||
             first_matrix.cols() != second_matrix.cols()
         ) {
-            Error error("SameSizeMatrices", caller);
+            Error error((Check()));
             error.set("first_rows", first_matrix.rows());
             error.set("first_cols", first_matrix.cols());
             error.set("second_rows", second_matrix.rows());
@@ -317,9 +427,9 @@ namespace OpenSolid
     }
     
     template <class MatrixType>
-    void checkSquareMatrix(const MatrixType& matrix, const std::string& caller) {
+    void Check<10>::SquareMatrix(const MatrixType& matrix) {
         if (matrix.rows() != matrix.cols()) {
-            Error error("SquareMatrix", caller);
+            Error error((Check()));
             error.set("rows", matrix.rows());
             error.set("cols", matrix.cols());
             throw error;
@@ -327,14 +437,13 @@ namespace OpenSolid
     }
     
     template <class MatrixType>
-    void checkSpecificMatrixSize(
+    void Check<11>::SpecificMatrixSize(
         const MatrixType& matrix,
         int expected_rows,
-        int expected_cols,
-        const std::string& caller
+        int expected_cols
     ) {
         if (matrix.rows() != expected_rows || matrix.cols() != expected_cols) {
-            Error error("SpecificMatrixSize", caller);
+            Error error((Check()));
             error.set("rows", matrix.rows());
             error.set("cols", matrix.cols());
             error.set("expected_rows", expected_rows);

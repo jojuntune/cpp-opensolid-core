@@ -82,7 +82,7 @@ public:
         try {
             script.run(text);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "NoPythonExceptions");
+            TS_ASSERT_EQUALS(error.id(), 25);
         }
     }
     
@@ -93,7 +93,7 @@ public:
         try {
             script.run(text);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "ValidPythonSyntax");
+            TS_ASSERT_EQUALS(error.id(), 25);
         }
     }
     
@@ -105,7 +105,7 @@ public:
         try {
             script.get<Vector3d>("a.cross(b)");
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "NoPythonExceptions");
+            TS_ASSERT_EQUALS(error.id(), 25);
         }
     }
     
@@ -196,7 +196,7 @@ public:
         try {
             script.run(text);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "NoPythonExceptions");
+            TS_ASSERT_EQUALS(error.id(), 25);
         }
     }
     
@@ -215,7 +215,7 @@ public:
         try {
             script.run(text);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "NoPythonExceptions");
+            TS_ASSERT_EQUALS(error.id(), 25);
         }
     }
     
@@ -247,7 +247,7 @@ public:
         try {
             script.run(text);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "SameSizeMatrices");
+            TS_ASSERT_EQUALS(error.id(), 9);
             TS_ASSERT_EQUALS(error.get<int>("first_rows"), 2);
             TS_ASSERT_EQUALS(error.get<int>("second_rows"), 3);
         }
@@ -280,7 +280,7 @@ public:
         try {
             script.get<Vector2d>(expression);
         } catch (const Error& error) {
-            TS_ASSERT_EQUALS(error.expected(), "CompatiblePythonType");
+            TS_ASSERT_EQUALS(error.id(), 1);
             TS_ASSERT_EQUALS(error.get<std::string>("expected_type"), "Vector2d");
             TS_ASSERT_EQUALS(error.get<std::string>("type"), "MatrixXI");
         }
