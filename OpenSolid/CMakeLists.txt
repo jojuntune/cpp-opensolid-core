@@ -308,6 +308,7 @@
     # Scalar directory files
     SET(SCALAR_HEADERS
         Scalar/Comparison.hpp
+        Scalar/int.hpp
         Scalar/double.hpp
         Scalar/Interval.hpp
         Scalar/IntervalTests.hpp

@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <utility>
+#include <string>
 
 #include <boost/numeric/interval.hpp>
 
@@ -185,6 +186,7 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 #include <OpenSolid/Scalar/double.hpp>
+#include <OpenSolid/Scalar/int.hpp>
 
 namespace OpenSolid
 {

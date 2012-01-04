@@ -18,73 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOUBLE_HPP
-#define OPENSOLID__DOUBLE_HPP
+#ifndef OPENSOLID__COMMON__HASH_HPP
+#define OPENSOLID__COMMON__HASH_HPP
 
 #include <OpenSolid/config.hpp>
 
-#include <cmath>
-#include <string>
-
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Common/Hash.hpp>
-#include <OpenSolid/Common/Repr.hpp>
-
 namespace OpenSolid
 {
-    using std::min;
-    using std::max;
-    using std::abs;
-    using std::sqrt;
-    using std::sin;
-    using std::cos;
-    using std::tan;
-    using std::asin;
-    using std::acos;
-    using std::atan;
-    using std::atan2;
-    using std::exp;
-    using std::log;
-    using std::pow;
-
-    class Interval;
-    
-    template <>
-    struct Bounds<double>
-    {
-        typedef Interval Type;
-
-        Interval operator()(double argument) const;
-    };
-
-    template <>
-    struct Hash<double>
-    {
-        std::size_t operator()(double argument) const;
-    };
-
-    template <>
-    struct Repr<double>
-    {
-        std::string operator()(double argument) const;
-    };
-}
-
-////////// Implementation //////////
-
-#include <functional>
-
-#include <boost/lexical_cast.hpp>
-
-namespace OpenSolid
-{
-    inline std::size_t Hash<double>::operator()(double argument) const {
-        return std::hash<double>()(argument);
-    }
-
-    inline std::string Repr<double>::operator()(double argument) const {
-        return boost::lexical_cast<std::string>(argument);
-    }
+    template <class Type>
+    struct Hash;
 }
 
 #endif
