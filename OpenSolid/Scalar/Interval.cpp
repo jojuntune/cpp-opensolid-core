@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <cmath>
+#include <sstream>
 
 #include <boost/numeric/interval.hpp>
 
@@ -26,6 +27,16 @@
 
 namespace OpenSolid
 {
+    std::string Repr<Interval>::operator()(const Interval& argument) const {
+        std::stringstream stream;
+        stream << "Interval(";
+        stream << Repr<double>()(argument.lower());
+        stream << ", ";
+        stream << Repr<double>()(argument.upper());
+        stream << ")";
+        return stream.str();
+    }
+
     Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 
     Interval cos(const Interval& argument) {return boost::numeric::cos(argument.value());}

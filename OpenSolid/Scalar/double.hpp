@@ -27,8 +27,6 @@
 #include <cstdlib>
 #include <cmath>
 
-#include <OpenSolid/Common/Bounds.hpp>
-
 namespace OpenSolid
 {
     using std::min;
@@ -45,35 +43,6 @@ namespace OpenSolid
     using std::exp;
     using std::log;
     using std::pow;
-
-    class Interval;
-    
-    template <>
-    struct Bounds<int>
-    {
-        typedef Interval Type;
-
-        Interval operator()(int argument) const;
-    };
-    
-    template <>
-    struct Bounds<double>
-    {
-        typedef Interval Type;
-
-        Interval operator()(double argument) const;
-    };
-}
-
-////////// Implementation //////////
-
-#include <OpenSolid/Scalar/Interval.hpp>
-
-namespace OpenSolid
-{
-    inline Interval Bounds<int>::operator()(int argument) const {return argument;}
-
-    inline Interval Bounds<double>::operator()(double argument) const {return argument;}
 }
 
 #endif

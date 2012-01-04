@@ -787,33 +787,59 @@ namespace OpenSolid
         return stream.str();
     }
 
+    template <class Scalar>
+    char scalarTypeCharacter();
+
+    template <>
+    char scalarTypeCharacter<double>() {return 'd';}
+
+    template <>
+    char scalarTypeCharacter<Interval>() {return 'I';}
+
     template <class MatrixType>
     std::string repr(const MatrixType& argument) {
         std::stringstream stream;
-        if (argument.cols() == 1) {
-            stream << "Vector([";
-            for (int i = 0; i < argument.rows(); ++i) {
-                stream << argument(i, 0);
-                if (i < argument.rows() - 1) {stream << ", ";}
+        int rows = argument.rows();
+        int cols = argument.cols();
+        char type_character = scalarTypeCharacter<typename MatrixType::Scalar>();
+        Repr<typename MatrixType::Scalar> repr;
+        if (rows == 1 || cols == 1) {
+            int size = cols == 1 ? rows : cols;
+            if (rows == 1) {stream << "Row";}
+            stream << "Vector";
+            bool dynamic = size > 3;
+            if (dynamic) {
+                stream << 'X';
+            } else {
+                stream << size;
             }
-            stream << "])";
-        } else if (argument.rows() == 1) {
-            stream << "RowVector([";
-            for (int i = 0; i < argument.cols(); ++i) {
-                stream << argument(0, i);
-                if (i < argument.cols() - 1) {stream << ", ";}
+            stream << type_character;
+            stream << '(';
+            if (dynamic) {stream << '[';}
+            for (int i = 0; i < size; ++i) {
+                stream << repr(argument(i));
+                if (i < size - 1) {stream << ", ";}
             }
-            stream << "])";
+            if (dynamic) {stream << ']';}
+            stream << ')';
         } else {
-            stream << "Matrix([";
-            for (int j = 0; j < argument.cols(); ++j) {
-                stream << "[";
-                for (int i = 0; i < argument.rows(); ++i) {
-                    stream << argument(i, j);
-                    if (i < argument.rows() - 1) {stream << ", ";}
+            stream << "Matrix";
+            bool dynamic = rows != cols || cols > 3;
+            if (dynamic) {
+                stream << 'X';
+            } else {
+                stream << cols;
+            }
+            stream << type_character;
+            stream << "([";
+            for (int j = 0; j < cols; ++j) {
+                stream << '[';
+                for (int i = 0; i < rows; ++i) {
+                    stream << repr(argument(i, j));
+                    if (i < rows - 1) {stream << ", ";}
                 }
-                stream << "]";
-                if (j < argument.cols() - 1) {stream << ", ";}
+                stream << ']';
+                if (j < cols - 1) {stream << ", ";}
             }
             stream << "])";
         }

@@ -29,8 +29,10 @@
 #include <utility>
 
 #include <boost/numeric/interval.hpp>
+
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
+#include <OpenSolid/Common/Repr.hpp>
 
 namespace OpenSolid
 {
@@ -109,6 +111,12 @@ namespace OpenSolid
         const Interval& operator()(const Interval& argument) const;
     };
 
+    template <>
+    struct Repr<Interval>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()(const Interval& argument) const;
+    };
+
     bool operator==(double first_argument, const Interval& second_argument);
     bool operator==(const Interval& first_argument, double second_argument);
     bool operator==(const Interval& first_argument, const Interval& second_argument);
@@ -180,6 +188,10 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    inline Interval Bounds<int>::operator()(int argument) const {return Interval(argument);}
+
+    inline Interval Bounds<double>::operator()(double argument) const {return Interval(argument);}
+
     inline Interval::Interval() : _value(BoostInterval::empty()) {}
     
     inline Interval::Interval(double argument) : _value(argument) {}

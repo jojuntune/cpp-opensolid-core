@@ -124,6 +124,8 @@
         Common/Convertible.hpp
         Common/Error.hpp
         Common/ReferenceCounted.hpp
+        Common/Hash.hpp
+        Common/Repr.hpp
         Common/Transformable.hpp
     )
     SET(COMMON_SOURCES Common/Error.cpp)
