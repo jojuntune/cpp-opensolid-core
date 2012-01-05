@@ -33,6 +33,7 @@
 
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
+#include <OpenSolid/Common/Hash.hpp>
 #include <OpenSolid/Common/Repr.hpp>
 
 namespace OpenSolid
@@ -113,6 +114,12 @@ namespace OpenSolid
     };
 
     template <>
+    struct Hash<Interval>
+    {
+        std::size_t operator()(const Interval& argument) const;
+    };
+
+    template <>
     struct Repr<Interval>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Interval& argument) const;
@@ -184,6 +191,8 @@ namespace OpenSolid
 }
 
 ////////// Implementation //////////
+
+#include <boost/functional/hash.hpp>
 
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/int.hpp>
@@ -323,6 +332,11 @@ namespace OpenSolid
     
     inline const Interval& Bounds<Interval>::operator()(const Interval& argument) const {
         return argument;
+    }
+
+    inline std::size_t Hash<Interval>::operator()(const Interval& argument) const {
+        Hash<double> hash;
+        return Hash<>::Combine(hash(argument.lower()), hash(argument.upper()));
     }
 
     inline bool operator==(double first_argument, const Interval& second_argument) {

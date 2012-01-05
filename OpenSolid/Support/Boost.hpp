@@ -28,7 +28,6 @@
 #endif
 
 #include <OpenSolid/Support/declarations.hpp>
-#include <OpenSolid/Support/STL.hpp>
 
 namespace boost
 {
@@ -39,7 +38,7 @@ namespace boost
     };
 
     template <>
-    struct hash<OpenSolid::Interval> : public std::hash<OpenSolid::Interval>
+    struct hash<OpenSolid::Interval> : public OpenSolid::Hash<OpenSolid::Interval>
     {
     };
 

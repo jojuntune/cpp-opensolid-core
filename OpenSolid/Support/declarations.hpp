@@ -29,6 +29,12 @@ namespace Eigen
 
 namespace OpenSolid
 {
+    template <class BoundedType>
+    struct Bounds;
+
+    template <class HashableType>
+    struct Hash;
+
     template <int dimensions_, int axes_>
     class Datum;
     

@@ -27,9 +27,6 @@
 #include <functional>
 #include <iterator>
 
-#include <boost/functional/hash.hpp>
-
-#include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Support/declarations.hpp>
 
 namespace OpenSolid
@@ -94,9 +91,8 @@ namespace std
     };
 
     template <>
-    struct hash<OpenSolid::Interval> : public unary_function<OpenSolid::Interval, size_t>
+    struct hash<OpenSolid::Interval> : public OpenSolid::Hash<OpenSolid::Interval>
     {
-        std::size_t operator()(const OpenSolid::Interval& argument) const;
     };
 
     template <>

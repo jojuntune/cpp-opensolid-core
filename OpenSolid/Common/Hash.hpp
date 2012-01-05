@@ -25,8 +25,32 @@
 
 namespace OpenSolid
 {
-    template <class Type>
+    template <class HashableType = std::size_t>
     struct Hash;
+
+    template <>
+    struct Hash<std::size_t>
+    {
+        std::size_t operator()(std::size_t argument) const;
+
+        static std::size_t Combine(std::size_t first_argument, std::size_t second_argument);
+    };
+}
+
+////////// Implementation //////////
+
+namespace OpenSolid
+{
+    inline std::size_t Hash<std::size_t>::operator()(std::size_t argument) const {return argument;}
+
+    inline std::size_t Hash<std::size_t>::Combine(
+        std::size_t first_argument,
+        std::size_t second_argument
+    ) {
+        return first_argument ^ (
+            second_argument + 0x9e3779b9 + (first_argument << 6) + (first_argument >> 2)
+        );
+    }
 }
 
 #endif
