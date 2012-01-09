@@ -358,15 +358,6 @@ namespace std
         const Eigen::Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& second
     ) const {return first.binaryExpr(second, EqualVisitor()).all();}
 
-    inline std::size_t hash<OpenSolid::Interval>::operator()(
-        const OpenSolid::Interval& argument
-    ) const {
-        size_t result = 0;
-        boost::hash_combine(result, boost::hash_value(argument.lower()));
-        boost::hash_combine(result, boost::hash_value(argument.upper()));
-        return result;
-    }
-
     inline bool equal_to<OpenSolid::Interval>::operator()(
         const OpenSolid::Interval& first_argument,
         const OpenSolid::Interval& second_argument

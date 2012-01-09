@@ -28,6 +28,7 @@
 #include <OpenSolid/Simplex/Simplex.hpp>
 #include <OpenSolid/Set/Set.hpp>
 #include <OpenSolid/Support/Boost.hpp>
+#include <OpenSolid/Support/STL.hpp>
 
 using namespace OpenSolid;
 

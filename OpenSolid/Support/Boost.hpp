@@ -28,6 +28,7 @@
 #endif
 
 #include <OpenSolid/Support/declarations.hpp>
+#include <OpenSolid/Support/STL.hpp>
 
 namespace boost
 {
