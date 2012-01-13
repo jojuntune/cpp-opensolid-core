@@ -128,7 +128,9 @@
         Common/Repr.hpp
         Common/Transformable.hpp
     )
-    SET(COMMON_SOURCES Common/Error.cpp)
+    SET(COMMON_SOURCES
+        Common/Error.cpp
+    )
     
     # Datum directory files
     SET(DATUM_HEADERS
@@ -142,8 +144,14 @@
     )
     
     # Domain directory files
-    SET(DOMAIN_HEADERS Domain/Domain.hpp Domain/DomainConstructors.hpp)
-    SET(DOMAIN_SOURCES Domain/Domain.cpp Domain/DomainConstructors.cpp)
+    SET(DOMAIN_HEADERS
+        Domain/Domain.hpp
+        Domain/DomainConstructors.hpp
+    )
+    SET(DOMAIN_SOURCES
+        Domain/Domain.cpp
+        Domain/DomainConstructors.cpp
+    )
 
     # Domain/DomainImplementation directory files
     SET(DOMAINIMPLEMENTATION_HEADERS
@@ -164,8 +172,12 @@
     )
     
     # Evaluation directory files
-    SET(EVALUATION_HEADERS Evaluation/Evaluation.hpp Evaluation/MatrixArgument.hpp)
-    SET(EVALUATION_SOURCES)
+    SET(EVALUATION_HEADERS
+        Evaluation/Evaluation.hpp
+        Evaluation/MatrixArgument.hpp
+    )
+    SET(EVALUATION_SOURCES
+    )
     
     # Function directory files
     SET(FUNCTION_HEADERS
@@ -174,7 +186,10 @@
         Function/FunctionTests.hpp
         Function/FunctionResult.hpp
     )
-    SET(FUNCTION_SOURCES Function/Function.cpp Function/FunctionConstructors.cpp)
+    SET(FUNCTION_SOURCES
+        Function/Function.cpp
+        Function/FunctionConstructors.cpp
+    )
     
     # Function/FunctionImplementation directory files
     SET(FUNCTIONIMPLEMENTATION_HEADERS
@@ -279,8 +294,21 @@
     SET(MATRIX_SOURCES)
 
     # Model directory files
-    SET(MODEL_HEADERS Model/Model.hpp)
-    SET(MODEL_SOURCES Model/Model.cpp)
+    SET(MODEL_HEADERS
+        Model/Model.hpp
+    )
+    SET(MODEL_SOURCES
+        Model/Model.cpp
+    )
+
+    # Object directory files
+    SET(OBJECT_HEADERS
+        Object/Object.hpp
+        Object/ObjectTests.hpp
+    )
+    SET(OBJECT_SOURCES
+        Object/Object.cpp
+    )
     
     # Python directory files
     SET(PYTHON_HEADERS
@@ -313,19 +341,36 @@
         Scalar/Interval.hpp
         Scalar/IntervalTests.hpp
     )
-    SET(SCALAR_SOURCES Scalar/Interval.cpp)
+    SET(SCALAR_SOURCES
+        Scalar/Interval.cpp
+    )
     
     # Set directory files
-    SET(SET_HEADERS Set/Set.hpp Set/SetTests.hpp Set/SetNode.hpp)
-    SET(SET_SOURCES)
+    SET(SET_HEADERS
+        Set/Set.hpp
+        Set/SetNode.hpp
+        Set/SetTests.hpp
+    )
+    SET(SET_SOURCES
+    )
     
     # Simplex directory files
-    SET(SIMPLEX_HEADERS Simplex/Simplex.hpp Simplex/SimplexTests.hpp)
-    SET(SIMPLEX_SOURCES Simplex/Simplex.cpp)
+    SET(SIMPLEX_HEADERS
+        Simplex/Simplex.hpp
+        Simplex/SimplexTests.hpp
+    )
+    SET(SIMPLEX_SOURCES
+        Simplex/Simplex.cpp
+    )
 
     # Support directory files
-    SET(SUPPORT_HEADERS Support/declarations.hpp Support/Boost.hpp Support/STL.hpp)
-    SET(SUPPORT_SOURCES)
+    SET(SUPPORT_HEADERS
+        Support/declarations.hpp
+        Support/Boost.hpp
+        Support/STL.hpp
+    )
+    SET(SUPPORT_SOURCES
+    )
     
 ########## Set up source groups for Visual Studio ##########
 
@@ -353,6 +398,8 @@
         ${MATRIX_SOURCES}
         ${MODEL_HEADERS}
         ${MODEL_SOURCES}
+        ${OBJECT_HEADERS}
+        ${OBJECT_SOURCES}
         ${PYTHON_HEADERS}
         ${PYTHON_MODULE_SOURCES}
         ${PYTHON_ENVIRONMENT_SOURCES}
@@ -378,6 +425,7 @@
     SOURCE_GROUP(OpenSolid\\Geometry\\GeometryImplementation FILES ${GEOMETRYIMPLEMENTATION_HEADERS} ${GEOMETRYIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
     SOURCE_GROUP(OpenSolid\\Model FILES ${MODEL_HEADERS} ${MODEL_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Object FILES ${OBJECT_HEADERS} ${OBJECT_SOURCES})
     SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_MODULE_SOURCES} ${PYTHON_ENVIRONMENT_SOURCES})
     SOURCE_GROUP(OpenSolid\\Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
     SOURCE_GROUP(OpenSolid\\Set FILES ${SET_HEADERS} ${SET_SOURCES})
@@ -404,6 +452,7 @@
         ${GEOMETRYIMPLEMENTATION_SOURCES}
         ${MATRIX_SOURCES}
         ${MODEL_SOURCES}
+        ${OBJECT_SOURCES}
         ${PRIMITIVE_SOURCES}
         ${SCALAR_SOURCES}
         ${SET_SOURCES}
@@ -440,6 +489,7 @@
     ADD_CXXTEST(SimplexTests Simplex/SimplexTests.hpp OpenSolidCore)
     ADD_CXXTEST(PythonTests Python/PythonTests.hpp OpenSolidPython OpenSolidCore)
     ADD_CXXTEST(BoundsTests Common/BoundsTests.hpp OpenSolidCore)
+    ADD_CXXTEST(ObjectTests Object/ObjectTests.hpp OpenSolidCore)
     
 ######################################################################
 #                                                                    #
