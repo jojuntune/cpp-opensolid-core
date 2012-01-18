@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__GEOMETRYEVALUATION_HPP
-#define OPENSOLID__GEOMETRYEVALUATION_HPP
+#ifndef OPENSOLID__EVALUATION_HPP
+#define OPENSOLID__EVALUATION_HPP
 
 #include <OpenSolid/Scalar/double.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Evaluation/MatrixArgument.hpp>
+#include <OpenSolid/Common/MatrixArgument.hpp>
 
 namespace OpenSolid
 {

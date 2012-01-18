@@ -123,8 +123,10 @@
         Common/BoundsTests.hpp
         Common/Convertible.hpp
         Common/Error.hpp
-        Common/ReferenceCounted.hpp
+        Common/Evaluation.hpp
         Common/Hash.hpp
+        Common/MatrixArgument.hpp
+        Common/ReferenceCounted.hpp
         Common/Repr.hpp
         Common/Transformable.hpp
     )
@@ -169,14 +171,6 @@
         Domain/DomainImplementation/RectangleDomain.cpp
         Domain/DomainImplementation/CuboidDomain.cpp
         Domain/DomainImplementation/SimplexDomain.cpp
-    )
-    
-    # Evaluation directory files
-    SET(EVALUATION_HEADERS
-        Evaluation/Evaluation.hpp
-        Evaluation/MatrixArgument.hpp
-    )
-    SET(EVALUATION_SOURCES
     )
     
     # Function directory files
@@ -384,8 +378,6 @@
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_HEADERS}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${EVALUATION_HEADERS}
-        ${EVALUATION_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_HEADERS}
@@ -418,7 +410,6 @@
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain\\DomainImplementation FILES ${DOMAINIMPLEMENTATION_HEADERS} ${DOMAINIMPLEMENTATION_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Evaluation FILES ${EVALUATION_HEADERS} ${EVALUATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FUNCTIONIMPLEMENTATION_HEADERS} ${FUNCTIONIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
@@ -445,7 +436,6 @@
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${EVALUATION_SOURCES}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}

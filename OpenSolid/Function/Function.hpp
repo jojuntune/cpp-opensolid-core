@@ -28,9 +28,9 @@
 #include <boost/intrusive_ptr.hpp>
 
 #include <OpenSolid/Common/Convertible.hpp>
+#include <OpenSolid/Common/Evaluation.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Evaluation/Evaluation.hpp>
 #include <OpenSolid/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>

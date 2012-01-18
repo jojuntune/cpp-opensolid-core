@@ -27,8 +27,8 @@
 
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
+#include <OpenSolid/Common/Evaluation.hpp>
 #include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Evaluation/Evaluation.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Geometry/GeometryConstructors.hpp>
 #include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>

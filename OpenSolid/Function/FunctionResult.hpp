@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__FUNCTIONRESULT_HPP
 #define OPENSOLID__FUNCTIONRESULT_HPP
 
+#include <OpenSolid/Common/Evaluation.hpp>
 #include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Evaluation/Evaluation.hpp>
 
 namespace OpenSolid
 {
