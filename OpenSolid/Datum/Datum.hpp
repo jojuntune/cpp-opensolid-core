@@ -89,7 +89,7 @@ namespace OpenSolid
         Matrix<double, dimensions_, 1> point(double x, double y) const;
         Matrix<double, dimensions_, 1> point(double x, double y, double z) const;
         
-        Matrix<double, dimensions_, 1> vector(double x) const;
+        Matrix<double, dimensions_, 1> vector(double x = 1) const;
         Matrix<double, dimensions_, 1> vector(double x, double y) const;
         Matrix<double, dimensions_, 1> vector(double x, double y, double z) const;
 

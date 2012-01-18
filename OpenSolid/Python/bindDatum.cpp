@@ -49,6 +49,10 @@ namespace OpenSolid
         return datum.point(x, y, z);
     }
 
+    MatrixXd vector0(const DatumXd& datum) {
+        return datum.vector();
+    }
+
     MatrixXd vector1(const DatumXd& datum, double x) {
         return datum.vector(x);
     }
