@@ -462,6 +462,8 @@ namespace OpenSolid
     MatrixXd* cwiseUpper(const MatrixXI& argument) {return new MatrixXd(argument.cwiseUpper());}
     
     MatrixXd* cwiseMedian(const MatrixXI& argument) {return new MatrixXd(argument.cwiseMedian());}
+
+    MatrixXd* cwiseRandom(const MatrixXI& argument) {return new MatrixXd(argument.cwiseRandom());}
     
     MatrixXd* cwiseWidth(const MatrixXI& argument) {return new MatrixXd(argument.cwiseWidth());}
     
@@ -1048,6 +1050,7 @@ namespace OpenSolid
             .def("cwiseLower", &cwiseLower, manage_new_matrix)
             .def("cwiseUpper", &cwiseUpper, manage_new_matrix)
             .def("cwiseMedian", &cwiseMedian, manage_new_matrix)
+            .def("cwiseRandom", &cwiseRandom, manage_new_matrix)
             .def("cwiseWidth", &cwiseWidth, manage_new_matrix)
             .def("hull", &hullXIXI, manage_new_matrix)
             .def("hull", &hullXIXd, manage_new_matrix)

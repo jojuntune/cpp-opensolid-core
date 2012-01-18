@@ -219,4 +219,13 @@ public:
         TS_ASSERT((point.mirrored(Frame3d().yzPlane()) - Vector3d(-3, 2, 1)).isZero());
         TS_ASSERT(((2 * point).mirrored(Frame3d().xyPlane()) - Vector3d(6, 4, -2)).isZero());
     }
+
+    void testRandom() {
+        Vector3I bounds = Vector3I::Random();
+        TS_ASSERT(bounds.cwiseWidth().minCoeff() > 0);
+        for (int i = 0; i < 10; ++i) {
+            Vector3d random = bounds.cwiseRandom();
+            TS_ASSERT(bounds.contains(random.cast<Interval>()));
+        }
+    }
 };

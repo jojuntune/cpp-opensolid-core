@@ -20,10 +20,11 @@
 
 bool isEmpty() const;
 
-inline CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const;
-inline CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const;
-inline CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
-inline CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
+CwiseUnaryOp<LowerOperation, const Derived> cwiseLower() const;
+CwiseUnaryOp<UpperOperation, const Derived> cwiseUpper() const;
+CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
+CwiseUnaryOp<RandomOperation, const Derived> cwiseRandom() const;
+CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
 
 template <class OtherDerivedType>
 bool overlaps(

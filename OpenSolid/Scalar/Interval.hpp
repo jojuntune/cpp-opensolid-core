@@ -64,13 +64,13 @@ namespace OpenSolid
         double lower() const;
         double upper() const;
         double median() const;
+        double random() const;
         double width() const;
 
         double clamp(double argument) const;
         Interval clamp(const Interval& argument) const;
         double interpolated(double argument) const;
         Interval interpolated(const Interval& argument) const;
-        double random() const;
         
         Interval squared() const;
         
@@ -218,6 +218,8 @@ namespace OpenSolid
     inline double Interval::upper() const {return value().upper();}
     
     inline double Interval::median() const {return boost::numeric::median(value());}
+
+    inline double Interval::random() const {return lower() + rand() * width() / RAND_MAX;}
     
     inline double Interval::width() const {return boost::numeric::width(value());}
 
@@ -236,8 +238,6 @@ namespace OpenSolid
     inline Interval Interval::interpolated(const Interval& argument) const {
         return lower() + argument * width();
     }
-
-    inline double Interval::random() const {return lower() + rand() * width() / RAND_MAX;}
 
     inline Interval Interval::squared() const {return boost::numeric::square(value());}
     

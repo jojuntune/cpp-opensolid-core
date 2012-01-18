@@ -99,6 +99,13 @@ namespace Eigen
         
         double operator()(const OpenSolid::Interval& argument) const;
     };
+
+    struct RandomOperation
+    {
+        typedef double result_type;
+
+        double operator()(const OpenSolid::Interval& argument) const;
+    };
     
     struct WidthOperation
     {
@@ -159,7 +166,7 @@ namespace Eigen
         ) const;
     };
     
-    struct ContainOperation
+    class ContainOperation
     {
     private:
         double _precision;
@@ -174,7 +181,7 @@ namespace Eigen
         ) const;
     };
     
-    struct StrictContainOperation
+    class StrictContainOperation
     {
     private:
         double _precision;
@@ -361,6 +368,10 @@ namespace Eigen
     inline double MedianOperation::operator()(const OpenSolid::Interval& argument) const {
         return argument.median();
     }
+
+    inline double RandomOperation::operator()(const OpenSolid::Interval& argument) const {
+        return argument.random();
+    }
     
     inline double WidthOperation::operator()(const OpenSolid::Interval& argument) const {
         return argument.width();
@@ -475,6 +486,10 @@ namespace Eigen
     template <class DerivedType>
     inline CwiseUnaryOp<MedianOperation, const DerivedType>
     DenseBase<DerivedType>::cwiseMedian() const {return derived().unaryExpr(MedianOperation());}
+
+    template <class DerivedType>
+    inline CwiseUnaryOp<RandomOperation, const DerivedType>
+    DenseBase<DerivedType>::cwiseRandom() const {return derived().unaryExpr(RandomOperation());}
 
     template <class DerivedType>
     inline CwiseUnaryOp<WidthOperation, const DerivedType>
