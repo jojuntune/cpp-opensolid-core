@@ -187,6 +187,16 @@ public:
         TS_ASSERT((transformed - Vector3d(-3, 2, 1)).isZero());
         transformed = environment.get<Vector3d>("(2 * point).mirrored(Frame3d().xyPlane())");
         TS_ASSERT((transformed - Vector3d(6, 4, -2)).isZero());
+
+        environment.run("a = MatrixXd([[1, 0, 0], [1, 1, 0]])");
+        environment.set("theta", M_PI / 4);
+        environment.run("m = Matrix3d([[cos(theta), sin(theta), 0], [-sin(theta), cos(theta), 0], [0, 0, 1]])");
+        environment.run("v = Vector3d(1, 2, 3)");
+        MatrixXd transformed_matrix = environment.get<MatrixXd>("a.transformed(m, v)");
+        Vector3d first_expected(1 + 1 / sqrt(2.0), 2 + 1 / sqrt(2.0), 3);
+        Vector3d second_expected(1, 2 + sqrt(2.0), 3);
+        TS_ASSERT((transformed_matrix.col(0) - first_expected).isZero());
+        TS_ASSERT((transformed_matrix.col(1) - second_expected).isZero());
     }
     
     void testInternalConversionError() {

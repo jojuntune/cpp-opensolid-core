@@ -687,6 +687,13 @@ namespace OpenSolid
     }
 
     template <class MatrixType>
+    inline MatrixType* transformed(
+        const MatrixType& argument,
+        const MatrixXd& matrix,
+        const MatrixXd& vector
+    ) {return new MatrixType(argument.transformed(matrix, vector.col(0)));}
+
+    template <class MatrixType>
     inline MatrixType scaled(const MatrixType& matrix, double scale, const MatrixXd& point) {
         return matrix.scaled(scale, point.col(0));
     }
@@ -960,6 +967,7 @@ namespace OpenSolid
             .def("__mul__", &mulXdXI, manage_new_matrix)
             .def("__mul__", &mulXdXd, manage_new_matrix)
             .def("__mod__", &modXdDatum, manage_new_matrix)
+            .def("transformed", &transformed<MatrixXd>, manage_new_matrix)
             .def("scaled", &scaled<MatrixXd>)
             .def("translated", &translated1<MatrixXd>)
             .def("translated", &translated2<MatrixXd>)
@@ -1071,6 +1079,7 @@ namespace OpenSolid
             .def("__mul__", &mulXIXI, manage_new_matrix)
             .def("__mul__", &mulXIXd, manage_new_matrix)
             .def("__mod__", &modXIDatum, manage_new_matrix)
+            .def("transformed", &transformed<MatrixXI>, manage_new_matrix)
             .def("scaled", &scaled<MatrixXI>)
             .def("translated", &translated1<MatrixXI>)
             .def("translated", &translated2<MatrixXI>)
