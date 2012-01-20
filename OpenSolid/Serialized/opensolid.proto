@@ -1,0 +1,6 @@
+package OpenSolid.Serialized;
+
+message Interval {
+    required double lower = 1;
+    required double upper = 2;
+}

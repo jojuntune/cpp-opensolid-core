@@ -31,11 +31,10 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include <OpenSolid/Common/Convertible.hpp>
+
 namespace OpenSolid
 {
-    template <int id_>
-    struct Check;
-
     class Error : public std::exception
     {
     private:
@@ -47,9 +46,6 @@ namespace OpenSolid
         mutable std::string _what;
     public:
         OPENSOLID_CORE_EXPORT Error();
-
-        template <int id_>
-        explicit Error(const Check<id_>&);
         
         OPENSOLID_CORE_EXPORT ~Error() throw ();
 
@@ -66,22 +62,45 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT const char* what() const override;
     };
 
-    /// Check that an object can be converted to a string.
-    template <>
-    struct Check<23>
+    template <int code_>
+    struct ErrorCode;
+
+    template <class ErrorType>
+    struct Conversion<ErrorType, Error>
     {
-        /// Perform the actual check.
-        template <class Type>
-        static std::string ValidConversionToString(const Type& value);
+        Error operator()(const ErrorType& argument) const;
     };
-    
-    /// Check that a string can be converted to an object of specified type.
-    template <>
-    struct Check<24>
+
+    template <class ErrorType>
+    struct Conversion<Error, ErrorType>
     {
-        /// Perform the actual check.
-        template <class Type>
-        static Type ValidConversionFromString(const std::string& value);
+        ErrorType operator()(const Error& argument) const;
+    };
+
+    class ConversionToStringError
+    {
+    public:
+        static const int error_code = 23;
+        ConversionToStringError(const Error& error);
+    };
+
+    template <>
+    struct ErrorCode<23>
+    {
+        typedef ConversionToStringError ErrorType;
+    };
+
+    class ConversionFromStringError
+    {
+    public:
+        static const int error_code = 24;
+        ConversionFromStringError(const Error& error);
+    };
+
+    template <>
+    struct ErrorCode<24>
+    {
+        typedef ConversionFromStringError ErrorType;
     };
     
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
@@ -109,6 +128,18 @@ namespace OpenSolid
         } else {
             return Check<24>::ValidConversionFromString<Type>(position->second);
         }
+    }
+
+    template <class ErrorType>
+    Error Conversion<ErrorType, Error>::operator()(const ErrorType& argument) const {
+        static_assert(std::is_same<ErrorType, ErrorCode<ErrorType::error_code>::ErrorType>::value);
+        return argument;
+    }
+
+    template <class ErrorType>
+    ErrorType Conversion<Error, ErrorType>::operator()(const Error& argument) const {
+        static_assert(std::is_same<ErrorType, ErrorCode<ErrorType::error_code>::ErrorType>::value);
+        return ErrorType(argument);
     }
 
     template <class Type>

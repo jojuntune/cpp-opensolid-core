@@ -106,6 +106,24 @@
         ADD_TEST(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})
     ENDMACRO(ADD_CXXTEST)
     
+########## Set up Protocol Buffers ##########
+
+    FIND_PROGRAM(PROTOC protoc)
+    ADD_CUSTOM_COMMAND(
+        OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.h
+        ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc
+        DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
+        COMMAND
+        ${PROTOC}
+        ARGS
+        --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/Serialized
+        --cpp_out=${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
+    )
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
 ########## Define lists of source files ##########
 
     # OpenSolid directory files
@@ -339,6 +357,15 @@
         Scalar/Interval.cpp
     )
     
+    # Serialized directory files
+    SET(SERIALIZED_HEADERS
+        Serialized/opensolid.proto
+        Serialized/Interval.hpp
+    )
+    SET(SERIALIZED_SOURCES
+        Serialized/Interval.cpp
+    )
+    
     # Set directory files
     SET(SET_HEADERS
         Set/Set.hpp
@@ -397,6 +424,8 @@
         ${PYTHON_ENVIRONMENT_SOURCES}
         ${SCALAR_HEADERS}
         ${SCALAR_SOURCES}
+        ${SERIALIZED_HEADERS}
+        ${SERIALIZED_SOURCES}
         ${SET_HEADERS}
         ${SET_SOURCES}
         ${SIMPLEX_HEADERS}
@@ -419,6 +448,7 @@
     SOURCE_GROUP(OpenSolid\\Object FILES ${OBJECT_HEADERS} ${OBJECT_SOURCES})
     SOURCE_GROUP(OpenSolid\\Python FILES ${PYTHON_HEADERS} ${PYTHON_MODULE_SOURCES} ${PYTHON_ENVIRONMENT_SOURCES})
     SOURCE_GROUP(OpenSolid\\Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Serialized FILES ${SERIALIZED_HEADERS} ${SERIALIZED_SOURCES})
     SOURCE_GROUP(OpenSolid\\Set FILES ${SET_HEADERS} ${SET_SOURCES})
     SOURCE_GROUP(OpenSolid\\Simplex FILES ${SIMPLEX_HEADERS} ${SIMPLEX_SOURCES})
     SOURCE_GROUP(OpenSolid\\Support FILES ${SUPPORT_HEADERS} ${SUPPORT_SOURCES})
@@ -445,6 +475,8 @@
         ${OBJECT_SOURCES}
         ${PRIMITIVE_SOURCES}
         ${SCALAR_SOURCES}
+        ${SERIALIZED_SOURCES}
+        ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
     )
