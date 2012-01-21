@@ -10,10 +10,7 @@
     CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
     ENABLE_TESTING()
 
-    # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
-    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
-
-    # GCC-specific compiler flags
+    # Set up compiler-specific flags
     IF (CMAKE_COMPILER_IS_GNUCXX)
         # Enable C++0x and add extra warning flags
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -Wno-unused-variable")
@@ -26,23 +23,20 @@
         IF (GCC_VERSION VERSION_LESS 4.6)
             ADD_DEFINITIONS(-Dnullptr=0)
         ENDIF (GCC_VERSION VERSION_LESS 4.6)
-    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
-    # FreeBSD-specific compiler flags
-    IF (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+    ELSEIF (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
         # Use -pthread compilation option to properly link to threading library
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-    ENDIF (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
-    
-    # Windows-specific compiler flags
-    IF (WIN32)
+    ELSEIF (WIN32)
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
-        ADD_DEFINITIONS(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS)
+        ADD_DEFINITIONS(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 
         # Add /MP flag for parallel compilation within projects
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    ENDIF (WIN32)
+    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
+
+    # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
+    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
 
     # Collect compiled binaries in single directory
     IF (MSVC_IDE)
@@ -108,15 +102,103 @@
     
 ########## Set up Protocol Buffers ##########
 
-    FIND_PROGRAM(PROTOC protoc)
+    SET(LIBPROTOBUF_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/descriptor.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/descriptor.pb.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/descriptor_database.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/dynamic_message.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/extension_set.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/extension_set_heavy.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/generated_message_reflection.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/generated_message_util.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/message.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/message_lite.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/reflection_ops.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/repeated_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/service.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/text_format.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/unknown_field_set.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/wire_format.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/wire_format_lite.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/coded_stream.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/gzip_stream.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/printer.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/tokenizer.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/zero_copy_stream.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/zero_copy_stream_impl.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/io/zero_copy_stream_impl_lite.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/stubs/common.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/stubs/once.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/stubs/structurally_valid.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/stubs/strutil.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/stubs/substitute.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/importer.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/parser.cc
+    )
+
+    SET(LIBPROTOC_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/code_generator.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/command_line_interface.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/plugin.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/plugin.pb.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/subprocess.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/zip_writer.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_enum.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_enum_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_extension.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_file.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_generator.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_helpers.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_message.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_message_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_primitive_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_service.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/cpp/cpp_string_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_enum.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_enum_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_extension.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_file.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_generator.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_helpers.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_message.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_message_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_primitive_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_service.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/java/java_string_field.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/python/python_generator.cc
+    )
+
+    SET(PROTOC_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/../External/google/protobuf/compiler/main.cc        
+    )
+    
+    # Compile static Protocol Buffers libraries
+    ADD_LIBRARY(libprotobuf STATIC ${LIBPROTOBUF_SOURCES})
+    ADD_LIBRARY(libprotoc STATIC ${LIBPROTOC_SOURCES})
+
+    # Compile protoc, Protocol Buffers compiler executable
+    ADD_EXECUTABLE(protoc ${PROTOC_SOURCES})
+    TARGET_LINK_LIBRARIES(protoc libprotobuf libprotoc)
+
+    # Disable warnings for Protocol Buffers compilation
+    IF (CMAKE_COMPILER_IS_GNUCXX)
+        SET_TARGET_PROPERTIES(libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "-w")
+    ELSEIF(WIN32)
+        SET_TARGET_PROPERTIES(libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "/W0")
+    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
+
+    # Generate opensolid.pb.h, opensolid.pb.cc from message format definition in opensolid.proto
     ADD_CUSTOM_COMMAND(
         OUTPUT
         ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.h
         ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc
         DEPENDS
+        protoc
         ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
         COMMAND
-        ${PROTOC}
+        protoc
         ARGS
         --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/Serialized
         --cpp_out=${CMAKE_CURRENT_BINARY_DIR}
@@ -128,274 +210,273 @@
 
     # OpenSolid directory files
     SET(OPENSOLID_FILES
-        bindTemplate.cpp
-        config.hpp
-        Template.cpp
-        Template.hpp
-        TemplateTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/bindTemplate.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/config.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Template.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Template.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/TemplateTests.hpp
     )
     
     # Common directory files
     SET(COMMON_HEADERS
-        Common/Bounds.hpp
-        Common/BoundsTests.hpp
-        Common/Convertible.hpp
-        Common/Error.hpp
-        Common/Evaluation.hpp
-        Common/Hash.hpp
-        Common/MatrixArgument.hpp
-        Common/ReferenceCounted.hpp
-        Common/Repr.hpp
-        Common/Transformable.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Bounds.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/BoundsTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Convertible.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Error.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Evaluation.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Hash.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/MatrixArgument.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/ReferenceCounted.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Repr.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Transformable.hpp
     )
     SET(COMMON_SOURCES
-        Common/Error.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Error.cpp
     )
     
     # Datum directory files
     SET(DATUM_HEADERS
-        Datum/Axis.hpp
-        Datum/Datum.hpp
-        Datum/DatumTests.hpp
-        Datum/Frame.hpp
-        Datum/Plane.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Datum/Axis.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Datum/Datum.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Datum/DatumTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Datum/Frame.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Datum/Plane.hpp
     )
     SET(DATUM_SOURCES
     )
     
     # Domain directory files
     SET(DOMAIN_HEADERS
-        Domain/Domain.hpp
-        Domain/DomainConstructors.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/Domain.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainConstructors.hpp
     )
     SET(DOMAIN_SOURCES
-        Domain/Domain.cpp
-        Domain/DomainConstructors.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/Domain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainConstructors.cpp
     )
 
     # Domain/DomainImplementation directory files
     SET(DOMAINIMPLEMENTATION_HEADERS
-        Domain/DomainImplementation/DomainImplementation.hpp
-        Domain/DomainImplementation/GenericDomain.hpp
-        Domain/DomainImplementation/IntervalDomain.hpp
-        Domain/DomainImplementation/RectangleDomain.hpp
-        Domain/DomainImplementation/CuboidDomain.hpp
-        Domain/DomainImplementation/SimplexDomain.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/DomainImplementation.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/GenericDomain.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/IntervalDomain.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/RectangleDomain.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/CuboidDomain.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/SimplexDomain.hpp
     )
     SET(DOMAINIMPLEMENTATION_SOURCES
-        Domain/DomainImplementation/DomainImplementation.cpp
-        Domain/DomainImplementation/GenericDomain.cpp
-        Domain/DomainImplementation/IntervalDomain.cpp
-        Domain/DomainImplementation/RectangleDomain.cpp
-        Domain/DomainImplementation/CuboidDomain.cpp
-        Domain/DomainImplementation/SimplexDomain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/DomainImplementation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/GenericDomain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/IntervalDomain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/RectangleDomain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/CuboidDomain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/SimplexDomain.cpp
     )
     
     # Function directory files
     SET(FUNCTION_HEADERS
-        Function/Function.hpp
-        Function/FunctionConstructors.hpp
-        Function/FunctionTests.hpp
-        Function/FunctionResult.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/Function.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionConstructors.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionResult.hpp
     )
     SET(FUNCTION_SOURCES
-        Function/Function.cpp
-        Function/FunctionConstructors.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/Function.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionConstructors.cpp
     )
     
     # Function/FunctionImplementation directory files
     SET(FUNCTIONIMPLEMENTATION_HEADERS
-        Function/FunctionImplementation/ArccosineFunction.hpp
-        Function/FunctionImplementation/ArcsineFunction.hpp
-        Function/FunctionImplementation/BinaryOperation.hpp
-        Function/FunctionImplementation/ComponentsFunction.hpp
-        Function/FunctionImplementation/CompositionFunction.hpp
-        Function/FunctionImplementation/ConcatenationFunction.hpp
-        Function/FunctionImplementation/ConstantFunction.hpp
-        Function/FunctionImplementation/CosineFunction.hpp
-        Function/FunctionImplementation/CrossProductFunction.hpp
-        Function/FunctionImplementation/DifferenceFunction.hpp
-        Function/FunctionImplementation/DotProductFunction.hpp
-        Function/FunctionImplementation/EllipticalFunction.hpp
-        Function/FunctionImplementation/ExponentialFunction.hpp
-        Function/FunctionImplementation/FunctionImplementation.hpp
-        Function/FunctionImplementation/LinearFunction.hpp
-        Function/FunctionImplementation/LogarithmFunction.hpp
-        Function/FunctionImplementation/NegationFunction.hpp
-        Function/FunctionImplementation/NormalizedFunction.hpp
-        Function/FunctionImplementation/NormFunction.hpp
-        Function/FunctionImplementation/ParametersFunction.hpp
-        Function/FunctionImplementation/PowerFunction.hpp
-        Function/FunctionImplementation/ProductFunction.hpp
-        Function/FunctionImplementation/QuotientFunction.hpp
-        Function/FunctionImplementation/SineFunction.hpp
-        Function/FunctionImplementation/SquaredNormFunction.hpp
-        Function/FunctionImplementation/SquareRootFunction.hpp
-        Function/FunctionImplementation/SumFunction.hpp
-        Function/FunctionImplementation/TangentFunction.hpp
-        Function/FunctionImplementation/TransformedFunction.hpp
-        Function/FunctionImplementation/UnaryOperation.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ArccosineFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ArcsineFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/BinaryOperation.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ComponentsFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/CompositionFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ConcatenationFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ConstantFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/CosineFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/CrossProductFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/DifferenceFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/DotProductFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/EllipticalFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ExponentialFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/FunctionImplementation.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/LinearFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/LogarithmFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/NegationFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/NormalizedFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/NormFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ParametersFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/PowerFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ProductFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/QuotientFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SineFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SquaredNormFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SquareRootFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SumFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/TangentFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/TransformedFunction.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/UnaryOperation.hpp
     )
     SET(FUNCTIONIMPLEMENTATION_SOURCES
-        Function/FunctionImplementation/ArccosineFunction.cpp
-        Function/FunctionImplementation/ArcsineFunction.cpp
-        Function/FunctionImplementation/BinaryOperation.cpp
-        Function/FunctionImplementation/ComponentsFunction.cpp
-        Function/FunctionImplementation/CompositionFunction.cpp
-        Function/FunctionImplementation/ConcatenationFunction.cpp
-        Function/FunctionImplementation/ConstantFunction.cpp
-        Function/FunctionImplementation/CosineFunction.cpp
-        Function/FunctionImplementation/CrossProductFunction.cpp
-        Function/FunctionImplementation/DifferenceFunction.cpp
-        Function/FunctionImplementation/DotProductFunction.cpp
-        Function/FunctionImplementation/EllipticalFunction.cpp
-        Function/FunctionImplementation/ExponentialFunction.cpp
-        Function/FunctionImplementation/FunctionImplementation.cpp
-        Function/FunctionImplementation/LinearFunction.cpp
-        Function/FunctionImplementation/LogarithmFunction.cpp
-        Function/FunctionImplementation/NegationFunction.cpp
-        Function/FunctionImplementation/NormalizedFunction.cpp
-        Function/FunctionImplementation/NormFunction.cpp
-        Function/FunctionImplementation/ParametersFunction.cpp
-        Function/FunctionImplementation/PowerFunction.cpp
-        Function/FunctionImplementation/ProductFunction.cpp
-        Function/FunctionImplementation/QuotientFunction.cpp
-        Function/FunctionImplementation/SineFunction.cpp
-        Function/FunctionImplementation/SquaredNormFunction.cpp
-        Function/FunctionImplementation/SquareRootFunction.cpp
-        Function/FunctionImplementation/SumFunction.cpp
-        Function/FunctionImplementation/TangentFunction.cpp
-        Function/FunctionImplementation/TransformedFunction.cpp
-        Function/FunctionImplementation/UnaryOperation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ArccosineFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ArcsineFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/BinaryOperation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ComponentsFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/CompositionFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ConcatenationFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ConstantFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/CosineFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/CrossProductFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/DifferenceFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/DotProductFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/EllipticalFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ExponentialFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/FunctionImplementation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/LinearFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/LogarithmFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/NegationFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/NormalizedFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/NormFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ParametersFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/PowerFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/ProductFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/QuotientFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SineFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SquaredNormFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SquareRootFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/SumFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/TangentFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/TransformedFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Function/FunctionImplementation/UnaryOperation.cpp
     )
     
     # Geometry directory files
     SET(GEOMETRY_HEADERS
-        Geometry/Geometry.hpp
-        Geometry/GeometryConstructors.hpp
-        Geometry/GeometryResult.hpp
-        Geometry/GeometryTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/Geometry.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryConstructors.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryResult.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryTests.hpp
     )
     SET(GEOMETRY_SOURCES
-        Geometry/Geometry.cpp
-        Geometry/GeometryConstructors.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/Geometry.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryConstructors.cpp
     )
 
     # Geometry/GeometryImplementation directory files
     SET(GEOMETRYIMPLEMENTATION_HEADERS
-        Geometry/GeometryImplementation/ConstantGeometry.hpp
-        Geometry/GeometryImplementation/GenericGeometry.hpp
-        Geometry/GeometryImplementation/GeometryImplementation.hpp
-        Geometry/GeometryImplementation/SimplexGeometry.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/ConstantGeometry.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/GenericGeometry.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/GeometryImplementation.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/SimplexGeometry.hpp
     )
     SET(GEOMETRYIMPLEMENTATION_SOURCES
-        Geometry/GeometryImplementation/ConstantGeometry.cpp
-        Geometry/GeometryImplementation/GenericGeometry.cpp
-        Geometry/GeometryImplementation/GeometryImplementation.cpp
-        Geometry/GeometryImplementation/SimplexGeometry.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/ConstantGeometry.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/GenericGeometry.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/GeometryImplementation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry/GeometryImplementation/SimplexGeometry.cpp
     )
     
     # Matrix directory files
     SET(MATRIX_HEADERS
-        Matrix/DenseBasePlugin.hpp
-        Matrix/Matrix.hpp
-        Matrix/MatrixBasePlugin.hpp
-        Matrix/MatrixTests.hpp
-        Matrix/MatrixIterator.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Matrix/DenseBasePlugin.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Matrix/Matrix.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Matrix/MatrixBasePlugin.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Matrix/MatrixTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Matrix/MatrixIterator.hpp
     )
     SET(MATRIX_SOURCES)
 
     # Model directory files
     SET(MODEL_HEADERS
-        Model/Model.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Model/Model.hpp
     )
     SET(MODEL_SOURCES
-        Model/Model.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Model/Model.cpp
     )
 
     # Object directory files
     SET(OBJECT_HEADERS
-        Object/Object.hpp
-        Object/ObjectTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Object/Object.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Object/ObjectTests.hpp
     )
     SET(OBJECT_SOURCES
-        Object/Object.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Object/Object.cpp
     )
     
     # Python directory files
     SET(PYTHON_HEADERS
-        Python/check.hpp
-        Python/PythonEnvironment.hpp
-        Python/PythonModule.hpp
-        Python/PythonTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/check.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonEnvironment.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonModule.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonTests.hpp
     )
     SET(PYTHON_MODULE_SOURCES
-        Python/bindComparison.cpp
-        Python/bindDatum.cpp
-        Python/bindFunction.cpp
-        Python/bindDouble.cpp
-        Python/bindInterval.cpp
-        Python/bindMatrix.cpp
-        Python/bindMatrixConstructors.cpp
-        Python/bindSimplex.cpp
-        Python/check.cpp
-        Python/PythonModule.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindComparison.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindDatum.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindFunction.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindDouble.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindInterval.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindMatrix.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindMatrixConstructors.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindSimplex.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/check.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonModule.cpp
     )
     SET(PYTHON_ENVIRONMENT_SOURCES
-        Python/PythonEnvironment.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonEnvironment.cpp
     )
 
     # Scalar directory files
     SET(SCALAR_HEADERS
-        Scalar/Comparison.hpp
-        Scalar/int.hpp
-        Scalar/double.hpp
-        Scalar/Interval.hpp
-        Scalar/IntervalTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/Comparison.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/int.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/double.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/Interval.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/IntervalTests.hpp
     )
     SET(SCALAR_SOURCES
-        Scalar/Interval.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/Interval.cpp
     )
     
     # Serialized directory files
     SET(SERIALIZED_HEADERS
-        Serialized/opensolid.proto
-        Serialized/Interval.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/Interval.hpp
     )
     SET(SERIALIZED_SOURCES
-        Serialized/Interval.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/Interval.cpp
     )
     
     # Set directory files
     SET(SET_HEADERS
-        Set/Set.hpp
-        Set/SetNode.hpp
-        Set/SetTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Set/Set.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Set/SetNode.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Set/SetTests.hpp
     )
     SET(SET_SOURCES
     )
     
     # Simplex directory files
     SET(SIMPLEX_HEADERS
-        Simplex/Simplex.hpp
-        Simplex/SimplexTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Simplex/Simplex.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Simplex/SimplexTests.hpp
     )
     SET(SIMPLEX_SOURCES
-        Simplex/Simplex.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Simplex/Simplex.cpp
     )
 
     # Support directory files
     SET(SUPPORT_HEADERS
-        Support/declarations.hpp
-        Support/Boost.hpp
-        Support/STL.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Support/declarations.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Support/Boost.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Support/STL.hpp
     )
     SET(SUPPORT_SOURCES
     )
     
-########## Set up source groups for Visual Studio ##########
-
-    ADD_LIBRARY(ALL_SOURCES EXCLUDE_FROM_ALL
+    # All header and source files
+    SET(ALL_HEADERS_AND_SOURCES
         ${OPENSOLID_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
@@ -434,6 +515,21 @@
         ${SUPPORT_SOURCES}
     )
     
+########## Run source file checker ##########
+
+    ADD_TEST(
+        SourceChecks
+        ${PYTHON_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/checker.py
+        ${ALL_HEADERS_AND_SOURCES}
+    )
+    
+########## Set up source groups for Visual Studio ##########
+
+    # Dummy library that is never built but provides a Visual Studio target that includes
+    # a complete source tree
+    ADD_LIBRARY(ALL_SOURCES EXCLUDE_FROM_ALL ${ALL_HEADERS_AND_SOURCES})
+    
     SOURCE_GROUP(OpenSolid FILES ${OPENSOLID_FILES})
     SOURCE_GROUP(OpenSolid\\Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
@@ -460,7 +556,7 @@
 ######################################################################
     
 ########## Compile OpenSolidCore library ##########
-    
+
     ADD_LIBRARY(OpenSolidCore SHARED
         ${COMMON_SOURCES}
         ${DATUM_SOURCES}
@@ -476,10 +572,12 @@
         ${PRIMITIVE_SOURCES}
         ${SCALAR_SOURCES}
         ${SERIALIZED_SOURCES}
-        ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
+        ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc
     )
+
+    TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf)
     
 ########## Compile Python extension module ##########
     
