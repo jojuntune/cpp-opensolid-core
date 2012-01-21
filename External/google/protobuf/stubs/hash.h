@@ -39,103 +39,14 @@
 #include <google/protobuf/stubs/common.h>
 #include "config.h"
 
-#if defined(HAVE_HASH_MAP) && defined(HAVE_HASH_SET)
-#include HASH_MAP_H
-#include HASH_SET_H
-#else
-#define MISSING_HASH
-#include <map>
-#include <set>
-#endif
+#include <unordered_map>
+#include <unordered_set>
 
 namespace google {
 namespace protobuf {
 
-#ifdef MISSING_HASH
-
-// This system doesn't have hash_map or hash_set.  Emulate them using map and
-// set.
-
-// Make hash<T> be the same as less<T>.  Note that everywhere where custom
-// hash functions are defined in the protobuf code, they are also defined such
-// that they can be used as "less" functions, which is required by MSVC anyway.
 template <typename Key>
-struct hash {
-  // Dummy, just to make derivative hash functions compile.
-  int operator()(const Key& key) {
-    GOOGLE_LOG(FATAL) << "Should never be called.";
-    return 0;
-  }
-
-  inline bool operator()(const Key& a, const Key& b) const {
-    return a < b;
-  }
-};
-
-// Make sure char* is compared by value.
-template <>
-struct hash<const char*> {
-  // Dummy, just to make derivative hash functions compile.
-  int operator()(const char* key) {
-    GOOGLE_LOG(FATAL) << "Should never be called.";
-    return 0;
-  }
-
-  inline bool operator()(const char* a, const char* b) const {
-    return strcmp(a, b) < 0;
-  }
-};
-
-template <typename Key, typename Data,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int >
-class hash_map : public std::map<Key, Data, HashFcn> {
-};
-
-template <typename Key,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int >
-class hash_set : public std::set<Key, HashFcn> {
-};
-
-#elif defined(_MSC_VER) && !defined(_STLPORT_VERSION)
-
-template <typename Key>
-struct hash : public HASH_NAMESPACE::hash_compare<Key> {
-};
-
-// MSVC's hash_compare<const char*> hashes based on the string contents but
-// compares based on the string pointer.  WTF?
-class CstringLess {
- public:
-  inline bool operator()(const char* a, const char* b) const {
-    return strcmp(a, b) < 0;
-  }
-};
-
-template <>
-struct hash<const char*>
-  : public HASH_NAMESPACE::hash_compare<const char*, CstringLess> {
-};
-
-template <typename Key, typename Data,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int >
-class hash_map : public HASH_NAMESPACE::hash_map<
-    Key, Data, HashFcn> {
-};
-
-template <typename Key,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int >
-class hash_set : public HASH_NAMESPACE::hash_set<
-    Key, HashFcn> {
-};
-
-#else
-
-template <typename Key>
-struct hash : public HASH_NAMESPACE::hash<Key> {
+struct hash : public std::hash<Key> {
 };
 
 template <typename Key>
@@ -161,18 +72,16 @@ struct hash<const char*> {
 template <typename Key, typename Data,
           typename HashFcn = hash<Key>,
           typename EqualKey = std::equal_to<Key> >
-class hash_map : public HASH_NAMESPACE::HASH_MAP_CLASS<
+class hash_map : public std::unordered_map<
     Key, Data, HashFcn, EqualKey> {
 };
 
 template <typename Key,
           typename HashFcn = hash<Key>,
           typename EqualKey = std::equal_to<Key> >
-class hash_set : public HASH_NAMESPACE::HASH_SET_CLASS<
+class hash_set : public std::unordered_set<
     Key, HashFcn, EqualKey> {
 };
-
-#endif
 
 template <>
 struct hash<string> {
@@ -217,4 +126,4 @@ struct streq {
 }  // namespace protobuf
 }  // namespace google
 
-#endif  // GOOGLE_PROTOBUF_STUBS_HASH_H__
+#endif
