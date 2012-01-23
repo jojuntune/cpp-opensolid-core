@@ -31,7 +31,7 @@ using namespace boost::python;
 
 namespace OpenSolid
 {   
-    object PythonEnvironment::_get(const std::string& argument) {
+    object PythonEnvironment::eval(const std::string& code) {
         std::vector<std::string> lines;
         boost::algorithm::split(
             lines,

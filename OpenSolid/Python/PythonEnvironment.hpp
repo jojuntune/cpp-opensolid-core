@@ -38,12 +38,16 @@ namespace OpenSolid
         boost::python::object _environment_dict;
         
         OPENSOLID_PYTHON_EXPORT Error error();
-        OPENSOLID_PYTHON_EXPORT boost::python::object _get(const std::string& argument);
+        OPENSOLID_PYTHON_EXPORT boost::python::object eval(const std::string& code);
+        
+        template <class Type>
+        static Type cast(boost::python::object argument);
         
         OPENSOLID_PYTHON_EXPORT static boost::python::object main();
     public:
         OPENSOLID_PYTHON_EXPORT PythonEnvironment();
 
+        OPENSOLID_PYTHON_EXPORT boost::python::object& environment();
         OPENSOLID_PYTHON_EXPORT PythonEnvironment& run(const std::string& argument);
         OPENSOLID_PYTHON_EXPORT PythonEnvironment& runFile(const std::string& filename);
 
@@ -52,17 +56,6 @@ namespace OpenSolid
 
         template <class Type>
         Type get(const std::string& code);
-
-        OPENSOLID_PYTHON_EXPORT boost::python::object& environment();
-        
-        template <class FunctionType>
-        PythonEnvironment& def(const char* name, FunctionType function);
-        
-        template <class BindFunctionType>
-        PythonEnvironment& extend(BindFunctionType bind_function);
-        
-        template <class Type>
-        static Type cast(boost::python::object argument);
     };
 
     template <>
@@ -77,18 +70,24 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    inline PythonEnvironment& PythonEnvironment::set(const std::string& name, const Type& argument) {
+    inline Type PythonEnvironment::cast(boost::python::object argument) {
+        Check<1>::CompatibleType<Type>(argument);
+        return boost::python::extract<Type>(argument);
+    }
+
+    template <class Type>
+    inline PythonEnvironment& PythonEnvironment::set(
+        const std::string& name,
+        const Type& argument
+    ) {
+        assert(boost::python::converter::registered_pytype<Type>::get_pytype() != nullptr);
         _environment_dict[name] = argument;
         return *this;
     }
     
     template <class Type>
-    inline Type PythonEnvironment::get(const std::string& code) {return cast<Type>(_get(code));}
-    
-    template <class Type>
-    inline Type PythonEnvironment::cast(boost::python::object argument) {
-        Check<1>::CompatibleType<Type>(argument);
-        return boost::python::extract<Type>(argument);
+    inline Type PythonEnvironment::get(const std::string& expression) {
+        return cast<Type>(_get(expression));
     }
 }
 
