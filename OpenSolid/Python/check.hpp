@@ -38,78 +38,108 @@
 
 namespace OpenSolid
 {
-    /// Check that a Python object is convertible to a desired type.
-    template <>
-    struct Check<1>
+    class BadPythonConversionError
     {
-        /// Perform the actual check.
-        template <class ExpectedType>
-        static void CompatibleType(const boost::python::object& python_object);
-    };
+    private:
+        std::string _object_type;
+        std::string _expected_type;
+    public:
+        static const int error_code = 1;
 
-    typedef Check<1> CheckConvertible;
-    
-    /// Check that a scalar value is non-zero.
-    template <>
-    struct Check<2>
-    {
-        /// Perform the actual check.
-        OPENSOLID_PYTHON_MODULE_EXPORT static void NonZero(double value);
-    };
-    
-    /// Check that two generic sizes are equal.
-    template <>
-    struct Check<3>
-    {
-        /// Perform the actual check.
-        OPENSOLID_PYTHON_MODULE_EXPORT static void EqualSizes(int first_size, int second_size);
-    };
-    
-    /// Check that two dimensions (e.g., of two  vectors to be added) are equal.
-    template <>
-    struct Check<4>
-    {
-        /// Perform the actual check.
-        OPENSOLID_PYTHON_MODULE_EXPORT static void EqualDimensions(
-            int first_dimensions,
-            int second_dimensions
+        OPENSOLID_PYTHON_MODULE_EXPORT BadPythonConversionError(
+            const std::string& object_type,
+            const std::string& expected_type
         );
     };
-    
-    /// Check that a matrix is actually a single scalar value.
-    template <>
-    struct Check<5>
+
+    class ZeroDivisionError
     {
-        /// Perform the actual check.
+    private:
+        double _divisor;
+    public:
+        static const int error_code = 2;
+
+        OPENSOLID_PYTHON_MODULE_EXPORT ZeroDivisionError(double divisor);
+    };
+
+    class DifferentSizeMatricesError
+    {
+    private:
+        int _first_rows;
+        int _first_cols;
+        int _second_rows;
+        int _second_cols;
+    public:
+        static const int error_code = 3;
+        
+        DifferentSizeMatricesError(
+            int first_rows,
+            int first_cols,
+            int second_rows,
+            int second_cols
+        );
+
+        template <class FirstMatrixType, class SecondMatrixType>
+        static void Check(
+            const FirstMatrixType& first_matrix,
+            const SecondMatrixType& second_matrix
+        );
+    };
+
+    class ScalarExpectedError
+    {
+    private:
+        int _rows;
+        int _cols;
+    public:
+        static const int error_code = 4;
+
+        OPENSOLID_PYTHON_MODULE_EXPORT ScalarExpectedError(int rows, int cols);
+
         template <class MatrixType>
-        static void ScalarValue(const MatrixType& matrix);
+        static void Check(const MatrixType& matrix);
+    };
+
+    class VectorExpectedError
+    {
+    private:
+        int _rows;
+        int _cols;
+    public:
+        static const int error_code = 6;
+
+        OPENSOLID_PYTHON_MODULE_EXPORT VectorExpectedError(int rows, int cols);
+
+        template <class MatrixType>
+        static void Check(const MatrixType& matrix);
+    };
+
+    class RowVectorExpectedError
+    {
+    private:
+        int _rows;
+        int _cols;
+    public:
+        static const int error_code = 7;
+
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVectorExpectedError(int rows, int cols);
+
+        template <class MatrixType>
+        static void Check(const MatrixType& matrix);
     };
     
-    /// Check that a matrix is actually a vector, i.e., has one column.
-    template <>
-    struct Check<6>
+    class VectorOrRowVectorExpectedError
     {
-        /// Perform the actual check.
+    private:
+        int _rows;
+        int _cols;
+    public:
+        static const int error_code = 8;
+
+        OPENSOLID_PYTHON_MODULE_EXPORT VectorOrRowVectorExpectedError(int rows, int cols);
+
         template <class MatrixType>
-        static void VectorValue(const MatrixType& matrix);
-    };
-    
-    /// Check that a matrix is actually a row vector.
-    template<>
-    struct Check<7>
-    {
-        /// Perform the actual check.
-        template <class MatrixType>
-        static void RowVectorValue(const MatrixType& matrix);
-    };
-    
-    /// Check that a matrix is actually a vector or row vector.
-    template <>
-    struct Check<8>
-    {
-        /// Perform the actual check.
-        template <class MatrixType>
-        static void VectorOrRowVectorValue(const MatrixType& matrix);
+        static void Check(const MatrixType& matrix);
     };
     
     /// Check that two matrices are the same size.

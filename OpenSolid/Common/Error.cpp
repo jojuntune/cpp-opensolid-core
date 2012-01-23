@@ -24,7 +24,7 @@
 
 namespace OpenSolid
 {
-    Error::Error() : _id(0), _data(), _what() {}
+    Error::Error() : _id(0), _data() {}
 
     Error::~Error() throw () {}
 
@@ -33,22 +33,8 @@ namespace OpenSolid
     bool Error::has(const std::string& key) const {return _data.find(key) != _data.end();}
 
     const char* Error::what() const {
-        std::stringstream stream;
-        stream << "Error " << id();
-        if (!_data.empty()) {
-            auto iterator = _data.begin();
-            stream << ": " << iterator->first << " = " << iterator->second;
-            ++iterator;
-            std::for_each(
-                iterator,
-                _data.end(),
-                [&] (const std::pair<std::string, std::string>& key_value_pair) {
-                    stream << ", " << key_value_pair.first << " = " << key_value_pair.second;
-                }
-            );
-        }
-        _what = stream.str();
-        return _what.c_str();
+        sprintf(_what, "OpenSolid error %d", id());
+        return _what;
     }
     
     std::ostream& operator<<(std::ostream& stream, const Error& error) {
