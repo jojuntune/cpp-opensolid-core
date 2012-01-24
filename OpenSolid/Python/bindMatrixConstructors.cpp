@@ -85,11 +85,11 @@ namespace OpenSolid
 
         static MatrixXd* Zero() {return new MatrixXd(Vector3d::Zero());}
 
-        static MatrixXd* UnitX() {return new MatrixXd(Vector2d::UnitX());}
+        static MatrixXd* UnitX() {return new MatrixXd(Vector3d::UnitX());}
 
-        static MatrixXd* UnitY() {return new MatrixXd(Vector2d::UnitY());}
+        static MatrixXd* UnitY() {return new MatrixXd(Vector3d::UnitY());}
 
-        static MatrixXd* UnitZ() {return new MatrixXd(Vector2d::UnitZ());}
+        static MatrixXd* UnitZ() {return new MatrixXd(Vector3d::UnitZ());}
 
         static MatrixXd* Unit(int index) {
             // TODO check valid index
