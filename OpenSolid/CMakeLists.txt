@@ -222,7 +222,6 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Bounds.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/BoundsTests.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Convertible.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Error.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Evaluation.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Hash.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/MatrixArgument.hpp
@@ -231,7 +230,6 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Transformable.hpp
     )
     SET(COMMON_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Error.cpp
     )
     
     # Datum directory files
@@ -271,6 +269,22 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/RectangleDomain.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/CuboidDomain.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Domain/DomainImplementation/SimplexDomain.cpp
+    )
+
+    # Error directory files
+    SET(ERROR_HEADERS
+        ${CMAKE_CURRENT_SOURCE_DIR}/Error/Error.hpp
+    )
+    SET(ERROR_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/Error/Error.cpp
+    )
+
+    # Error/ErrorImplementation files
+    SET(ERRORIMPLEMENTATION_HEADERS
+        ${CMAKE_CURRENT_SOURCE_DIR}/Error/ErrorImplementation/ErrorImplementation.hpp
+    )
+    SET(ERRORIMPLEMENTATION_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/Error/ErrorImplementation/ErrorImplementation.cpp
     )
     
     # Function directory files
@@ -486,6 +500,10 @@
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_HEADERS}
         ${DOMAINIMPLEMENTATION_SOURCES}
+        ${ERROR_HEADERS}
+        ${ERROR_SOURCES}
+        ${ERRORIMPLEMENTATION_HEADERS}
+        ${ERRORIMPLEMENTATION_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_HEADERS}
@@ -535,6 +553,8 @@
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain\\DomainImplementation FILES ${DOMAINIMPLEMENTATION_HEADERS} ${DOMAINIMPLEMENTATION_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Error FILES ${ERROR_HEADERS} ${ERROR_SOURCES})
+    SOURCE_GROUP(OpenSolid\\Error\\ErrorImplementation FILES ${ERRORIMPLEMENTATION_HEADERS} ${ERRORIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FUNCTIONIMPLEMENTATION_HEADERS} ${FUNCTIONIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
@@ -562,6 +582,8 @@
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_SOURCES}
+        ${ERROR_SOURCES}
+        ${ERRORIMPLEMENTATION_SOURCES}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}

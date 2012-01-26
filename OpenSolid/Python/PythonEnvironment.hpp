@@ -27,7 +27,7 @@
 
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/check.hpp>
-#include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Error/Error.hpp>
 
 namespace OpenSolid
 {

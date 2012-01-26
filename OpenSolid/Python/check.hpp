@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Error/Error.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
@@ -38,7 +38,7 @@
 
 namespace OpenSolid
 {
-    class BadPythonConversionError
+    class BadPythonConversion : public Error
     {
     private:
         std::string _object_type;
@@ -46,23 +46,23 @@ namespace OpenSolid
     public:
         static const int error_code = 1;
 
-        OPENSOLID_PYTHON_MODULE_EXPORT BadPythonConversionError(
+        OPENSOLID_PYTHON_MODULE_EXPORT BadPythonConversion(
             const std::string& object_type,
             const std::string& expected_type
         );
     };
 
-    class ZeroDivisionError
+    class ZeroDivision : public Error
     {
     private:
         double _divisor;
     public:
         static const int error_code = 2;
 
-        OPENSOLID_PYTHON_MODULE_EXPORT ZeroDivisionError(double divisor);
+        OPENSOLID_PYTHON_MODULE_EXPORT ZeroDivision(double divisor);
     };
 
-    class DifferentSizeMatricesError
+    class DifferentSizeMatrices
     {
     private:
         int _first_rows;

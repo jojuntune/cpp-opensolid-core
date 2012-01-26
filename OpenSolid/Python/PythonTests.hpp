@@ -23,7 +23,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include <OpenSolid/Scalar/Comparison.hpp>
-#include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Error/Error.hpp>
 #include <OpenSolid/Function/Function.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>

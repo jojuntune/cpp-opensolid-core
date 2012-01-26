@@ -20,7 +20,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Error/Error.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;

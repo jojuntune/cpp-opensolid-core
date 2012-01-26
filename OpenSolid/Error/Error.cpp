@@ -20,18 +20,10 @@
 
 #include <algorithm>
 
-#include <OpenSolid/Common/Error.hpp>
+#include <OpenSolid/Error/Error.hpp>
 
 namespace OpenSolid
 {
-    Error::Error() : _id(0), _data() {}
-
-    Error::~Error() throw () {}
-
-    int Error::id() const {return _id;}
-
-    bool Error::has(const std::string& key) const {return _data.find(key) != _data.end();}
-
     const char* Error::what() const {
         sprintf(_what, "OpenSolid error %d", id());
         return _what;

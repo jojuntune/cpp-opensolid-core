@@ -25,84 +25,41 @@
 
 #include <string>
 #include <iostream>
-#include <map>
-#include <cassert>
 #include <exception>
 
-#include <boost/lexical_cast.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 #include <OpenSolid/Common/Convertible.hpp>
+#include <OpenSolid/Error/ErrorImplementation/ErrorImplementation.hpp>
 
 namespace OpenSolid
 {
-    class Error : public std::exception
+    class Error : public std::exception, public Convertible<Error>
     {
     private:
-        /// ID specifying the type of error.
-        int _id;
+        boost::intrusive_ptr<ErrorImplementation> _implementation;
 
-        /// Additional data about the cause of the error.
-        std::map<std::string, std::string> _data;
-
-        /// Buffer for error message returned from what().
-        mutable char _what[32];
+        mutable std::string _what;
     public:
-        OPENSOLID_CORE_EXPORT Error();
-        
-        OPENSOLID_CORE_EXPORT ~Error() throw ();
+        Error();
+        Error(const ErrorImplementation* implementation);
 
-        OPENSOLID_CORE_EXPORT int id() const;
-        
-        template <class Type>
-        Error& set(const std::string& key, const Type& value);
-        
-        OPENSOLID_CORE_EXPORT bool has(const std::string& key) const;
-        
-        template <class Type>
-        Type get(const std::string& key) const;
-
-        OPENSOLID_CORE_EXPORT const char* what() const override;
+        const char* what() const override;
     };
 
-    class ConversionToStringError
+    template <>
+    struct Conversion<Error, Serialized::Error>
     {
-    public:
-        static const int error_code = 23;
-
-        ConversionToStringError(const Error& error);
+        OPENSOLID_CORE_EXPORT Serialized::Error operator()(const Error& argument) const;
     };
 
-    class ConversionFromStringError
+    template <>
+    struct Conversion<Serialized::Error, Error>
     {
-    public:
-        static const int error_code = 24;
-
-        ConversionFromStringError(const Error& error);
+        OPENSOLID_CORE_EXPORT Error operator()(const Serialized::Error& argument) const;
     };
     
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    template <class Type>
-    Error& Error::set(const std::string& key, const Type& value) {
-        std::string string = Check<23>::ValidConversionToString(value);
-        _data[key] = string;
-        return *this;
-    }
-    
-    template <class Type>
-    Type Error::get(const std::string& key) const {
-        auto position = _data.find(key);
-        if (position == _data.end()) {
-            return Type();
-        } else {
-            return Check<24>::ValidConversionFromString<Type>(position->second);
-        }
-    }
 }
 
 #endif
