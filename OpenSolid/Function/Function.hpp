@@ -56,8 +56,6 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Function(int value);
         OPENSOLID_CORE_EXPORT Function(double value);
         OPENSOLID_CORE_EXPORT Function(const VectorXd& vector);
-        OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y);
-        OPENSOLID_CORE_EXPORT Function(const Function& x, const Function& y, const Function& z);
 
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& vector);
