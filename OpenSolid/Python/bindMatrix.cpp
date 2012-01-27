@@ -21,6 +21,7 @@
 #include <OpenSolid/Datum/Datum.hpp>
 #include <OpenSolid/Matrix/Matrix.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
+#include <OpenSolid/Python/repr.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
 #include "check.hpp"
@@ -790,69 +791,8 @@ namespace OpenSolid
     }
 
     template <class MatrixType>
-    std::string str(const MatrixType& argument) {
-        std::stringstream stream;
-        stream << argument;
-        return stream.str();
-    }
-
-    template <class Scalar>
-    char scalarTypeCharacter();
-
-    template <>
-    char scalarTypeCharacter<double>() {return 'd';}
-
-    template <>
-    char scalarTypeCharacter<Interval>() {return 'I';}
-
-    template <class MatrixType>
     std::string repr(const MatrixType& argument) {
-        std::stringstream stream;
-        int rows = argument.rows();
-        int cols = argument.cols();
-        char type_character = scalarTypeCharacter<typename MatrixType::Scalar>();
-        Repr<typename MatrixType::Scalar> repr;
-        if (rows == 1 || cols == 1) {
-            int size = cols == 1 ? rows : cols;
-            if (rows == 1) {stream << "Row";}
-            stream << "Vector";
-            bool dynamic = size > 3;
-            if (dynamic) {
-                stream << 'X';
-            } else {
-                stream << size;
-            }
-            stream << type_character;
-            stream << '(';
-            if (dynamic) {stream << '[';}
-            for (int i = 0; i < size; ++i) {
-                stream << repr(argument(i));
-                if (i < size - 1) {stream << ", ";}
-            }
-            if (dynamic) {stream << ']';}
-            stream << ')';
-        } else {
-            stream << "Matrix";
-            bool dynamic = rows != cols || cols > 3;
-            if (dynamic) {
-                stream << 'X';
-            } else {
-                stream << cols;
-            }
-            stream << type_character;
-            stream << "([";
-            for (int j = 0; j < cols; ++j) {
-                stream << '[';
-                for (int i = 0; i < rows; ++i) {
-                    stream << repr(argument(i, j));
-                    if (i < rows - 1) {stream << ", ";}
-                }
-                stream << ']';
-                if (j < cols - 1) {stream << ", ";}
-            }
-            stream << "])";
-        }
-        return stream.str();
+        return __repr__<MatrixType>(argument);
     }
 
     template <class MatrixType>
@@ -978,7 +918,6 @@ namespace OpenSolid
             .def("__eq__", &eqXdXI)
             .def("__ne__", &neXdXd)
             .def("__ne__", &neXdXI)
-            .def("__str__", &str<MatrixXd>)
             .def("__repr__", &repr<MatrixXd>)
             .def_pickle(MatrixPickleSuite<MatrixXd>());
 
@@ -1090,7 +1029,6 @@ namespace OpenSolid
             .def("__eq__", &eqXIXI)
             .def("__ne__", &neXIXd)
             .def("__ne__", &neXIXI)
-            .def("__str__", &str<MatrixXI>)
             .def("__repr__", &repr<MatrixXI>)
             .def_pickle(MatrixPickleSuite<MatrixXI>());
 

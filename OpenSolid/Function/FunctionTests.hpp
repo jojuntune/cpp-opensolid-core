@@ -46,26 +46,26 @@ public:
     void testConstant() {
         Function f = 3.0;
         TS_ASSERT(f.isConstant());
-        TS_ASSERT(f(0.0).value() == Approx(3.0));
-        TS_ASSERT(f.to<double>() == Approx(3.0));
+        TS_ASSERT(f(0.0).value() - 3 == Zero());
+        TS_ASSERT(f.as<double>() - 3 == Zero());
     }
     
     void testArithmetic() {
         Function function = 2.0 + u * 1.0 - 1.0 * v;
         
-        TS_ASSERT(function(Vector2d(0, 0)).value() == Approx(2.0));
-        TS_ASSERT(function(Vector2d(1, 0)).value() == Approx(3.0));
-        TS_ASSERT(function(Vector2d(1, 1)).value() == Approx(2.0));
-        TS_ASSERT(function(Vector2d(0, 1)).value() == One());
+        TS_ASSERT(function(Vector2d(0, 0)).value() - 2 == Zero());
+        TS_ASSERT(function(Vector2d(1, 0)).value() - 3 == Zero());
+        TS_ASSERT(function(Vector2d(1, 1)).value() - 2 == Zero());
+        TS_ASSERT(function(Vector2d(0, 1)).value() - 1 == Zero());
         TS_ASSERT(function.derivative(0)(Vector2d(0, 0)).value() == One());
         TS_ASSERT(function.derivative(1)(Vector2d(0, 0)).value() == -One());
         
         Function negated = -function;
         
-        TS_ASSERT(negated(Vector2d(0, 0)).value() == -Approx(2.0));
-        TS_ASSERT(negated(Vector2d(1, 0)).value() == -Approx(3.0));
-        TS_ASSERT(negated(Vector2d(1, 1)).value() == -Approx(2.0));
-        TS_ASSERT(negated(Vector2d(0, 1)).value() == -One());
+        TS_ASSERT(negated(Vector2d(0, 0)).value() + 2 == Zero());
+        TS_ASSERT(negated(Vector2d(1, 0)).value() + 3 == Zero());
+        TS_ASSERT(negated(Vector2d(1, 1)).value() + 2 == Zero());
+        TS_ASSERT(negated(Vector2d(0, 1)).value() + 1 == Zero());
         TS_ASSERT(negated.derivative(0)(Vector2d(0, 0)).value() == -One());
         TS_ASSERT(negated.derivative(1)(Vector2d(0, 0)).value() == One());
     }
@@ -73,10 +73,10 @@ public:
     void testMultiplication() {
         Function function = 1.0 + u / 1.0 * v / 1.0;
     
-        TS_ASSERT(function(Vector2d(0, 0)).value() == One());
-        TS_ASSERT(function(Vector2d(1, 0)).value() == One());
-        TS_ASSERT(function(Vector2d(1, 1)).value() == Approx(2.0));
-        TS_ASSERT(function(Vector2d(0, 1)).value() == One());
+        TS_ASSERT(function(Vector2d(0, 0)).value() - 1 == Zero());
+        TS_ASSERT(function(Vector2d(1, 0)).value() - 1 == Zero());
+        TS_ASSERT(function(Vector2d(1, 1)).value() - 2 == Zero());
+        TS_ASSERT(function(Vector2d(0, 1)).value() - 1 == Zero());
     
         Function u_derivative = function.derivative(0);
         
@@ -95,11 +95,11 @@ public:
     
     void testSquare() {
         Function function = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0;
-        TS_ASSERT(function(Vector2d(1, 2)).value() == Approx(5.0));
+        TS_ASSERT(function(Vector2d(1, 2)).value() - 5 == Zero());
         Function u_derivative = function.derivative(0);
-        TS_ASSERT(u_derivative(Vector2d(3, 4)).value() == Approx(6.0));
+        TS_ASSERT(u_derivative(Vector2d(3, 4)).value() - 6 == Zero());
         Function v_second_derivative = function.derivative(1).derivative(1);
-        TS_ASSERT(v_second_derivative(Vector2d(5, 6)).value() == Approx(2.0));
+        TS_ASSERT(v_second_derivative(Vector2d(5, 6)).value() - 2 == Zero());
     }
 
     void testNorm() {
@@ -110,13 +110,13 @@ public:
     void testVector() {
         Function f = Vector3d(1, 2, 3);
         TS_ASSERT(f.isConstant());
-        TS_ASSERT(f.to<Vector3d>() == Vector3d(1, 2, 3));
-        TS_ASSERT(f.to<Vector3d>().transpose() == RowVector3d(1, 2, 3));
+        TS_ASSERT(f.as<Vector3d>() == Vector3d(1, 2, 3));
+        TS_ASSERT(f.as<Vector3d>().transpose() == RowVector3d(1, 2, 3));
     }
     
     void testConversion() {
         Function function = u * v;
-        TS_ASSERT(function(Vector2d(2, 3)).value() == Approx(6.0));
+        TS_ASSERT(function(Vector2d(2, 3)).value() - 6 == Zero());
         function = Function(2);
         TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
     }
@@ -174,7 +174,7 @@ public:
         result = f(RowVector3d(0, 0.5, 1)).row(1);
         TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
         double value = f.z()(0.5).value();
-        TS_ASSERT(value == Approx(4.5));
+        TS_ASSERT(value - 4.5 == Zero());
     }
     
     void testTransformation() {
@@ -236,7 +236,7 @@ public:
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
         TS_ASSERT(derivative.isConstant());
-        TS_ASSERT((derivative.to<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((derivative.as<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testNormal() {
@@ -362,6 +362,6 @@ public:
         RowVectorXd root = derivative_difference.roots(Interval(0, r));
         std::cout << root << std::endl;
         TS_ASSERT_EQUALS(root.size(), 1);
-        TS_ASSERT(root.value() == Approx(0.052786404500042038));
+        TS_ASSERT(root.value() - 0.052786404500042038 == Zero());
     }
 };

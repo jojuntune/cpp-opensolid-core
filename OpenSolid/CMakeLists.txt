@@ -196,13 +196,13 @@
         ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc
         DEPENDS
         protoc
-        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/opensolid.proto
         COMMAND
         protoc
         ARGS
         --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/Serialized
         --cpp_out=${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/opensolid.proto
     )
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -212,6 +212,7 @@
     SET(OPENSOLID_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/bindTemplate.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/config.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/opensolid.proto
         ${CMAKE_CURRENT_SOURCE_DIR}/Template.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Template.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/TemplateTests.hpp
@@ -226,7 +227,6 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Hash.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/MatrixArgument.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/ReferenceCounted.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Common/Repr.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Common/Transformable.hpp
     )
     SET(COMMON_SOURCES
@@ -424,6 +424,7 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonEnvironment.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonModule.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonTests.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/repr.hpp
     )
     SET(PYTHON_MODULE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindComparison.cpp
@@ -436,6 +437,7 @@
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/bindSimplex.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/check.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonModule.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Python/repr.cpp
     )
     SET(PYTHON_ENVIRONMENT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Python/PythonEnvironment.cpp
@@ -451,15 +453,6 @@
     )
     SET(SCALAR_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Scalar/Interval.cpp
-    )
-    
-    # Serialized directory files
-    SET(SERIALIZED_HEADERS
-        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/opensolid.proto
-        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/Interval.hpp
-    )
-    SET(SERIALIZED_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/Serialized/Interval.cpp
     )
     
     # Set directory files
@@ -523,8 +516,6 @@
         ${PYTHON_ENVIRONMENT_SOURCES}
         ${SCALAR_HEADERS}
         ${SCALAR_SOURCES}
-        ${SERIALIZED_HEADERS}
-        ${SERIALIZED_SOURCES}
         ${SET_HEADERS}
         ${SET_SOURCES}
         ${SIMPLEX_HEADERS}
@@ -593,7 +584,6 @@
         ${OBJECT_SOURCES}
         ${PRIMITIVE_SOURCES}
         ${SCALAR_SOURCES}
-        ${SERIALIZED_SOURCES}
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
         ${CMAKE_CURRENT_BINARY_DIR}/opensolid.pb.cc

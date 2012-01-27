@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Hash.hpp>
-#include <OpenSolid/Common/Repr.hpp>
 
 namespace OpenSolid
 {
@@ -62,28 +61,16 @@ namespace OpenSolid
     {
         std::size_t operator()(double argument) const;
     };
-
-    template <>
-    struct Repr<double>
-    {
-        std::string operator()(double argument) const;
-    };
 }
 
 ////////// Implementation //////////
 
 #include <functional>
 
-#include <boost/lexical_cast.hpp>
-
 namespace OpenSolid
 {
     inline std::size_t Hash<double>::operator()(double argument) const {
         return std::hash<double>()(argument);
-    }
-
-    inline std::string Repr<double>::operator()(double argument) const {
-        return boost::lexical_cast<std::string>(argument);
     }
 }
 

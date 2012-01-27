@@ -37,7 +37,7 @@ namespace OpenSolid
 
     int IntervalDomain::dimensions() const {return 1;}
 
-    VectorXI IntervalDomain::bounds() const {return _interval.to<VectorXI>();}
+    VectorXI IntervalDomain::bounds() const {return _interval.as<VectorXI>();}
 
     Domain IntervalDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return new IntervalDomain(matrix.value() + vector.value() * _interval);

@@ -176,19 +176,19 @@ public:
         TS_ASSERT_EQUALS(boost::geometry::get<0>(point), 3);
         TS_ASSERT_EQUALS(boost::geometry::get<1>(point), 4);
         Vector2d origin = Vector2d::Zero();
-        TS_ASSERT(boost::geometry::distance(origin, point) == Approx(5));
+        TS_ASSERT(boost::geometry::distance(origin, point) - 5 == Zero());
         #endif
     }
 
     void testBoostGeometryBox() {
         #if BOOST_VERSION >= 104700
         Vector2I first_box(Interval(1, 3), Interval(1, 3));
-        TS_ASSERT(boost::geometry::area(first_box) == Approx(4));
+        TS_ASSERT(boost::geometry::area(first_box) - 4 == Zero());
         Vector2I second_box(Interval(2, 4), Interval(2, 4));
         TS_ASSERT(boost::geometry::intersects(first_box, second_box));
         Vector2I intersection;
         boost::geometry::intersection(first_box, second_box, intersection);
-        TS_ASSERT(boost::geometry::area(intersection) == Approx(1));
+        TS_ASSERT(boost::geometry::area(intersection) == One());
         TS_ASSERT(intersection.cwiseLower().isApprox(Vector2d::Constant(2)));
         TS_ASSERT(intersection.cwiseUpper().isApprox(Vector2d::Constant(3)));
         #endif

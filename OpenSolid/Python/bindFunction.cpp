@@ -25,10 +25,6 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
-    MatrixXd* vector(const Function& function) {
-        return new MatrixXd(function.to<VectorXd>());
-    }
-    
     MatrixXd* callDouble(const Function& function, double argument) {
         return new MatrixXd(function(argument));
     }
@@ -110,6 +106,7 @@ namespace OpenSolid
     }
         
     void bindFunction() {
+        return_value_policy<manage_new_object> manage_new_matrix;
         class_<Function>("Function")
             .def(init<Function>())
             .def(init<MatrixXd>())
@@ -120,10 +117,10 @@ namespace OpenSolid
             .def("dimensions", &Function::dimensions)
             .def("isConstant", &Function::isConstant)
             .def("__call__", &callFunction)
-            .def("__call__", &callMatrixXI, return_value_policy<manage_new_object>())
-            .def("__call__", &callMatrixXd, return_value_policy<manage_new_object>())
-            .def("__call__", &callInterval, return_value_policy<manage_new_object>())
-            .def("__call__", &callDouble, return_value_policy<manage_new_object>())
+            .def("__call__", &callMatrixXI, manage_new_matrix)
+            .def("__call__", &callMatrixXd, manage_new_matrix)
+            .def("__call__", &callInterval, manage_new_matrix)
+            .def("__call__", &callDouble, manage_new_matrix)
             .def("derivative", &derivative1)
             .def("derivative", &derivative2)
             .def("transformed", &transformed)

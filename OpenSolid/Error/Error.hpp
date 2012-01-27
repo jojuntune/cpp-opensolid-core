@@ -32,19 +32,21 @@
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Error/ErrorImplementation/ErrorImplementation.hpp>
 
+#include <opensolid.pb.h>
+
 namespace OpenSolid
 {
-    class Error : public std::exception, public Convertible<Error>
+    class Error : public Convertible<Error>, public std::exception
     {
     private:
-        boost::intrusive_ptr<ErrorImplementation> _implementation;
-
+        boost::intrusive_ptr<const ErrorImplementation> _implementation;
         mutable std::string _what;
     public:
-        Error();
-        Error(const ErrorImplementation* implementation);
+        OPENSOLID_CORE_EXPORT Error();
+        OPENSOLID_CORE_EXPORT Error(const ErrorImplementation* implementation);
 
-        const char* what() const override;
+        OPENSOLID_CORE_EXPORT const ErrorImplementation* implementation() const;
+        OPENSOLID_CORE_EXPORT const char* what() const override;
     };
 
     template <>

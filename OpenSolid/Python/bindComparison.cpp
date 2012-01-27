@@ -30,18 +30,6 @@ namespace OpenSolid
     Comparison zero() {return Zero();}
     
     Comparison zeroP(double precision) {return Zero(precision);}
-    
-    Comparison approxI(const Interval& argument) {return Approx(argument);}
-    
-    Comparison approxIP(const Interval& argument, double precision) {
-        return Approx(argument, precision);
-    }
-    
-    Comparison approxD(double argument) {return Approx(argument);}
-    
-    Comparison approxDP(double argument, double precision) {
-        return Approx(argument, precision);
-    }
 
     bool equalI(const Comparison& comparison, const Interval& argument) {
         return argument == comparison;
@@ -107,9 +95,5 @@ namespace OpenSolid
             .def("__ge__", &greaterOrEqualD);
         def("Zero", &zero);
         def("Zero", &zeroP);
-        def("Approx", &approxI);
-        def("Approx", &approxIP);
-        def("Approx", &approxD);
-        def("Approx", &approxDP);
     }
 }

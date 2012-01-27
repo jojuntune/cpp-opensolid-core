@@ -27,15 +27,18 @@
 
 namespace OpenSolid
 {
-    std::string Repr<Interval>::operator()(const Interval& argument) const {
-        std::stringstream stream;
-        stream << "Interval(";
-        stream << Repr<double>()(argument.lower());
-        stream << ", ";
-        stream << Repr<double>()(argument.upper());
-        stream << ")";
-        return stream.str();
+    Serialized::Interval Conversion<Interval, Serialized::Interval>::operator()(
+        const Interval& argument
+    ) const {
+        Serialized::Interval result;
+        result.set_lower(argument.lower());
+        result.set_upper(argument.upper());
+        return std::move(result);
     }
+
+    Interval Conversion<Serialized::Interval, Interval>::operator()(
+        const Serialized::Interval& argument
+    ) const {return Interval(argument.lower(), argument.upper());}
 
     Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 

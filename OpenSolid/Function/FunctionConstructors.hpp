@@ -40,6 +40,17 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT static Function Parameters(int total);
 
         OPENSOLID_CORE_EXPORT static Function Parameters(int total, int index, int num);
+
+        OPENSOLID_CORE_EXPORT static Function Components(
+            const Function& x,
+            const Function& y
+        );
+
+        OPENSOLID_CORE_EXPORT static Function Components(
+            const Function& x,
+            const Function& y,
+            const Function& z
+        );
         
         OPENSOLID_CORE_EXPORT static Function Linear(const DatumXd& datum);
         

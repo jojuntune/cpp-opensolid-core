@@ -19,8 +19,9 @@
  *****************************************************************************/
 
 #include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/check.hpp>
+#include <OpenSolid/Python/PythonModule.hpp>
+#include <OpenSolid/Python/repr.hpp>
 #include <OpenSolid/Support/STL.hpp>
 
 using namespace boost::python;
@@ -114,17 +115,9 @@ namespace OpenSolid
         double precision
     ) {return first_argument.strictlyContains(second_argument, precision);}
 
-    std::string repr(const Interval& argument) {
-        std::stringstream stream;
-        stream << "Interval(" << argument.lower();
-        if (argument.upper() != argument.lower()) {stream << "," << argument.upper();}
-        stream << ")";
-        return stream.str();
-    }
+    std::string repr(const Interval& argument) {return __repr__(argument);}
 
-    std::string str(const Interval& argument) {return repr(argument);}
-
-    std::size_t hash(const Interval& argument) {return std::hash<Interval>()(argument);}
+    std::size_t hash(const Interval& argument) {return Hash<Interval>()(argument);}
 
     struct IntervalPickleSuite : public pickle_suite
     {
@@ -202,7 +195,6 @@ namespace OpenSolid
             .def(self / double())
             .def(double() / self)
             .def("__repr__", &repr)
-            .def("__str__", &str)
             .def("__hash__", &hash)
             .def_pickle(IntervalPickleSuite());
         

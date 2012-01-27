@@ -24,9 +24,16 @@
 
 namespace OpenSolid
 {
+    Error::Error() : _implementation(), _what() {}
+
+    Error::Error(const ErrorImplementation* implementation) :
+        _implementation(implementation), _what() {}
+
+    const ErrorImplementation* Error::implementation() const {return _implementation.get();}
+
     const char* Error::what() const {
-        sprintf(_what, "OpenSolid error %d", id());
-        return _what;
+        _what = _implementation->what();
+        return _what.c_str();
     }
     
     std::ostream& operator<<(std::ostream& stream, const Error& error) {

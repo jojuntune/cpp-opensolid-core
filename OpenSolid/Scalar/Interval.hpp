@@ -34,7 +34,8 @@
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Hash.hpp>
-#include <OpenSolid/Common/Repr.hpp>
+
+#include <opensolid.pb.h>
 
 namespace OpenSolid
 {
@@ -120,9 +121,15 @@ namespace OpenSolid
     };
 
     template <>
-    struct Repr<Interval>
+    struct Conversion<Serialized::Interval, Interval>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Interval& argument) const;
+        OPENSOLID_CORE_EXPORT Interval operator()(const Serialized::Interval& argument) const;
+    };
+
+    template <>
+    struct Conversion<Interval, Serialized::Interval>
+    {
+        OPENSOLID_CORE_EXPORT Serialized::Interval operator()(const Interval& argument) const;
     };
 
     bool operator==(double first_argument, const Interval& second_argument);

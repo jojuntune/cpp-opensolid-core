@@ -83,10 +83,10 @@ public:
 
     void testInterpolated() {
         Interval x(6, 10);
-        TS_ASSERT(x.interpolated(0.5) == Approx(8));
+        TS_ASSERT(x.interpolated(0.5) - 8 == Zero());
         Interval interpolated = x.interpolated(Interval(0.25, 0.75));
-        TS_ASSERT(interpolated.lower() == Approx(7));
-        TS_ASSERT(interpolated.upper() == Approx(9));
+        TS_ASSERT(interpolated.lower() - 7 == Zero());
+        TS_ASSERT(interpolated.upper() - 9 == Zero());
     }
 
     void testClamp() {
@@ -111,12 +111,9 @@ public:
     void testConversion() {
         Interval interval(2, 3);
         Domain domain(interval);
-        Interval first = Interval::from<Domain>(domain);
-        Interval second = domain.to<Interval>();
-        TS_ASSERT_EQUALS(first.lower(), 2);
-        TS_ASSERT_EQUALS(first.upper(), 3);
-        TS_ASSERT_EQUALS(second.lower(), 2);
-        TS_ASSERT_EQUALS(second.upper(), 3);
+        Interval converted = domain.as<Interval>();
+        TS_ASSERT_EQUALS(converted.lower(), 2);
+        TS_ASSERT_EQUALS(converted.upper(), 3);
     }
 
     void testRandom() {
