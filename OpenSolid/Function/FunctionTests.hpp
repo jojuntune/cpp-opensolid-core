@@ -197,7 +197,7 @@ public:
         Function x = t;
         double y = 3;
         Function z = t.squaredNorm();
-        Function concatenated(x, y, z);
+        Function concatenated = Function::Components(x, y, z);
         TS_ASSERT(concatenated(2.0).isApprox(Vector3d(2.0, 3.0, 4.0)));
     }
 
@@ -240,7 +240,7 @@ public:
     }
 
     void testNormal() {
-        Function f = Vector2d(1, 1) + Function(2 * cos(t), 2 * sin(t));
+        Function f = Vector2d(1, 1) + 2 * Function::Components(cos(t), sin(t));
         TS_ASSERT((f(-M_PI / 2) - Vector2d(1, -1)).isZero());
         TS_ASSERT((f(0) - Vector2d(3, 1)).isZero());
         TS_ASSERT((f(M_PI / 2) - Vector2d(1, 3)).isZero());

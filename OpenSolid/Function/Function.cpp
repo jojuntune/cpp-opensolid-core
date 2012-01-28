@@ -65,20 +65,6 @@ namespace OpenSolid
     Function::Function(const VectorXd& vector) :
         _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {}
     
-    Function::Function(const Function& x, const Function& y) {
-        _implementation = x.concatenate(y).implementation();
-        _type = &typeid(implementation());
-    }
-    
-    Function::Function(const Function& x, const Function& y, const Function& z) {
-        _implementation = x.concatenate(y).concatenate(z).implementation();
-        _type = &typeid(implementation());
-    }
-    
-    const FunctionImplementation* Function::implementation() const {
-        return _implementation.get();
-    }
-    
     int Function::parameters() const {
         assert(implementation());
         return implementation()->parameters();

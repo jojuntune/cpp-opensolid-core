@@ -31,11 +31,10 @@
 
 #include <boost/numeric/interval.hpp>
 
+#include <OpenSolid/opensolid.pb.h>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Hash.hpp>
-
-#include <opensolid.pb.h>
 
 namespace OpenSolid
 {

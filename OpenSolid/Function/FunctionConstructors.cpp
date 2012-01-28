@@ -43,8 +43,22 @@ namespace OpenSolid
     Function FunctionConstructors::Parameters(int total, int index, int num) {
         return new ParametersFunction(total, index, num);
     }
+    
+    Function FunctionConstructors::Components(const Function& x, const Function& y) {
+        return x.concatenate(y);
+    }
+    
+    Function FunctionConstructors::Components(
+        const Function& x,
+        const Function& y,
+        const Function& z
+    ) {
+        return x.concatenate(y).concatenate(z);
+    }
         
-    Function FunctionConstructors::Linear(const DatumXd& datum) {return new LinearFunction(datum);}
+    Function FunctionConstructors::Linear(const DatumXd& datum) {
+        return new LinearFunction(datum);
+    }
         
     Function FunctionConstructors::Elliptical(const DatumXd& datum) {
         return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, true));

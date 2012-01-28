@@ -104,6 +104,14 @@ namespace OpenSolid
     Function parameters2(int total, int index, int num) {
         return Function::Parameters(total, index, num);
     }
+
+    Function components1(const Function& x, const Function& y) {
+        return Function::Components(x, y);
+    }
+
+    Function components2(const Function& x, const Function& y, const Function& z) {
+        return Function::Components(x, y, z);
+    }
         
     void bindFunction() {
         return_value_policy<manage_new_object> manage_new_matrix;
@@ -111,8 +119,6 @@ namespace OpenSolid
             .def(init<Function>())
             .def(init<MatrixXd>())
             .def(init<double>())
-            .def(init<Function, Function>())
-            .def(init<Function, Function, Function>())
             .def("parameters", &Function::parameters)
             .def("dimensions", &Function::dimensions)
             .def("isConstant", &Function::isConstant)
@@ -176,7 +182,10 @@ namespace OpenSolid
                 .staticmethod("Parameter")
             .def("Parameters", &parameters1)
             .def("Parameters", &parameters2)
-                .staticmethod("Parameters");
+                .staticmethod("Parameters")
+            .def("Components", &components1)
+            .def("Components", &components2)
+                .staticmethod("Components");
             
         implicitly_convertible<MatrixXd, Function>();
         implicitly_convertible<double, Function>();

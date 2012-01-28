@@ -24,8 +24,6 @@
 #include <OpenSolid/Python/repr.hpp>
 #include <OpenSolid/Scalar/Interval.hpp>
 
-#include "check.hpp"
-
 using namespace boost::python;
 
 namespace OpenSolid
@@ -58,50 +56,50 @@ namespace OpenSolid
 
     template <class MatrixType>
     typename MatrixType::Scalar xComponent(const MatrixType& argument) {
-        Check<6>::VectorValue(argument);
+        //Check<6>::VectorValue(argument);
         return argument(0, 0);
     }
 
     template <class MatrixType>
     typename MatrixType::Scalar yComponent(const MatrixType& argument) {
-        Check<6>::VectorValue(argument);
-        Check<14>::ComponentIndexInRange(1, argument.size());
+        //Check<6>::VectorValue(argument);
+        //Check<14>::ComponentIndexInRange(1, argument.size());
         return argument(1, 0);
     }
 
     template <class MatrixType>
     typename MatrixType::Scalar zComponent(const MatrixType& argument) {
-        Check<6>::VectorValue(argument);
-        Check<14>::ComponentIndexInRange(2, argument.size());
+        //Check<6>::VectorValue(argument);
+        //Check<14>::ComponentIndexInRange(2, argument.size());
         return argument(2, 0);
     }
         
     int positiveIndex(int index, int size) {
-        Check<14>::ComponentIndexInRange(index, size);
+        //Check<14>::ComponentIndexInRange(index, size);
         return index >= 0 ? index : size + index;
     }
     
     void getComponentBlock(slice indices, int size, int& block_start, int& block_size) {
-        Check<16>::NoMatrixIndexStep(indices);
+        //Check<16>::NoMatrixIndexStep(indices);
         if (indices.start() == object()) {
             block_start = 0;
         } else {
-            Check<1>::CompatibleType<int>(indices.start());
+            //Check<1>::CompatibleType<int>(indices.start());
             block_start = extract<int>(indices.start());
         }
         if (indices.stop() == object()) {
             block_size = block_start < 0 ? -block_start : size - block_start;
         } else {
-            Check<1>::CompatibleType<int>(indices.stop());
+            //Check<1>::CompatibleType<int>(indices.stop());
             block_size = extract<int>(indices.stop());
         }
-        Check<15>::ComponentBlockInRange(block_start, block_size, size);
+        //Check<15>::ComponentBlockInRange(block_start, block_size, size);
         if (block_start < 0) {block_start += size;}
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar getI(const MatrixType& matrix, int index) {
-        Check<8>::VectorOrRowVectorValue(matrix);
+        //Check<8>::VectorOrRowVectorValue(matrix);
         if (matrix.cols() == 1) {
             return matrix(positiveIndex(index, matrix.rows()), 0);
         } else {
@@ -111,7 +109,7 @@ namespace OpenSolid
     
     template <class MatrixType>
     MatrixType* getS(const MatrixType& matrix, slice indices) {
-        Check<8>::VectorOrRowVectorValue(matrix);
+        //Check<8>::VectorOrRowVectorValue(matrix);
         int block_start;
         int block_size;
         if (matrix.cols() == 1) {
@@ -186,7 +184,7 @@ namespace OpenSolid
     
     template <class MatrixType>
     void setI(MatrixType& matrix, int index, typename MatrixType::Scalar argument) {
-        Check<8>::VectorOrRowVectorValue(matrix);
+        //Check<8>::VectorOrRowVectorValue(matrix);
         if (matrix.cols() == 1) {
             matrix(positiveIndex(index, matrix.rows()), 0) = argument;
         } else {
@@ -196,16 +194,16 @@ namespace OpenSolid
     
     template <class MatrixType>
     void setS(MatrixType& matrix, slice indices, const MatrixType& argument) {
-        Check<8>::VectorOrRowVectorValue(matrix);
+        //Check<8>::VectorOrRowVectorValue(matrix);
         int block_start;
         int block_size;
         if (matrix.cols() == 1) {
             getComponentBlock(indices, matrix.rows(), block_start, block_size);
-            Check<11>::SpecificMatrixSize(argument, block_size, 1);
+            //Check<11>::SpecificMatrixSize(argument, block_size, 1);
             matrix.block(block_start, 0, block_size, 1) = argument;
         } else {
             getComponentBlock(indices, matrix.cols(), block_start, block_size);
-            Check<11>::SpecificMatrixSize(argument, 1, block_size);
+            //Check<11>::SpecificMatrixSize(argument, 1, block_size);
             matrix.block(0, block_start, 1, block_size) = argument;
         }
     }
@@ -220,7 +218,7 @@ namespace OpenSolid
         int block_start;
         int block_size;
         getComponentBlock(rows, matrix.rows(), block_start, block_size);
-        Check<11>::SpecificMatrixSize(argument, block_size, 1);
+        //Check<11>::SpecificMatrixSize(argument, block_size, 1);
         matrix.block(block_start, positiveIndex(col, matrix.cols()), block_size, 1) = argument;
     }
     
@@ -229,7 +227,7 @@ namespace OpenSolid
         int block_start;
         int block_size;
         getComponentBlock(cols, matrix.cols(), block_start, block_size);
-        Check<11>::SpecificMatrixSize(argument, 1, block_size);
+        //Check<11>::SpecificMatrixSize(argument, 1, block_size);
         matrix.block(positiveIndex(row, matrix.rows()), block_start, 1, block_size) = argument;
     }
     
@@ -241,7 +239,7 @@ namespace OpenSolid
         int col_start;
         int col_size;
         getComponentBlock(cols, matrix.cols(), col_start, col_size);
-        Check<11>::SpecificMatrixSize(argument, row_size, col_size);
+        //Check<11>::SpecificMatrixSize(argument, row_size, col_size);
         matrix.block(row_start, col_start, row_size, col_size) = argument;
     }
     
@@ -277,7 +275,7 @@ namespace OpenSolid
 
     template <class MatrixType>
     typename MatrixType::Scalar squaredNorm(const MatrixType& argument) {
-        Check<6>::VectorValue(argument);
+        //Check<6>::VectorValue(argument);
         return argument.col(0).squaredNorm();
     }
     
@@ -289,21 +287,21 @@ namespace OpenSolid
     
     template <>
     MatrixXd* normalized(const MatrixXd& argument) {
-        Check<6>::VectorValue(argument);
-        Check<2>::NonZero(argument.squaredNorm());
+        //Check<6>::VectorValue(argument);
+        //Check<2>::NonZero(argument.squaredNorm());
         return new MatrixXd(argument.col(0).normalized());
     }
     
     template <>
     MatrixXI* normalized(const MatrixXI& argument) {
-        Check<6>::VectorValue(argument);
-        Check<2>::NonZero(argument.squaredNorm().lower());
+        //Check<6>::VectorValue(argument);
+        //Check<2>::NonZero(argument.squaredNorm().lower());
         return new MatrixXI(argument.col(0).normalized());
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar determinant(const MatrixType& argument) {
-        Check<10>::SquareMatrix(argument);
+        //Check<10>::SquareMatrix(argument);
         return argument.determinant();
     }
     
@@ -321,48 +319,48 @@ namespace OpenSolid
     }
     
     double dotXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
     Interval dotXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
         return first_argument.col(0).cast<Interval>().dot(second_argument.col(0));
     }
     
     Interval dotXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
         return first_argument.col(0).dot(second_argument.col(0).cast<Interval>());
     }
     
     Interval dotXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
     MatrixXd* crossXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<3>::EqualSizes(first_argument.rows(), 3);
-        Check<3>::EqualSizes(second_argument.rows(), 3);
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<3>::EqualSizes(first_argument.rows(), 3);
+        //Check<3>::EqualSizes(second_argument.rows(), 3);
         return new MatrixXd(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
     }
     
     MatrixXI* crossXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<3>::EqualSizes(first_argument.rows(), 3);
-        Check<3>::EqualSizes(second_argument.rows(), 3);
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<3>::EqualSizes(first_argument.rows(), 3);
+        //Check<3>::EqualSizes(second_argument.rows(), 3);
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cast<Interval>().cross(
                 second_argument.block<3, 1>(0, 0)
@@ -371,10 +369,10 @@ namespace OpenSolid
     }
     
     MatrixXI* crossXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<3>::EqualSizes(first_argument.rows(), 3);
-        Check<3>::EqualSizes(second_argument.rows(), 3);
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<3>::EqualSizes(first_argument.rows(), 3);
+        //Check<3>::EqualSizes(second_argument.rows(), 3);
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(
                 second_argument.block<3, 1>(0, 0).cast<Interval>()
@@ -383,10 +381,10 @@ namespace OpenSolid
     }
     
     MatrixXI* crossXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<6>::VectorValue(first_argument);
-        Check<6>::VectorValue(second_argument);
-        Check<3>::EqualSizes(first_argument.rows(), 3);
-        Check<3>::EqualSizes(second_argument.rows(), 3);
+        //Check<6>::VectorValue(first_argument);
+        //Check<6>::VectorValue(second_argument);
+        //Check<3>::EqualSizes(first_argument.rows(), 3);
+        //Check<3>::EqualSizes(second_argument.rows(), 3);
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
@@ -512,42 +510,42 @@ namespace OpenSolid
     MatrixXI* negXI(const MatrixXI& argument) {return new MatrixXI(-argument);}
     
     MatrixXd* addXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXd(first_argument + second_argument);
     }
     
     MatrixXI* addXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXI(first_argument.cast<Interval>() + second_argument);
     }
     
     MatrixXI* addXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXI(first_argument + second_argument.cast<Interval>());
     }
     
     MatrixXI* addXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXI(first_argument + second_argument);
     }
     
     MatrixXd* subXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXd(first_argument - second_argument);
     }
     
     MatrixXI* subXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXI(first_argument.cast<Interval>() - second_argument);
     }
     
     MatrixXI* subXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXI(first_argument - second_argument.cast<Interval>());
     }
     
     MatrixXI* subXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return new MatrixXI(first_argument - second_argument);
     }
     
@@ -584,82 +582,82 @@ namespace OpenSolid
     }
     
     MatrixXd* divXdd(const MatrixXd& first_argument, double second_argument) {
-        Check<2>::NonZero(second_argument);
+        //Check<2>::NonZero(second_argument);
         return new MatrixXd(first_argument / second_argument);
     }
     
     MatrixXI* divXdI(const MatrixXd& first_argument, const Interval& second_argument) {
-        Check<2>::NonZero(abs(second_argument).lower());
+        //Check<2>::NonZero(abs(second_argument).lower());
         return new MatrixXI(first_argument.cast<Interval>() / second_argument);
     }
     
     MatrixXI* divXId(const MatrixXI& first_argument, double second_argument) {
-        Check<2>::NonZero(second_argument);
+        //Check<2>::NonZero(second_argument);
         return new MatrixXI(first_argument / Interval(second_argument));
     }
     
     MatrixXI* divXII(const MatrixXI& first_argument, const Interval& second_argument) {
-        Check<2>::NonZero(abs(second_argument).lower());
+        //Check<2>::NonZero(abs(second_argument).lower());
         return new MatrixXI(first_argument / second_argument);
     }
     
     MatrixXd* mulXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
         return new MatrixXd(first_argument * second_argument);
     }
     
     MatrixXI* mulXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
         return new MatrixXI(first_argument.cast<Interval>() * second_argument);
     }
     
     MatrixXI* mulXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
         return new MatrixXI(first_argument * second_argument.cast<Interval>());
     }
     
     MatrixXI* mulXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
         return new MatrixXI(first_argument * second_argument);
     }
 
     bool eqXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument == second_argument;
     }
 
     bool eqXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument.cast<Interval>() == second_argument;
     }
 
     bool eqXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument == second_argument.cast<Interval>();
     }
 
     bool eqXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument == second_argument;
     }
 
     bool neXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument != second_argument;
     }
 
     bool neXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument.cast<Interval>() != second_argument;
     }
 
     bool neXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument != second_argument.cast<Interval>();
     }
 
     bool neXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        Check<9>::SameSizeMatrices(first_argument, second_argument);
+        //Check<9>::SameSizeMatrices(first_argument, second_argument);
         return first_argument != second_argument;
     }
 
@@ -791,9 +789,7 @@ namespace OpenSolid
     }
 
     template <class MatrixType>
-    std::string repr(const MatrixType& argument) {
-        return __repr__<MatrixType>(argument);
-    }
+    std::string repr(const MatrixType& argument) {return __repr__(argument);}
 
     template <class MatrixType>
     struct MatrixPickleSuite : public pickle_suite

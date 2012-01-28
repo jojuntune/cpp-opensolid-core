@@ -23,30 +23,43 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <string>
-#include <iostream>
 #include <exception>
+#include <iostream>
+#include <string>
+#include <typeinfo>
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <OpenSolid/opensolid.pb.h>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Error/ErrorImplementation/ErrorImplementation.hpp>
 
-#include <opensolid.pb.h>
-
 namespace OpenSolid
 {
-    class Error : public Convertible<Error>, public std::exception
+    class Error : public std::exception, public Convertible<Error> 
     {
     private:
         boost::intrusive_ptr<const ErrorImplementation> _implementation;
+        const std::type_info* _type;
+
         mutable std::string _what;
     public:
+        enum {
+            INCOMPATIBLE_TYPES,
+            DIVISION_BY_ZERO,
+            INCOMPATIBLE_SIZES,
+            INCOMPATIBLE_DIMENSIONS,
+            INCOMPATIBLE_PARAMETERS
+        };
+
         OPENSOLID_CORE_EXPORT Error();
         OPENSOLID_CORE_EXPORT Error(const ErrorImplementation* implementation);
 
-        OPENSOLID_CORE_EXPORT const ErrorImplementation* implementation() const;
+        const ErrorImplementation* implementation() const;
+        const std::type_info& type() const;
+
         OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT int problem() const;
     };
 
     template <>

@@ -87,7 +87,7 @@ public:
     
     void testCurveOperations() {
         Function t = Function::Parameter();
-        Geometry parabola(Function(t, t.squaredNorm(), 0), Interval(-2, 2));
+        Geometry parabola(Function::Components(t, t.squaredNorm(), 0), Interval(-2, 2));
         TS_ASSERT((parabola.function().tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());
         TS_ASSERT(parabola.function().curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
         TS_ASSERT((parabola.function().normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());

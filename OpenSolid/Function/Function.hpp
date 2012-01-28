@@ -60,7 +60,8 @@ namespace OpenSolid
         template <class DerivedType>
         Function(const EigenBase<DerivedType>& vector);
         
-        OPENSOLID_CORE_EXPORT const FunctionImplementation* implementation() const;
+        const FunctionImplementation* implementation() const;
+        const std::type_info& type() const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
@@ -174,6 +175,12 @@ namespace OpenSolid
     Function::Function(const EigenBase<DerivedType>& vector) {
         *this = Function(VectorXd(vector));
     }
+    
+    inline const FunctionImplementation* Function::implementation() const {
+        return _implementation.get();
+    }
+
+    inline const std::type_info& Function::type() const {return *_type;}
     
     template <class ArgumentType>
     inline Evaluation<Function, ArgumentType> Function::operator()(const ArgumentType& argument) const {

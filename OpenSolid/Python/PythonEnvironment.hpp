@@ -26,7 +26,6 @@
 #include <string>
 
 #include <OpenSolid/Python/PythonModule.hpp>
-#include <OpenSolid/Python/check.hpp>
 #include <OpenSolid/Error/Error.hpp>
 
 namespace OpenSolid
@@ -58,11 +57,11 @@ namespace OpenSolid
         Type get(const std::string& code);
     };
 
-    template <>
-    struct Check<25>
-    {
-        OPENSOLID_PYTHON_EXPORT static void PythonError();
-    };
+    //template <>
+    //struct Check<25>
+    //{
+    //    OPENSOLID_PYTHON_EXPORT static void PythonError();
+    //};
 }
 
 ////////// Implementation //////////
@@ -71,7 +70,7 @@ namespace OpenSolid
 {
     template <class Type>
     inline Type PythonEnvironment::cast(boost::python::object argument) {
-        Check<1>::CompatibleType<Type>(argument);
+        //Check<1>::CompatibleType<Type>(argument);
         return boost::python::extract<Type>(argument);
     }
 
@@ -87,7 +86,7 @@ namespace OpenSolid
     
     template <class Type>
     inline Type PythonEnvironment::get(const std::string& expression) {
-        return cast<Type>(_get(expression));
+        return cast<Type>(eval(expression));
     }
 }
 
