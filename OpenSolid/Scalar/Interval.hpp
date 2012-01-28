@@ -31,10 +31,10 @@
 
 #include <boost/numeric/interval.hpp>
 
-#include <OpenSolid/opensolid.pb.h>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Hash.hpp>
+#include <OpenSolid/Common/Serialization.hpp>
 
 namespace OpenSolid
 {
@@ -49,7 +49,7 @@ namespace OpenSolid
     
     typedef boost::numeric::interval<double, IntervalPolicies> BoostInterval;
 
-    class Interval : public Convertible<Interval>
+    class Interval
     {
     private:
         BoostInterval _value;
@@ -120,15 +120,10 @@ namespace OpenSolid
     };
 
     template <>
-    struct Conversion<Serialized::Interval, Interval>
+    struct Serialization<Interval>
     {
-        OPENSOLID_CORE_EXPORT Interval operator()(const Serialized::Interval& argument) const;
-    };
-
-    template <>
-    struct Conversion<Interval, Serialized::Interval>
-    {
-        OPENSOLID_CORE_EXPORT Serialized::Interval operator()(const Interval& argument) const;
+        OPENSOLID_CORE_EXPORT std::string serialized(const Interval& argument) const;
+        OPENSOLID_CORE_EXPORT Interval deserialized(const std::string& argument) const;
     };
 
     bool operator==(double first_argument, const Interval& second_argument);

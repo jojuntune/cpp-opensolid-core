@@ -24,57 +24,12 @@
 #include <OpenSolid/config.hpp>
 
 #include <exception>
-#include <iostream>
-#include <string>
-#include <typeinfo>
-
-#include <boost/intrusive_ptr.hpp>
-
-#include <OpenSolid/opensolid.pb.h>
-#include <OpenSolid/Common/Convertible.hpp>
-#include <OpenSolid/Error/ErrorImplementation/ErrorImplementation.hpp>
 
 namespace OpenSolid
 {
-    class Error : public std::exception, public Convertible<Error> 
+    class Error : public std::exception
     {
-    private:
-        boost::intrusive_ptr<const ErrorImplementation> _implementation;
-        const std::type_info* _type;
-
-        mutable std::string _what;
-    public:
-        enum {
-            INCOMPATIBLE_TYPES,
-            DIVISION_BY_ZERO,
-            INCOMPATIBLE_SIZES,
-            INCOMPATIBLE_DIMENSIONS,
-            INCOMPATIBLE_PARAMETERS
-        };
-
-        OPENSOLID_CORE_EXPORT Error();
-        OPENSOLID_CORE_EXPORT Error(const ErrorImplementation* implementation);
-
-        const ErrorImplementation* implementation() const;
-        const std::type_info& type() const;
-
-        OPENSOLID_CORE_EXPORT const char* what() const override;
-        OPENSOLID_CORE_EXPORT int problem() const;
     };
-
-    template <>
-    struct Conversion<Error, Serialized::Error>
-    {
-        OPENSOLID_CORE_EXPORT Serialized::Error operator()(const Error& argument) const;
-    };
-
-    template <>
-    struct Conversion<Serialized::Error, Error>
-    {
-        OPENSOLID_CORE_EXPORT Error operator()(const Serialized::Error& argument) const;
-    };
-    
-    OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Error& error);
 }
 
 #endif

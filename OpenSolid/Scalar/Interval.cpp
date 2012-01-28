@@ -23,22 +23,23 @@
 
 #include <boost/numeric/interval.hpp>
 
+#include <OpenSolid/opensolid.pb.h>
 #include <OpenSolid/Scalar/Interval.hpp>
 
 namespace OpenSolid
 {
-    Serialized::Interval Conversion<Interval, Serialized::Interval>::operator()(
-        const Interval& argument
-    ) const {
-        Serialized::Interval result;
-        result.set_lower(argument.lower());
-        result.set_upper(argument.upper());
-        return std::move(result);
+    std::string Serialization<Interval>::serialized(const Interval& argument) const {
+        SerializedInterval temp;
+        temp.set_lower(argument.lower());
+        temp.set_upper(argument.upper());
+        return temp.SerializeAsString();
     }
 
-    Interval Conversion<Serialized::Interval, Interval>::operator()(
-        const Serialized::Interval& argument
-    ) const {return Interval(argument.lower(), argument.upper());}
+    Interval Serialization<Interval>::deserialized(const std::string& argument) const {
+        SerializedInterval temp;
+        temp.ParseFromString(argument);
+        return Interval(temp.lower(), temp.upper());
+    }
 
     Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 

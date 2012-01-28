@@ -59,10 +59,14 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline Axis2d::Axis2d(const Datum<dimensions_, axes_>& datum) {
         assertCompatible<dimensions_, 2>();
-        assert(datum.dimensions() == 2);
         assertCompatible<axes_, 1>();
-        assert(datum.axes() == 1);
-        assert(datum.direction().norm() == One());
+        if (datum.dimensions() != 2) {
+
+        }
+        if (datum.axes() != 1) {
+        }
+        if (datum.direction().norm() - 1 != Zero()) {
+        }
         initialize(datum);
     }
 
@@ -75,10 +79,14 @@ namespace OpenSolid
     template <int dimensions_, int axes_>
     inline Axis3d::Axis3d(const Datum<dimensions_, axes_>& datum) {
         assertCompatible<dimensions_, 3>();
-        assert(datum.dimensions() == 3);
         assertCompatible<axes_, 1>();
-        assert(datum.axes() == 1);
-        assert(datum.direction().norm() == One());
+        if (datum.dimensions() != 3) {
+
+        }
+        if (datum.axes() != 1) {
+        }
+        if (datum.direction().norm() - 1 != Zero()) {
+        }
         initialize(datum);
     }
 }

@@ -214,6 +214,7 @@
     # OpenSolid directory files
     SET(OPENSOLID_FILES
         ${OpenSolid_SOURCE_DIR}/bindTemplate.cpp
+        ${OpenSolid_SOURCE_DIR}/checker.py
         ${OpenSolid_SOURCE_DIR}/config.hpp
         ${OpenSolid_SOURCE_DIR}/opensolid.proto
         ${OpenSolid_SOURCE_DIR}/Template.cpp
@@ -230,6 +231,7 @@
         ${OpenSolid_SOURCE_DIR}/Common/Hash.hpp
         ${OpenSolid_SOURCE_DIR}/Common/MatrixArgument.hpp
         ${OpenSolid_SOURCE_DIR}/Common/ReferenceCounted.hpp
+        ${OpenSolid_SOURCE_DIR}/Common/Serialization.hpp
         ${OpenSolid_SOURCE_DIR}/Common/Transformable.hpp
     )
     SET(COMMON_SOURCES
@@ -284,9 +286,11 @@
 
     # Error/ErrorImplementation files
     SET(ERRORIMPLEMENTATION_HEADERS
+        ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/DatumCopyConstructionError.hpp
         ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/ErrorImplementation.hpp
     )
     SET(ERRORIMPLEMENTATION_SOURCES
+        ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/DatumCopyConstructionError.cpp
         ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/ErrorImplementation.cpp
     )
     

@@ -1,14 +1,9 @@
-package OpenSolid.Serialized;
+package OpenSolid;
 
-message Interval {
+message SerializedInterval {
     required double lower = 1;
     required double upper = 2;
 }
 
-message Error {
-    message ZeroDivisionError {
-        required double value = 1;
-    }
-    
-    optional ZeroDivisionError zero_division_error = 1;
+message SerializedError {
 }

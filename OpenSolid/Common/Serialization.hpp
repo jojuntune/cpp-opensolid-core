@@ -18,22 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__ERRORIMPLEMENTATION_HPP
-#define OPENSOLID__ERRORIMPLEMENTATION_HPP
+#ifndef OPENSOLID__SERIALIZATION_HPP
+#define OPENSOLID__SERIALIZATION_HPP
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-
 namespace OpenSolid
 {
-    class ErrorImplementation : public ReferenceCounted<ErrorImplementation>
-    {
-    public:
-        virtual ~ErrorImplementation();
-
-        virtual std::string what() const = 0; 
-    };
+    template <class Type>
+    struct Serialization;
 }
 
 #endif
