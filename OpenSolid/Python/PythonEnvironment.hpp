@@ -26,7 +26,7 @@
 #include <string>
 
 #include <OpenSolid/Python/PythonModule.hpp>
-#include <OpenSolid/Error/Error.hpp>
+#include <OpenSolid/Common/Error.hpp>
 
 namespace OpenSolid
 {

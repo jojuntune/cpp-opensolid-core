@@ -21,6 +21,7 @@
 #ifndef OPENSOLID__AXIS_HPP
 #define OPENSOLID__AXIS_HPP
 
+#include <OpenSolid/Common/Error.hpp>
 #include <OpenSolid/Datum/Datum.hpp>
 
 namespace OpenSolid
@@ -29,7 +30,9 @@ namespace OpenSolid
     {
     public:
         Axis2d();
-        Axis2d(const Vector2d& origin, const Vector2d& direction);
+
+        template <class OriginType, class DirectionType>
+        Axis2d(const EigenBase<OriginType>& origin, const EigenBase<DirectionType>& direction);
 
         template <int dimensions_, int axes_>
         Axis2d(const Datum<dimensions_, axes_>& datum);
@@ -39,10 +42,71 @@ namespace OpenSolid
     {
     public:
         Axis3d();
-        Axis3d(const Vector3d& origin, const Vector3d& direction);
+
+        template <class OriginType, class DirectionType>
+        Axis3d(const EigenBase<OriginType>& origin, const EigenBase<DirectionType>& direction);
 
         template <int dimensions_, int axes_>
         Axis3d(const Datum<dimensions_, axes_>& datum);
+    };
+}
+
+////////// Errors //////////
+
+namespace OpenSolid
+{
+    class Axis2dConstructionError : public Error
+    {
+    private:
+        MatrixXd _origin;
+        MatrixXd _direction;
+    public:
+        OPENSOLID_CORE_EXPORT Axis2dConstructionError(
+            const MatrixXd& origin,
+            const MatrixXd& direction
+        );
+        
+        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT MatrixXd origin() const;
+        OPENSOLID_CORE_EXPORT MatrixXd direction() const;
+    };
+
+    class Axis2dCopyConstructionError : public Error
+    {
+    private:
+        DatumXd _argument;
+    public:
+        OPENSOLID_CORE_EXPORT Axis2dCopyConstructionError(const DatumXd& argument);
+
+        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT DatumXd argument() const;
+    };
+
+    class Axis3dConstructionError : public Error
+    {
+    private:
+        MatrixXd _origin;
+        MatrixXd _direction;
+    public:
+        OPENSOLID_CORE_EXPORT Axis3dConstructionError(
+            const MatrixXd& origin,
+            const MatrixXd& direction
+        );
+        
+        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT MatrixXd origin() const;
+        OPENSOLID_CORE_EXPORT MatrixXd direction() const;
+    };
+
+    class Axis3dCopyConstructionError : public Error
+    {
+    private:
+        DatumXd _argument;
+    public:
+        OPENSOLID_CORE_EXPORT Axis3dCopyConstructionError(const DatumXd& argument);
+
+        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT DatumXd argument() const;
     };
 }
 
@@ -52,41 +116,55 @@ namespace OpenSolid
 {
     inline Axis2d::Axis2d() {initialize(Vector2d::Zero(), Vector2d::UnitX());}
 
-    inline Axis2d::Axis2d(const Vector2d& origin, const Vector2d& direction) {
-        initialize(origin, direction.normalized());
+    template <class OriginType, class DirectionType>
+    inline Axis2d::Axis2d(
+        const EigenBase<OriginType>& origin,
+        const EigenBase<DirectionType>& direction
+    ) {
+        if (
+            origin.cols() != 1 ||
+            origin.rows() != 2 ||
+            direction.cols() != 1 ||
+            direction.rows() != 2 ||
+            direction.derived().isZero()
+        ) {throw Axis2dConstructionError(origin, direction);}
+        initialize(origin.derived(), direction.derived().normalized());
     }
 
     template <int dimensions_, int axes_>
     inline Axis2d::Axis2d(const Datum<dimensions_, axes_>& datum) {
-        assertCompatible<dimensions_, 2>();
-        assertCompatible<axes_, 1>();
-        if (datum.dimensions() != 2) {
-
-        }
-        if (datum.axes() != 1) {
-        }
-        if (datum.direction().norm() - 1 != Zero()) {
-        }
+        if (
+            datum.dimensions() != 2 ||
+            datum.axes() != 1 ||
+            datum.basis().squaredNorm() - 1 != Zero()
+        ) {throw Axis2dCopyConstructionError(datum);}
         initialize(datum);
     }
 
     inline Axis3d::Axis3d() {initialize(Vector3d::Zero(), Vector3d::UnitX());}
 
-    inline Axis3d::Axis3d(const Vector3d& origin, const Vector3d& direction) {
-        initialize(origin, direction.normalized());
+    template <class OriginType, class DirectionType>
+    inline Axis3d::Axis3d(
+        const EigenBase<OriginType>& origin,
+        const EigenBase<DirectionType>& direction
+    ) {
+        if (
+            origin.cols() != 1 ||
+            origin.rows() != 3 ||
+            direction.cols() != 1 ||
+            direction.rows() != 3 ||
+            direction.derived().isZero()
+        ) {throw Axis3dConstructionError(origin, direction);}
+        initialize(origin.derived(), direction.derived().normalized());
     }
 
     template <int dimensions_, int axes_>
     inline Axis3d::Axis3d(const Datum<dimensions_, axes_>& datum) {
-        assertCompatible<dimensions_, 3>();
-        assertCompatible<axes_, 1>();
-        if (datum.dimensions() != 3) {
-
-        }
-        if (datum.axes() != 1) {
-        }
-        if (datum.direction().norm() - 1 != Zero()) {
-        }
+        if (
+            datum.dimensions() != 3 ||
+            datum.axes() != 1 ||
+            datum.basis().squaredNorm() - 1 != Zero()
+        ) {throw Axis3dCopyConstructionError(datum);}
         initialize(datum);
     }
 }

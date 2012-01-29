@@ -20,7 +20,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Error/Error.hpp>
+#include <OpenSolid/Common/Error.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
@@ -55,6 +55,7 @@ namespace OpenSolid
     void PythonModule::initialize() {
         _object() = scope();
         _dictionary() = _object().attr("__dict__");
+        /*
         boost::python::object exceptions = import("exceptions");
         dictionary()["Exception"] = exceptions.attr("Exception");
         exec(
@@ -78,6 +79,7 @@ namespace OpenSolid
                 PyErr_SetObject(errorClass().ptr(), error_object.ptr());
             }
         );
+        */
         bindFunction();
         bindDatum();
         bindSimplex();
@@ -86,6 +88,7 @@ namespace OpenSolid
         bindComparison();
         bindInterval();
         bindDouble();
+        bindError();
     }
 
     object PythonModule::object() {return _object();}

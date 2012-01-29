@@ -227,6 +227,7 @@
         ${OpenSolid_SOURCE_DIR}/Common/Bounds.hpp
         ${OpenSolid_SOURCE_DIR}/Common/BoundsTests.hpp
         ${OpenSolid_SOURCE_DIR}/Common/Convertible.hpp
+        ${OpenSolid_SOURCE_DIR}/Common/Error.hpp
         ${OpenSolid_SOURCE_DIR}/Common/Evaluation.hpp
         ${OpenSolid_SOURCE_DIR}/Common/Hash.hpp
         ${OpenSolid_SOURCE_DIR}/Common/MatrixArgument.hpp
@@ -246,6 +247,10 @@
         ${OpenSolid_SOURCE_DIR}/Datum/Plane.hpp
     )
     SET(DATUM_SOURCES
+        ${OpenSolid_SOURCE_DIR}/Datum/Axis.cpp
+        ${OpenSolid_SOURCE_DIR}/Datum/Datum.cpp
+        ${OpenSolid_SOURCE_DIR}/Datum/Frame.cpp
+        ${OpenSolid_SOURCE_DIR}/Datum/Plane.cpp
     )
     
     # Domain directory files
@@ -274,24 +279,6 @@
         ${OpenSolid_SOURCE_DIR}/Domain/DomainImplementation/RectangleDomain.cpp
         ${OpenSolid_SOURCE_DIR}/Domain/DomainImplementation/CuboidDomain.cpp
         ${OpenSolid_SOURCE_DIR}/Domain/DomainImplementation/SimplexDomain.cpp
-    )
-
-    # Error directory files
-    SET(ERROR_HEADERS
-        ${OpenSolid_SOURCE_DIR}/Error/Error.hpp
-    )
-    SET(ERROR_SOURCES
-        ${OpenSolid_SOURCE_DIR}/Error/Error.cpp
-    )
-
-    # Error/ErrorImplementation files
-    SET(ERRORIMPLEMENTATION_HEADERS
-        ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/DatumCopyConstructionError.hpp
-        ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/ErrorImplementation.hpp
-    )
-    SET(ERRORIMPLEMENTATION_SOURCES
-        ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/DatumCopyConstructionError.cpp
-        ${OpenSolid_SOURCE_DIR}/Error/ErrorImplementation/ErrorImplementation.cpp
     )
     
     # Function directory files
@@ -435,6 +422,7 @@
     SET(PYTHON_MODULE_SOURCES
         ${OpenSolid_SOURCE_DIR}/Python/bindComparison.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindDatum.cpp
+        ${OpenSolid_SOURCE_DIR}/Python/bindError.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindFunction.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindDouble.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindInterval.cpp
@@ -498,8 +486,6 @@
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_HEADERS}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${ERROR_HEADERS}
-        ${ERROR_SOURCES}
         ${ERRORIMPLEMENTATION_HEADERS}
         ${ERRORIMPLEMENTATION_SOURCES}
         ${FUNCTION_HEADERS}
@@ -549,8 +535,6 @@
     SOURCE_GROUP(OpenSolid\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
     SOURCE_GROUP(OpenSolid\\Domain\\DomainImplementation FILES ${DOMAINIMPLEMENTATION_HEADERS} ${DOMAINIMPLEMENTATION_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Error FILES ${ERROR_HEADERS} ${ERROR_SOURCES})
-    SOURCE_GROUP(OpenSolid\\Error\\ErrorImplementation FILES ${ERRORIMPLEMENTATION_HEADERS} ${ERRORIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Function\\FunctionImplementation FILES ${FUNCTIONIMPLEMENTATION_HEADERS} ${FUNCTIONIMPLEMENTATION_SOURCES})
     SOURCE_GROUP(OpenSolid\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})

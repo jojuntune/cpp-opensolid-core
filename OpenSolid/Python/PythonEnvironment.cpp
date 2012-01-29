@@ -24,7 +24,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-#include <OpenSolid/Error/Error.hpp>
+#include <OpenSolid/Common/Error.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>
 
 using namespace boost::python;
@@ -46,8 +46,8 @@ namespace OpenSolid
         try {
             return boost::python::eval(str(last_line), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
-            return object();
             //Check<25>::PythonError();
+            return object();
         }
     }
     
