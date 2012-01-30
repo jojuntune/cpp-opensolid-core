@@ -4,6 +4,8 @@ import re
 error_code_declarations = {} # int -> (line number, file)
 error_code_pattern = re.compile('static\s+const\s+int\s+error_code\s+=\s+(\d+);')
 
+error_found = False
+
 for line in fileinput.input():
     # Get current line number and filename for purposes of error reporting
     line_number = fileinput.filelineno()
@@ -25,17 +27,11 @@ for line in fileinput.input():
                 previous_filename
             )
             print(message.format(*arguments))
-            exit(1)
+            error_found = True
         else:
             error_code_declarations[error_code] = (line_number, filename)
-    # Check for tab characters
-    if '\t' in line:
-        print('ERROR: Found tab character on line {0} of file {1}'.format(line_number, filename))
-    # Check for carriage return characters
-    if '\r' in line:
-        print('ERROR: Found carriage return  on line {0} of file {1}'.format(line_number, filename))
 
-if error_code_declarations:
+if error_code_declarations and not error_found:
     used_error_codes = error_code_declarations.keys()
     max_used_error_code = max(used_error_codes)
     missing_error_codes = set(range(1, max_used_error_code + 1)) - set(used_error_codes)
@@ -51,6 +47,20 @@ if error_code_declarations:
         message = 'Error code {0} declared at line {1} of file {2}'
         arguments = (error_code, line_number, filename)
         print(message.format(*arguments))
+
+for line in fileinput.input(mode='rb'):
+    # Get current line number and filename for purposes of error reporting
+    line_number = fileinput.filelineno()
+    filename = fileinput.filename()
+    # Check for tab characters
+    if '\t' in line:
+        print('ERROR: Found tab character on line {0} of file {1}'.format(line_number, filename))
+        error_found = True
+    # Check for carriage return characters
+    if '\r' in line:
+        print('ERROR: Found carriage return  on line {0} of file {1}'.format(line_number, filename))
+        error_found = True
     
 print('')
-print('All source code checks complete, no errors found')
+if not error_found:
+    print('All source code checks complete, no errors found')
