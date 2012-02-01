@@ -37,49 +37,7 @@ namespace OpenSolid
     void bindDouble();
     void bindError();
 
-    object& _object() {
-        static object result;
-        return result;
-    }
-
-    object& _dictionary() {
-        static object result;
-        return result;
-    }
-
-    object& _errorClass() {
-        static object result;
-        return result;
-    }
-
     void PythonModule::initialize() {
-        _object() = scope();
-        _dictionary() = _object().attr("__dict__");
-        /*
-        boost::python::object exceptions = import("exceptions");
-        dictionary()["Exception"] = exceptions.attr("Exception");
-        exec(
-            "class Error(Exception):\n"
-            "    def __init__(self):\n"
-            "        self._error = None\n"
-            "        self._message = None"
-            "\n"
-            "    def __str__(self): return self._message\n"
-            "\n",
-            dictionary(),
-            dictionary()
-        );
-        _errorClass() = eval("Error", dictionary(), dictionary());
-        boost::python::class_<Error>("_Error", no_init);
-        register_exception_translator<Error>(
-            [] (const Error& error) {
-                boost::python::object error_object = eval("Error()", dictionary(), dictionary());
-                error_object.attr("_error") = error;
-                error_object.attr("_message") = error.what();
-                PyErr_SetObject(errorClass().ptr(), error_object.ptr());
-            }
-        );
-        */
         bindFunction();
         bindDatum();
         bindSimplex();
@@ -90,12 +48,6 @@ namespace OpenSolid
         bindDouble();
         bindError();
     }
-
-    object PythonModule::object() {return _object();}
-
-    object PythonModule::dictionary() {return _dictionary();}
-    
-    object PythonModule::errorClass() {return _errorClass();}
 
     BOOST_PYTHON_MODULE(opensolid) {PythonModule::initialize();}
 }

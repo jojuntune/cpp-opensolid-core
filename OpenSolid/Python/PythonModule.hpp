@@ -40,7 +40,6 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT static boost::python::object object();
         OPENSOLID_PYTHON_MODULE_EXPORT static boost::python::object dictionary();
-        OPENSOLID_PYTHON_MODULE_EXPORT static boost::python::object errorClass();
     };
 }
 

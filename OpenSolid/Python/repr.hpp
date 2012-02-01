@@ -24,6 +24,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <string>
+#include <typeinfo>
 
 #include <boost/python.hpp>
 
@@ -48,7 +49,10 @@ namespace OpenSolid
 ////////// Implementation //////////
 
 namespace OpenSolid
-{    
+{
+    template <class Type>
+    std::string __repr__() {return typeid(Type).name();}
+
     template <>
     inline std::string __repr__<bool>() {return "bool";}
 
@@ -63,9 +67,57 @@ namespace OpenSolid
 
     template <>
     inline std::string __repr__<Interval>() {return "Interval";}
+        
+    template <>
+    inline std::string __repr__<Vector2d>() {return "Vector2d";}
+        
+    template <>
+    inline std::string __repr__<Vector3d>() {return "Vector3d";}
+        
+    template <>
+    inline std::string __repr__<VectorXd>() {return "VectorXd";}
+        
+    template <>
+    inline std::string __repr__<RowVector2d>() {return "RowVector2d";}
+        
+    template <>
+    inline std::string __repr__<RowVector3d>() {return "RowVector3d";}
+        
+    template <>
+    inline std::string __repr__<RowVectorXd>() {return "RowVectorXd";}
+        
+    template <>
+    inline std::string __repr__<Matrix2d>() {return "Matrix2d";}
+        
+    template <>
+    inline std::string __repr__<Matrix3d>() {return "Matrix3d";}
 
     template <>
     inline std::string __repr__<MatrixXd>() {return "MatrixXd";}
+        
+    template <>
+    inline std::string __repr__<Vector2I>() {return "Vector2I";}
+        
+    template <>
+    inline std::string __repr__<Vector3I>() {return "Vector3I";}
+        
+    template <>
+    inline std::string __repr__<VectorXI>() {return "VectorXI";}
+        
+    template <>
+    inline std::string __repr__<RowVector2I>() {return "RowVector2I";}
+        
+    template <>
+    inline std::string __repr__<RowVector3I>() {return "RowVector3I";}
+        
+    template <>
+    inline std::string __repr__<RowVectorXI>() {return "RowVectorXI";}
+        
+    template <>
+    inline std::string __repr__<Matrix2I>() {return "Matrix2I";}
+        
+    template <>
+    inline std::string __repr__<Matrix3I>() {return "Matrix3I";}
 
     template <>
     inline std::string __repr__<MatrixXI>() {return "MatrixXI";}

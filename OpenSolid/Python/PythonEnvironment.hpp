@@ -25,7 +25,10 @@
 
 #include <string>
 
+#include <boost/python/converter/registry.hpp>
+
 #include <OpenSolid/Python/PythonModule.hpp>
+#include <OpenSolid/Python/repr.hpp>
 #include <OpenSolid/Common/Error.hpp>
 
 namespace OpenSolid
@@ -35,14 +38,8 @@ namespace OpenSolid
     private:
         boost::python::object _environment;
         boost::python::object _environment_dict;
-        
-        OPENSOLID_PYTHON_EXPORT Error error();
+
         OPENSOLID_PYTHON_EXPORT boost::python::object eval(const std::string& code);
-        
-        template <class Type>
-        static Type cast(boost::python::object argument);
-        
-        OPENSOLID_PYTHON_EXPORT static boost::python::object main();
     public:
         OPENSOLID_PYTHON_EXPORT PythonEnvironment();
 
@@ -56,12 +53,38 @@ namespace OpenSolid
         template <class Type>
         Type get(const std::string& code);
     };
+}
 
-    //template <>
-    //struct Check<25>
-    //{
-    //    OPENSOLID_PYTHON_EXPORT static void PythonError();
-    //};
+////////// Errors //////////
+
+namespace OpenSolid
+{
+    class ConversionFromPythonError : public Error
+    {
+    private:
+        boost::python::object _python_object;
+        std::string _expected_type;
+    public:
+        OPENSOLID_PYTHON_EXPORT ConversionFromPythonError(
+            const boost::python::object& python_object,
+            const std::string& expected_type
+        );
+
+        OPENSOLID_PYTHON_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_EXPORT boost::python::object pythonObject() const;
+        OPENSOLID_PYTHON_EXPORT std::string expectedType() const;
+    };
+
+    class ConversionToPythonError : public Error
+    {
+    private:
+        std::string _type;
+    public:
+        OPENSOLID_PYTHON_EXPORT ConversionToPythonError(const std::string& type);
+        
+        OPENSOLID_PYTHON_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_EXPORT std::string type() const;
+    };
 }
 
 ////////// Implementation //////////
@@ -69,24 +92,22 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <class Type>
-    inline Type PythonEnvironment::cast(boost::python::object argument) {
-        //Check<1>::CompatibleType<Type>(argument);
-        return boost::python::extract<Type>(argument);
-    }
-
-    template <class Type>
-    inline PythonEnvironment& PythonEnvironment::set(
-        const std::string& name,
-        const Type& argument
-    ) {
-        assert(boost::python::converter::registered_pytype<Type>::get_pytype() != nullptr);
-        _environment_dict[name] = argument;
+    PythonEnvironment& PythonEnvironment::set(const std::string& name, const Type& argument) {
+        try {
+            _environment_dict[name] = argument;
+        } catch (const boost::python::error_already_set& error) {
+            PyErr_Clear();
+            throw ConversionToPythonError(__repr__<Type>());
+        }
         return *this;
     }
     
     template <class Type>
     inline Type PythonEnvironment::get(const std::string& expression) {
-        return cast<Type>(eval(expression));
+        boost::python::object python_object = eval(expression);
+        boost::python::extract<Type> extracted(python_object);
+        if (!extracted.check()) {throw ConversionFromPythonError(python_object, __repr__<Type>());}
+        return extracted;
     }
 }
 

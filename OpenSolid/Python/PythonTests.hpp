@@ -111,6 +111,15 @@ public:
         //    TS_ASSERT_EQUALS(error.id(), 25);
         //}
     }
+
+    struct UnregisteredType
+    {
+    };
+
+    void testUnregisteredType() {
+        PythonEnvironment environment;
+        TS_ASSERT_THROWS(environment.set("a", UnregisteredType()), ConversionToPythonError);
+    }
     
     void testParameter() {
         PythonEnvironment environment;
