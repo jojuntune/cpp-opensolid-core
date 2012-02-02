@@ -31,6 +31,7 @@
 
 #include <boost/numeric/interval.hpp>
 
+#include <OpenSolid/opensolid.pb.h>
 #include <OpenSolid/Common/Bounds.hpp>
 #include <OpenSolid/Common/Convertible.hpp>
 #include <OpenSolid/Common/Hash.hpp>
@@ -122,8 +123,8 @@ namespace OpenSolid
     template <>
     struct Serialization<Interval>
     {
-        OPENSOLID_CORE_EXPORT std::string serialized(const Interval& argument) const;
-        OPENSOLID_CORE_EXPORT Interval deserialized(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT SerializedInterval serialized(const Interval& argument) const;
+        OPENSOLID_CORE_EXPORT Interval deserialized(const SerializedInterval& argument) const;
     };
 
     bool operator==(double first_argument, const Interval& second_argument);
