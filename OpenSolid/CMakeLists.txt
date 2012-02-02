@@ -420,14 +420,18 @@
         ${OpenSolid_SOURCE_DIR}/Python/repr.hpp
     )
     SET(PYTHON_MODULE_SOURCES
+        ${OpenSolid_SOURCE_DIR}/Python/bindBounds.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindComparison.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindDatum.cpp
+        ${OpenSolid_SOURCE_DIR}/Python/bindDouble.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindError.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindFunction.cpp
-        ${OpenSolid_SOURCE_DIR}/Python/bindDouble.cpp
+        ${OpenSolid_SOURCE_DIR}/Python/bindHash.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindInterval.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindMatrix.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindMatrixConstructors.cpp
+        ${OpenSolid_SOURCE_DIR}/Python/bindSerialization.cpp
+        ${OpenSolid_SOURCE_DIR}/Python/bindSet.cpp
         ${OpenSolid_SOURCE_DIR}/Python/bindSimplex.cpp
         ${OpenSolid_SOURCE_DIR}/Python/PythonModule.cpp
         ${OpenSolid_SOURCE_DIR}/Python/repr.cpp
