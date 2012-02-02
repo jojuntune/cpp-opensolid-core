@@ -119,6 +119,41 @@ namespace OpenSolid
     };
 
     template <class MatrixType>
+    class VectorAssignmentError : public BinaryMatrixError<MatrixType, MatrixType>
+    {
+    private:
+        boost::python::object _index;
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT VectorAssignmentError(
+            const MatrixType& first_matrix,
+            boost::python::object index,
+            const MatrixType& second_matrix
+        );
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object index() const;
+    };
+
+    template <class MatrixType>
+    class MatrixAssignmentError : public BinaryMatrixError<MatrixType, MatrixType>
+    {
+    private:
+        boost::python::object _row_index;
+        boost::python::object _col_index;
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixAssignmentError(
+            const MatrixType& first_matrix,
+            boost::python::object row_index,
+            boost::python::object col_index,
+            const MatrixType& second_matrix
+        );
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object rowIndex() const;
+        OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object colIndex() const;
+    };
+
+    template <class MatrixType>
     class VectorSquaredNormError : public UnaryMatrixError<MatrixType>
     {
     public:
@@ -160,6 +195,24 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT MatrixInverseError(const MatrixXd& matrix);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    template <class MatrixType>
+    class MatrixReplicateError : public UnaryMatrixError<MatrixType>
+    {
+    private:
+        int _row_factor;
+        int _col_factor;
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixReplicateError(
+            const MatrixType& matrix,
+            int row_factor,
+            int col_factor
+        );
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_MODULE_EXPORT int rowFactor() const;
+        OPENSOLID_PYTHON_MODULE_EXPORT int colFactor() const;
     };
 
     template <class FirstMatrixType, class SecondMatrixType>

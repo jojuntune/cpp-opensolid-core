@@ -171,6 +171,71 @@ namespace OpenSolid
     template boost::python::object MatrixIndexError<MatrixXd>::colIndex() const;
     template boost::python::object MatrixIndexError<MatrixXI>::colIndex() const;
 
+    // VectorAssignmentError
+
+    template <class MatrixType>
+    VectorAssignmentError<MatrixType>::VectorAssignmentError(
+        const MatrixType& first_matrix,
+        boost::python::object index,
+        const MatrixType& second_matrix
+    ) : BinaryMatrixError<MatrixType, MatrixType>(first_matrix, second_matrix), _index(index) {}
+
+    template VectorAssignmentError<MatrixXd>::VectorAssignmentError(const MatrixXd&, boost::python::object, const MatrixXd&);
+    template VectorAssignmentError<MatrixXI>::VectorAssignmentError(const MatrixXI&, boost::python::object, const MatrixXI&);
+
+    template <>
+    const char* VectorAssignmentError<MatrixXd>::what() const {
+        return "VectorAssignmentError<MatrixXd>";
+    }
+
+    template <>
+    const char* VectorAssignmentError<MatrixXI>::what() const {
+        return "VectorAssignmentError<MatrixXI>";
+    }
+
+    template <class MatrixType>
+    boost::python::object VectorAssignmentError<MatrixType>::index() const {return _index;}
+
+    template boost::python::object VectorAssignmentError<MatrixXd>::index() const;
+    template boost::python::object VectorAssignmentError<MatrixXI>::index() const;
+
+    // MatrixAssignmentError
+
+    template <class MatrixType>
+    MatrixAssignmentError<MatrixType>::MatrixAssignmentError(
+        const MatrixType& first_matrix,
+        boost::python::object row_index,
+        boost::python::object col_index,
+        const MatrixType& second_matrix
+    ) : BinaryMatrixError<MatrixType, MatrixType>(first_matrix, second_matrix),
+        _row_index(row_index),
+        _col_index(col_index) {}
+
+    template MatrixAssignmentError<MatrixXd>::MatrixAssignmentError(const MatrixXd&, boost::python::object, boost::python::object, const MatrixXd&);
+    template MatrixAssignmentError<MatrixXI>::MatrixAssignmentError(const MatrixXI&, boost::python::object, boost::python::object, const MatrixXI&);
+
+    template <>
+    const char* MatrixAssignmentError<MatrixXd>::what() const {
+        return "MatrixAssignmentError<MatrixXd>";
+    }
+
+    template <>
+    const char* MatrixAssignmentError<MatrixXI>::what() const {
+        return "MatrixAssignmentError<MatrixXI>";
+    }
+
+    template <class MatrixType>
+    boost::python::object MatrixAssignmentError<MatrixType>::rowIndex() const {return _row_index;}
+
+    template boost::python::object MatrixAssignmentError<MatrixXd>::rowIndex() const;
+    template boost::python::object MatrixAssignmentError<MatrixXI>::rowIndex() const;
+
+    template <class MatrixType>
+    boost::python::object MatrixAssignmentError<MatrixType>::colIndex() const {return _col_index;}
+
+    template boost::python::object MatrixAssignmentError<MatrixXd>::colIndex() const;
+    template boost::python::object MatrixAssignmentError<MatrixXI>::colIndex() const;
+
     // VectorSquaredNormError
 
     template <class MatrixType>
@@ -255,6 +320,40 @@ namespace OpenSolid
     const char* MatrixInverseError::what() const {
         return "MatrixInverseError";
     }
+
+    // MatrixReplicateError
+
+    template <class MatrixType>
+    MatrixReplicateError<MatrixType>::MatrixReplicateError(
+        const MatrixType& matrix,
+        int row_factor,
+        int col_factor
+    ) : UnaryMatrixError<MatrixType>(matrix), _row_factor(row_factor), _col_factor(col_factor) {}
+
+    template MatrixReplicateError<MatrixXd>::MatrixReplicateError(const MatrixXd&, int, int);
+    template MatrixReplicateError<MatrixXI>::MatrixReplicateError(const MatrixXI&, int, int);
+
+    template <>
+    const char* MatrixReplicateError<MatrixXd>::what() const {
+        return "MatrixReplicateError<MatrixXd>";
+    }
+
+    template <>
+    const char* MatrixReplicateError<MatrixXI>::what() const {
+        return "MatrixReplicateError<MatrixXI>";
+    }
+
+    template <class MatrixType>
+    int MatrixReplicateError<MatrixType>::rowFactor() const {return _row_factor;}
+
+    template int MatrixReplicateError<MatrixXd>::rowFactor() const;
+    template int MatrixReplicateError<MatrixXI>::rowFactor() const;
+
+    template <class MatrixType>
+    int MatrixReplicateError<MatrixType>::colFactor() const {return _col_factor;}
+
+    template int MatrixReplicateError<MatrixXd>::colFactor() const;
+    template int MatrixReplicateError<MatrixXI>::colFactor() const;
 
     // MatrixDotProductError
 

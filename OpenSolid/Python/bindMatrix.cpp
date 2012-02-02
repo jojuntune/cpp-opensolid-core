@@ -57,115 +57,154 @@ namespace OpenSolid
 
     template <class MatrixType>
     typename MatrixType::Scalar xComponent(const MatrixType& argument) {
-        //Check<6>::VectorValue(argument);
+        if (argument.cols() != 1) {throw VectorComponentError<MatrixType>(argument, 0);}
         return argument(0, 0);
     }
 
     template <class MatrixType>
     typename MatrixType::Scalar yComponent(const MatrixType& argument) {
-        //Check<6>::VectorValue(argument);
-        //Check<14>::ComponentIndexInRange(1, argument.size());
+        if (argument.cols() != 1 || argument.rows() < 2) {
+            throw VectorComponentError<MatrixType>(argument, 1);
+        }
         return argument(1, 0);
     }
 
     template <class MatrixType>
     typename MatrixType::Scalar zComponent(const MatrixType& argument) {
-        //Check<6>::VectorValue(argument);
-        //Check<14>::ComponentIndexInRange(2, argument.size());
+        if (argument.cols() != 1 || argument.rows() < 3) {
+            throw VectorComponentError<MatrixType>(argument, 2);
+        }
         return argument(2, 0);
     }
+
+    struct IndexError
+    {
+    };
         
     int positiveIndex(int index, int size) {
-        //Check<14>::ComponentIndexInRange(index, size);
+        if (index < -size || index >= size) {throw IndexError();}
         return index >= 0 ? index : size + index;
     }
     
     void getComponentBlock(slice indices, int size, int& block_start, int& block_size) {
-        //Check<16>::NoMatrixIndexStep(indices);
+        if (!indices.step().is_none()) {throw IndexError();}
         if (indices.start() == object()) {
             block_start = 0;
         } else {
-            //Check<1>::CompatibleType<int>(indices.start());
-            block_start = extract<int>(indices.start());
+            extract<int> extracted_start(indices.start());
+            if (!extracted_start.check()) {throw IndexError();}
+            block_start = extracted_start;
         }
         if (indices.stop() == object()) {
             block_size = block_start < 0 ? -block_start : size - block_start;
         } else {
-            //Check<1>::CompatibleType<int>(indices.stop());
-            block_size = extract<int>(indices.stop());
+            extract<int> extracted_stop(indices.stop());
+            if (!extracted_stop.check()) {throw IndexError();}
+            block_size = extracted_stop;
         }
-        //Check<15>::ComponentBlockInRange(block_start, block_size, size);
+        if (block_size <= 0) {throw IndexError();}
+        if (block_start < 0) {
+            if (block_start < -size || block_size > -block_start) {throw IndexError();}
+        } else {
+            if (block_start + block_size > size) {throw IndexError();}
+        }
         if (block_start < 0) {block_start += size;}
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar getI(const MatrixType& matrix, int index) {
-        //Check<8>::VectorOrRowVectorValue(matrix);
-        if (matrix.cols() == 1) {
-            return matrix(positiveIndex(index, matrix.rows()), 0);
-        } else {
-            return matrix(0, positiveIndex(index, matrix.cols()));
+        try {
+            if (matrix.cols() == 1) {
+                return matrix(positiveIndex(index, matrix.rows()), 0);
+            } else if (matrix.rows() == 1) {
+                return matrix(0, positiveIndex(index, matrix.cols()));
+            } else {
+                throw IndexError();
+            }
+        } catch (const IndexError&) {
+            throw VectorIndexError<MatrixType>(matrix, object(index));
         }
     }
     
     template <class MatrixType>
     MatrixType* getS(const MatrixType& matrix, slice indices) {
-        //Check<8>::VectorOrRowVectorValue(matrix);
-        int block_start;
-        int block_size;
-        if (matrix.cols() == 1) {
-            getComponentBlock(indices, matrix.rows(), block_start, block_size);
-            return new MatrixType(matrix.block(block_start, 0, block_size, 1));
-        } else {
-            getComponentBlock(indices, matrix.cols(), block_start, block_size);
-            return new MatrixType(matrix.block(0, block_start, 1, block_size));
+        try {
+            int block_start = 0;
+            int block_size = 0;
+            if (matrix.cols() == 1) {
+                getComponentBlock(indices, matrix.rows(), block_start, block_size);
+                return new MatrixType(matrix.block(block_start, 0, block_size, 1));
+            } else if (matrix.rows() == 1) {
+                getComponentBlock(indices, matrix.cols(), block_start, block_size);
+                return new MatrixType(matrix.block(0, block_start, 1, block_size));
+            } else {
+                throw IndexError();
+            }
+        } catch (const IndexError&) {
+            throw VectorIndexError<MatrixType>(matrix, indices);
         }
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar getII(const MatrixType& matrix, int row, int col) {
-        return matrix(positiveIndex(row, matrix.rows()), positiveIndex(col, matrix.cols()));
+        try {
+            return matrix(positiveIndex(row, matrix.rows()), positiveIndex(col, matrix.cols()));
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, object(row), object(col));
+        }
     }
     
     template <class MatrixType>
     MatrixType* getSI(const MatrixType& matrix, slice rows, int col) {
-        int block_start;
-        int block_size;
-        getComponentBlock(rows, matrix.rows(), block_start, block_size);
-        return new MatrixType(
-            matrix.block(
-                block_start,
-                positiveIndex(col, matrix.cols()),
-                block_size,
-                1
-            )
-        );
+        try {
+            int block_start;
+            int block_size;
+            getComponentBlock(rows, matrix.rows(), block_start, block_size);
+            return new MatrixType(
+                matrix.block(
+                    block_start,
+                    positiveIndex(col, matrix.cols()),
+                    block_size,
+                    1
+                )
+            );
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, rows, object(col));
+        }
     }
     
     template <class MatrixType>
     MatrixType* getIS(const MatrixType& matrix, int row, slice cols) {
-        int block_start;
-        int block_size;
-        getComponentBlock(cols, matrix.cols(), block_start, block_size);
-        return new MatrixType(
-            matrix.block(
-                positiveIndex(row, matrix.rows()),
-                block_start,
-                1,
-                block_size
-            )
-        );
+        try {
+            int block_start;
+            int block_size;
+            getComponentBlock(cols, matrix.cols(), block_start, block_size);
+            return new MatrixType(
+                matrix.block(
+                    positiveIndex(row, matrix.rows()),
+                    block_start,
+                    1,
+                    block_size
+                )
+            );
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, object(row), cols);
+        }
     }
     
     template <class MatrixType>
     MatrixType* getSS(const MatrixType& matrix, slice rows, slice cols) {
-        int row_start;
-        int row_size;
-        getComponentBlock(rows, matrix.rows(), row_start, row_size);
-        int col_start;
-        int col_size;
-        getComponentBlock(cols, matrix.cols(), col_start, col_size);
-        return new MatrixType(matrix.block(row_start, col_start, row_size, col_size));
+        try {
+            int row_start;
+            int row_size;
+            getComponentBlock(rows, matrix.rows(), row_start, row_size);
+            int col_start;
+            int col_size;
+            getComponentBlock(cols, matrix.cols(), col_start, col_size);
+            return new MatrixType(matrix.block(row_start, col_start, row_size, col_size));
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, rows, cols);
+        }
     }
     
     object getItem(tuple arguments, dict) {
@@ -185,63 +224,99 @@ namespace OpenSolid
     
     template <class MatrixType>
     void setI(MatrixType& matrix, int index, typename MatrixType::Scalar argument) {
-        //Check<8>::VectorOrRowVectorValue(matrix);
-        if (matrix.cols() == 1) {
-            matrix(positiveIndex(index, matrix.rows()), 0) = argument;
-        } else {
-            matrix(0, positiveIndex(index, matrix.cols())) = argument;
+        try {
+            if (matrix.cols() == 1) {
+                matrix(positiveIndex(index, matrix.rows()), 0) = argument;
+            } else if (matrix.rows() == 1) {
+                matrix(0, positiveIndex(index, matrix.cols())) = argument;
+            } else {
+                throw IndexError();
+            }
+        } catch (const IndexError&) {
+            throw VectorIndexError<MatrixType>(matrix, object(index));
         }
     }
     
     template <class MatrixType>
     void setS(MatrixType& matrix, slice indices, const MatrixType& argument) {
-        //Check<8>::VectorOrRowVectorValue(matrix);
-        int block_start;
-        int block_size;
-        if (matrix.cols() == 1) {
-            getComponentBlock(indices, matrix.rows(), block_start, block_size);
-            //Check<11>::SpecificMatrixSize(argument, block_size, 1);
-            matrix.block(block_start, 0, block_size, 1) = argument;
-        } else {
-            getComponentBlock(indices, matrix.cols(), block_start, block_size);
-            //Check<11>::SpecificMatrixSize(argument, 1, block_size);
-            matrix.block(0, block_start, 1, block_size) = argument;
+        try {
+            int block_start;
+            int block_size;
+            if (matrix.cols() == 1) {
+                getComponentBlock(indices, matrix.rows(), block_start, block_size);
+                if (argument.rows() != block_size || argument.cols() != 1) {
+                    throw VectorAssignmentError<MatrixType>(matrix, indices, argument);
+                }
+                matrix.block(block_start, 0, block_size, 1) = argument;
+            } else if (matrix.rows() == 1) {
+                getComponentBlock(indices, matrix.cols(), block_start, block_size);
+                if (argument.rows() != 1 || argument.cols() != block_size) {
+                    throw VectorAssignmentError<MatrixType>(matrix, indices, argument);
+                }
+                matrix.block(0, block_start, 1, block_size) = argument;
+            } else {
+                throw IndexError();
+            }
+        } catch (const IndexError&) {
+            throw VectorIndexError<MatrixType>(matrix, indices);
         }
     }
     
     template <class MatrixType>
     void setII(MatrixType& matrix, int row, int col, typename MatrixType::Scalar argument) {
-        matrix(positiveIndex(row, matrix.rows()), positiveIndex(col, matrix.cols())) = argument;
+        try {
+            matrix(positiveIndex(row, matrix.rows()), positiveIndex(col, matrix.cols())) = argument;
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, object(row), object(col));
+        }
     }
     
     template <class MatrixType>
     void setSI(MatrixType& matrix, slice rows, int col, const MatrixType& argument) {
-        int block_start;
-        int block_size;
-        getComponentBlock(rows, matrix.rows(), block_start, block_size);
-        //Check<11>::SpecificMatrixSize(argument, block_size, 1);
-        matrix.block(block_start, positiveIndex(col, matrix.cols()), block_size, 1) = argument;
+        try {
+            int block_start;
+            int block_size;
+            getComponentBlock(rows, matrix.rows(), block_start, block_size);
+            if (argument.rows() != block_size || argument.cols() != 1) {
+                throw MatrixAssignmentError<MatrixType>(matrix, rows, object(col), argument);
+            }
+            matrix.block(block_start, positiveIndex(col, matrix.cols()), block_size, 1) = argument;
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, rows, object(col));
+        }
     }
     
     template <class MatrixType>
     void setIS(MatrixType& matrix, int row, slice cols, const MatrixType& argument) {
-        int block_start;
-        int block_size;
-        getComponentBlock(cols, matrix.cols(), block_start, block_size);
-        //Check<11>::SpecificMatrixSize(argument, 1, block_size);
-        matrix.block(positiveIndex(row, matrix.rows()), block_start, 1, block_size) = argument;
+        try {
+            int block_start;
+            int block_size;
+            getComponentBlock(cols, matrix.cols(), block_start, block_size);
+            if (argument.rows() != 1 || argument.cols() != block_size) {
+                throw MatrixAssignmentError<MatrixType>(matrix, object(row), cols, argument);
+            }
+            matrix.block(positiveIndex(row, matrix.rows()), block_start, 1, block_size) = argument;
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, object(row), cols);
+        }
     }
     
     template <class MatrixType>
     void setSS(MatrixType& matrix, slice rows, slice cols, const MatrixType& argument) {
-        int row_start;
-        int row_size;
-        getComponentBlock(rows, matrix.rows(), row_start, row_size);
-        int col_start;
-        int col_size;
-        getComponentBlock(cols, matrix.cols(), col_start, col_size);
-        //Check<11>::SpecificMatrixSize(argument, row_size, col_size);
-        matrix.block(row_start, col_start, row_size, col_size) = argument;
+        try {
+            int row_start;
+            int row_size;
+            getComponentBlock(rows, matrix.rows(), row_start, row_size);
+            int col_start;
+            int col_size;
+            getComponentBlock(cols, matrix.cols(), col_start, col_size);
+            if (argument.rows() != row_size || argument.cols() != col_size) {
+                throw MatrixAssignmentError<MatrixType>(matrix, rows, cols, argument);
+            }
+            matrix.block(row_start, col_start, row_size, col_size) = argument;
+        } catch (const IndexError&) {
+            throw MatrixIndexError<MatrixType>(matrix, rows, cols);
+        }
     }
     
     object setItem(tuple arguments, dict) {
@@ -276,33 +351,45 @@ namespace OpenSolid
 
     template <class MatrixType>
     typename MatrixType::Scalar squaredNorm(const MatrixType& argument) {
-        //Check<6>::VectorValue(argument);
+        if (argument.rows() != 1 && argument.cols() != 1) {
+            throw VectorSquaredNormError<MatrixType>(argument);
+        }
         return argument.col(0).squaredNorm();
     }
     
     template <class MatrixType>
-    typename MatrixType::Scalar norm(const MatrixType& argument) {return argument.norm();}
+    typename MatrixType::Scalar norm(const MatrixType& argument) {
+        if (argument.rows() != 1 && argument.cols() != 1) {
+            throw VectorNormError<MatrixType>(argument);
+        }
+        return argument.norm();
+    }
     
     template <class MatrixType>
     MatrixType* normalized(const MatrixType& argument);
     
     template <>
     MatrixXd* normalized(const MatrixXd& argument) {
-        //Check<6>::VectorValue(argument);
-        //Check<2>::NonZero(argument.squaredNorm());
+        if ((argument.rows() != 1 && argument.cols() != 1) || argument.squaredNorm() == Zero()) {
+            throw VectorNormalizedError<MatrixXd>(argument);
+        }
         return new MatrixXd(argument.col(0).normalized());
     }
     
     template <>
     MatrixXI* normalized(const MatrixXI& argument) {
-        //Check<6>::VectorValue(argument);
-        //Check<2>::NonZero(argument.squaredNorm().lower());
+        if (
+            (argument.rows() != 1 && argument.cols() != 1) ||
+            argument.squaredNorm().lower() == Zero()
+        ) {throw VectorNormalizedError<MatrixXI>(argument);}
         return new MatrixXI(argument.col(0).normalized());
     }
     
     template <class MatrixType>
     typename MatrixType::Scalar determinant(const MatrixType& argument) {
-        //Check<10>::SquareMatrix(argument);
+        if (argument.rows() != argument.cols()) {
+            throw MatrixDeterminantError<MatrixType>(argument);
+        }
         return argument.determinant();
     }
     
@@ -312,10 +399,17 @@ namespace OpenSolid
     template <class MatrixType>
     MatrixType* transpose(const MatrixType& argument) {return new MatrixType(argument.transpose());}
 
-    MatrixXd* inverse(const MatrixXd& argument) {return new MatrixXd(argument.inverse());}
+    MatrixXd* inverse(const MatrixXd& argument) {
+        FullPivLU<MatrixXd> decomposition(argument);
+        if (!decomposition.isInvertible()) {throw MatrixInverseError(argument);}
+        return new MatrixXd(decomposition.inverse());
+    }
     
     template <class MatrixType>
     MatrixType* replicate(const MatrixType& argument, int row_factor, int col_factor) {
+        if (row_factor <= 0 || col_factor <= 0) {
+            throw MatrixReplicateError<MatrixType>(argument, row_factor, col_factor);
+        }
         return new MatrixType(argument.replicate(row_factor, col_factor));
     }
     
