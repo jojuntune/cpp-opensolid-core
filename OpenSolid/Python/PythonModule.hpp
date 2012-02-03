@@ -423,6 +423,145 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    template <class MatrixType>
+    class MatrixCopyConstructionError : public Error
+    {
+    private:
+        MatrixType _argument;
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixCopyConstructionError(const MatrixType& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixType argument() const;
+    };
+
+    class Vector2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Vector2dCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Vector3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Vector3dCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class VectorXdCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT VectorXdCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class RowVector2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVector2dCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class RowVector3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVector3dCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class RowVectorXdCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVectorXdCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Matrix2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Matrix2dCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Matrix3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Matrix3dCopyConstructionError(const MatrixXd& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Vector2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Vector2ICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Vector3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Vector3ICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class VectorXICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT VectorXICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class RowVector2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVector2ICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class RowVector3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVector3ICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class RowVectorXICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT RowVectorXICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Matrix2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Matrix2ICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class Matrix3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
+    {
+    private:
+        OPENSOLID_PYTHON_MODULE_EXPORT Matrix3ICopyConstructionError(const MatrixXI& argument);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
 }
 
 #endif
