@@ -532,6 +532,9 @@ namespace OpenSolid
         return _value;
     }
 
+    template double ConstantMatrixConstructionError<MatrixXd>::value() const;
+    template Interval ConstantMatrixConstructionError<MatrixXI>::value() const;
+
     // ZeroMatrixConstructionError
 
     template <class MatrixType>
