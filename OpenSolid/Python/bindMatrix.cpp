@@ -414,48 +414,60 @@ namespace OpenSolid
     }
     
     double dotXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != second_argument.rows()
+        ) {throw MatrixDotProductError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
     Interval dotXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != second_argument.rows()
+        ) {throw MatrixDotProductError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return first_argument.col(0).cast<Interval>().dot(second_argument.col(0));
     }
     
     Interval dotXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != second_argument.rows()
+        ) {throw MatrixDotProductError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return first_argument.col(0).dot(second_argument.col(0).cast<Interval>());
     }
     
     Interval dotXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<4>::EqualDimensions(first_argument.rows(), second_argument.rows());
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != second_argument.rows()
+        ) {throw MatrixDotProductError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
     MatrixXd* crossXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<3>::EqualSizes(first_argument.rows(), 3);
-        //Check<3>::EqualSizes(second_argument.rows(), 3);
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != 3 ||
+            second_argument.rows() != 3
+        ) {throw MatrixCrossProductError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return new MatrixXd(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
     }
     
     MatrixXI* crossXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<3>::EqualSizes(first_argument.rows(), 3);
-        //Check<3>::EqualSizes(second_argument.rows(), 3);
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != 3 ||
+            second_argument.rows() != 3
+        ) {throw MatrixCrossProductError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cast<Interval>().cross(
                 second_argument.block<3, 1>(0, 0)
@@ -464,10 +476,12 @@ namespace OpenSolid
     }
     
     MatrixXI* crossXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<3>::EqualSizes(first_argument.rows(), 3);
-        //Check<3>::EqualSizes(second_argument.rows(), 3);
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != 3 ||
+            second_argument.rows() != 3
+        ) {throw MatrixCrossProductError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(
                 second_argument.block<3, 1>(0, 0).cast<Interval>()
@@ -476,10 +490,12 @@ namespace OpenSolid
     }
     
     MatrixXI* crossXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<6>::VectorValue(first_argument);
-        //Check<6>::VectorValue(second_argument);
-        //Check<3>::EqualSizes(first_argument.rows(), 3);
-        //Check<3>::EqualSizes(second_argument.rows(), 3);
+        if (
+            first_argument.cols() != 1 ||
+            second_argument.cols() != 1 ||
+            first_argument.rows() != 3 ||
+            second_argument.rows() != 3
+        ) {throw MatrixCrossProductError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
@@ -492,6 +508,10 @@ namespace OpenSolid
     bool isZeroP(const MatrixType& argument, double precision) {return argument.isZero(precision);}
     
     bool overlaps(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixOverlapsError(first_argument, second_argument);}
         return first_argument.overlaps(second_argument);
     }
     
@@ -499,9 +519,19 @@ namespace OpenSolid
         const MatrixXI& first_argument,
         const MatrixXI& second_argument,
         double precision
-    ) {return first_argument.overlaps(second_argument, precision);}
+    ) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixOverlapsError(first_argument, second_argument);}
+        return first_argument.overlaps(second_argument, precision);
+    }
     
     bool strictlyOverlaps(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixOverlapsError(first_argument, second_argument);}
         return first_argument.strictlyOverlaps(second_argument);
     }
     
@@ -509,9 +539,19 @@ namespace OpenSolid
         const MatrixXI& first_argument,
         const MatrixXI& second_argument,
         double precision
-    ) {return first_argument.strictlyOverlaps(second_argument, precision);}
+    ) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixOverlapsError(first_argument, second_argument);}
+        return first_argument.strictlyOverlaps(second_argument, precision);
+    }
     
     bool containsXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
         return first_argument.contains(second_argument.cast<Interval>());
     }
     
@@ -519,9 +559,19 @@ namespace OpenSolid
         const MatrixXI& first_argument,
         const MatrixXd& second_argument,
         double precision
-    ) {return first_argument.contains(second_argument.cast<Interval>(), precision);}
+    ) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
+        return first_argument.contains(second_argument.cast<Interval>(), precision);
+    }
     
     bool containsXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
         return first_argument.contains(second_argument);
     }
     
@@ -529,9 +579,19 @@ namespace OpenSolid
         const MatrixXI& first_argument,
         const MatrixXI& second_argument,
         double precision
-    ) {return first_argument.contains(second_argument, precision);}
+    ) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
+        return first_argument.contains(second_argument, precision);
+    }
     
     bool strictlyContainsXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
         return first_argument.strictlyContains(second_argument.cast<Interval>());
     }
     
@@ -539,9 +599,19 @@ namespace OpenSolid
         const MatrixXI& first_argument,
         const MatrixXd& second_argument,
         double precision
-    ) {return first_argument.strictlyContains(second_argument.cast<Interval>(), precision);}
+    ) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
+        return first_argument.strictlyContains(second_argument.cast<Interval>(), precision);
+    }
     
     bool strictlyContainsXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
         return first_argument.strictlyContains(second_argument);
     }
     
@@ -549,7 +619,13 @@ namespace OpenSolid
         const MatrixXI& first_argument,
         const MatrixXI& second_argument,
         double precision
-    ) {return first_argument.strictlyContains(second_argument, precision);}
+    ) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
+        return first_argument.strictlyContains(second_argument, precision);
+    }
     
     MatrixXd* cwiseLower(const MatrixXI& argument) {return new MatrixXd(argument.cwiseLower());}
     
@@ -562,41 +638,82 @@ namespace OpenSolid
     MatrixXd* cwiseWidth(const MatrixXI& argument) {return new MatrixXd(argument.cwiseWidth());}
     
     MatrixXI* hullXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixHullError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return new MatrixXI(first_argument.hull(second_argument));
     }
     
     MatrixXI* hullXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixHullError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(first_argument.cast<Interval>().hull(second_argument));
     }
     
     MatrixXI* hullXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixHullError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return new MatrixXI(first_argument.hull(second_argument.cast<Interval>()));
     }
     
     MatrixXI* hullXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixHullError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(first_argument.hull(second_argument));
     }
     
     MatrixXI* intersection(const MatrixXI& first_argument, const MatrixXI& second_argument) {
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixIntersectionError(first_argument, second_argument);}
         return new MatrixXI(first_argument.intersection(second_argument));
     }
     
     template <class MatrixType>
     MatrixType* constant(int rows, int cols, const typename MatrixType::Scalar& value) {
+        if (rows <= 0 || cols <= 0) {
+            throw ConstantMatrixConstructionError<MatrixType>(rows, cols, value);
+        }
         return new MatrixType(MatrixType::Constant(rows, cols, value));
     }
     
     template <class MatrixType>
-    MatrixType* zero(int rows, int cols) {return new MatrixType(MatrixType::Zero(rows, cols));}
+    MatrixType* zero(int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            throw ZeroMatrixConstructionError<MatrixType>(rows, cols);
+        }
+        return new MatrixType(MatrixType::Zero(rows, cols));
+    }
     
     template <class MatrixType>
-    MatrixType* ones(int rows, int cols) {return new MatrixType(MatrixType::Ones(rows, cols));}
+    MatrixType* ones(int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            throw OnesMatrixConstructionError<MatrixType>(rows, cols);
+        }
+        return new MatrixType(MatrixType::Ones(rows, cols));
+    }
     
     template <class MatrixType>
-    MatrixType* random(int rows, int cols) {return new MatrixType(MatrixType::Random(rows, cols));}
+    MatrixType* random(int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            throw RandomMatrixConstructionError<MatrixType>(rows, cols);
+        }
+        return new MatrixType(MatrixType::Random(rows, cols));
+    }
 
     template <class MatrixType>
     MatrixType* identity(int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            throw IdentityMatrixConstructionError<MatrixType>(rows, cols);
+        }
         return new MatrixType(MatrixType::Identity(rows, cols));
     }
     
@@ -605,42 +722,66 @@ namespace OpenSolid
     MatrixXI* negXI(const MatrixXI& argument) {return new MatrixXI(-argument);}
     
     MatrixXd* addXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixSumError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return new MatrixXd(first_argument + second_argument);
     }
     
     MatrixXI* addXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixSumError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(first_argument.cast<Interval>() + second_argument);
     }
     
     MatrixXI* addXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixSumError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return new MatrixXI(first_argument + second_argument.cast<Interval>());
     }
     
     MatrixXI* addXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixSumError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(first_argument + second_argument);
     }
     
     MatrixXd* subXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixDifferenceError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return new MatrixXd(first_argument - second_argument);
     }
     
     MatrixXI* subXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixDifferenceError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(first_argument.cast<Interval>() - second_argument);
     }
     
     MatrixXI* subXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixDifferenceError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return new MatrixXI(first_argument - second_argument.cast<Interval>());
     }
     
     MatrixXI* subXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixDifferenceError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return new MatrixXI(first_argument - second_argument);
     }
     
@@ -677,82 +818,122 @@ namespace OpenSolid
     }
     
     MatrixXd* divXdd(const MatrixXd& first_argument, double second_argument) {
-        //Check<2>::NonZero(second_argument);
+        if (second_argument == Zero()) {
+            throw MatrixQuotientError<MatrixXd, double>(first_argument, second_argument);
+        }
         return new MatrixXd(first_argument / second_argument);
     }
     
     MatrixXI* divXdI(const MatrixXd& first_argument, const Interval& second_argument) {
-        //Check<2>::NonZero(abs(second_argument).lower());
+        if (second_argument.contains(0.0)) {
+            throw MatrixQuotientError<MatrixXd, Interval>(first_argument, second_argument);
+        }
         return new MatrixXI(first_argument.cast<Interval>() / second_argument);
     }
     
     MatrixXI* divXId(const MatrixXI& first_argument, double second_argument) {
-        //Check<2>::NonZero(second_argument);
+        if (second_argument == Zero()) {
+            throw MatrixQuotientError<MatrixXI, double>(first_argument, second_argument);
+        }
         return new MatrixXI(first_argument / Interval(second_argument));
     }
     
     MatrixXI* divXII(const MatrixXI& first_argument, const Interval& second_argument) {
-        //Check<2>::NonZero(abs(second_argument).lower());
+        if (second_argument.contains(0.0)) {
+            throw MatrixQuotientError<MatrixXI, Interval>(first_argument, second_argument);
+        }
         return new MatrixXI(first_argument / second_argument);
     }
     
     MatrixXd* mulXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        if (first_argument.cols() != second_argument.rows()) {
+            throw MatrixProductError<MatrixXd, MatrixXd>(first_argument, second_argument);
+        }
         return new MatrixXd(first_argument * second_argument);
     }
     
     MatrixXI* mulXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        if (first_argument.cols() != second_argument.rows()) {
+            throw MatrixProductError<MatrixXd, MatrixXI>(first_argument, second_argument);
+        }
         return new MatrixXI(first_argument.cast<Interval>() * second_argument);
     }
     
     MatrixXI* mulXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        if (first_argument.cols() != second_argument.rows()) {
+            throw MatrixProductError<MatrixXI, MatrixXd>(first_argument, second_argument);
+        }
         return new MatrixXI(first_argument * second_argument.cast<Interval>());
     }
     
     MatrixXI* mulXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<3>::EqualSizes(first_argument.cols(), second_argument.rows());
+        if (first_argument.cols() != second_argument.rows()) {
+            throw MatrixProductError<MatrixXI, MatrixXI>(first_argument, second_argument);
+        }
         return new MatrixXI(first_argument * second_argument);
     }
 
     bool eqXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixEqualityError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return first_argument == second_argument;
     }
 
     bool eqXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixEqualityError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return first_argument.cast<Interval>() == second_argument;
     }
 
     bool eqXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixEqualityError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return first_argument == second_argument.cast<Interval>();
     }
 
     bool eqXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixEqualityError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return first_argument == second_argument;
     }
 
     bool neXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixInequalityError<MatrixXd, MatrixXd>(first_argument, second_argument);}
         return first_argument != second_argument;
     }
 
     bool neXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixInequalityError<MatrixXd, MatrixXI>(first_argument, second_argument);}
         return first_argument.cast<Interval>() != second_argument;
     }
 
     bool neXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixInequalityError<MatrixXI, MatrixXd>(first_argument, second_argument);}
         return first_argument != second_argument.cast<Interval>();
     }
 
     bool neXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
-        //Check<9>::SameSizeMatrices(first_argument, second_argument);
+        if (
+            first_argument.rows() != second_argument.rows() ||
+            first_argument.cols() != second_argument.cols()
+        ) {throw MatrixInequalityError<MatrixXI, MatrixXI>(first_argument, second_argument);}
         return first_argument != second_argument;
     }
 
