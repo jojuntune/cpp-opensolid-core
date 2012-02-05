@@ -85,6 +85,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT int index() const;
     };
 
+    typedef VectorComponentError<MatrixXd> MatrixXdVectorComponentError;
+    typedef VectorComponentError<MatrixXI> MatrixXIVectorComponentError;
+
     template <class MatrixType>
     class VectorIndexError : public UnaryMatrixError<MatrixType>
     {
@@ -99,6 +102,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object index() const;
     };
+
+    typedef VectorIndexError<MatrixXd> MatrixXdVectorIndexError;
+    typedef VectorIndexError<MatrixXI> MatrixXIVectorIndexError;
 
     template <class MatrixType>
     class MatrixIndexError : public UnaryMatrixError<MatrixType>
@@ -118,6 +124,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object colIndex() const;
     };
 
+    typedef MatrixIndexError<MatrixXd> MatrixXdIndexError;
+    typedef MatrixIndexError<MatrixXI> MatrixXIIndexError;
+
     template <class MatrixType>
     class VectorAssignmentError : public BinaryMatrixError<MatrixType, MatrixType>
     {
@@ -133,6 +142,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object index() const;
     };
+
+    typedef VectorAssignmentError<MatrixXd> MatrixXdVectorAssignmentError;
+    typedef VectorAssignmentError<MatrixXI> MatrixXIVectorAssignmentError;
 
     template <class MatrixType>
     class MatrixAssignmentError : public BinaryMatrixError<MatrixType, MatrixType>
@@ -153,32 +165,44 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object colIndex() const;
     };
 
+    typedef MatrixAssignmentError<MatrixXd> MatrixXdAssignmentError;
+    typedef MatrixAssignmentError<MatrixXI> MatrixXIAssignmentError;
+
     template <class MatrixType>
-    class VectorSquaredNormError : public UnaryMatrixError<MatrixType>
+    class MatrixSquaredNormError : public UnaryMatrixError<MatrixType>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT VectorSquaredNormError(const MatrixType& matrix);
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixSquaredNormError(const MatrixType& matrix);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
+    typedef MatrixSquaredNormError<MatrixXd> MatrixXdSquaredNormError;
+    typedef MatrixSquaredNormError<MatrixXI> MatrixXISquaredNormError;
+
     template <class MatrixType>
-    class VectorNormError : public UnaryMatrixError<MatrixType>
+    class MatrixNormError : public UnaryMatrixError<MatrixType>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT VectorNormError(const MatrixType& matrix);
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixNormError(const MatrixType& matrix);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
+    typedef MatrixNormError<MatrixXd> MatrixXdNormError;
+    typedef MatrixNormError<MatrixXI> MatrixXINormError;
+
     template <class MatrixType>
-    class VectorNormalizedError : public UnaryMatrixError<MatrixType>
+    class MatrixNormalizedError : public UnaryMatrixError<MatrixType>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT VectorNormalizedError(const MatrixType& matrix);
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixNormalizedError(const MatrixType& matrix);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef MatrixNormalizedError<MatrixXd> MatrixXdNormalizedError;
+    typedef MatrixNormalizedError<MatrixXI> MatrixXINormalizedError;
 
     template <class MatrixType>
     class MatrixDeterminantError : public UnaryMatrixError<MatrixType>
@@ -189,10 +213,13 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
-    class MatrixInverseError : public UnaryMatrixError<MatrixXd>
+    typedef MatrixDeterminantError<MatrixXd> MatrixXdDeterminantError;
+    typedef MatrixDeterminantError<MatrixXI> MatrixXIDeterminantError;
+
+    class MatrixXdInverseError : public UnaryMatrixError<MatrixXd>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT MatrixInverseError(const MatrixXd& matrix);
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixXdInverseError(const MatrixXd& matrix);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
@@ -215,6 +242,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT int colFactor() const;
     };
 
+    typedef MatrixReplicateError<MatrixXd> MatrixXdReplicateError;
+    typedef MatrixReplicateError<MatrixXI> MatrixXIReplicateError;
+
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixDotProductError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
     {
@@ -226,6 +256,11 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef MatrixDotProductError<MatrixXd, MatrixXd> MatrixXdDotProductMatrixXdError;
+    typedef MatrixDotProductError<MatrixXd, MatrixXI> MatrixXdDotProductMatrixXIError;
+    typedef MatrixDotProductError<MatrixXI, MatrixXd> MatrixXIDotProductMatrixXdError;
+    typedef MatrixDotProductError<MatrixXI, MatrixXI> MatrixXIDotProductMatrixXIError;
 
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixCrossProductError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
@@ -239,10 +274,15 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
-    class MatrixOverlapsError : public BinaryMatrixError<MatrixXI, MatrixXI>
+    typedef MatrixCrossProductError<MatrixXd, MatrixXd> MatrixXdCrossProductMatrixXdError;
+    typedef MatrixCrossProductError<MatrixXd, MatrixXI> MatrixXdCrossProductMatrixXIError;
+    typedef MatrixCrossProductError<MatrixXI, MatrixXd> MatrixXICrossProductMatrixXdError;
+    typedef MatrixCrossProductError<MatrixXI, MatrixXI> MatrixXICrossProductMatrixXIError;
+
+    class MatrixXIOverlapsMatrixXIError : public BinaryMatrixError<MatrixXI, MatrixXI>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT MatrixOverlapsError(
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixXIOverlapsMatrixXIError(
             const MatrixXI& first_matrix,
             const MatrixXI& second_matrix
         );
@@ -251,16 +291,19 @@ namespace OpenSolid
     };
 
     template <class SecondMatrixType>
-    class MatrixContainsError : public BinaryMatrixError<MatrixXI, SecondMatrixType>
+    class MatrixXIContainsError : public BinaryMatrixError<MatrixXI, SecondMatrixType>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT MatrixContainsError(
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixXIContainsError(
             const MatrixXI& first_matrix,
             const SecondMatrixType& second_matrix
         );
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef MatrixXIContainsError<MatrixXd> MatrixXIContainsMatrixXdError;
+    typedef MatrixXIContainsError<MatrixXI> MatrixXIContainsMatrixXIError;
 
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixHullError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
@@ -274,10 +317,15 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
-    class MatrixIntersectionError : public BinaryMatrixError<MatrixXI, MatrixXI>
+    typedef MatrixHullError<MatrixXd, MatrixXd> MatrixXdHullMatrixXdError;
+    typedef MatrixHullError<MatrixXd, MatrixXI> MatrixXdHullMatrixXIError;
+    typedef MatrixHullError<MatrixXI, MatrixXd> MatrixXIHullMatrixXdError;
+    typedef MatrixHullError<MatrixXI, MatrixXI> MatrixXIHullMatrixXIError;
+
+    class MatrixXIIntersectionMatrixXIError : public BinaryMatrixError<MatrixXI, MatrixXI>
     {
     public:
-        OPENSOLID_PYTHON_MODULE_EXPORT MatrixIntersectionError(
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixXIIntersectionMatrixXIError(
             const MatrixXI& first_matrix,
             const MatrixXI& second_matrix
         );
@@ -313,6 +361,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT typename MatrixType::Scalar value() const;
     };
 
+    typedef ConstantMatrixConstructionError<MatrixXd> ConstantMatrixXdConstructionError;
+    typedef ConstantMatrixConstructionError<MatrixXI> ConstantMatrixXIConstructionError;
+
     template <class MatrixType>
     class ZeroMatrixConstructionError : public MatrixFactoryError
     {
@@ -321,6 +372,9 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef ZeroMatrixConstructionError<MatrixXd> ZeroMatrixXdConstructionError;
+    typedef ZeroMatrixConstructionError<MatrixXI> ZeroMatrixXIConstructionError;
 
     template <class MatrixType>
     class OnesMatrixConstructionError : public MatrixFactoryError
@@ -331,6 +385,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
+    typedef OnesMatrixConstructionError<MatrixXd> OnesMatrixXdConstructionError;
+    typedef OnesMatrixConstructionError<MatrixXI> OnesMatrixXIConstructionError;
+
     template <class MatrixType>
     class RandomMatrixConstructionError : public MatrixFactoryError
     {
@@ -340,6 +397,9 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
+    typedef RandomMatrixConstructionError<MatrixXd> RandomMatrixXdConstructionError;
+    typedef RandomMatrixConstructionError<MatrixXI> RandomMatrixXIConstructionError;
+
     template <class MatrixType>
     class IdentityMatrixConstructionError : public MatrixFactoryError
     {
@@ -348,6 +408,9 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef IdentityMatrixConstructionError<MatrixXd> IdentityMatrixXdConstructionError;
+    typedef IdentityMatrixConstructionError<MatrixXI> IdentityMatrixXIConstructionError;
 
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixSumError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
@@ -361,6 +424,11 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
+    typedef MatrixSumError<MatrixXd, MatrixXd> MatrixXdSumMatrixXdError;
+    typedef MatrixSumError<MatrixXd, MatrixXI> MatrixXdSumMatrixXIError;
+    typedef MatrixSumError<MatrixXI, MatrixXd> MatrixXISumMatrixXdError;
+    typedef MatrixSumError<MatrixXI, MatrixXI> MatrixXISumMatrixXIError;
+
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixDifferenceError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
     {
@@ -372,6 +440,11 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef MatrixDifferenceError<MatrixXd, MatrixXd> MatrixXdDifferenceMatrixXdError;
+    typedef MatrixDifferenceError<MatrixXd, MatrixXI> MatrixXdDifferenceMatrixXIError;
+    typedef MatrixDifferenceError<MatrixXI, MatrixXd> MatrixXIDifferenceMatrixXdError;
+    typedef MatrixDifferenceError<MatrixXI, MatrixXI> MatrixXIDifferenceMatrixXIError;
 
     template <class MatrixType, class ScalarType>
     class MatrixQuotientError : public UnaryMatrixError<MatrixType>
@@ -388,6 +461,11 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT ScalarType divisor() const;
     };
 
+    typedef MatrixQuotientError<MatrixXd, double> MatrixXdQuotientDoubleError;
+    typedef MatrixQuotientError<MatrixXd, Interval> MatrixXdQuotientIntervalError;
+    typedef MatrixQuotientError<MatrixXI, double> MatrixXIQuotientDoubleError;
+    typedef MatrixQuotientError<MatrixXI, Interval> MatrixXIQuotientIntervalError;
+
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixProductError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
     {
@@ -399,6 +477,11 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef MatrixProductError<MatrixXd, MatrixXd> MatrixXdProductMatrixXdError;
+    typedef MatrixProductError<MatrixXd, MatrixXI> MatrixXdProductMatrixXIError;
+    typedef MatrixProductError<MatrixXI, MatrixXd> MatrixXIProductMatrixXdError;
+    typedef MatrixProductError<MatrixXI, MatrixXI> MatrixXIProductMatrixXIError;
 
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixEqualityError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
@@ -412,6 +495,11 @@ namespace OpenSolid
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
 
+    typedef MatrixEqualityError<MatrixXd, MatrixXd> MatrixXdEqualityMatrixXdError;
+    typedef MatrixEqualityError<MatrixXd, MatrixXI> MatrixXdEqualityMatrixXIError;
+    typedef MatrixEqualityError<MatrixXI, MatrixXd> MatrixXIEqualityMatrixXdError;
+    typedef MatrixEqualityError<MatrixXI, MatrixXI> MatrixXIEqualityMatrixXIError;
+
     template <class FirstMatrixType, class SecondMatrixType>
     class MatrixInequalityError : public BinaryMatrixError<FirstMatrixType, SecondMatrixType>
     {
@@ -423,6 +511,11 @@ namespace OpenSolid
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
     };
+
+    typedef MatrixInequalityError<MatrixXd, MatrixXd> MatrixXdInequalityMatrixXdError;
+    typedef MatrixInequalityError<MatrixXd, MatrixXI> MatrixXdInequalityMatrixXIError;
+    typedef MatrixInequalityError<MatrixXI, MatrixXd> MatrixXIInequalityMatrixXdError;
+    typedef MatrixInequalityError<MatrixXI, MatrixXI> MatrixXIInequalityMatrixXIError;
 
     template <class MatrixType>
     class MatrixCopyConstructionError : public Error
@@ -437,7 +530,7 @@ namespace OpenSolid
 
     class Vector2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Vector2dCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -445,7 +538,7 @@ namespace OpenSolid
 
     class Vector3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Vector3dCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -453,7 +546,7 @@ namespace OpenSolid
 
     class VectorXdCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT VectorXdCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -461,7 +554,7 @@ namespace OpenSolid
 
     class RowVector2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT RowVector2dCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -469,7 +562,7 @@ namespace OpenSolid
 
     class RowVector3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT RowVector3dCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -477,7 +570,7 @@ namespace OpenSolid
 
     class RowVectorXdCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT RowVectorXdCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -485,7 +578,7 @@ namespace OpenSolid
 
     class Matrix2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Matrix2dCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -493,7 +586,7 @@ namespace OpenSolid
 
     class Matrix3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Matrix3dCopyConstructionError(const MatrixXd& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -501,7 +594,7 @@ namespace OpenSolid
 
     class Vector2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Vector2ICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -509,7 +602,7 @@ namespace OpenSolid
 
     class Vector3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Vector3ICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -517,7 +610,7 @@ namespace OpenSolid
 
     class VectorXICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT VectorXICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -525,7 +618,7 @@ namespace OpenSolid
 
     class RowVector2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT RowVector2ICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -533,7 +626,7 @@ namespace OpenSolid
 
     class RowVector3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT RowVector3ICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -541,7 +634,7 @@ namespace OpenSolid
 
     class RowVectorXICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT RowVectorXICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -549,7 +642,7 @@ namespace OpenSolid
 
     class Matrix2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Matrix2ICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
@@ -557,10 +650,126 @@ namespace OpenSolid
 
     class Matrix3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
     {
-    private:
+    public:
         OPENSOLID_PYTHON_MODULE_EXPORT Matrix3ICopyConstructionError(const MatrixXI& argument);
 
         OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+    };
+
+    class UnitVectorConstructionError
+    {
+    private:
+        int _index;
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVectorConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT int index() const;
+    };
+
+    class DynamicUnitVectorConstructionError : public UnitVectorConstructionError
+    {
+    private:
+        int _size;
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT DynamicUnitVectorConstructionError(int size, int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT int size() const;
+    };
+
+    class UnitVector2dConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVector2dConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitVector3dConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVector3dConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitVectorXdConstructionError : public DynamicUnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVectorXdConstructionError(int size, int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitRowVector2dConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitRowVector2dConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitRowVector3dConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitRowVector3dConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitRowVectorXdConstructionError : public DynamicUnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitRowVectorXdConstructionError(int size, int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitVector2IConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVector2IConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitVector3IConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVector3IConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitVectorXIConstructionError : public DynamicUnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitVectorXIConstructionError(int size, int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitRowVector2IConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitRowVector2IConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitRowVector3IConstructionError : public UnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitRowVector3IConstructionError(int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
+    };
+
+    class UnitRowVectorXIConstructionError : public DynamicUnitVectorConstructionError
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT UnitRowVectorXIConstructionError(int size, int index);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const;
     };
 }
 

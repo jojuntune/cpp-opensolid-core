@@ -352,7 +352,7 @@ namespace OpenSolid
     template <class MatrixType>
     typename MatrixType::Scalar squaredNorm(const MatrixType& argument) {
         if (argument.rows() != 1 && argument.cols() != 1) {
-            throw VectorSquaredNormError<MatrixType>(argument);
+            throw MatrixSquaredNormError<MatrixType>(argument);
         }
         return argument.col(0).squaredNorm();
     }
@@ -360,7 +360,7 @@ namespace OpenSolid
     template <class MatrixType>
     typename MatrixType::Scalar norm(const MatrixType& argument) {
         if (argument.rows() != 1 && argument.cols() != 1) {
-            throw VectorNormError<MatrixType>(argument);
+            throw MatrixNormError<MatrixType>(argument);
         }
         return argument.norm();
     }
@@ -371,7 +371,7 @@ namespace OpenSolid
     template <>
     MatrixXd* normalized(const MatrixXd& argument) {
         if ((argument.rows() != 1 && argument.cols() != 1) || argument.squaredNorm() == Zero()) {
-            throw VectorNormalizedError<MatrixXd>(argument);
+            throw MatrixXdNormalizedError(argument);
         }
         return new MatrixXd(argument.col(0).normalized());
     }
@@ -381,7 +381,7 @@ namespace OpenSolid
         if (
             (argument.rows() != 1 && argument.cols() != 1) ||
             argument.squaredNorm().lower() == Zero()
-        ) {throw VectorNormalizedError<MatrixXI>(argument);}
+        ) {throw MatrixXINormalizedError(argument);}
         return new MatrixXI(argument.col(0).normalized());
     }
     
@@ -401,7 +401,7 @@ namespace OpenSolid
 
     MatrixXd* inverse(const MatrixXd& argument) {
         FullPivLU<MatrixXd> decomposition(argument);
-        if (!decomposition.isInvertible()) {throw MatrixInverseError(argument);}
+        if (!decomposition.isInvertible()) {throw MatrixXdInverseError(argument);}
         return new MatrixXd(decomposition.inverse());
     }
     
@@ -418,7 +418,7 @@ namespace OpenSolid
             first_argument.cols() != 1 ||
             second_argument.cols() != 1 ||
             first_argument.rows() != second_argument.rows()
-        ) {throw MatrixDotProductError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdDotProductMatrixXdError(first_argument, second_argument);}
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
@@ -427,7 +427,7 @@ namespace OpenSolid
             first_argument.cols() != 1 ||
             second_argument.cols() != 1 ||
             first_argument.rows() != second_argument.rows()
-        ) {throw MatrixDotProductError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdDotProductMatrixXIError(first_argument, second_argument);}
         return first_argument.col(0).cast<Interval>().dot(second_argument.col(0));
     }
     
@@ -436,7 +436,7 @@ namespace OpenSolid
             first_argument.cols() != 1 ||
             second_argument.cols() != 1 ||
             first_argument.rows() != second_argument.rows()
-        ) {throw MatrixDotProductError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIDotProductMatrixXdError(first_argument, second_argument);}
         return first_argument.col(0).dot(second_argument.col(0).cast<Interval>());
     }
     
@@ -445,7 +445,7 @@ namespace OpenSolid
             first_argument.cols() != 1 ||
             second_argument.cols() != 1 ||
             first_argument.rows() != second_argument.rows()
-        ) {throw MatrixDotProductError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIDotProductMatrixXIError(first_argument, second_argument);}
         return first_argument.col(0).dot(second_argument.col(0));
     }
     
@@ -455,7 +455,7 @@ namespace OpenSolid
             second_argument.cols() != 1 ||
             first_argument.rows() != 3 ||
             second_argument.rows() != 3
-        ) {throw MatrixCrossProductError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdCrossProductMatrixXdError(first_argument, second_argument);}
         return new MatrixXd(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
@@ -467,7 +467,7 @@ namespace OpenSolid
             second_argument.cols() != 1 ||
             first_argument.rows() != 3 ||
             second_argument.rows() != 3
-        ) {throw MatrixCrossProductError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdCrossProductMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cast<Interval>().cross(
                 second_argument.block<3, 1>(0, 0)
@@ -481,7 +481,7 @@ namespace OpenSolid
             second_argument.cols() != 1 ||
             first_argument.rows() != 3 ||
             second_argument.rows() != 3
-        ) {throw MatrixCrossProductError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXICrossProductMatrixXdError(first_argument, second_argument);}
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(
                 second_argument.block<3, 1>(0, 0).cast<Interval>()
@@ -495,7 +495,7 @@ namespace OpenSolid
             second_argument.cols() != 1 ||
             first_argument.rows() != 3 ||
             second_argument.rows() != 3
-        ) {throw MatrixCrossProductError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXICrossProductMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(
             first_argument.block<3, 1>(0, 0).cross(second_argument.block<3, 1>(0, 0))
         );
@@ -511,7 +511,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixOverlapsError(first_argument, second_argument);}
+        ) {throw MatrixXIOverlapsMatrixXIError(first_argument, second_argument);}
         return first_argument.overlaps(second_argument);
     }
     
@@ -523,7 +523,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixOverlapsError(first_argument, second_argument);}
+        ) {throw MatrixXIOverlapsMatrixXIError(first_argument, second_argument);}
         return first_argument.overlaps(second_argument, precision);
     }
     
@@ -531,7 +531,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixOverlapsError(first_argument, second_argument);}
+        ) {throw MatrixXIOverlapsMatrixXIError(first_argument, second_argument);}
         return first_argument.strictlyOverlaps(second_argument);
     }
     
@@ -543,7 +543,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixOverlapsError(first_argument, second_argument);}
+        ) {throw MatrixXIOverlapsMatrixXIError(first_argument, second_argument);}
         return first_argument.strictlyOverlaps(second_argument, precision);
     }
     
@@ -551,7 +551,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXdError(first_argument, second_argument);}
         return first_argument.contains(second_argument.cast<Interval>());
     }
     
@@ -563,7 +563,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXdError(first_argument, second_argument);}
         return first_argument.contains(second_argument.cast<Interval>(), precision);
     }
     
@@ -571,7 +571,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXIError(first_argument, second_argument);}
         return first_argument.contains(second_argument);
     }
     
@@ -583,7 +583,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXIError(first_argument, second_argument);}
         return first_argument.contains(second_argument, precision);
     }
     
@@ -591,7 +591,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXdError(first_argument, second_argument);}
         return first_argument.strictlyContains(second_argument.cast<Interval>());
     }
     
@@ -603,7 +603,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXdError(first_argument, second_argument);}
         return first_argument.strictlyContains(second_argument.cast<Interval>(), precision);
     }
     
@@ -611,7 +611,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXIError(first_argument, second_argument);}
         return first_argument.strictlyContains(second_argument);
     }
     
@@ -623,7 +623,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixContainsError<MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIContainsMatrixXIError(first_argument, second_argument);}
         return first_argument.strictlyContains(second_argument, precision);
     }
     
@@ -641,7 +641,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixHullError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdHullMatrixXdError(first_argument, second_argument);}
         return new MatrixXI(first_argument.hull(second_argument));
     }
     
@@ -649,7 +649,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixHullError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdHullMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument.cast<Interval>().hull(second_argument));
     }
     
@@ -657,7 +657,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixHullError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIHullMatrixXdError(first_argument, second_argument);}
         return new MatrixXI(first_argument.hull(second_argument.cast<Interval>()));
     }
     
@@ -665,7 +665,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixHullError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIHullMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument.hull(second_argument));
     }
     
@@ -673,7 +673,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixIntersectionError(first_argument, second_argument);}
+        ) {throw MatrixXIIntersectionMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument.intersection(second_argument));
     }
     
@@ -725,7 +725,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixSumError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdSumMatrixXdError(first_argument, second_argument);}
         return new MatrixXd(first_argument + second_argument);
     }
     
@@ -733,7 +733,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixSumError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdSumMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument.cast<Interval>() + second_argument);
     }
     
@@ -741,7 +741,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixSumError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXISumMatrixXdError(first_argument, second_argument);}
         return new MatrixXI(first_argument + second_argument.cast<Interval>());
     }
     
@@ -749,7 +749,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixSumError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXISumMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument + second_argument);
     }
     
@@ -757,7 +757,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixDifferenceError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdDifferenceMatrixXdError(first_argument, second_argument);}
         return new MatrixXd(first_argument - second_argument);
     }
     
@@ -765,7 +765,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixDifferenceError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdDifferenceMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument.cast<Interval>() - second_argument);
     }
     
@@ -773,7 +773,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixDifferenceError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIDifferenceMatrixXdError(first_argument, second_argument);}
         return new MatrixXI(first_argument - second_argument.cast<Interval>());
     }
     
@@ -781,7 +781,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixDifferenceError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIDifferenceMatrixXIError(first_argument, second_argument);}
         return new MatrixXI(first_argument - second_argument);
     }
     
@@ -819,56 +819,56 @@ namespace OpenSolid
     
     MatrixXd* divXdd(const MatrixXd& first_argument, double second_argument) {
         if (second_argument == Zero()) {
-            throw MatrixQuotientError<MatrixXd, double>(first_argument, second_argument);
+            throw MatrixXdQuotientDoubleError(first_argument, second_argument);
         }
         return new MatrixXd(first_argument / second_argument);
     }
     
     MatrixXI* divXdI(const MatrixXd& first_argument, const Interval& second_argument) {
         if (second_argument.contains(0.0)) {
-            throw MatrixQuotientError<MatrixXd, Interval>(first_argument, second_argument);
+            throw MatrixXdQuotientIntervalError(first_argument, second_argument);
         }
         return new MatrixXI(first_argument.cast<Interval>() / second_argument);
     }
     
     MatrixXI* divXId(const MatrixXI& first_argument, double second_argument) {
         if (second_argument == Zero()) {
-            throw MatrixQuotientError<MatrixXI, double>(first_argument, second_argument);
+            throw MatrixXIQuotientDoubleError(first_argument, second_argument);
         }
         return new MatrixXI(first_argument / Interval(second_argument));
     }
     
     MatrixXI* divXII(const MatrixXI& first_argument, const Interval& second_argument) {
         if (second_argument.contains(0.0)) {
-            throw MatrixQuotientError<MatrixXI, Interval>(first_argument, second_argument);
+            throw MatrixXIQuotientIntervalError(first_argument, second_argument);
         }
         return new MatrixXI(first_argument / second_argument);
     }
     
     MatrixXd* mulXdXd(const MatrixXd& first_argument, const MatrixXd& second_argument) {
         if (first_argument.cols() != second_argument.rows()) {
-            throw MatrixProductError<MatrixXd, MatrixXd>(first_argument, second_argument);
+            throw MatrixXdProductMatrixXdError(first_argument, second_argument);
         }
         return new MatrixXd(first_argument * second_argument);
     }
     
     MatrixXI* mulXdXI(const MatrixXd& first_argument, const MatrixXI& second_argument) {
         if (first_argument.cols() != second_argument.rows()) {
-            throw MatrixProductError<MatrixXd, MatrixXI>(first_argument, second_argument);
+            throw MatrixXdProductMatrixXIError(first_argument, second_argument);
         }
         return new MatrixXI(first_argument.cast<Interval>() * second_argument);
     }
     
     MatrixXI* mulXIXd(const MatrixXI& first_argument, const MatrixXd& second_argument) {
         if (first_argument.cols() != second_argument.rows()) {
-            throw MatrixProductError<MatrixXI, MatrixXd>(first_argument, second_argument);
+            throw MatrixXIProductMatrixXdError(first_argument, second_argument);
         }
         return new MatrixXI(first_argument * second_argument.cast<Interval>());
     }
     
     MatrixXI* mulXIXI(const MatrixXI& first_argument, const MatrixXI& second_argument) {
         if (first_argument.cols() != second_argument.rows()) {
-            throw MatrixProductError<MatrixXI, MatrixXI>(first_argument, second_argument);
+            throw MatrixXIProductMatrixXIError(first_argument, second_argument);
         }
         return new MatrixXI(first_argument * second_argument);
     }
@@ -877,7 +877,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixEqualityError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdEqualityMatrixXdError(first_argument, second_argument);}
         return first_argument == second_argument;
     }
 
@@ -885,7 +885,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixEqualityError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdEqualityMatrixXIError(first_argument, second_argument);}
         return first_argument.cast<Interval>() == second_argument;
     }
 
@@ -893,7 +893,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixEqualityError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIEqualityMatrixXdError(first_argument, second_argument);}
         return first_argument == second_argument.cast<Interval>();
     }
 
@@ -901,7 +901,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixEqualityError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIEqualityMatrixXIError(first_argument, second_argument);}
         return first_argument == second_argument;
     }
 
@@ -909,7 +909,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixInequalityError<MatrixXd, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXdInequalityMatrixXdError(first_argument, second_argument);}
         return first_argument != second_argument;
     }
 
@@ -917,7 +917,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixInequalityError<MatrixXd, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXdInequalityMatrixXIError(first_argument, second_argument);}
         return first_argument.cast<Interval>() != second_argument;
     }
 
@@ -925,7 +925,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixInequalityError<MatrixXI, MatrixXd>(first_argument, second_argument);}
+        ) {throw MatrixXIInequalityMatrixXdError(first_argument, second_argument);}
         return first_argument != second_argument.cast<Interval>();
     }
 
@@ -933,7 +933,7 @@ namespace OpenSolid
         if (
             first_argument.rows() != second_argument.rows() ||
             first_argument.cols() != second_argument.cols()
-        ) {throw MatrixInequalityError<MatrixXI, MatrixXI>(first_argument, second_argument);}
+        ) {throw MatrixXIInequalityMatrixXIError(first_argument, second_argument);}
         return first_argument != second_argument;
     }
 

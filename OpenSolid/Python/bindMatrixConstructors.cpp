@@ -32,7 +32,9 @@ namespace OpenSolid
         }
 
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 2 || matrix.cols() != 1) {
+                throw Vector2dCopyConstructionError(matrix);
+            }
             return new MatrixXd(matrix);
         }
 
@@ -55,7 +57,7 @@ namespace OpenSolid
         static MatrixXd* UnitY() {return new MatrixXd(Vector2d::UnitY());}
 
         static MatrixXd* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 1) {throw UnitVector2dConstructionError(index);}
             return new MatrixXd(Vector2d::Unit(index));
         }
     };
@@ -67,7 +69,9 @@ namespace OpenSolid
         }
 
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 3 || matrix.cols() != 1) {
+                throw Vector3dCopyConstructionError(matrix);
+            }
             return new MatrixXd(matrix);
         }
 
@@ -92,7 +96,7 @@ namespace OpenSolid
         static MatrixXd* UnitZ() {return new MatrixXd(Vector3d::UnitZ());}
 
         static MatrixXd* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 2) {throw UnitVector3dConstructionError(index);}
             return new MatrixXd(Vector3d::Unit(index));
         }
     };
@@ -100,7 +104,7 @@ namespace OpenSolid
     struct VectorXdConstructors
     {
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.cols() != 1) {throw VectorXdCopyConstructionError(matrix);}
             return new MatrixXd(matrix);
         }
 
@@ -119,7 +123,9 @@ namespace OpenSolid
         static MatrixXd* Zero(int size) {return new MatrixXd(VectorXd::Zero(size));}
 
         static MatrixXd* Unit(int size, int index) {
-            // TODO check valid index
+            if (size <= 0 || index < 0 || index >= size) {
+                throw UnitVectorXdConstructionError(size, index);
+            }
             return new MatrixXd(VectorXd::Unit(size, index));
         }
     };
@@ -131,7 +137,9 @@ namespace OpenSolid
         }
 
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 1 || matrix.cols() != 2) {
+                throw RowVector2dCopyConstructionError(matrix);
+            }
             return new MatrixXd(matrix);
         }
 
@@ -154,7 +162,7 @@ namespace OpenSolid
         static MatrixXd* UnitY() {return new MatrixXd(RowVector2d::UnitY());}
 
         static MatrixXd* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 1) {throw UnitRowVector2dConstructionError(index);}
             return new MatrixXd(RowVector2d::Unit(index));
         }
     };
@@ -166,7 +174,9 @@ namespace OpenSolid
         }
 
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 1 || matrix.cols() != 3) {
+                throw RowVector3dCopyConstructionError(matrix);
+            }
             return new MatrixXd(matrix);
         }
 
@@ -191,7 +201,7 @@ namespace OpenSolid
         static MatrixXd* UnitZ() {return new MatrixXd(RowVector3d::UnitZ());}
 
         static MatrixXd* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 2) {throw UnitRowVector3dConstructionError(index);}
             return new MatrixXd(RowVector3d::Unit(index));
         }
     };
@@ -199,7 +209,7 @@ namespace OpenSolid
     struct RowVectorXdConstructors
     {
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 1) {throw RowVectorXdCopyConstructionError(matrix);}
             return new MatrixXd(matrix);
         }
 
@@ -218,7 +228,9 @@ namespace OpenSolid
         static MatrixXd* Zero(int size) {return new MatrixXd(RowVectorXd::Zero(size));}
 
         static MatrixXd* Unit(int size, int index) {
-            // TODO check valid index
+            if (size <= 0 || index < 0 || index >= size) {
+                throw UnitRowVectorXdConstructionError(size, index);
+            }
             return new MatrixXd(RowVectorXd::Unit(size, index));
         }
     };
@@ -230,7 +242,9 @@ namespace OpenSolid
         }
 
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 2 || matrix.cols() != 1) {
+                throw Vector2ICopyConstructionError(matrix);
+            }
             return new MatrixXI(matrix);
         }
 
@@ -253,7 +267,7 @@ namespace OpenSolid
         static MatrixXI* UnitY() {return new MatrixXI(Vector2I::UnitY());}
 
         static MatrixXI* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 1) {throw UnitVector2IConstructionError(index);}
             return new MatrixXI(Vector2I::Unit(index));
         }
     };
@@ -265,7 +279,9 @@ namespace OpenSolid
         }
 
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 3 || matrix.cols() != 1) {
+                throw Vector3ICopyConstructionError(matrix);
+            }
             return new MatrixXI(matrix);
         }
 
@@ -290,7 +306,7 @@ namespace OpenSolid
         static MatrixXI* UnitZ() {return new MatrixXI(Vector3I::UnitZ());}
 
         static MatrixXI* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 2) {throw UnitVector3IConstructionError(index);}
             return new MatrixXI(Vector3I::Unit(index));
         }
     };
@@ -298,7 +314,7 @@ namespace OpenSolid
     struct VectorXIConstructors
     {
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.cols() != 1) {throw VectorXICopyConstructionError(matrix);}
             return new MatrixXI(matrix);
         }
 
@@ -317,7 +333,9 @@ namespace OpenSolid
         static MatrixXI* Zero(int size) {return new MatrixXI(VectorXI::Zero(size));}
 
         static MatrixXI* Unit(int size, int index) {
-            // TODO check valid index
+            if (size <= 0 || index < 0 || index >= size) {
+                throw UnitVectorXIConstructionError(size, index);
+            }
             return new MatrixXI(VectorXI::Unit(size, index));
         }
     };
@@ -329,7 +347,9 @@ namespace OpenSolid
         }
 
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 1 || matrix.cols() != 2) {
+                throw RowVector2ICopyConstructionError(matrix);
+            }
             return new MatrixXI(matrix);
         }
 
@@ -352,7 +372,7 @@ namespace OpenSolid
         static MatrixXI* UnitY() {return new MatrixXI(RowVector2I::UnitY());}
 
         static MatrixXI* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 1) {throw UnitRowVector2IConstructionError(index);}
             return new MatrixXI(RowVector2I::Unit(index));
         }
     };
@@ -364,7 +384,9 @@ namespace OpenSolid
         }
 
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 1 || matrix.cols() != 3) {
+                throw RowVector2ICopyConstructionError(matrix);
+            }
             return new MatrixXI(matrix);
         }
 
@@ -389,7 +411,7 @@ namespace OpenSolid
         static MatrixXI* UnitZ() {return new MatrixXI(RowVector3I::UnitZ());}
 
         static MatrixXI* Unit(int index) {
-            // TODO check valid index
+            if (index < 0 || index > 1) {throw UnitRowVector3IConstructionError(index);}
             return new MatrixXI(RowVector3I::Unit(index));
         }
     };
@@ -397,7 +419,7 @@ namespace OpenSolid
     struct RowVectorXIConstructors
     {
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 1) {throw RowVectorXICopyConstructionError(matrix);}
             return new MatrixXI(matrix);
         }
 
@@ -416,7 +438,9 @@ namespace OpenSolid
         static MatrixXI* Zero(int size) {return new MatrixXI(RowVectorXI::Zero(size));}
 
         static MatrixXI* Unit(int size, int index) {
-            // TODO check valid index
+            if (size <= 0 || index < 0 || index >= size) {
+                throw UnitRowVectorXIConstructionError(size, index);
+            }
             return new MatrixXI(RowVectorXI::Unit(size, index));
         }
     };
@@ -424,7 +448,9 @@ namespace OpenSolid
     struct Matrix2dConstructors
     {
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 2 || matrix.cols() != 2) {
+                throw Matrix2dCopyConstructionError(matrix);
+            }
             return new MatrixXd(matrix);
         }
 
@@ -442,7 +468,9 @@ namespace OpenSolid
     struct Matrix3dConstructors
     {
         static MatrixXd* copy(object, const MatrixXd& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 3 || matrix.cols() != 3) {
+                throw Matrix3dCopyConstructionError(matrix);
+            }
             return new MatrixXd(matrix);
         }
 
@@ -462,22 +490,37 @@ namespace OpenSolid
         static MatrixXd* copy(const MatrixXd& matrix) {return new MatrixXd(matrix);}
 
         static MatrixXd* Constant(int rows, int cols, double value) {
+            if (rows <= 0 || cols <= 0) {
+                throw ConstantMatrixConstructionError<MatrixXd>(rows, cols, value);
+            }
             return new MatrixXd(MatrixXd::Constant(rows, cols, value));
         }
 
         static MatrixXd* Identity(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw IdentityMatrixConstructionError<MatrixXd>(rows, cols);
+            }
             return new MatrixXd(MatrixXd::Identity(rows, cols));
         }
 
         static MatrixXd* Ones(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw OnesMatrixConstructionError<MatrixXd>(rows, cols);
+            }
             return new MatrixXd(MatrixXd::Ones(rows, cols));
         }
 
         static MatrixXd* Random(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw RandomMatrixConstructionError<MatrixXd>(rows, cols);
+            }
             return new MatrixXd(MatrixXd::Random(rows, cols));
         }
 
         static MatrixXd* Zero(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw ZeroMatrixConstructionError<MatrixXd>(rows, cols);
+            }
             return new MatrixXd(MatrixXd::Zero(rows, cols));
         }
     };
@@ -485,7 +528,9 @@ namespace OpenSolid
     struct Matrix2IConstructors
     {
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 2 || matrix.cols() != 2) {
+                throw Matrix2ICopyConstructionError(matrix);
+            }
             return new MatrixXI(matrix);
         }
 
@@ -505,7 +550,9 @@ namespace OpenSolid
     struct Matrix3IConstructors
     {
         static MatrixXI* copy(object, const MatrixXI& matrix) {
-            // TODO check dimensions
+            if (matrix.rows() != 3 || matrix.cols() != 3) {
+                throw Matrix3ICopyConstructionError(matrix);
+            }
             return new MatrixXI(matrix);
         }
 
@@ -527,22 +574,37 @@ namespace OpenSolid
         static MatrixXI* copy(const MatrixXI& matrix) {return new MatrixXI(matrix);}
 
         static MatrixXI* Constant(int rows, int cols, const Interval& value) {
+            if (rows <= 0 || cols <= 0) {
+                throw ConstantMatrixConstructionError<MatrixXI>(rows, cols, value);
+            }
             return new MatrixXI(MatrixXI::Constant(rows, cols, value));
         }
 
         static MatrixXI* Identity(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw IdentityMatrixConstructionError<MatrixXI>(rows, cols);
+            }
             return new MatrixXI(MatrixXI::Identity(rows, cols));
         }
 
         static MatrixXI* Ones(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw OnesMatrixConstructionError<MatrixXI>(rows, cols);
+            }
             return new MatrixXI(MatrixXI::Ones(rows, cols));
         }
 
         static MatrixXI* Random(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw RandomMatrixConstructionError<MatrixXd>(rows, cols);
+            }
             return new MatrixXI(MatrixXI::Random(rows, cols));
         }
 
         static MatrixXI* Zero(int rows, int cols) {
+            if (rows <= 0 || cols <= 0) {
+                throw ZeroMatrixConstructionError<MatrixXd>(rows, cols);
+            }
             return new MatrixXI(MatrixXI::Zero(rows, cols));
         }
     };
