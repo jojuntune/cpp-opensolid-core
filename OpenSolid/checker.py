@@ -1,53 +1,16 @@
 import fileinput
 import re
 
-error_code_declarations = {} # int -> (line number, file)
-error_code_pattern = re.compile('static\s+const\s+int\s+error_code\s+=\s+(\d+);')
+what_template_error_type_pattern = re.compile('return "\w+Error<[\w\s,]+>"')
+what_error_type_pattern = re.compile('return "(\w+Error)"')
+what_error_types = set()
+
+bound_error_type_pattern = re.compile('class_<(\w+)>\("_\\1", no_init\)')
+bound_error_types = set()
 
 error_found = False
 
-for line in fileinput.input():
-    # Get current line number and filename for purposes of error reporting
-    line_number = fileinput.filelineno()
-    filename = fileinput.filename()
-    # Check for duplicate error codes
-    error_code_match = re.search(error_code_pattern, line)
-    if error_code_match:
-        error_code = int(error_code_match.group(1))
-        if error_code_declarations.has_key(error_code):
-            message = 'ERROR: Error code {0} on line {1} of file {2} '\
-                'already encountered at line {3} of file {4}'
-            previous_line_number = error_code_declarations[error_code][0]
-            previous_filename = error_code_declarations[error_code][1]
-            arguments = (
-                error_code,
-                line_number,
-                filename,
-                previous_line_number,
-                previous_filename
-            )
-            print(message.format(*arguments))
-            error_found = True
-        else:
-            error_code_declarations[error_code] = (line_number, filename)
-
-if error_code_declarations and not error_found:
-    used_error_codes = error_code_declarations.keys()
-    max_used_error_code = max(used_error_codes)
-    missing_error_codes = set(range(1, max_used_error_code + 1)) - set(used_error_codes)
-    message = 'Available error codes: {0}, {1}+'
-    arguments = (
-        ', '.join(str(error_code) for error_code in missing_error_codes),
-        max_used_error_code + 1
-    )
-    print(message.format(*arguments))
-    for error_code in used_error_codes:
-        line_number = error_code_declarations[error_code][0]
-        filename = error_code_declarations[error_code][1]
-        message = 'Error code {0} declared at line {1} of file {2}'
-        arguments = (error_code, line_number, filename)
-        print(message.format(*arguments))
-
+# Loop through all source file lines to look for errors
 for line in fileinput.input(mode='rb'):
     # Get current line number and filename for purposes of error reporting
     line_number = fileinput.filelineno()
@@ -60,7 +23,35 @@ for line in fileinput.input(mode='rb'):
     if '\r' in line:
         print('ERROR: Found carriage return  on line {0} of file {1}'.format(line_number, filename))
         error_found = True
-    
-print('')
-if not error_found:
+    # Check for what() in error type returning a template specialization
+    if what_template_error_type_pattern.search(line):
+        message = 'ERROR: what() returns specialization of an error type on line {0} of file {1}'
+        print(message.format(line_number, filename))
+        error_found = True
+    # Collect error types as found in what()
+    what_error_type_match = what_error_type_pattern.search(line)
+    if what_error_type_match:
+        what_error_types.add(what_error_type_match.group(1))
+    # Collect bound error types
+    bound_error_type_match = bound_error_type_pattern.search(line)
+    if bound_error_type_match:
+        bound_error_types.add(bound_error_type_match.group(1))
+
+# Check if any error types are not bound for use in Python
+unbound_error_types = what_error_types - bound_error_types
+# Conversion to/from Python errors do not need to be bound, since they will
+# never occur inside Python scripts
+unbound_error_types.remove('ConversionToPythonError')
+unbound_error_types.remove('ConversionFromPythonError')
+if unbound_error_types:
+    print('ERROR: {0} unbound error types'.format(len(unbound_error_types)))
+    for error_type in sorted(unbound_error_types):
+        print('  ' + error_type)
+    error_found = True
+
+# Print success message if no errors found
+if error_found:
+    exit(1)
+else:
+    print('')
     print('All source code checks complete, no errors found')
