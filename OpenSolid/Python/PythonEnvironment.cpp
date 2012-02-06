@@ -31,38 +31,79 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    object pythonErrorBaseClass();
+
+    template <class ErrorType>
+    void checkForPythonError(PyObject* error_type, object type, object value, object traceback) {
+        if (PyErr_GivenExceptionMatches(type.ptr(), error_type)) {
+            throw ErrorType(type, value, traceback);
+        }
+    }
+
+    template <class ErrorType>
+    void checkForOpenSolidError(object type, object value, object traceback) {
+        extract<ErrorType> extracted(value);
+        if (extracted.check()) {throw extracted();}
+    }
+
     void throwError() {
-        /*
         PyObject* type_pointer = nullptr;
         PyObject* value_pointer = nullptr;
         PyObject* traceback_pointer = nullptr;
         PyErr_Fetch(&type_pointer, &value_pointer, &traceback_pointer);
-        auto wrap = [] (PyObject* pointer) -> object {
-            return pointer ? object(handle<>(borrowed(pointer))) : object();
-        };
-        object type = wrap(type_pointer);
-        object value = wrap(value_pointer);
-        object traceback = wrap(traceback_pointer);
+        object type;
+        object value;
+        object traceback;
+        if (type_pointer) {type = object(handle<>(type_pointer));}
+        if (value_pointer) {value = object(handle<>(value_pointer));}
+        if (traceback_pointer) {traceback = object(handle<>(traceback_pointer));}
 
-
-        Error result;
-        if (PyErr_GivenExceptionMatches(type_pointer, PythonModule::errorClass().ptr())) {
-            result = extract<Error>(value.attr("_error"));
-        } else {
-            result = Error((Check()));
-        }
+        std::string traceback;
         if (traceback) {
             object traceback_module = import("traceback");
             object format_tb = traceback_module.attr("format_tb");
             object format_exception_only = traceback_module.attr("format_exception_only");
             list strings(format_tb(traceback));
             strings.extend(format_exception_only(type, value));
-            result.set("traceback", std::string(extract<std::string>(str("").join(strings))));
+            //traceback = extract<std::string>(str("").join(strings));
         }
-        PyErr_Restore(type_pointer, value_pointer, traceback_pointer);
-        PyErr_Clear();
-        throw result;
-        */
+
+        if (PyErr_GivenExceptionMatches(type_pointer, pythonErrorBaseClass().ptr())) {
+
+        } else if (PyErr_GivenExceptionMatches(type_pointer, PyExc_Exception)) {
+            checkForPythonError<PythonWarning>(PyExc_Warning, type, value, traceback);
+            checkForPythonError<PythonUnicodeError>(PyExc_UnicodeError, type, value, traceback);
+            checkForPythonError<PythonValueError>(PyExc_ValueError, type, value, traceback);
+            checkForPythonError<PythonTypeError>(PyExc_TypeError, type, value, traceback);
+            checkForPythonError<PythonSystemError>(PyExc_SystemError, type, value, traceback);
+            checkForPythonError<PythonIndentationError>(PyExc_IndentationError, type, value, traceback);
+            checkForPythonError<PythonSyntaxError>(PyExc_SyntaxError, type, value, traceback);
+            checkForPythonError<PythonNotImplementedError>(PyExc_NotImplementedError, type, value, traceback);
+            checkForPythonError<PythonRuntimeError>(PyExc_RuntimeError, type, value, traceback);
+            checkForPythonError<PythonReferenceError>(PyExc_ReferenceError, type, value, traceback);
+            checkForPythonError<PythonUnboundLocalError>(PyExc_UnboundLocalError, type, value, traceback);
+            checkForPythonError<PythonNameError>(PyExc_NameError, type, value, traceback);
+            checkForPythonError<PythonMemoryError>(PyExc_MemoryError, type, value, traceback);
+            checkForPythonError<PythonKeyError>(PyExc_KeyError, type, value, traceback);
+            checkForPythonError<PythonIndexError>(PyExc_IndexError, type, value, traceback);
+            checkForPythonError<PythonLookupError>(PyExc_LookupError, type, value, traceback);
+            checkForPythonError<PythonImportError>(PyExc_ImportError, type, value, traceback);
+            checkForPythonError<PythonEOFError>(PyExc_EOFError, type, value, traceback);
+            checkForPythonError<PythonOSError>(PyExc_OSError, type, value, traceback);
+            checkForPythonError<PythonIOError>(PyExc_IOError, type, value, traceback);
+            checkForPythonError<PythonEnvironmentError>(PyExc_EnvironmentError, type, value, traceback);
+            checkForPythonError<PythonBufferError>(PyExc_BufferError, type, value, traceback);
+            checkForPythonError<PythonAttributeError>(PyExc_AttributeError, type, value, traceback);
+            checkForPythonError<PythonAssertionError>(PyExc_AssertionError, type, value, traceback);
+            checkForPythonError<PythonZeroDivisionError>(PyExc_ZeroDivisionError, type, value, traceback);
+            checkForPythonError<PythonOverflowError>(PyExc_OverflowError, type, value, traceback);
+            checkForPythonError<PythonFloatingPointError>(PyExc_FloatingPointError, type, value, traceback);
+            checkForPythonError<PythonArithmeticError>(PyExc_ArithmeticError, type, value, traceback);
+            checkForPythonError<PythonException>(PyExc_Exception, type, value, traceback);
+            // Unknown Python exception
+        } else {
+            // Unexpected Python error
+        }
     }
 
     boost::python::object PythonEnvironment::eval(const std::string& code) {
@@ -80,8 +121,7 @@ namespace OpenSolid
         try {
             return boost::python::eval(str(last_line), _environment_dict, _environment_dict);
         } catch (const boost::python::error_already_set&) {
-            //Check<25>::PythonError();
-            return object();
+            throwError();
         }
     }
     
@@ -112,7 +152,7 @@ namespace OpenSolid
         try {
             exec(str(argument), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
-            //Check<25>::PythonError();
+            throwError();
         }
         return *this;
     }
@@ -121,7 +161,7 @@ namespace OpenSolid
         try {
             exec_file(str(filename), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
-            //Check<25>::PythonError();
+            throwError();
         }
         return *this;
     }
@@ -142,34 +182,4 @@ namespace OpenSolid
     const char* ConversionToPythonError::what() const {return "ConversionToPythonError";}
     
     std::string ConversionToPythonError::type() const {return _type;}
-    
-    //void Check<25>::PythonError() {
-    //    PyObject* type_pointer = nullptr;
-    //    PyObject* value_pointer = nullptr;
-    //    PyObject* traceback_pointer = nullptr;
-    //    PyErr_Fetch(&type_pointer, &value_pointer, &traceback_pointer);
-    //    auto wrap = [] (PyObject* pointer) -> object {
-    //        return pointer ? object(handle<>(borrowed(pointer))) : object();
-    //    };
-    //    object type = wrap(type_pointer);
-    //    object value = wrap(value_pointer);
-    //    object traceback = wrap(traceback_pointer);
-    //    Error result;
-    //    if (PyErr_GivenExceptionMatches(type_pointer, PythonModule::errorClass().ptr())) {
-    //        result = extract<Error>(value.attr("_error"));
-    //    } else {
-    //        result = Error((Check()));
-    //    }
-    //    if (traceback) {
-    //        object traceback_module = import("traceback");
-    //        object format_tb = traceback_module.attr("format_tb");
-    //        object format_exception_only = traceback_module.attr("format_exception_only");
-    //        list strings(format_tb(traceback));
-    //        strings.extend(format_exception_only(type, value));
-    //        result.set("traceback", std::string(extract<std::string>(str("").join(strings))));
-    //    }
-    //    PyErr_Restore(type_pointer, value_pointer, traceback_pointer);
-    //    PyErr_Clear();
-    //    throw result;
-    //}
 }

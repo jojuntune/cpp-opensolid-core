@@ -80,6 +80,20 @@ namespace OpenSolid
         return result;
     }
 
+    object pythonErrorBaseClass() {
+        static object result;
+        if (result.is_none()) {
+            dict class_dict;
+            class_dict["__module__"] = scope();
+            result = reference(&PyType_Type)(
+                "Error",
+                make_tuple(reference(PyExc_Exception)),
+                class_dict
+            );
+        }
+        return result;
+    }
+
     object pythonErrorClass(object native_error_class, str class_name) {
         dict class_dict;
         class_dict["__module__"] = scope();
@@ -97,7 +111,7 @@ namespace OpenSolid
         }
         return reference(&PyType_Type)(
             class_name,
-            make_tuple(reference(PyExc_Exception)),
+            make_tuple(pythonErrorBaseClass()),
             class_dict
         );
     }

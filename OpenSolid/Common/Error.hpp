@@ -27,7 +27,7 @@
 
 namespace OpenSolid
 {
-    class Error : public std::exception
+    class Error : virtual public std::exception
     {
     };
 }
