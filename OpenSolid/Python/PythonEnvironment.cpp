@@ -52,11 +52,20 @@ namespace OpenSolid
 
     std::string PythonStackFrame::text() const {return _text;}
 
+    std::ostream& operator<<(std::ostream& stream, const PythonStackFrame& stack_frame) {
+        stream << "File " << stack_frame.filename() << ", ";
+        stream << "line " << stack_frame.lineNumber() << ", ";
+        stream << "in " << stack_frame.functionName();
+        std::string text = stack_frame.text();
+        if (!text.empty()) {stream << ": " << text;};
+        return stream;
+    }
+
     object pythonErrorBaseClass();
 
     template <class ErrorType>
-    void checkForPythonError(PyObject* error_object, PyObject* error_type) {
-        if (PyErr_GivenExceptionMatches(error_object, error_type)) {throw ErrorType();}
+    void checkForPythonError(PyObject* raised_type, PyObject* error_type) {
+        if (PyErr_GivenExceptionMatches(raised_type, error_type)) {throw ErrorType();}
     }
 
     template <class ErrorType>
@@ -179,36 +188,37 @@ namespace OpenSolid
             checkForOpenSolidError<ZeroMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<ZeroMatrixXdConstructionError>(error_object);
         } else {
-            checkForPythonError<PythonWarning>(value_pointer, PyExc_Warning);
-            checkForPythonError<PythonUnicodeError>(value_pointer, PyExc_UnicodeError);
-            checkForPythonError<PythonValueError>(value_pointer, PyExc_ValueError);
-            checkForPythonError<PythonTypeError>(value_pointer, PyExc_TypeError);
-            checkForPythonError<PythonSystemError>(value_pointer, PyExc_SystemError);
-            checkForPythonError<PythonIndentationError>(value_pointer, PyExc_IndentationError);
-            checkForPythonError<PythonSyntaxError>(value_pointer, PyExc_SyntaxError);
-            checkForPythonError<PythonNotImplementedError>(value_pointer, PyExc_NotImplementedError);
-            checkForPythonError<PythonRuntimeError>(value_pointer, PyExc_RuntimeError);
-            checkForPythonError<PythonReferenceError>(value_pointer, PyExc_ReferenceError);
-            checkForPythonError<PythonUnboundLocalError>(value_pointer, PyExc_UnboundLocalError);
-            checkForPythonError<PythonNameError>(value_pointer, PyExc_NameError);
-            checkForPythonError<PythonMemoryError>(value_pointer, PyExc_MemoryError);
-            checkForPythonError<PythonKeyError>(value_pointer, PyExc_KeyError);
-            checkForPythonError<PythonIndexError>(value_pointer, PyExc_IndexError);
-            checkForPythonError<PythonLookupError>(value_pointer, PyExc_LookupError);
-            checkForPythonError<PythonImportError>(value_pointer, PyExc_ImportError);
-            checkForPythonError<PythonEOFError>(value_pointer, PyExc_EOFError);
-            checkForPythonError<PythonOSError>(value_pointer, PyExc_OSError);
-            checkForPythonError<PythonIOError>(value_pointer, PyExc_IOError);
-            checkForPythonError<PythonEnvironmentError>(value_pointer, PyExc_EnvironmentError);
-            checkForPythonError<PythonBufferError>(value_pointer, PyExc_BufferError);
-            checkForPythonError<PythonAttributeError>(value_pointer, PyExc_AttributeError);
-            checkForPythonError<PythonAssertionError>(value_pointer, PyExc_AssertionError);
-            checkForPythonError<PythonZeroDivisionError>(value_pointer, PyExc_ZeroDivisionError);
-            checkForPythonError<PythonOverflowError>(value_pointer, PyExc_OverflowError);
-            checkForPythonError<PythonFloatingPointError>(value_pointer, PyExc_FloatingPointError);
-            checkForPythonError<PythonArithmeticError>(value_pointer, PyExc_ArithmeticError);
-            checkForPythonError<PythonException>(value_pointer, PyExc_Exception);
+            checkForPythonError<PythonWarning>(type_pointer, PyExc_Warning);
+            checkForPythonError<PythonUnicodeError>(type_pointer, PyExc_UnicodeError);
+            checkForPythonError<PythonValueError>(type_pointer, PyExc_ValueError);
+            checkForPythonError<PythonTypeError>(type_pointer, PyExc_TypeError);
+            checkForPythonError<PythonSystemError>(type_pointer, PyExc_SystemError);
+            checkForPythonError<PythonIndentationError>(type_pointer, PyExc_IndentationError);
+            checkForPythonError<PythonSyntaxError>(type_pointer, PyExc_SyntaxError);
+            checkForPythonError<PythonNotImplementedError>(type_pointer, PyExc_NotImplementedError);
+            checkForPythonError<PythonRuntimeError>(type_pointer, PyExc_RuntimeError);
+            checkForPythonError<PythonReferenceError>(type_pointer, PyExc_ReferenceError);
+            checkForPythonError<PythonUnboundLocalError>(type_pointer, PyExc_UnboundLocalError);
+            checkForPythonError<PythonNameError>(type_pointer, PyExc_NameError);
+            checkForPythonError<PythonMemoryError>(type_pointer, PyExc_MemoryError);
+            checkForPythonError<PythonKeyError>(type_pointer, PyExc_KeyError);
+            checkForPythonError<PythonIndexError>(type_pointer, PyExc_IndexError);
+            checkForPythonError<PythonLookupError>(type_pointer, PyExc_LookupError);
+            checkForPythonError<PythonImportError>(type_pointer, PyExc_ImportError);
+            checkForPythonError<PythonEOFError>(type_pointer, PyExc_EOFError);
+            checkForPythonError<PythonOSError>(type_pointer, PyExc_OSError);
+            checkForPythonError<PythonIOError>(type_pointer, PyExc_IOError);
+            checkForPythonError<PythonEnvironmentError>(type_pointer, PyExc_EnvironmentError);
+            checkForPythonError<PythonBufferError>(type_pointer, PyExc_BufferError);
+            checkForPythonError<PythonAttributeError>(type_pointer, PyExc_AttributeError);
+            checkForPythonError<PythonAssertionError>(type_pointer, PyExc_AssertionError);
+            checkForPythonError<PythonZeroDivisionError>(type_pointer, PyExc_ZeroDivisionError);
+            checkForPythonError<PythonOverflowError>(type_pointer, PyExc_OverflowError);
+            checkForPythonError<PythonFloatingPointError>(type_pointer, PyExc_FloatingPointError);
+            checkForPythonError<PythonArithmeticError>(type_pointer, PyExc_ArithmeticError);
+            checkForPythonError<PythonException>(type_pointer, PyExc_Exception);
         }
+        throw UnexpectedPythonError();
     }
 
     object PythonEnvironment::eval(const std::string& code) {
@@ -227,7 +237,7 @@ namespace OpenSolid
             return boost::python::eval(str(last_line), _environment_dict, _environment_dict);
         } catch (const error_already_set&) {
             throwError();
-            throw UnexpectedPythonError();
+            return object(); // Should never be reached
         }
     }
     
@@ -303,7 +313,8 @@ namespace OpenSolid
                 std::string filename = extract<std::string>(frame[0]);
                 int line_number = extract<int>(frame[1]);
                 std::string function_name = extract<std::string>(frame[2]);
-                std::string text = extract<std::string>(frame[3]);
+                std::string text;
+                if (frame[3]) {text = extract<std::string>(frame[3]);}
                 result[i] = PythonStackFrame(filename, line_number, function_name, text);
             }
         }

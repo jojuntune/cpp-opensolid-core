@@ -57,6 +57,11 @@ namespace OpenSolid
         OPENSOLID_PYTHON_EXPORT std::string text() const;
     };
 
+    OPENSOLID_PYTHON_EXPORT std::ostream& operator<<(
+        std::ostream& stream,
+        const PythonStackFrame& stack_frame
+    );
+
     class PythonEnvironment
     {
     private:
