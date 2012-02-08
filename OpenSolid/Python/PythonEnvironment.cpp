@@ -81,8 +81,6 @@ namespace OpenSolid
             checkForOpenSolidError<Axis3dCopyConstructionError>(error_object);
             checkForOpenSolidError<ConstantMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<ConstantMatrixXdConstructionError>(error_object);
-            checkForOpenSolidError<ConversionFromPythonError>(error_object);
-            checkForOpenSolidError<ConversionToPythonError>(error_object);
             checkForOpenSolidError<IdentityMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<IdentityMatrixXdConstructionError>(error_object);
             checkForOpenSolidError<Matrix2ICopyConstructionError>(error_object);
@@ -317,7 +315,9 @@ namespace OpenSolid
         const std::string& expected_type
     ) : _python_object(python_object), _expected_type(expected_type) {}
 
-    const char* ConversionFromPythonError::what() const {return "ConversionFromPythonError";}
+    const char* ConversionFromPythonError::what() const {
+        return "ConversionFromPythonError";
+    }
 
     boost::python::object ConversionFromPythonError::pythonObject() const {return _python_object;}
 
@@ -325,7 +325,9 @@ namespace OpenSolid
 
     ConversionToPythonError::ConversionToPythonError(const std::string& type) : _type(type) {}
         
-    const char* ConversionToPythonError::what() const {return "ConversionToPythonError";}
+    const char* ConversionToPythonError::what() const {
+        return "ConversionToPythonError";
+    }
     
     std::string ConversionToPythonError::type() const {return _type;}
 
