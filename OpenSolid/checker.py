@@ -63,10 +63,21 @@ if unbound_error_types:
         print('  ' + error_type)
     error_found = True
     
+# Check for error types not checked for and re-thrown
+unchecked_error_types = all_error_types - checked_opensolid_error_types - checked_python_error_types
+unchecked_error_types.remove("UnexpectedPythonError")
+unchecked_error_types.remove("ConversionToPythonError")
+unchecked_error_types.remove("ConversionFromPythonError")
+if unchecked_error_types:
+    print('ERROR: {0} unchecked error types'.format(len(unchecked_error_types)))
+    for error_type in sorted(unchecked_error_types):
+        print('  ' + error_type)
+    error_found = True
+    
 # Print all error types
-print('Error types: {0}'.format(len(all_error_types)))
-for error_type in sorted(all_error_types):
-    print('  ' + error_type)
+# print('Error types: {0}'.format(len(all_error_types)))
+# for error_type in sorted(all_error_types):
+#     print('  ' + error_type)
 
 # Print success message if no errors found
 if error_found:
