@@ -40,6 +40,8 @@ namespace OpenSolid
     public:
         OPENSOLID_PYTHON_MODULE_EXPORT static void initialize();
     };
+
+    OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object pythonErrorBaseClass();
 }
 
 ////////// Errors //////////
