@@ -49,13 +49,14 @@ namespace OpenSolid
     private:
         SetNode<Type>* _root;
         boost::detail::atomic_count* _shared_count;
+        Bounds<Type> _bounds_function;
     public:
-        Set();
+        Set(Bounds<Type> bounds_function = Bounds<Type>());
         
         Set(const Set<Type>& other);
         
         template <class IteratorType>
-        Set(IteratorType begin, IteratorType end);
+        Set(IteratorType begin, IteratorType end, Bounds<Type> bounds_function = Bounds<Type>());
         
         ~Set();
         
@@ -241,10 +242,11 @@ namespace OpenSolid
 namespace OpenSolid
 {   
     template <class Type>
-    inline Set<Type>::Set() : _root(nullptr), _shared_count(nullptr) {}
+    inline Set<Type>::Set(Bounds<Type> bounds_function) :
+        _root(nullptr), _shared_count(nullptr), _bounds_function(bounds_function) {}
     
     template <class Type>
-    inline Set<Type>::Set(const Set<Type>& other) {
+    inline Set<Type>::Set(const Set<Type>& other) : _bounds_function(other._bounds_function) {
         if (other._root) {
             _root = other._root;
             _shared_count = other._shared_count;
@@ -256,8 +258,8 @@ namespace OpenSolid
     }
         
     template <class Type> template <class IteratorType>
-    inline Set<Type>::Set(IteratorType begin, IteratorType end) {
-        Bounds<Type> bounds_function;
+    inline Set<Type>::Set(IteratorType begin, IteratorType end, Bounds<Type> bounds_function) :
+        _bounds_function(bounds_function) {
         std::vector<SetNode<Type>*> nodes;
         std::transform(
             begin,
@@ -355,7 +357,7 @@ namespace OpenSolid
     
     template <class Type>
     inline void Set<Type>::insert(const Type& object) {
-        typename Bounds<Type>::Type bounds = Bounds<Type>()(object);
+        typename Bounds<Type>::Type bounds = _bounds_function(object);
         if (isEmpty()) {
             _root = new SetNode<Type>(object, bounds);
             _shared_count = new boost::detail::atomic_count(1);
@@ -380,7 +382,7 @@ namespace OpenSolid
                 _shared_count = new boost::detail::atomic_count(1);
             }
             std::size_t previous_size = size();
-            _root = _root->erase(object, Bounds<Type>()(object));
+            _root = _root->erase(object, _bounds_function(object));
             return previous_size - size();
         }
     }

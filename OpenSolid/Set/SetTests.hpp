@@ -56,6 +56,21 @@ Interval randomInterval() {
 
 Vector3I randomVector() {return Vector3I(randomInterval(), randomInterval(), randomInterval());}
 
+struct IntervalIndex
+{
+    std::size_t index;
+};
+
+template <>
+struct Bounds<IntervalIndex>
+{
+    typedef Interval Type;
+
+    std::vector<Interval>* intervals;
+
+    Interval operator()(IntervalIndex index) {return intervals->at(index.index);}
+};
+
 class SetTests : public CxxTest::TestSuite
 {
 public:
@@ -317,5 +332,23 @@ public:
         TS_ASSERT_EQUALS(set.size(), 5);
         TS_ASSERT_EQUALS(set.erase(erasure_list.begin(), erasure_list.end()), 3);
         TS_ASSERT_EQUALS(set.size(), 2);
+    }
+
+    void testCustomBoundsFunction() {
+        std::vector<Interval> intervals(2);
+        intervals[0] = Interval(1, 2);
+        intervals[1] = Interval(3, 4);
+        IntervalIndex first_index;
+        first_index.index = 0;
+        IntervalIndex second_index;
+        second_index.index = 1;
+        Bounds<IntervalIndex> bounds_function;
+        bounds_function.intervals = &intervals;
+        Set<IntervalIndex> indices(bounds_function);
+        indices.insert(first_index);
+        indices.insert(second_index);
+        Interval bounds = indices.bounds();
+        TS_ASSERT_EQUALS(bounds.lower(), 1.0);
+        TS_ASSERT_EQUALS(bounds.upper(), 4.0);
     }
 };
