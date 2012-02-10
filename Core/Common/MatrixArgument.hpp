@@ -23,7 +23,7 @@
 
 #include <boost/mpl/if.hpp>
 
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

@@ -1,4 +1,4 @@
-import fileinput
+import os
 import re
 
 what_template_error_type_pattern = re.compile('return "\w+Error<[\w\s,]+>"')
@@ -16,11 +16,19 @@ checked_python_error_types = set()
 
 error_found = False
 
+# Get all source lines as tuples (filename, line number, line)
+all_source_lines = []
+for path, directories, files in os.walk(os.getcwd()):
+    if 'External' in directories:
+        directories.remove('External')
+    for filename in files:
+        if filename.endswith('.hpp') or filename.endswith('.cpp'):
+            file_path = os.path.join(path, filename)
+            for i, line in enumerate(open(file_path, 'rb')):
+                all_source_lines.append((file_path, i + 1, line))
+
 # Loop through all source file lines to look for errors
-for line in fileinput.input(mode='rb'):
-    # Get current line number and filename for purposes of error reporting
-    line_number = fileinput.filelineno()
-    filename = fileinput.filename()
+for filename, line_number, line in all_source_lines:
     # Check for tab characters
     if '\t' in line:
         print('ERROR: Found tab character on line {0} of file {1}'.format(line_number, filename))

@@ -22,13 +22,13 @@
 #include <boost/unordered_map.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Scalar/Comparison.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
-#include <OpenSolid/Set/Set.hpp>
-#include <OpenSolid/Support/Boost.hpp>
-#include <OpenSolid/Support/STL.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Scalar/Comparison.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Set/Set.hpp>
+#include <OpenSolid/Core/Support/Boost.hpp>
+#include <OpenSolid/Core/Support/STL.hpp>
 
 using namespace OpenSolid;
 

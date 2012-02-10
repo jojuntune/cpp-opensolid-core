@@ -27,8 +27,8 @@
 #include <boost/geometry.hpp>
 #endif
 
-#include <OpenSolid/Support/declarations.hpp>
-#include <OpenSolid/Support/STL.hpp>
+#include <OpenSolid/Core/Support/declarations.hpp>
+#include <OpenSolid/Core/Support/STL.hpp>
 
 namespace boost
 {
@@ -285,7 +285,7 @@ namespace boost
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
 
 #if BOOST_VERSION >= 104700
 namespace boost

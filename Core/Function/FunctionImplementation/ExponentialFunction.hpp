@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__EXPONENTIALFUNCTION_HPP
 #define OPENSOLID__EXPONENTIALFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {

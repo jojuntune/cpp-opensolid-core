@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__COMMON__HASH_HPP
 #define OPENSOLID__COMMON__HASH_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {

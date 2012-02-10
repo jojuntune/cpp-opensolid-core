@@ -23,10 +23,10 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Datum/Plane.hpp>
-#include <OpenSolid/Scalar/Comparison.hpp>
-#include <OpenSolid/Function/Function.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
+#include <OpenSolid/Core/Datum/Plane.hpp>
+#include <OpenSolid/Core/Scalar/Comparison.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
 
 using namespace OpenSolid;
 

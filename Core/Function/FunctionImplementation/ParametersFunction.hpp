@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__PARAMETERSFUNCTION_HPP
 #define OPENSOLID__PARAMETERSFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
 namespace OpenSolid
 {

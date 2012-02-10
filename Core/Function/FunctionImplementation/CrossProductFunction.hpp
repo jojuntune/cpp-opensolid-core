@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__CROSSPRODUCTFUNCTION_HPP
 #define OPENSOLID__CROSSPRODUCTFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/BinaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/BinaryOperation.hpp>
 
 namespace OpenSolid
 {

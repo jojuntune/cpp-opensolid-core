@@ -26,8 +26,8 @@
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Set/Set.hpp>
 
 using namespace OpenSolid;
 

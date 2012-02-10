@@ -23,7 +23,7 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace Eigen
 {

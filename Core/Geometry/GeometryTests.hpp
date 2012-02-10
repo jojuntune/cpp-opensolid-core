@@ -22,11 +22,11 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Function/FunctionImplementation/EllipticalFunction.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
-#include <OpenSolid/Scalar/Comparison.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
-#include <OpenSolid/Support/STL.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
+#include <OpenSolid/Core/Scalar/Comparison.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Support/STL.hpp>
 
 using namespace OpenSolid;
 

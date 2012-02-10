@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__TRANSFORMEDFUNCTION_HPP
 #define OPENSOLID__TRANSFORMEDFUNCTION_HPP
 
-#include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {

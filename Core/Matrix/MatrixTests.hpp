@@ -22,10 +22,10 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Support/Boost.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Support/Boost.hpp>
 
 using namespace OpenSolid;
 

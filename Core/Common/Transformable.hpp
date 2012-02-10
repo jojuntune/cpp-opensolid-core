@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__TRANSFORMABLE_HPP
 #define OPENSOLID__TRANSFORMABLE_HPP
 
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 ////////// Implementation //////////
 
@@ -127,6 +127,6 @@ namespace OpenSolid
     }
 }
 
-#include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
 
 #endif

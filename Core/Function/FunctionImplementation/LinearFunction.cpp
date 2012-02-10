@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/LinearFunction.hpp>
 
 namespace OpenSolid
 {

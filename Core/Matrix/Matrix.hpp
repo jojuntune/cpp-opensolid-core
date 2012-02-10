@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <OpenSolid/Common/Convertible.hpp>
-#include <OpenSolid/Scalar/double.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Scalar/double.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace Eigen
 {   
@@ -211,12 +211,12 @@ namespace OpenSolid
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
 
-#define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Matrix/DenseBasePlugin.hpp>
-#define EIGEN_MATRIXBASE_PLUGIN <OpenSolid/Matrix/MatrixBasePlugin.hpp>
+#define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Core/Matrix/DenseBasePlugin.hpp>
+#define EIGEN_MATRIXBASE_PLUGIN <OpenSolid/Core/Matrix/MatrixBasePlugin.hpp>
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include <OpenSolid/Matrix/DenseBasePlugin.hpp>
-#include <OpenSolid/Matrix/MatrixBasePlugin.hpp>
+#include <OpenSolid/Core/Matrix/DenseBasePlugin.hpp>
+#include <OpenSolid/Core/Matrix/MatrixBasePlugin.hpp>
 #endif
 
 #include <Eigen/Core>
@@ -636,7 +636,7 @@ namespace OpenSolid
     }
 }
 
-#include <OpenSolid/Matrix/MatrixIterator.hpp>
-#include <OpenSolid/Common/Transformable.hpp>
+#include <OpenSolid/Core/Matrix/MatrixIterator.hpp>
+#include <OpenSolid/Core/Common/Transformable.hpp>
 
 #endif

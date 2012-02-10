@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__AXIS_HPP
 #define OPENSOLID__AXIS_HPP
 
-#include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
+#include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace OpenSolid
 {

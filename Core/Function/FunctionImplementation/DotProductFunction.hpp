@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__DOTPRODUCTFUNCTION_HPP
 #define OPENSOLID__DOTPRODUCTFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/BinaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/BinaryOperation.hpp>
 
 namespace OpenSolid
 {

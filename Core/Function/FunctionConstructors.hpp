@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__FUNCTIONCONSTRUCTORS_HPP
 #define OPENSOLID__FUNCTIONCONSTRUCTORS_HPP
 
-#include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

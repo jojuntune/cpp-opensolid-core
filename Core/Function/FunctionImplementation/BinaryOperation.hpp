@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__BINARYOPERATION_HPP
 #define OPENSOLID__BINARYOPERATION_HPP
 
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
 namespace OpenSolid
 {

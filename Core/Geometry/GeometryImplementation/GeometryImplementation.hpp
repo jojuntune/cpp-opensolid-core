@@ -21,12 +21,12 @@
 #ifndef OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
 #define OPENSOLID__GEOMETRYIMPLEMENTATION_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Set/Set.hpp>
+#include <OpenSolid/Core/Common/ReferenceCounted.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Set/Set.hpp>
 
 namespace OpenSolid
 {

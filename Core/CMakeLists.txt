@@ -50,8 +50,7 @@
     # Initialize local include paths
     INCLUDE_DIRECTORIES(BEFORE
         ${OpenSolidCore_SOURCE_DIR}/External
-        ${OpenSolidCore_SOURCE_DIR}/..
-        ${OpenSolidCore_BINARY_DIR}/..
+        ${OpenSolidCore_SOURCE_DIR}/../..
     )
     
 ########## Set up Python ##########
@@ -60,7 +59,7 @@
 
 ########## Set up Boost ##########
 
-    FIND_PACKAGE(Boost)
+    FIND_PACKAGE(Boost REQUIRED)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
     
     # Add Boost library directory to link path so auto-linking works when using MSVC
@@ -186,8 +185,8 @@
     # Generate opensolid.pb.h, opensolid.pb.cc from message format definition in opensolid.proto
     ADD_CUSTOM_COMMAND(
         OUTPUT
-        ${OpenSolidCore_BINARY_DIR}/opensolid.pb.h
-        ${OpenSolidCore_BINARY_DIR}/opensolid.pb.cc
+        ${OpenSolidCore_SOURCE_DIR}/opensolid.pb.h
+        ${OpenSolidCore_SOURCE_DIR}/opensolid.pb.cc
         DEPENDS
         protoc
         ${OpenSolidCore_SOURCE_DIR}/opensolid.proto
@@ -195,15 +194,14 @@
         protoc
         ARGS
         --proto_path=${OpenSolidCore_SOURCE_DIR}
-        --cpp_out=${OpenSolidCore_BINARY_DIR}
+        --cpp_out=${OpenSolidCore_SOURCE_DIR}
         ${OpenSolidCore_SOURCE_DIR}/opensolid.proto
     )
 
 ########## Define lists of source files ##########
 
     # Root directory files
-    SET(ROOT_FILES
-        ${OpenSolidCore_SOURCE_DIR}/checker.py
+    SET(CORE_FILES
         ${OpenSolidCore_SOURCE_DIR}/config.hpp
         ${OpenSolidCore_SOURCE_DIR}/opensolid.proto
         ${OpenSolidCore_SOURCE_DIR}/Template.cpp
@@ -434,7 +432,7 @@
     
     # All header and source files
     SET(ALL_HEADERS_AND_SOURCES
-        ${ROOT_FILES}
+        ${CORE_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
         ${DATUM_HEADERS}
@@ -467,22 +465,13 @@
         ${SUPPORT_SOURCES}
     )
     
-########## Run source file checker ##########
-
-    ADD_TEST(
-        SourceChecks
-        ${PYTHON_EXECUTABLE}
-        ${OpenSolidCore_SOURCE_DIR}/checker.py
-        ${ALL_HEADERS_AND_SOURCES}
-    )
-    
 ########## Set up source groups for Visual Studio ##########
 
     # Dummy library that is never built but provides a Visual Studio target that includes
     # a complete source tree
     ADD_LIBRARY(ALL_SOURCES EXCLUDE_FROM_ALL ${ALL_HEADERS_AND_SOURCES})
     
-    SOURCE_GROUP(Core FILES ${ROOT_FILES})
+    SOURCE_GROUP(Core FILES ${CORE_FILES})
     SOURCE_GROUP(Core\\Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
     SOURCE_GROUP(Core\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
     SOURCE_GROUP(Core\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
@@ -520,7 +509,7 @@
         ${SCALAR_SOURCES}
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
-        ${OpenSolidCore_BINARY_DIR}/opensolid.pb.cc
+        ${OpenSolidCore_SOURCE_DIR}/opensolid.pb.cc
     )
 
     TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf)
@@ -554,10 +543,6 @@
         PATTERN "CMakeLists.txt" EXCLUDE
         PATTERN "*Tests.hpp" EXCLUDE
         PATTERN "Template.hpp" EXCLUDE
-    )
-
-    INSTALL(FILES ${OpenSolidCore_BINARY_DIR}/opensolid.pb.h
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/OpenSolid/Core
     )
     
 ########## Install libraries ##########

@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__SIMPLEX_HPP
 #define OPENSOLID__SIMPLEX_HPP
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/config.hpp>
+#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

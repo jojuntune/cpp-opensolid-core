@@ -21,13 +21,13 @@
 #ifndef OPENSOLID__DOUBLE_HPP
 #define OPENSOLID__DOUBLE_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <cmath>
 #include <string>
 
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Common/Hash.hpp>
+#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Common/Hash.hpp>
 
 namespace OpenSolid
 {

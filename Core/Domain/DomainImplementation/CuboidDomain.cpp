@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Datum/Plane.hpp>
-#include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Domain/DomainImplementation/CuboidDomain.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
+#include <OpenSolid/Core/Datum/Plane.hpp>
+#include <OpenSolid/Core/Domain/Domain.hpp>
+#include <OpenSolid/Core/Domain/DomainImplementation/CuboidDomain.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {

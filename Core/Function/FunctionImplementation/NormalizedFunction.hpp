@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__NORMALIZEDFUNCTION_HPP
 #define OPENSOLID__NORMALIZEDFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {

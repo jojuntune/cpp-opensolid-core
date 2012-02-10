@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__DATUM_HPP
 #define OPENSOLID__DATUM_HPP
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/config.hpp>
+#include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

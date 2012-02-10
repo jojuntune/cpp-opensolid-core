@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <OpenSolid/Geometry/Geometry.hpp>
-#include <OpenSolid/Geometry/GeometryImplementation/ConstantGeometry.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
+#include <OpenSolid/Core/Geometry/GeometryImplementation/ConstantGeometry.hpp>
 
 namespace OpenSolid
 {

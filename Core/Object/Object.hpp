@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__OBJECT_HPP
 #define OPENSOLID__OBJECT_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {

@@ -21,11 +21,11 @@
 #ifndef OPENSOLID__SIMPLEXGEOMETRY_HPP
 #define OPENSOLID__SIMPLEXGEOMETRY_HPP
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/config.hpp>
+#include <OpenSolid/Core/Domain/Domain.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
 
 namespace OpenSolid
 {

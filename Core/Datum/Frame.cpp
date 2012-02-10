@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Datum/Frame.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
 
 namespace OpenSolid
 {

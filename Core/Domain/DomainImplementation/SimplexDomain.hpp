@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__SIMPLEXDOMAIN_HPP
 #define OPENSOLID__SIMPLEXDOMAIN_HPP
 
-#include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Domain/DomainImplementation/DomainImplementation.hpp>
+#include <OpenSolid/Core/Domain/Domain.hpp>
+#include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 
 namespace OpenSolid
 {

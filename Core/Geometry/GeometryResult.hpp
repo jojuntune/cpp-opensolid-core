@@ -21,10 +21,10 @@
 #ifndef OPENSOLID__GEOMETRYEVALUATION_HPP
 #define OPENSOLID__GEOMETRYEVALUATION_HPP
 
-#include <OpenSolid/Scalar/double.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
-#include <OpenSolid/Function/FunctionArgument.hpp>
+#include <OpenSolid/Core/Scalar/double.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
+#include <OpenSolid/Core/Function/FunctionArgument.hpp>
 
 namespace OpenSolid
 {

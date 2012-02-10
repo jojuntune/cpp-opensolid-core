@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__ERROR_HPP
 #define OPENSOLID__ERROR_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <exception>
 

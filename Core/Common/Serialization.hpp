@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__SERIALIZATION_HPP
 #define OPENSOLID__SERIALIZATION_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {

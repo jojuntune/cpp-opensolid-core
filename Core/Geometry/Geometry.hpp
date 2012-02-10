@@ -21,20 +21,20 @@
 #ifndef OPENSOLID__GEOMETRY_HPP
 #define OPENSOLID__GEOMETRY_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Common/Convertible.hpp>
-#include <OpenSolid/Common/Evaluation.hpp>
-#include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Geometry/GeometryConstructors.hpp>
-#include <OpenSolid/Geometry/GeometryImplementation/GeometryImplementation.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Set/Set.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Evaluation.hpp>
+#include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
+#include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Set/Set.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
 
 namespace OpenSolid
 {
@@ -109,7 +109,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Domain/Domain.hpp>
+#include <OpenSolid/Core/Domain/Domain.hpp>
 
 namespace OpenSolid
 {

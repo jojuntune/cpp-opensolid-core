@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Datum/Axis.hpp>
+#include <OpenSolid/Core/Datum/Axis.hpp>
 
 namespace OpenSolid
 {

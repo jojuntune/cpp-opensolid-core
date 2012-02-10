@@ -21,20 +21,20 @@
 #ifndef OPENSOLID__FUNCTION_HPP
 #define OPENSOLID__FUNCTION_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <typeinfo>
 
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Common/Convertible.hpp>
-#include <OpenSolid/Common/Evaluation.hpp>
-#include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Function/FunctionConstructors.hpp>
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Evaluation.hpp>
+#include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Function/FunctionConstructors.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace OpenSolid
 {

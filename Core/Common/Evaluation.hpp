@@ -21,9 +21,9 @@
 #ifndef OPENSOLID__EVALUATION_HPP
 #define OPENSOLID__EVALUATION_HPP
 
-#include <OpenSolid/Scalar/double.hpp>
-#include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Common/MatrixArgument.hpp>
+#include <OpenSolid/Core/Scalar/double.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Common/MatrixArgument.hpp>
 
 namespace OpenSolid
 {

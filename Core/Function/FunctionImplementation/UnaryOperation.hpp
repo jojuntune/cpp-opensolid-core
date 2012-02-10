@@ -21,8 +21,8 @@
 #ifndef OPENSOLID__UNARYOPERATION_HPP
 #define OPENSOLID__UNARYOPERATION_HPP
 
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
 namespace OpenSolid
 {

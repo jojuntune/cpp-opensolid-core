@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__COMPARISON_HPP
 #define OPENSOLID__COMPARISON_HPP
 
-#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace OpenSolid
 {

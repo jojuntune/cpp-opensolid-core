@@ -21,10 +21,10 @@
 #ifndef OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 #define OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
-#include <OpenSolid/Common/ReferenceCounted.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Common/ReferenceCounted.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__LOGARITHMFUNCTION_HPP
 #define OPENSOLID__LOGARITHMFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/UnaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
 namespace OpenSolid
 {

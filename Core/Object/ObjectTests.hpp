@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Object/Object.hpp>
+#include <OpenSolid/Core/Object/Object.hpp>
 
 using namespace OpenSolid;
 

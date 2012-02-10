@@ -18,33 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Function/FunctionImplementation/TangentFunction.hpp>
+#ifndef OPENSOLID__CONFIG_HPP
+#define OPENSOLID__CONFIG_HPP
 
-namespace OpenSolid
-{
-    TangentFunction::TangentFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
-    }
-    
-    int TangentFunction::dimensions() const {return 1;}
-    
-    void TangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd operand_values = operand()(parameter_values);
-        results = operand_values.array().sin() / operand_values.array().cos();
-    }
-    
-    void TangentFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        MatrixXI operand_bounds = operand()(parameter_bounds);
-        results = operand_bounds.array().sin() / operand_bounds.array().cos();
-    }
+#if defined(WIN32)
+    #if defined(OpenSolidCore_EXPORTS)
+        #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
+    #endif
 
-    void TangentFunction::getDerivative(int index, Function& result) const {
-        result = (1 + Function(this).squaredNorm()) * operand().derivative(index);
-    }
+    #if defined(opensolid_EXPORTS)
+        #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)
+    #endif
     
-    void TangentFunction::debug(std::ostream& stream, int indent) const {
-        stream << "TangentFunction" << std::endl;
-        operand().debug(stream, indent + 1);
-    }
-}
+    #if defined(OpenSolidPython_EXPORTS)
+        #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define OPENSOLID_CORE_EXPORT
+    #define OPENSOLID_MODULE_EXPORT
+    #define OPENSOLID_PYTHON_EXPORT
+#endif
+
+#endif

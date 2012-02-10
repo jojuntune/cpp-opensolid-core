@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__DOMAINCONSTRUCTORS_HPP
 #define OPENSOLID__DOMAINCONSTRUCTORS_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {

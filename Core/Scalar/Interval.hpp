@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__INTERVAL_HPP
 #define OPENSOLID__INTERVAL_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <cassert>
 #include <cstdlib>
@@ -31,11 +31,11 @@
 
 #include <boost/numeric/interval.hpp>
 
-#include <OpenSolid/opensolid.pb.h>
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Common/Convertible.hpp>
-#include <OpenSolid/Common/Hash.hpp>
-#include <OpenSolid/Common/Serialization.hpp>
+#include <OpenSolid/Core/opensolid.pb.h>
+#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Hash.hpp>
+#include <OpenSolid/Core/Common/Serialization.hpp>
 
 namespace OpenSolid
 {
@@ -196,8 +196,8 @@ namespace OpenSolid
 
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Scalar/double.hpp>
-#include <OpenSolid/Scalar/int.hpp>
+#include <OpenSolid/Core/Scalar/double.hpp>
+#include <OpenSolid/Core/Scalar/int.hpp>
 
 namespace OpenSolid
 {
@@ -487,6 +487,6 @@ namespace OpenSolid
     inline Interval abs2(const Interval& argument) {return argument.squared();}
 }
 
-#include <OpenSolid/Scalar/Comparison.hpp>
+#include <OpenSolid/Core/Scalar/Comparison.hpp>
 
 #endif

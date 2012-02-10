@@ -20,11 +20,11 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Common/Bounds.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
-#include <OpenSolid/Set/Set.hpp>
-#include <OpenSolid/Support/STL.hpp>
+#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Set/Set.hpp>
+#include <OpenSolid/Core/Support/STL.hpp>
 
 using namespace OpenSolid;
 

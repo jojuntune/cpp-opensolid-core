@@ -21,12 +21,12 @@
 #ifndef OPENSOLID__GEOMETRYCONSTRUCTORS_HPP
 #define OPENSOLID__GEOMETRYCONSTRUCTORS_HPP
 
-#include <OpenSolid/Datum/Axis.hpp>
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Datum/Plane.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Datum/Axis.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
+#include <OpenSolid/Core/Datum/Plane.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
 
 namespace OpenSolid
 {

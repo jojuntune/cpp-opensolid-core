@@ -27,7 +27,7 @@
 #include <functional>
 #include <iterator>
 
-#include <OpenSolid/Support/declarations.hpp>
+#include <OpenSolid/Core/Support/declarations.hpp>
 
 namespace OpenSolid
 {
@@ -251,10 +251,10 @@ namespace std
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Domain/Domain.hpp>
-#include <OpenSolid/Geometry/Geometry.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Domain/Domain.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
 
 namespace OpenSolid
 {

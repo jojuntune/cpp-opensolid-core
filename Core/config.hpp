@@ -27,24 +27,8 @@
     #else
         #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
     #endif
-
-    #if defined(opensolid_EXPORTS)
-        #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)
-    #endif
-    
-    #if defined(OpenSolidPython_EXPORTS)
-        #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
-    #endif
-    
-    #define __func__ __FUNCTION__
 #else
     #define OPENSOLID_CORE_EXPORT
-    #define OPENSOLID_MODULE_EXPORT
-    #define OPENSOLID_PYTHON_EXPORT
 #endif
 
 #endif

@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__ELLIPTICALFUNCTION_HPP
 #define OPENSOLID__ELLIPTICALFUNCTION_HPP
 
-#include <OpenSolid/Function/FunctionImplementation/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
 namespace OpenSolid
 {
