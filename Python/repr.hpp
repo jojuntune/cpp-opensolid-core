@@ -21,15 +21,15 @@
 #ifndef OPENSOLID__REPR_HPP
 #define OPENSOLID__REPR_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Python/config.hpp>
 
 #include <string>
 #include <typeinfo>
 
 #include <boost/python.hpp>
 
-#include <OpenSolid/Scalar/Interval.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
 {

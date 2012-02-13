@@ -21,16 +21,16 @@
 #ifndef OPENSOLID__PYTHON__PYTHONENVIRONMENT_HPP
 #define OPENSOLID__PYTHON__PYTHONENVIRONMENT_HPP
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Python/config.hpp>
 
 #include <string>
 #include <exception>
 
 #include <boost/python/converter/registry.hpp>
 
+#include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/repr.hpp>
-#include <OpenSolid/Common/Error.hpp>
 
 namespace OpenSolid
 {

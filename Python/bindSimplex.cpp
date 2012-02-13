@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;

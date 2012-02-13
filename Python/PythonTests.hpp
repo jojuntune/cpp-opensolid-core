@@ -22,13 +22,13 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Scalar/Comparison.hpp>
-#include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Function/Function.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
-#include <OpenSolid/Datum/Datum.hpp>
-#include <OpenSolid/Datum/Frame.hpp>
-#include <OpenSolid/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Scalar/Comparison.hpp>
+#include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Function/Function.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Datum/Frame.hpp>
+#include <OpenSolid/Core/Simplex/Simplex.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>
 
 using namespace OpenSolid;

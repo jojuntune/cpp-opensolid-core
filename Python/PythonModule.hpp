@@ -21,9 +21,10 @@
 #ifndef OPENSOLID__PYTHON__PYTHONMODULE_HPP
 #define OPENSOLID__PYTHON__PYTHONMODULE_HPP
 
-#include <OpenSolid/config.hpp>
-#include <OpenSolid/Common/Error.hpp>
-#include <OpenSolid/Matrix/Matrix.hpp>
+#include <OpenSolid/Python/config.hpp>
+
+#include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 #include <boost/python.hpp>
 #include <boost/python/handle.hpp>

@@ -22,7 +22,7 @@
 
 #include <boost/python/converter/pytype_function.hpp>
 
-#include <OpenSolid/Datum/Axis.hpp>
+#include <OpenSolid/Core/Datum/Axis.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;

@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <OpenSolid/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Support/STL.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/repr.hpp>
-#include <OpenSolid/Support/STL.hpp>
 
 using namespace boost::python;
 
