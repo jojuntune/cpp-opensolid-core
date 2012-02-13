@@ -49,10 +49,6 @@
         PARENT_SCOPE
     )
     
-########## Set up source groups for Visual Studio ##########
-    
-    # SOURCE_GROUP(OpenSolid\\Python FILES ${ALL_PYTHON_SOURCES})
-    
 ########## Compile Python extension module ##########
     
     ADD_LIBRARY(opensolid SHARED ${PYTHON_MODULE_SOURCES})

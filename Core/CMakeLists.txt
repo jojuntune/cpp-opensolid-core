@@ -289,24 +289,6 @@
         PARENT_SCOPE
     )
     
-########## Set up source groups for Visual Studio ##########
-    
-    # SOURCE_GROUP(OpenSolid\\Core FILES ${CORE_FILES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Common FILES ${COMMON_HEADERS} ${COMMON_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Datum FILES ${DATUM_HEADERS} ${DATUM_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Domain FILES ${DOMAIN_HEADERS} ${DOMAIN_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Domain\\DomainImplementation FILES ${DOMAINIMPLEMENTATION_HEADERS} ${DOMAINIMPLEMENTATION_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Function FILES ${FUNCTION_HEADERS} ${FUNCTION_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Function\\FunctionImplementation FILES ${FUNCTIONIMPLEMENTATION_HEADERS} ${FUNCTIONIMPLEMENTATION_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Geometry FILES ${GEOMETRY_HEADERS} ${GEOMETRY_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Geometry\\GeometryImplementation FILES ${GEOMETRYIMPLEMENTATION_HEADERS} ${GEOMETRYIMPLEMENTATION_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Matrix FILES ${MATRIX_HEADERS} ${MATRIX_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Object FILES ${OBJECT_HEADERS} ${OBJECT_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Scalar FILES ${SCALAR_HEADERS} ${SCALAR_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Set FILES ${SET_HEADERS} ${SET_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Simplex FILES ${SIMPLEX_HEADERS} ${SIMPLEX_SOURCES})
-    # SOURCE_GROUP(OpenSolid\\Core\\Support FILES ${SUPPORT_HEADERS} ${SUPPORT_SOURCES})
-    
 ########## Compile OpenSolidCore library ##########
 
     ADD_LIBRARY(OpenSolidCore SHARED
