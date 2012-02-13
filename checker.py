@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 what_template_error_type_pattern = re.compile('return "\w+Error<[\w\s,]+>"')
 what_error_type_pattern = re.compile('return "(\w+Error)"')
@@ -18,9 +19,11 @@ error_found = False
 
 # Get all source lines as tuples (filename, line number, line)
 all_source_lines = []
-for path, directories, files in os.walk(os.getcwd()):
+for path, directories, files in os.walk(sys.argv[1]):
     if 'External' in directories:
         directories.remove('External')
+    if 'Build' in directories:
+        directories.remove('Build')
     for filename in files:
         if filename.endswith('.hpp') or filename.endswith('.cpp'):
             file_path = os.path.join(path, filename)
@@ -93,3 +96,4 @@ if error_found:
 else:
     print('')
     print('All source code checks complete, no errors found')
+    exit(0)

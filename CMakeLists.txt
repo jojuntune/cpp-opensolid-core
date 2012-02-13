@@ -87,7 +87,7 @@
     ENDMACRO(ADD_CXXTEST)
     
     # Add global source-checking test
-    ADD_TEST(SourceChecks ${PYTHON_EXECUTABLE} ${OpenSolid}/checker.py)
+    ADD_TEST(SourceChecks ${PYTHON_EXECUTABLE} ${OpenSolid}/checker.py ${OpenSolid})
     
 ########## Build subprojects ##########
 
