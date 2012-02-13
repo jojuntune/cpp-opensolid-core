@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CONFIG_HPP
-#define OPENSOLID__CONFIG_HPP
+#ifndef OPENSOLID_CORE__CONFIG_HPP
+#define OPENSOLID_CORE__CONFIG_HPP
 
 #if defined(WIN32)
     #if defined(OpenSolidCore_EXPORTS)

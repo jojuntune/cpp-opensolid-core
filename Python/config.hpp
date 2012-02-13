@@ -18,16 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CONFIG_HPP
-#define OPENSOLID__CONFIG_HPP
+#ifndef OPENSOLID_PYTHON__CONFIG_HPP
+#define OPENSOLID_PYTHON__CONFIG_HPP
 
 #if defined(WIN32)
-    #if defined(OpenSolidCore_EXPORTS)
-        #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
-    #endif
-
     #if defined(opensolid_EXPORTS)
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
     #else
@@ -40,7 +34,6 @@
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
     #endif
 #else
-    #define OPENSOLID_CORE_EXPORT
     #define OPENSOLID_MODULE_EXPORT
     #define OPENSOLID_PYTHON_EXPORT
 #endif
