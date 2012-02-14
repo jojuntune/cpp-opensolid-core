@@ -14,7 +14,13 @@
 ########## Define lists of source files ##########
 
     # Python directory files
+    SET(PYTHON_FILES
+        ${OpenSolid}/Python/bindTemplate.cpp
+        ${OpenSolid}/Python/CMakeLists.txt
+    )
+    
     SET(PYTHON_HEADERS
+        ${OpenSolid}/Python/config.hpp
         ${OpenSolid}/Python/PythonEnvironment.hpp
         ${OpenSolid}/Python/PythonModule.hpp
         ${OpenSolid}/Python/PythonTests.hpp
@@ -43,6 +49,7 @@
     
     # Update global source list
     SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
+        ${PYTHON_FILES}
         ${PYTHON_HEADERS}
         ${PYTHON_MODULE_SOURCES}
         ${PYTHON_ENVIRONMENT_SOURCES}

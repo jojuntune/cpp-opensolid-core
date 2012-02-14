@@ -21,7 +21,9 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
+#include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Scalar/double.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
@@ -285,10 +287,24 @@ namespace OpenSolid
         ) const;
     };
 
-    template<>
+    template <>
     struct Conversion<Interval, VectorXI>
     {
         VectorXI operator()(const Interval& interval) const;
+    };
+
+    template <>
+    struct Serialization<MatrixXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string serialized(const MatrixXd& argument) const;
+        OPENSOLID_CORE_EXPORT MatrixXd deserialized(const std::string& argument) const;
+    };
+
+    template <>
+    struct Serialization<MatrixXI>
+    {
+        OPENSOLID_CORE_EXPORT std::string serialized(const MatrixXI& argument) const;
+        OPENSOLID_CORE_EXPORT MatrixXI deserialized(const std::string& argument) const;
     };
 
     template <int destination_size_, int source_size_>

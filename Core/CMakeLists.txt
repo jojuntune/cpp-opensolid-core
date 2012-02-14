@@ -25,6 +25,7 @@
 
     # Core directory files
     SET(CORE_FILES
+        ${OpenSolid}/Core/CMakeLists.txt
         ${OpenSolid}/Core/config.hpp
         ${OpenSolid}/Core/opensolid.proto
         ${OpenSolid}/Core/Template.cpp
@@ -203,7 +204,9 @@
         ${OpenSolid}/Core/Matrix/MatrixTests.hpp
         ${OpenSolid}/Core/Matrix/MatrixIterator.hpp
     )
-    SET(MATRIX_SOURCES)
+    SET(MATRIX_SOURCES
+        ${OpenSolid}/Core/Matrix/Matrix.cpp
+    )
 
     # Object directory files
     SET(OBJECT_HEADERS

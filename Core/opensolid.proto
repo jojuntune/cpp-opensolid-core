@@ -5,5 +5,23 @@ message SerializedInterval {
     required double upper = 2;
 }
 
-message SerializedError {
+message SerializedMatrixXd {
+    required uint32 rows = 1;
+    required uint32 cols = 2;
+    repeated double data = 3 [packed=true];
+}
+
+message SerializedMatrixXI {
+    required uint32 rows = 1;
+    required uint32 cols = 2;
+    repeated string data = 3;
+}
+
+message SerializedDatumXd {
+    required string origin = 1;
+    required string basis = 2;
+}
+
+message SerializedSimplexXd {
+    required string vertices = 1;
 }

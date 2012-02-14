@@ -24,6 +24,11 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    struct SetSingleton
+    {
+    };
+
     void bindSet() {
+        class_<SetSingleton>("SetSingleton", no_init);
     }
 }

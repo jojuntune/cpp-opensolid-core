@@ -20,6 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Core/opensolid.pb.h>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 
@@ -123,5 +124,14 @@ public:
             TS_ASSERT_LESS_THAN_EQUALS(interval.lower(), random);
             TS_ASSERT_LESS_THAN_EQUALS(random, interval.upper());
         }
+    }
+
+    void testSerialization() {
+        Interval original(2, 3);
+        Serialization<Interval> serializer;
+        std::string serialized = serializer.serialized(original);
+        Interval final = serializer.deserialized(serialized);
+        TS_ASSERT_EQUALS(original.lower(), final.lower());
+        TS_ASSERT_EQUALS(original.upper(), final.upper());
     }
 };
