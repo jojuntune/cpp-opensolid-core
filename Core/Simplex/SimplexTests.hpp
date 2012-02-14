@@ -201,6 +201,16 @@ public:
         TS_ASSERT((line.vector() - Vector3d::Constant(3)).isZero());
     }
 
+    void testSerialization() {
+        Triangle3d original(Vector3d::Random(), Vector3d::Random(), Vector3d::Random());
+        Serialization<SimplexXd> serializer;
+        std::string serialized = serializer.serialized(original);
+        SimplexXd final = serializer.deserialized(serialized);
+        TS_ASSERT_EQUALS(final.dimensions(), original.dimensions());
+        TS_ASSERT_EQUALS(final.size(), original.size());
+        TS_ASSERT_EQUALS(final.vertices(), original.vertices());
+    }
+
     void testBoostGeometry() {
         #if BOOST_VERSION >= 104700
         Line3d line(Vector3d(1, 1, 1), Vector3d(4, 5, 6));

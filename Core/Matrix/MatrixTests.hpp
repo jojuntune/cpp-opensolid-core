@@ -228,4 +228,27 @@ public:
             TS_ASSERT(bounds.contains(random.cast<Interval>()));
         }
     }
+
+    void testMatrixXdSerialization() {
+        Matrix3d original = Matrix3d::Random();
+        Serialization<MatrixXd> serializer;
+        std::string serialized = serializer.serialized(original);
+        MatrixXd final = serializer.deserialized(serialized);
+        TS_ASSERT_EQUALS(final.rows(), original.rows());
+        TS_ASSERT_EQUALS(final.cols(), original.cols());
+        TS_ASSERT_EQUALS(original, final);
+    }
+
+    void testMatrixXISerialization() {
+        Matrix3I original = Matrix3I::Random();
+        Serialization<MatrixXI> serializer;
+        std::string serialized = serializer.serialized(original);
+        MatrixXI final = serializer.deserialized(serialized);
+        TS_ASSERT_EQUALS(final.rows(), original.rows());
+        TS_ASSERT_EQUALS(final.cols(), original.cols());
+        for (int i = 0; i < original.size(); ++i) {
+            TS_ASSERT_EQUALS(original(i).lower(), final(i).lower());
+            TS_ASSERT_EQUALS(original(i).upper(), final(i).upper());
+        }
+    }
 };

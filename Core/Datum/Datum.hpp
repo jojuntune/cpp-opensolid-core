@@ -23,6 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace OpenSolid
@@ -149,6 +150,13 @@ namespace OpenSolid
     typedef Datum<2, 2> Datum2d;
     typedef Datum<3, 3> Datum3d;
     typedef Datum<Dynamic, Dynamic> DatumXd;
+
+    template <>
+    struct Serialization<DatumXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string serialized(const DatumXd& argument) const;
+        OPENSOLID_CORE_EXPORT DatumXd deserialized(const std::string& argument) const;
+    };
 
     template <class TransformableType, int dimensions_, int axes_>
     auto operator*(const TransformableType& argument, const Datum<dimensions_, axes_>& datum) ->

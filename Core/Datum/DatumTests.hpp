@@ -135,4 +135,15 @@ public:
         Vector3d expected(2, -1, 4);
         TS_ASSERT((point - expected).isZero());
     }
+
+    void testSerialization() {
+        Datum3d original(Vector3d::Random(), Matrix3d::Random());
+        Serialization<DatumXd> serializer;
+        std::string serialized = serializer.serialized(original);
+        DatumXd final = serializer.deserialized(serialized);
+        TS_ASSERT_EQUALS(original.dimensions(), final.dimensions());
+        TS_ASSERT_EQUALS(original.axes(), final.axes());
+        TS_ASSERT_EQUALS(original.origin(), final.origin());
+        TS_ASSERT_EQUALS(original.basis(), final.basis());
+    }
 };

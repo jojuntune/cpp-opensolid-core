@@ -18,9 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Core/opensolid.pb.h>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace OpenSolid
 {
-    
+    std::string Serialization<DatumXd>::serialized(const DatumXd& argument) const {
+        Serialization<MatrixXd> matrix_serializer;
+        SerializedDatumXd temp;
+        temp.set_origin(matrix_serializer.serialized(argument.origin()));
+        temp.set_basis(matrix_serializer.serialized(argument.basis()));
+        return temp.SerializeAsString();
+    }
+
+    DatumXd Serialization<DatumXd>::deserialized(const std::string& argument) const {
+        Serialization<MatrixXd> matrix_serializer;
+        SerializedDatumXd temp;
+        temp.ParseFromString(argument);
+        MatrixXd origin = matrix_serializer.deserialized(temp.origin());
+        MatrixXd basis = matrix_serializer.deserialized(temp.basis());
+        return DatumXd(origin, basis);
+    }
 }

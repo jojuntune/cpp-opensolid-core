@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
+#include <OpenSolid/Core/opensolid.pb.h>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 
@@ -368,4 +369,19 @@ namespace OpenSolid
     template bool Simplex<3, 3>::operator==(const Simplex<3, 3>&) const;
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
     template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
+
+    std::string Serialization<SimplexXd>::serialized(const SimplexXd& argument) const {
+        Serialization<MatrixXd> matrix_serializer;
+        SerializedSimplexXd temp;
+        temp.set_vertices(matrix_serializer.serialized(argument.vertices()));
+        return temp.SerializeAsString();
+    }
+
+    SimplexXd Serialization<SimplexXd>::deserialized(const std::string& argument) const {
+        Serialization<MatrixXd> matrix_serializer;
+        SerializedSimplexXd temp;
+        temp.ParseFromString(argument);
+        MatrixXd vertices = matrix_serializer.deserialized(temp.vertices());
+        return SimplexXd(vertices);
+    }
 }
