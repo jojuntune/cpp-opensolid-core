@@ -99,25 +99,8 @@
 ########## Set up source groups for Visual Studio ##########
 
     # Automatically sort source files into groups based on directory structure
-    SET(UNIQUE_PATHS)
-    FOREACH(SOURCE_FILE ${GLOBAL_SOURCE_LIST})
-        GET_FILENAME_COMPONENT(SOURCE_PATH ${SOURCE_FILE} PATH)
-        LIST(APPEND UNIQUE_PATHS ${SOURCE_PATH})
-    ENDFOREACH(SOURCE_FILE)
-    LIST(SORT UNIQUE_PATHS)
-    LIST(REMOVE_DUPLICATES UNIQUE_PATHS)
-    FOREACH(GROUP_PATH ${UNIQUE_PATHS})
-        SET(CONTAINED_SOURCES)
-        FOREACH(SOURCE_FILE ${GLOBAL_SOURCE_LIST})
-            GET_FILENAME_COMPONENT(SOURCE_PATH ${SOURCE_FILE} PATH)
-            IF (${SOURCE_PATH} STREQUAL ${GROUP_PATH})
-                LIST(APPEND CONTAINED_SOURCES ${SOURCE_FILE})
-            ENDIF(${SOURCE_PATH} STREQUAL ${GROUP_PATH})
-        ENDFOREACH(SOURCE_FILE)
-        STRING(REPLACE "${OpenSolid}/" "" STRIPPED_PATH ${GROUP_PATH})
-        STRING(REGEX REPLACE "/" "\\\\" GROUP_NAME ${STRIPPED_PATH})
-        SOURCE_GROUP(${GROUP_NAME} FILES ${CONTAINED_SOURCES})
-    ENDFOREACH(GROUP_PATH)
+    INCLUDE(CreateSourceGroups.cmake)
+    CREATE_SOURCE_GROUPS(${OpenSolid} ${GLOBAL_SOURCE_LIST})
     
     # Dummy library that is never built but provides a Visual Studio target that includes
     # a complete source tree
