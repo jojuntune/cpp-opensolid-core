@@ -1,10 +1,5 @@
 package OpenSolid;
 
-message SerializedInterval {
-    required double lower = 1;
-    required double upper = 2;
-}
-
 message SerializedMatrixXd {
     required int32 rows = 1;
     required int32 cols = 2;
@@ -15,13 +10,4 @@ message SerializedMatrixXI {
     required int32 rows = 1;
     required int32 cols = 2;
     repeated bytes data = 3;
-}
-
-message SerializedDatumXd {
-    required bytes origin = 1;
-    required bytes basis = 2;
-}
-
-message SerializedSimplexXd {
-    required bytes vertices = 1;
 }

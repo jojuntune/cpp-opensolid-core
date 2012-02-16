@@ -23,8 +23,8 @@
 
 #include <boost/numeric/interval.hpp>
 
-#include <OpenSolid/Core/opensolid.pb.h>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/Scalar/Interval.pb.h>
 
 namespace OpenSolid
 {

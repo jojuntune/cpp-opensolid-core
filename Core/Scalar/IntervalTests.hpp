@@ -20,7 +20,6 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Core/opensolid.pb.h>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 

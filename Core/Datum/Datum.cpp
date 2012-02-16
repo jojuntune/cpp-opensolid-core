@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/opensolid.pb.h>
 #include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Datum/Datum.pb.h>
 
 namespace OpenSolid
 {

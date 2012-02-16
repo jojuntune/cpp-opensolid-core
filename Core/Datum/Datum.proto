@@ -1,0 +1,6 @@
+package OpenSolid;
+
+message SerializedDatumXd {
+    required bytes origin = 1;
+    required bytes basis = 2;
+}

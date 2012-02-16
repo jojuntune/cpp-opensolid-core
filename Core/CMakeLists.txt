@@ -5,21 +5,13 @@
     
 ########## Set up Protocol Buffers serialization ##########
 
-    # Generate opensolid.pb.h, opensolid.pb.cc from message format definition in opensolid.proto
-    ADD_CUSTOM_COMMAND(
-        OUTPUT
-        ${OpenSolid}/Core/opensolid.pb.h
-        ${OpenSolid}/Core/opensolid.pb.cc
-        DEPENDS
-        protoc
-        ${OpenSolid}/Core/opensolid.proto
-        COMMAND
-        protoc
-        ARGS
-        --proto_path=${OpenSolid}/Core
-        --cpp_out=${OpenSolid}/Core
-        ${OpenSolid}/Core/opensolid.proto
+    SET(PROTO_FILES
+        ${OpenSolid}/Core/Scalar/Interval.proto
+        ${OpenSolid}/Core/Matrix/Matrix.proto
+        ${OpenSolid}/Core/Datum/Datum.proto
+        ${OpenSolid}/Core/Simplex/Simplex.proto
     )
+    COMPILE_PROTO_FILES(PROTO_SOURCES ${PROTO_FILES})
 
 ########## Define lists of source files ##########
 
@@ -27,7 +19,6 @@
     SET(CORE_FILES
         ${OpenSolid}/Core/CMakeLists.txt
         ${OpenSolid}/Core/config.hpp
-        ${OpenSolid}/Core/opensolid.proto
         ${OpenSolid}/Core/Template.cpp
         ${OpenSolid}/Core/Template.hpp
         ${OpenSolid}/Core/TemplateTests.hpp
@@ -258,6 +249,7 @@
     
     # Update global source list
     SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
+        ${PROTO_FILES}
         ${CORE_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
@@ -295,6 +287,7 @@
 ########## Compile OpenSolidCore library ##########
 
     ADD_LIBRARY(OpenSolidCore SHARED
+        ${PROTO_SOURCES}
         ${COMMON_SOURCES}
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
@@ -308,7 +301,6 @@
         ${SCALAR_SOURCES}
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
-        ${OpenSolid}/Core/opensolid.pb.cc
     )
 
     TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf)
@@ -331,11 +323,8 @@
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/OpenSolid
         FILES_MATCHING
         PATTERN "*.hpp"
-        PATTERN "*.h"
-        PATTERN "Eigen/*"
-        PATTERN "CMakeLists.txt" EXCLUDE
         PATTERN "*Tests.hpp" EXCLUDE
-        PATTERN "Template.hpp" EXCLUDE
+        PATTERN "*Template.hpp" EXCLUDE
     )
     
 ########## Install libraries ##########
