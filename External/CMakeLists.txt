@@ -71,6 +71,8 @@
     SET(PROTOC_SOURCES
         ${OpenSolid}/External/google/protobuf/compiler/main.cc        
     )
+    
+    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST} ${OpenSolid}/External/CMakeLists.txt PARENT_SCOPE)
 
 ########## Build Protocol Buffers libraries and compiler ##########
 
@@ -86,3 +88,10 @@
     ELSEIF(WIN32)
         SET_TARGET_PROPERTIES(libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "/W0")
     ENDIF (CMAKE_COMPILER_IS_GNUCXX)
+    
+########## Install Eigen headers ##########
+    
+    INSTALL(DIRECTORY ${OpenSolid}/External/Eigen
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+        PATTERN "CMakeLists.txt" EXCLUDE
+    )
