@@ -25,6 +25,7 @@
 
 #include <string>
 #include <exception>
+#include <vector>
 
 #include <boost/python/converter/registry.hpp>
 
