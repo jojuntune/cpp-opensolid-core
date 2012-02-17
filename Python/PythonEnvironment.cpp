@@ -248,7 +248,7 @@ namespace OpenSolid
         static bool initialized = false;
         static object global;
         static object hidden;
-        static object format_exception;
+        static object print_exception;
         static object string_io;
         static object extract_tb;
         if (!initialized) {
@@ -259,7 +259,7 @@ namespace OpenSolid
             exec("from opensolid import *", global, global);
             exec("class Environment: pass", hidden, hidden);
             object traceback_module = import("traceback");
-            format_exception = traceback_module.attr("format_exception");
+            print_exception = traceback_module.attr("print_exception");
             string_io = import("StringIO").attr("StringIO");
             extract_tb = traceback_module.attr("extract_tb");
             initialized = true;
@@ -267,7 +267,7 @@ namespace OpenSolid
         _environment_dict = dict(global);
         _environment = boost::python::eval("Environment()", hidden, hidden);
         _environment.attr("__dict__") = _environment_dict;
-        _format_exception = format_exception;
+        _print_exception = print_exception;
         _string_io = string_io;
         _extract_tb = extract_tb;
     }
@@ -296,7 +296,7 @@ namespace OpenSolid
         std::string result;
         if (_traceback) {
             object string_io = _string_io();
-            _format_exception(_error_type, _error_value, _traceback, object(), string_io);
+            _print_exception(_error_type, _error_value, _traceback, object(), string_io);
             result = extract<std::string>(string_io.attr("getvalue")());
         }
         return result;

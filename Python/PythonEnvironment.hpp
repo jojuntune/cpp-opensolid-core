@@ -68,7 +68,7 @@ namespace OpenSolid
     private:
         boost::python::object _environment;
         boost::python::object _environment_dict;
-        boost::python::object _format_exception;
+        boost::python::object _print_exception;
         boost::python::object _string_io;
         boost::python::object _extract_tb;
         boost::python::object _error_type;

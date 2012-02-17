@@ -86,6 +86,7 @@ public:
             environment.run(text);
         } catch (const Error& error) {
             TS_ASSERT_EQUALS(std::string(error.what()), "PythonTypeError");
+            std::cout << environment.formattedTraceback() << std::endl;
             std::vector<PythonStackFrame> stack_trace = environment.stackTrace();
             TS_ASSERT_EQUALS(stack_trace.size(), 1);
             TS_ASSERT_EQUALS(stack_trace.front().lineNumber(), 2);
@@ -100,6 +101,7 @@ public:
             environment.run(text);
         } catch (const Error& error) {
             TS_ASSERT_EQUALS(std::string(error.what()), "PythonSyntaxError");
+            std::cout << environment.formattedTraceback() << std::endl;
         }
     }
     
@@ -112,6 +114,8 @@ public:
             environment.get<Vector3d>("a.cross(b)");
         } catch (const Error& error) {
             TS_ASSERT_EQUALS(std::string(error.what()), "PythonAttributeError");
+            std::cout << environment.formattedTraceback() << std::endl;
+
         }
     }
 
@@ -225,6 +229,7 @@ public:
             environment.run(text);
         } catch (const Error& error) {
             TS_ASSERT_EQUALS(std::string(error.what()), "PythonTypeError");
+            std::cout << environment.formattedTraceback() << std::endl;
         }
     }
     
@@ -248,6 +253,7 @@ public:
             TS_ASSERT_EQUALS(stack_trace[0].lineNumber(), 6);
             TS_ASSERT_EQUALS(stack_trace[1].lineNumber(), 2);
             TS_ASSERT_EQUALS(stack_trace[1].functionName(), "foo");
+            std::cout << environment.formattedTraceback() << std::endl;
         }
     }
     
@@ -284,6 +290,7 @@ public:
             TS_ASSERT_EQUALS(error.secondMatrix().rows(), 3);
             TS_ASSERT_EQUALS(error.firstMatrix(), Vector2d(1, 2));
             TS_ASSERT_EQUALS(error.secondMatrix(), Vector3d(1, 2, 3));
+            std::cout << environment.formattedTraceback() << std::endl;
         }
     }
     
@@ -314,6 +321,7 @@ public:
         try {
             environment.get<Vector2d>(expression);
         } catch (const ConversionFromPythonError& error) {
+            std::cout << environment.formattedTraceback() << std::endl;
             TS_ASSERT_EQUALS(std::string(error.what()), "ConversionFromPythonError");
             TS_ASSERT_EQUALS(error.expectedType(), "Vector2d");
             TS_ASSERT(extract<MatrixXI>(error.pythonObject()).check());
