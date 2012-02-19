@@ -126,6 +126,13 @@
     # Automatically sort source files into groups based on directory structure
     INCLUDE(CreateSourceGroups.cmake)
     CREATE_SOURCE_GROUPS(${OpenSolid} ${GLOBAL_SOURCE_LIST})
+
+    # Include all directories included by subprojects to allow code completion to work properly
+    # within ALL_SOURCES target
+    GET_DIRECTORY_PROPERTY(CORE_INCLUDES DIRECTORY Core INCLUDE_DIRECTORIES)
+    GET_DIRECTORY_PROPERTY(PYTHON_INCLUDES DIRECTORY Python INCLUDE_DIRECTORIES)
+    INCLUDE_DIRECTORIES(${CORE_INCLUDES})
+    INCLUDE_DIRECTORIES(${PYTHON_INCLUDES})
     
     # Dummy library that is never built but provides a Visual Studio target that includes
     # a complete source tree
