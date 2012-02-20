@@ -21,6 +21,8 @@
 #ifndef OPENSOLID__COMMON__HASH_HPP
 #define OPENSOLID__COMMON__HASH_HPP
 
+#include <string>
+
 #include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
@@ -35,9 +37,29 @@ namespace OpenSolid
 
         static std::size_t Combine(std::size_t first_argument, std::size_t second_argument);
     };
+
+    template <>
+    struct Hash<int>
+    {
+        std::size_t operator()(int argument) const;
+    };
+
+    template <>
+    struct Hash<double>
+    {
+        std::size_t operator()(double argument) const;
+    };
+
+    template <>
+    struct Hash<std::string>
+    {
+        std::size_t operator()(const std::string& argument) const;
+    };
 }
 
 ////////// Implementation //////////
+
+#include <functional>
 
 namespace OpenSolid
 {
@@ -50,6 +72,18 @@ namespace OpenSolid
         return first_argument ^ (
             second_argument + 0x9e3779b9 + (first_argument << 6) + (first_argument >> 2)
         );
+    }
+
+    inline std::size_t Hash<int>::operator()(int argument) const {
+        return std::hash_value(argument);
+    }
+
+    inline std::size_t Hash<double>::operator()(double argument) const {
+        return std::hash_value(argument);
+    }
+
+    inline std::size_t Hash<std::string>::operator()(const std::string& argument) const {
+        return std::hash_value(argument);
     }
 }
 

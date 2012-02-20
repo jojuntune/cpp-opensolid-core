@@ -21,10 +21,10 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
+#include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Scalar/double.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace Eigen

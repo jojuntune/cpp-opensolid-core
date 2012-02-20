@@ -36,6 +36,24 @@ namespace OpenSolid
 
         auto operator()(const BoundedType& argument) const -> decltype(argument.bounds());
     };
+
+    class Interval;
+    
+    template <>
+    struct Bounds<int>
+    {
+        typedef Interval Type;
+
+        Interval operator()(int argument) const; // Defined in Interval.hpp
+    };
+    
+    template <>
+    struct Bounds<double>
+    {
+        typedef Interval Type;
+
+        Interval operator()(double argument) const; // Defined in Interval.hpp
+    };
 }
 
 ////////// Implementation //////////

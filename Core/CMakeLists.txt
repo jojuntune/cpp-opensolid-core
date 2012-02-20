@@ -36,8 +36,10 @@
         ${OpenSolid}/Core/Common/ReferenceCounted.hpp
         ${OpenSolid}/Core/Common/Serialization.hpp
         ${OpenSolid}/Core/Common/Transformable.hpp
+        ${OpenSolid}/Core/Common/TypeName.hpp
     )
     SET(COMMON_SOURCES
+        ${OpenSolid}/Core/Common/TypeName.cpp
     )
     
     # Datum directory files
@@ -82,13 +84,20 @@
         ${OpenSolid}/Core/Domain/DomainImplementation/CuboidDomain.cpp
         ${OpenSolid}/Core/Domain/DomainImplementation/SimplexDomain.cpp
     )
+
+    # File directory files
+    SET(FILE_HEADERS
+        ${OpenSolid}/Core/File/File.hpp
+    )
+    SET(FILE_SOURCES
+        ${OpenSolid}/Core/File/File.cpp
+    )
     
     # Function directory files
     SET(FUNCTION_HEADERS
         ${OpenSolid}/Core/Function/Function.hpp
         ${OpenSolid}/Core/Function/FunctionConstructors.hpp
         ${OpenSolid}/Core/Function/FunctionTests.hpp
-        ${OpenSolid}/Core/Function/FunctionResult.hpp
     )
     SET(FUNCTION_SOURCES
         ${OpenSolid}/Core/Function/Function.cpp
@@ -165,7 +174,6 @@
     SET(GEOMETRY_HEADERS
         ${OpenSolid}/Core/Geometry/Geometry.hpp
         ${OpenSolid}/Core/Geometry/GeometryConstructors.hpp
-        ${OpenSolid}/Core/Geometry/GeometryResult.hpp
         ${OpenSolid}/Core/Geometry/GeometryTests.hpp
     )
     SET(GEOMETRY_SOURCES
@@ -211,8 +219,6 @@
     # Scalar directory files
     SET(SCALAR_HEADERS
         ${OpenSolid}/Core/Scalar/Comparison.hpp
-        ${OpenSolid}/Core/Scalar/int.hpp
-        ${OpenSolid}/Core/Scalar/double.hpp
         ${OpenSolid}/Core/Scalar/Interval.hpp
         ${OpenSolid}/Core/Scalar/IntervalTests.hpp
     )
@@ -259,8 +265,8 @@
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_HEADERS}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${ERRORIMPLEMENTATION_HEADERS}
-        ${ERRORIMPLEMENTATION_SOURCES}
+        ${FILE_HEADERS}
+        ${FILE_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_HEADERS}
@@ -292,6 +298,7 @@
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_SOURCES}
+        ${FILE_SOURCES}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}

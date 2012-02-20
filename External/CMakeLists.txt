@@ -72,7 +72,15 @@
         ${OpenSolid}/External/google/protobuf/compiler/main.cc        
     )
     
-    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST} ${OpenSolid}/External/CMakeLists.txt PARENT_SCOPE)
+    SET(GLOBAL_SOURCE_LIST
+        ${GLOBAL_SOURCE_LIST}
+        ${OpenSolid}/External/CMakeLists.txt
+        PARENT_SCOPE
+    )
+
+########## Build SQLite library ##########
+
+    ADD_LIBRARY(sqlite STATIC ${OpenSolid}/External/sqlite/sqlite3.c)
 
 ########## Build Protocol Buffers libraries and compiler ##########
 
@@ -82,12 +90,13 @@
     ADD_EXECUTABLE(protoc ${PROTOC_SOURCES})
     TARGET_LINK_LIBRARIES(protoc libprotobuf libprotoc)
     
-    # Disable warnings for Protocol Buffers compilation
-    IF (CMAKE_COMPILER_IS_GNUCXX)
-        SET_TARGET_PROPERTIES(libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "-w")
+########## Disable warnings for external code compilation ##########
+
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+        SET_TARGET_PROPERTIES(sqlite libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "-w")
     ELSEIF(WIN32)
-        SET_TARGET_PROPERTIES(libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "/W0")
-    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
+        SET_TARGET_PROPERTIES(sqlite libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "/W0")
+    ENDIF()
     
 ########## Install Eigen headers ##########
     

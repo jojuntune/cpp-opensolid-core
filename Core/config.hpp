@@ -21,6 +21,8 @@
 #ifndef OPENSOLID_CORE__CONFIG_HPP
 #define OPENSOLID_CORE__CONFIG_HPP
 
+#include <cmath>
+
 #if defined(WIN32)
     #if defined(OpenSolidCore_EXPORTS)
         #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
@@ -30,5 +32,23 @@
 #else
     #define OPENSOLID_CORE_EXPORT
 #endif
+
+namespace OpenSolid
+{
+    using std::min;
+    using std::max;
+    using std::abs;
+    using std::sqrt;
+    using std::sin;
+    using std::cos;
+    using std::tan;
+    using std::asin;
+    using std::acos;
+    using std::atan;
+    using std::atan2;
+    using std::exp;
+    using std::log;
+    using std::pow;
+}
 
 #endif

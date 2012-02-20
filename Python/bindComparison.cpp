@@ -19,7 +19,6 @@
  *****************************************************************************/
 
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
-#include <OpenSolid/Core/Scalar/double.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 

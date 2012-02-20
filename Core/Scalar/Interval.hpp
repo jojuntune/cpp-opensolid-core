@@ -193,11 +193,6 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-#include <boost/functional/hash.hpp>
-
-#include <OpenSolid/Core/Scalar/double.hpp>
-#include <OpenSolid/Core/Scalar/int.hpp>
-
 namespace OpenSolid
 {
     inline Interval Bounds<int>::operator()(int argument) const {return Interval(argument);}
