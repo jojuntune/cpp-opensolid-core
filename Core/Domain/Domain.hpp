@@ -27,6 +27,7 @@
 
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
@@ -74,11 +75,22 @@ namespace OpenSolid
             const VectorXd& vector
         ) const;
     };
-    
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
     template <>
     struct Conversion<Domain, Interval>
     {
         OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
+    };
+
+    template <>
+    struct TypeName<Domain>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

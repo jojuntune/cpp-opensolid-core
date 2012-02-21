@@ -139,8 +139,9 @@ public:
     void testSerialization() {
         Datum3d original(Vector3d::Random(), Matrix3d::Random());
         Serialization<DatumXd> serializer;
-        std::string serialized = serializer.serialized(original);
-        DatumXd final = serializer.deserialized(serialized);
+        Deserialization<DatumXd> deserializer;
+        std::string serialized = serializer(original);
+        DatumXd final = deserializer(serialized);
         TS_ASSERT_EQUALS(original.dimensions(), final.dimensions());
         TS_ASSERT_EQUALS(original.axes(), final.axes());
         TS_ASSERT_EQUALS(original.origin(), final.origin());

@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace Eigen
@@ -296,15 +297,133 @@ namespace OpenSolid
     template <>
     struct Serialization<MatrixXd>
     {
-        OPENSOLID_CORE_EXPORT std::string serialized(const MatrixXd& argument) const;
-        OPENSOLID_CORE_EXPORT MatrixXd deserialized(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT std::string operator()(const MatrixXd& argument) const;
+    };
+
+    template <>
+    struct Deserialization<MatrixXd>
+    {
+        OPENSOLID_CORE_EXPORT MatrixXd operator()(const std::string& argument) const;
     };
 
     template <>
     struct Serialization<MatrixXI>
     {
-        OPENSOLID_CORE_EXPORT std::string serialized(const MatrixXI& argument) const;
-        OPENSOLID_CORE_EXPORT MatrixXI deserialized(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT std::string operator()(const MatrixXI& argument) const;
+    };
+
+    template <>
+    struct Deserialization<MatrixXI>
+    {
+        OPENSOLID_CORE_EXPORT MatrixXI operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<MatrixXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<MatrixXI>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Vector2d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Vector3d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<VectorXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<RowVector2d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<RowVector3d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<RowVectorXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Matrix2d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Matrix3d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Vector2I>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Vector3I>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<VectorXI>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<RowVector2I>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<RowVector3I>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<RowVectorXI>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Matrix2I>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<Matrix3I>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 
     template <int destination_size_, int source_size_>

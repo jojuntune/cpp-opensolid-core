@@ -27,8 +27,6 @@
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
-#include <OpenSolid/Core/Support/Boost.hpp>
-#include <OpenSolid/Core/Support/STL.hpp>
 
 using namespace OpenSolid;
 
@@ -129,23 +127,6 @@ public:
         TS_ASSERT_EQUALS(line, simplex);
     }
     
-    void testHashing() {
-        Line2d first_line(Vector2d::Zero(), Vector2d::Ones());
-        Line2d second_line(Vector2d::Zero(), Vector2d::Ones());
-        TS_ASSERT_EQUALS(
-            std::hash<Line2d>()(first_line),
-            std::hash<Line2d>()(second_line)
-        );
-    }
-    
-    void testBoostHashing() {
-        boost::unordered_map<Line2d, std::string> map;
-        Line2d first_line(Vector2d::Zero(), Vector2d::Ones());
-        Line2d second_line(Vector2d::Zero(), Vector2d::Ones());
-        map[first_line] = "value";
-        TS_ASSERT_EQUALS(map[second_line], "value");
-    }
-    
     void testCoordinateSystem() {
         Triangle3d triangle(Vector3d::Zero(), Vector3d(2, 0, 0), Vector3d(1, 2, 0));
         Datum<3, 2> coordinate_system = triangle.coordinateSystem();
@@ -204,8 +185,9 @@ public:
     void testSerialization() {
         Triangle3d original(Vector3d::Random(), Vector3d::Random(), Vector3d::Random());
         Serialization<SimplexXd> serializer;
-        std::string serialized = serializer.serialized(original);
-        SimplexXd final = serializer.deserialized(serialized);
+        Deserialization<SimplexXd> deserializer;
+        std::string serialized = serializer(original);
+        SimplexXd final = deserializer(serialized);
         TS_ASSERT_EQUALS(final.dimensions(), original.dimensions());
         TS_ASSERT_EQUALS(final.size(), original.size());
         TS_ASSERT_EQUALS(final.vertices(), original.vertices());

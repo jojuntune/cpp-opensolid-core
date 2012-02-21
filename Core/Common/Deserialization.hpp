@@ -18,42 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__MODEL_HPP
-#define OPENSOLID__MODEL_HPP
+#ifndef OPENSOLID__DESERIALIZATION_HPP
+#define OPENSOLID__DESERIALIZATION_HPP
 
-#include <unordered_map>
-
-#include <boost/any.hpp>
-
-#include <OpenSolid/Common/Transformable.hpp>
-#include <OpenSolid/Support/STL.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {
-    class Model
-    {
-    private:
-        std::unordered_map<std::string, boost::any> _elements;
-    public:
-        OPENSOLID_CORE_EXPORT Model();
-        
-        template <class Type>
-        OPENSOLID_CORE_EXPORT Model& set(const std::string& name, const Type& argument);
-        
-        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
-
-        OPENSOLID_CORE_EXPORT const std::type_info& type(const std::string& name) const;
-
-        template <class Type>
-        OPENSOLID_CORE_EXPORT Type get(const std::string& name) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    
+    template <class Type>
+    struct Deserialization;
 }
 
 #endif

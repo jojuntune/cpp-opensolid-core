@@ -27,11 +27,10 @@
     # Common directory files
     SET(COMMON_HEADERS
         ${OpenSolid}/Core/Common/Bounds.hpp
-        ${OpenSolid}/Core/Common/BoundsTests.hpp
         ${OpenSolid}/Core/Common/Convertible.hpp
+        ${OpenSolid}/Core/Common/Deserialization.hpp
         ${OpenSolid}/Core/Common/Error.hpp
         ${OpenSolid}/Core/Common/Evaluation.hpp
-        ${OpenSolid}/Core/Common/Hash.hpp
         ${OpenSolid}/Core/Common/MatrixArgument.hpp
         ${OpenSolid}/Core/Common/ReferenceCounted.hpp
         ${OpenSolid}/Core/Common/Serialization.hpp
@@ -243,15 +242,6 @@
     SET(SIMPLEX_SOURCES
         ${OpenSolid}/Core/Simplex/Simplex.cpp
     )
-
-    # Support directory files
-    SET(SUPPORT_HEADERS
-        ${OpenSolid}/Core/Support/declarations.hpp
-        ${OpenSolid}/Core/Support/Boost.hpp
-        ${OpenSolid}/Core/Support/STL.hpp
-    )
-    SET(SUPPORT_SOURCES
-    )
     
     # Update global source list
     SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
@@ -285,8 +275,6 @@
         ${SET_SOURCES}
         ${SIMPLEX_HEADERS}
         ${SIMPLEX_SOURCES}
-        ${SUPPORT_HEADERS}
-        ${SUPPORT_SOURCES}
         PARENT_SCOPE
     )
     
@@ -321,7 +309,6 @@
     ADD_CXXTEST(FunctionTests ${OpenSolid}/Core/Function/FunctionTests.hpp OpenSolidCore)
     ADD_CXXTEST(GeometryTests ${OpenSolid}/Core/Geometry/GeometryTests.hpp OpenSolidCore)
     ADD_CXXTEST(SimplexTests ${OpenSolid}/Core/Simplex/SimplexTests.hpp OpenSolidCore)
-    ADD_CXXTEST(BoundsTests ${OpenSolid}/Core/Common/BoundsTests.hpp OpenSolidCore)
     ADD_CXXTEST(ObjectTests ${OpenSolid}/Core/Object/ObjectTests.hpp OpenSolidCore)
     
 ########## Install headers ##########

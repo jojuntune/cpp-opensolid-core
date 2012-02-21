@@ -33,19 +33,20 @@
 
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
-#include <OpenSolid/Core/Common/Hash.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Common/Deserialization.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 
 namespace OpenSolid
 {
-    typedef boost::numeric::interval_lib::policies<
-        boost::numeric::interval_lib::save_state_nothing<
-            boost::numeric::interval_lib::rounded_transc_exact<double,
-                boost::numeric::interval_lib::rounded_arith_exact<double>
-            >
-        >,
-        boost::numeric::interval_lib::checking_base<double>
-    > IntervalPolicies;
+    namespace
+    {
+        using namespace boost::numeric::interval_lib;
+        typedef policies<
+            save_state_nothing<rounded_transc_exact<double, rounded_arith_exact<double>>>,
+            checking_base<double>
+        > IntervalPolicies;
+    }
     
     typedef boost::numeric::interval<double, IntervalPolicies> BoostInterval;
 
@@ -103,27 +104,6 @@ namespace OpenSolid
         static Interval Hull(double first_argument, double second_argument);
         static Interval Empty();
         static Interval Whole();
-    };
-
-    template <>
-    struct Bounds<Interval>
-    {
-        typedef Interval Type;
-
-        const Interval& operator()(const Interval& argument) const;
-    };
-
-    template <>
-    struct Hash<Interval>
-    {
-        std::size_t operator()(const Interval& argument) const;
-    };
-
-    template <>
-    struct Serialization<Interval>
-    {
-        OPENSOLID_CORE_EXPORT std::string serialized(const Interval& argument) const;
-        OPENSOLID_CORE_EXPORT Interval deserialized(const std::string& argument) const;
     };
 
     bool operator==(double first_argument, const Interval& second_argument);
@@ -191,14 +171,41 @@ namespace OpenSolid
     OPENSOLID_CORE_EXPORT std::ostream& operator<<(std::ostream& stream, const Interval& argument);
 }
 
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
+    struct Bounds<Interval>
+    {
+        typedef Interval Type;
+
+        const Interval& operator()(const Interval& argument) const;
+    };
+
+    template <>
+    struct Serialization<Interval>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()(const Interval& argument) const;
+    };
+
+    template <>
+    struct Deserialization<Interval>
+    {
+        OPENSOLID_CORE_EXPORT Interval operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<Interval>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+}
+
 ////////// Implementation //////////
 
 namespace OpenSolid
 {
-    inline Interval Bounds<int>::operator()(int argument) const {return Interval(argument);}
-
-    inline Interval Bounds<double>::operator()(double argument) const {return Interval(argument);}
-
     inline Interval::Interval() : _value(BoostInterval::empty()) {}
     
     inline Interval::Interval(double argument) : _value(argument) {}
@@ -325,15 +332,6 @@ namespace OpenSolid
     inline Interval Interval::Empty() {return BoostInterval::empty();}
     
     inline Interval Interval::Whole() {return BoostInterval::whole();}
-    
-    inline const Interval& Bounds<Interval>::operator()(const Interval& argument) const {
-        return argument;
-    }
-
-    inline std::size_t Hash<Interval>::operator()(const Interval& argument) const {
-        Hash<double> hash;
-        return Hash<>::Combine(hash(argument.lower()), hash(argument.upper()));
-    }
 
     inline bool operator==(double first_argument, const Interval& second_argument) {
         return first_argument == second_argument.lower() &&
@@ -479,6 +477,14 @@ namespace OpenSolid
     inline Interval imag(const Interval& argument) {return 0.0;}
     
     inline Interval abs2(const Interval& argument) {return argument.squared();}
+    
+    inline Interval Bounds<int>::operator()(int argument) const {return Interval(argument);}
+
+    inline Interval Bounds<double>::operator()(double argument) const {return Interval(argument);}
+    
+    inline const Interval& Bounds<Interval>::operator()(const Interval& argument) const {
+        return argument;
+    }
 }
 
 #include <OpenSolid/Core/Scalar/Comparison.hpp>

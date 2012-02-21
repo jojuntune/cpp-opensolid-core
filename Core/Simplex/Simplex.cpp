@@ -370,18 +370,20 @@ namespace OpenSolid
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
     template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
 
-    std::string Serialization<SimplexXd>::serialized(const SimplexXd& argument) const {
+    std::string Serialization<SimplexXd>::operator()(const SimplexXd& argument) const {
         Serialization<MatrixXd> matrix_serializer;
         SerializedSimplexXd temp;
-        temp.set_vertices(matrix_serializer.serialized(argument.vertices()));
+        temp.set_vertices(matrix_serializer(argument.vertices()));
         return temp.SerializeAsString();
     }
 
-    SimplexXd Serialization<SimplexXd>::deserialized(const std::string& argument) const {
-        Serialization<MatrixXd> matrix_serializer;
+    SimplexXd Deserialization<SimplexXd>::operator()(const std::string& argument) const {
+        Deserialization<MatrixXd> matrix_deserializer;
         SerializedSimplexXd temp;
         temp.ParseFromString(argument);
-        MatrixXd vertices = matrix_serializer.deserialized(temp.vertices());
+        MatrixXd vertices = matrix_deserializer(temp.vertices());
         return SimplexXd(vertices);
     }
+
+    std::string TypeName<SimplexXd>::operator()() const {return "SimplexXd";}
 }

@@ -84,4 +84,6 @@ namespace OpenSolid
         assert(argument.boundaries().size() == 2);
         return argument.bounds().value();
     }
+
+    std::string TypeName<Domain>::operator()() const {return "Domain";}
 }

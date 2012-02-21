@@ -23,7 +23,7 @@
 
 namespace OpenSolid
 {
-    std::string Serialization<MatrixXd>::serialized(const MatrixXd& argument) const {
+    std::string Serialization<MatrixXd>::operator()(const MatrixXd& argument) const {
         SerializedMatrixXd temp;
         temp.set_rows(argument.rows());
         temp.set_cols(argument.cols());
@@ -31,7 +31,7 @@ namespace OpenSolid
         return temp.SerializeAsString();
     }
 
-    MatrixXd Serialization<MatrixXd>::deserialized(const std::string& argument) const {
+    MatrixXd Deserialization<MatrixXd>::operator()(const std::string& argument) const {
         SerializedMatrixXd temp;
         temp.ParseFromString(argument);
         MatrixXd result(temp.rows(), temp.cols());
@@ -39,25 +39,61 @@ namespace OpenSolid
         return std::move(result);
     }
 
-    std::string Serialization<MatrixXI>::serialized(const MatrixXI& argument) const {
+    std::string Serialization<MatrixXI>::operator()(const MatrixXI& argument) const {
         Serialization<Interval> interval_serializer;
         SerializedMatrixXI temp;
         temp.set_rows(argument.rows());
         temp.set_cols(argument.cols());
         for (int i = 0; i < argument.size(); ++i) {
-            temp.add_data(interval_serializer.serialized(argument(i)));
+            temp.add_data(interval_serializer(argument(i)));
        }
         return temp.SerializeAsString();
     }
 
-    MatrixXI Serialization<MatrixXI>::deserialized(const std::string& argument) const {
-        Serialization<Interval> interval_serializer;
+    MatrixXI Deserialization<MatrixXI>::operator()(const std::string& argument) const {
+        Deserialization<Interval> interval_deserializer;
         SerializedMatrixXI temp;
         temp.ParseFromString(argument);
         MatrixXI result(temp.rows(), temp.cols());
         for (int i = 0; i < result.size(); ++i) {
-            result(i) = interval_serializer.deserialized(temp.data(i));
+            result(i) = interval_deserializer(temp.data(i));
         }
         return std::move(result);
     }
+
+    std::string TypeName<MatrixXd>::operator()() const {return "MatrixXd";}
+
+    std::string TypeName<MatrixXI>::operator()() const {return "MatrixXI";}
+
+    std::string TypeName<Vector2d>::operator()() const {return "Vector2d";}
+
+    std::string TypeName<Vector3d>::operator()() const {return "Vector3d";}
+
+    std::string TypeName<VectorXd>::operator()() const {return "VectorXd";}
+
+    std::string TypeName<RowVector2d>::operator()() const {return "RowVector2d";}
+
+    std::string TypeName<RowVector3d>::operator()() const {return "RowVector3d";}
+
+    std::string TypeName<RowVectorXd>::operator()() const {return "RowVectorXd";}
+
+    std::string TypeName<Matrix2d>::operator()() const {return "Matrix2d";}
+
+    std::string TypeName<Matrix3d>::operator()() const {return "Matrix3d";}
+
+    std::string TypeName<Vector2I>::operator()() const {return "Vector2I";}
+
+    std::string TypeName<Vector3I>::operator()() const {return "Vector3I";}
+
+    std::string TypeName<VectorXI>::operator()() const {return "VectorXI";}
+
+    std::string TypeName<RowVector2I>::operator()() const {return "RowVector2I";}
+
+    std::string TypeName<RowVector3I>::operator()() const {return "RowVector3I";}
+
+    std::string TypeName<RowVectorXI>::operator()() const {return "RowVectorXI";}
+
+    std::string TypeName<Matrix2I>::operator()() const {return "Matrix2I";}
+
+    std::string TypeName<Matrix3I>::operator()() const {return "Matrix3I";}
 }

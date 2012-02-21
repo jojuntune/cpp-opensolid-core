@@ -23,20 +23,22 @@
 
 namespace OpenSolid
 {
-    std::string Serialization<DatumXd>::serialized(const DatumXd& argument) const {
+    std::string Serialization<DatumXd>::operator()(const DatumXd& argument) const {
         Serialization<MatrixXd> matrix_serializer;
         SerializedDatumXd temp;
-        temp.set_origin(matrix_serializer.serialized(argument.origin()));
-        temp.set_basis(matrix_serializer.serialized(argument.basis()));
+        temp.set_origin(matrix_serializer(argument.origin()));
+        temp.set_basis(matrix_serializer(argument.basis()));
         return temp.SerializeAsString();
     }
 
-    DatumXd Serialization<DatumXd>::deserialized(const std::string& argument) const {
-        Serialization<MatrixXd> matrix_serializer;
+    DatumXd Deserialization<DatumXd>::operator()(const std::string& argument) const {
+        Deserialization<MatrixXd> matrix_deserializer;
         SerializedDatumXd temp;
         temp.ParseFromString(argument);
-        MatrixXd origin = matrix_serializer.deserialized(temp.origin());
-        MatrixXd basis = matrix_serializer.deserialized(temp.basis());
+        MatrixXd origin = matrix_deserializer(temp.origin());
+        MatrixXd basis = matrix_deserializer(temp.basis());
         return DatumXd(origin, basis);
     }
+
+    std::string TypeName<DatumXd>::operator()() const {return "DatumXd";}
 }

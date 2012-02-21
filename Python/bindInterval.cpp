@@ -19,7 +19,6 @@
  *****************************************************************************/
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Support/STL.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/repr.hpp>
 
@@ -116,8 +115,6 @@ namespace OpenSolid
 
     std::string repr(const Interval& argument) {return __repr__(argument);}
 
-    std::size_t hash(const Interval& argument) {return Hash<Interval>()(argument);}
-
     struct IntervalPickleSuite : public pickle_suite
     {
         static tuple getinitargs(const Interval& argument) {
@@ -194,7 +191,6 @@ namespace OpenSolid
             .def(self / double())
             .def(double() / self)
             .def("__repr__", &repr)
-            .def("__hash__", &hash)
             .def_pickle(IntervalPickleSuite());
         
         implicitly_convertible<double, Interval>();

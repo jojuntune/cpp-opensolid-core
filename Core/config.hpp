@@ -21,6 +21,7 @@
 #ifndef OPENSOLID_CORE__CONFIG_HPP
 #define OPENSOLID_CORE__CONFIG_HPP
 
+#include <algorithm>
 #include <cmath>
 
 #if defined(WIN32)

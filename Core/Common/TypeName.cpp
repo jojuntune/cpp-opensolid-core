@@ -22,11 +22,9 @@
 
 namespace OpenSolid
 {
-    std::string TypeName<int>::operator()(int argument) const {return "int";}
+    std::string TypeName<int>::operator()() const {return "int";}
 
-    std::string TypeName<double>::operator()(double argument) const {return "double";}
+    std::string TypeName<double>::operator()() const {return "double";}
 
-    std::string TypeName<std::string>::operator()(const std::string& argument) const {
-        return "string";
-    }
+    std::string TypeName<std::string>::operator()() const {return "string";}
 }

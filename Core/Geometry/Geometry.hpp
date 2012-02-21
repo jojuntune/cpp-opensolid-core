@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Evaluation.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
@@ -81,7 +82,12 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
         OPENSOLID_CORE_EXPORT Geometry reversed() const;
     };
-    
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
     template <>
     struct Conversion<Geometry, double>
     {
@@ -104,6 +110,12 @@ namespace OpenSolid
     struct Conversion<Geometry, VectorXd>
     {
         OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& argument) const;
+    };
+
+    template <>
+    struct TypeName<Geometry>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

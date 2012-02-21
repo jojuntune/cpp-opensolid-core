@@ -28,19 +28,6 @@
 
 namespace OpenSolid
 {
-    std::string Serialization<Interval>::serialized(const Interval& argument) const {
-        SerializedInterval temp;
-        temp.set_lower(argument.lower());
-        temp.set_upper(argument.upper());
-        return temp.SerializeAsString();
-    }
-
-    Interval Serialization<Interval>::deserialized(const std::string& argument) const {
-        SerializedInterval temp;
-        temp.ParseFromString(argument);
-        return Interval(temp.lower(), temp.upper());
-    }
-
     Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 
     Interval cos(const Interval& argument) {return boost::numeric::cos(argument.value());}
@@ -87,4 +74,19 @@ namespace OpenSolid
         }
         return stream;
     }
+
+    std::string Serialization<Interval>::operator()(const Interval& argument) const {
+        SerializedInterval temp;
+        temp.set_lower(argument.lower());
+        temp.set_upper(argument.upper());
+        return temp.SerializeAsString();
+    }
+
+    Interval Deserialization<Interval>::operator()(const std::string& argument) const {
+        SerializedInterval temp;
+        temp.ParseFromString(argument);
+        return Interval(temp.lower(), temp.upper());
+    }
+
+    std::string TypeName<Interval>::operator()() const {return "Interval";}
 }

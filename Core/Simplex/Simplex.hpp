@@ -24,7 +24,9 @@
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
@@ -137,12 +139,28 @@ namespace OpenSolid
     typedef Simplex<3, 3> Triangle3d;
     typedef Simplex<3, 4> Tetrahedron3d;
     typedef Simplex<Dynamic, Dynamic> SimplexXd;
+}
 
+////////// Specializations //////////
+
+namespace OpenSolid
+{
     template <>
     struct Serialization<SimplexXd>
     {
-        OPENSOLID_CORE_EXPORT std::string serialized(const SimplexXd& argument) const;
-        OPENSOLID_CORE_EXPORT SimplexXd deserialized(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT std::string operator()(const SimplexXd& argument) const;
+    };
+
+    template <>
+    struct Deserialization<SimplexXd>
+    {
+        OPENSOLID_CORE_EXPORT SimplexXd operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<SimplexXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

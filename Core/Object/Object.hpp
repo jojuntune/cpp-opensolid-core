@@ -43,6 +43,111 @@ namespace OpenSolid
     class Object;
 
     template <>
+    struct Conversion<Object, int>;
+
+    template <>
+    struct Conversion<Object, double>;
+
+    template <>
+    struct Conversion<Object, std::string>;
+
+    template <>
+    struct Conversion<Object, Interval>;
+
+    template <>
+    struct Conversion<Object, MatrixXd>;
+
+    template <>
+    struct Conversion<Object, MatrixXI>;
+
+    template <>
+    struct Conversion<Object, DatumXd>;
+
+    template <>
+    struct Conversion<Object, SimplexXd>;
+
+    template <>
+    struct Conversion<Object, Function>;
+
+    template <>
+    struct Conversion<Object, Geometry>;
+
+    template <>
+    struct Conversion<Object, Domain>;
+
+    class Object : public Convertible<Object>, public Transformable<Object>
+    {
+    public:
+        struct None
+        {
+            None() {}
+        };
+    private:
+        boost::variant<
+            None,
+            int,
+            double,
+            std::string,
+            Interval,
+            MatrixXd,
+            MatrixXI,
+            DatumXd,
+            SimplexXd,
+            Function,
+            Geometry,
+            Domain
+        > _value;
+
+        template <class Type>
+        Type extract() const;
+
+        friend struct Conversion<Object, int>;
+        friend struct Conversion<Object, double>;
+        friend struct Conversion<Object, std::string>;
+        friend struct Conversion<Object, Interval>;
+        friend struct Conversion<Object, MatrixXd>;
+        friend struct Conversion<Object, MatrixXI>;
+        friend struct Conversion<Object, DatumXd>;
+        friend struct Conversion<Object, SimplexXd>;
+        friend struct Conversion<Object, Function>;
+        friend struct Conversion<Object, Geometry>;
+        friend struct Conversion<Object, Domain>;
+
+        std::unordered_map<std::string, Object> _properties;
+    public:
+        OPENSOLID_CORE_EXPORT Object();
+        OPENSOLID_CORE_EXPORT Object(int value);
+        OPENSOLID_CORE_EXPORT Object(double value);
+        OPENSOLID_CORE_EXPORT Object(const std::string& value);
+        OPENSOLID_CORE_EXPORT Object(const Interval& value);
+
+        template <class DerivedType>
+        Object(const EigenBase<DerivedType>& value);
+
+        OPENSOLID_CORE_EXPORT Object(const DatumXd& value);
+        OPENSOLID_CORE_EXPORT Object(const SimplexXd& value);
+        OPENSOLID_CORE_EXPORT Object(const Function& value);
+        OPENSOLID_CORE_EXPORT Object(const Geometry& value);
+        OPENSOLID_CORE_EXPORT Object(const Domain& value);
+
+        OPENSOLID_CORE_EXPORT bool hasValue() const;
+        OPENSOLID_CORE_EXPORT std::string valueType() const;
+        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
+        OPENSOLID_CORE_EXPORT Object get(const std::string& name) const;
+        OPENSOLID_CORE_EXPORT void set(const std::string& name, const Object& object);
+
+        OPENSOLID_CORE_EXPORT Object transformed(
+            const MatrixXd& matrix,
+            const VectorXd& vector
+        ) const;
+    };
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
     struct Conversion<Object, int>
     {
         OPENSOLID_CORE_EXPORT int operator()(const Object& object) const;
@@ -106,70 +211,6 @@ namespace OpenSolid
     struct Conversion<Object, Domain>
     {
         OPENSOLID_CORE_EXPORT Domain operator()(const Object& object) const;
-    };
-
-    class Object : public Convertible<Object>, public Transformable<Object>
-    {
-    public:
-        struct None
-        {
-            None() {}
-        };
-    private:
-        boost::variant<
-            None,
-            int,
-            double,
-            std::string,
-            Interval,
-            MatrixXd,
-            MatrixXI,
-            DatumXd,
-            SimplexXd,
-            Function,
-            Geometry,
-            Domain
-        > _value;
-
-        friend struct Conversion<Object, int>;
-        friend struct Conversion<Object, double>;
-        friend struct Conversion<Object, std::string>;
-        friend struct Conversion<Object, Interval>;
-        friend struct Conversion<Object, MatrixXd>;
-        friend struct Conversion<Object, MatrixXI>;
-        friend struct Conversion<Object, DatumXd>;
-        friend struct Conversion<Object, SimplexXd>;
-        friend struct Conversion<Object, Function>;
-        friend struct Conversion<Object, Geometry>;
-        friend struct Conversion<Object, Domain>;
-
-        std::unordered_map<std::string, Object> _properties;
-    public:
-        OPENSOLID_CORE_EXPORT Object();
-        OPENSOLID_CORE_EXPORT Object(int value);
-        OPENSOLID_CORE_EXPORT Object(double value);
-        OPENSOLID_CORE_EXPORT Object(const std::string& value);
-        OPENSOLID_CORE_EXPORT Object(const Interval& value);
-
-        template <class DerivedType>
-        Object(const EigenBase<DerivedType>& value);
-
-        OPENSOLID_CORE_EXPORT Object(const DatumXd& value);
-        OPENSOLID_CORE_EXPORT Object(const SimplexXd& value);
-        OPENSOLID_CORE_EXPORT Object(const Function& value);
-        OPENSOLID_CORE_EXPORT Object(const Geometry& value);
-        OPENSOLID_CORE_EXPORT Object(const Domain& value);
-
-        OPENSOLID_CORE_EXPORT bool hasValue() const;
-        OPENSOLID_CORE_EXPORT std::string valueType() const;
-        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
-        OPENSOLID_CORE_EXPORT void set(const std::string& name, const Object& object);
-        OPENSOLID_CORE_EXPORT Object get(const std::string& name) const;
-
-        OPENSOLID_CORE_EXPORT Object transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
     };
 
     template <>
@@ -267,7 +308,12 @@ namespace OpenSolid
     {
         OPENSOLID_CORE_EXPORT Matrix3I operator()(const Object& object) const;
     };
+}
 
+////////// Errors //////////
+
+namespace OpenSolid
+{
     class ObjectPropertyError : public Error
     {
     private:

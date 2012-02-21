@@ -33,10 +33,10 @@
         ${OpenSolid}/Python/bindDouble.cpp
         ${OpenSolid}/Python/bindError.cpp
         ${OpenSolid}/Python/bindFunction.cpp
-        ${OpenSolid}/Python/bindHash.cpp
         ${OpenSolid}/Python/bindInterval.cpp
         ${OpenSolid}/Python/bindMatrix.cpp
         ${OpenSolid}/Python/bindMatrixConstructors.cpp
+        ${OpenSolid}/Python/bindObject.cpp
         ${OpenSolid}/Python/bindSerialization.cpp
         ${OpenSolid}/Python/bindSet.cpp
         ${OpenSolid}/Python/bindSimplex.cpp

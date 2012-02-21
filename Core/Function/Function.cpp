@@ -374,12 +374,6 @@ namespace OpenSolid
         }
     }
     
-    std::ostream& operator<<(std::ostream& stream, const Function& function) {
-        assert(function.implementation());
-        function.debug(stream);
-        return stream;
-    }
-    
     void Function::debug(std::ostream& stream, int indent) const {
         assert(implementation());
         for (int i = 0; i < indent; ++i) {stream << "  ";}
@@ -391,29 +385,6 @@ namespace OpenSolid
     Function operator-(const Function& operand) {
         if (operand.isConstant()) {return -operand.as<VectorXd>();}
         return new NegationFunction(operand);
-    }
-    
-    double Conversion<Function, double>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        assert(argument.dimensions() == 1);
-        return argument.as<VectorXd>().value();
-    }
-    
-    Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        assert(argument.dimensions() == 2);
-        return argument.as<VectorXd>();
-    }
-    
-    Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        assert(argument.dimensions() == 3);
-        return argument.as<VectorXd>();
-    }
-    
-    const VectorXd& Conversion<Function, VectorXd>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        return static_cast<const ConstantFunction*>(argument.implementation())->vector();
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {
@@ -565,4 +536,35 @@ namespace OpenSolid
             return new PowerFunction(base, exponent);
         }
     }
+    
+    std::ostream& operator<<(std::ostream& stream, const Function& function) {
+        assert(function.implementation());
+        function.debug(stream);
+        return stream;
+    }
+    
+    double Conversion<Function, double>::operator()(const Function& argument) const {
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 1);
+        return argument.as<VectorXd>().value();
+    }
+    
+    Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 2);
+        return argument.as<VectorXd>();
+    }
+    
+    Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
+        assert(argument.isConstant());
+        assert(argument.dimensions() == 3);
+        return argument.as<VectorXd>();
+    }
+    
+    const VectorXd& Conversion<Function, VectorXd>::operator()(const Function& argument) const {
+        assert(argument.isConstant());
+        return static_cast<const ConstantFunction*>(argument.implementation())->vector();
+    }
+
+    std::string TypeName<Function>::operator()() const {return "Function";}
 }

@@ -33,19 +33,19 @@ namespace OpenSolid
     template <>
     struct TypeName<int>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(int argument) const;
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 
     template <>
     struct TypeName<double>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(double argument) const;
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 
     template <>
     struct TypeName<std::string>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

@@ -25,7 +25,6 @@
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Support/Boost.hpp>
 
 using namespace OpenSolid;
 
@@ -232,8 +231,9 @@ public:
     void testMatrixXdSerialization() {
         Matrix3d original = Matrix3d::Random();
         Serialization<MatrixXd> serializer;
-        std::string serialized = serializer.serialized(original);
-        MatrixXd final = serializer.deserialized(serialized);
+        Deserialization<MatrixXd> deserializer;
+        std::string serialized = serializer(original);
+        MatrixXd final = deserializer(serialized);
         TS_ASSERT_EQUALS(final.rows(), original.rows());
         TS_ASSERT_EQUALS(final.cols(), original.cols());
         TS_ASSERT_EQUALS(original, final);
@@ -242,8 +242,9 @@ public:
     void testMatrixXISerialization() {
         Matrix3I original = Matrix3I::Random();
         Serialization<MatrixXI> serializer;
-        std::string serialized = serializer.serialized(original);
-        MatrixXI final = serializer.deserialized(serialized);
+        Deserialization<MatrixXI> deserializer;
+        std::string serialized = serializer(original);
+        MatrixXI final = deserializer(serialized);
         TS_ASSERT_EQUALS(final.rows(), original.rows());
         TS_ASSERT_EQUALS(final.cols(), original.cols());
         for (int i = 0; i < original.size(); ++i) {

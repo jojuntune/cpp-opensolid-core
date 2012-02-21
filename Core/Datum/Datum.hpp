@@ -151,13 +151,6 @@ namespace OpenSolid
     typedef Datum<3, 3> Datum3d;
     typedef Datum<Dynamic, Dynamic> DatumXd;
 
-    template <>
-    struct Serialization<DatumXd>
-    {
-        OPENSOLID_CORE_EXPORT std::string serialized(const DatumXd& argument) const;
-        OPENSOLID_CORE_EXPORT DatumXd deserialized(const std::string& argument) const;
-    };
-
     template <class TransformableType, int dimensions_, int axes_>
     auto operator*(const TransformableType& argument, const Datum<dimensions_, axes_>& datum) ->
         decltype(argument.transformed(datum.basis(), datum.origin()));
@@ -176,6 +169,29 @@ namespace OpenSolid
                 datum.origin() - datum.projectionMatrix() * datum.origin()
             )
         );
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
+    struct Serialization<DatumXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()(const DatumXd& argument) const;
+    };
+
+    template <>
+    struct Deserialization<DatumXd>
+    {
+        OPENSOLID_CORE_EXPORT DatumXd operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<DatumXd>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
 }
 
 ////////// Implementation //////////

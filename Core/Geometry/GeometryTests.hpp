@@ -22,11 +22,11 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Core/Datum/Axis.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/EllipticalFunction.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Support/STL.hpp>
 
 using namespace OpenSolid;
 
@@ -95,14 +95,5 @@ public:
         Geometry reversed = parabola.reversed();
         TS_ASSERT((reversed(-1) - Vector3d(1, 1, 0)).isZero());
         TS_ASSERT((reversed(1) - Vector3d(-1, 1, 0)).isZero());
-    }
-    
-    void testHashing() {
-        Geometry line = Line2d(Vector2d::Zero(), Vector2d::Ones());
-        std::unordered_map<Geometry, std::string> colors;
-        colors[line] = "red";
-        Geometry line_copy = line;
-        TS_ASSERT_DIFFERS(colors.find(line_copy), colors.end());
-        TS_ASSERT_EQUALS(colors[line_copy], "red");
     }
 };

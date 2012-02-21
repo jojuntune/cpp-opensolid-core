@@ -30,6 +30,7 @@
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Evaluation.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
@@ -104,30 +105,6 @@ namespace OpenSolid
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
     };
-    
-    template <>
-    struct Conversion<Function, double>
-    {
-        OPENSOLID_CORE_EXPORT double operator()(const Function& argument) const;
-    };
-    
-    template <>
-    struct Conversion<Function, Vector2d>
-    {
-        OPENSOLID_CORE_EXPORT Vector2d operator()(const Function& argument) const;
-    };
-    
-    template <>
-    struct Conversion<Function, Vector3d>
-    {
-        OPENSOLID_CORE_EXPORT Vector3d operator()(const Function& argument) const;
-    };
-    
-    template <>
-    struct Conversion<Function, VectorXd>
-    {
-        OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
-    };
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
     
@@ -165,6 +142,41 @@ namespace OpenSolid
         std::ostream& stream,
         const Function& function
     );
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
+    struct Conversion<Function, double>
+    {
+        OPENSOLID_CORE_EXPORT double operator()(const Function& argument) const;
+    };
+    
+    template <>
+    struct Conversion<Function, Vector2d>
+    {
+        OPENSOLID_CORE_EXPORT Vector2d operator()(const Function& argument) const;
+    };
+    
+    template <>
+    struct Conversion<Function, Vector3d>
+    {
+        OPENSOLID_CORE_EXPORT Vector3d operator()(const Function& argument) const;
+    };
+    
+    template <>
+    struct Conversion<Function, VectorXd>
+    {
+        OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
+    };
+
+    template <>
+    struct TypeName<Function>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
 }
 
 ////////// Implementation //////////

@@ -26,6 +26,7 @@
 
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Datum/Axis.hpp>
+#include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>
 
 using namespace boost::python;
@@ -157,6 +158,8 @@ namespace OpenSolid
             checkForOpenSolidError<MatrixXdVectorAssignmentError>(error_object);
             checkForOpenSolidError<MatrixXdVectorComponentError>(error_object);
             checkForOpenSolidError<MatrixXdVectorIndexError>(error_object);
+            checkForOpenSolidError<ObjectPropertyError>(error_object);
+            checkForOpenSolidError<ObjectConversionError>(error_object);
             checkForOpenSolidError<OnesMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<OnesMatrixXdConstructionError>(error_object);
             checkForOpenSolidError<RandomMatrixXIConstructionError>(error_object);

@@ -24,16 +24,19 @@
 namespace OpenSolid
 {
     template <>
-    struct Hash<Object::None>
-    {
-        std::size_t operator()(const Object::None&) {return 0;}
-    };
-
-    template <>
     struct TypeName<Object::None>
     {
-        std::string operator()(const Object::None&) {return "None";}
+        std::string operator()() {return "None";}
     };
+
+    template <class Type>
+    Type Object::extract() const {
+        try {
+            return boost::get<Type>(_value);
+        } catch (const boost::bad_get&) {
+            throw ObjectConversionError(*this, TypeName<Type>()());
+        }
+    }
 
     Object::Object() {}
 
@@ -62,7 +65,7 @@ namespace OpenSolid
         typedef std::string result_type;
 
         template <class Type>
-        std::string operator()(const Type& argument) {return TypeName<Type>()(argument);}
+        std::string operator()(const Type&) const {return TypeName<Type>()();}
     };
 
     std::string Object::valueType() const {
@@ -140,6 +143,135 @@ namespace OpenSolid
         for (auto i = _properties.begin(); i != _properties.end(); ++i) {
             result._properties[i->first] = i->second.transformed(matrix, vector);
         }
+        return result;
+    }
+
+    int Conversion<Object, int>::operator()(const Object& object) const {
+        return object.extract<int>();
+    }
+
+    double Conversion<Object, double>::operator()(const Object& object) const {
+        return object.extract<double>();
+    }
+
+    std::string Conversion<Object, std::string>::operator()(const Object& object) const {
+        return object.extract<std::string>();
+    }
+
+    Interval Conversion<Object, Interval>::operator()(const Object& object) const {
+        return object.extract<Interval>();
+    }
+
+    MatrixXd Conversion<Object, MatrixXd>::operator()(const Object& object) const {
+        return object.extract<MatrixXd>();
+    }
+
+    MatrixXI Conversion<Object, MatrixXI>::operator()(const Object& object) const {
+        return object.extract<MatrixXI>();
+    }
+
+    DatumXd Conversion<Object, DatumXd>::operator()(const Object& object) const {
+        return object.extract<DatumXd>();
+    }
+
+    SimplexXd Conversion<Object, SimplexXd>::operator()(const Object& object) const {
+        return object.extract<SimplexXd>();
+    }
+
+    Function Conversion<Object, Function>::operator()(const Object& object) const {
+        return object.extract<Function>();
+    }
+
+    Geometry Conversion<Object, Geometry>::operator()(const Object& object) const {
+        return object.extract<Geometry>();
+    }
+
+    Domain Conversion<Object, Domain>::operator()(const Object& object) const {
+        return object.extract<Domain>();
+    }
+
+    template <class MatrixType>
+    MatrixType convertToMatrix(const Object& object) {
+        typedef Matrix<typename MatrixType::Scalar, Dynamic, Dynamic> DynamicMatrixType;
+        DynamicMatrixType dynamic_matrix;
+        try {
+            dynamic_matrix = object.as<DynamicMatrixType>();
+        } catch (const ObjectConversionError&) {
+            throw ObjectConversionError(object, TypeName<MatrixType>()());
+        }
+        int compile_time_rows = MatrixType::RowsAtCompileTime;
+        int compile_time_cols = MatrixType::ColsAtCompileTime;
+        if (dynamic_matrix.rows() != compile_time_rows && compile_time_rows != Dynamic) {
+            throw ObjectConversionError(object, TypeName<MatrixType>()());
+        }
+        if (dynamic_matrix.cols() != compile_time_cols && compile_time_cols != Dynamic) {
+            throw ObjectConversionError(object, TypeName<MatrixType>()());
+        }
+        return dynamic_matrix;
+    }
+
+    Vector2d Conversion<Object, Vector2d>::operator()(const Object& object) const {
+        return convertToMatrix<Vector2d>(object);
+    }
+
+    Vector3d Conversion<Object, Vector3d>::operator()(const Object& object) const {
+        return convertToMatrix<Vector3d>(object);
+    }
+
+    VectorXd Conversion<Object, VectorXd>::operator()(const Object& object) const {
+        return convertToMatrix<VectorXd>(object);
+    }
+
+    RowVector2d Conversion<Object, RowVector2d>::operator()(const Object& object) const {
+        return convertToMatrix<RowVector2d>(object);
+    }
+
+    RowVector3d Conversion<Object, RowVector3d>::operator()(const Object& object) const {
+        return convertToMatrix<RowVector3d>(object);
+    }
+
+    RowVectorXd Conversion<Object, RowVectorXd>::operator()(const Object& object) const {
+        return convertToMatrix<RowVectorXd>(object);
+    }
+
+    Matrix2d Conversion<Object, Matrix2d>::operator()(const Object& object) const {
+        return convertToMatrix<Matrix2d>(object);
+    }
+
+    Matrix3d Conversion<Object, Matrix3d>::operator()(const Object& object) const {
+        return convertToMatrix<Matrix3d>(object);
+    }
+
+    Vector2I Conversion<Object, Vector2I>::operator()(const Object& object) const {
+        return convertToMatrix<Vector2I>(object);
+    }
+
+    Vector3I Conversion<Object, Vector3I>::operator()(const Object& object) const {
+        return convertToMatrix<Vector3I>(object);
+    }
+
+    VectorXI Conversion<Object, VectorXI>::operator()(const Object& object) const {
+        return convertToMatrix<VectorXI>(object);
+    }
+
+    RowVector2I Conversion<Object, RowVector2I>::operator()(const Object& object) const {
+        return convertToMatrix<RowVector2I>(object);
+    }
+
+    RowVector3I Conversion<Object, RowVector3I>::operator()(const Object& object) const {
+        return convertToMatrix<RowVector3I>(object);
+    }
+
+    RowVectorXI Conversion<Object, RowVectorXI>::operator()(const Object& object) const {
+        return convertToMatrix<RowVectorXI>(object);
+    }
+
+    Matrix2I Conversion<Object, Matrix2I>::operator()(const Object& object) const {
+        return convertToMatrix<Matrix2I>(object);
+    }
+
+    Matrix3I Conversion<Object, Matrix3I>::operator()(const Object& object) const {
+        return convertToMatrix<Matrix3I>(object);
     }
 
     ObjectPropertyError::ObjectPropertyError(const Object& object, const std::string& name) :
@@ -152,7 +284,6 @@ namespace OpenSolid
     Object ObjectPropertyError::object() const {return _object;}
 
     std::string ObjectPropertyError::name() const {return _name;}
-
 
     ObjectConversionError::ObjectConversionError(
         const Object& object,

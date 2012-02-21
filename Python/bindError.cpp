@@ -23,6 +23,7 @@
 #include <boost/python/converter/pytype_function.hpp>
 
 #include <OpenSolid/Core/Datum/Axis.hpp>
+#include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
@@ -825,6 +826,20 @@ namespace OpenSolid
                 .def("__str__", &UnitRowVectorXIConstructionError::what)
                 .def("size", &UnitRowVectorXIConstructionError::size)
                 .def("index", &UnitRowVectorXIConstructionError::index)
+        );
+
+        registerException(
+            class_<ObjectPropertyError>("_ObjectPropertyError", no_init)
+                .def("__str__", &ObjectPropertyError::what)
+                .def("object", &ObjectPropertyError::object)
+                .def("name", &ObjectPropertyError::name)
+        );
+
+        registerException(
+            class_<ObjectConversionError>("_ObjectConversionError", no_init)
+                .def("__str__", &ObjectConversionError::what)
+                .def("object", &ObjectConversionError::object)
+                .def("requestedType", &ObjectConversionError::requestedType)
         );
     }
 }
