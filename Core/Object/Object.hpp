@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/PropertyMap.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
@@ -40,51 +41,10 @@
 
 namespace OpenSolid
 {
-    class Object;
-
-    template <>
-    struct Conversion<Object, int>;
-
-    template <>
-    struct Conversion<Object, double>;
-
-    template <>
-    struct Conversion<Object, std::string>;
-
-    template <>
-    struct Conversion<Object, Interval>;
-
-    template <>
-    struct Conversion<Object, MatrixXd>;
-
-    template <>
-    struct Conversion<Object, MatrixXI>;
-
-    template <>
-    struct Conversion<Object, DatumXd>;
-
-    template <>
-    struct Conversion<Object, SimplexXd>;
-
-    template <>
-    struct Conversion<Object, Function>;
-
-    template <>
-    struct Conversion<Object, Geometry>;
-
-    template <>
-    struct Conversion<Object, Domain>;
-
-    class Object : public Convertible<Object>, public Transformable<Object>
+    class Object : public PropertyMap<Object>, public Transformable<Object>
     {
-    public:
-        struct None
-        {
-            None() {}
-        };
     private:
-        boost::variant<
-            None,
+        typedef boost::variant<
             int,
             double,
             std::string,
@@ -95,46 +55,31 @@ namespace OpenSolid
             SimplexXd,
             Function,
             Geometry,
-            Domain
-        > _value;
+            Domain,
+            Object
+        > Variant;
+
+        std::unordered_map<std::string, Variant> _properties;
 
         template <class Type>
-        Type extract() const;
+        void setProperty(const std::string& name, const Type& value);
 
-        friend struct Conversion<Object, int>;
-        friend struct Conversion<Object, double>;
-        friend struct Conversion<Object, std::string>;
-        friend struct Conversion<Object, Interval>;
-        friend struct Conversion<Object, MatrixXd>;
-        friend struct Conversion<Object, MatrixXI>;
-        friend struct Conversion<Object, DatumXd>;
-        friend struct Conversion<Object, SimplexXd>;
-        friend struct Conversion<Object, Function>;
-        friend struct Conversion<Object, Geometry>;
-        friend struct Conversion<Object, Domain>;
+        template <class Type>
+        void getProperty(const std::string& name, Type& value) const;
 
-        std::unordered_map<std::string, Object> _properties;
+        OPENSOLID_CORE_EXPORT void throwPropertyError(
+            const std::string& name,
+            const std::string& requested_type
+        ) const;
+
+        friend class PropertyMap<Object>;
+        friend struct GetObjectProperty;
     public:
         OPENSOLID_CORE_EXPORT Object();
-        OPENSOLID_CORE_EXPORT Object(int value);
-        OPENSOLID_CORE_EXPORT Object(double value);
-        OPENSOLID_CORE_EXPORT Object(const std::string& value);
-        OPENSOLID_CORE_EXPORT Object(const Interval& value);
 
-        template <class DerivedType>
-        Object(const EigenBase<DerivedType>& value);
-
-        OPENSOLID_CORE_EXPORT Object(const DatumXd& value);
-        OPENSOLID_CORE_EXPORT Object(const SimplexXd& value);
-        OPENSOLID_CORE_EXPORT Object(const Function& value);
-        OPENSOLID_CORE_EXPORT Object(const Geometry& value);
-        OPENSOLID_CORE_EXPORT Object(const Domain& value);
-
-        OPENSOLID_CORE_EXPORT bool hasValue() const;
-        OPENSOLID_CORE_EXPORT std::string valueType() const;
         OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
-        OPENSOLID_CORE_EXPORT Object get(const std::string& name) const;
-        OPENSOLID_CORE_EXPORT void set(const std::string& name, const Object& object);
+
+        OPENSOLID_CORE_EXPORT std::string type(const std::string& name) const;
 
         OPENSOLID_CORE_EXPORT Object transformed(
             const MatrixXd& matrix,
@@ -148,165 +93,9 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <>
-    struct Conversion<Object, int>
+    struct TypeName<Object>
     {
-        OPENSOLID_CORE_EXPORT int operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, double>
-    {
-        OPENSOLID_CORE_EXPORT double operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, std::string>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Interval>
-    {
-        OPENSOLID_CORE_EXPORT Interval operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, MatrixXd>
-    {
-        OPENSOLID_CORE_EXPORT MatrixXd operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, MatrixXI>
-    {
-        OPENSOLID_CORE_EXPORT MatrixXI operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, DatumXd>
-    {
-        OPENSOLID_CORE_EXPORT DatumXd operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, SimplexXd>
-    {
-        OPENSOLID_CORE_EXPORT SimplexXd operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Function>
-    {
-        OPENSOLID_CORE_EXPORT Function operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Geometry>
-    {
-        OPENSOLID_CORE_EXPORT Geometry operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Domain>
-    {
-        OPENSOLID_CORE_EXPORT Domain operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Vector2d>
-    {
-        OPENSOLID_CORE_EXPORT Vector2d operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Vector3d>
-    {
-        OPENSOLID_CORE_EXPORT Vector3d operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, VectorXd>
-    {
-        OPENSOLID_CORE_EXPORT VectorXd operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, RowVector2d>
-    {
-        OPENSOLID_CORE_EXPORT RowVector2d operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, RowVector3d>
-    {
-        OPENSOLID_CORE_EXPORT RowVector3d operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, RowVectorXd>
-    {
-        OPENSOLID_CORE_EXPORT RowVectorXd operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Matrix2d>
-    {
-        OPENSOLID_CORE_EXPORT Matrix2d operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Matrix3d>
-    {
-        OPENSOLID_CORE_EXPORT Matrix3d operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Vector2I>
-    {
-        OPENSOLID_CORE_EXPORT Vector2I operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Vector3I>
-    {
-        OPENSOLID_CORE_EXPORT Vector3I operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, VectorXI>
-    {
-        OPENSOLID_CORE_EXPORT VectorXI operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, RowVector2I>
-    {
-        OPENSOLID_CORE_EXPORT RowVector2I operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, RowVector3I>
-    {
-        OPENSOLID_CORE_EXPORT RowVector3I operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, RowVectorXI>
-    {
-        OPENSOLID_CORE_EXPORT RowVectorXI operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Matrix2I>
-    {
-        OPENSOLID_CORE_EXPORT Matrix2I operator()(const Object& object) const;
-    };
-
-    template <>
-    struct Conversion<Object, Matrix3I>
-    {
-        OPENSOLID_CORE_EXPORT Matrix3I operator()(const Object& object) const;
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
@@ -314,33 +103,19 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    class ObjectPropertyError : public Error
+    class ObjectPropertyError : public PropertyError
     {
     private:
         Object _object;
-        std::string _name;
     public:
-        OPENSOLID_CORE_EXPORT ObjectPropertyError(const Object& object, const std::string& name);
-
-        OPENSOLID_CORE_EXPORT const char* what() const override;
-        OPENSOLID_CORE_EXPORT Object object() const;
-        OPENSOLID_CORE_EXPORT std::string name() const;
-    };
-
-    class ObjectConversionError : public Error
-    {
-    private:
-        Object _object;
-        std::string _requested_type;
-    public:
-        OPENSOLID_CORE_EXPORT ObjectConversionError(
+        OPENSOLID_CORE_EXPORT ObjectPropertyError(
             const Object& object,
+            const std::string& name,
             const std::string& requested_type
         );
 
         OPENSOLID_CORE_EXPORT const char* what() const override;
         OPENSOLID_CORE_EXPORT Object object() const;
-        OPENSOLID_CORE_EXPORT std::string requestedType() const;
     };
 }
 
@@ -348,9 +123,18 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
-    template <class DerivedType>
-    Object::Object(const EigenBase<DerivedType>& value) {
-        _value = Matrix<typename DerivedType::Scalar, Dynamic, Dynamic>(value);
+    template <class Type>
+    void Object::setProperty(const std::string& name, const Type& value) {
+        _properties[name] = value;
+    }
+
+    template <class Type>
+    void Object::getProperty(const std::string& name, Type& value) const {
+        if (const Type* result = boost::get<Type>(&_properties.at(name))) {
+            value = *result;
+        } else {
+            throw ObjectPropertyError(*this, name, TypeName<Type>()());
+        }
     }
 }
 

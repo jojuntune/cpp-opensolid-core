@@ -23,6 +23,66 @@
 
 namespace OpenSolid
 {
+    void setObject(Object& object, const std::string& name, const Object& value) {
+        object.set(name, value);
+    }
+
+    void setFunction(Object& object, const std::string& name, const Function& value) {
+        object.set(name, value);
+    }
+
+    void setSimplexXd(Object& object, const std::string& name, const SimplexXd& value) {
+        object.set(name, value);
+    }
+
+    void setDatumXd(Object& object, const std::string& name, const DatumXd& value) {
+        object.set(name, value);
+    }
+
+    void setMatrixXI(Object& object, const std::string& name, const MatrixXI& value) {
+        object.set(name, value);
+    }
+
+    void setMatrixXd(Object& object, const std::string& name, const MatrixXd& value) {
+        object.set(name, value);
+    }
+
+    void setInterval(Object& object, const std::string& name, const Interval& value) {
+        object.set(name, value);
+    }
+
+    void setString(Object& object, const std::string& name, const std::string& value) {
+        object.set(name, value);
+    }
+
+    void setDouble(Object& object, const std::string& name, double value) {
+        object.set(name, value);
+    }
+
+    void setInt(Object& object, const std::string& name, int value) {
+        object.set(name, value);
+    }
+
+    struct GetObjectProperty
+    {
+        struct Visitor
+        {
+            typedef boost::python::object result_type;
+
+            template <class Type>
+            boost::python::object operator()(const Type& argument) const {
+                return boost::python::object(argument);
+            }
+        };
+
+        static boost::python::object get(const Object& object, const std::string& name) {
+            if (!object.has(name)) {
+                throw ObjectPropertyError(object, name, "");
+            }
+            return boost::apply_visitor(Visitor(), object._properties.at(name));
+        }
+    };
+
     Object transformed(
         const Object& object,
         const MatrixXd& matrix,
@@ -56,21 +116,20 @@ namespace OpenSolid
     void bindObject() {
         using namespace boost::python;
         class_<Object>("Object")
-            .def(init<Function>())
-            .def(init<SimplexXd>())
-            .def(init<DatumXd>())
-            .def(init<MatrixXI>())
-            .def(init<MatrixXd>())
-            .def(init<Interval>())
-            .def(init<std::string>())
-            .def(init<double>())
-            .def(init<int>())
-            .def("hasValue", &Object::hasValue)
             .def("has", &Object::has)
-            .def("get", &Object::get)
-            .def("set", &Object::set)
+            .def("get", &GetObjectProperty::get)
+            .def("set", &setObject)
+            .def("set", &setFunction)
+            .def("set", &setSimplexXd)
+            .def("set", &setDatumXd)
+            .def("set", &setMatrixXI)
+            .def("set", &setMatrixXd)
+            .def("set", &setInterval)
+            .def("set", &setString)
+            .def("set", &setDouble)
+            .def("set", &setInt)
             .def("transformed", &transformed)
-            .def("scalae", &scaled)
+            .def("scaled", &scaled)
             .def("translated", &translated1)
             .def("translated", &translated2)
             .def("rotated", &rotated1)

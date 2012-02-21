@@ -159,7 +159,6 @@ namespace OpenSolid
             checkForOpenSolidError<MatrixXdVectorComponentError>(error_object);
             checkForOpenSolidError<MatrixXdVectorIndexError>(error_object);
             checkForOpenSolidError<ObjectPropertyError>(error_object);
-            checkForOpenSolidError<ObjectConversionError>(error_object);
             checkForOpenSolidError<OnesMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<OnesMatrixXdConstructionError>(error_object);
             checkForOpenSolidError<RandomMatrixXIConstructionError>(error_object);

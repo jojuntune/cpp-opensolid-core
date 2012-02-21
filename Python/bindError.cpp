@@ -833,13 +833,8 @@ namespace OpenSolid
                 .def("__str__", &ObjectPropertyError::what)
                 .def("object", &ObjectPropertyError::object)
                 .def("name", &ObjectPropertyError::name)
-        );
-
-        registerException(
-            class_<ObjectConversionError>("_ObjectConversionError", no_init)
-                .def("__str__", &ObjectConversionError::what)
-                .def("object", &ObjectConversionError::object)
-                .def("requestedType", &ObjectConversionError::requestedType)
+                .def("requestedType", &ObjectPropertyError::requestedType)
+                
         );
     }
 }
