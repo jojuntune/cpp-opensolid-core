@@ -1,0 +1,4 @@
+package OpenSolid;
+
+message SerializedFunction {
+}
