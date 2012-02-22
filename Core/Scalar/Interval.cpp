@@ -24,7 +24,7 @@
 #include <boost/numeric/interval.hpp>
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Scalar/Interval.pb.h>
+#include <OpenSolid/Core/Scalar/SerializedInterval.pb.h>
 
 namespace OpenSolid
 {

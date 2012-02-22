@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Datum/Datum.pb.h>
+#include <OpenSolid/Core/Datum/SerializedDatum.pb.h>
 
 namespace OpenSolid
 {

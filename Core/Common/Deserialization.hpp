@@ -21,12 +21,32 @@
 #ifndef OPENSOLID__DESERIALIZATION_HPP
 #define OPENSOLID__DESERIALIZATION_HPP
 
+#include <string>
+
 #include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {
     template <class Type>
     struct Deserialization;
+
+    template <>
+    struct Deserialization<int>
+    {
+        OPENSOLID_CORE_EXPORT int operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct Deserialization<double>
+    {
+        OPENSOLID_CORE_EXPORT double operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct Deserialization<std::string>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()(const std::string& argument) const;
+    };
 }
 
 #endif

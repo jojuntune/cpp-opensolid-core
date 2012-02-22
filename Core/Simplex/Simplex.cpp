@@ -20,7 +20,7 @@
  
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Simplex/Simplex.pb.h>
+#include <OpenSolid/Core/Simplex/SerializedSimplex.pb.h>
 
 namespace OpenSolid
 {   

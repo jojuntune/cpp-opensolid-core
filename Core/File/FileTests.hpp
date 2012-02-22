@@ -30,21 +30,43 @@ class FileTests : public CxxTest::TestSuite
 {
 public:
     void testFile() {
-        std::remove("test.db");
-        File file("test.db");
+        std::string filename = "testFile.db";
+        std::remove(filename.c_str());
 
-        file.open("rw");
-        file.set("vector", Vector3d(1, 2, 3));
-        file.set("interval", Interval(4, 5));
-        file.close();
+        File save_file(filename);
+        save_file.open("rw");
+        save_file.set("vector", Vector3d(1, 2, 3));
+        save_file.set("interval", Interval(4, 5));
+        save_file.set("value", M_PI);
+        save_file.close();
 
-        file.open("r");
-        Vector3d vector = file.get<Vector3d>("vector");
-        Interval interval = file.get<Interval>("interval");
-        file.close();
+        File load_file(filename);
+        load_file.open("r");
+        Vector3d vector = load_file.get<Vector3d>("vector");
+        Interval interval = load_file.get<Interval>("interval");
+        double value = load_file.get<double>("value");
+        load_file.close();
 
         TS_ASSERT_EQUALS(vector, Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(interval.lower(), 4);
         TS_ASSERT_EQUALS(interval.upper(), 5);
+        TS_ASSERT_EQUALS(value, M_PI);
+    }
+
+    void testFileErrors() {
+        std::string filename = "testFileErrors.db";
+        std::remove(filename.c_str());
+
+        File save_file(filename);
+        save_file.open("rw");
+        save_file.set("vector", Vector3d(1, 2, 3));
+        save_file.close();
+
+        File load_file(filename);
+        load_file.open("r");
+        TS_ASSERT_THROWS(load_file.set("one", 1.0), FileSetPropertyError);
+        TS_ASSERT_THROWS(load_file.get<Vector2d>("vector"), FilePropertyError);
+        TS_ASSERT_EQUALS(load_file.get<Vector3d>("vector"), Vector3d(1, 2, 3));
+        load_file.close();
     }
 };

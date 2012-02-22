@@ -18,35 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__SERIALIZATION_HPP
-#define OPENSOLID__SERIALIZATION_HPP
-
-#include <string>
-
-#include <OpenSolid/Core/config.hpp>
+#include <OpenSolid/Core/Common/Deserialization.hpp>
+#include <OpenSolid/Core/Common/SerializedInt.pb.h>
+#include <OpenSolid/Core/Common/SerializedDouble.pb.h>
 
 namespace OpenSolid
 {
-    template <class Type>
-    struct Serialization;
+    int Deserialization<int>::operator()(const std::string& argument) const {
+        SerializedInt temp;
+        temp.ParseFromString(argument);
+        return temp.value();
+    }
 
-    template <>
-    struct Serialization<int>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(int argument) const;
-    };
+    double Deserialization<double>::operator()(const std::string& argument) const {
+        SerializedDouble temp;
+        temp.ParseFromString(argument);
+        return temp.value();
+    }
 
-    template <>
-    struct Serialization<double>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(double argument) const;
-    };
-
-    template <>
-    struct Serialization<std::string>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(const std::string& argument) const;
-    };
+    std::string Deserialization<std::string>::operator()(const std::string& argument) const {
+        return argument;
+    }
 }
-
-#endif

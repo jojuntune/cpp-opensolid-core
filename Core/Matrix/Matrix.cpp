@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Matrix/Matrix.pb.h>
+#include <OpenSolid/Core/Matrix/SerializedMatrix.pb.h>
 
 namespace OpenSolid
 {
