@@ -30,6 +30,7 @@
 #include <boost/python/converter/registry.hpp>
 
 #include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/repr.hpp>
 
@@ -318,7 +319,7 @@ namespace OpenSolid
             _environment_dict[name] = argument;
         } catch (const boost::python::error_already_set& error) {
             PyErr_Clear();
-            throw ConversionToPythonError(__repr__<Type>());
+            throw ConversionToPythonError(TypeName<Type>()());
         }
         return *this;
     }
@@ -327,7 +328,9 @@ namespace OpenSolid
     Type PythonEnvironment::get(const std::string& expression) {
         boost::python::object python_object = eval(expression);
         boost::python::extract<Type> extracted(python_object);
-        if (!extracted.check()) {throw ConversionFromPythonError(python_object, __repr__<Type>());}
+        if (!extracted.check()) {
+            throw ConversionFromPythonError(python_object, TypeName<Type>()());
+        }
         return extracted;
     }
 }

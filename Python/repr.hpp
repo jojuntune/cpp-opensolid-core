@@ -33,9 +33,6 @@
 
 namespace OpenSolid
 {
-    template <class Type>
-    std::string __repr__();
-
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(bool argument);
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(int argument);
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(double argument);
@@ -44,98 +41,6 @@ namespace OpenSolid
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const MatrixXd& argument);
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const MatrixXI& argument);
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const boost::python::object& argument);
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    template <class Type>
-    std::string __repr__() {return typeid(Type).name();}
-
-    template <>
-    inline std::string __repr__<bool>() {return "bool";}
-
-    template <>
-    inline std::string __repr__<int>() {return "int";}
-
-    template <>
-    inline std::string __repr__<double>() {return "double";}
-
-    template <>
-    inline std::string __repr__<std::string>() {return "string";}
-
-    template <>
-    inline std::string __repr__<Interval>() {return "Interval";}
-        
-    template <>
-    inline std::string __repr__<Vector2d>() {return "Vector2d";}
-        
-    template <>
-    inline std::string __repr__<Vector3d>() {return "Vector3d";}
-        
-    template <>
-    inline std::string __repr__<VectorXd>() {return "VectorXd";}
-        
-    template <>
-    inline std::string __repr__<RowVector2d>() {return "RowVector2d";}
-        
-    template <>
-    inline std::string __repr__<RowVector3d>() {return "RowVector3d";}
-        
-    template <>
-    inline std::string __repr__<RowVectorXd>() {return "RowVectorXd";}
-        
-    template <>
-    inline std::string __repr__<Matrix2d>() {return "Matrix2d";}
-        
-    template <>
-    inline std::string __repr__<Matrix3d>() {return "Matrix3d";}
-
-    template <>
-    inline std::string __repr__<MatrixXd>() {return "MatrixXd";}
-        
-    template <>
-    inline std::string __repr__<Vector2I>() {return "Vector2I";}
-        
-    template <>
-    inline std::string __repr__<Vector3I>() {return "Vector3I";}
-        
-    template <>
-    inline std::string __repr__<VectorXI>() {return "VectorXI";}
-        
-    template <>
-    inline std::string __repr__<RowVector2I>() {return "RowVector2I";}
-        
-    template <>
-    inline std::string __repr__<RowVector3I>() {return "RowVector3I";}
-        
-    template <>
-    inline std::string __repr__<RowVectorXI>() {return "RowVectorXI";}
-        
-    template <>
-    inline std::string __repr__<Matrix2I>() {return "Matrix2I";}
-        
-    template <>
-    inline std::string __repr__<Matrix3I>() {return "Matrix3I";}
-
-    template <>
-    inline std::string __repr__<MatrixXI>() {return "MatrixXI";}
-
-    template <>
-    inline std::string __repr__<boost::python::object>() {return "object";}
-
-    template <>
-    inline std::string __repr__<boost::python::list>() {return "list";}
-
-    template <>
-    inline std::string __repr__<boost::python::tuple>() {return "tuple";}
-
-    template <>
-    inline std::string __repr__<boost::python::str>() {return "str";}
-
-    template <>
-    inline std::string __repr__<boost::python::dict>() {return "dict";}
 }
 
 #endif

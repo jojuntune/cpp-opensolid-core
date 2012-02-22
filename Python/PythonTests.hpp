@@ -63,6 +63,16 @@ public:
     MatrixXd vector() const {return _vector;}
 };
 
+struct UnregisteredType
+{
+};
+
+template <>
+struct TypeName<UnregisteredType>
+{
+    std::string operator()() const {return "UnregisteredType";}
+};
+
 class PythonTests : public CxxTest::TestSuite
 {
 public:
@@ -120,10 +130,6 @@ public:
 
         }
     }
-
-    struct UnregisteredType
-    {
-    };
 
     void testUnregisteredType() {
         PythonEnvironment environment;
