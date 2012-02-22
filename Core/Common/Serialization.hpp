@@ -33,7 +33,7 @@ namespace OpenSolid
     template <>
     struct Serialization<int>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(int argument) const;
+        std::string operator()(int argument) const;
     };
 
     template <>
@@ -45,8 +45,23 @@ namespace OpenSolid
     template <>
     struct Serialization<std::string>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const std::string& argument) const;
+        const std::string& operator()(const std::string& argument) const;
     };
+}
+
+////////// Implementation //////////
+
+#include <boost/lexical_cast.hpp>
+
+namespace OpenSolid
+{
+    inline std::string Serialization<int>::operator()(int argument) const {
+        return boost::lexical_cast<std::string>(argument);
+    }
+
+    inline const std::string& Serialization<std::string>::operator()(
+        const std::string& argument
+    ) const {return argument;}
 }
 
 #endif

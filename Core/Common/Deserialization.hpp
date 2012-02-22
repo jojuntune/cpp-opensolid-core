@@ -33,7 +33,7 @@ namespace OpenSolid
     template <>
     struct Deserialization<int>
     {
-        OPENSOLID_CORE_EXPORT int operator()(const std::string& argument) const;
+        int operator()(const std::string& argument) const;
     };
 
     template <>
@@ -45,8 +45,23 @@ namespace OpenSolid
     template <>
     struct Deserialization<std::string>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const std::string& argument) const;
+        const std::string& operator()(const std::string& argument) const;
     };
+}
+
+////////// Implementation //////////
+
+#include <boost/lexical_cast.hpp>
+
+namespace OpenSolid
+{
+    inline int Deserialization<int>::operator()(const std::string& argument) const {
+        return boost::lexical_cast<int>(argument);
+    }
+
+    inline const std::string& Deserialization<std::string>::operator()(
+        const std::string& argument
+    ) const {return argument;}
 }
 
 #endif

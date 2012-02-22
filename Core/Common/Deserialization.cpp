@@ -19,24 +19,13 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Common/Deserialization.hpp>
-#include <OpenSolid/Core/Common/SerializedInt.pb.h>
 #include <OpenSolid/Core/Common/SerializedDouble.pb.h>
 
 namespace OpenSolid
 {
-    int Deserialization<int>::operator()(const std::string& argument) const {
-        SerializedInt temp;
-        temp.ParseFromString(argument);
-        return temp.value();
-    }
-
     double Deserialization<double>::operator()(const std::string& argument) const {
         SerializedDouble temp;
         temp.ParseFromString(argument);
         return temp.value();
-    }
-
-    std::string Deserialization<std::string>::operator()(const std::string& argument) const {
-        return argument;
     }
 }

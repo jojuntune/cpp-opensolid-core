@@ -18,25 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <boost/lexical_cast.hpp>
+
 #include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/SerializedInt.pb.h>
 #include <OpenSolid/Core/Common/SerializedDouble.pb.h>
 
 namespace OpenSolid
 {
-    std::string Serialization<int>::operator()(int argument) const {
-        SerializedInt temp;
-        temp.set_value(argument);
-        return temp.SerializeAsString();
-    }
-
     std::string Serialization<double>::operator()(double argument) const {
         SerializedDouble temp;
         temp.set_value(argument);
         return temp.SerializeAsString();
-    }
-
-    std::string Serialization<std::string>::operator()(const std::string& argument) const {
-        return argument;
     }
 }
