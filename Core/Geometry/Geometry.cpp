@@ -82,6 +82,10 @@ namespace OpenSolid
     }
 
     Geometry Geometry::reversed() const {return implementation()->reversed();}
+
+    VectorXI Bounds<Geometry>::operator()(const Geometry& argument) const {
+        return argument.bounds();
+    }
     
     double Conversion<Geometry, double>::operator()(const Geometry& argument) const {
         assert(argument.isConstant());

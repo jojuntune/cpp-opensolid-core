@@ -26,16 +26,7 @@
 namespace OpenSolid
 {
     template <class BoundedType>
-    struct Bounds
-    {
-        typedef typename std::remove_const<
-            typename std::remove_reference<
-                decltype(((const BoundedType*) nullptr)->bounds())
-            >::type
-        >::type Type;
-
-        auto operator()(const BoundedType& argument) const -> decltype(argument.bounds());
-    };
+    struct Bounds;
 
     class Interval;
     
@@ -54,15 +45,6 @@ namespace OpenSolid
 
         Interval operator()(double argument) const; // Defined in Interval.hpp
     };
-}
-
-////////// Implementation //////////
-
-namespace OpenSolid
-{
-    template <class BoundedType>
-    inline auto Bounds<BoundedType>::operator()(const BoundedType& argument) const ->
-        decltype(argument.bounds()) {return argument.bounds();}
 }
 
 #endif

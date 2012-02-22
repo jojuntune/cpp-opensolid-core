@@ -145,6 +145,16 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <int dimensions_, int size_>
+    struct Bounds<Simplex<dimensions_, size_>>
+    {
+        typedef Matrix<Interval, dimensions_, 1> Type;
+
+        Matrix<Interval, dimensions_, 1> operator()(
+            const Simplex<dimensions_, size_>& argument
+        ) const;
+    };
+
     template <>
     struct Serialization<SimplexXd>
     {
@@ -240,6 +250,11 @@ namespace OpenSolid
             (matrix * vertices()).colwise() + vector
         );
     }
+
+    template <int dimensions_, int size_>
+    Matrix<Interval, dimensions_, 1> Bounds<Simplex<dimensions_, size_>>::operator()(
+        const Simplex<dimensions_, size_>& argument
+    ) const {return argument.bounds();}
 }
 
 #endif

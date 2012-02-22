@@ -25,6 +25,7 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/Deserialization.hpp>
@@ -83,6 +84,14 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    template <>
+    struct Bounds<Domain>
+    {
+        typedef VectorXI Type;
+
+        OPENSOLID_CORE_EXPORT VectorXI operator()(const Domain& argument) const;
+    };
+
     template <>
     struct Conversion<Domain, Interval>
     {

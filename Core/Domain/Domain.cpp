@@ -78,6 +78,10 @@ namespace OpenSolid
     Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return implementation()->transformed(matrix, vector);
     }
+
+    VectorXI Bounds<Domain>::operator()(const Domain& argument) const {
+        return argument.bounds();
+    }
     
     Interval Conversion<Domain, Interval>::operator()(const Domain& argument) const {
         assert(!argument.isEmpty());

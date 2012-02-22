@@ -91,6 +91,14 @@ namespace OpenSolid
 namespace OpenSolid
 {
     template <>
+    struct Bounds<Geometry>
+    {
+        typedef VectorXI Type;
+
+        OPENSOLID_CORE_EXPORT VectorXI operator()(const Geometry& argument) const;
+    };
+
+    template <>
     struct Conversion<Geometry, double>
     {
         OPENSOLID_CORE_EXPORT double operator()(const Geometry& argument) const;
