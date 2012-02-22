@@ -46,4 +46,25 @@ public:
         TS_ASSERT_EQUALS(object.get<Interval>("b").upper(), 5.0);
         TS_ASSERT_THROWS(object.get<int>("c"), ObjectPropertyError);
     }
+
+    void testSerialization() {
+        Object object;
+        object.set("value", 1.0);
+        object.set("vector", Vector3d(1, 2, 3));
+        Object component;
+        component.set("axis", Axis3d(Vector3d::Zero(), Vector3d(4, 5, 6)));
+        component.set("facet", Triangle3d(Matrix3d::Ones()));
+        object.set("component", component);
+        Serialization<Object> serialization;
+        std::string serialized = serialization(object);
+        Deserialization<Object> deserialization;
+        Object deserialized = deserialization(serialized);
+        TS_ASSERT_EQUALS(deserialized.get<double>("value"), 1.0);
+        TS_ASSERT_EQUALS(deserialized.get<Vector3d>("vector"), Vector3d(1, 2, 3));
+        Axis3d axis = deserialized.get<Object>("component").get<Axis3d>("axis");
+        TS_ASSERT_EQUALS(axis.origin(), Vector3d::Zero());
+        TS_ASSERT((axis.direction() - Vector3d(4, 5, 6).normalized()).isZero());
+        Triangle3d facet = deserialized.get<Object>("component").get<Triangle3d>("facet");
+        TS_ASSERT_EQUALS(facet.vertices(), Matrix3d::Ones());
+    }
 };

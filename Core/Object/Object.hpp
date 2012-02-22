@@ -30,6 +30,8 @@
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/PropertyMap.hpp>
+#include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
@@ -41,6 +43,12 @@
 
 namespace OpenSolid
 {
+    template <>
+    struct Serialization<Object>;
+
+    template <>
+    struct Deserialization<Object>;
+
     class Object : public PropertyMap<Object>, public Transformable<Object>
     {
     private:
@@ -74,6 +82,8 @@ namespace OpenSolid
 
         friend class PropertyMap<Object>;
         friend struct GetObjectProperty;
+        friend struct Serialization<Object>;
+        friend struct Deserialization<Object>;
     public:
         OPENSOLID_CORE_EXPORT Object();
 
@@ -96,6 +106,18 @@ namespace OpenSolid
     struct TypeName<Object>
     {
         OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct Serialization<Object>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()(const Object& argument) const;
+    };
+
+    template <>
+    struct Deserialization<Object>
+    {
+        OPENSOLID_CORE_EXPORT Object operator()(const std::string& argument) const;
     };
 }
 
