@@ -60,7 +60,13 @@ namespace OpenSolid
         void getProperty(const std::string& name, Object& result) const;
 
         template <class MatrixType>
-        void getProperty(const std::string& name, EigenBase<MatrixType>& matrix) const;
+        void getProperty(const std::string& name, EigenBase<MatrixType>& result) const;
+
+        template <int dimensions_, int axes_>
+        void getProperty(const std::string& name, Datum<dimensions_, axes_>& result) const;
+
+        template <int dimensions_, int size_>
+        void getProperty(const std::string& name, Simplex<dimensions_, size_>& result) const;
     public:
         void set(const std::string& name, int value);
         void set(const std::string& name, double value);
@@ -76,7 +82,13 @@ namespace OpenSolid
         void set(const std::string& name, const Object& value);
 
         template <class MatrixType>
-        void set(const std::string& name, const EigenBase<MatrixType>& matrix);
+        void set(const std::string& name, const EigenBase<MatrixType>& value);
+
+        template <int dimensions_, int axes_>
+        void set(const std::string& name, const Datum<dimensions_, axes_>& value);
+
+        template <int dimensions_, int size_>
+        void set(const std::string& name, const Simplex<dimensions_, size_>& value);
 
         template <class Type>
         Type get(const std::string& name);
@@ -120,81 +132,132 @@ namespace OpenSolid
     }
 
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, int& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        int& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, double& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        double& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, std::string& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        std::string& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, Interval& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Interval& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, MatrixXd& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        MatrixXd& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, MatrixXI& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        MatrixXI& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, DatumXd& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        DatumXd& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, SimplexXd& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        SimplexXd& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, Function& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Function& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, Geometry& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Geometry& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, Domain& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Domain& result
+    ) const {derived().getProperty(name, result);}
     
     template <class Derived>
-    inline void PropertyMap<Derived>::getProperty(const std::string& name, Object& result) const {
-        derived().getProperty(name, result);
-    }
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Object& result
+    ) const {derived().getProperty(name, result);}
 
     template <class Derived> template <class MatrixType>
-    void PropertyMap<Derived>::getProperty(const std::string& name, EigenBase<MatrixType>& matrix) const {
+    void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        EigenBase<MatrixType>& result
+    ) const {
         typedef Matrix<typename MatrixType::Scalar, Dynamic, Dynamic> DynamicMatrixType;
-        DynamicMatrixType dynamic_matrix;
+        DynamicMatrixType temp;
         try {
-            derived().getProperty(name, dynamic_matrix);
+            derived().getProperty(name, temp);
         } catch (const PropertyError&) {
             derived().throwPropertyError(name, TypeName<MatrixType>()());
         }
         int compile_time_rows = MatrixType::RowsAtCompileTime;
         int compile_time_cols = MatrixType::ColsAtCompileTime;
         if (
-            (dynamic_matrix.rows() != compile_time_rows && compile_time_rows != Dynamic) ||
-            (dynamic_matrix.cols() != compile_time_cols && compile_time_cols != Dynamic)
-        ) {derived().throwPropertyError(name, TypeName<MatrixType>()());}
-        matrix.derived() = dynamic_matrix;
+            (temp.rows() != compile_time_rows && compile_time_rows != Dynamic) ||
+            (temp.cols() != compile_time_cols && compile_time_cols != Dynamic)
+        ) {derived().throwPropertyError(name, "");}
+        result.derived() = temp;
+    }
+
+    template <class Derived> template <int dimensions_, int axes_>
+    void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Datum<dimensions_, axes_>& result
+    ) const {
+        DatumXd temp;
+        try {
+            derived().getProperty(name, temp);
+        } catch (const PropertyError&) {
+            derived().throwPropertyError(name, "");
+        }
+        if (
+            (temp.dimensions() != dimensions_ && dimensions_ != Dynamic) ||
+            (temp.axes() != axes_ && axes_ != Dynamic)
+        ) {derived().throwPropertyError(name, "");}
+        result = temp;
+    }
+
+    template <class Derived> template <int dimensions_, int size_>
+    void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        Simplex<dimensions_, size_>& result
+    ) const {
+        SimplexXd temp;
+        try {
+            derived().getProperty(name, temp);
+        } catch (const PropertyError&) {
+            derived().throwPropertyError(name, TypeName<Simplex<dimensions_, size_>>()());
+        }
+        if (
+            (temp.dimensions() != dimensions_ && dimensions_ != Dynamic) ||
+            (temp.size() != size_ && size_ != Dynamic)
+        ) {derived().throwPropertyError(name, "");}
+        result = temp;
     }
 
     template <class Derived>
@@ -258,10 +321,22 @@ namespace OpenSolid
     }
 
     template <class Derived> template <class MatrixType>
-    void PropertyMap<Derived>::set(const std::string& name, const EigenBase<MatrixType>& matrix) {
+    void PropertyMap<Derived>::set(const std::string& name, const EigenBase<MatrixType>& value) {
         typedef Matrix<typename MatrixType::Scalar, Dynamic, Dynamic> DynamicMatrixType;
-        derived().setProperty(name, DynamicMatrixType(matrix));
+        derived().setProperty(name, DynamicMatrixType(value));
     }
+
+    template <class Derived> template <int dimensions_, int axes_>
+    void PropertyMap<Derived>::set(
+        const std::string& name,
+        const Datum<dimensions_, axes_>& value
+    ) {derived().setProperty(name, DatumXd(value));}
+
+    template <class Derived> template <int dimensions_, int size_>
+    void PropertyMap<Derived>::set(
+        const std::string& name,
+        const Simplex<dimensions_, size_>& value
+    ) {derived().setProperty(name, SimplexXd(value));}
 
     template <class Derived> template <class Type>
     Type PropertyMap<Derived>::get(const std::string& name) {
