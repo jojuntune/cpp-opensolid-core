@@ -1,5 +1,0 @@
-package OpenSolid;
-
-message SerializedInt {
-    required int32 value = 1;
-}
