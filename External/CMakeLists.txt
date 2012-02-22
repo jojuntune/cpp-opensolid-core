@@ -69,7 +69,7 @@
     )
     
     SET(PROTOC_SOURCES
-        ${OpenSolid}/External/google/protobuf/compiler/main.cc        
+        ${OpenSolid}/External/google/protobuf/compiler/main.cc
     )
     
     SET(GLOBAL_SOURCE_LIST
@@ -80,7 +80,10 @@
 
 ########## Build SQLite library ##########
 
-    ADD_LIBRARY(sqlite STATIC ${OpenSolid}/External/sqlite/sqlite3.c)
+    ADD_LIBRARY(libsqlite3 STATIC ${OpenSolid}/External/sqlite/sqlite3.c)
+
+    ADD_EXECUTABLE(sqlite3 ${OpenSolid}/External/sqlite/shell.c)
+    TARGET_LINK_LIBRARIES(sqlite3 libsqlite3)
 
 ########## Build Protocol Buffers libraries and compiler ##########
 
@@ -92,10 +95,11 @@
     
 ########## Disable warnings for external code compilation ##########
 
+    SET(EXTERNAL_TARGETS libsqlite3 sqlite3 libprotobuf libprotoc protoc)
     IF(CMAKE_COMPILER_IS_GNUCXX)
-        SET_TARGET_PROPERTIES(sqlite libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "-w")
+        SET_TARGET_PROPERTIES(${EXTERNAL_TARGETS} PROPERTIES COMPILE_FLAGS "-w")
     ELSEIF(WIN32)
-        SET_TARGET_PROPERTIES(sqlite libprotobuf libprotoc protoc PROPERTIES COMPILE_FLAGS "/W0")
+        SET_TARGET_PROPERTIES(${EXTERNAL_TARGETS} PROPERTIES COMPILE_FLAGS "/W0")
     ENDIF()
     
 ########## Install Eigen headers ##########

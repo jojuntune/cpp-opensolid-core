@@ -89,6 +89,7 @@
     # File directory files
     SET(FILE_HEADERS
         ${OpenSolid}/Core/File/File.hpp
+        ${OpenSolid}/Core/File/FileTests.hpp
     )
     SET(FILE_SOURCES
         ${OpenSolid}/Core/File/File.cpp
@@ -300,7 +301,7 @@
         ${SIMPLEX_SOURCES}
     )
 
-    TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf)
+    TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf libsqlite3)
     
 ########## Compile tests ##########
 
@@ -312,6 +313,7 @@
     ADD_CXXTEST(GeometryTests ${OpenSolid}/Core/Geometry/GeometryTests.hpp OpenSolidCore)
     ADD_CXXTEST(SimplexTests ${OpenSolid}/Core/Simplex/SimplexTests.hpp OpenSolidCore)
     ADD_CXXTEST(ObjectTests ${OpenSolid}/Core/Object/ObjectTests.hpp OpenSolidCore)
+    ADD_CXXTEST(FileTests ${OpenSolid}/Core/File/FileTests.hpp OpenSolidCore)
     
 ########## Install headers ##########
     
