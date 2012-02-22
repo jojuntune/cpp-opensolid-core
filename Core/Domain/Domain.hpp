@@ -26,6 +26,8 @@
 #include <boost/intrusive_ptr.hpp>
 
 #include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
@@ -91,6 +93,18 @@ namespace OpenSolid
     struct TypeName<Domain>
     {
         OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct Serialization<Domain>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()(const Domain& argument) const;
+    };
+
+    template <>
+    struct Deserialization<Domain>
+    {
+        OPENSOLID_CORE_EXPORT Domain operator()(const std::string& argument) const;
     };
 }
 

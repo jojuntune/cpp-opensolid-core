@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Domain/Domain.hpp>
+#include <OpenSolid/Core/Domain/SerializedDomain.pb.h>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/GenericDomain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/IntervalDomain.hpp>
@@ -86,4 +87,12 @@ namespace OpenSolid
     }
 
     std::string TypeName<Domain>::operator()() const {return "Domain";}
+
+    std::string Serialization<Domain>::operator()(const Domain& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
+    Domain Deserialization<Domain>::operator()(const std::string& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
 }

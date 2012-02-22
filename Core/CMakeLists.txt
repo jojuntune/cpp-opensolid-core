@@ -6,12 +6,15 @@
 ########## Set up Protocol Buffers serialization ##########
 
     SET(PROTO_FILES
-        ${OpenSolid}/Core/Common/SerializedInt.proto
         ${OpenSolid}/Core/Common/SerializedDouble.proto
         ${OpenSolid}/Core/Scalar/SerializedInterval.proto
         ${OpenSolid}/Core/Matrix/SerializedMatrix.proto
         ${OpenSolid}/Core/Datum/SerializedDatum.proto
         ${OpenSolid}/Core/Simplex/SerializedSimplex.proto
+        ${OpenSolid}/Core/Object/SerializedObject.proto
+        ${OpenSolid}/Core/Function/SerializedFunction.proto
+        ${OpenSolid}/Core/Geometry/SerializedGeometry.proto
+        ${OpenSolid}/Core/Domain/SerializedDomain.proto
     )
     COMPILE_PROTO_FILES(PROTO_SOURCES ${PROTO_FILES})
 
@@ -42,6 +45,7 @@
     )
     SET(COMMON_SOURCES
         ${OpenSolid}/Core/Common/Deserialization.cpp
+        ${OpenSolid}/Core/Common/Error.cpp
         ${OpenSolid}/Core/Common/PropertyMap.cpp
         ${OpenSolid}/Core/Common/Serialization.cpp
         ${OpenSolid}/Core/Common/TypeName.cpp
