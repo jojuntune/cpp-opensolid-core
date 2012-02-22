@@ -21,14 +21,28 @@
 #ifndef OPENSOLID__ERROR_HPP
 #define OPENSOLID__ERROR_HPP
 
-#include <OpenSolid/Core/config.hpp>
-
 #include <exception>
+#include <string>
+
+#include <OpenSolid/Core/config.hpp>
 
 namespace OpenSolid
 {
     class Error : public std::exception
     {
+    };
+
+    class NotImplementedError : public Error
+    {
+    private:
+        std::string _file;
+        int _line;
+    public:
+        OPENSOLID_CORE_EXPORT NotImplementedError(const std::string& file, int line);
+
+        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT std::string file() const;
+        OPENSOLID_CORE_EXPORT int line() const;
     };
 }
 
