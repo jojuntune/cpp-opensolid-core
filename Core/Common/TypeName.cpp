@@ -22,6 +22,8 @@
 
 namespace OpenSolid
 {
+    std::string TypeName<bool>::operator()() const {return "bool";}
+
     std::string TypeName<int>::operator()() const {return "int";}
 
     std::string TypeName<double>::operator()() const {return "double";}

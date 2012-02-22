@@ -3,18 +3,19 @@ package OpenSolid;
 message SerializedObject {
     message NameValuePair {
         required string name = 1;
-        optional int32 int_value = 2;
-        optional double double_value = 3;
-        optional string string_value = 4;
-        optional bytes interval_value = 5;
-        optional bytes matrixxd_value = 6;
-        optional bytes matrixxi_value = 7;
-        optional bytes datumxd_value = 8;
-        optional bytes simplexxd_value = 9;
-        optional bytes function_value = 10;
-        optional bytes geometry_value = 11;
-        optional bytes domain_value = 12;
-        optional bytes object_value = 13;
+        optional bool bool_value = 2;
+        optional int32 int_value = 3;
+        optional double double_value = 4;
+        optional string string_value = 5;
+        optional bytes interval_value = 6;
+        optional bytes matrixxd_value = 7;
+        optional bytes matrixxi_value = 8;
+        optional bytes datumxd_value = 9;
+        optional bytes simplexxd_value = 10;
+        optional bytes function_value = 11;
+        optional bytes geometry_value = 12;
+        optional bytes domain_value = 13;
+        optional bytes object_value = 14;
     }
 
     repeated NameValuePair name_value_pair = 1;

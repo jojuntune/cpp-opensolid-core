@@ -31,6 +31,12 @@ namespace OpenSolid
     struct Deserialization;
 
     template <>
+    struct Deserialization<bool>
+    {
+        bool operator()(const std::string& argument) const;
+    };
+
+    template <>
     struct Deserialization<int>
     {
         int operator()(const std::string& argument) const;
@@ -55,6 +61,10 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    inline bool Deserialization<bool>::operator()(const std::string& argument) const {
+        return boost::lexical_cast<bool>(argument);
+    }
+
     inline int Deserialization<int>::operator()(const std::string& argument) const {
         return boost::lexical_cast<int>(argument);
     }

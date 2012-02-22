@@ -45,7 +45,8 @@ namespace OpenSolid
     private:
         Derived& derived();
         const Derived& derived() const;
-
+        
+        void getProperty(const std::string& name, bool& result) const;
         void getProperty(const std::string& name, int& result) const;
         void getProperty(const std::string& name, double& result) const;
         void getProperty(const std::string& name, std::string& result) const;
@@ -68,6 +69,7 @@ namespace OpenSolid
         template <int dimensions_, int size_>
         void getProperty(const std::string& name, Simplex<dimensions_, size_>& result) const;
     public:
+        void set(const std::string& name, bool value);
         void set(const std::string& name, int value);
         void set(const std::string& name, double value);
         void set(const std::string& name, const std::string& value);
@@ -130,6 +132,12 @@ namespace OpenSolid
     inline const Derived& PropertyMap<Derived>::derived() const {
         return static_cast<const Derived&>(*this);
     }
+
+    template <class Derived>
+    inline void PropertyMap<Derived>::getProperty(
+        const std::string& name,
+        bool& result
+    ) const {derived().getProperty(name, result);}
 
     template <class Derived>
     inline void PropertyMap<Derived>::getProperty(
@@ -258,6 +266,11 @@ namespace OpenSolid
             (temp.size() != size_ && size_ != Dynamic)
         ) {derived().throwPropertyError(name, "");}
         result = temp;
+    }
+
+    template <class Derived>
+    void PropertyMap<Derived>::set(const std::string& name, bool value) {
+        derived().setProperty(name, value);
     }
 
     template <class Derived>

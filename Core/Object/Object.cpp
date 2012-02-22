@@ -62,6 +62,8 @@ namespace OpenSolid
         TransformVisitor(const MatrixXd& matrix, const VectorXd& vector) :
             _matrix(matrix), _vector(vector) {}
 
+        void operator()(bool&) const {}
+
         void operator()(int&) const {}
 
         void operator()(double&) const {}
@@ -126,6 +128,10 @@ namespace OpenSolid
 
         SerializationVisitor(SerializedObject::NameValuePair* name_value_pair) :
             _name_value_pair(name_value_pair) {}
+
+        void operator()(bool value) const {
+            _name_value_pair->set_bool_value(value);
+        }
 
         void operator()(int value) const {
             _name_value_pair->set_int_value(value);
@@ -204,7 +210,9 @@ namespace OpenSolid
         for (int i = 0; i < temp.name_value_pair_size(); ++i) {
             const SerializedObject::NameValuePair& name_value_pair = temp.name_value_pair(i);
             std::string name = name_value_pair.name();
-            if (name_value_pair.has_int_value()) {
+            if (name_value_pair.has_bool_value()) {
+                result.set(name, name_value_pair.bool_value());
+            } else if (name_value_pair.has_int_value()) {
                 result.set(name, name_value_pair.int_value());
             } else if (name_value_pair.has_double_value()) {
                 result.set(name, name_value_pair.double_value());

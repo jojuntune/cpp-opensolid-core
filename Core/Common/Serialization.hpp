@@ -31,6 +31,12 @@ namespace OpenSolid
     struct Serialization;
 
     template <>
+    struct Serialization<bool>
+    {
+        std::string operator()(bool argument) const;
+    };
+
+    template <>
     struct Serialization<int>
     {
         std::string operator()(int argument) const;
@@ -55,6 +61,10 @@ namespace OpenSolid
 
 namespace OpenSolid
 {
+    inline std::string Serialization<bool>::operator()(bool argument) const {
+        return boost::lexical_cast<std::string>(argument);
+    }
+
     inline std::string Serialization<int>::operator()(int argument) const {
         return boost::lexical_cast<std::string>(argument);
     }

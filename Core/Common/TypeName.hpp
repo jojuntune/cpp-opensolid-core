@@ -31,6 +31,12 @@ namespace OpenSolid
     struct TypeName;
 
     template <>
+    struct TypeName<bool>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
     struct TypeName<int>
     {
         OPENSOLID_CORE_EXPORT std::string operator()() const;

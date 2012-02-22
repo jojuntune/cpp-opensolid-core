@@ -53,6 +53,7 @@ namespace OpenSolid
     {
     private:
         typedef boost::variant<
+            bool,
             int,
             double,
             std::string,
