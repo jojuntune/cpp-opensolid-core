@@ -22,6 +22,7 @@
 #define OPENSOLID__AXIS_HPP
 
 #include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace OpenSolid
@@ -48,6 +49,23 @@ namespace OpenSolid
 
         template <int dimensions_, int axes_>
         Axis3d(const Datum<dimensions_, axes_>& datum);
+    };
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
+    struct TypeName<Axis2d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+    
+    template <>
+    struct TypeName<Axis3d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

@@ -385,5 +385,17 @@ namespace OpenSolid
         return SimplexXd(vertices);
     }
 
+    std::string TypeName<Line1d>::operator()() const {return "Line1d";}
+
+    std::string TypeName<Line2d>::operator()() const {return "Line2d";}
+
+    std::string TypeName<Line3d>::operator()() const {return "Line3d";}
+
+    std::string TypeName<Triangle2d>::operator()() const {return "Triangle2d";}
+
+    std::string TypeName<Triangle3d>::operator()() const {return "Triangle3d";}
+
+    std::string TypeName<Tetrahedron3d>::operator()() const {return "Tetrahedron3d";}
+
     std::string TypeName<SimplexXd>::operator()() const {return "SimplexXd";}
 }

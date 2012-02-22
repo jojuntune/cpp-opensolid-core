@@ -21,6 +21,6 @@
 #include <OpenSolid/Core/Datum/Plane.hpp>
 
 namespace OpenSolid
-{
-    
+{   
+    std::string TypeName<Plane3d>::operator()() const {return "Plane3d";}
 }

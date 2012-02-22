@@ -22,6 +22,7 @@
 #define OPENSOLID__FRAME_HPP
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Common/TypeName.hpp>
 
 namespace OpenSolid
 {
@@ -46,6 +47,23 @@ namespace OpenSolid
         
         template <int dimensions_, int axes_>
         Frame3d(const Datum<dimensions_, axes_>& datum);
+    };
+}
+
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
+    struct TypeName<Frame2d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+    
+    template <>
+    struct TypeName<Frame3d>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

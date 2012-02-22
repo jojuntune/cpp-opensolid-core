@@ -40,5 +40,9 @@ namespace OpenSolid
         return DatumXd(origin, basis);
     }
 
+    std::string TypeName<Datum2d>::operator()() const {return "Datum2d";}
+
+    std::string TypeName<Datum3d>::operator()() const {return "Datum3d";}
+
     std::string TypeName<DatumXd>::operator()() const {return "DatumXd";}
 }

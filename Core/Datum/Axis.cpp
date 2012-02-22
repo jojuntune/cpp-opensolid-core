@@ -22,12 +22,18 @@
 
 namespace OpenSolid
 {
+    std::string TypeName<Axis2d>::operator()() const {return "Axis2d";}
+
+    std::string TypeName<Axis3d>::operator()() const {return "Axis3d";}
+
     Axis2dConstructionError::Axis2dConstructionError(
             const MatrixXd& origin,
             const MatrixXd& direction
     ) : _origin(origin), _direction(direction) {}
 
-    const char* Axis2dConstructionError::what() const {return "Axis2dConstructionError";}
+    const char* Axis2dConstructionError::what() const {
+        return "Axis2dConstructionError";
+    }
 
     MatrixXd Axis2dConstructionError::origin() const {return _origin;}
 
@@ -36,7 +42,9 @@ namespace OpenSolid
     Axis2dCopyConstructionError::Axis2dCopyConstructionError(const DatumXd& argument) :
         _argument(argument) {}
 
-    const char* Axis2dCopyConstructionError::what() const {return "Axis2dCopyConstructionError";}
+    const char* Axis2dCopyConstructionError::what() const {
+        return "Axis2dCopyConstructionError";
+    }
 
     DatumXd Axis2dCopyConstructionError::argument() const {return _argument;}
 
@@ -45,7 +53,9 @@ namespace OpenSolid
             const MatrixXd& direction
     ) : _origin(origin), _direction(direction) {}
 
-    const char* Axis3dConstructionError::what() const {return "Axis3dConstructionError";}
+    const char* Axis3dConstructionError::what() const {
+        return "Axis3dConstructionError";
+    }
 
     MatrixXd Axis3dConstructionError::origin() const {return _origin;}
 
@@ -54,7 +64,9 @@ namespace OpenSolid
     Axis3dCopyConstructionError::Axis3dCopyConstructionError(const DatumXd& argument) :
         _argument(argument) {}
 
-    const char* Axis3dCopyConstructionError::what() const {return "Axis3dCopyConstructionError";}
+    const char* Axis3dCopyConstructionError::what() const {
+        return "Axis3dCopyConstructionError";
+    }
 
     DatumXd Axis3dCopyConstructionError::argument() const {return _argument;}
 }

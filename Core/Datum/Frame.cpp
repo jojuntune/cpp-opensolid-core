@@ -22,5 +22,7 @@
 
 namespace OpenSolid
 {
-    
+    std::string TypeName<Frame2d>::operator()() const {return "Frame2d";}
+
+    std::string TypeName<Frame3d>::operator()() const {return "Frame3d";}
 }
