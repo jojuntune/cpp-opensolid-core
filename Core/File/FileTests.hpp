@@ -30,7 +30,7 @@ class FileTests : public CxxTest::TestSuite
 {
 public:
     void testFile() {
-        std::string filename = "testFile.db";
+        std::string filename = "FileTests.testFile.db";
         std::remove(filename.c_str());
 
         File save_file(filename);
@@ -54,7 +54,7 @@ public:
     }
 
     void testFileErrors() {
-        std::string filename = "testFileErrors.db";
+        std::string filename = "FileTests.testFileErrors.db";
         std::remove(filename.c_str());
 
         File save_file(filename);
