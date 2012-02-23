@@ -27,6 +27,7 @@ using namespace boost::python;
 
 namespace OpenSolid
 {
+    void bindFile();
     void bindObject();
     void bindFunction();
     void bindDatum();
@@ -39,6 +40,7 @@ namespace OpenSolid
     void bindError();
 
     void PythonModule::initialize() {
+        bindFile();
         bindObject();
         bindFunction();
         bindDatum();

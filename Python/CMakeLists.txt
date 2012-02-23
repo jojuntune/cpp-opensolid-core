@@ -32,6 +32,7 @@
         ${OpenSolid}/Python/bindDatum.cpp
         ${OpenSolid}/Python/bindDouble.cpp
         ${OpenSolid}/Python/bindError.cpp
+        ${OpenSolid}/Python/bindFile.cpp
         ${OpenSolid}/Python/bindFunction.cpp
         ${OpenSolid}/Python/bindInterval.cpp
         ${OpenSolid}/Python/bindMatrix.cpp

@@ -716,4 +716,36 @@ public:
             TS_ASSERT_EQUALS(error.name(), "volume");
         }
     }
+
+    void testFile() {
+        std::string filename = "PythonTests.testFile.db";
+        std::remove(filename.c_str());
+
+        PythonEnvironment first_environment;
+        first_environment.set("filename", filename);
+        first_environment.run("f = File(filename)");
+        first_environment.run("f.open('rw')");
+        first_environment.run("model = Object()");
+        first_environment.run("model.set('value', 1.0)");
+        first_environment.run("model.set('vector', Vector3d(1, 2, 3))");
+        first_environment.run("component = Object()");
+        first_environment.run("component.set('axis', Axis3d(Vector3d.Zero(), Vector3d(4, 5, 6)))");
+        first_environment.run("component.set('facet', Triangle3d(Matrix3d.Ones()))");
+        first_environment.run("model.set('component', component)");
+        first_environment.run("f.set('model', model)");
+        first_environment.run("f.close()");
+        
+        PythonEnvironment second_environment;
+        second_environment.set("filename", filename);
+        second_environment.run("f = File(filename)");
+        second_environment.run("f.open('rw')");
+        Object model = second_environment.get<Object>("f.get('model')");
+        TS_ASSERT_EQUALS(model.get<double>("value"), 1.0);
+        TS_ASSERT_EQUALS(model.get<Vector3d>("vector"), Vector3d(1, 2, 3));
+        Axis3d axis = model.get<Object>("component").get<Axis3d>("axis");
+        TS_ASSERT_EQUALS(axis.origin(), Vector3d::Zero());
+        TS_ASSERT((axis.direction() - Vector3d(4, 5, 6).normalized()).isZero());
+        Triangle3d facet = model.get<Object>("component").get<Triangle3d>("facet");
+        TS_ASSERT_EQUALS(facet.vertices(), Matrix3d::Ones());
+    }
 };
