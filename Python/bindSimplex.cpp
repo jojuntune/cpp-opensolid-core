@@ -96,32 +96,62 @@ namespace OpenSolid
         return Line1d(first_vertex, second_vertex);
     }
 
+    SimplexXd line1d2(MatrixXd vertices) {
+        return Line1d(vertices);
+    }
+
     SimplexXd line2d(const MatrixXd& first_vertex, const MatrixXd& second_vertex) {
         return Line2d(first_vertex, second_vertex);
+    }
+
+    SimplexXd line2d2(const MatrixXd& vertices) {
+        return Line2d(vertices);
     }
 
     SimplexXd line3d(const MatrixXd& first_vertex, const MatrixXd& second_vertex) {
         return Line3d(first_vertex, second_vertex);
     }
 
+    SimplexXd line3d2(const MatrixXd& vertices) {
+        return Line3d(vertices);
+    }
+
     SimplexXd triangle2d(
         const MatrixXd& first_vertex,
         const MatrixXd& second_vertex,
         const MatrixXd& third_vertex
-    ) {return Triangle2d(first_vertex, second_vertex, third_vertex);}
+    ) {
+        return Triangle2d(first_vertex, second_vertex, third_vertex);
+    }
+
+    SimplexXd triangle2d2(const MatrixXd& vertices) {
+        return Triangle2d(vertices);
+    }
 
     SimplexXd triangle3d(
         const MatrixXd& first_vertex,
         const MatrixXd& second_vertex,
         const MatrixXd& third_vertex
-    ) {return Triangle3d(first_vertex, second_vertex, third_vertex);}
+    ) {
+        return Triangle3d(first_vertex, second_vertex, third_vertex);
+    }
+
+    SimplexXd triangle3d2(const MatrixXd& vertices) {
+        return Triangle3d(vertices);
+    }
 
     SimplexXd tetrahedron3d(
         const MatrixXd& first_vertex,
         const MatrixXd& second_vertex,
         const MatrixXd& third_vertex,
         const MatrixXd& fourth_vertex
-    ) {return Tetrahedron3d(first_vertex, second_vertex, third_vertex, fourth_vertex);}
+    ) {
+        return Tetrahedron3d(first_vertex, second_vertex, third_vertex, fourth_vertex);
+    }
+
+    SimplexXd tetrahedron3d2(const MatrixXd& vertices) {
+        return Tetrahedron3d(vertices);
+    }
 
     void bindSimplex() {
         return_value_policy<manage_new_object> manage_new_matrix;
@@ -154,10 +184,16 @@ namespace OpenSolid
             .def(self % DatumXd())
             .def_pickle(SimplexPickleSuite());
         def("Line1d", &line1d);
+        def("Line1d", &line1d2);
         def("Line2d", &line2d);
+        def("Line2d", &line2d2);
         def("Line3d", &line3d);
+        def("Line3d", &line3d2);
         def("Triangle2d", &triangle2d);
+        def("Triangle2d", &triangle2d2);
         def("Triangle3d", &triangle3d);
+        def("Triangle3d", &triangle3d2);
         def("Tetrahedron3d", &tetrahedron3d);
+        def("Tetrahedron3d", &tetrahedron3d2);
     }
 }
