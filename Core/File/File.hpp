@@ -72,6 +72,7 @@ namespace OpenSolid
         ) const;
 
         friend class PropertyMap<File>;
+        friend struct GetFileProperty;
     public:
         OPENSOLID_CORE_EXPORT File(const std::string& filename);
         OPENSOLID_CORE_EXPORT ~File();
