@@ -27,6 +27,14 @@ namespace OpenSolid
         object.set(name, value);
     }
 
+    void setDomain(Object& object, const std::string& name, const Domain& value) {
+        object.set(name, value);
+    }
+
+    void setGeometry(Object& object, const std::string& name, const Geometry& value) {
+        object.set(name, value);
+    }
+
     void setFunction(Object& object, const std::string& name, const Function& value) {
         object.set(name, value);
     }
@@ -60,6 +68,10 @@ namespace OpenSolid
     }
 
     void setInt(Object& object, const std::string& name, int value) {
+        object.set(name, value);
+    }
+
+    void setBool(Object& object, const std::string& name, bool value) {
         object.set(name, value);
     }
 
@@ -119,6 +131,8 @@ namespace OpenSolid
             .def("has", &Object::has)
             .def("get", &GetObjectProperty::get)
             .def("set", &setObject)
+            .def("set", &setDomain)
+            .def("set", &setGeometry)
             .def("set", &setFunction)
             .def("set", &setSimplexXd)
             .def("set", &setDatumXd)
@@ -128,6 +142,7 @@ namespace OpenSolid
             .def("set", &setString)
             .def("set", &setDouble)
             .def("set", &setInt)
+            .def("set", &setBool)
             .def("transformed", &transformed)
             .def("scaled", &scaled)
             .def("translated", &translated1)
