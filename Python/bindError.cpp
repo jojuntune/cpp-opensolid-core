@@ -734,13 +734,6 @@ namespace OpenSolid
                 .def("requestedType", &ObjectPropertyError::requestedType)
         );
         registerException(
-            class_<ObjectPropertyError>("_ObjectPropertyError", no_init)
-                .def("__str__", &ObjectPropertyError::what)
-                .def("object", &ObjectPropertyError::object)
-                .def("name", &ObjectPropertyError::name)
-                .def("requestedType", &ObjectPropertyError::requestedType)
-        );
-        registerException(
             class_<NotImplementedError>("_NotImplementedError", no_init)
                 .def("__str__", &NotImplementedError::what)
                 .def("file", &NotImplementedError::file)
