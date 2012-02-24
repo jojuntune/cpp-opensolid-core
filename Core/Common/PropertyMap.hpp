@@ -25,7 +25,6 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/Convertible.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
@@ -93,7 +92,7 @@ namespace OpenSolid
         void set(const std::string& name, const Simplex<dimensions_, size_>& value);
 
         template <class Type>
-        Type get(const std::string& name);
+        Type get(const std::string& name) const;
     };
 }
 
@@ -352,7 +351,7 @@ namespace OpenSolid
     ) {derived().setProperty(name, SimplexXd(value));}
 
     template <class Derived> template <class Type>
-    Type PropertyMap<Derived>::get(const std::string& name) {
+    Type PropertyMap<Derived>::get(const std::string& name) const {
         if (derived().has(name)) {
             Type result;
             getProperty(name, result);
