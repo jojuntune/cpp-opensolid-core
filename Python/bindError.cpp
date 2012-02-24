@@ -97,7 +97,7 @@ namespace OpenSolid
 
     object pythonErrorClass(object native_error_class, str class_name) {
         dict class_dict;
-        class_dict["__module__"] = scope();
+        class_dict["__module__"] = "opensolid";
         class_dict["__doc__"] = native_error_class.attr("__doc__");
         class_dict["__init__"] = __init__();
         class_dict["__str__"] = __str__();
