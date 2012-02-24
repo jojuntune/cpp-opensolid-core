@@ -324,6 +324,14 @@ namespace OpenSolid
         return result;
     }
 
+    std::string TypeName<boost::python::object>::operator()() const {return "object";}
+
+    std::string TypeName<boost::python::str>::operator()() const {return "str";}
+
+    std::string TypeName<boost::python::list>::operator()() const {return "list";}
+
+    std::string TypeName<boost::python::dict>::operator()() const {return "dict";}
+
     ConversionFromPythonError::ConversionFromPythonError(
         const boost::python::object& python_object,
         const std::string& expected_type

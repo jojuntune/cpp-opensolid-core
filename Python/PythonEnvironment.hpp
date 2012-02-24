@@ -97,6 +97,35 @@ namespace OpenSolid
     };
 }
 
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <>
+    struct TypeName<boost::python::object>
+    {
+        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<boost::python::str>
+    {
+        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<boost::python::list>
+    {
+        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct TypeName<boost::python::dict>
+    {
+        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
+    };
+}
+
 ////////// Errors //////////
 
 namespace OpenSolid
