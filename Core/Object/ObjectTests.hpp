@@ -20,9 +20,38 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Object/Object.hpp>
 
 using namespace OpenSolid;
+
+struct CustomType
+{
+    double value;
+    Vector3d vector;
+};
+
+template <>
+struct Conversion<CustomType, Object>
+{
+    Object operator()(const CustomType& argument) const {
+        Object result;
+        result.set("value", argument.value);
+        result.set("vector", argument.vector);
+        return result;
+    }
+};
+
+template <>
+struct Conversion<Object, CustomType>
+{
+    CustomType operator()(const Object& argument) const {
+        CustomType result;
+        result.value = argument.get<double>("value");
+        result.vector = argument.get<Vector3d>("vector");
+        return result;
+    }
+};
 
 class ObjectTests : public CxxTest::TestSuite
 {
@@ -66,5 +95,15 @@ public:
         TS_ASSERT((axis.direction() - Vector3d(4, 5, 6).normalized()).isZero());
         Triangle3d facet = deserialized.get<Object>("component").get<Triangle3d>("facet");
         TS_ASSERT_EQUALS(facet.vertices(), Matrix3d::Ones());
+    }
+
+    void testCustomConversion() {
+        CustomType original;
+        original.value = M_PI;
+        original.vector = Vector3d::Random();
+        Object converted = Object::from<CustomType>(original);
+        CustomType reconstructed = converted.as<CustomType>();
+        TS_ASSERT_EQUALS(reconstructed.value, original.value);
+        TS_ASSERT_EQUALS(reconstructed.vector, original.vector);
     }
 };
