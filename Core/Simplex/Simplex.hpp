@@ -23,6 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
@@ -45,7 +46,9 @@ namespace OpenSolid
     };
 
     template <int dimensions_, int size_>
-    class Simplex : public Transformable<Simplex<dimensions_, size_>>
+    class Simplex :
+        public Transformable<Simplex<dimensions_, size_>>,
+        public Convertible<Simplex<dimensions_, size_>>
     {
     static_assert(
         (dimensions_ == Dynamic) == (size_ == Dynamic),

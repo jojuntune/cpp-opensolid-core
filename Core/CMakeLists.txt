@@ -32,7 +32,7 @@
     # Common directory files
     SET(COMMON_HEADERS
         ${OpenSolid}/Core/Common/Bounds.hpp
-        ${OpenSolid}/Core/Common/Convertible.hpp
+        ${OpenSolid}/Core/Common/Conversion.hpp
         ${OpenSolid}/Core/Common/Deserialization.hpp
         ${OpenSolid}/Core/Common/Error.hpp
         ${OpenSolid}/Core/Common/Evaluation.hpp

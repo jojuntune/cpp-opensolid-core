@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/PropertyMap.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/Deserialization.hpp>
@@ -49,7 +49,10 @@ namespace OpenSolid
     template <>
     struct Deserialization<Object>;
 
-    class Object : public PropertyMap<Object>, public Transformable<Object>
+    class Object :
+        public PropertyMap<Object>,
+        public Transformable<Object>,
+        public Convertible<Object>
     {
     private:
         typedef boost::variant<

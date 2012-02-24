@@ -27,7 +27,7 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Evaluation.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/Deserialization.hpp>

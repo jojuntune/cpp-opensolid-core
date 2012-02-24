@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Convertible.hpp>
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
