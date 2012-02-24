@@ -235,6 +235,19 @@ namespace OpenSolid
     std::ostream& operator<<(std::ostream& stream, const Set<Type>& set);
 }
     
+////////// Specializations //////////
+
+namespace OpenSolid
+{
+    template <class ItemType>
+    struct Bounds<Set<ItemType>>
+    {
+        typedef typename Bounds<ItemType>::Type Type;
+
+        const typename Bounds<ItemType>::Type& operator()(const Set<ItemType>& set) const;
+    };
+}
+    
 ////////// Implementation //////////
 
 #include <boost/functional/hash.hpp>
@@ -821,6 +834,11 @@ namespace OpenSolid
         }
         return stream;
     }
+
+    template <class ItemType>
+    inline const typename Bounds<ItemType>::Type& Bounds<Set<ItemType>>::operator()(
+        const Set<ItemType>& set
+    ) const {return set.bounds();}
 }
 
 #endif
