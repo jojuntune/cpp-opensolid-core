@@ -31,7 +31,7 @@ namespace OpenSolid
     class FunctionConstructors
     {
     public:
-        OPENSOLID_CORE_EXPORT static Function Identity(int dimensions);
+        OPENSOLID_CORE_EXPORT static Function Identity(int dimensions = 1);
 
         OPENSOLID_CORE_EXPORT static Function Parameter();
 
