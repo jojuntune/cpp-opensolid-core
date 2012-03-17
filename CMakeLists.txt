@@ -1,12 +1,18 @@
 ########## General setup ##########
 
     PROJECT(OpenSolid)
+    
     # CMake 2.8.3 or later is required for CMAKE_CURRENT_LIST_DIR variable
     CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3)
+    
     # Create convenience variable for referring to root OpenSolid directory
     SET(OpenSolid ${CMAKE_CURRENT_LIST_DIR})
+    
     # Enable testing using CTest
     ENABLE_TESTING()
+
+    # Include generic macros
+    INCLUDE(macros.cmake)
 
 ########## Set up compiler flags ##########
 
@@ -52,31 +58,6 @@
         SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
         SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
     ENDIF (MSVC_IDE)
-
-########## Create macro for .proto file compilation ##########
-
-    MACRO(COMPILE_PROTO_FILES GENERATED_SOURCES)
-        SET(${GENERATED_SOURCES})
-        FOREACH(FULL_NAME ${ARGN})
-            GET_FILENAME_COMPONENT(FILE_PATH ${FULL_NAME} PATH)
-            GET_FILENAME_COMPONENT(BASE_NAME ${FULL_NAME} NAME_WE)
-            ADD_CUSTOM_COMMAND(
-                OUTPUT
-                "${FILE_PATH}/${BASE_NAME}.pb.h"
-                "${FILE_PATH}/${BASE_NAME}.pb.cc"
-                DEPENDS
-                protoc
-                ${FULL_NAME}
-                COMMAND
-                protoc
-                ARGS
-                --proto_path=${FILE_PATH}
-                --cpp_out=${FILE_PATH}
-                ${FULL_NAME}
-            )
-            LIST(APPEND ${GENERATED_SOURCES} "${FILE_PATH}/${BASE_NAME}.pb.cc")
-        ENDFOREACH(FULL_NAME)
-    ENDMACRO(COMPILE_PROTO_FILES)
 
 ########## Set up testing ##########
 
@@ -124,7 +105,6 @@
 ########## Set up source groups for Visual Studio ##########
 
     # Automatically sort source files into groups based on directory structure
-    INCLUDE(CreateSourceGroups.cmake)
     CREATE_SOURCE_GROUPS(${OpenSolid} ${GLOBAL_SOURCE_LIST})
 
     # Include all directories included by subprojects to allow code completion to work properly

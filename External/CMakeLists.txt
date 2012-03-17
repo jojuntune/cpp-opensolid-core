@@ -101,6 +101,31 @@
     ELSEIF(WIN32)
         SET_TARGET_PROPERTIES(${EXTERNAL_TARGETS} PROPERTIES COMPILE_FLAGS "/W0")
     ENDIF()
+
+########## Create macro for .proto file compilation ##########
+
+    MACRO(COMPILE_PROTO_FILES GENERATED_SOURCES)
+        SET(${GENERATED_SOURCES})
+        FOREACH(FULL_NAME ${ARGN})
+            GET_FILENAME_COMPONENT(FILE_PATH ${FULL_NAME} PATH)
+            GET_FILENAME_COMPONENT(BASE_NAME ${FULL_NAME} NAME_WE)
+            ADD_CUSTOM_COMMAND(
+                OUTPUT
+                "${FILE_PATH}/${BASE_NAME}.pb.h"
+                "${FILE_PATH}/${BASE_NAME}.pb.cc"
+                DEPENDS
+                protoc
+                ${FULL_NAME}
+                COMMAND
+                protoc
+                ARGS
+                --proto_path=${FILE_PATH}
+                --cpp_out=${FILE_PATH}
+                ${FULL_NAME}
+            )
+            LIST(APPEND ${GENERATED_SOURCES} "${FILE_PATH}/${BASE_NAME}.pb.cc")
+        ENDFOREACH(FULL_NAME)
+    ENDMACRO(COMPILE_PROTO_FILES)
     
 ########## Install Eigen headers ##########
     
