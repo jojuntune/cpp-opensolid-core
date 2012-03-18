@@ -102,6 +102,12 @@
     ADD_SUBDIRECTORY(Python)
     ADD_SUBDIRECTORY(Documentation EXCLUDE_FROM_ALL)
 
+########## Convenience headers ##########
+
+    SET(CONVENIENCE_HEADERS ${OpenSolid}/Core.hpp ${OpenSolid}/Python.hpp)
+    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST} ${CONVENIENCE_HEADERS})
+    INSTALL(FILES ${CONVENIENCE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/OpenSolid)
+
 ########## Set up source groups for Visual Studio ##########
 
     # Automatically sort source files into groups based on directory structure
