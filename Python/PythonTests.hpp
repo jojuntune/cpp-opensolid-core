@@ -621,23 +621,23 @@ public:
         TS_ASSERT(environment.get<double>("sqrt(4)") - 2 == Zero());
     }
 
-    void testFunctionRoots() {
-        PythonEnvironment environment;
-        std::string text =
-            "x = Function.Parameter() \n"
-            "f = x * x * x - 4 * x * x + 5 * x - 2\n"
-            "roots = f.roots(Interval(0, 3))\n"
-            "derivative_roots = f.derivative().roots(Interval(0, 3))\n"
-            "second_derivative_roots = f.derivative().derivative().roots(Interval(0, 3))\n"
-        ;
-        environment.run(text);
-        RowVectorXd roots = environment.get<RowVectorXd>("roots");
-        TS_ASSERT((roots - RowVector2d(1, 2)).isZero());
-        roots = environment.get<RowVectorXd>("derivative_roots");
-        TS_ASSERT((roots - RowVector2d(1, 5.0 / 3.0)).isZero());
-        roots = environment.get<RowVectorXd>("second_derivative_roots");
-        TS_ASSERT(roots.value() - 4.0 / 3.0 == Zero());
-    }
+    //void xtestFunctionRoots() {
+    //    PythonEnvironment environment;
+    //    std::string text =
+    //        "x = Function.Parameter() \n"
+    //        "f = x * x * x - 4 * x * x + 5 * x - 2\n"
+    //        "roots = f.roots(Interval(0, 3))\n"
+    //        "derivative_roots = f.derivative().roots(Interval(0, 3))\n"
+    //        "second_derivative_roots = f.derivative().derivative().roots(Interval(0, 3))\n"
+    //    ;
+    //    environment.run(text);
+    //    RowVectorXd roots = environment.get<RowVectorXd>("roots");
+    //    TS_ASSERT((roots - RowVector2d(1, 2)).isZero());
+    //    roots = environment.get<RowVectorXd>("derivative_roots");
+    //    TS_ASSERT((roots - RowVector2d(1, 5.0 / 3.0)).isZero());
+    //    roots = environment.get<RowVectorXd>("second_derivative_roots");
+    //    TS_ASSERT(roots.value() - 4.0 / 3.0 == Zero());
+    //}
 
     void testDatum() {
         PythonEnvironment environment;
