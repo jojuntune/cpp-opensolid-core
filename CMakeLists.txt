@@ -6,7 +6,7 @@
     CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3)
     
     # Create convenience variable for referring to root OpenSolid directory
-    SET(OpenSolid ${CMAKE_CURRENT_LIST_DIR})
+    SET(OpenSolid "${CMAKE_CURRENT_LIST_DIR}")
     
     # Enable testing using CTest
     ENABLE_TESTING()
@@ -52,11 +52,11 @@
 
     # Place all executables, libraries in one directory
     IF (MSVC_IDE)
-        SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
-        SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
+        SET(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+        SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
     ELSE (MSVC_IDE)
-        SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
-        SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
+        SET(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+        SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
     ENDIF (MSVC_IDE)
 
 ########## Set up testing ##########
@@ -70,30 +70,30 @@
         # Generate test source file
         ADD_CUSTOM_COMMAND(
             OUTPUT
-            ${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp
+            "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
             DEPENDS
-            ${source}
+            "${source}"
             COMMAND
-            ${PYTHON_EXECUTABLE}
+            "${PYTHON_EXECUTABLE}"
             ARGS
-            ${OpenSolid}/External/cxxtest/cxxtestgen.py
+            "${OpenSolid}/External/cxxtest/cxxtestgen.py"
             --error-printer
-            -o ${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp
-            ${source}
+            -o "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
+            "${source}"
         )
 
         # Create test executable
-        ADD_EXECUTABLE(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp)
+        ADD_EXECUTABLE(${name} "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp")
 
         # Link test executable to any libraries specified as additional macro arguments
         TARGET_LINK_LIBRARIES(${name} ${ARGN})
 
         # Register executable as a test
-        ADD_TEST(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})
+        ADD_TEST(${name} "${EXECUTABLE_OUTPUT_PATH}/${name}")
     ENDMACRO(ADD_CXXTEST)
     
     # Add global source-checking test
-    ADD_TEST(SourceChecks ${PYTHON_EXECUTABLE} ${OpenSolid}/checker.py ${OpenSolid})
+    ADD_TEST(SourceChecks "${PYTHON_EXECUTABLE}" "${OpenSolid}/checker.py" "${OpenSolid}")
     
 ########## Build subprojects ##########
 
@@ -104,29 +104,18 @@
 
 ########## Convenience headers ##########
 
-    SET(CONVENIENCE_HEADERS ${OpenSolid}/Core.hpp ${OpenSolid}/Python.hpp)
+    SET(CONVENIENCE_HEADERS "${OpenSolid}/Core.hpp" "${OpenSolid}/Python.hpp")
     SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST} ${CONVENIENCE_HEADERS})
-    INSTALL(FILES ${CONVENIENCE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/OpenSolid)
+    INSTALL(FILES ${CONVENIENCE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/OpenSolid")
 
 ########## Set up source groups for Visual Studio ##########
 
     SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
-        ${OpenSolid}/checker.py
-        ${OpenSolid}/macros.cmake
-        ${OpenSolid}/license.txt
+        "${OpenSolid}/checker.py"
+        "${OpenSolid}/macros.cmake"
+        "${OpenSolid}/license.txt"
     )
 
     # Automatically sort source files into groups based on directory structure
-    CREATE_SOURCE_GROUPS(${OpenSolid} ${GLOBAL_SOURCE_LIST})
-
-    # Include all directories included by subprojects to allow code completion to work properly
-    # within ALL_SOURCES target
-    GET_DIRECTORY_PROPERTY(CORE_INCLUDES DIRECTORY Core INCLUDE_DIRECTORIES)
-    GET_DIRECTORY_PROPERTY(PYTHON_INCLUDES DIRECTORY Python INCLUDE_DIRECTORIES)
-    INCLUDE_DIRECTORIES(${CORE_INCLUDES})
-    INCLUDE_DIRECTORIES(${PYTHON_INCLUDES})
-    
-    # Dummy library that is never built but provides a Visual Studio target that includes
-    # a complete source tree
-    ADD_LIBRARY(ALL_SOURCES EXCLUDE_FROM_ALL ${GLOBAL_SOURCE_LIST})
+    CREATE_SOURCE_GROUPS(${GLOBAL_SOURCE_LIST})
         
