@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class RectangleDomain : public DomainImplementation
     {

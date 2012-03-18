@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Template.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     
 }

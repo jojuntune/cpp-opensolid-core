@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/NormalizedFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryOperation(operand) {}
     

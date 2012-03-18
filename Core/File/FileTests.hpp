@@ -24,7 +24,7 @@
 
 #include <OpenSolid/Core/File/File.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class FileTests : public CxxTest::TestSuite
 {

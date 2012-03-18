@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/SquaredNormFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     SquaredNormFunction::SquaredNormFunction(const Function& operand) : UnaryOperation(operand) {}
     

@@ -39,7 +39,7 @@
 #include <OpenSolid/Core/Set/Set.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Geometry :
         public GeometryConstructors,
@@ -88,7 +88,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct Bounds<Geometry>
@@ -145,7 +145,7 @@ namespace OpenSolid
 
 #include <OpenSolid/Core/Domain/Domain.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType>
     Geometry::Geometry(const EigenBase<DerivedType>& vector) {

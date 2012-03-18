@@ -41,7 +41,7 @@
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct Serialization<Object>;
@@ -104,7 +104,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct TypeName<Object>
@@ -127,7 +127,7 @@ namespace OpenSolid
 
 ////////// Errors //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     class ObjectPropertyError : public PropertyError
     {
@@ -147,7 +147,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     void Object::setProperty(const std::string& name, const Type& value) {

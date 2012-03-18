@@ -28,7 +28,7 @@
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class FunctionTests : public CxxTest::TestSuite
 {

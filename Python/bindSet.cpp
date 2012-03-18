@@ -22,7 +22,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     struct SetSingleton
     {

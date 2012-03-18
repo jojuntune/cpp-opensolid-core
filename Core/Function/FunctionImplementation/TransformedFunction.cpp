@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/TransformedFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     TransformedFunction::TransformedFunction(
         const Function& operand,

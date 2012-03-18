@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArccosineFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ArccosineFunction::ArccosineFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);

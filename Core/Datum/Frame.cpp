@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Datum/Frame.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string TypeName<Frame2d>::operator()() const {return "Frame2d";}
 

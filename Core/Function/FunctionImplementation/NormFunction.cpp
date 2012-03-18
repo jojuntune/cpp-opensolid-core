@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/NormFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     NormFunction::NormFunction(const Function& operand) : UnaryOperation(operand) {}
     

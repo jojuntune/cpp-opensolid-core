@@ -34,7 +34,7 @@
 #include <boost/python/raw_function.hpp>
 #include <boost/python/converter/pytype_function.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class PythonModule
     {
@@ -47,7 +47,7 @@ namespace OpenSolid
 
 ////////// Errors //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class MatrixType>
     class UnaryMatrixError : public Error

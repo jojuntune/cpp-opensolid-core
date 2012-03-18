@@ -25,7 +25,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class TransformedFunction : public UnaryOperation
     {
@@ -63,7 +63,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline const MatrixXd& TransformedFunction::matrix() const {return _matrix;}
 

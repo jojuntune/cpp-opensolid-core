@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Domain/DomainImplementation/RectangleDomain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     RectangleDomain::RectangleDomain(const Vector2I& bounds) : _bounds(bounds) {}
 

@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/SerializedDouble.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {
     double Deserialization<double>::operator()(const std::string& argument) const {
         SerializedDouble temp;

@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/DifferenceFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     DifferenceFunction::DifferenceFunction(
         const Function& first_operand,

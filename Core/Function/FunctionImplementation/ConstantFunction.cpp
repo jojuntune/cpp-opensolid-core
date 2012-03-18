@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ConstantFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ConstantFunction::ConstantFunction(const VectorXd& vector) : _vector(vector) {}
     

@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/LogarithmFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     LogarithmFunction::LogarithmFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);

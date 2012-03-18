@@ -26,7 +26,7 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 template <class Type>
 void printDirectAccess(const Type& argument) {

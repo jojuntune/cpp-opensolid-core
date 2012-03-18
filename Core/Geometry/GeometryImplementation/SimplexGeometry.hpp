@@ -27,7 +27,7 @@
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class SimplexGeometry : public GeometryImplementation
     {

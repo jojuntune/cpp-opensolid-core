@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Common/Error.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     NotImplementedError::NotImplementedError(const std::string& file, int line) :
         _file(file), _line(line) {}

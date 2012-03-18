@@ -25,7 +25,7 @@
 
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template<class Type>
     class MatrixArgument
@@ -49,7 +49,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template<class Type>
     inline MatrixArgument<Type>::MatrixArgument(const Type& argument) : _argument(argument) {}

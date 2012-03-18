@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__CONVERTIBLE_HPP
 #define OPENSOLID__CONVERTIBLE_HPP
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type, class OtherType>
     struct Conversion;
@@ -39,7 +39,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType> template <class OtherType>
     inline OtherType Convertible<DerivedType>::as() const {

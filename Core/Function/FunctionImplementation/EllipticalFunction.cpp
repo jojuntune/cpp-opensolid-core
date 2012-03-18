@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/EllipticalFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     EllipticalFunction::EllipticalFunction(const DatumXd& datum, const VectorXb& convention) :
         _datum(datum), _convention(convention) {

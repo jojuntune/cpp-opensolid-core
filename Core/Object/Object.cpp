@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Core/Object/SerializedObject.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {
     void Object::throwPropertyError(
         const std::string& name,

@@ -27,7 +27,7 @@
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     class SetNode
@@ -89,7 +89,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     namespace
     {

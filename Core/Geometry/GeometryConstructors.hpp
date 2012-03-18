@@ -28,7 +28,7 @@
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Geometry;
     class Domain;

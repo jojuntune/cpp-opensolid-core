@@ -25,7 +25,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     MatrixXd* vertices(const SimplexXd& simplex) {
         return new MatrixXd(simplex.vertices());

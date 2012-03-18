@@ -1,4 +1,4 @@
-package OpenSolid;
+package opensolid;
 
 message SerializedSimplexXd {
     required bytes vertices = 1;

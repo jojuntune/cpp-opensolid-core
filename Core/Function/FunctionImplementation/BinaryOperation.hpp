@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class BinaryOperation : public FunctionImplementation
     {
@@ -43,7 +43,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline const Function& BinaryOperation::firstOperand() const {return _first_operand;}
     

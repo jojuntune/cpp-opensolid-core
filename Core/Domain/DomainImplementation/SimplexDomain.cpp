@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Domain/DomainImplementation/SimplexDomain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     SimplexDomain::SimplexDomain(const SimplexXd& simplex) : _simplex(simplex) {
         assert(simplex.dimensions() == simplex.size() - 1);

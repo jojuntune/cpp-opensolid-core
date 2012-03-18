@@ -62,10 +62,10 @@ CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> inte
 
 static const RandomAccessLinSpacedReturnType LinSpaced(
     Index size,
-    const OpenSolid::Interval& range
+    const opensolid::Interval& range
 );
 
-static const RandomAccessLinSpacedReturnType LinSpaced(const OpenSolid::Interval& range);
+static const RandomAccessLinSpacedReturnType LinSpaced(const opensolid::Interval& range);
 
 template <class FirstDerivedType, class SecondDerivedType>
 static CwiseBinaryOp<HullOperation, const FirstDerivedType, const SecondDerivedType> Hull(

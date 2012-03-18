@@ -37,7 +37,7 @@
 
 struct sqlite3;
 
-namespace OpenSolid
+namespace opensolid
 {
     class File : public PropertyMap<File>
     {
@@ -88,7 +88,7 @@ namespace OpenSolid
 
 ////////// Errors //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     class FileOpenError : public Error
     {
@@ -152,7 +152,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     void File::setProperty(const std::string& name, const Type& value) {

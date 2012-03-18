@@ -25,7 +25,7 @@
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Datum/Plane.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class DatumTests : public CxxTest::TestSuite
 {

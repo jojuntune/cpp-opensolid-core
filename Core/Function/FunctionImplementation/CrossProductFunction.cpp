@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/CrossProductFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     CrossProductFunction::CrossProductFunction(
         const Function& first_operand,

@@ -34,7 +34,7 @@
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/repr.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class PythonStackFrame
     {
@@ -99,7 +99,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct TypeName<boost::python::object>
@@ -128,7 +128,7 @@ namespace OpenSolid
 
 ////////// Errors //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     class ConversionFromPythonError : public Error
     {
@@ -340,7 +340,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     PythonEnvironment& PythonEnvironment::set(const std::string& name, const Type& argument) {

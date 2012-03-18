@@ -34,7 +34,7 @@
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Object;
 
@@ -98,7 +98,7 @@ namespace OpenSolid
 
 ////////// Errors //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     class PropertyError : public Error
     {
@@ -120,7 +120,7 @@ namespace OpenSolid
 
 #include <OpenSolid/Core/Object/Object.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Derived>
     inline Derived& PropertyMap<Derived>::derived() {

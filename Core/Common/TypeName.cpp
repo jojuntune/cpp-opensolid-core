@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Common/TypeName.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string TypeName<bool>::operator()() const {return "bool";}
 

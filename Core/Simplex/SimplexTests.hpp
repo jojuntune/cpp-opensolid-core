@@ -28,7 +28,7 @@
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class SimplexTests : public CxxTest::TestSuite
 {

@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Domain/DomainImplementation/GenericDomain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     GenericDomain::GenericDomain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
 

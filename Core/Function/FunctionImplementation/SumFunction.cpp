@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/SumFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     SumFunction::SumFunction(const Function& first_operand, const Function& second_operand) :
         BinaryOperation(first_operand, second_operand) {

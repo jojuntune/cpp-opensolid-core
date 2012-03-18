@@ -26,7 +26,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class GenericGeometry : public GeometryImplementation
     {

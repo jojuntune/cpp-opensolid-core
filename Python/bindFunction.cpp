@@ -23,7 +23,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     MatrixXd* callDouble(const Function& function, double argument) {
         return new MatrixXd(function(argument));

@@ -27,7 +27,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     MatrixXd origin(const DatumXd& datum) {return datum.origin();}
 

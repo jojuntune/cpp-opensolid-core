@@ -25,7 +25,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     void bindFile();
     void bindObject();

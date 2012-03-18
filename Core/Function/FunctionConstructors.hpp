@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Function;
 

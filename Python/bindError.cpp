@@ -28,7 +28,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     object reference(PyObject* pointer) {
         return pointer ? object(handle<>(borrowed(pointer))) : object();

@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Template
     {
@@ -32,7 +32,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     
 }

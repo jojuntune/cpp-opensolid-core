@@ -23,7 +23,7 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class IntervalTests : public CxxTest::TestSuite
 {

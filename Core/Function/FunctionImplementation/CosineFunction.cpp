@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/CosineFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     CosineFunction::CosineFunction(const Function& operand) :
         UnaryOperation(operand) {assert(operand.dimensions() == 1);}

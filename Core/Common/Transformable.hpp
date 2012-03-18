@@ -25,7 +25,7 @@
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <int dimensions_, int axes_>
     class Datum;
@@ -76,7 +76,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType, class ResultType>
     inline const DerivedType& Transformable<DerivedType, ResultType>::derived() const {
@@ -117,7 +117,7 @@ namespace OpenSolid
         const MatrixType& matrix,
         const VectorType& vector
     ) const {
-        OpenSolid::assertValidTransform<ArgumentType::RowsAtCompileTime>(
+        opensolid::assertValidTransform<ArgumentType::RowsAtCompileTime>(
             _argument.rows(),
             matrix,
             vector

@@ -34,7 +34,7 @@
     #define OPENSOLID_CORE_EXPORT
 #endif
 
-namespace OpenSolid
+namespace opensolid
 {
     using std::min;
     using std::max;

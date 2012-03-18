@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class ArcsineFunction : public UnaryOperation
     {

@@ -23,7 +23,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     void setObject(File& file, const std::string& name, const Object& value) {
         file.set(name, value);

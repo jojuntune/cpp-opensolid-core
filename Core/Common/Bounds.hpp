@@ -23,7 +23,7 @@
 
 #include <type_traits>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class BoundedType>
     struct Bounds;

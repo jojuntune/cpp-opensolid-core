@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GenericGeometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     GenericGeometry::GenericGeometry(const Function& function, const Domain& domain) :
         _function(function), _domain(domain) {}

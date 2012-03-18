@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     Domain DomainConstructors::UnitInterval() {return Domain(Interval(0, 1));}
 

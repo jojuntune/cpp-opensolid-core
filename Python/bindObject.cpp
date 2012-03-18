@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     void setObject(Object& object, const std::string& name, const Object& value) {
         object.set(name, value);

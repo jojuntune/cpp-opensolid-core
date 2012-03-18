@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ParametersFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ParametersFunction::ParametersFunction(int total, int index, int num) :
         _total(total), _index(index), _num(num) {

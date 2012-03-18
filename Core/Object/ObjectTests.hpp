@@ -23,7 +23,7 @@
 #include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Object/Object.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 struct CustomType
 {

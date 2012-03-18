@@ -24,7 +24,7 @@
 #include <boost/intrusive_ptr.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType>
     class ReferenceCounted;
@@ -55,7 +55,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType>
     inline ReferenceCounted<DerivedType>::ReferenceCounted() : _count(0) {}

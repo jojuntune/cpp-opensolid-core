@@ -23,7 +23,7 @@
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GenericGeometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     GeometryImplementation::~GeometryImplementation() {}
         

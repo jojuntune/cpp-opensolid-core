@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/SimplexGeometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     SimplexGeometry::SimplexGeometry(const SimplexXd& simplex) : _simplex(simplex) {}
 

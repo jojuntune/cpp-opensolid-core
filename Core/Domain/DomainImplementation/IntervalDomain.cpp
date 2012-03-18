@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Domain/DomainImplementation/IntervalDomain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     IntervalDomain::IntervalDomain(const Interval& interval) : _interval(interval) {}
 

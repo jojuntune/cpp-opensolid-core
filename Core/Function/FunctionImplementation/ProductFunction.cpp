@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ProductFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ProductFunction::ProductFunction(
         const Function& first_operand,

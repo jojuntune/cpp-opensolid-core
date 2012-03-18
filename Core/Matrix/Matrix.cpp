@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Matrix/SerializedMatrix.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string Serialization<MatrixXd>::operator()(const MatrixXd& argument) const {
         SerializedMatrixXd temp;

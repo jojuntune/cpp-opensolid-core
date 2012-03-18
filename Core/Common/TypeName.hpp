@@ -25,7 +25,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     struct TypeName;

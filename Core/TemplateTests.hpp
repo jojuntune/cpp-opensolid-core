@@ -22,7 +22,7 @@
 
 #include <OpenSolid/Template.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class TemplateTests : public CxxTest::TestSuite
 {

@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class GenericDomain : public DomainImplementation
     {

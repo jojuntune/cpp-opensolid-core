@@ -31,7 +31,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     PythonStackFrame::PythonStackFrame() : _line_number(0) {}
 

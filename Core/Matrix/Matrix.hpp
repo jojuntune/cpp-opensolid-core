@@ -36,7 +36,7 @@ namespace Eigen
         struct significant_decimals_default_impl;
 
         template <>
-        struct significant_decimals_default_impl<OpenSolid::Interval, false>
+        struct significant_decimals_default_impl<opensolid::Interval, false>
         {
             static inline int run();
         };
@@ -45,7 +45,7 @@ namespace Eigen
         struct is_arithmetic;
         
         template <>
-        struct is_arithmetic<OpenSolid::Interval>
+        struct is_arithmetic<opensolid::Interval>
         {
             static const bool value = true;
         };
@@ -55,11 +55,11 @@ namespace Eigen
     struct NumTraits;
     
     template <>
-    struct NumTraits<OpenSolid::Interval>
+    struct NumTraits<opensolid::Interval>
     {
-        typedef OpenSolid::Interval Real;
-        typedef OpenSolid::Interval NonInteger;
-        typedef OpenSolid::Interval Nested;
+        typedef opensolid::Interval Real;
+        typedef opensolid::Interval NonInteger;
+        typedef opensolid::Interval Nested;
         
         static const int IsComplex = 0;
         static const int IsInteger = 0;
@@ -69,73 +69,73 @@ namespace Eigen
         static const int IsSigned = 1;
         static const int RequireInitialization = 0;
         
-        static OpenSolid::Interval epsilon();
-        static OpenSolid::Interval dummy_precision();
-        static OpenSolid::Interval lowest();
-        static OpenSolid::Interval highest();  
+        static opensolid::Interval epsilon();
+        static opensolid::Interval dummy_precision();
+        static opensolid::Interval lowest();
+        static opensolid::Interval highest();  
     };
 
     struct EmptyOperation
     {
         typedef bool result_type;
 
-        bool operator()(const OpenSolid::Interval& argument) const;
+        bool operator()(const opensolid::Interval& argument) const;
     };
     
     struct LowerOperation
     {
         typedef double result_type;
         
-        double operator()(const OpenSolid::Interval& argument) const;
+        double operator()(const opensolid::Interval& argument) const;
     };
     
     struct UpperOperation
     {
         typedef double result_type;
         
-        double operator()(const OpenSolid::Interval& argument) const;
+        double operator()(const opensolid::Interval& argument) const;
     };
     
     struct MedianOperation
     {
         typedef double result_type;
         
-        double operator()(const OpenSolid::Interval& argument) const;
+        double operator()(const opensolid::Interval& argument) const;
     };
 
     struct RandomOperation
     {
         typedef double result_type;
 
-        double operator()(const OpenSolid::Interval& argument) const;
+        double operator()(const opensolid::Interval& argument) const;
     };
     
     struct WidthOperation
     {
         typedef double result_type;
         
-        double operator()(const OpenSolid::Interval& argument) const;
+        double operator()(const opensolid::Interval& argument) const;
     };
     
     struct HullOperation
     {
-        typedef OpenSolid::Interval result_type;
+        typedef opensolid::Interval result_type;
 
-        OpenSolid::Interval operator()(double first_argument, double second_argument) const;
+        opensolid::Interval operator()(double first_argument, double second_argument) const;
         
-        OpenSolid::Interval operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
+        opensolid::Interval operator()(
+            const opensolid::Interval& first_argument,
+            const opensolid::Interval& second_argument
         ) const;
     };
     
     struct IntersectionOperation
     {
-        typedef OpenSolid::Interval result_type;
+        typedef opensolid::Interval result_type;
         
-        OpenSolid::Interval operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
+        opensolid::Interval operator()(
+            const opensolid::Interval& first_argument,
+            const opensolid::Interval& second_argument
         ) const;
     };
     
@@ -149,8 +149,8 @@ namespace Eigen
         OverlapOperation(double precision);
 
         bool operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
+            const opensolid::Interval& first_argument,
+            const opensolid::Interval& second_argument
         ) const;
     };
     
@@ -164,8 +164,8 @@ namespace Eigen
         StrictOverlapOperation(double precision);
 
         bool operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
+            const opensolid::Interval& first_argument,
+            const opensolid::Interval& second_argument
         ) const;
     };
     
@@ -179,8 +179,8 @@ namespace Eigen
         ContainOperation(double precision);
         
         bool operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
+            const opensolid::Interval& first_argument,
+            const opensolid::Interval& second_argument
         ) const;
     };
     
@@ -194,13 +194,13 @@ namespace Eigen
         StrictContainOperation(double precision);
         
         bool operator()(
-            const OpenSolid::Interval& first_argument,
-            const OpenSolid::Interval& second_argument
+            const opensolid::Interval& first_argument,
+            const opensolid::Interval& second_argument
         ) const;
     };
 }
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class ArgumentType>
     class TransformableMatrix;
@@ -228,19 +228,19 @@ namespace OpenSolid
 
 namespace Eigen
 {   
-    typedef Matrix<OpenSolid::Interval, 2, 1> Vector2I;
-    typedef Matrix<OpenSolid::Interval, 1, 2> RowVector2I;
-    typedef Matrix<OpenSolid::Interval, 2, 2> Matrix2I;
-    typedef Matrix<OpenSolid::Interval, 3, 1> Vector3I;
-    typedef Matrix<OpenSolid::Interval, 1, 3> RowVector3I;
-    typedef Matrix<OpenSolid::Interval, 3, 3> Matrix3I;
-    typedef Matrix<OpenSolid::Interval, Dynamic, 1> VectorXI;
-    typedef Matrix<OpenSolid::Interval, 1, Dynamic> RowVectorXI;
-    typedef Matrix<OpenSolid::Interval, Dynamic, Dynamic> MatrixXI;
-    typedef Matrix<OpenSolid::Interval, 2, Dynamic> Matrix2XI;
-    typedef Matrix<OpenSolid::Interval, Dynamic, 2> MatrixX2I;
-    typedef Matrix<OpenSolid::Interval, 3, Dynamic> Matrix3XI;
-    typedef Matrix<OpenSolid::Interval, Dynamic, 3> MatrixX3I;
+    typedef Matrix<opensolid::Interval, 2, 1> Vector2I;
+    typedef Matrix<opensolid::Interval, 1, 2> RowVector2I;
+    typedef Matrix<opensolid::Interval, 2, 2> Matrix2I;
+    typedef Matrix<opensolid::Interval, 3, 1> Vector3I;
+    typedef Matrix<opensolid::Interval, 1, 3> RowVector3I;
+    typedef Matrix<opensolid::Interval, 3, 3> Matrix3I;
+    typedef Matrix<opensolid::Interval, Dynamic, 1> VectorXI;
+    typedef Matrix<opensolid::Interval, 1, Dynamic> RowVectorXI;
+    typedef Matrix<opensolid::Interval, Dynamic, Dynamic> MatrixXI;
+    typedef Matrix<opensolid::Interval, 2, Dynamic> Matrix2XI;
+    typedef Matrix<opensolid::Interval, Dynamic, 2> MatrixX2I;
+    typedef Matrix<opensolid::Interval, 3, Dynamic> Matrix3XI;
+    typedef Matrix<opensolid::Interval, Dynamic, 3> MatrixX3I;
     
     typedef Matrix<bool, 2, 1> Vector2b;
     typedef Matrix<bool, 1, 2> RowVector2b;
@@ -265,7 +265,7 @@ namespace Eigen
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
 }
 
-namespace OpenSolid
+namespace opensolid
 {
     using namespace Eigen;
     
@@ -445,116 +445,116 @@ namespace Eigen
 {
     namespace internal
     {
-        inline int significant_decimals_default_impl<OpenSolid::Interval, false>::run() {
+        inline int significant_decimals_default_impl<opensolid::Interval, false>::run() {
             return significant_decimals_default_impl<double, false>::run();
         }
 
         template <>
-        struct random_impl<OpenSolid::Interval>
+        struct random_impl<opensolid::Interval>
         {
-            static OpenSolid::Interval run(
-                const OpenSolid::Interval& lower,
-                const OpenSolid::Interval& upper
+            static opensolid::Interval run(
+                const opensolid::Interval& lower,
+                const opensolid::Interval& upper
             ) {
-                OpenSolid::Interval range(lower.lower(), upper.upper());
+                opensolid::Interval range(lower.lower(), upper.upper());
                 double first_ratio = double(std::rand()) / RAND_MAX;
                 double second_ratio = double(std::rand()) / RAND_MAX;
                 if (first_ratio > second_ratio) {std::swap(first_ratio, second_ratio);}
-                return range.interpolated(OpenSolid::Interval(first_ratio, second_ratio));
+                return range.interpolated(opensolid::Interval(first_ratio, second_ratio));
             }
 
-            static OpenSolid::Interval run() {
+            static opensolid::Interval run() {
                 double lower = -1 + 2 * double(std::rand()) / RAND_MAX;
                 double upper = -1 + 2 * double(std::rand()) / RAND_MAX;
                 if (lower > upper) {std::swap(lower, upper);}
-                return OpenSolid::Interval(lower, upper);
+                return opensolid::Interval(lower, upper);
             }
         };
     }
 
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::epsilon() {
+    inline opensolid::Interval NumTraits<opensolid::Interval>::epsilon() {
         return NumTraits<double>::epsilon();
     }
     
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::dummy_precision() {
+    inline opensolid::Interval NumTraits<opensolid::Interval>::dummy_precision() {
         return NumTraits<double>::dummy_precision();
     }
     
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::lowest() {
+    inline opensolid::Interval NumTraits<opensolid::Interval>::lowest() {
         return NumTraits<double>::lowest();
     }
     
-    inline OpenSolid::Interval NumTraits<OpenSolid::Interval>::highest() {
+    inline opensolid::Interval NumTraits<opensolid::Interval>::highest() {
         return NumTraits<double>::highest();
     }
 
-    inline bool EmptyOperation::operator()(const OpenSolid::Interval& argument) const {
+    inline bool EmptyOperation::operator()(const opensolid::Interval& argument) const {
         return argument.isEmpty();
     }
         
-    inline double LowerOperation::operator()(const OpenSolid::Interval& argument) const {
+    inline double LowerOperation::operator()(const opensolid::Interval& argument) const {
         return argument.lower();
     }
     
-    inline double UpperOperation::operator()(const OpenSolid::Interval& argument) const {
+    inline double UpperOperation::operator()(const opensolid::Interval& argument) const {
         return argument.upper();
     }
     
-    inline double MedianOperation::operator()(const OpenSolid::Interval& argument) const {
+    inline double MedianOperation::operator()(const opensolid::Interval& argument) const {
         return argument.median();
     }
 
-    inline double RandomOperation::operator()(const OpenSolid::Interval& argument) const {
+    inline double RandomOperation::operator()(const opensolid::Interval& argument) const {
         return argument.random();
     }
     
-    inline double WidthOperation::operator()(const OpenSolid::Interval& argument) const {
+    inline double WidthOperation::operator()(const opensolid::Interval& argument) const {
         return argument.width();
     }
     
-    inline OpenSolid::Interval HullOperation::operator()(
+    inline opensolid::Interval HullOperation::operator()(
         double first_argument,
         double second_argument
-    ) const {return OpenSolid::Interval::Hull(first_argument, second_argument);}
+    ) const {return opensolid::Interval::Hull(first_argument, second_argument);}
     
-    inline OpenSolid::Interval HullOperation::operator()(
-        const OpenSolid::Interval& first_argument,
-        const OpenSolid::Interval& second_argument
+    inline opensolid::Interval HullOperation::operator()(
+        const opensolid::Interval& first_argument,
+        const opensolid::Interval& second_argument
     ) const {return first_argument.hull(second_argument);}
     
-    inline OpenSolid::Interval IntersectionOperation::operator()(
-        const OpenSolid::Interval& first_argument,
-        const OpenSolid::Interval& second_argument
+    inline opensolid::Interval IntersectionOperation::operator()(
+        const opensolid::Interval& first_argument,
+        const opensolid::Interval& second_argument
     ) const {return first_argument.intersection(second_argument);}
 
     inline OverlapOperation::OverlapOperation(double precision) : _precision(precision) {}
     
     inline bool OverlapOperation::operator()(
-        const OpenSolid::Interval& first_argument,
-        const OpenSolid::Interval& second_argument
+        const opensolid::Interval& first_argument,
+        const opensolid::Interval& second_argument
     ) const {return first_argument.overlaps(second_argument, _precision);}
 
     inline StrictOverlapOperation::StrictOverlapOperation(double precision)
         : _precision(precision) {}
     
     inline bool StrictOverlapOperation::operator()(
-        const OpenSolid::Interval& first_argument,
-        const OpenSolid::Interval& second_argument
+        const opensolid::Interval& first_argument,
+        const opensolid::Interval& second_argument
     ) const {return first_argument.strictlyOverlaps(second_argument, _precision);}
 
     inline ContainOperation::ContainOperation(double precision) : _precision(precision) {}
     
     inline bool ContainOperation::operator()(
-        const OpenSolid::Interval& first_argument,
-        const OpenSolid::Interval& second_argument
+        const opensolid::Interval& first_argument,
+        const opensolid::Interval& second_argument
     ) const {return first_argument.contains(second_argument, _precision);}
 
     inline StrictContainOperation::StrictContainOperation(double precision)
         : _precision(precision) {}
     
     inline bool StrictContainOperation::operator()(
-        const OpenSolid::Interval& first_argument,
-        const OpenSolid::Interval& second_argument
+        const opensolid::Interval& first_argument,
+        const opensolid::Interval& second_argument
     ) const {return first_argument.strictlyContains(second_argument, _precision);}
 
     template <class DerivedType> template <class MatrixType, class VectorType>
@@ -566,44 +566,44 @@ namespace Eigen
         const MatrixType& matrix,
         const VectorType& vector
     ) const {
-        return OpenSolid::TransformableMatrix<DerivedType>(derived()).transformed(matrix, vector);
+        return opensolid::TransformableMatrix<DerivedType>(derived()).transformed(matrix, vector);
     }
 
     template <class DerivedType> template <class PointType>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::scaled(
         double scale,
         const EigenBase<PointType>& point
-    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).scaled(scale, point);}
+    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).scaled(scale, point);}
 
     template <class DerivedType> template <class VectorType>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
         const EigenBase<VectorType>& vector
-    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).translated(vector);}
+    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).translated(vector);}
 
     template <class DerivedType> template <int dimensions_, int axes_>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
         double distance,
-        const OpenSolid::Datum<dimensions_, axes_>& axis
+        const opensolid::Datum<dimensions_, axes_>& axis
     ) const {
-        return OpenSolid::TransformableMatrix<DerivedType>(derived()).translated(distance, axis);
+        return opensolid::TransformableMatrix<DerivedType>(derived()).translated(distance, axis);
     }
 
     template <class DerivedType>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::rotated(
         double angle,
         const Vector2d& point
-    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, point);}
+    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, point);}
 
     template <class DerivedType> template <int dimensions_, int axes_>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::rotated(
         double angle,
-        const OpenSolid::Datum<dimensions_, axes_>& axis
-    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, axis);}
+        const opensolid::Datum<dimensions_, axes_>& axis
+    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, axis);}
 
     template <class DerivedType> template <int dimensions_, int axes_>
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::mirrored(
-        const OpenSolid::Datum<dimensions_, axes_>& datum
-    ) const {return OpenSolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
+        const opensolid::Datum<dimensions_, axes_>& datum
+    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
 
     template <class DerivedType>
     inline bool DenseBase<DerivedType>::isEmpty() const {
@@ -670,12 +670,12 @@ namespace Eigen
     inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
     DenseBase<DerivedType>::LinSpaced(
         typename DenseBase<DerivedType>::Index size,
-        const OpenSolid::Interval& range
+        const opensolid::Interval& range
     ) {return LinSpaced(size, Scalar(range.lower()), Scalar(range.upper()));}
 
     template <class DerivedType>
     inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
-    DenseBase<DerivedType>::LinSpaced(const OpenSolid::Interval& range) {
+    DenseBase<DerivedType>::LinSpaced(const opensolid::Interval& range) {
         return LinSpaced(Scalar(range.lower()), Scalar(range.upper()));
     }
 
@@ -688,38 +688,38 @@ namespace Eigen
 
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty() {
-        return Constant(OpenSolid::Interval::Empty());
+        return Constant(opensolid::Interval::Empty());
     }
     
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty(
         typename DenseBase<DerivedType>::Index size
-    ) {return Constant(size, OpenSolid::Interval::Empty());}
+    ) {return Constant(size, opensolid::Interval::Empty());}
     
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty(
         typename DenseBase<DerivedType>::Index rows,
         typename DenseBase<DerivedType>::Index cols
-    ) {return Constant(rows, cols, OpenSolid::Interval::Empty());}
+    ) {return Constant(rows, cols, opensolid::Interval::Empty());}
 
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole() {
-        return Constant(OpenSolid::Interval::Whole());
+        return Constant(opensolid::Interval::Whole());
     }
     
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole(
         typename DenseBase<DerivedType>::Index size
-    ) {return Constant(size, OpenSolid::Interval::Whole());}
+    ) {return Constant(size, opensolid::Interval::Whole());}
     
     template <class DerivedType>
     const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole(
         typename DenseBase<DerivedType>::Index rows,
         typename DenseBase<DerivedType>::Index cols
-    ) {return Constant(rows, cols, OpenSolid::Interval::Whole());}
+    ) {return Constant(rows, cols, opensolid::Interval::Whole());}
 }
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
     inline typename Bounds<

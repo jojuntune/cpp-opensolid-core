@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Common/PropertyMap.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     PropertyError::PropertyError(const std::string& name, const std::string& requested_type) :
         _name(name), _requested_type(requested_type) {}

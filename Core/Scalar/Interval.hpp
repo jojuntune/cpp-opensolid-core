@@ -37,7 +37,7 @@
 #include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     namespace
     {
@@ -173,7 +173,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct Bounds<Interval>
@@ -204,7 +204,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline Interval::Interval() : _value(BoostInterval::empty()) {}
     

@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Frame2d : public Datum<2, 2>
     {
@@ -52,7 +52,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct TypeName<Frame2d>
@@ -69,7 +69,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline Frame2d::Frame2d() {initialize(Vector2d::Zero(), Matrix2d::Identity());}
 

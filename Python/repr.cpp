@@ -24,7 +24,7 @@
 
 #include <OpenSolid/Python/repr.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string __repr__(bool argument) {
         return argument ? "True" : "False";

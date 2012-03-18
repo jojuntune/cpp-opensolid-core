@@ -24,7 +24,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     double clampD(const Interval& interval, double argument) {
         return interval.clamp(argument);

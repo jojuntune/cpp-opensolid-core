@@ -39,7 +39,7 @@
 #include <OpenSolid/Core/Set/Set.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Domain :
         public DomainConstructors,
@@ -82,7 +82,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct Bounds<Domain>
@@ -121,7 +121,7 @@ namespace OpenSolid
 
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType>
     Domain::Domain(const EigenBase<DerivedType>& bounds) {

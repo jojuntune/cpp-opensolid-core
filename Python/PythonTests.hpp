@@ -33,7 +33,7 @@
 #include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 using namespace boost::python;
 
 MatrixXd twice(const MatrixXd& argument) {return 2 * argument;}

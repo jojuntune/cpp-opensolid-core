@@ -27,7 +27,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class ExpressionType, class MatrixType>
     struct ExpressionConverter

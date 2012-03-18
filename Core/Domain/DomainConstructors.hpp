@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Domain;
 

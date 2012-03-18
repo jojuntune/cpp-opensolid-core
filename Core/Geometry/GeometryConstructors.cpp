@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     Geometry GeometryConstructors::Arc2d(
         const Frame2d& frame,

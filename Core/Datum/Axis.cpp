@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Datum/Axis.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string TypeName<Axis2d>::operator()() const {return "Axis2d";}
 

@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <int dimensions_, int size_>
     class Simplex;
@@ -146,7 +146,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <int dimensions_, int size_>
     struct Bounds<Simplex<dimensions_, size_>>
@@ -215,7 +215,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <int dimensions_, int size_>
     inline Simplex<dimensions_, size_>::Simplex(const Simplex<dimensions_, size_>& other) :

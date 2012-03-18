@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class LinearFunction : public FunctionImplementation
     {
@@ -54,7 +54,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline const DatumXd& LinearFunction::datum() const {return _datum;}
 }

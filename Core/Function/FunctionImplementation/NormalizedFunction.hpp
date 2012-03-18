@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class NormalizedFunction : public UnaryOperation
     {

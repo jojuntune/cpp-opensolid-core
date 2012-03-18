@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ExponentialFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ExponentialFunction::ExponentialFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);

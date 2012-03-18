@@ -23,7 +23,7 @@
 
 using namespace boost::python;
 
-namespace OpenSolid
+namespace opensolid
 {
     void bindDouble() {
         def("abs", (double (*)(double)) &abs);

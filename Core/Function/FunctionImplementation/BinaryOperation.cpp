@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/BinaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     BinaryOperation::BinaryOperation(const Function& first_operand, const Function& second_operand) :
         _first_operand(first_operand), _second_operand(second_operand) {

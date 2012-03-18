@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Domain/DomainImplementation/CuboidDomain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     CuboidDomain::CuboidDomain(const Vector3I& bounds) : _bounds(bounds) {}
 

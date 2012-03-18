@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Plane3d : public Datum<3, 2>
     {
@@ -40,7 +40,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct TypeName<Plane3d>
@@ -51,7 +51,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline Plane3d::Plane3d() {initialize(Vector3d::Zero(), Matrix<double, 3, 2>::Identity());}
 

@@ -26,7 +26,7 @@
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <int dimensions_, int axes_>
     class Datum : public Transformable<Datum<dimensions_, axes_>>
@@ -173,7 +173,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct Serialization<DatumXd>
@@ -208,7 +208,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType, class ResultType> template <int dimensions_, int axes_>
     inline ResultType Transformable<DerivedType, ResultType>::translated(

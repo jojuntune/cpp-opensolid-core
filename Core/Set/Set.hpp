@@ -33,7 +33,7 @@
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Set/SetNode.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     class SetIterator;
@@ -237,7 +237,7 @@ namespace OpenSolid
     
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class ItemType>
     struct Bounds<Set<ItemType>>
@@ -252,7 +252,7 @@ namespace OpenSolid
 
 #include <boost/functional/hash.hpp>
     
-namespace OpenSolid
+namespace opensolid
 {   
     template <class Type>
     inline Set<Type>::Set(Bounds<Type> bounds_function) :

@@ -39,7 +39,7 @@
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Domain;
     class Geometry;
@@ -146,7 +146,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct Conversion<Function, double>
@@ -193,7 +193,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class DerivedType>
     Function::Function(const EigenBase<DerivedType>& vector) {

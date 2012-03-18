@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Datum/SerializedDatum.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string Serialization<DatumXd>::operator()(const DatumXd& argument) const {
         Serialization<MatrixXd> matrix_serializer;

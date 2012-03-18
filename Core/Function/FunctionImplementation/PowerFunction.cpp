@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/PowerFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     PowerFunction::PowerFunction(const Function& base, const Function& exponent) :
         BinaryOperation(base, exponent) {

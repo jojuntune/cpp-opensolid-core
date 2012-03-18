@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ComponentsFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ComponentsFunction::ComponentsFunction(const Function& operand, int index, int num) :
         UnaryOperation(operand), _index(index), _num(num) {

@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 #include <OpenSolid/Core/Simplex/SerializedSimplex.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {   
     template <int dimensions_, int size_>
     Simplex<dimensions_, size_>::Simplex() : _vertices() {}

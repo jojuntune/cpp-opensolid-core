@@ -25,7 +25,7 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Common/MatrixArgument.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template<class EvaluatedType, class ArgumentType>
     class Evaluation;
@@ -36,7 +36,7 @@ namespace Eigen
     namespace internal
     {
         template <class EvaluatedType, class ArgumentType>
-        struct traits<OpenSolid::Evaluation<EvaluatedType, ArgumentType>>
+        struct traits<opensolid::Evaluation<EvaluatedType, ArgumentType>>
         {
             typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime>
                 ReturnType;
@@ -45,7 +45,7 @@ namespace Eigen
         };
         
         template <class EvaluatedType>
-        struct traits<OpenSolid::Evaluation<EvaluatedType, int>>
+        struct traits<opensolid::Evaluation<EvaluatedType, int>>
         {
             typedef VectorXd ReturnType;
             static const int Flags =
@@ -53,7 +53,7 @@ namespace Eigen
         };
         
         template<class EvaluatedType>
-        struct traits<OpenSolid::Evaluation<EvaluatedType, double>>
+        struct traits<opensolid::Evaluation<EvaluatedType, double>>
         {
             typedef VectorXd ReturnType;
             static const int Flags =
@@ -61,7 +61,7 @@ namespace Eigen
         };
         
         template<class EvaluatedType>
-        struct traits<OpenSolid::Evaluation<EvaluatedType, OpenSolid::Interval>>
+        struct traits<opensolid::Evaluation<EvaluatedType, opensolid::Interval>>
         {
             typedef VectorXI ReturnType;
             static const int Flags =
@@ -70,7 +70,7 @@ namespace Eigen
     }
 }
 
-namespace OpenSolid
+namespace opensolid
 {
     template<class EvaluatedType, class ArgumentType>
     class Evaluation : public ReturnByValue<Evaluation<EvaluatedType, ArgumentType>>
@@ -151,7 +151,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template<class EvaluatedType, class ArgumentType>
     inline Evaluation<EvaluatedType, ArgumentType>::Evaluation(

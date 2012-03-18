@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     UnaryOperation::UnaryOperation(const Function& operand) : _operand(operand) {}
     

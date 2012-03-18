@@ -26,7 +26,7 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Scalar/SerializedInterval.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {
     Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
 

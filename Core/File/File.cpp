@@ -21,7 +21,7 @@
 #include <sqlite/sqlite3.h>
 #include <OpenSolid/Core/File/File.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     struct File::SQL
     {

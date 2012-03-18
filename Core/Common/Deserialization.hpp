@@ -25,7 +25,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     template <class Type>
     struct Deserialization;
@@ -59,7 +59,7 @@ namespace OpenSolid
 
 #include <boost/lexical_cast.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     inline bool Deserialization<bool>::operator()(const std::string& argument) const {
         return boost::lexical_cast<bool>(argument);

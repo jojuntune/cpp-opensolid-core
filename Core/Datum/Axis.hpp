@@ -25,7 +25,7 @@
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Axis2d : public Datum<2, 1>
     {
@@ -54,7 +54,7 @@ namespace OpenSolid
 
 ////////// Specializations //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     template <>
     struct TypeName<Axis2d>
@@ -71,7 +71,7 @@ namespace OpenSolid
 
 ////////// Errors //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     class Axis2dConstructionError : public Error
     {
@@ -130,7 +130,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline Axis2d::Axis2d() {initialize(Vector2d::Zero(), Vector2d::UnitX());}
 

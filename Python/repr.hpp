@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(bool argument);
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(int argument);

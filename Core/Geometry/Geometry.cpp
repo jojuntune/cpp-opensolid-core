@@ -27,7 +27,7 @@
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GenericGeometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/SimplexGeometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     Geometry::Geometry() : _implementation(), _type(nullptr) {}
 

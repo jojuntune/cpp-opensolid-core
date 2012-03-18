@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/ConstantGeometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     ConstantGeometry::ConstantGeometry(const VectorXd& vector) : _vector(vector) {}
 

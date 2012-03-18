@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 template <class Type>
 void testSet(const SetNode<Type>* node) {

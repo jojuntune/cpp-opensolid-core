@@ -26,7 +26,7 @@
 #include <OpenSolid/Core/Function/FunctionImplementation/SquaredNormFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/TransformedFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     FunctionImplementation::~FunctionImplementation() {}
 

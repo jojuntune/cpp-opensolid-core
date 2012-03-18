@@ -23,7 +23,7 @@
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/SerializedDouble.pb.h>
 
-namespace OpenSolid
+namespace opensolid
 {
     std::string Serialization<double>::operator()(double argument) const {
         SerializedDouble temp;

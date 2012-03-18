@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class EllipticalFunction : public FunctionImplementation
     {
@@ -56,7 +56,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline const DatumXd& EllipticalFunction::datum() const {return _datum;}
     

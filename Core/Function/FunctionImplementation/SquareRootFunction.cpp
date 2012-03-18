@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/SquareRootFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryOperation(operand) {
         assert(operand.dimensions() == 1);

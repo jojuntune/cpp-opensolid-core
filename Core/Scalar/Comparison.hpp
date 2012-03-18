@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Comparison
     {
@@ -75,7 +75,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline Comparison::Comparison(double lower, double upper) : _lower(lower), _upper(upper) {}
 

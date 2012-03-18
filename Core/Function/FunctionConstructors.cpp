@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/Function/FunctionImplementation/LinearFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ParametersFunction.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     Function FunctionConstructors::Identity(int dimensions) {
         return new ParametersFunction(dimensions, 0, dimensions);

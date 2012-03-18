@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/BinaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class SumFunction : public BinaryOperation
     {

@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class ComponentsFunction : public UnaryOperation
     {
@@ -51,7 +51,7 @@ namespace OpenSolid
 
 ////////// Implementation //////////
 
-namespace OpenSolid
+namespace opensolid
 {
     inline int ComponentsFunction::index() const {return _index;}
     

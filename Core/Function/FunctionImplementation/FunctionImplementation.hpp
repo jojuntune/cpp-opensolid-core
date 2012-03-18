@@ -26,7 +26,7 @@
 #include <OpenSolid/Core/Common/ReferenceCounted.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class Function;
     

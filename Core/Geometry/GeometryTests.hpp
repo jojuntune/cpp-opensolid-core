@@ -28,7 +28,7 @@
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 
-using namespace OpenSolid;
+using namespace opensolid;
 
 class GeometryTests : public CxxTest::TestSuite
 {

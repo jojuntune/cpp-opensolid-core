@@ -35,12 +35,12 @@ template <class VectorType>
 PlainObject translated(const EigenBase<VectorType>& vector) const;
 
 template <int dimensions_, int axes_>
-PlainObject translated(double distance, const OpenSolid::Datum<dimensions_, axes_>& axis) const;
+PlainObject translated(double distance, const opensolid::Datum<dimensions_, axes_>& axis) const;
 
 PlainObject rotated(double angle, const Matrix<double, 2, 1>& point) const;
 
 template <int dimensions_, int axes_>
-PlainObject rotated(double angle, const OpenSolid::Datum<dimensions_, axes_>& axis) const;
+PlainObject rotated(double angle, const opensolid::Datum<dimensions_, axes_>& axis) const;
 
 template <int dimensions_, int axes_>
-PlainObject mirrored(const OpenSolid::Datum<dimensions_, axes_>& datum) const;
+PlainObject mirrored(const opensolid::Datum<dimensions_, axes_>& datum) const;

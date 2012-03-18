@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {   
     Domain::Domain() : _implementation(), _type(nullptr) {}
     
