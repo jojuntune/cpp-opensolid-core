@@ -210,6 +210,7 @@
         ${OpenSolid}/Core/Matrix/DenseBasePlugin.hpp
         ${OpenSolid}/Core/Matrix/Matrix.hpp
         ${OpenSolid}/Core/Matrix/MatrixBasePlugin.hpp
+        ${OpenSolid}/Core/Matrix/MatrixPlugin.hpp
         ${OpenSolid}/Core/Matrix/MatrixTests.hpp
         ${OpenSolid}/Core/Matrix/MatrixIterator.hpp
     )

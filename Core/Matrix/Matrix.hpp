@@ -216,10 +216,12 @@ namespace opensolid
 
 #define EIGEN_DENSEBASE_PLUGIN <OpenSolid/Core/Matrix/DenseBasePlugin.hpp>
 #define EIGEN_MATRIXBASE_PLUGIN <OpenSolid/Core/Matrix/MatrixBasePlugin.hpp>
+#define EIGEN_MATRIX_PLUGIN <OpenSolid/Core/Matrix/MatrixPlugin.hpp>
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
 #include <OpenSolid/Core/Matrix/DenseBasePlugin.hpp>
 #include <OpenSolid/Core/Matrix/MatrixBasePlugin.hpp>
+#include <OpenSolid/Core/Matrix/MatrixPlugin.hpp>
 #endif
 
 #include <Eigen/Core>
@@ -441,6 +443,8 @@ namespace opensolid
 
 ////////// Implementation //////////
 
+#include <OpenSolid/Core/Common/Conversion.hpp>
+
 namespace Eigen
 {
     namespace internal
@@ -604,6 +608,18 @@ namespace Eigen
     inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::mirrored(
         const opensolid::Datum<dimensions_, axes_>& datum
     ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
+
+    template<class DerivedType> template <class OtherType>
+    OtherType MatrixBase<DerivedType>::as() const {
+        return Conversion<PlainObject, OtherType>()(derived());
+    }
+
+    template<class Scalar, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
+    template <class OtherType>
+    static Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>
+    Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>::from(const OtherType& argument) {
+        return Conversion<OtherType, Matrix>()(argument);
+    }
 
     template <class DerivedType>
     inline bool DenseBase<DerivedType>::isEmpty() const {

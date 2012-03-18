@@ -19,6 +19,7 @@
  *****************************************************************************/
 
 #include <typeinfo>
+#include <vector>
 
 #include <cxxtest/TestSuite.h>
 
@@ -36,6 +37,36 @@ void printDirectAccess(const Type& argument) {
     } else {
         std::cout << " does not have direct access" << std::endl;
     }
+}
+
+struct MyVector
+{
+    double x;
+    double y;
+    double z;
+};
+
+namespace opensolid
+{
+    template <>
+    struct Conversion<MyVector, Vector3d>
+    {
+        Vector3d operator()(const MyVector& argument) const {
+            return Vector3d(argument.x, argument.y, argument.z);
+        }
+    };
+
+    template <>
+    struct Conversion<Vector3d, MyVector>
+    {
+        MyVector operator()(const Vector3d& argument) const {
+            MyVector result;
+            result.x = argument.x();
+            result.y = argument.y();
+            result.z = argument.z();
+            return result;
+        }
+    };
 }
 
 class MatrixTests : public CxxTest::TestSuite
@@ -251,5 +282,15 @@ public:
             TS_ASSERT_EQUALS(original(i).lower(), final(i).lower());
             TS_ASSERT_EQUALS(original(i).upper(), final(i).upper());
         }
+    }
+
+    void testConversion() {
+        MyVector my_vector = {1, 2, 3};
+        Vector3d from = Vector3d::from(my_vector);
+        TS_ASSERT_EQUALS(from, Vector3d(1, 2, 3));
+        MyVector as = Vector3d::Ones().as<MyVector>();
+        TS_ASSERT_EQUALS(as.x, 1.0);
+        TS_ASSERT_EQUALS(as.y, 1.0);
+        TS_ASSERT_EQUALS(as.z, 1.0);
     }
 };
