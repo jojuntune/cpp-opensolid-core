@@ -110,6 +110,12 @@
 
 ########## Set up source groups for Visual Studio ##########
 
+    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
+        ${OpenSolid}/checker.py
+        ${OpenSolid}/macros.cmake
+        ${OpenSolid}/license.txt
+    )
+
     # Automatically sort source files into groups based on directory structure
     CREATE_SOURCE_GROUPS(${OpenSolid} ${GLOBAL_SOURCE_LIST})
 
