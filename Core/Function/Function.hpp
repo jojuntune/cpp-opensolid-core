@@ -103,8 +103,6 @@ namespace OpenSolid
         OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
         OPENSOLID_CORE_EXPORT Geometry operator()(const Geometry& geometry) const;
         
-        OPENSOLID_CORE_EXPORT RowVectorXd roots(const Interval& domain) const;
-        
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
     };
 

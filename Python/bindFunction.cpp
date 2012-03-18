@@ -85,10 +85,6 @@ namespace OpenSolid
         return function.dot(argument);
     }
 
-    MatrixXd roots(const Function& function, const Interval& domain) {
-        return function.roots(domain);
-    }
-
     Function parameter1() {
         return Function::Parameter();
     }
@@ -151,7 +147,6 @@ namespace OpenSolid
             .def("curvature", &Function::curvature)
             .def("normal", &Function::normal)
             .def("binormal", &Function::binormal)
-            .def("roots", &roots)
             .def(-self)
             .def(double() + self)
             .def(self + double())
