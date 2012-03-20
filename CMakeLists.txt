@@ -95,26 +95,30 @@
     # Add global source-checking test
     ADD_TEST(SourceChecks "${PYTHON_EXECUTABLE}" "${OpenSolid}/checker.py" "${OpenSolid}")
     
-########## Build subprojects ##########
+########## Build and install subprojects ##########
 
     ADD_SUBDIRECTORY(External)
     ADD_SUBDIRECTORY(Core)
     ADD_SUBDIRECTORY(Python)
     ADD_SUBDIRECTORY(Documentation EXCLUDE_FROM_ALL)
 
-########## Convenience headers ##########
+########## Top-level headers and files ##########
 
-    SET(CONVENIENCE_HEADERS "${OpenSolid}/Core.hpp" "${OpenSolid}/Python.hpp")
-    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST} ${CONVENIENCE_HEADERS})
-    INSTALL(FILES ${CONVENIENCE_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/OpenSolid")
+    SET(TOP_LEVEL_HEADERS "${OpenSolid}/Core.hpp" "${OpenSolid}/Python.hpp")
+    SET(LICENSE_FILE "${OpenSolid}/license.txt")
+    SET(TOP_LEVEL_FILES "${OpenSolid}/checker.py" "${OpenSolid}/macros.cmake")
+
+    SET(GLOBAL_SOURCE_LIST
+        ${GLOBAL_SOURCE_LIST}
+        ${TOP_LEVEL_HEADERS}
+        ${LICENSE_FILE}
+        ${TOP_LEVEL_FILES}
+    )
+
+    INSTALL(FILES ${TOP_LEVEL_HEADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/OpenSolid")
+    INSTALL(FILES ${LICENSE_FILE} DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 ########## Set up source groups for Visual Studio ##########
-
-    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
-        "${OpenSolid}/checker.py"
-        "${OpenSolid}/macros.cmake"
-        "${OpenSolid}/license.txt"
-    )
 
     # Automatically sort source files into groups based on directory structure
     CREATE_SOURCE_GROUPS(${GLOBAL_SOURCE_LIST})
