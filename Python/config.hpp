@@ -21,6 +21,8 @@
 #ifndef OPENSOLID_PYTHON__CONFIG_HPP
 #define OPENSOLID_PYTHON__CONFIG_HPP
 
+#include <OpenSolid/Core/config.hpp>
+
 #if defined(WIN32)
     #if defined(opensolid_EXPORTS)
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
