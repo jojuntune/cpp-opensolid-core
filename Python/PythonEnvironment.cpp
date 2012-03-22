@@ -337,6 +337,8 @@ namespace opensolid
         const std::string& expected_type
     ) : _python_object(python_object), _expected_type(expected_type) {}
 
+    ConversionFromPythonError::~ConversionFromPythonError() {}
+
     const char* ConversionFromPythonError::what() const {
         return "ConversionFromPythonError";
     }
@@ -346,6 +348,8 @@ namespace opensolid
     std::string ConversionFromPythonError::expectedType() const {return _expected_type;}
 
     ConversionToPythonError::ConversionToPythonError(const std::string& type) : _type(type) {}
+
+    ConversionToPythonError::~ConversionToPythonError() {}
         
     const char* ConversionToPythonError::what() const {
         return "ConversionToPythonError";

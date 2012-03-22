@@ -103,7 +103,7 @@ namespace opensolid
             bool is_open
         );
         
-        OPENSOLID_CORE_EXPORT const char* what() const;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;
         OPENSOLID_CORE_EXPORT std::string mode() const;
         OPENSOLID_CORE_EXPORT bool isOpen() const;
@@ -124,7 +124,7 @@ namespace opensolid
             const std::string& requested_type
         );
 
-        OPENSOLID_CORE_EXPORT const char* what() const;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;
         OPENSOLID_CORE_EXPORT std::string mode() const;
         OPENSOLID_CORE_EXPORT bool isOpen() const;
@@ -143,7 +143,7 @@ namespace opensolid
             bool is_open
         );
         
-        OPENSOLID_CORE_EXPORT const char* what() const;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;
         OPENSOLID_CORE_EXPORT std::string mode() const;
         OPENSOLID_CORE_EXPORT bool isOpen() const;

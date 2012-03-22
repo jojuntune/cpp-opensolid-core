@@ -25,6 +25,8 @@ namespace opensolid
     NotImplementedError::NotImplementedError(const std::string& file, int line) :
         _file(file), _line(line) {}
 
+    NotImplementedError::~NotImplementedError() {}
+
     const char* NotImplementedError::what() const throw() {
         return "NotImplementedError";
     }

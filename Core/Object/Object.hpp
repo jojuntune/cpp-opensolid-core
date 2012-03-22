@@ -139,8 +139,10 @@ namespace opensolid
             const std::string& name,
             const std::string& requested_type
         );
+        
+        ~ObjectPropertyError() throw () {}
 
-        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT Object object() const;
     };
 }

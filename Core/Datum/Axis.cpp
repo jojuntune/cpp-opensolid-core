@@ -31,6 +31,8 @@ namespace opensolid
             const MatrixXd& direction
     ) : _origin(origin), _direction(direction) {}
 
+    Axis2dConstructionError::~Axis2dConstructionError() {}
+
     const char* Axis2dConstructionError::what() const {
         return "Axis2dConstructionError";
     }
@@ -41,6 +43,8 @@ namespace opensolid
 
     Axis2dCopyConstructionError::Axis2dCopyConstructionError(const DatumXd& argument) :
         _argument(argument) {}
+
+    Axis2dCopyConstructionError::~Axis2dCopyConstructionError() {}
 
     const char* Axis2dCopyConstructionError::what() const {
         return "Axis2dCopyConstructionError";
@@ -53,6 +57,8 @@ namespace opensolid
             const MatrixXd& direction
     ) : _origin(origin), _direction(direction) {}
 
+    Axis3dConstructionError::~Axis3dConstructionError() {}
+
     const char* Axis3dConstructionError::what() const {
         return "Axis3dConstructionError";
     }
@@ -63,6 +69,8 @@ namespace opensolid
 
     Axis3dCopyConstructionError::Axis3dCopyConstructionError(const DatumXd& argument) :
         _argument(argument) {}
+
+    Axis3dCopyConstructionError::~Axis3dCopyConstructionError() {}
 
     const char* Axis3dCopyConstructionError::what() const {
         return "Axis3dCopyConstructionError";

@@ -84,7 +84,9 @@ namespace opensolid
             const MatrixXd& direction
         );
         
-        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT ~Axis2dConstructionError() throw ();
+        
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT MatrixXd origin() const;
         OPENSOLID_CORE_EXPORT MatrixXd direction() const;
     };
@@ -95,8 +97,10 @@ namespace opensolid
         DatumXd _argument;
     public:
         OPENSOLID_CORE_EXPORT Axis2dCopyConstructionError(const DatumXd& argument);
+        
+        OPENSOLID_CORE_EXPORT ~Axis2dCopyConstructionError() throw ();
 
-        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT DatumXd argument() const;
     };
 
@@ -111,7 +115,9 @@ namespace opensolid
             const MatrixXd& direction
         );
         
-        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT ~Axis3dConstructionError() throw ();
+        
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT MatrixXd origin() const;
         OPENSOLID_CORE_EXPORT MatrixXd direction() const;
     };
@@ -122,8 +128,10 @@ namespace opensolid
         DatumXd _argument;
     public:
         OPENSOLID_CORE_EXPORT Axis3dCopyConstructionError(const DatumXd& argument);
+        
+        OPENSOLID_CORE_EXPORT ~Axis3dCopyConstructionError() throw ();
 
-        OPENSOLID_CORE_EXPORT const char* what() const override;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT DatumXd argument() const;
     };
 }

@@ -40,7 +40,7 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT NotImplementedError(const std::string& file, int line);
         
-        ~NotImplementedError() throw () {}
+        OPENSOLID_CORE_EXPORT ~NotImplementedError() throw ();
 
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string file() const;
