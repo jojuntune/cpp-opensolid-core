@@ -18,8 +18,9 @@
 
     # Set up compiler-specific flags
     IF (CMAKE_COMPILER_IS_GNUCXX)
-        # Enable C++0x and add extra warning flags
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -Wno-unused-variable")
+        # Enable C++0x and pthread and add extra warning flags
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -pthread -Wall -Wno-unused-variable")
+        ADD_DEFINITIONS(-DHAVE_PTHREAD)
         SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
         # Enable -fPIC on 64-bit systems where it is required
         IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -29,10 +30,7 @@
         EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
         IF (GCC_VERSION VERSION_LESS 4.6)
             ADD_DEFINITIONS(-Dnullptr=0)
-        ENDIF (GCC_VERSION VERSION_LESS 4.6)
-    ELSEIF (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
-        # Use -pthread compilation option to properly link to threading library
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+        ENDIF ()
     ELSEIF (WIN32)
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
