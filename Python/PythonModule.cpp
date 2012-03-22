@@ -61,7 +61,7 @@ namespace opensolid
     UnaryMatrixError<MatrixType>::UnaryMatrixError(const MatrixType& matrix) : _matrix(matrix) {}
 
     template <class MatrixType>
-    UnaryMatrixError<MatrixType>::~UnaryMatrixError() {}
+    UnaryMatrixError<MatrixType>::~UnaryMatrixError() throw() {}
 
     template <class MatrixType>
     MatrixType UnaryMatrixError<MatrixType>::matrix() const {return _matrix;}
@@ -78,7 +78,7 @@ namespace opensolid
     ) : _first_matrix(first_matrix), _second_matrix(second_matrix) {}
 
     template <class FirstMatrixType, class SecondMatrixType>
-    BinaryMatrixError<FirstMatrixType, SecondMatrixType>::~BinaryMatrixError() {}
+    BinaryMatrixError<FirstMatrixType, SecondMatrixType>::~BinaryMatrixError() throw() {}
 
     template <class FirstMatrixType, class SecondMatrixType>
     FirstMatrixType BinaryMatrixError<FirstMatrixType, SecondMatrixType>::firstMatrix() const {
@@ -105,18 +105,18 @@ namespace opensolid
     template VectorComponentError<MatrixXI>::VectorComponentError(const MatrixXI&, int);
 
     template <class MatrixType>
-    VectorComponentError<MatrixType>::~VectorComponentError() {}
+    VectorComponentError<MatrixType>::~VectorComponentError() throw() {}
 
     template VectorComponentError<MatrixXd>::~VectorComponentError();
     template VectorComponentError<MatrixXI>::~VectorComponentError();
 
     template <>
-    const char* VectorComponentError<MatrixXd>::what() const {
+    const char* VectorComponentError<MatrixXd>::what() const throw() {
         return "MatrixXdVectorComponentError";
     }
 
     template <>
-    const char* VectorComponentError<MatrixXI>::what() const {
+    const char* VectorComponentError<MatrixXI>::what() const throw() {
         return "MatrixXIVectorComponentError";
     }
 
@@ -138,18 +138,18 @@ namespace opensolid
     template VectorIndexError<MatrixXI>::VectorIndexError(const MatrixXI&, boost::python::object);
 
     template <class MatrixType>
-    VectorIndexError<MatrixType>::~VectorIndexError() {}
+    VectorIndexError<MatrixType>::~VectorIndexError() throw() {}
 
     template VectorIndexError<MatrixXd>::~VectorIndexError();
     template VectorIndexError<MatrixXI>::~VectorIndexError();
 
     template <>
-    const char* VectorIndexError<MatrixXd>::what() const {
+    const char* VectorIndexError<MatrixXd>::what() const throw() {
         return "MatrixXdVectorIndexError";
     }
 
     template <>
-    const char* VectorIndexError<MatrixXI>::what() const {
+    const char* VectorIndexError<MatrixXI>::what() const throw() {
         return "MatrixXIVectorIndexError";
     }
 
@@ -172,18 +172,18 @@ namespace opensolid
     template MatrixIndexError<MatrixXI>::MatrixIndexError(const MatrixXI&, boost::python::object, boost::python::object);
 
     template <class MatrixType>
-    MatrixIndexError<MatrixType>::~MatrixIndexError() {}
+    MatrixIndexError<MatrixType>::~MatrixIndexError() throw() {}
 
     template MatrixIndexError<MatrixXd>::~MatrixIndexError();
     template MatrixIndexError<MatrixXI>::~MatrixIndexError();
 
     template <>
-    const char* MatrixIndexError<MatrixXd>::what() const {
+    const char* MatrixIndexError<MatrixXd>::what() const throw() {
         return "MatrixXdIndexError";
     }
 
     template <>
-    const char* MatrixIndexError<MatrixXI>::what() const {
+    const char* MatrixIndexError<MatrixXI>::what() const throw() {
         return "MatrixXIIndexError";
     }
 
@@ -212,18 +212,18 @@ namespace opensolid
     template VectorAssignmentError<MatrixXI>::VectorAssignmentError(const MatrixXI&, boost::python::object, const MatrixXI&);
 
     template <class MatrixType>
-    VectorAssignmentError<MatrixType>::~VectorAssignmentError() {}
+    VectorAssignmentError<MatrixType>::~VectorAssignmentError() throw() {}
 
     template VectorAssignmentError<MatrixXd>::~VectorAssignmentError();
     template VectorAssignmentError<MatrixXI>::~VectorAssignmentError();
 
     template <>
-    const char* VectorAssignmentError<MatrixXd>::what() const {
+    const char* VectorAssignmentError<MatrixXd>::what() const throw() {
         return "MatrixXdVectorAssignmentError";
     }
 
     template <>
-    const char* VectorAssignmentError<MatrixXI>::what() const {
+    const char* VectorAssignmentError<MatrixXI>::what() const throw() {
         return "MatrixXIVectorAssignmentError";
     }
 
@@ -249,18 +249,18 @@ namespace opensolid
     template MatrixAssignmentError<MatrixXI>::MatrixAssignmentError(const MatrixXI&, boost::python::object, boost::python::object, const MatrixXI&);
 
     template <class MatrixType>
-    MatrixAssignmentError<MatrixType>::~MatrixAssignmentError() {}
+    MatrixAssignmentError<MatrixType>::~MatrixAssignmentError() throw() {}
 
     template MatrixAssignmentError<MatrixXd>::~MatrixAssignmentError();
     template MatrixAssignmentError<MatrixXI>::~MatrixAssignmentError();
 
     template <>
-    const char* MatrixAssignmentError<MatrixXd>::what() const {
+    const char* MatrixAssignmentError<MatrixXd>::what() const throw() {
         return "MatrixXdAssignmentError";
     }
 
     template <>
-    const char* MatrixAssignmentError<MatrixXI>::what() const {
+    const char* MatrixAssignmentError<MatrixXI>::what() const throw() {
         return "MatrixXIAssignmentError";
     }
 
@@ -286,18 +286,18 @@ namespace opensolid
     template MatrixSquaredNormError<MatrixXI>::MatrixSquaredNormError(const MatrixXI&);
 
     template <class MatrixType>
-    MatrixSquaredNormError<MatrixType>::~MatrixSquaredNormError() {}
+    MatrixSquaredNormError<MatrixType>::~MatrixSquaredNormError() throw() {}
 
     template MatrixSquaredNormError<MatrixXd>::~MatrixSquaredNormError();
     template MatrixSquaredNormError<MatrixXI>::~MatrixSquaredNormError();
 
     template <>
-    const char* MatrixSquaredNormError<MatrixXd>::what() const {
+    const char* MatrixSquaredNormError<MatrixXd>::what() const throw() {
         return "MatrixXdSquaredNormError";
     }
 
     template <>
-    const char* MatrixSquaredNormError<MatrixXI>::what() const {
+    const char* MatrixSquaredNormError<MatrixXI>::what() const throw() {
         return "MatrixXISquaredNormError";
     }
 
@@ -311,18 +311,18 @@ namespace opensolid
     template MatrixNormError<MatrixXI>::MatrixNormError(const MatrixXI&);
 
     template <class MatrixType>
-    MatrixNormError<MatrixType>::~MatrixNormError() {}
+    MatrixNormError<MatrixType>::~MatrixNormError() throw() {}
 
     template MatrixNormError<MatrixXd>::~MatrixNormError();
     template MatrixNormError<MatrixXI>::~MatrixNormError();
 
     template <>
-    const char* MatrixNormError<MatrixXd>::what() const {
+    const char* MatrixNormError<MatrixXd>::what() const throw() {
         return "MatrixXdNormError";
     }
 
     template <>
-    const char* MatrixNormError<MatrixXI>::what() const {
+    const char* MatrixNormError<MatrixXI>::what() const throw() {
         return "MatrixXINormError";
     }
 
@@ -336,18 +336,18 @@ namespace opensolid
     template MatrixNormalizedError<MatrixXI>::MatrixNormalizedError(const MatrixXI&);
 
     template <class MatrixType>
-    MatrixNormalizedError<MatrixType>::~MatrixNormalizedError() {}
+    MatrixNormalizedError<MatrixType>::~MatrixNormalizedError() throw() {}
 
     template MatrixNormalizedError<MatrixXd>::~MatrixNormalizedError();
     template MatrixNormalizedError<MatrixXI>::~MatrixNormalizedError();
 
     template <>
-    const char* MatrixNormalizedError<MatrixXd>::what() const {
+    const char* MatrixNormalizedError<MatrixXd>::what() const throw() {
         return "MatrixXdNormalizedError";
     }
 
     template <>
-    const char* MatrixNormalizedError<MatrixXI>::what() const {
+    const char* MatrixNormalizedError<MatrixXI>::what() const throw() {
         return "MatrixXINormalizedError";
     }
 
@@ -361,18 +361,18 @@ namespace opensolid
     template MatrixDeterminantError<MatrixXI>::MatrixDeterminantError(const MatrixXI&);
 
     template <class MatrixType>
-    MatrixDeterminantError<MatrixType>::~MatrixDeterminantError() {}
+    MatrixDeterminantError<MatrixType>::~MatrixDeterminantError() throw() {}
 
     template MatrixDeterminantError<MatrixXd>::~MatrixDeterminantError();
     template MatrixDeterminantError<MatrixXI>::~MatrixDeterminantError();
 
     template <>
-    const char* MatrixDeterminantError<MatrixXd>::what() const {
+    const char* MatrixDeterminantError<MatrixXd>::what() const throw() {
         return "MatrixXdDeterminantError";
     }
 
     template <>
-    const char* MatrixDeterminantError<MatrixXI>::what() const {
+    const char* MatrixDeterminantError<MatrixXI>::what() const throw() {
         return "MatrixXIDeterminantError";
     }
 
@@ -381,9 +381,9 @@ namespace opensolid
     MatrixXdInverseError::MatrixXdInverseError(const MatrixXd& matrix) :
         UnaryMatrixError<MatrixXd>(matrix) {}
 
-    MatrixXdInverseError::~MatrixXdInverseError() {}
+    MatrixXdInverseError::~MatrixXdInverseError() throw() {}
 
-    const char* MatrixXdInverseError::what() const {
+    const char* MatrixXdInverseError::what() const throw() {
         return "MatrixXdInverseError";
     }
 
@@ -400,18 +400,18 @@ namespace opensolid
     template MatrixReplicateError<MatrixXI>::MatrixReplicateError(const MatrixXI&, int, int);
 
     template <class MatrixType>
-    MatrixReplicateError<MatrixType>::~MatrixReplicateError() {}
+    MatrixReplicateError<MatrixType>::~MatrixReplicateError() throw() {}
 
     template MatrixReplicateError<MatrixXd>::~MatrixReplicateError();
     template MatrixReplicateError<MatrixXI>::~MatrixReplicateError();
 
     template <>
-    const char* MatrixReplicateError<MatrixXd>::what() const {
+    const char* MatrixReplicateError<MatrixXd>::what() const throw() {
         return "MatrixXdReplicateError";
     }
 
     template <>
-    const char* MatrixReplicateError<MatrixXI>::what() const {
+    const char* MatrixReplicateError<MatrixXI>::what() const throw() {
         return "MatrixXIReplicateError";
     }
 
@@ -441,7 +441,7 @@ namespace opensolid
     template MatrixDotProductError<MatrixXI, MatrixXI>::MatrixDotProductError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixDotProductError<FirstMatrixType, SecondMatrixType>::~MatrixDotProductError() {}
+    MatrixDotProductError<FirstMatrixType, SecondMatrixType>::~MatrixDotProductError() throw() {}
 
     template MatrixDotProductError<MatrixXd, MatrixXd>::~MatrixDotProductError();
     template MatrixDotProductError<MatrixXd, MatrixXI>::~MatrixDotProductError();
@@ -449,22 +449,22 @@ namespace opensolid
     template MatrixDotProductError<MatrixXI, MatrixXI>::~MatrixDotProductError();
 
     template <>
-    const char* MatrixDotProductError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixDotProductError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdDotProductMatrixXdError";
     }
 
     template <>
-    const char* MatrixDotProductError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixDotProductError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdDotProductMatrixXIError";
     }
 
     template <>
-    const char* MatrixDotProductError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixDotProductError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXIDotProductMatrixXdError";
     }
 
     template <>
-    const char* MatrixDotProductError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixDotProductError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXIDotProductMatrixXIError";
     }
 
@@ -482,7 +482,7 @@ namespace opensolid
     template MatrixCrossProductError<MatrixXI, MatrixXI>::MatrixCrossProductError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixCrossProductError<FirstMatrixType, SecondMatrixType>::~MatrixCrossProductError() {}
+    MatrixCrossProductError<FirstMatrixType, SecondMatrixType>::~MatrixCrossProductError() throw() {}
 
     template MatrixCrossProductError<MatrixXd, MatrixXd>::~MatrixCrossProductError();
     template MatrixCrossProductError<MatrixXd, MatrixXI>::~MatrixCrossProductError();
@@ -490,22 +490,22 @@ namespace opensolid
     template MatrixCrossProductError<MatrixXI, MatrixXI>::~MatrixCrossProductError();
 
     template <>
-    const char* MatrixCrossProductError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixCrossProductError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdCrossProductMatrixXdError";
     }
 
     template <>
-    const char* MatrixCrossProductError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixCrossProductError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdCrossProductMatrixXIError";
     }
 
     template <>
-    const char* MatrixCrossProductError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixCrossProductError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXICrossProductMatrixXdError";
     }
 
     template <>
-    const char* MatrixCrossProductError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixCrossProductError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXICrossProductMatrixXIError";
     }
 
@@ -516,9 +516,9 @@ namespace opensolid
         const MatrixXI& second_matrix
     ) : BinaryMatrixError<MatrixXI, MatrixXI>(first_matrix, second_matrix) {}
 
-    MatrixXIOverlapsMatrixXIError::~MatrixXIOverlapsMatrixXIError() {}
+    MatrixXIOverlapsMatrixXIError::~MatrixXIOverlapsMatrixXIError() throw() {}
 
-    const char* MatrixXIOverlapsMatrixXIError::what() const {
+    const char* MatrixXIOverlapsMatrixXIError::what() const throw() {
         return "MatrixXIOverlapsMatrixXIError";
     }
 
@@ -534,18 +534,18 @@ namespace opensolid
     template MatrixXIContainsError<MatrixXI>::MatrixXIContainsError(const MatrixXI&, const MatrixXI&);
 
     template <class SecondMatrixType>
-    MatrixXIContainsError<SecondMatrixType>::~MatrixXIContainsError() {}
+    MatrixXIContainsError<SecondMatrixType>::~MatrixXIContainsError() throw() {}
 
     template MatrixXIContainsError<MatrixXd>::~MatrixXIContainsError();
     template MatrixXIContainsError<MatrixXI>::~MatrixXIContainsError();
 
     template <>
-    const char* MatrixXIContainsError<MatrixXd>::what() const {
+    const char* MatrixXIContainsError<MatrixXd>::what() const throw() {
         return "MatrixXIContainsMatrixXdError";
     }
 
     template <>
-    const char* MatrixXIContainsError<MatrixXI>::what() const {
+    const char* MatrixXIContainsError<MatrixXI>::what() const throw() {
         return "MatrixXIContainsMatrixXIError";
     }
 
@@ -563,7 +563,7 @@ namespace opensolid
     template MatrixHullError<MatrixXI, MatrixXI>::MatrixHullError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixHullError<FirstMatrixType, SecondMatrixType>::~MatrixHullError() {}
+    MatrixHullError<FirstMatrixType, SecondMatrixType>::~MatrixHullError() throw() {}
 
     template MatrixHullError<MatrixXd, MatrixXd>::~MatrixHullError();
     template MatrixHullError<MatrixXd, MatrixXI>::~MatrixHullError();
@@ -571,22 +571,22 @@ namespace opensolid
     template MatrixHullError<MatrixXI, MatrixXI>::~MatrixHullError();
 
     template <>
-    const char* MatrixHullError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixHullError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdHullMatrixXdError";
     }
 
     template <>
-    const char* MatrixHullError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixHullError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdHullMatrixXIError";
     }
 
     template <>
-    const char* MatrixHullError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixHullError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXIHullMatrixXdError";
     }
 
     template <>
-    const char* MatrixHullError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixHullError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXIHullMatrixXIError";
     }
 
@@ -597,9 +597,9 @@ namespace opensolid
         const MatrixXI& second_matrix
     ) : BinaryMatrixError<MatrixXI, MatrixXI>(first_matrix, second_matrix) {}
 
-    MatrixXIIntersectionMatrixXIError::~MatrixXIIntersectionMatrixXIError() {}
+    MatrixXIIntersectionMatrixXIError::~MatrixXIIntersectionMatrixXIError() throw() {}
 
-    const char* MatrixXIIntersectionMatrixXIError::what() const {
+    const char* MatrixXIIntersectionMatrixXIError::what() const throw() {
         return "MatrixXIIntersectionMatrixXIError";
     }
 
@@ -607,7 +607,7 @@ namespace opensolid
 
     MatrixFactoryError::MatrixFactoryError(int rows, int cols) : _rows(rows), _cols(cols) {}
 
-    MatrixFactoryError::~MatrixFactoryError() {}
+    MatrixFactoryError::~MatrixFactoryError() throw() {}
 
     int MatrixFactoryError::rows() const {return _rows;}
 
@@ -626,18 +626,18 @@ namespace opensolid
     template ConstantMatrixConstructionError<MatrixXI>::ConstantMatrixConstructionError(int, int, Interval);
 
     template <class MatrixType>
-    ConstantMatrixConstructionError<MatrixType>::~ConstantMatrixConstructionError() {}
+    ConstantMatrixConstructionError<MatrixType>::~ConstantMatrixConstructionError() throw() {}
 
     template ConstantMatrixConstructionError<MatrixXd>::~ConstantMatrixConstructionError();
     template ConstantMatrixConstructionError<MatrixXI>::~ConstantMatrixConstructionError();
 
     template <>
-    const char* ConstantMatrixConstructionError<MatrixXd>::what() const {
+    const char* ConstantMatrixConstructionError<MatrixXd>::what() const throw() {
         return "ConstantMatrixXdConstructionError";
     }
 
     template <>
-    const char* ConstantMatrixConstructionError<MatrixXI>::what() const {
+    const char* ConstantMatrixConstructionError<MatrixXI>::what() const throw() {
         return "ConstantMatrixXIConstructionError";
     }
 
@@ -659,18 +659,18 @@ namespace opensolid
     template ZeroMatrixConstructionError<MatrixXI>::ZeroMatrixConstructionError(int, int);
 
     template <class MatrixType>
-    ZeroMatrixConstructionError<MatrixType>::~ZeroMatrixConstructionError() {}
+    ZeroMatrixConstructionError<MatrixType>::~ZeroMatrixConstructionError() throw() {}
 
     template ZeroMatrixConstructionError<MatrixXd>::~ZeroMatrixConstructionError();
     template ZeroMatrixConstructionError<MatrixXI>::~ZeroMatrixConstructionError();
 
     template <>
-    const char* ZeroMatrixConstructionError<MatrixXd>::what() const {
+    const char* ZeroMatrixConstructionError<MatrixXd>::what() const throw() {
         return "ZeroMatrixXdConstructionError";
     }
 
     template <>
-    const char* ZeroMatrixConstructionError<MatrixXI>::what() const {
+    const char* ZeroMatrixConstructionError<MatrixXI>::what() const throw() {
         return "ZeroMatrixXIConstructionError";
     }
 
@@ -684,18 +684,18 @@ namespace opensolid
     template OnesMatrixConstructionError<MatrixXI>::OnesMatrixConstructionError(int, int);
 
     template <class MatrixType>
-    OnesMatrixConstructionError<MatrixType>::~OnesMatrixConstructionError() {}
+    OnesMatrixConstructionError<MatrixType>::~OnesMatrixConstructionError() throw() {}
 
     template OnesMatrixConstructionError<MatrixXd>::~OnesMatrixConstructionError();
     template OnesMatrixConstructionError<MatrixXI>::~OnesMatrixConstructionError();
 
     template <>
-    const char* OnesMatrixConstructionError<MatrixXd>::what() const {
+    const char* OnesMatrixConstructionError<MatrixXd>::what() const throw() {
         return "OnesMatrixXdConstructionError";
     }
 
     template <>
-    const char* OnesMatrixConstructionError<MatrixXI>::what() const {
+    const char* OnesMatrixConstructionError<MatrixXI>::what() const throw() {
         return "OnesMatrixXIConstructionError";
     }
 
@@ -709,18 +709,18 @@ namespace opensolid
     template RandomMatrixConstructionError<MatrixXI>::RandomMatrixConstructionError(int, int);
 
     template <class MatrixType>
-    RandomMatrixConstructionError<MatrixType>::~RandomMatrixConstructionError() {}
+    RandomMatrixConstructionError<MatrixType>::~RandomMatrixConstructionError() throw() {}
 
     template RandomMatrixConstructionError<MatrixXd>::~RandomMatrixConstructionError();
     template RandomMatrixConstructionError<MatrixXI>::~RandomMatrixConstructionError();
 
     template <>
-    const char* RandomMatrixConstructionError<MatrixXd>::what() const {
+    const char* RandomMatrixConstructionError<MatrixXd>::what() const throw() {
         return "RandomMatrixXdConstructionError";
     }
 
     template <>
-    const char* RandomMatrixConstructionError<MatrixXI>::what() const {
+    const char* RandomMatrixConstructionError<MatrixXI>::what() const throw() {
         return "RandomMatrixXIConstructionError";
     }
 
@@ -734,18 +734,18 @@ namespace opensolid
     template IdentityMatrixConstructionError<MatrixXI>::IdentityMatrixConstructionError(int, int);
 
     template <class MatrixType>
-    IdentityMatrixConstructionError<MatrixType>::~IdentityMatrixConstructionError() {}
+    IdentityMatrixConstructionError<MatrixType>::~IdentityMatrixConstructionError() throw() {}
 
     template IdentityMatrixConstructionError<MatrixXd>::~IdentityMatrixConstructionError();
     template IdentityMatrixConstructionError<MatrixXI>::~IdentityMatrixConstructionError();
 
     template <>
-    const char* IdentityMatrixConstructionError<MatrixXd>::what() const {
+    const char* IdentityMatrixConstructionError<MatrixXd>::what() const throw() {
         return "IdentityMatrixXdConstructionError";
     }
 
     template <>
-    const char* IdentityMatrixConstructionError<MatrixXI>::what() const {
+    const char* IdentityMatrixConstructionError<MatrixXI>::what() const throw() {
         return "IdentityMatrixXIConstructionError";
     }
 
@@ -763,7 +763,7 @@ namespace opensolid
     template MatrixSumError<MatrixXI, MatrixXI>::MatrixSumError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixSumError<FirstMatrixType, SecondMatrixType>::~MatrixSumError() {}
+    MatrixSumError<FirstMatrixType, SecondMatrixType>::~MatrixSumError() throw() {}
 
     template MatrixSumError<MatrixXd, MatrixXd>::~MatrixSumError();
     template MatrixSumError<MatrixXd, MatrixXI>::~MatrixSumError();
@@ -771,22 +771,22 @@ namespace opensolid
     template MatrixSumError<MatrixXI, MatrixXI>::~MatrixSumError();
 
     template <>
-    const char* MatrixSumError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixSumError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdSumMatrixXdError";
     }
 
     template <>
-    const char* MatrixSumError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixSumError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdSumMatrixXIError";
     }
 
     template <>
-    const char* MatrixSumError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixSumError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXISumMatrixXdError";
     }
 
     template <>
-    const char* MatrixSumError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixSumError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXISumMatrixXIError";
     }
 
@@ -804,7 +804,7 @@ namespace opensolid
     template MatrixDifferenceError<MatrixXI, MatrixXI>::MatrixDifferenceError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixDifferenceError<FirstMatrixType, SecondMatrixType>::~MatrixDifferenceError() {}
+    MatrixDifferenceError<FirstMatrixType, SecondMatrixType>::~MatrixDifferenceError() throw() {}
 
     template MatrixDifferenceError<MatrixXd, MatrixXd>::~MatrixDifferenceError();
     template MatrixDifferenceError<MatrixXd, MatrixXI>::~MatrixDifferenceError();
@@ -812,22 +812,22 @@ namespace opensolid
     template MatrixDifferenceError<MatrixXI, MatrixXI>::~MatrixDifferenceError();
 
     template <>
-    const char* MatrixDifferenceError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixDifferenceError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdDifferenceMatrixXdError";
     }
 
     template <>
-    const char* MatrixDifferenceError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixDifferenceError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdDifferenceMatrixXIError";
     }
 
     template <>
-    const char* MatrixDifferenceError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixDifferenceError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXIDifferenceMatrixXdError";
     }
 
     template <>
-    const char* MatrixDifferenceError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixDifferenceError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXIDifferenceMatrixXIError";
     }
 
@@ -845,7 +845,7 @@ namespace opensolid
     template MatrixQuotientError<MatrixXI, Interval>::MatrixQuotientError(const MatrixXI&, Interval);
 
     template <class FirstMatrixType, class ScalarType>
-    MatrixQuotientError<FirstMatrixType, ScalarType>::~MatrixQuotientError() {}
+    MatrixQuotientError<FirstMatrixType, ScalarType>::~MatrixQuotientError() throw() {}
 
     template MatrixQuotientError<MatrixXd, double>::~MatrixQuotientError();
     template MatrixQuotientError<MatrixXd, Interval>::~MatrixQuotientError();
@@ -853,22 +853,22 @@ namespace opensolid
     template MatrixQuotientError<MatrixXI, Interval>::~MatrixQuotientError();
 
     template <>
-    const char* MatrixQuotientError<MatrixXd, double>::what() const {
+    const char* MatrixQuotientError<MatrixXd, double>::what() const throw() {
         return "MatrixXdQuotientDoubleError";
     }
 
     template <>
-    const char* MatrixQuotientError<MatrixXd, Interval>::what() const {
+    const char* MatrixQuotientError<MatrixXd, Interval>::what() const throw() {
         return "MatrixXdQuotientIntervalError";
     }
 
     template <>
-    const char* MatrixQuotientError<MatrixXI, double>::what() const {
+    const char* MatrixQuotientError<MatrixXI, double>::what() const throw() {
         return "MatrixXIQuotientDoubleError";
     }
 
     template <>
-    const char* MatrixQuotientError<MatrixXI, Interval>::what() const {
+    const char* MatrixQuotientError<MatrixXI, Interval>::what() const throw() {
         return "MatrixXIQuotientIntervalError";
     }
 
@@ -894,7 +894,7 @@ namespace opensolid
     template MatrixProductError<MatrixXI, MatrixXI>::MatrixProductError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixProductError<FirstMatrixType, SecondMatrixType>::~MatrixProductError() {}
+    MatrixProductError<FirstMatrixType, SecondMatrixType>::~MatrixProductError() throw() {}
 
     template MatrixProductError<MatrixXd, MatrixXd>::~MatrixProductError();
     template MatrixProductError<MatrixXd, MatrixXI>::~MatrixProductError();
@@ -902,22 +902,22 @@ namespace opensolid
     template MatrixProductError<MatrixXI, MatrixXI>::~MatrixProductError();
 
     template <>
-    const char* MatrixProductError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixProductError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdProductMatrixXdError";
     }
 
     template <>
-    const char* MatrixProductError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixProductError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdProductMatrixXIError";
     }
 
     template <>
-    const char* MatrixProductError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixProductError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXIProductMatrixXdError";
     }
 
     template <>
-    const char* MatrixProductError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixProductError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXIProductMatrixXIError";
     }
 
@@ -935,7 +935,7 @@ namespace opensolid
     template MatrixEqualityError<MatrixXI, MatrixXI>::MatrixEqualityError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixEqualityError<FirstMatrixType, SecondMatrixType>::~MatrixEqualityError() {}
+    MatrixEqualityError<FirstMatrixType, SecondMatrixType>::~MatrixEqualityError() throw() {}
 
     template MatrixEqualityError<MatrixXd, MatrixXd>::~MatrixEqualityError();
     template MatrixEqualityError<MatrixXd, MatrixXI>::~MatrixEqualityError();
@@ -943,22 +943,22 @@ namespace opensolid
     template MatrixEqualityError<MatrixXI, MatrixXI>::~MatrixEqualityError();
 
     template <>
-    const char* MatrixEqualityError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixEqualityError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdEqualityMatrixXdError";
     }
 
     template <>
-    const char* MatrixEqualityError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixEqualityError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdEqualityMatrixXIError";
     }
 
     template <>
-    const char* MatrixEqualityError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixEqualityError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXIEqualityMatrixXdError";
     }
 
     template <>
-    const char* MatrixEqualityError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixEqualityError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXIEqualityMatrixXIError";
     }
 
@@ -976,7 +976,7 @@ namespace opensolid
     template MatrixInequalityError<MatrixXI, MatrixXI>::MatrixInequalityError(const MatrixXI&, const MatrixXI&);
 
     template <class FirstMatrixType, class SecondMatrixType>
-    MatrixInequalityError<FirstMatrixType, SecondMatrixType>::~MatrixInequalityError() {}
+    MatrixInequalityError<FirstMatrixType, SecondMatrixType>::~MatrixInequalityError() throw() {}
 
     template MatrixInequalityError<MatrixXd, MatrixXd>::~MatrixInequalityError();
     template MatrixInequalityError<MatrixXd, MatrixXI>::~MatrixInequalityError();
@@ -984,22 +984,22 @@ namespace opensolid
     template MatrixInequalityError<MatrixXI, MatrixXI>::~MatrixInequalityError();
 
     template <>
-    const char* MatrixInequalityError<MatrixXd, MatrixXd>::what() const {
+    const char* MatrixInequalityError<MatrixXd, MatrixXd>::what() const throw() {
         return "MatrixXdInequalityMatrixXdError";
     }
 
     template <>
-    const char* MatrixInequalityError<MatrixXd, MatrixXI>::what() const {
+    const char* MatrixInequalityError<MatrixXd, MatrixXI>::what() const throw() {
         return "MatrixXdInequalityMatrixXIError";
     }
 
     template <>
-    const char* MatrixInequalityError<MatrixXI, MatrixXd>::what() const {
+    const char* MatrixInequalityError<MatrixXI, MatrixXd>::what() const throw() {
         return "MatrixXIInequalityMatrixXdError";
     }
 
     template <>
-    const char* MatrixInequalityError<MatrixXI, MatrixXI>::what() const {
+    const char* MatrixInequalityError<MatrixXI, MatrixXI>::what() const throw() {
         return "MatrixXIInequalityMatrixXIError";
     }
 
@@ -1009,7 +1009,7 @@ namespace opensolid
     ) : _argument(argument) {}
     
     template <class MatrixType>
-    MatrixCopyConstructionError<MatrixType>::~MatrixCopyConstructionError() {}
+    MatrixCopyConstructionError<MatrixType>::~MatrixCopyConstructionError() throw() {}
 
     template <class MatrixType>
     MatrixType MatrixCopyConstructionError<MatrixType>::argument() const {return _argument;}
@@ -1022,7 +1022,7 @@ namespace opensolid
     
     Vector2dCopyConstructionError::~Vector2dCopyConstructionError() {}
 
-    const char* Vector2dCopyConstructionError::what() const {
+    const char* Vector2dCopyConstructionError::what() const throw() {
         return "Vector2dCopyConstructionError";
     }
 
@@ -1031,16 +1031,16 @@ namespace opensolid
     
     Vector3dCopyConstructionError::~Vector3dCopyConstructionError() {}
 
-    const char* Vector3dCopyConstructionError::what() const {
+    const char* Vector3dCopyConstructionError::what() const throw() {
         return "Vector3dCopyConstructionError";
     }
 
     VectorXdCopyConstructionError::VectorXdCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    VectorXdCopyConstructionError::~VectorXdCopyConstructionError() {}
+    VectorXdCopyConstructionError::~VectorXdCopyConstructionError() throw() {}
 
-    const char* VectorXdCopyConstructionError::what() const {
+    const char* VectorXdCopyConstructionError::what() const throw() {
         return "VectorXdCopyConstructionError";
     }
 
@@ -1049,7 +1049,7 @@ namespace opensolid
     
     RowVector2dCopyConstructionError::~RowVector2dCopyConstructionError() {}
 
-    const char* RowVector2dCopyConstructionError::what() const {
+    const char* RowVector2dCopyConstructionError::what() const throw() {
         return "RowVector2dCopyConstructionError";
     }
 
@@ -1058,16 +1058,16 @@ namespace opensolid
     
     RowVector3dCopyConstructionError::~RowVector3dCopyConstructionError() {}
 
-    const char* RowVector3dCopyConstructionError::what() const {
+    const char* RowVector3dCopyConstructionError::what() const throw() {
         return "RowVector3dCopyConstructionError";
     }
 
     RowVectorXdCopyConstructionError::RowVectorXdCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    RowVectorXdCopyConstructionError::~RowVectorXdCopyConstructionError() {}
+    RowVectorXdCopyConstructionError::~RowVectorXdCopyConstructionError() throw() {}
 
-    const char* RowVectorXdCopyConstructionError::what() const {
+    const char* RowVectorXdCopyConstructionError::what() const throw() {
         return "RowVectorXdCopyConstructionError";
     }
 
@@ -1076,7 +1076,7 @@ namespace opensolid
     
     Matrix2dCopyConstructionError::~Matrix2dCopyConstructionError() {}
 
-    const char* Matrix2dCopyConstructionError::what() const {
+    const char* Matrix2dCopyConstructionError::what() const throw() {
         return "Matrix2dCopyConstructionError";
     }
 
@@ -1085,7 +1085,7 @@ namespace opensolid
     
     Matrix3dCopyConstructionError::~Matrix3dCopyConstructionError() {}
 
-    const char* Matrix3dCopyConstructionError::what() const {
+    const char* Matrix3dCopyConstructionError::what() const throw() {
         return "Matrix3dCopyConstructionError";
     }
 
@@ -1094,7 +1094,7 @@ namespace opensolid
     
     Vector2ICopyConstructionError::~Vector2ICopyConstructionError() {}
 
-    const char* Vector2ICopyConstructionError::what() const {
+    const char* Vector2ICopyConstructionError::what() const throw() {
         return "Vector2ICopyConstructionError";
     }
 
@@ -1103,16 +1103,16 @@ namespace opensolid
     
     Vector3ICopyConstructionError::~Vector3ICopyConstructionError() {}
 
-    const char* Vector3ICopyConstructionError::what() const {
+    const char* Vector3ICopyConstructionError::what() const throw() {
         return "Vector3ICopyConstructionError";
     }
 
     VectorXICopyConstructionError::VectorXICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    VectorXICopyConstructionError::~VectorXICopyConstructionError() {}
+    VectorXICopyConstructionError::~VectorXICopyConstructionError() throw() {}
 
-    const char* VectorXICopyConstructionError::what() const {
+    const char* VectorXICopyConstructionError::what() const throw() {
         return "VectorXICopyConstructionError";
     }
 
@@ -1121,7 +1121,7 @@ namespace opensolid
     
     RowVector2ICopyConstructionError::~RowVector2ICopyConstructionError() {}
 
-    const char* RowVector2ICopyConstructionError::what() const {
+    const char* RowVector2ICopyConstructionError::what() const throw() {
         return "RowVector2ICopyConstructionError";
     }
 
@@ -1130,16 +1130,16 @@ namespace opensolid
     
     RowVector3ICopyConstructionError::~RowVector3ICopyConstructionError() {}
 
-    const char* RowVector3ICopyConstructionError::what() const {
+    const char* RowVector3ICopyConstructionError::what() const throw() {
         return "RowVector3ICopyConstructionError";
     }
 
     RowVectorXICopyConstructionError::RowVectorXICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    RowVectorXICopyConstructionError::~RowVectorXICopyConstructionError() {}
+    RowVectorXICopyConstructionError::~RowVectorXICopyConstructionError() throw() {}
 
-    const char* RowVectorXICopyConstructionError::what() const {
+    const char* RowVectorXICopyConstructionError::what() const throw() {
         return "RowVectorXICopyConstructionError";
     }
 
@@ -1148,7 +1148,7 @@ namespace opensolid
     
     Matrix2ICopyConstructionError::~Matrix2ICopyConstructionError() {}
 
-    const char* Matrix2ICopyConstructionError::what() const {
+    const char* Matrix2ICopyConstructionError::what() const throw() {
         return "Matrix2ICopyConstructionError";
     }
 
@@ -1157,20 +1157,20 @@ namespace opensolid
     
     Matrix3ICopyConstructionError::~Matrix3ICopyConstructionError() {}
 
-    const char* Matrix3ICopyConstructionError::what() const {
+    const char* Matrix3ICopyConstructionError::what() const throw() {
         return "Matrix3ICopyConstructionError";
     }
 
     UnitVectorConstructionError::UnitVectorConstructionError(int index) : _index(index) {}
     
-    UnitVectorConstructionError::~UnitVectorConstructionError() {}
+    UnitVectorConstructionError::~UnitVectorConstructionError() throw() {}
 
     int UnitVectorConstructionError::index() const {return _index;}
 
     DynamicUnitVectorConstructionError::DynamicUnitVectorConstructionError(int size, int index) :
         UnitVectorConstructionError(index), _size(size) {}
     
-    DynamicUnitVectorConstructionError::~DynamicUnitVectorConstructionError() {}
+    DynamicUnitVectorConstructionError::~DynamicUnitVectorConstructionError() throw() {}
 
     int DynamicUnitVectorConstructionError::size() const {return _size;}
 
@@ -1179,7 +1179,7 @@ namespace opensolid
     
     UnitVector2dConstructionError::~UnitVector2dConstructionError() {}
 
-    const char* UnitVector2dConstructionError::what() const {
+    const char* UnitVector2dConstructionError::what() const throw() {
         return "UnitVector2dConstructionError";
     }
 
@@ -1188,16 +1188,16 @@ namespace opensolid
     
     UnitVector3dConstructionError::~UnitVector3dConstructionError() {}
 
-    const char* UnitVector3dConstructionError::what() const {
+    const char* UnitVector3dConstructionError::what() const throw() {
         return "UnitVector3dConstructionError";
     }
 
     UnitVectorXdConstructionError::UnitVectorXdConstructionError(int size, int index) :
         DynamicUnitVectorConstructionError(size, index) {}
     
-    UnitVectorXdConstructionError::~UnitVectorXdConstructionError() {}
+    UnitVectorXdConstructionError::~UnitVectorXdConstructionError() throw() {}
 
-    const char* UnitVectorXdConstructionError::what() const {
+    const char* UnitVectorXdConstructionError::what() const throw() {
         return "UnitVectorXdConstructionError";
     }
 
@@ -1206,7 +1206,7 @@ namespace opensolid
     
     UnitRowVector2dConstructionError::~UnitRowVector2dConstructionError() {}
 
-    const char* UnitRowVector2dConstructionError::what() const {
+    const char* UnitRowVector2dConstructionError::what() const throw() {
         return "UnitRowVector2dConstructionError";
     }
 
@@ -1215,16 +1215,16 @@ namespace opensolid
     
     UnitRowVector3dConstructionError::~UnitRowVector3dConstructionError() {}
 
-    const char* UnitRowVector3dConstructionError::what() const {
+    const char* UnitRowVector3dConstructionError::what() const throw() {
         return "UnitRowVector3dConstructionError";
     }
 
     UnitRowVectorXdConstructionError::UnitRowVectorXdConstructionError(int size, int index) :
         DynamicUnitVectorConstructionError(size, index) {}
     
-    UnitRowVectorXdConstructionError::~UnitRowVectorXdConstructionError() {}
+    UnitRowVectorXdConstructionError::~UnitRowVectorXdConstructionError() throw() {}
 
-    const char* UnitRowVectorXdConstructionError::what() const {
+    const char* UnitRowVectorXdConstructionError::what() const throw() {
         return "UnitRowVectorXdConstructionError";
     }
 
@@ -1233,7 +1233,7 @@ namespace opensolid
     
     UnitVector2IConstructionError::~UnitVector2IConstructionError() {}
 
-    const char* UnitVector2IConstructionError::what() const {
+    const char* UnitVector2IConstructionError::what() const throw() {
         return "UnitVector2IConstructionError";
     }
 
@@ -1242,16 +1242,16 @@ namespace opensolid
     
     UnitVector3IConstructionError::~UnitVector3IConstructionError() {}
 
-    const char* UnitVector3IConstructionError::what() const {
+    const char* UnitVector3IConstructionError::what() const throw() {
         return "UnitVector3IConstructionError";
     }
 
     UnitVectorXIConstructionError::UnitVectorXIConstructionError(int size, int index) :
         DynamicUnitVectorConstructionError(size, index) {}
     
-    UnitVectorXIConstructionError::~UnitVectorXIConstructionError() {}
+    UnitVectorXIConstructionError::~UnitVectorXIConstructionError() throw() {}
 
-    const char* UnitVectorXIConstructionError::what() const {
+    const char* UnitVectorXIConstructionError::what() const throw() {
         return "UnitVectorXIConstructionError";
     }
 
@@ -1260,7 +1260,7 @@ namespace opensolid
     
     UnitRowVector2IConstructionError::~UnitRowVector2IConstructionError() {}
 
-    const char* UnitRowVector2IConstructionError::what() const {
+    const char* UnitRowVector2IConstructionError::what() const throw() {
         return "UnitRowVector2IConstructionError";
     }
 
@@ -1269,16 +1269,16 @@ namespace opensolid
     
     UnitRowVector3IConstructionError::~UnitRowVector3IConstructionError() {}
 
-    const char* UnitRowVector3IConstructionError::what() const {
+    const char* UnitRowVector3IConstructionError::what() const throw() {
         return "UnitRowVector3IConstructionError";
     }
 
     UnitRowVectorXIConstructionError::UnitRowVectorXIConstructionError(int size, int index) :
         DynamicUnitVectorConstructionError(size, index) {}
     
-    UnitRowVectorXIConstructionError::~UnitRowVectorXIConstructionError() {}
+    UnitRowVectorXIConstructionError::~UnitRowVectorXIConstructionError() throw() {}
 
-    const char* UnitRowVectorXIConstructionError::what() const {
+    const char* UnitRowVectorXIConstructionError::what() const throw() {
         return "UnitRowVectorXIConstructionError";
     }
 }

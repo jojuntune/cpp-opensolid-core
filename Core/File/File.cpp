@@ -151,7 +151,7 @@ namespace opensolid
     
     FileOpenError::~FileOpenError() throw() {}
 
-    const char* FileOpenError::what() const {
+    const char* FileOpenError::what() const throw() {
         return "FileOpenError";
     }
 
@@ -169,7 +169,7 @@ namespace opensolid
     
     FilePropertyError::~FilePropertyError() throw() {}
 
-    const char* FilePropertyError::what() const {
+    const char* FilePropertyError::what() const throw() {
         return "FilePropertyError";
     }
 
@@ -187,7 +187,7 @@ namespace opensolid
     
     FileSetPropertyError::~FileSetPropertyError() throw() {}
 
-    const char* FileSetPropertyError::what() const {
+    const char* FileSetPropertyError::what() const throw() {
         return "FileSetPropertyError";
     }
 

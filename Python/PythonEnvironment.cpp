@@ -337,9 +337,9 @@ namespace opensolid
         const std::string& expected_type
     ) : _python_object(python_object), _expected_type(expected_type) {}
 
-    ConversionFromPythonError::~ConversionFromPythonError() {}
+    ConversionFromPythonError::~ConversionFromPythonError() throw() {}
 
-    const char* ConversionFromPythonError::what() const {
+    const char* ConversionFromPythonError::what() const throw() {
         return "ConversionFromPythonError";
     }
 
@@ -349,131 +349,131 @@ namespace opensolid
 
     ConversionToPythonError::ConversionToPythonError(const std::string& type) : _type(type) {}
 
-    ConversionToPythonError::~ConversionToPythonError() {}
+    ConversionToPythonError::~ConversionToPythonError() throw() {}
         
-    const char* ConversionToPythonError::what() const {
+    const char* ConversionToPythonError::what() const throw() {
         return "ConversionToPythonError";
     }
     
     std::string ConversionToPythonError::type() const {return _type;}
 
-    const char* UnexpectedPythonError::what() const {
+    const char* UnexpectedPythonError::what() const throw() {
         return "UnexpectedPythonError";
     }
     
-    const char* PythonException::what() const {
+    const char* PythonException::what() const throw() {
         return "PythonException";
     }
 
-    const char* PythonArithmeticError::what() const {
+    const char* PythonArithmeticError::what() const throw() {
         return "PythonArithmeticError";
     }
 
-    const char* PythonFloatingPointError::what() const {
+    const char* PythonFloatingPointError::what() const throw() {
         return "PythonFloatingPointError";
     }
 
-    const char* PythonOverflowError::what() const {
+    const char* PythonOverflowError::what() const throw() {
         return "PythonOverflowError";
     }
 
-    const char* PythonZeroDivisionError::what() const {
+    const char* PythonZeroDivisionError::what() const throw() {
         return "PythonZeroDivisionError";
     }
 
-    const char* PythonAssertionError::what() const {
+    const char* PythonAssertionError::what() const throw() {
         return "PythonAssertionError";
     }
 
-    const char* PythonAttributeError::what() const {
+    const char* PythonAttributeError::what() const throw() {
         return "PythonAttributeError";
     }
 
-    const char* PythonBufferError::what() const {
+    const char* PythonBufferError::what() const throw() {
         return "PythonBufferError";
     }
 
-    const char* PythonEnvironmentError::what() const {
+    const char* PythonEnvironmentError::what() const throw() {
         return "PythonEnvironmentError";
     }
 
-    const char* PythonIOError::what() const {
+    const char* PythonIOError::what() const throw() {
         return "PythonIOError";
     }
 
-    const char* PythonOSError::what() const {
+    const char* PythonOSError::what() const throw() {
         return "PythonOSError";
     }
 
-    const char* PythonEOFError::what() const {
+    const char* PythonEOFError::what() const throw() {
         return "PythonEOFError";
     }
 
-    const char* PythonImportError::what() const {
+    const char* PythonImportError::what() const throw() {
         return "PythonImportError";
     }
 
-    const char* PythonLookupError::what() const {
+    const char* PythonLookupError::what() const throw() {
         return "PythonLookupError";
     }
 
-    const char* PythonIndexError::what() const {
+    const char* PythonIndexError::what() const throw() {
         return "PythonIndexError";
     }
 
-    const char* PythonKeyError::what() const {
+    const char* PythonKeyError::what() const throw() {
         return "PythonKeyError";
     }
 
-    const char* PythonMemoryError::what() const {
+    const char* PythonMemoryError::what() const throw() {
         return "PythonMemoryError";
     }
 
-    const char* PythonNameError::what() const {
+    const char* PythonNameError::what() const throw() {
         return "PythonNameError";
     }
 
-    const char* PythonUnboundLocalError::what() const {
+    const char* PythonUnboundLocalError::what() const throw() {
         return "PythonUnboundLocalError";
     }
 
-    const char* PythonReferenceError::what() const {
+    const char* PythonReferenceError::what() const throw() {
         return "PythonReferenceError";
     }
 
-    const char* PythonRuntimeError::what() const {
+    const char* PythonRuntimeError::what() const throw() {
         return "PythonRuntimeError";
     }
 
-    const char* PythonNotImplementedError::what() const {
+    const char* PythonNotImplementedError::what() const throw() {
         return "PythonNotImplementedError";
     }
 
-    const char* PythonSyntaxError::what() const {
+    const char* PythonSyntaxError::what() const throw() {
         return "PythonSyntaxError";
     }
 
-    const char* PythonIndentationError::what() const {
+    const char* PythonIndentationError::what() const throw() {
         return "PythonIndentationError";
     }
 
-    const char* PythonSystemError::what() const {
+    const char* PythonSystemError::what() const throw() {
         return "PythonSystemError";
     }
 
-    const char* PythonTypeError::what() const {
+    const char* PythonTypeError::what() const throw() {
         return "PythonTypeError";
     }
 
-    const char* PythonValueError::what() const {
+    const char* PythonValueError::what() const throw() {
         return "PythonValueError";
     }
 
-    const char* PythonUnicodeError::what() const {
+    const char* PythonUnicodeError::what() const throw() {
         return "PythonUnicodeError";
     }
 
-    const char* PythonWarning::what() const {
+    const char* PythonWarning::what() const throw() {
         return "PythonWarning";
     }
 }

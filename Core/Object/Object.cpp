@@ -256,7 +256,7 @@ namespace opensolid
         const std::string& requested_type
     ) : PropertyError(name, requested_type), _object(object) {}
 
-    const char* ObjectPropertyError::what() const {
+    const char* ObjectPropertyError::what() const throw() {
         return "ObjectPropertyError";
     }
 
