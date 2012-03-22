@@ -309,6 +309,10 @@
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
     )
+    
+    IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
+        SET_TARGET_PROPERTIES(OpenSolidCore PROPERTIES COMPILE_FLAGS "-Doverride=")
+    ENDIF()
 
     TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf libsqlite3)
     
