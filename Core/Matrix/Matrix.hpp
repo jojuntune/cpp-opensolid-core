@@ -616,7 +616,7 @@ namespace Eigen
 
     template<class Scalar, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
     template <class OtherType>
-    static Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>
+    Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>
     Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>::from(const OtherType& argument) {
         return opensolid::Conversion<OtherType, Matrix>()(argument);
     }
