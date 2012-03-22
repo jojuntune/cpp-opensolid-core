@@ -123,7 +123,7 @@ namespace opensolid
 
     std::string File::mode() const {return _mode;}
 
-    bool File::isOpen() const {return _sql;}
+    bool File::isOpen() const {return bool(_sql);}
 
     void File::close() {
         if (isOpen()) {
