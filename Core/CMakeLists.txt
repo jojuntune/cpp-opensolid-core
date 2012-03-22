@@ -309,10 +309,6 @@
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
     )
-    
-    IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
-        SET_TARGET_PROPERTIES(OpenSolidCore PROPERTIES COMPILE_FLAGS "-Doverride=")
-    ENDIF()
 
     TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf libsqlite3)
     
@@ -327,6 +323,26 @@
     ADD_CXXTEST(SimplexTests "${OpenSolid}/Core/Simplex/SimplexTests.hpp" OpenSolidCore)
     ADD_CXXTEST(ObjectTests "${OpenSolid}/Core/Object/ObjectTests.hpp" OpenSolidCore)
     ADD_CXXTEST(FileTests "${OpenSolid}/Core/File/FileTests.hpp" OpenSolidCore)
+    
+########## Temporary fix - define 'override' as empty macro for GCC < 4.7 ##########
+    
+    IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
+        SET_TARGET_PROPERTIES(
+            OpenSolidCore
+            IntervalTests
+            MatrixTests
+            DatumTests
+            SetTests
+            FunctionTests
+            GeometryTests
+            SimplexTests
+            ObjectTests
+            FileTests
+            PROPERTIES
+            COMPILE_FLAGS
+            "-Doverride="
+        )
+    ENDIF()
     
 ########## Install headers ##########
     
