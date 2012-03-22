@@ -68,7 +68,7 @@ namespace opensolid
             Function,
             Geometry,
             Domain,
-            Object
+            boost::recursive_wrapper<Object>
         > Variant;
 
         std::unordered_map<std::string, Variant> _properties;
