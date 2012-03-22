@@ -103,6 +103,8 @@ namespace opensolid
             bool is_open
         );
         
+        OPENSOLID_CORE_EXPORT ~FileOpenError() throw();
+        
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;
         OPENSOLID_CORE_EXPORT std::string mode() const;
@@ -123,6 +125,8 @@ namespace opensolid
             const std::string& name,
             const std::string& requested_type
         );
+        
+        OPENSOLID_CORE_EXPORT ~FileOpenError() throw();
 
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;
@@ -142,6 +146,8 @@ namespace opensolid
             const std::string& mode,
             bool is_open
         );
+        
+        OPENSOLID_CORE_EXPORT ~FileSetPropertyError() throw();
         
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;

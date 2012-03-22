@@ -148,6 +148,8 @@ namespace opensolid
         const std::string& mode,
         bool is_open
     ) : _filename(filename), _mode(mode), _is_open(is_open) {}
+    
+    FileOpenError::~FileOpenError() throw() {}
 
     const char* FileOpenError::what() const {
         return "FileOpenError";
@@ -164,6 +166,8 @@ namespace opensolid
         const std::string& name,
         const std::string& requested_type
     ) : PropertyError(name, requested_type), _filename(filename), _mode(mode), _is_open(is_open) {}
+    
+    FilePropertyError::~FilePropertyError() throw() {}
 
     const char* FilePropertyError::what() const {
         return "FilePropertyError";
@@ -180,6 +184,8 @@ namespace opensolid
         const std::string& mode,
         bool is_open
     ) : _filename(filename), _mode(mode), _is_open(is_open) {}
+    
+    FileSetPropertyError::~FileSetPropertyError() throw() {}
 
     const char* FileSetPropertyError::what() const {
         return "FileSetPropertyError";

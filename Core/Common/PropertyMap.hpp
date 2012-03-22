@@ -110,6 +110,8 @@ namespace opensolid
             const std::string& name,
             const std::string& requested_type
         );
+        
+        OPENSOLID_CORE_EXPORT ~PropertyError() throw();
 
         OPENSOLID_CORE_EXPORT std::string name() const;
         OPENSOLID_CORE_EXPORT std::string requestedType() const;
