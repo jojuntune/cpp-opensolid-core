@@ -202,7 +202,7 @@ namespace opensolid
         public boost::iterator_facade<SetIterator<Type>, const Type, std::forward_iterator_tag>
     {
     private:
-        const typename SetNode<Type>* _node;
+        const SetNode<Type>* _node;
         
         friend class boost::iterator_core_access;
         
@@ -317,7 +317,7 @@ namespace opensolid
     inline bool Set<Type>::isEmpty() const {return !root();}
     
     template <class Type>
-    inline const typename SetNode<Type>* Set<Type>::root() const {return _root;}
+    inline const SetNode<Type>* Set<Type>::root() const {return _root;}
         
     template <class Type>
     void Set<Type>::operator=(const Set<Type>& other) {
