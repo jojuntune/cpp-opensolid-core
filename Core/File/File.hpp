@@ -126,7 +126,7 @@ namespace opensolid
             const std::string& requested_type
         );
         
-        OPENSOLID_CORE_EXPORT ~FileOpenError() throw();
+        OPENSOLID_CORE_EXPORT ~FilePropertyError() throw();
 
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT std::string filename() const;
