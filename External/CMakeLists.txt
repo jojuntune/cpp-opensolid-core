@@ -85,13 +85,18 @@
     ADD_EXECUTABLE(sqlite3 "${OpenSolid}/External/sqlite/shell.c")
     TARGET_LINK_LIBRARIES(sqlite3 libsqlite3)
 
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+        FIND_PACKAGE(Threads)
+        TARGET_LINK_LIBRARIES(libsqlite3 dl ${CMAKE_THREAD_LIBS_INIT})
+    ENDIF()
+
 ########## Build Protocol Buffers libraries and compiler ##########
 
     ADD_LIBRARY(libprotobuf STATIC ${LIBPROTOBUF_SOURCES})
     ADD_LIBRARY(libprotoc STATIC ${LIBPROTOC_SOURCES})
     
     ADD_EXECUTABLE(protoc ${PROTOC_SOURCES})
-    TARGET_LINK_LIBRARIES(protoc libprotobuf libprotoc)
+    TARGET_LINK_LIBRARIES(protoc libprotoc libprotobuf)
     
 ########## Disable warnings for external code compilation ##########
 
