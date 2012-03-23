@@ -17,7 +17,7 @@
 
 using namespace stk;
 
-#include <graph/project.h>
+#include <OpenSolid/Graph/project.h>
 
 using namespace opensolid;
 

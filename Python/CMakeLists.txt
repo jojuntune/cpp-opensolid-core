@@ -75,7 +75,7 @@
     
     IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
         SET_TARGET_PROPERTIES(
-            opensolid
+            OpenSolidPythonModule
             OpenSolidPython
             PythonTests
             PROPERTIES

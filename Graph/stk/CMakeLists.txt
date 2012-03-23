@@ -39,3 +39,13 @@ SET(GLOBAL_SOURCE_LIST
 # Compile and link STK library
 ADD_LIBRARY(OpenSolidSTK ${STK_SOURCES})
 TARGET_LINK_LIBRARIES(OpenSolidSTK ${QT_LIBRARIES})
+   
+# Temporary fix - define 'override' as empty macro for GCC < 4.7
+IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
+    SET_TARGET_PROPERTIES(
+        OpenSolidSTK
+        PROPERTIES
+        COMPILE_FLAGS
+        "-Doverride="
+    )
+ENDIF()
