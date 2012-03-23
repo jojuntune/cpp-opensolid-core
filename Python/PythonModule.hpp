@@ -26,6 +26,11 @@
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
+#ifdef override
+    #define REDEFINE_OVERRIDE
+    #undef override
+#endif
+
 #include <boost/python.hpp>
 #include <boost/python/handle.hpp>
 #include <boost/python/slice.hpp>
@@ -33,6 +38,11 @@
 #include <boost/python/manage_new_object.hpp>
 #include <boost/python/raw_function.hpp>
 #include <boost/python/converter/pytype_function.hpp>
+
+#ifdef REDEFINE_OVERRIDE
+    #define override
+    #undef REDEFINE_OVERRIDE
+#endif
 
 namespace opensolid
 {
@@ -786,7 +796,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVector2dConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
     };
 
     class UnitVector3dConstructionError : public UnitVectorConstructionError
@@ -836,7 +846,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVectorXdConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const override;
+        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
     };
 
     class UnitVector2IConstructionError : public UnitVectorConstructionError

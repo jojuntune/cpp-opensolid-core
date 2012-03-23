@@ -26,7 +26,17 @@
 #include <string>
 #include <typeinfo>
 
+#ifdef override
+    #define REDEFINE_OVERRIDE
+    #undef override
+#endif
+
 #include <boost/python.hpp>
+
+#ifdef REDEFINE_OVERRIDE
+    #define override
+    #undef REDEFINE_OVERRIDE
+#endif
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
