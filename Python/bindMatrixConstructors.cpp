@@ -638,10 +638,10 @@ namespace opensolid
     }
     
     template <class MatrixType>
-    auto newMatrixFromList(object, list components) ->
-        decltype(initMatrixFromList<MatrixType>(components)) {
-        return initMatrixFromList<MatrixType>(components);
-    }
+    Matrix<typename MatrixType::Scalar, Dynamic, Dynamic>* newMatrixFromList(
+        object,
+        list components
+    ) {return initMatrixFromList<MatrixType>(components);}
 
     class_<MatrixXd>& pythonMatrixXd();
     class_<MatrixXI>& pythonMatrixXI();
