@@ -67,11 +67,14 @@ struct UnregisteredType
 {
 };
 
-template <>
-struct TypeName<UnregisteredType>
+namespace opensolid
 {
-    std::string operator()() const {return "UnregisteredType";}
-};
+    template <>
+    struct TypeName<UnregisteredType>
+    {
+        std::string operator()() const {return "UnregisteredType";}
+    };
+}
 
 class PythonTests : public CxxTest::TestSuite
 {
@@ -100,7 +103,7 @@ public:
             TS_ASSERT_EQUALS(std::string(error.what()), "PythonTypeError");
             std::cout << environment.formattedTraceback() << std::endl;
             std::vector<PythonStackFrame> stack_trace = environment.stackTrace();
-            TS_ASSERT_EQUALS(stack_trace.size(), 1);
+            TS_ASSERT_EQUALS(stack_trace.size(), 1u);
             TS_ASSERT_EQUALS(stack_trace.front().lineNumber(), 2);
         }
     }
