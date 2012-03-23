@@ -80,6 +80,19 @@
 
     ADD_CXXTEST(PythonTests "${OpenSolid}/Python/PythonTests.hpp" OpenSolidPython OpenSolidCore)
     
+########## Temporary fix - define 'override' as empty macro for GCC < 4.7 ##########
+    
+    IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
+        SET_TARGET_PROPERTIES(
+            opensolid
+            OpenSolidPython
+            PythonTests
+            PROPERTIES
+            COMPILE_FLAGS
+            "-Doverride="
+        )
+    ENDIF()
+    
 ########## Install headers ##########
     
     INSTALL(DIRECTORY ${OpenSolid}/Python
