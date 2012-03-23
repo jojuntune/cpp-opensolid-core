@@ -1020,7 +1020,7 @@ namespace opensolid
     Vector2dCopyConstructionError::Vector2dCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    Vector2dCopyConstructionError::~Vector2dCopyConstructionError() {}
+    Vector2dCopyConstructionError::~Vector2dCopyConstructionError() throw() {}
 
     const char* Vector2dCopyConstructionError::what() const throw() {
         return "Vector2dCopyConstructionError";
@@ -1029,7 +1029,7 @@ namespace opensolid
     Vector3dCopyConstructionError::Vector3dCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    Vector3dCopyConstructionError::~Vector3dCopyConstructionError() {}
+    Vector3dCopyConstructionError::~Vector3dCopyConstructionError() throw() {}
 
     const char* Vector3dCopyConstructionError::what() const throw() {
         return "Vector3dCopyConstructionError";
@@ -1047,7 +1047,7 @@ namespace opensolid
     RowVector2dCopyConstructionError::RowVector2dCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    RowVector2dCopyConstructionError::~RowVector2dCopyConstructionError() {}
+    RowVector2dCopyConstructionError::~RowVector2dCopyConstructionError() throw() {}
 
     const char* RowVector2dCopyConstructionError::what() const throw() {
         return "RowVector2dCopyConstructionError";
@@ -1056,7 +1056,7 @@ namespace opensolid
     RowVector3dCopyConstructionError::RowVector3dCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    RowVector3dCopyConstructionError::~RowVector3dCopyConstructionError() {}
+    RowVector3dCopyConstructionError::~RowVector3dCopyConstructionError() throw() {}
 
     const char* RowVector3dCopyConstructionError::what() const throw() {
         return "RowVector3dCopyConstructionError";
@@ -1074,7 +1074,7 @@ namespace opensolid
     Matrix2dCopyConstructionError::Matrix2dCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    Matrix2dCopyConstructionError::~Matrix2dCopyConstructionError() {}
+    Matrix2dCopyConstructionError::~Matrix2dCopyConstructionError() throw() {}
 
     const char* Matrix2dCopyConstructionError::what() const throw() {
         return "Matrix2dCopyConstructionError";
@@ -1083,7 +1083,7 @@ namespace opensolid
     Matrix3dCopyConstructionError::Matrix3dCopyConstructionError(const MatrixXd& argument) :
         MatrixCopyConstructionError<MatrixXd>(argument) {}
     
-    Matrix3dCopyConstructionError::~Matrix3dCopyConstructionError() {}
+    Matrix3dCopyConstructionError::~Matrix3dCopyConstructionError() throw() {}
 
     const char* Matrix3dCopyConstructionError::what() const throw() {
         return "Matrix3dCopyConstructionError";
@@ -1092,7 +1092,7 @@ namespace opensolid
     Vector2ICopyConstructionError::Vector2ICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    Vector2ICopyConstructionError::~Vector2ICopyConstructionError() {}
+    Vector2ICopyConstructionError::~Vector2ICopyConstructionError() throw() {}
 
     const char* Vector2ICopyConstructionError::what() const throw() {
         return "Vector2ICopyConstructionError";
@@ -1101,7 +1101,7 @@ namespace opensolid
     Vector3ICopyConstructionError::Vector3ICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    Vector3ICopyConstructionError::~Vector3ICopyConstructionError() {}
+    Vector3ICopyConstructionError::~Vector3ICopyConstructionError() throw() {}
 
     const char* Vector3ICopyConstructionError::what() const throw() {
         return "Vector3ICopyConstructionError";
@@ -1119,7 +1119,7 @@ namespace opensolid
     RowVector2ICopyConstructionError::RowVector2ICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    RowVector2ICopyConstructionError::~RowVector2ICopyConstructionError() {}
+    RowVector2ICopyConstructionError::~RowVector2ICopyConstructionError() throw() {}
 
     const char* RowVector2ICopyConstructionError::what() const throw() {
         return "RowVector2ICopyConstructionError";
@@ -1128,7 +1128,7 @@ namespace opensolid
     RowVector3ICopyConstructionError::RowVector3ICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    RowVector3ICopyConstructionError::~RowVector3ICopyConstructionError() {}
+    RowVector3ICopyConstructionError::~RowVector3ICopyConstructionError() throw() {}
 
     const char* RowVector3ICopyConstructionError::what() const throw() {
         return "RowVector3ICopyConstructionError";
@@ -1146,7 +1146,7 @@ namespace opensolid
     Matrix2ICopyConstructionError::Matrix2ICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    Matrix2ICopyConstructionError::~Matrix2ICopyConstructionError() {}
+    Matrix2ICopyConstructionError::~Matrix2ICopyConstructionError() throw() {}
 
     const char* Matrix2ICopyConstructionError::what() const throw() {
         return "Matrix2ICopyConstructionError";
@@ -1155,7 +1155,7 @@ namespace opensolid
     Matrix3ICopyConstructionError::Matrix3ICopyConstructionError(const MatrixXI& argument) :
         MatrixCopyConstructionError<MatrixXI>(argument) {}
     
-    Matrix3ICopyConstructionError::~Matrix3ICopyConstructionError() {}
+    Matrix3ICopyConstructionError::~Matrix3ICopyConstructionError() throw() {}
 
     const char* Matrix3ICopyConstructionError::what() const throw() {
         return "Matrix3ICopyConstructionError";
@@ -1177,7 +1177,7 @@ namespace opensolid
     UnitVector2dConstructionError::UnitVector2dConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitVector2dConstructionError::~UnitVector2dConstructionError() {}
+    UnitVector2dConstructionError::~UnitVector2dConstructionError() throw() {}
 
     const char* UnitVector2dConstructionError::what() const throw() {
         return "UnitVector2dConstructionError";
@@ -1186,7 +1186,7 @@ namespace opensolid
     UnitVector3dConstructionError::UnitVector3dConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitVector3dConstructionError::~UnitVector3dConstructionError() {}
+    UnitVector3dConstructionError::~UnitVector3dConstructionError() throw() {}
 
     const char* UnitVector3dConstructionError::what() const throw() {
         return "UnitVector3dConstructionError";
@@ -1204,7 +1204,7 @@ namespace opensolid
     UnitRowVector2dConstructionError::UnitRowVector2dConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitRowVector2dConstructionError::~UnitRowVector2dConstructionError() {}
+    UnitRowVector2dConstructionError::~UnitRowVector2dConstructionError() throw() {}
 
     const char* UnitRowVector2dConstructionError::what() const throw() {
         return "UnitRowVector2dConstructionError";
@@ -1213,7 +1213,7 @@ namespace opensolid
     UnitRowVector3dConstructionError::UnitRowVector3dConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitRowVector3dConstructionError::~UnitRowVector3dConstructionError() {}
+    UnitRowVector3dConstructionError::~UnitRowVector3dConstructionError() throw() {}
 
     const char* UnitRowVector3dConstructionError::what() const throw() {
         return "UnitRowVector3dConstructionError";
@@ -1231,7 +1231,7 @@ namespace opensolid
     UnitVector2IConstructionError::UnitVector2IConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitVector2IConstructionError::~UnitVector2IConstructionError() {}
+    UnitVector2IConstructionError::~UnitVector2IConstructionError() throw() {}
 
     const char* UnitVector2IConstructionError::what() const throw() {
         return "UnitVector2IConstructionError";
@@ -1240,7 +1240,7 @@ namespace opensolid
     UnitVector3IConstructionError::UnitVector3IConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitVector3IConstructionError::~UnitVector3IConstructionError() {}
+    UnitVector3IConstructionError::~UnitVector3IConstructionError() throw() {}
 
     const char* UnitVector3IConstructionError::what() const throw() {
         return "UnitVector3IConstructionError";
@@ -1258,7 +1258,7 @@ namespace opensolid
     UnitRowVector2IConstructionError::UnitRowVector2IConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitRowVector2IConstructionError::~UnitRowVector2IConstructionError() {}
+    UnitRowVector2IConstructionError::~UnitRowVector2IConstructionError() throw() {}
 
     const char* UnitRowVector2IConstructionError::what() const throw() {
         return "UnitRowVector2IConstructionError";
@@ -1267,7 +1267,7 @@ namespace opensolid
     UnitRowVector3IConstructionError::UnitRowVector3IConstructionError(int index) :
         UnitVectorConstructionError(index) {}
     
-    UnitRowVector3IConstructionError::~UnitRowVector3IConstructionError() {}
+    UnitRowVector3IConstructionError::~UnitRowVector3IConstructionError() throw() {}
 
     const char* UnitRowVector3IConstructionError::what() const throw() {
         return "UnitRowVector3IConstructionError";
