@@ -31,27 +31,30 @@ struct CustomType
     Vector3d vector;
 };
 
-template <>
-struct Conversion<CustomType, Object>
+namespace opensolid
 {
-    Object operator()(const CustomType& argument) const {
-        Object result;
-        result.set("value", argument.value);
-        result.set("vector", argument.vector);
-        return result;
-    }
-};
+    template <>
+    struct Conversion<CustomType, Object>
+    {
+        Object operator()(const CustomType& argument) const {
+            Object result;
+            result.set("value", argument.value);
+            result.set("vector", argument.vector);
+            return result;
+        }
+    };
 
-template <>
-struct Conversion<Object, CustomType>
-{
-    CustomType operator()(const Object& argument) const {
-        CustomType result;
-        result.value = argument.get<double>("value");
-        result.vector = argument.get<Vector3d>("vector");
-        return result;
-    }
-};
+    template <>
+    struct Conversion<Object, CustomType>
+    {
+        CustomType operator()(const Object& argument) const {
+            CustomType result;
+            result.value = argument.get<double>("value");
+            result.vector = argument.get<Vector3d>("vector");
+            return result;
+        }
+    };
+}
 
 class ObjectTests : public CxxTest::TestSuite
 {
