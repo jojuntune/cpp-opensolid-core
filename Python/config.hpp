@@ -36,7 +36,7 @@
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
     #endif
 #else
-    #define OPENSOLID_MODULE_EXPORT
+    #define OPENSOLID_PYTHON_MODULE_EXPORT
     #define OPENSOLID_PYTHON_EXPORT
 #endif
 
