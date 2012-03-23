@@ -92,12 +92,46 @@
     
     # Add global source-checking test
     ADD_TEST(SourceChecks "${PYTHON_EXECUTABLE}" "${OpenSolid}/checker.py" "${OpenSolid}")
+
+########## Set up required libraries ##########
+
+    # Set up Python
+    FIND_PACKAGE(PythonLibs REQUIRED)
+    INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+
+    # Set up Boost
+    FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+    # Add Boost library directory to link path so auto-linking works when using MSVC
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    
+    # Set up Qt
+    FIND_PACKAGE(Qt4 REQUIRED)
+    SET(QT_USE_QTOPENGL ON)
+    SET(QT_USE_QTXML ON)
+    INCLUDE(${QT_USE_FILE})
+    INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
+    ADD_DEFINITIONS(${QT_DEFINITIONS})
+    
+    # Set up OpenGL
+    FIND_PACKAGE(OpenGL REQUIRED)
+    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+    # Most POSIX systems have OpenGL headers in GL/ subdirectory
+    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR}/GL)
+    # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
+    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR}/Headers)
     
 ########## Build and install subprojects ##########
 
     ADD_SUBDIRECTORY(External)
     ADD_SUBDIRECTORY(Core)
     ADD_SUBDIRECTORY(Python)
+
+    INCLUDE_DIRECTORIES(Graph Graph/stk)
+        
+    ADD_SUBDIRECTORY(Graph)
+    ADD_SUBDIRECTORY(UI)
+    
     ADD_SUBDIRECTORY(Documentation EXCLUDE_FROM_ALL)
 
 ########## Top-level headers and files ##########

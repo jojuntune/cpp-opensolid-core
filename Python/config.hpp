@@ -24,7 +24,7 @@
 #include <OpenSolid/Core/config.hpp>
 
 #if defined(WIN32)
-    #if defined(opensolid_EXPORTS)
+    #if defined(OpenSolidPythonModule_EXPORTS)
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)

@@ -1,16 +1,3 @@
-########## Set up Python ##########
-
-    FIND_PACKAGE(PythonLibs REQUIRED)
-    INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
-
-########## Set up Boost ##########
-
-    FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-    
-    # Add Boost library directory to link path so auto-linking works when using MSVC
-    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-
 ########## Define lists of source files ##########
 
     # Python directory files
@@ -59,19 +46,23 @@
     
 ########## Compile Python extension module ##########
     
-    ADD_LIBRARY(opensolid SHARED ${PYTHON_MODULE_SOURCES})
-    SET_TARGET_PROPERTIES(opensolid PROPERTIES PREFIX "")
+    ADD_LIBRARY(OpenSolidPythonModule SHARED ${PYTHON_MODULE_SOURCES})
+    SET_TARGET_PROPERTIES(OpenSolidPythonModule PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
     IF(WIN32)
-        SET_TARGET_PROPERTIES(opensolid PROPERTIES SUFFIX ".pyd")
+        SET_TARGET_PROPERTIES(OpenSolidPythonModule PROPERTIES SUFFIX ".pyd")
     ENDIF(WIN32)
-    TARGET_LINK_LIBRARIES(opensolid OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(OpenSolidPythonModule
+        OpenSolidCore
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARIES}
+    )
     
 ########## Compile OpenSolidPython library ##########
     
     ADD_LIBRARY(OpenSolidPython SHARED ${PYTHON_ENVIRONMENT_SOURCES})
     TARGET_LINK_LIBRARIES(OpenSolidPython
         OpenSolidCore
-        opensolid
+        OpenSolidPythonModule
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARIES}
     )
@@ -119,4 +110,4 @@
     )
 
     # Install Python extension module
-    INSTALL(TARGETS opensolid DESTINATION ${PYTHON_SITE_PACKAGES})
+    INSTALL(TARGETS OpenSolidPythonModule DESTINATION ${PYTHON_SITE_PACKAGES})
