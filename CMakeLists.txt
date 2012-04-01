@@ -25,6 +25,7 @@
         # Enable -fPIC on 64-bit systems where it is required
         IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+            SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
         ENDIF (CMAKE_SIZEOF_VOID_P EQUAL 8)
         # Define nullptr as 0 on GCC versions earlier than 4.6
         EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
