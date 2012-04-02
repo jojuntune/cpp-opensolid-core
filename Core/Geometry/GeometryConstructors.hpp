@@ -97,7 +97,7 @@ namespace opensolid
             const Frame3d& frame,
             double radius,
             double pitch,
-            const Interval& angle
+            const Interval& turns
         );
     };
 }

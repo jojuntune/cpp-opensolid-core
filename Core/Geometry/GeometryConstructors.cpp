@@ -31,20 +31,19 @@ namespace opensolid
         double end_angle
     ) {
         Datum2d datum = frame.scaled(radius);
+        Function angle;
         if (end_angle - start_angle == Zero()) {
-            return Geometry(Function::Elliptical(datum), Interval(0, 2 * M_PI));
+            angle = 2 * M_PI * Function::Parameter();
+            datum = frame.scaled(radius);
         } else if (end_angle > start_angle) {
-            return Geometry(
-                Function::Elliptical(datum)(start_angle + Function::Parameter()),
-                Interval(0, end_angle - start_angle)
-            );
+            angle = start_angle + (end_angle - start_angle) * Function::Parameter();
+            datum = frame.scaled(radius);
         } else {
-            Function theta = Function::Parameter();
-            return Geometry(
-                Function::Elliptical(datum.xReversed())(M_PI - start_angle + Function::Parameter()),
-                Interval(0, start_angle - end_angle)
-            );
-        }}
+            datum = frame.scaled(radius).xReversed();
+            angle = M_PI - start_angle + (start_angle - end_angle) * Function::Parameter();
+        }
+        return Geometry(Function::Elliptical(datum)(angle), Interval(0, 1));
+    }
         
     Geometry GeometryConstructors::Arc2d(
         const Vector2d& center,
@@ -57,9 +56,10 @@ namespace opensolid
         Datum2d datum = Frame2d(center, radial).scaled(radius);
         if (!counterclockwise) {datum = datum.yReversed();}
         Vector2d local_end = end / datum;
-        double angle = atan2(local_end.y(), local_end.x());
-        if (angle <= Zero()) {angle += 2 * M_PI;}
-        return Geometry(Function::Elliptical(datum), Interval(0, angle));
+        double swept_angle = atan2(local_end.y(), local_end.x());
+        if (swept_angle <= Zero()) {swept_angle += 2 * M_PI;}
+        Function angle = swept_angle * Function::Parameter();
+        return Geometry(Function::Elliptical(datum)(angle), Interval(0, 1));
     }
 
     Geometry GeometryConstructors::Arc2d(
@@ -130,14 +130,14 @@ namespace opensolid
         double radius,
         bool filled
     ) {
-        Function arc_function = Geometry::Arc2d(Frame2d(), radius, 0, -2 * M_PI).function();
         if (filled) {
+            Function arc_function = Geometry::Arc2d(Frame2d(), radius, 0, 2 * M_PI).function();
             Function u = Function::Parameter(2, 0);
             Function v = Function::Parameter(2, 1);
             Function circle_function = center + u * arc_function(v);
-            return Geometry(circle_function, Domain(Interval(0, 1), Interval(0, 2 * M_PI)));
+            return Geometry(circle_function, Domain(Interval(0, 1), Interval(0, 1)));
         } else {
-            return Geometry(center + arc_function, Interval(0, 2 * M_PI));
+            return Geometry::Arc2d(Frame2d(center), radius, 0, 2 * M_PI);
         }
     }
 
@@ -157,10 +157,11 @@ namespace opensolid
         const Frame3d& frame,
         double radius,
         double pitch,
-        const Interval& angle
+        const Interval& turns
     ) {
-        Function planar = Function::Elliptical(frame.xyPlane().scaled(radius));
-        Function axial = Function::Linear(frame.zAxis().scaled(pitch / (2 * M_PI)));
-        return Geometry(planar + axial, angle);
+        Function angle = 2 * M_PI * Function::Parameter();
+        Function planar = Function::Elliptical(frame.xyPlane().scaled(radius))(angle);
+        Function axial = Function::Linear(frame.zAxis().scaled(pitch));
+        return Geometry(planar + axial, turns);
     }
 }
