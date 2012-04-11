@@ -109,4 +109,14 @@ public:
         TS_ASSERT_EQUALS(reconstructed.value, original.value);
         TS_ASSERT_EQUALS(reconstructed.vector, original.vector);
     }
+
+    void testIndexedAccess() {
+        Object object;
+        Vector3d vector(1, 2, 3);
+        double value = 4.5;
+        object.set(1, vector);
+        object.set("2", value);
+        TS_ASSERT_EQUALS(object.get<Vector3d>("1"), vector);
+        TS_ASSERT_EQUALS(object.get<double>(2), value);
+    }
 };

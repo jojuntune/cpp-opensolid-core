@@ -23,6 +23,8 @@
 
 #include <string>
 
+#include <boost/lexical_cast.hpp>
+
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
@@ -93,6 +95,32 @@ namespace opensolid
 
         template <class Type>
         Type get(const std::string& name) const;
+
+        void set(int index, bool value);
+        void set(int index, int value);
+        void set(int index, double value);
+        void set(int index, const std::string& value);
+        void set(int index, const Interval& value);
+        void set(int index, const MatrixXd& value);
+        void set(int index, const MatrixXI& value);
+        void set(int index, const DatumXd& value);
+        void set(int index, const SimplexXd& value);
+        void set(int index, const Function& value);
+        void set(int index, const Geometry& value);
+        void set(int index, const Domain& value);
+        void set(int index, const Object& value);
+        
+        template <class MatrixType>
+        void set(int index, const EigenBase<MatrixType>& value);
+
+        template <int dimensions_, int axes_>
+        void set(int index, const Datum<dimensions_, axes_>& value);
+
+        template <int dimensions_, int size_>
+        void set(int index, const Simplex<dimensions_, size_>& value);
+
+        template <class Type>
+        Type get(int index) const;
     };
 }
 
@@ -354,6 +382,100 @@ namespace opensolid
 
     template <class Derived> template <class Type>
     Type PropertyMap<Derived>::get(const std::string& name) const {
+        if (derived().has(name)) {
+            Type result;
+            getProperty(name, result);
+            return std::move(result);
+        } else {
+            derived().throwPropertyError(name, TypeName<Type>()());
+            return Type();
+        }
+    }
+
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, bool value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, int value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, double value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const std::string& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const Interval& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const MatrixXd& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const MatrixXI& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const DatumXd& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const SimplexXd& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const Function& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const Geometry& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const Domain& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+    
+    template <class Derived>
+    void PropertyMap<Derived>::set(int index, const Object& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), value);
+    }
+
+    template <class Derived> template <class MatrixType>
+    void PropertyMap<Derived>::set(int index, const EigenBase<MatrixType>& value) {
+        typedef Matrix<typename MatrixType::Scalar, Dynamic, Dynamic> DynamicMatrixType;
+        derived().setProperty(boost::lexical_cast<std::string>(index), DynamicMatrixType(value));
+    }
+
+    template <class Derived> template <int dimensions_, int axes_>
+    void PropertyMap<Derived>::set(int index, const Datum<dimensions_, axes_>& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), DatumXd(value));
+    }
+
+    template <class Derived> template <int dimensions_, int size_>
+    void PropertyMap<Derived>::set(int index, const Simplex<dimensions_, size_>& value) {
+        derived().setProperty(boost::lexical_cast<std::string>(index), SimplexXd(value));
+    }
+
+    template <class Derived> template <class Type>
+    Type PropertyMap<Derived>::get(int index) const {
+        std::string name = boost::lexical_cast<std::string>(index);
         if (derived().has(name)) {
             Type result;
             getProperty(name, result);
