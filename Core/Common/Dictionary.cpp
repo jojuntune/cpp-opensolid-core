@@ -18,16 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/PropertyMap.hpp>
+#include <OpenSolid/Core/Common/Dictionary.hpp>
 
 namespace opensolid
 {
-    PropertyError::PropertyError(const std::string& name, const std::string& requested_type) :
-        _name(name), _requested_type(requested_type) {}
+    DictionaryError::DictionaryError(const std::string& key, const std::string& requested_type) :
+        _key(key), _requested_type(requested_type) {}
         
-    PropertyError::~PropertyError() throw() {}
+    DictionaryError::~DictionaryError() throw() {}
 
-    std::string PropertyError::name() const {return _name;}
+    std::string DictionaryError::key() const {return _key;}
 
-    std::string PropertyError::requestedType() const {return _requested_type;}
+    std::string DictionaryError::requestedType() const {return _requested_type;}
 }

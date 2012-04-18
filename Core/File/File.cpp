@@ -19,84 +19,70 @@
  ***************************************************************************/
 
 #include <sqlite/sqlite3.h>
+
 #include <OpenSolid/Core/File/File.hpp>
 
 namespace opensolid
 {
-    struct File::SQL
-    {
-        sqlite3* database;
-        sqlite3_stmt* insert_statement;
-        sqlite3_stmt* select_statement;
-    };
-
     void File::getData(
-        const std::string& name,
+        const std::string& key,
         std::string& type,
         std::string& data
     ) const {
-        if (!isOpen()) {throw FilePropertyError(filename(), mode(), isOpen(), "", "");}
-        sqlite3_bind_text(_sql->select_statement, 1, name.c_str(), name.size(), SQLITE_STATIC);
-        if (sqlite3_step(_sql->select_statement) != SQLITE_ROW) {throwPropertyError(name, "");}
+        sqlite3_bind_text(_select_statement, 1, key.c_str(), key.size(), SQLITE_STATIC);
+        if (sqlite3_step(_select_statement) != SQLITE_ROW) {throwDictionaryError(key, "");}
         type.assign(
-            (const char*) sqlite3_column_text(_sql->select_statement, 0),
-            sqlite3_column_bytes(_sql->select_statement, 0)
+            (const char*) sqlite3_column_text(_select_statement, 0),
+            sqlite3_column_bytes(_select_statement, 0)
         );
         data.assign(
-            (const char*) sqlite3_column_text(_sql->select_statement, 1),
-            sqlite3_column_bytes(_sql->select_statement, 1)
+            (const char*) sqlite3_column_text(_select_statement, 1),
+            sqlite3_column_bytes(_select_statement, 1)
         );
-        sqlite3_reset(_sql->select_statement);
-        sqlite3_clear_bindings(_sql->select_statement);
+        sqlite3_reset(_select_statement);
+        sqlite3_clear_bindings(_select_statement);
     }
         
     void File::setData(
-        const std::string& name,
+        const std::string& key,
         const std::string& type,
         const std::string& data
     ) {
-        if (!isOpen()) {throw FilePropertyError(filename(), mode(), isOpen(), "", "");}
-        sqlite3_bind_text(_sql->insert_statement, 1, name.c_str(), name.size(), SQLITE_STATIC);
-        sqlite3_bind_text(_sql->insert_statement, 2, type.c_str(), type.size(), SQLITE_STATIC);
-        sqlite3_bind_blob(_sql->insert_statement, 3, data.c_str(), data.size(), SQLITE_STATIC);
-        if (sqlite3_step(_sql->insert_statement) != SQLITE_DONE) {
-            throw FileSetPropertyError(filename(), mode(), isOpen());
+        sqlite3_bind_text(_insert_statement, 1, key.c_str(), key.size(), SQLITE_STATIC);
+        sqlite3_bind_text(_insert_statement, 2, type.c_str(), type.size(), SQLITE_STATIC);
+        sqlite3_bind_blob(_insert_statement, 3, data.c_str(), data.size(), SQLITE_STATIC);
+        if (sqlite3_step(_insert_statement) != SQLITE_DONE) {
+            throw FileSetValueError(filename(), mode());
         }
-        sqlite3_reset(_sql->insert_statement);
-        sqlite3_clear_bindings(_sql->insert_statement);
+        sqlite3_reset(_insert_statement);
+        sqlite3_clear_bindings(_insert_statement);
     }
 
-    void File::throwPropertyError(
-        const std::string& name,
+    void File::throwDictionaryError(
+        const std::string& key,
         const std::string& requested_type
-    ) const {throw FilePropertyError(filename(), mode(), isOpen(), name, requested_type);}
+    ) const {throw FileGetValueError(filename(), mode(), key, requested_type);}
 
-    File::File(const std::string& filename) : _filename(filename) {}
-
-    File::~File() {close();}
-
-    std::string File::filename() const {return _filename;}
-
-    void File::open(const std::string& mode) {
-        if (isOpen()) {throw FileOpenError(filename(), mode, isOpen());}
-        sqlite3* database = nullptr;
+    File::File(const std::string& filename, const std::string& mode) :
+        _filename(filename),
+        _mode(mode),
+        _database(nullptr),
+        _insert_statement(nullptr),
+        _select_statement(nullptr) {
         int flags = 0;
         if (mode == "r") {
             flags = SQLITE_OPEN_READONLY;
         } else if (mode == "rw") {
             flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
         } else {
-            throw FileOpenError(filename(), mode, isOpen());
+            throw FileOpenError(filename, mode);
         }
-        int result = sqlite3_open_v2(filename().c_str(), &database, flags, nullptr);
-        if (result) {throw FileOpenError(filename(), mode, isOpen());}
-        _mode = mode;
-        _sql.reset(new File::SQL);
-        _sql->database = database;
+        int result = sqlite3_open_v2(filename.c_str(), &_database, flags, nullptr);
+        if (result) {throw FileOpenError(filename, mode);}
         result = sqlite3_exec(
-            _sql->database,
+            _database,
             "BEGIN TRANSACTION;"
-            "CREATE TABLE IF NOT EXISTS Model (name TEXT PRIMARY KEY, type TEXT, data BLOB);"
+            "CREATE TABLE IF NOT EXISTS Model (key TEXT PRIMARY KEY, type TEXT, data BLOB);"
             "CREATE TABLE IF NOT EXISTS FunctionImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
             "CREATE TABLE IF NOT EXISTS GeometryImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
             "CREATE TABLE IF NOT EXISTS DomainImplementation (pointer INTEGER PRIMARY KEY, data BLOB);",
@@ -104,50 +90,52 @@ namespace opensolid
             nullptr,
             nullptr
         );
-        if (result) {throw FileOpenError(filename(), mode, isOpen());}
+        if (result) {throw FileOpenError(filename, mode);}
         sqlite3_prepare_v2(
-            _sql->database,
+            _database,
             "INSERT OR REPLACE INTO Model VALUES (?1, ?2, ?3)",
             -1,
-            &(_sql->insert_statement),
+            &_insert_statement,
             nullptr
         );
         sqlite3_prepare_v2(
-            _sql->database,
-            "SELECT type, data FROM Model WHERE name=?1",
+            _database,
+            "SELECT type, data FROM Model WHERE key=?1",
             -1,
-            &(_sql->select_statement),
+            &_select_statement,
             nullptr
         );
     }
+
+    File::~File() {
+        sqlite3_exec(_database, "COMMIT", nullptr, nullptr, nullptr);
+        sqlite3_close(_database);
+        sqlite3_finalize(_insert_statement);
+        sqlite3_finalize(_select_statement);
+    }
+
+    std::string File::filename() const {return _filename;}
 
     std::string File::mode() const {return _mode;}
 
-    bool File::isOpen() const {return bool(_sql);}
-
-    void File::close() {
-        if (isOpen()) {
-            sqlite3_exec(_sql->database, "COMMIT", nullptr, nullptr, nullptr);
-            sqlite3_close(_sql->database);
-            sqlite3_finalize(_sql->insert_statement);
-            sqlite3_finalize(_sql->select_statement);
-            _sql.reset();
-        }
-    }
-
-    bool File::has(const std::string& name) const {
-        if (!isOpen()) {throw FilePropertyError(filename(), mode(), isOpen(), "", "");}
-        sqlite3_bind_text(_sql->select_statement, 1, name.c_str(), name.size(), SQLITE_STATIC);
-        bool result = sqlite3_step(_sql->select_statement) != SQLITE_DONE;
-        sqlite3_reset(_sql->select_statement);
+    bool File::has(const std::string& key) const {
+        sqlite3_bind_text(_select_statement, 1, key.c_str(), key.size(), SQLITE_STATIC);
+        bool result = sqlite3_step(_select_statement) != SQLITE_DONE;
+        sqlite3_reset(_select_statement);
         return result;
     }
 
+    FileError::FileError(const std::string& filename, const std::string& mode) :
+        _filename(filename), _mode(mode) {}
+
+    std::string FileError::filename() const {return _filename;}
+
+    std::string FileError::mode() const {return _mode;}
+
     FileOpenError::FileOpenError(
         const std::string& filename,
-        const std::string& mode,
-        bool is_open
-    ) : _filename(filename), _mode(mode), _is_open(is_open) {}
+        const std::string& mode
+    ) : FileError(filename, mode) {}
     
     FileOpenError::~FileOpenError() throw() {}
 
@@ -155,43 +143,27 @@ namespace opensolid
         return "FileOpenError";
     }
 
-    std::string FileOpenError::filename() const {return _filename;}
-
-    std::string FileOpenError::mode() const {return _mode;}
-
-    FilePropertyError::FilePropertyError(
+    FileGetValueError::FileGetValueError(
         const std::string& filename,
         const std::string& mode,
-        bool is_open,
-        const std::string& name,
+        const std::string& key,
         const std::string& requested_type
-    ) : PropertyError(name, requested_type), _filename(filename), _mode(mode), _is_open(is_open) {}
+    ) : FileError(filename, mode), DictionaryError(key, requested_type) {}
     
-    FilePropertyError::~FilePropertyError() throw() {}
+    FileGetValueError::~FileGetValueError() throw() {}
 
-    const char* FilePropertyError::what() const throw() {
-        return "FilePropertyError";
+    const char* FileGetValueError::what() const throw() {
+        return "FileGetValueError";
     }
 
-    std::string FilePropertyError::filename() const {return _filename;}
-
-    std::string FilePropertyError::mode() const {return _mode;}
-
-    bool FilePropertyError::isOpen() const {return _is_open;}
-
-    FileSetPropertyError::FileSetPropertyError(
+    FileSetValueError::FileSetValueError(
         const std::string& filename,
-        const std::string& mode,
-        bool is_open
-    ) : _filename(filename), _mode(mode), _is_open(is_open) {}
+        const std::string& mode
+    ) : FileError(filename, mode) {}
     
-    FileSetPropertyError::~FileSetPropertyError() throw() {}
+    FileSetValueError::~FileSetValueError() throw() {}
 
-    const char* FileSetPropertyError::what() const throw() {
-        return "FileSetPropertyError";
+    const char* FileSetValueError::what() const throw() {
+        return "FileSetValueError";
     }
-
-    std::string FileSetPropertyError::filename() const {return _filename;}
-
-    std::string FileSetPropertyError::mode() const {return _mode;}
 }

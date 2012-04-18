@@ -87,11 +87,9 @@ namespace opensolid
             }
         };
 
-        static boost::python::object get(const Object& object, const std::string& name) {
-            if (!object.has(name)) {
-                throw ObjectPropertyError(object, name, "");
-            }
-            return boost::apply_visitor(Visitor(), object._properties.at(name));
+        static boost::python::object get(const Object& object, const std::string& key) {
+            if (!object.has(key)) {throw ObjectGetValueError(object, key, "");}
+            return boost::apply_visitor(Visitor(), object._map.at(key));
         }
     };
 

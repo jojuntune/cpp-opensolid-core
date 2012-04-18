@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Core/Datum/Axis.hpp>
 #include <OpenSolid/Core/Object/Object.hpp>
+#include <OpenSolid/Core/File/File.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 
 using namespace boost::python;
@@ -727,17 +728,37 @@ namespace opensolid
                 .def("index", &UnitRowVectorXIConstructionError::index)
         );
         registerException(
-            class_<ObjectPropertyError>("_ObjectPropertyError", no_init)
-                .def("__str__", &ObjectPropertyError::what)
-                .def("object", &ObjectPropertyError::object)
-                .def("name", &ObjectPropertyError::name)
-                .def("requestedType", &ObjectPropertyError::requestedType)
+            class_<ObjectGetValueError>("_ObjectGetValueError", no_init)
+                .def("__str__", &ObjectGetValueError::what)
+                .def("object", &ObjectGetValueError::object)
+                .def("key", &ObjectGetValueError::key)
+                .def("requestedType", &ObjectGetValueError::requestedType)
         );
         registerException(
             class_<NotImplementedError>("_NotImplementedError", no_init)
                 .def("__str__", &NotImplementedError::what)
                 .def("file", &NotImplementedError::file)
                 .def("line", &NotImplementedError::line)
+        );
+        registerException(
+            class_<FileGetValueError>("_FileGetValueError", no_init)
+                .def("__str__", &FileGetValueError::what)
+                .def("key", &FileGetValueError::key)
+                .def("requestedType", &FileGetValueError::requestedType)
+                .def("filename", &FileGetValueError::filename)
+                .def("mode", &FileGetValueError::mode)
+        );
+        registerException(
+            class_<FileSetValueError>("_FileSetValueError", no_init)
+                .def("__str__", &FileSetValueError::what)
+                .def("filename", &FileSetValueError::filename)
+                .def("mode", &FileSetValueError::mode)
+        );
+        registerException(
+            class_<FileOpenError>("_FileOpenError", no_init)
+                .def("__str__", &FileOpenError::what)
+                .def("filename", &FileOpenError::filename)
+                .def("mode", &FileOpenError::mode)
         );
     }
 }

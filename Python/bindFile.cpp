@@ -79,13 +79,11 @@ namespace opensolid
 
     struct GetFileProperty
     {
-        static boost::python::object get(const File& file, const std::string& name) {
-            if (!file.has(name)) {
-                throw FilePropertyError(file.filename(), file.mode(), file.isOpen(), name, "");
-            }
+        static boost::python::object get(const File& file, const std::string& key) {
+            if (!file.has(key)) {throw FileGetValueError(file.filename(), file.mode(), key, "");}
             std::string type;
             std::string data;
-            file.getData(name, type, data);
+            file.getData(key, type, data);
             if (type == "bool") {
                 Deserialization<bool> deserialization;
                 return boost::python::object(deserialization(data));
@@ -131,12 +129,9 @@ namespace opensolid
     };
 
     void bindFile() {
-        class_<File, boost::noncopyable>("File", init<std::string>())
+        class_<File, boost::noncopyable>("File", init<std::string, std::string>())
             .def("filename", &File::filename)
-            .def("open", &File::open)
             .def("mode", &File::mode)
-            .def("isOpen", &File::isOpen)
-            .def("close", &File::close)
             .def("has", &File::has)
             .def("get", &GetFileProperty::get)
             .def("set", &setObject)

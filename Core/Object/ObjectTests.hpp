@@ -76,7 +76,7 @@ public:
         TS_ASSERT(!object.has("c"));
         TS_ASSERT_EQUALS(object.get<double>("a"), 1.0);
         TS_ASSERT_EQUALS(object.get<Interval>("b").upper(), 5.0);
-        TS_ASSERT_THROWS(object.get<int>("c"), ObjectPropertyError);
+        TS_ASSERT_THROWS(object.get<int>("c"), ObjectGetValueError);
     }
 
     void testSerialization() {

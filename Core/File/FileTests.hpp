@@ -33,19 +33,17 @@ public:
         std::string filename = "FileTests.testFile.db";
         std::remove(filename.c_str());
 
-        File save_file(filename);
-        save_file.open("rw");
-        save_file.set("vector", Vector3d(1, 2, 3));
-        save_file.set("interval", Interval(4, 5));
-        save_file.set("value", M_PI);
-        save_file.close();
+        {
+            File save_file(filename, "rw");
+            save_file.set("vector", Vector3d(1, 2, 3));
+            save_file.set("interval", Interval(4, 5));
+            save_file.set("value", M_PI);
+        }
 
-        File load_file(filename);
-        load_file.open("r");
+        File load_file(filename, "r");
         Vector3d vector = load_file.get<Vector3d>("vector");
         Interval interval = load_file.get<Interval>("interval");
         double value = load_file.get<double>("value");
-        load_file.close();
 
         TS_ASSERT_EQUALS(vector, Vector3d(1, 2, 3));
         TS_ASSERT_EQUALS(interval.lower(), 4);
@@ -57,16 +55,14 @@ public:
         std::string filename = "FileTests.testFileErrors.db";
         std::remove(filename.c_str());
 
-        File save_file(filename);
-        save_file.open("rw");
-        save_file.set("vector", Vector3d(1, 2, 3));
-        save_file.close();
+        {
+            File save_file(filename, "rw");
+            save_file.set("vector", Vector3d(1, 2, 3));
+        }
 
-        File load_file(filename);
-        load_file.open("r");
-        TS_ASSERT_THROWS(load_file.set("one", 1.0), FileSetPropertyError);
-        TS_ASSERT_THROWS(load_file.get<Vector2d>("vector"), FilePropertyError);
+        File load_file(filename, "r");
+        TS_ASSERT_THROWS(load_file.set("one", 1.0), FileSetValueError);
+        TS_ASSERT_THROWS(load_file.get<Vector2d>("vector"), FileGetValueError);
         TS_ASSERT_EQUALS(load_file.get<Vector3d>("vector"), Vector3d(1, 2, 3));
-        load_file.close();
     }
 };

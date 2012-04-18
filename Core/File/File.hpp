@@ -25,7 +25,7 @@
 #include <memory>
 
 #include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/PropertyMap.hpp>
+#include <OpenSolid/Core/Common/Dictionary.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
@@ -36,17 +36,18 @@
 #include <OpenSolid/Core/Object/Object.hpp>
 
 struct sqlite3;
+struct sqlite3_stmt;
 
 namespace opensolid
 {
-    class File : public PropertyMap<File>
+    class File : public Dictionary<File>
     {
     private:
         std::string _filename;
         std::string _mode;
-
-        struct SQL;
-        std::unique_ptr<SQL> _sql;
+        sqlite3* _database;
+        sqlite3_stmt* _insert_statement;
+        sqlite3_stmt* _select_statement;
 
         OPENSOLID_CORE_EXPORT void getData(
             const std::string& name,
@@ -61,27 +62,24 @@ namespace opensolid
         );
 
         template <class Type>
-        void setProperty(const std::string& name, const Type& value);
+        void setValue(const std::string& key, const Type& value);
 
         template <class Type>
-        void getProperty(const std::string& name, Type& value) const;
+        void getValue(const std::string& key, Type& value) const;
 
-        OPENSOLID_CORE_EXPORT void throwPropertyError(
+        OPENSOLID_CORE_EXPORT void throwDictionaryError(
             const std::string& name,
             const std::string& requested_type
         ) const;
 
-        friend class PropertyMap<File>;
+        friend class Dictionary<File>;
         friend struct GetFileProperty;
     public:
-        OPENSOLID_CORE_EXPORT File(const std::string& filename);
+        OPENSOLID_CORE_EXPORT File(const std::string& filename, const std::string& mode);
         OPENSOLID_CORE_EXPORT ~File();
 
         OPENSOLID_CORE_EXPORT std::string filename() const;
-        OPENSOLID_CORE_EXPORT void open(const std::string& mode);
         OPENSOLID_CORE_EXPORT std::string mode() const;
-        OPENSOLID_CORE_EXPORT bool isOpen() const;
-        OPENSOLID_CORE_EXPORT void close();
         OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
     };
 }
@@ -90,69 +88,60 @@ namespace opensolid
 
 namespace opensolid
 {
-    class FileOpenError : public Error
+    class FileError : public Error
     {
     private:
         std::string _filename;
         std::string _mode;
-        bool _is_open;
+    public:
+        OPENSOLID_CORE_EXPORT FileError(
+            const std::string& filename,
+            const std::string& mode
+        );
+
+        OPENSOLID_CORE_EXPORT std::string filename() const;
+        OPENSOLID_CORE_EXPORT std::string mode() const;
+    };
+
+    class FileOpenError : public FileError
+    {
     public:
         OPENSOLID_CORE_EXPORT FileOpenError(
             const std::string& filename,
-            const std::string& mode,
-            bool is_open
+            const std::string& mode
         );
         
         OPENSOLID_CORE_EXPORT ~FileOpenError() throw();
         
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-        OPENSOLID_CORE_EXPORT std::string filename() const;
-        OPENSOLID_CORE_EXPORT std::string mode() const;
-        OPENSOLID_CORE_EXPORT bool isOpen() const;
     };
 
-    class FilePropertyError : public PropertyError
+    class FileGetValueError : public FileError, public DictionaryError
     {
-    private:
-        std::string _filename;
-        std::string _mode;
-        bool _is_open;
     public:
-        OPENSOLID_CORE_EXPORT FilePropertyError(
+        OPENSOLID_CORE_EXPORT FileGetValueError(
             const std::string& filename,
             const std::string& mode,
-            bool is_open,
-            const std::string& name,
+            const std::string& key,
             const std::string& requested_type
         );
         
-        OPENSOLID_CORE_EXPORT ~FilePropertyError() throw();
+        OPENSOLID_CORE_EXPORT ~FileGetValueError() throw();
 
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-        OPENSOLID_CORE_EXPORT std::string filename() const;
-        OPENSOLID_CORE_EXPORT std::string mode() const;
-        OPENSOLID_CORE_EXPORT bool isOpen() const;
     };
 
-    class FileSetPropertyError : public Error
+    class FileSetValueError : public FileError
     {
-    private:
-        std::string _filename;
-        std::string _mode;
-        bool _is_open;
     public:
-        OPENSOLID_CORE_EXPORT FileSetPropertyError(
+        OPENSOLID_CORE_EXPORT FileSetValueError(
             const std::string& filename,
-            const std::string& mode,
-            bool is_open
+            const std::string& mode
         );
         
-        OPENSOLID_CORE_EXPORT ~FileSetPropertyError() throw();
+        OPENSOLID_CORE_EXPORT ~FileSetValueError() throw();
         
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-        OPENSOLID_CORE_EXPORT std::string filename() const;
-        OPENSOLID_CORE_EXPORT std::string mode() const;
-        OPENSOLID_CORE_EXPORT bool isOpen() const;
     };
 }
 
@@ -161,19 +150,19 @@ namespace opensolid
 namespace opensolid
 {
     template <class Type>
-    void File::setProperty(const std::string& name, const Type& value) {
+    void File::setValue(const std::string& key, const Type& value) {
         Serialization<Type> serialization;
-        setData(name, TypeName<Type>()(), serialization(value));
+        setData(key, TypeName<Type>()(), serialization(value));
     }
 
     template <class Type>
-    void File::getProperty(const std::string& name, Type& value) const {
+    void File::getValue(const std::string& key, Type& value) const {
         std::string type;
         std::string data;
-        getData(name, type, data);
+        getData(key, type, data);
         std::string expected_type = TypeName<Type>()();
         if (type != expected_type) {
-            throw FilePropertyError(filename(), mode(), isOpen(), name, expected_type);
+            throw FileGetValueError(filename(), mode(), key, expected_type);
         }
         Deserialization<Type> deserialization;
         value = deserialization(data);

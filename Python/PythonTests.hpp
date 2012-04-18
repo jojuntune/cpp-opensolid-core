@@ -711,12 +711,12 @@ public:
         TS_ASSERT((transformed_axis.direction() - expected_direction).isZero());
         std::string transformed_color = environment.get<std::string>("transformed.get('color')");
         TS_ASSERT_EQUALS(transformed_color, "red");
-        TS_ASSERT_THROWS(environment.get<double>("component.get('volume')"), ObjectPropertyError);
+        TS_ASSERT_THROWS(environment.get<double>("component.get('volume')"), ObjectGetValueError);
         try {
             environment.get<double>("component.get('volume')");
-        } catch (const ObjectPropertyError& error) {
+        } catch (const ObjectGetValueError& error) {
             TS_ASSERT_EQUALS(error.object().get<std::string>("color"), "red");
-            TS_ASSERT_EQUALS(error.name(), "volume");
+            TS_ASSERT_EQUALS(error.key(), "volume");
         }
     }
 
@@ -724,24 +724,23 @@ public:
         std::string filename = "PythonTests.testFile.db";
         std::remove(filename.c_str());
 
-        PythonEnvironment first_environment;
-        first_environment.set("filename", filename);
-        first_environment.run("f = File(filename)");
-        first_environment.run("f.open('rw')");
-        first_environment.run("model = Object()");
-        first_environment.run("model.set('value', 1.0)");
-        first_environment.run("model.set('vector', Vector3d(1, 2, 3))");
-        first_environment.run("component = Object()");
-        first_environment.run("component.set('axis', Axis3d(Vector3d.Zero(), Vector3d(4, 5, 6)))");
-        first_environment.run("component.set('facet', Triangle3d(Matrix3d.Ones()))");
-        first_environment.run("model.set('component', component)");
-        first_environment.run("f.set('model', model)");
-        first_environment.run("f.close()");
+        {
+            PythonEnvironment first_environment;
+            first_environment.set("filename", filename);
+            first_environment.run("f = File(filename, 'rw')");
+            first_environment.run("model = Object()");
+            first_environment.run("model.set('value', 1.0)");
+            first_environment.run("model.set('vector', Vector3d(1, 2, 3))");
+            first_environment.run("component = Object()");
+            first_environment.run("component.set('axis', Axis3d(Vector3d.Zero(), Vector3d(4, 5, 6)))");
+            first_environment.run("component.set('facet', Triangle3d(Matrix3d.Ones()))");
+            first_environment.run("model.set('component', component)");
+            first_environment.run("f.set('model', model)");
+        }
         
         PythonEnvironment second_environment;
         second_environment.set("filename", filename);
-        second_environment.run("f = File(filename)");
-        second_environment.run("f.open('rw')");
+        second_environment.run("f = File(filename, 'rw')");
         Object model = second_environment.get<Object>("f.get('model')");
         TS_ASSERT_EQUALS(model.get<double>("value"), 1.0);
         TS_ASSERT_EQUALS(model.get<Vector3d>("vector"), Vector3d(1, 2, 3));

@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/PropertyMap.hpp>
+#include <OpenSolid/Core/Common/Dictionary.hpp>
 #include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
@@ -50,7 +50,7 @@ namespace opensolid
     struct Deserialization<Object>;
 
     class Object :
-        public PropertyMap<Object>,
+        public Dictionary<Object>,
         public Transformable<Object>,
         public Convertible<Object>
     {
@@ -71,27 +71,27 @@ namespace opensolid
             boost::recursive_wrapper<Object>
         > Variant;
 
-        std::unordered_map<std::string, Variant> _properties;
+        std::unordered_map<std::string, Variant> _map;
 
         template <class Type>
-        void setProperty(const std::string& name, const Type& value);
+        void setValue(const std::string& key, const Type& value);
 
         template <class Type>
-        void getProperty(const std::string& name, Type& value) const;
+        void getValue(const std::string& key, Type& value) const;
 
-        OPENSOLID_CORE_EXPORT void throwPropertyError(
-            const std::string& name,
+        OPENSOLID_CORE_EXPORT void throwDictionaryError(
+            const std::string& key,
             const std::string& requested_type
         ) const;
 
-        friend class PropertyMap<Object>;
+        friend class Dictionary<Object>;
         friend struct GetObjectProperty;
         friend struct Serialization<Object>;
         friend struct Deserialization<Object>;
     public:
         OPENSOLID_CORE_EXPORT Object();
 
-        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
+        OPENSOLID_CORE_EXPORT bool has(const std::string& key) const;
 
         OPENSOLID_CORE_EXPORT std::string type(const std::string& name) const;
 
@@ -129,18 +129,18 @@ namespace opensolid
 
 namespace opensolid
 {
-    class ObjectPropertyError : public PropertyError
+    class ObjectGetValueError : public Error, public DictionaryError
     {
     private:
         Object _object;
     public:
-        OPENSOLID_CORE_EXPORT ObjectPropertyError(
+        OPENSOLID_CORE_EXPORT ObjectGetValueError(
             const Object& object,
-            const std::string& name,
+            const std::string& key,
             const std::string& requested_type
         );
         
-        ~ObjectPropertyError() throw () {}
+        ~ObjectGetValueError() throw () {}
 
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT Object object() const;
@@ -152,16 +152,14 @@ namespace opensolid
 namespace opensolid
 {
     template <class Type>
-    void Object::setProperty(const std::string& name, const Type& value) {
-        _properties[name] = value;
-    }
+    void Object::setValue(const std::string& key, const Type& value) {_map[key] = value;}
 
     template <class Type>
-    void Object::getProperty(const std::string& name, Type& value) const {
-        if (const Type* result = boost::get<Type>(&_properties.at(name))) {
+    void Object::getValue(const std::string& key, Type& value) const {
+        if (const Type* result = boost::get<Type>(&_map.at(key))) {
             value = *result;
         } else {
-            throw ObjectPropertyError(*this, name, TypeName<Type>()());
+            throw ObjectGetValueError(*this, key, TypeName<Type>()());
         }
     }
 }

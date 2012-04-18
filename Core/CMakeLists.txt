@@ -37,7 +37,7 @@
         "${OpenSolid}/Core/Common/Error.hpp"
         "${OpenSolid}/Core/Common/Evaluation.hpp"
         "${OpenSolid}/Core/Common/MatrixArgument.hpp"
-        "${OpenSolid}/Core/Common/PropertyMap.hpp"
+        "${OpenSolid}/Core/Common/Dictionary.hpp"
         "${OpenSolid}/Core/Common/ReferenceCounted.hpp"
         "${OpenSolid}/Core/Common/Serialization.hpp"
         "${OpenSolid}/Core/Common/Transformable.hpp"
@@ -46,7 +46,7 @@
     SET(COMMON_SOURCES
         "${OpenSolid}/Core/Common/Deserialization.cpp"
         "${OpenSolid}/Core/Common/Error.cpp"
-        "${OpenSolid}/Core/Common/PropertyMap.cpp"
+        "${OpenSolid}/Core/Common/Dictionary.cpp"
         "${OpenSolid}/Core/Common/Serialization.cpp"
         "${OpenSolid}/Core/Common/TypeName.cpp"
     )

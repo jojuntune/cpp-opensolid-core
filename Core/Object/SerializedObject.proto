@@ -1,8 +1,8 @@
 package opensolid;
 
 message SerializedObject {
-    message NameValuePair {
-        required string name = 1;
+    message KeyValuePair {
+        required string key = 1;
         optional bool bool_value = 2;
         optional int32 int_value = 3;
         optional double double_value = 4;
@@ -18,5 +18,5 @@ message SerializedObject {
         optional bytes object_value = 14;
     }
 
-    repeated NameValuePair name_value_pair = 1;
+    repeated KeyValuePair key_value_pair = 1;
 }
