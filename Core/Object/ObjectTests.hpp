@@ -54,6 +54,12 @@ namespace opensolid
             return result;
         }
     };
+
+    template <>
+    struct TypeName<CustomType>
+    {
+        std::string operator()() const {return "CustomType";}
+    };
 }
 
 class ObjectTests : public CxxTest::TestSuite
@@ -118,5 +124,18 @@ public:
         object.set("2", value);
         TS_ASSERT_EQUALS(object.get<Vector3d>("1"), vector);
         TS_ASSERT_EQUALS(object.get<double>(2), value);
+    }
+
+    void testAutomaticConversion() {
+        CustomType original;
+        original.value = M_PI;
+        original.vector = Vector3d::Random();
+        Object object;
+        object.set("custom", original);
+        TS_ASSERT_EQUALS(object.get<Object>("custom").get<double>("value"), original.value);
+        TS_ASSERT_EQUALS(object.get<Object>("custom").get<Vector3d>("vector"), original.vector);
+        CustomType reconstructed = object.get<CustomType>("custom");
+        TS_ASSERT_EQUALS(reconstructed.value, original.value);
+        TS_ASSERT_EQUALS(reconstructed.vector, original.vector);
     }
 };

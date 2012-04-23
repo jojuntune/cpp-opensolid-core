@@ -69,6 +69,12 @@ namespace opensolid
 
         template <int dimensions_, int size_>
         void getValue(const std::string& key, Simplex<dimensions_, size_>& result) const;
+
+        template <class Type>
+        auto getValue(
+            const std::string& key,
+            Type& result
+        ) const -> decltype(Conversion<Object, Type>()(Object()))*;
     public:
         void set(const std::string& key, bool value);
         void set(const std::string& key, int value);
@@ -94,33 +100,45 @@ namespace opensolid
         void set(const std::string& key, const Simplex<dimensions_, size_>& value);
 
         template <class Type>
-        Type get(const std::string& key) const;
-
-        void set(int index, bool value);
-        void set(int index, int value);
-        void set(int index, double value);
-        void set(int index, const std::string& value);
-        void set(int index, const Interval& value);
-        void set(int index, const MatrixXd& value);
-        void set(int index, const MatrixXI& value);
-        void set(int index, const DatumXd& value);
-        void set(int index, const SimplexXd& value);
-        void set(int index, const Function& value);
-        void set(int index, const Geometry& value);
-        void set(int index, const Domain& value);
-        void set(int index, const Object& value);
-        
-        template <class MatrixType>
-        void set(int index, const EigenBase<MatrixType>& value);
-
-        template <int dimensions_, int axes_>
-        void set(int index, const Datum<dimensions_, axes_>& value);
-
-        template <int dimensions_, int size_>
-        void set(int index, const Simplex<dimensions_, size_>& value);
+        auto set(
+            const std::string& key,
+            const Type& value
+        ) -> decltype(Conversion<Type, Object>()(value))*;
 
         template <class Type>
-        Type get(int index) const;
+        Type get(const std::string& key) const;
+
+        void set(int key, bool value);
+        void set(int key, int value);
+        void set(int key, double value);
+        void set(int key, const std::string& value);
+        void set(int key, const Interval& value);
+        void set(int key, const MatrixXd& value);
+        void set(int key, const MatrixXI& value);
+        void set(int key, const DatumXd& value);
+        void set(int key, const SimplexXd& value);
+        void set(int key, const Function& value);
+        void set(int key, const Geometry& value);
+        void set(int key, const Domain& value);
+        void set(int key, const Object& value);
+        
+        template <class MatrixType>
+        void set(int key, const EigenBase<MatrixType>& value);
+
+        template <int dimensions_, int axes_>
+        void set(int key, const Datum<dimensions_, axes_>& value);
+
+        template <int dimensions_, int size_>
+        void set(int key, const Simplex<dimensions_, size_>& value);
+
+        template <class Type>
+        auto set(
+            int key,
+            const Type& value
+        ) -> decltype(Conversion<Type, Object>()(value))*;
+
+        template <class Type>
+        Type get(int key) const;
     };
 }
 
@@ -257,7 +275,7 @@ namespace opensolid
         if (
             (temp.rows() != compile_time_rows && compile_time_rows != Dynamic) ||
             (temp.cols() != compile_time_cols && compile_time_cols != Dynamic)
-        ) {derived().throwDictionaryError(key, "");}
+        ) {derived().throwDictionaryError(key, TypeName<MatrixType>()());}
         result.derived() = temp;
     }
 
@@ -288,13 +306,28 @@ namespace opensolid
         try {
             derived().getValue(key, temp);
         } catch (const DictionaryError&) {
-            derived().throwDictionaryError(key, TypeName<Simplex<dimensions_, size_>>()());
+            derived().throwDictionaryError(key, "");
         }
         if (
             (temp.dimensions() != dimensions_ && dimensions_ != Dynamic) ||
             (temp.size() != size_ && size_ != Dynamic)
         ) {derived().throwDictionaryError(key, "");}
         result = temp;
+    }
+
+    template <class Derived> template <class Type>
+    auto Dictionary<Derived>::getValue(
+        const std::string& key,
+        Type& result
+    ) const -> decltype(Conversion<Object, Type>()(Object()))* {
+        Object object;
+        try {
+            derived().getValue(key, object);
+        } catch (const DictionaryError&) {
+            derived().throwDictionaryError(key, TypeName<Type>()());
+        }
+        result = object.as<Type>();
+        return nullptr;
     }
 
     template <class Derived>
@@ -381,6 +414,15 @@ namespace opensolid
     ) {derived().setValue(key, SimplexXd(value));}
 
     template <class Derived> template <class Type>
+    auto Dictionary<Derived>::set(
+        const std::string& key,
+        const Type& value
+    ) -> decltype(Conversion<Type, Object>()(value))* {
+        derived().setValue(key, Conversion<Type, Object>()(value));
+        return nullptr;
+    }
+
+    template <class Derived> template <class Type>
     Type Dictionary<Derived>::get(const std::string& key) const {
         if (derived().has(key)) {
             Type result;
@@ -393,97 +435,96 @@ namespace opensolid
     }
 
     template <class Derived>
-    void Dictionary<Derived>::set(int index, bool value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, bool value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
 
     template <class Derived>
-    void Dictionary<Derived>::set(int index, int value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, int value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, double value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, double value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, const std::string& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, const std::string& value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, const Interval& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, const Interval& value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, const MatrixXd& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, const MatrixXd& value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, const MatrixXI& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, const MatrixXI& value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, const DatumXd& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
+    void Dictionary<Derived>::set(int key, const DatumXd& value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
     
     template <class Derived>
-    void Dictionary<Derived>::set(int index, const SimplexXd& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
-    }
-    
-    template <class Derived>
-    void Dictionary<Derived>::set(int index, const Function& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
-    }
-    
-    template <class Derived>
-    void Dictionary<Derived>::set(int index, const Geometry& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
-    }
-    
-    template <class Derived>
-    void Dictionary<Derived>::set(int index, const Domain& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
-    }
-    
-    template <class Derived>
-    void Dictionary<Derived>::set(int index, const Object& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), value);
-    }
-
-    template <class Derived> template <class MatrixType>
-    void Dictionary<Derived>::set(int index, const EigenBase<MatrixType>& value) {
-        typedef Matrix<typename MatrixType::Scalar, Dynamic, Dynamic> DynamicMatrixType;
-        derived().setValue(boost::lexical_cast<std::string>(index), DynamicMatrixType(value));
-    }
-
-    template <class Derived> template <int dimensions_, int axes_>
-    void Dictionary<Derived>::set(int index, const Datum<dimensions_, axes_>& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), DatumXd(value));
-    }
-
-    template <class Derived> template <int dimensions_, int size_>
-    void Dictionary<Derived>::set(int index, const Simplex<dimensions_, size_>& value) {
-        derived().setValue(boost::lexical_cast<std::string>(index), SimplexXd(value));
+    void Dictionary<Derived>::set(int key, const SimplexXd& value) {
+        set(boost::lexical_cast<std::string>(key), value);
     }
 
     template <class Derived> template <class Type>
-    Type Dictionary<Derived>::get(int index) const {
-        std::string key = boost::lexical_cast<std::string>(index);
-        if (derived().has(key)) {
-            Type result;
-            getValue(key, result);
-            return std::move(result);
-        } else {
-            derived().throwDictionaryError(key, TypeName<Type>()());
-            return Type();
-        }
+    auto Dictionary<Derived>::set(
+        int key,
+        const Type& value
+    ) -> decltype(Conversion<Type, Object>()(value))* {
+        return set(boost::lexical_cast<std::string>(key), value);
+    }
+    
+    template <class Derived>
+    void Dictionary<Derived>::set(int key, const Function& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+    
+    template <class Derived>
+    void Dictionary<Derived>::set(int key, const Geometry& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+    
+    template <class Derived>
+    void Dictionary<Derived>::set(int key, const Domain& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+    
+    template <class Derived>
+    void Dictionary<Derived>::set(int key, const Object& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+
+    template <class Derived> template <class MatrixType>
+    void Dictionary<Derived>::set(int key, const EigenBase<MatrixType>& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+
+    template <class Derived> template <int dimensions_, int axes_>
+    void Dictionary<Derived>::set(int key, const Datum<dimensions_, axes_>& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+
+    template <class Derived> template <int dimensions_, int size_>
+    void Dictionary<Derived>::set(int key, const Simplex<dimensions_, size_>& value) {
+        set(boost::lexical_cast<std::string>(key), value);
+    }
+
+    template <class Derived> template <class Type>
+    Type Dictionary<Derived>::get(int key) const {
+        return get<Type>(boost::lexical_cast<std::string>(key));
     }
 }
 
