@@ -218,6 +218,14 @@
         "${OpenSolid}/Core/Matrix/Matrix.cpp"
     )
 
+    # Mesh directory files
+    SET(MESH_HEADERS
+        "${OpenSolid}/Core/Mesh/Mesh.hpp"
+    )
+    SET(MESH_SOURCES
+        "${OpenSolid}/Core/Mesh/Mesh.cpp"
+    )
+
     # Object directory files
     SET(OBJECT_HEADERS
         "${OpenSolid}/Core/Object/Object.hpp"
@@ -279,6 +287,8 @@
         ${GEOMETRYIMPLEMENTATION_SOURCES}
         ${MATRIX_HEADERS}
         ${MATRIX_SOURCES}
+        ${MESH_HEADERS}
+        ${MESH_SOURCES}
         ${OBJECT_HEADERS}
         ${OBJECT_SOURCES}
         ${SCALAR_HEADERS}
@@ -304,6 +314,7 @@
         ${GEOMETRY_SOURCES}
         ${GEOMETRYIMPLEMENTATION_SOURCES}
         ${MATRIX_SOURCES}
+        ${MESH_SOURCES}
         ${OBJECT_SOURCES}
         ${SCALAR_SOURCES}
         ${SET_SOURCES}

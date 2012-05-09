@@ -18,28 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CORE_HPP
-#define OPENSOLID__CORE_HPP
+#ifndef OPENSOLID__MESH_HPP
+#define OPENSOLID__MESH_HPP
 
 #include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
-#include <OpenSolid/Core/Datum/Axis.hpp>
-#include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Datum/Frame.hpp>
-#include <OpenSolid/Core/Datum/Plane.hpp>
-#include <OpenSolid/Core/Domain/Domain.hpp>
-#include <OpenSolid/Core/File/File.hpp>
-#include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Geometry/Geometry.hpp>
+
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Mesh/Mesh.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
-#include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Set/Set.hpp>
-#include <OpenSolid/Core/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
+
+namespace opensolid
+{
+    class Mesh
+    {
+    private:
+        MatrixXd _vertices;
+    public:
+        OPENSOLID_CORE_EXPORT Mesh(const Geometry& geometry, double linear_deviation);
+
+        MatrixXd vertices() const;
+    };
+}
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    inline MatrixXd Mesh::vertices() const {return _vertices;}
+}
 
 #endif

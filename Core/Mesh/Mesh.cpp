@@ -18,28 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CORE_HPP
-#define OPENSOLID__CORE_HPP
-
-#include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
-#include <OpenSolid/Core/Datum/Axis.hpp>
-#include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Datum/Frame.hpp>
-#include <OpenSolid/Core/Datum/Plane.hpp>
-#include <OpenSolid/Core/Domain/Domain.hpp>
-#include <OpenSolid/Core/File/File.hpp>
-#include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Geometry/Geometry.hpp>
-#include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Mesh/Mesh.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
-#include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Set/Set.hpp>
-#include <OpenSolid/Core/Simplex/Simplex.hpp>
 
-#endif
+namespace opensolid
+{
+    void getParameterValues(
+        const Function& function,
+        const Function& derivative,
+        const Interval& domain,
+        double linear_deviation,
+        std::vector<double>& results
+    ) {
+
+    }
+
+    Mesh::Mesh(const Geometry& geometry, double linear_deviation) {
+        if (geometry.parameters() != 1) {
+            // Only supports curves for now
+            throw NotImplementedError("Mesh.cpp", __LINE__);
+        }
+        std::vector<double> temp;
+        Function function = geometry.function();
+        Function derivative = function.derivative();
+        Interval domain = geometry.domain().as<Interval>();
+        getParameterValues(
+            function,
+            derivative,
+            domain,
+            linear_deviation,
+            temp
+        );
+        temp.push_back(domain.upper());
+        RowVectorXd parameter_values(1, temp.size());
+        std::copy(temp.begin(), temp.end(), begin(parameter_values));
+        _vertices = function(parameter_values);
+    }
+}
