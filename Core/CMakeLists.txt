@@ -35,6 +35,7 @@
         "${OpenSolid}/Core/Common/Conversion.hpp"
         "${OpenSolid}/Core/Common/Error.hpp"
         "${OpenSolid}/Core/Common/Evaluation.hpp"
+        "${OpenSolid}/Core/Common/Key.hpp"
         "${OpenSolid}/Core/Common/MatrixArgument.hpp"
         "${OpenSolid}/Core/Common/Dictionary.hpp"
         "${OpenSolid}/Core/Common/ReferenceCounted.hpp"
