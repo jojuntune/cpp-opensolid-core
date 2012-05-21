@@ -127,8 +127,8 @@ public:
 
     void testSerialization() {
         Interval original(2, 3);
-        Serialization<Interval> serializer;
-        Deserialization<Interval> deserializer;
+        Conversion<Interval, std::string> serializer;
+        Conversion<std::string, Interval> deserializer;
         std::string serialized = serializer(original);
         Interval final = deserializer(serialized);
         TS_ASSERT_EQUALS(original.lower(), final.lower());

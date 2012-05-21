@@ -93,9 +93,9 @@ public:
         component.set("axis", Axis3d(Vector3d::Zero(), Vector3d(4, 5, 6)));
         component.set("facet", Triangle3d(Matrix3d::Ones()));
         object.set("component", component);
-        Serialization<Object> serialization;
+        Conversion<Object, std::string> serialization;
         std::string serialized = serialization(object);
-        Deserialization<Object> deserialization;
+        Conversion<std::string, Object> deserialization;
         Object deserialized = deserialization(serialized);
         TS_ASSERT_EQUALS(deserialized.get<double>("value"), 1.0);
         TS_ASSERT_EQUALS(deserialized.get<Vector3d>("vector"), Vector3d(1, 2, 3));

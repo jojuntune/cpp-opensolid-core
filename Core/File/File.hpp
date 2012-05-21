@@ -151,7 +151,7 @@ namespace opensolid
 {
     template <class Type>
     void File::setValue(const std::string& key, const Type& value) {
-        Serialization<Type> serialization;
+        Conversion<Type, std::string> serialization;
         setData(key, TypeName<Type>()(), serialization(value));
     }
 
@@ -164,7 +164,7 @@ namespace opensolid
         if (type != expected_type) {
             throw FileGetValueError(filename(), mode(), key, expected_type);
         }
-        Deserialization<Type> deserialization;
+        Conversion<std::string, Type> deserialization;
         value = deserialization(data);
     }
 }

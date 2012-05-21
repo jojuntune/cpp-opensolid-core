@@ -184,8 +184,8 @@ public:
 
     void testSerialization() {
         Triangle3d original(Vector3d::Random(), Vector3d::Random(), Vector3d::Random());
-        Serialization<SimplexXd> serializer;
-        Deserialization<SimplexXd> deserializer;
+        Conversion<SimplexXd, std::string> serializer;
+        Conversion<std::string, SimplexXd> deserializer;
         std::string serialized = serializer(original);
         SimplexXd final = deserializer(serialized);
         TS_ASSERT_EQUALS(final.dimensions(), original.dimensions());

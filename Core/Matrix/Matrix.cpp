@@ -23,7 +23,7 @@
 
 namespace opensolid
 {
-    std::string Serialization<MatrixXd>::operator()(const MatrixXd& argument) const {
+    std::string Conversion<MatrixXd, std::string>::operator()(const MatrixXd& argument) const {
         SerializedMatrixXd temp;
         temp.set_rows(argument.rows());
         temp.set_cols(argument.cols());
@@ -31,16 +31,16 @@ namespace opensolid
         return temp.SerializeAsString();
     }
 
-    MatrixXd Deserialization<MatrixXd>::operator()(const std::string& argument) const {
+    MatrixXd Conversion<std::string, MatrixXd>::operator()(const std::string& argument) const {
         SerializedMatrixXd temp;
         temp.ParseFromString(argument);
         MatrixXd result(temp.rows(), temp.cols());
         for (int i = 0; i < result.size(); ++i) {result(i) = temp.data(i);}
-        return std::move(result);
+        return result;
     }
 
-    std::string Serialization<MatrixXI>::operator()(const MatrixXI& argument) const {
-        Serialization<Interval> interval_serializer;
+    std::string Conversion<MatrixXI, std::string>::operator()(const MatrixXI& argument) const {
+        Conversion<Interval, std::string> interval_serializer;
         SerializedMatrixXI temp;
         temp.set_rows(argument.rows());
         temp.set_cols(argument.cols());
@@ -50,15 +50,15 @@ namespace opensolid
         return temp.SerializeAsString();
     }
 
-    MatrixXI Deserialization<MatrixXI>::operator()(const std::string& argument) const {
-        Deserialization<Interval> interval_deserializer;
+    MatrixXI Conversion<std::string, MatrixXI>::operator()(const std::string& argument) const {
+        Conversion<std::string, Interval> interval_deserializer;
         SerializedMatrixXI temp;
         temp.ParseFromString(argument);
         MatrixXI result(temp.rows(), temp.cols());
         for (int i = 0; i < result.size(); ++i) {
             result(i) = interval_deserializer(temp.data(i));
         }
-        return std::move(result);
+        return result;
     }
 
     std::string TypeName<MatrixXd>::operator()() const {return "MatrixXd";}

@@ -33,8 +33,6 @@
 
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 
 namespace opensolid
@@ -184,13 +182,13 @@ namespace opensolid
     };
 
     template <>
-    struct Serialization<Interval>
+    struct Conversion<Interval, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Interval& argument) const;
     };
 
     template <>
-    struct Deserialization<Interval>
+    struct Conversion<std::string, Interval>
     {
         OPENSOLID_CORE_EXPORT Interval operator()(const std::string& argument) const;
     };

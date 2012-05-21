@@ -29,8 +29,6 @@
 
 #include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Evaluation.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
@@ -173,21 +171,21 @@ namespace opensolid
     };
 
     template <>
-    struct TypeName<Function>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct Serialization<Function>
+    struct Conversion<Function, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Function& argument) const;
     };
 
     template <>
-    struct Deserialization<Function>
+    struct Conversion<std::string, Function>
     {
         OPENSOLID_CORE_EXPORT Function operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<Function>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

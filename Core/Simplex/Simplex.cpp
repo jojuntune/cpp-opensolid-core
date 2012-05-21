@@ -370,15 +370,15 @@ namespace opensolid
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
     template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
 
-    std::string Serialization<SimplexXd>::operator()(const SimplexXd& argument) const {
-        Serialization<MatrixXd> matrix_serializer;
+    std::string Conversion<SimplexXd, std::string>::operator()(const SimplexXd& argument) const {
+        Conversion<MatrixXd, std::string> matrix_serializer;
         SerializedSimplexXd temp;
         temp.set_vertices(matrix_serializer(argument.vertices()));
         return temp.SerializeAsString();
     }
 
-    SimplexXd Deserialization<SimplexXd>::operator()(const std::string& argument) const {
-        Deserialization<MatrixXd> matrix_deserializer;
+    SimplexXd Conversion<std::string, SimplexXd>::operator()(const std::string& argument) const {
+        Conversion<std::string, MatrixXd> matrix_deserializer;
         SerializedSimplexXd temp;
         temp.ParseFromString(argument);
         MatrixXd vertices = matrix_deserializer(temp.vertices());

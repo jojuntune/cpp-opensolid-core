@@ -18,12 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/Deserialization.hpp>
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/SerializedDouble.pb.h>
+
+#include <boost/lexical_cast.hpp>
 
 namespace opensolid
 {
-    double Deserialization<double>::operator()(const std::string& argument) const {
+    std::string Conversion<bool, std::string>::operator()(bool argument) const {
+        return boost::lexical_cast<std::string>(argument);
+    }
+
+    bool Conversion<std::string, bool>::operator()(const std::string& argument) const {
+        return boost::lexical_cast<bool>(argument);
+    }
+
+    std::string Conversion<int, std::string>::operator()(int argument) const {
+        return boost::lexical_cast<std::string>(argument);
+    }
+
+    int Conversion<std::string, int>::operator()(const std::string& argument) const {
+        return boost::lexical_cast<int>(argument);
+    }
+
+    std::string Conversion<double, std::string>::operator()(double argument) const {
+        SerializedDouble temp;
+        temp.set_value(argument);
+        return temp.SerializeAsString();
+    }
+
+    double Conversion<std::string, double>::operator()(const std::string& argument) const {
         SerializedDouble temp;
         temp.ParseFromString(argument);
         return temp.value();

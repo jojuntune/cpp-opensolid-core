@@ -23,16 +23,16 @@
 
 namespace opensolid
 {
-    std::string Serialization<DatumXd>::operator()(const DatumXd& argument) const {
-        Serialization<MatrixXd> matrix_serializer;
+    std::string Conversion<DatumXd, std::string>::operator()(const DatumXd& argument) const {
+        Conversion<MatrixXd, std::string> matrix_serializer;
         SerializedDatumXd temp;
         temp.set_origin(matrix_serializer(argument.origin()));
         temp.set_basis(matrix_serializer(argument.basis()));
         return temp.SerializeAsString();
     }
 
-    DatumXd Deserialization<DatumXd>::operator()(const std::string& argument) const {
-        Deserialization<MatrixXd> matrix_deserializer;
+    DatumXd Conversion<std::string, DatumXd>::operator()(const std::string& argument) const {
+        Conversion<std::string, MatrixXd> matrix_deserializer;
         SerializedDatumXd temp;
         temp.ParseFromString(argument);
         MatrixXd origin = matrix_deserializer(temp.origin());

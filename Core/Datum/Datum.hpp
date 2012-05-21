@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace opensolid
@@ -176,13 +176,13 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct Serialization<DatumXd>
+    struct Conversion<DatumXd, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const DatumXd& argument) const;
     };
 
     template <>
-    struct Deserialization<DatumXd>
+    struct Conversion<std::string, DatumXd>
     {
         OPENSOLID_CORE_EXPORT DatumXd operator()(const std::string& argument) const;
     };

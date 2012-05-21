@@ -27,8 +27,6 @@
 
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
@@ -99,21 +97,21 @@ namespace opensolid
     };
 
     template <>
-    struct TypeName<Domain>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct Serialization<Domain>
+    struct Conversion<Domain, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Domain& argument) const;
     };
 
     template <>
-    struct Deserialization<Domain>
+    struct Conversion<std::string, Domain>
     {
         OPENSOLID_CORE_EXPORT Domain operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<Domain>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

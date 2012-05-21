@@ -75,14 +75,14 @@ namespace opensolid
         return stream;
     }
 
-    std::string Serialization<Interval>::operator()(const Interval& argument) const {
+    std::string Conversion<Interval, std::string>::operator()(const Interval& argument) const {
         SerializedInterval temp;
         temp.set_lower(argument.lower());
         temp.set_upper(argument.upper());
         return temp.SerializeAsString();
     }
 
-    Interval Deserialization<Interval>::operator()(const std::string& argument) const {
+    Interval Conversion<std::string, Interval>::operator()(const std::string& argument) const {
         SerializedInterval temp;
         temp.ParseFromString(argument);
         return Interval(temp.lower(), temp.upper());

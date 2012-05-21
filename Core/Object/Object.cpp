@@ -144,53 +144,53 @@ namespace opensolid
         }
 
         void operator()(const Interval& value) const {
-            Serialization<Interval> serialization;
+            Conversion<Interval, std::string> serialization;
             _key_value_pair->set_interval_value(serialization(value));
         }
 
         void operator()(const MatrixXd& value) const {
-            Serialization<MatrixXd> serialization;
+            Conversion<MatrixXd, std::string> serialization;
             _key_value_pair->set_matrixxd_value(serialization(value));
         }
 
         void operator()(const MatrixXI& value) const {
-            Serialization<MatrixXI> serialization;
+            Conversion<MatrixXI, std::string> serialization;
             _key_value_pair->set_matrixxi_value(serialization(value));
 
         }
 
         void operator()(const DatumXd& value) const {
-            Serialization<DatumXd> serialization;
+            Conversion<DatumXd, std::string> serialization;
             _key_value_pair->set_datumxd_value(serialization(value));
         }
 
         void operator()(const SimplexXd& value) const {
-            Serialization<SimplexXd> serialization;
+            Conversion<SimplexXd, std::string> serialization;
             _key_value_pair->set_simplexxd_value(serialization(value));
         }
 
         void operator()(const Function& value) const {
-            Serialization<Function> serialization;
+            Conversion<Function, std::string> serialization;
             _key_value_pair->set_function_value(serialization(value));
         }
 
         void operator()(const Geometry& value) const {
-            Serialization<Geometry> serialization;
+            Conversion<Geometry, std::string> serialization;
             _key_value_pair->set_geometry_value(serialization(value));
         }
 
         void operator()(const Domain& value) const {
-            Serialization<Domain> serialization;
+            Conversion<Domain, std::string> serialization;
             _key_value_pair->set_domain_value(serialization(value));
         }
 
         void operator()(const Object& value) const {
-            Serialization<Object> serialization;
+            Conversion<Object, std::string> serialization;
             _key_value_pair->set_object_value(serialization(value));
         }
     };
 
-    std::string Serialization<Object>::operator()(const Object& argument) const {
+    std::string Conversion<Object, std::string>::operator()(const Object& argument) const {
         SerializedObject temp;
         for (auto i = argument._map.begin(); i != argument._map.end(); ++i) {
             SerializedObject::KeyValuePair* key_value_pair = temp.add_key_value_pair();
@@ -201,7 +201,7 @@ namespace opensolid
         return temp.SerializeAsString();
     }
 
-    Object Deserialization<Object>::operator()(const std::string& argument) const {
+    Object Conversion<std::string, Object>::operator()(const std::string& argument) const {
         SerializedObject temp;
         temp.ParseFromString(argument);
         Object result;
@@ -217,31 +217,31 @@ namespace opensolid
             } else if (key_value_pair.has_string_value()) {
                 result.set(key, key_value_pair.string_value());
             } else if (key_value_pair.has_interval_value()) {
-                Deserialization<Interval> deserialization;
+                Conversion<std::string, Interval> deserialization;
                 result.set(key, deserialization(key_value_pair.interval_value()));
             } else if (key_value_pair.has_matrixxd_value()) {
-                Deserialization<MatrixXd> deserialization;
+                Conversion<std::string, MatrixXd> deserialization;
                 result.set(key, deserialization(key_value_pair.matrixxd_value()));
             } else if (key_value_pair.has_matrixxi_value()) {
-                Deserialization<MatrixXI> deserialization;
+                Conversion<std::string, MatrixXI> deserialization;
                 result.set(key, deserialization(key_value_pair.matrixxi_value()));
             } else if (key_value_pair.has_datumxd_value()) {
-                Deserialization<DatumXd> deserialization;
+                Conversion<std::string, DatumXd> deserialization;
                 result.set(key, deserialization(key_value_pair.datumxd_value()));
             } else if (key_value_pair.has_simplexxd_value()) {
-                Deserialization<SimplexXd> deserialization;
+                Conversion<std::string, SimplexXd> deserialization;
                 result.set(key, deserialization(key_value_pair.simplexxd_value()));
             } else if (key_value_pair.has_function_value()) {
-                Deserialization<Function> deserialization;
+                Conversion<std::string, Function> deserialization;
                 result.set(key, deserialization(key_value_pair.function_value()));
             } else if (key_value_pair.has_geometry_value()) {
-                Deserialization<Geometry> deserialization;
+                Conversion<std::string, Geometry> deserialization;
                 result.set(key, deserialization(key_value_pair.geometry_value()));
             } else if (key_value_pair.has_domain_value()) {
-                Deserialization<Domain> deserialization;
+                Conversion<std::string, Domain> deserialization;
                 result.set(key, deserialization(key_value_pair.domain_value()));
             } else if (key_value_pair.has_object_value()) {
-                Deserialization<Object> deserialization;
+                Conversion<std::string, Object> deserialization;
                 result.set(key, deserialization(key_value_pair.object_value()));
             }
         }

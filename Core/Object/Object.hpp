@@ -30,8 +30,6 @@
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Dictionary.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
@@ -44,10 +42,10 @@
 namespace opensolid
 {
     template <>
-    struct Serialization<Object>;
+    struct Conversion<Object, std::string>;
 
     template <>
-    struct Deserialization<Object>;
+    struct Conversion<std::string, Object>;
 
     class Object :
         public Dictionary<Object>,
@@ -86,8 +84,8 @@ namespace opensolid
 
         friend class Dictionary<Object>;
         friend struct GetObjectProperty;
-        friend struct Serialization<Object>;
-        friend struct Deserialization<Object>;
+        friend struct Conversion<Object, std::string>;
+        friend struct Conversion<std::string, Object>;
     public:
         OPENSOLID_CORE_EXPORT Object();
 
@@ -113,13 +111,13 @@ namespace opensolid
     };
 
     template <>
-    struct Serialization<Object>
+    struct Conversion<Object, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Object& argument) const;
     };
 
     template <>
-    struct Deserialization<Object>
+    struct Conversion<std::string, Object>
     {
         OPENSOLID_CORE_EXPORT Object operator()(const std::string& argument) const;
     };

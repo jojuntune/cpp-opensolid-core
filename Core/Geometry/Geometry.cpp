@@ -110,13 +110,13 @@ namespace opensolid
         return argument.function().as<VectorXd>();
     }
 
+    std::string Conversion<Geometry, std::string>::operator()(const Geometry& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
+    Geometry Conversion<std::string, Geometry>::operator()(const std::string& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
     std::string TypeName<Geometry>::operator()() const {return "Geometry";}
-
-    std::string Serialization<Geometry>::operator()(const Geometry& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
-
-    Geometry Deserialization<Geometry>::operator()(const std::string& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
 }

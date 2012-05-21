@@ -28,8 +28,6 @@
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Evaluation.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
@@ -123,21 +121,21 @@ namespace opensolid
     };
 
     template <>
-    struct TypeName<Geometry>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct Serialization<Geometry>
+    struct Conversion<Geometry, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Geometry& argument) const;
     };
 
     template <>
-    struct Deserialization<Geometry>
+    struct Conversion<std::string, Geometry>
     {
         OPENSOLID_CORE_EXPORT Geometry operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<Geometry>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

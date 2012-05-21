@@ -24,8 +24,6 @@
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
 #include <OpenSolid/Core/Common/Transformable.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
@@ -159,13 +157,13 @@ namespace opensolid
     };
 
     template <>
-    struct Serialization<SimplexXd>
+    struct Conversion<SimplexXd, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const SimplexXd& argument) const;
     };
 
     template <>
-    struct Deserialization<SimplexXd>
+    struct Conversion<std::string, SimplexXd>
     {
         OPENSOLID_CORE_EXPORT SimplexXd operator()(const std::string& argument) const;
     };

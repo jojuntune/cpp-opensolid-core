@@ -33,21 +33,18 @@
     SET(COMMON_HEADERS
         "${OpenSolid}/Core/Common/Bounds.hpp"
         "${OpenSolid}/Core/Common/Conversion.hpp"
-        "${OpenSolid}/Core/Common/Deserialization.hpp"
         "${OpenSolid}/Core/Common/Error.hpp"
         "${OpenSolid}/Core/Common/Evaluation.hpp"
         "${OpenSolid}/Core/Common/MatrixArgument.hpp"
         "${OpenSolid}/Core/Common/Dictionary.hpp"
         "${OpenSolid}/Core/Common/ReferenceCounted.hpp"
-        "${OpenSolid}/Core/Common/Serialization.hpp"
         "${OpenSolid}/Core/Common/Transformable.hpp"
         "${OpenSolid}/Core/Common/TypeName.hpp"
     )
     SET(COMMON_SOURCES
-        "${OpenSolid}/Core/Common/Deserialization.cpp"
+        "${OpenSolid}/Core/Common/Conversion.cpp"
         "${OpenSolid}/Core/Common/Error.cpp"
         "${OpenSolid}/Core/Common/Dictionary.cpp"
-        "${OpenSolid}/Core/Common/Serialization.cpp"
         "${OpenSolid}/Core/Common/TypeName.cpp"
     )
     

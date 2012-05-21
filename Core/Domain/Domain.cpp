@@ -90,13 +90,13 @@ namespace opensolid
         return argument.bounds().value();
     }
 
+    std::string Conversion<Domain, std::string>::operator()(const Domain& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
+    Domain Conversion<std::string, Domain>::operator()(const std::string& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
     std::string TypeName<Domain>::operator()() const {return "Domain";}
-
-    std::string Serialization<Domain>::operator()(const Domain& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
-
-    Domain Deserialization<Domain>::operator()(const std::string& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
 }

@@ -24,7 +24,6 @@
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
 #include <OpenSolid/Core/Common/TypeName.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
@@ -297,25 +296,25 @@ namespace opensolid
     };
 
     template <>
-    struct Serialization<MatrixXd>
+    struct Conversion<MatrixXd, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const MatrixXd& argument) const;
     };
 
     template <>
-    struct Deserialization<MatrixXd>
+    struct Conversion<std::string, MatrixXd>
     {
         OPENSOLID_CORE_EXPORT MatrixXd operator()(const std::string& argument) const;
     };
 
     template <>
-    struct Serialization<MatrixXI>
+    struct Conversion<MatrixXI, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const MatrixXI& argument) const;
     };
 
     template <>
-    struct Deserialization<MatrixXI>
+    struct Conversion<std::string, MatrixXI>
     {
         OPENSOLID_CORE_EXPORT MatrixXI operator()(const std::string& argument) const;
     };
