@@ -18,13 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#ifndef OPENSOLID__ERROR_HPP
-#define OPENSOLID__ERROR_HPP
+#pragma once
+
+#include <OpenSolid/Core/config.hpp>
 
 #include <exception>
 #include <string>
-
-#include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {
@@ -47,5 +46,3 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT int line() const;
     };
 }
-
-#endif
