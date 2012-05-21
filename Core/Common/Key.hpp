@@ -38,6 +38,7 @@ namespace opensolid
         boost::variant<int, std::string> _key;
     public:
         Key(int key);
+        Key(const char* key);
         Key(const std::string& key);
 
         bool operator==(const Key& other) const;
@@ -63,6 +64,8 @@ namespace std
 namespace opensolid
 {
     inline Key::Key(int key) : _key(key) {}
+
+    inline Key::Key(const char* key) : _key(std::string(key)) {}
 
     inline Key::Key(const std::string& key) : _key(key) {}
 
