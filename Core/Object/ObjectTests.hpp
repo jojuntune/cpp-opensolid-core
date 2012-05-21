@@ -20,6 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Object/Object.hpp>
 
@@ -132,8 +133,9 @@ public:
         original.vector = Vector3d::Random();
         Object object;
         object.set("custom", original);
-        TS_ASSERT_EQUALS(object.get<Object>("custom").get<double>("value"), original.value);
-        TS_ASSERT_EQUALS(object.get<Object>("custom").get<Vector3d>("vector"), original.vector);
+        Object converted = object.get<Object>("custom");
+        TS_ASSERT_EQUALS(converted.get<double>("value"), original.value);
+        TS_ASSERT_EQUALS(converted.get<Vector3d>("vector"), original.vector);
         CustomType reconstructed = object.get<CustomType>("custom");
         TS_ASSERT_EQUALS(reconstructed.value, original.value);
         TS_ASSERT_EQUALS(reconstructed.vector, original.vector);
