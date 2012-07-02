@@ -56,6 +56,7 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Value();
 
+        // Construct from integral type
         OPENSOLID_CORE_EXPORT Value(bool argument);
         OPENSOLID_CORE_EXPORT Value(short argument);
         OPENSOLID_CORE_EXPORT Value(unsigned short argument);
@@ -66,18 +67,23 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Value(long long argument);
         OPENSOLID_CORE_EXPORT Value(unsigned long long argument);
 
+        // Construct from floating-point type
         OPENSOLID_CORE_EXPORT Value(float argument);
         OPENSOLID_CORE_EXPORT Value(double argument);
         OPENSOLID_CORE_EXPORT Value(long double argument);
         
+        // Construct from string type
         OPENSOLID_CORE_EXPORT Value(const char* argument);
         OPENSOLID_CORE_EXPORT Value(const std::string& argument);
 
+        // Construct from List
         OPENSOLID_CORE_EXPORT Value(const List& argument);
 
+        // Construct from arbitrary object (via conversion to List)
         template <class Type>
         Value(const Type& argument);
 
+        // Assign from integral type
         OPENSOLID_CORE_EXPORT void operator=(bool argument);
         OPENSOLID_CORE_EXPORT void operator=(short argument);
         OPENSOLID_CORE_EXPORT void operator=(unsigned short argument);
@@ -88,15 +94,19 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void operator=(long long argument);
         OPENSOLID_CORE_EXPORT void operator=(unsigned long long argument);
 
+        // Assign from floating-point types
         OPENSOLID_CORE_EXPORT void operator=(float argument);
         OPENSOLID_CORE_EXPORT void operator=(double argument);
         OPENSOLID_CORE_EXPORT void operator=(long double argument);
         
+        // Assign from string type
         OPENSOLID_CORE_EXPORT void operator=(const char* argument);
         OPENSOLID_CORE_EXPORT void operator=(const std::string& argument);
 
+        // Assign from List
         OPENSOLID_CORE_EXPORT void operator=(const List& argument);
 
+        // Assign from arbitrary object (via conversion to List)
         template <class Type>
         void operator=(const Type& argument);
 
@@ -115,12 +125,12 @@ namespace opensolid
     {
     private:
         Value _value;
-        std::string _expected_type;
+        std::string _desired_type;
     public:
-        OPENSOLID_CORE_EXPORT ValueConversionError(const Value& value, const std::string& expected_type);
+        OPENSOLID_CORE_EXPORT ValueConversionError(const Value& value, const std::string& desired_type);
 
         OPENSOLID_CORE_EXPORT Value value() const;
-        OPENSOLID_CORE_EXPORT std::string expectedType() const;
+        OPENSOLID_CORE_EXPORT std::string desiredType() const;
 
         OPENSOLID_CORE_EXPORT const char* what() const override;
     };
