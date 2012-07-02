@@ -48,6 +48,7 @@ namespace opensolid
         const std::string& type,
         const std::string& data
     ) {
+        if (mode() == "r") {throw FileSetValueError(filename(), mode());}
         sqlite3_bind_text(_insert_statement, 1, key.c_str(), key.size(), SQLITE_STATIC);
         sqlite3_bind_text(_insert_statement, 2, type.c_str(), type.size(), SQLITE_STATIC);
         sqlite3_bind_blob(_insert_statement, 3, data.c_str(), data.size(), SQLITE_STATIC);
@@ -79,18 +80,20 @@ namespace opensolid
         }
         int result = sqlite3_open_v2(filename.c_str(), &_database, flags, nullptr);
         if (result) {throw FileOpenError(filename, mode);}
-        result = sqlite3_exec(
-            _database,
-            "BEGIN TRANSACTION;"
-            "CREATE TABLE IF NOT EXISTS Model (key TEXT PRIMARY KEY, type TEXT, data BLOB);"
-            "CREATE TABLE IF NOT EXISTS FunctionImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
-            "CREATE TABLE IF NOT EXISTS GeometryImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
-            "CREATE TABLE IF NOT EXISTS DomainImplementation (pointer INTEGER PRIMARY KEY, data BLOB);",
-            nullptr,
-            nullptr,
-            nullptr
-        );
-        if (result) {throw FileOpenError(filename, mode);}
+        if (mode != "r") {
+            result = sqlite3_exec(
+                _database,
+                "BEGIN TRANSACTION;"
+                "CREATE TABLE IF NOT EXISTS Model (key TEXT PRIMARY KEY, type TEXT, data BLOB);"
+                "CREATE TABLE IF NOT EXISTS FunctionImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
+                "CREATE TABLE IF NOT EXISTS GeometryImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
+                "CREATE TABLE IF NOT EXISTS DomainImplementation (pointer INTEGER PRIMARY KEY, data BLOB);",
+                nullptr,
+                nullptr,
+                nullptr
+            );
+            if (result) {throw FileOpenError(filename, mode);}
+        }
         sqlite3_prepare_v2(
             _database,
             "INSERT OR REPLACE INTO Model VALUES (?1, ?2, ?3)",
@@ -108,7 +111,7 @@ namespace opensolid
     }
 
     File::~File() {
-        sqlite3_exec(_database, "COMMIT", nullptr, nullptr, nullptr);
+        if (mode() != "r") {sqlite3_exec(_database, "COMMIT", nullptr, nullptr, nullptr);}
         sqlite3_close(_database);
         sqlite3_finalize(_insert_statement);
         sqlite3_finalize(_select_statement);
