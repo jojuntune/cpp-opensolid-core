@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID_PYTHON__CONFIG_HPP
-#define OPENSOLID_PYTHON__CONFIG_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 
@@ -38,6 +37,4 @@
 #else
     #define OPENSOLID_PYTHON_MODULE_EXPORT
     #define OPENSOLID_PYTHON_EXPORT
-#endif
-
 #endif

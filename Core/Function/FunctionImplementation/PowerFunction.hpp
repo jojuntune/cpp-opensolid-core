@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__POWERFUNCTION_HPP
-#define OPENSOLID__POWERFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/FunctionImplementation/BinaryOperation.hpp>
 
@@ -45,5 +44,3 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
-
-#endif

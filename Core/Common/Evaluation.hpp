@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__EVALUATION_HPP
-#define OPENSOLID__EVALUATION_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
@@ -378,5 +377,3 @@ namespace opensolid
         return this->eval().isZero(precision);
     }
 }
-
-#endif

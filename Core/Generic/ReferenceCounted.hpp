@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__REFERENCECOUNTED_HPP
-#define OPENSOLID__REFERENCECOUNTED_HPP
+#pragma once
 
 #include <boost/intrusive_ptr.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
@@ -72,5 +71,3 @@ namespace opensolid
         }
     }
 }
-
-#endif

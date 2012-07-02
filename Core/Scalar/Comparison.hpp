@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__COMPARISON_HPP
-#define OPENSOLID__COMPARISON_HPP
+#pragma once
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
@@ -145,5 +144,3 @@ namespace opensolid
         return Comparison(-argument.upper(), -argument.lower());
     }
 }
-
-#endif

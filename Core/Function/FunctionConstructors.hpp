@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FUNCTIONCONSTRUCTORS_HPP
-#define OPENSOLID__FUNCTIONCONSTRUCTORS_HPP
+#pragma once
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>

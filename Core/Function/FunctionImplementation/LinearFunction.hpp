@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__LINEARFUNCTION_HPP
-#define OPENSOLID__LINEARFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
@@ -58,5 +57,3 @@ namespace opensolid
 {
     inline const DatumXd& LinearFunction::datum() const {return _datum;}
 }
-
-#endif

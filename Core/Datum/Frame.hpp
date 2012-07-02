@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FRAME_HPP
-#define OPENSOLID__FRAME_HPP
+#pragma once
 
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
@@ -118,5 +117,3 @@ namespace opensolid
         initialize(datum);
     }
 }
-
-#endif

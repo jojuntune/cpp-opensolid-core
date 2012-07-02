@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__REPR_HPP
-#define OPENSOLID__REPR_HPP
+#pragma once
 
 #include <OpenSolid/Python/config.hpp>
 
@@ -52,5 +51,3 @@ namespace opensolid
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const MatrixXI& argument);
     OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const boost::python::object& argument);
 }
-
-#endif

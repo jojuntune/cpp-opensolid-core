@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__BOUNDS_HPP
-#define OPENSOLID__BOUNDS_HPP
+#pragma once
 
 #include <type_traits>
 
@@ -46,5 +45,3 @@ namespace opensolid
         Interval operator()(double argument) const; // Defined in Interval.hpp
     };
 }
-
-#endif

@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__SIMPLEX_HPP
-#define OPENSOLID__SIMPLEX_HPP
+#pragma once
 
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
@@ -263,5 +262,3 @@ namespace opensolid
         const Simplex<dimensions_, size_>& argument
     ) const {return argument.bounds();}
 }
-
-#endif

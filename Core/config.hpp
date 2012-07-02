@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID_CORE__CONFIG_HPP
-#define OPENSOLID_CORE__CONFIG_HPP
+#pragma once
 
 #include <algorithm>
 #include <cmath>
@@ -51,5 +50,3 @@ namespace opensolid
     using std::log;
     using std::pow;
 }
-
-#endif

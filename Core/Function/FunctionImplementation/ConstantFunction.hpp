@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CONSTANTFUNCTION_HPP
-#define OPENSOLID__CONSTANTFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
@@ -65,5 +64,3 @@ namespace opensolid
 {
     inline const VectorXd& ConstantFunction::vector() const {return _vector;}
 }
-
-#endif

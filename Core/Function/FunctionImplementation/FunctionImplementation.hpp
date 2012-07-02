@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
-#define OPENSOLID__FUNCTIONIMPLEMENTATION_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 
@@ -66,5 +65,3 @@ namespace opensolid
         virtual void debug(std::ostream& stream, int indent) const = 0;
     };
 }
-
-#endif

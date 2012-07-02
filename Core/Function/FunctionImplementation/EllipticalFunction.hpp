@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__ELLIPTICALFUNCTION_HPP
-#define OPENSOLID__ELLIPTICALFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
@@ -62,5 +61,3 @@ namespace opensolid
     
     inline const VectorXb& EllipticalFunction::convention() const {return _convention;}
 }
-
-#endif

@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__MATRIX_HPP
-#define OPENSOLID__MATRIX_HPP
+#pragma once
 
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Schema.hpp>
@@ -801,5 +800,3 @@ namespace opensolid
 
 #include <OpenSolid/Core/Matrix/MatrixIterator.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
-
-#endif

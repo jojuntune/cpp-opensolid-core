@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__UNARYOPERATION_HPP
-#define OPENSOLID__UNARYOPERATION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
@@ -45,5 +44,3 @@ namespace opensolid
 {
     inline const Function& UnaryOperation::operand() const {return _operand;}
 }
-
-#endif

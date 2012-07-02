@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CONSTANTGEOMETRY_HPP
-#define OPENSOLID__CONSTANTGEOMETRY_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
@@ -49,5 +48,3 @@ namespace opensolid
         Geometry reversed() const;
     };
 }
-
-#endif

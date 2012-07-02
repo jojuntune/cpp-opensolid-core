@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__RECTANGLEDOMAIN_HPP
-#define OPENSOLID__RECTANGLEDOMAIN_HPP
+#pragma once
 
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
@@ -41,5 +40,3 @@ namespace opensolid
         Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };
 }
-
-#endif

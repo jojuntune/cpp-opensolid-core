@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__NEGATIONFUNCTION_HPP
-#define OPENSOLID__NEGATIONFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/FunctionImplementation/UnaryOperation.hpp>
 
@@ -49,5 +48,3 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
 }
-
-#endif

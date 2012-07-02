@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FILE_HPP
-#define OPENSOLID__FILE_HPP
+#pragma once
 
 #include <string>
 #include <memory>
@@ -168,5 +167,3 @@ namespace opensolid
         value = deserialization(data);
     }
 }
-
-#endif

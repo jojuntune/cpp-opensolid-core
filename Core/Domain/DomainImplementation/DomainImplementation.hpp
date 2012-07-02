@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DOMAINIMPLEMENTATION_HPP
-#define OPENSOLID__DOMAINIMPLEMENTATION_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 
@@ -45,5 +44,3 @@ namespace opensolid
         virtual Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };
 }
-
-#endif

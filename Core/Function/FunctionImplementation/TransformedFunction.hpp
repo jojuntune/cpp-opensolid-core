@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__TRANSFORMEDFUNCTION_HPP
-#define OPENSOLID__TRANSFORMEDFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
@@ -69,5 +68,3 @@ namespace opensolid
 
     inline const VectorXd& TransformedFunction::vector() const {return _vector;}
 }
-
-#endif

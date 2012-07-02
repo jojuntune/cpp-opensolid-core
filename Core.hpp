@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__CORE_HPP
-#define OPENSOLID__CORE_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Common/Bounds.hpp>
@@ -41,5 +40,3 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-
-#endif

@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__GENERICDOMAIN_HPP
-#define OPENSOLID__GENERICDOMAIN_HPP
+#pragma once
 
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
@@ -36,5 +35,3 @@ namespace opensolid
         Set<Geometry> boundaries() const;
     };
 }
-
-#endif

@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#ifndef OPENSOLID__PYTHON__PYTHONENVIRONMENT_HPP
-#define OPENSOLID__PYTHON__PYTHONENVIRONMENT_HPP
+#pragma once
 
 #include <OpenSolid/Python/config.hpp>
 
@@ -367,5 +366,3 @@ namespace opensolid
         return extracted;
     }
 }
-
-#endif

@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__PARAMETERSFUNCTION_HPP
-#define OPENSOLID__PARAMETERSFUNCTION_HPP
+#pragma once
 
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 
@@ -63,5 +62,3 @@ namespace opensolid
     
     inline int ParametersFunction::num() const {return _num;}
 }
-
-#endif

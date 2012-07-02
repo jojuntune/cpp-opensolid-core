@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__MESH_HPP
-#define OPENSOLID__MESH_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 
@@ -45,5 +44,3 @@ namespace opensolid
 {
     inline MatrixXd Mesh::vertices() const {return _vertices;}
 }
-
-#endif

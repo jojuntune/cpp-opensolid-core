@@ -20,7 +20,6 @@
 
 #pragma once
 
-
 #include <OpenSolid/Core/Common/Evaluation.hpp>
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>

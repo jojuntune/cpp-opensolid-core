@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__SET_HPP
-#define OPENSOLID__SET_HPP
+#pragma once
 
 #include <ostream>
 #include <algorithm>
@@ -840,5 +839,3 @@ namespace opensolid
         const Set<ItemType>& set
     ) const {return set.bounds();}
 }
-
-#endif
