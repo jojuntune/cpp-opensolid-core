@@ -32,13 +32,17 @@
         IF (GCC_VERSION VERSION_LESS 4.6)
             ADD_DEFINITIONS(-Dnullptr=0)
         ENDIF ()
-    ELSEIF (WIN32)
+    ELSEIF (MSVC)
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
         ADD_DEFINITIONS(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
         # Add /MP flag for parallel compilation within projects
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
+        # Disable incremental linking (seems to cause erros in debug builds)
+        SET(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO")
+        SET(CMAKE_SHARED_LINKER_FLAGS "/INCREMENTAL:NO")
+        SET(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
+    ENDIF ()
     
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
