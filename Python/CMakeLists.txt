@@ -48,6 +48,7 @@
     
     ADD_LIBRARY(OpenSolidPythonModule SHARED ${PYTHON_MODULE_SOURCES})
     SET_TARGET_PROPERTIES(OpenSolidPythonModule PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
+    SET_TARGET_PROPERTIES(OpenSolidPythonModule PROPERTIES DEBUG_POSTFIX "d")
     IF(WIN32)
         SET_TARGET_PROPERTIES(OpenSolidPythonModule PROPERTIES SUFFIX ".pyd")
     ENDIF(WIN32)
@@ -60,6 +61,7 @@
 ########## Compile OpenSolidPython library ##########
     
     ADD_LIBRARY(OpenSolidPython SHARED ${PYTHON_ENVIRONMENT_SOURCES})
+    SET_TARGET_PROPERTIES(OpenSolidPython PROPERTIES DEBUG_POSTFIX "d")
     TARGET_LINK_LIBRARIES(OpenSolidPython
         OpenSolidCore
         OpenSolidPythonModule

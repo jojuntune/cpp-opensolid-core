@@ -309,7 +309,7 @@
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
     )
-
+    SET_TARGET_PROPERTIES(OpenSolidCore PROPERTIES DEBUG_POSTFIX "d")
     TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf libsqlite3)
     
 ########## Compile tests ##########

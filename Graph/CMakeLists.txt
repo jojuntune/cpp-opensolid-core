@@ -32,6 +32,7 @@ SET(GLOBAL_SOURCE_LIST
 
 # Compile and link graph library
 ADD_LIBRARY(OpenSolidGraph ${GRAPH_SOURCES})
+SET_TARGET_PROPERTIES(OpenSolidGraph PROPERTIES DEBUG_POSTFIX "d")
 TARGET_LINK_LIBRARIES(OpenSolidGraph OpenSolidSTK OpenSolidPython ${OPENGL_LIBRARIES})
    
 # Temporary fix - define 'override' as empty macro for GCC < 4.7    
