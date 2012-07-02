@@ -18,60 +18,72 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DESERIALIZATION_HPP
-#define OPENSOLID__DESERIALIZATION_HPP
+#pragma once
+
+#include <OpenSolid/Core/Common/Value.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <string>
 
-#include <OpenSolid/Core/config.hpp>
+namespace opensolid
+{
+    class Message : public std::string, public Convertible<Message>
+    {
+    public:
+        Message(const std::string& argument);
+    };
+}
+
+////////// Specializations //////////
 
 namespace opensolid
 {
+    template <>
+    struct TypeName<Message>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct Conversion<Value, Message>
+    {
+        OPENSOLID_CORE_EXPORT Message operator()(const Value& argument) const;
+    };
+
+    template <>
+    struct Conversion<Message, Value>
+    {
+        OPENSOLID_CORE_EXPORT Value operator()(const Message& argument) const;
+    };
+
     template <class Type>
-    struct Deserialization;
-
-    template <>
-    struct Deserialization<bool>
+    struct Conversion<Type, Message>
     {
-        bool operator()(const std::string& argument) const;
+        Message operator()(const Type& argument) const;
     };
 
-    template <>
-    struct Deserialization<int>
+    template <class Type>
+    struct Conversion<Message, Type>
     {
-        int operator()(const std::string& argument) const;
-    };
-
-    template <>
-    struct Deserialization<double>
-    {
-        OPENSOLID_CORE_EXPORT double operator()(const std::string& argument) const;
-    };
-
-    template <>
-    struct Deserialization<std::string>
-    {
-        const std::string& operator()(const std::string& argument) const;
+        Type operator()(const Message& argument) const;
     };
 }
 
 ////////// Implementation //////////
 
-#include <boost/lexical_cast.hpp>
-
 namespace opensolid
 {
-    inline bool Deserialization<bool>::operator()(const std::string& argument) const {
-        return boost::lexical_cast<bool>(argument);
+    inline Message::Message(const std::string& argument) : std::string(argument) {}
+
+    template <class Type>
+    Message Conversion<Type, Message>::operator()(const Type& argument) const {
+        return Conversion<Value, Message>()(Conversion<Type, Value>()(argument));
     }
 
-    inline int Deserialization<int>::operator()(const std::string& argument) const {
-        return boost::lexical_cast<int>(argument);
+    template <class Type>
+    Type Conversion<Message, Type>::operator()(const Message& argument) const {
+        return Conversion<Value, Type>()(Conversion<Message, Value>()(argument));
     }
-
-    inline const std::string& Deserialization<std::string>::operator()(
-        const std::string& argument
-    ) const {return argument;}
 }
-
-#endif

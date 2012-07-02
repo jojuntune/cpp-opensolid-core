@@ -1,5 +1,0 @@
-package opensolid;
-
-message SerializedDouble {
-    required double value = 1;
-}

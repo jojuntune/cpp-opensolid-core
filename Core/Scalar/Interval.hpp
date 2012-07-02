@@ -18,24 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__INTERVAL_HPP
-#define OPENSOLID__INTERVAL_HPP
+#pragma once
 
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Bounds.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/Generic/Schema.hpp>
 #include <OpenSolid/Core/config.hpp>
+
+#include <boost/numeric/interval.hpp>
 
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <utility>
 #include <string>
-
-#include <boost/numeric/interval.hpp>
-
-#include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
 
 namespace opensolid
 {
@@ -184,15 +181,23 @@ namespace opensolid
     };
 
     template <>
-    struct Serialization<Interval>
+    struct Schema<Interval>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Interval& argument) const;
+        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+    };
+
+    class List;
+
+    template <>
+    struct Conversion<Interval, List>
+    {
+        OPENSOLID_CORE_EXPORT List operator()(const Interval& argument) const;
     };
 
     template <>
-    struct Deserialization<Interval>
+    struct Conversion<List, Interval>
     {
-        OPENSOLID_CORE_EXPORT Interval operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT Interval operator()(const List& argument) const;
     };
 
     template <>
@@ -488,5 +493,3 @@ namespace opensolid
 }
 
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
-
-#endif

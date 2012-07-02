@@ -20,6 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Object/Object.hpp>
 
@@ -85,27 +86,6 @@ public:
         TS_ASSERT_THROWS(object.get<int>("c"), ObjectGetValueError);
     }
 
-    void testSerialization() {
-        Object object;
-        object.set("value", 1.0);
-        object.set("vector", Vector3d(1, 2, 3));
-        Object component;
-        component.set("axis", Axis3d(Vector3d::Zero(), Vector3d(4, 5, 6)));
-        component.set("facet", Triangle3d(Matrix3d::Ones()));
-        object.set("component", component);
-        Serialization<Object> serialization;
-        std::string serialized = serialization(object);
-        Deserialization<Object> deserialization;
-        Object deserialized = deserialization(serialized);
-        TS_ASSERT_EQUALS(deserialized.get<double>("value"), 1.0);
-        TS_ASSERT_EQUALS(deserialized.get<Vector3d>("vector"), Vector3d(1, 2, 3));
-        Axis3d axis = deserialized.get<Object>("component").get<Axis3d>("axis");
-        TS_ASSERT_EQUALS(axis.origin(), Vector3d::Zero());
-        TS_ASSERT((axis.direction() - Vector3d(4, 5, 6).normalized()).isZero());
-        Triangle3d facet = deserialized.get<Object>("component").get<Triangle3d>("facet");
-        TS_ASSERT_EQUALS(facet.vertices(), Matrix3d::Ones());
-    }
-
     void testCustomConversion() {
         CustomType original;
         original.value = M_PI;
@@ -132,8 +112,9 @@ public:
         original.vector = Vector3d::Random();
         Object object;
         object.set("custom", original);
-        TS_ASSERT_EQUALS(object.get<Object>("custom").get<double>("value"), original.value);
-        TS_ASSERT_EQUALS(object.get<Object>("custom").get<Vector3d>("vector"), original.vector);
+        Object converted = object.get<Object>("custom");
+        TS_ASSERT_EQUALS(converted.get<double>("value"), original.value);
+        TS_ASSERT_EQUALS(converted.get<Vector3d>("vector"), original.vector);
         CustomType reconstructed = object.get<CustomType>("custom");
         TS_ASSERT_EQUALS(reconstructed.value, original.value);
         TS_ASSERT_EQUALS(reconstructed.vector, original.vector);

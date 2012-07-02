@@ -18,16 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/Dictionary.hpp>
+#include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Mesh/Mesh.hpp>
 
 namespace opensolid
 {
-    DictionaryError::DictionaryError(const std::string& key, const std::string& requested_type) :
-        _key(key), _requested_type(requested_type) {}
-        
-    DictionaryError::~DictionaryError() throw() {}
+    void getParameterValues(
+        const Function& function,
+        const Function& derivative,
+        const Interval& domain,
+        double linear_deviation,
+        std::vector<double>& results
+    ) {
 
-    std::string DictionaryError::key() const {return _key;}
+    }
 
-    std::string DictionaryError::requestedType() const {return _requested_type;}
+    Mesh::Mesh(const Geometry& geometry, double linear_deviation) {
+        if (geometry.parameters() != 1) {
+            // Only supports curves for now
+            throw NotImplementedError("Mesh.cpp", __LINE__);
+        }
+        std::vector<double> temp;
+        Function function = geometry.function();
+        Function derivative = function.derivative();
+        Interval domain = geometry.domain().as<Interval>();
+        getParameterValues(
+            function,
+            derivative,
+            domain,
+            linear_deviation,
+            temp
+        );
+        temp.push_back(domain.upper());
+        RowVectorXd parameter_values(1, temp.size());
+        std::copy(temp.begin(), temp.end(), begin(parameter_values));
+        _vertices = function(parameter_values);
+    }
 }

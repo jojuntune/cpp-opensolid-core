@@ -18,60 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__SERIALIZATION_HPP
-#define OPENSOLID__SERIALIZATION_HPP
-
-#include <string>
-
-#include <OpenSolid/Core/config.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 
 namespace opensolid
 {
-    template <class Type>
-    struct Serialization;
+    std::string TypeName<bool>::operator()() const {return "Bool";}
 
-    template <>
-    struct Serialization<bool>
-    {
-        std::string operator()(bool argument) const;
-    };
+    std::string TypeName<short>::operator()() const {return "Short";}
 
-    template <>
-    struct Serialization<int>
-    {
-        std::string operator()(int argument) const;
-    };
+    std::string TypeName<unsigned short>::operator()() const {return "UnsignedShort";}
 
-    template <>
-    struct Serialization<double>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(double argument) const;
-    };
+    std::string TypeName<int>::operator()() const {return "Int";}
 
-    template <>
-    struct Serialization<std::string>
-    {
-        const std::string& operator()(const std::string& argument) const;
-    };
+    std::string TypeName<unsigned>::operator()() const {return "Unsigned";}
+
+    std::string TypeName<long>::operator()() const {return "Long";}
+
+    std::string TypeName<unsigned long>::operator()() const {return "UnsignedLong";}
+
+    std::string TypeName<long long>::operator()() const {return "LongLong";}
+
+    std::string TypeName<unsigned long long>::operator()() const {return "UnsignedLongLong";}
+
+    std::string TypeName<float>::operator()() const {return "Float";}
+
+    std::string TypeName<double>::operator()() const {return "Double";}
+
+    std::string TypeName<long double>::operator()() const {return "LongDouble";}
+
+    std::string TypeName<std::string>::operator()() const {return "String";}
 }
-
-////////// Implementation //////////
-
-#include <boost/lexical_cast.hpp>
-
-namespace opensolid
-{
-    inline std::string Serialization<bool>::operator()(bool argument) const {
-        return boost::lexical_cast<std::string>(argument);
-    }
-
-    inline std::string Serialization<int>::operator()(int argument) const {
-        return boost::lexical_cast<std::string>(argument);
-    }
-
-    inline const std::string& Serialization<std::string>::operator()(
-        const std::string& argument
-    ) const {return argument;}
-}
-
-#endif

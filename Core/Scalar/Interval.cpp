@@ -24,7 +24,7 @@
 #include <boost/numeric/interval.hpp>
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Scalar/SerializedInterval.pb.h>
+#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
@@ -75,17 +75,22 @@ namespace opensolid
         return stream;
     }
 
-    std::string Serialization<Interval>::operator()(const Interval& argument) const {
-        SerializedInterval temp;
-        temp.set_lower(argument.lower());
-        temp.set_upper(argument.upper());
-        return temp.SerializeAsString();
+    TypeSchema Schema<Interval>::operator()() const {
+        TypeSchema result;
+        result.addItem<double>("Lower");
+        result.addItem<double>("Upper");
+        return result;
     }
 
-    Interval Deserialization<Interval>::operator()(const std::string& argument) const {
-        SerializedInterval temp;
-        temp.ParseFromString(argument);
-        return Interval(temp.lower(), temp.upper());
+    List Conversion<Interval, List>::operator()(const Interval& argument) const {
+        List result;
+        result.append(argument.lower());
+        result.append(argument.upper());
+        return result;
+    }
+
+    Interval Conversion<List, Interval>::operator()(const List& argument) const {
+        return Interval(argument[0].as<double>(), argument[1].as<double>());
     }
 
     std::string TypeName<Interval>::operator()() const {return "Interval";}

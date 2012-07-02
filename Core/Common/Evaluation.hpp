@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Common/MatrixArgument.hpp>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 namespace opensolid
 {
@@ -153,6 +153,52 @@ namespace opensolid
 
 namespace opensolid
 {
+    namespace
+    {
+        template<class Type>
+        class MatrixArgument
+        {
+        private:
+            typename boost::mpl::if_c<
+                Eigen::internal::has_direct_access<Type>::ret,
+                const Type&,
+                typename Type::PlainObject
+            >::type _argument;
+        public:
+            MatrixArgument(const Type& argument);
+        
+            const typename Type::Scalar* data() const;
+            int rows() const;
+            int cols() const;
+            int outerStride() const;
+            int innerStride() const;
+        };
+
+        template<class Type>
+        inline MatrixArgument<Type>::MatrixArgument(const Type& argument) : _argument(argument) {}
+    
+        template<class Type>
+        inline const typename Type::Scalar* MatrixArgument<Type>::data() const {
+            return _argument.data();
+        }
+    
+        template<class Type>
+        inline int MatrixArgument<Type>::rows() const {return _argument.rows();}
+    
+        template<class Type>
+        inline int MatrixArgument<Type>::cols() const {return _argument.cols();}
+    
+        template<class Type>
+        inline int MatrixArgument<Type>::outerStride() const {
+            return (Type::Flags & RowMajorBit) ? _argument.innerStride() : _argument.outerStride();
+        }
+    
+        template<class Type>
+        inline int MatrixArgument<Type>::innerStride() const {
+            return (Type::Flags & RowMajorBit) ? _argument.outerStride() : _argument.innerStride();
+        }
+    }
+
     template<class EvaluatedType, class ArgumentType>
     inline Evaluation<EvaluatedType, ArgumentType>::Evaluation(
         const EvaluatedType& evaluated,

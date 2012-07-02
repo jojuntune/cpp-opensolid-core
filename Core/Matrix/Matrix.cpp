@@ -19,46 +19,58 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Matrix/SerializedMatrix.pb.h>
+#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
-    std::string Serialization<MatrixXd>::operator()(const MatrixXd& argument) const {
-        SerializedMatrixXd temp;
-        temp.set_rows(argument.rows());
-        temp.set_cols(argument.cols());
-        for (int i = 0; i < argument.size(); ++i) {temp.add_data(argument(i));}
-        return temp.SerializeAsString();
+    TypeSchema Schema<MatrixXd>::operator()() const {
+        TypeSchema result;
+        result.addItem<int>("Rows");
+        result.addItem<int>("Cols");
+        result.addList<double>("Data");
+        return result;
     }
 
-    MatrixXd Deserialization<MatrixXd>::operator()(const std::string& argument) const {
-        SerializedMatrixXd temp;
-        temp.ParseFromString(argument);
-        MatrixXd result(temp.rows(), temp.cols());
-        for (int i = 0; i < result.size(); ++i) {result(i) = temp.data(i);}
-        return std::move(result);
+    List Conversion<MatrixXd, List>::operator()(const MatrixXd& argument) const {
+        List result;
+        result.append(argument.rows());
+        result.append(argument.cols());
+        result.append(List(begin(argument), end(argument)));
+        return result;
     }
 
-    std::string Serialization<MatrixXI>::operator()(const MatrixXI& argument) const {
-        Serialization<Interval> interval_serializer;
-        SerializedMatrixXI temp;
-        temp.set_rows(argument.rows());
-        temp.set_cols(argument.cols());
-        for (int i = 0; i < argument.size(); ++i) {
-            temp.add_data(interval_serializer(argument(i)));
-       }
-        return temp.SerializeAsString();
+    MatrixXd Conversion<List, MatrixXd>::operator()(const List& argument) const {
+        int rows = argument[0].as<int>();
+        int cols = argument[1].as<int>();
+        List data = argument[2].as<List>();
+        MatrixXd result(rows, cols);
+        for (int i = 0; i < data.size(); ++i) {result(i) = data[i].as<double>();}
+        return result;
     }
 
-    MatrixXI Deserialization<MatrixXI>::operator()(const std::string& argument) const {
-        Deserialization<Interval> interval_deserializer;
-        SerializedMatrixXI temp;
-        temp.ParseFromString(argument);
-        MatrixXI result(temp.rows(), temp.cols());
-        for (int i = 0; i < result.size(); ++i) {
-            result(i) = interval_deserializer(temp.data(i));
-        }
-        return std::move(result);
+    TypeSchema Schema<MatrixXI>::operator()() const {
+        TypeSchema result;
+        result.addItem<int>("Rows");
+        result.addItem<int>("Cols");
+        result.addList<Interval>("Data");
+        return result;
+    }
+
+    List Conversion<MatrixXI, List>::operator()(const MatrixXI& argument) const {
+        List result;
+        result.append(argument.rows());
+        result.append(argument.cols());
+        result.append(List(begin(argument), end(argument)));
+        return result;
+    }
+
+    MatrixXI Conversion<List, MatrixXI>::operator()(const List& argument) const {
+        int rows = argument[0].as<int>();
+        int cols = argument[1].as<int>();
+        List data = argument[2].as<List>();
+        MatrixXI result(rows, cols);
+        for (int i = 0; i < data.size(); ++i) {result(i) = data[i].as<Interval>();}
+        return result;
     }
 
     std::string TypeName<MatrixXd>::operator()() const {return "MatrixXd";}

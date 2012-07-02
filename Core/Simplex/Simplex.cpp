@@ -20,7 +20,7 @@
  
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Simplex/SerializedSimplex.pb.h>
+#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {   
@@ -370,19 +370,20 @@ namespace opensolid
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
     template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
 
-    std::string Serialization<SimplexXd>::operator()(const SimplexXd& argument) const {
-        Serialization<MatrixXd> matrix_serializer;
-        SerializedSimplexXd temp;
-        temp.set_vertices(matrix_serializer(argument.vertices()));
-        return temp.SerializeAsString();
+    TypeSchema Schema<SimplexXd>::operator()() const {
+        TypeSchema result;
+        result.addItem<MatrixXd>("Vertices");
+        return result;
     }
 
-    SimplexXd Deserialization<SimplexXd>::operator()(const std::string& argument) const {
-        Deserialization<MatrixXd> matrix_deserializer;
-        SerializedSimplexXd temp;
-        temp.ParseFromString(argument);
-        MatrixXd vertices = matrix_deserializer(temp.vertices());
-        return SimplexXd(vertices);
+    List Conversion<SimplexXd, List>::operator()(const SimplexXd& argument) const {
+        List result;
+        result.append(argument.vertices());
+        return result;
+    }
+
+    SimplexXd Conversion<List, SimplexXd>::operator()(const List& argument) const {
+        return SimplexXd(argument[0].as<MatrixXd>());
     }
 
     std::string TypeName<Line1d>::operator()() const {return "Line1d";}

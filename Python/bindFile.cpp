@@ -84,44 +84,43 @@ namespace opensolid
             std::string type;
             std::string data;
             file.getData(key, type, data);
-            if (type == "bool") {
-                Deserialization<bool> deserialization;
+            if (type == TypeName<bool>()()) {
+                Conversion<std::string, bool> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "int") {
-                Deserialization<int> deserialization;
+            } else if (type == TypeName<int>()()) {
+                Conversion<std::string, int> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "double") {
-                Deserialization<double> deserialization;
+            } else if (type == TypeName<double>()()) {
+                Conversion<std::string, double> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "string") {
-                Deserialization<std::string> deserialization;
+            } else if (type == TypeName<std::string>()()) {
+                return boost::python::object(data);
+            } else if (type == TypeName<Interval>()()) {
+                Conversion<std::string, Interval> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "Interval") {
-                Deserialization<Interval> deserialization;
+            } else if (type == TypeName<MatrixXd>()()) {
+                Conversion<std::string, MatrixXd> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "MatrixXd") {
-                Deserialization<MatrixXd> deserialization;
+            } else if (type == TypeName<MatrixXI>()()) {
+                Conversion<std::string, MatrixXI> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "MatrixXI") {
-                Deserialization<MatrixXI> deserialization;
+            } else if (type == TypeName<DatumXd>()()) {
+                Conversion<std::string, DatumXd> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "DatumXd") {
-                Deserialization<DatumXd> deserialization;
+            } else if (type == TypeName<SimplexXd>()()) {
+                Conversion<std::string, SimplexXd> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "SimplexXd") {
-                Deserialization<SimplexXd> deserialization;
+            } else if (type == TypeName<Function>()()) {
+                Conversion<std::string, Function> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "Function") {
-                Deserialization<Function> deserialization;
+            } else if (type == TypeName<Geometry>()()) {
+                Conversion<std::string, Geometry> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "Geometry") {
-                Deserialization<Geometry> deserialization;
+            } else if (type == TypeName<Domain>()()) {
+                Conversion<std::string, Domain> deserialization;
                 return boost::python::object(deserialization(data));
-            } else if (type == "Domain") {
-                Deserialization<Domain> deserialization;
-                return boost::python::object(deserialization(data));
-            } else if (type == "Object") {
-                Deserialization<Object> deserialization;
+            } else if (type == TypeName<Object>()()) {
+                Conversion<std::string, Object> deserialization;
                 return boost::python::object(deserialization(data));
             }
             return boost::python::object();

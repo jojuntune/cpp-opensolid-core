@@ -36,6 +36,7 @@
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Mesh/Mesh.hpp>
 #include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>

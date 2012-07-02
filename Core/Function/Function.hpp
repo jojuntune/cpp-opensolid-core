@@ -18,26 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FUNCTION_HPP
-#define OPENSOLID__FUNCTION_HPP
+#pragma once
 
-#include <OpenSolid/Core/config.hpp>
-
-#include <typeinfo>
-
-#include <boost/intrusive_ptr.hpp>
-
-#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Evaluation.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/Deserialization.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Transformable.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/config.hpp>
+
+#include <boost/intrusive_ptr.hpp>
+
+#include <typeinfo>
 
 namespace opensolid
 {
@@ -173,21 +169,21 @@ namespace opensolid
     };
 
     template <>
-    struct TypeName<Function>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct Serialization<Function>
+    struct Conversion<Function, std::string>
     {
         OPENSOLID_CORE_EXPORT std::string operator()(const Function& argument) const;
     };
 
     template <>
-    struct Deserialization<Function>
+    struct Conversion<std::string, Function>
     {
         OPENSOLID_CORE_EXPORT Function operator()(const std::string& argument) const;
+    };
+
+    template <>
+    struct TypeName<Function>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
@@ -211,5 +207,3 @@ namespace opensolid
         return Evaluation<Function, ArgumentType>(*this, argument);
     }
 }
-
-#endif

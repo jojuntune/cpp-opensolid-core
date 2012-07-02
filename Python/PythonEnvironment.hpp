@@ -30,7 +30,7 @@
 #include <boost/python/converter/registry.hpp>
 
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 #include <OpenSolid/Python/repr.hpp>
 

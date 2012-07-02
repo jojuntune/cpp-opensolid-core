@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__DATUM_HPP
-#define OPENSOLID__DATUM_HPP
+#pragma once
 
-#include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Transformable.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {
@@ -176,15 +176,21 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct Serialization<DatumXd>
+    struct Schema<DatumXd>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const DatumXd& argument) const;
+        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
     };
 
     template <>
-    struct Deserialization<DatumXd>
+    struct Conversion<DatumXd, List>
     {
-        OPENSOLID_CORE_EXPORT DatumXd operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT List operator()(const DatumXd& argument) const;
+    };
+
+    template <>
+    struct Conversion<List, DatumXd>
+    {
+        OPENSOLID_CORE_EXPORT DatumXd operator()(const List& argument) const;
     };
 
     template <>
@@ -723,5 +729,3 @@ namespace opensolid
         );
     }
 }
-
-#endif

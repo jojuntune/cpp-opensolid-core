@@ -18,41 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__TYPENAME_HPP
-#define OPENSOLID__TYPENAME_HPP
-
-#include <string>
+#ifndef OPENSOLID__MESH_HPP
+#define OPENSOLID__MESH_HPP
 
 #include <OpenSolid/Core/config.hpp>
 
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
+
 namespace opensolid
 {
-    template <class Type>
-    struct TypeName;
-
-    template <>
-    struct TypeName<bool>
+    class Mesh
     {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
+    private:
+        MatrixXd _vertices;
+    public:
+        OPENSOLID_CORE_EXPORT Mesh(const Geometry& geometry, double linear_deviation);
 
-    template <>
-    struct TypeName<int>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
+        MatrixXd vertices() const;
     };
+}
 
-    template <>
-    struct TypeName<double>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
+////////// Implementation //////////
 
-    template <>
-    struct TypeName<std::string>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
+namespace opensolid
+{
+    inline MatrixXd Mesh::vertices() const {return _vertices;}
 }
 
 #endif

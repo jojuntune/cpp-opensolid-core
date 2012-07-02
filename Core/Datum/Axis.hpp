@@ -22,7 +22,7 @@
 #define OPENSOLID__AXIS_HPP
 
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace opensolid

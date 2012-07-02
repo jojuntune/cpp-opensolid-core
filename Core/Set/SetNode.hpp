@@ -24,7 +24,7 @@
 #include <new>
 #include <vector>
 
-#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace opensolid

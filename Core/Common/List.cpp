@@ -18,16 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/lexical_cast.hpp>
-
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/SerializedDouble.pb.h>
+#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
-    std::string Serialization<double>::operator()(double argument) const {
-        SerializedDouble temp;
-        temp.set_value(argument);
-        return temp.SerializeAsString();
+    List::List() {}
+
+    List& List::append(const Value& argument) {
+        _list.push_back(argument);
+        return *this;
     }
+    
+    int List::size() const {return _list.size();}
+
+    const Value& List::operator[](int index) const {
+        if (index < 0 || index > size()) {throw ListIndexError(*this, index);}
+        return _list[index];
+    }
+
+    List::Iterator List::begin() const {return _list.begin();}
+
+    List::Iterator List::end() const {return _list.end();}
+
+    ListIndexError::ListIndexError(const List& list, int index) : _list(list), _index(index) {}
+
+    const List& ListIndexError::list() const {return _list;}
+
+    int ListIndexError::index() const {return _index;}
+
+    std::string TypeName<List>::operator()() const {return "List";}
 }

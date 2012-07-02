@@ -21,32 +21,56 @@
 #pragma once
 
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/Value.hpp>
 #include <OpenSolid/Core/Generic/TypeName.hpp>
-#include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/config.hpp>
 
+#include <vector>
+#include <utility>
 #include <string>
-#include <unordered_map>
 
 namespace opensolid
 {
-    class Object : public Convertible<Object>
+    class Object;
+
+    class TypeSchema
     {
     private:
-        std::unordered_map<std::string, Value> _map;
+        std::vector<std::pair<std::string, std::string>> _schema;
     public:
-        typedef std::unordered_map<std::string, Value>::const_iterator Iterator;
+        typedef std::vector<std::pair<std::string, std::string>>::const_iterator Iterator;
 
-        OPENSOLID_CORE_EXPORT Object();
+        template <class Type>
+        void addItem(const std::string& name);
 
-        OPENSOLID_CORE_EXPORT bool has(const std::string& key) const;
+        template <class Type>
+        void addList(const std::string& name);
 
-        OPENSOLID_CORE_EXPORT Value& operator[](const std::string& key);
-        OPENSOLID_CORE_EXPORT const Value& operator[](const std::string& key) const;
+        OPENSOLID_CORE_EXPORT bool isEmpty() const;
+        OPENSOLID_CORE_EXPORT int size() const;
+        OPENSOLID_CORE_EXPORT const std::string& name(int index) const;
+        OPENSOLID_CORE_EXPORT const std::string& type(int index) const;
 
         OPENSOLID_CORE_EXPORT Iterator begin() const;
         OPENSOLID_CORE_EXPORT Iterator end() const;
+    };
+}
+
+////////// Errors //////////
+
+namespace opensolid
+{
+    class SchemaIndexError : public Error
+    {
+    private:
+        TypeSchema _schema;
+        int _index;
+    public:
+        OPENSOLID_CORE_EXPORT SchemaIndexError(const TypeSchema& schema, int index);
+
+        OPENSOLID_CORE_EXPORT TypeSchema schema() const;
+        OPENSOLID_CORE_EXPORT int index() const;
+
+        OPENSOLID_CORE_EXPORT const char* what() const override;
     };
 }
 
@@ -55,31 +79,23 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct TypeName<Object>
+    struct TypeName<TypeSchema>
     {
         OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
-////////// Errors //////////
+////////// Implementation //////////
 
 namespace opensolid
 {
-    class ObjectGetError : public Error
-    {
-    private:
-        Object _object;
-        std::string _key;
-    public:
-        OPENSOLID_CORE_EXPORT ObjectGetError(
-            const Object& object,
-            const std::string& key
-        );
-        
-        ~ObjectGetError() throw () {}
+    template <class Type>
+    void TypeSchema::addItem(const std::string& name) {
+        _schema.push_back(std::pair<std::string, std::string>(name, TypeName<Type>()()));
+    }
 
-        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-        OPENSOLID_CORE_EXPORT Object object() const;
-        OPENSOLID_CORE_EXPORT std::string key() const;
-    };
+    template <class Type>
+    void TypeSchema::addList(const std::string& name) {
+        _schema.push_back(std::pair<std::string, std::string>(name, TypeName<List>()() + ":" + TypeName<Type>()()));
+    }
 }

@@ -18,32 +18,62 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__MATRIXARGUMENT_HPP
-#define OPENSOLID__MATRIXARGUMENT_HPP
+#pragma once
 
-#include <boost/mpl/if.hpp>
+#include <OpenSolid/Core/Common/Value.hpp>
+#include <OpenSolid/Core/config.hpp>
 
-#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <vector>
 
 namespace opensolid
 {
-    template<class Type>
-    class MatrixArgument
+    class List : public Convertible<List>
     {
     private:
-        typename boost::mpl::if_c<
-            Eigen::internal::has_direct_access<Type>::ret,
-            const Type&,
-            typename Type::PlainObject
-        >::type _argument;
+        std::vector<Value> _list;
     public:
-        MatrixArgument(const Type& argument);
-        
-        const typename Type::Scalar* data() const;
-        int rows() const;
-        int cols() const;
-        int outerStride() const;
-        int innerStride() const;
+        typedef std::vector<Value>::const_iterator Iterator;
+
+        OPENSOLID_CORE_EXPORT List();
+
+        template <class IteratorType>
+        List(IteratorType begin, IteratorType end);
+
+        OPENSOLID_CORE_EXPORT List& append(const Value& argument);
+
+        OPENSOLID_CORE_EXPORT int size() const;
+        OPENSOLID_CORE_EXPORT const Value& operator[](int index) const;
+
+        OPENSOLID_CORE_EXPORT Iterator begin() const;
+        OPENSOLID_CORE_EXPORT Iterator end() const;
+    };
+}
+
+////////// Errors //////////
+
+namespace opensolid
+{
+    class ListIndexError
+    {
+    private:
+        List _list;
+        int _index;
+    public:
+        OPENSOLID_CORE_EXPORT ListIndexError(const List& list, int index);
+
+        OPENSOLID_CORE_EXPORT const List& list() const;
+        OPENSOLID_CORE_EXPORT int index() const;
+    };
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <>
+    struct TypeName<List>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
@@ -51,29 +81,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template<class Type>
-    inline MatrixArgument<Type>::MatrixArgument(const Type& argument) : _argument(argument) {}
-    
-    template<class Type>
-    inline const typename Type::Scalar* MatrixArgument<Type>::data() const {
-        return _argument.data();
-    }
-    
-    template<class Type>
-    inline int MatrixArgument<Type>::rows() const {return _argument.rows();}
-    
-    template<class Type>
-    inline int MatrixArgument<Type>::cols() const {return _argument.cols();}
-    
-    template<class Type>
-    inline int MatrixArgument<Type>::outerStride() const {
-        return (Type::Flags & RowMajorBit) ? _argument.innerStride() : _argument.outerStride();
-    }
-    
-    template<class Type>
-    inline int MatrixArgument<Type>::innerStride() const {
-        return (Type::Flags & RowMajorBit) ? _argument.outerStride() : _argument.innerStride();
-    }
+    template <class IteratorType>
+    List::List(IteratorType begin, IteratorType end) : _list(begin, end) {}
 }
-
-#endif

@@ -18,14 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/Deserialization.hpp>
-#include <OpenSolid/Core/Common/SerializedDouble.pb.h>
+#include <OpenSolid/Core/Common/TypeSchema.hpp>
 
 namespace opensolid
 {
-    double Deserialization<double>::operator()(const std::string& argument) const {
-        SerializedDouble temp;
-        temp.ParseFromString(argument);
-        return temp.value();
+    bool TypeSchema::isEmpty() const {return _schema.empty();}
+
+    int TypeSchema::size() const {return _schema.size();}
+
+    const std::string& TypeSchema::name(int index) const {
+        if (index < 0 || index >= size()) {throw SchemaIndexError(*this, index);}
+        return _schema[index].first;
     }
+
+    const std::string& TypeSchema::type(int index) const {
+        if (index < 0 || index >= size()) {throw SchemaIndexError(*this, index);}
+        return _schema[index].second;
+    }
+
+    TypeSchema::Iterator TypeSchema::begin() const {return _schema.begin();}
+
+    TypeSchema::Iterator TypeSchema::end() const {return _schema.end();}
+
+    SchemaIndexError::SchemaIndexError(const TypeSchema& schema, int index) :
+        _schema(schema), _index(index) {}
+
+    TypeSchema SchemaIndexError::schema() const {return _schema;}
+
+    int SchemaIndexError::index() const {return _index;}
+
+    std::string TypeName<TypeSchema>::operator()() const {return "TypeSchema";}
 }

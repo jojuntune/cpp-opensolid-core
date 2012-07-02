@@ -21,12 +21,12 @@
 #ifndef OPENSOLID__MATRIX_HPP
 #define OPENSOLID__MATRIX_HPP
 
-#include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Serialization.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Schema.hpp>
+#include <OpenSolid/Core/Generic/Bounds.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace Eigen
 {   
@@ -297,27 +297,39 @@ namespace opensolid
     };
 
     template <>
-    struct Serialization<MatrixXd>
+    struct Schema<MatrixXd>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const MatrixXd& argument) const;
+        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
     };
 
     template <>
-    struct Deserialization<MatrixXd>
+    struct Conversion<MatrixXd, List>
     {
-        OPENSOLID_CORE_EXPORT MatrixXd operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT List operator()(const MatrixXd& argument) const;
     };
 
     template <>
-    struct Serialization<MatrixXI>
+    struct Conversion<List, MatrixXd>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const MatrixXI& argument) const;
+        OPENSOLID_CORE_EXPORT MatrixXd operator()(const List& argument) const;
     };
 
     template <>
-    struct Deserialization<MatrixXI>
+    struct Schema<MatrixXI>
     {
-        OPENSOLID_CORE_EXPORT MatrixXI operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+    };
+
+    template <>
+    struct Conversion<MatrixXI, List>
+    {
+        OPENSOLID_CORE_EXPORT List operator()(const MatrixXI& argument) const;
+    };
+
+    template <>
+    struct Conversion<List, MatrixXI>
+    {
+        OPENSOLID_CORE_EXPORT MatrixXI operator()(const List& argument) const;
     };
 
     template <>
@@ -443,7 +455,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Core/Common/Conversion.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
 
 namespace Eigen
 {
@@ -788,6 +800,6 @@ namespace opensolid
 }
 
 #include <OpenSolid/Core/Matrix/MatrixIterator.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
+#include <OpenSolid/Core/Generic/Transformable.hpp>
 
 #endif

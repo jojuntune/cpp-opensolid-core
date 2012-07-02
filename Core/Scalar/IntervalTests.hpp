@@ -22,6 +22,7 @@
 
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
+#include <OpenSolid/Core/Common/List.hpp>
 
 using namespace opensolid;
 
@@ -125,12 +126,12 @@ public:
         }
     }
 
-    void testSerialization() {
+    void testListConversion() {
         Interval original(2, 3);
-        Serialization<Interval> serializer;
-        Deserialization<Interval> deserializer;
-        std::string serialized = serializer(original);
-        Interval final = deserializer(serialized);
+        Conversion<Interval, List> converter;
+        Conversion<List, Interval> deconverter;
+        List list = converter(original);
+        Interval final = deconverter(list);
         TS_ASSERT_EQUALS(original.lower(), final.lower());
         TS_ASSERT_EQUALS(original.upper(), final.upper());
     }

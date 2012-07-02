@@ -84,10 +84,10 @@ namespace opensolid
             result = sqlite3_exec(
                 _database,
                 "BEGIN TRANSACTION;"
-                "CREATE TABLE IF NOT EXISTS Model (key TEXT PRIMARY KEY, type TEXT, data BLOB);"
-                "CREATE TABLE IF NOT EXISTS FunctionImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
-                "CREATE TABLE IF NOT EXISTS GeometryImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
-                "CREATE TABLE IF NOT EXISTS DomainImplementation (pointer INTEGER PRIMARY KEY, data BLOB);",
+                "CREATE TABLE IF NOT EXISTS Model (Key TEXT PRIMARY KEY, Type TEXT, Data BLOB);"
+                "CREATE TABLE IF NOT EXISTS FunctionImplementation (Pointer INTEGER PRIMARY KEY, Data BLOB);"
+                "CREATE TABLE IF NOT EXISTS GeometryImplementation (Pointer INTEGER PRIMARY KEY, Data BLOB);"
+                "CREATE TABLE IF NOT EXISTS DomainImplementation (Pointer INTEGER PRIMARY KEY, Data BLOB);",
                 nullptr,
                 nullptr,
                 nullptr
@@ -103,7 +103,7 @@ namespace opensolid
         );
         sqlite3_prepare_v2(
             _database,
-            "SELECT type, data FROM Model WHERE key=?1",
+            "SELECT Type, Data FROM Model WHERE Key=?1",
             -1,
             &_select_statement,
             nullptr

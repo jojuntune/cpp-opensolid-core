@@ -18,8 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__TEMPLATE_HPP
-#define OPENSOLID__TEMPLATE_HPP
+#pragma once
 
 #include <OpenSolid/Core/config.hpp>
 
@@ -36,5 +35,3 @@ namespace opensolid
 {
     
 }
-
-#endif

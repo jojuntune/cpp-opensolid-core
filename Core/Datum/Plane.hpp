@@ -22,7 +22,7 @@
 #define OPENSOLID__PLANE_HPP
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 
 namespace opensolid
 {

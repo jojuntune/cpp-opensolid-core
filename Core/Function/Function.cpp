@@ -22,7 +22,6 @@
 
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Function/SerializedFunction.pb.h>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArccosineFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArcsineFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ComponentsFunction.hpp>
@@ -450,13 +449,13 @@ namespace opensolid
         return static_cast<const ConstantFunction*>(argument.implementation())->vector();
     }
 
+    std::string Conversion<Function, std::string>::operator()(const Function& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
+    Function Conversion<std::string, Function>::operator()(const std::string& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
     std::string TypeName<Function>::operator()() const {return "Function";}
-
-    std::string Serialization<Function>::operator()(const Function& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
-
-    Function Deserialization<Function>::operator()(const std::string& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
 }

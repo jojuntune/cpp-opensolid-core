@@ -261,8 +261,8 @@ public:
 
     void testMatrixXdSerialization() {
         Matrix3d original = Matrix3d::Random();
-        Serialization<MatrixXd> serializer;
-        Deserialization<MatrixXd> deserializer;
+        Conversion<MatrixXd, std::string> serializer;
+        Conversion<std::string, MatrixXd> deserializer;
         std::string serialized = serializer(original);
         MatrixXd final = deserializer(serialized);
         TS_ASSERT_EQUALS(final.rows(), original.rows());
@@ -272,8 +272,8 @@ public:
 
     void testMatrixXISerialization() {
         Matrix3I original = Matrix3I::Random();
-        Serialization<MatrixXI> serializer;
-        Deserialization<MatrixXI> deserializer;
+        Conversion<MatrixXI, std::string> serializer;
+        Conversion<std::string, MatrixXI> deserializer;
         std::string serialized = serializer(original);
         MatrixXI final = deserializer(serialized);
         TS_ASSERT_EQUALS(final.rows(), original.rows());
