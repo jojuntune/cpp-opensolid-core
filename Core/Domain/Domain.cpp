@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Domain/Domain.hpp>
-#include <OpenSolid/Core/Domain/SerializedDomain.pb.h>
+#include <OpenSolid/Core/Common/List.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/GenericDomain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/IntervalDomain.hpp>
@@ -90,11 +90,15 @@ namespace opensolid
         return argument.bounds().value();
     }
 
-    std::string Conversion<Domain, std::string>::operator()(const Domain& argument) const {
+    TypeSchema Schema<Domain>::operator()() const {
         throw NotImplementedError(__FILE__, __LINE__);
     }
 
-    Domain Conversion<std::string, Domain>::operator()(const std::string& argument) const {
+    List Conversion<Domain, List>::operator()(const Domain& argument) const {
+        throw NotImplementedError(__FILE__, __LINE__);
+    }
+
+    Domain Conversion<List, Domain>::operator()(const List& argument) const {
         throw NotImplementedError(__FILE__, __LINE__);
     }
 

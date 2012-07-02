@@ -18,24 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#ifndef OPENSOLID__DOMAIN_HPP
-#define OPENSOLID__DOMAIN_HPP
+#pragma once
 
-#include <OpenSolid/Core/config.hpp>
-
-#include <boost/intrusive_ptr.hpp>
-
-#include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
-#include <OpenSolid/Core/Common/Bounds.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Schema.hpp>
+#include <OpenSolid/Core/Generic/Bounds.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/Generic/Transformable.hpp>
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
+#include <OpenSolid/Core/config.hpp>
+
+#include <boost/intrusive_ptr.hpp>
 
 namespace opensolid
 {
@@ -97,15 +95,21 @@ namespace opensolid
     };
 
     template <>
-    struct Conversion<Domain, std::string>
+    struct Schema<Domain>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Domain& argument) const;
+        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
     };
 
     template <>
-    struct Conversion<std::string, Domain>
+    struct Conversion<Domain, List>
     {
-        OPENSOLID_CORE_EXPORT Domain operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT List operator()(const Domain& argument) const;
+    };
+
+    template <>
+    struct Conversion<List, Domain>
+    {
+        OPENSOLID_CORE_EXPORT Domain operator()(const List& argument) const;
     };
 
     template <>
@@ -131,5 +135,3 @@ namespace opensolid
         *this = Domain(SimplexXd(simplex));
     }
 }
-
-#endif

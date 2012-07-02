@@ -21,7 +21,7 @@
 #ifndef OPENSOLID__FRAME_HPP
 #define OPENSOLID__FRAME_HPP
 
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace opensolid

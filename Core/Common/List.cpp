@@ -18,16 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/Dictionary.hpp>
+#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
-    DictionaryError::DictionaryError(const std::string& key, const std::string& requested_type) :
-        _key(key), _requested_type(requested_type) {}
-        
-    DictionaryError::~DictionaryError() throw() {}
+    List::List() {}
 
-    std::string DictionaryError::key() const {return _key;}
+    List& List::append(const Value& argument) {
+        _list.push_back(argument);
+        return *this;
+    }
+    
+    int List::size() const {return _list.size();}
 
-    std::string DictionaryError::requestedType() const {return _requested_type;}
+    const Value& List::operator[](int index) const {
+        if (index < 0 || index > size()) {throw ListIndexError(*this, index);}
+        return _list[index];
+    }
+
+    List::Iterator List::begin() const {return _list.begin();}
+
+    List::Iterator List::end() const {return _list.end();}
+
+    ListIndexError::ListIndexError(const List& list, int index) : _list(list), _index(index) {}
+
+    const List& ListIndexError::list() const {return _list;}
+
+    int ListIndexError::index() const {return _index;}
+
+    std::string TypeName<List>::operator()() const {return "List";}
 }

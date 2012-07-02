@@ -19,25 +19,26 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Datum/SerializedDatum.pb.h>
+#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
-    std::string Conversion<DatumXd, std::string>::operator()(const DatumXd& argument) const {
-        Conversion<MatrixXd, std::string> matrix_serializer;
-        SerializedDatumXd temp;
-        temp.set_origin(matrix_serializer(argument.origin()));
-        temp.set_basis(matrix_serializer(argument.basis()));
-        return temp.SerializeAsString();
+    TypeSchema Schema<DatumXd>::operator()() const {
+        TypeSchema result;
+        result.addItem<MatrixXd>("Origin");
+        result.addItem<MatrixXd>("Basis");
+        return result;
     }
 
-    DatumXd Conversion<std::string, DatumXd>::operator()(const std::string& argument) const {
-        Conversion<std::string, MatrixXd> matrix_deserializer;
-        SerializedDatumXd temp;
-        temp.ParseFromString(argument);
-        MatrixXd origin = matrix_deserializer(temp.origin());
-        MatrixXd basis = matrix_deserializer(temp.basis());
-        return DatumXd(origin, basis);
+    List Conversion<DatumXd, List>::operator()(const DatumXd& argument) const {
+        List result;
+        result.append(MatrixXd(argument.origin()));
+        result.append(MatrixXd(argument.basis()));
+        return result;
+    }
+
+    DatumXd Conversion<List, DatumXd>::operator()(const List& argument) const {
+        return DatumXd(argument[0].as<MatrixXd>(), argument[1].as<MatrixXd>());
     }
 
     std::string TypeName<Datum2d>::operator()() const {return "Datum2d";}

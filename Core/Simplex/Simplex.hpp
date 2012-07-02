@@ -21,13 +21,13 @@
 #ifndef OPENSOLID__SIMPLEX_HPP
 #define OPENSOLID__SIMPLEX_HPP
 
-#include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Bounds.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Bounds.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/Generic/Transformable.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {
@@ -157,15 +157,21 @@ namespace opensolid
     };
 
     template <>
-    struct Conversion<SimplexXd, std::string>
+    struct Schema<SimplexXd>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()(const SimplexXd& argument) const;
+        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
     };
 
     template <>
-    struct Conversion<std::string, SimplexXd>
+    struct Conversion<SimplexXd, List>
     {
-        OPENSOLID_CORE_EXPORT SimplexXd operator()(const std::string& argument) const;
+        OPENSOLID_CORE_EXPORT List operator()(const SimplexXd& argument) const;
+    };
+
+    template <>
+    struct Conversion<List, SimplexXd>
+    {
+        OPENSOLID_CORE_EXPORT SimplexXd operator()(const List& argument) const;
     };
 
     template <>

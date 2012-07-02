@@ -18,85 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__OBJECT_HPP
-#define OPENSOLID__OBJECT_HPP
+#pragma once
+
+#include <OpenSolid/Core/Common/Error.hpp>
+#include <OpenSolid/Core/Common/Value.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/config.hpp>
 
 #include <string>
 #include <unordered_map>
 
-#include <boost/variant.hpp>
-
-#include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/Dictionary.hpp>
-#include <OpenSolid/Core/Common/Transformable.hpp>
-#include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Geometry/Geometry.hpp>
-#include <OpenSolid/Core/Domain/Domain.hpp>
-
 namespace opensolid
 {
-    template <>
-    struct Conversion<Object, std::string>;
-
-    template <>
-    struct Conversion<std::string, Object>;
-
-    class Object :
-        public Dictionary<Object>,
-        public Transformable<Object>,
-        public Convertible<Object>
+    class Object : public Convertible<Object>
     {
     private:
-        typedef boost::variant<
-            bool,
-            int,
-            double,
-            std::string,
-            Interval,
-            MatrixXd,
-            MatrixXI,
-            DatumXd,
-            SimplexXd,
-            Function,
-            Geometry,
-            Domain,
-            boost::recursive_wrapper<Object>
-        > Variant;
-
-        std::unordered_map<std::string, Variant> _map;
-
-        template <class Type>
-        void setValue(const std::string& key, const Type& value);
-
-        template <class Type>
-        void getValue(const std::string& key, Type& value) const;
-
-        OPENSOLID_CORE_EXPORT void throwDictionaryError(
-            const std::string& key,
-            const std::string& requested_type
-        ) const;
-
-        friend class Dictionary<Object>;
-        friend struct GetObjectProperty;
-        friend struct Conversion<Object, std::string>;
-        friend struct Conversion<std::string, Object>;
+        std::unordered_map<std::string, Value> _map;
     public:
+        typedef std::unordered_map<std::string, Value>::const_iterator Iterator;
+
         OPENSOLID_CORE_EXPORT Object();
 
         OPENSOLID_CORE_EXPORT bool has(const std::string& key) const;
 
-        OPENSOLID_CORE_EXPORT std::string type(const std::string& name) const;
+        OPENSOLID_CORE_EXPORT Value& operator[](const std::string& key);
+        OPENSOLID_CORE_EXPORT const Value& operator[](const std::string& key) const;
 
-        OPENSOLID_CORE_EXPORT Object transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
-        ) const;
+        OPENSOLID_CORE_EXPORT Iterator begin() const;
+        OPENSOLID_CORE_EXPORT Iterator end() const;
     };
 }
 
@@ -109,57 +59,27 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
-
-    template <>
-    struct Conversion<Object, std::string>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Object& argument) const;
-    };
-
-    template <>
-    struct Conversion<std::string, Object>
-    {
-        OPENSOLID_CORE_EXPORT Object operator()(const std::string& argument) const;
-    };
 }
 
 ////////// Errors //////////
 
 namespace opensolid
 {
-    class ObjectGetValueError : public Error, public DictionaryError
+    class ObjectGetError : public Error
     {
     private:
         Object _object;
+        std::string _key;
     public:
-        OPENSOLID_CORE_EXPORT ObjectGetValueError(
+        OPENSOLID_CORE_EXPORT ObjectGetError(
             const Object& object,
-            const std::string& key,
-            const std::string& requested_type
+            const std::string& key
         );
         
-        ~ObjectGetValueError() throw () {}
+        ~ObjectGetError() throw () {}
 
         OPENSOLID_CORE_EXPORT const char* what() const throw() override;
         OPENSOLID_CORE_EXPORT Object object() const;
+        OPENSOLID_CORE_EXPORT std::string key() const;
     };
 }
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    template <class Type>
-    void Object::setValue(const std::string& key, const Type& value) {_map[key] = value;}
-
-    template <class Type>
-    void Object::getValue(const std::string& key, Type& value) const {
-        if (const Type* result = boost::get<Type>(&_map.at(key))) {
-            value = *result;
-        } else {
-            throw ObjectGetValueError(*this, key, TypeName<Type>()());
-        }
-    }
-}
-
-#endif

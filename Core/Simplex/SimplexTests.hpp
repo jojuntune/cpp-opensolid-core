@@ -27,6 +27,7 @@
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
+#include <OpenSolid/Core/Common/List.hpp>
 
 using namespace opensolid;
 
@@ -182,12 +183,12 @@ public:
         TS_ASSERT((line.vector() - Vector3d::Constant(3)).isZero());
     }
 
-    void testSerialization() {
+    void testListConversion() {
         Triangle3d original(Vector3d::Random(), Vector3d::Random(), Vector3d::Random());
-        Conversion<SimplexXd, std::string> serializer;
-        Conversion<std::string, SimplexXd> deserializer;
-        std::string serialized = serializer(original);
-        SimplexXd final = deserializer(serialized);
+        Conversion<SimplexXd, List> converter;
+        Conversion<List, SimplexXd> deconverter;
+        List list = converter(original);
+        SimplexXd final = deconverter(list);
         TS_ASSERT_EQUALS(final.dimensions(), original.dimensions());
         TS_ASSERT_EQUALS(final.size(), original.size());
         TS_ASSERT_EQUALS(final.vertices(), original.vertices());

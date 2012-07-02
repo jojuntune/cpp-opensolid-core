@@ -18,15 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 
 namespace opensolid
 {
-    std::string TypeName<bool>::operator()() const {return "bool";}
+    std::string TypeName<bool>::operator()() const {return "Bool";}
 
-    std::string TypeName<int>::operator()() const {return "int";}
+    std::string TypeName<short>::operator()() const {return "Short";}
 
-    std::string TypeName<double>::operator()() const {return "double";}
+    std::string TypeName<unsigned short>::operator()() const {return "UnsignedShort";}
 
-    std::string TypeName<std::string>::operator()() const {return "string";}
+    std::string TypeName<int>::operator()() const {return "Int";}
+
+    std::string TypeName<unsigned>::operator()() const {return "Unsigned";}
+
+    std::string TypeName<long>::operator()() const {return "Long";}
+
+    std::string TypeName<unsigned long>::operator()() const {return "UnsignedLong";}
+
+    std::string TypeName<long long>::operator()() const {return "LongLong";}
+
+    std::string TypeName<unsigned long long>::operator()() const {return "UnsignedLongLong";}
+
+    std::string TypeName<float>::operator()() const {return "Float";}
+
+    std::string TypeName<double>::operator()() const {return "Double";}
+
+    std::string TypeName<long double>::operator()() const {return "LongDouble";}
+
+    std::string TypeName<std::string>::operator()() const {return "String";}
 }

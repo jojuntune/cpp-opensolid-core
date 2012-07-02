@@ -22,7 +22,6 @@
 
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Function/SerializedFunction.pb.h>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArccosineFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArcsineFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ComponentsFunction.hpp>

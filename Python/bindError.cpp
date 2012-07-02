@@ -23,7 +23,6 @@
 #include <boost/python/converter/pytype_function.hpp>
 
 #include <OpenSolid/Core/Datum/Axis.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Core/File/File.hpp>
 #include <OpenSolid/Python/PythonModule.hpp>
 

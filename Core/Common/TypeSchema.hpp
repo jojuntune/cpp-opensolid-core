@@ -20,42 +20,68 @@
 
 #pragma once
 
-#include <OpenSolid/Core/Common/Conversion.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
-#include <OpenSolid/Core/Common/TypeName.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/config.hpp>
 
-#include <boost/variant.hpp>
-
+#include <vector>
+#include <utility>
 #include <string>
-#include <functional>
 
 namespace opensolid
 {
-    class Key
+    class Object;
+
+    class TypeSchema
     {
     private:
-        boost::variant<int, std::string> _key;
+        std::vector<std::pair<std::string, std::string>> _schema;
     public:
-        Key(int key);
-        Key(const char* key);
-        Key(const std::string& key);
+        typedef std::vector<std::pair<std::string, std::string>>::const_iterator Iterator;
 
-        bool operator==(const Key& other) const;
+        template <class Type>
+        void addItem(const std::string& name);
 
-        template <class VisitorType>
-        typename VisitorType::result_type apply(const VisitorType& visitor) const;
+        template <class Type>
+        void addList(const std::string& name);
+
+        OPENSOLID_CORE_EXPORT bool isEmpty() const;
+        OPENSOLID_CORE_EXPORT int size() const;
+        OPENSOLID_CORE_EXPORT const std::string& name(int index) const;
+        OPENSOLID_CORE_EXPORT const std::string& type(int index) const;
+
+        OPENSOLID_CORE_EXPORT Iterator begin() const;
+        OPENSOLID_CORE_EXPORT Iterator end() const;
+    };
+}
+
+////////// Errors //////////
+
+namespace opensolid
+{
+    class SchemaIndexError : public Error
+    {
+    private:
+        TypeSchema _schema;
+        int _index;
+    public:
+        OPENSOLID_CORE_EXPORT SchemaIndexError(const TypeSchema& schema, int index);
+
+        OPENSOLID_CORE_EXPORT TypeSchema schema() const;
+        OPENSOLID_CORE_EXPORT int index() const;
+
+        OPENSOLID_CORE_EXPORT const char* what() const override;
     };
 }
 
 ////////// Specializations //////////
 
-namespace std
+namespace opensolid
 {
     template <>
-    struct hash<opensolid::Key>
+    struct TypeName<TypeSchema>
     {
-        size_t operator()(const opensolid::Key& key) const;
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
@@ -63,35 +89,13 @@ namespace std
 
 namespace opensolid
 {
-    inline Key::Key(int key) : _key(key) {}
-
-    inline Key::Key(const char* key) : _key(std::string(key)) {}
-
-    inline Key::Key(const std::string& key) : _key(key) {}
-
-    inline bool Key::operator==(const Key& other) const {return _key == other._key;}
-
-    template <class VisitorType>
-    typename VisitorType::result_type Key::apply(const VisitorType& visitor) const {
-        return boost::apply_visitor(visitor, _key);
+    template <class Type>
+    void TypeSchema::addItem(const std::string& name) {
+        _schema.push_back(std::pair<std::string, std::string>(name, TypeName<Type>()()));
     }
-}
 
-namespace std
-{
-    size_t hash<opensolid::Key>::operator()(const opensolid::Key& key) const {
-        struct HashVisitor
-        {
-            typedef std::size_t result_type;
-
-            std::size_t operator()(int key) const {
-                return std::hash<int>()(key);
-            }
-
-            std::size_t operator()(const std::string& key) const {
-                return std::hash<std::string>()(key);
-            }
-        };
-        return key.apply(HashVisitor());
+    template <class Type>
+    void TypeSchema::addList(const std::string& name) {
+        _schema.push_back(std::pair<std::string, std::string>(name, TypeName<List>()() + ":" + TypeName<Type>()()));
     }
 }

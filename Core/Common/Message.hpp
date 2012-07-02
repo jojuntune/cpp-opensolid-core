@@ -20,12 +20,54 @@
 
 #pragma once
 
+#include <OpenSolid/Core/Common/Value.hpp>
+#include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/config.hpp>
+
+#include <string>
 
 namespace opensolid
 {
-    class Template
+    class Message : public std::string, public Convertible<Message>
     {
+    public:
+        Message(const std::string& argument);
+    };
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <>
+    struct TypeName<Message>
+    {
+        OPENSOLID_CORE_EXPORT std::string operator()() const;
+    };
+
+    template <>
+    struct Conversion<Value, Message>
+    {
+        OPENSOLID_CORE_EXPORT Message operator()(const Value& argument) const;
+    };
+
+    template <>
+    struct Conversion<Message, Value>
+    {
+        OPENSOLID_CORE_EXPORT Value operator()(const Message& argument) const;
+    };
+
+    template <class Type>
+    struct Conversion<Type, Message>
+    {
+        Message operator()(const Type& argument) const;
+    };
+
+    template <class Type>
+    struct Conversion<Message, Type>
+    {
+        Type operator()(const Message& argument) const;
     };
 }
 
@@ -33,5 +75,15 @@ namespace opensolid
 
 namespace opensolid
 {
-    
+    inline Message::Message(const std::string& argument) : std::string(argument) {}
+
+    template <class Type>
+    Message Conversion<Type, Message>::operator()(const Type& argument) const {
+        return Conversion<Value, Message>()(Conversion<Type, Value>()(argument));
+    }
+
+    template <class Type>
+    Type Conversion<Message, Type>::operator()(const Message& argument) const {
+        return Conversion<Value, Type>()(Conversion<Message, Value>()(argument));
+    }
 }

@@ -24,6 +24,7 @@
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Datum/Plane.hpp>
+#include <OpenSolid/Core/Common/List.hpp>
 
 using namespace opensolid;
 
@@ -136,12 +137,12 @@ public:
         TS_ASSERT((point - expected).isZero());
     }
 
-    void testSerialization() {
+    void testListConversion() {
         Datum3d original(Vector3d::Random(), Matrix3d::Random());
-        Conversion<DatumXd, std::string> serializer;
-        Conversion<std::string, DatumXd> deserializer;
-        std::string serialized = serializer(original);
-        DatumXd final = deserializer(serialized);
+        Conversion<DatumXd, List> converter;
+        Conversion<List, DatumXd> deconverter;
+        List list = converter(original);
+        DatumXd final = deconverter(list);
         TS_ASSERT_EQUALS(original.dimensions(), final.dimensions());
         TS_ASSERT_EQUALS(original.axes(), final.axes());
         TS_ASSERT_EQUALS(original.origin(), final.origin());

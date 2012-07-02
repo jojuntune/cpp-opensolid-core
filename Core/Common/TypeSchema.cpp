@@ -18,38 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/Conversion.hpp>
-#include <OpenSolid/Core/Common/SerializedDouble.pb.h>
-
-#include <boost/lexical_cast.hpp>
+#include <OpenSolid/Core/Common/TypeSchema.hpp>
 
 namespace opensolid
 {
-    std::string Conversion<bool, std::string>::operator()(bool argument) const {
-        return boost::lexical_cast<std::string>(argument);
+    bool TypeSchema::isEmpty() const {return _schema.empty();}
+
+    int TypeSchema::size() const {return _schema.size();}
+
+    const std::string& TypeSchema::name(int index) const {
+        if (index < 0 || index >= size()) {throw SchemaIndexError(*this, index);}
+        return _schema[index].first;
     }
 
-    bool Conversion<std::string, bool>::operator()(const std::string& argument) const {
-        return boost::lexical_cast<bool>(argument);
+    const std::string& TypeSchema::type(int index) const {
+        if (index < 0 || index >= size()) {throw SchemaIndexError(*this, index);}
+        return _schema[index].second;
     }
 
-    std::string Conversion<int, std::string>::operator()(int argument) const {
-        return boost::lexical_cast<std::string>(argument);
-    }
+    TypeSchema::Iterator TypeSchema::begin() const {return _schema.begin();}
 
-    int Conversion<std::string, int>::operator()(const std::string& argument) const {
-        return boost::lexical_cast<int>(argument);
-    }
+    TypeSchema::Iterator TypeSchema::end() const {return _schema.end();}
 
-    std::string Conversion<double, std::string>::operator()(double argument) const {
-        SerializedDouble temp;
-        temp.set_value(argument);
-        return temp.SerializeAsString();
-    }
+    SchemaIndexError::SchemaIndexError(const TypeSchema& schema, int index) :
+        _schema(schema), _index(index) {}
 
-    double Conversion<std::string, double>::operator()(const std::string& argument) const {
-        SerializedDouble temp;
-        temp.ParseFromString(argument);
-        return temp.value();
-    }
+    TypeSchema SchemaIndexError::schema() const {return _schema;}
+
+    int SchemaIndexError::index() const {return _index;}
+
+    std::string TypeName<TypeSchema>::operator()() const {return "TypeSchema";}
 }

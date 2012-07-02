@@ -18,41 +18,69 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__TYPENAME_HPP
-#define OPENSOLID__TYPENAME_HPP
+#pragma once
 
-#include <string>
-
+#include <OpenSolid/Core/Common/Value.hpp>
 #include <OpenSolid/Core/config.hpp>
+
+#include <vector>
 
 namespace opensolid
 {
-    template <class Type>
-    struct TypeName;
-
-    template <>
-    struct TypeName<bool>
+    class List : public Convertible<List>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
+    private:
+        std::vector<Value> _list;
+    public:
+        typedef std::vector<Value>::const_iterator Iterator;
 
-    template <>
-    struct TypeName<int>
+        OPENSOLID_CORE_EXPORT List();
+
+        template <class IteratorType>
+        List(IteratorType begin, IteratorType end);
+
+        OPENSOLID_CORE_EXPORT List& append(const Value& argument);
+
+        OPENSOLID_CORE_EXPORT int size() const;
+        OPENSOLID_CORE_EXPORT const Value& operator[](int index) const;
+
+        OPENSOLID_CORE_EXPORT Iterator begin() const;
+        OPENSOLID_CORE_EXPORT Iterator end() const;
+    };
+}
+
+////////// Errors //////////
+
+namespace opensolid
+{
+    class ListIndexError
     {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
+    private:
+        List _list;
+        int _index;
+    public:
+        OPENSOLID_CORE_EXPORT ListIndexError(const List& list, int index);
 
-    template <>
-    struct TypeName<double>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
+        OPENSOLID_CORE_EXPORT const List& list() const;
+        OPENSOLID_CORE_EXPORT int index() const;
     };
+}
 
+////////// Specializations //////////
+
+namespace opensolid
+{
     template <>
-    struct TypeName<std::string>
+    struct TypeName<List>
     {
         OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
-#endif
+////////// Implementation //////////
+
+namespace opensolid
+{
+    template <class IteratorType>
+    List::List(IteratorType begin, IteratorType end) : _list(begin, end) {}
+}

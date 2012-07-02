@@ -2,21 +2,6 @@
 
     FIND_PACKAGE(Boost REQUIRED)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-    
-########## Set up Protocol Buffers serialization ##########
-
-    SET(PROTO_FILES
-        "${OpenSolid}/Core/Common/SerializedDouble.proto"
-        "${OpenSolid}/Core/Scalar/SerializedInterval.proto"
-        "${OpenSolid}/Core/Matrix/SerializedMatrix.proto"
-        "${OpenSolid}/Core/Datum/SerializedDatum.proto"
-        "${OpenSolid}/Core/Simplex/SerializedSimplex.proto"
-        "${OpenSolid}/Core/Object/SerializedObject.proto"
-        "${OpenSolid}/Core/Function/SerializedFunction.proto"
-        "${OpenSolid}/Core/Geometry/SerializedGeometry.proto"
-        "${OpenSolid}/Core/Domain/SerializedDomain.proto"
-    )
-    COMPILE_PROTO_FILES(PROTO_SOURCES ${PROTO_FILES})
 
 ########## Define lists of source files ##########
 
@@ -31,22 +16,22 @@
     
     # Common directory files
     SET(COMMON_HEADERS
-        "${OpenSolid}/Core/Common/Bounds.hpp"
-        "${OpenSolid}/Core/Common/Conversion.hpp"
         "${OpenSolid}/Core/Common/Error.hpp"
         "${OpenSolid}/Core/Common/Evaluation.hpp"
-        "${OpenSolid}/Core/Common/Key.hpp"
-        "${OpenSolid}/Core/Common/MatrixArgument.hpp"
-        "${OpenSolid}/Core/Common/Dictionary.hpp"
-        "${OpenSolid}/Core/Common/ReferenceCounted.hpp"
-        "${OpenSolid}/Core/Common/Transformable.hpp"
-        "${OpenSolid}/Core/Common/TypeName.hpp"
+        "${OpenSolid}/Core/Common/List.hpp"
+        "${OpenSolid}/Core/Common/Message.hpp"
+        "${OpenSolid}/Core/Common/TypeSchema.hpp"
+        "${OpenSolid}/Core/Common/Value.hpp"
     )
     SET(COMMON_SOURCES
-        "${OpenSolid}/Core/Common/Conversion.cpp"
         "${OpenSolid}/Core/Common/Error.cpp"
-        "${OpenSolid}/Core/Common/Dictionary.cpp"
-        "${OpenSolid}/Core/Common/TypeName.cpp"
+        "${OpenSolid}/Core/Common/List.cpp"
+        "${OpenSolid}/Core/Common/Message.cpp"
+        "${OpenSolid}/Core/Common/TypeSchema.cpp"
+        "${OpenSolid}/Core/Common/Value.cpp"
+    )
+    COMPILE_PROTO_FILES(PROTO_SOURCES
+        "${OpenSolid}/Core/Common/Value.proto"
     )
     
     # Datum directory files
@@ -177,6 +162,19 @@
         "${OpenSolid}/Core/Function/FunctionImplementation/TransformedFunction.cpp"
         "${OpenSolid}/Core/Function/FunctionImplementation/UnaryOperation.cpp"
     )
+
+    # Generic directory files
+    SET(GENERIC_HEADERS
+        "${OpenSolid}/Core/Generic/Bounds.hpp"
+        "${OpenSolid}/Core/Generic/Conversion.hpp"
+        "${OpenSolid}/Core/Generic/ReferenceCounted.hpp"
+        "${OpenSolid}/Core/Generic/Schema.hpp"
+        "${OpenSolid}/Core/Generic/Transformable.hpp"
+        "${OpenSolid}/Core/Generic/TypeName.hpp"
+    )
+    SET(GENERIC_SOURCES
+        "${OpenSolid}/Core/Generic/TypeName.cpp"
+    )
     
     # Geometry directory files
     SET(GEOMETRY_HEADERS
@@ -263,10 +261,12 @@
     
     # Update global source list
     SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
-        ${PROTO_FILES}
+        "${OpenSolid}/Core/Common/Value.proto"
         ${CORE_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
+        ${GENERIC_HEADERS}
+        ${GENERIC_SOURCES}
         ${DATUM_HEADERS}
         ${DATUM_SOURCES}
         ${DOMAIN_HEADERS}
@@ -303,10 +303,11 @@
     ADD_LIBRARY(OpenSolidCore SHARED
         ${PROTO_SOURCES}
         ${COMMON_SOURCES}
+        ${GENERIC_SOURCES}
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${FILE_SOURCES}
+        #${FILE_SOURCES}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}
@@ -331,7 +332,7 @@
     ADD_CXXTEST(GeometryTests "${OpenSolid}/Core/Geometry/GeometryTests.hpp" OpenSolidCore)
     ADD_CXXTEST(SimplexTests "${OpenSolid}/Core/Simplex/SimplexTests.hpp" OpenSolidCore)
     ADD_CXXTEST(ObjectTests "${OpenSolid}/Core/Object/ObjectTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(FileTests "${OpenSolid}/Core/File/FileTests.hpp" OpenSolidCore)
+    #ADD_CXXTEST(FileTests "${OpenSolid}/Core/File/FileTests.hpp" OpenSolidCore)
     
 ########## Temporary fix - define 'override' as empty macro for GCC < 4.7 ##########
     

@@ -23,7 +23,7 @@
 
 #include <OpenSolid/Core/config.hpp>
 
-#include <OpenSolid/Core/Common/ReferenceCounted.hpp>
+#include <OpenSolid/Core/Generic/ReferenceCounted.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
