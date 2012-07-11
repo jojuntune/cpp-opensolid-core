@@ -21,7 +21,7 @@
 #pragma once
 
 #include <OpenSolid/Core/Generic/TypeName.hpp>
-#include <OpenSolid/Core/Generic/Schema.hpp>
+#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
@@ -95,9 +95,9 @@ namespace opensolid
     };
 
     template <>
-    struct Schema<Domain>
+    struct TypeDescriptionFunction<Domain>
     {
-        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
     };
 
     template <>

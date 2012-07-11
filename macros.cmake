@@ -1,10 +1,12 @@
 macro(create_source_groups)
+    get_property(SOURCE_LIST GLOBAL PROPERTY GLOBAL_SOURCE_LIST)
+    
     # Add dummy ALL_SOURCES target to include all source files
-    add_library(ALL_SOURCES EXCLUDE_FROM_ALL ${ARGN})
+    add_library(ALL_SOURCES EXCLUDE_FROM_ALL ${SOURCE_LIST})
 
     # Get list of all unique directory paths
     set(PATH_LIST)
-    foreach(SOURCE_FILE ${ARGN})
+    foreach(SOURCE_FILE ${SOURCE_LIST})
         get_filename_component(SOURCE_PATH ${SOURCE_FILE} PATH)
         list(APPEND PATH_LIST ${SOURCE_PATH})
     endforeach()
@@ -24,7 +26,7 @@ macro(create_source_groups)
     foreach(UNIQUE_PATH ${PATH_LIST})
         # Scan through all source files to find those contained within the current subdirectory
         set(CONTAINED_SOURCES)
-        foreach(SOURCE_FILE ${ARGN})
+        foreach(SOURCE_FILE ${SOURCE_LIST})
             get_filename_component(SOURCE_PATH ${SOURCE_FILE} PATH)
             if (${SOURCE_PATH} STREQUAL ${UNIQUE_PATH})
                 list(APPEND CONTAINED_SOURCES ${SOURCE_FILE})
@@ -35,5 +37,12 @@ macro(create_source_groups)
         string(REGEX REPLACE "/" "\\\\" GROUP_NAME ${STRIPPED_PATH})
         # Create source group
         source_group(${GROUP_NAME} FILES ${CONTAINED_SOURCES})
+    endforeach()
+endmacro()
+
+macro(add_to_global_source_list)
+    foreach(SOURCE_PATH ${ARGN})
+        get_source_file_property(ABSOLUTE_PATH ${SOURCE_PATH} LOCATION)
+        set_property(GLOBAL APPEND PROPERTY GLOBAL_SOURCE_LIST ${ABSOLUTE_PATH})
     endforeach()
 endmacro()

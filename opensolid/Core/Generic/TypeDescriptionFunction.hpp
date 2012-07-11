@@ -20,11 +20,11 @@
 
 #pragma once
 
-#include <OpenSolid/Core/Common/TypeSchema.hpp>
+#include <OpenSolid/Core/Common/TypeDescription.hpp>
 #include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {
     template <class Type>
-    struct Schema;
+    struct TypeDescriptionFunction;
 }

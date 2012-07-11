@@ -370,9 +370,9 @@ namespace opensolid
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
     template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
 
-    TypeSchema Schema<SimplexXd>::operator()() const {
-        TypeSchema result;
-        result.addItem<MatrixXd>("Vertices");
+    TypeDescription TypeDescriptionFunction<SimplexXd>::operator()() const {
+        TypeDescription result;
+        result.appendObject<MatrixXd>("Vertices");
         return result;
     }
 

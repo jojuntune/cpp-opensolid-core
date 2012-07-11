@@ -6,29 +6,24 @@ ADD_SUBDIRECTORY(tests)
 
 # Collect graph library sources
 SET(GRAPH_SOURCES
-    "${OpenSolid}/Graph/assemblyNode.cpp"
-    "${OpenSolid}/Graph/componentNode.cpp"
-    "${OpenSolid}/Graph/evaluateGraphAction.cpp"
-    "${OpenSolid}/Graph/fragmentNode.cpp"
-    "${OpenSolid}/Graph/graphAction.cpp"
-    "${OpenSolid}/Graph/graphScript.cpp"
-    "${OpenSolid}/Graph/graphNode.cpp"
-    "${OpenSolid}/Graph/graphParam.cpp"
-    "${OpenSolid}/Graph/graphParamList.cpp"
-    "${OpenSolid}/Graph/groupNode.cpp"
-    "${OpenSolid}/Graph/listGraphAction.cpp"
-    "${OpenSolid}/Graph/paramNode.cpp"
-    "${OpenSolid}/Graph/pointNode.cpp"
-    "${OpenSolid}/Graph/project.cpp"
-    "${OpenSolid}/Graph/renderGraphAction.cpp"
+    assemblyNode.cpp
+    componentNode.cpp
+    evaluateGraphAction.cpp
+    fragmentNode.cpp
+    graphAction.cpp
+    graphScript.cpp
+    graphNode.cpp
+    graphParam.cpp
+    graphParamList.cpp
+    groupNode.cpp
+    listGraphAction.cpp
+    paramNode.cpp
+    pointNode.cpp
+    project.cpp
+    renderGraphAction.cpp
 )
 
-SET(GLOBAL_SOURCE_LIST
-    ${GLOBAL_SOURCE_LIST}
-    ${GRAPH_SOURCES}
-    "${OpenSolid}/Graph/CMakeLists.txt"
-    PARENT_SCOPE
-)
+ADD_TO_GLOBAL_SOURCE_LIST(${GRAPH_SOURCES} CMakeLists.txt)
 
 # Compile and link graph library
 ADD_LIBRARY(OpenSolidGraph ${GRAPH_SOURCES})

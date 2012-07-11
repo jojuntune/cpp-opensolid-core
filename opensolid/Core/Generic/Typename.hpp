@@ -31,100 +31,20 @@ namespace opensolid
     struct TypeName;
 
     template <>
-    struct TypeName<bool>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<short>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<unsigned short>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
     struct TypeName<int>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<unsigned>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<long>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<unsigned long>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<long long>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<unsigned long long>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<float>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
+        OPENSOLID_CORE_EXPORT const std::string& operator()() const;
     };
 
     template <>
     struct TypeName<double>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<long double>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
+        OPENSOLID_CORE_EXPORT const std::string& operator()() const;
     };
 
     template <>
     struct TypeName<std::string>
     {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
+        OPENSOLID_CORE_EXPORT const std::string& operator()() const;
     };
-
-    template <class Type>
-    struct TypeName<std::vector<Type>>
-    {
-        std::string operator()() const;
-    };
-}
-
-////////// Implementation //////////
-
-#include <sstream>
-
-namespace opensolid
-{
-    template <class Type>
-    std::string TypeName<std::vector<Type>>::operator()() const {
-        std::stringstream stream;
-        stream << "StdVector" << TypeName<Type>()();
-        return stream.str();
-    }
 }

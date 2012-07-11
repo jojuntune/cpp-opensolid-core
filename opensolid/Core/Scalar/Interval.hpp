@@ -20,11 +20,12 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
-#include <OpenSolid/Core/Generic/Schema.hpp>
-#include <OpenSolid/Core/config.hpp>
+#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 
 #include <boost/numeric/interval.hpp>
 
@@ -181,9 +182,9 @@ namespace opensolid
     };
 
     template <>
-    struct Schema<Interval>
+    struct TypeDescriptionFunction<Interval>
     {
-        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
     };
 
     class List;

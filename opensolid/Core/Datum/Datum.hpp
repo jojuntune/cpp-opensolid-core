@@ -23,6 +23,7 @@
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
+#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/config.hpp>
 
@@ -176,9 +177,9 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct Schema<DatumXd>
+    struct TypeDescriptionFunction<DatumXd>
     {
-        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
     };
 
     template <>

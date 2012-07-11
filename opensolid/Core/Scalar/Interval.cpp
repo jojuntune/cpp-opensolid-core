@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <cmath>
 #include <sstream>
 
@@ -75,10 +77,10 @@ namespace opensolid
         return stream;
     }
 
-    TypeSchema Schema<Interval>::operator()() const {
-        TypeSchema result;
-        result.addItem<double>("Lower");
-        result.addItem<double>("Upper");
+    TypeDescription TypeDescriptionFunction<Interval>::operator()() const {
+        TypeDescription result;
+        result.appendDouble("Lower");
+        result.appendDouble("Upper");
         return result;
     }
 

@@ -22,7 +22,7 @@
 #include <OpenSolid/Core/Common/Message.hpp>
 #include <OpenSolid/Core/Common/Value.hpp>
 #include <OpenSolid/Core/Common/List.hpp>
-#include <OpenSolid/Core/Common/Value.pb.h>
+#include <OpenSolid/Core/Common/serialization.pb.h>
 
 namespace opensolid
 {

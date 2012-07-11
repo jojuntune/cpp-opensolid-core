@@ -23,10 +23,10 @@
 
 namespace opensolid
 {
-    TypeSchema Schema<DatumXd>::operator()() const {
-        TypeSchema result;
-        result.addItem<MatrixXd>("Origin");
-        result.addItem<MatrixXd>("Basis");
+    TypeDescription TypeDescriptionFunction<DatumXd>::operator()() const {
+        TypeDescription result;
+        result.appendObject<MatrixXd>("Origin");
+        result.appendObject<MatrixXd>("Basis");
         return result;
     }
 

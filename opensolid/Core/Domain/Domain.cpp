@@ -90,7 +90,7 @@ namespace opensolid
         return argument.bounds().value();
     }
 
-    TypeSchema Schema<Domain>::operator()() const {
+    TypeDescription TypeDescriptionFunction<Domain>::operator()() const {
         throw NotImplementedError(__FILE__, __LINE__);
     }
 

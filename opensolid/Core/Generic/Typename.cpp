@@ -22,29 +22,18 @@
 
 namespace opensolid
 {
-    std::string TypeName<bool>::operator()() const {return "Bool";}
+    const std::string& TypeName<int>::operator()() const {
+        static const std::string result("Int");
+        return result;
+    }
 
-    std::string TypeName<short>::operator()() const {return "Short";}
+    const std::string& TypeName<double>::operator()() const {
+        static const std::string result("Double");
+        return result;
+    }
 
-    std::string TypeName<unsigned short>::operator()() const {return "UnsignedShort";}
-
-    std::string TypeName<int>::operator()() const {return "Int";}
-
-    std::string TypeName<unsigned>::operator()() const {return "Unsigned";}
-
-    std::string TypeName<long>::operator()() const {return "Long";}
-
-    std::string TypeName<unsigned long>::operator()() const {return "UnsignedLong";}
-
-    std::string TypeName<long long>::operator()() const {return "LongLong";}
-
-    std::string TypeName<unsigned long long>::operator()() const {return "UnsignedLongLong";}
-
-    std::string TypeName<float>::operator()() const {return "Float";}
-
-    std::string TypeName<double>::operator()() const {return "Double";}
-
-    std::string TypeName<long double>::operator()() const {return "LongDouble";}
-
-    std::string TypeName<std::string>::operator()() const {return "String";}
+    const std::string& TypeName<std::string>::operator()() const {
+        static const std::string result("String");
+        return result;
+    }
 }

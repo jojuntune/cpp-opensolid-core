@@ -2,46 +2,44 @@
 
     # Python directory files
     SET(PYTHON_FILES
-        "${OpenSolid}/Python/bindTemplate.cpp"
-        "${OpenSolid}/Python/CMakeLists.txt"
+        bindTemplate.cpp
+        CMakeLists.txt
     )
     
     SET(PYTHON_HEADERS
-        "${OpenSolid}/Python/config.hpp"
-        "${OpenSolid}/Python/PythonEnvironment.hpp"
-        "${OpenSolid}/Python/PythonModule.hpp"
-        "${OpenSolid}/Python/PythonTests.hpp"
-        "${OpenSolid}/Python/repr.hpp"
+        config.hpp
+        PythonEnvironment.hpp
+        PythonModule.hpp
+        PythonTests.hpp
+        repr.hpp
     )
     SET(PYTHON_MODULE_SOURCES
-        "${OpenSolid}/Python/bindBounds.cpp"
-        "${OpenSolid}/Python/bindComparison.cpp"
-        "${OpenSolid}/Python/bindDatum.cpp"
-        "${OpenSolid}/Python/bindDouble.cpp"
-        "${OpenSolid}/Python/bindError.cpp"
-        "${OpenSolid}/Python/bindFile.cpp"
-        "${OpenSolid}/Python/bindFunction.cpp"
-        "${OpenSolid}/Python/bindInterval.cpp"
-        "${OpenSolid}/Python/bindMatrix.cpp"
-        "${OpenSolid}/Python/bindMatrixConstructors.cpp"
-        "${OpenSolid}/Python/bindObject.cpp"
-        "${OpenSolid}/Python/bindSerialization.cpp"
-        "${OpenSolid}/Python/bindSet.cpp"
-        "${OpenSolid}/Python/bindSimplex.cpp"
-        "${OpenSolid}/Python/PythonModule.cpp"
-        "${OpenSolid}/Python/repr.cpp"
+        bindBounds.cpp
+        bindComparison.cpp
+        bindDatum.cpp
+        bindDouble.cpp
+        bindError.cpp
+        bindFile.cpp
+        bindFunction.cpp
+        bindInterval.cpp
+        bindMatrix.cpp
+        bindMatrixConstructors.cpp
+        bindObject.cpp
+        bindSerialization.cpp
+        bindSet.cpp
+        bindSimplex.cpp
+        PythonModule.cpp
+        repr.cpp
     )
     SET(PYTHON_ENVIRONMENT_SOURCES
-        "${OpenSolid}/Python/PythonEnvironment.cpp"
+        PythonEnvironment.cpp
     )
     
-    # Update global source list
-    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
+    ADD_TO_GLOBAL_SOURCE_LIST(
         ${PYTHON_FILES}
         ${PYTHON_HEADERS}
         ${PYTHON_MODULE_SOURCES}
         ${PYTHON_ENVIRONMENT_SOURCES}
-        PARENT_SCOPE
     )
     
 ########## Compile Python extension module ##########
@@ -71,7 +69,7 @@
     
 ########## Compile tests ##########
 
-    ADD_CXXTEST(PythonTests "${OpenSolid}/Python/PythonTests.hpp" OpenSolidPython OpenSolidCore)
+    ADD_CXXTEST(PythonTests PythonTests.hpp OpenSolidPython OpenSolidCore)
     
 ########## Temporary fix - define 'override' as empty macro for GCC < 4.7 ##########
     
@@ -88,8 +86,8 @@
     
 ########## Install headers ##########
     
-    INSTALL(DIRECTORY ${OpenSolid}/Python
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/OpenSolid"
+    INSTALL(DIRECTORY .
+        DESTINATION include/opensolid
         FILES_MATCHING
         PATTERN "*.hpp"
         PATTERN "*Tests.hpp" EXCLUDE
@@ -98,9 +96,9 @@
 ########## Install libraries ##########
         
     INSTALL(TARGETS OpenSolidPython
-        RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
-        LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
-        ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
     )
 
     # Get site packages directory

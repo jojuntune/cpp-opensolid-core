@@ -23,11 +23,11 @@
 
 namespace opensolid
 {
-    TypeSchema Schema<MatrixXd>::operator()() const {
-        TypeSchema result;
-        result.addItem<int>("Rows");
-        result.addItem<int>("Cols");
-        result.addList<double>("Data");
+    TypeDescription TypeDescriptionFunction<MatrixXd>::operator()() const {
+        TypeDescription result;
+        result.appendInt("Rows");
+        result.appendInt("Cols");
+        result.appendListOfDoubles("Data");
         return result;
     }
 
@@ -48,11 +48,11 @@ namespace opensolid
         return result;
     }
 
-    TypeSchema Schema<MatrixXI>::operator()() const {
-        TypeSchema result;
-        result.addItem<int>("Rows");
-        result.addItem<int>("Cols");
-        result.addList<Interval>("Data");
+    TypeDescription TypeDescriptionFunction<MatrixXI>::operator()() const {
+        TypeDescription result;
+        result.appendInt("Rows");
+        result.appendInt("Cols");
+        result.appendListOfObjects<Interval>("Data");
         return result;
     }
 

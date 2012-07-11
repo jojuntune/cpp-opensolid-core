@@ -21,7 +21,7 @@
 #pragma once
 
 #include <OpenSolid/Core/Generic/TypeName.hpp>
-#include <OpenSolid/Core/Generic/Schema.hpp>
+#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
@@ -296,9 +296,9 @@ namespace opensolid
     };
 
     template <>
-    struct Schema<MatrixXd>
+    struct TypeDescriptionFunction<MatrixXd>
     {
-        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
     };
 
     template <>
@@ -314,9 +314,9 @@ namespace opensolid
     };
 
     template <>
-    struct Schema<MatrixXI>
+    struct TypeDescriptionFunction<MatrixXI>
     {
-        OPENSOLID_CORE_EXPORT TypeSchema operator()() const;
+        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
     };
 
     template <>

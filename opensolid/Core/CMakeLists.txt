@@ -7,278 +7,275 @@
 
     # Core directory files
     SET(CORE_FILES
-        "${OpenSolid}/Core/CMakeLists.txt"
-        "${OpenSolid}/Core/config.hpp"
-        "${OpenSolid}/Core/Template.cpp"
-        "${OpenSolid}/Core/Template.hpp"
-        "${OpenSolid}/Core/TemplateTests.hpp"
+        CMakeLists.txt
+        config.hpp
+        Template.cpp
+        Template.hpp
+        TemplateTests.hpp
     )
     
     # Common directory files
     SET(COMMON_HEADERS
-        "${OpenSolid}/Core/Common/Error.hpp"
-        "${OpenSolid}/Core/Common/Evaluation.hpp"
-        "${OpenSolid}/Core/Common/List.hpp"
-        "${OpenSolid}/Core/Common/Message.hpp"
-        "${OpenSolid}/Core/Common/TypeSchema.hpp"
-        "${OpenSolid}/Core/Common/Value.hpp"
+        Common/Error.hpp
+        Common/Evaluation.hpp
+        Common/List.hpp
+        Common/Message.hpp
+        Common/TypeDescription.hpp
+        Common/Value.hpp
     )
     SET(COMMON_SOURCES
-        "${OpenSolid}/Core/Common/Error.cpp"
-        "${OpenSolid}/Core/Common/List.cpp"
-        "${OpenSolid}/Core/Common/Message.cpp"
-        "${OpenSolid}/Core/Common/TypeSchema.cpp"
-        "${OpenSolid}/Core/Common/Value.cpp"
+        Common/Error.cpp
+        Common/List.cpp
+        Common/Message.cpp
+        Common/TypeDescription.cpp
+        Common/Value.cpp
     )
-    COMPILE_PROTO_FILES(PROTO_SOURCES
-        "${OpenSolid}/Core/Common/Value.proto"
+
+    # Database directory files
+    SET(DATABASE_HEADERS
+        Database/Database.hpp
+        Database/DatabaseTests.hpp
+    )
+    SET(DATABASE_SOURCES
+        Database/Database.cpp
     )
     
     # Datum directory files
     SET(DATUM_HEADERS
-        "${OpenSolid}/Core/Datum/Axis.hpp"
-        "${OpenSolid}/Core/Datum/Datum.hpp"
-        "${OpenSolid}/Core/Datum/DatumTests.hpp"
-        "${OpenSolid}/Core/Datum/Frame.hpp"
-        "${OpenSolid}/Core/Datum/Plane.hpp"
+        Datum/Axis.hpp
+        Datum/Datum.hpp
+        Datum/DatumTests.hpp
+        Datum/Frame.hpp
+        Datum/Plane.hpp
     )
     SET(DATUM_SOURCES
-        "${OpenSolid}/Core/Datum/Axis.cpp"
-        "${OpenSolid}/Core/Datum/Datum.cpp"
-        "${OpenSolid}/Core/Datum/Frame.cpp"
-        "${OpenSolid}/Core/Datum/Plane.cpp"
+        Datum/Axis.cpp
+        Datum/Datum.cpp
+        Datum/Frame.cpp
+        Datum/Plane.cpp
     )
     
     # Domain directory files
     SET(DOMAIN_HEADERS
-        "${OpenSolid}/Core/Domain/Domain.hpp"
-        "${OpenSolid}/Core/Domain/DomainConstructors.hpp"
+        Domain/Domain.hpp
+        Domain/DomainConstructors.hpp
     )
     SET(DOMAIN_SOURCES
-        "${OpenSolid}/Core/Domain/Domain.cpp"
-        "${OpenSolid}/Core/Domain/DomainConstructors.cpp"
+        Domain/Domain.cpp
+        Domain/DomainConstructors.cpp
     )
 
     # Domain/DomainImplementation directory files
     SET(DOMAINIMPLEMENTATION_HEADERS
-        "${OpenSolid}/Core/Domain/DomainImplementation/DomainImplementation.hpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/GenericDomain.hpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/IntervalDomain.hpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/RectangleDomain.hpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/CuboidDomain.hpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/SimplexDomain.hpp"
+        Domain/DomainImplementation/DomainImplementation.hpp
+        Domain/DomainImplementation/GenericDomain.hpp
+        Domain/DomainImplementation/IntervalDomain.hpp
+        Domain/DomainImplementation/RectangleDomain.hpp
+        Domain/DomainImplementation/CuboidDomain.hpp
+        Domain/DomainImplementation/SimplexDomain.hpp
     )
     SET(DOMAINIMPLEMENTATION_SOURCES
-        "${OpenSolid}/Core/Domain/DomainImplementation/DomainImplementation.cpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/GenericDomain.cpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/IntervalDomain.cpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/RectangleDomain.cpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/CuboidDomain.cpp"
-        "${OpenSolid}/Core/Domain/DomainImplementation/SimplexDomain.cpp"
-    )
-
-    # File directory files
-    SET(FILE_HEADERS
-        "${OpenSolid}/Core/File/File.hpp"
-        "${OpenSolid}/Core/File/FileTests.hpp"
-    )
-    SET(FILE_SOURCES
-        "${OpenSolid}/Core/File/File.cpp"
+        Domain/DomainImplementation/DomainImplementation.cpp
+        Domain/DomainImplementation/GenericDomain.cpp
+        Domain/DomainImplementation/IntervalDomain.cpp
+        Domain/DomainImplementation/RectangleDomain.cpp
+        Domain/DomainImplementation/CuboidDomain.cpp
+        Domain/DomainImplementation/SimplexDomain.cpp
     )
     
     # Function directory files
     SET(FUNCTION_HEADERS
-        "${OpenSolid}/Core/Function/Function.hpp"
-        "${OpenSolid}/Core/Function/FunctionConstructors.hpp"
-        "${OpenSolid}/Core/Function/FunctionTests.hpp"
+        Function/Function.hpp
+        Function/FunctionConstructors.hpp
+        Function/FunctionTests.hpp
     )
     SET(FUNCTION_SOURCES
-        "${OpenSolid}/Core/Function/Function.cpp"
-        "${OpenSolid}/Core/Function/FunctionConstructors.cpp"
+        Function/Function.cpp
+        Function/FunctionConstructors.cpp
     )
     
     # Function/FunctionImplementation directory files
     SET(FUNCTIONIMPLEMENTATION_HEADERS
-        "${OpenSolid}/Core/Function/FunctionImplementation/ArccosineFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ArcsineFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/BinaryOperation.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ComponentsFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/CompositionFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ConcatenationFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ConstantFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/CosineFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/CrossProductFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/DifferenceFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/DotProductFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/EllipticalFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ExponentialFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/FunctionImplementation.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/LinearFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/LogarithmFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/NegationFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/NormalizedFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/NormFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ParametersFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/PowerFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ProductFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/QuotientFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SineFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SquaredNormFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SquareRootFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SumFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/TangentFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/TransformedFunction.hpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/UnaryOperation.hpp"
+        Function/FunctionImplementation/ArccosineFunction.hpp
+        Function/FunctionImplementation/ArcsineFunction.hpp
+        Function/FunctionImplementation/BinaryOperation.hpp
+        Function/FunctionImplementation/ComponentsFunction.hpp
+        Function/FunctionImplementation/CompositionFunction.hpp
+        Function/FunctionImplementation/ConcatenationFunction.hpp
+        Function/FunctionImplementation/ConstantFunction.hpp
+        Function/FunctionImplementation/CosineFunction.hpp
+        Function/FunctionImplementation/CrossProductFunction.hpp
+        Function/FunctionImplementation/DifferenceFunction.hpp
+        Function/FunctionImplementation/DotProductFunction.hpp
+        Function/FunctionImplementation/EllipticalFunction.hpp
+        Function/FunctionImplementation/ExponentialFunction.hpp
+        Function/FunctionImplementation/FunctionImplementation.hpp
+        Function/FunctionImplementation/LinearFunction.hpp
+        Function/FunctionImplementation/LogarithmFunction.hpp
+        Function/FunctionImplementation/NegationFunction.hpp
+        Function/FunctionImplementation/NormalizedFunction.hpp
+        Function/FunctionImplementation/NormFunction.hpp
+        Function/FunctionImplementation/ParametersFunction.hpp
+        Function/FunctionImplementation/PowerFunction.hpp
+        Function/FunctionImplementation/ProductFunction.hpp
+        Function/FunctionImplementation/QuotientFunction.hpp
+        Function/FunctionImplementation/SineFunction.hpp
+        Function/FunctionImplementation/SquaredNormFunction.hpp
+        Function/FunctionImplementation/SquareRootFunction.hpp
+        Function/FunctionImplementation/SumFunction.hpp
+        Function/FunctionImplementation/TangentFunction.hpp
+        Function/FunctionImplementation/TransformedFunction.hpp
+        Function/FunctionImplementation/UnaryOperation.hpp
     )
     SET(FUNCTIONIMPLEMENTATION_SOURCES
-        "${OpenSolid}/Core/Function/FunctionImplementation/ArccosineFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ArcsineFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/BinaryOperation.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ComponentsFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/CompositionFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ConcatenationFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ConstantFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/CosineFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/CrossProductFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/DifferenceFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/DotProductFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/EllipticalFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ExponentialFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/FunctionImplementation.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/LinearFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/LogarithmFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/NegationFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/NormalizedFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/NormFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ParametersFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/PowerFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/ProductFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/QuotientFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SineFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SquaredNormFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SquareRootFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/SumFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/TangentFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/TransformedFunction.cpp"
-        "${OpenSolid}/Core/Function/FunctionImplementation/UnaryOperation.cpp"
+        Function/FunctionImplementation/ArccosineFunction.cpp
+        Function/FunctionImplementation/ArcsineFunction.cpp
+        Function/FunctionImplementation/BinaryOperation.cpp
+        Function/FunctionImplementation/ComponentsFunction.cpp
+        Function/FunctionImplementation/CompositionFunction.cpp
+        Function/FunctionImplementation/ConcatenationFunction.cpp
+        Function/FunctionImplementation/ConstantFunction.cpp
+        Function/FunctionImplementation/CosineFunction.cpp
+        Function/FunctionImplementation/CrossProductFunction.cpp
+        Function/FunctionImplementation/DifferenceFunction.cpp
+        Function/FunctionImplementation/DotProductFunction.cpp
+        Function/FunctionImplementation/EllipticalFunction.cpp
+        Function/FunctionImplementation/ExponentialFunction.cpp
+        Function/FunctionImplementation/FunctionImplementation.cpp
+        Function/FunctionImplementation/LinearFunction.cpp
+        Function/FunctionImplementation/LogarithmFunction.cpp
+        Function/FunctionImplementation/NegationFunction.cpp
+        Function/FunctionImplementation/NormalizedFunction.cpp
+        Function/FunctionImplementation/NormFunction.cpp
+        Function/FunctionImplementation/ParametersFunction.cpp
+        Function/FunctionImplementation/PowerFunction.cpp
+        Function/FunctionImplementation/ProductFunction.cpp
+        Function/FunctionImplementation/QuotientFunction.cpp
+        Function/FunctionImplementation/SineFunction.cpp
+        Function/FunctionImplementation/SquaredNormFunction.cpp
+        Function/FunctionImplementation/SquareRootFunction.cpp
+        Function/FunctionImplementation/SumFunction.cpp
+        Function/FunctionImplementation/TangentFunction.cpp
+        Function/FunctionImplementation/TransformedFunction.cpp
+        Function/FunctionImplementation/UnaryOperation.cpp
     )
 
     # Generic directory files
     SET(GENERIC_HEADERS
-        "${OpenSolid}/Core/Generic/Bounds.hpp"
-        "${OpenSolid}/Core/Generic/Conversion.hpp"
-        "${OpenSolid}/Core/Generic/ReferenceCounted.hpp"
-        "${OpenSolid}/Core/Generic/Schema.hpp"
-        "${OpenSolid}/Core/Generic/Transformable.hpp"
-        "${OpenSolid}/Core/Generic/TypeName.hpp"
+        Generic/Bounds.hpp
+        Generic/Conversion.hpp
+        Generic/ReferenceCounted.hpp
+        Generic/TypeDescriptionFunction.hpp
+        Generic/Transformable.hpp
+        Generic/TypeName.hpp
     )
     SET(GENERIC_SOURCES
-        "${OpenSolid}/Core/Generic/TypeName.cpp"
+        Generic/TypeName.cpp
     )
     
     # Geometry directory files
     SET(GEOMETRY_HEADERS
-        "${OpenSolid}/Core/Geometry/Geometry.hpp"
-        "${OpenSolid}/Core/Geometry/GeometryConstructors.hpp"
-        "${OpenSolid}/Core/Geometry/GeometryTests.hpp"
+        Geometry/Geometry.hpp
+        Geometry/GeometryConstructors.hpp
+        Geometry/GeometryTests.hpp
     )
     SET(GEOMETRY_SOURCES
-        "${OpenSolid}/Core/Geometry/Geometry.cpp"
-        "${OpenSolid}/Core/Geometry/GeometryConstructors.cpp"
+        Geometry/Geometry.cpp
+        Geometry/GeometryConstructors.cpp
     )
 
     # Geometry/GeometryImplementation directory files
     SET(GEOMETRYIMPLEMENTATION_HEADERS
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/ConstantGeometry.hpp"
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/GenericGeometry.hpp"
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp"
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/SimplexGeometry.hpp"
+        Geometry/GeometryImplementation/ConstantGeometry.hpp
+        Geometry/GeometryImplementation/GenericGeometry.hpp
+        Geometry/GeometryImplementation/GeometryImplementation.hpp
+        Geometry/GeometryImplementation/SimplexGeometry.hpp
     )
     SET(GEOMETRYIMPLEMENTATION_SOURCES
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/ConstantGeometry.cpp"
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/GenericGeometry.cpp"
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/GeometryImplementation.cpp"
-        "${OpenSolid}/Core/Geometry/GeometryImplementation/SimplexGeometry.cpp"
+        Geometry/GeometryImplementation/ConstantGeometry.cpp
+        Geometry/GeometryImplementation/GenericGeometry.cpp
+        Geometry/GeometryImplementation/GeometryImplementation.cpp
+        Geometry/GeometryImplementation/SimplexGeometry.cpp
     )
     
     # Matrix directory files
     SET(MATRIX_HEADERS
-        "${OpenSolid}/Core/Matrix/DenseBasePlugin.hpp"
-        "${OpenSolid}/Core/Matrix/Matrix.hpp"
-        "${OpenSolid}/Core/Matrix/MatrixBasePlugin.hpp"
-        "${OpenSolid}/Core/Matrix/MatrixPlugin.hpp"
-        "${OpenSolid}/Core/Matrix/MatrixTests.hpp"
-        "${OpenSolid}/Core/Matrix/MatrixIterator.hpp"
+        Matrix/DenseBasePlugin.hpp
+        Matrix/Matrix.hpp
+        Matrix/MatrixBasePlugin.hpp
+        Matrix/MatrixPlugin.hpp
+        Matrix/MatrixTests.hpp
+        Matrix/MatrixIterator.hpp
     )
     SET(MATRIX_SOURCES
-        "${OpenSolid}/Core/Matrix/Matrix.cpp"
+        Matrix/Matrix.cpp
     )
 
     # Mesh directory files
     SET(MESH_HEADERS
-        "${OpenSolid}/Core/Mesh/Mesh.hpp"
+        Mesh/Mesh.hpp
     )
     SET(MESH_SOURCES
-        "${OpenSolid}/Core/Mesh/Mesh.cpp"
+        Mesh/Mesh.cpp
     )
 
     # Object directory files
     SET(OBJECT_HEADERS
-        "${OpenSolid}/Core/Object/Object.hpp"
-        "${OpenSolid}/Core/Object/ObjectTests.hpp"
+        Object/Object.hpp
+        Object/ObjectTests.hpp
     )
     SET(OBJECT_SOURCES
-        "${OpenSolid}/Core/Object/Object.cpp"
+        Object/Object.cpp
     )
     
     # Scalar directory files
     SET(SCALAR_HEADERS
-        "${OpenSolid}/Core/Scalar/Comparison.hpp"
-        "${OpenSolid}/Core/Scalar/Interval.hpp"
-        "${OpenSolid}/Core/Scalar/IntervalTests.hpp"
+        Scalar/Comparison.hpp
+        Scalar/Interval.hpp
+        Scalar/IntervalTests.hpp
     )
     SET(SCALAR_SOURCES
-        "${OpenSolid}/Core/Scalar/Interval.cpp"
+        Scalar/Interval.cpp
     )
     
     # Set directory files
     SET(SET_HEADERS
-        "${OpenSolid}/Core/Set/Set.hpp"
-        "${OpenSolid}/Core/Set/SetNode.hpp"
-        "${OpenSolid}/Core/Set/SetTests.hpp"
+        Set/Set.hpp
+        Set/SetNode.hpp
+        Set/SetTests.hpp
     )
     SET(SET_SOURCES
     )
     
     # Simplex directory files
     SET(SIMPLEX_HEADERS
-        "${OpenSolid}/Core/Simplex/Simplex.hpp"
-        "${OpenSolid}/Core/Simplex/SimplexTests.hpp"
+        Simplex/Simplex.hpp
+        Simplex/SimplexTests.hpp
     )
     SET(SIMPLEX_SOURCES
-        "${OpenSolid}/Core/Simplex/Simplex.cpp"
+        Simplex/Simplex.cpp
     )
     
     # Update global source list
-    SET(GLOBAL_SOURCE_LIST ${GLOBAL_SOURCE_LIST}
-        "${OpenSolid}/Core/Common/Value.proto"
+    ADD_TO_GLOBAL_SOURCE_LIST(
         ${CORE_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
-        ${GENERIC_HEADERS}
-        ${GENERIC_SOURCES}
+        Common/serialization.proto
+        ${DATABASE_HEADERS}
+        ${DATABASE_SOURCES}
         ${DATUM_HEADERS}
         ${DATUM_SOURCES}
         ${DOMAIN_HEADERS}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_HEADERS}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${FILE_HEADERS}
-        ${FILE_SOURCES}
         ${FUNCTION_HEADERS}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_HEADERS}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
+        ${GENERIC_HEADERS}
+        ${GENERIC_SOURCES}
         ${GEOMETRY_HEADERS}
         ${GEOMETRY_SOURCES}
         ${GEOMETRYIMPLEMENTATION_HEADERS}
@@ -295,10 +292,11 @@
         ${SET_SOURCES}
         ${SIMPLEX_HEADERS}
         ${SIMPLEX_SOURCES}
-        PARENT_SCOPE
     )
     
 ########## Compile OpenSolidCore library ##########
+
+    COMPILE_PROTO_FILES(PROTO_SOURCES Common/serialization.proto)
 
     ADD_LIBRARY(OpenSolidCore SHARED
         ${PROTO_SOURCES}
@@ -307,7 +305,7 @@
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        #${FILE_SOURCES}
+        ${FILE_SOURCES}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}
@@ -324,15 +322,15 @@
     
 ########## Compile tests ##########
 
-    ADD_CXXTEST(IntervalTests "${OpenSolid}/Core/Scalar/IntervalTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(MatrixTests "${OpenSolid}/Core/Matrix/MatrixTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(DatumTests "${OpenSolid}/Core/Datum/DatumTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(SetTests "${OpenSolid}/Core/Set/SetTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(FunctionTests "${OpenSolid}/Core/Function/FunctionTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(GeometryTests "${OpenSolid}/Core/Geometry/GeometryTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(SimplexTests "${OpenSolid}/Core/Simplex/SimplexTests.hpp" OpenSolidCore)
-    ADD_CXXTEST(ObjectTests "${OpenSolid}/Core/Object/ObjectTests.hpp" OpenSolidCore)
-    #ADD_CXXTEST(FileTests "${OpenSolid}/Core/File/FileTests.hpp" OpenSolidCore)
+    ADD_CXXTEST(IntervalTests Scalar/IntervalTests OpenSolidCore)
+    ADD_CXXTEST(MatrixTests Matrix/MatrixTests OpenSolidCore)
+    ADD_CXXTEST(DatumTests Datum/DatumTests OpenSolidCore)
+    ADD_CXXTEST(SetTests Set/SetTests OpenSolidCore)
+    ADD_CXXTEST(FunctionTests Function/FunctionTests OpenSolidCore)
+    ADD_CXXTEST(GeometryTests Geometry/GeometryTests OpenSolidCore)
+    ADD_CXXTEST(SimplexTests Simplex/SimplexTests OpenSolidCore)
+    ADD_CXXTEST(ObjectTests Object/ObjectTests OpenSolidCore)
+    ADD_CXXTEST(FileTests File/FileTests OpenSolidCore)
     
 ########## Temporary fix - define 'override' as empty macro for GCC < 4.7 ##########
     
@@ -356,19 +354,19 @@
     
 ########## Install headers ##########
     
-    INSTALL(DIRECTORY "${OpenSolid}/Core"
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/OpenSolid"
+    INSTALL(DIRECTORY .
+        DESTINATION include/opensolid
         FILES_MATCHING
-        PATTERN "*.hpp"
-        PATTERN "*Tests.hpp" EXCLUDE
-        PATTERN "*Template.hpp" EXCLUDE
+        PATTERN *.hpp
+        PATTERN *Tests.hpp EXCLUDE
+        PATTERN Template*.hpp EXCLUDE
     )
     
 ########## Install libraries ##########
         
     # Install C++ shared libraries
     INSTALL(TARGETS OpenSolidCore
-        RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
-        LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
-        ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
     )

@@ -98,7 +98,7 @@ namespace opensolid
     ValueConversionError::ValueConversionError(
         const Value& value,
         const std::string& desired_type
-    ) : _value(value), _desired_type(expected_type) {}
+    ) : _value(value), _desired_type(desired_type) {}
 
     Value ValueConversionError::value() const {return _value;}
 

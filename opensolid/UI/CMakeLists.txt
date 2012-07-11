@@ -1,23 +1,20 @@
 # Generate resource .cpp file
-QT4_ADD_RESOURCES(IMAGES_RESOURCE "${OpenSolid}/UI/res/images.qrc")
+QT4_ADD_RESOURCES(IMAGES_RESOURCE res/images.qrc)
 
 # Collect .ui files
-SET(UI_INTERFACE_FILES
-    "${OpenSolid}/UI/dlgPointDetails.ui"
-    "${OpenSolid}/UI/mainWindow.ui"
-)
+SET(UI_INTERFACE_FILES dlgPointDetails.ui mainWindow.ui)
 
 # Generate ui_XXX.h headers from .ui files
 QT4_WRAP_UI(UI_INTERFACE_HEADERS ${UI_INTERFACE_FILES})
 
 # Collect headers to be passed to moc
 SET(UI_MOC_HEADERS
-    "${OpenSolid}/UI/dlgPointDetails.h"
-    "${OpenSolid}/UI/graphItemModel.h"
-    "${OpenSolid}/UI/mainWindow.h"
-    "${OpenSolid}/UI/modelView.h"
-    "${OpenSolid}/UI/nodePropItemModel.h"
-    "${OpenSolid}/UI/treeWidget.h"
+    dlgPointDetails.h
+    graphItemModel.h
+    mainWindow.h
+    modelView.h
+    nodePropItemModel.h
+    treeWidget.h
 )
     
 # Use moc to generate source files from headers
@@ -25,17 +22,17 @@ QT4_WRAP_CPP(UI_MOC_SOURCES ${UI_MOC_HEADERS})
 
 # Collect all other UI source files
 SET(UI_SOURCES
-    "${OpenSolid}/UI/camera.cpp"
-    "${OpenSolid}/UI/cameraModelView.cpp"
-    "${OpenSolid}/UI/cameraFirstPerson.cpp"
-    "${OpenSolid}/UI/dlgPointDetails.cpp"
-    "${OpenSolid}/UI/graphItemModel.cpp"
-    "${OpenSolid}/UI/mainWindow.cpp"
-    "${OpenSolid}/UI/modelView.cpp"
-    "${OpenSolid}/UI/nodePropItemModel.cpp"
-    "${OpenSolid}/UI/renderTarget.cpp"
-    "${OpenSolid}/UI/treeWidget.cpp"
-    "${OpenSolid}/UI/projectRenderTarget.cpp"
+    camera.cpp
+    cameraModelView.cpp
+    cameraFirstPerson.cpp
+    dlgPointDetails.cpp
+    graphItemModel.cpp
+    mainWindow.cpp
+    modelView.cpp
+    nodePropItemModel.cpp
+    renderTarget.cpp
+    treeWidget.cpp
+    projectRenderTarget.cpp
 )
 
 # Include build directory so ui_XXX.h headers (generated from the .ui files)
@@ -58,7 +55,7 @@ SET(GLOBAL_SOURCE_LIST
     ${UI_MOC_HEADERS}
     ${UI_SOURCES}
     ${STK_SOURCES}
-    "${OpenSolid}/UI/CMakeLists.txt"
+    CMakeLists.txt
     PARENT_SCOPE
 )
 
