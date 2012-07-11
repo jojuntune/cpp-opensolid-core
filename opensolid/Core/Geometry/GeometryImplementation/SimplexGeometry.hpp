@@ -21,6 +21,7 @@
 #pragma once
 
 #include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>

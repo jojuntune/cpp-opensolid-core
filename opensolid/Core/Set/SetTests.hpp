@@ -18,16 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <iterator>
-#include <algorithm>
-#include <vector>
-#include <cstdlib>
+#include <OpenSolid/Core/Matrix/Matrix.hpp>
+#include <OpenSolid/Core/Set/Set.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Set/Set.hpp>
+#include <iterator>
+#include <algorithm>
+#include <vector>
+#include <cstdlib>
 
 using namespace opensolid;
 

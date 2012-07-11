@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
 

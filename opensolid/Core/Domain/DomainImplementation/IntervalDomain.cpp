@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/IntervalDomain.hpp>
+
+#include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
 namespace opensolid
@@ -37,7 +38,7 @@ namespace opensolid
 
     int IntervalDomain::dimensions() const {return 1;}
 
-    VectorXI IntervalDomain::bounds() const {return _interval.as<VectorXI>();}
+    VectorXI IntervalDomain::bounds() const {return _interval.convertTo<VectorXI>();}
 
     Domain IntervalDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return new IntervalDomain(matrix.value() + vector.value() * _interval);

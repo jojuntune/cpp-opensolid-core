@@ -19,60 +19,9 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
-    TypeDescription TypeDescriptionFunction<MatrixXd>::operator()() const {
-        TypeDescription result;
-        result.appendInt("Rows");
-        result.appendInt("Cols");
-        result.appendListOfDoubles("Data");
-        return result;
-    }
-
-    List Conversion<MatrixXd, List>::operator()(const MatrixXd& argument) const {
-        List result;
-        result.append(argument.rows());
-        result.append(argument.cols());
-        result.append(List(begin(argument), end(argument)));
-        return result;
-    }
-
-    MatrixXd Conversion<List, MatrixXd>::operator()(const List& argument) const {
-        int rows = argument[0].as<int>();
-        int cols = argument[1].as<int>();
-        List data = argument[2].as<List>();
-        MatrixXd result(rows, cols);
-        for (int i = 0; i < data.size(); ++i) {result(i) = data[i].as<double>();}
-        return result;
-    }
-
-    TypeDescription TypeDescriptionFunction<MatrixXI>::operator()() const {
-        TypeDescription result;
-        result.appendInt("Rows");
-        result.appendInt("Cols");
-        result.appendListOfObjects<Interval>("Data");
-        return result;
-    }
-
-    List Conversion<MatrixXI, List>::operator()(const MatrixXI& argument) const {
-        List result;
-        result.append(argument.rows());
-        result.append(argument.cols());
-        result.append(List(begin(argument), end(argument)));
-        return result;
-    }
-
-    MatrixXI Conversion<List, MatrixXI>::operator()(const List& argument) const {
-        int rows = argument[0].as<int>();
-        int cols = argument[1].as<int>();
-        List data = argument[2].as<List>();
-        MatrixXI result(rows, cols);
-        for (int i = 0; i < data.size(); ++i) {result(i) = data[i].as<Interval>();}
-        return result;
-    }
-
     std::string TypeName<MatrixXd>::operator()() const {return "MatrixXd";}
 
     std::string TypeName<MatrixXI>::operator()() const {return "MatrixXI";}

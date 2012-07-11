@@ -20,14 +20,14 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
 #include <OpenSolid/Core/Generic/TypeName.hpp>
-#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {
@@ -154,24 +154,6 @@ namespace opensolid
         Matrix<Interval, dimensions_, 1> operator()(
             const Simplex<dimensions_, size_>& argument
         ) const;
-    };
-
-    template <>
-    struct TypeDescriptionFunction<SimplexXd>
-    {
-        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
-    };
-
-    template <>
-    struct Conversion<SimplexXd, List>
-    {
-        OPENSOLID_CORE_EXPORT List operator()(const SimplexXd& argument) const;
-    };
-
-    template <>
-    struct Conversion<List, SimplexXd>
-    {
-        OPENSOLID_CORE_EXPORT SimplexXd operator()(const List& argument) const;
     };
 
     template <>

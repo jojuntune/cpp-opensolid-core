@@ -18,10 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <algorithm>
+#include <OpenSolid/Core/Function/Function.hpp>
 
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
-#include <OpenSolid/Core/Function/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArccosineFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ArcsineFunction.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/ComponentsFunction.hpp>
@@ -50,6 +49,8 @@
 #include <OpenSolid/Core/Function/FunctionImplementation/TangentFunction.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
+
+#include <algorithm>
 
 namespace opensolid
 {
@@ -159,8 +160,8 @@ namespace opensolid
         assert(other.implementation());
         if (isConstant() && other.isConstant()) {
             VectorXd result(dimensions() + other.dimensions());
-            result.head(dimensions()) = this->as<VectorXd>();
-            result.tail(other.dimensions()) = other.as<VectorXd>();
+            result.head(dimensions()) = this->convertTo<VectorXd>();
+            result.tail(other.dimensions()) = other.convertTo<VectorXd>();
             return result;
         } else {
             return new ConcatenationFunction(*this, other);
@@ -174,10 +175,10 @@ namespace opensolid
             assert(other.dimensions() == 1);
             return (*this) * other;
         } else if (isConstant() && other.isConstant()) {
-            return this->as<VectorXd>().dot(other.as<VectorXd>());
+            return this->convertTo<VectorXd>().dot(other.convertTo<VectorXd>());
         } else if (
-            (isConstant() && this->as<VectorXd>().isZero()) ||
-            (other.isConstant() && other.as<VectorXd>().isZero())
+            (isConstant() && this->convertTo<VectorXd>().isZero()) ||
+            (other.isConstant() && other.convertTo<VectorXd>().isZero())
         ) {
             return 0.0;
         } else {
@@ -190,11 +191,11 @@ namespace opensolid
         assert(other.implementation());
         assert(dimensions() == 3 && other.dimensions() == 3);
         if (isConstant() && other.isConstant()) {
-            return this->as<Vector3d>().cross(other.as<Vector3d>());
+            return this->convertTo<Vector3d>().cross(other.convertTo<Vector3d>());
         }
         else if (
-            (isConstant() && this->as<Vector3d>().isZero()) ||
-            (other.isConstant() && other.as<Vector3d>().isZero())
+            (isConstant() && this->convertTo<Vector3d>().isZero()) ||
+            (other.isConstant() && other.convertTo<Vector3d>().isZero())
         ) {
             return Vector3d::Zero();
         } else {
@@ -240,7 +241,7 @@ namespace opensolid
         assert(inner.implementation());
         if (isConstant()) {return *this;}
         assert(parameters() == inner.dimensions());
-        if (inner.isConstant()) {return operator()(inner.as<VectorXd>());}
+        if (inner.isConstant()) {return operator()(inner.convertTo<VectorXd>());}
         Function result;
         implementation()->getComposition(inner, result);
         return result;
@@ -266,16 +267,16 @@ namespace opensolid
     }
     
     Function operator-(const Function& operand) {
-        if (operand.isConstant()) {return -operand.as<VectorXd>();}
+        if (operand.isConstant()) {return -operand.convertTo<VectorXd>();}
         return new NegationFunction(operand);
     }
     
     Function operator+(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
-            return first_operand.as<VectorXd>() + second_operand.as<VectorXd>();
-        } else if (first_operand.isConstant() && first_operand.as<VectorXd>().isZero()) {
+            return first_operand.convertTo<VectorXd>() + second_operand.convertTo<VectorXd>();
+        } else if (first_operand.isConstant() && first_operand.convertTo<VectorXd>().isZero()) {
             return second_operand;
-        } else if (second_operand.isConstant() && second_operand.as<VectorXd>().isZero()) {
+        } else if (second_operand.isConstant() && second_operand.convertTo<VectorXd>().isZero()) {
             return first_operand;
         } else {
             return new SumFunction(first_operand, second_operand);
@@ -284,10 +285,10 @@ namespace opensolid
     
     Function operator-(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
-            return first_operand.as<VectorXd>() - second_operand.as<VectorXd>();
-        } else if (first_operand.isConstant() && first_operand.as<VectorXd>().isZero()) {
+            return first_operand.convertTo<VectorXd>() - second_operand.convertTo<VectorXd>();
+        } else if (first_operand.isConstant() && first_operand.convertTo<VectorXd>().isZero()) {
             return -second_operand;
-        } else if (second_operand.isConstant() && second_operand.as<VectorXd>().isZero()) {
+        } else if (second_operand.isConstant() && second_operand.convertTo<VectorXd>().isZero()) {
             return first_operand;
         } else {
             return new DifferenceFunction(first_operand, second_operand);
@@ -305,12 +306,12 @@ namespace opensolid
             multiplier = first_operand;
         }
         if (multiplicand.isConstant() && multiplier.isConstant()) {
-            double multiplier_value = multiplier.as<double>();
-            return multiplicand.as<VectorXd>() * multiplier_value;
-        } else if (multiplicand.isConstant() && multiplicand.as<VectorXd>().isZero()) {
+            double multiplier_value = multiplier.convertTo<double>();
+            return multiplicand.convertTo<VectorXd>() * multiplier_value;
+        } else if (multiplicand.isConstant() && multiplicand.convertTo<VectorXd>().isZero()) {
             return multiplicand;
         } else if (multiplier.isConstant()) {
-            double multiplier_value = multiplier.as<double>();
+            double multiplier_value = multiplier.convertTo<double>();
             if (multiplier_value == Zero()) {
                 return VectorXd::Zero(multiplicand.dimensions());
             } else if (multiplier_value == One()) {
@@ -327,15 +328,15 @@ namespace opensolid
     
     Function operator/(const Function& first_operand, const Function& second_operand) {
         if (first_operand.isConstant() && second_operand.isConstant()) {
-            double divisor_value = second_operand.as<double>();
-            return first_operand.as<VectorXd>() / divisor_value;
+            double divisor_value = second_operand.convertTo<double>();
+            return first_operand.convertTo<VectorXd>() / divisor_value;
         } else if (
             first_operand.isConstant() &&
-            first_operand.as<VectorXd>().isZero()
+            first_operand.convertTo<VectorXd>().isZero()
         ) {
             return first_operand;
         } else if (second_operand.isConstant()) {
-            double second_value = second_operand.as<double>();
+            double second_value = second_operand.convertTo<double>();
             if (second_value == One()) {
                 return first_operand;
             } else if (second_value == -One()) {
@@ -350,7 +351,7 @@ namespace opensolid
     
     Function sin(const Function& operand) {
         if (operand.isConstant()) {
-            return sin(operand.as<double>());
+            return sin(operand.convertTo<double>());
         } else {
             return new SineFunction(operand);
         }
@@ -358,7 +359,7 @@ namespace opensolid
     
     Function cos(const Function& operand) {
         if (operand.isConstant()) {
-            return cos(operand.as<double>());
+            return cos(operand.convertTo<double>());
         } else {
             return new CosineFunction(operand);
         }
@@ -366,7 +367,7 @@ namespace opensolid
     
     Function tan(const Function& operand) {
         if (operand.isConstant()) {
-            return tan(operand.as<double>());
+            return tan(operand.convertTo<double>());
         } else {
             return new TangentFunction(operand);
         }
@@ -374,7 +375,7 @@ namespace opensolid
     
     Function sqrt(const Function& operand) {
         if (operand.isConstant()) {
-            return sqrt(operand.as<double>());
+            return sqrt(operand.convertTo<double>());
         } else {
             return new SquareRootFunction(operand);
         }
@@ -382,7 +383,7 @@ namespace opensolid
     
     Function asin(const Function& operand) {
         if (operand.isConstant()) {
-            return asin(operand.as<double>());
+            return asin(operand.convertTo<double>());
         } else {
             return new ArcsineFunction(operand);
         }
@@ -390,7 +391,7 @@ namespace opensolid
     
     Function acos(const Function& operand) {
         if (operand.isConstant()) {
-            return acos(operand.as<double>());
+            return acos(operand.convertTo<double>());
         } else {
             return new ArccosineFunction(operand);
         }
@@ -398,7 +399,7 @@ namespace opensolid
 
     Function exp(const Function& argument) {
         if (argument.isConstant()) {
-            return exp(argument.as<double>());
+            return exp(argument.convertTo<double>());
         } else {
             return new ExponentialFunction(argument);
         }
@@ -406,7 +407,7 @@ namespace opensolid
 
     Function log(const Function& argument) {
         if (argument.isConstant()) {
-            return log(argument.as<double>());
+            return log(argument.convertTo<double>());
         } else {
             return new LogarithmFunction(argument);
         }
@@ -414,7 +415,7 @@ namespace opensolid
 
     Function pow(const Function& base, const Function& exponent) {
         if (base.isConstant() && exponent.isConstant()) {
-            return pow(base.as<double>(), exponent.as<double>());
+            return pow(base.convertTo<double>(), exponent.convertTo<double>());
         } else {
             return new PowerFunction(base, exponent);
         }
@@ -429,32 +430,24 @@ namespace opensolid
     double Conversion<Function, double>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 1);
-        return argument.as<VectorXd>().value();
+        return argument.convertTo<VectorXd>().value();
     }
     
     Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 2);
-        return argument.as<VectorXd>();
+        return argument.convertTo<VectorXd>();
     }
     
     Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 3);
-        return argument.as<VectorXd>();
+        return argument.convertTo<VectorXd>();
     }
     
     const VectorXd& Conversion<Function, VectorXd>::operator()(const Function& argument) const {
         assert(argument.isConstant());
         return static_cast<const ConstantFunction*>(argument.implementation())->vector();
-    }
-
-    std::string Conversion<Function, std::string>::operator()(const Function& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
-
-    Function Conversion<std::string, Function>::operator()(const std::string& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
     }
 
     std::string TypeName<Function>::operator()() const {return "Function";}

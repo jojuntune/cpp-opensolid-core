@@ -19,28 +19,9 @@
  ***************************************************************************/
 
 #include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Common/List.hpp>
 
 namespace opensolid
 {
-    TypeDescription TypeDescriptionFunction<DatumXd>::operator()() const {
-        TypeDescription result;
-        result.appendObject<MatrixXd>("Origin");
-        result.appendObject<MatrixXd>("Basis");
-        return result;
-    }
-
-    List Conversion<DatumXd, List>::operator()(const DatumXd& argument) const {
-        List result;
-        result.append(MatrixXd(argument.origin()));
-        result.append(MatrixXd(argument.basis()));
-        return result;
-    }
-
-    DatumXd Conversion<List, DatumXd>::operator()(const List& argument) const {
-        return DatumXd(argument[0].as<MatrixXd>(), argument[1].as<MatrixXd>());
-    }
-
     std::string TypeName<Datum2d>::operator()() const {return "Datum2d";}
 
     std::string TypeName<Datum3d>::operator()() const {return "Datum3d";}

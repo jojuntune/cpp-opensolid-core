@@ -20,11 +20,13 @@
 
 #pragma once
 
-#include <new>
-#include <vector>
+#include <OpenSolid/Core/config.hpp>
 
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
+
+#include <new>
+#include <vector>
 
 namespace opensolid
 {

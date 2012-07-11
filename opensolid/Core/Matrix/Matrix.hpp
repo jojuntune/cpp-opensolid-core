@@ -20,8 +20,9 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Generic/TypeName.hpp>
-#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
@@ -293,42 +294,6 @@ namespace opensolid
     struct Conversion<Interval, VectorXI>
     {
         VectorXI operator()(const Interval& interval) const;
-    };
-
-    template <>
-    struct TypeDescriptionFunction<MatrixXd>
-    {
-        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
-    };
-
-    template <>
-    struct Conversion<MatrixXd, List>
-    {
-        OPENSOLID_CORE_EXPORT List operator()(const MatrixXd& argument) const;
-    };
-
-    template <>
-    struct Conversion<List, MatrixXd>
-    {
-        OPENSOLID_CORE_EXPORT MatrixXd operator()(const List& argument) const;
-    };
-
-    template <>
-    struct TypeDescriptionFunction<MatrixXI>
-    {
-        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
-    };
-
-    template <>
-    struct Conversion<MatrixXI, List>
-    {
-        OPENSOLID_CORE_EXPORT List operator()(const MatrixXI& argument) const;
-    };
-
-    template <>
-    struct Conversion<List, MatrixXI>
-    {
-        OPENSOLID_CORE_EXPORT MatrixXI operator()(const List& argument) const;
     };
 
     template <>
@@ -621,14 +586,14 @@ namespace Eigen
     ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
 
     template<class DerivedType> template <class OtherType>
-    OtherType MatrixBase<DerivedType>::as() const {
+    OtherType MatrixBase<DerivedType>::convertTo() const {
         return opensolid::Conversion<PlainObject, OtherType>()(derived());
     }
 
     template<class Scalar, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
     template <class OtherType>
     Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>
-    Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>::from(const OtherType& argument) {
+    Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>::convertFrom(const OtherType& argument) {
         return opensolid::Conversion<OtherType, Matrix>()(argument);
     }
 

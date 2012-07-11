@@ -20,8 +20,9 @@
  
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Generic/TypeName.hpp>
-#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
@@ -31,7 +32,6 @@
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/config.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -92,24 +92,6 @@ namespace opensolid
     struct Conversion<Domain, Interval>
     {
         OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
-    };
-
-    template <>
-    struct TypeDescriptionFunction<Domain>
-    {
-        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
-    };
-
-    template <>
-    struct Conversion<Domain, List>
-    {
-        OPENSOLID_CORE_EXPORT List operator()(const Domain& argument) const;
-    };
-
-    template <>
-    struct Conversion<List, Domain>
-    {
-        OPENSOLID_CORE_EXPORT Domain operator()(const List& argument) const;
     };
 
     template <>

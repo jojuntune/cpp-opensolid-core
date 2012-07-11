@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Common/Evaluation.hpp>
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
@@ -29,7 +31,6 @@
 #include <OpenSolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/config.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -166,18 +167,6 @@ namespace opensolid
     struct Conversion<Function, VectorXd>
     {
         OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
-    };
-
-    template <>
-    struct Conversion<Function, std::string>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Function& argument) const;
-    };
-
-    template <>
-    struct Conversion<std::string, Function>
-    {
-        OPENSOLID_CORE_EXPORT Function operator()(const std::string& argument) const;
     };
 
     template <>

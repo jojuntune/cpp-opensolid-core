@@ -18,10 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <iostream>
-
-#include <cxxtest/TestSuite.h>
-
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
@@ -30,8 +26,11 @@
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Datum/Axis.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>
+
+#include <cxxtest/TestSuite.h>
+
+#include <iostream>
 
 using namespace opensolid;
 using namespace boost::python;
@@ -696,58 +695,5 @@ public:
         TS_ASSERT_EQUALS(environment.get<Matrix2d>("a2")(1, 1), 4.0);
         TS_ASSERT_EQUALS(environment.get<MatrixXd>("b1")(1, 1), 5.0);
         TS_ASSERT_EQUALS(environment.get<Matrix2d>("b2")(1, 1), 5.0);
-    }
-
-    void testObject() {
-        PythonEnvironment environment;
-        environment.run("from math import pi");
-        environment.run("component = Object()");
-        environment.run("component.set('axis', Axis3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6)))");
-        environment.run("component.set('color', 'red')");
-        environment.run("transformed = component.rotated(-pi / 2, Frame3d().yAxis())");
-        Axis3d transformed_axis = environment.get<DatumXd>("transformed.get('axis')");
-        TS_ASSERT((transformed_axis.origin() - Vector3d(-3, 2, 1)).isZero());
-        Vector3d expected_direction = Vector3d(4, 5, 6).normalized().rotated(-M_PI_2, Frame3d().yAxis());
-        TS_ASSERT((transformed_axis.direction() - expected_direction).isZero());
-        std::string transformed_color = environment.get<std::string>("transformed.get('color')");
-        TS_ASSERT_EQUALS(transformed_color, "red");
-        TS_ASSERT_THROWS(environment.get<double>("component.get('volume')"), ObjectGetValueError);
-        try {
-            environment.get<double>("component.get('volume')");
-        } catch (const ObjectGetValueError& error) {
-            TS_ASSERT_EQUALS(error.object().get<std::string>("color"), "red");
-            TS_ASSERT_EQUALS(error.key(), "volume");
-        }
-    }
-
-    void testFile() {
-        std::string filename = "PythonTests.testFile.db";
-        std::remove(filename.c_str());
-
-        {
-            PythonEnvironment first_environment;
-            first_environment.set("filename", filename);
-            first_environment.run("f = File(filename, 'rw')");
-            first_environment.run("model = Object()");
-            first_environment.run("model.set('value', 1.0)");
-            first_environment.run("model.set('vector', Vector3d(1, 2, 3))");
-            first_environment.run("component = Object()");
-            first_environment.run("component.set('axis', Axis3d(Vector3d.Zero(), Vector3d(4, 5, 6)))");
-            first_environment.run("component.set('facet', Triangle3d(Matrix3d.Ones()))");
-            first_environment.run("model.set('component', component)");
-            first_environment.run("f.set('model', model)");
-        }
-        
-        PythonEnvironment second_environment;
-        second_environment.set("filename", filename);
-        second_environment.run("f = File(filename, 'rw')");
-        Object model = second_environment.get<Object>("f.get('model')");
-        TS_ASSERT_EQUALS(model.get<double>("value"), 1.0);
-        TS_ASSERT_EQUALS(model.get<Vector3d>("vector"), Vector3d(1, 2, 3));
-        Axis3d axis = model.get<Object>("component").get<Axis3d>("axis");
-        TS_ASSERT_EQUALS(axis.origin(), Vector3d::Zero());
-        TS_ASSERT((axis.direction() - Vector3d(4, 5, 6).normalized()).isZero());
-        Triangle3d facet = model.get<Object>("component").get<Triangle3d>("facet");
-        TS_ASSERT_EQUALS(facet.vertices(), Matrix3d::Ones());
     }
 };

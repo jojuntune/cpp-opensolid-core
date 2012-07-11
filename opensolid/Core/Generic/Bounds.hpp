@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <type_traits>
+#include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {

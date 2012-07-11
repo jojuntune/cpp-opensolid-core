@@ -18,14 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <typeinfo>
-#include <vector>
-
-#include <cxxtest/TestSuite.h>
-
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
+
+#include <cxxtest/TestSuite.h>
+
+#include <typeinfo>
+#include <vector>
 
 using namespace opensolid;
 
@@ -259,36 +259,11 @@ public:
         }
     }
 
-    void testMatrixXdSerialization() {
-        Matrix3d original = Matrix3d::Random();
-        Conversion<MatrixXd, std::string> serializer;
-        Conversion<std::string, MatrixXd> deserializer;
-        std::string serialized = serializer(original);
-        MatrixXd final = deserializer(serialized);
-        TS_ASSERT_EQUALS(final.rows(), original.rows());
-        TS_ASSERT_EQUALS(final.cols(), original.cols());
-        TS_ASSERT_EQUALS(original, final);
-    }
-
-    void testMatrixXISerialization() {
-        Matrix3I original = Matrix3I::Random();
-        Conversion<MatrixXI, std::string> serializer;
-        Conversion<std::string, MatrixXI> deserializer;
-        std::string serialized = serializer(original);
-        MatrixXI final = deserializer(serialized);
-        TS_ASSERT_EQUALS(final.rows(), original.rows());
-        TS_ASSERT_EQUALS(final.cols(), original.cols());
-        for (int i = 0; i < original.size(); ++i) {
-            TS_ASSERT_EQUALS(original(i).lower(), final(i).lower());
-            TS_ASSERT_EQUALS(original(i).upper(), final(i).upper());
-        }
-    }
-
     void testConversion() {
         MyVector my_vector = {1, 2, 3};
-        Vector3d from = Vector3d::from(my_vector);
+        Vector3d from = Vector3d::convertFrom(my_vector);
         TS_ASSERT_EQUALS(from, Vector3d(1, 2, 3));
-        MyVector as = Vector3d::Ones().as<MyVector>();
+        MyVector as = Vector3d::Ones().convertTo<MyVector>();
         TS_ASSERT_EQUALS(as.x, 1.0);
         TS_ASSERT_EQUALS(as.y, 1.0);
         TS_ASSERT_EQUALS(as.z, 1.0);

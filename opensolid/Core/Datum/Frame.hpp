@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 

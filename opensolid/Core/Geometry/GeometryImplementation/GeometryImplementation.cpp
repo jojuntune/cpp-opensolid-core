@@ -18,10 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
+
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GenericGeometry.hpp>
-#include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 
 namespace opensolid
 {
@@ -44,7 +45,7 @@ namespace opensolid
     VectorXI GeometryImplementation::bounds() const {
         Function function = this->function();
         if (function.isConstant()) {
-            return function.as<VectorXd>().cast<Interval>();
+            return function.convertTo<VectorXd>().cast<Interval>();
         } else {
             return function(domain().bounds());
         }
@@ -75,7 +76,7 @@ namespace opensolid
 
     Geometry GeometryImplementation::reversed() const {
         assert(parameters() == 1);
-        Interval interval = domain().as<Interval>();
+        Interval interval = domain().convertTo<Interval>();
         Function reversed_parameter = interval.lower() + interval.upper() - Function::Parameter();
         return new GenericGeometry(function()(reversed_parameter), domain());
     }

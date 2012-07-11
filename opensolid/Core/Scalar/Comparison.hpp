@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Scalar/Interval.hpp>
 
 namespace opensolid

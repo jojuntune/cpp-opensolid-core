@@ -24,7 +24,6 @@
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Datum/Plane.hpp>
-#include <OpenSolid/Core/Common/List.hpp>
 
 using namespace opensolid;
 
@@ -135,17 +134,5 @@ public:
         Vector3d point = Frame3d().translated(Vector3d(1, 1, 1)).yReversed().point(1, 2, 3);
         Vector3d expected(2, -1, 4);
         TS_ASSERT((point - expected).isZero());
-    }
-
-    void testListConversion() {
-        Datum3d original(Vector3d::Random(), Matrix3d::Random());
-        Conversion<DatumXd, List> converter;
-        Conversion<List, DatumXd> deconverter;
-        List list = converter(original);
-        DatumXd final = deconverter(list);
-        TS_ASSERT_EQUALS(original.dimensions(), final.dimensions());
-        TS_ASSERT_EQUALS(original.axes(), final.axes());
-        TS_ASSERT_EQUALS(original.origin(), final.origin());
-        TS_ASSERT_EQUALS(original.basis(), final.basis());
     }
 };

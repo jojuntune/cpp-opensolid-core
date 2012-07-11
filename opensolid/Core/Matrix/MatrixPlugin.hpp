@@ -19,4 +19,4 @@
  ***************************************************************************/
 
 template <class OtherType>
-static Matrix from(const OtherType& argument);
+static Matrix convertFrom(const OtherType& argument);

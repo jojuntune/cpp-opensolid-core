@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
 
 ////////// Implementation //////////

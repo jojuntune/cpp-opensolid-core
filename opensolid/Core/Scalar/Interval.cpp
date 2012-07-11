@@ -18,15 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/config.hpp>
-
-#include <cmath>
-#include <sstream>
+#include <OpenSolid/Core/Scalar/Interval.hpp>
 
 #include <boost/numeric/interval.hpp>
 
-#include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Common/List.hpp>
+#include <cmath>
+#include <sstream>
 
 namespace opensolid
 {
@@ -75,24 +72,6 @@ namespace opensolid
             stream << "[" << argument.lower() << "," << argument.upper() << "]";
         }
         return stream;
-    }
-
-    TypeDescription TypeDescriptionFunction<Interval>::operator()() const {
-        TypeDescription result;
-        result.appendDouble("Lower");
-        result.appendDouble("Upper");
-        return result;
-    }
-
-    List Conversion<Interval, List>::operator()(const Interval& argument) const {
-        List result;
-        result.append(argument.lower());
-        result.append(argument.upper());
-        return result;
-    }
-
-    Interval Conversion<List, Interval>::operator()(const List& argument) const {
-        return Interval(argument[0].as<double>(), argument[1].as<double>());
     }
 
     std::string TypeName<Interval>::operator()() const {return "Interval";}

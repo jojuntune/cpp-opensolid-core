@@ -20,15 +20,20 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include <OpenSolid/Core/config.hpp>
+
+#include <string>
 
 namespace opensolid
 {
     template <class Type>
     struct TypeName;
+
+    template <>
+    struct TypeName<bool>
+    {
+        OPENSOLID_CORE_EXPORT const std::string& operator()() const;
+    };
 
     template <>
     struct TypeName<int>

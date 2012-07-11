@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Common/List.hpp>
+
+#include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace opensolid
 {   
@@ -369,22 +369,6 @@ namespace opensolid
     template bool Simplex<3, 3>::operator==(const Simplex<3, 3>&) const;
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
     template bool Simplex<Dynamic, Dynamic>::operator==(const Simplex<Dynamic, Dynamic>&) const;
-
-    TypeDescription TypeDescriptionFunction<SimplexXd>::operator()() const {
-        TypeDescription result;
-        result.appendObject<MatrixXd>("Vertices");
-        return result;
-    }
-
-    List Conversion<SimplexXd, List>::operator()(const SimplexXd& argument) const {
-        List result;
-        result.append(argument.vertices());
-        return result;
-    }
-
-    SimplexXd Conversion<List, SimplexXd>::operator()(const List& argument) const {
-        return SimplexXd(argument[0].as<MatrixXd>());
-    }
 
     std::string TypeName<Line1d>::operator()() const {return "Line1d";}
 

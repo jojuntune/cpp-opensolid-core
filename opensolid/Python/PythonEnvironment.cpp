@@ -26,8 +26,6 @@
 
 #include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Datum/Axis.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
-#include <OpenSolid/Core/File/File.hpp>
 #include <OpenSolid/Python/PythonEnvironment.hpp>
 
 using namespace boost::python;
@@ -92,9 +90,6 @@ namespace opensolid
             checkForOpenSolidError<Axis3dCopyConstructionError>(error_object);
             checkForOpenSolidError<ConstantMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<ConstantMatrixXdConstructionError>(error_object);
-            checkForOpenSolidError<FileGetValueError>(error_object);
-            checkForOpenSolidError<FileOpenError>(error_object);
-            checkForOpenSolidError<FileSetValueError>(error_object);
             checkForOpenSolidError<IdentityMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<IdentityMatrixXdConstructionError>(error_object);
             checkForOpenSolidError<Matrix2ICopyConstructionError>(error_object);
@@ -163,7 +158,6 @@ namespace opensolid
             checkForOpenSolidError<MatrixXdVectorComponentError>(error_object);
             checkForOpenSolidError<MatrixXdVectorIndexError>(error_object);
             checkForOpenSolidError<NotImplementedError>(error_object);
-            checkForOpenSolidError<ObjectGetValueError>(error_object);
             checkForOpenSolidError<OnesMatrixXIConstructionError>(error_object);
             checkForOpenSolidError<OnesMatrixXdConstructionError>(error_object);
             checkForOpenSolidError<RandomMatrixXIConstructionError>(error_object);

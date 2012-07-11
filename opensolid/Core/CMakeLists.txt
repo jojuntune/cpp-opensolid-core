@@ -18,26 +18,9 @@
     SET(COMMON_HEADERS
         Common/Error.hpp
         Common/Evaluation.hpp
-        Common/List.hpp
-        Common/Message.hpp
-        Common/TypeDescription.hpp
-        Common/Value.hpp
     )
     SET(COMMON_SOURCES
         Common/Error.cpp
-        Common/List.cpp
-        Common/Message.cpp
-        Common/TypeDescription.cpp
-        Common/Value.cpp
-    )
-
-    # Database directory files
-    SET(DATABASE_HEADERS
-        Database/Database.hpp
-        Database/DatabaseTests.hpp
-    )
-    SET(DATABASE_SOURCES
-        Database/Database.cpp
     )
     
     # Datum directory files
@@ -165,7 +148,6 @@
         Generic/Bounds.hpp
         Generic/Conversion.hpp
         Generic/ReferenceCounted.hpp
-        Generic/TypeDescriptionFunction.hpp
         Generic/Transformable.hpp
         Generic/TypeName.hpp
     )
@@ -218,15 +200,6 @@
     SET(MESH_SOURCES
         Mesh/Mesh.cpp
     )
-
-    # Object directory files
-    SET(OBJECT_HEADERS
-        Object/Object.hpp
-        Object/ObjectTests.hpp
-    )
-    SET(OBJECT_SOURCES
-        Object/Object.cpp
-    )
     
     # Scalar directory files
     SET(SCALAR_HEADERS
@@ -261,9 +234,6 @@
         ${CORE_FILES}
         ${COMMON_HEADERS}
         ${COMMON_SOURCES}
-        Common/serialization.proto
-        ${DATABASE_HEADERS}
-        ${DATABASE_SOURCES}
         ${DATUM_HEADERS}
         ${DATUM_SOURCES}
         ${DOMAIN_HEADERS}
@@ -284,8 +254,6 @@
         ${MATRIX_SOURCES}
         ${MESH_HEADERS}
         ${MESH_SOURCES}
-        ${OBJECT_HEADERS}
-        ${OBJECT_SOURCES}
         ${SCALAR_HEADERS}
         ${SCALAR_SOURCES}
         ${SET_HEADERS}
@@ -296,8 +264,6 @@
     
 ########## Compile OpenSolidCore library ##########
 
-    COMPILE_PROTO_FILES(PROTO_SOURCES Common/serialization.proto)
-
     ADD_LIBRARY(OpenSolidCore SHARED
         ${PROTO_SOURCES}
         ${COMMON_SOURCES}
@@ -305,20 +271,17 @@
         ${DATUM_SOURCES}
         ${DOMAIN_SOURCES}
         ${DOMAINIMPLEMENTATION_SOURCES}
-        ${FILE_SOURCES}
         ${FUNCTION_SOURCES}
         ${FUNCTIONIMPLEMENTATION_SOURCES}
         ${GEOMETRY_SOURCES}
         ${GEOMETRYIMPLEMENTATION_SOURCES}
         ${MATRIX_SOURCES}
         ${MESH_SOURCES}
-        ${OBJECT_SOURCES}
         ${SCALAR_SOURCES}
         ${SET_SOURCES}
         ${SIMPLEX_SOURCES}
     )
     SET_TARGET_PROPERTIES(OpenSolidCore PROPERTIES DEBUG_POSTFIX "d")
-    TARGET_LINK_LIBRARIES(OpenSolidCore libprotobuf libsqlite3)
     
 ########## Compile tests ##########
 
@@ -329,8 +292,6 @@
     ADD_CXXTEST(FunctionTests Function/FunctionTests OpenSolidCore)
     ADD_CXXTEST(GeometryTests Geometry/GeometryTests OpenSolidCore)
     ADD_CXXTEST(SimplexTests Simplex/SimplexTests OpenSolidCore)
-    ADD_CXXTEST(ObjectTests Object/ObjectTests OpenSolidCore)
-    ADD_CXXTEST(FileTests File/FileTests OpenSolidCore)
     
 ########## Temporary fix - define 'override' as empty macro for GCC < 4.7 ##########
     
@@ -344,8 +305,6 @@
             FunctionTests
             GeometryTests
             SimplexTests
-            ObjectTests
-            FileTests
             PROPERTIES
             COMPILE_FLAGS
             "-Doverride="

@@ -18,16 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <boost/functional/hash.hpp>
-#include <boost/unordered_map.hpp>
-#include <cxxtest/TestSuite.h>
-
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Datum/Datum.hpp>
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
 #include <OpenSolid/Core/Set/Set.hpp>
-#include <OpenSolid/Core/Common/List.hpp>
+
+#include <boost/functional/hash.hpp>
+#include <boost/unordered_map.hpp>
+#include <cxxtest/TestSuite.h>
 
 using namespace opensolid;
 
@@ -181,17 +180,6 @@ public:
     void testVector() {
         Line3d line(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
         TS_ASSERT((line.vector() - Vector3d::Constant(3)).isZero());
-    }
-
-    void testListConversion() {
-        Triangle3d original(Vector3d::Random(), Vector3d::Random(), Vector3d::Random());
-        Conversion<SimplexXd, List> converter;
-        Conversion<List, SimplexXd> deconverter;
-        List list = converter(original);
-        SimplexXd final = deconverter(list);
-        TS_ASSERT_EQUALS(final.dimensions(), original.dimensions());
-        TS_ASSERT_EQUALS(final.size(), original.size());
-        TS_ASSERT_EQUALS(final.vertices(), original.vertices());
     }
 
     void testBoostGeometry() {

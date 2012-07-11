@@ -19,13 +19,10 @@
         bindDatum.cpp
         bindDouble.cpp
         bindError.cpp
-        bindFile.cpp
         bindFunction.cpp
         bindInterval.cpp
         bindMatrix.cpp
         bindMatrixConstructors.cpp
-        bindObject.cpp
-        bindSerialization.cpp
         bindSet.cpp
         bindSimplex.cpp
         PythonModule.cpp

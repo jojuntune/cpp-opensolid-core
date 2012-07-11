@@ -18,15 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <unordered_map>
-
-#include <cxxtest/TestSuite.h>
-
 #include <OpenSolid/Core/Datum/Axis.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation/EllipticalFunction.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Simplex/Simplex.hpp>
+
+#include <cxxtest/TestSuite.h>
+
+#include <unordered_map>
 
 using namespace opensolid;
 

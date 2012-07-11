@@ -20,12 +20,11 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Transformable.hpp>
-#include <OpenSolid/Core/Generic/Conversion.hpp>
-#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/config.hpp>
 
 namespace opensolid
 {
@@ -176,24 +175,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <>
-    struct TypeDescriptionFunction<DatumXd>
-    {
-        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
-    };
-
-    template <>
-    struct Conversion<DatumXd, List>
-    {
-        OPENSOLID_CORE_EXPORT List operator()(const DatumXd& argument) const;
-    };
-
-    template <>
-    struct Conversion<List, DatumXd>
-    {
-        OPENSOLID_CORE_EXPORT DatumXd operator()(const List& argument) const;
-    };
-
     template <>
     struct TypeName<Datum2d>
     {

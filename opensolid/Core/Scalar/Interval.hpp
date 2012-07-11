@@ -25,7 +25,6 @@
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
 #include <OpenSolid/Core/Generic/Conversion.hpp>
-#include <OpenSolid/Core/Generic/TypeDescriptionFunction.hpp>
 
 #include <boost/numeric/interval.hpp>
 
@@ -179,26 +178,6 @@ namespace opensolid
         typedef Interval Type;
 
         const Interval& operator()(const Interval& argument) const;
-    };
-
-    template <>
-    struct TypeDescriptionFunction<Interval>
-    {
-        OPENSOLID_CORE_EXPORT TypeDescription operator()() const;
-    };
-
-    class List;
-
-    template <>
-    struct Conversion<Interval, List>
-    {
-        OPENSOLID_CORE_EXPORT List operator()(const Interval& argument) const;
-    };
-
-    template <>
-    struct Conversion<List, Interval>
-    {
-        OPENSOLID_CORE_EXPORT Interval operator()(const List& argument) const;
     };
 
     template <>

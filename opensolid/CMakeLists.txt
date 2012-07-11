@@ -1,8 +1,3 @@
-########## General setup ##########
-    
-    # Enable testing using CTest
-    ENABLE_TESTING()
-
 ########## Set up compiler flags ##########
 
     # Set up compiler-specific flags
@@ -84,19 +79,20 @@
     
     # Create macro for adding a CxxTest/CTest-based test
     MACRO(ADD_CXXTEST name source)
+        GET_SOURCE_FILE_PROPERTY(FULL_PATH ${source} LOCATION)
         # Generate test source file
         ADD_CUSTOM_COMMAND(
             OUTPUT
             "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
             DEPENDS
-            "${source}"
+            "${FULL_PATH}"
             COMMAND
             "${PYTHON_EXECUTABLE}"
             ARGS
             "${OpenSolid_SOURCE_DIR}/External/cxxtest/cxxtestgen.py"
             --error-printer
             -o "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
-            "${source}"
+            "${FULL_PATH}"
         )
 
         # Create test executable

@@ -18,9 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <OpenSolid/Core/Geometry/Geometry.hpp>
+
 #include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
-#include <OpenSolid/Core/Geometry/Geometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GeometryImplementation.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/ConstantGeometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation/GenericGeometry.hpp>
@@ -89,32 +90,24 @@ namespace opensolid
     double Conversion<Geometry, double>::operator()(const Geometry& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 1);
-        return argument.function().as<double>();
+        return argument.function().convertTo<double>();
     }
     
     Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 2);
-        return argument.function().as<Vector2d>();
+        return argument.function().convertTo<Vector2d>();
     }
     
     Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& argument) const {
         assert(argument.isConstant());
         assert(argument.dimensions() == 3);
-        return argument.function().as<Vector3d>();
+        return argument.function().convertTo<Vector3d>();
     }
     
     VectorXd Conversion<Geometry, VectorXd>::operator()(const Geometry& argument) const {
         assert(argument.isConstant());
-        return argument.function().as<VectorXd>();
-    }
-
-    std::string Conversion<Geometry, std::string>::operator()(const Geometry& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
-    }
-
-    Geometry Conversion<std::string, Geometry>::operator()(const std::string& argument) const {
-        throw NotImplementedError(__FILE__, __LINE__);
+        return argument.function().convertTo<VectorXd>();
     }
 
     std::string TypeName<Geometry>::operator()() const {return "Geometry";}

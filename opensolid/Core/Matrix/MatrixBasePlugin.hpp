@@ -46,4 +46,4 @@ template <int dimensions_, int axes_>
 PlainObject mirrored(const opensolid::Datum<dimensions_, axes_>& datum) const;
 
 template <class OtherType>
-OtherType as() const;
+OtherType convertTo() const;

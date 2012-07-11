@@ -7,6 +7,9 @@
 
     # Include generic macros
     INCLUDE(macros.cmake)
+    
+    # Enable testing using CTest
+    ENABLE_TESTING()
 
 ########## Define minimal preprocessor definitions ##########
 

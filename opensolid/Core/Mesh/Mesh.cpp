@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/Error.hpp>
 #include <OpenSolid/Core/Mesh/Mesh.hpp>
+
+#include <OpenSolid/Core/Common/Error.hpp>
 
 namespace opensolid
 {
@@ -41,7 +42,7 @@ namespace opensolid
         std::vector<double> temp;
         Function function = geometry.function();
         Function derivative = function.derivative();
-        Interval domain = geometry.domain().as<Interval>();
+        Interval domain = geometry.domain().convertTo<Interval>();
         getParameterValues(
             function,
             derivative,

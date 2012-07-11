@@ -22,8 +22,6 @@
 
 #include <OpenSolid/Core/config.hpp>
 
-#include <string>
-
 namespace opensolid
 {
     template <class Type, class OtherType>
@@ -33,10 +31,10 @@ namespace opensolid
     struct Convertible
     {
         template <class OtherType>
-        OtherType as() const;
+        OtherType convertTo() const;
 
         template <class OtherType>
-        static DerivedType from(const OtherType& argument);
+        static DerivedType convertFrom(const OtherType& argument);
     };
 }
 
@@ -45,12 +43,12 @@ namespace opensolid
 namespace opensolid
 {
     template <class DerivedType> template <class OtherType>
-    inline OtherType Convertible<DerivedType>::as() const {
+    inline OtherType Convertible<DerivedType>::convertTo() const {
         return Conversion<DerivedType, OtherType>()(static_cast<const DerivedType&>(*this));
     }
 
     template <class DerivedType> template <class OtherType>
-    inline DerivedType Convertible<DerivedType>::from(const OtherType& argument) {
+    inline DerivedType Convertible<DerivedType>::convertFrom(const OtherType& argument) {
         return Conversion<OtherType, DerivedType>()(argument);
     }
 }

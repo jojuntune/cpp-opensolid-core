@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <OpenSolid/Core/config.hpp>
+
 #include <OpenSolid/Core/Common/Evaluation.hpp>
 #include <OpenSolid/Core/Generic/TypeName.hpp>
 #include <OpenSolid/Core/Generic/Bounds.hpp>
@@ -116,18 +118,6 @@ namespace opensolid
     struct Conversion<Geometry, VectorXd>
     {
         OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& argument) const;
-    };
-
-    template <>
-    struct Conversion<Geometry, std::string>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()(const Geometry& argument) const;
-    };
-
-    template <>
-    struct Conversion<std::string, Geometry>
-    {
-        OPENSOLID_CORE_EXPORT Geometry operator()(const std::string& argument) const;
     };
 
     template <>

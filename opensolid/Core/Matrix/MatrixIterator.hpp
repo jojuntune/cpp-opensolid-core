@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <boost/iterator/iterator_facade.hpp>
-
 #include <OpenSolid/Core/Matrix/Matrix.hpp>
+
+#include <boost/iterator/iterator_facade.hpp>
 
 namespace Eigen
 {

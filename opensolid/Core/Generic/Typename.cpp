@@ -22,6 +22,11 @@
 
 namespace opensolid
 {
+    const std::string& TypeName<bool>::operator()() const {
+        static const std::string result("Bool");
+        return result;
+    }
+
     const std::string& TypeName<int>::operator()() const {
         static const std::string result("Int");
         return result;

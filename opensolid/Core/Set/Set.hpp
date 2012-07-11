@@ -20,17 +20,19 @@
 
 #pragma once
 
-#include <ostream>
-#include <algorithm>
-#include <functional>
-#include <numeric>
+#include <OpenSolid/Core/config.hpp>
+
+#include <OpenSolid/Core/Generic/Bounds.hpp>
+#include <OpenSolid/Core/Set/SetNode.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
 #include <boost/functional/hash.hpp>
 
-#include <OpenSolid/Core/Generic/Bounds.hpp>
-#include <OpenSolid/Core/Set/SetNode.hpp>
+#include <ostream>
+#include <algorithm>
+#include <functional>
+#include <numeric>
 
 namespace opensolid
 {

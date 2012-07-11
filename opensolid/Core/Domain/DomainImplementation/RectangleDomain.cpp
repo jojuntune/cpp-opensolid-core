@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation/RectangleDomain.hpp>
+
+#include <OpenSolid/Core/Domain/Domain.hpp>
 #include <OpenSolid/Core/Geometry/Geometry.hpp>
 
 namespace opensolid

@@ -29,7 +29,7 @@ namespace opensolid
         assert(exponent.dimensions() == 1);
         if (exponent.isConstant()) {
             _exponent_is_constant = true;
-            _constant_exponent = exponent.as<double>();
+            _constant_exponent = exponent.convertTo<double>();
             _integer_exponent = floor(_constant_exponent + 0.5);
             _exponent_is_integer = (_constant_exponent - _integer_exponent == Zero());
         } else {

@@ -18,15 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <vector>
-
-#include <boost/timer.hpp>
-#include <cxxtest/TestSuite.h>
-
 #include <OpenSolid/Core/Datum/Frame.hpp>
 #include <OpenSolid/Core/Datum/Plane.hpp>
 #include <OpenSolid/Core/Scalar/Comparison.hpp>
 #include <OpenSolid/Core/Function/Function.hpp>
+
+#include <boost/timer.hpp>
+#include <cxxtest/TestSuite.h>
+
+#include <vector>
 
 using namespace opensolid;
 
@@ -47,7 +47,7 @@ public:
         Function f = 3.0;
         TS_ASSERT(f.isConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
-        TS_ASSERT(f.as<double>() - 3 == Zero());
+        TS_ASSERT(f.convertTo<double>() - 3 == Zero());
     }
     
     void testArithmetic() {
@@ -110,8 +110,8 @@ public:
     void testVector() {
         Function f = Vector3d(1, 2, 3);
         TS_ASSERT(f.isConstant());
-        TS_ASSERT(f.as<Vector3d>() == Vector3d(1, 2, 3));
-        TS_ASSERT(f.as<Vector3d>().transpose() == RowVector3d(1, 2, 3));
+        TS_ASSERT(f.convertTo<Vector3d>() == Vector3d(1, 2, 3));
+        TS_ASSERT(f.convertTo<Vector3d>().transpose() == RowVector3d(1, 2, 3));
     }
     
     void testConversion() {
@@ -236,7 +236,7 @@ public:
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
         TS_ASSERT(derivative.isConstant());
-        TS_ASSERT((derivative.as<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((derivative.convertTo<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testNormal() {
