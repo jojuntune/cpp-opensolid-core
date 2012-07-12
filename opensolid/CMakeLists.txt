@@ -55,7 +55,7 @@
             COMMAND
             "${PYTHON_EXECUTABLE}"
             ARGS
-            "${OpenSolid_SOURCE_DIR}/External/cxxtest/cxxtestgen.py"
+            "${OpenSolid_SOURCE_DIR}/external/cxxtest/cxxtestgen.py"
             --error-printer
             -o "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
             "${FULL_PATH}"
@@ -80,16 +80,16 @@
     
 ########## Build and install subprojects ##########
 
-    ADD_SUBDIRECTORY(Core)
-    ADD_SUBDIRECTORY(Python)
+    ADD_SUBDIRECTORY(core)
+    ADD_SUBDIRECTORY(python)
 
-    INCLUDE_DIRECTORIES(Graph Graph/stk)
-    ADD_SUBDIRECTORY(Graph)
-    ADD_SUBDIRECTORY(UI)
+    INCLUDE_DIRECTORIES(graph graph/stk)
+    ADD_SUBDIRECTORY(graph)
+    ADD_SUBDIRECTORY(ui)
 
 ########## Top-level headers and files ##########
 
-    SET(TOP_LEVEL_HEADERS Core.hpp Python.hpp)
+    SET(TOP_LEVEL_HEADERS core.hpp python.hpp)
     SET(TOP_LEVEL_FILES CMakeLists.txt checker.py)
 
     ADD_TO_GLOBAL_SOURCE_LIST(${TOP_LEVEL_HEADERS} ${TOP_LEVEL_FILES})

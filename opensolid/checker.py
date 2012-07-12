@@ -20,10 +20,10 @@ error_found = False
 # Get all source lines as tuples (filename, line number, line)
 all_source_lines = []
 for path, directories, files in os.walk(sys.argv[1]):
-    if 'External' in directories:
-        directories.remove('External')
-    if 'Build' in directories:
-        directories.remove('Build')
+    if 'external' in directories:
+        directories.remove('external')
+    if 'build' in directories:
+        directories.remove('build')
     for filename in files:
         if filename.endswith('.hpp') or filename.endswith('.cpp'):
             file_path = os.path.join(path, filename)

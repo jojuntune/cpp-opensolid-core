@@ -41,18 +41,18 @@
         SET(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
     ENDIF ()
     
-    # Include parent directory to allow for #include <opensolid/...>, and External directory to
+    # Include parent directory to allow for #include <opensolid/...>, and external directory to
     # allow for #include <Eigen/...> etc.
-    INCLUDE_DIRECTORIES(. External)
+    INCLUDE_DIRECTORIES(. external)
 
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
     
 ########## Build and install subprojects ##########
 
-    ADD_SUBDIRECTORY(External)
+    ADD_SUBDIRECTORY(external)
     ADD_SUBDIRECTORY(opensolid)
-    ADD_SUBDIRECTORY(Documentation EXCLUDE_FROM_ALL)
+    ADD_SUBDIRECTORY(documentation EXCLUDE_FROM_ALL)
 
 ########## Set up source groups for Visual Studio ##########
 
