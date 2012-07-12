@@ -101,7 +101,7 @@
     # Get site packages directory
     EXECUTE_PROCESS(
         COMMAND "${PYTHON_EXECUTABLE}"
-        -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"
+        -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
         OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
