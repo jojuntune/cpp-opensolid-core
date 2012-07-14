@@ -10,29 +10,11 @@
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
 
-#ifndef STK_EVENT_H
-#define STK_EVENT_H
+#include "event.h"
 
 namespace stk
 {
-
-class eventListener;
-
-//! Base class for an event.
-
-class event
-{
-    public:
-        virtual ~event();
-        
-        //! Invoke event on event listener.
-        //! @return False to cancel event otherwise True.
-        virtual bool invoke( eventListener* ) const = 0;
-
-        //! Require all subclasses to have a clone method.
-        virtual event* clone() const = 0;
-};
+    
+event::~event() {}
 
 }
-
-#endif
