@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Scalar/Interval.hpp>
-#include <opensolid/Core/Matrix/Matrix.hpp>
+#include <opensolid/core/scalar/Interval.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
 
 namespace opensolid
 {

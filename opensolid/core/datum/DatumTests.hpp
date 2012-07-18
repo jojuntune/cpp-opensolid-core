@@ -20,10 +20,10 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <opensolid/Core/Datum/Axis.hpp>
-#include <opensolid/Core/Datum/Datum.hpp>
-#include <opensolid/Core/Datum/Frame.hpp>
-#include <opensolid/Core/Datum/Plane.hpp>
+#include <opensolid/core/datum/Axis.hpp>
+#include <opensolid/core/datum/Datum.hpp>
+#include <opensolid/core/datum/Frame.hpp>
+#include <opensolid/core/datum/Plane.hpp>
 
 using namespace opensolid;
 

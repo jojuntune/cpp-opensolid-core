@@ -472,4 +472,4 @@ namespace opensolid
     }
 }
 
-#include <opensolid/Core/Scalar/Comparison.hpp>
+#include <opensolid/core/scalar/Comparison.hpp>

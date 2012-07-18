@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Core/Function/Function.hpp>
-#include <opensolid/Python/PythonModule.hpp>
+#include <opensolid/core/function/Function.hpp>
+#include <opensolid/python/PythonModule.hpp>
 
 using namespace boost::python;
 

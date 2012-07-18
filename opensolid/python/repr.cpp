@@ -22,7 +22,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <opensolid/Python/repr.hpp>
+#include <opensolid/python/repr.hpp>
 
 namespace opensolid
 {

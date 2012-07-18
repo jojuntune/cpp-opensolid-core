@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Core/Scalar/Interval.hpp>
-#include <opensolid/Core/Domain/Domain.hpp>
+#include <opensolid/core/scalar/Interval.hpp>
+#include <opensolid/core/domain/Domain.hpp>
 
 #include <cxxtest/TestSuite.h>
 

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/Core/Matrix/Matrix.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
 
 namespace opensolid
 {

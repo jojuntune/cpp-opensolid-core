@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
 #if defined(WIN32)
     #if defined(OpenSolidPythonModule_EXPORTS)

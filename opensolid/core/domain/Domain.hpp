@@ -20,18 +20,18 @@
  
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Generic/TypeName.hpp>
-#include <opensolid/Core/Generic/Bounds.hpp>
-#include <opensolid/Core/Generic/Conversion.hpp>
-#include <opensolid/Core/Generic/Transformable.hpp>
-#include <opensolid/Core/Domain/DomainConstructors.hpp>
-#include <opensolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
-#include <opensolid/Core/Matrix/Matrix.hpp>
-#include <opensolid/Core/Scalar/Interval.hpp>
-#include <opensolid/Core/Set/Set.hpp>
-#include <opensolid/Core/Simplex/Simplex.hpp>
+#include <opensolid/core/generic/TypeName.hpp>
+#include <opensolid/core/generic/Bounds.hpp>
+#include <opensolid/core/generic/Conversion.hpp>
+#include <opensolid/core/generic/Transformable.hpp>
+#include <opensolid/core/domain/DomainConstructors.hpp>
+#include <opensolid/core/domain/domainimplementation/DomainImplementation.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/core/scalar/Interval.hpp>
+#include <opensolid/core/set/Set.hpp>
+#include <opensolid/core/simplex/Simplex.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -103,7 +103,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include <opensolid/Core/Geometry/Geometry.hpp>
+#include <opensolid/core/geometry/Geometry.hpp>
 
 namespace opensolid
 {

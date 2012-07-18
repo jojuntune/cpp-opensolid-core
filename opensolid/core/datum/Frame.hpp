@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Generic/TypeName.hpp>
-#include <opensolid/Core/Datum/Datum.hpp>
+#include <opensolid/core/generic/TypeName.hpp>
+#include <opensolid/core/datum/Datum.hpp>
 
 namespace opensolid
 {

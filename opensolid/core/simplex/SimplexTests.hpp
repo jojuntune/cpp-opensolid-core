@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Core/Datum/Frame.hpp>
-#include <opensolid/Core/Datum/Datum.hpp>
-#include <opensolid/Core/Scalar/Comparison.hpp>
-#include <opensolid/Core/Simplex/Simplex.hpp>
-#include <opensolid/Core/Set/Set.hpp>
+#include <opensolid/core/datum/Frame.hpp>
+#include <opensolid/core/datum/Datum.hpp>
+#include <opensolid/core/scalar/Comparison.hpp>
+#include <opensolid/core/simplex/Simplex.hpp>
+#include <opensolid/core/set/Set.hpp>
 
 #include <boost/functional/hash.hpp>
 #include <boost/unordered_map.hpp>

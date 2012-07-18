@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/Core/Datum/Frame.hpp>
-#include <opensolid/Core/Datum/Plane.hpp>
-#include <opensolid/Core/Domain/Domain.hpp>
-#include <opensolid/Core/Domain/DomainImplementation/CuboidDomain.hpp>
-#include <opensolid/Core/Geometry/Geometry.hpp>
+#include <opensolid/core/datum/Frame.hpp>
+#include <opensolid/core/datum/Plane.hpp>
+#include <opensolid/core/domain/Domain.hpp>
+#include <opensolid/core/domain/domainimplementation/CuboidDomain.hpp>
+#include <opensolid/core/geometry/Geometry.hpp>
 
 namespace opensolid
 {

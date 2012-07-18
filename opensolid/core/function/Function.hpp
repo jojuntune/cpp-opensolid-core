@@ -20,17 +20,17 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Common/Evaluation.hpp>
-#include <opensolid/Core/Generic/TypeName.hpp>
-#include <opensolid/Core/Generic/Transformable.hpp>
-#include <opensolid/Core/Generic/Conversion.hpp>
-#include <opensolid/Core/Datum/Datum.hpp>
-#include <opensolid/Core/Function/FunctionConstructors.hpp>
-#include <opensolid/Core/Function/FunctionImplementation/FunctionImplementation.hpp>
-#include <opensolid/Core/Matrix/Matrix.hpp>
-#include <opensolid/Core/Scalar/Interval.hpp>
+#include <opensolid/core/common/Evaluation.hpp>
+#include <opensolid/core/generic/TypeName.hpp>
+#include <opensolid/core/generic/Transformable.hpp>
+#include <opensolid/core/generic/Conversion.hpp>
+#include <opensolid/core/datum/Datum.hpp>
+#include <opensolid/core/function/FunctionConstructors.hpp>
+#include <opensolid/core/function/functionimplementation/FunctionImplementation.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/core/scalar/Interval.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 

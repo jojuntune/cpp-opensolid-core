@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/Python/config.hpp>
+#include <opensolid/python/config.hpp>
 
 #include <string>
 #include <typeinfo>
@@ -37,8 +37,8 @@
     #undef REDEFINE_OVERRIDE
 #endif
 
-#include <opensolid/Core/Scalar/Interval.hpp>
-#include <opensolid/Core/Matrix/Matrix.hpp>
+#include <opensolid/core/scalar/Interval.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
 
 namespace opensolid
 {

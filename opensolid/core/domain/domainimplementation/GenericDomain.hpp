@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Domain/DomainImplementation/DomainImplementation.hpp>
-#include <opensolid/Core/Geometry/Geometry.hpp>
+#include <opensolid/core/domain/domainimplementation/DomainImplementation.hpp>
+#include <opensolid/core/geometry/Geometry.hpp>
 
 namespace opensolid
 {

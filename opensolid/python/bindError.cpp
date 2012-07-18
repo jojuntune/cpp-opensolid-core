@@ -22,8 +22,8 @@
 
 #include <boost/python/converter/pytype_function.hpp>
 
-#include <opensolid/Core/Datum/Axis.hpp>
-#include <opensolid/Python/PythonModule.hpp>
+#include <opensolid/core/datum/Axis.hpp>
+#include <opensolid/python/PythonModule.hpp>
 
 using namespace boost::python;
 

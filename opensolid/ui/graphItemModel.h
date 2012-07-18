@@ -16,9 +16,9 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 
-#include <opensolid/Graph/graphNode.h>
-#include <opensolid/Graph/project.h>
-#include <opensolid/Graph/projectEventListener.h>
+#include <opensolid/graph/graphNode.h>
+#include <opensolid/graph/project.h>
+#include <opensolid/graph/projectEventListener.h>
 
 #include <stk/ptrList.h>
 

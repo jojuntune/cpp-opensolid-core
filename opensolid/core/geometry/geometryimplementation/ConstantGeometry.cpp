@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <opensolid/Core/Geometry/GeometryImplementation/ConstantGeometry.hpp>
+#include <opensolid/core/geometry/geometryimplementation/ConstantGeometry.hpp>
 
-#include <opensolid/Core/Geometry/Geometry.hpp>
+#include <opensolid/core/geometry/Geometry.hpp>
 
 namespace opensolid
 {

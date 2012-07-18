@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Core/Datum/Axis.hpp>
-#include <opensolid/Core/Function/FunctionImplementation/EllipticalFunction.hpp>
-#include <opensolid/Core/Geometry/Geometry.hpp>
-#include <opensolid/Core/Scalar/Comparison.hpp>
-#include <opensolid/Core/Simplex/Simplex.hpp>
+#include <opensolid/core/datum/Axis.hpp>
+#include <opensolid/core/function/functionimplementation/EllipticalFunction.hpp>
+#include <opensolid/core/geometry/Geometry.hpp>
+#include <opensolid/core/scalar/Comparison.hpp>
+#include <opensolid/core/simplex/Simplex.hpp>
 
 #include <cxxtest/TestSuite.h>
 

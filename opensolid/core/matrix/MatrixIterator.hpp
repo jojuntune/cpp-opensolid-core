@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/Core/Matrix/Matrix.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 

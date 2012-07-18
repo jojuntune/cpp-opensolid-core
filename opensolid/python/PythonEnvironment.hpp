@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/Python/config.hpp>
+#include <opensolid/python/config.hpp>
 
 #include <string>
 #include <exception>
@@ -28,10 +28,10 @@
 
 #include <boost/python/converter/registry.hpp>
 
-#include <opensolid/Core/Common/Error.hpp>
-#include <opensolid/Core/Generic/TypeName.hpp>
-#include <opensolid/Python/PythonModule.hpp>
-#include <opensolid/Python/repr.hpp>
+#include <opensolid/core/common/Error.hpp>
+#include <opensolid/core/generic/TypeName.hpp>
+#include <opensolid/python/PythonModule.hpp>
+#include <opensolid/python/repr.hpp>
 
 namespace opensolid
 {

@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Datum/Axis.hpp>
-#include <opensolid/Core/Datum/Frame.hpp>
-#include <opensolid/Core/Datum/Plane.hpp>
-#include <opensolid/Core/Function/Function.hpp>
-#include <opensolid/Core/Matrix/Matrix.hpp>
-#include <opensolid/Core/Simplex/Simplex.hpp>
+#include <opensolid/core/datum/Axis.hpp>
+#include <opensolid/core/datum/Frame.hpp>
+#include <opensolid/core/datum/Plane.hpp>
+#include <opensolid/core/function/Function.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/core/simplex/Simplex.hpp>
 
 namespace opensolid
 {
