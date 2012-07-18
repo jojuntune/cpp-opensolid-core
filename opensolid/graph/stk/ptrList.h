@@ -540,9 +540,9 @@ template < class T > void ptrList<T>::copyFrom ( const ptrList<T>& list )
     
     ptrListItem<T>* itemToCopy = list.fItem;
 
-    ptrListItem<T>* newItem;
+    ptrListItem<T>* newItem = nullptr;
 
-    ptrListItem<T>* newCItem;
+    ptrListItem<T>* newCItem = nullptr;
 
     // Copy pointers across but they can't be automatically deleted.
 
