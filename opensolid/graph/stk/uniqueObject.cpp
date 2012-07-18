@@ -38,7 +38,7 @@ uniqueObject::uniqueObject ( const uniqueObject& )
     init();
 }
 
-long uniqueObject::id()
+long uniqueObject::id() const
 {
     return object_id;
 }

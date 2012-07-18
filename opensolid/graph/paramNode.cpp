@@ -45,7 +45,7 @@ int paramNode::type()
     return PARAMETER;
 }
 
-string paramNode::paramValue()
+string paramNode::paramValue() const
 {
     //! @return Parameters current value.
 

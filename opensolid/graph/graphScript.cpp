@@ -10,7 +10,8 @@
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
 
-#include <opensolid/Core/Common/Error.hpp>
+#include <opensolid/core/common/Error.hpp>
+#include <opensolid/python/PythonEnvironment.hpp>
 
 #include "graphScript.h"
 
@@ -49,7 +50,7 @@ void graphScript::scriptText ( const string& scriptText )
     script_text = scriptText;
 }
 
-string graphScript::scriptText()
+string graphScript::scriptText() const
 {
     //! @return Text of script.
 

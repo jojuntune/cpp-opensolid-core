@@ -29,7 +29,7 @@ class  uniqueObject : public threadedObject
 
         void init();
 
-        long id(); //!< Return the ID of this object.
+        long id() const; //!< Return the ID of this object.
 
     private:
 

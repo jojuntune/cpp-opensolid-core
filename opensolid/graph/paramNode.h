@@ -33,7 +33,7 @@ class paramNode : public graphNode
 
         virtual int type();
 
-        string paramValue(); //! Get parameters value.
+        string paramValue() const; //! Get parameters value.
 
         void paramValue ( const string& value ); //! Set parameters value.
 

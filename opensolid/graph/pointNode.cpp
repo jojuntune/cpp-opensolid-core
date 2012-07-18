@@ -146,7 +146,7 @@ stk::point pointNode::location()
     return locn;
 }
 
-colour pointNode::pointColour()
+colour pointNode::pointColour() const
 {
     return pt_colour;
 }
@@ -156,7 +156,7 @@ void pointNode::pointColour( colour ptColour )
     pt_colour = ptColour;
 }
 
-string pointNode::x()
+string pointNode::x() const
 {
     //! @return Expression that defines coordinate as a string.
 
@@ -172,7 +172,7 @@ void pointNode::x ( const string& exprX )
     fireEvent( graphNodeChanged( id() ) );
 }
 
-string pointNode::y()
+string pointNode::y() const
 {
     //! @return Expression that defines coordinate as a string.
 
@@ -188,13 +188,11 @@ void pointNode::y ( const string& exprY )
     fireEvent( graphNodeChanged( id() ) );
 }
 
-string pointNode::z()
+string pointNode::z() const
 {
     //! @return Expression that defines coordinate as a string.
 
     return expr_z -> scriptText();
-
-    fireEvent( graphNodeChanged( id() ) );
 }
 
 void pointNode::z ( const string& exprZ )
@@ -206,7 +204,7 @@ void pointNode::z ( const string& exprZ )
     fireEvent( graphNodeChanged( id() ) );
 }
 
-string pointNode::w()
+string pointNode::w() const
 {
     //! @return Expression that defines coordinate as a string.
 

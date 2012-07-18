@@ -25,7 +25,7 @@ template < class T > class propertyDelegate : public property
 {
     public:
 
-        typedef string ( T::*getStringFunct )();
+        typedef string ( T::*getStringFunct )() const;
         typedef void ( T::*setStringFunct )( const string& );
     
         virtual ~propertyDelegate() {}

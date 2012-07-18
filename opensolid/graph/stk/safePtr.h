@@ -226,14 +226,22 @@ template < class T > class safePtr
         }
 
         T* operator->() { return ptr; }
+        const T* operator->() const { return ptr; }
         T& operator*() { return *ptr; }
+        const T& operator*() const { return *ptr; }
 
         T& operator[] ( int index )
         {
             return ptr[ index ];
         }
+        
+        const T& operator[] ( int index ) const
+        {
+            return ptr[ index ];
+        }
 
         T* pointer() { return ptr; }
+        const T* pointer() const { return ptr; }
 
         bool isNull() const { return ptr == 0; };
 

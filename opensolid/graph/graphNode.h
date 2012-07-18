@@ -88,7 +88,7 @@ class graphNode : public stk::graphNode, public stk::eventDispatcher
         void dirty ( bool trueFalse ); //!< Set state of nodes dirty flag.
 
         virtual void name ( const string& newName ); //!< Set nodes name.
-        virtual string name() { return stk::graphNode::name(); } //!< Get nodes name.
+        virtual string name() const { return stk::graphNode::name(); } //!< Get nodes name.
 
         // Exceptions.
         

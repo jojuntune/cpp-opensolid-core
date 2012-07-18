@@ -13,8 +13,7 @@
 #ifndef OS_GRAPH_SCRIPT_H
 #define OS_GRAPH_SCRIPT_H
 
-#include <opensolid/Core/Matrix/Matrix.hpp>
-#include <opensolid/Python/PythonEnvironment.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
 
 #include <stk/Exception.h>
 #include <stk/namedObject.h>
@@ -38,7 +37,7 @@ class graphScript : public stk::namedObject, public stk::threadedObject
         graphScript ( const string& scriptText );
 
         void scriptText ( const string& scriptString ); //!< Set script text.
-        string scriptText(); //!< Get script text.
+        string scriptText() const; //!< Get script text.
 
         double evaluate ( graphParamList::sptr paramList ); //!< Evaluate ( invoke ) script.
 

@@ -50,21 +50,21 @@ class pointNode : public graphNode
         stk::point location();
 
         //! Get points colour.
-        colour pointColour();
+        colour pointColour() const;
 
         //! Set points colour.
         void pointColour( colour ptColour );
 
-        string x(); //!< Get X coordinate expression.
+        string x() const; //!< Get X coordinate expression.
         void x ( const string& exprX ); //!< Set X coordinate expression.
 
-        string y (); //!< Get Y coordinate expression.
+        string y () const; //!< Get Y coordinate expression.
         void y ( const string& exprY ); //!< Set Y coordinate expression.
         
-        string z (); //!< Get Z coordinate expression.
+        string z () const; //!< Get Z coordinate expression.
         void z ( const string& exprZ ); //!< Set Z coordinate expression.
         
-        string w (); //!< Get W coordinate expression.
+        string w () const; //!< Get W coordinate expression.
         void w ( const string& exprW ); //!< Set W coordinate expression.
 
     private:
