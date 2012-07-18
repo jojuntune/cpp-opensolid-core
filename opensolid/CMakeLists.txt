@@ -55,7 +55,7 @@
             COMMAND
             "${PYTHON_EXECUTABLE}"
             ARGS
-            "${OpenSolid_SOURCE_DIR}/external/cxxtest/cxxtestgen.py"
+            "${OpenSolid_SOURCE_DIR}/external/cxxtest/bin/cxxtestgen"
             --error-printer
             -o "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
             "${FULL_PATH}"

@@ -16,7 +16,8 @@
     # Set up compiler-specific flags
     IF (CMAKE_COMPILER_IS_GNUCXX)
         # Enable C++11 and pthread and add extra warning flags
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Wno-unused-variable")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-enum-compare")
         ADD_DEFINITIONS(-DHAVE_PTHREAD)
         SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
         # Enable -fPIC on 64-bit systems where it is required
@@ -29,6 +30,13 @@
         IF (GCC_VERSION VERSION_LESS 4.6)
             ADD_DEFINITIONS(-Dnullptr=0)
         ENDIF ()
+    ELSEIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
+        ADD_DEFINITIONS(-DHAVE_PTHREAD)
+        SET(CMAKE_EXE_LINKER_FLAGS "-pthread -ldl")
+        SET(CMAKE_SHARED_LINKER_FLAGS "-pthread -ldl")
+        SET(CMAKE_MODULE_LINKER_FLAGS "-pthread -ldl")
     ELSEIF (MSVC)
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
@@ -43,7 +51,7 @@
     
     # Include parent directory to allow for #include <opensolid/...>, and external directory to
     # allow for #include <Eigen/...> etc.
-    INCLUDE_DIRECTORIES(. external)
+    INCLUDE_DIRECTORIES(. external external/cxxtest)
 
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
