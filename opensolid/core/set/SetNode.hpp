@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/Core/config.hpp>
+#include <opensolid/core/config.hpp>
 
-#include <opensolid/Core/Generic/Bounds.hpp>
-#include <opensolid/Core/Scalar/Interval.hpp>
+#include <opensolid/core/generic/Bounds.hpp>
+#include <opensolid/core/scalar/Interval.hpp>
 
 #include <new>
 #include <vector>
@@ -235,8 +235,8 @@ namespace opensolid
         _right(right),
         _parent(nullptr),
         _size(left->_size + right->_size) {
-        _left._parent = this;
-        _right._parent = this;
+        _left->_parent = this;
+        _right->_parent = this;
     }
     
     template <class Type>
