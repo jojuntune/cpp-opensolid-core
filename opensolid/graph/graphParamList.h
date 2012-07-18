@@ -18,8 +18,6 @@
 #include <stk/threadedObject.h>
 using namespace stk;
 
-#include <opensolid/Python/PythonEnvironment.hpp>
-
 #include "Exception.h"
 #include "graphParam.h"
 
@@ -27,6 +25,8 @@ namespace opensolid
 {
 
 //! List of named graph parameter values.
+
+class PythonEnvironment;
 
 class graphParamList : public threadedObject
 {

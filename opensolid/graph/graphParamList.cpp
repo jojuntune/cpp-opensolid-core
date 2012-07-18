@@ -12,6 +12,8 @@
 
 #include "graphParamList.h"
 
+#include <opensolid/python/PythonEnvironment.hpp>
+
 namespace opensolid
 {
 
