@@ -2,6 +2,7 @@
 SET(STK_SOURCES
     colour.cpp
     dumpGraphAction.cpp
+    event.cpp
     eventDispatcher.cpp
     eventListener.cpp
     Exception.cpp
