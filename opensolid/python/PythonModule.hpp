@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/Python/config.hpp>
+#include <opensolid/python/config.hpp>
 
-#include <opensolid/Core/Common/Error.hpp>
-#include <opensolid/Core/Matrix/Matrix.hpp>
+#include <opensolid/core/common/Error.hpp>
+#include <opensolid/core/matrix/Matrix.hpp>
 
 #ifdef override
     #define REDEFINE_OVERRIDE
@@ -99,7 +99,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~VectorComponentError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT int index() const;
     };
 
@@ -119,7 +120,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~VectorIndexError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object index() const;
     };
 
@@ -141,7 +143,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixIndexError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object rowIndex() const;
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object colIndex() const;
     };
@@ -163,7 +166,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~VectorAssignmentError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object index() const;
     };
 
@@ -186,7 +190,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixAssignmentError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object rowIndex() const;
         OPENSOLID_PYTHON_MODULE_EXPORT boost::python::object colIndex() const;
     };
@@ -202,7 +207,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixSquaredNormError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixSquaredNormError<MatrixXd> MatrixXdSquaredNormError;
@@ -216,7 +221,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixNormError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixNormError<MatrixXd> MatrixXdNormError;
@@ -230,7 +235,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixNormalizedError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixNormalizedError<MatrixXd> MatrixXdNormalizedError;
@@ -244,7 +249,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixDeterminantError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixDeterminantError<MatrixXd> MatrixXdDeterminantError;
@@ -257,7 +262,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixXdInverseError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     template <class MatrixType>
@@ -275,7 +280,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixReplicateError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT int rowFactor() const;
         OPENSOLID_PYTHON_MODULE_EXPORT int colFactor() const;
     };
@@ -294,7 +300,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixDotProductError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixDotProductError<MatrixXd, MatrixXd> MatrixXdDotProductMatrixXdError;
@@ -313,7 +319,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixCrossProductError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixCrossProductError<MatrixXd, MatrixXd> MatrixXdCrossProductMatrixXdError;
@@ -331,7 +337,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixXIOverlapsMatrixXIError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     template <class SecondMatrixType>
@@ -345,7 +351,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixXIContainsError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixXIContainsError<MatrixXd> MatrixXIContainsMatrixXdError;
@@ -362,7 +368,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixHullError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixHullError<MatrixXd, MatrixXd> MatrixXdHullMatrixXdError;
@@ -380,7 +386,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixXIIntersectionMatrixXIError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class MatrixFactoryError : public Error
@@ -411,7 +417,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~ConstantMatrixConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
         OPENSOLID_PYTHON_MODULE_EXPORT typename MatrixType::Scalar value() const;
     };
 
@@ -426,7 +432,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~ZeroMatrixConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef ZeroMatrixConstructionError<MatrixXd> ZeroMatrixXdConstructionError;
@@ -440,7 +446,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~OnesMatrixConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef OnesMatrixConstructionError<MatrixXd> OnesMatrixXdConstructionError;
@@ -454,7 +460,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RandomMatrixConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef RandomMatrixConstructionError<MatrixXd> RandomMatrixXdConstructionError;
@@ -468,7 +474,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~IdentityMatrixConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef IdentityMatrixConstructionError<MatrixXd> IdentityMatrixXdConstructionError;
@@ -485,7 +491,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixSumError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixSumError<MatrixXd, MatrixXd> MatrixXdSumMatrixXdError;
@@ -504,7 +510,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixDifferenceError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixDifferenceError<MatrixXd, MatrixXd> MatrixXdDifferenceMatrixXdError;
@@ -525,7 +531,8 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixQuotientError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
+        
         OPENSOLID_PYTHON_MODULE_EXPORT ScalarType divisor() const;
     };
 
@@ -545,7 +552,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixProductError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixProductError<MatrixXd, MatrixXd> MatrixXdProductMatrixXdError;
@@ -564,7 +571,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixEqualityError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixEqualityError<MatrixXd, MatrixXd> MatrixXdEqualityMatrixXdError;
@@ -583,7 +590,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixInequalityError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     typedef MatrixInequalityError<MatrixXd, MatrixXd> MatrixXdInequalityMatrixXdError;
@@ -611,7 +618,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Vector2dCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Vector3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -621,7 +628,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Vector3dCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class VectorXdCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -631,7 +638,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~VectorXdCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class RowVector2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -641,7 +648,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RowVector2dCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class RowVector3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -651,7 +658,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RowVector3dCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class RowVectorXdCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -661,7 +668,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RowVectorXdCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Matrix2dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -671,7 +678,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Matrix2dCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Matrix3dCopyConstructionError : public MatrixCopyConstructionError<MatrixXd>
@@ -681,7 +688,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Matrix3dCopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Vector2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -691,7 +698,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Vector2ICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Vector3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -701,7 +708,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Vector3ICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class VectorXICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -711,7 +718,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~VectorXICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class RowVector2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -721,7 +728,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RowVector2ICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class RowVector3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -731,7 +738,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RowVector3ICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class RowVectorXICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -741,7 +748,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~RowVectorXICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Matrix2ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -751,7 +758,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Matrix2ICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class Matrix3ICopyConstructionError : public MatrixCopyConstructionError<MatrixXI>
@@ -761,7 +768,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~Matrix3ICopyConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitVectorConstructionError : public Error
@@ -795,7 +802,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVector2dConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitVector3dConstructionError : public UnitVectorConstructionError
@@ -805,7 +812,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVector3dConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitVectorXdConstructionError : public DynamicUnitVectorConstructionError
@@ -815,7 +822,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVectorXdConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitRowVector2dConstructionError : public UnitVectorConstructionError
@@ -825,7 +832,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVector2dConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitRowVector3dConstructionError : public UnitVectorConstructionError
@@ -835,7 +842,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVector3dConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitRowVectorXdConstructionError : public DynamicUnitVectorConstructionError
@@ -845,7 +852,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVectorXdConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitVector2IConstructionError : public UnitVectorConstructionError
@@ -855,7 +862,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVector2IConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitVector3IConstructionError : public UnitVectorConstructionError
@@ -865,7 +872,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVector3IConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitVectorXIConstructionError : public DynamicUnitVectorConstructionError
@@ -875,7 +882,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitVectorXIConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitRowVector2IConstructionError : public UnitVectorConstructionError
@@ -885,7 +892,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVector2IConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitRowVector3IConstructionError : public UnitVectorConstructionError
@@ -895,7 +902,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVector3IConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 
     class UnitRowVectorXIConstructionError : public DynamicUnitVectorConstructionError
@@ -905,6 +912,6 @@ namespace opensolid
         
         OPENSOLID_PYTHON_MODULE_EXPORT ~UnitRowVectorXIConstructionError() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT const char* what() const throw() override;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 }
