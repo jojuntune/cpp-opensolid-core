@@ -13,6 +13,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <opensolid/core/config.hpp>
+
 namespace stk // Scott's Toolkit.
 {
 
