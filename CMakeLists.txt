@@ -16,7 +16,7 @@
     # Set up compiler-specific flags
     IF (CMAKE_COMPILER_IS_GNUCXX)
         # Enable C++11 and pthread and add extra warning flags
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-enum-compare")
         ADD_DEFINITIONS(-DHAVE_PTHREAD)
         SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
@@ -28,7 +28,11 @@
         # Define nullptr as 0 on GCC versions earlier than 4.6
         EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
         IF (GCC_VERSION VERSION_LESS 4.6)
-            ADD_DEFINITIONS(-Dnullptr=0)
+            ADD_DEFINITIONS(-std=c++0x -Dnullptr=0)
+        ELSEIF (GCC_VERSION VERSION_LESS 4.7)
+            ADD_DEFINITIONS(-std=c++0x)
+        ELSE ()
+            ADD_DEFINITIONS(-std=c++11)
         ENDIF ()
     ELSEIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall")
