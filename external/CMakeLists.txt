@@ -79,10 +79,10 @@
     ADD_EXECUTABLE(sqlite3 sqlite/shell.c)
     TARGET_LINK_LIBRARIES(sqlite3 libsqlite3)
 
-    IF(CMAKE_COMPILER_IS_GNUCXX)
+    IF (CMAKE_COMPILER_IS_GNUCXX)
         FIND_PACKAGE(Threads)
         TARGET_LINK_LIBRARIES(libsqlite3 dl ${CMAKE_THREAD_LIBS_INIT})
-    ENDIF()
+    ENDIF ()
 
 ########## Build Protocol Buffers libraries and compiler ##########
 
@@ -95,11 +95,11 @@
 ########## Disable warnings for external code compilation ##########
 
     SET(EXTERNAL_TARGETS libsqlite3 sqlite3 libprotobuf libprotoc protoc)
-    IF(CMAKE_COMPILER_IS_GNUCXX)
+    IF (CMAKE_COMPILER_IS_GNUCXX)
         SET_TARGET_PROPERTIES(${EXTERNAL_TARGETS} PROPERTIES COMPILE_FLAGS "-w")
-    ELSEIF(WIN32)
+    ELSEIF (MSVC)
         SET_TARGET_PROPERTIES(${EXTERNAL_TARGETS} PROPERTIES COMPILE_FLAGS "/W0")
-    ENDIF()
+    ENDIF ()
 
 ########## Create macro for .proto file compilation ##########
 
@@ -125,7 +125,7 @@
             )
             LIST(APPEND ${GENERATED_SOURCES} "${FILE_PATH}/${BASE_NAME}.pb.cc")
         ENDFOREACH()
-    ENDMACRO(COMPILE_PROTO_FILES)
+    ENDMACRO()
     
 ########## Install Eigen headers ##########
     

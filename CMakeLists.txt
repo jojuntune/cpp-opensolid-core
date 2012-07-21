@@ -24,7 +24,7 @@
         IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
             SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-        ENDIF (CMAKE_SIZEOF_VOID_P EQUAL 8)
+        ENDIF ()
         # Define nullptr as 0 on GCC versions earlier than 4.6
         EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
         IF (GCC_VERSION VERSION_LESS 4.6)
@@ -34,7 +34,7 @@
         ELSE ()
             ADD_DEFINITIONS(-std=c++11)
         ENDIF ()
-    ELSEIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    ELSEIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
         ADD_DEFINITIONS(-DHAVE_PTHREAD)
