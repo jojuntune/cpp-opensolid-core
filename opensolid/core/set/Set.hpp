@@ -397,6 +397,10 @@ namespace opensolid
             }
             std::size_t previous_size = size();
             _root = _root->erase(object, _bounds_function(object));
+            if (!_root) {
+                delete _shared_count;
+                _shared_count = nullptr;
+            }
             return previous_size - size();
         }
     }
