@@ -1,3 +1,15 @@
+########## Set up required libraries ##########
+
+    # Set up Python
+    FIND_PACKAGE(PythonLibs REQUIRED)
+    INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+
+    # Set up Boost
+    FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+    # Add Boost library directory to link path so auto-linking works when using MSVC
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    
 ########## Define lists of source files ##########
 
     # Python directory files

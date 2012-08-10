@@ -20,25 +20,44 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#ifdef __GNUC__
+    #if __GNUC__ >= 5
+        #define OPENSOLID_OVERRIDE override
+        #define OPENSOLID_NULLPTR nullptr
+    #elif __GNUC__ == 4 && __GNUC_MINOR__ >= 7
+        #define OPENSOLID_OVERRIDE override
+        #define OPENSOLID_NULLPTR nullptr
+    #elif __GNUC__ == 4 && __GNUC_MINOR__ == 6
+        #define OPENSOLID_OVERRIDE
+        #define OPENSOLID_NULLPTR nullptr
+    #elif __GNUC__ == 4 && __GNUC_MINOR__ == 5
+        #define OPENSOLID_OVERRIDE
+        #define OPENSOLID_NULLPTR 0
+    #else
+        #error GCC 4.5 or higher required for C++11 support
+    #endif
+#else
+    #define OPENSOLID_OVERRIDE override
+    #define OPENSOLID_NULLPTR nullptr
+#endif
+
+#include <algorithm>
+#include <cmath>
 
 namespace opensolid
 {
-    class Template
-    {
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    
-}
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    
+    using std::min;
+    using std::max;
+    using std::abs;
+    using std::sqrt;
+    using std::sin;
+    using std::cos;
+    using std::tan;
+    using std::asin;
+    using std::acos;
+    using std::atan;
+    using std::atan2;
+    using std::exp;
+    using std::log;
+    using std::pow;
 }

@@ -18,8 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#pragma once
+#include <opensolid/MODULE/CLASS.hpp>
 
-#include <opensolid/python/config.hpp>
-#include <opensolid/python/PythonModule.hpp>
-#include <opensolid/python/PythonEnvironment.hpp>
+#include <opensolid/HEADERS>
+
+#include <EXTERNAL_LIBRARY/HEADERS>
+
+#include <STANDARD_HEADERS>
+
+namespace opensolid { namespace MODULE {
+
+
+
+} }

@@ -18,15 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <opensolid/MODULE/CLASS.hpp>
+
+#include <opensolid/HEADERS>
+
 #include <cxxtest/TestSuite.h>
+#include <EXTERNAL_LIBRARY/HEADERS>
 
-#include <opensolid/Template.hpp>
+#include <STANDARD_HEADERS>
 
-using namespace opensolid;
+using namespace opensolid::MODULE;
 
-class TemplateTests : public CxxTest::TestSuite
+class CLASSTests : public CxxTest::TestSuite
 {
 public:
-    void test() {
+    void testSOMETHING() {
     }
 };

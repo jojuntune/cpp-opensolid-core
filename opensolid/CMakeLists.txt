@@ -1,53 +1,52 @@
+########## General setup ##########
+    
+    # Enable testing using CTest
+    enable_testing()
+
 ########## Set up required libraries ##########
 
-    # Set up Python
-    FIND_PACKAGE(PythonLibs REQUIRED)
-    INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
-
     # Set up Boost
-    FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-    # Add Boost library directory to link path so auto-linking works when using MSVC
-    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    find_package(Boost)
+    include_directories(${Boost_INCLUDE_DIRS})
     
     # Set up Qt
-    FIND_PACKAGE(Qt4 REQUIRED)
-    SET(QT_USE_QTOPENGL ON)
-    SET(QT_USE_QTXML ON)
-    INCLUDE(${QT_USE_FILE})
-    INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
-    ADD_DEFINITIONS(${QT_DEFINITIONS})
+    find_package(Qt4 REQUIRED)
+    set(QT_USE_QTOPENGL ON)
+    set(QT_USE_QTXML ON)
+    include(${QT_USE_FILE})
+    include_directories(${QT_INCLUDE_DIR})
+    add_definitions(${QT_DEFINITIONS})
     
     # Set up OpenGL
-    FIND_PACKAGE(OpenGL REQUIRED)
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+    find_package(OpenGL REQUIRED)
+    include_directories(${OPENGL_INCLUDE_DIR})
     # Most POSIX systems have OpenGL headers in GL/ subdirectory
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR}/GL)
+    include_directories(${OPENGL_INCLUDE_DIR}/GL)
     # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
-    INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR}/Headers)
+    include_directories(${OPENGL_INCLUDE_DIR}/Headers)
     
 ########## Set up build directory ##########
 
     # Place all executables, libraries in one directory
-    IF (MSVC_IDE)
-        SET(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
-        SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
-    ELSE ()
-        SET(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
-        SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
-    ENDIF ()
+    if (MSVC_IDE)
+        set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+        set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+    else ()
+        set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+        set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+    endif ()
 
 ########## Set up testing ##########
 
     # Find Python interpreter (used by CxxTest to generate test source files, and to run source
     # file checker script)
-    FIND_PACKAGE(PythonInterp REQUIRED)
+    find_package(PythonInterp REQUIRED)
     
     # Create macro for adding a CxxTest/CTest-based test
-    MACRO(ADD_CXXTEST name source)
-        GET_SOURCE_FILE_PROPERTY(FULL_PATH ${source} LOCATION)
+    macro(add_cxxtest name source)
+        get_source_file_property(FULL_PATH ${source} LOCATION)
         # Generate test source file
-        ADD_CUSTOM_COMMAND(
+        add_custom_command(
             OUTPUT
             "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
             DEPENDS
@@ -62,17 +61,17 @@
         )
 
         # Create test executable
-        ADD_EXECUTABLE(${name} "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp")
+        add_executable(${name} "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp")
 
         # Link test executable to any libraries specified as additional macro arguments
-        TARGET_LINK_LIBRARIES(${name} ${ARGN})
+        target_link_libraries(${name} ${ARGN})
 
         # Register executable as a test
-        ADD_TEST(${name} "${EXECUTABLE_OUTPUT_PATH}/${name}")
-    ENDMACRO(ADD_CXXTEST)
+        add_test(${name} "${EXECUTABLE_OUTPUT_PATH}/${name}")
+    endmacro(add_cxxtest)
     
     # Add global source-checking test
-    ADD_TEST(SourceChecks
+    add_test(SourceChecks
         "${PYTHON_EXECUTABLE}"
         "${CMAKE_CURRENT_SOURCE_DIR}/checker.py"
         "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -80,19 +79,20 @@
     
 ########## Build and install subprojects ##########
 
-    ADD_SUBDIRECTORY(core)
-    ADD_SUBDIRECTORY(python)
+    add_subdirectory(core)
+    add_subdirectory(python)
 
-    INCLUDE_DIRECTORIES(graph graph/stk)
-    ADD_SUBDIRECTORY(graph)
-    ADD_SUBDIRECTORY(ui)
+    include_directories(graph graph/stk)
+    add_subdirectory(graph)
+    add_subdirectory(ui)
 
-########## Top-level headers and files ##########
+########## Add files to global source list ##########
 
-    SET(TOP_LEVEL_HEADERS core.hpp python.hpp)
-    SET(TOP_LEVEL_FILES CMakeLists.txt checker.py)
-
-    ADD_TO_GLOBAL_SOURCE_LIST(${TOP_LEVEL_HEADERS} ${TOP_LEVEL_FILES})
-
-    INSTALL(FILES ${TOP_LEVEL_HEADERS} DESTINATION include/opensolid)
-        
+    add_to_global_source_list(    
+        checker.py
+        CMakeLists.txt
+        config.hpp
+        Template.cpp
+        Template.hpp
+        TemplateTests.hpp
+    )

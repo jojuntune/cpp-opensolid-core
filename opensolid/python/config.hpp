@@ -20,16 +20,17 @@
 
 #pragma once
 
+#include <opensolid/config.hpp>
 #include <opensolid/core/config.hpp>
 
-#if defined(WIN32)
-    #if defined(OpenSolidPythonModule_EXPORTS)
+#ifdef WIN32
+    #ifdef opensolid_python_module_EXPORTS
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)
     #endif
     
-    #if defined(OpenSolidPython_EXPORTS)
+    #ifdef opensolid_python_EXPORTS
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
@@ -38,3 +39,5 @@
     #define OPENSOLID_PYTHON_MODULE_EXPORT
     #define OPENSOLID_PYTHON_EXPORT
 #endif
+
+namespace opensolid { namespace python {} }

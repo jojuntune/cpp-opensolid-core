@@ -18,9 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/core/Template.hpp>
+#pragma once
 
-namespace opensolid
-{
+#include <opensolid/MODULE/config.hpp>
+
+#include <opensolid/HEADERS>
+
+#include <EXTERNAL_LIBRARY/HEADERS>
+
+#include <STANDARD_HEADERS>
+
+namespace opensolid { namespace MODULE {
     
-}
+class CLASS
+{
+};
+    
+} }
+
+////////// Specializations //////////
+
+namespace opensolid { namespace MODULE {
+
+// class specializations
+
+} }
+
+////////// Implementation //////////
+
+namespace opensolid { namespace MODULE {
+
+// inline function implementations
+
+} }
