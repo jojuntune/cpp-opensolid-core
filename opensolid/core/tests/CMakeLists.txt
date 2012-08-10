@@ -1,7 +1,0 @@
-add_cxxtest(DatumTests tests/DatumTests opensolidcore)
-add_cxxtest(FunctionTests tests/FunctionTests opensolidcore)
-add_cxxtest(GeometryTests tests/GeometryTests opensolidcore)
-add_cxxtest(IntervalTests tests/IntervalTests opensolidcore)
-add_cxxtest(MatrixTests tests/MatrixTests opensolidcore)
-add_cxxtest(SetTests tests/SetTests opensolidcore)
-add_cxxtest(SimplexTests tests/SimplexTests opensolidcore)
