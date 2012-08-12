@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/core/function/functionimplementation/BinaryOperation.hpp>
+#include <opensolid/detail/BinaryOperation.hpp>
 
 namespace opensolid
 {

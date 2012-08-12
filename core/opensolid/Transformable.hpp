@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/Matrix.hpp>
 
 ////////// Implementation //////////
 
@@ -128,4 +128,4 @@ namespace opensolid
     }
 }
 
-#include <opensolid/core/datum/Datum.hpp>
+#include <opensolid/Datum.hpp>

@@ -18,37 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/core/function/Function.hpp>
+#include <opensolid/Function.hpp>
 
-#include <opensolid/core/scalar/Comparison.hpp>
-#include <opensolid/core/function/functionimplementation/ArccosineFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ArcsineFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ComponentsFunction.hpp>
-#include <opensolid/core/function/functionimplementation/CompositionFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ConcatenationFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ConstantFunction.hpp>
-#include <opensolid/core/function/functionimplementation/CosineFunction.hpp>
-#include <opensolid/core/function/functionimplementation/CrossProductFunction.hpp>
-#include <opensolid/core/function/functionimplementation/DifferenceFunction.hpp>
-#include <opensolid/core/function/functionimplementation/DotProductFunction.hpp>
-#include <opensolid/core/function/functionimplementation/EllipticalFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ExponentialFunction.hpp>
-#include <opensolid/core/function/functionimplementation/LinearFunction.hpp>
-#include <opensolid/core/function/functionimplementation/LogarithmFunction.hpp>
-#include <opensolid/core/function/functionimplementation/NegationFunction.hpp>
-#include <opensolid/core/function/functionimplementation/NormFunction.hpp>
-#include <opensolid/core/function/functionimplementation/NormalizedFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ParametersFunction.hpp>
-#include <opensolid/core/function/functionimplementation/PowerFunction.hpp>
-#include <opensolid/core/function/functionimplementation/ProductFunction.hpp>
-#include <opensolid/core/function/functionimplementation/QuotientFunction.hpp>
-#include <opensolid/core/function/functionimplementation/SineFunction.hpp>
-#include <opensolid/core/function/functionimplementation/SquaredNormFunction.hpp>
-#include <opensolid/core/function/functionimplementation/SquareRootFunction.hpp>
-#include <opensolid/core/function/functionimplementation/SumFunction.hpp>
-#include <opensolid/core/function/functionimplementation/TangentFunction.hpp>
-#include <opensolid/core/domain/Domain.hpp>
-#include <opensolid/core/geometry/Geometry.hpp>
+#include <opensolid/detail/ArccosineFunction.hpp>
+#include <opensolid/detail/ArcsineFunction.hpp>
+#include <opensolid/detail/ComponentsFunction.hpp>
+#include <opensolid/detail/CompositionFunction.hpp>
+#include <opensolid/detail/ConcatenationFunction.hpp>
+#include <opensolid/detail/ConstantFunction.hpp>
+#include <opensolid/detail/CosineFunction.hpp>
+#include <opensolid/detail/CrossProductFunction.hpp>
+#include <opensolid/detail/DifferenceFunction.hpp>
+#include <opensolid/detail/DotProductFunction.hpp>
+#include <opensolid/detail/EllipticalFunction.hpp>
+#include <opensolid/detail/ExponentialFunction.hpp>
+#include <opensolid/detail/LinearFunction.hpp>
+#include <opensolid/detail/LogarithmFunction.hpp>
+#include <opensolid/detail/NegationFunction.hpp>
+#include <opensolid/detail/NormFunction.hpp>
+#include <opensolid/detail/NormalizedFunction.hpp>
+#include <opensolid/detail/ParametersFunction.hpp>
+#include <opensolid/detail/PowerFunction.hpp>
+#include <opensolid/detail/ProductFunction.hpp>
+#include <opensolid/detail/QuotientFunction.hpp>
+#include <opensolid/detail/SineFunction.hpp>
+#include <opensolid/detail/SquaredNormFunction.hpp>
+#include <opensolid/detail/SquareRootFunction.hpp>
+#include <opensolid/detail/SumFunction.hpp>
+#include <opensolid/detail/TangentFunction.hpp>
+#include <opensolid/Comparison.hpp>
+#include <opensolid/Domain.hpp>
+#include <opensolid/Geometry.hpp>
 
 #include <algorithm>
 

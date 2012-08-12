@@ -10,11 +10,11 @@
     
 ########## Set up user configuration options ##########
 
-    set(BUILD_IO_MODULE ON CACHE BOOL "Build I/O module")
-    set(BUILD_PYTHON_MODULE ON CACHE BOOL "Build Python module (requires SWIG, Python)")
-    set(BUILD_UI ON CACHE BOOL "Build UI (requires Qt, depends on Python module)")
-    set(BUILD_TESTS ON CACHE BOOL "Build tests")
-    set(BUILD_DOCUMENTATION ON CACHE BOOL "Build documentation (requires Doxygen)")
+    set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
+    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module (requires SWIG, Python)")
+    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on Python module)")
+    set(BUILD_TESTS OFF CACHE BOOL "Build tests")
+    set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
     
 ########## Set up common build settings ##########
 
@@ -59,10 +59,6 @@
         set(CMAKE_SHARED_LINKER_FLAGS "/INCREMENTAL:NO")
         set(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
     endif ()
-    
-    # Include parent directory to allow for #include <opensolid/...>, and external directory to
-    # allow for #include <Eigen/...> etc.
-    include_directories(. external external/cxxtest)
 
     # Place all executables, libraries in one directory
     if (MSVC_IDE)
@@ -73,10 +69,19 @@
         set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
     endif ()
     
+########## Set up Boost ##########
+
+    find_package(Boost)
+    include_directories(${Boost_INCLUDE_DIRS})
+    
 ########## Build and install subprojects ##########
 
     # Set up external dependencies
     add_subdirectory(external)
+    include_directories(${EIGEN_ROOT})
+    if (${BUILD_TESTS})
+        include_directories(${CXXTEST_ROOT})
+    endif ()
 
     # Set up config header
     include_directories(config)
@@ -105,6 +110,7 @@
     
     # Build tests if selected
     if (${BUILD_TESTS})
+        enable_testing()
         add_subdirectory(tests)
     endif()
     
@@ -114,6 +120,12 @@
     endif()
 
 ########## Set up source groups for Visual Studio ##########
+
+    add_to_global_source_list(
+        CMakeLists.txt
+        Template.cpp
+        Template.hpp
+    )
 
     create_source_groups()
     

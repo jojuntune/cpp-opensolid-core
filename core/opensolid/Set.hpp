@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <opensolid/core/generic/Bounds.hpp>
-#include <opensolid/core/set/SetNode.hpp>
+#include <opensolid/detail/SetNode.hpp>
+#include <opensolid/Bounds.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>

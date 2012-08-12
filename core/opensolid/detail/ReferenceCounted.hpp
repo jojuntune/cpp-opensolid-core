@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#include <opensolid/config.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>

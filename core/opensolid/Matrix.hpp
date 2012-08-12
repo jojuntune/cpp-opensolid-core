@@ -20,13 +20,12 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <opensolid/core/generic/TypeName.hpp>
-#include <opensolid/core/generic/Bounds.hpp>
-#include <opensolid/core/generic/Conversion.hpp>
-#include <opensolid/core/scalar/Interval.hpp>
-#include <opensolid/core/config.hpp>
+#include <opensolid/TypeName.hpp>
+#include <opensolid/Bounds.hpp>
+#include <opensolid/Conversion.hpp>
+#include <opensolid/Interval.hpp>
 
 namespace Eigen
 {   
@@ -214,14 +213,14 @@ namespace opensolid
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
 
-#define EIGEN_DENSEBASE_PLUGIN <opensolid/core/matrix/DenseBasePlugin.hpp>
-#define EIGEN_MATRIXBASE_PLUGIN <opensolid/core/matrix/MatrixBasePlugin.hpp>
-#define EIGEN_MATRIX_PLUGIN <opensolid/core/matrix/MatrixPlugin.hpp>
+#define EIGEN_DENSEBASE_PLUGIN <opensolid/detail/DenseBasePlugin.hpp>
+#define EIGEN_MATRIXBASE_PLUGIN <opensolid/detail/MatrixBasePlugin.hpp>
+#define EIGEN_MATRIX_PLUGIN <opensolid/detail/MatrixPlugin.hpp>
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include <opensolid/core/matrix/DenseBasePlugin.hpp>
-#include <opensolid/core/matrix/MatrixBasePlugin.hpp>
-#include <opensolid/core/matrix/MatrixPlugin.hpp>
+#include <opensolid/detail/DenseBasePlugin.hpp>
+#include <opensolid/detail/MatrixBasePlugin.hpp>
+#include <opensolid/detail/MatrixPlugin.hpp>
 #endif
 
 #include <Eigen/Core>
@@ -419,7 +418,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include <opensolid/core/generic/Conversion.hpp>
+#include <opensolid/Conversion.hpp>
 
 namespace Eigen
 {
@@ -763,5 +762,5 @@ namespace opensolid
     }
 }
 
-#include <opensolid/core/matrix/MatrixIterator.hpp>
-#include <opensolid/core/generic/Transformable.hpp>
+#include <opensolid/detail/MatrixIterator.hpp>
+#include <opensolid/Transformable.hpp>

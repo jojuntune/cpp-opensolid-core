@@ -18,10 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/Datum/CoordinateSystem.hpp>
-#include <opensolid/Domain/DomainImplementation/VectorXIDomain.hpp>
+#include <opensolid/detail/VectorXIDomain.hpp>
 
-namespace OpenSolid
+#include <opensolid/Datum.hpp>
+
+namespace opensolid
 {
     VectorXIDomain::VectorXIDomain(const VectorXI& bounds) : _bounds(bounds) {}
 
@@ -31,54 +32,7 @@ namespace OpenSolid
             results.insert(_bounds.value().lower());
             results.insert(_bounds.value().upper());
         } else {
-            VectorXd origin;
-            MatrixXd basis;
-            for (int i = 0; i < _bounds.size(); ++i) {
-                origin = _bounds.cwiseLower();
-
-                origin = _bounds.cwiseUpper();
-            }
-        }
-        return results;
-
-
-        Set<Geometry> results;
-        if (dims == 1) {
-            results.insert(_bounds.value().lower());
-            results.insert(_bounds.value().upper());
-        } else {
-            CoordinateSystemXd boundary_coordinate_system;
-            VectorXI boundary_domain = _bounds.tail(dims - 1);
-            MatrixXd boundary_basis = MatrixXd::Zero(dims, dims - 1);
-            boundary_basis.diagonal(-1).setOnes();
-            VectorXd boundary_origin = VectorXd::Zero(dims, 0);
-            boundary_origin(0) = _bounds(0).lower();
-            boundary_coordinate_system = CoordinateSystemXd(boundary_origin, boundary_basis);
-            results.insert(Geometry(Function::Linear(boundary_coordinate_system), boundary_domain));
-            boundary_origin(0) = _bounds(0).upper();
-            boundary_coordinate_system = CoordinateSystemXd(boundary_origin, boundary_basis);
-            results.insert(Geometry(Function::Linear(coordinate_system), geometry_domain_bounds));
-            for (int i = 1; i < dims; ++i) {
-                geometry_domain_bounds(i - 1) = _bounds(i - 1);
-                geometry_basis(i, i - 1) = 0;
-                geometry_basis(i - 1, i - 1) = 1;
-                geometry_origin(i - 1) = 0;
-                geometry_origin(i) = _bounds(i).lower();
-                coordinate_system = CoordinateSystemXd(geometry_domain_origin, geometry_domain_basis);
-                results.insert(
-                    Geometry(
-                        Function::Linear(geometry_domain_origin, geometry_domain_unit_vectors),
-                        geometry_domain_bounds
-                    )
-                );
-                geometry_domain_origin(i) = bounds(i).upper();
-                results.insert(
-                    Geometry(
-                        Function::Linear(geometry_domain_origin, geometry_domain_unit_vectors),
-                        geometry_domain_bounds
-                    )
-                );
-            }
+            throw NotImplementedError(__FILE__, __LINE__);
         }
         return results;
     }

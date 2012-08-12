@@ -20,11 +20,11 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <opensolid/core/generic/TypeName.hpp>
-#include <opensolid/core/generic/Transformable.hpp>
-#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/TypeName.hpp>
+#include <opensolid/Transformable.hpp>
+#include <opensolid/Matrix.hpp>
 
 namespace opensolid
 {

@@ -20,12 +20,12 @@
 
 #pragma once
 
-#include <opensolid/core/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <opensolid/core/generic/ReferenceCounted.hpp>
-#include <opensolid/core/function/Function.hpp>
-#include <opensolid/core/matrix/Matrix.hpp>
-#include <opensolid/core/set/Set.hpp>
+#include <opensolid/detail/ReferenceCounted.hpp>
+#include <opensolid/Function.hpp>
+#include <opensolid/Matrix.hpp>
+#include <opensolid/Set.hpp>
 
 namespace opensolid
 {

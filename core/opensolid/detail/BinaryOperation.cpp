@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/core/function/functionimplementation/BinaryOperation.hpp>
+#include <opensolid/detail/BinaryOperation.hpp>
 
 namespace opensolid
 {

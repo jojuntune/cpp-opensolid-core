@@ -16,9 +16,13 @@
     # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
     include_directories(${OPENGL_INCLUDE_DIR}/Headers)
     
-######### Build graph (and STK) libraries ##########
+######### Build STK and graph libraries ##########
 
+    add_subdirectory(stk)
+    include_directories(stk)
+    
     add_subdirectory(graph)
+    include_directories(graph)
     
 ######### Perform Qt preprocessing ##########
 

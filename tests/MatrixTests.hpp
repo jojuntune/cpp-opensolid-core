@@ -18,15 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/core/datum/Frame.hpp>
-#include <opensolid/core/scalar/Interval.hpp>
-#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/Frame.hpp>
+#include <opensolid/Interval.hpp>
+#include <opensolid/Matrix.hpp>
 
 #include <cxxtest/TestSuite.h>
+#include <boost/concept_check.hpp>
 
 #include <typeinfo>
 #include <vector>
-#include <boost/concept_check.hpp>
 
 using namespace opensolid;
 

@@ -1,7 +1,3 @@
-# Build STK library
-add_subdirectory(stk)
-include_directories(stk)
-
 # Collect graph library sources
 set(GRAPH_SOURCES
     assemblyNode.cpp

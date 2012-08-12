@@ -1,5 +1,5 @@
 # Collect STK source files
-SET(STK_SOURCES
+set(STK_SOURCES
     colour.cpp
     dumpGraphAction.cpp
     event.cpp
@@ -30,19 +30,9 @@ SET(STK_SOURCES
     vector3.cpp
 )
 
-ADD_TO_GLOBAL_SOURCE_LIST(${STK_SOURCES} CMakeLists.txt)
+add_to_global_sources(${STK_SOURCES} CMakeLists.txt)
     
 # Compile and link STK library
-ADD_LIBRARY(OpenSolidSTK ${STK_SOURCES})
-SET_TARGET_PROPERTIES(OpenSolidSTK PROPERTIES DEBUG_POSTFIX "d")
-TARGET_LINK_LIBRARIES(OpenSolidSTK ${QT_LIBRARIES})
-   
-# Temporary fix - define 'override' as empty macro for GCC < 4.7
-IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
-    SET_TARGET_PROPERTIES(
-        OpenSolidSTK
-        PROPERTIES
-        COMPILE_FLAGS
-        "-Doverride="
-    )
-ENDIF()
+add_library(opensolid_stk ${STK_SOURCES})
+SET_TARGET_PROPERTIES(opensolid_stk PROPERTIES DEBUG_POSTFIX "_debug")
+TARGET_LINK_LIBRARIES(opensolid_stk ${QT_LIBRARIES})

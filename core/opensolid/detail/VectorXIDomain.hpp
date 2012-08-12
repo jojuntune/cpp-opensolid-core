@@ -18,13 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__VECTOR2IDOMAIN_HPP
-#define OPENSOLID__VECTOR2IDOMAIN_HPP
+#pragma once
 
-#include <opensolid/Domain/Domain.hpp>
-#include <opensolid/Domain/DomainImplementation/DomainImplementation.hpp>
+#include <opensolid/detail/DomainImplementation.hpp>
+#include <opensolid/Domain.hpp>
 
-namespace OpenSolid
+namespace opensolid
 {
     class VectorXIDomain : public DomainImplementation
     {
@@ -44,5 +43,3 @@ namespace OpenSolid
         ) const;
     };
 }
-
-#endif

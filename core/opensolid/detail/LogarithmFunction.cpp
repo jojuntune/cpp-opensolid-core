@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/core/function/Function.hpp>
-#include <opensolid/core/function/functionimplementation/LogarithmFunction.hpp>
+#include <opensolid/detail/LogarithmFunction.hpp>
+
+#include <opensolid/Function.hpp>
 
 namespace opensolid
 {

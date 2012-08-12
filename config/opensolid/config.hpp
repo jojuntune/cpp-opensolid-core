@@ -20,6 +20,12 @@
 
 #pragma once
 
+#include <algorithm>
+#include <cmath>
+
+// Create OPENSOLID_OVERRIDE and OPENSOLID_NULLPTR to act as placeholders for
+// override and nullptr keywords respectively until all current compilers
+// support them
 #ifdef __GNUC__
     #if (__GNUC__ == 4 && __GNUC_MINOR__ >= 7) || __GNUC__ >= 5
         #define OPENSOLID_OVERRIDE override
@@ -38,9 +44,40 @@
     #define OPENSOLID_NULLPTR nullptr
 #endif
 
-#include <algorithm>
-#include <cmath>
+// Create DLL import/export declaration macros for core module
+#ifdef _WIN32
+    #ifdef opensolid_core_EXPORTS
+        #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define OPENSOLID_CORE_EXPORT
+#endif
 
+// Create DLL import/export declaration macros for I/O module
+#ifdef _WIN32
+    #ifdef opensolid_io_EXPORTS
+        #define OPENSOLID_IO_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_IO_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define OPENSOLID_IO_EXPORT
+#endif
+
+// Create DLL import/export declaration macros for python module
+#ifdef _WIN32
+    #ifdef opensolid_python_EXPORTS
+        #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define OPENSOLID_PYTHON_EXPORT
+#endif
+
+// Explicitly use math functions from C++ standard library
 namespace opensolid
 {
     using std::min;
