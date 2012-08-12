@@ -1,3 +1,8 @@
+########## Set up Boost ##########
+
+    find_package(Boost)
+    include_directories(${Boost_INCLUDE_DIRS})
+
 ########## Define lists of source files ##########
 
     file(GLOB HEADERS *.hpp)
@@ -19,7 +24,7 @@
 ########## Compile OpenSolidCore library ##########
 
     add_library(opensolidcore SHARED ${SOURCES} ${DETAIL_SOURCES})
-    set_target_properties(opensolidcore PROPERTIES DEBUG_POSTFIX "d")
+    set_target_properties(opensolidcore PROPERTIES DEBUG_POSTFIX "_debug")
     
 ########## Compile tests ##########
 

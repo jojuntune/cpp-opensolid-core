@@ -21,10 +21,7 @@
 #pragma once
 
 #ifdef __GNUC__
-    #if __GNUC__ >= 5
-        #define OPENSOLID_OVERRIDE override
-        #define OPENSOLID_NULLPTR nullptr
-    #elif __GNUC__ == 4 && __GNUC_MINOR__ >= 7
+    #if (__GNUC__ == 4 && __GNUC_MINOR__ >= 7) || __GNUC__ >= 5
         #define OPENSOLID_OVERRIDE override
         #define OPENSOLID_NULLPTR nullptr
     #elif __GNUC__ == 4 && __GNUC_MINOR__ == 6

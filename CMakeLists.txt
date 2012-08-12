@@ -12,11 +12,11 @@
 
     set(BUILD_IO_MODULE ON CACHE BOOL "Build I/O module")
     set(BUILD_PYTHON_MODULE ON CACHE BOOL "Build Python module (requires SWIG, Python)")
-    set(BUILD_UI_MODULE ON CACHE BOOL "Build UI module (requires Qt, depends on Python module)")
+    set(BUILD_UI ON CACHE BOOL "Build UI (requires Qt, depends on Python module)")
     set(BUILD_TESTS ON CACHE BOOL "Build tests")
     set(BUILD_DOCUMENTATION ON CACHE BOOL "Build documentation (requires Doxygen)")
     
-########## Set up common compiler settings ##########
+########## Set up common build settings ##########
 
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
     add_definitions(-D_USE_MATH_DEFINES)
@@ -63,8 +63,20 @@
     # Include parent directory to allow for #include <opensolid/...>, and external directory to
     # allow for #include <Eigen/...> etc.
     include_directories(. external external/cxxtest)
+
+    # Place all executables, libraries in one directory
+    if (MSVC_IDE)
+        set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+        set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+    else ()
+        set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+        set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+    endif ()
     
 ########## Build and install subprojects ##########
+
+    # Set up external dependencies
+    add_subdirectory(external)
 
     # Set up config header
     include_directories(config)
@@ -86,10 +98,8 @@
         add_subdirectory(python)
     endif()
     
-    # Build UI module if selected
-    if (${BUILD_UI_MODULE})
-        include_directories(graph graph/stk)
-        add_subdirectory(graph)
+    # Build UI if selected
+    if (${BUILD_UI})
         add_subdirectory(ui)
     endif()
     

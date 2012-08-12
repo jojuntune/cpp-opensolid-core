@@ -1,11 +1,9 @@
-# Create STK library
-ADD_SUBDIRECTORY(stk)
-
-# Create tests
-ADD_SUBDIRECTORY(tests)
+# Build STK library
+add_subdirectory(stk)
+include_directories(stk)
 
 # Collect graph library sources
-SET(GRAPH_SOURCES
+set(GRAPH_SOURCES
     assemblyNode.cpp
     componentNode.cpp
     evaluateGraphAction.cpp
@@ -22,20 +20,9 @@ SET(GRAPH_SOURCES
     project.cpp
     renderGraphAction.cpp
 )
+add_to_global_source_list(${GRAPH_SOURCES} CMakeLists.txt)
 
-ADD_TO_GLOBAL_SOURCE_LIST(${GRAPH_SOURCES} CMakeLists.txt)
-
-# Compile and link graph library
-ADD_LIBRARY(OpenSolidGraph ${GRAPH_SOURCES})
-SET_TARGET_PROPERTIES(OpenSolidGraph PROPERTIES DEBUG_POSTFIX "d")
-TARGET_LINK_LIBRARIES(OpenSolidGraph OpenSolidSTK OpenSolidPython ${OPENGL_LIBRARIES})
-   
-# Temporary fix - define 'override' as empty macro for GCC < 4.7    
-IF(CMAKE_COMPILER_IS_GNUCXX AND GCC_VERSION VERSION_LESS 4.7)
-    SET_TARGET_PROPERTIES(
-        OpenSolidGraph
-        PROPERTIES
-        COMPILE_FLAGS
-        "-Doverride="
-    )
-ENDIF()
+# Build graph library
+add_library(opensolid_graph ${GRAPH_SOURCES})
+set_target_properties(opensolid_graph PROPERTIES DEBUG_POSTFIX "_debug")
+target_link_libraries(opensolid_graph opensolid_stk opensolid_python ${OPENGL_LIBRARIES})
