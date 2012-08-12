@@ -6,7 +6,15 @@
     cmake_minimum_required(VERSION 2.8.3)
 
     # Include generic macros
-    include(macros.cmake)
+    include(CreateSourceGroups.cmake)
+    
+########## Set up user configuration options ##########
+
+    set(BUILD_IO_MODULE ON CACHE BOOL "Build I/O module")
+    set(BUILD_PYTHON_MODULE ON CACHE BOOL "Build Python module (requires SWIG, Python)")
+    set(BUILD_UI_MODULE ON CACHE BOOL "Build UI module (requires Qt, depends on Python module)")
+    set(BUILD_TESTS ON CACHE BOOL "Build tests")
+    set(BUILD_DOCUMENTATION ON CACHE BOOL "Build documentation (requires Doxygen)")
     
 ########## Set up common compiler settings ##########
 
@@ -58,9 +66,42 @@
     
 ########## Build and install subprojects ##########
 
-    add_subdirectory(external)
-    add_subdirectory(opensolid)
-    add_subdirectory(documentation EXCLUDE_FROM_ALL)
+    # Set up config header
+    include_directories(config)
+    add_subdirectory(config)
+    
+    # Build core library
+    include_directories(core)
+    add_subdirectory(core)
+    
+    # Build I/O module if selected
+    if (${BUILD_IO_MODULE})
+        include_directories(io)
+        add_subdirectory(io)
+    endif()
+    
+    # Build Python module if selected
+    if (${BUILD_PYTHON_MODULE})
+        include_directories(python)
+        add_subdirectory(python)
+    endif()
+    
+    # Build UI module if selected
+    if (${BUILD_UI_MODULE})
+        include_directories(graph graph/stk)
+        add_subdirectory(graph)
+        add_subdirectory(ui)
+    endif()
+    
+    # Build tests if selected
+    if (${BUILD_TESTS})
+        add_subdirectory(tests)
+    endif()
+    
+    # Build documentation if selected
+    if (${BUILD_DOCUMENTATION})
+        add_subdirectory(documentation EXCLUDE_FROM_ALL)
+    endif()
 
 ########## Set up source groups for Visual Studio ##########
 
