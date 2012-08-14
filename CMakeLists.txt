@@ -38,9 +38,9 @@
         # Define proper flag to enable C++11 features
         execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
         if (GCC_VERSION VERSION_LESS 4.7)
-            add_definitions(-std=c++0x)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
         else ()
-            add_definitions(-std=c++11)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
         endif ()
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         add_definitions(-DHAVE_PTHREAD)
@@ -58,6 +58,10 @@
         set(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO")
         set(CMAKE_SHARED_LINKER_FLAGS "/INCREMENTAL:NO")
         set(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
+        # Explicitly set WIN64 flag
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+            add_definitions(-DWIN64)
+        endif ()
     endif ()
 
     # Place all executables, libraries in one directory
@@ -123,6 +127,7 @@
 
     add_to_global_source_list(
         CMakeLists.txt
+        CreateSourceGroups.cmake
         source/Template.cpp
         source/Template.hpp
         source/license.txt

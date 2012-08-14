@@ -415,7 +415,7 @@ namespace opensolid
         return std::accumulate(
             begin,
             end,
-            0,
+            std::size_t(0),
             [this] (std::size_t result, const Type& object) {return result + this->erase(object);}
         );
     }
