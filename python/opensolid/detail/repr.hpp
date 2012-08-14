@@ -20,25 +20,15 @@
 
 #pragma once
 
-#include <opensolid/python/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <string>
-#include <typeinfo>
-
-#ifdef override
-    #define REDEFINE_OVERRIDE
-    #undef override
-#endif
+#include <opensolid/Interval.hpp>
+#include <opensolid/Matrix.hpp>
 
 #include <boost/python.hpp>
 
-#ifdef REDEFINE_OVERRIDE
-    #define override
-    #undef REDEFINE_OVERRIDE
-#endif
-
-#include <opensolid/core/scalar/Interval.hpp>
-#include <opensolid/core/matrix/Matrix.hpp>
+#include <string>
+#include <typeinfo>
 
 namespace opensolid
 {

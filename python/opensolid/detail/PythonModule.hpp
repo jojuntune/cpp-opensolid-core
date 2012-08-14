@@ -20,15 +20,10 @@
 
 #pragma once
 
-#include <opensolid/python/config.hpp>
+#include <opensolid/config.hpp>
 
-#include <opensolid/core/common/Error.hpp>
-#include <opensolid/core/matrix/Matrix.hpp>
-
-#ifdef override
-    #define REDEFINE_OVERRIDE
-    #undef override
-#endif
+#include <opensolid/Error.hpp>
+#include <opensolid/Matrix.hpp>
 
 #include <boost/python.hpp>
 #include <boost/python/handle.hpp>
@@ -37,11 +32,6 @@
 #include <boost/python/manage_new_object.hpp>
 #include <boost/python/raw_function.hpp>
 #include <boost/python/converter/pytype_function.hpp>
-
-#ifdef REDEFINE_OVERRIDE
-    #define override
-    #undef REDEFINE_OVERRIDE
-#endif
 
 namespace opensolid
 {

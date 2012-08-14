@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <sstream>
+#include <opensolid/detail/PythonModule.hpp>
+#include <opensolid/Axis.hpp>
 
 #include <boost/python/converter/pytype_function.hpp>
 
-#include <opensolid/core/datum/Axis.hpp>
-#include <opensolid/python/PythonModule.hpp>
+#include <sstream>
 
 using namespace boost::python;
 

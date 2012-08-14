@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/core/common/Error.hpp>
-#include <opensolid/core/datum/Datum.hpp>
-#include <opensolid/core/matrix/Matrix.hpp>
-#include <opensolid/core/scalar/Interval.hpp>
-#include <opensolid/python/PythonModule.hpp>
-#include <opensolid/python/repr.hpp>
+#include <opensolid/detail/PythonModule.hpp>
+#include <opensolid/detail/repr.hpp>
+#include <opensolid/Error.hpp>
+#include <opensolid/Datum.hpp>
+#include <opensolid/Matrix.hpp>
+#include <opensolid/Interval.hpp>
 
 using namespace boost::python;
 

@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <sstream>
+#include <opensolid/detail/repr.hpp>
 
 #include <boost/lexical_cast.hpp>
 
-#include <opensolid/python/repr.hpp>
+#include <sstream>
 
 namespace opensolid
 {

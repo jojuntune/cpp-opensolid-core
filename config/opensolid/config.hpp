@@ -66,7 +66,18 @@
     #define OPENSOLID_IO_EXPORT
 #endif
 
-// Create DLL import/export declaration macros for python module
+// Create DLL import/export declaration macros for python extension module
+#ifdef _WIN32
+    #ifdef opensolid_python_module_EXPORTS
+        #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define OPENSOLID_PYTHON_EXPORT
+#endif
+
+// Create DLL import/export declaration macros for python library
 #ifdef _WIN32
     #ifdef opensolid_python_EXPORTS
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)

@@ -69,6 +69,10 @@
 ########## Python module tests ##########
     
     if (${BUILD_PYTHON_MODULE})
+        # Set up Python
+        find_package(PythonLibs REQUIRED)
+        include_directories(${PYTHON_INCLUDE_DIRS})
+
         add_cxxtest(PythonTests PythonTests.hpp opensolid_python)
         
         add_to_global_source_list(PythonTests.hpp)

@@ -20,18 +20,18 @@
 
 #pragma once
 
-#include <opensolid/python/config.hpp>
+#include <opensolid/config.hpp>
+
+#include <opensolid/detail/PythonModule.hpp>
+#include <opensolid/detail/repr.hpp>
+#include <opensolid/Error.hpp>
+#include <opensolid/TypeName.hpp>
+
+#include <boost/python/converter/registry.hpp>
 
 #include <string>
 #include <exception>
 #include <vector>
-
-#include <boost/python/converter/registry.hpp>
-
-#include <opensolid/core/common/Error.hpp>
-#include <opensolid/core/generic/TypeName.hpp>
-#include <opensolid/python/PythonModule.hpp>
-#include <opensolid/python/repr.hpp>
 
 namespace opensolid
 {

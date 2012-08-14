@@ -95,29 +95,29 @@
     if (${BUILD_IO_MODULE})
         include_directories(io)
         add_subdirectory(io)
-    endif()
+    endif ()
     
     # Build Python module if selected
     if (${BUILD_PYTHON_MODULE})
         include_directories(python)
         add_subdirectory(python)
-    endif()
+    endif ()
     
     # Build UI if selected
     if (${BUILD_UI})
         add_subdirectory(ui)
-    endif()
+    endif ()
     
     # Build tests if selected
     if (${BUILD_TESTS})
         enable_testing()
         add_subdirectory(tests)
-    endif()
+    endif ()
     
     # Build documentation if selected
     if (${BUILD_DOCUMENTATION})
         add_subdirectory(documentation EXCLUDE_FROM_ALL)
-    endif()
+    endif ()
 
 ########## Set up source groups for Visual Studio ##########
 

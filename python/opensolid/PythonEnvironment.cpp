@@ -24,9 +24,9 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-#include <opensolid/core/common/Error.hpp>
-#include <opensolid/core/datum/Axis.hpp>
-#include <opensolid/python/PythonEnvironment.hpp>
+#include <opensolid/Error.hpp>
+#include <opensolid/Axis.hpp>
+#include <opensolid/PythonEnvironment.hpp>
 
 using namespace boost::python;
 
