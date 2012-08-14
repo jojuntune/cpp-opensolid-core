@@ -84,28 +84,28 @@
     endif ()
 
     # Set up config header
-    include_directories(config)
-    add_subdirectory(config)
+    include_directories(source/config)
+    add_subdirectory(source/config)
     
     # Build core library
-    include_directories(core)
-    add_subdirectory(core)
+    include_directories(source/core)
+    add_subdirectory(source/core)
     
     # Build I/O module if selected
     if (${BUILD_IO_MODULE})
-        include_directories(io)
-        add_subdirectory(io)
+        include_directories(source/io)
+        add_subdirectory(source/io)
     endif ()
     
     # Build Python module if selected
     if (${BUILD_PYTHON_MODULE})
-        include_directories(python)
-        add_subdirectory(python)
+        include_directories(source/python)
+        add_subdirectory(source/python)
     endif ()
     
     # Build UI if selected
     if (${BUILD_UI})
-        add_subdirectory(ui)
+        add_subdirectory(source/ui)
     endif ()
     
     # Build tests if selected
@@ -123,8 +123,9 @@
 
     add_to_global_source_list(
         CMakeLists.txt
-        Template.cpp
-        Template.hpp
+        source/Template.cpp
+        source/Template.hpp
+        source/license.txt
     )
 
     create_source_groups()

@@ -38,7 +38,8 @@
 
 ########## Global source-checking test ##########
 
-    add_test(SourceChecks
+    add_test(
+        SourceChecks
         "${PYTHON_EXECUTABLE}"
         "${CMAKE_CURRENT_SOURCE_DIR}/checker.py"
         "${OpenSolid_SOURCE_DIR}"

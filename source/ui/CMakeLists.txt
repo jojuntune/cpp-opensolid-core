@@ -36,7 +36,8 @@
     qt4_wrap_ui(UI_INTERFACE_HEADERS ${UI_INTERFACE_FILES})
 
     # Collect headers to be passed to moc
-    set(UI_MOC_HEADERS
+    set(
+        UI_MOC_HEADERS
         dlgPointDetails.h
         graphItemModel.h
         mainWindow.h
@@ -55,7 +56,8 @@
 
 ########## Build UI library ##########
 
-    set(UI_SOURCES
+    set(
+        UI_SOURCES
         camera.cpp
         cameraModelView.cpp
         cameraFirstPerson.cpp
@@ -69,7 +71,8 @@
         projectRenderTarget.cpp
     )
     
-    add_library(opensolid_ui
+    add_library(
+        opensolid_ui
         ${UI_INTERFACE_HEADERS}
         ${UI_SOURCES}
         ${UI_MOC_SOURCES}
@@ -92,7 +95,8 @@
 
     add_executable(opensolid opensolid.cpp)
     
-    target_link_libraries(opensolid
+    target_link_libraries(
+        opensolid
         ${QT_LIBRARIES}
         ${OPENGL_LIBRARIES}
         opensolid_ui

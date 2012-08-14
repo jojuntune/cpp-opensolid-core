@@ -1,5 +1,6 @@
 # Collect STK source files
-set(STK_SOURCES
+set(
+    STK_SOURCES
     colour.cpp
     dumpGraphAction.cpp
     event.cpp

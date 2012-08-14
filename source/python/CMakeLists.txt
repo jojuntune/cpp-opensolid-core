@@ -1,6 +1,7 @@
 ########## Set up required libraries ##########
 
     # Set up Python
+    find_package(PythonInterp REQUIRED)
     find_package(PythonLibs REQUIRED)
     include_directories(${PYTHON_INCLUDE_DIRS})
 

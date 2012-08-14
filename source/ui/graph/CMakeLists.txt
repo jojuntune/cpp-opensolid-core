@@ -1,5 +1,6 @@
 # Collect graph library sources
-set(GRAPH_SOURCES
+set(
+    GRAPH_SOURCES
     assemblyNode.cpp
     componentNode.cpp
     evaluateGraphAction.cpp
