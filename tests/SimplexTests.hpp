@@ -24,8 +24,6 @@
 #include <opensolid/Simplex.hpp>
 #include <opensolid/Set.hpp>
 
-#include <boost/functional/hash.hpp>
-#include <boost/unordered_map.hpp>
 #include <cxxtest/TestSuite.h>
 
 using namespace opensolid;

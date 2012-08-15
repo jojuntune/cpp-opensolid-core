@@ -23,7 +23,6 @@
 #include <opensolid/Matrix.hpp>
 
 #include <cxxtest/TestSuite.h>
-#include <boost/concept_check.hpp>
 
 #include <typeinfo>
 #include <vector>

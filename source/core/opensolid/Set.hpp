@@ -27,7 +27,6 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
-#include <boost/functional/hash.hpp>
 
 #include <ostream>
 #include <algorithm>
@@ -250,8 +249,6 @@ namespace opensolid
 }
     
 ////////// Implementation //////////
-
-#include <boost/functional/hash.hpp>
     
 namespace opensolid
 {   
