@@ -1,15 +1,15 @@
-FIND_PACKAGE(Doxygen)
+find_package(Doxygen)
 
-SET(SOURCE_DIR ${OpenSolid_SOURCE_DIR}/opensolid/core)
+set(SOURCE_DIR ${OpenSolid_SOURCE_DIR}/source/core/opensolid)
 
 # Copy logo image to build directory
-CONFIGURE_FILE(images/logo-small.png ${CMAKE_CURRENT_BINARY_DIR}/logo-small.png COPYONLY)
+configure_file(images/logo-small.png ${CMAKE_CURRENT_BINARY_DIR}/logo-small.png COPYONLY)
 
 # Replace references to CMake variables within Doxyfile.in with actual values
 # (various paths to source files and directories)
-CONFIGURE_FILE(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 # Generate Doxygen documentation
-ADD_CUSTOM_TARGET(documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+add_custom_target(documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-ADD_TO_GLOBAL_SOURCE_LIST(CMakeLists.txt Doxyfile.in mainpage.dox)
+add_to_global_source_list(CMakeLists.txt Doxyfile.in mainpage.dox)
