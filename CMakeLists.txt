@@ -147,7 +147,7 @@
     
     # Build documentation if selected
     if (${BUILD_DOCUMENTATION})
-        add_subdirectory(documentation EXCLUDE_FROM_ALL)
+        add_subdirectory(documentation)
     endif ()
 
 ########## Set up source groups for Visual Studio ##########
