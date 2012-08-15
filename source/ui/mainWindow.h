@@ -15,8 +15,8 @@
 
 #include "ui_mainWindow.h"
 
-#include <opensolid/graph/project.h>
-#include <opensolid/graph/projectEventListener.h>
+#include <graph/project.h>
+#include <graph/projectEventListener.h>
 
 namespace opensolid
 {

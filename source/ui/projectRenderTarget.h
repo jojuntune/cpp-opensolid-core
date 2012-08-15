@@ -13,7 +13,7 @@
 #ifndef OS_PROJECT_RENDERTARGET_H
 #define OS_PROJECT_RENDERTARGET_H
 
-#include <opensolid/graph/project.h>
+#include <graph/project.h>
 
 #include "renderTarget.h"
 

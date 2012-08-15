@@ -18,8 +18,8 @@
 #include <stk/threadedObject.h>
 using namespace stk;
 
-#include "Exception.h"
-#include "graphParam.h"
+#include "stk/Exception.h"
+#include "graph/graphParam.h"
 
 namespace opensolid
 {

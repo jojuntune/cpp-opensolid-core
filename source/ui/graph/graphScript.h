@@ -13,7 +13,7 @@
 #ifndef OS_GRAPH_SCRIPT_H
 #define OS_GRAPH_SCRIPT_H
 
-#include <opensolid/core/matrix/Matrix.hpp>
+#include <opensolid/Matrix.hpp>
 
 #include <stk/Exception.h>
 #include <stk/namedObject.h>

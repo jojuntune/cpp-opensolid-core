@@ -73,12 +73,11 @@
         set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
     endif ()
     
-########## Set up Boost ##########
-
+########## Build and install subprojects ##########
+    
+    # Set up Boost
     find_package(Boost)
     include_directories(${Boost_INCLUDE_DIRS})
-    
-########## Build and install subprojects ##########
 
     # Set up external dependencies
     add_subdirectory(external)
@@ -103,12 +102,40 @@
     
     # Build Python module if selected
     if (${BUILD_PYTHON_MODULE})
+        # Set up Python
+        find_package(PythonInterp REQUIRED)
+        find_package(PythonLibs REQUIRED)
+        include_directories(${PYTHON_INCLUDE_DIRS})
+    
+        # Set up Boost
+        find_package(Boost REQUIRED COMPONENTS python)
+        include_directories(${Boost_INCLUDE_DIRS})
+        # Add Boost library directory to link path so auto-linking works when using MSVC
+        link_directories(${Boost_LIBRARY_DIRS})
+        
         include_directories(source/python)
         add_subdirectory(source/python)
     endif ()
     
     # Build UI if selected
     if (${BUILD_UI})
+        # Se up Qt
+        find_package(Qt4 REQUIRED)
+        set(QT_USE_QTOPENGL ON)
+        set(QT_USE_QTXML ON)
+        include(${QT_USE_FILE})
+        include_directories(${QT_INCLUDE_DIR})
+        add_definitions(${QT_DEFINITIONS})
+        
+        # Set up OpenGL
+        find_package(OpenGL REQUIRED)
+        include_directories(${OPENGL_INCLUDE_DIR})
+        # Most POSIX systems have OpenGL headers in GL/ subdirectory
+        include_directories(${OPENGL_INCLUDE_DIR}/GL)
+        # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
+        include_directories(${OPENGL_INCLUDE_DIR}/Headers)
+    
+        include_directories(source/ui)
         add_subdirectory(source/ui)
     endif ()
     

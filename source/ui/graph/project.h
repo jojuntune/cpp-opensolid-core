@@ -21,7 +21,7 @@ using namespace std;
 using namespace stk;
 
 #include "componentNode.h"
-#include "Exception.h"
+#include "stk/Exception.h"
 #include "graphScript.h"
 #include "graphNode.h"
 #include "graphNodeEventListener.h"

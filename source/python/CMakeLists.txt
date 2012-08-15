@@ -1,16 +1,3 @@
-########## Set up required libraries ##########
-
-    # Set up Python
-    find_package(PythonInterp REQUIRED)
-    find_package(PythonLibs REQUIRED)
-    include_directories(${PYTHON_INCLUDE_DIRS})
-
-    # Set up Boost
-    find_package(Boost REQUIRED COMPONENTS python)
-    include_directories(${Boost_INCLUDE_DIRS})
-    # Add Boost library directory to link path so auto-linking works when using MSVC
-    link_directories(${Boost_LIBRARY_DIRS})
-    
 ########## Define lists of source files ##########
 
     file(GLOB HEADERS opensolid/*.hpp)

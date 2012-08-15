@@ -1,21 +1,3 @@
-######### Find required libraries ##########
-
-    # Qt
-    find_package(Qt4 REQUIRED)
-    set(QT_USE_QTOPENGL ON)
-    set(QT_USE_QTXML ON)
-    include(${QT_USE_FILE})
-    include_directories(${QT_INCLUDE_DIR})
-    add_definitions(${QT_DEFINITIONS})
-    
-    # OpenGL
-    find_package(OpenGL REQUIRED)
-    include_directories(${OPENGL_INCLUDE_DIR})
-    # Most POSIX systems have OpenGL headers in GL/ subdirectory
-    include_directories(${OPENGL_INCLUDE_DIR}/GL)
-    # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
-    include_directories(${OPENGL_INCLUDE_DIR}/Headers)
-    
 ######### Build STK and graph libraries ##########
 
     add_subdirectory(stk)
@@ -86,10 +68,9 @@
         ${UI_SOURCES}
         ${STK_SOURCES}
         CMakeLists.txt
-        PARENT_SCOPE
     )
     
-    target_link_libraries(OpenSolidUI ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+    target_link_libraries(opensolid_ui ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 
 ########## Compile OpenSolid application ##########
 

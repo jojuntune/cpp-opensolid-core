@@ -16,7 +16,7 @@
 #include <QAbstractTableModel>
 #include <QModelIndex>
 
-#include <opensolid/graph/graphNode.h>
+#include <graph/graphNode.h>
 
 namespace opensolid
 {
