@@ -12,6 +12,7 @@
         ${MODULE_HEADERS}
         ${MODULE_SOURCES}
         CMakeLists.txt
+        bindTemplate.cpp
     )
     
 ########## Compile Python extension module ##########
