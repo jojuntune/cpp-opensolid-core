@@ -25,9 +25,6 @@
 #include <opensolid/detail/SetNode.hpp>
 #include <opensolid/Bounds.hpp>
 
-#include <boost/iterator/iterator_facade.hpp>
-#include <boost/smart_ptr/detail/atomic_count.hpp>
-
 #include <ostream>
 #include <algorithm>
 #include <functional>
@@ -36,19 +33,13 @@
 namespace opensolid
 {
     template <class Type>
-    class SetIterator;
-
-    template <class Type>
     class SetInserter;
 
     template <class Type>
     class Set
     {
-    public:
-        typedef SetIterator<Type> Iterator;
     private:
         SetNode<Type>* _root;
-        boost::detail::atomic_count* _shared_count;
         Bounds<Type> _bounds_function;
     public:
         Set(Bounds<Type> bounds_function = Bounds<Type>());
@@ -67,12 +58,6 @@ namespace opensolid
         std::size_t size() const;
         bool isEmpty() const;
         const typename Bounds<Type>::Type& bounds() const;
-        
-        const Type& front() const;
-        const Type& back() const;
-        
-        SetIterator<Type> begin() const;
-        SetIterator<Type> end() const;
         
         void insert(const Type& object);
         std::size_t erase(const Type& object);
@@ -196,23 +181,6 @@ namespace opensolid
             OutputIteratorType output_iterator
         ) const;
     };
-    
-    template <class Type>
-    class SetIterator :
-        public boost::iterator_facade<SetIterator<Type>, const Type, std::forward_iterator_tag>
-    {
-    private:
-        const SetNode<Type>* _node;
-        
-        friend class boost::iterator_core_access;
-        
-        void increment();
-        bool equal(const SetIterator<Type>& other) const;
-        const Type& dereference() const;
-    public:
-        SetIterator();
-        SetIterator(const SetNode<Type>* node);
-    };
 
     template <class Type>
     class SetInserter
@@ -254,19 +222,12 @@ namespace opensolid
 {   
     template <class Type>
     inline Set<Type>::Set(Bounds<Type> bounds_function) :
-        _root(nullptr), _shared_count(nullptr), _bounds_function(bounds_function) {}
+        _root(OPENSOLID_NULLPTR), _bounds_function(bounds_function) {}
     
     template <class Type>
-    inline Set<Type>::Set(const Set<Type>& other) : _bounds_function(other._bounds_function) {
-        if (other._root) {
-            _root = other._root;
-            _shared_count = other._shared_count;
-            ++*_shared_count;
-        } else {
-            _root = nullptr;
-            _shared_count = nullptr;
-        }
-    }
+    inline Set<Type>::Set(const Set<Type>& other) :
+        _bounds_function(other._bounds_function),
+        _root(other.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<Type>(*other.root())) {}
         
     template <class Type> template <class IteratorType>
     inline Set<Type>::Set(IteratorType begin, IteratorType end, Bounds<Type> bounds_function) :
@@ -281,11 +242,9 @@ namespace opensolid
             }
         );
         if (nodes.empty()) {
-            _root = nullptr;
-            _shared_count = nullptr;
+            _root = OPENSOLID_NULLPTR;
         } else if (nodes.size() == 1) {
             _root = nodes[0];
-            _shared_count = new boost::detail::atomic_count(1);
         } else {
             typename Bounds<Type>::Type overall_bounds = nodes.front()->bounds();
             std::for_each(
@@ -296,17 +255,11 @@ namespace opensolid
                 }
             );
             _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
-            _shared_count = new boost::detail::atomic_count(1);
         }
     }
     
     template <class Type>
-    inline Set<Type>::~Set() {
-        if (_root && !--*_shared_count) {
-            delete _root;
-            delete _shared_count;
-        }
-    }
+    inline Set<Type>::~Set() {clear();}
     
     template <class Type>
     inline std::size_t Set<Type>::size() const {return isEmpty() ? 0 : root()->size();}
@@ -319,29 +272,12 @@ namespace opensolid
         
     template <class Type>
     void Set<Type>::operator=(const Set<Type>& other) {
-        if (other._root) {
-            _root = other._root;
-            _shared_count = other._shared_count;
-            ++*_shared_count;
-        } else {
-            _root = nullptr;
-            _shared_count = nullptr;
+        if (this == &other) {return;}
+        clear();
+        if (!other.isEmpty()) {
+            _root = new SetNode<Type>(*other.root());
         }
     }
-        
-    template <class Type>
-    inline SetIterator<Type> Set<Type>::begin() const {
-        if (isEmpty()) {
-            return nullptr;
-        } else {
-            const SetNode<Type>* node = root();
-            while (node->left()) {node = node->left();}
-            return node;
-        }
-    }
-    
-    template <class Type>
-    inline SetIterator<Type> Set<Type>::end() const {return nullptr;}
     
     template <class Type>
     inline const typename Bounds<Type>::Type&
@@ -351,33 +287,11 @@ namespace opensolid
     }
     
     template <class Type>
-    inline const Type& Set<Type>::front() const {
-        assert(!isEmpty());
-        const SetNode<Type>* node = root();
-        while (node->left()) {node = node->left();}
-        return *node->object();
-    }
-    
-    template <class Type>
-    inline const Type& Set<Type>::back() const {
-        assert(!isEmpty());
-        const SetNode<Type>* node = root();
-        while (node->right()) {node = node->right();}
-        return *node->object();
-    }
-    
-    template <class Type>
     inline void Set<Type>::insert(const Type& object) {
         typename Bounds<Type>::Type bounds = _bounds_function(object);
         if (isEmpty()) {
             _root = new SetNode<Type>(object, bounds);
-            _shared_count = new boost::detail::atomic_count(1);
         } else {
-            if (*_shared_count > 1) {
-                --*_shared_count;
-                _root = new SetNode<Type>(*_root);
-                _shared_count = new boost::detail::atomic_count(1);
-            }
             _root = _root->insert(object, bounds);
         }
     }
@@ -387,17 +301,8 @@ namespace opensolid
         if (isEmpty()) {
             return 0;
         } else {
-            if (*_shared_count > 1) {
-                --*_shared_count;
-                _root = new SetNode<Type>(*_root);
-                _shared_count = new boost::detail::atomic_count(1);
-            }
             std::size_t previous_size = size();
             _root = _root->erase(object, _bounds_function(object));
-            if (!_root) {
-                delete _shared_count;
-                _shared_count = nullptr;
-            }
             return previous_size - size();
         }
     }
@@ -420,12 +325,8 @@ namespace opensolid
     template <class Type>
     inline void Set<Type>::clear() {
         if (_root) {
-            if (!--*_shared_count) {
-                delete _root;
-                delete _shared_count;
-            }
-            _root = nullptr;
-            _shared_count = nullptr;
+            delete _root;
+            _root = OPENSOLID_NULLPTR;
         }
     }
 
@@ -771,32 +672,6 @@ namespace opensolid
             );
         }
     }
-    
-    template <class Type>
-    inline void SetIterator<Type>::increment() {
-        while (_node->parent() && _node->parent()->right() == _node) {_node = _node->parent();}
-        if (!_node->parent()) {
-            _node = nullptr;
-            return;
-        } else {
-            _node = _node->parent()->right();
-            while (_node->left()) {_node = _node->left();}
-        }
-    }
-    
-    template <class Type>
-    inline bool SetIterator<Type>::equal(const SetIterator<Type>& other) const {
-        return _node == other._node;
-    }
-    
-    template <class Type>
-    inline const Type& SetIterator<Type>::dereference() const {return *_node->object();}
-    
-    template <class Type>
-    inline SetIterator<Type>::SetIterator() : _node(nullptr) {}
-    
-    template <class Type>
-    inline SetIterator<Type>::SetIterator(const SetNode<Type>* node) : _node(node) {}
 
     template <class Type>
     inline SetInserter<Type>::SetInserter(Set<Type>* set) : _set(set) {}

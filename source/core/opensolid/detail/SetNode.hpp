@@ -42,7 +42,6 @@ namespace opensolid
         double _split_value;
         SetNode<Type>* _left;
         SetNode<Type>* _right;
-        const SetNode<Type>* _parent;
         std::size_t _size;
         
         void getLeaves(std::vector<SetNode<Type>*>& leaves);
@@ -73,7 +72,6 @@ namespace opensolid
         double splitValue() const;
         const SetNode<Type>* left() const;
         const SetNode<Type>* right() const;
-        const SetNode<Type>* parent() const;
         std::size_t size() const;
         
         SetNode<Type>* insert(
@@ -177,7 +175,6 @@ namespace opensolid
     void SetNode<Type>::getLeaves(std::vector<SetNode<Type>*>& leaves) {
         if (_object) {
             assert(!_left && !_right);
-            _parent = nullptr;
             leaves.push_back(this);
         } else {
             assert(_left && _right);
@@ -194,7 +191,6 @@ namespace opensolid
         _bounds(other._bounds),
         _split_direction(other._split_direction),
         _split_value(other._split_value),
-        _parent(nullptr),
         _size(other._size) {
         if (other._object) {
             assert(!other._left && !other._right);
@@ -205,9 +201,7 @@ namespace opensolid
             assert(other._left && other._right);
             _object = nullptr;
             _left = new SetNode<Type>(*other._left);
-            _left->_parent = this;
             _right = new SetNode<Type>(*other._right);
-            _right->_parent = this;
         }
     }
     
@@ -217,7 +211,6 @@ namespace opensolid
         _bounds(bounds),
         _left(nullptr),
         _right(nullptr),
-        _parent(nullptr),
         _size(1) {}
     
     template <class Type>
@@ -233,11 +226,7 @@ namespace opensolid
         _split_value(split_value),
         _left(left),
         _right(right),
-        _parent(nullptr),
-        _size(left->_size + right->_size) {
-        _left->_parent = this;
-        _right->_parent = this;
-    }
+        _size(left->_size + right->_size) {}
     
     template <class Type>
     SetNode<Type>::SetNode(
@@ -247,7 +236,6 @@ namespace opensolid
     ) {
         _object = nullptr;
         _bounds = overall_bounds;
-        _parent = nullptr;
         _size = end - begin;
         split(_bounds, _split_direction, _split_value);
         if (_size == 2) {
@@ -316,8 +304,6 @@ namespace opensolid
                 _right = new SetNode<Type>(right_bounds, lower, end);
             }
         }
-        _left->_parent = this;
-        _right->_parent = this;
     }
     
     template <class Type>
@@ -350,9 +336,6 @@ namespace opensolid
     inline const SetNode<Type>* SetNode<Type>::right() const {return _right;}
     
     template <class Type>
-    inline const SetNode<Type>* SetNode<Type>::parent() const {return _parent;}
-    
-    template <class Type>
     inline std::size_t SetNode<Type>::size() const {return _size;}
     
     template <class Type>
@@ -370,16 +353,12 @@ namespace opensolid
             double mid = median(argument_bounds, _split_direction);
             if (mid < _split_value) {
                 _left = _left->insert(argument, argument_bounds);
-                _left->_parent = this;
             } else if (mid > _split_value) {
                 _right = _right->insert(argument, argument_bounds);
-                _right->_parent = this;
             } else if (_left->_size < _right->_size) {
                 _left = _left->insert(argument, argument_bounds);
-                _left->_parent = this;
             } else {
                 _right = _right->insert(argument, argument_bounds);
-                _right->_parent = this;
             }
             _bounds = overall_bounds;
             ++_size;
@@ -432,8 +411,6 @@ namespace opensolid
             } else {
                 typename Bounds<Type>::Type overall_bounds = _left->_bounds.hull(_right->_bounds);
                 if (compatible(overall_bounds, _split_direction, _split_value)) {
-                    _left->_parent = this;
-                    _right->_parent = this;
                     _bounds = overall_bounds;
                     _size = _left->size() + _right->size();
                     return this;

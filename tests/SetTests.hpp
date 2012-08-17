@@ -87,7 +87,8 @@ public:
         Set<double> set(list.begin(), list.end());
         std::cout << set << std::endl;
         testSet(set.root());
-        std::vector<double> sorted(set.begin(), set.end());
+        std::vector<double> sorted(list.size());
+        set.copy(sorted.begin());
         std::sort(list.begin(), list.end());
         TS_ASSERT_EQUALS(sorted, list);
     }
@@ -158,8 +159,10 @@ public:
         Set<Vector2d> overlapping;
         set.copyOverlapping(Vector2I(Interval(1, 5), Interval(2, 4)), overlapping.inserter());
         TS_ASSERT_EQUALS(overlapping.size(), 2u);
-        TS_ASSERT_EQUALS(overlapping.front(), Vector2d(1, 3));
-        TS_ASSERT_EQUALS(overlapping.back(), Vector2d(5, 3));
+        std::vector<Vector2d> check(2);
+        overlapping.copy(check.begin());
+        TS_ASSERT_EQUALS(check[0], Vector2d(1, 3));
+        TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
     }
     
     void testdoubleInsertion() {
@@ -260,61 +263,6 @@ public:
         std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
         
         std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;
-    }
-    
-    void testSharing() {
-        std::vector<double> list(4);
-        list[0] = 1;
-        list[1] = 2;
-        list[2] = 4;
-        list[3] = 5;
-        Set<double> set1(list.begin(), list.end());
-        Set<double> set2 = set1;
-        TS_ASSERT_EQUALS(set1.root(), set2.root());
-        set2.insert(3);
-        TS_ASSERT_DIFFERS(set1.root(), set2.root());
-        std::cout << set1 << std::endl;
-        std::cout << set2 << std::endl;
-        
-        const SetNode<double>* root;
-        {
-            std::vector<double> list2(3);
-            list2[0] = 10;
-            list2[1] = 11;
-            list2[2] = 12;
-            Set<double> set3(list2.begin(), list2.end());
-            root = set3.root();
-            set1 = set3;
-            set2 = set3;
-            TS_ASSERT_EQUALS(set1.root(), root);
-            TS_ASSERT_EQUALS(set2.root(), root);
-        }
-        set1.insert(13);
-        TS_ASSERT_DIFFERS(set1.root(), root);
-        set2.insert(14);
-        TS_ASSERT_EQUALS(set2.root(), root);
-    }
-    
-    void testIterator() {
-        std::vector<double> list(5);
-        list[0] = 5;
-        list[1] = 1;
-        list[2] = 3;
-        list[3] = 2;
-        list[4] = 4;
-        Set<double> set(list.begin(), list.end());
-        auto i = set.begin();
-        TS_ASSERT_EQUALS(*i, 1);
-        ++i;
-        TS_ASSERT_EQUALS(*i, 2);
-        ++i;
-        TS_ASSERT_EQUALS(*i, 3);
-        ++i;
-        TS_ASSERT_EQUALS(*i, 4);
-        ++i;
-        TS_ASSERT_EQUALS(*i, 5);
-        ++i;
-        TS_ASSERT(i == set.end());
     }
     
     void testRangeOperations() {
