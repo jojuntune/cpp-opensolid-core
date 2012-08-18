@@ -226,8 +226,8 @@ namespace opensolid
     
     template <class Type>
     inline Set<Type>::Set(const Set<Type>& other) :
-        _bounds_function(other._bounds_function),
-        _root(other.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<Type>(*other.root())) {}
+        _root(other.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<Type>(*other.root())),
+        _bounds_function(other._bounds_function) {}
         
     template <class Type> template <class IteratorType>
     inline Set<Type>::Set(IteratorType begin, IteratorType end, Bounds<Type> bounds_function) :
