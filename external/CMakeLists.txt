@@ -49,7 +49,7 @@
     if (${BUILD_IO_MODULE})
         externalproject_add(
             SQLite
-            PREFIX ${SQLITE_OUTPUT_DIR}
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             URL ${CMAKE_CURRENT_SOURCE_DIR}/sqlite-3.7.13.tar.gz
             URL_MD5 3318320154a6e00cd50e7746e81f89df
             CONFIGURE_COMMAND ""
@@ -59,20 +59,24 @@
         set(SQLITE_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/SQLite)
         
         # Build SQLite static library
-        ADD_LIBRARY(libsqlite3 STATIC ${SQLITE_ROOT}/sqlite3.c)
-        IF (CMAKE_COMPILER_IS_GNUCXX)
-            FIND_PACKAGE(Threads)
-            TARGET_LINK_LIBRARIES(libsqlite3 dl ${CMAKE_THREAD_LIBS_INIT})
-        ENDIF ()
+        add_library(libsqlite3 STATIC ${SQLITE_ROOT}/sqlite3.c)
+        set_source_files_properties(${SQLITE_ROOT}/sqlite3.c PROPERTIES GENERATED TRUE)
+        add_dependencies(libsqlite3 SQLite)
+        if (CMAKE_COMPILER_IS_GNUCXX)
+            find_package(Threads)
+            target_link_libraries(libsqlite3 dl ${CMAKE_THREAD_LIBS_INIT})
+        endif ()
     
         # Build SQLite shell
-        ADD_EXECUTABLE(sqlite3 ${SQLITE_ROOT}/shell.c)
-        TARGET_LINK_LIBRARIES(sqlite3 libsqlite3)
+        add_executable(sqlite3 ${SQLITE_ROOT}/shell.c)
+        set_source_files_properties(${SQLITE_ROOT}/shell.c PROPERTIES GENERATED TRUE)
+        add_dependencies(sqlite3 SQLite)
+        target_link_libraries(sqlite3 libsqlite3)
         
         # Disable compiler warnings for SQLite code
-        SET_TARGET_PROPERTIES(libsqlite3 sqlite3 PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
+        set_target_properties(libsqlite3 sqlite3 PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
     endif()
 
 ########## Define lists of source files ##########
     
-    ADD_TO_GLOBAL_SOURCE_LIST(CMakeLists.txt)
+    add_to_global_source_list(CMakeLists.txt)
