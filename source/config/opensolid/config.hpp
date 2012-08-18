@@ -74,7 +74,7 @@
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)
     #endif
 #else
-    #define OPENSOLID_PYTHON_EXPORT
+    #define OPENSOLID_PYTHON_MODULE_EXPORT
 #endif
 
 // Create DLL import/export declaration macros for python library
