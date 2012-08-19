@@ -30,8 +30,8 @@ namespace opensolid
     CuboidDomain::CuboidDomain(const Vector3I& bounds) : _bounds(bounds) {}
 
     Set<Geometry> CuboidDomain::boundaries() const {
-        Vector3d lower = _bounds.cwiseLower();
-        Vector3d upper = _bounds.cwiseUpper();
+        //Vector3d lower = _bounds.cwiseLower();
+        //Vector3d upper = _bounds.cwiseUpper();
         Set<Geometry> results;
         // TODO - boundary construction
         return results;
