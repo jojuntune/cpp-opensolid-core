@@ -6,6 +6,8 @@
     set(DISABLE_WARNINGS_FLAG "")
     if (CMAKE_COMPILER_IS_GNUCXX)
         set(DISABLE_WARNINGS_FLAG "-w")
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        set(DISABLE_WARNINGS_FLAG "-w")
     elseif (MSVC)
         set(DISABLE_WARNINGS_FLAG "/w")
     endif()
