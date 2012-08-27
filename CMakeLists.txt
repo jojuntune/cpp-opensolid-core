@@ -1,0 +1,167 @@
+########## General setup ##########
+
+    project(OpenSolid)
+    
+    # CMake 2.8.3 or later is required for CMAKE_CURRENT_LIST_DIR variable
+    cmake_minimum_required(VERSION 2.8.3)
+
+    # Include generic macros
+    include(CreateSourceGroups.cmake)
+    
+########## Set up user configuration options ##########
+
+    set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
+    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module (requires SWIG, Python)")
+    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on Python module)")
+    set(BUILD_TESTS OFF CACHE BOOL "Build tests")
+    set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
+    
+########## Set up common build settings ##########
+
+    # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
+    add_definitions(-D_USE_MATH_DEFINES)
+
+    # Set up compiler-specific flags
+    if (CMAKE_COMPILER_IS_GNUCXX)
+        # Enable pthread
+        add_definitions(-DHAVE_PTHREAD)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+        # Set up warnings
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-variable -Wno-enum-compare")
+        # Disable asserts in RelWithDebInfo build for efficiency
+        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
+        # Enable -fpic on 64-bit systems where it is required
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fpic")
+        endif ()
+        # Define proper flag to enable C++11 features
+        execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+        if (GCC_VERSION VERSION_LESS 4.7)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+        else ()
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+        endif ()
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        add_definitions(-DHAVE_PTHREAD)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Wno-unused-function")
+        set(CMAKE_EXE_LINKER_FLAGS "-pthread -ldl")
+        set(CMAKE_SHARED_LINKER_FLAGS "-pthread -ldl")
+        set(CMAKE_MODULE_LINKER_FLAGS "-pthread -ldl")
+    elseif (MSVC)
+        # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
+        # Eigen code), and avoid warning about boost string algorithms
+        add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
+        # Add /MP flag for parallel compilation within projects
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+        # Disable incremental linking (seems to cause erros in debug builds)
+        set(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO")
+        set(CMAKE_SHARED_LINKER_FLAGS "/INCREMENTAL:NO")
+        set(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
+        # Explicitly set WIN64 flag
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+            add_definitions(-DWIN64)
+        endif ()
+    endif ()
+
+    # Place all executables, libraries in one directory
+    if (MSVC_IDE)
+        set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+        set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+    else ()
+        set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+        set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+    endif ()
+    
+########## Build and install subprojects ##########
+    
+    # Set up Boost
+    find_package(Boost)
+    include_directories(${Boost_INCLUDE_DIRS})
+
+    # Set up external dependencies
+    add_subdirectory(external)
+    include_directories(${EIGEN_ROOT})
+    if (${BUILD_TESTS})
+        include_directories(${CXXTEST_ROOT})
+    endif ()
+
+    # Set up config header
+    include_directories(source/config)
+    add_subdirectory(source/config)
+    
+    # Build core library
+    include_directories(source/core)
+    add_subdirectory(source/core)
+    
+    # Build I/O module if selected
+    if (${BUILD_IO_MODULE})
+        include_directories(source/io)
+        add_subdirectory(source/io)
+    endif ()
+    
+    # Build Python module if selected
+    if (${BUILD_PYTHON_MODULE})
+        # Set up Python
+        find_package(PythonInterp REQUIRED)
+        find_package(PythonLibs REQUIRED)
+        include_directories(${PYTHON_INCLUDE_DIRS})
+    
+        # Set up Boost
+        find_package(Boost REQUIRED COMPONENTS python)
+        include_directories(${Boost_INCLUDE_DIRS})
+        # Add Boost library directory to link path so auto-linking works when using MSVC
+        link_directories(${Boost_LIBRARY_DIRS})
+        
+        include_directories(source/python)
+        add_subdirectory(source/python)
+    endif ()
+    
+    # Build UI if selected
+    if (${BUILD_UI})
+        # Se up Qt
+        find_package(Qt4 REQUIRED)
+        set(QT_USE_QTOPENGL ON)
+        set(QT_USE_QTXML ON)
+        include(${QT_USE_FILE})
+        include_directories(${QT_INCLUDE_DIR})
+        add_definitions(${QT_DEFINITIONS})
+        
+        # Set up OpenGL
+        find_package(OpenGL REQUIRED)
+        include_directories(${OPENGL_INCLUDE_DIR})
+        # Most POSIX systems have OpenGL headers in GL/ subdirectory
+        include_directories(${OPENGL_INCLUDE_DIR}/GL)
+        # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
+        include_directories(${OPENGL_INCLUDE_DIR}/Headers)
+    
+        include_directories(source/ui)
+        add_subdirectory(source/ui)
+    endif ()
+    
+    # Build tests if selected
+    if (${BUILD_TESTS})
+        enable_testing()
+        add_subdirectory(tests)
+    endif ()
+    
+    # Build documentation if selected
+    if (${BUILD_DOCUMENTATION})
+        add_subdirectory(documentation)
+    endif ()
+
+########## Set up source groups for Visual Studio ##########
+
+    add_to_global_source_list(
+        CMakeLists.txt
+        CreateSourceGroups.cmake
+        source/Template.cpp
+        source/Template.hpp
+        source/license.txt
+    )
+
+    create_source_groups()
+    
+########## Install license file ##########
+    
+    install(FILES license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")

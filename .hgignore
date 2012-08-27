@@ -1,0 +1,8 @@
+syntax: glob
+
+*.pb.*
+Build*/*
+build*/*
+.svn/*
+*kdev4*
+*.pyc
