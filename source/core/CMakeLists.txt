@@ -17,8 +17,8 @@
 ########## Compile OpenSolidCore library ##########
 
     add_library(opensolid_core SHARED ${SOURCES} ${DETAIL_SOURCES})
-    set_target_properties(opensolid_core PROPERTIES DEBUG_POSTFIX "_debug")
-    add_dependencies(opensolid_core Eigen)
+    set_target_properties(opensolid_core PROPERTIES DEBUG_POSTFIX _debug)
+    add_dependencies(opensolid_core eigen_sources)
     
 ########## Install headers ##########
     

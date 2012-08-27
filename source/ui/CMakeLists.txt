@@ -61,7 +61,7 @@
         ${IMAGES_RESOURCE}
     )
     
-    set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX "_debug")
+    set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX _debug)
     
     add_to_global_source_list(
         ${UI_MOC_HEADERS}

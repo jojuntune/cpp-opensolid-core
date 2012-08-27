@@ -21,5 +21,5 @@ add_to_global_source_list(${GRAPH_SOURCES} CMakeLists.txt)
 
 # Build graph library
 add_library(opensolid_graph ${GRAPH_SOURCES})
-set_target_properties(opensolid_graph PROPERTIES DEBUG_POSTFIX "_debug")
+set_target_properties(opensolid_graph PROPERTIES DEBUG_POSTFIX _debug)
 target_link_libraries(opensolid_graph opensolid_stk opensolid_python ${OPENGL_LIBRARIES})

@@ -29,6 +29,7 @@
     
         # Link test executable to any libraries specified as additional macro arguments
         target_link_libraries(${name} ${ARGN})
+        add_dependencies(${name} cxxtest_sources) 
     
         # Register executable as a test
         add_test(${name} "${EXECUTABLE_OUTPUT_PATH}/${name}")

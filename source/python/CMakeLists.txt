@@ -19,7 +19,7 @@
     
     add_library(opensolid_python_module SHARED ${MODULE_SOURCES})
     set_target_properties(opensolid_python_module PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
-    set_target_properties(opensolid_python_module PROPERTIES DEBUG_POSTFIX "_debug")
+    set_target_properties(opensolid_python_module PROPERTIES DEBUG_POSTFIX _debug)
     if (WIN32)
         set_target_properties(opensolid_python_module PROPERTIES SUFFIX ".pyd")
     endif ()
@@ -33,7 +33,7 @@
 ########## Compile OpenSolidPython library ##########
     
     add_library(opensolid_python SHARED ${SOURCES})
-    set_target_properties(opensolid_python PROPERTIES DEBUG_POSTFIX "_debug")
+    set_target_properties(opensolid_python PROPERTIES DEBUG_POSTFIX _debug)
     target_link_libraries(
         opensolid_python
         opensolid_core
