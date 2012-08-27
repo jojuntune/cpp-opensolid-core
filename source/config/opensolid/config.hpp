@@ -25,8 +25,8 @@
 
 // Create OPENSOLID_OVERRIDE and OPENSOLID_NULLPTR to act as placeholders for
 // override and nullptr keywords respectively until all current compilers
-// support them
-#ifdef __GNUC__
+// support them    
+#if defined(__GNUC__) && !defined(__clang__)
     #if (__GNUC__ == 4 && __GNUC_MINOR__ >= 7) || __GNUC__ >= 5
         #define OPENSOLID_OVERRIDE override
         #define OPENSOLID_NULLPTR nullptr

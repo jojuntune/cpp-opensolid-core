@@ -41,7 +41,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT ~NotImplementedError() throw ();
 
-        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
+        OPENSOLID_CORE_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
         OPENSOLID_CORE_EXPORT std::string file() const;
         OPENSOLID_CORE_EXPORT int line() const;
     };

@@ -71,8 +71,10 @@ namespace opensolid
         double a = (inner_point - start_point).norm();
         double b = (end_point - inner_point).norm();
         double c = (start_point - end_point).norm();
+        #ifndef NDEBUG
         double s = (a + b + c) / 2;
         assert(s - a > Zero() && s - b > Zero() && s - c > Zero());
+        #endif
         double radius = a * b * c / sqrt((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c));
         double a2 = a * a;
         double b2 = b * b;
