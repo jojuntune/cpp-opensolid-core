@@ -66,6 +66,17 @@
     #define OPENSOLID_IO_EXPORT
 #endif
 
+// Create DLL import/export declaration macros for bridge module
+#ifdef _WIN32
+    #ifdef opensolid_bridge_EXPORTS
+        #define OPENSOLID_BRIDGE_EXPORT __declspec(dllexport)
+    #else
+        #define OPENSOLID_BRIDGE_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define OPENSOLID_BRIDGE_EXPORT
+#endif
+
 // Create DLL import/export declaration macros for python extension module
 #ifdef _WIN32
     #ifdef opensolid_python_module_EXPORTS
