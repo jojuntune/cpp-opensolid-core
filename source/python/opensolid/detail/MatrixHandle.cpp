@@ -170,10 +170,9 @@ namespace opensolid
     ScalarType
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemII(int row, int col) const {
         try {
-            return readAccess()(
-                positiveIndex(row, matrix.rows()),
-                positiveIndex(col, matrix.cols())
-            );
+            row = positiveIndex(row, readAccess().rows());
+            col = positiveIndex(col, readAccess().cols());
+            return readAccess()(row, col);
         } catch (const IndexError&) {
             throw MatrixIndexError<MatrixType>(readAccess(), object(row), object(col));
         }
