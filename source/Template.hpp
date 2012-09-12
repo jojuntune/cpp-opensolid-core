@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/MODULE/config.hpp>
+#include <opensolid/config.hpp>
 
 #include <opensolid/HEADERS>
 
@@ -28,26 +28,23 @@
 
 #include <STANDARD_HEADERS>
 
-namespace opensolid { namespace MODULE {
-    
-class CLASS
+namespace opensolid
 {
-};
-    
-} }
+    class CLASS
+    {
+    };
+}
 
 ////////// Specializations //////////
 
-namespace opensolid { namespace MODULE {
-
-// class specializations
-
-} }
+namespace opensolid
+{
+    // class specializations
+}
 
 ////////// Implementation //////////
 
-namespace opensolid { namespace MODULE {
-
-// inline function implementations
-
-} }
+namespace opensolid
+{
+    // template or inline function implementations
+}
