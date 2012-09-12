@@ -11,7 +11,6 @@
 ########## Set up user configuration options ##########
 
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
-    set(BUILD_BRIDGE_MODULE OFF CACHE BOOL "Build bridge module")
     set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module (requires Boost.Python, Python)")
     set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on Python module)")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests")
@@ -110,12 +109,6 @@
     if (${BUILD_IO_MODULE})
         include_directories(source/io)
         add_subdirectory(source/io)
-    endif ()
-
-    # Build bridge module if selected
-    if (${BUILD_BRIDGE_MODULE})
-        include_directories(source/bridge)
-        add_subdirectory(source/bridge)
     endif ()
     
     # Build Python module if selected
