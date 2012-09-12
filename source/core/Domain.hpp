@@ -20,18 +20,18 @@
  
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/TypeName.hpp>
-#include <opensolid/Bounds.hpp>
-#include <opensolid/Conversion.hpp>
-#include <opensolid/Transformable.hpp>
-#include <opensolid/Matrix.hpp>
-#include <opensolid/Interval.hpp>
-#include <opensolid/Set.hpp>
-#include <opensolid/Simplex.hpp>
-#include <opensolid/detail/DomainConstructors.hpp>
-#include <opensolid/detail/DomainImplementation.hpp>
+#include "TypeName.hpp"
+#include "Bounds.hpp"
+#include "Conversion.hpp"
+#include "Transformable.hpp"
+#include "Matrix.hpp"
+#include "Interval.hpp"
+#include "Set.hpp"
+#include "Simplex.hpp"
+#include "detail/DomainConstructors.hpp"
+#include "detail/DomainImplementation.hpp"
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -103,7 +103,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include <opensolid/Geometry.hpp>
+#include "Geometry.hpp"
 
 namespace opensolid
 {

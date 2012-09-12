@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/Bounds.hpp>
-#include <opensolid/Conversion.hpp>
-#include <opensolid/Transformable.hpp>
-#include <opensolid/TypeName.hpp>
-#include <opensolid/Datum.hpp>
-#include <opensolid/Matrix.hpp>
+#include "Bounds.hpp"
+#include "Conversion.hpp"
+#include "Transformable.hpp"
+#include "TypeName.hpp"
+#include "Datum.hpp"
+#include "Matrix.hpp"
 
 namespace opensolid
 {

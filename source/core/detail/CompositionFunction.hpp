@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include <opensolid/detail/FunctionImplementation.hpp>
-#include <opensolid/Function.hpp>
+#include "detail/FunctionImplementation.hpp"
+#include "Function.hpp"
 
 namespace opensolid
 {

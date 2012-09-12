@@ -20,11 +20,11 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/TypeName.hpp>
-#include <opensolid/Bounds.hpp>
-#include <opensolid/Conversion.hpp>
+#include "TypeName.hpp"
+#include "Bounds.hpp"
+#include "Conversion.hpp"
 
 #include <boost/numeric/interval.hpp>
 
@@ -472,4 +472,4 @@ namespace opensolid
     }
 }
 
-#include <opensolid/Comparison.hpp>
+#include "Comparison.hpp"

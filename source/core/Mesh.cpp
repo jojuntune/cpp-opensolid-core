@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/Mesh.hpp>
+#include "Mesh.hpp"
 
-#include <opensolid/Error.hpp>
+#include "Error.hpp"
 
 namespace opensolid
 {

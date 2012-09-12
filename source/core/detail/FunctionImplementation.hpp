@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/detail/ReferenceCounted.hpp>
-#include <opensolid/Matrix.hpp>
+#include "detail/ReferenceCounted.hpp"
+#include "Matrix.hpp"
 
 namespace opensolid
 {

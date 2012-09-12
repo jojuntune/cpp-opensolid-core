@@ -18,37 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/Function.hpp>
+#include "Function.hpp"
 
-#include <opensolid/detail/ArccosineFunction.hpp>
-#include <opensolid/detail/ArcsineFunction.hpp>
-#include <opensolid/detail/ComponentsFunction.hpp>
-#include <opensolid/detail/CompositionFunction.hpp>
-#include <opensolid/detail/ConcatenationFunction.hpp>
-#include <opensolid/detail/ConstantFunction.hpp>
-#include <opensolid/detail/CosineFunction.hpp>
-#include <opensolid/detail/CrossProductFunction.hpp>
-#include <opensolid/detail/DifferenceFunction.hpp>
-#include <opensolid/detail/DotProductFunction.hpp>
-#include <opensolid/detail/EllipticalFunction.hpp>
-#include <opensolid/detail/ExponentialFunction.hpp>
-#include <opensolid/detail/LinearFunction.hpp>
-#include <opensolid/detail/LogarithmFunction.hpp>
-#include <opensolid/detail/NegationFunction.hpp>
-#include <opensolid/detail/NormFunction.hpp>
-#include <opensolid/detail/NormalizedFunction.hpp>
-#include <opensolid/detail/ParametersFunction.hpp>
-#include <opensolid/detail/PowerFunction.hpp>
-#include <opensolid/detail/ProductFunction.hpp>
-#include <opensolid/detail/QuotientFunction.hpp>
-#include <opensolid/detail/SineFunction.hpp>
-#include <opensolid/detail/SquaredNormFunction.hpp>
-#include <opensolid/detail/SquareRootFunction.hpp>
-#include <opensolid/detail/SumFunction.hpp>
-#include <opensolid/detail/TangentFunction.hpp>
-#include <opensolid/Comparison.hpp>
-#include <opensolid/Domain.hpp>
-#include <opensolid/Geometry.hpp>
+#include "detail/ArccosineFunction.hpp"
+#include "detail/ArcsineFunction.hpp"
+#include "detail/ComponentsFunction.hpp"
+#include "detail/CompositionFunction.hpp"
+#include "detail/ConcatenationFunction.hpp"
+#include "detail/ConstantFunction.hpp"
+#include "detail/CosineFunction.hpp"
+#include "detail/CrossProductFunction.hpp"
+#include "detail/DifferenceFunction.hpp"
+#include "detail/DotProductFunction.hpp"
+#include "detail/EllipticalFunction.hpp"
+#include "detail/ExponentialFunction.hpp"
+#include "detail/LinearFunction.hpp"
+#include "detail/LogarithmFunction.hpp"
+#include "detail/NegationFunction.hpp"
+#include "detail/NormFunction.hpp"
+#include "detail/NormalizedFunction.hpp"
+#include "detail/ParametersFunction.hpp"
+#include "detail/PowerFunction.hpp"
+#include "detail/ProductFunction.hpp"
+#include "detail/QuotientFunction.hpp"
+#include "detail/SineFunction.hpp"
+#include "detail/SquaredNormFunction.hpp"
+#include "detail/SquareRootFunction.hpp"
+#include "detail/SumFunction.hpp"
+#include "detail/TangentFunction.hpp"
+#include "Comparison.hpp"
+#include "Domain.hpp"
+#include "Geometry.hpp"
 
 #include <algorithm>
 

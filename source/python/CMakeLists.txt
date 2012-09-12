@@ -1,14 +1,12 @@
 ########## Define lists of source files ##########
 
-    file(GLOB HEADERS opensolid/*.hpp)
-    file(GLOB SOURCES opensolid/*.cpp)
-    file(GLOB MODULE_HEADERS opensolid/detail/*.hpp)
-    file(GLOB MODULE_SOURCES opensolid/detail/*.cpp)
+    file(GLOB MODULE_HEADERS detail/*.hpp)
+    file(GLOB MODULE_SOURCES detail/*.cpp)
 
     # Update global source list
     add_to_global_source_list(
-        ${HEADERS}
-        ${SOURCES}
+        PythonEnvironment.hpp
+        PythonEnvironment.cpp
         ${MODULE_HEADERS}
         ${MODULE_SOURCES}
         CMakeLists.txt
@@ -32,7 +30,7 @@
     
 ########## Compile OpenSolidPython library ##########
     
-    add_library(opensolid_python SHARED ${SOURCES})
+    add_library(opensolid_python SHARED PythonEnvironment.cpp)
     set_target_properties(opensolid_python PROPERTIES DEBUG_POSTFIX _debug)
     target_link_libraries(
         opensolid_python
@@ -45,7 +43,7 @@
 ########## Install headers ##########
     
     install(
-        DIRECTORY opensolid
+        DIRECTORY .
         DESTINATION include/opensolid
         FILES_MATCHING
         PATTERN "*.hpp"

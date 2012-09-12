@@ -1,0 +1,1 @@
+add_to_global_source_list(CMakeLists.txt)

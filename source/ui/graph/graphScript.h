@@ -13,11 +13,11 @@
 #ifndef OS_GRAPH_SCRIPT_H
 #define OS_GRAPH_SCRIPT_H
 
-#include <opensolid/Matrix.hpp>
+#include "Matrix.hpp"
 
-#include <stk/Exception.h>
-#include <stk/namedObject.h>
-#include <stk/threadedObject.h>
+#include "stk/Exception.h"
+#include "stk/namedObject.h"
+#include "stk/threadedObject.h"
 
 #include "graphParamList.h"
 

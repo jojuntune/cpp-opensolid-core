@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Axis.hpp>
-#include <opensolid/Geometry.hpp>
-#include <opensolid/Comparison.hpp>
-#include <opensolid/Simplex.hpp>
+#include "Axis.hpp"
+#include "Geometry.hpp"
+#include "Comparison.hpp"
+#include "Simplex.hpp"
 
 #include <cxxtest/TestSuite.h>
 

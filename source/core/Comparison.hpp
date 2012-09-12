@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/Interval.hpp>
+#include "Interval.hpp"
 
 namespace opensolid
 {

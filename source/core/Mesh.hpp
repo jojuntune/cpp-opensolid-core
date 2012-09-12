@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/Matrix.hpp>
-#include <opensolid/Geometry.hpp>
+#include "Matrix.hpp"
+#include "Geometry.hpp"
 
 namespace opensolid
 {

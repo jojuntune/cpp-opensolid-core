@@ -175,4 +175,4 @@
     
 ########## Install license file ##########
     
-    install(FILES license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
+    install(FILES source/license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")

@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/detail/VectorXIDomain.hpp>
+#include "detail/VectorXIDomain.hpp"
 
-#include <opensolid/Datum.hpp>
+#include "Datum.hpp"
 
 namespace opensolid
 {

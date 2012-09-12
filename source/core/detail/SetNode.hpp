@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
-#include <opensolid/Bounds.hpp>
-#include <opensolid/Interval.hpp>
+#include "Bounds.hpp"
+#include "Interval.hpp"
 
 #include <new>
 #include <vector>

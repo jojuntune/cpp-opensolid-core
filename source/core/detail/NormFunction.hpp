@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/detail/UnaryOperation.hpp>
+#include "detail/UnaryOperation.hpp"
 
 namespace opensolid
 {

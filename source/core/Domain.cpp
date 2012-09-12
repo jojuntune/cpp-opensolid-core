@@ -18,16 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/Domain.hpp>
+#include "Domain.hpp"
 
-#include <opensolid/Function.hpp>
-#include <opensolid/Geometry.hpp>
-#include <opensolid/detail/DomainImplementation.hpp>
-#include <opensolid/detail/GenericDomain.hpp>
-#include <opensolid/detail/IntervalDomain.hpp>
-#include <opensolid/detail/RectangleDomain.hpp>
-#include <opensolid/detail/CuboidDomain.hpp>
-#include <opensolid/detail/SimplexDomain.hpp>
+#include "Function.hpp"
+#include "Geometry.hpp"
+#include "detail/DomainImplementation.hpp"
+#include "detail/GenericDomain.hpp"
+#include "detail/IntervalDomain.hpp"
+#include "detail/RectangleDomain.hpp"
+#include "detail/CuboidDomain.hpp"
+#include "detail/SimplexDomain.hpp"
 
 namespace opensolid
 {   

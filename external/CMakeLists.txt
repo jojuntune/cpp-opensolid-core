@@ -14,6 +14,7 @@
 
 ########## Set up Eigen ##########
 
+    # Extract Eigen sources
     externalproject_add(
         eigen_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
@@ -23,8 +24,12 @@
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
     )
-    set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources PARENT_SCOPE)
+    set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)
     
+    # Set EIGEN_ROOT in parent scope so it can be used as an include dir
+    set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
+    
+    # Install Eigen headers
     install(
         DIRECTORY ${EIGEN_ROOT}/Eigen
         DESTINATION include

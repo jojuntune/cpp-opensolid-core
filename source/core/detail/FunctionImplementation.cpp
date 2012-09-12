@@ -18,14 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <opensolid/detail/FunctionImplementation.hpp>
+#include "detail/FunctionImplementation.hpp"
 
-#include <opensolid/detail/ComponentsFunction.hpp>
-#include <opensolid/detail/CompositionFunction.hpp>
-#include <opensolid/detail/NormFunction.hpp>
-#include <opensolid/detail/NormalizedFunction.hpp>
-#include <opensolid/detail/SquaredNormFunction.hpp>
-#include <opensolid/detail/TransformedFunction.hpp>
+#include "detail/ComponentsFunction.hpp"
+#include "detail/CompositionFunction.hpp"
+#include "detail/NormFunction.hpp"
+#include "detail/NormalizedFunction.hpp"
+#include "detail/SquaredNormFunction.hpp"
+#include "detail/TransformedFunction.hpp"
 
 namespace opensolid
 {

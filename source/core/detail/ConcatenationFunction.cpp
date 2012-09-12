@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/detail/ConcatenationFunction.hpp>
+#include "detail/ConcatenationFunction.hpp"
 
-#include <opensolid/Function.hpp>
+#include "Function.hpp"
 
 namespace opensolid
 {

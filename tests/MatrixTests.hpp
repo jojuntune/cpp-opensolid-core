@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Frame.hpp>
-#include <opensolid/Interval.hpp>
-#include <opensolid/Matrix.hpp>
+#include "Frame.hpp"
+#include "Interval.hpp"
+#include "Matrix.hpp"
 
 #include <cxxtest/TestSuite.h>
 

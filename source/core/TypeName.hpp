@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include "config.hpp"
 
 #include <string>
 
