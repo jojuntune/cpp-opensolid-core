@@ -90,6 +90,31 @@ namespace opensolid
     template class BinaryMatrixError<MatrixXI, MatrixXd>;
     template class BinaryMatrixError<MatrixXI, MatrixXI>;
 
+    // MatrixValueError
+
+    template <class MatrixType>
+    MatrixValueError<MatrixType>::MatrixValueError(const MatrixType& matrix) :
+        UnaryMatrixError<MatrixType>(matrix) {}
+
+    template MatrixValueError<MatrixXd>::MatrixValueError(const MatrixXd&);
+    template MatrixValueError<MatrixXI>::MatrixValueError(const MatrixXI&);
+
+    template <class MatrixType>
+    MatrixValueError<MatrixType>::~MatrixValueError() throw() {}
+
+    template MatrixValueError<MatrixXd>::~MatrixValueError();
+    template MatrixValueError<MatrixXI>::~MatrixValueError();
+
+    template <>
+    const char* MatrixValueError<MatrixXd>::what() const throw() {
+        return "MatrixXdValueError";
+    }
+
+    template <>
+    const char* VectorComponentError<MatrixXI>::what() const throw() {
+        return "MatrixXIValueError";
+    }
+
     // VectorComponentError
 
     template <class MatrixType>

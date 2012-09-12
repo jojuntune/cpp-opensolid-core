@@ -80,6 +80,20 @@ namespace opensolid
     };
 
     template <class MatrixType>
+    class MatrixValueError : public UnaryMatrixError<MatrixType>
+    {
+    public:
+        OPENSOLID_PYTHON_MODULE_EXPORT MatrixValueError(const MatrixType& matrix);
+
+        OPENSOLID_PYTHON_MODULE_EXPORT ~MatrixValueError() throw ();
+
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() OPENSOLID_OVERRIDE;
+    };
+
+    typedef MatrixValueError<MatrixXd> MatrixXdValueError;
+    typedef MatrixValueError<MatrixXI> MatrixXIValueError;
+
+    template <class MatrixType>
     class VectorComponentError : public UnaryMatrixError<MatrixType>
     {
     private:
