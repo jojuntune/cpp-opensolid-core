@@ -21,40 +21,62 @@
 #pragma once
 
 #include "config.hpp"
-#include "Error.hpp"
-#include "Conversion.hpp"
 
-#include <boost/variant.hpp>
+#include "Conversion.hpp"
+#include "TypeName.hpp"
 
 #include <string>
-#include <unordered_map>
 
 namespace opensolid
 {
+    class ObjectData;
+
     class Object : public Convertible<Object>
     {
-    public:
     private:
-        std::unordered_map<int, int> _map_int_int;
-        std::unordered_map<int, double> _map_int_double;
-        std::unordered_map<int, std::string> _map_int_string;
-        std::unordered_map<int, Object> _map_int_object;
-        std::unordered_map<std::string, int> _map_string_int;
-        std::unordered_map<std::string, double> _map_string_double;
-        std::unordered_map<std::string, std::string> _map_string_string;
-        std::unordered_map<std::string, Object> _map_string_object;
+        ObjectData* _data;
         
         friend class Conversion<Object, std::string>;
     public:
         OPENSOLID_IO_EXPORT Object();
+        OPENSOLID_IO_EXPORT Object(const Object& other);
+        OPENSOLID_IO_EXPORT Object(Object&& other);
 
-        OPENSOLID_IO_EXPORT bool has(const Key& key) const;
+        OPENSOLID_IO_EXPORT bool has(int key) const;
+        OPENSOLID_IO_EXPORT bool has(const std::string& key) const;
         
-        OPENSOLID_IO_EXPORT Object& set(const Key& key, const Value& value) const;
+        OPENSOLID_IO_EXPORT Object& set(int key, int value);
+        OPENSOLID_IO_EXPORT Object& set(int key, double value);
+        OPENSOLID_IO_EXPORT Object& set(int key, const std::string& value);
+        OPENSOLID_IO_EXPORT Object& set(int key, const Object& value);
+        
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, int value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, double value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, const std::string& value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, const Object& value);
+
+        template <class Type>
+        Object& set(int key, const Type& value);
+
+        template <class Type>
+        Object& set(const std::string& key, const Type& value);
         
         template <class Type>
-        Type get(const Key& key) const;
+        Type get(int key) const;
+        
+        template <class Type>
+        Type get(const std::string& key) const;
     };
+
+    template <> OPENSOLID_IO_EXPORT int Object::get<int>(int) const;
+    template <> OPENSOLID_IO_EXPORT double Object::get<double>(int) const;
+    template <> OPENSOLID_IO_EXPORT std::string Object::get<std::string>(int) const;
+    template <> OPENSOLID_IO_EXPORT Object Object::get<Object>(int) const;
+
+    template <> OPENSOLID_IO_EXPORT int Object::get<int>(const std::string&) const;
+    template <> OPENSOLID_IO_EXPORT double Object::get<double>(const std::string&) const;
+    template <> OPENSOLID_IO_EXPORT std::string Object::get<std::string>(const std::string&) const;
+    template <> OPENSOLID_IO_EXPORT Object Object::get<Object>(const std::string&) const;
 }
 
 ////////// Specializations //////////
@@ -72,7 +94,7 @@ namespace opensolid
 
 namespace opensolid
 {
-    class ObjectKeyError : public Error
+    class ObjectKeyError : public std::exception
     {
     private:
         Object _object;
