@@ -212,14 +212,14 @@ namespace opensolid
 #define EIGEN_DONT_ALIGN
 #define EIGEN_DONT_VECTORIZE
 
-#define EIGEN_DENSEBASE_PLUGIN "opensolid/detail/DenseBasePlugin.hpp"
-#define EIGEN_MATRIXBASE_PLUGIN "opensolid/detail/MatrixBasePlugin.hpp"
-#define EIGEN_MATRIX_PLUGIN "opensolid/detail/MatrixPlugin.hpp"
+#define EIGEN_DENSEBASE_PLUGIN "DenseBasePlugin.hpp"
+#define EIGEN_MATRIXBASE_PLUGIN "MatrixBasePlugin.hpp"
+#define EIGEN_MATRIX_PLUGIN "MatrixPlugin.hpp"
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include "detail/DenseBasePlugin.hpp"
-#include "detail/MatrixBasePlugin.hpp"
-#include "detail/MatrixPlugin.hpp"
+#include "DenseBasePlugin.hpp"
+#include "MatrixBasePlugin.hpp"
+#include "MatrixPlugin.hpp"
 #endif
 
 #include <Eigen/Core>

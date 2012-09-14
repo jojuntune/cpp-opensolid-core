@@ -5,16 +5,6 @@
     
     # Update global source list
     add_to_global_source_list(${HEADERS} ${SOURCES} CMakeLists.txt)
-
-########## Copy Eigen plugin headers to temporary install directory ##########
-
-    set(
-        EIGEN_PLUGIN_HEADERS
-        detail/DenseBasePlugin.hpp
-        detail/MatrixBasePlugin.hpp
-        detail/MatrixPlugin.hpp
-    )
-    file(COPY ${EIGEN_PLUGIN_HEADERS} DESTINATION ${EIGEN_ROOT}/opensolid/detail)
     
 ########## Compile OpenSolidCore library ##########
 

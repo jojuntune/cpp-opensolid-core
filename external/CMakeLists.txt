@@ -25,12 +25,21 @@
         INSTALL_COMMAND ""
     )
     set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)
+    set(EIGEN_PLUGIN_HEADERS DenseBasePlugin.hpp MatrixBasePlugin.hpp MatrixPlugin.hpp)
+
+    add_to_global_source_list(${EIGEN_PLUGIN_HEADERS})
+
+    # Copy Eigen plugin headers into the same directory as the corresponding Eigen headers
+    file(COPY ${EIGEN_PLUGIN_HEADERS} DESTINATION ${EIGEN_ROOT}/Eigen/src/Core)
     
     # Set EIGEN_ROOT in parent scope so it can be used as an include dir
     set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
     
     # Install Eigen headers
     install(DIRECTORY ${EIGEN_ROOT}/Eigen DESTINATION include PATTERN CMakeLists.txt EXCLUDE)
+
+    # Install Eigen plugin headers
+    install(FILES ${EIGEN_PLUGIN_HEADERS} DESTINATION include/Eigen/src/Core)
 
 ########## Set up CxxTest (if testing is enabled) ##########
 
