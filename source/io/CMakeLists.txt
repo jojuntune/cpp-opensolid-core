@@ -7,6 +7,8 @@
     add_to_global_source_list(${HEADERS} ${SOURCES} CMakeLists.txt ObjectMessage.proto)
     
 ########## Compile opensolid_io library ##########
+    
+    include_directories(${SQLITE_ROOT})
 
     add_library(opensolid_io SHARED ${SOURCES} ${DETAIL_SOURCES})
     set_target_properties(opensolid_io PROPERTIES DEBUG_POSTFIX _debug)

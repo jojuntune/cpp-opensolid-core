@@ -217,9 +217,9 @@ namespace opensolid
 #define EIGEN_MATRIX_PLUGIN "MatrixPlugin.hpp"
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include "DenseBasePlugin.hpp"
-#include "MatrixBasePlugin.hpp"
-#include "MatrixPlugin.hpp"
+#include "../../external/eigen/DenseBasePlugin.hpp"
+#include "../../external/eigen/MatrixBasePlugin.hpp"
+#include "../../external/eigen/MatrixPlugin.hpp"
 #endif
 
 #include <Eigen/Core>

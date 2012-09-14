@@ -100,7 +100,6 @@
 
     # Set up external dependencies
     add_subdirectory(external)
-    include_directories(external ${EIGEN_ROOT})
 
     # Set up utility headers
     include_directories(source/util)
@@ -108,6 +107,7 @@
     
     # Build core library if selected
     if (${BUILD_CORE_MODULE})
+        include_directories(${EIGEN_ROOT})
         include_directories(source/core)
         add_subdirectory(source/core)
     endif ()
