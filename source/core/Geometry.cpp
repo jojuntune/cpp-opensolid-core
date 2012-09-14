@@ -109,6 +109,4 @@ namespace opensolid
         assert(argument.isConstant());
         return argument.function().convertTo<VectorXd>();
     }
-
-    std::string TypeName<Geometry>::operator()() const {return "Geometry";}
 }

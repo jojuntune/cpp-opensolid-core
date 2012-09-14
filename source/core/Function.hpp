@@ -25,7 +25,6 @@
 #include "detail/Evaluation.hpp"
 #include "detail/FunctionConstructors.hpp"
 #include "detail/FunctionImplementation.hpp"
-#include "TypeName.hpp"
 #include "Transformable.hpp"
 #include "Conversion.hpp"
 #include "Datum.hpp"
@@ -167,12 +166,6 @@ namespace opensolid
     struct Conversion<Function, VectorXd>
     {
         OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
-    };
-
-    template <>
-    struct TypeName<Function>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

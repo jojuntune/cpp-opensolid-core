@@ -22,10 +22,6 @@
 
 namespace opensolid
 {
-    std::string TypeName<Axis2d>::operator()() const {return "Axis2d";}
-
-    std::string TypeName<Axis3d>::operator()() const {return "Axis3d";}
-
     Axis2dConstructionError::Axis2dConstructionError(
             const MatrixXd& origin,
             const MatrixXd& direction

@@ -22,7 +22,6 @@
 
 #include "config.hpp"
 
-#include "TypeName.hpp"
 #include "Bounds.hpp"
 #include "Conversion.hpp"
 
@@ -178,12 +177,6 @@ namespace opensolid
         typedef Interval Type;
 
         const Interval& operator()(const Interval& argument) const;
-    };
-
-    template <>
-    struct TypeName<Interval>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

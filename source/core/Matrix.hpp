@@ -22,7 +22,6 @@
 
 #include "config.hpp"
 
-#include "TypeName.hpp"
 #include "Bounds.hpp"
 #include "Conversion.hpp"
 #include "Interval.hpp"
@@ -293,114 +292,6 @@ namespace opensolid
     struct Conversion<Interval, VectorXI>
     {
         VectorXI operator()(const Interval& interval) const;
-    };
-
-    template <>
-    struct TypeName<MatrixXd>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<MatrixXI>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Vector2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Vector3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<VectorXd>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<RowVector2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<RowVector3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<RowVectorXd>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Matrix2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Matrix3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Vector2I>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Vector3I>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<VectorXI>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<RowVector2I>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<RowVector3I>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<RowVectorXI>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Matrix2I>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Matrix3I>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 
     template <int destination_size_, int source_size_>

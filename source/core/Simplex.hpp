@@ -25,7 +25,6 @@
 #include "Bounds.hpp"
 #include "Conversion.hpp"
 #include "Transformable.hpp"
-#include "TypeName.hpp"
 #include "Datum.hpp"
 #include "Matrix.hpp"
 
@@ -154,48 +153,6 @@ namespace opensolid
         Matrix<Interval, dimensions_, 1> operator()(
             const Simplex<dimensions_, size_>& argument
         ) const;
-    };
-
-    template <>
-    struct TypeName<Line1d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Line2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Line3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Triangle2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Triangle3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Tetrahedron3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<SimplexXd>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

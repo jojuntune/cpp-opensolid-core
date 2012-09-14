@@ -22,7 +22,6 @@
 
 #include "config.hpp"
 
-#include "TypeName.hpp"
 #include "Transformable.hpp"
 #include "Matrix.hpp"
 
@@ -169,29 +168,6 @@ namespace opensolid
                 datum.origin() - datum.projectionMatrix() * datum.origin()
             )
         );
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct TypeName<Datum2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<Datum3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<DatumXd>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
 }
 
 ////////// Implementation //////////

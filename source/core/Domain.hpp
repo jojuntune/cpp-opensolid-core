@@ -22,7 +22,6 @@
 
 #include "config.hpp"
 
-#include "TypeName.hpp"
 #include "Bounds.hpp"
 #include "Conversion.hpp"
 #include "Transformable.hpp"
@@ -92,12 +91,6 @@ namespace opensolid
     struct Conversion<Domain, Interval>
     {
         OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
-    };
-
-    template <>
-    struct TypeName<Domain>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

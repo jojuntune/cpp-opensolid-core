@@ -23,7 +23,6 @@
 #include "config.hpp"
 
 #include "Conversion.hpp"
-#include "TypeName.hpp"
 
 #include <string>
 
@@ -77,17 +76,6 @@ namespace opensolid
     template <> OPENSOLID_IO_EXPORT double Object::get<double>(const std::string&) const;
     template <> OPENSOLID_IO_EXPORT std::string Object::get<std::string>(const std::string&) const;
     template <> OPENSOLID_IO_EXPORT Object Object::get<Object>(const std::string&) const;
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct TypeName<Object>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
 }
 
 ////////// Errors //////////

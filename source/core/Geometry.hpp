@@ -25,7 +25,6 @@
 #include "detail/GeometryConstructors.hpp"
 #include "detail/GeometryImplementation.hpp"
 #include "detail/Evaluation.hpp"
-#include "TypeName.hpp"
 #include "Bounds.hpp"
 #include "Conversion.hpp"
 #include "Transformable.hpp"
@@ -117,12 +116,6 @@ namespace opensolid
     struct Conversion<Geometry, VectorXd>
     {
         OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& argument) const;
-    };
-
-    template <>
-    struct TypeName<Geometry>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

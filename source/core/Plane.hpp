@@ -23,7 +23,6 @@
 #include "config.hpp"
 
 #include "Datum.hpp"
-#include "TypeName.hpp"
 
 namespace opensolid
 {
@@ -36,17 +35,6 @@ namespace opensolid
 
         template <int dimensions_, int axes_>
         Plane3d(const Datum<dimensions_, axes_>& datum);
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct TypeName<Plane3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 

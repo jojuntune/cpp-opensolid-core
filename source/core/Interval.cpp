@@ -73,6 +73,4 @@ namespace opensolid
         }
         return stream;
     }
-
-    std::string TypeName<Interval>::operator()() const {return "Interval";}
 }

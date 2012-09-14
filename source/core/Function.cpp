@@ -449,6 +449,4 @@ namespace opensolid
         assert(argument.isConstant());
         return static_cast<const ConstantFunction*>(argument.implementation())->vector();
     }
-
-    std::string TypeName<Function>::operator()() const {return "Function";}
 }

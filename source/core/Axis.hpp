@@ -23,7 +23,6 @@
 #include "config.hpp"
 
 #include "Error.hpp"
-#include "TypeName.hpp"
 #include "Datum.hpp"
 
 namespace opensolid
@@ -50,23 +49,6 @@ namespace opensolid
 
         template <int dimensions_, int axes_>
         Axis3d(const Datum<dimensions_, axes_>& datum);
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct TypeName<Axis2d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
-    };
-    
-    template <>
-    struct TypeName<Axis3d>
-    {
-        OPENSOLID_CORE_EXPORT std::string operator()() const;
     };
 }
 
