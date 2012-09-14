@@ -1,25 +1,20 @@
 ########## Define lists of source files ##########
 
-    file(GLOB HEADERS *.hpp)
-    file(GLOB SOURCES *.cpp)
-    file(GLOB DETAIL_HEADERS detail/*.hpp)
-    file(GLOB DETAIL_SOURCES detail/*.cpp)
+    file(GLOB HEADERS *.hpp detail/*.hpp)
+    file(GLOB SOURCES *.cpp detail/*.cpp)
     
     # Update global source list
-    add_to_global_source_list(
-        ${HEADERS}
-        ${SOURCES}
-        ${DETAIL_HEADERS}
-        ${DETAIL_SOURCES}
-        CMakeLists.txt
-    )
+    add_to_global_source_list(${HEADERS} ${SOURCES} CMakeLists.txt)
 
 ########## Copy Eigen plugin headers to temporary install directory ##########
 
-    file(
-        COPY detail/DenseBasePlugin.hpp detail/MatrixBasePlugin.hpp detail/MatrixPlugin.hpp
-        DESTINATION ${EIGEN_ROOT}/opensolid/detail
+    set(
+        EIGEN_PLUGIN_HEADERS
+        detail/DenseBasePlugin.hpp
+        detail/MatrixBasePlugin.hpp
+        detail/MatrixPlugin.hpp
     )
+    file(COPY ${EIGEN_PLUGIN_HEADERS} DESTINATION ${EIGEN_ROOT}/opensolid/detail)
     
 ########## Compile OpenSolidCore library ##########
 
@@ -29,12 +24,7 @@
     
 ########## Install headers ##########
     
-    install(
-        DIRECTORY .
-        DESTINATION include/opensolid
-        FILES_MATCHING
-        PATTERN *.hpp
-    )
+    install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)
     
 ########## Install libraries ##########
         

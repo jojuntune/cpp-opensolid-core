@@ -63,12 +63,7 @@
     
     set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX _debug)
     
-    add_to_global_source_list(
-        ${UI_MOC_HEADERS}
-        ${UI_SOURCES}
-        ${STK_SOURCES}
-        CMakeLists.txt
-    )
+    add_to_global_source_list(${UI_MOC_HEADERS} ${UI_SOURCES} ${STK_SOURCES} CMakeLists.txt)
     
     target_link_libraries(opensolid_ui ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 
@@ -84,4 +79,3 @@
         opensolid_graph
         opensolid_stk
     )
-    

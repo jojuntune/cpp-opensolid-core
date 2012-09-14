@@ -10,7 +10,7 @@
         set(DISABLE_WARNINGS_FLAG "-w")
     elseif (MSVC)
         set(DISABLE_WARNINGS_FLAG "/w")
-    endif()
+    endif ()
 
 ########## Set up Eigen ##########
 
@@ -30,11 +30,7 @@
     set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
     
     # Install Eigen headers
-    install(
-        DIRECTORY ${EIGEN_ROOT}/Eigen
-        DESTINATION include
-        PATTERN "CMakeLists.txt" EXCLUDE
-    )
+    install(DIRECTORY ${EIGEN_ROOT}/Eigen DESTINATION include PATTERN CMakeLists.txt EXCLUDE)
 
 ########## Set up CxxTest (if testing is enabled) ##########
 
@@ -83,8 +79,13 @@
         target_link_libraries(sqlite_shell sqlite_library)
         
         # Disable compiler warnings for SQLite code
-        set_target_properties(sqlite_library sqlite_shell PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
-    endif()
+        set_target_properties(
+            sqlite_library
+            sqlite_shell
+            PROPERTIES
+            COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG}
+        )
+    endif ()
 
 ########## Define lists of source files ##########
     

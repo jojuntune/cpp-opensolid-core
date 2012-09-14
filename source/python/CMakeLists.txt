@@ -42,12 +42,7 @@
     
 ########## Install headers ##########
     
-    install(
-        DIRECTORY .
-        DESTINATION include/opensolid
-        FILES_MATCHING
-        PATTERN "*.hpp"
-    )
+    install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)
     
 ########## Install libraries ##########
         

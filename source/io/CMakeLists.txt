@@ -4,12 +4,7 @@
     file(GLOB SOURCES *.cpp)
     
     # Update global source list
-    add_to_global_source_list(
-        ${HEADERS}
-        ${SOURCES}
-        CMakeLists.txt
-        SerializedObject.proto
-    )
+    add_to_global_source_list(${HEADERS} ${SOURCES} CMakeLists.txt ObjectMessage.proto)
     
 ########## Compile opensolid_io library ##########
 
@@ -19,18 +14,13 @@
     
 ########## Install headers ##########
     
-    install(
-        DIRECTORY .
-        DESTINATION include/opensolid
-        FILES_MATCHING
-        PATTERN *.hpp
-    )
+    install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)
     
 ########## Install libraries ##########
         
     # Install C++ shared libraries
     install(
-        TARGETS opensolid_core
+        TARGETS opensolid_io
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
