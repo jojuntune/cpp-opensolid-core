@@ -22,7 +22,7 @@
 
 #include "config.hpp"
 
-#include "detail/ReferenceCounted.hpp"
+#include "ReferenceCounted.hpp"
 #include "Function.hpp"
 #include "Matrix.hpp"
 #include "Set.hpp"
