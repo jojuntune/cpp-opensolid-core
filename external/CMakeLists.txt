@@ -11,52 +11,41 @@
     elseif (MSVC)
         set(DISABLE_WARNINGS_FLAG "/w")
     endif ()
-
-########## Set up Eigen ##########
-
-    # Extract Eigen sources
-    externalproject_add(
-        eigen_sources
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/eigen-3.1.1.tar.gz
-        URL_MD5 7f1de87d4bfef65d0c59f15f6697829d
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-    )
-    set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)
-    set(EIGEN_PLUGIN_HEADERS DenseBasePlugin.hpp MatrixBasePlugin.hpp MatrixPlugin.hpp)
-
-    add_to_global_source_list(${EIGEN_PLUGIN_HEADERS})
-
-    # Copy Eigen plugin headers into the same directory as the corresponding Eigen headers
-    file(COPY ${EIGEN_PLUGIN_HEADERS} DESTINATION ${EIGEN_ROOT}/Eigen/src/Core)
     
-    # Set EIGEN_ROOT in parent scope so it can be used as an include dir
-    set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
-    
-    # Install Eigen headers
-    install(DIRECTORY ${EIGEN_ROOT}/Eigen DESTINATION include PATTERN CMakeLists.txt EXCLUDE)
+    add_to_global_source_list(CMakeLists.txt)
 
-    # Install Eigen plugin headers
-    install(FILES ${EIGEN_PLUGIN_HEADERS} DESTINATION include/Eigen/src/Core)
+########## Set up Eigen (if core module is enabled) ##########
 
-########## Set up CxxTest (if testing is enabled) ##########
-
-    if (${BUILD_TESTS})
+    if (${BUILD_CORE_MODULE})
+        # Extract Eigen sources
         externalproject_add(
-            cxxtest_sources
+            eigen_sources
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            URL ${CMAKE_CURRENT_SOURCE_DIR}/cxxtest-4.0.2.tar.gz
-            URL_MD5 8fac08cb5300d74f054cffdd2466a5d3
+            URL ${CMAKE_CURRENT_SOURCE_DIR}/eigen-3.1.1.tar.gz
+            URL_MD5 7f1de87d4bfef65d0c59f15f6697829d
             CONFIGURE_COMMAND ""
             BUILD_COMMAND ""
             INSTALL_COMMAND ""
         )
-        set(CXXTEST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/cxxtest_sources PARENT_SCOPE)
-    endif()
+        set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)
+        set(EIGEN_PLUGIN_HEADERS DenseBasePlugin.hpp MatrixBasePlugin.hpp MatrixPlugin.hpp)
 
-########## Extract and build SQLite ##########
+        add_to_global_source_list(${EIGEN_PLUGIN_HEADERS})
+
+        # Copy Eigen plugin headers into the same directory as the corresponding Eigen headers
+        file(COPY ${EIGEN_PLUGIN_HEADERS} DESTINATION ${EIGEN_ROOT}/Eigen/src/Core)
+    
+        # Set EIGEN_ROOT in parent scope so it can be used as an include dir
+        set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
+    
+        # Install Eigen headers
+        install(DIRECTORY ${EIGEN_ROOT}/Eigen DESTINATION include PATTERN CMakeLists.txt EXCLUDE)
+
+        # Install Eigen plugin headers
+        install(FILES ${EIGEN_PLUGIN_HEADERS} DESTINATION include/Eigen/src/Core)
+    endif ()
+
+########## Extract and build SQLite (if I/O module is enabled) ##########
 
     if (${BUILD_IO_MODULE})
         externalproject_add(
@@ -96,6 +85,17 @@
         )
     endif ()
 
-########## Define lists of source files ##########
-    
-    add_to_global_source_list(CMakeLists.txt)
+########## Set up CxxTest (if testing is enabled) ##########
+
+    if (${BUILD_TESTS})
+        externalproject_add(
+            cxxtest_sources
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+            URL ${CMAKE_CURRENT_SOURCE_DIR}/cxxtest-4.0.2.tar.gz
+            URL_MD5 8fac08cb5300d74f054cffdd2466a5d3
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            INSTALL_COMMAND ""
+        )
+        set(CXXTEST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/cxxtest_sources PARENT_SCOPE)
+    endif()
