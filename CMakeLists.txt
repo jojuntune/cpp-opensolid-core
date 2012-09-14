@@ -10,10 +10,11 @@
     
 ########## Set up user configuration options ##########
 
-    set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
-    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module (requires Boost.Python, Python)")
-    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on Python module)")
-    set(BUILD_TESTS OFF CACHE BOOL "Build tests")
+    set(BUILD_CORE_MODULE OFF CACHE BOOL "Build core module")
+    set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module (depends on core module)")
+    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module (requires Boost.Python, Python, depends on core module)")
+    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on core and Python modules)")
+    set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
     
 ########## Set up common build settings ##########
@@ -26,15 +27,19 @@
         # Enable pthread
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+        
         # Set up warnings
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-variable -Wno-enum-compare")
+        
         # Disable asserts in RelWithDebInfo build for efficiency
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
+        
         # Enable -fpic on 64-bit systems where it is required
         if (CMAKE_SIZEOF_VOID_P EQUAL 8)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fpic")
         endif ()
+        
         # Define proper flag to enable C++11 features
         execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
         if (GCC_VERSION VERSION_LESS 4.7)
@@ -63,12 +68,15 @@
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
         add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
+        
         # Add /MP flag for parallel compilation within projects
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-        # Disable incremental linking (seems to cause erros in debug builds)
+        
+        # Disable incremental linking (seems to cause errors in debug builds)
         set(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO")
         set(CMAKE_SHARED_LINKER_FLAGS "/INCREMENTAL:NO")
         set(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
+        
         # Explicitly set WIN64 flag
         if (CMAKE_SIZEOF_VOID_P EQUAL 8)
             add_definitions(-DWIN64)
@@ -93,17 +101,16 @@
     # Set up external dependencies
     add_subdirectory(external)
     include_directories(${EIGEN_ROOT})
-    if (${BUILD_TESTS})
-        include_directories(${CXXTEST_ROOT})
-    endif ()
 
-    # Set up config header
-    include_directories(source/config)
-    add_subdirectory(source/config)
+    # Set up utility headers
+    include_directories(source/util)
+    add_subdirectory(source/util)
     
-    # Build core library
-    include_directories(source/core)
-    add_subdirectory(source/core)
+    # Build core library if selected
+    if (${BUILD_CORE_MODULE})
+        include_directories(source/core)
+        add_subdirectory(source/core)
+    endif ()
     
     # Build I/O module if selected
     if (${BUILD_IO_MODULE})
@@ -160,6 +167,10 @@
     if (${BUILD_DOCUMENTATION})
         add_subdirectory(documentation)
     endif ()
+    
+########## Install license file ##########
+    
+    install(FILES source/license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 ########## Set up source groups for Visual Studio ##########
 
@@ -172,7 +183,3 @@
     )
 
     create_source_groups()
-    
-########## Install license file ##########
-    
-    install(FILES source/license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")

@@ -22,20 +22,10 @@
 
 #include "config.hpp"
 
-#include <boost/intrusive_ptr.hpp>
 #include <boost/smart_ptr/detail/atomic_count.hpp>
 
 namespace opensolid
 {
-    template <class DerivedType>
-    class ReferenceCounted;
-
-    template <class DerivedType>
-    void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument);
-    
-    template <class DerivedType>
-    void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument);
-
     template <class DerivedType>
     class ReferenceCounted
     {
@@ -43,15 +33,18 @@ namespace opensolid
         ReferenceCounted(const ReferenceCounted&);
 
         mutable boost::detail::atomic_count _count;
-
-        template <class Type>
-        friend void intrusive_ptr_add_ref(const ReferenceCounted<Type>* argument);
-
-        template <class Type>
-        friend void intrusive_ptr_release(const ReferenceCounted<Type>* argument);
     public:
         ReferenceCounted();
+
+        void addReference() const;
+        void removeReference() const;
     };
+
+    template <class DerivedType>
+    void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument);
+    
+    template <class DerivedType>
+    void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument);
 }
 
 ////////// Implementation //////////
@@ -60,16 +53,24 @@ namespace opensolid
 {
     template <class DerivedType>
     inline ReferenceCounted<DerivedType>::ReferenceCounted() : _count(0) {}
+
+    template <class DerivedType>
+    inline void ReferenceCounted<DerivedType>::addReference() const {
+        ++_count;
+    }
+
+    template <class DerivedType>
+    inline void ReferenceCounted<DerivedType>::removeReference() const {
+        if (--_count == 0) {delete static_cast<const DerivedType*>(this);}
+    }
         
     template <class DerivedType>
     inline void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument) {
-        ++argument->_count;
+        argument->addReference();
     }
     
     template <class DerivedType>
     inline void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument) {
-        if (--argument->_count == 0) {
-            delete static_cast<const DerivedType*>(argument);
-        }
+        argument->removeReference();
     }
 }
