@@ -4,7 +4,7 @@
         protobuf_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         URL ${CMAKE_CURRENT_SOURCE_DIR}/protobuf-2.4.1.tar.gz
-        URL_MD5 dc84e9912ea768baa1976cb7bbcea7b5
+        URL_MD5 cddfadb4f8691a0a45e833e7ad0039ec
         PATCH_COMMAND
         ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/patch.cmake
         CONFIGURE_COMMAND ""
