@@ -1,7 +1,3 @@
-########## Define lists of source files ##########
-
-    add_to_global_source_list(*)
-
 ########## Set up Eigen source tree ##########
 
     externalproject_add(
@@ -22,3 +18,7 @@
 ########## Install Eigen headers ##########
 
     install(DIRECTORY ${EIGEN_ROOT}/Eigen DESTINATION include PATTERN CMakeLists.txt EXCLUDE)
+    
+########## Add files to global source list ##########
+
+    add_to_global_source_list(*)

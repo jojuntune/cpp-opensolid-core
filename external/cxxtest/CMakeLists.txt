@@ -1,7 +1,3 @@
-########## Define lists of source files ##########
-
-    add_to_global_source_list(*)
-
 ########## Set up CxxTest source tree ##########
 
     externalproject_add(
@@ -16,3 +12,7 @@
     
     # Set CXXTEST_ROOT in external/ directory (will then be passed up to root)
     set(CXXTEST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/cxxtest_sources PARENT_SCOPE)
+    
+########## Add files to global source list ##########
+
+    add_to_global_source_list(*)

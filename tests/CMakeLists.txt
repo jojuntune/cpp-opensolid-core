@@ -72,7 +72,7 @@
     
 ########## Python module tests ##########
     
-    if (${BUILD_PYTHON_MODULE})
+    if(${BUILD_PYTHON_MODULE})
         # Set up Python
         find_package(PythonLibs REQUIRED)
         include_directories(${PYTHON_INCLUDE_DIRS})
@@ -80,11 +80,11 @@
         add_cxxtest(PythonTests PythonTests.hpp opensolid_python)
         
         add_to_global_source_list(PythonTests.hpp)
-    endif ()
+    endif()
     
 ########## Graph library tests ##########
 
-    if (${BUILD_UI})
+    if(${BUILD_UI})
         # Add graph tests
         add_executable(nodeTests nodeTests.cpp)
         target_link_libraries(nodeTests opensolid_graph)
@@ -95,4 +95,4 @@
         #ADD_TEST( graph_eval_tests ${EXECUTABLE_OUTPUT_PATH}/evalTests )
         
         add_to_global_source_list(nodeTests.cpp)
-    endif ()
+    endif()

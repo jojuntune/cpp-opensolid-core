@@ -1,34 +1,37 @@
 ########## General setup ##########
 
     include(ExternalProject)
-    add_to_global_source_list(CMakeLists.txt)
 
 ########## Set up flag to use to disable compiler warnings on external code ##########
 
     set(DISABLE_WARNINGS_FLAG "")
-    if (CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_COMPILER_IS_GNUCXX)
         set(DISABLE_WARNINGS_FLAG "-w")
-    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(DISABLE_WARNINGS_FLAG "-w")
-    elseif (MSVC)
+    elseif(MSVC)
         set(DISABLE_WARNINGS_FLAG "/w")
-    endif ()
+    endif()
     
 ########## Build external projects where required by OpenSolid modules ##########
 
-    if (${BUILD_CORE_MODULE})
+    if(${BUILD_CORE_MODULE})
         add_subdirectory(eigen)
         set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
-    endif ()
+    endif()
     
-    if (${BUILD_IO_MODULE})
+    if(${BUILD_IO_MODULE})
         add_subdirectory(sqlite)
         add_subdirectory(protobuf)
         set(SQLITE_ROOT ${SQLITE_ROOT} PARENT_SCOPE)
         set(PROTOBUF_ROOT ${PROTOBUF_ROOT} PARENT_SCOPE)
-    endif ()
+    endif()
     
-    if (${BUILD_TESTS})
+    if(${BUILD_TESTS})
         add_subdirectory(cxxtest)
         set(CXXTEST_ROOT ${CXXTEST_ROOT} PARENT_SCOPE)
-    endif ()
+    endif()
+    
+########## Add files to global source list ##########
+    
+    add_to_global_source_list(CMakeLists.txt)

@@ -1,25 +1,10 @@
-# Collect graph library sources
-set(
-    GRAPH_SOURCES
-    assemblyNode.cpp
-    componentNode.cpp
-    evaluateGraphAction.cpp
-    fragmentNode.cpp
-    graphAction.cpp
-    graphScript.cpp
-    graphNode.cpp
-    graphParam.cpp
-    graphParamList.cpp
-    groupNode.cpp
-    listGraphAction.cpp
-    paramNode.cpp
-    pointNode.cpp
-    project.cpp
-    renderGraphAction.cpp
-)
-add_to_global_source_list(*)
+########## Build STK library ##########
 
-# Build graph library
-add_library(opensolid_graph ${GRAPH_SOURCES})
-set_target_properties(opensolid_graph PROPERTIES DEBUG_POSTFIX _debug)
-target_link_libraries(opensolid_graph opensolid_stk opensolid_python ${OPENGL_LIBRARIES})
+    file(GLOB GRAPH_SOURCES *.cpp)
+    add_library(opensolid_graph ${GRAPH_SOURCES})
+    SET_TARGET_PROPERTIES(opensolid_graph PROPERTIES DEBUG_POSTFIX _debug)
+    TARGET_LINK_LIBRARIES(opensolid_graph opensolid_stk opensolid_python ${OPENGL_LIBRARIES})
+
+########## Add files to global source list ##########
+
+    add_to_global_source_list(*)

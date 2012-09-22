@@ -1,10 +1,3 @@
-########## Define lists of source files ##########
-
-    file(GLOB HEADERS *.hpp)
-    file(GLOB SOURCES *.cpp)
-    
-    add_to_global_source_list(*)
-    
 ########## Create macro for .proto file compilation ##########
 
     # MACRO(COMPILE_PROTO_FILES GENERATED_SOURCES)
@@ -34,7 +27,8 @@
     
     include_directories(${SQLITE_ROOT})
 
-    add_library(opensolid_io SHARED ${SOURCES} ${DETAIL_SOURCES})
+    file(GLOB IO_SOURCES *.cpp)
+    add_library(opensolid_io SHARED ${IO_SOURCES})
     set_target_properties(opensolid_io PROPERTIES DEBUG_POSTFIX _debug)
     target_link_libraries(opensolid_io opensolid_core)
     
@@ -51,3 +45,7 @@
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
     )
+    
+########## Add files to global source list ##########
+
+    add_to_global_source_list(*)

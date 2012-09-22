@@ -38,20 +38,7 @@
 
 ########## Build UI library ##########
 
-    set(
-        UI_SOURCES
-        camera.cpp
-        cameraModelView.cpp
-        cameraFirstPerson.cpp
-        dlgPointDetails.cpp
-        graphItemModel.cpp
-        mainWindow.cpp
-        modelView.cpp
-        nodePropItemModel.cpp
-        renderTarget.cpp
-        treeWidget.cpp
-        projectRenderTarget.cpp
-    )
+    file(GLOB UI_SOURCES *.cpp)
     
     add_library(
         opensolid_ui
@@ -63,11 +50,9 @@
     
     set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX _debug)
     
-    add_to_global_source_list(* res/*)
-    
     target_link_libraries(opensolid_ui ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 
-########## Compile OpenSolid application ##########
+########## Build OpenSolid application ##########
 
     add_executable(opensolid opensolid.cpp)
     
@@ -79,3 +64,7 @@
         opensolid_graph
         opensolid_stk
     )
+
+########## Add files to global source list ##########
+
+    add_to_global_source_list(* res/*)

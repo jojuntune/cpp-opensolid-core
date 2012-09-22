@@ -23,7 +23,7 @@
     add_definitions(-D_USE_MATH_DEFINES)
 
     # Set up compiler-specific flags
-    if (CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_COMPILER_IS_GNUCXX)
         # Enable pthread
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -35,36 +35,36 @@
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
         
         # Enable -fpic on 64-bit systems where it is required
-        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fpic")
-        endif ()
+        endif()
         
         # Define proper flag to enable C++11 features
         execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-        if (GCC_VERSION VERSION_LESS 4.7)
+        if(GCC_VERSION VERSION_LESS 4.7)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-        else ()
+        else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-        endif ()
-    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        endif()
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unused-function")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
         set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ldl")
         set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -ldl")
-        if (APPLE)
+        if(APPLE)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")
             set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -stdlib=libc++")
-        else ()
+        else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pthread")
             set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -pthread")
         endif()
-    elseif (MSVC)
+    elseif(MSVC)
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
         add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
@@ -78,19 +78,19 @@
         set(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
         
         # Explicitly set WIN64 flag
-        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
             add_definitions(-DWIN64)
-        endif ()
-    endif ()
+        endif()
+    endif()
 
     # Place all executables, libraries in one directory
-    if (MSVC_IDE)
+    if(MSVC_IDE)
         set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
         set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
-    else ()
+    else()
         set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
         set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
-    endif ()
+    endif()
     
 ########## Build and install subprojects ##########
     
@@ -106,20 +106,20 @@
     add_subdirectory(source/util)
     
     # Build core library if selected
-    if (${BUILD_CORE_MODULE})
+    if(${BUILD_CORE_MODULE})
         include_directories(${EIGEN_ROOT})
         include_directories(source/core)
         add_subdirectory(source/core)
-    endif ()
+    endif()
     
     # Build I/O module if selected
-    if (${BUILD_IO_MODULE})
+    if(${BUILD_IO_MODULE})
         include_directories(source/io)
         add_subdirectory(source/io)
-    endif ()
+    endif()
     
     # Build Python module if selected
-    if (${BUILD_PYTHON_MODULE})
+    if(${BUILD_PYTHON_MODULE})
         # Set up Python
         find_package(PythonInterp REQUIRED)
         find_package(PythonLibs REQUIRED)
@@ -133,10 +133,10 @@
         
         include_directories(source/python)
         add_subdirectory(source/python)
-    endif ()
+    endif()
     
     # Build UI if selected
-    if (${BUILD_UI})
+    if(${BUILD_UI})
         # Se up Qt
         find_package(Qt4 REQUIRED)
         set(QT_USE_QTOPENGL ON)
@@ -155,18 +155,18 @@
     
         include_directories(source/ui)
         add_subdirectory(source/ui)
-    endif ()
+    endif()
     
     # Build tests if selected
-    if (${BUILD_TESTS})
+    if(${BUILD_TESTS})
         enable_testing()
         add_subdirectory(tests)
-    endif ()
+    endif()
     
     # Build documentation if selected
-    if (${BUILD_DOCUMENTATION})
+    if(${BUILD_DOCUMENTATION})
         add_subdirectory(documentation)
-    endif ()
+    endif()
     
 ########## Install license file ##########
     

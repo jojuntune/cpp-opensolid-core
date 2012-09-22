@@ -1,19 +1,12 @@
-########## Define lists of source files ##########
-
-    file(GLOB MODULE_HEADERS detail/*.hpp)
-    file(GLOB MODULE_SOURCES detail/*.cpp)
-
-    # Update global source list
-    add_to_global_source_list(* detail/*)
-    
 ########## Compile Python extension module ##########
     
+    file(GLOB MODULE_SOURCES detail/*.cpp)
     add_library(opensolid_python_module SHARED ${MODULE_SOURCES})
     set_target_properties(opensolid_python_module PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
     set_target_properties(opensolid_python_module PROPERTIES DEBUG_POSTFIX _debug)
-    if (WIN32)
+    if(WIN32)
         set_target_properties(opensolid_python_module PROPERTIES SUFFIX ".pyd")
-    endif ()
+    endif()
     target_link_libraries(
         opensolid_python_module
         opensolid_core
@@ -56,3 +49,7 @@
 
     # Install Python extension module
     install(TARGETS opensolid_python_module DESTINATION ${PYTHON_SITE_PACKAGES})
+
+########## Add files to global source list ##########
+
+    add_to_global_source_list(* detail/*)

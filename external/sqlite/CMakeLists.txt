@@ -1,7 +1,3 @@
-########## Define lists of source files ##########
-
-    add_to_global_source_list(*)
-
 ########## Set up SQLite source tree ##########
 
     externalproject_add(
@@ -24,10 +20,10 @@
     set_target_properties(sqlite_library PROPERTIES OUTPUT_NAME sqlite3 DEBUG_POSTFIX _debug)
     set_source_files_properties(${SQLITE_ROOT}/sqlite3.c PROPERTIES GENERATED TRUE)
     add_dependencies(sqlite_library sqlite_sources)
-    if (CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_COMPILER_IS_GNUCXX)
         find_package(Threads)
         target_link_libraries(sqlite_library dl ${CMAKE_THREAD_LIBS_INIT})
-    endif ()
+    endif()
     set_target_properties(sqlite_library PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
     
 ########## Build SQLite shell ##########
@@ -38,3 +34,7 @@
     add_dependencies(sqlite_shell sqlite_sources)
     target_link_libraries(sqlite_shell sqlite_library)
     set_target_properties(sqlite_shell PROPERTIES COMPILE_FLAGS ${DISABLE_WARNINGS_FLAG})
+
+########## Add files to global source list ##########
+
+    add_to_global_source_list(*)
