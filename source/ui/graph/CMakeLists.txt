@@ -17,7 +17,7 @@ set(
     project.cpp
     renderGraphAction.cpp
 )
-add_to_global_source_list(${GRAPH_SOURCES} CMakeLists.txt)
+add_to_global_source_list(*)
 
 # Build graph library
 add_library(opensolid_graph ${GRAPH_SOURCES})

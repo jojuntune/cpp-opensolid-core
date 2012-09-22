@@ -1,6 +1,3 @@
-file(GLOB HEADERS *.hpp)
-file(GLOB SOURCES *.cpp)
+########## Install headers ##########
 
-add_to_global_source_list(${HEADERS} ${SOURCES} CMakeLists.txt)
-
-install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)
+    install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)

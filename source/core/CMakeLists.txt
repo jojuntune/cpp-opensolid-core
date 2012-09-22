@@ -4,7 +4,7 @@
     file(GLOB SOURCES *.cpp detail/*.cpp)
     
     # Update global source list
-    add_to_global_source_list(${HEADERS} ${SOURCES} CMakeLists.txt)
+    add_to_global_source_list(* detail/*)
     
 ########## Compile OpenSolidCore library ##########
 

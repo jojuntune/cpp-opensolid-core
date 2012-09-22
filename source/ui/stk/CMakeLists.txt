@@ -31,7 +31,7 @@ set(
     vector3.cpp
 )
 
-add_to_global_source_list(${STK_SOURCES} CMakeLists.txt)
+add_to_global_source_list(*)
     
 # Compile and link STK library
 add_library(opensolid_stk ${STK_SOURCES})

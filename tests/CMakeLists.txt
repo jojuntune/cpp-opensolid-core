@@ -50,23 +50,25 @@
     
 ########## Core module tests ##########
 
-    add_cxxtest(IntervalTests IntervalTests.hpp opensolid_core)
-    add_cxxtest(MatrixTests MatrixTests.hpp opensolid_core)
-    add_cxxtest(DatumTests DatumTests.hpp opensolid_core)
-    add_cxxtest(SimplexTests SimplexTests.hpp opensolid_core)
-    add_cxxtest(SetTests SetTests.hpp opensolid_core)
-    add_cxxtest(FunctionTests FunctionTests.hpp opensolid_core)
-    add_cxxtest(GeometryTests GeometryTests.hpp opensolid_core)
-    
-    add_to_global_source_list(
-        IntervalTests.hpp
-        MatrixTests.hpp
-        DatumTests.hpp
-        SimplexTests.hpp
-        SetTests.hpp
-        FunctionTests.hpp
-        GeometryTests.hpp
-    )
+    if(${BUILD_CORE_MODULE})
+        add_cxxtest(IntervalTests IntervalTests.hpp opensolid_core)
+        add_cxxtest(MatrixTests MatrixTests.hpp opensolid_core)
+        add_cxxtest(DatumTests DatumTests.hpp opensolid_core)
+        add_cxxtest(SimplexTests SimplexTests.hpp opensolid_core)
+        add_cxxtest(SetTests SetTests.hpp opensolid_core)
+        add_cxxtest(FunctionTests FunctionTests.hpp opensolid_core)
+        add_cxxtest(GeometryTests GeometryTests.hpp opensolid_core)
+        
+        add_to_global_source_list(
+            IntervalTests.hpp
+            MatrixTests.hpp
+            DatumTests.hpp
+            SimplexTests.hpp
+            SetTests.hpp
+            FunctionTests.hpp
+            GeometryTests.hpp
+        )
+    endif()
     
 ########## Python module tests ##########
     

@@ -34,7 +34,7 @@
     # Include build directory so ui_XXX.h headers (generated from the .ui files)
     # can be found, and the current directory so generated headers can find headers
     # in the current directory
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} .)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR} .)
 
 ########## Build UI library ##########
 
@@ -63,7 +63,7 @@
     
     set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX _debug)
     
-    add_to_global_source_list(${UI_MOC_HEADERS} ${UI_SOURCES} ${STK_SOURCES} CMakeLists.txt)
+    add_to_global_source_list(* res/*)
     
     target_link_libraries(opensolid_ui ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 

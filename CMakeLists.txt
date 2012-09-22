@@ -177,9 +177,9 @@
     add_to_global_source_list(
         CMakeLists.txt
         CreateSourceGroups.cmake
-        source/Template.cpp
-        source/Template.hpp
-        source/license.txt
+        license.txt
+        Template.hpp
+        Template.cpp
     )
-
+    
     create_source_groups()

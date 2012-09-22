@@ -4,14 +4,7 @@
     file(GLOB MODULE_SOURCES detail/*.cpp)
 
     # Update global source list
-    add_to_global_source_list(
-        PythonEnvironment.hpp
-        PythonEnvironment.cpp
-        ${MODULE_HEADERS}
-        ${MODULE_SOURCES}
-        CMakeLists.txt
-        bindTemplate.cpp
-    )
+    add_to_global_source_list(* detail/*)
     
 ########## Compile Python extension module ##########
     
