@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <sqlite/sqlite3.h>
+#include "sqlite3.h"
 
-#include <OpenSolid/Core/File/File.hpp>
+#include <OpenSolid/IO/File.hpp>
 
 namespace opensolid
 {

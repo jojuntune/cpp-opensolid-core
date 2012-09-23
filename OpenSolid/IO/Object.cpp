@@ -18,9 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Common/TypeName.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
-#include <OpenSolid/Core/Object/SerializedObject.pb.h>
+#include <OpenSolid/IO/Object.hpp>
+#include <OpenSolid/IO/ObjectMessage.pb.h>
 
 namespace opensolid
 {

@@ -24,8 +24,6 @@
 
 #include <OpenSolid/util/Conversion.hpp>
 
-#include <string>
-
 namespace opensolid
 {
     class ObjectData;
@@ -41,30 +39,33 @@ namespace opensolid
         OPENSOLID_IO_EXPORT Object(const Object& other);
         OPENSOLID_IO_EXPORT Object(Object&& other);
 
+        template <class Type>
+        Object(const Type& argument);
+
         OPENSOLID_IO_EXPORT bool has(int key) const;
-        OPENSOLID_IO_EXPORT bool has(const std::string& key) const;
+        OPENSOLID_IO_EXPORT bool has(const char* key) const;
         
         OPENSOLID_IO_EXPORT Object& set(int key, int value);
         OPENSOLID_IO_EXPORT Object& set(int key, double value);
-        OPENSOLID_IO_EXPORT Object& set(int key, const std::string& value);
+        OPENSOLID_IO_EXPORT Object& set(int key, const char* value);
         OPENSOLID_IO_EXPORT Object& set(int key, const Object& value);
         
-        OPENSOLID_IO_EXPORT Object& set(const std::string& key, int value);
-        OPENSOLID_IO_EXPORT Object& set(const std::string& key, double value);
-        OPENSOLID_IO_EXPORT Object& set(const std::string& key, const std::string& value);
-        OPENSOLID_IO_EXPORT Object& set(const std::string& key, const Object& value);
+        OPENSOLID_IO_EXPORT Object& set(const char* key, int value);
+        OPENSOLID_IO_EXPORT Object& set(const char* key, double value);
+        OPENSOLID_IO_EXPORT Object& set(const char* key, const char* value);
+        OPENSOLID_IO_EXPORT Object& set(const char* key, const Object& value);
 
         template <class Type>
         Object& set(int key, const Type& value);
 
         template <class Type>
-        Object& set(const std::string& key, const Type& value);
+        Object& set(const char* key, const Type& value);
         
         template <class Type>
         Type get(int key) const;
         
         template <class Type>
-        Type get(const std::string& key) const;
+        Type get(const char* key) const;
     };
 
     template <> OPENSOLID_IO_EXPORT int Object::get<int>(int) const;

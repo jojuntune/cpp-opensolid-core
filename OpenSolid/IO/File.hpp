@@ -18,29 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef OPENSOLID__FILE_HPP
-#define OPENSOLID__FILE_HPP
+#pragma once
+
+#include <OpenSolid/config.hpp>
+#include <OpenSolid/IO/Object.hpp>
 
 #include <string>
 #include <memory>
-
-#include <OpenSolid/Core/config.hpp>
-#include <OpenSolid/Core/Common/Dictionary.hpp>
-#include <OpenSolid/Core/Scalar/Interval.hpp>
-#include <OpenSolid/Core/Matrix/Matrix.hpp>
-#include <OpenSolid/Core/Datum/Datum.hpp>
-#include <OpenSolid/Core/Simplex/Simplex.hpp>
-#include <OpenSolid/Core/Function/Function.hpp>
-#include <OpenSolid/Core/Geometry/Geometry.hpp>
-#include <OpenSolid/Core/Domain/Domain.hpp>
-#include <OpenSolid/Core/Object/Object.hpp>
 
 struct sqlite3;
 struct sqlite3_stmt;
 
 namespace opensolid
 {
-    class File : public Dictionary<File>
+    class File
     {
     private:
         std::string _filename;
