@@ -5,7 +5,7 @@
     # CMake 2.8.3 or later is required for CMAKE_CURRENT_LIST_DIR variable
     cmake_minimum_required(VERSION 2.8.3)
 
-    # Include generic macros
+    # Include macros for generating Visual Studio source groups
     include(CreateSourceGroups.cmake)
     
 ########## Set up user configuration options ##########
@@ -99,23 +99,22 @@
     include_directories(${Boost_INCLUDE_DIRS})
 
     # Set up external dependencies
-    add_subdirectory(external)
-
-    # Set up utility headers
-    include_directories(source/util)
-    add_subdirectory(source/util)
+    add_subdirectory(External)
+    
+    # Add root directory to include path to allow for #include <OpenSolid/...>
+    include_directories(.)
     
     # Build core library if selected
     if(${BUILD_CORE_MODULE})
         include_directories(${EIGEN_ROOT})
-        include_directories(source/core)
-        add_subdirectory(source/core)
+        add_subdirectory(OpenSolid/Core)
     endif()
     
     # Build I/O module if selected
     if(${BUILD_IO_MODULE})
-        include_directories(source/io)
-        add_subdirectory(source/io)
+        include_directories(${PROTOBUF_ROOT})
+        include_directories(${SQLITE_ROOT})
+        add_subdirectory(OpenSolid/IO)
     endif()
     
     # Build Python module if selected
@@ -131,8 +130,7 @@
         # Add Boost library directory to link path so auto-linking works when using MSVC
         link_directories(${Boost_LIBRARY_DIRS})
         
-        include_directories(source/python)
-        add_subdirectory(source/python)
+        add_subdirectory(OpenSolid/Python)
     endif()
     
     # Build UI if selected
@@ -153,33 +151,27 @@
         # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
         include_directories(${OPENGL_INCLUDE_DIR}/Headers)
     
-        include_directories(source/ui)
-        add_subdirectory(source/ui)
+        add_subdirectory(OpenSolid/UI)
     endif()
     
     # Build tests if selected
     if(${BUILD_TESTS})
+        # Need to call enable_testing at project root for testing to be enabled properly
         enable_testing()
-        add_subdirectory(tests)
+        add_subdirectory(Tests)
     endif()
     
     # Build documentation if selected
     if(${BUILD_DOCUMENTATION})
-        add_subdirectory(documentation)
+        add_subdirectory(Documentation)
     endif()
     
-########## Install license file ##########
+########## Install files ##########
     
-    install(FILES source/license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
+    install(DIRECTORY OpenSolid DESTINATION include FILES_MATCHING PATTERN *.hpp)
+    install(FILES license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 ########## Set up source groups for Visual Studio ##########
 
-    add_to_global_source_list(
-        CMakeLists.txt
-        CreateSourceGroups.cmake
-        license.txt
-        Template.hpp
-        Template.cpp
-    )
-    
+    add_to_global_source_list(*)
     create_source_groups()

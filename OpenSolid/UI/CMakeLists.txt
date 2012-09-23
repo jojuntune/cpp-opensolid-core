@@ -48,7 +48,7 @@
         ${IMAGES_RESOURCE}
     )
     
-    set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX _debug)
+    set_target_properties(opensolid_ui PROPERTIES DEBUG_POSTFIX d)
     
     target_link_libraries(opensolid_ui ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 

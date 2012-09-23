@@ -51,13 +51,13 @@
 ########## Core module tests ##########
 
     if(${BUILD_CORE_MODULE})
-        add_cxxtest(IntervalTests IntervalTests.hpp opensolid_core)
-        add_cxxtest(MatrixTests MatrixTests.hpp opensolid_core)
-        add_cxxtest(DatumTests DatumTests.hpp opensolid_core)
-        add_cxxtest(SimplexTests SimplexTests.hpp opensolid_core)
-        add_cxxtest(SetTests SetTests.hpp opensolid_core)
-        add_cxxtest(FunctionTests FunctionTests.hpp opensolid_core)
-        add_cxxtest(GeometryTests GeometryTests.hpp opensolid_core)
+        add_cxxtest(IntervalTests IntervalTests.hpp OpenSolidCore)
+        add_cxxtest(MatrixTests MatrixTests.hpp OpenSolidCore)
+        add_cxxtest(DatumTests DatumTests.hpp OpenSolidCore)
+        add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
+        add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
+        add_cxxtest(FunctionTests FunctionTests.hpp OpenSolidCore)
+        add_cxxtest(GeometryTests GeometryTests.hpp OpenSolidCore)
         
         add_to_global_source_list(
             IntervalTests.hpp
@@ -77,7 +77,7 @@
         find_package(PythonLibs REQUIRED)
         include_directories(${PYTHON_INCLUDE_DIRS})
 
-        add_cxxtest(PythonTests PythonTests.hpp opensolid_python)
+        add_cxxtest(PythonTests PythonTests.hpp OpenSolidPython)
         
         add_to_global_source_list(PythonTests.hpp)
     endif()

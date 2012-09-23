@@ -20,10 +20,11 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
-#include "Bounds.hpp"
-#include "Conversion.hpp"
+#include <OpenSolid/util/Zero.hpp>
+#include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Core/Bounds.hpp>
 
 #include <boost/numeric/interval.hpp>
 
@@ -125,6 +126,13 @@ namespace opensolid
     bool operator>=(double first_argument, const Interval& second_argument);
     bool operator>=(const Interval& first_argument, double second_argument);
     bool operator>=(const Interval& first_argument, const Interval& second_argument);
+    
+    bool operator==(const Interval& interval, Zero zero);
+    bool operator!=(const Interval& interval, Zero zero);
+    bool operator<(const Interval& interval, Zero zero);
+    bool operator>(const Interval& interval, Zero zero);
+    bool operator<=(const Interval& interval, Zero zero);
+    bool operator>=(const Interval& interval, Zero zero);
         
     Interval operator-(const Interval& argument);
 
@@ -388,6 +396,30 @@ namespace opensolid
 
     inline bool operator>=(const Interval& first_argument, const Interval& second_argument) {
         return !(first_argument < second_argument);
+    }
+
+    inline bool operator==(const Interval& interval, Zero zero) {
+        return interval.lower() >= -zero.precision() && interval.upper() <= zero.precision();
+    }
+
+    inline bool operator!=(const Interval& interval, Zero zero) {
+        return interval.lower() > zero.precision() || interval.upper() < -zero.precision();
+    }
+
+    inline bool operator<(const Interval& interval, Zero zero) {
+        return interval.upper() < -zero.precision();
+    }
+
+    inline bool operator>(const Interval& interval, Zero zero) {
+        return interval.lower() > zero.precision();
+    }
+
+    inline bool operator<=(const Interval& interval, Zero zero) {
+        return interval.upper() <= zero.precision();
+    }
+
+    inline bool operator>=(const Interval& interval, Zero zero) {
+        return interval.lower() >= -zero.precision();
     }
 
     inline Interval operator-(const Interval& argument) {return -argument.value();}

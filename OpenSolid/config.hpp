@@ -46,7 +46,7 @@
 
 // Create DLL import/export declaration macros for core module
 #ifdef _WIN32
-    #ifdef opensolid_core_EXPORTS
+    #ifdef OpenSolidCore_EXPORTS
         #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
@@ -57,7 +57,7 @@
 
 // Create DLL import/export declaration macros for I/O module
 #ifdef _WIN32
-    #ifdef opensolid_io_EXPORTS
+    #ifdef OpenSolidIO_EXPORTS
         #define OPENSOLID_IO_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_IO_EXPORT __declspec(dllimport)
@@ -66,20 +66,9 @@
     #define OPENSOLID_IO_EXPORT
 #endif
 
-// Create DLL import/export declaration macros for bridge module
+// Create DLL import/export declaration macros for Python extension module
 #ifdef _WIN32
-    #ifdef opensolid_bridge_EXPORTS
-        #define OPENSOLID_BRIDGE_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_BRIDGE_EXPORT __declspec(dllimport)
-    #endif
-#else
-    #define OPENSOLID_BRIDGE_EXPORT
-#endif
-
-// Create DLL import/export declaration macros for python extension module
-#ifdef _WIN32
-    #ifdef opensolid_python_module_EXPORTS
+    #ifdef python_module_EXPORTS
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_PYTHON_MODULE_EXPORT __declspec(dllimport)
@@ -88,9 +77,9 @@
     #define OPENSOLID_PYTHON_MODULE_EXPORT
 #endif
 
-// Create DLL import/export declaration macros for python library
+// Create DLL import/export declaration macros for Python library
 #ifdef _WIN32
-    #ifdef opensolid_python_EXPORTS
+    #ifdef OpenSolidPython_EXPORTS
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)
     #else
         #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)

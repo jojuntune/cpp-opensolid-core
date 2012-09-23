@@ -23,24 +23,19 @@
     #     ENDFOREACH(FULL_NAME)
     # ENDMACRO(COMPILE_PROTO_FILES)
     
-########## Compile opensolid_io library ##########
+########## Compile OpenSolidIO library ##########
     
     include_directories(${SQLITE_ROOT})
 
     file(GLOB IO_SOURCES *.cpp)
-    add_library(opensolid_io SHARED ${IO_SOURCES})
-    set_target_properties(opensolid_io PROPERTIES DEBUG_POSTFIX _debug)
-    target_link_libraries(opensolid_io opensolid_core)
+    add_library(OpenSolidIO SHARED ${IO_SOURCES})
+    set_target_properties(OpenSolidIO PROPERTIES DEBUG_POSTFIX d)
+    target_link_libraries(OpenSolidIO OpenSolidCore)
     
-########## Install headers ##########
-    
-    install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)
-    
-########## Install libraries ##########
+########## Install OpenSolidIO library ##########
         
-    # Install C++ shared libraries
     install(
-        TARGETS opensolid_io
+        TARGETS OpenSolidIO
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib

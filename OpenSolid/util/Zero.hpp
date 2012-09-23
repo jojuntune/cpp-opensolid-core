@@ -24,31 +24,53 @@
 
 namespace opensolid
 {
-    template <class Type, class OtherType>
-    struct Conversion;
-
-    template <class DerivedType>
-    struct Convertible
+    class Zero
     {
-        template <class OtherType>
-        OtherType convertTo() const;
+    private:
+        double _precision;
+    public:
+        Zero(double precision = 1e-12);
 
-        template <class OtherType>
-        static DerivedType convertFrom(const OtherType& argument);
+        double precision() const;
     };
+
+    bool operator==(double value, Zero zero);
+    bool operator!=(double value, Zero zero);
+    bool operator<(double value, Zero zero);
+    bool operator>(double value, Zero zero);
+    bool operator<=(double value, Zero zero);
+    bool operator>=(double value, Zero zero);
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
 {
-    template <class DerivedType> template <class OtherType>
-    inline OtherType Convertible<DerivedType>::convertTo() const {
-        return Conversion<DerivedType, OtherType>()(static_cast<const DerivedType&>(*this));
+    inline Zero::Zero(double precision) : _precision(precision) {}
+
+    inline double Zero::precision() const {return _precision;}
+
+    inline bool operator==(double value, Zero zero) {
+        return value >= -zero.precision() && value <= zero.precision();
     }
 
-    template <class DerivedType> template <class OtherType>
-    inline DerivedType Convertible<DerivedType>::convertFrom(const OtherType& argument) {
-        return Conversion<OtherType, DerivedType>()(argument);
+    inline bool operator!=(double value, Zero zero) {
+        return value > zero.precision() || value < -zero.lower();
+    }
+
+    inline bool operator<(double value, Zero zero) {
+        return value < -zero.precision();
+    }
+
+    inline bool operator>(double value, Zero zero) {
+        return value > zero.precision();
+    }
+
+    inline bool operator<=(double value, Zero zero) {
+        return value <= zero.precision();
+    }
+
+    inline bool operator>=(double value, Zero zero) {
+        return value >= -zero.precision();
     }
 }

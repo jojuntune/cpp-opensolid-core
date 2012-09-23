@@ -16,19 +16,19 @@
 ########## Build external projects where required by OpenSolid modules ##########
 
     if(${BUILD_CORE_MODULE})
-        add_subdirectory(eigen)
+        add_subdirectory(Eigen)
         set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
     endif()
     
     if(${BUILD_IO_MODULE})
-        add_subdirectory(sqlite)
-        add_subdirectory(protobuf)
+        add_subdirectory(SQLite)
+        add_subdirectory(ProtocolBuffers)
         set(SQLITE_ROOT ${SQLITE_ROOT} PARENT_SCOPE)
         set(PROTOBUF_ROOT ${PROTOBUF_ROOT} PARENT_SCOPE)
     endif()
     
     if(${BUILD_TESTS})
-        add_subdirectory(cxxtest)
+        add_subdirectory(CxxTest)
         set(CXXTEST_ROOT ${CXXTEST_ROOT} PARENT_SCOPE)
     endif()
     

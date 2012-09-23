@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
 #include <boost/smart_ptr/detail/atomic_count.hpp>
 

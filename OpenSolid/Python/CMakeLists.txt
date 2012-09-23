@@ -1,39 +1,30 @@
 ########## Compile Python extension module ##########
     
     file(GLOB MODULE_SOURCES detail/*.cpp)
-    add_library(opensolid_python_module SHARED ${MODULE_SOURCES})
-    set_target_properties(opensolid_python_module PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
-    set_target_properties(opensolid_python_module PROPERTIES DEBUG_POSTFIX _debug)
+    add_library(python_module SHARED ${MODULE_SOURCES})
+    set_target_properties(python_module PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
+    set_target_properties(python_module PROPERTIES DEBUG_POSTFIX d)
     if(WIN32)
-        set_target_properties(opensolid_python_module PROPERTIES SUFFIX ".pyd")
+        set_target_properties(python_module PROPERTIES SUFFIX ".pyd")
     endif()
-    target_link_libraries(
-        opensolid_python_module
-        opensolid_core
-        ${Boost_LIBRARIES}
-        ${PYTHON_LIBRARIES}
-    )
+    target_link_libraries(python_module OpenSolidCore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
     
 ########## Compile OpenSolidPython library ##########
     
-    add_library(opensolid_python SHARED PythonEnvironment.cpp)
-    set_target_properties(opensolid_python PROPERTIES DEBUG_POSTFIX _debug)
+    add_library(OpenSolidPython SHARED PythonEnvironment.cpp)
+    set_target_properties(OpenSolidPython PROPERTIES DEBUG_POSTFIX d)
     target_link_libraries(
-        opensolid_python
-        opensolid_core
-        opensolid_python_module
+        OpenSolidPython
+        OpenSolidCore
+        python_module
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARIES}
     )
     
-########## Install headers ##########
-    
-    install(DIRECTORY . DESTINATION include/opensolid FILES_MATCHING PATTERN *.hpp)
-    
-########## Install libraries ##########
+########## Install OpenSolidPython library ##########
         
     install(
-        TARGETS opensolid_python
+        TARGETS OpenSolidPython
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
@@ -48,7 +39,7 @@
     )
 
     # Install Python extension module
-    install(TARGETS opensolid_python_module DESTINATION ${PYTHON_SITE_PACKAGES})
+    install(TARGETS python_module DESTINATION ${PYTHON_SITE_PACKAGES})
 
 ########## Add files to global source list ##########
 

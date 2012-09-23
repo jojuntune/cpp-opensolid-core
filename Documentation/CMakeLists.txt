@@ -1,6 +1,7 @@
 find_package(Doxygen)
 
-set(SOURCE_DIR ${OpenSolid_SOURCE_DIR}/source/core/opensolid)
+# Directory for which documentation should be generated
+set(SOURCE_DIR ${OpenSolid_SOURCE_DIR}/OpenSolid)
 
 # Copy logo image to build directory
 configure_file(images/logo-small.png ${CMAKE_CURRENT_BINARY_DIR}/logo-small.png COPYONLY)
@@ -10,6 +11,6 @@ configure_file(images/logo-small.png ${CMAKE_CURRENT_BINARY_DIR}/logo-small.png 
 configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 # Generate Doxygen documentation
-add_custom_target(documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+add_custom_target(Documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-add_to_global_source_list(CMakeLists.txt Doxyfile.in mainpage.dox)
+add_to_global_source_list(* images/*)
