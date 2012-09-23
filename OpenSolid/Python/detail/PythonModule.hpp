@@ -22,7 +22,7 @@
 
 #include <opensolid/config.hpp>
 
-#include <opensolid/Error.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <opensolid/Matrix.hpp>
 
 #include <boost/python.hpp>

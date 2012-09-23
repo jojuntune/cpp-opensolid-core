@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
-#include <opensolid/HEADERS>
+#include <OpenSolid/HEADERS>
 
 #include <EXTERNAL_LIBRARY/HEADERS>
 

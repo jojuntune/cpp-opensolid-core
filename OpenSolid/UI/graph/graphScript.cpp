@@ -10,7 +10,7 @@
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
 
-#include "Error.hpp"
+#include <OpenSolid/Core/Error.hpp>
 #include "PythonEnvironment.hpp"
 
 #include "graphScript.h"

@@ -20,10 +20,11 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
 #include "detail/SetNode.hpp"
-#include "Bounds.hpp"
+
+#include <OpenSolid/Core/Bounds.hpp>
 
 #include <ostream>
 #include <algorithm>

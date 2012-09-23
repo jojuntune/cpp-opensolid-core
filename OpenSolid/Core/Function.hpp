@@ -20,16 +20,17 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
 #include "detail/Evaluation.hpp"
 #include "detail/FunctionConstructors.hpp"
 #include "detail/FunctionImplementation.hpp"
-#include "Transformable.hpp"
-#include "Conversion.hpp"
-#include "Datum.hpp"
-#include "Matrix.hpp"
-#include "Interval.hpp"
+
+#include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Interval.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 

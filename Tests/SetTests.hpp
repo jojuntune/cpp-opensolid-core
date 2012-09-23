@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include "Matrix.hpp"
-#include "Set.hpp"
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Set.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>

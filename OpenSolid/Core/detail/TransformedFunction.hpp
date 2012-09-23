@@ -20,8 +20,9 @@
 
 #pragma once
 
-#include "detail/UnaryOperation.hpp"
-#include "Datum.hpp"
+#include "UnaryOperation.hpp"
+
+#include <OpenSolid/Core/Datum.hpp>
 
 namespace opensolid
 {

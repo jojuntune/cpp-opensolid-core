@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
-#include "Conversion.hpp"
+#include <OpenSolid/util/Conversion.hpp>
 
 #include <string>
 

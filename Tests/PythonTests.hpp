@@ -19,7 +19,7 @@
  *****************************************************************************/
 
 #include <opensolid/Comparison.hpp>
-#include <opensolid/Error.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <opensolid/Function.hpp>
 #include <opensolid/Matrix.hpp>
 #include <opensolid/Datum.hpp>

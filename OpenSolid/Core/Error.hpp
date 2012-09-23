@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
 #include <exception>
 #include <string>

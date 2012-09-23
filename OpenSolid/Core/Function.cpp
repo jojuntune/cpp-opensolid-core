@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "Function.hpp"
+#include <OpenSolid/Core/Function.hpp>
 
 #include "detail/ArccosineFunction.hpp"
 #include "detail/ArcsineFunction.hpp"
@@ -46,9 +46,10 @@
 #include "detail/SquareRootFunction.hpp"
 #include "detail/SumFunction.hpp"
 #include "detail/TangentFunction.hpp"
-#include "Comparison.hpp"
-#include "Domain.hpp"
-#include "Geometry.hpp"
+
+#include <OpenSolid/util/Zero.hpp>
+#include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Geometry.hpp>
 
 #include <algorithm>
 
@@ -314,9 +315,9 @@ namespace opensolid
             double multiplier_value = multiplier.convertTo<double>();
             if (multiplier_value == Zero()) {
                 return VectorXd::Zero(multiplicand.dimensions());
-            } else if (multiplier_value == One()) {
+            } else if (multiplier_value - 1 == Zero()) {
                 return multiplicand;
-            } else if (multiplier_value == -One()) {
+            } else if (multiplier_value + 1 == Zero()) {
                 return -multiplicand;
             } else {
                 return new ProductFunction(multiplicand, multiplier);
@@ -337,9 +338,9 @@ namespace opensolid
             return first_operand;
         } else if (second_operand.isConstant()) {
             double second_value = second_operand.convertTo<double>();
-            if (second_value == One()) {
+            if (second_value - 1 == Zero()) {
                 return first_operand;
-            } else if (second_value == -One()) {
+            } else if (second_value + 1 == Zero()) {
                 return -first_operand;
             } else {
                 return new ProductFunction(first_operand, 1 / second_value);

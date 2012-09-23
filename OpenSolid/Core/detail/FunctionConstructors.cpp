@@ -18,12 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "detail/FunctionConstructors.hpp"
+#include "FunctionConstructors.hpp"
 
-#include "detail/EllipticalFunction.hpp"
-#include "detail/LinearFunction.hpp"
-#include "detail/ParametersFunction.hpp"
-#include "Function.hpp"
+#include "EllipticalFunction.hpp"
+#include "LinearFunction.hpp"
+#include "ParametersFunction.hpp"
+
+#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {

@@ -24,7 +24,7 @@
 
 #include <opensolid/detail/PythonModule.hpp>
 #include <opensolid/detail/repr.hpp>
-#include <opensolid/Error.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <opensolid/TypeName.hpp>
 
 #include <boost/python/converter/registry.hpp>

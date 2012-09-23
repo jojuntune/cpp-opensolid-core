@@ -20,11 +20,11 @@
 
 #pragma once
 
-#include "config.hpp"
+#include <OpenSolid/config.hpp>
 
-#include "Bounds.hpp"
-#include "Conversion.hpp"
-#include "Interval.hpp"
+#include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Interval.hpp>
 
 namespace Eigen
 {   
@@ -309,7 +309,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include "Conversion.hpp"
+#include <OpenSolid/util/Conversion.hpp>
 
 namespace Eigen
 {
@@ -654,4 +654,4 @@ namespace opensolid
 }
 
 #include "detail/MatrixIterator.hpp"
-#include "Transformable.hpp"
+#include <OpenSolid/Core/Transformable.hpp>

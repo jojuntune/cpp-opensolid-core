@@ -497,4 +497,4 @@ namespace opensolid
     }
 }
 
-#include "Comparison.hpp"
+#include <OpenSolid/util/Zero.hpp>

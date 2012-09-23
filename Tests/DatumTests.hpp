@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include "Axis.hpp"
-#include "Datum.hpp"
-#include "Frame.hpp"
-#include "Plane.hpp"
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 
 #include <cxxtest/TestSuite.h>
 

@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "detail/ArcsineFunction.hpp"
+#include "ArcsineFunction.hpp"
 
-#include "Function.hpp"
+#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {

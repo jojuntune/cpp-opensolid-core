@@ -20,7 +20,7 @@
 
 #include <opensolid/detail/PythonModule.hpp>
 #include <opensolid/detail/repr.hpp>
-#include <opensolid/Error.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <opensolid/Datum.hpp>
 #include <opensolid/Matrix.hpp>
 #include <opensolid/Interval.hpp>

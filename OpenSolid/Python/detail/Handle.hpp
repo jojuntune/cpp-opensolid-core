@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <opensolid/Error.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <opensolid/config.hpp>
 
 #include <memory>

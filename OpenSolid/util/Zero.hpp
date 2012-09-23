@@ -55,7 +55,7 @@ namespace opensolid
     }
 
     inline bool operator!=(double value, Zero zero) {
-        return value > zero.precision() || value < -zero.lower();
+        return value > zero.precision() || value < -zero.precision();
     }
 
     inline bool operator<(double value, Zero zero) {

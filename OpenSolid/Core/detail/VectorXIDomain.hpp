@@ -20,8 +20,9 @@
 
 #pragma once
 
-#include "detail/DomainImplementation.hpp"
-#include "Domain.hpp"
+#include "DomainImplementation.hpp"
+
+#include <OpenSolid/Core/Domain.hpp>
 
 namespace opensolid
 {

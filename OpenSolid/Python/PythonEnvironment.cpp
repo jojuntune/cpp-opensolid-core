@@ -24,7 +24,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-#include <opensolid/Error.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <opensolid/Axis.hpp>
 #include <opensolid/PythonEnvironment.hpp>
 

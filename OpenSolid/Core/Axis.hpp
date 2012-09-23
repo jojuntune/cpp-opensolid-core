@@ -22,8 +22,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "Error.hpp"
-#include "Datum.hpp"
+#include <OpenSolid/Core/Error.hpp>
+#include <OpenSolid/Core/Datum.hpp>
 
 namespace opensolid
 {

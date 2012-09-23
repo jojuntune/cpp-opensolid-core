@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "detail/IntervalDomain.hpp"
+#include "IntervalDomain.hpp"
 
-#include "Domain.hpp"
-#include "Geometry.hpp"
+#include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Geometry.hpp>
 
 namespace opensolid
 {
