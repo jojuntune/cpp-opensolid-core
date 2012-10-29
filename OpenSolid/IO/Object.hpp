@@ -21,84 +21,72 @@
 #pragma once
 
 #include <OpenSolid/config.hpp>
-
 #include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Core/Error.hpp>
+
+#include <string>
+#include <memory>
 
 namespace opensolid
 {
-    class ObjectData;
-
     class Object : public Convertible<Object>
     {
     private:
-        ObjectData* _data;
-        
-        friend class Conversion<Object, std::string>;
+        struct Data;
+
+        std::auto_ptr<Data> m_data;
+
+        OPENSOLID_IO_EXPORT void clear(const std::string& key);
+
+        template <class Type>
+        Type getItem(const std::string& key, int index, const Type& default_value) const;
     public:
+        enum ItemType {NO_ITEM, MULTIPLE_ITEMS, INT_ITEM, DOUBLE_ITEM, STRING_ITEM, OBJECT_ITEM};
+
         OPENSOLID_IO_EXPORT Object();
         OPENSOLID_IO_EXPORT Object(const Object& other);
-        OPENSOLID_IO_EXPORT Object(Object&& other);
 
         template <class Type>
         Object(const Type& argument);
 
-        OPENSOLID_IO_EXPORT bool has(int key) const;
-        OPENSOLID_IO_EXPORT bool has(const char* key) const;
+        OPENSOLID_IO_EXPORT Object& operator=(const Object& other);
         
-        OPENSOLID_IO_EXPORT Object& set(int key, int value);
-        OPENSOLID_IO_EXPORT Object& set(int key, double value);
-        OPENSOLID_IO_EXPORT Object& set(int key, const char* value);
-        OPENSOLID_IO_EXPORT Object& set(int key, const Object& value);
-        
-        OPENSOLID_IO_EXPORT Object& set(const char* key, int value);
-        OPENSOLID_IO_EXPORT Object& set(const char* key, double value);
-        OPENSOLID_IO_EXPORT Object& set(const char* key, const char* value);
-        OPENSOLID_IO_EXPORT Object& set(const char* key, const Object& value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, int value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, double value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, const std::string& value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, const Object& value);
 
+        template <class Iterator>
+        Object& set(const std::string& key, Iterator begin, Iterator end);
+        
+        OPENSOLID_IO_EXPORT Object& append(const std::string& key, int value);
+        OPENSOLID_IO_EXPORT Object& append(const std::string& key, double value);
+        OPENSOLID_IO_EXPORT Object& append(const std::string& key, const std::string& value);
+        OPENSOLID_IO_EXPORT Object& append(const std::string& key, const Object& value);
+
+        template <class Iterator>
+        Object& append(const std::string& key, Iterator begin, Iterator end);
+
+        OPENSOLID_IO_EXPORT bool has(const std::string& key) const;
+        OPENSOLID_IO_EXPORT int size(const std::string& key) const;
+        OPENSOLID_IO_EXPORT ItemType itemType(const std::string& key) const;
+        OPENSOLID_IO_EXPORT ItemType itemType(const std::string& key, int index) const;
+
+        OPENSOLID_IO_EXPORT int getInt(const std::string& key) const;
+        OPENSOLID_IO_EXPORT double getDouble(const std::string& key) const;
+        OPENSOLID_IO_EXPORT std::string getString(const std::string& key) const;
+        OPENSOLID_IO_EXPORT Object getObject(const std::string& key) const;
+        
         template <class Type>
-        Object& set(int key, const Type& value);
+        Type get(const std::string& key) const;
 
-        template <class Type>
-        Object& set(const char* key, const Type& value);
+        OPENSOLID_IO_EXPORT int getInt(const std::string& key, int index) const;
+        OPENSOLID_IO_EXPORT double getDouble(const std::string& key, int index) const;
+        OPENSOLID_IO_EXPORT std::string getString(const std::string& key, int index) const;
+        OPENSOLID_IO_EXPORT Object getObject(const std::string& key, int index) const;
         
         template <class Type>
-        Type get(int key) const;
-        
-        template <class Type>
-        Type get(const char* key) const;
-    };
-
-    template <> OPENSOLID_IO_EXPORT int Object::get<int>(int) const;
-    template <> OPENSOLID_IO_EXPORT double Object::get<double>(int) const;
-    template <> OPENSOLID_IO_EXPORT std::string Object::get<std::string>(int) const;
-    template <> OPENSOLID_IO_EXPORT Object Object::get<Object>(int) const;
-
-    template <> OPENSOLID_IO_EXPORT int Object::get<int>(const std::string&) const;
-    template <> OPENSOLID_IO_EXPORT double Object::get<double>(const std::string&) const;
-    template <> OPENSOLID_IO_EXPORT std::string Object::get<std::string>(const std::string&) const;
-    template <> OPENSOLID_IO_EXPORT Object Object::get<Object>(const std::string&) const;
-}
-
-////////// Errors //////////
-
-namespace opensolid
-{
-    class ObjectKeyError : public std::exception
-    {
-    private:
-        Object _object;
-        Object::Key _key;
-    public:
-        OPENSOLID_CORE_EXPORT ObjectKeyError(
-            const Object& object,
-            const std::string& key,
-            const std::string& requested_type
-        );
-        
-        ~ObjectGetValueError() throw () {}
-
-        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-        OPENSOLID_CORE_EXPORT Object object() const;
+        Type get(const std::string& key, int index) const;
     };
 }
 
@@ -107,16 +95,30 @@ namespace opensolid
 namespace opensolid
 {
     template <class Type>
-    void Object::setValue(const std::string& key, const Type& value) {_map[key] = value;}
-
+    Object::Object(const Type& argument) {
+        *this = Conversion<Type, Object>(argument);
+    }
+    
+    template <class Iterator>
+    Object& Object::set(const std::string& key, Iterator begin, Iterator end) {
+        clear(key);
+        append(key, begin, end);
+        return *this;
+    }
+    
+    template <class Iterator>
+    Object& Object::append(const std::string& key, Iterator begin, Iterator end) {
+        for (Iterator iterator = begin; iterator != end; ++iterator) {append(key, *iterator);}
+        return *this;
+    }
+        
     template <class Type>
-    void Object::getValue(const std::string& key, Type& value) const {
-        if (const Type* result = boost::get<Type>(&_map.at(key))) {
-            value = *result;
-        } else {
-            throw ObjectGetValueError(*this, key, TypeName<Type>()());
-        }
+    Type Object::get(const std::string& key) const {
+        return getObject(key).convertTo<Type>();
+    }
+        
+    template <class Type>
+    Type Object::get(const std::string& key, int index) const {
+        return getObject(key, index).convertTo<Type>();
     }
 }
-
-#endif
