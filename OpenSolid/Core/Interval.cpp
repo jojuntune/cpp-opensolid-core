@@ -27,19 +27,87 @@
 
 namespace opensolid
 {
-    Interval sin(const Interval& argument) {return boost::numeric::sin(argument.value());}
+    using namespace boost::numeric::interval_lib;
 
-    Interval cos(const Interval& argument) {return boost::numeric::cos(argument.value());}
+    typedef boost::numeric::interval<
+        double,
+        policies<
+            save_state_nothing<rounded_transc_exact<double, rounded_arith_exact<double>>>,
+            checking_base<double>
+        >
+    > BoostInterval;
 
-    Interval tan(const Interval& argument) {return boost::numeric::tan(argument.value());}
+    template <>
+    struct Conversion<Interval, BoostInterval>
+    {
+        inline BoostInterval operator()(Interval argument) {
+            return BoostInterval(argument.lower(), argument.upper());
+        }
+    };
 
-    Interval asin(const Interval& argument) {return boost::numeric::asin(argument.value());}
+    template <>
+    struct Conversion<BoostInterval, Interval>
+    {
+        inline Interval operator()(BoostInterval argument) {
+            return Interval(argument.lower(), argument.upper());
+        }
+    };
+    
+    Interval& Interval::operator*=(Interval argument) {
+        BoostInterval self = this->as<BoostInterval>();
+        BoostInterval other = argument.as<BoostInterval>();
+        *this = Interval::from(self * other);
+        return *this;
+    }
+    
+    Interval& Interval::operator/=(Interval argument) {
+        BoostInterval self = this->as<BoostInterval>();
+        BoostInterval other = argument.as<BoostInterval>();
+        *this = Interval::from(self / other);
+        return *this;
+    }
+    
+    Interval operator*(Interval first_argument, Interval second_argument) {
+        return Interval::from(
+            first_argument.as<BoostInterval>() * second_argument.as<BoostInterval>()
+        );
+    }
 
-    Interval acos(const Interval& argument) {return boost::numeric::acos(argument.value());}
+    Interval operator/(double first_argument, Interval second_argument) {
+        return Interval::from(first_argument / second_argument.as<BoostInterval>());
+    }
 
-    Interval atan(const Interval& argument) {return boost::numeric::atan(argument.value());}
+    Interval operator/(Interval first_argument, Interval second_argument) {
+        return Interval::from(
+            first_argument.as<BoostInterval>() / second_argument.as<BoostInterval>()
+        );
+    }
 
-    Interval atan2(const Interval& y, const Interval& x) {
+    Interval sin(Interval argument) {
+        return Interval::from(boost::numeric::sin(argument.as<BoostInterval>()));
+    }
+
+    Interval cos(Interval argument) {
+        return Interval::from(boost::numeric::cos(argument.as<BoostInterval>()));
+    }
+
+    Interval tan(Interval argument) {
+        return Interval::from(boost::numeric::tan(argument.as<BoostInterval>()));
+    }
+
+    Interval asin(Interval argument) {
+        return Interval::from(boost::numeric::asin(argument.as<BoostInterval>()));
+    }
+
+    Interval acos(Interval argument) {
+        return Interval::from(boost::numeric::acos(argument.as<BoostInterval>()));
+    }
+
+    Interval atan(Interval argument) {
+        return Interval::from(boost::numeric::atan(argument.as<BoostInterval>()));
+    }
+
+    Interval atan2(Interval y, Interval x) {
         if (x.lower() > 0.0) {
             return atan(y / x);
         } else if (y.lower() > 0.0) {
@@ -51,19 +119,23 @@ namespace opensolid
         }
     }
 
-    Interval exp(const Interval& argument) {return boost::numeric::exp(argument.value());}
+    Interval exp(Interval argument) {
+        return Interval::from(boost::numeric::exp(argument.as<BoostInterval>()));
+    }
 
-    Interval log(const Interval& argument) {return boost::numeric::log(argument.value());}
-    
-    Interval pow(const Interval& base, int exponent) {
-        return boost::numeric::pow(base.value(), exponent);
+    Interval log(Interval argument) {
+        return Interval::from(boost::numeric::log(argument.as<BoostInterval>()));
+    }
+
+    Interval pow(Interval argument, int exponent) {
+        return Interval::from(boost::numeric::pow(argument.as<BoostInterval>(), exponent));
     }
     
-    Interval pow(const Interval& base, double exponent) {return exp(log(base) * exponent);}
+    Interval pow(Interval base, double exponent) {return exp(log(base) * exponent);}
     
-    Interval pow(const Interval& base, const Interval& exponent) {return exp(log(base) * exponent);}
+    Interval pow(Interval base, Interval exponent) {return exp(log(base) * exponent);}
     
-    std::ostream& operator<<(std::ostream& stream, const Interval& argument) {
+    std::ostream& operator<<(std::ostream& stream, Interval argument) {
         if (argument.isEmpty()) {
             stream << "[]";
         } else if (argument.isSingleton()) {
