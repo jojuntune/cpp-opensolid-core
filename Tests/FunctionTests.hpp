@@ -47,7 +47,7 @@ public:
         Function f = 3.0;
         TS_ASSERT(f.isConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
-        TS_ASSERT(f.convertTo<double>() - 3 == Zero());
+        TS_ASSERT(f.as<double>() - 3 == Zero());
     }
     
     void testArithmetic() {
@@ -57,8 +57,8 @@ public:
         TS_ASSERT(function(Vector2d(1, 0)).value() - 3 == Zero());
         TS_ASSERT(function(Vector2d(1, 1)).value() - 2 == Zero());
         TS_ASSERT(function(Vector2d(0, 1)).value() - 1 == Zero());
-        TS_ASSERT(function.derivative(0)(Vector2d(0, 0)).value() == One());
-        TS_ASSERT(function.derivative(1)(Vector2d(0, 0)).value() == -One());
+        TS_ASSERT(function.derivative(0)(Vector2d(0, 0)).value() - 1 == Zero());
+        TS_ASSERT(function.derivative(1)(Vector2d(0, 0)).value() + 1 == Zero());
         
         Function negated = -function;
         
@@ -66,8 +66,8 @@ public:
         TS_ASSERT(negated(Vector2d(1, 0)).value() + 3 == Zero());
         TS_ASSERT(negated(Vector2d(1, 1)).value() + 2 == Zero());
         TS_ASSERT(negated(Vector2d(0, 1)).value() + 1 == Zero());
-        TS_ASSERT(negated.derivative(0)(Vector2d(0, 0)).value() == -One());
-        TS_ASSERT(negated.derivative(1)(Vector2d(0, 0)).value() == One());
+        TS_ASSERT(negated.derivative(0)(Vector2d(0, 0)).value() + 1 == Zero());
+        TS_ASSERT(negated.derivative(1)(Vector2d(0, 0)).value() - 1 == Zero());
     }
 
     void testMultiplication() {
@@ -82,14 +82,14 @@ public:
         
         TS_ASSERT(u_derivative(Vector2d(0, 0)).value() == Zero());
         TS_ASSERT(u_derivative(Vector2d(1, 0)).value() == Zero());
-        TS_ASSERT(u_derivative(Vector2d(1, 1)).value() == One());
-        TS_ASSERT(u_derivative(Vector2d(0, 1)).value() == One());
+        TS_ASSERT(u_derivative(Vector2d(1, 1)).value() - 1 == Zero());
+        TS_ASSERT(u_derivative(Vector2d(0, 1)).value() - 1 == Zero());
     
         Function v_derivative = function.derivative(1);
         
         TS_ASSERT(v_derivative(Vector2d(0, 0)).value() == Zero());
-        TS_ASSERT(v_derivative(Vector2d(1, 0)).value() == One());
-        TS_ASSERT(v_derivative(Vector2d(1, 1)).value() == One());
+        TS_ASSERT(v_derivative(Vector2d(1, 0)).value() - 1 == Zero());
+        TS_ASSERT(v_derivative(Vector2d(1, 1)).value() - 1 == Zero());
         TS_ASSERT(v_derivative(Vector2d(0, 1)).value() == Zero());
     }
     
@@ -110,8 +110,8 @@ public:
     void testVector() {
         Function f = Vector3d(1, 2, 3);
         TS_ASSERT(f.isConstant());
-        TS_ASSERT(f.convertTo<Vector3d>() == Vector3d(1, 2, 3));
-        TS_ASSERT(f.convertTo<Vector3d>().transpose() == RowVector3d(1, 2, 3));
+        TS_ASSERT(f.as<Vector3d>() == Vector3d(1, 2, 3));
+        TS_ASSERT(f.as<Vector3d>().transpose() == RowVector3d(1, 2, 3));
     }
     
     void testConversion() {
@@ -236,7 +236,7 @@ public:
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
         TS_ASSERT(derivative.isConstant());
-        TS_ASSERT((derivative.convertTo<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((derivative.as<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testNormal() {

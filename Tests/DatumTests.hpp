@@ -75,8 +75,8 @@ public:
 
     void testAdvancedDatumComposition() {
         Plane3d plane(Vector3d(1, 1, 1), Vector3d(1, 0, 1), Vector3d(0, 1, 0));
-        TS_ASSERT(plane.basis().col(0).norm() == One());
-        TS_ASSERT(plane.basis().col(1).norm() == One());
+        TS_ASSERT(plane.basis().col(0).norm() - 1 == Zero());
+        TS_ASSERT(plane.basis().col(1).norm() - 1 == Zero());
         Datum<3, 2> projected = plane % Frame3d().xyPlane();
         TS_ASSERT((projected.basis().col(0) - Vector3d(1 / sqrt(2.0), 0, 0)).isZero());
         TS_ASSERT((projected.basis().col(1) - Vector3d(0, 1, 0)).isZero());
