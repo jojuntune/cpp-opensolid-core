@@ -46,7 +46,7 @@ namespace opensolid
     VectorXI GeometryImplementation::bounds() const {
         Function function = this->function();
         if (function.isConstant()) {
-            return function.convertTo<VectorXd>().cast<Interval>();
+            return function.as<VectorXd>().cast<Interval>();
         } else {
             return function(domain().bounds());
         }
@@ -77,7 +77,7 @@ namespace opensolid
 
     Geometry GeometryImplementation::reversed() const {
         assert(parameters() == 1);
-        Interval interval = domain().convertTo<Interval>();
+        Interval interval = domain().as<Interval>();
         Function reversed_parameter = interval.lower() + interval.upper() - Function::Parameter();
         return new GenericGeometry(function()(reversed_parameter), domain());
     }

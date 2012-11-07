@@ -42,7 +42,7 @@ namespace opensolid
         std::vector<double> temp;
         Function function = geometry.function();
         Function derivative = function.derivative();
-        Interval domain = geometry.domain().convertTo<Interval>();
+        Interval domain = geometry.domain().as<Interval>();
         getParameterValues(
             function,
             derivative,

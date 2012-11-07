@@ -111,7 +111,7 @@ public:
     void testConversion() {
         Interval interval(2, 3);
         Domain domain(interval);
-        Interval converted = domain.convertTo<Interval>();
+        Interval converted = domain.as<Interval>();
         TS_ASSERT_EQUALS(converted.lower(), 2);
         TS_ASSERT_EQUALS(converted.upper(), 3);
     }

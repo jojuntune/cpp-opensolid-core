@@ -31,10 +31,10 @@ namespace opensolid
     struct Convertible
     {
         template <class OtherType>
-        OtherType convertTo() const;
+        OtherType as() const;
 
         template <class OtherType>
-        static DerivedType convertFrom(const OtherType& argument);
+        static DerivedType from(const OtherType& argument);
     };
 }
 
@@ -43,12 +43,12 @@ namespace opensolid
 namespace opensolid
 {
     template <class DerivedType> template <class OtherType>
-    inline OtherType Convertible<DerivedType>::convertTo() const {
+    inline OtherType Convertible<DerivedType>::as() const {
         return Conversion<DerivedType, OtherType>()(static_cast<const DerivedType&>(*this));
     }
 
     template <class DerivedType> template <class OtherType>
-    inline DerivedType Convertible<DerivedType>::convertFrom(const OtherType& argument) {
+    inline DerivedType Convertible<DerivedType>::from(const OtherType& argument) {
         return Conversion<OtherType, DerivedType>()(argument);
     }
 }

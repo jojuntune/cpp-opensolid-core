@@ -274,9 +274,9 @@ public:
 
     void testConversion() {
         MyVector my_vector = {1, 2, 3};
-        Vector3d from = Vector3d::convertFrom(my_vector);
+        Vector3d from = Vector3d::from(my_vector);
         TS_ASSERT_EQUALS(from, Vector3d(1, 2, 3));
-        MyVector as = Vector3d::Ones().convertTo<MyVector>();
+        MyVector as = Vector3d::Ones().as<MyVector>();
         TS_ASSERT_EQUALS(as.x, 1.0);
         TS_ASSERT_EQUALS(as.y, 1.0);
         TS_ASSERT_EQUALS(as.z, 1.0);
