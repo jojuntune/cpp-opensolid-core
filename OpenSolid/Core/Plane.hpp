@@ -68,7 +68,6 @@ namespace opensolid
         assert(datum.dimensions() == 3);
         assertCompatible<axes_, 2>();
         assert(datum.axes() == 2);
-        assert(datum.basis().isUnitary());
         initialize(datum);
     }
 }
