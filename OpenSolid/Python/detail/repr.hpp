@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
-#include <opensolid/Interval.hpp>
-#include <opensolid/Matrix.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 #include <boost/python.hpp>
 

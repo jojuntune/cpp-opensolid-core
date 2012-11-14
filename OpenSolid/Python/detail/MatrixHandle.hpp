@@ -20,12 +20,12 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
-#include <opensolid/Interval.hpp>
-#include <opensolid/Matrix.hpp>
-#include <opensolid/Datum.hpp>
-#include <opensolid/detail/Handle.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include "Handle.hpp"
 
 #include <boost/python/slice.hpp>
 
@@ -58,8 +58,6 @@ namespace opensolid
     private:
         const MatrixHandleType& derived() const;
         MatrixHandleType& derived();
-        const MatrixType& readAccess() const;
-        MatrixType& writeAccess();
     public:
         int rows() const;
         int cols() const;
@@ -108,10 +106,10 @@ namespace opensolid
         MatrixHandleType mirrored(const DatumXd& plane);
 
         static MatrixHandleType Constant(int rows, int cols, const ScalarType& value);
-        static MatrixHandleType Zero(int rows, int cols) const;
-        static MatrixHandleType Ones(int rows, int cols) const;
-        static MatrixHandleType Random(int rows, int cols) const;
-        static MatrixHandleType Identity(int rows, int cols) const;
+        static MatrixHandleType Zero(int rows, int cols);
+        static MatrixHandleType Ones(int rows, int cols);
+        static MatrixHandleType Random(int rows, int cols);
+        static MatrixHandleType Identity(int rows, int cols);
     };
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -274,7 +272,7 @@ namespace opensolid
         MatrixXdHandle _matrix_handle;
         int _index;
     public:
-        typedef typename MatrixXdHandle value_type;
+        typedef MatrixXdHandle value_type;
 
         MatrixXdColwiseHandleIterator();
         MatrixXdColwiseHandleIterator(const MatrixXdHandle& matrix_handle, int index);
@@ -291,7 +289,7 @@ namespace opensolid
         MatrixXIHandle _matrix_handle;
         int _index;
     public:
-        typedef typename MatrixXIHandle value_type;
+        typedef MatrixXIHandle value_type;
 
         MatrixXIColwiseHandleIterator();
         MatrixXIColwiseHandleIterator(const MatrixXIHandle& matrix_handle, int index);
@@ -308,7 +306,7 @@ namespace opensolid
         MatrixXdHandle _matrix_handle;
         int _index;
     public:
-        typedef typename MatrixXdHandle value_type;
+        typedef MatrixXdHandle value_type;
 
         MatrixXdRowwiseHandleIterator();
         MatrixXdRowwiseHandleIterator(const MatrixXdHandle& matrix_handle, int index);
@@ -325,7 +323,7 @@ namespace opensolid
         MatrixXIHandle _matrix_handle;
         int _index;
     public:
-        typedef typename MatrixXIHandle value_type;
+        typedef MatrixXIHandle value_type;
 
         MatrixXIRowwiseHandleIterator();
         MatrixXIRowwiseHandleIterator(const MatrixXIHandle& matrix_handle, int index);

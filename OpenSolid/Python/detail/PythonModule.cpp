@@ -31,7 +31,7 @@ namespace opensolid
     void bindSimplex();
     void bindMatrixConstructors();
     void bindMatrix();
-    void bindComparison();
+    void bindZero();
     void bindInterval();
     void bindDouble();
     void bindError();
@@ -42,7 +42,7 @@ namespace opensolid
         bindSimplex();
         bindMatrix();
         bindMatrixConstructors();
-        bindComparison();
+        bindZero();
         bindInterval();
         bindDouble();
         bindError();
@@ -111,7 +111,7 @@ namespace opensolid
     }
 
     template <>
-    const char* VectorComponentError<MatrixXI>::what() const throw() {
+    const char* MatrixValueError<MatrixXI>::what() const throw() {
         return "MatrixXIValueError";
     }
 

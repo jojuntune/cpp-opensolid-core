@@ -18,7 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <opensolid/detail/MatrixHandle.hpp>
+#include "MatrixHandle.hpp"
+#include <OpenSolid/Python/PythonEnvironment.hpp>
 
 namespace opensolid
 {
@@ -37,62 +38,54 @@ namespace opensolid
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
-    const MatrixType&
-    MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::readAccess() const {
-        return derived().readAccess();
-    }
-    
-    template <class MatrixHandleType, class MatrixType, class ScalarType>
-    MatrixType&
-    MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::writeAccess() {
-        return derived().writeAccess();
-    }
-    
-    template <class MatrixHandleType, class MatrixType, class ScalarType>
-    int MatrixHandle<MatrixHandleType, ScalarType>::rows() const {
-        return readAccess().rows();
+    int MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::rows() const {
+        return derived().readAccess().rows();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     int MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::cols() const {
-        return readAccess().cols();
+        return derived().readAccess().cols();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     int MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::size() const {
-        return readAccess().size();
+        return derived().readAccess().size();
     }
-
+    
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::value() const {
-        if (readAccess().size() != 1) {throw MatrixValueError<MatrixType>(readAccess());}
-        return readAccess().value();
+        if (derived().readAccess().size() != 1) {
+            throw MatrixValueError<MatrixType>(derived().readAccess());
+        }
+        return derived().readAccess().value();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::x() const {
-        if (!(readAccess().cols() == 1 || readAccess().rows() == 1)) {
-            throw VectorComponentError<MatrixType>(readAccess(), 0);
+        if (derived().readAccess().cols() != 1 && derived().readAccess().rows() != 1) {
+            throw VectorComponentError<MatrixType>(derived().readAccess(), 0);
         }
-        return readAccess().x();
+        return derived().readAccess()(0);
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::y() const {
-        if (readAccess().size() < 2 || !(readAccess().cols() == 1 || readAccess().rows() == 1)) {
-            throw VectorComponentError<MatrixType>(readAccess(), 1);
-        }
-        return readAccess().y();
+        if (
+            derived().readAccess().size() < 2 ||
+            (derived().readAccess().cols() != 1 && derived().readAccess().rows() != 1)
+        ) {throw VectorComponentError<MatrixType>(derived().readAccess(), 1);}
+        return derived().readAccess()(1);
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::z() const {
-        if (readAccess().size() < 3 || (readAccess().cols() != 1 && readAccess().rows() != 1)) {
-            throw VectorComponentError<MatrixType>(readAccess(), 2);
-        }
-        return readAccess().z();
+        if (
+            derived().readAccess().size() < 3 ||
+            (derived().readAccess().cols() != 1 && derived().readAccess().rows() != 1)
+        ) {throw VectorComponentError<MatrixType>(derived().readAccess(), 2);}
+        return derived().readAccess()(2);
     }
-
+    
     struct IndexError
     {
     };
@@ -130,39 +123,39 @@ namespace opensolid
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemI(int index) const {
         try {
-            if (readAccess().cols() == 1) {
-                return readAccess()(positiveIndex(index, matrix.rows()), 0);
-            } else if (readAccess().rows() == 1) {
-                return readAccess()(0, positiveIndex(index, matrix.cols()));
+            if (derived().readAccess().cols() == 1) {
+                return derived().readAccess()(positiveIndex(index, derived().readAccess().rows()), 0);
+            } else if (derived().readAccess().rows() == 1) {
+                return derived().readAccess()(0, positiveIndex(index, derived().readAccess().cols()));
             } else {
                 throw IndexError();
             }
         } catch (const IndexError&) {
-            throw VectorIndexError<MatrixType>(readAccess(), object(index));
+            throw VectorIndexError<MatrixType>(derived().readAccess(), object(index));
         }
     }
-
+    
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemS(slice indices) const {
         try {
             int block_start = 0;
             int block_size = 0;
-            if (readAccess().cols() == 1) {
-                getComponentBlock(indices, readAccess().rows(), block_start, block_size);
+            if (derived().readAccess().cols() == 1) {
+                getComponentBlock(indices, derived().readAccess().rows(), block_start, block_size);
                 return MatrixHandleType(
-                    new MatrixType(readAccess().block(block_start, 0, block_size, 1))
+                    new MatrixType(derived().readAccess().block(block_start, 0, block_size, 1))
                 );
-            } else if (readAccess().rows() == 1) {
-                getComponentBlock(indices, readAccess().cols(), block_start, block_size);
+            } else if (derived().readAccess().rows() == 1) {
+                getComponentBlock(indices, derived().readAccess().cols(), block_start, block_size);
                 return MatrixHandleType(
-                    new MatrixType(readAccess().block(0, block_start, 1, block_size))
+                    new MatrixType(derived().readAccess().block(0, block_start, 1, block_size))
                 );
             } else {
                 throw IndexError();
             }
         } catch (const IndexError&) {
-            throw VectorIndexError<MatrixType>(readAccess(), indices);
+            throw VectorIndexError<MatrixType>(derived().readAccess(), indices);
         }
     }
 
@@ -170,27 +163,33 @@ namespace opensolid
     ScalarType
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemII(int row, int col) const {
         try {
-            row = positiveIndex(row, readAccess().rows());
-            col = positiveIndex(col, readAccess().cols());
-            return readAccess()(row, col);
+            row = positiveIndex(row, derived().readAccess().rows());
+            col = positiveIndex(col, derived().readAccess().cols());
+            return derived().readAccess()(row, col);
         } catch (const IndexError&) {
-            throw MatrixIndexError<MatrixType>(readAccess(), object(row), object(col));
+            throw MatrixIndexError<MatrixType>(derived().readAccess(), object(row), object(col));
         }
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemIS(int row, slice cols) const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemSI(slice rows, int col) const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::getItemSS(slice rows, slice cols) const {
+        // TODO
+        return MatrixHandleType();
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -240,33 +239,47 @@ namespace opensolid
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
-    MatrixHandleIterator<MatrixHandleType>
+    MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::begin() const {
+        // TODO
+        return MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
-    MatrixHandleIterator<MatrixHandleType>
+    MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>
     MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::end() const {
+        // TODO
+        return MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>();
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::squaredNorm() const {
+        // TODO
+        return ScalarType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::norm() const {
+        // TODO
+        return ScalarType();
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::determinant() const {
+        // TODO
+        return ScalarType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     ScalarType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::trace() const {
+        // TODO
+        return ScalarType();
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::transpose() const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -274,14 +287,20 @@ namespace opensolid
         int row_factor,
         int col_factor
     ) const {
+        // TODO
+        return MatrixHandleType();
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     bool MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::isZero() const {
+        // TODO
+        return false;
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     bool MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::isZeroP(double precision) const {
+        // TODO
+        return false;
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -289,6 +308,8 @@ namespace opensolid
         const MatrixXdHandle& matrix,
         const MatrixXdHandle& vector
     ) const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -296,12 +317,16 @@ namespace opensolid
         double scale,
         const MatrixXdHandle& point
     ) const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::translatedV(
         const MatrixXdHandle& vector
     ) const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -309,6 +334,8 @@ namespace opensolid
         double distance,
         const DatumXd& axis
     ) const {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -316,6 +343,8 @@ namespace opensolid
         double angle,
         const MatrixXdHandle& point
     ) {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -323,12 +352,16 @@ namespace opensolid
         double angle,
         const DatumXd& axis
     ) {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::mirrored(
         const DatumXd& plane
     ) {
+        // TODO
+        return MatrixHandleType();
     }
 
     template <class MatrixHandleType, class MatrixType, class ScalarType>
@@ -337,51 +370,85 @@ namespace opensolid
         int cols,
         const ScalarType& value
     ) {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::Zero(
         int rows,
         int cols
-    ) const {
+    ) {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::Ones(
         int rows,
         int cols
-    ) const {
+    ) {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::Random(
         int rows,
         int cols
-    ) const {
+    ) {
+        // TODO
+        return MatrixHandleType();
     }
     
     template <class MatrixHandleType, class MatrixType, class ScalarType>
     MatrixHandleType MatrixHandle<MatrixHandleType, MatrixType, ScalarType>::Identity(
         int rows,
         int cols
-    ) const {
+    ) {
+        // TODO
+        return MatrixHandleType();
     }
 
-    template <class MatrixHandleType, class ScalarType>
-    class MatrixHandleIterator
-    {
-    private:
-        MatrixHandleType _matrix_handle;
-        int _index;
-    public:
-        typedef ScalarType value_type;
+    template <class MatrixHandleType, class MatrixType, class ScalarType>
+    MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>::MatrixHandleIterator() {
+        // TODO
+    }
 
-        MatrixHandleIterator();
-        MatrixHandleIterator(const MatrixHandleType& matrix_handle, int index);
+    template <class MatrixHandleType, class MatrixType, class ScalarType>
+    MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>::MatrixHandleIterator(
+        const MatrixHandleType& matrix_handle,
+        int index
+    ) {
+        // TODO
+    }
 
-        MatrixHandleIterator& operator++() const;
-        ScalarType operator*() const;
-        bool operator==(const MatrixHandleIterator& other) const;
-        bool operator<(const MatrixHandleIterator& other) const;
-    };
+    template <class MatrixHandleType, class MatrixType, class ScalarType>
+    MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>&
+    MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>::operator++() const {
+        // TODO
+        return *this;
+    }
+
+    template <class MatrixHandleType, class MatrixType, class ScalarType>
+    ScalarType MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>::operator*() const {
+        // TODO
+        return ScalarType();
+    }
+
+    template <class MatrixHandleType, class MatrixType, class ScalarType>
+    bool MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>::operator==(
+        const MatrixHandleIterator& other
+    ) const {
+        // TODO
+        return false;
+    }
+
+    template <class MatrixHandleType, class MatrixType, class ScalarType>
+    bool MatrixHandleIterator<MatrixHandleType, MatrixType, ScalarType>::operator<(
+        const MatrixHandleIterator& other
+    ) const {
+        // TODO
+        return false;
+    }
 }

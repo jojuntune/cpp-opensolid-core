@@ -18,68 +18,65 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/detail/PythonModule.hpp>
-#include <opensolid/Comparison.hpp>
-#include <opensolid/Interval.hpp>
+#include "PythonModule.hpp"
+#include <OpenSolid/util/Zero.hpp>
+#include <OpenSolid/Core/Interval.hpp>
 
 using namespace boost::python;
 
 namespace opensolid
 {
-    Comparison zero() {return Zero();}
-    
-    Comparison zeroP(double precision) {return Zero(precision);}
-
-    bool equalI(const Comparison& comparison, const Interval& argument) {
-        return argument == comparison;
+    bool equalI(const Zero& zero, const Interval& argument) {
+        return argument == zero;
     }
 
-    bool equalD(const Comparison& comparison, double argument) {
-        return argument == comparison;
+    bool equalD(const Zero& zero, double argument) {
+        return argument == zero;
     }
 
-    bool notEqualI(const Comparison& comparison, const Interval& argument) {
-        return argument != comparison;
+    bool notEqualI(const Zero& zero, const Interval& argument) {
+        return argument != zero;
     }
 
-    bool notEqualD(const Comparison& comparison, double argument) {
-        return argument != comparison;
+    bool notEqualD(const Zero& zero, double argument) {
+        return argument != zero;
     }
 
-    bool lessI(const Comparison& comparison, const Interval& argument) {
-        return argument > comparison;
+    bool lessI(const Zero& zero, const Interval& argument) {
+        return argument > zero;
     }
 
-    bool lessD(const Comparison& comparison, double argument) {
-        return argument > comparison;
+    bool lessD(const Zero& zero, double argument) {
+        return argument > zero;
     }
 
-    bool greaterI(const Comparison& comparison, const Interval& argument) {
-        return argument < comparison;
+    bool greaterI(const Zero& zero, const Interval& argument) {
+        return argument < zero;
     }
 
-    bool greaterD(const Comparison& comparison, double argument) {
-        return argument < comparison;
+    bool greaterD(const Zero& zero, double argument) {
+        return argument < zero;
     }
 
-    bool lessOrEqualI(const Comparison& comparison, const Interval& argument) {
-        return argument >= comparison;
+    bool lessOrEqualI(const Zero& zero, const Interval& argument) {
+        return argument >= zero;
     }
 
-    bool lessOrEqualD(const Comparison& comparison, double argument) {
-        return argument >= comparison;
+    bool lessOrEqualD(const Zero& zero, double argument) {
+        return argument >= zero;
     }
 
-    bool greaterOrEqualI(const Comparison& comparison, const Interval& argument) {
-        return argument <= comparison;
+    bool greaterOrEqualI(const Zero& zero, const Interval& argument) {
+        return argument <= zero;
     }
 
-    bool greaterOrEqualD(const Comparison& comparison, double argument) {
-        return argument <= comparison;
+    bool greaterOrEqualD(const Zero& zero, double argument) {
+        return argument <= zero;
     }
     
-    void bindComparison() {
-        class_<Comparison>("Comparison", no_init)
+    void bindZero() {
+        class_<Zero>("Zero")
+            .def(init<double>())
             .def("__eq__", &equalI)
             .def("__eq__", &equalD)
             .def("__ne__", &notEqualI)
@@ -92,7 +89,5 @@ namespace opensolid
             .def("__le__", &lessOrEqualD)
             .def("__ge__", &greaterOrEqualI)
             .def("__ge__", &greaterOrEqualD);
-        def("Zero", &zero);
-        def("Zero", &zeroP);
     }
 }

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <OpenSolid/Core/Error.hpp>
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
 #include <memory>
 
@@ -62,7 +62,7 @@ namespace opensolid
     Handle<Type>::Handle(Type* argument) : _pointer(argument) {}
 
     template <class Type>
-    Handle<Type>::isValid() const {return _pointer;}
+    bool Handle<Type>::isValid() const {return _pointer;}
 
     template <class Type>
     const Type& Handle<Type>::readAccess() const {

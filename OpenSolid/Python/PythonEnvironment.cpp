@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
+#include <OpenSolid/Python/PythonEnvironment.hpp>
+
 #include <vector>
 
 #include <boost/algorithm/string/split.hpp>
@@ -25,8 +27,8 @@
 #include <boost/algorithm/string/classification.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
-#include <opensolid/Axis.hpp>
-#include <opensolid/PythonEnvironment.hpp>
+#include <OpenSolid/Core/Axis.hpp>
+#include "detail/PythonModule.hpp"
 
 using namespace boost::python;
 
@@ -322,18 +324,9 @@ namespace opensolid
         return result;
     }
 
-    std::string TypeName<boost::python::object>::operator()() const {return "object";}
-
-    std::string TypeName<boost::python::str>::operator()() const {return "str";}
-
-    std::string TypeName<boost::python::list>::operator()() const {return "list";}
-
-    std::string TypeName<boost::python::dict>::operator()() const {return "dict";}
-
     ConversionFromPythonError::ConversionFromPythonError(
-        const boost::python::object& python_object,
-        const std::string& expected_type
-    ) : _python_object(python_object), _expected_type(expected_type) {}
+        const boost::python::object& python_object
+    ) : _python_object(python_object) {}
 
     ConversionFromPythonError::~ConversionFromPythonError() throw() {}
 
@@ -343,17 +336,13 @@ namespace opensolid
 
     boost::python::object ConversionFromPythonError::pythonObject() const {return _python_object;}
 
-    std::string ConversionFromPythonError::expectedType() const {return _expected_type;}
-
-    ConversionToPythonError::ConversionToPythonError(const std::string& type) : _type(type) {}
+    ConversionToPythonError::ConversionToPythonError() {}
 
     ConversionToPythonError::~ConversionToPythonError() throw() {}
         
     const char* ConversionToPythonError::what() const throw() {
         return "ConversionToPythonError";
     }
-    
-    std::string ConversionToPythonError::type() const {return _type;}
 
     const char* UnexpectedPythonError::what() const throw() {
         return "UnexpectedPythonError";

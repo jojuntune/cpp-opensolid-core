@@ -20,12 +20,11 @@
 
 #pragma once
 
-#include <opensolid/config.hpp>
+#include <OpenSolid/config.hpp>
 
-#include <opensolid/detail/PythonModule.hpp>
-#include <opensolid/detail/repr.hpp>
+#include "detail/PythonModule.hpp"
+#include "detail/repr.hpp"
 #include <OpenSolid/Core/Error.hpp>
-#include <opensolid/TypeName.hpp>
 
 #include <boost/python/converter/registry.hpp>
 
@@ -96,35 +95,6 @@ namespace opensolid
     };
 }
 
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct TypeName<boost::python::object>
-    {
-        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<boost::python::str>
-    {
-        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<boost::python::list>
-    {
-        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
-    };
-
-    template <>
-    struct TypeName<boost::python::dict>
-    {
-        OPENSOLID_PYTHON_EXPORT std::string operator()() const;
-    };
-}
-
 ////////// Errors //////////
 
 namespace opensolid
@@ -133,31 +103,25 @@ namespace opensolid
     {
     private:
         boost::python::object _python_object;
-        std::string _expected_type;
     public:
         OPENSOLID_PYTHON_EXPORT ConversionFromPythonError(
-            const boost::python::object& python_object,
-            const std::string& expected_type
+            const boost::python::object& python_object
         );
         
         OPENSOLID_PYTHON_EXPORT ~ConversionFromPythonError() throw ();
 
         OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
         OPENSOLID_PYTHON_EXPORT boost::python::object pythonObject() const;
-        OPENSOLID_PYTHON_EXPORT std::string expectedType() const;
     };
 
     class ConversionToPythonError : public Error
     {
-    private:
-        std::string _type;
     public:
-        OPENSOLID_PYTHON_EXPORT ConversionToPythonError(const std::string& type);
+        OPENSOLID_PYTHON_EXPORT ConversionToPythonError();
         
         OPENSOLID_PYTHON_EXPORT ~ConversionToPythonError() throw ();
         
         OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
-        OPENSOLID_PYTHON_EXPORT std::string type() const;
     };
 
     class UnexpectedPythonError : public Error
@@ -351,7 +315,7 @@ namespace opensolid
             _environment_dict[name] = argument;
         } catch (const boost::python::error_already_set& error) {
             PyErr_Clear();
-            throw ConversionToPythonError(TypeName<Type>()());
+            throw ConversionToPythonError();
         }
         return *this;
     }
@@ -361,7 +325,7 @@ namespace opensolid
         boost::python::object python_object = eval(expression);
         boost::python::extract<Type> extracted(python_object);
         if (!extracted.check()) {
-            throw ConversionFromPythonError(python_object, TypeName<Type>()());
+            throw ConversionFromPythonError(python_object);
         }
         return extracted;
     }

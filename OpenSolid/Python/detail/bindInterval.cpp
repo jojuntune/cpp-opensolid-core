@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/detail/PythonModule.hpp>
-#include <opensolid/detail/repr.hpp>
-#include <opensolid/Interval.hpp>
+#include "PythonModule.hpp"
+#include "repr.hpp"
+#include <OpenSolid/Core/Interval.hpp>
 
 using namespace boost::python;
 
@@ -195,19 +195,19 @@ namespace opensolid
         
         implicitly_convertible<double, Interval>();
         
-        def("abs", (Interval (*)(const Interval&)) &abs);
-        def("sqrt", (Interval (*)(const Interval&)) &sqrt);
-        def("sin", (Interval (*)(const Interval&)) &sin);
-        def("cos", (Interval (*)(const Interval&)) &cos);
-        def("tan", (Interval (*)(const Interval&)) &tan);
-        def("asin", (Interval (*)(const Interval&)) &asin);
-        def("acos", (Interval (*)(const Interval&)) &acos);
-        def("atan", (Interval (*)(const Interval&)) &atan);
-        def("atan2", (Interval (*)(const Interval&, const Interval&)) &atan2);
-        def("exp", (Interval (*)(const Interval&))  &exp);
-        def("log", (Interval (*)(const Interval&)) &log);
-        def("pow", (Interval (*)(const Interval&, int)) &pow);
-        def("pow", (Interval (*)(const Interval&, double)) &pow);
-        def("pow", (Interval (*)(const Interval&, const Interval&)) &pow);
+        def("abs", (Interval (*)(Interval)) &abs);
+        def("sqrt", (Interval (*)(Interval)) &sqrt);
+        def("sin", (Interval (*)(Interval)) &sin);
+        def("cos", (Interval (*)(Interval)) &cos);
+        def("tan", (Interval (*)(Interval)) &tan);
+        def("asin", (Interval (*)(Interval)) &asin);
+        def("acos", (Interval (*)(Interval)) &acos);
+        def("atan", (Interval (*)(Interval)) &atan);
+        def("atan2", (Interval (*)(Interval, Interval)) &atan2);
+        def("exp", (Interval (*)(Interval))  &exp);
+        def("log", (Interval (*)(Interval)) &log);
+        def("pow", (Interval (*)(Interval, int)) &pow);
+        def("pow", (Interval (*)(Interval, double)) &pow);
+        def("pow", (Interval (*)(Interval, Interval)) &pow);
     }
 }

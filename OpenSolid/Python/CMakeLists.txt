@@ -1,6 +1,11 @@
 ########## Compile Python extension module ##########
     
     file(GLOB MODULE_SOURCES detail/*.cpp)
+    
+    # Temporarily remove handle sources until they compile properly
+    list(REMOVE_ITEM MODULE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/detail/Handle.cpp)
+    list(REMOVE_ITEM MODULE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/detail/MatrixHandle.cpp)
+
     add_library(python_module SHARED ${MODULE_SOURCES})
     set_target_properties(python_module PROPERTIES PREFIX "" OUTPUT_NAME opensolid)
     set_target_properties(python_module PROPERTIES DEBUG_POSTFIX d)

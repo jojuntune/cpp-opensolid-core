@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/detail/PythonModule.hpp>
-#include <opensolid/Axis.hpp>
+#include "PythonModule.hpp"
+#include <OpenSolid/Core/Axis.hpp>
 
 #include <boost/python/converter/pytype_function.hpp>
 

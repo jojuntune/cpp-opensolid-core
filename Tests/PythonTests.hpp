@@ -18,15 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.               *
  *****************************************************************************/
 
-#include <opensolid/Comparison.hpp>
+#include <OpenSolid/util/Zero.hpp>
 #include <OpenSolid/Core/Error.hpp>
-#include <opensolid/Function.hpp>
-#include <opensolid/Matrix.hpp>
-#include <opensolid/Datum.hpp>
-#include <opensolid/Frame.hpp>
-#include <opensolid/Axis.hpp>
-#include <opensolid/Simplex.hpp>
-#include <opensolid/PythonEnvironment.hpp>
+#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Simplex.hpp>
+#include <OpenSolid/Python/PythonEnvironment.hpp>
 
 #include <cxxtest/TestSuite.h>
 
@@ -65,15 +65,6 @@ public:
 struct UnregisteredType
 {
 };
-
-namespace opensolid
-{
-    template <>
-    struct TypeName<UnregisteredType>
-    {
-        std::string operator()() const {return "UnregisteredType";}
-    };
-}
 
 class PythonTests : public CxxTest::TestSuite
 {
@@ -333,7 +324,6 @@ public:
         } catch (const ConversionFromPythonError& error) {
             std::cout << environment.formattedTraceback() << std::endl;
             TS_ASSERT_EQUALS(std::string(error.what()), "ConversionFromPythonError");
-            TS_ASSERT_EQUALS(error.expectedType(), "Vector2d");
             TS_ASSERT(extract<MatrixXI>(error.pythonObject()).check());
         }
     }
