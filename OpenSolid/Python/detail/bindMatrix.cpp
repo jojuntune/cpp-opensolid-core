@@ -786,10 +786,6 @@ namespace opensolid
     }
     
     MatrixXd* rmulXdd(const MatrixXd& self, double argument) {
-        std::cout << "rmulXdd &self: " << &self << std::endl;
-        std::cout << "rmulXdd self.data(): " << self.data() << std::endl;
-        std::cout << "rmulXdd self.rows(): " << self.rows() << std::endl;
-        std::cout << "rmulXdd self.cols(): " << self.cols() << std::endl;
         return new MatrixXd(argument * self);
     }
     
@@ -798,10 +794,6 @@ namespace opensolid
     }
     
     MatrixXI* rmulXdI(const MatrixXd& self, const Interval& argument) {
-        std::cout << "rmulXdI &self: " << &self << std::endl;
-        std::cout << "rmulXdI self.data(): " << self.data() << std::endl;
-        std::cout << "rmulXdI self.rows(): " << self.rows() << std::endl;
-        std::cout << "rmulXdI self.cols(): " << self.cols() << std::endl;
         return new MatrixXI(argument * self.cast<Interval>());
     }
     

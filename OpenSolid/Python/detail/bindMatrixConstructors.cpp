@@ -65,13 +65,7 @@ namespace opensolid
     struct Vector3dConstructors
     {
         static MatrixXd* components(object, double x, double y, double z) {
-            std::cout << "Constructing MatrixXd from Vector3d(" << x << ", " << y << ", " << z << ")" << std::endl;
             MatrixXd* result = new MatrixXd(Vector3d(x, y, z));
-            std::cout << "result: " << result << std::endl;
-            std::cout << "result->data(): " << result->data() << std::endl;
-            std::cout << "result->rows(): " << result->rows() << std::endl;
-            std::cout << "result->cols(): " << result->cols() << std::endl;
-            std::cout << "result->transpose(): " << result->transpose() << std::endl;
             return result;
         }
 
