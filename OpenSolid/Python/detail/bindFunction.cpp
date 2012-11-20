@@ -85,6 +85,14 @@ namespace opensolid
         return function.dot(argument);
     }
 
+    Function identity1() {
+        return Function::Identity();
+    }
+
+    Function identity2(int dimensions) {
+        return Function::Identity(dimensions);
+    }
+
     Function parameter1() {
         return Function::Parameter();
     }
@@ -170,7 +178,8 @@ namespace opensolid
             .def(self / DatumXd())
             .def(self / self)
             .def(self % DatumXd())
-            .def("Identity", &Function::Identity)
+            .def("Identity", &identity1)
+            .def("Identity", &identity2)
                 .staticmethod("Identity")
             .def("Parameter", &parameter1)
             .def("Parameter", &parameter2)
