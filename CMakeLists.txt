@@ -176,5 +176,5 @@
 
 ########## Set up source groups for Visual Studio ##########
 
-    add_to_global_source_list(*)
+    add_to_global_source_list(* OpenSolid/*)
     create_source_groups()
