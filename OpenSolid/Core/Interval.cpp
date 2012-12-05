@@ -40,108 +40,114 @@ namespace opensolid
     template <>
     struct Conversion<Interval, BoostInterval>
     {
-        inline BoostInterval operator()(Interval argument) {
-            return BoostInterval(argument.lower(), argument.upper());
+        inline BoostInterval operator()(Interval interval) {
+            return BoostInterval(interval.lower(), interval.upper());
         }
     };
 
     template <>
     struct Conversion<BoostInterval, Interval>
     {
-        inline Interval operator()(BoostInterval argument) {
-            return Interval(argument.lower(), argument.upper());
+        inline Interval operator()(BoostInterval boostInterval) {
+            return Interval(boostInterval.lower(), boostInterval.upper());
         }
     };
     
-    Interval& Interval::operator*=(Interval argument) {
+    Interval& Interval::operator*=(Interval interval) {
         BoostInterval self = this->as<BoostInterval>();
-        BoostInterval other = argument.as<BoostInterval>();
+        BoostInterval other = interval.as<BoostInterval>();
         *this = Interval::from(self * other);
         return *this;
     }
     
-    Interval& Interval::operator/=(Interval argument) {
+    Interval& Interval::operator/=(Interval interval) {
         BoostInterval self = this->as<BoostInterval>();
-        BoostInterval other = argument.as<BoostInterval>();
+        BoostInterval other = interval.as<BoostInterval>();
         *this = Interval::from(self / other);
         return *this;
     }
     
-    Interval operator*(Interval first_argument, Interval second_argument) {
+    Interval operator*(Interval firstInterval, Interval secondInterval) {
         return Interval::from(
-            first_argument.as<BoostInterval>() * second_argument.as<BoostInterval>()
+            firstInterval.as<BoostInterval>() * secondInterval.as<BoostInterval>()
         );
     }
 
-    Interval operator/(double first_argument, Interval second_argument) {
-        return Interval::from(first_argument / second_argument.as<BoostInterval>());
+    Interval operator/(double value, Interval interval) {
+        return Interval::from(value / interval.as<BoostInterval>());
     }
 
-    Interval operator/(Interval first_argument, Interval second_argument) {
+    Interval operator/(Interval firstInterval, Interval secondInterval) {
         return Interval::from(
-            first_argument.as<BoostInterval>() / second_argument.as<BoostInterval>()
+            firstInterval.as<BoostInterval>() / secondInterval.as<BoostInterval>()
         );
     }
 
-    Interval sin(Interval argument) {
-        return Interval::from(boost::numeric::sin(argument.as<BoostInterval>()));
+    Interval sin(Interval interval) {
+        return Interval::from(boost::numeric::sin(interval.as<BoostInterval>()));
     }
 
-    Interval cos(Interval argument) {
-        return Interval::from(boost::numeric::cos(argument.as<BoostInterval>()));
+    Interval cos(Interval interval) {
+        return Interval::from(boost::numeric::cos(interval.as<BoostInterval>()));
     }
 
-    Interval tan(Interval argument) {
-        return Interval::from(boost::numeric::tan(argument.as<BoostInterval>()));
+    Interval tan(Interval interval) {
+        return Interval::from(boost::numeric::tan(interval.as<BoostInterval>()));
     }
 
-    Interval asin(Interval argument) {
-        return Interval::from(boost::numeric::asin(argument.as<BoostInterval>()));
+    Interval asin(Interval interval) {
+        return Interval::from(boost::numeric::asin(interval.as<BoostInterval>()));
     }
 
-    Interval acos(Interval argument) {
-        return Interval::from(boost::numeric::acos(argument.as<BoostInterval>()));
+    Interval acos(Interval interval) {
+        return Interval::from(boost::numeric::acos(interval.as<BoostInterval>()));
     }
 
-    Interval atan(Interval argument) {
-        return Interval::from(boost::numeric::atan(argument.as<BoostInterval>()));
+    Interval atan(Interval interval) {
+        return Interval::from(boost::numeric::atan(interval.as<BoostInterval>()));
     }
 
-    Interval atan2(Interval y, Interval x) {
-        if (x.lower() > 0.0) {
-            return atan(y / x);
-        } else if (y.lower() > 0.0) {
-            return atan(-x / y) + M_PI / 2;
-        } else if (y.upper() < 0.0) {
-            return atan(-x / y) - M_PI / 2;
+    Interval atan2(Interval yInterval, Interval xInterval) {
+        if (xInterval.lower() > 0.0) {
+            return atan(yInterval / xInterval);
+        } else if (yInterval.lower() > 0.0) {
+            return atan(-xInterval / yInterval) + M_PI / 2;
+        } else if (yInterval.upper() < 0.0) {
+            return atan(-xInterval / yInterval) - M_PI / 2;
         } else {
             return Interval(-M_PI, M_PI);
         }
     }
 
-    Interval exp(Interval argument) {
-        return Interval::from(boost::numeric::exp(argument.as<BoostInterval>()));
+    Interval exp(Interval interval) {
+        return Interval::from(boost::numeric::exp(interval.as<BoostInterval>()));
     }
 
-    Interval log(Interval argument) {
-        return Interval::from(boost::numeric::log(argument.as<BoostInterval>()));
+    Interval log(Interval interval) {
+        return Interval::from(boost::numeric::log(interval.as<BoostInterval>()));
     }
 
-    Interval pow(Interval argument, int exponent) {
-        return Interval::from(boost::numeric::pow(argument.as<BoostInterval>(), exponent));
+    Interval pow(Interval baseInterval, int exponentValue) {
+        return Interval::from(
+            boost::numeric::pow(baseInterval.as<BoostInterval>(), exponentValue)
+        );
     }
     
-    Interval pow(Interval base, double exponent) {return exp(log(base) * exponent);}
+    Interval pow(Interval baseInterval, double exponentValue) {
+        return exp(log(baseInterval) * exponentValue);
+    }
     
-    Interval pow(Interval base, Interval exponent) {return exp(log(base) * exponent);}
+    Interval pow(Interval baseInterval, Interval exponentInterval) {
+        return exp(log(baseInterval) * exponentInterval);
+    }
     
-    std::ostream& operator<<(std::ostream& stream, Interval argument) {
-        if (argument.isEmpty()) {
+    std::ostream& operator<<(std::ostream& stream, Interval interval) {
+        if (interval.isEmpty()) {
             stream << "[]";
-        } else if (argument.isSingleton()) {
-            stream << "[" << argument.lower() << "]";
+        } else if (interval.isSingleton()) {
+            stream << "[" << interval.lower() << "]";
         } else {
-            stream << "[" << argument.lower() << "," << argument.upper() << "]";
+            stream << "[" << interval.lower() << "," << interval.upper() << "]";
         }
         return stream;
     }
