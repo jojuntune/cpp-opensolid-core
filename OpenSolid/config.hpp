@@ -105,4 +105,16 @@ namespace opensolid
     using std::exp;
     using std::log;
     using std::pow;
+
+    inline double pi() {
+        return M_PI;
+    }
+
+    inline double e() {
+        return M_E;
+    }
+
+    inline double infinity() {
+        return std::numeric_limits<double>::infinity();
+    }
 }
