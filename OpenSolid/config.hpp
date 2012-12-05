@@ -107,11 +107,11 @@ namespace opensolid
     using std::pow;
 
     inline double pi() {
-        return M_PI;
+        return 3.14159265358979323846;
     }
 
     inline double e() {
-        return M_E;
+        return 2.71828182845904523536;
     }
 
     inline double infinity() {
