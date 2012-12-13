@@ -30,6 +30,7 @@ namespace opensolid
     template Simplex<1, 2>::Simplex();
     template Simplex<2, 2>::Simplex();
     template Simplex<3, 2>::Simplex();
+    template Simplex<1, 3>::Simplex();
     template Simplex<2, 3>::Simplex();
     template Simplex<3, 3>::Simplex();
     template Simplex<3, 4>::Simplex();
@@ -42,6 +43,7 @@ namespace opensolid
     template Simplex<1, 2>::Simplex(const Matrix<double, 1, 2>&);
     template Simplex<2, 2>::Simplex(const Matrix<double, 2, 2>&);
     template Simplex<3, 2>::Simplex(const Matrix<double, 3, 2>&);
+    template Simplex<1, 3>::Simplex(const Matrix<double, 1, 3>&);
     template Simplex<2, 3>::Simplex(const Matrix<double, 2, 3>&);
     template Simplex<3, 3>::Simplex(const Matrix<double, 3, 3>&);
     template Simplex<3, 4>::Simplex(const Matrix<double, 3, 4>&);
@@ -88,6 +90,7 @@ namespace opensolid
         _vertices.col(2) = third_vertex;
     }
     
+    template Simplex<1, 3>::Simplex(const Matrix<double, 1, 1>&, const Matrix<double, 1, 1>&, const Matrix<double, 1, 1>&);
     template Simplex<2, 3>::Simplex(const Matrix<double, 2, 1>&, const Matrix<double, 2, 1>&, const Matrix<double, 2, 1>&);
     template Simplex<3, 3>::Simplex(const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&, const Matrix<double, 3, 1>&);
     template Simplex<Dynamic, Dynamic>::Simplex(const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&, const Matrix<double, Dynamic, 1>&);
@@ -119,6 +122,7 @@ namespace opensolid
     template int Simplex<1, 2>::dimensions() const;
     template int Simplex<2, 2>::dimensions() const;
     template int Simplex<3, 2>::dimensions() const;
+    template int Simplex<1, 3>::dimensions() const;
     template int Simplex<2, 3>::dimensions() const;
     template int Simplex<3, 3>::dimensions() const;
     template int Simplex<3, 4>::dimensions() const;
@@ -130,6 +134,7 @@ namespace opensolid
     template int Simplex<1, 2>::size() const;
     template int Simplex<2, 2>::size() const;
     template int Simplex<3, 2>::size() const;
+    template int Simplex<1, 3>::size() const;
     template int Simplex<2, 3>::size() const;
     template int Simplex<3, 3>::size() const;
     template int Simplex<3, 4>::size() const;
@@ -143,6 +148,7 @@ namespace opensolid
     template Simplex<1, 2>::Vertices& Simplex<1, 2>::vertices();
     template Simplex<2, 2>::Vertices& Simplex<2, 2>::vertices();
     template Simplex<3, 2>::Vertices& Simplex<3, 2>::vertices();
+    template Simplex<1, 3>::Vertices& Simplex<1, 3>::vertices();
     template Simplex<2, 3>::Vertices& Simplex<2, 3>::vertices();
     template Simplex<3, 3>::Vertices& Simplex<3, 3>::vertices();
     template Simplex<3, 4>::Vertices& Simplex<3, 4>::vertices();
@@ -155,6 +161,7 @@ namespace opensolid
     template const Simplex<1, 2>::Vertices& Simplex<1, 2>::vertices() const;
     template const Simplex<2, 2>::Vertices& Simplex<2, 2>::vertices() const;
     template const Simplex<3, 2>::Vertices& Simplex<3, 2>::vertices() const;
+    template const Simplex<1, 3>::Vertices& Simplex<1, 3>::vertices() const;
     template const Simplex<2, 3>::Vertices& Simplex<2, 3>::vertices() const;
     template const Simplex<3, 3>::Vertices& Simplex<3, 3>::vertices() const;
     template const Simplex<3, 4>::Vertices& Simplex<3, 4>::vertices() const;
@@ -168,6 +175,7 @@ namespace opensolid
     template Simplex<1, 2>::Vertex Simplex<1, 2>::vertex(int);
     template Simplex<2, 2>::Vertex Simplex<2, 2>::vertex(int);
     template Simplex<3, 2>::Vertex Simplex<3, 2>::vertex(int);
+    template Simplex<1, 3>::Vertex Simplex<1, 3>::vertex(int);
     template Simplex<2, 3>::Vertex Simplex<2, 3>::vertex(int);
     template Simplex<3, 3>::Vertex Simplex<3, 3>::vertex(int);
     template Simplex<3, 4>::Vertex Simplex<3, 4>::vertex(int);
@@ -180,6 +188,7 @@ namespace opensolid
     template Simplex<1, 2>::ConstVertex Simplex<1, 2>::vertex(int) const;
     template Simplex<2, 2>::ConstVertex Simplex<2, 2>::vertex(int) const;
     template Simplex<3, 2>::ConstVertex Simplex<3, 2>::vertex(int) const;
+    template Simplex<1, 3>::ConstVertex Simplex<1, 3>::vertex(int) const;
     template Simplex<2, 3>::ConstVertex Simplex<2, 3>::vertex(int) const;
     template Simplex<3, 3>::ConstVertex Simplex<3, 3>::vertex(int) const;
     template Simplex<3, 4>::ConstVertex Simplex<3, 4>::vertex(int) const;
@@ -250,6 +259,7 @@ namespace opensolid
         return vertex(1) - vertex(0);
     }
     
+    template Simplex<1, 2>::Vector Simplex<1, 2>::vector() const;
     template Simplex<2, 2>::Vector Simplex<2, 2>::vector() const;
     template Simplex<3, 2>::Vector Simplex<3, 2>::vector() const;
     template Simplex<Dynamic, Dynamic>::Vector Simplex<Dynamic, Dynamic>::vector() const;
@@ -261,6 +271,7 @@ namespace opensolid
     template Simplex<1, 2>::Vector Simplex<1, 2>::centroid() const;
     template Simplex<2, 2>::Vector Simplex<2, 2>::centroid() const;
     template Simplex<3, 2>::Vector Simplex<3, 2>::centroid() const;
+    template Simplex<1, 3>::Vector Simplex<1, 3>::centroid() const;
     template Simplex<2, 3>::Vector Simplex<2, 3>::centroid() const;
     template Simplex<3, 3>::Vector Simplex<3, 3>::centroid() const;
     template Simplex<3, 4>::Vector Simplex<3, 4>::centroid() const;
@@ -286,6 +297,7 @@ namespace opensolid
     template Simplex<1, 2>::Edge Simplex<1, 2>::edge(int) const;
     template Simplex<2, 2>::Edge Simplex<2, 2>::edge(int) const;
     template Simplex<3, 2>::Edge Simplex<3, 2>::edge(int) const;
+    template Simplex<1, 3>::Edge Simplex<1, 3>::edge(int) const;
     template Simplex<2, 3>::Edge Simplex<2, 3>::edge(int) const;
     template Simplex<3, 3>::Edge Simplex<3, 3>::edge(int) const;
     template Simplex<3, 4>::Edge Simplex<3, 4>::edge(int) const;
@@ -305,6 +317,7 @@ namespace opensolid
     template Simplex<1, 2>::Edge Simplex<1, 2>::edge(int, int) const;
     template Simplex<2, 2>::Edge Simplex<2, 2>::edge(int, int) const;
     template Simplex<3, 2>::Edge Simplex<3, 2>::edge(int, int) const;
+    template Simplex<1, 3>::Edge Simplex<1, 3>::edge(int, int) const;
     template Simplex<2, 3>::Edge Simplex<2, 3>::edge(int, int) const;
     template Simplex<3, 3>::Edge Simplex<3, 3>::edge(int, int) const;
     template Simplex<3, 4>::Edge Simplex<3, 4>::edge(int, int) const;
@@ -337,6 +350,7 @@ namespace opensolid
     template Datum<1, 1> Simplex<1, 2>::coordinateSystem() const;
     template Datum<2, 1> Simplex<2, 2>::coordinateSystem() const;
     template Datum<3, 1> Simplex<3, 2>::coordinateSystem() const;
+    template Datum<1, 2> Simplex<1, 3>::coordinateSystem() const;
     template Datum<2, 2> Simplex<2, 3>::coordinateSystem() const;
     template Datum<3, 2> Simplex<3, 3>::coordinateSystem() const;
     template Datum<3, 3> Simplex<3, 4>::coordinateSystem() const;
@@ -350,6 +364,7 @@ namespace opensolid
     template Matrix<Interval, 1, 1> Simplex<1, 2>::bounds() const;
     template Matrix<Interval, 2, 1> Simplex<2, 2>::bounds() const;
     template Matrix<Interval, 3, 1> Simplex<3, 2>::bounds() const;
+    template Matrix<Interval, 1, 1> Simplex<1, 3>::bounds() const;
     template Matrix<Interval, 2, 1> Simplex<2, 3>::bounds() const;
     template Matrix<Interval, 3, 1> Simplex<3, 3>::bounds() const;
     template Matrix<Interval, 3, 1> Simplex<3, 4>::bounds() const;
@@ -365,6 +380,7 @@ namespace opensolid
     template bool Simplex<1, 2>::operator==(const Simplex<1, 2>&) const;
     template bool Simplex<2, 2>::operator==(const Simplex<2, 2>&) const;
     template bool Simplex<3, 2>::operator==(const Simplex<3, 2>&) const;
+    template bool Simplex<1, 3>::operator==(const Simplex<1, 3>&) const;
     template bool Simplex<2, 3>::operator==(const Simplex<2, 3>&) const;
     template bool Simplex<3, 3>::operator==(const Simplex<3, 3>&) const;
     template bool Simplex<3, 4>::operator==(const Simplex<3, 4>&) const;
