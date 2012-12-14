@@ -597,7 +597,7 @@ namespace opensolid
         assert(axis.dimensions() == dimensions());
         assertCompatible<other_axes_, 1>();
         assert(axis.axes() == 1);
-        assert(axis.direction().norm() == One());
+        assert(axis.direction().norm() - 1 == Zero());
         Datum<dimensions_, axes_> result(*this);
         result._origin += distance * axis.direction();
         return result;

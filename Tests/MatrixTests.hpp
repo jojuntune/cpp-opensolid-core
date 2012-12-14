@@ -231,7 +231,7 @@ public:
         TS_ASSERT(boost::geometry::intersects(first_box, second_box));
         Vector2I intersection;
         boost::geometry::intersection(first_box, second_box, intersection);
-        TS_ASSERT(boost::geometry::area(intersection) == One());
+        TS_ASSERT(boost::geometry::area(intersection) - 1 == Zero());
         TS_ASSERT(intersection.cwiseLower().isApprox(Vector2d::Constant(2)));
         TS_ASSERT(intersection.cwiseUpper().isApprox(Vector2d::Constant(3)));
         #endif
