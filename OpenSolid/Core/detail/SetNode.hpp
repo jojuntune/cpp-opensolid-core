@@ -96,7 +96,7 @@ namespace opensolid
         inline void split(const BoundsType& bounds, int& split_direction, double& split_value) {
             typename BoundsType::Index index;
             bounds.cwiseWidth().maxCoeff(&index);
-            split_direction = index;
+            split_direction = int(index);
             split_value = bounds(index).median();
         }
         
