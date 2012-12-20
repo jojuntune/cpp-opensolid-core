@@ -26,51 +26,36 @@ CwiseUnaryOp<MedianOperation, const Derived> cwiseMedian() const;
 CwiseUnaryOp<RandomOperation, const Derived> cwiseRandom() const;
 CwiseUnaryOp<WidthOperation, const Derived> cwiseWidth() const;
 
-template <class OtherDerivedType>
-bool overlaps(
-    const DenseBase<OtherDerivedType>& other,
-    double precision = 1e-12
+template <class TOther>
+bool overlaps(const DenseBase<TOther>& other, double precision = 1e-12) const;
+
+template <class TOther>
+bool strictlyOverlaps(const DenseBase<TOther>& other, double precision = 1e-12) const;
+
+template <class TOther>
+bool contains(const DenseBase<TOther>& other, double precision = 1e-12) const;
+
+template <class TOther>
+bool strictlyContains(const DenseBase<TOther>& other, double precision = 1e-12) const;
+
+template <class TOther>
+CwiseBinaryOp<HullOperation, const Derived, const TOther> hull(
+    const DenseBase<TOther>& other
 ) const;
 
-template <class OtherDerivedType>
-bool strictlyOverlaps(
-    const DenseBase<OtherDerivedType>& other,
-    double precision = 1e-12
+template <class TOther>
+CwiseBinaryOp<IntersectionOperation, const Derived, const TOther> intersection(
+    const DenseBase<TOther>& other
 ) const;
 
-template <class OtherDerivedType>
-bool contains(
-    const DenseBase<OtherDerivedType>& other,
-    double precision = 1e-12
-) const;
+static const RandomAccessLinSpacedReturnType LinSpaced(Index size, opensolid::Interval interval);
 
-template <class OtherDerivedType>
-bool strictlyContains(
-    const DenseBase<OtherDerivedType>& other,
-    double precision = 1e-12
-) const;
+static const RandomAccessLinSpacedReturnType LinSpaced(const opensolid::Interval& interval);
 
-template <class OtherDerivedType>
-CwiseBinaryOp<HullOperation, const Derived, const OtherDerivedType> hull(
-    const DenseBase<OtherDerivedType>& other
-) const;
-
-template <class OtherDerivedType>
-CwiseBinaryOp<IntersectionOperation, const Derived, const OtherDerivedType> intersection(
-    const DenseBase<OtherDerivedType>& other
-) const;
-
-static const RandomAccessLinSpacedReturnType LinSpaced(
-    Index size,
-    const opensolid::Interval& range
-);
-
-static const RandomAccessLinSpacedReturnType LinSpaced(const opensolid::Interval& range);
-
-template <class FirstDerivedType, class SecondDerivedType>
-static CwiseBinaryOp<HullOperation, const FirstDerivedType, const SecondDerivedType> Hull(
-    const DenseBase<FirstDerivedType>& first_argument,
-    const DenseBase<SecondDerivedType>& second_argument
+template <class TFirst, class TSecond>
+static CwiseBinaryOp<HullOperation, const TFirst, const SecondDerivedType> Hull(
+    const DenseBase<TFirst>& first,
+    const DenseBase<TSecond>& second
 );
 
 static const ConstantReturnType Empty();

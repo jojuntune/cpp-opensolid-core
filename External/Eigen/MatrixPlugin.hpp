@@ -18,5 +18,5 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-template <class OtherType>
-static Matrix from(const OtherType& argument);
+template <class TOther>
+static Matrix from(const TOther& argument);

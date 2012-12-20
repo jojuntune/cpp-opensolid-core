@@ -26,6 +26,7 @@
 
 #include <string>
 #include <memory>
+#include <cstdint>
 
 namespace opensolid
 {
@@ -37,9 +38,13 @@ namespace opensolid
         std::auto_ptr<Data> m_data;
 
         OPENSOLID_IO_EXPORT void clear(const std::string& key);
+        OPENSOLID_IO_EXPORT void append(const std::string& key, std::int64_t value);
+        OPENSOLID_IO_EXPORT void append(const std::string& key, double value);
+        OPENSOLID_IO_EXPORT void append(const std::string& key, const std::string& value);
+        OPENSOLID_IO_EXPORT void append(const std::string& key, const Object& value);
 
         template <class Type>
-        Type getItem(const std::string& key, int index, const Type& default_value) const;
+        Type getItem(const std::string& key, std::int64_t index, const Type& default_value) const;
     public:
         enum ItemType {NO_ITEM, MULTIPLE_ITEMS, INT_ITEM, DOUBLE_ITEM, STRING_ITEM, OBJECT_ITEM};
 
@@ -51,42 +56,24 @@ namespace opensolid
 
         OPENSOLID_IO_EXPORT Object& operator=(const Object& other);
         
-        OPENSOLID_IO_EXPORT Object& set(const std::string& key, int value);
+        OPENSOLID_IO_EXPORT Object& set(const std::string& key, std::int64_t value);
         OPENSOLID_IO_EXPORT Object& set(const std::string& key, double value);
         OPENSOLID_IO_EXPORT Object& set(const std::string& key, const std::string& value);
         OPENSOLID_IO_EXPORT Object& set(const std::string& key, const Object& value);
 
         template <class Iterator>
         Object& set(const std::string& key, Iterator begin, Iterator end);
-        
-        OPENSOLID_IO_EXPORT Object& append(const std::string& key, int value);
-        OPENSOLID_IO_EXPORT Object& append(const std::string& key, double value);
-        OPENSOLID_IO_EXPORT Object& append(const std::string& key, const std::string& value);
-        OPENSOLID_IO_EXPORT Object& append(const std::string& key, const Object& value);
-
-        template <class Iterator>
-        Object& append(const std::string& key, Iterator begin, Iterator end);
 
         OPENSOLID_IO_EXPORT bool has(const std::string& key) const;
-        OPENSOLID_IO_EXPORT int size(const std::string& key) const;
-        OPENSOLID_IO_EXPORT ItemType itemType(const std::string& key) const;
-        OPENSOLID_IO_EXPORT ItemType itemType(const std::string& key, int index) const;
+        OPENSOLID_IO_EXPORT std::int64_t size(const std::string& key) const;
 
-        OPENSOLID_IO_EXPORT int getInt(const std::string& key) const;
-        OPENSOLID_IO_EXPORT double getDouble(const std::string& key) const;
-        OPENSOLID_IO_EXPORT std::string getString(const std::string& key) const;
-        OPENSOLID_IO_EXPORT Object getObject(const std::string& key) const;
+        OPENSOLID_IO_EXPORT std::int64_t getInt(const std::string& key, std::int64_t index = 0) const;
+        OPENSOLID_IO_EXPORT double getDouble(const std::string& key, std::int64_t index = 0) const;
+        OPENSOLID_IO_EXPORT std::string getString(const std::string& key, std::int64_t index = 0) const;
+        OPENSOLID_IO_EXPORT Object getObject(const std::string& key, std::int64_t index = 0) const;
         
         template <class Type>
-        Type get(const std::string& key) const;
-
-        OPENSOLID_IO_EXPORT int getInt(const std::string& key, int index) const;
-        OPENSOLID_IO_EXPORT double getDouble(const std::string& key, int index) const;
-        OPENSOLID_IO_EXPORT std::string getString(const std::string& key, int index) const;
-        OPENSOLID_IO_EXPORT Object getObject(const std::string& key, int index) const;
-        
-        template <class Type>
-        Type get(const std::string& key, int index) const;
+        Type get(const std::string& key, std::int64_t index = 0) const;
     };
 }
 
@@ -102,23 +89,12 @@ namespace opensolid
     template <class Iterator>
     Object& Object::set(const std::string& key, Iterator begin, Iterator end) {
         clear(key);
-        append(key, begin, end);
-        return *this;
-    }
-    
-    template <class Iterator>
-    Object& Object::append(const std::string& key, Iterator begin, Iterator end) {
         for (Iterator iterator = begin; iterator != end; ++iterator) {append(key, *iterator);}
         return *this;
     }
         
     template <class Type>
-    Type Object::get(const std::string& key) const {
-        return getObject(key).convertTo<Type>();
-    }
-        
-    template <class Type>
-    Type Object::get(const std::string& key, int index) const {
-        return getObject(key, index).convertTo<Type>();
+    Type Object::get(const std::string& key, std::int64_t index) const {
+        return getObject(key, index).as<Type>();
     }
 }

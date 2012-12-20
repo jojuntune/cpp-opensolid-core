@@ -23,26 +23,57 @@
 #include <OpenSolid/config.hpp>
 
 #include <exception>
-#include <string>
+#include <cstdio>
 
 namespace opensolid
 {
-    class Error : public std::exception
-    {
-    };
+    template <int N = 0>
+    class Error;
 
-    class NotImplementedError : public Error
+    template <>
+    class Error<0> : public std::exception
     {
     private:
-        std::string _file;
-        int _line;
+        char _buffer[32];
+        int _number;
+    
+        Error(int code);
+    
+        template <int N> friend class Error;
     public:
-        OPENSOLID_CORE_EXPORT NotImplementedError(const std::string& file, int line);
-        
-        OPENSOLID_CORE_EXPORT ~NotImplementedError() throw ();
-
-        OPENSOLID_CORE_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
-        OPENSOLID_CORE_EXPORT std::string file() const;
-        OPENSOLID_CORE_EXPORT int line() const;
+        const char* what() const;
+        int number() const;
     };
+
+    template <int N>
+    class Error : public Error<>
+    {
+    public:
+        static const int NUMBER = N;
+    
+        Error();
+    };
+
+    template <int N>
+    struct UniqueErrorCode;
+}
+
+namespace opensolid
+{
+    inline Error<0>::Error(int number) : _number(number) {
+        sprintf(_buffer, "OpenSolid error %i", number);
+    }
+
+    inline const char* Error<0>::what() const {
+        return _buffer;
+    }
+
+    inline int Error<0>::number() const {
+        return _number;
+    }
+
+    template <int N>
+    inline Error<N>::Error() : Error<>(N) {
+        UniqueErrorNumber<N> checkForUniqueErrorNumberSpecialization;
+    }
 }

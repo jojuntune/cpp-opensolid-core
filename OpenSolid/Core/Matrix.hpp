@@ -30,7 +30,7 @@ namespace Eigen
 {   
     namespace internal
     {
-        template <class ScalarType, bool is_integer_>
+        template <class TScalar, bool bIsInteger>
         struct significant_decimals_default_impl;
 
         template <>
@@ -39,7 +39,7 @@ namespace Eigen
             static inline int run();
         };
         
-        template <class ScalarType>
+        template <class TScalar>
         struct is_arithmetic;
         
         template <>
@@ -49,7 +49,7 @@ namespace Eigen
         };
     }
     
-    template <class Type>
+    template <class TScalar>
     struct NumTraits;
     
     template <>
@@ -77,53 +77,53 @@ namespace Eigen
     {
         typedef bool result_type;
 
-        bool operator()(const opensolid::Interval& argument) const;
+        bool operator()(opensolid::Interval interval) const;
     };
     
     struct LowerOperation
     {
         typedef double result_type;
         
-        double operator()(const opensolid::Interval& argument) const;
+        double operator()(opensolid::Interval interval) const;
     };
     
     struct UpperOperation
     {
         typedef double result_type;
         
-        double operator()(const opensolid::Interval& argument) const;
+        double operator()(opensolid::Interval interval) const;
     };
     
     struct MedianOperation
     {
         typedef double result_type;
         
-        double operator()(const opensolid::Interval& argument) const;
+        double operator()(opensolid::Interval interval) const;
     };
 
     struct RandomOperation
     {
         typedef double result_type;
 
-        double operator()(const opensolid::Interval& argument) const;
+        double operator()(opensolid::Interval interval) const;
     };
     
     struct WidthOperation
     {
         typedef double result_type;
         
-        double operator()(const opensolid::Interval& argument) const;
+        double operator()(opensolid::Interval interval) const;
     };
     
     struct HullOperation
     {
         typedef opensolid::Interval result_type;
 
-        opensolid::Interval operator()(double first_argument, double second_argument) const;
+        opensolid::Interval operator()(double firstValue, double secondValue) const;
         
         opensolid::Interval operator()(
-            const opensolid::Interval& first_argument,
-            const opensolid::Interval& second_argument
+            opensolid::Interval firstInterval,
+            opensolid::Interval secondInterval
         ) const;
     };
     
@@ -132,8 +132,8 @@ namespace Eigen
         typedef opensolid::Interval result_type;
         
         opensolid::Interval operator()(
-            const opensolid::Interval& first_argument,
-            const opensolid::Interval& second_argument
+            opensolid::Interval firstInterval,
+            opensolid::Interval secondInterval
         ) const;
     };
     
@@ -147,8 +147,8 @@ namespace Eigen
         OverlapOperation(double precision);
 
         bool operator()(
-            const opensolid::Interval& first_argument,
-            const opensolid::Interval& second_argument
+            opensolid::Interval firstInterval,
+            opensolid::Interval secondInterval
         ) const;
     };
     
@@ -162,8 +162,8 @@ namespace Eigen
         StrictOverlapOperation(double precision);
 
         bool operator()(
-            const opensolid::Interval& first_argument,
-            const opensolid::Interval& second_argument
+            opensolid::Interval firstInterval,
+            opensolid::Interval secondInterval
         ) const;
     };
     
@@ -177,8 +177,8 @@ namespace Eigen
         ContainOperation(double precision);
         
         bool operator()(
-            const opensolid::Interval& first_argument,
-            const opensolid::Interval& second_argument
+            opensolid::Interval firstInterval,
+            opensolid::Interval secondInterval
         ) const;
     };
     
@@ -192,18 +192,18 @@ namespace Eigen
         StrictContainOperation(double precision);
         
         bool operator()(
-            const opensolid::Interval& first_argument,
-            const opensolid::Interval& second_argument
+            opensolid::Interval firstInterval,
+            opensolid::Interval secondInterval
         ) const;
     };
 }
 
 namespace opensolid
 {
-    template <class ArgumentType>
+    template <class TMatrix>
     class TransformableMatrix;
 
-    template <int dimensions_, int size_>
+    template <int iNumDimensions, int iNumAxes>
     class Datum;
 };
 
@@ -269,42 +269,42 @@ namespace opensolid
 {
     using namespace Eigen;
     
-    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    struct Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct Bounds<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {
-        typedef Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_> Type;
+        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> Type;
 
         typedef typename internal::conditional<
-            internal::is_same<ScalarType, Interval>::value,
-            const Matrix<Interval, rows_, cols_, options_, max_rows_, max_cols_>&,
+            internal::is_same<TScalar, Interval>::value,
+            const Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols>&,
             const CwiseUnaryOp<
-                internal::scalar_cast_op<ScalarType, Interval>,
-                const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
+                internal::scalar_cast_op<TScalar, Interval>,
+                const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
             >
         >::type CastType;
 
         CastType operator()(
-            const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument
         ) const;
     };
 
     template <>
     struct Conversion<Interval, VectorXI>
     {
-        VectorXI operator()(const Interval& interval) const;
+        VectorXI operator()(Interval interval) const;
     };
 
-    template <int destination_size_, int source_size_>
+    template <int iDestinationSize, int iSourceSize>
     void assertCompatible();
 
-    template <int destination_size_>
-    void assertCompatible(int source_size);
+    template <int iDestinationSize>
+    void assertCompatible(int sourceSize);
 
-    template <class VectorType>
-    void assertVector(const VectorType& vector);
+    template <class TMatrixType>
+    void assertVector(const TMatrixType& matrix);
 
-    template <int dimensions_, class MatrixType, class VectorType>
-    void assertValidTransform(int dimensions, const MatrixType& matrix, const VectorType& vector);
+    template <int iNumDimensions, class TMatrix, class TVector>
+    void assertValidTransform(int dimensions, const TMatrix& matrix, const TVector& vector);
 }
 
 ////////// Implementation //////////
@@ -323,21 +323,19 @@ namespace Eigen
         struct random_impl<opensolid::Interval>
         {
             static opensolid::Interval run(
-                const opensolid::Interval& lower,
-                const opensolid::Interval& upper
+                const opensolid::Interval& lowerInterval,
+                const opensolid::Interval& upperInterval
             ) {
-                opensolid::Interval range(lower.lower(), upper.upper());
-                double first_ratio = double(std::rand()) / RAND_MAX;
-                double second_ratio = double(std::rand()) / RAND_MAX;
-                if (first_ratio > second_ratio) {std::swap(first_ratio, second_ratio);}
-                return range.interpolated(opensolid::Interval(first_ratio, second_ratio));
+                opensolid::Interval interval(lowerInterval.lowerValue(), upperInterval.upperValue());
+                double firstRatio = double(std::rand()) / RAND_MAX;
+                double secondRatio = double(std::rand()) / RAND_MAX;
+                return interval.interpolated(opensolid::Interval::Hull(firstRatio, secondRatio));
             }
 
             static opensolid::Interval run() {
                 double lower = -1 + 2 * double(std::rand()) / RAND_MAX;
                 double upper = -1 + 2 * double(std::rand()) / RAND_MAX;
-                if (lower > upper) {std::swap(lower, upper);}
-                return opensolid::Interval(lower, upper);
+                return opensolid::Interval::Hull(lower, upper);
             }
         };
     }
@@ -358,300 +356,352 @@ namespace Eigen
         return NumTraits<double>::highest();
     }
 
-    inline bool EmptyOperation::operator()(const opensolid::Interval& argument) const {
-        return argument.isEmpty();
+    inline bool EmptyOperation::operator()(opensolid::Interval interval) const {
+        return interval.isEmpty();
     }
         
-    inline double LowerOperation::operator()(const opensolid::Interval& argument) const {
-        return argument.lower();
+    inline double LowerOperation::operator()(opensolid::Interval interval) const {
+        return interval.lowerValue();
     }
     
-    inline double UpperOperation::operator()(const opensolid::Interval& argument) const {
-        return argument.upper();
+    inline double UpperOperation::operator()(opensolid::Interval interval) const {
+        return interval.upperValue();
     }
     
-    inline double MedianOperation::operator()(const opensolid::Interval& argument) const {
-        return argument.median();
+    inline double MedianOperation::operator()(opensolid::Interval interval) const {
+        return interval.median();
     }
 
-    inline double RandomOperation::operator()(const opensolid::Interval& argument) const {
-        return argument.random();
+    inline double RandomOperation::operator()(opensolid::Interval interval) const {
+        return interval.randomValue();
     }
     
-    inline double WidthOperation::operator()(const opensolid::Interval& argument) const {
-        return argument.width();
+    inline double WidthOperation::operator()(opensolid::Interval interval) const {
+        return interval.width();
     }
     
     inline opensolid::Interval HullOperation::operator()(
-        double first_argument,
-        double second_argument
-    ) const {return opensolid::Interval::Hull(first_argument, second_argument);}
+        double firstValue,
+        double secondValue
+    ) const {
+        return opensolid::Interval::Hull(firstValue, secondValue);
+    }
     
     inline opensolid::Interval HullOperation::operator()(
-        const opensolid::Interval& first_argument,
-        const opensolid::Interval& second_argument
-    ) const {return first_argument.hull(second_argument);}
+        opensolid::Interval firstInterval,
+        opensolid::Interval secondInterval
+    ) const {
+        return firstInterval.hull(secondInterval);
+    }
     
     inline opensolid::Interval IntersectionOperation::operator()(
-        const opensolid::Interval& first_argument,
-        const opensolid::Interval& second_argument
-    ) const {return first_argument.intersection(second_argument);}
+        opensolid::Interval firstInterval,
+        opensolid::Interval secondInterval
+    ) const {
+        return firstInterval.intersection(secondInterval);
+    }
 
-    inline OverlapOperation::OverlapOperation(double precision) : _precision(precision) {}
+    inline OverlapOperation::OverlapOperation(double precision) :
+        _precision(precision) {
+    }
     
     inline bool OverlapOperation::operator()(
-        const opensolid::Interval& first_argument,
-        const opensolid::Interval& second_argument
-    ) const {return first_argument.overlaps(second_argument, _precision);}
+        opensolid::Interval firstInterval,
+        opensolid::Interval secondInterval
+    ) const {
+        return firstInterval.overlaps(secondInterval, _precision);
+    }
 
-    inline StrictOverlapOperation::StrictOverlapOperation(double precision)
-        : _precision(precision) {}
+    inline StrictOverlapOperation::StrictOverlapOperation(double precision) :
+        _precision(precision) {
+    }
     
     inline bool StrictOverlapOperation::operator()(
-        const opensolid::Interval& first_argument,
-        const opensolid::Interval& second_argument
-    ) const {return first_argument.strictlyOverlaps(second_argument, _precision);}
+        opensolid::Interval firstInterval,
+        opensolid::Interval secondInterval
+    ) const {
+        return firstInterval.strictlyOverlaps(secondInterval, _precision);
+    }
 
-    inline ContainOperation::ContainOperation(double precision) : _precision(precision) {}
+    inline ContainOperation::ContainOperation(double precision) :
+        _precision(precision) {
+    }
     
     inline bool ContainOperation::operator()(
-        const opensolid::Interval& first_argument,
-        const opensolid::Interval& second_argument
-    ) const {return first_argument.contains(second_argument, _precision);}
+        opensolid::Interval firstInterval,
+        opensolid::Interval secondInterval
+    ) const {
+        return firstInterval.contains(secondInterval, _precision);
+    }
 
     inline StrictContainOperation::StrictContainOperation(double precision)
-        : _precision(precision) {}
+        : _precision(precision) {
+    }
     
     inline bool StrictContainOperation::operator()(
-        const opensolid::Interval& first_argument,
-        const opensolid::Interval& second_argument
-    ) const {return first_argument.strictlyContains(second_argument, _precision);}
+        opensolid::Interval firstInterval,
+        opensolid::Interval secondInterval
+    ) const {
+        return firstInterval.strictlyContains(secondInterval, _precision);
+    }
 
-    template <class DerivedType> template <class MatrixType, class VectorType>
+    template <class TDerived> template <class TMatrix, class TVector>
     inline Matrix<
-        typename internal::traits<DerivedType>::Scalar,
-        MatrixType::RowsAtCompileTime,
-        internal::traits<DerivedType>::ColsAtCompileTime
-    > MatrixBase<DerivedType>::transformed(
-        const MatrixType& matrix,
-        const VectorType& vector
-    ) const {
-        return opensolid::TransformableMatrix<DerivedType>(derived()).transformed(matrix, vector);
+        typename internal::traits<TDerived>::Scalar,
+        TMatrix::RowsAtCompileTime,
+        internal::traits<TDerived>::ColsAtCompileTime
+    > MatrixBase<TDerived>::transformed(const TMatrix& matrix, const TVector& vector) const {
+        return opensolid::TransformableMatrix<TDerived>(derived()).transformed(matrix, vector);
     }
 
-    template <class DerivedType> template <class PointType>
-    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::scaled(
+    template <class TDerived> template <class TPoint>
+    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::scaled(
         double scale,
-        const EigenBase<PointType>& point
-    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).scaled(scale, point);}
-
-    template <class DerivedType> template <class VectorType>
-    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
-        const EigenBase<VectorType>& vector
-    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).translated(vector);}
-
-    template <class DerivedType> template <int dimensions_, int axes_>
-    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::translated(
-        double distance,
-        const opensolid::Datum<dimensions_, axes_>& axis
+        const EigenBase<TPoint>& point
     ) const {
-        return opensolid::TransformableMatrix<DerivedType>(derived()).translated(distance, axis);
+        return opensolid::TransformableMatrix<TDerived>(derived()).scaled(scale, point);
     }
 
-    template <class DerivedType>
-    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::rotated(
+    template <class TDerived> template <class TVector>
+    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::translated(
+        const EigenBase<TVector>& vector
+    ) const {
+        return opensolid::TransformableMatrix<TDerived>(derived()).translated(vector);
+    }
+
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::translated(
+        double distance,
+        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
+    ) const {
+        return opensolid::TransformableMatrix<TDerived>(derived()).translated(distance, axis);
+    }
+
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::rotated(
         double angle,
         const Vector2d& point
-    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, point);}
+    ) const {
+        return opensolid::TransformableMatrix<TDerived>(derived()).rotated(angle, point);
+    }
 
-    template <class DerivedType> template <int dimensions_, int axes_>
-    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::rotated(
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::rotated(
         double angle,
-        const opensolid::Datum<dimensions_, axes_>& axis
-    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).rotated(angle, axis);}
-
-    template <class DerivedType> template <int dimensions_, int axes_>
-    inline typename MatrixBase<DerivedType>::PlainObject MatrixBase<DerivedType>::mirrored(
-        const opensolid::Datum<dimensions_, axes_>& datum
-    ) const {return opensolid::TransformableMatrix<DerivedType>(derived()).mirrored(datum);}
-
-    template<class DerivedType> template <class OtherType>
-    OtherType MatrixBase<DerivedType>::as() const {
-        return opensolid::Conversion<PlainObject, OtherType>()(derived());
+        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
+    ) const {
+        return opensolid::TransformableMatrix<TDerived>(derived()).rotated(angle, axis);
     }
 
-    template<class Scalar, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    template <class OtherType>
-    Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>
-    Matrix<Scalar, rows_, cols_, options_, max_rows_, max_cols_>::from(const OtherType& argument) {
-        return opensolid::Conversion<OtherType, Matrix>()(argument);
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::mirrored(
+        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
+    ) const {
+        return opensolid::TransformableMatrix<TDerived>(derived()).mirrored(datum);
     }
 
-    template <class DerivedType>
-    inline bool DenseBase<DerivedType>::isEmpty() const {
+    template<class TDerived> template <class TOther>
+    OtherType MatrixBase<TDerived>::as() const {
+        return opensolid::Conversion<PlainObject, TOther>()(derived());
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    template <class TOther>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::from(const TOther& other) {
+        return opensolid::Conversion<TOther, Matrix>()(other);
+    }
+
+    template <class TDerived>
+    inline bool DenseBase<TDerived>::isEmpty() const {
         return derived().unaryExpr(EmptyOperation()).any();
     }
     
-    template <class DerivedType>
-    inline CwiseUnaryOp<LowerOperation, const DerivedType>
-    DenseBase<DerivedType>::cwiseLower() const {return derived().unaryExpr(LowerOperation());}
+    template <class TDerived>
+    inline CwiseUnaryOp<LowerOperation, const TDerived> DenseBase<TDerived>::cwiseLower() const {
+        return derived().unaryExpr(LowerOperation());
+    }
 
     template <class DerivedType>
-    inline CwiseUnaryOp<UpperOperation, const DerivedType>
-    DenseBase<DerivedType>::cwiseUpper() const {return derived().unaryExpr(UpperOperation());}
+    inline CwiseUnaryOp<UpperOperation, const TDerived> DenseBase<TDerived>::cwiseUpper() const {
+        return derived().unaryExpr(UpperOperation());
+    }
 
-    template <class DerivedType>
-    inline CwiseUnaryOp<MedianOperation, const DerivedType>
-    DenseBase<DerivedType>::cwiseMedian() const {return derived().unaryExpr(MedianOperation());}
+    template <class TDerived>
+    inline CwiseUnaryOp<MedianOperation, const TDerived> DenseBase<TDerived>::cwiseMedian() const {
+        return derived().unaryExpr(MedianOperation());
+    }
 
-    template <class DerivedType>
-    inline CwiseUnaryOp<RandomOperation, const DerivedType>
-    DenseBase<DerivedType>::cwiseRandom() const {return derived().unaryExpr(RandomOperation());}
+    template <class TDerived>
+    inline CwiseUnaryOp<RandomOperation, const TDerived> DenseBase<TDerived>::cwiseRandom() const {
+        return derived().unaryExpr(RandomOperation());
+    }
 
-    template <class DerivedType>
-    inline CwiseUnaryOp<WidthOperation, const DerivedType>
-    DenseBase<DerivedType>::cwiseWidth() const {return derived().unaryExpr(WidthOperation());}
+    template <class TDerived>
+    inline CwiseUnaryOp<WidthOperation, const TDerived> DenseBase<TDerived>::cwiseWidth() const {
+        return derived().unaryExpr(WidthOperation());
+    }
 
-    template <class DerivedType> template<class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::overlaps(
-        const DenseBase<OtherDerivedType>& other,
+    template <class TDerived> template<class TOther>
+    inline bool DenseBase<TDerived>::overlaps(
+        const DenseBase<TOther>& other,
         double precision
-    ) const {return derived().binaryExpr(other.derived(), OverlapOperation(precision)).all();}
+    ) const {
+        return derived().binaryExpr(other.derived(), OverlapOperation(precision)).all();
+    }
 
-    template <class DerivedType> template<class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::strictlyOverlaps(
-        const DenseBase<OtherDerivedType>& other,
+    template <class TDerived> template<class TOther>
+    inline bool DenseBase<TDerived>::strictlyOverlaps(
+        const DenseBase<TOther>& other,
         double precision
-    ) const {return derived().binaryExpr(other.derived(), StrictOverlapOperation(precision)).all();}
+    ) const {
+        return derived().binaryExpr(other.derived(), StrictOverlapOperation(precision)).all();
+    }
 
-    template <class DerivedType> template<class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::contains(
-        const DenseBase<OtherDerivedType>& other,
+    template <class TDerived> template<class TOther>
+    inline bool DenseBase<TDerived>::contains(
+        const DenseBase<TOther>& other,
         double precision
-    ) const {return derived().binaryExpr(other.derived(), ContainOperation(precision)).all();}
+    ) const {
+        return derived().binaryExpr(other.derived(), ContainOperation(precision)).all();
+    }
 
-    template <class DerivedType> template<class OtherDerivedType>
-    inline bool DenseBase<DerivedType>::strictlyContains(
-        const DenseBase<OtherDerivedType>& other,
+    template <class TDerived> template<class TOther>
+    inline bool DenseBase<TDerived>::strictlyContains(
+        const DenseBase<TOther>& other,
         double precision
-    ) const {return derived().binaryExpr(other.derived(), StrictContainOperation(precision)).all();}
+    ) const {
+        return derived().binaryExpr(other.derived(), StrictContainOperation(precision)).all();
+    }
 
-    template <class DerivedType> template <class OtherDerivedType>
-    inline CwiseBinaryOp<HullOperation, const DerivedType, const OtherDerivedType>
-    DenseBase<DerivedType>::hull(const DenseBase<OtherDerivedType>& other) const {
+    template <class TDerived> template <class TOther>
+    inline CwiseBinaryOp<HullOperation, const TDerived, const TOther>
+    DenseBase<TDerived>::hull(const DenseBase<TOther>& other) const {
         return derived().binaryExpr(other.derived(), HullOperation());
     }
 
-    template <class DerivedType> template <class OtherDerivedType>
-    inline CwiseBinaryOp<IntersectionOperation, const DerivedType, const OtherDerivedType>
-    DenseBase<DerivedType>::intersection(const DenseBase<OtherDerivedType>& other) const {
+    template <class TDerived> template <class TOther>
+    inline CwiseBinaryOp<IntersectionOperation, const TDerived, const TOther>
+    DenseBase<TDerived>::intersection(const DenseBase<TOther>& other) const {
         return derived().binaryExpr(other.derived(), IntersectionOperation());
     }
 
-    template <class DerivedType>
-    inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
-    DenseBase<DerivedType>::LinSpaced(
-        typename DenseBase<DerivedType>::Index size,
-        const opensolid::Interval& range
-    ) {return LinSpaced(size, Scalar(range.lower()), Scalar(range.upper()));}
-
-    template <class DerivedType>
-    inline const typename DenseBase<DerivedType>::RandomAccessLinSpacedReturnType
-    DenseBase<DerivedType>::LinSpaced(const opensolid::Interval& range) {
-        return LinSpaced(Scalar(range.lower()), Scalar(range.upper()));
+    template <class TDerived>
+    inline const typename DenseBase<TDerived>::RandomAccessLinSpacedReturnType
+    DenseBase<TDerived>::LinSpaced(
+        typename DenseBase<TDerived>::Index size,
+        opensolid::Interval interval
+    ) {
+        return LinSpaced(size, Scalar(interval.lower()), Scalar(interval.upper()));
     }
 
-    template <class DerivedType> template <class FirstDerivedType, class SecondDerivedType>
-    inline CwiseBinaryOp<HullOperation, const FirstDerivedType, const SecondDerivedType>
-    DenseBase<DerivedType>::Hull(
-        const DenseBase<FirstDerivedType>& first_argument,
-        const DenseBase<SecondDerivedType>& second_argument
-    ) {return first_argument.hull(second_argument);}
+    template <class TDerived>
+    inline const typename DenseBase<TDerived>::RandomAccessLinSpacedReturnType
+    DenseBase<TDerived>::LinSpaced(opensolid::Interval interval) {
+        return LinSpaced(Scalar(interval.lower()), Scalar(interval.upper()));
+    }
 
-    template <class DerivedType>
-    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty() {
+    template <class TDerived> template <class TFirst, class TSecond>
+    inline CwiseBinaryOp<HullOperation, const TFirst, const TSecond> DenseBase<TDerived>::Hull(
+        const DenseBase<TFirst>& first,
+        const DenseBase<TSecond>& second
+    ) {
+        return first.hull(second);
+    }
+
+    template <class TDerived>
+    const typename DenseBase<TDerived>::ConstantReturnType DenseBase<TDerived>::Empty() {
         return Constant(opensolid::Interval::Empty());
     }
     
-    template <class DerivedType>
-    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty(
-        typename DenseBase<DerivedType>::Index size
-    ) {return Constant(size, opensolid::Interval::Empty());}
+    template <class TDerived>
+    const typename DenseBase<TDerived>::ConstantReturnType DenseBase<TDerived>::Empty(
+        typename DenseBase<TDerived>::Index size
+    ) {
+        return Constant(size, opensolid::Interval::Empty());
+    }
     
-    template <class DerivedType>
-    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Empty(
-        typename DenseBase<DerivedType>::Index rows,
-        typename DenseBase<DerivedType>::Index cols
-    ) {return Constant(rows, cols, opensolid::Interval::Empty());}
+    template <class TDerived>
+    const typename DenseBase<TDerived>::ConstantReturnType DenseBase<TDerived>::Empty(
+        typename DenseBase<TDerived>::Index rows,
+        typename DenseBase<TDerived>::Index cols
+    ) {
+        return Constant(rows, cols, opensolid::Interval::Empty());
+    }
 
-    template <class DerivedType>
-    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole() {
+    template <class TDerived>
+    const typename DenseBase<TDerived>::ConstantReturnType DenseBase<TDerived>::Whole() {
         return Constant(opensolid::Interval::Whole());
     }
     
-    template <class DerivedType>
-    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole(
-        typename DenseBase<DerivedType>::Index size
-    ) {return Constant(size, opensolid::Interval::Whole());}
+    template <class TDerived>
+    const typename DenseBase<TDerived>::ConstantReturnType DenseBase<TDerived>::Whole(
+        typename DenseBase<TDerived>::Index size
+    ) {
+        return Constant(size, opensolid::Interval::Whole());
+    }
     
-    template <class DerivedType>
-    const typename DenseBase<DerivedType>::ConstantReturnType DenseBase<DerivedType>::Whole(
-        typename DenseBase<DerivedType>::Index rows,
-        typename DenseBase<DerivedType>::Index cols
-    ) {return Constant(rows, cols, opensolid::Interval::Whole());}
+    template <class TDerived>
+    const typename DenseBase<TDerived>::ConstantReturnType DenseBase<TDerived>::Whole(
+        typename DenseBase<TDerived>::Index rows,
+        typename DenseBase<TDerived>::Index cols
+    ) {
+        return Constant(rows, cols, opensolid::Interval::Whole());
+    }
 }
 
 namespace opensolid
 {
-    template <class ScalarType, int rows_, int cols_, int options_, int max_rows_, int max_cols_>
-    inline typename Bounds<
-        Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>
-    >::CastType
-    Bounds<Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>>::operator()(
-        const Matrix<ScalarType, rows_, cols_, options_, max_rows_, max_cols_>& argument
-    ) const {return argument.template cast<Interval>();}
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    inline typename Bounds<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::CastType
+    Bounds<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& matrix
+    ) const {
+        return matrix.template cast<Interval>();
+    }
 
-    inline VectorXI Conversion<Interval, VectorXI>::operator()(const Interval& interval) const {
+    inline VectorXI Conversion<Interval, VectorXI>::operator()(Interval interval) const {
         return VectorXI::Constant(1, interval);
     }
 
-    template <int destination_size_, int source_size_>
+    template <int iDestinationSize, int iSourceSize>
     inline void assertCompatible() {
         static_assert(
-            destination_size_ == source_size_ ||
-            destination_size_ == Dynamic ||
-            source_size_ == Dynamic,
+            iDestinationSize == iSourceSize ||
+            iDestinationSize == Dynamic ||
+            iSourceSize == Dynamic,
             "Different sizes at compile time"
         );
     }
 
-    template <int destination_size_>
-    inline void assertCompatible(int source_size) {
-        assert(source_size == destination_size_ && "Different sizes");
+    template <int iDestinationSize>
+    inline void assertCompatible(int sourceSize) {
+        assert(sourceSize == iDestinationSize && "Different sizes");
     }
 
     template <>
-    inline void assertCompatible<Dynamic>(int) {}
+    inline void assertCompatible<Dynamic>(int) {
+    }
 
-    template <class VectorType>
-    inline void assertVector(const VectorType& vector) {
-        assertCompatible<VectorType::ColsAtCompileTime, 1>();
+    template <class TVector>
+    inline void assertVector(const TVector& vector) {
+        assertCompatible<TVector::ColsAtCompileTime, 1>();
         assert(vector.cols() == 1);
     }
 
-    template <int dimensions_, class MatrixType, class VectorType>
+    template <int iNumDimensions, class TMatrix, class TVector>
     inline void assertValidTransform(
         int dimensions,
-        const MatrixType& matrix,
-        const VectorType& vector
+        const TMatrix& matrix,
+        const TVector& vector
     ) {
-        assertCompatible<MatrixType::ColsAtCompileTime, dimensions_>();
+        assertCompatible<TMatrix::ColsAtCompileTime, iNumDimensions>();
         assert(matrix.cols() == dimensions);
         assertVector(vector);
-        assertCompatible<MatrixType::RowsAtCompileTime, VectorType::SizeAtCompileTime>();
+        assertCompatible<TMatrix::RowsAtCompileTime, TVector::SizeAtCompileTime>();
         assert(matrix.rows() == vector.size());
     }
 }
 
 #include "detail/MatrixIterator.hpp"
-#include <OpenSolid/Core/Transformable.hpp>
+#include "detail/TransformableMatrix.hpp"

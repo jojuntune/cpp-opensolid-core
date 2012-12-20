@@ -22,8 +22,91 @@
 
 #include <OpenSolid/IO/File.hpp>
 
+#define FILE_OPEN_ERROR "FileOpenError"
+
 namespace opensolid
 {
+    struct File::Handle
+    {
+        sqlite3* database;
+        sqlite3_stmt* insert_statement;
+        sqlite3_stmt* select_statement;
+    };
+
+    File::File(const std::string& filename, bool write_access) : m_handle(new File::Handle()) {
+        int flags = write_access ?
+            (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE) :
+            SQLITE_OPEN_READONLY;
+        int result = sqlite3_open_v2(
+            filename.c_str(),
+            &m_handle->database,
+            flags,
+            OPENSOLID_NULLPTR
+        );
+        if (result != SQLITE_OK) {throw FileOpenError(filename, mode);}
+        if (mode != "r") {
+            result = sqlite3_exec(
+                _database,
+                "BEGIN TRANSACTION;"
+                "CREATE TABLE IF NOT EXISTS Model (key TEXT PRIMARY KEY, type TEXT, data BLOB);"
+                "CREATE TABLE IF NOT EXISTS FunctionImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
+                "CREATE TABLE IF NOT EXISTS GeometryImplementation (pointer INTEGER PRIMARY KEY, data BLOB);"
+                "CREATE TABLE IF NOT EXISTS DomainImplementation (pointer INTEGER PRIMARY KEY, data BLOB);",
+                nullptr,
+                nullptr,
+                nullptr
+            );
+            if (result) {throw FileOpenError(filename, mode);}
+        }
+        sqlite3_prepare_v2(
+            _database,
+            "INSERT OR REPLACE INTO Model VALUES (?1, ?2, ?3)",
+            -1,
+            &_insert_statement,
+            nullptr
+        );
+        sqlite3_prepare_v2(
+            _database,
+            "SELECT type, data FROM Model WHERE key=?1",
+            -1,
+            &_select_statement,
+            nullptr
+        );
+    }
+
+    std::string File::filename() const {
+    }
+        
+    File& File::set(const std::string& key, std::int64_t value) {
+    }
+
+    File& File::set(const std::string& key, double value) {
+    }
+
+    File& File::set(const std::string& key, const std::string& value) {
+    }
+
+    File& File::set(const std::string& key, const Object& value) {
+    }
+
+    bool File::has(const std::string& key) const {
+    }
+
+    std::int64_t File::size(const std::string& key) const {
+    }
+
+    std::int64_t File::getInt(const std::string& key, std::int64_t index = 0) const {
+    }
+
+    double File::getDouble(const std::string& key, std::int64_t index = 0) const {
+    }
+
+    std::string File::getString(const std::string& key, std::int64_t index = 0) const {
+    }
+
+    Object File::getObject(const std::string& key, std::int64_t index = 0) const {
+    }
+ 
     void File::getData(
         const std::string& key,
         std::string& type,

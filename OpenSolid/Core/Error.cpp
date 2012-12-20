@@ -22,16 +22,10 @@
 
 namespace opensolid
 {
-    NotImplementedError::NotImplementedError(const std::string& file, int line) :
-        _file(file), _line(line) {}
+    Error::Error(const std::string& type, const std::string& file, int line) :
+        std::runtime_error(type), m_file(file), m_line(line) {}
 
-    NotImplementedError::~NotImplementedError() throw() {}
+    std::string Error::file() const {return m_file;}
 
-    const char* NotImplementedError::what() const throw() {
-        return "NotImplementedError";
-    }
-
-    std::string NotImplementedError::file() const {return _file;}
-
-    int NotImplementedError::line() const {return _line;}
+    int Error::line() const {return m_line;}
 }

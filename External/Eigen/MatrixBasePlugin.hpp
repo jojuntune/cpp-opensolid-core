@@ -18,32 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-template <class MatrixType, class VectorType>
+template <class TMatrix, class TVector>
 Matrix<
     typename internal::traits<Derived>::Scalar,
-    MatrixType::RowsAtCompileTime,
+    TMatrix::RowsAtCompileTime,
     internal::traits<Derived>::ColsAtCompileTime
 > transformed(
-    const MatrixType& matrix,
-    const VectorType& vector
+    const TMatrix& matrix,
+    const TVector& vector
 ) const;
 
-template <class PointType>
-PlainObject scaled(double scale, const EigenBase<PointType>& point) const;
+template <class TPoint>
+PlainObject scaled(double scale, const EigenBase<TPoint>& point) const;
 
-template <class VectorType>
-PlainObject translated(const EigenBase<VectorType>& vector) const;
+template <class TVector>
+PlainObject translated(const EigenBase<TVector>& vector) const;
 
-template <int dimensions_, int axes_>
-PlainObject translated(double distance, const opensolid::Datum<dimensions_, axes_>& axis) const;
+template <int iNumDimensions, int iNumAxes>
+PlainObject translated(
+    double distance,
+    const opensolid::Datum<iNumDimensions, iNumAxes>& axis
+) const;
 
 PlainObject rotated(double angle, const Matrix<double, 2, 1>& point) const;
 
-template <int dimensions_, int axes_>
-PlainObject rotated(double angle, const opensolid::Datum<dimensions_, axes_>& axis) const;
+template <int iNumDimensions, int iNumAxes>
+PlainObject rotated(
+    double angle,
+    const opensolid::Datum<iNumDimensions, iNumAxes>& axis
+) const;
 
-template <int dimensions_, int axes_>
-PlainObject mirrored(const opensolid::Datum<dimensions_, axes_>& datum) const;
+template <int iNumDimensions, int iNumAxes>
+PlainObject mirrored(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
 
-template <class OtherType>
-OtherType as() const;
+template <class TOther>
+TOther as() const;
