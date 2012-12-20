@@ -28,50 +28,58 @@
 
 namespace opensolid
 {
-    template <int dimensions_, int axes_>
+    template <int iNumDimensions, int iNumAxes>
     class Datum;
 
-    template <class DerivedType, class ResultType = DerivedType>
+    template <class TBase, int iTransformedDimensions>
+    struct Transformed
+    {
+        typedef TBase Type;
+    };
+
+    template <class TDerived>
     class Transformable
     {
     private:
-        const DerivedType& derived() const;
+        const TDerived& derived() const;
     public:
-        template <class PointType>
-        ResultType scaled(double scale, const EigenBase<PointType>& point) const;
+        template <class TPoint>
+        typename Transformed<TDerived, TPoint::SizeAtCompileTime>::Type scaled(
+            double scale,
+            const EigenBase<TPoint>& point
+        ) const;
 
-        template <class VectorType>
-        ResultType translated(const EigenBase<VectorType>& vector) const;
+        template <class TVector>
+        typename Transformed<TDerived, TVector::SizeAtCompileTime>::Type translated(
+            const EigenBase<TVector>& vector
+        ) const;
 
-        template <int dimensions_, int axes_>
-        ResultType translated(double distance, const Datum<dimensions_, axes_>& axis) const;
+        template <int iNumDimensions, int iNumAxes>
+        typename Transformed<TDerived, iNumDimensions>::Type translated(
+            double distance,
+            const Datum<iNumDimensions, iNumAxes>& axis
+        ) const;
 
-        ResultType rotated(double angle, const Vector2d& point) const;
+        typename Transformed<TDerived, 2>::Type rotated(
+            double angle,
+            const Vector2d& point
+        ) const;
 
-        template <int dimensions_, int axes_>
-        ResultType rotated(double angle, const Datum<dimensions_, axes_>& axis) const;
+        template <int iNumDimensions, int iNumAxes>
+        typename Transformed<TDerived, 3>::Type rotated(
+            double angle,
+            const Datum<iNumDimensions, iNumAxes>& axis
+        ) const;
 
-        template <int dimensions_, int axes_>
-        ResultType mirrored(const Datum<dimensions_, axes_>& plane) const;
-    };
+        template <int iNumDimensions, int iNumAxes>
+        typename Transformed<TDerived, iNumDimensions>::Type mirrored(
+            const Datum<iNumDimensions, iNumAxes>& plane
+        ) const;
 
-    template <class ArgumentType>
-    class TransformableMatrix : public Transformable<
-        TransformableMatrix<ArgumentType>,
-        typename ArgumentType::PlainObject
-    >
-    {
-    private:
-        const ArgumentType& _argument;
-    public:
-        TransformableMatrix(const ArgumentType& argument);
-
-        template <class MatrixType, class VectorType>
-        Matrix<
-            typename ArgumentType::Scalar,
-            MatrixType::RowsAtCompileTime,
-            ArgumentType::ColsAtCompileTime
-        > transformed(const MatrixType& matrix, const VectorType& vector) const;
+        template <int iNumDimensions, int iNumAxes>
+        typename Transformed<TDerived, iNumDimensions>::Type projected(
+            const Datum<iNumDimensions, iNumAxes>& datum
+        ) const;
     };
 }
 
@@ -79,53 +87,43 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class DerivedType, class ResultType>
-    inline const DerivedType& Transformable<DerivedType, ResultType>::derived() const {
-        return static_cast<const DerivedType&>(*this);
+    template <class TDerived>
+    inline const TDerived& Transformable<TDerived>::derived() const {
+        return static_cast<const TDerived&>(*this);
     }
 
-    template <class DerivedType, class ResultType> template <class PointType>
-    inline ResultType Transformable<DerivedType, ResultType>::scaled(
+    template <class TDerived> template <class TPoint>
+    inline typename Transformed<TDerived, TPoint::SizeAtCompileTime>::Type
+    Transformable<TDerived>::scaled(
         double scale,
-        const EigenBase<PointType>& point
+        const EigenBase<TPoint>& point
     ) const {
-        static const int static_dimensions = PointType::SizeAtCompileTime;
-        Matrix<double, static_dimensions, static_dimensions> identity(point.size(), point.size());
-        identity.setIdentity();
-        return derived().transformed(scale * identity, point.derived() - scale * point.derived());
-    }
-
-    template <class DerivedType, class ResultType> template <class VectorType>
-    inline ResultType Transformable<DerivedType, ResultType>::translated(
-        const EigenBase<VectorType>& vector
-    ) const {
-        static const int dimensions = VectorType::SizeAtCompileTime;
-        Matrix<double, dimensions, dimensions> identity(vector.size(), vector.size());
-        identity.setIdentity();
-        return derived().transformed(identity, vector.derived());
-    }
-
-    template <class ArgumentType>
-    TransformableMatrix<ArgumentType>::TransformableMatrix(const ArgumentType& argument) :
-        _argument(argument) {}
-
-    template <class ArgumentType> template <class MatrixType, class VectorType>
-    inline Matrix<
-        typename ArgumentType::Scalar,
-        MatrixType::RowsAtCompileTime,
-        ArgumentType::ColsAtCompileTime
-    > TransformableMatrix<ArgumentType>::transformed(
-        const MatrixType& matrix,
-        const VectorType& vector
-    ) const {
-        opensolid::assertValidTransform<ArgumentType::RowsAtCompileTime>(
-            _argument.rows(),
-            matrix,
-            vector
+        return derived().transformed(
+            Matrix<double, TPoint::SizeAtCompileTime, TPoint::SizeAtCompileTime>::Identity(
+                point.size()
+            ) * scale,
+            point.derived() - scale * point.derived()
         );
-        return (matrix.template cast<typename ArgumentType::Scalar>() * _argument).colwise() +
-            vector.template cast<typename ArgumentType::Scalar>();
+    }
+
+    template <class TDerived> template <class TVector>
+    inline typename Transformed<TDerived, TVector::SizeAtCompileTime>::Type
+    Transformable<TDerived, TResult>::translated(
+        const EigenBase<TVector>& vector
+    ) const {
+        return derived().transformed(
+            Matrix<double, TVector::SizeAtCompileTime, TVector::SizeAtCompileTime>::Identity(
+                vector.size()
+            ),
+            vector.derived()
+        );
+    }
+
+    template <class TDerived>
+    inline typename Transformed<TDerived, 2>::Type Transformable<TDerived>::rotated(
+        double angle,
+        const Vector2d& point
+    ) const {
+        return derived().transformed(Matrix2d(Rotation2Dd(angle)), point - matrix * point);
     }
 }
-
-#include <OpenSolid/Core/Datum.hpp>
