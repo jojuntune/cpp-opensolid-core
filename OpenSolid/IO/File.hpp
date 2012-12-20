@@ -26,138 +26,47 @@
 #include <string>
 #include <memory>
 
-struct sqlite3;
-struct sqlite3_stmt;
-
 namespace opensolid
 {
     class File
     {
-    private:
-        std::string _filename;
-        std::string _mode;
-        sqlite3* _database;
-        sqlite3_stmt* _insert_statement;
-        sqlite3_stmt* _select_statement;
+    private:  
+        struct Handle;
 
-        OPENSOLID_CORE_EXPORT void getData(
-            const std::string& name,
-            std::string& type,
-            std::string& data
-        ) const;
+        std::string m_filename;
+        std::unique_ptr<Handle> m_handle;
+    public:
+        OPENSOLID_IO_EXPORT File(const std::string& filename, bool write_access = true);
+
+        OPENSOLID_IO_EXPORT std::string filename() const;
         
-        OPENSOLID_CORE_EXPORT void setData(
-            const std::string& name,
-            const std::string& type,
-            const std::string& data
-        );
+        OPENSOLID_IO_EXPORT File& set(const std::string& key, std::int64_t value);
+        OPENSOLID_IO_EXPORT File& set(const std::string& key, double value);
+        OPENSOLID_IO_EXPORT File& set(const std::string& key, const std::string& value);
+        OPENSOLID_IO_EXPORT File& set(const std::string& key, const Object& value);
 
+        template <class Iterator>
+        File& set(const std::string& key, Iterator begin, Iterator end);
+
+        OPENSOLID_IO_EXPORT bool has(const std::string& key) const;
+        OPENSOLID_IO_EXPORT std::int64_t size(const std::string& key) const;
+
+        OPENSOLID_IO_EXPORT std::int64_t getInt(const std::string& key, std::int64_t index = 0) const;
+        OPENSOLID_IO_EXPORT double getDouble(const std::string& key, std::int64_t index = 0) const;
+        OPENSOLID_IO_EXPORT std::string getString(const std::string& key, std::int64_t index = 0) const;
+        OPENSOLID_IO_EXPORT Object getObject(const std::string& key, std::int64_t index = 0) const;
+        
         template <class Type>
-        void setValue(const std::string& key, const Type& value);
-
-        template <class Type>
-        void getValue(const std::string& key, Type& value) const;
-
-        OPENSOLID_CORE_EXPORT void throwDictionaryError(
-            const std::string& name,
-            const std::string& requested_type
-        ) const;
-
-        friend class Dictionary<File>;
-        friend struct GetFileProperty;
-    public:
-        OPENSOLID_CORE_EXPORT File(const std::string& filename, const std::string& mode);
-        OPENSOLID_CORE_EXPORT ~File();
-
-        OPENSOLID_CORE_EXPORT std::string filename() const;
-        OPENSOLID_CORE_EXPORT std::string mode() const;
-        OPENSOLID_CORE_EXPORT bool has(const std::string& name) const;
-    };
-}
-
-////////// Errors //////////
-
-namespace opensolid
-{
-    class FileError : public Error
-    {
-    private:
-        std::string _filename;
-        std::string _mode;
-    public:
-        OPENSOLID_CORE_EXPORT FileError(
-            const std::string& filename,
-            const std::string& mode
-        );
-
-        OPENSOLID_CORE_EXPORT std::string filename() const;
-        OPENSOLID_CORE_EXPORT std::string mode() const;
-    };
-
-    class FileOpenError : public FileError
-    {
-    public:
-        OPENSOLID_CORE_EXPORT FileOpenError(
-            const std::string& filename,
-            const std::string& mode
-        );
-        
-        OPENSOLID_CORE_EXPORT ~FileOpenError() throw();
-        
-        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-    };
-
-    class FileGetValueError : public FileError, public DictionaryError
-    {
-    public:
-        OPENSOLID_CORE_EXPORT FileGetValueError(
-            const std::string& filename,
-            const std::string& mode,
-            const std::string& key,
-            const std::string& requested_type
-        );
-        
-        OPENSOLID_CORE_EXPORT ~FileGetValueError() throw();
-
-        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
-    };
-
-    class FileSetValueError : public FileError
-    {
-    public:
-        OPENSOLID_CORE_EXPORT FileSetValueError(
-            const std::string& filename,
-            const std::string& mode
-        );
-        
-        OPENSOLID_CORE_EXPORT ~FileSetValueError() throw();
-        
-        OPENSOLID_CORE_EXPORT const char* what() const throw() override;
+        Type get(const std::string& key, std::int64_t index = 0) const;
     };
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
-{
+{   
     template <class Type>
-    void File::setValue(const std::string& key, const Type& value) {
-        Serialization<Type> serialization;
-        setData(key, TypeName<Type>()(), serialization(value));
-    }
-
-    template <class Type>
-    void File::getValue(const std::string& key, Type& value) const {
-        std::string type;
-        std::string data;
-        getData(key, type, data);
-        std::string expected_type = TypeName<Type>()();
-        if (type != expected_type) {
-            throw FileGetValueError(filename(), mode(), key, expected_type);
-        }
-        Deserialization<Type> deserialization;
-        value = deserialization(data);
+    Type File::get(const std::string& key, std::int64_t index) const {
+        return getObject(key, index).as<Type>();
     }
 }
-
-#endif

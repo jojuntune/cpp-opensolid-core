@@ -26,7 +26,7 @@
 
 namespace opensolid
 {
-    typedef boost::variant<int, double, std::string, Object> Variant;
+    typedef boost::variant<std::int64_t, double, std::string, Object> Variant;
 
     struct Object::Data
     {
@@ -35,8 +35,24 @@ namespace opensolid
 
     void Object::clear(const std::string& key) {m_data->map[key].clear();}
 
+    void Object::append(const std::string& key, std::int64_t value) {
+        m_data->map[key].push_back(value);
+    }
+
+    void Object::append(const std::string& key, double value) {
+        m_data->map[key].push_back(value);
+    }
+
+    void Object::append(const std::string& key, const std::string& value) {
+        m_data->map[key].push_back(value);
+    }
+
+    void Object::append(const std::string& key, const Object& value) {
+        m_data->map[key].push_back(value);
+    }
+
     template <class Type>
-    Type Object::getItem(const std::string& key, int index, const Type& default_value) const {
+    Type Object::getItem(const std::string& key, std::int64_t index, const Type& default_value) const {
         auto iterator = m_data->map.find(key);
         // Check if key exists
         if (iterator == m_data->map.end()) {
@@ -66,7 +82,7 @@ namespace opensolid
         return *this;
     }
 
-    Object& Object::set(const std::string& key, int value) {
+    Object& Object::set(const std::string& key, std::int64_t value) {
         clear(key);
         m_data->map[key].push_back(value);
         return *this;
@@ -90,26 +106,6 @@ namespace opensolid
         return *this;
     }
 
-    Object& Object::append(const std::string& key, int value) {
-        m_data->map[key].push_back(value);
-        return *this;
-    }
-
-    Object& Object::append(const std::string& key, double value) {
-        m_data->map[key].push_back(value);
-        return *this;
-    }
-
-    Object& Object::append(const std::string& key, const std::string& value) {
-        m_data->map[key].push_back(value);
-        return *this;
-    }
-
-    Object& Object::append(const std::string& key, const Object& value) {
-        m_data->map[key].push_back(value);
-        return *this;
-    }
-
     bool Object::has(const std::string& key) const {
         return m_data->map.find(key) != m_data->map.end();
     }
@@ -119,79 +115,23 @@ namespace opensolid
         if (iterator == m_data->map.end()) {
             assert(false);
             return 0;
-        } else {
-            return iterator->second.size();
         }
+        return iterator->second.size();
     }
 
-    struct ItemTypeVisitor
-    {
-        typedef Object::ItemType result_type;
-
-        Object::ItemType operator()(int) const {return Object::INT_ITEM;}
-
-        Object::ItemType operator()(double) const {return Object::DOUBLE_ITEM;}
-
-        Object::ItemType operator()(const std::string&) const {return Object::STRING_ITEM;}
-
-        Object::ItemType operator()(const Object&) const {return Object::OBJECT_ITEM;}
-    };
-
-    Object::ItemType variantType(const Variant& variant) {
-        return boost::apply_visitor(ItemTypeVisitor(), variant);
-    }
-
-    Object::ItemType Object::itemType(const std::string& key) const {
-        auto iterator = m_data->map.find(key);
-        if (iterator == m_data->map.end() || iterator->second.empty()) {
-            return NO_ITEM;
-        }
-        if (iterator->second.size() > 1) {
-            return MULTIPLE_ITEMS;
-        }
-        return boost::apply_visitor(ItemTypeVisitor(), iterator->second.front());
-    }
-
-    Object::ItemType Object::itemType(const std::string& key, int index) const {
-        auto iterator = m_data->map.find(key);
-        if (iterator == m_data->map.end() || iterator->second.empty()) {
-            return NO_ITEM;
-        }
-        if (index < 0 || index >= int(iterator->second.size())) {
-            return NO_ITEM;
-        }
-        return boost::apply_visitor(ItemTypeVisitor(), iterator->second[index]);
-    }
-
-    int Object::getInt(const std::string& key) const {
-        return getItem<int>(key, 0, 0);
-    }
-
-    double Object::getDouble(const std::string& key) const {
-        return getItem<double>(key, 0, 0.0);
-    }
-
-    std::string Object::getString(const std::string& key) const {
-        return getItem<std::string>(key, 0, std::string());
-    }
-
-    Object Object::getObject(const std::string& key) const {
-        return getItem<Object>(key, 0, Object());
-    }
-
-    int Object::getInt(const std::string& key, int index) const {
+    std::int64_t Object::getInt(const std::string& key, std::int64_t index) const {
         return getItem<int>(key, index, 0);
     }
 
-    double Object::getDouble(const std::string& key, int index) const {
+    double Object::getDouble(const std::string& key, std::int64_t index) const {
         return getItem<double>(key, index, 0.0);
     }
 
-    std::string Object::getString(const std::string& key, int index) const {
+    std::string Object::getString(const std::string& key, std::int64_t index) const {
         return getItem<std::string>(key, index, std::string());
     }
 
-    Object Object::getObject(const std::string& key, int index) const {
+    Object Object::getObject(const std::string& key, std::int64_t index) const {
         return getItem<Object>(key, index, Object());
     }
 }
