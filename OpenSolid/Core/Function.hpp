@@ -22,15 +22,17 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "detail/Evaluation.hpp"
-#include "detail/FunctionConstructors.hpp"
-#include "detail/FunctionImplementation.hpp"
+#include "Function/declarations.hpp"
+#include "Function/FunctionConstructors.hpp"
 
-#include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Utils/Conversion.hpp>
+#include <OpenSolid/Core/Evaluation.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Domain/declarations.hpp>
+#include <OpenSolid/Core/Geometry/declarations.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -38,9 +40,6 @@
 
 namespace opensolid
 {
-    class Domain;
-    class Geometry;
-
     class Function :
         public FunctionConstructors,
         public Convertible<Function>,

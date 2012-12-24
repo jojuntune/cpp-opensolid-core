@@ -22,14 +22,14 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "detail/GeometryConstructors.hpp"
-#include "detail/GeometryImplementation.hpp"
-#include "detail/Evaluation.hpp"
+#include "Geometry/declarations.hpp"
+#include "Geometry/GeometryConstructors.hpp"
 
-#include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Utils/Conversion.hpp>
+#include <OpenSolid/Core/Evaulation.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Function/declarations.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
@@ -56,29 +56,34 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
         OPENSOLID_CORE_EXPORT Geometry(const SimplexXd& simplex);
 
-        template <class DerivedType>
-        Geometry(const EigenBase<DerivedType>& vector);
+        template <class TDerived>
+        Geometry(const EigenBase<TDerived>& vector);
 
-        template <int dimensions_, int size_>
-        Geometry(const Simplex<dimensions_, size_>& simplex);
+        template <int iNumDimensions, int iNumVertices>
+        Geometry(const Simplex<iNumDimensions, iNumVertices>& simplex);
 
         OPENSOLID_CORE_EXPORT const GeometryImplementation* implementation() const;
         
         OPENSOLID_CORE_EXPORT Function function() const;
         OPENSOLID_CORE_EXPORT Domain domain() const;
         
-        template <class ArgumentType>
-        Evaluation<Geometry, ArgumentType> operator()(const ArgumentType& argument) const;
+        template <class TArgument>
+        Evaluation<Geometry, TArgument> operator()(const TArgument& argument) const;
 
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
         
         OPENSOLID_CORE_EXPORT int parameters() const;
         OPENSOLID_CORE_EXPORT int dimensions() const;
         OPENSOLID_CORE_EXPORT bool isConstant() const;
         OPENSOLID_CORE_EXPORT VectorXI bounds() const;
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
-        OPENSOLID_CORE_EXPORT Geometry transformed(const MatrixXd& matrix, const VectorXd& vector) const;
+        
+        OPENSOLID_CORE_EXPORT Geometry transformed(
+            const MatrixXd& transformMatrix,
+            const VectorXd& transformVector
+        ) const;
+        
         OPENSOLID_CORE_EXPORT Geometry reversed() const;
     };
 }
@@ -92,31 +97,31 @@ namespace opensolid
     {
         typedef VectorXI Type;
 
-        OPENSOLID_CORE_EXPORT VectorXI operator()(const Geometry& argument) const;
+        OPENSOLID_CORE_EXPORT VectorXI operator()(const Geometry& geometry) const;
     };
 
     template <>
     struct Conversion<Geometry, double>
     {
-        OPENSOLID_CORE_EXPORT double operator()(const Geometry& argument) const;
+        OPENSOLID_CORE_EXPORT double operator()(const Geometry& geometry) const;
     };
     
     template <>
     struct Conversion<Geometry, Vector2d>
     {
-        OPENSOLID_CORE_EXPORT Vector2d operator()(const Geometry& argument) const;
+        OPENSOLID_CORE_EXPORT Vector2d operator()(const Geometry& geometry) const;
     };
     
     template <>
     struct Conversion<Geometry, Vector3d>
     {
-        OPENSOLID_CORE_EXPORT Vector3d operator()(const Geometry& argument) const;
+        OPENSOLID_CORE_EXPORT Vector3d operator()(const Geometry& geometry) const;
     };
     
     template <>
     struct Conversion<Geometry, VectorXd>
     {
-        OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& argument) const;
+        OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& geometry) const;
     };
 }
 
@@ -126,18 +131,18 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class DerivedType>
-    Geometry::Geometry(const EigenBase<DerivedType>& vector) {
+    template <class TDerived>
+    Geometry::Geometry(const EigenBase<TDerived>& vector) {
         *this = Geometry(VectorXd(vector));
     }
 
-    template <int dimensions_, int size_>
-    Geometry::Geometry(const Simplex<dimensions_, size_>& simplex) {
+    template <int iNumDimensions, int iNumVertices>
+    Geometry::Geometry(const Simplex<iNumDimensions, iNumVertices>& simplex) {
         *this = Geometry(SimplexXd(simplex));
     }
 
-    template <class ArgumentType>
-    inline Evaluation<Geometry, ArgumentType> Geometry::operator()(
-        const ArgumentType& argument
-    ) const {return Evaluation<Geometry, ArgumentType>(*this, argument);}
+    template <class TArgument>
+    inline Evaluation<Geometry, TArgument> Geometry::operator()(const TArgument& argument) const {
+        return Evaluation<Geometry, TArgument>(*this, argument);
+    }
 }

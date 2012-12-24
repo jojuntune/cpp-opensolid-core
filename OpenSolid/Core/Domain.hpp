@@ -22,11 +22,12 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "detail/DomainConstructors.hpp"
-#include "detail/DomainImplementation.hpp"
+#include "Domain/declarations.hpp"
+#include "Domain/DomainConstructors.hpp"
+#include "Domain/DomainImplementation.hpp"
 
+#include <OpenSolid/Utils/Conversion.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/util/Conversion.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Interval.hpp>

@@ -27,7 +27,7 @@
 
 namespace opensolid
 {
-    template <int N = 0>
+    template <int iNumber = 0>
     class Error;
 
     template <>
@@ -37,24 +37,24 @@ namespace opensolid
         char _buffer[32];
         int _number;
     
-        Error(int code);
+        Error(int number);
     
-        template <int N> friend class Error;
+        template <int iNumber> friend class Error;
     public:
         const char* what() const;
         int number() const;
     };
 
-    template <int N>
+    template <int iNumber>
     class Error : public Error<>
     {
     public:
-        static const int NUMBER = N;
+        static const int NUMBER = iNumber;
     
         Error();
     };
 
-    template <int N>
+    template <int iNumber>
     struct UniqueErrorCode;
 }
 
@@ -72,8 +72,8 @@ namespace opensolid
         return _number;
     }
 
-    template <int N>
-    inline Error<N>::Error() : Error<>(N) {
-        UniqueErrorNumber<N> checkForUniqueErrorNumberSpecialization;
+    template <int iNumber>
+    inline Error<iNumber>::Error() : Error<>(iNumber) {
+        UniqueErrorNumber<iNumber> checkForUniqueErrorNumberSpecialization;
     }
 }

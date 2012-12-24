@@ -22,7 +22,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/util/Conversion.hpp>
+#include "Simplex/declarations.hpp"
+
+#include <OpenSolid/Utils/Conversion.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Datum.hpp>
@@ -30,106 +32,92 @@
 
 namespace opensolid
 {
-    template <int dimensions_, int size_>
-    class Simplex;
-
-    template <int dimensions_, int size_, class MatrixType>
-    struct TransformedSimplex
-    {
-        typedef Simplex<
-            (dimensions_ == Dynamic ? Dynamic : MatrixType::RowsAtCompileTime),
-            size_
-        > Type;
-    };
-
-    template <int dimensions_, int size_>
+    template <int iNumDimensions, int iNumVertices>
     class Simplex :
-        public Transformable<Simplex<dimensions_, size_>>,
-        public Convertible<Simplex<dimensions_, size_>>
+        public Transformable<Simplex<iNumDimensions, iNumVertices>>,
+        public Convertible<Simplex<iNumDimensions, iNumVertices>>
     {
-    static_assert(
-        (dimensions_ == Dynamic) == (size_ == Dynamic),
-        "Mixing static and dynamic simplex dimensions and sizes is not supported"
-    );
     public:
-        typedef Matrix<double, dimensions_, size_> Vertices;
+        typedef Matrix<double, iNumDimensions, iNumVertices> Vertices;
         typedef typename Vertices::ColXpr Vertex;
         typedef typename Vertices::ConstColXpr ConstVertex;
-        typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : 2)> Edge;
-        typedef Simplex<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> Face;
-        typedef Matrix<double, dimensions_, 1> Vector;
+        typedef Simplex<iNumDimensions, 2> Edge;
+        typedef Simplex<iNumDimensions, 3> Face;
+        typedef Matrix<double, iNumDimensions, 1> Vector;
     private:
         Vertices _vertices;
     public:
-        OPENSOLID_CORE_EXPORT Simplex();
+        Simplex();
         
-        Simplex(const Simplex<dimensions_, size_>& other);
+        Simplex(const Simplex<iNumDimensions, iNumVertices>& otherSimplex);
         
-        template <int other_dimensions_, int other_size_>
-        Simplex(const Simplex<other_dimensions_, other_size_>& other);
+        template <int iOtherNumDimensions, int iOtherNumVertices>
+        Simplex(const Simplex<iOtherNumDimensions, iOtherNumVertices>& otherSimplex);
         
-        OPENSOLID_CORE_EXPORT explicit Simplex(const Matrix<double, dimensions_, size_>& vertices);
+        explicit Simplex(const Matrix<double, iNumDimensions, iNumVertices>& vertices);
         
-        OPENSOLID_CORE_EXPORT Simplex(double first_vertex, double second_vertex);
+        Simplex(double firstVertex, double secondVertex);
         
-        OPENSOLID_CORE_EXPORT Simplex(
-            const Matrix<double, dimensions_, 1>& first_vertex,
-            const Matrix<double, dimensions_, 1>& second_vertex
+        Simplex(
+            const Matrix<double, iNumDimensions, 1>& firstVertex,
+            const Matrix<double, iNumDimensions, 1>& secondVertex
         );
         
-        OPENSOLID_CORE_EXPORT Simplex(
-            const Matrix<double, dimensions_, 1>& first_vertex,
-            const Matrix<double, dimensions_, 1>& second_vertex,
-            const Matrix<double, dimensions_, 1>& third_vertex
+        Simplex(
+            const Matrix<double, iNumDimensions, 1>& firstVertex,
+            const Matrix<double, iNumDimensions, 1>& secondVertex,
+            const Matrix<double, iNumDimensions, 1>& thirdVertex
         );
         
-        OPENSOLID_CORE_EXPORT Simplex(
-            const Matrix<double, dimensions_, 1>& first_vertex,
-            const Matrix<double, dimensions_, 1>& second_vertex,
-            const Matrix<double, dimensions_, 1>& third_vertex,
-            const Matrix<double, dimensions_, 1>& fourth_vertex
+        Simplex(
+            const Matrix<double, iNumDimensions, 1>& firstVertex,
+            const Matrix<double, iNumDimensions, 1>& secondVertex,
+            const Matrix<double, iNumDimensions, 1>& thirdVertex,
+            const Matrix<double, iNumDimensions, 1>& fourthVertex
         );
             
-        Simplex<dimensions_, size_>& operator=(
-            const Simplex<dimensions_, size_>& other
+        Simplex<iNumDimensions, iNumVertices>& operator=(
+            const Simplex<iNumDimensions, iNumVertices>& otherSimplex
         );
         
-        template <int other_dimensions_, int other_size_>
-        Simplex<dimensions_, size_>& operator=(
-            const Simplex<other_dimensions_, other_size_>& other
+        template <int iOtherNumDimensions, int iOtherNumVertices>
+        Simplex<iNumDimensions, iNumVertices>& operator=(
+            const Simplex<iOtherNumDimensions, iOtherNumVertices>& otherSimplex
         );
         
-        OPENSOLID_CORE_EXPORT int dimensions() const;
-        OPENSOLID_CORE_EXPORT int size() const;
+        int numDimensions() const;
+        int numVertices() const;
         
-        OPENSOLID_CORE_EXPORT Vertices& vertices();
-        OPENSOLID_CORE_EXPORT const Vertices& vertices() const;
+        Vertices& vertices();
+        const Vertices& vertices() const;
 
-        OPENSOLID_CORE_EXPORT Vertex vertex(int index);
-        OPENSOLID_CORE_EXPORT ConstVertex vertex(int index) const;
+        Vertex vertex(int index);
+        ConstVertex vertex(int index) const;
+        
+        double length() const;
+        double area() const;
+        double volume() const;
+        
+        Vector vector() const;
+        Vector centroid() const;
+        Vector normal() const;
+        
+        Edge edge(int index) const;
+        Edge edge(int startIndex, int endIndex) const;
+        Face face(int index) const;
+        
+        Datum<iNumDimensions, (iNumVertices == Dynamic ? Dynamic : iNumVertices - 1)>
+        coordinateSystem() const;
+        
+        Matrix<Interval, iNumDimensions, 1> bounds() const;
 
-        template <class MatrixType, class VectorType>
-        typename TransformedSimplex<dimensions_, size_, MatrixType>::Type
-        transformed(const MatrixType& matrix, const VectorType& vector) const;
+        template <class TTransformMatrix, class TTransformVector>
+        Simplex<TTransformMatrix::RowsAtCompileTime, iNumVertices> transformed(
+            const MatrixType& transformMatrix,
+            const TTransformVector& transformVector
+        ) const;
         
-        OPENSOLID_CORE_EXPORT double length() const;
-        OPENSOLID_CORE_EXPORT double area() const;
-        OPENSOLID_CORE_EXPORT double volume() const;
-        
-        OPENSOLID_CORE_EXPORT Vector vector() const;
-        OPENSOLID_CORE_EXPORT Vector centroid() const;
-        OPENSOLID_CORE_EXPORT Vector normal() const;
-        
-        OPENSOLID_CORE_EXPORT Edge edge(int index) const;
-        OPENSOLID_CORE_EXPORT Edge edge(int start_index, int end_index) const;
-        OPENSOLID_CORE_EXPORT Face face(int index) const;
-        
-        OPENSOLID_CORE_EXPORT
-        Datum<dimensions_, (size_ == Dynamic ? Dynamic : size_ - 1)> coordinateSystem() const;
-        
-        OPENSOLID_CORE_EXPORT Matrix<Interval, dimensions_, 1> bounds() const;
-        
-        OPENSOLID_CORE_EXPORT bool operator==(const Simplex<dimensions_, size_>& other) const;
+        bool operator==(const Simplex<iNumDimensions, iNumVertices>& otherSimplex) const;
     };
     
     typedef Simplex<1, 2> Line1d;
@@ -145,14 +133,21 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int dimensions_, int size_>
-    struct Bounds<Simplex<dimensions_, size_>>
+    template <int iNumDimensions, int iNumVertices>
+    struct Bounds<Simplex<iNumDimensions, iNumVertices>>
     {
-        typedef Matrix<Interval, dimensions_, 1> Type;
+        typedef Matrix<Interval, iNumDimensions, 1> Type;
 
-        Matrix<Interval, dimensions_, 1> operator()(
-            const Simplex<dimensions_, size_>& argument
+        Matrix<Interval, iNumDimensions, 1> operator()(
+            const Simplex<iNumDimensions, iNumVertices>& simplex
         ) const;
+    };
+
+
+    template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
+    struct Transformed
+    {
+        typedef Simplex<iNumTransformedDimensions, iNumVertices> Type;
     };
 }
 
@@ -160,45 +155,278 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int dimensions_, int size_>
-    inline Simplex<dimensions_, size_>::Simplex(const Simplex<dimensions_, size_>& other) :
-        _vertices(other.vertices()) {}
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::Simplex() : _vertices() {
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    inline Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const Simplex<iNumDimensions, iNumVertices>& otherSimplex
+    ) : _vertices(otherSimplex.vertices()) {
+    }
         
-    template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
-    inline Simplex<dimensions_, size_>::Simplex(
-        const Simplex<other_dimensions_, other_size_>& other
-    ) : _vertices(other.vertices()) {}
-    
-    template <int dimensions_, int size_> 
-    inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
-        const Simplex<dimensions_, size_>& other
+    template <int iNumDimensions, int iNumVertices>
+    template <int iOtherNumDimensions, int iOtherNumVertices>
+    inline Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const Simplex<iOtherNumDimensions, iOtherNumVertices>& otherSimplex
+    ) : _vertices(otherSimplex.vertices()) {
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const Matrix<double, iNumDimensions, iNumVertices>& vertices
+    ) : _vertices(vertices) {
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::Simplex(double firstVertex, double secondVertex) {
+        _vertices.resize(1, 2);
+        _vertices(0) = firstVertex;
+        _vertices(1) = secondVertex;
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const Matrix<double, iNumDimensions, 1>& firstVertex,
+        const Matrix<double, iNumDimensions, 1>& secondVertex
     ) {
-        _vertices = other.vertices();
+        assert(firstVertex.size() == secondVertex.size());
+        _vertices.resize(firstVertex.size(), 2);
+        _vertices.col(0) = firstVertex;
+        _vertices.col(1) = secondVertex;
+    }
+        
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const Matrix<double, iNumDimensions, 1>& firstVertex,
+        const Matrix<double, iNumDimensions, 1>& secondVertex,
+        const Matrix<double, iNumDimensions, 1>& thirdVertex
+    ) {
+        assertCompatible<iNumVertices, 3>();
+        assert(firstVertex.size() == secondVertex.size());
+        assert(firstVertex.size() == thirdVertex.size());
+        _vertices.resize(firstVertex.size(), 3);
+        _vertices.col(0) = firstVertex;
+        _vertices.col(1) = secondVertex;
+        _vertices.col(2) = thirdVertex;
+    }
+
+    template <int iNumDimensions, int iNumVertices> 
+    Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const Matrix<double, iNumDimensions, 1>& firstVertex,
+        const Matrix<double, iNumDimensions, 1>& secondVertex,
+        const Matrix<double, iNumDimensions, 1>& thirdVertex,
+        const Matrix<double, iNumDimensions, 1>& fourthVertex
+    ) {
+        assertCompatible<iNumVertices, 4>();
+        assert(firstVertex.size() == secondVertex.size());
+        assert(firstVertex.size() == thirdVertex.size());
+        assert(firstVertex.size() == fourthVertex.size());
+        _vertices.resize(firstVertex.size(), 4);
+        _vertices.col(0) = firstVertex;
+        _vertices.col(1) = secondVertex;
+        _vertices.col(2) = thirdVertex;
+        _vertices.col(3) = fourthVertex;
+    }
+    
+    template <int iNumDimensions, int iNumVertices> 
+    inline Simplex<iNumDimensions, iNumVertices>& Simplex<iNumDimensions, iNumVertices>::operator=(
+        const Simplex<iNumDimensions, iNumVertices>& otherSimplex
+    ) {
+        _vertices = otherSimplex.vertices();
         return *this;
     }
     
-    template <int dimensions_, int size_> template <int other_dimensions_, int other_size_>
-    inline Simplex<dimensions_, size_>& Simplex<dimensions_, size_>::operator=(
-        const Simplex<other_dimensions_, other_size_>& other
+    template <int iNumDimensions, int iNumVertices>
+    template <int iOtherNumDimensions, int iOtherNumVertices>
+    inline Simplex<iNumDimensions, iNumVertices>& Simplex<iNumDimensions, iNumVertices>::operator=(
+        const Simplex<iOtherNumDimensions, iOtherNumVertices>& otherSimplex
     ) {
-        _vertices = other.vertices();
+        _vertices = otherSimplex.vertices();
         return *this;
     }
 
-    template <int dimensions_, int size_> template <class MatrixType, class VectorType>
-    typename TransformedSimplex<dimensions_, size_, MatrixType>::Type
-    Simplex<dimensions_, size_>::transformed(
-        const MatrixType& matrix,
-        const VectorType& vector
-    ) const {
-        assertValidTransform<dimensions_>(dimensions(), matrix, vector);
-        return Simplex<(dimensions_ == Dynamic ? Dynamic : MatrixType::RowsAtCompileTime), size_>(
-            (matrix * vertices()).colwise() + vector
+    template <int iNumDimensions, int iNumVertices>
+    int Simplex<iNumDimensions, iNumVertices>::numDimensions() const {
+        return _vertices.rows();
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    int Simplex<iNumDimensions, iNumVertices>::numVertices() const {
+        return _vertices.cols();
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Vertices&
+    Simplex<iNumDimensions, iNumVertices>::vertices() {
+        return _vertices;
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    const typename Simplex<iNumDimensions, iNumVertices>::Vertices&
+    Simplex<iNumDimensions, iNumVertices>::vertices() const {
+        return _vertices;
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Vertex
+    Simplex<iNumDimensions, iNumVertices>::vertex(int index) {
+        return _vertices.col(index);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::ConstVertex
+    Simplex<iNumDimensions, iNumVertices>::vertex(int index) const {
+        return _vertices.col(index);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    double Simplex<iNumDimensions, iNumVertices>::length() const {
+        assert(numVertices() == 2);
+        if (numDimensions() == 1) {
+            return vertices()(0, 1) - vertices()(0, 0);
+        } else {
+            return (vertex(1) - vertex(0)).norm();
+        }
+    }
+
+    namespace detail
+    {
+        template <class SimplexType>
+        inline double triangleArea2d(const SimplexType& triangle) {
+            Matrix2d edges;
+            edges.col(0) = triangle.vertex(1) - triangle.vertex(0);
+            edges.col(1) = triangle.vertex(2) - triangle.vertex(0);
+            return edges.determinant() / 2;
+        }
+
+        template <class SimplexType>
+        inline double triangleArea3d(const SimplexType& triangle) {
+            Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
+            Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
+            return first_edge.cross(second_edge).norm() / 2;
+        }
+
+        inline double triangleArea(const Simplex<2, 3>& triangle) {
+            return triangleArea2d(triangle);
+        }
+
+        inline double triangleArea(const Simplex<3, 3>& triangle) {
+            return triangleArea3d(triangle);
+        }
+
+        inline double triangleArea(const Simplex<Dynamic, Dynamic>& triangle) {
+            return triangle.numDimensions() == 2 ? triangleArea2d(triangle) : triangleArea3d(triangle);
+        }
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    double Simplex<iNumDimensions, iNumVertices>::area() const {
+        assert(numVertices() == 3);
+        assert(numDimensions() >= 2);
+        return detail::triangleArea(*this);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    double Simplex<iNumDimensions, iNumVertices>::volume() const {
+        assert(numVertices() == 4);
+        assert(numDimensions() == 3);
+        return (vertices().template rightCols<3>().colwise() - vertex(0)).determinant() / 6;
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Vector Simplex<iNumDimensions, iNumVertices>::vector() const {
+        assert(numVertices() == 2);
+        return vertex(1) - vertex(0);
+    }
+    
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Vector
+    Simplex<iNumDimensions, iNumVertices>::centroid() const {
+        return vertices().rowwise().mean();
+    }
+    
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Vector
+    Simplex<iNumDimensions, iNumVertices>::normal() const {
+        assert(numVertices() <= numDimensions());
+        return coordinateSystem().normal();
+    }
+    
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Edge
+    Simplex<iNumDimensions, iNumVertices>::edge(int index) const {
+        assert(0 <= index && index < numVertices());
+        return Edge(vertex(index), vertex((index + 1) % numVertices()));
+    }
+    
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Edge
+    Simplex<iNumDimensions, iNumVertices>::edge(int startIndex, int endIndex) const {
+        assert(0 <= startIndex && startIndex < numVertices());
+        assert(0 <= endIndex && endIndex < numVertices());
+        assert(startIndex != endIndex);
+        return Edge(vertex(startIndex), vertex(endIndex));
+    }
+    
+    template <int iNumDimensions, int iNumVertices>
+    typename Simplex<iNumDimensions, iNumVertices>::Face
+    Simplex<iNumDimensions, iNumVertices>::face(int index) const {
+        typename Face::Vertices faceVertices(numDimensions(), numVertices() - 1);
+        Matrix<int, 1, (iNumVertices == Dynamic ? Dynamic : iNumVertices - 1)> indices(numVertices() - 1);
+        for (int i = 0; i < indices.size(); ++i) {
+            indices(i) = (index + 1 + i) % numVertices();
+        }
+        if (numVertices() % 2 != 0 || index % 2 != 0) {
+            indices.tail(2).reverseInPlace();
+        }
+        for (int i = 0; i < indices.size(); ++i) {
+            faceVertices.col(i) = vertex(indices(i));
+        }
+        return Face(faceVertices);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Datum<iNumDimensions, (iNumVertices == Dynamic ? Dynamic : iNumVertices - 1)>
+    Simplex<iNumDimensions, iNumVertices>::coordinateSystem() const {
+        return Datum<iNumDimensions, (iNumVertices == Dynamic ? Dynamic : iNumVertices - 1)>(
+            vertex(0),
+            vertices().rightCols(numVertices() - 1).colwise() - vertex(0)
         );
     }
+    
+    template <int iNumDimensions, int iNumVertices>
+    Matrix<Interval, iNumDimensions, 1> Simplex<iNumDimensions, iNumVertices>::bounds() const {
+        return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
+    }
 
-    template <int dimensions_, int size_>
-    Matrix<Interval, dimensions_, 1> Bounds<Simplex<dimensions_, size_>>::operator()(
-        const Simplex<dimensions_, size_>& argument
-    ) const {return argument.bounds();}
+    template <int iNumDimensions, int iNumVertices>
+    template <class TTransformMatrix, class TTransformVector>
+    Simplex<MatrixType::RowsAtCompileTime, iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::transformed(
+        const TTransformMatrix& transformMatrix,
+        const TTransformVector& transformVector
+    ) const {
+        assertValidTransform<iNumDimensions>(numDimensions(), transformMatrix, transformVector);
+        return Simplex<
+            (iNumDimensions == Dynamic ? Dynamic : TTransformMatrix::RowsAtCompileTime),
+            iNumVertices
+        >((transformMatrix * vertices()).colwise() + transformVector);
+    }
+        
+    template <int iNumDimensions, int iNumVertices>
+    bool Simplex<iNumDimensions, iNumVertices>::operator==(
+        const Simplex<iNumDimensions, iNumVertices>& otherSimplex
+    ) const {
+        assert(numDimensions() == otherSimplex.numDimensions());
+        assert(numVertices() == otherSimplex.numVertices());
+        return vertices() == otherSimplex.vertices();
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Matrix<Interval, iNumDimensions, 1> Bounds<Simplex<iNumDimensions, iNumVertices>>::operator()(
+        const Simplex<iNumDimensions, iNumVertices>& simplex
+    ) const {
+        return simplex.bounds();
+    }
 }

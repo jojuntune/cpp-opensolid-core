@@ -22,7 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "detail/SetNode.hpp"
+#include "Set/SetNode.hpp"
 
 #include <OpenSolid/Core/Bounds.hpp>
 
@@ -33,187 +33,195 @@
 
 namespace opensolid
 {
-    template <class Type>
+    template <class TElement>
     class SetInserter;
 
-    template <class Type>
+    template <class TElement>
     class Set
     {
     private:
-        SetNode<Type>* _root;
-        Bounds<Type> _bounds_function;
+        SetNode<TElement>* _root;
+        Bounds<TElement> _boundsFunction;
     public:
-        Set(Bounds<Type> bounds_function = Bounds<Type>());
+        Set(Bounds<TElement> boundsFunction = Bounds<TElement>());
         
-        Set(const Set<Type>& other);
+        Set(const Set<TElement>& otherSet);
         
-        template <class IteratorType>
-        Set(IteratorType begin, IteratorType end, Bounds<Type> bounds_function = Bounds<Type>());
+        template <class TIterator>
+        Set(TIterator begin, TIterator end, Bounds<TElement> boundsFunction = Bounds<TElement>());
         
         ~Set();
         
-        const SetNode<Type>* root() const;
+        const SetNode<TElement>* root() const;
         
-        void operator=(const Set<Type>& other);
+        void operator=(const Set<TElement>& otherSet);
         
         std::size_t size() const;
         bool isEmpty() const;
-        const typename Bounds<Type>::Type& bounds() const;
+        const typename Bounds<TElement>::Type& bounds() const;
         
-        void insert(const Type& object);
-        std::size_t erase(const Type& object);
+        void insert(const TElement& element);
+        std::size_t erase(const TElement& element);
         
-        template <class IteratorType>
-        void insert(IteratorType begin, IteratorType end);
+        template <class TIterator>
+        void insert(TIterator begin, TIterator end);
         
-        template <class IteratorType>
-        std::size_t erase(IteratorType begin, IteratorType end);
+        template <class TIterator>
+        std::size_t erase(TIterator begin, TIterator end);
         
         void clear();
 
-        SetInserter<Type> inserter();
+        SetInserter<TElement> inserter();
 
-        template <class VisitorType>
-        void forEach(const VisitorType& visitor) const;
+        template <class TVisitor>
+        void forEach(
+            const TVisitor& visitor
+        ) const;
 
-        template <class VisitorType>
+        template <class TVisitor>
         void forEachOverlapping(
-            const typename Bounds<Type>::Type& overlapping_bounds,
-            const VisitorType& visitor
+            const typename Bounds<TElement>::Type& predicateBounds,
+            const TVisitor& visitor
         ) const;
 
-        template <class VisitorType, class BoundsPredicateType>
+        template <class TBoundsPredicate, class TVisitor>
         void forEachFiltered(
-            const BoundsPredicateType& bounds_predicate,
-            const VisitorType& visitor
+            const TBoundsPredicate& boundsPredicate,
+            const TVisitor& visitor
         ) const;
 
-        template <class VisitorType, class PredicateType>
-        void forEachIf(const PredicateType& predicate, const VisitorType& visitor) const;
+        template <class TElementPredicate, class TVisitor>
+        void forEachIf(
+            const TElementPredicate& elementPredicate,
+            const TVisitor& visitor
+        ) const;
 
-        template <class VisitorType, class PredicateType>
+        template <class TElementPredicate, class TVisitor>
         void forEachOverlappingIf(
-            const typename Bounds<Type>::Type& overlapping_bounds,
-            const PredicateType& predicate,
-            const VisitorType& visitor
+            const typename Bounds<TElement>::Type& predicateBounds,
+            const TElementPredicate& elementPredicate,
+            const TVisitor& visitor
         ) const;
 
-        template <class VisitorType, class BoundsPredicateType, class PredicateType>
+        template <class TBoundsPredicate, class TElementPredicate, class TVisitor>
         void forEachFilteredIf(
-            const BoundsPredicateType& bounds_predicate,
-            const PredicateType& predicate,
-            const VisitorType& visitor
+            const TBoundsPredicate& boundsPredicate,
+            const TPredicate& elementPredicate,
+            const TVisitor& visitor
         ) const;
 
-        template <class OutputIteratorType>
-        void copy(OutputIteratorType output_iterator) const;
+        template <class TOutputIterator>
+        void copy(
+            TOutputIterator outputIterator
+        ) const;
 
-        template<class OutputIteratorType>
+        template<class TOutputIterator>
         void copyOverlapping(
-            const typename Bounds<Type>::Type& overlapping_bounds,
-            OutputIteratorType output_iterator
+            const typename Bounds<TElement>::Type& predicateBounds,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class BoundsPredicateType, class OutputIteratorType>
+        template <class TBoundsPredicate, class TOutputIterator>
         void copyFiltered(
-            const BoundsPredicateType& bounds_predicate,
-            OutputIteratorType output_iterator
+            const TBoundsPredicate& boundsPredicate,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class PredicateType, class OutputIteratorType>
-        void copyIf(const PredicateType& predicate, OutputIteratorType output_iterator) const;
+        template <class TElementPredicate, class TOutputIterator>
+        void copyIf(
+            const TElementPredicate& elementPredicate,
+            TOutputIterator outputIterator
+        ) const;
 
-        template <class PredicateType, class OutputIteratorType>
+        template <class TElementPredicate, class TOutputIterator>
         void copyOverlappingIf(
-            const typename Bounds<Type>::Type& overlapping_bounds,
-            const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            const typename Bounds<TElement>::Type& predicateBounds,
+            const TElementPredicate& elementPredicate,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class BoundsPredicateType, class PredicateType, class OutputIteratorType>
+        template <class TBoundsPredicate, class TElementPredicate, class TOutputIterator>
         void copyFilteredIf(
-            const BoundsPredicateType& bounds_predicate,
-            const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            const TBoundsPredicate& boundsPredicate,
+            const TElementPredicate& elementPredicate,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class FunctionType, class OutputIteratorType>
-        void transform(const FunctionType& function, OutputIteratorType output_iterator) const;
+        template <class TFunction, class TOutputIterator>
+        void transform(
+            const TFunction& function,
+            TOutputIterator outputIterator
+        ) const;
 
-        template <class FunctionType, class OutputIteratorType>
+        template <class TFunction, class TOutputIterator>
         void transformOverlapping(
-            const FunctionType& function,
-            const typename Bounds<Type>::Type& overlapping_bounds,
-            OutputIteratorType output_iterator
+            const typename Bounds<TElement>::Type& predicateBounds,
+            const TFunction& function,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class FunctionType, class BoundsPredicateType, class OutputIteratorType>
+        template <class TFunction, class TBoundsPredicate, class TOutputIterator>
         void transformFiltered(
-            const FunctionType& function,
-            const BoundsPredicateType& bounds_predicate,
-            OutputIteratorType output_iterator
+            const TBoundsPredicate& boundsPredicate,
+            const TFunction& function,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class FunctionType, class PredicateType, class OutputIteratorType>
+        template <class TFunction, class TElementPredicate, class TOutputIterator>
         void transformIf(
-            const FunctionType& function,
-            const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            const TElementPredicate& predicate,
+            const TFunction& function,
+            TOutputIterator outputIterator
         ) const;
 
-        template <class FunctionType, class PredicateType, class OutputIteratorType>
+        template <class TFunction, class TElementPredicate, class TOutputIterator>
         void transformOverlappingIf(
-            const FunctionType& function,
-            const typename Bounds<Type>::Type& overlapping_bounds,
-            const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            const typename Bounds<TElement>::Type& predicateBounds,
+            const TElementPredicate& elementPredicate,
+            const TFunction& function,
+            TOutputIterator outputIterator
         ) const;
 
-        template <
-            class FunctionType,
-            class BoundsPredicateType,
-            class PredicateType,
-            class OutputIteratorType
-        >
+        template <class TBoundsPredicate, class TElementPredicate, class TFunction, class TOutputIterator>
         void transformFilteredIf(
-            const FunctionType& function,
-            const BoundsPredicateType& bounds_predicate,
-            const PredicateType& predicate,
-            OutputIteratorType output_iterator
+            const TBoundsPredicate& boundsPredicate,
+            const TElementPredicate& elementPredicate,
+            const TFunction& function,
+            TOutputIterator outputIterator
         ) const;
     };
 
-    template <class Type>
+    template <class TElement>
     class SetInserter
     {
     private:
-        Set<Type>* _set;
+        Set<TElement>* _set;
     public:
-        SetInserter(Set<Type>* set);
+        SetInserter(Set<TElement>* set);
 
-        SetInserter<Type>& operator*();
-        void operator=(const Type& item);
-        SetInserter<Type>& operator++();
-        SetInserter<Type>& operator++(int);
+        SetInserter<TElement>& operator*();
+        void operator=(const TElement& element);
+        SetInserter<TElement>& operator++();
+        SetInserter<TElement>& operator++(int);
     };
     
-    template <class Type>
-    std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node);
+    template <class TElement>
+    std::ostream& operator<<(std::ostream& stream, const SetNode<TElement>& node);
     
-    template <class Type>
-    std::ostream& operator<<(std::ostream& stream, const Set<Type>& set);
+    template <class TElement>
+    std::ostream& operator<<(std::ostream& stream, const Set<TElement>& set);
 }
     
 ////////// Specializations //////////
 
 namespace opensolid
 {
-    template <class ItemType>
-    struct Bounds<Set<ItemType>>
+    template <class TElement>
+    struct Bounds<Set<TElement>>
     {
-        typedef typename Bounds<ItemType>::Type Type;
+        typedef typename Bounds<TElement>::Type Type;
 
-        const typename Bounds<ItemType>::Type& operator()(const Set<ItemType>& set) const;
+        const typename Bounds<TElement>::Type& operator()(const Set<TElement>& set) const;
     };
 }
     
@@ -221,25 +229,27 @@ namespace opensolid
     
 namespace opensolid
 {   
-    template <class Type>
-    inline Set<Type>::Set(Bounds<Type> bounds_function) :
-        _root(OPENSOLID_NULLPTR), _bounds_function(bounds_function) {}
+    template <class TElement>
+    inline Set<TElement>::Set(Bounds<TElement> boundsFunction) :
+        _root(OPENSOLID_NULLPTR), _boundsFunction(boundsFunction) {
+    }
     
-    template <class Type>
-    inline Set<Type>::Set(const Set<Type>& other) :
-        _root(other.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<Type>(*other.root())),
-        _bounds_function(other._bounds_function) {}
+    template <class TElement>
+    inline Set<TElement>::Set(const Set<TElement>& otherSet) :
+        _root(otherSet.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<Type>(*otherSet.root())),
+        _boundsFunction(other._boundsFunction) {
+    }
         
-    template <class Type> template <class IteratorType>
-    inline Set<Type>::Set(IteratorType begin, IteratorType end, Bounds<Type> bounds_function) :
-        _bounds_function(bounds_function) {
-        std::vector<SetNode<Type>*> nodes;
+    template <class TElement> template <class TIterator>
+    inline Set<TElement>::Set(TIterator begin, TIterator end, Bounds<TElement> boundsFunction) :
+        _boundsFunction(boundsFunction) {
+        std::vector<SetNode<TElement>*> nodes;
         std::transform(
             begin,
             end,
             std::back_inserter(nodes), 
-            [&bounds_function] (const Type& item) {
-                return new SetNode<Type>(item, bounds_function(item));
+            [boundsFunction] (const TElement& element) {
+                return new SetNode<TElement>(element, boundsFunction(element));
             }
         );
         if (nodes.empty()) {
@@ -247,453 +257,513 @@ namespace opensolid
         } else if (nodes.size() == 1) {
             _root = nodes[0];
         } else {
-            typename Bounds<Type>::Type overall_bounds = nodes.front()->bounds();
+            typename Bounds<TElement>::Type overallBounds = nodes.front()->bounds();
             std::for_each(
                 nodes.begin() + 1,
                 nodes.end(),
-                [&overall_bounds] (SetNode<Type>* node) {
-                    overall_bounds = overall_bounds.hull(node->bounds());
+                [&overallBounds] (SetNode<TElement>* node) {
+                    overallBounds = overallBounds.hull(node->bounds());
                 }
             );
-            _root = new SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
+            _root = new SetNode<TElement>(overallBounds, &nodes.front(), &nodes.back() + 1);
         }
     }
     
-    template <class Type>
-    inline Set<Type>::~Set() {clear();}
-    
-    template <class Type>
-    inline std::size_t Set<Type>::size() const {return isEmpty() ? 0 : root()->size();}
-    
-    template <class Type>
-    inline bool Set<Type>::isEmpty() const {return !root();}
-    
-    template <class Type>
-    inline const SetNode<Type>* Set<Type>::root() const {return _root;}
-        
-    template <class Type>
-    void Set<Type>::operator=(const Set<Type>& other) {
-        if (this == &other) {return;}
+    template <class TElement>
+    inline Set<TElement>::~Set() {
         clear();
-        if (!other.isEmpty()) {
-            _root = new SetNode<Type>(*other.root());
+    }
+    
+    template <class TElement>
+    inline std::size_t Set<TElement>::size() const {
+        return isEmpty() ? 0 : root()->size();
+    }
+    
+    template <class TElement>
+    inline bool Set<TElement>::isEmpty() const {
+        return !root();
+    }
+    
+    template <class TElement>
+    inline const SetNode<TElement>* Set<TElement>::root() const {
+        return _root;
+    }
+        
+    template <class TElement>
+    void Set<TElement>::operator=(const Set<TElement>& otherSet) {
+        if (this == &otherSet) {
+            return;
+        }
+        clear();
+        if (!otherSet.isEmpty()) {
+            _root = new SetNode<TElement>(*otherSet.root());
         }
     }
     
-    template <class Type>
-    inline const typename Bounds<Type>::Type&
-    Set<Type>::bounds() const {
+    template <class TElement>
+    inline const typename Bounds<TElement>::Type&
+    Set<TElement>::bounds() const {
         assert(!isEmpty());
         return root()->bounds();
     }
     
-    template <class Type>
-    inline void Set<Type>::insert(const Type& object) {
-        typename Bounds<Type>::Type bounds = _bounds_function(object);
+    template <class TElement>
+    inline void Set<TElement>::insert(const TElement& element) {
+        typename Bounds<TElement>::Type bounds = _boundsFunction(element);
         if (isEmpty()) {
-            _root = new SetNode<Type>(object, bounds);
+            _root = new SetNode<TElement>(element, bounds);
         } else {
-            _root = _root->insert(object, bounds);
+            _root = _root->insert(element, bounds);
         }
     }
     
-    template <class Type>
-    inline std::size_t Set<Type>::erase(const Type& object) {
+    template <class TElement>
+    inline std::size_t Set<TElement>::erase(const TElement& element) {
         if (isEmpty()) {
             return 0;
         } else {
-            std::size_t previous_size = size();
-            _root = _root->erase(object, _bounds_function(object));
+            std::size_t previousSize = size();
+            _root = _root->erase(element, _boundsFunction(element));
             return previous_size - size();
         }
     }
     
-    template <class Type> template <class IteratorType>
-    inline void Set<Type>::insert(IteratorType begin, IteratorType end) {
-        std::for_each(begin, end, [this] (const Type& object) {this->insert(object);});
+    template <class TElement> template <class TIterator>
+    inline void Set<TElement>::insert(TIterator begin, TIterator end) {
+        std::for_each(
+            begin,
+            end,
+            [this] (const TElement& element) {
+                this->insert(element);
+            }
+        );
     }
     
-    template <class Type> template <class IteratorType>
-    inline std::size_t Set<Type>::erase(IteratorType begin, IteratorType end) {
+    template <class TElement> template <class TIterator>
+    inline std::size_t Set<TElement>::erase(TIterator begin, TIterator end) {
         return std::accumulate(
             begin,
             end,
             std::size_t(0),
-            [this] (std::size_t result, const Type& object) {return result + this->erase(object);}
+            [this] (std::size_t result, const TElement& element) {
+                return result + this->erase(element);
+            }
         );
     }
     
-    template <class Type>
-    inline void Set<Type>::clear() {
+    template <class TElement>
+    inline void Set<TElement>::clear() {
         if (_root) {
             delete _root;
             _root = OPENSOLID_NULLPTR;
         }
     }
 
-    template <class Type>
-    inline SetInserter<Type> Set<Type>::inserter() {return SetInserter<Type>(this);}
+    template <class TElement>
+    inline SetInserter<TElement> Set<TElement>::inserter() {
+        return SetInserter<TElement>(this);
+    }
 
-    namespace
+    namespace detail
     {
-        template <class Type, class VisitorType, class BoundsPredicateType>
-        void visitNode(
-            const SetNode<Type>* node,
-            const VisitorType& visitor,
-            const BoundsPredicateType& bounds_predicate
+        template <class TElement, class TVisitor>
+        void visitNodes(
+            const SetNode<TElement>* root,
+            const TVisitor& visitor,
         ) {
-            if (bounds_predicate(node->bounds())) {
-                if (node->object()) {
-                    const_cast<VisitorType&>(visitor)(*node->object());
+            if (root->element()) {
+                const_cast<TVisitor&>(visitor)(*root->element());
+            } else {
+                visitNodes(root->left(), visitor);
+                visitNodes(root->right(), visitor);
+            }
+        }
+
+        template <class TElement, class TBoundsPredicate, class TVisitor>
+        void visitFilteredNodes(
+            const SetNode<TElement>* root,
+            const TBoundsPredicate& boundsPredicate
+            const TVisitor& visitor,
+        ) {
+            if (boundsPredicate(root->bounds())) {
+                if (root->element()) {
+                    const_cast<TVisitor&>(visitor)(*root->element());
                 } else {
-                    visitNode(node->left(), visitor, bounds_predicate);
-                    visitNode(node->right(), visitor, bounds_predicate);
+                    visitFilteredNodes(root->left(), boundsPredicate, visitor);
+                    visitFilteredNodes(root->right(), boundsPredicate, visitor);
                 }
             }
         }
     }
 
-    template <class Type> template <class VisitorType>
-    void Set<Type>::forEach(const VisitorType& visitor) const {
+    template <class TElement>
+    template <class TVisitor>
+    void Set<TElement>::forEach(
+        const TVisitor& visitor
+    ) const {
         if (root()) {
-            visitNode(root(), visitor, [] (const typename Bounds<Type>::Type&) {return true;});
+            detail::visitNodes(
+                root(),
+                visitor
+            );
         }
     }
 
-    template <class Type> template <class VisitorType>
-    void Set<Type>::forEachOverlapping(
-        const typename Bounds<Type>::Type& overlapping_bounds,
-        const VisitorType& visitor
+    template <class TElement>
+    template <class TVisitor>
+    void Set<TElement>::forEachOverlapping(
+        const typename Bounds<TElement>::Type& predicateBounds,
+        const TVisitor& visitor
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitFilteredNodes(
                 root(),
-                visitor,
-                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
-                    return bounds.overlaps(overlapping_bounds);
+                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                    return bounds.overlaps(predicateBounds);
+                },
+                visitor
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TVisitor, class TBoundsPredicate>
+    inline void Set<TElement>::forEachFiltered(
+        const TBoundsPredicate& boundsPredicate,
+        const TVisitor& visitor
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                boundsPredicate,
+                visitor
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TVisitor, class TElementPredicate>
+    void Set<TElement>::forEachIf(
+        const TElementPredicate& elementPredicate,
+        const TVisitor& visitor
+    ) const {
+        if (root()) {
+            detail::visitNodes(
+                root(),
+                [&visitor, &elementPredicate] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        const_cast<TVisitor&>(visitor)(element);
+                    }
                 }
             );
         }
     }
 
-    template <class Type> template <class VisitorType, class BoundsPredicateType>
-    inline void Set<Type>::forEachFiltered(
-        const BoundsPredicateType& bounds_predicate,
-        const VisitorType& visitor
-    ) const {if (root()) {visitNode(root(), visitor, bounds_predicate);}}
-
-    template <class Type>
-    template <class VisitorType, class PredicateType>
-    void Set<Type>::forEachIf(const PredicateType& predicate, const VisitorType& visitor) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&visitor, &predicate] (const Type& item) {
-                    if (predicate(item)) {const_cast<VisitorType&>(visitor)(item);}
-                },
-                [] (const typename Bounds<Type>::Type&) {return true;}
-            );
-        }
-    }
-
-    template <class Type> template <class VisitorType, class PredicateType>
-    void Set<Type>::forEachOverlappingIf(
-        const typename Bounds<Type>::Type& overlapping_bounds,
-        const PredicateType& predicate,
-        const VisitorType& visitor
+    template <class TElement> template <class TVisitor, class TElementPredicate>
+    void Set<TElement>::forEachOverlappingIf(
+        const typename Bounds<TElement>::Type& predicateBounds,
+        const TElementPredicate& elementPredicate,
+        const TVisitor& visitor
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitFilteredNodes(
                 root(),
-                [&visitor, &predicate] (const Type& item) {
-                    if (predicate(item)) {const_cast<VisitorType&>(visitor)(item);}
+                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                    return bounds.overlaps(predicateBounds);
                 },
-                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
-                    return bounds.overlaps(overlapping_bounds);
+                [&visitor, &elementPredicate] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        const_cast<TVisitor&>(visitor)(element);
+                    }
                 }
             );
         }
     }
 
-    template <class Type>
-    template <class VisitorType, class BoundsPredicateType, class PredicateType>
-    void Set<Type>::forEachFilteredIf(
-        const BoundsPredicateType& bounds_predicate,
-        const PredicateType& predicate,
-        const VisitorType& visitor
+    template <class TElement>
+    template <class TVisitor, class TBoundsPredicate, class TElementPredicate>
+    void Set<TElement>::forEachFilteredIf(
+        const TBoundsPredicate& boundsPredicate,
+        const TElementPredicate& elementPredicate,
+        const TVisitor& visitor
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitFilteredNodes(
                 root(),
-                [&visitor, &predicate] (const Type& item) {
-                    if (predicate(item)) {const_cast<VisitorType&>(visitor)(item);}
-                },
-                bounds_predicate
-            );
-        }
-    }
-
-    template <class Type> template<class OutputIteratorType>
-    void Set<Type>::copy(OutputIteratorType output_iterator) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&output_iterator] (const Type& item) {
-                    *output_iterator = item;
-                    ++output_iterator;
-                },
-                [] (const typename Bounds<Type>::Type&) {return true;}
-            );
-        }
-    }
-
-    template <class Type> template<class OutputIteratorType>
-    void Set<Type>::copyOverlapping(
-        const typename Bounds<Type>::Type& overlapping_bounds,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&output_iterator] (const Type& item) {
-                    *output_iterator = item;
-                    ++output_iterator;
-                },
-                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
-                    return bounds.overlaps(overlapping_bounds);
+                boundsPredicate,
+                [&visitor, &elementPredicate] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        const_cast<TVisitor&>(visitor)(element);
+                    }
                 }
             );
         }
     }
 
-    template <class Type> template <class BoundsPredicateType, class OutputIteratorType>
-    void Set<Type>::copyFiltered(
-        const BoundsPredicateType& bounds_predicate,
-        OutputIteratorType output_iterator
+    template <class TElement> template<class TOutputIterator>
+    void Set<TElement>::copy(
+        TOutputIterator outputIterator
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitNodes(
                 root(),
-                [&output_iterator] (const Type& item) {
-                    *output_iterator = item;
-                    ++output_iterator;
-                },
-                bounds_predicate
-            );
-        }
-    }
-
-    template <class Type> template <class PredicateType, class OutputIteratorType>
-    void Set<Type>::copyIf(
-        const PredicateType& predicate,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&predicate, &output_iterator] (const Type& item) {
-                    if (predicate(item)) {
-                        *output_iterator = item;
-                        ++output_iterator;
-                    }
-                },
-                [] (const typename Bounds<Type>::Type&) {return true;}
-            );
-        }
-    }
-
-    template <class Type> template <class PredicateType, class OutputIteratorType>
-    void Set<Type>::copyOverlappingIf(
-        const typename Bounds<Type>::Type& overlapping_bounds,
-        const PredicateType& predicate,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&predicate, &output_iterator] (const Type& item) {
-                    if (predicate(item)) {
-                        *output_iterator = item;
-                        ++output_iterator;
-                    }
-                },
-                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
-                    return bounds.overlaps(overlapping_bounds);
+                [&outputIterator] (const TElement& element) {
+                    *outputIterator = element;
+                    ++outputIterator;
                 }
             );
         }
     }
 
-    template <class Type>
-    template <class BoundsPredicateType, class PredicateType, class OutputIteratorType>
-    void Set<Type>::copyFilteredIf(
-        const BoundsPredicateType& bounds_predicate,
-        const PredicateType& predicate,
-        OutputIteratorType output_iterator
+    template <class TElement> template<class TOutputIterator>
+    void Set<TElement>::copyOverlapping(
+        const typename Bounds<TElement>::Type& predicateBounds,
+        TOutputIterator outputIterator
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitFilteredNodes(
                 root(),
-                [&predicate, &output_iterator] (const Type& item) {
-                    if (predicate(item)) {
-                        *output_iterator = item;
-                        ++output_iterator;
-                    }
+                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                    return bounds.overlaps(predicateBounds);
                 },
-                bounds_predicate
-            );
-        }
-    }
-
-    template <class Type>
-    template <class FunctionType, class OutputIteratorType>
-    void Set<Type>::transform(
-        const FunctionType& function,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&function, &output_iterator] (const Type& item) {
-                    *output_iterator = function(item);
-                    ++output_iterator;
-                },
-                [] (const typename Bounds<Type>::Type&) {return true;}
-            );
-        }
-    }
-
-    template <class Type> template <class FunctionType, class OutputIteratorType>
-    void Set<Type>::transformOverlapping(
-        const FunctionType& function,
-        const typename Bounds<Type>::Type& overlapping_bounds,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&function, &output_iterator] (const Type& item) {
-                    *output_iterator = function(item);
-                    ++output_iterator;
-                },
-                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
-                    return bounds.overlaps(overlapping_bounds);
+                [&outputIterator] (const TElement& element) {
+                    *outputIterator = element;
+                    ++outputIterator;
                 }
             );
         }
     }
 
-    template <class Type>
-    template <class FunctionType, class BoundsPredicateType, class OutputIteratorType>
-    void Set<Type>::transformFiltered(
-        const FunctionType& function,
-        const BoundsPredicateType& bounds_predicate,
-        OutputIteratorType output_iterator
+    template <class TElement> template <class TBoundsPredicate, class TOutputIterator>
+    void Set<TElement>::copyFiltered(
+        const TBoundsPredicate& boundsPredicate,
+        TOutputIterator outputIterator
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitFilteredNodes(
                 root(),
-                [&function, &output_iterator] (const Type& item) {
-                    *output_iterator = function(item);
-                    ++output_iterator;
-                },
-                bounds_predicate
-            );
-        }
-    }
-
-    template <class Type>
-    template <class FunctionType, class PredicateType, class OutputIteratorType>
-    void Set<Type>::transformIf(
-        const FunctionType& function,
-        const PredicateType& predicate,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&function, &predicate, &output_iterator] (const Type& item) {
-                    if (predicate(item)) {
-                        *output_iterator = function(item);
-                        ++output_iterator;
-                    }
-                },
-                [] (const typename Bounds<Type>::Type&) {return true;}
-            );
-        }
-    }
-
-    template <class Type>
-    template <class FunctionType, class PredicateType, class OutputIteratorType>
-    void Set<Type>::transformOverlappingIf(
-        const FunctionType& function,
-        const typename Bounds<Type>::Type& overlapping_bounds,
-        const PredicateType& predicate,
-        OutputIteratorType output_iterator
-    ) const {
-        if (root()) {
-            visitNode(
-                root(),
-                [&function, &predicate, &output_iterator] (const Type& item) {
-                    if (predicate(item)) {
-                        *output_iterator = function(item);
-                        ++output_iterator;
-                    }
-                },
-                [&overlapping_bounds] (const typename Bounds<Type>::Type& bounds) {
-                    return bounds.overlaps(overlapping_bounds);
+                boundsPredicate,
+                [&outputIterator] (const TElement& element) {
+                    *outputIterator = element;
+                    ++outputIterator;
                 }
             );
         }
     }
 
-    template <class Type>
-    template <
-        class FunctionType,
-        class BoundsPredicateType,
-        class PredicateType,
-        class OutputIteratorType
-    >
-    void Set<Type>::transformFilteredIf(
-        const FunctionType& function,
-        const BoundsPredicateType& bounds_predicate,
-        const PredicateType& predicate,
-        OutputIteratorType output_iterator
+    template <class TElement> template <class TElementPredicate, class TOutputIterator>
+    void Set<TElement>::copyIf(
+        const TElementPredicate& elementPredicate,
+        TOutputIterator outputIterator
     ) const {
         if (root()) {
-            visitNode(
+            detail::visitNodes(
                 root(),
-                [&function, &predicate, &output_iterator] (const Type& item) {
-                    if (predicate(item)) {
-                        *output_iterator = function(item);
-                        ++output_iterator;
+                [&elementPredicate, &outputIterator] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        *outputIterator = element;
+                        ++outputIterator;
                     }
-                },
-                bounds_predicate
+                }
             );
         }
     }
 
-    template <class Type>
-    inline SetInserter<Type>::SetInserter(Set<Type>* set) : _set(set) {}
+    template <class TElement> template <class TElementPredicate, class TOutputIterator>
+    void Set<TElement>::copyOverlappingIf(
+        const typename Bounds<TElement>::Type& predicateBounds,
+        const TElementPredicate& elementPredicate,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                    return bounds.overlaps(predicateBounds);
+                },
+                [&elementPredicate, &outputIterator] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        *outputIterator = element;
+                        ++outputIterator;
+                    }
+                }
+            );
+        }
+    }
 
-    template <class Type>
-    inline SetInserter<Type>& SetInserter<Type>::operator*() {return *this;}
+    template <class TElement>
+    template <class TBoundsPredicate, class TElementPredicate, class TOutputIterator>
+    void Set<TElement>::copyFilteredIf(
+        const TBoundsPredicate& boundsPredicate,
+        const TElementPredicate& elementPredicate,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                boundsPredicate,
+                [&elementPredicate, &outputIterator] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        *outputIterator = element;
+                        ++outputIterator;
+                    }
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TFunction, class TOutputIterator>
+    void Set<TElement>::transform(
+        const TFunction& function,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitNodes(
+                root(),
+                [&function, &outputIterator] (const TElement& element) {
+                    *outputIterator = function(element);
+                    ++outputIterator;
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TFunction, class TOutputIterator>
+    void Set<TElement>::transformOverlapping(
+        const TFunction& function,
+        const typename Bounds<TElement>::Type& predicateBounds,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                    return bounds.overlaps(predicateBounds);
+                },
+                [&function, &outputIterator] (const TElement& element) {
+                    *outputIterator = function(element);
+                    ++outputIterator;
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TFunction, class TBoundsPredicate, class TOutputIterator>
+    void Set<TElement>::transformFiltered(
+        const TFunction& function,
+        const TBoundsPredicate& boundsPredicate,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                boundsPredicate,
+                [&function, &outputIterator] (const TElement& element) {
+                    *outputIterator = function(element);
+                    ++outputIterator;
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TFunction, class TElementPredicate, class TOutputIterator>
+    void Set<TElement>::transformIf(
+        const TFunction& function,
+        const TElementPredicate& elementPredicate,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitNodes(
+                root(),
+                [&function, &elementPredicate, &outputIterator] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        *outputIterator = function(element);
+                        ++outputIterator;
+                    }
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TFunction, class TElementPredicate, class TOutputIterator>
+    void Set<TElement>::transformOverlappingIf(
+        const TFunction& function,
+        const typename Bounds<TElement>::Type& predicateBounds,
+        const TElementPredicate& elementPredicate,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                    return bounds.overlaps(predicateBounds);
+                },
+                [&function, &elementPredicate, &outputIterator] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        *outputIterator = function(element);
+                        ++outputIterator;
+                    }
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    template <class TFunction, class TBoundsPredicate, class TElementPredicate, class TOutputIterator>
+    void Set<TElement>::transformFilteredIf(
+        const TFunction& function,
+        const TBoundsPredicate& boundsPredicate,
+        const TElementPredicate& elementPredicate,
+        TOutputIterator outputIterator
+    ) const {
+        if (root()) {
+            detail::visitFilteredNodes(
+                root(),
+                boundsPredicate,
+                [&function, &elementPredicate, &outputIterator] (const TElement& element) {
+                    if (elementPredicate(element)) {
+                        *outputIterator = function(element);
+                        ++outputIterator;
+                    }
+                }
+            );
+        }
+    }
+
+    template <class TElement>
+    inline SetInserter<TElement>::SetInserter(Set<TElement>* set) : _set(set) {
+    }
+
+    template <class TElement>
+    inline SetInserter<TElement>& SetInserter<TElement>::operator*() {
+        return *this;
+    }
     
-    template <class Type>
-    inline void SetInserter<Type>::operator=(const Type& item) {_set->insert(item);}
+    template <class TElement>
+    inline void SetInserter<TElement>::operator=(const TElement& element) {
+        _set->insert(element);
+    }
     
-    template <class Type>
-    inline SetInserter<Type>& SetInserter<Type>::operator++() {return *this;}
+    template <class TElement>
+    inline SetInserter<TElement>& SetInserter<TElement>::operator++() {
+        return *this;
+    }
     
-    template <class Type>
-    inline SetInserter<Type>& SetInserter<Type>::operator++(int) {return *this;}
+    template <class TElement>
+    inline SetInserter<TElement>& SetInserter<TElement>::operator++(int) {
+        return *this;
+    }
 
-    template <class Type>
-    std::ostream& operator<<(std::ostream& stream, const SetNode<Type>& node) {
+    template <class TElement>
+    std::ostream& operator<<(std::ostream& stream, const SetNode<TElement>& node) {
         stream << "{";
-        if (node.object()) {
-            stream << *node.object();
+        if (node.element()) {
+            stream << *node.element();
         } else {
             stream << *node.left();
             stream << ",";
@@ -703,8 +773,8 @@ namespace opensolid
         return stream;
     }
     
-    template <class Type>
-    std::ostream& operator<<(std::ostream& stream, const Set<Type>& set) {
+    template <class TElement>
+    std::ostream& operator<<(std::ostream& stream, const Set<TElement>& set) {
         if (set.isEmpty()) {
             stream << "{}";
         } else {
@@ -713,8 +783,10 @@ namespace opensolid
         return stream;
     }
 
-    template <class ItemType>
-    inline const typename Bounds<ItemType>::Type& Bounds<Set<ItemType>>::operator()(
-        const Set<ItemType>& set
-    ) const {return set.bounds();}
+    template <class TElement>
+    inline const typename Bounds<TElement>::Type& Bounds<Set<TElement>>::operator()(
+        const Set<TElement>& set
+    ) const {
+        return set.bounds();
+    }
 }

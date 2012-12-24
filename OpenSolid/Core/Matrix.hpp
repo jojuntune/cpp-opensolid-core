@@ -22,7 +22,10 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/util/Conversion.hpp>
+#include "Matrix/declarations.hpp"
+
+#include <OpenSolid/Utils/Conversion.hpp>
+#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 
@@ -30,17 +33,11 @@ namespace Eigen
 {   
     namespace internal
     {
-        template <class TScalar, bool bIsInteger>
-        struct significant_decimals_default_impl;
-
         template <>
         struct significant_decimals_default_impl<opensolid::Interval, false>
         {
             static inline int run();
         };
-        
-        template <class TScalar>
-        struct is_arithmetic;
         
         template <>
         struct is_arithmetic<opensolid::Interval>
@@ -48,9 +45,6 @@ namespace Eigen
             static const bool value = true;
         };
     }
-    
-    template <class TScalar>
-    struct NumTraits;
     
     template <>
     struct NumTraits<opensolid::Interval>
@@ -198,15 +192,6 @@ namespace Eigen
     };
 }
 
-namespace opensolid
-{
-    template <class TMatrix>
-    class TransformableMatrix;
-
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
-};
-
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
 #define EIGEN_DONT_ALIGN
@@ -309,7 +294,7 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include <OpenSolid/util/Conversion.hpp>
+#include <OpenSolid/Utils/Conversion.hpp>
 
 namespace Eigen
 {
@@ -703,5 +688,5 @@ namespace opensolid
     }
 }
 
-#include "detail/MatrixIterator.hpp"
-#include "detail/TransformableMatrix.hpp"
+#include "Matrix/MatrixIterator.hpp"
+#include "Matrix/TransformableMatrix.hpp"

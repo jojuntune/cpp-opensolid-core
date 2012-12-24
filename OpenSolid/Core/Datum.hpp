@@ -22,7 +22,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "detail/DatumBase.hpp"
+#include "Datum/declarations.hpp"
+#include "Datum/DatumBase.hpp"
 
 namespace opensolid
 {   
@@ -41,16 +42,12 @@ namespace opensolid
     //template <int iOtherNumDimensions, int iOtherNumAxes>
     //Datum<iNumDimensions, iNumAxes>& operator=(const Datum<iOtherNumDimensions, iOtherNumAxes>& other);
 
-
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
-
     // Axis2d, Axis3d
     template <int iNumDimensions>
     class Datum<iNumDimensions, 1> : public DatumBase<iNumDimensions, 1>
     {
     public:
-        static Datum<iNumDimensions, 1> FromPoints(
+        static Datum<iNumDimensions, 1> ThroughPoints(
             const Matrix<double, iNumDimensions, 1>& originPoint,
             const Matrix<double, iNumDimensions, 1>& axisPoint
         );

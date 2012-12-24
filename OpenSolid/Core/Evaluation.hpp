@@ -27,7 +27,7 @@
 
 namespace opensolid
 {
-    template<class EvaluatedType, class ArgumentType>
+    template<class TEvaluated, class TArgument>
     class Evaluation;
 }
 
@@ -35,35 +35,39 @@ namespace Eigen
 {
     namespace internal
     {
-        template <class EvaluatedType, class ArgumentType>
-        struct traits<opensolid::Evaluation<EvaluatedType, ArgumentType>>
+        template <class TEvaluated, class TArgument>
+        struct traits<opensolid::Evaluation<TEvaluated, TArgument>>
         {
-            typedef Matrix<typename ArgumentType::Scalar, Dynamic, ArgumentType::ColsAtCompileTime>
+            typedef Matrix<typename TArgument::Scalar, Dynamic, TArgument::ColsAtCompileTime>
                 ReturnType;
+
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template <class EvaluatedType>
-        struct traits<opensolid::Evaluation<EvaluatedType, int>>
+        template <class TEvaluated>
+        struct traits<opensolid::Evaluation<TEvaluated, int>>
         {
             typedef VectorXd ReturnType;
+
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<class EvaluatedType>
-        struct traits<opensolid::Evaluation<EvaluatedType, double>>
+        template<class TEvaluated>
+        struct traits<opensolid::Evaluation<TEvaluated, double>>
         {
             typedef VectorXd ReturnType;
+
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<class EvaluatedType>
-        struct traits<opensolid::Evaluation<EvaluatedType, opensolid::Interval>>
+        template<class TEvaluated>
+        struct traits<opensolid::Evaluation<TEvaluated, opensolid::Interval>>
         {
             typedef VectorXI ReturnType;
+
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
@@ -72,77 +76,77 @@ namespace Eigen
 
 namespace opensolid
 {
-    template<class EvaluatedType, class ArgumentType>
-    class Evaluation : public ReturnByValue<Evaluation<EvaluatedType, ArgumentType>>
+    template<class TEvaluated, class TArgument>
+    class Evaluation : public ReturnByValue<Evaluation<TEvaluated, TArgument>>
     {
     private:
-        const EvaluatedType& _evaluated;
-        const ArgumentType& _argument;
+        const TEvaluated& _evaluated;
+        const TArgument& _argument;
     public:
-        Evaluation(const EvaluatedType& evaluated, const ArgumentType& argument);
+        Evaluation(const TEvaluated& evaluated, const TArgument& argument);
         
         int rows() const;
         int cols() const;
         
-        template<class ResultType>
-        void evalTo(ResultType& result) const;
+        template<class TResult>
+        void evalTo(TResult& result) const;
         
-        typename ArgumentType::Scalar value() const;
+        typename TArgument::Scalar value() const;
         bool isZero(double tolerance = 1e-12) const;
     };
     
-    template<class EvaluatedType>
-    class Evaluation<EvaluatedType, int> : public ReturnByValue<Evaluation<EvaluatedType, int>>
+    template<class TEvaluated>
+    class Evaluation<TEvaluated, int> : public ReturnByValue<Evaluation<TEvaluated, int>>
     {
     private:
-        const EvaluatedType& _evaluated;
+        const TEvaluated& _evaluated;
         double _argument;
     public:
-        Evaluation(const EvaluatedType& evaluated, int argument);
+        Evaluation(const TEvaluated& evaluated, int argument);
         
         int rows() const;
         int cols() const;
         
-        template<class ResultType>
-        void evalTo(ResultType& result) const;
+        template<class TResult>
+        void evalTo(TResult& result) const;
         
         double value() const;
         bool isZero(double precision = 1e-12) const;
     };
     
-    template<class EvaluatedType>
-    class Evaluation<EvaluatedType, double> : public ReturnByValue<Evaluation<EvaluatedType, double>>
+    template<class TEvaluated>
+    class Evaluation<TEvaluated, double> : public ReturnByValue<Evaluation<TEvaluated, double>>
     {
     private:
-        const EvaluatedType& _evaluated;
+        const TEvaluated& _evaluated;
         double _argument;
     public:
-        Evaluation(const EvaluatedType& evaluated, double argument);
+        Evaluation(const TEvaluated& evaluated, double argument);
         
         int rows() const;
         int cols() const;
         
-        template<class ResultType>
-        void evalTo(ResultType& result) const;
+        template<class TResult>
+        void evalTo(TResult& result) const;
         
         double value() const;
         bool isZero(double precision = 1e-12) const;
     };
     
-    template<class EvaluatedType>
-    class Evaluation<EvaluatedType, Interval> : public ReturnByValue<Evaluation<EvaluatedType, Interval>>
+    template<class TEvaluated>
+    class Evaluation<TEvaluated, Interval> : public ReturnByValue<Evaluation<TEvaluated, Interval>>
     {
     private:
-        const EvaluatedType& _evaluated;
+        const TEvaluated& _evaluated;
         Interval _argument;
     public:
-        Evaluation(const EvaluatedType& evaluated, Interval argument);
+        Evaluation(const TEvaluated& evaluated, Interval argument);
         
         int rows() const;
         int cols() const;
         
-        template<class ResultType>
-        void evalTo(ResultType& result) const;
+        template<class TResult>
+        void evalTo(TResult& result) const;
         
         Interval value() const;
         bool isZero(double precision = 1e-12) const;
@@ -175,7 +179,8 @@ namespace opensolid
         };
 
         template<class Type>
-        inline MatrixArgument<Type>::MatrixArgument(const Type& argument) : _argument(argument) {}
+        inline MatrixArgument<Type>::MatrixArgument(const Type& argument) : _argument(argument) {
+        }
     
         template<class Type>
         inline const typename Type::Scalar* MatrixArgument<Type>::data() const {
@@ -183,10 +188,14 @@ namespace opensolid
         }
     
         template<class Type>
-        inline int MatrixArgument<Type>::rows() const {return _argument.rows();}
+        inline int MatrixArgument<Type>::rows() const {
+            return _argument.rows();
+        }
     
         template<class Type>
-        inline int MatrixArgument<Type>::cols() const {return _argument.cols();}
+        inline int MatrixArgument<Type>::cols() const {
+            return _argument.cols();
+        }
     
         template<class Type>
         inline int MatrixArgument<Type>::outerStride() const {
@@ -199,182 +208,206 @@ namespace opensolid
         }
     }
 
-    template<class EvaluatedType, class ArgumentType>
-    inline Evaluation<EvaluatedType, ArgumentType>::Evaluation(
-        const EvaluatedType& evaluated,
-        const ArgumentType& argument
-    ) : _evaluated(evaluated), _argument(argument) {}
+    template<class TEvaluated, class TArgument>
+    inline Evaluation<TEvaluated, TArgument>::Evaluation(
+        const TEvaluated& evaluated,
+        const TArgument& argument
+    ) : _evaluated(evaluated), _argument(argument) {
+    }
     
-    template<class EvaluatedType, class ArgumentType>
-    inline int Evaluation<EvaluatedType, ArgumentType>::rows() const {return _evaluated.dimensions();}
+    template<class TEvaluated, class TArgument>
+    inline int Evaluation<TEvaluated, TArgument>::rows() const {
+        return _evaluated.dimensions();
+    }
     
-    template<class EvaluatedType, class ArgumentType>
-    inline int Evaluation<EvaluatedType, ArgumentType>::cols() const {return _argument.cols();}
+    template<class TEvaluated, class TArgument>
+    inline int Evaluation<TEvaluated, TArgument>::cols() const {
+        return _argument.cols();
+    }
     
-    template<class EvaluatedType, class ArgumentType> template<class ResultType>
-    inline void Evaluation<EvaluatedType, ArgumentType>::evalTo(ResultType& result) const {
-        MatrixArgument<ArgumentType> argument(_argument);
+    template<class TEvaluated, class TArgument> template<class TResult>
+    inline void Evaluation<TEvaluated, TArgument>::evalTo(TResult& result) const {
+        MatrixArgument<TArgument> argument(_argument);
         
         // Common typedefs
-        typedef typename ResultType::Scalar Scalar;
+        typedef typename TResult::Scalar Scalar;
         typedef Map<const Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic>>
             ArgumentMapType;
             
         // Create argument map
-        Stride<Dynamic, Dynamic> argument_stride(argument.outerStride(), argument.innerStride());
-        ArgumentMapType argument_map(
+        Stride<Dynamic, Dynamic> argumentStride(argument.outerStride(), argument.innerStride());
+        ArgumentMapType argumentMap(
             argument.data(),
             argument.rows(),
             argument.cols(),
-            argument_stride
+            argumentStride
         );
         
         // Create result map
-        int result_outer_stride =
-            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
-        int result_inner_stride =
-            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
-        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
+        int resultOuterStride =
+            (TResult::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int resultInnerStride =
+            (TResult::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> resultStride(resultOuterStride, resultInnerStride);
         typedef Map<Matrix<Scalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic>>
             ResultMapType;
-        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
+        ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Evaluate evaluated
-        _evaluated.evaluate(argument_map, result_map);
+        _evaluated.evaluate(argumentMap, resultMap);
     }
     
-    template<class EvaluatedType, class ArgumentType>
-    inline typename ArgumentType::Scalar Evaluation<EvaluatedType, ArgumentType>::value() const {
-        Matrix<typename ArgumentType::Scalar, 1, 1> result;
+    template<class TEvaluated, class TArgument>
+    inline typename TArgument::Scalar Evaluation<TEvaluated, TArgument>::value() const {
+        Matrix<typename TArgument::Scalar, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class EvaluatedType, class ArgumentType>
-    inline bool Evaluation<EvaluatedType, ArgumentType>::isZero(double precision) const {
+    template <class TEvaluated, class TArgument>
+    inline bool Evaluation<TEvaluated, TArgument>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    template <class EvaluatedType>
-    inline Evaluation<EvaluatedType, int>::Evaluation(const EvaluatedType& evaluated, int argument) :
-        _evaluated(evaluated), _argument(argument) {}
-    
-    template <class EvaluatedType>
-    inline int Evaluation<EvaluatedType, int>::rows() const {return _evaluated.dimensions();}
-    
-    template <class EvaluatedType>
-    inline int Evaluation<EvaluatedType, int>::cols() const {return 1;}
-    
-    template <class EvaluatedType> template<class ResultType>
-    inline void Evaluation<EvaluatedType, int>::evalTo(ResultType& result) const {
-        // Create argument map
-        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
-        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
-        
-        // Create result map
-        int result_outer_stride =
-            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
-        int result_inner_stride =
-            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
-        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
-        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
-        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
-        
-        // Evaluate evaluated
-        _evaluated.evaluate(argument_map, result_map);
+    template <class TEvaluated>
+    inline Evaluation<TEvaluated, int>::Evaluation(const TEvaluated& evaluated, int argument) :
+        _evaluated(evaluated), _argument(argument) {
     }
     
-    template <class EvaluatedType>
-    inline double Evaluation<EvaluatedType, int>::value() const {
+    template <class TEvaluated>
+    inline int Evaluation<TEvaluated, int>::rows() const {
+        return _evaluated.dimensions();
+    }
+    
+    template <class TEvaluated>
+    inline int Evaluation<TEvaluated, int>::cols() const {
+        return 1;
+    }
+    
+    template <class TEvaluated> template<class TResult>
+    inline void Evaluation<TEvaluated, int>::evalTo(TResult& result) const {
+        // Create argument map
+        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
+        ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
+        
+        // Create result map
+        int resultOuterStride =
+            (TResult::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int resultInnerStride =
+            (TResult::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> resultStride(resultOuterStride, resultInnerStride);
+        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
+        ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
+        
+        // Evaluate evaluated
+        _evaluated.evaluate(argumentMap, resultMap);
+    }
+    
+    template <class TEvaluated>
+    inline double Evaluation<TEvaluated, int>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class EvaluatedType>
-    inline bool Evaluation<EvaluatedType, int>::isZero(double precision) const {
+    template <class TEvaluated>
+    inline bool Evaluation<TEvaluated, int>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    template <class EvaluatedType>
-    inline Evaluation<EvaluatedType, double>::Evaluation(const EvaluatedType& evaluated, double argument) :
-        _evaluated(evaluated), _argument(argument) {}
-    
-    template <class EvaluatedType>
-    inline int Evaluation<EvaluatedType, double>::rows() const {return _evaluated.dimensions();}
-    
-    template <class EvaluatedType>
-    inline int Evaluation<EvaluatedType, double>::cols() const {return 1;}
-    
-    template <class EvaluatedType> template<class ResultType>
-    inline void Evaluation<EvaluatedType, double>::evalTo(ResultType& result) const {
-        // Create argument map
-        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
-        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
-        
-        // Create result map
-        int result_outer_stride =
-            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
-        int result_inner_stride =
-            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
-        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
-        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
-        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
-        
-        // Evaluate evaluated
-        _evaluated.evaluate(argument_map, result_map);
+    template <class TEvaluated>
+    inline Evaluation<TEvaluated, double>::Evaluation(
+        const TEvaluated& evaluated,
+        double argument
+    ) : _evaluated(evaluated), _argument(argument) {
     }
     
-    template <class EvaluatedType>
-    inline double Evaluation<EvaluatedType, double>::value() const {
+    template <class TEvaluated>
+    inline int Evaluation<TEvaluated, double>::rows() const {
+        return _evaluated.dimensions();
+    }
+    
+    template <class TEvaluated>
+    inline int Evaluation<TEvaluated, double>::cols() const {
+        return 1;
+    }
+    
+    template <class TEvaluated> template<class TResult>
+    inline void Evaluation<TEvaluated, double>::evalTo(TResult& result) const {
+        // Create argument map
+        typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
+        ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
+        
+        // Create result map
+        int resultOuterStride =
+            (TResult::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int resultInnerStride =
+            (TResult::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> resultStride(resultOuterStride, resultInnerStride);
+        typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
+        ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
+        
+        // Evaluate evaluated
+        _evaluated.evaluate(argumentMap, resultMap);
+    }
+    
+    template <class TEvaluated>
+    inline double Evaluation<TEvaluated, double>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class EvaluatedType>
-    inline bool Evaluation<EvaluatedType, double>::isZero(double precision) const {
+    template <class TEvaluated>
+    inline bool Evaluation<TEvaluated, double>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    template <class EvaluatedType>
-    inline Evaluation<EvaluatedType, Interval>::Evaluation(const EvaluatedType& evaluated, Interval argument) :
-        _evaluated(evaluated), _argument(argument) {}
+    template <class TEvaluated>
+    inline Evaluation<TEvaluated, Interval>::Evaluation(
+        const TEvaluated& evaluated,
+        Interval argument
+    ) : _evaluated(evaluated), _argument(argument) {
+    }
     
-    template <class EvaluatedType>
-    inline int Evaluation<EvaluatedType, Interval>::rows() const {return _evaluated.dimensions();}
+    template <class TEvaluated>
+    inline int Evaluation<TEvaluated, Interval>::rows() const {
+        return _evaluated.dimensions();
+    }
     
-    template <class EvaluatedType>
-    inline int Evaluation<EvaluatedType, Interval>::cols() const {return 1;}
+    template <class TEvaluated>
+    inline int Evaluation<TEvaluated, Interval>::cols() const {
+        return 1;
+    }
     
-    template <class EvaluatedType> template<class ResultType>
-    inline void Evaluation<EvaluatedType, Interval>::evalTo(ResultType& result) const {
+    template <class TEvaluated> template<class TResult>
+    inline void Evaluation<TEvaluated, Interval>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
-        ArgumentMapType argument_map(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
+        ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
         
         // Create result map
-        int result_outer_stride =
-            (ResultType::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
-        int result_inner_stride =
-            (ResultType::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
-        Stride<Dynamic, Dynamic> result_stride(result_outer_stride, result_inner_stride);
+        int resultOuterStride =
+            (TResult::Flags & RowMajorBit) ? result.innerStride() : result.outerStride();
+        int resultInnerStride =
+            (TResult::Flags & RowMajorBit) ? result.outerStride() : result.innerStride();
+        Stride<Dynamic, Dynamic> resultStride(resultOuterStride, resultInnerStride);
         typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
-        ResultMapType result_map(result.data(), result.rows(), result.cols(), result_stride);
+        ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Evaluate evaluated
-        _evaluated.evaluate(argument_map, result_map);
+        _evaluated.evaluate(argumentMap, resultMap);
     }
     
-    template <class EvaluatedType>
-    inline Interval Evaluation<EvaluatedType, Interval>::value() const {
+    template <class TEvaluated>
+    inline Interval Evaluation<TEvaluated, Interval>::value() const {
         Matrix<Interval, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class EvaluatedType>
-    inline bool Evaluation<EvaluatedType, Interval>::isZero(double precision) const {
+    template <class TEvaluated>
+    inline bool Evaluation<TEvaluated, Interval>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
 }

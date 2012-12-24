@@ -18,22 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Geometry.hpp>
+#include "Geometry.hpp"
 
-#include "detail/GeometryImplementation.hpp"
-#include "detail/ConstantGeometry.hpp"
-#include "detail/GenericGeometry.hpp"
-#include "detail/SimplexGeometry.hpp"
+#include "Geometry/GeometryImplementation.hpp"
+#include "Geometry/ConstantGeometry.hpp"
+#include "Geometry/GenericGeometry.hpp"
+#include "Geometry/SimplexGeometry.hpp"
 
-#include <OpenSolid/util/Zero.hpp>
+#include <OpenSolid/Utils/Zero.hpp>
 #include <OpenSolid/Core/Domain.hpp>
 
 namespace opensolid
 {
-    Geometry::Geometry() : _implementation(), _type(nullptr) {}
+    Geometry::Geometry() :
+        _implementation(), _type(nullptr) {
+    }
 
     Geometry::Geometry(const GeometryImplementation* implementation) :
-        _implementation(implementation), _type(&typeid(implementation)) {}
+        _implementation(implementation), _type(&typeid(implementation)) {
+    }
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
         _implementation(new GenericGeometry(function, domain)), _type(&typeid(GenericGeometry)) {
@@ -42,72 +45,97 @@ namespace opensolid
     
     Geometry::Geometry(int value) :
         _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantGeometry)) {}
+        _type(&typeid(ConstantGeometry)) {
+    }
     
     Geometry::Geometry(double value) :
         _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantGeometry)) {}
+        _type(&typeid(ConstantGeometry)) {
+    }
     
     Geometry::Geometry(const VectorXd& vector) :
-        _implementation(new ConstantGeometry(vector)), _type(&typeid(ConstantGeometry)) {}
+        _implementation(new ConstantGeometry(vector)), _type(&typeid(ConstantGeometry)) {
+    }
     
     Geometry::Geometry(const SimplexXd& simplex) :
-        _implementation(new SimplexGeometry(simplex)), _type(&typeid(SimplexGeometry)) {}
-
-    const GeometryImplementation* Geometry::implementation() const {return _implementation.get();}
-    
-    Function Geometry::function() const {return implementation()->function();}
-    
-    Domain Geometry::domain() const {return implementation()->domain();}
-
-    void Geometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        implementation()->evaluate(parameter_values, results);
+        _implementation(new SimplexGeometry(simplex)), _type(&typeid(SimplexGeometry)) {
     }
 
-    void Geometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        implementation()->evaluate(parameter_bounds, results);
+    const GeometryImplementation* Geometry::implementation() const {
+        return _implementation.get();
     }
     
-    int Geometry::parameters() const {return implementation()->parameters();}
+    Function Geometry::function() const {
+        return implementation()->function();
+    }
     
-    int Geometry::dimensions() const {return implementation()->dimensions();}
-    
-    bool Geometry::isConstant() const {return implementation()->isConstant();}
-    
-    VectorXI Geometry::bounds() const {return implementation()->bounds();}
-    
-    Set<Geometry> Geometry::boundaries() const {return implementation()->boundaries();}
-
-    Geometry Geometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return implementation()->transformed(matrix, vector);
+    Domain Geometry::domain() const {
+        return implementation()->domain();
     }
 
-    Geometry Geometry::reversed() const {return implementation()->reversed();}
+    void Geometry::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        implementation()->evaluate(parameterValues, results);
+    }
 
-    VectorXI Bounds<Geometry>::operator()(const Geometry& argument) const {
-        return argument.bounds();
+    void Geometry::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        implementation()->evaluate(parameterBounds, results);
     }
     
-    double Conversion<Geometry, double>::operator()(const Geometry& argument) const {
-        assert(argument.isConstant());
-        assert(argument.dimensions() == 1);
-        return argument.function().as<double>();
+    int Geometry::parameters() const {
+        return implementation()->parameters();
     }
     
-    Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& argument) const {
-        assert(argument.isConstant());
-        assert(argument.dimensions() == 2);
-        return argument.function().as<Vector2d>();
+    int Geometry::dimensions() const {
+        return implementation()->dimensions();
     }
     
-    Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& argument) const {
-        assert(argument.isConstant());
-        assert(argument.dimensions() == 3);
-        return argument.function().as<Vector3d>();
+    bool Geometry::isConstant() const {
+        return implementation()->isConstant();
     }
     
-    VectorXd Conversion<Geometry, VectorXd>::operator()(const Geometry& argument) const {
-        assert(argument.isConstant());
-        return argument.function().as<VectorXd>();
+    VectorXI Geometry::bounds() const {
+        return implementation()->bounds();
+    }
+    
+    Set<Geometry> Geometry::boundaries() const {
+        return implementation()->boundaries();
+    }
+
+    Geometry Geometry::transformed(
+        const MatrixXd& transformMatrix,
+        const VectorXd& transformVector
+    ) const {
+        return implementation()->transformed(transformMatrix, transformVector);
+    }
+
+    Geometry Geometry::reversed() const {
+        return implementation()->reversed();
+    }
+
+    VectorXI Bounds<Geometry>::operator()(const Geometry& geometry) const {
+        return geometry.bounds();
+    }
+    
+    double Conversion<Geometry, double>::operator()(const Geometry& geometry) const {
+        assert(geometry.isConstant());
+        assert(geometry.dimensions() == 1);
+        return geometry.function().as<double>();
+    }
+    
+    Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& geometry) const {
+        assert(geometry.isConstant());
+        assert(geometry.dimensions() == 2);
+        return geometry.function().as<Vector2d>();
+    }
+    
+    Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& geometry) const {
+        assert(geometry.isConstant());
+        assert(geometry.dimensions() == 3);
+        return geometry.function().as<Vector3d>();
+    }
+    
+    VectorXd Conversion<Geometry, VectorXd>::operator()(const Geometry& geometry) const {
+        assert(geometry.isConstant());
+        return geometry.function().as<VectorXd>();
     }
 }

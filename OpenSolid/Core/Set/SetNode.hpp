@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Ian Mackenzie                                   *
+ *   CopyrightChild (C) 2007 by Ian Mackenzie                                   *
  *   ian.e.mackenzie@gmail.com                                             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,58 +30,58 @@
 
 namespace opensolid
 {
-    template <class Type>
+    template <class TElement>
     class SetNode
     {
     private:
-        void operator=(const SetNode<Type>& other);
+        void operator=(const SetNode<TElement>& other);
         
-        const Type* _object;
-        typename Bounds<Type>::Type _bounds;
-        int _split_direction;
-        double _split_value;
-        SetNode<Type>* _left;
-        SetNode<Type>* _right;
+        const TElement* _element;
+        typename Bounds<TElement>::Type _bounds;
+        int _splitDirection;
+        double _splitValue;
+        SetNode<TElement>* _leftChild;
+        SetNode<TElement>* _rightChild;
         std::size_t _size;
         
-        void getLeaves(std::vector<SetNode<Type>*>& leaves);
+        void getLeaves(std::vector<SetNode<TElement>*>& leaves);
     public:
-        explicit SetNode(const SetNode<Type>& other);
+        explicit SetNode(const SetNode<TElement>& otherNode);
         
-        SetNode(const Type& object, const typename Bounds<Type>::Type& bounds);
+        SetNode(const TElement& element, const typename Bounds<TElement>::Type& bounds);
         
         SetNode(
-            const typename Bounds<Type>::Type& overall_bounds,
-            int split_direction,
-            double split_value,
-            SetNode<Type>* left,
-            SetNode<Type>* right
+            const typename Bounds<TElement>::Type& overallBounds,
+            int splitDirection,
+            double splitValue,
+            SetNode<TElement>* leftChildNode,
+            SetNode<TElement>* rightChildNode
         );
         
         SetNode(
-            const typename Bounds<Type>::Type& overall_bounds,
-            SetNode<Type>** begin,
-            SetNode<Type>** end
+            const typename Bounds<TElement>::Type& overallBounds,
+            SetNode<TElement>** begin,
+            SetNode<TElement>** end
         );
         
         ~SetNode();
         
-        const Type* object() const;
-        const typename Bounds<Type>::Type& bounds() const;
+        const TElement* element() const;
+        const typename Bounds<TElement>::Type& bounds() const;
         int splitDirection() const;
         double splitValue() const;
-        const SetNode<Type>* left() const;
-        const SetNode<Type>* right() const;
+        const SetNode<TElement>* leftChild() const;
+        const SetNode<TElement>* rightChild() const;
         std::size_t size() const;
         
-        SetNode<Type>* insert(
-            const Type& argument,
-            const typename Bounds<Type>::Type& argument_bounds
+        SetNode<TElement>* insert(
+            const TElement& element,
+            const typename Bounds<TElement>::Type& elementBounds
         );
 
-        SetNode<Type>* erase(
-            const Type& argument,
-            const typename Bounds<Type>::Type& argument_bounds
+        SetNode<TElement>* erase(
+            const TElement& element,
+            const typename Bounds<TElement>::Type& elementBounds
         );
     };
 }
@@ -90,336 +90,361 @@ namespace opensolid
 
 namespace opensolid
 {
-    namespace
+    namespace detail
     {
-        template <class BoundsType>
-        inline void split(const BoundsType& bounds, int& split_direction, double& split_value) {
-            typename BoundsType::Index index;
+        template <class TBounds>
+        inline void split(const TBounds& bounds, int& splitDirection, double& splitValue) {
+            typename TBounds::Index index;
             bounds.cwiseWidth().maxCoeff(&index);
-            split_direction = int(index);
-            split_value = bounds(index).median();
+            splitDirection = int(index);
+            splitValue = bounds(index).median();
         }
         
-        inline void split(const Interval& bounds, int& split_direction, double& split_value) {
-            split_direction = 0;
-            split_value = bounds.median();
+        inline void split(const Interval& interval, int& splitDirection, double& splitValue) {
+            splitDirection = 0;
+            splitValue = bounds.median();
         }
 
-        template <class BoundsType>
-        inline bool compatible(const BoundsType& bounds, int split_direction, double split_value) {
-            double lower = bounds(split_direction).lower();
-            double upper = bounds(split_direction).upper();
-            double split_ratio = (split_value - lower) / (upper - split_value);
-            double width_ratio = bounds.cwiseWidth().maxCoeff() / (upper - lower);
-            return split_ratio > 0.5 && split_ratio < 2 && width_ratio < 1.5;
+        template <class TBounds>
+        inline bool isCompatible(const TBounds& bounds, int splitDirection, double splitValue) {
+            double lowerValue = bounds(splitDirection).lowerValue();
+            double upperValue = bounds(splitDirection).upperValue();
+            double splitRatio = (splitValue - lowerValue) / (upperValue - splitValue);
+            double widthRatio = bounds.cwiseWidth().maxCoeff() / bounds(splitDirection).width();
+            return splitRatio > 0.5 && split_ratio < 2 && width_ratio < 1.5;
         }
     
-        inline bool compatible(const Interval& bounds, int split_direction, double split_value) {
-            assert(split_direction == 0);
-            double split_ratio = (split_value - bounds.lower()) / (bounds.upper() - split_value);
-            return split_ratio > 0.5 && split_ratio < 2;
+        inline bool isCompatible(const Interval& interval, int splitDirection, double splitValue) {
+            assert(splitDirection == 0);
+            double splitRatio =
+                (splitValue - interval.lowerValue()) / (interval.upperValue() - splitValue);
+            return splitRatio > 0.5 && splitRatio < 2;
         }
 
-        template <class BoundsType>
-        inline double median(const BoundsType& bounds, int split_direction) {
-            return bounds(split_direction).median();
+        template <class TBounds>
+        inline double median(const TBounds& bounds, int splitDirection) {
+            return bounds(splitDirection).median();
         }
 
-        inline double median(const Interval& bounds, int split_direction) {
-            assert(split_direction == 0);
+        inline double median(const Interval& bounds, int splitDirection) {
+            assert(splitDirection == 0);
             return bounds.median();
         }
 
-        template <class BoundsType>
-        inline bool lesserMedian(
-            const BoundsType& first_bounds,
-            const BoundsType& second_bounds,
-            int split_direction
+        template <class TBounds>
+        inline bool hasLesserMedian(
+            const BoundsType& firstBounds,
+            const BoundsType& secondBounds,
+            int splitDirection
         ) {
-            Interval difference = first_bounds(split_direction) - second_bounds(split_direction);
-            return difference.upper() < -difference.lower();
+            Interval difference = firstBounds(splitDirection) - secondBounds(splitDirection);
+            return difference.upperValue() < -difference.lowerValue();
         }
 
-        inline bool lesserMedian(
-            const Interval& first_bounds,
-            const Interval& second_bounds,
-            int split_direction
+        inline bool hasLesserMedian(
+            const Interval& firstInterval,
+            const Interval& secondInterval,
+            int splitDirection
         ) {
-            assert(split_direction == 0);
-            Interval difference = first_bounds - second_bounds;
-            return difference.upper() < -difference.lower();
+            assert(splitDirection == 0);
+            Interval difference = firstInterval - secondInterval;
+            return difference.upperValue() < -difference.lowerValue();
         }
 
-        template <class BoundsType>
-        inline bool greaterMedian(
-            const BoundsType& first_bounds,
-            const BoundsType& second_bounds,
-            int split_direction
+        template <class TBounds>
+        inline bool hasGreaterMedian(
+            const BoundsType& firstBounds,
+            const BoundsType& secondBounds,
+            int splitDirection
         ) {
-            Interval difference = first_bounds(split_direction) - second_bounds(split_direction);
-            return difference.upper() > -difference.lower();
+            Interval difference = firstBounds(splitDirection) - secondBounds(splitDirection);
+            return difference.upperValue() > -difference.lowerValue();
         }
 
-        inline bool greaterMedian(
-            const Interval& first_bounds,
-            const Interval& second_bounds,
-            int split_direction
+        inline bool hasGreaterMedian(
+            const Interval& firstInterval,
+            const Interval& secondInterval,
+            int splitDirection
         ) {
-            assert(split_direction == 0);
-            Interval difference = first_bounds - second_bounds;
-            return difference.upper() > -difference.lower();
+            assert(splitDirection == 0);
+            Interval difference = firstInterval - secondInterval;
+            return difference.upperValue() > -difference.lowerValue();
         }
     }
     
-    template <class Type>
-    void SetNode<Type>::getLeaves(std::vector<SetNode<Type>*>& leaves) {
-        if (_object) {
-            assert(!_left && !_right);
+    template <class TElement>
+    void SetNode<TElement>::getLeaves(std::vector<SetNode<TElement>*>& leaves) {
+        if (_element) {
+            assert(!_leftChild && !_rightChild);
             leaves.push_back(this);
         } else {
-            assert(_left && _right);
-            _left->getLeaves(leaves);
-            _right->getLeaves(leaves);
-            _left = nullptr;
-            _right = nullptr;
+            assert(_leftChild && _rightChild);
+            _leftChild->getLeaves(leaves);
+            _rightChild->getLeaves(leaves);
+            _leftChild = OPENSOLID_NULLPTR;
+            _rightChild = OPENSOLID_NULLPTR;
             delete this;
         }
     }
     
-    template <class Type>
-    inline SetNode<Type>::SetNode(const SetNode<Type>& other) :
-        _bounds(other._bounds),
-        _split_direction(other._split_direction),
-        _split_value(other._split_value),
-        _size(other._size) {
-        if (other._object) {
-            assert(!other._left && !other._right);
-            _object = new Type(*other._object);
-            _left = nullptr;
-            _right = nullptr;
+    template <class TElement>
+    inline SetNode<TElement>::SetNode(const SetNode<TElement>& otherNode) :
+        _bounds(otherNode._bounds),
+        _splitDirection(otherNode._splitDirection),
+        _splitValue(otherNode._splitValue),
+        _size(otherNode._size) {
+        if (otherNode._element) {
+            assert(!otherNode._leftChild && !otherNode._rightChild);
+            _element = new TElement(*otherNode._element);
+            _leftChild = OPENSOLID_NULLPTR;
+            _rightChild = OPENSOLID_NULLPTR;
         } else {
-            assert(other._left && other._right);
-            _object = nullptr;
-            _left = new SetNode<Type>(*other._left);
-            _right = new SetNode<Type>(*other._right);
+            assert(otherNode._leftChild && otherNode._rightChild);
+            _element = OPENSOLID_NULLPTR;
+            _leftChild = new SetNode<TElement>(*otherNode._leftChild);
+            _rightChild = new SetNode<TElement>(*otherNode._rightChild);
         }
     }
     
-    template <class Type>
-    inline SetNode<Type>::SetNode(const Type& object, const typename Bounds<Type>::Type& bounds) :
-        _object(new Type(object)),
+    template <class TElement>
+    inline SetNode<TElement>::SetNode(
+        const TElement& element,
+        const typename Bounds<TElement>::Type& bounds
+    ) : _element(new TElement(object)),
         _bounds(bounds),
-        _left(nullptr),
-        _right(nullptr),
-        _size(1) {}
+        _leftChild(OPENSOLID_NULLPTR),
+        _rightChild(OPENSOLID_NULLPTR),
+        _size(1) {
+    }
     
-    template <class Type>
-    inline SetNode<Type>::SetNode(
-        const typename Bounds<Type>::Type& overall_bounds,
-        int split_direction,
-        double split_value,
-        SetNode<Type>* left,
-        SetNode<Type>* right
-    ) : _object(nullptr),
-        _bounds(overall_bounds),
-        _split_direction(split_direction),
-        _split_value(split_value),
-        _left(left),
-        _right(right),
-        _size(left->_size + right->_size) {}
+    template <class TElement>
+    inline SetNode<TElement>::SetNode(
+        const typename Bounds<TElement>::Type& overallBounds,
+        int splitDirection,
+        double splitValue,
+        SetNode<TElement>* leftChild,
+        SetNode<TElement>* rightChild
+    ) : _element(OPENSOLID_NULLPTR),
+        _bounds(overallBounds),
+        _splitDirection(splitDirection),
+        _splitValue(splitValue),
+        _leftChild(leftChild),
+        _rightChild(rightChild),
+        _size(leftChild->_size + rightChild->_size) {
+    }
     
-    template <class Type>
-    SetNode<Type>::SetNode(
-        const typename Bounds<Type>::Type& overall_bounds,
-        SetNode<Type>** begin,
-        SetNode<Type>** end
+    template <class TElement>
+    SetNode<TElement>::SetNode(
+        const typename Bounds<TElement>::Type& overallBounds,
+        SetNode<TElement>** begin,
+        SetNode<TElement>** end
     ) {
-        _object = nullptr;
-        _bounds = overall_bounds;
+        _element = OPENSOLID_NULLPTR;
+        _bounds = overallBounds;
         _size = end - begin;
-        split(_bounds, _split_direction, _split_value);
+        detail::split(_bounds, _splitDirection, _splitValue);
         if (_size == 2) {
-            _left = *begin;
-            _right = *(begin + 1);
-            double right_median = median(_right->_bounds, _split_direction);
-            double left_median = median(_left->_bounds, _split_direction);
-            if (right_median < left_median) {std::swap(_left, _right);}
+            _leftChild = *begin;
+            _rightChild = *(begin + 1);
+            double rightMedian = detail::median(_rightChild->_bounds, _splitDirection);
+            double leftMedian = detail::median(_leftChild->_bounds, _splitDirection);
+            if (right_median < left_median) {
+                std::swap(_leftChild, _rightChild);
+            }
         } else {
-            std::size_t left_size = 0;
-            std::size_t right_size = 0;
-            typename Bounds<Type>::Type left_bounds;
-            typename Bounds<Type>::Type right_bounds;
-            SetNode<Type>** lower = begin;
-            SetNode<Type>** upper = end - 1;
-            for (SetNode<Type>** i = lower; i <= upper; ++i) {
-                if (lesserMedian((*i)->_bounds, _bounds, _split_direction)) {
-                    if (left_size == 0) {
-                        left_bounds = (*i)->_bounds;
+            std::size_t leftSize = 0;
+            std::size_t rightSize = 0;
+            typename Bounds<TElement>::Type leftBounds;
+            typename Bounds<TElement>::Type rightBounds;
+            SetNode<TElement>** lower = begin;
+            SetNode<TElement>** upper = end - 1;
+            for (SetNode<TElement>** i = lower; i <= upper; ++i) {
+                if (detail::hasLesserMedian((*i)->_bounds, _bounds, _splitDirection)) {
+                    if (leftSize == 0) {
+                        leftBounds = (*i)->_bounds;
                     } else {
-                        left_bounds = left_bounds.hull((*i)->_bounds);
+                        leftBounds = leftBounds.hull((*i)->_bounds);
                     }
-                    ++left_size;
-                    if (i != lower) {std::swap(*i, *lower);}
+                    ++leftSize;
+                    if (i != lower) {
+                        std::swap(*i, *lower);
+                    }
                     ++lower;
                 }
             }
-            for (SetNode<Type>** i = upper; i >= lower; --i) {
-                if (greaterMedian((*i)->_bounds, _bounds, _split_direction)) {
-                    if (right_size == 0) {
-                        right_bounds = (*i)->_bounds;
+            for (SetNode<TElement>** i = upper; i >= lower; --i) {
+                if (detail::hasGreaterMedian((*i)->_bounds, _bounds, _splitDirection)) {
+                    if (rightSize == 0) {
+                        rightBounds = (*i)->_bounds;
                     } else {
-                        right_bounds = right_bounds.hull((*i)->_bounds);
+                        rightBounds = rightBounds.hull((*i)->_bounds);
                     }
-                    ++right_size;
-                    if (i != upper) {std::swap(*i, *upper);}
+                    ++rightSize;
+                    if (i != upper) {
+                        std::swap(*i, *upper);
+                    }
                     --upper;
                 }
             }
-            while (left_size < _size / 2 && lower <= upper) {
-                if (left_size == 0) {
-                    left_bounds = (*lower)->_bounds;
+            while (leftSize < _size / 2 && lower <= upper) {
+                if (leftSize == 0) {
+                    leftBounds = (*lower)->_bounds;
                 } else {
-                    left_bounds = left_bounds.hull((*lower)->_bounds);
+                    leftBounds = leftBounds.hull((*lower)->_bounds);
                 }
-                ++left_size;
+                ++leftSize;
                 ++lower;
             }
-            while (right_size < _size - _size / 2 && lower <= upper) {
-                if (right_size == 0) {
-                    right_bounds = (*upper)->_bounds;
+            while (rightSize < _size - _size / 2 && lower <= upper) {
+                if (rightSize == 0) {
+                    rightBounds = (*upper)->_bounds;
                 } else {
-                    right_bounds = right_bounds.hull((*upper)->_bounds);
+                    rightBounds = rightBounds.hull((*upper)->_bounds);
                 }
-                ++right_size;
+                ++rightSize;
                 --upper;
             }
-            if (left_size == 1) {
-                _left = *begin;
+            if (leftSize == 1) {
+                _leftChild = *begin;
             } else {
-                _left = new SetNode<Type>(left_bounds, begin, lower);
+                _leftChild = new SetNode<TElement>(leftBounds, begin, lower);
             }
-            if (right_size == 1) {
-                _right = *lower;
+            if (rightSize == 1) {
+                _rightChild = *lower;
             } else {
-                _right = new SetNode<Type>(right_bounds, lower, end);
+                _rightChild = new SetNode<TElement>(rightBounds, lower, end);
             }
         }
     }
     
-    template <class Type>
-    inline SetNode<Type>::~SetNode() {
-        if (_object) {
-            assert(!_left && !_right);
-            delete _object;
-        } else if (_left && _right) {
-            delete _left;
-            delete _right;
+    template <class TElement>
+    inline SetNode<TElement>::~SetNode() {
+        if (_element) {
+            assert(!_leftChild && !_rightChild);
+            delete _element;
+        } else if (_leftChild && _rightChild) {
+            delete _leftChild;
+            delete _rightChild;
         }
     }
     
-    template <class Type>
-    inline const Type* SetNode<Type>::object() const {return _object;}
+    template <class TElement>
+    inline const TElement* SetNode<TElement>::element() const {
+        return _element;
+    }
     
-    template <class Type>
-    inline const typename Bounds<Type>::Type& SetNode<Type>::bounds() const {return _bounds;}
+    template <class TElement>
+    inline const typename Bounds<TElement>::Type& SetNode<TElement>::bounds() const {
+        return _bounds;
+    }
     
-    template <class Type>
-    inline int SetNode<Type>::splitDirection() const {return _split_direction;}
+    template <class TElement>
+    inline int SetNode<TElement>::splitDirection() const {
+        return _splitDirection;
+    }
     
-    template <class Type>
-    inline double SetNode<Type>::splitValue() const {return _split_value;}
+    template <class TElement>
+    inline double SetNode<TElement>::splitValue() const {
+        return _splitValue;
+    }
         
-    template <class Type>
-    inline const SetNode<Type>* SetNode<Type>::left() const {return _left;}
+    template <class TElement>
+    inline const SetNode<TElement>* SetNode<TElement>::leftChild() const {
+        return _leftChild;
+    }
     
-    template <class Type>
-    inline const SetNode<Type>* SetNode<Type>::right() const {return _right;}
+    template <class TElement>
+    inline const SetNode<TElement>* SetNode<TElement>::rightChild() const {
+        return _rightChild;
+    }
     
-    template <class Type>
-    inline std::size_t SetNode<Type>::size() const {return _size;}
+    template <class TElement>
+    inline std::size_t SetNode<TElement>::size() const {
+        return _size;
+    }
     
-    template <class Type>
-    SetNode<Type>* SetNode<Type>::insert(
-        const Type& argument,
-        const typename Bounds<Type>::Type& argument_bounds
+    template <class TElement>
+    SetNode<TElement>* SetNode<TElement>::insert(
+        const TElement& element,
+        const typename Bounds<TElement>::Type& elementBounds
     ) {
-        typename Bounds<Type>::Type overall_bounds = _bounds.hull(argument_bounds);
-        if (_object) {
-            assert(!_left && !_right);
-            SetNode<Type>* nodes[2] = {this, new SetNode<Type>(argument, argument_bounds)};
-            return new SetNode<Type>(overall_bounds, nodes, nodes + 2);
-        } else if (compatible(overall_bounds, _split_direction, _split_value)) {
-            assert(_left && _right);
-            double mid = median(argument_bounds, _split_direction);
-            if (mid < _split_value) {
-                _left = _left->insert(argument, argument_bounds);
-            } else if (mid > _split_value) {
-                _right = _right->insert(argument, argument_bounds);
-            } else if (_left->_size < _right->_size) {
-                _left = _left->insert(argument, argument_bounds);
+        typename Bounds<TElement>::Type overallBounds = _bounds.hull(elementBounds);
+        if (_element) {
+            assert(!_leftChild && !_rightChild);
+            SetNode<TElement>* nodes[2] = {this, new SetNode<TElement>(element, elementBounds)};
+            return new SetNode<TElement>(overallBounds, nodes, nodes + 2);
+        } else if (detail::isCompatible(overallBounds, _splitDirection, _splitValue)) {
+            assert(_leftChild && _rightChild);
+            double mid = detail::median(elementBounds, _splitDirection);
+            if (mid < _splitValue) {
+                _leftChild = _leftChild->insert(element, elementBounds);
+            } else if (mid > _splitValue) {
+                _rightChild = _rightChild->insert(element, elementBounds);
+            } else if (_leftChild->_size < _rightChild->_size) {
+                _leftChild = _leftChild->insert(element, elementBounds);
             } else {
-                _right = _right->insert(argument, argument_bounds);
+                _rightChild = _rightChild->insert(element, elementBounds);
             }
-            _bounds = overall_bounds;
+            _bounds = overallBounds;
             ++_size;
             return this;
         } else {
-            assert(_left && _right);
-            std::vector<SetNode<Type>*> nodes;
+            assert(_leftChild && _rightChild);
+            std::vector<SetNode<TElement>*> nodes;
             nodes.reserve(_size + 1);
-            _left->getLeaves(nodes);
-            _right->getLeaves(nodes);
-            nodes.push_back(new SetNode<Type>(argument, argument_bounds));
-            return new(this) SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
+            _leftChild->getLeaves(nodes);
+            _rightChild->getLeaves(nodes);
+            nodes.push_back(new SetNode<TElement>(element, elementBounds));
+            return new(this) SetNode<TElement>(overallBounds, &nodes.front(), &nodes.back() + 1);
         }
     }
 
-    template <class Type>
-    SetNode<Type>* SetNode<Type>::erase(
-        const Type& argument,
-        const typename Bounds<Type>::Type& argument_bounds
+    template <class TElement>
+    SetNode<TElement>* SetNode<TElement>::erase(
+        const TElement& element,
+        const typename Bounds<TElement>::Type& elementBounds
     ) {
-        if (!_bounds.overlaps(argument_bounds)) {
+        if (!_bounds.overlaps(elementBounds)) {
             return this;
-        } else if (_object) {
-            assert(!_left && !_right);
-            if (*_object == argument) {
+        } else if (_element) {
+            assert(!_leftChild && !_rightChild);
+            if (*_element == element) {
                 delete this;
-                return nullptr;
+                return OPENSOLID_NULLPTR;
             } else {
                 return this;
             }
         } else {
-            assert(_left && _right);
-            double mid = median(argument_bounds, _split_direction);
-            if (mid - _split_value <= Zero()) {
-                _left = _left->erase(argument, argument_bounds);
+            assert(_leftChild && _rightChild);
+            double mid = detail::median(elementBounds, _splitDirection);
+            if (mid - _splitValue <= Zero()) {
+                _leftChild = _leftChild->erase(element, elementBounds);
             }
-            if (mid - _split_value >= Zero()) {
-                _right = _right->erase(argument, argument_bounds);
+            if (mid - _splitValue >= Zero()) {
+                _rightChild = _rightChild->erase(element, elementBounds);
             }
-            if (!_left) {
-                SetNode<Type>* result = _right;
-                _right = nullptr;
+            if (!_leftChild) {
+                SetNode<TElement>* result = _rightChild;
+                _rightChild = OPENSOLID_NULLPTR;
                 delete this;
                 return result;
-            } else if (!_right) {
-                SetNode<Type>* result = _left;
-                _left = nullptr;
+            } else if (!_rightChild) {
+                SetNode<TElement>* result = _leftChild;
+                _leftChild = OPENSOLID_NULLPTR;
                 delete this;
                 return result;
             } else {
-                typename Bounds<Type>::Type overall_bounds = _left->_bounds.hull(_right->_bounds);
-                if (compatible(overall_bounds, _split_direction, _split_value)) {
-                    _bounds = overall_bounds;
-                    _size = _left->size() + _right->size();
+                typename Bounds<TElement>::Type overallBounds = _leftChild->_bounds.hull(_rightChild->_bounds);
+                if (detail::isCompatible(overallBounds, _splitDirection, _splitValue)) {
+                    _bounds = overallBounds;
+                    _size = _leftChild->size() + _rightChild->size();
                     return this;
                 } else {
-                    std::vector<SetNode<Type>*> nodes;
-                    nodes.reserve(_left->_size + _right->_size);
-                    _left->getLeaves(nodes);
-                    _right->getLeaves(nodes);
-                    return new(this) SetNode<Type>(overall_bounds, &nodes.front(), &nodes.back() + 1);
+                    std::vector<SetNode<TElement>*> nodes;
+                    nodes.reserve(_leftChild->_size + _rightChild->_size);
+                    _leftChild->getLeaves(nodes);
+                    _rightChild->getLeaves(nodes);
+                    return new(this) SetNode<TElement>(overallBounds, &nodes.front(), &nodes.back() + 1);
                 }
             }
         }

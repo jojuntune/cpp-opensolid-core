@@ -102,7 +102,7 @@
     add_subdirectory(External)
     
     # Set up utility headers
-    add_subdirectory(OpenSolid/util)
+    add_subdirectory(OpenSolid/Utils)
     
     # Add root directory to include path to allow for #include <OpenSolid/...>
     include_directories(.)

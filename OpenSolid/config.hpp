@@ -88,7 +88,8 @@
     #define OPENSOLID_PYTHON_EXPORT
 #endif
 
-// Explicitly use math functions from C++ standard library
+// Explicitly use math functions from C++ standard library, and define convenience functiosn for
+// mathematical constants
 namespace opensolid
 {
     using std::min;

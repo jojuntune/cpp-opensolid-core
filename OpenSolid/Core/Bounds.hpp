@@ -22,12 +22,12 @@
 
 #include <OpenSolid/config.hpp>
 
+ #include "Interval/declarations.hpp"
+
 namespace opensolid
 {
     template <class BoundedType>
     struct Bounds;
-
-    class Interval;
     
     template <>
     struct Bounds<int>

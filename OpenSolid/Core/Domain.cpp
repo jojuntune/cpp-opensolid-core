@@ -18,14 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Domain.hpp>
+#include "Domain.hpp"
 
-#include "detail/DomainImplementation.hpp"
-#include "detail/GenericDomain.hpp"
-#include "detail/IntervalDomain.hpp"
-#include "detail/RectangleDomain.hpp"
-#include "detail/CuboidDomain.hpp"
-#include "detail/SimplexDomain.hpp"
+#include "Domain/DomainImplementation.hpp"
+#include "Domain/GenericDomain.hpp"
+#include "Domain/IntervalDomain.hpp"
+#include "Domain/RectangleDomain.hpp"
+#include "Domain/CuboidDomain.hpp"
+#include "Domain/SimplexDomain.hpp"
 
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>

@@ -18,14 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <OpenSolid/Core/Error.hpp>
+#include "Error.hpp"
 
 namespace opensolid
 {
     Error::Error(const std::string& type, const std::string& file, int line) :
-        std::runtime_error(type), m_file(file), m_line(line) {}
+        std::runtime_error(type), m_file(file), m_line(line) {
+    }
 
-    std::string Error::file() const {return m_file;}
+    std::string Error::file() const {
+    	return m_file;
+    }
 
-    int Error::line() const {return m_line;}
+    int Error::line() const {
+    	return m_line;
+    }
 }

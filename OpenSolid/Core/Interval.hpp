@@ -22,6 +22,8 @@
 
 #include <OpenSolid/config.hpp>
 
+#include "Interval/declarations.hpp"
+
 #include <OpenSolid/util/Zero.hpp>
 #include <OpenSolid/util/Conversion.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
