@@ -23,7 +23,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace opensolid
 {
@@ -39,12 +39,6 @@ namespace opensolid
         Axis2d(const Datum<dimensions_, axes_>& datum);
     };
 
-    class Axis2dConstructionError : public ErrorType<100> {};
-    template <> struct UniqueErrorCode<Axis2dConstructionError::error_code> {};
-
-    class Axis2dCopyConstructionError : public ErrorType<101> {};
-    template <> struct UniqueErrorCode<Axis2dCopyConstructionError::error_code> {};
-
     class Axis3d : public Datum<3, 1>
     {
     public:
@@ -56,12 +50,6 @@ namespace opensolid
         template <int dimensions_, int axes_>
         Axis3d(const Datum<dimensions_, axes_>& datum);
     };
-
-    class Axis3dConstructionError : public ErrorType<102> {};
-    template <> struct UniqueErrorCode<Axis3dConstructionError::error_code> {};
-
-    class Axis3dCopyConstructionError : public ErrorType<103> {};
-    template <> struct UniqueErrorCode<Axis3dCopyConstructionError::error_code> {};
 }
 
 ////////// Implementation //////////

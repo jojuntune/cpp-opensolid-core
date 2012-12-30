@@ -22,38 +22,28 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    class Datum;
-
-    template <int iNumDimensions, int iNumAxes>
-    class DatumBase : public Transformable<Datum<iNumDimensions, iNumAxes>>
+    class Datum
     {
     private:
-        template <int iOtherNumDimensions, int iOtherNumAxes>
-        friend class DatumBase;
-
         Matrix<double, iNumDimensions, 1> _originPoint;
         Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
-        Matrix<double, iNumAxes, iNumDimensions> _inverseMatrix;
     protected:
-        void assign(
+        Datum(
             const Matrix<double, iNumDimensions, 1>& originPoint,
             const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
         );
 
         template <int iOtherNumDimensions, int iOtherNumAxes>
-        void assign(const DatumBase<iOtherNumDimensions, iOtherNumAxes>& otherDatum);
-
-        DatumBase();
+        Datum(const Datum<iOtherNumDimensions, iOtherNumAxes>& otherDatum);
     public:
         const Matrix<double, iNumDimensions, 1>& originPoint() const;
         const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix() const;
-        const Matrix<double, iNumAxes, iNumDimensions>& inverseMatrix() const;
         
         int numDimensions() const;
         int numAxes() const;
@@ -66,75 +56,62 @@ namespace opensolid
         Matrix<double, iNumDimensions, 1> vector(double x, double y) const;
         Matrix<double, iNumDimensions, 1> vector(double x, double y, double z) const;
 
+        Matrix<double, iNumDimensions, 1> basisVector() const;
+        Matrix<double, iNumDimensions, 1> basisVector(int index) const;
         Matrix<double, iNumDimensions, 1> xBasisVector() const;
         Matrix<double, iNumDimensions, 1> yBasisVector() const;
         Matrix<double, iNumDimensions, 1> zBasisVector() const;
-        Matrix<double, iNumDimensions, 1> basisVector(int index) const;
-        Matrix<double, iNumDimensions, 1> basisVector() const;
-
-        Matrix<double, iNumDimensions, 1> directionVector() const;
-        Matrix<double, iNumDimensions, 1> normalVector() const;
         
-        Datum<iNumDimensions, 1> xAxis() const;
-        Datum<iNumDimensions, 1> yAxis() const;
-        Datum<iNumDimensions, 1> zAxis() const;
-        Datum<iNumDimensions, 1> axis(int index) const;
-        Datum<iNumDimensions, 1> normalAxis() const;
+        // Datum<iNumDimensions, 1> xAxis() const;
+        // Datum<iNumDimensions, 1> yAxis() const;
+        // Datum<iNumDimensions, 1> zAxis() const;
+        // Datum<iNumDimensions, 1> axis(int index) const;
+        // Datum<iNumDimensions, 1> normalAxis() const;
 
-        Datum<3, 2> xyPlane() const;
-        Datum<3, 2> xzPlane() const;
-        Datum<3, 2> yxPlane() const;
-        Datum<3, 2> yzPlane() const;
-        Datum<3, 2> zxPlane() const;
-        Datum<3, 2> zyPlane() const;
-        Datum<3, 2> plane(int firstIndex, int secondIndex) const;
-        Datum<3, 2> normalPlane() const;
+        // Datum<3, 2> xyPlane() const;
+        // Datum<3, 2> xzPlane() const;
+        // Datum<3, 2> yxPlane() const;
+        // Datum<3, 2> yzPlane() const;
+        // Datum<3, 2> zxPlane() const;
+        // Datum<3, 2> zyPlane() const;
+        // Datum<3, 2> plane(int firstIndex, int secondIndex) const;
+        // Datum<3, 2> normalPlane() const;
 
-        template <class TTransformMatrix, class TTransformVector>
-        Datum<TTransformMatrix::RowsAtCompileTime, iNumAxes> transformed(
-            const TTransformMatrix& matrix,
-            const TTransformVector& vector
-        ) const;
+        // template <class TTransformMatrix, class TTransformVector>
+        // Datum<TTransformMatrix::RowsAtCompileTime, iNumAxes> transformed(
+        //     const TTransformMatrix& matrix,
+        //     const TTransformVector& vector
+        // ) const;
 
-        Datum<iNumDimensions, iNumAxes> scaled(
-            double scale,
-            const Matrix<double, iNumDimensions, 1>& point
-        ) const;
+        // Datum<iNumDimensions, iNumAxes> scaled(
+        //     double scale,
+        //     const Matrix<double, iNumDimensions, 1>& point
+        // ) const;
         
-        Datum<iNumDimensions, iNumAxes> scaled(
-            double scale
-        ) const;
-
-        Datum<iNumDimensions, iNumAxes> translated(
-            const Matrix<double, iNumDimensions, 1>& vector
-        ) const;
-
-        template <int iOtherNumDimensions, int iOtherNumAxes>
-        Datum<iNumDimensions, iNumAxes> translated(
-            double distance,
-            const Datum<iOtherNumDimensions, iOtherNumAxes>& axis
-        ) const;
+        // Datum<iNumDimensions, iNumAxes> scaled(
+        //     double scale
+        // ) const;
         
-        Datum<iNumDimensions, iNumAxes> xReversed() const;
-        Datum<iNumDimensions, iNumAxes> yReversed() const;
-        Datum<iNumDimensions, iNumAxes> zReversed() const;
-        Datum<iNumDimensions, iNumAxes> reversed(int index) const;
-        Datum<iNumDimensions, iNumAxes> reversed() const;
+        // Datum<iNumDimensions, iNumAxes> xReversed() const;
+        // Datum<iNumDimensions, iNumAxes> yReversed() const;
+        // Datum<iNumDimensions, iNumAxes> zReversed() const;
+        // Datum<iNumDimensions, iNumAxes> reversed(int index) const;
+        // Datum<iNumDimensions, iNumAxes> reversed() const;
 
-        Datum<iNumDimensions, iNumAxes> orientation() const;
+        // Datum<iNumDimensions, iNumAxes> orientation() const;
     };
 
     template <class TTransformable, int iNumDimensions, int iNumAxes>
     typename Transformed<TTransformable, iNumDimensions>::Type
     operator*(const TTransformable& transformable, const Datum<iNumDimensions, iNumAxes>& datum);
 
-    template <class TTransformable, int iNumDimensions, int iNumAxes>
-    typename Transformed<TTransformable, iNumAxes>::Type
-    operator/(const TTransformable& transformable, const Datum<iNumDimensions, iNumAxes>& datum);
+    // template <class TTransformable, int iNumDimensions, int iNumAxes>
+    // typename Transformed<TTransformable, iNumAxes>::Type
+    // operator/(const TTransformable& transformable, const Datum<iNumDimensions, iNumAxes>& datum);
 
-    template <class TTransformable, int iNumDimensions, int iNumAxes>
-    typename Transformed<TTransformable, iNumDimensions>::Type
-    operator%(const TTransformable& transformable, const Datum<iNumDimensions, iNumAxes>& datum);
+    // template <class TTransformable, int iNumDimensions, int iNumAxes>
+    // typename Transformed<TTransformable, iNumDimensions>::Type
+    // operator%(const TTransformable& transformable, const Datum<iNumDimensions, iNumAxes>& datum);
 }
 
 ////////// Implementation //////////
@@ -188,39 +165,43 @@ namespace opensolid
     Transformable<TDerived>::projected(
         const Datum<iNumDimensions, iNumAxes>& datum
     ) const {
-        Matrix<double, iNumDimensions, iNumDimensions> projectionMatrix =
-            datum.basisMatrix() * datum.inverseMatrix();
-
+        // TODO
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline void Datum<iNumDimensions, iNumAxes>::initialize(
-        const Matrix<double, iNumDimensions, 1>& origin,
-        const Matrix<double, iNumDimensions, iNumAxes>& basis
+        const Matrix<double, iNumDimensions, 1>& originPoint,
+        const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
     ) {
-        assert(origin.size() >= 1);
-        assert(basis.cols() >= 1);
-        assert(origin.size() == basis.rows());
-        _origin = origin;
-        _basis = basis;
-        _inverse_matrix = (_basis.transpose() * _basis).inverse() * _basis.transpose();
+        assert(originPoint.size() >= 1);
+        assert(basisMatrix.cols() >= 1);
+        assert(originPoint.size() == basisMatrix.rows());
+        _originPoint = originPoint;
+        _basisMatrix = basisMatrix;
+
+        _inverseMatrix =
+            (_basisMatrix.transpose() * _basisMatrix).inverse() * _basisMatrix.transpose();
+        _projectionMatrix = _basisMatrix * _inverseMatrix;
     }
 
-    template <int iNumDimensions, int iNumAxes> template <int iOtherNumDimensions, int iOtherNumAxes>
+    template <int iNumDimensions, int iNumAxes>
+    template <int iOtherNumDimensions, int iOtherNumAxes>
     inline void Datum<iNumDimensions, iNumAxes>::initialize(
-        const Datum<iOtherNumDimensions, iOtherNumAxes>& other
+        const Datum<iOtherNumDimensions, iOtherNumAxes>& otherDatum
     ) {
         assertCompatible<iNumDimensions, iOtherNumDimensions>();
-        assertCompatible<iNumDimensions>(other.dimensions());
+        assertCompatible<iNumDimensions>(otherDatum.dimensions());
         assertCompatible<iNumAxes, iOtherNumAxes>();
-        assertCompatible<iNumAxes>(other.axes());
-        _origin = other.origin();
-        _basis = other.basis();
-        _inverse_matrix = other.inverseMatrix();
+        assertCompatible<iNumAxes>(otherDatum.numAxes());
+        _originPoint = otherDatum.originPoint();
+        _basisMatrix = other.basisMatrix();
+        _inverseMatrix = otherDatum.inverseMatrix();
+        _projectionMatrix = otherDatum.projectionMatrix();
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, iNumAxes>::Datum() {}
+    inline Datum<iNumDimensions, iNumAxes>::Datum() {
+    }
     
     template <int iNumDimensions, int iNumAxes>
     inline Datum<iNumDimensions, iNumAxes>::Datum(

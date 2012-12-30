@@ -25,8 +25,13 @@
 namespace opensolid
 {
 	template <int iNumDimensions, int iNumAxes>
-    class DatumBase;
-	
-	template <int iNumDimensions, int iNumAxes>
     class Datum;
+
+    template <int iNumDimensions>
+    class Axis;
+
+    class Plane3d;
+
+    template <int iNumDimensions>
+    class Frame;
 }

@@ -22,19 +22,47 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Datum/Datum.hpp>
 
 namespace opensolid
 {
     class Plane3d : public Datum<3, 2>
     {
+    private:
+        Vector3d _normalVector;
     public:
-        Plane3d();
-        Plane3d(const Vector3d& origin, const Vector3d& normal);
-        Plane3d(const Vector3d& origin, const Vector3d& x_direction, const Vector3d& y_direction);
+        template <int iNumDimensions, int iNumAxes>
+        Plane3d(const Datum<iNumDimensions, iNumAxes>& otherDatum);
 
-        template <int dimensions_, int axes_>
-        Plane3d(const Datum<dimensions_, axes_>& datum);
+        OPENSOLID_CORE_EXPORT static Plane3d FromPointAndNormal(
+            const Vector3d& originPoint,
+            const Vector3d& normalVector
+        );
+
+        OPENSOLID_CORE_EXPORT static Plane3d ThroughPoints(
+            const Vector3d& originPoint,
+            const Vector3d& xAxisPoint,
+            const Vector3d& planePoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Plane3d Midplane(
+            const Vector3d& pointBelow,
+            const Vector3d& pointAbove
+        );
+
+        OPENSOLID_CORE_EXPORT static Plane3d Midplane(
+            const Plane3d planeBelow,
+            const Plane3d planeAbove
+        );
+
+        OPENSOLID_CORE_EXPORT static Plane3d ThroughAxisAndPoint(
+            const Axis3d& axis,
+            const Vector3d& point
+        );
+
+        OPENSOLID_CORE_EXPORT static Plane3d ThroughAxis(
+            const Axis3d& axis
+        );
     };
 }
 
