@@ -27,10 +27,10 @@ namespace opensolid
     }
 
     std::string Error::file() const {
-    	return m_file;
+        return m_file;
     }
 
     int Error::line() const {
-    	return m_line;
+        return m_line;
     }
 }

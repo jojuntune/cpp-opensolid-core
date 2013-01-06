@@ -23,6 +23,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Transformation.hpp>
 
 ////////// Implementation //////////
 
@@ -31,10 +32,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     class Datum;
 
-    template <class TBase, int iTransformedDimensions>
+    template <class TInput, int iTransformedDimensions>
     struct Transformed
     {
-        typedef TBase Type;
+        typedef TInput Type;
     };
 
     template <class TDerived>
@@ -73,7 +74,7 @@ namespace opensolid
 
         template <int iNumDimensions, int iNumAxes>
         typename Transformed<TDerived, iNumDimensions>::Type mirrored(
-            const Datum<iNumDimensions, iNumAxes>& plane
+            const Datum<iNumDimensions, iNumAxes>& datum
         ) const;
 
         template <int iNumDimensions, int iNumAxes>
@@ -99,10 +100,12 @@ namespace opensolid
         const EigenBase<TPoint>& point
     ) const {
         return derived().transformed(
-            Matrix<double, TPoint::SizeAtCompileTime, TPoint::SizeAtCompileTime>::Identity(
-                point.size()
-            ) * scale,
-            point.derived() - scale * point.derived()
+            Transformation<TPoint::SizeAtCompileTime>(
+                Matrix<double, TPoint::SizeAtCompileTime, TPoint::SizeAtCompileTime>::Identity(
+                    point.size()
+                ) * scale,
+                point.derived() - scale * point.derived()
+            )
         );
     }
 
@@ -112,10 +115,12 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return derived().transformed(
-            Matrix<double, TVector::SizeAtCompileTime, TVector::SizeAtCompileTime>::Identity(
-                vector.size()
-            ),
-            vector.derived()
+            Transformation<TVector::SizeAtCompileTime>(
+                Matrix<double, TVector::SizeAtCompileTime, TVector::SizeAtCompileTime>::Identity(
+                    vector.size()
+                ),
+                vector.derived()
+            )
         );
     }
 
@@ -124,6 +129,8 @@ namespace opensolid
         double angle,
         const Vector2d& point
     ) const {
-        return derived().transformed(Matrix2d(Rotation2Dd(angle)), point - matrix * point);
+        return derived().transformed(
+            Transformation<2>(Matrix2d(Rotation2Dd(angle)), point - matrix * point)
+        );
     }
 }

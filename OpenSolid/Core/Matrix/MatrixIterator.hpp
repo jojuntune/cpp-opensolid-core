@@ -20,591 +20,637 @@
 
 #pragma once
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Matrix/declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace Eigen
 {
-    template <class MatrixType>
+    template <class TMatrix>
     class MatrixIterator;
     
-    template <class MatrixType>
+    template <class TMatrix>
     class ConstMatrixIterator : 
         public boost::iterator_facade<
-            ConstMatrixIterator<MatrixType>,
-            typename MatrixType::Scalar,
+            ConstMatrixIterator<TMatrix>,
+            typename TMatrix::Scalar,
             std::random_access_iterator_tag,
-            typename MatrixType::Scalar,
-            typename MatrixType::Index
+            typename TMatrix::Scalar,
+            typename TMatrix::Index
         >
     {
     private:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
         friend class boost::iterator_core_access;
-        friend class MatrixIterator<MatrixType>;
+        friend class MatrixIterator<TMatrix>;
         
-        const MatrixType* _matrix;
+        const TMatrix* _matrix;
         Index _index;
         
-        typename MatrixType::Scalar dereference() const;
+        typename TMatrix::Scalar dereference() const;
         
-        bool equal(const MatrixIterator<MatrixType>& other) const;
-        bool equal(const ConstMatrixIterator<MatrixType>& other) const;
+        bool equal(const MatrixIterator<TMatrix>& other) const;
+        bool equal(const ConstMatrixIterator<TMatrix>& other) const;
         
-        Index distance_to(const MatrixIterator<MatrixType>& other) const;
-        Index distance_to(const ConstMatrixIterator<MatrixType>& other) const;
+        Index distance_to(const MatrixIterator<TMatrix>& other) const;
+        Index distance_to(const ConstMatrixIterator<TMatrix>& other) const;
         
         void increment();
         void decrement();
         void advance(Index argument);
     public:
-        ConstMatrixIterator(const MatrixType& matrix, Index index);
-        ConstMatrixIterator(const ConstMatrixIterator<MatrixType>& other);
-        ConstMatrixIterator(const MatrixIterator<MatrixType>& other);
+        ConstMatrixIterator(const TMatrix& matrix, Index index);
+        ConstMatrixIterator(const ConstMatrixIterator<TMatrix>& other);
+        ConstMatrixIterator(const MatrixIterator<TMatrix>& other);
     };
     
-    template <class MatrixType>
+    template <class TMatrix>
     class MatrixIterator : 
         public boost::iterator_facade<
-            MatrixIterator<MatrixType>,
-            typename MatrixType::Scalar,
+            MatrixIterator<TMatrix>,
+            typename TMatrix::Scalar,
             std::random_access_iterator_tag,
-            typename MatrixType::Scalar&,
-            typename MatrixType::Index
+            typename TMatrix::Scalar&,
+            typename TMatrix::Index
         >
     {
     private:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
         friend class boost::iterator_core_access;
-        friend class ConstMatrixIterator<MatrixType>;
+        friend class ConstMatrixIterator<TMatrix>;
         
-        MatrixType* _matrix;
+        TMatrix* _matrix;
         Index _index;
         
-        typename MatrixType::Scalar& dereference() const;
+        typename TMatrix::Scalar& dereference() const;
         
-        bool equal(const MatrixIterator<MatrixType>& other) const;
-        bool equal(const ConstMatrixIterator<MatrixType>& other) const;
+        bool equal(const MatrixIterator<TMatrix>& other) const;
+        bool equal(const ConstMatrixIterator<TMatrix>& other) const;
         
-        Index distance_to(const MatrixIterator<MatrixType>& other) const;
-        Index distance_to(const ConstMatrixIterator<MatrixType>& other) const;
+        Index distance_to(const MatrixIterator<TMatrix>& other) const;
+        Index distance_to(const ConstMatrixIterator<TMatrix>& other) const;
         
         void increment();
         void decrement();
         void advance(Index argument);
     public:
-        MatrixIterator(MatrixType& matrix, Index index);
-        MatrixIterator(const MatrixIterator<MatrixType>& other);
+        MatrixIterator(TMatrix& matrix, Index index);
+        MatrixIterator(const MatrixIterator<TMatrix>& other);
     };
     
-    template <class DerivedType, class MatrixType, class BlockType>
+    template <class TDerived, class TMatrix, class TBlock>
     class MatrixBlockIterator :
         public boost::iterator_facade<
-            DerivedType,
-            BlockType,
+            TDerived,
+            TBlock,
             std::random_access_iterator_tag,
-            BlockType,
-            typename MatrixType::Index
+            TBlock,
+            typename TMatrix::Index
         >
     {
     protected:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
-        template <class OtherDerived, class OtherMatrixType, class OtherBlockType>
+        template <class OtherDerived, class TOtherMatrix, class TOtherBlock>
         friend class MatrixBlockIterator;
         
         friend class boost::iterator_core_access;
         
-        MatrixType* _matrix;
+        TMatrix* _matrix;
         Index _index;
         
-        BlockType dereference() const;
+        TBlock dereference() const;
         
-        template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
+        template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
         bool equal(
-            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
+            const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
         ) const;
         
-        template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
+        template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
         Index distance_to(
-            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
+            const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
         ) const;
         
         void increment();
         void decrement();
         void advance(Index argument);
 
-        MatrixBlockIterator(MatrixType& matrix, Index index);
+        MatrixBlockIterator(TMatrix& matrix, Index index);
         
-        template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
+        template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
         MatrixBlockIterator(
-            const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
+            const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
         );
     };
 
-    template <class MatrixType>
+    template <class TMatrix>
     class MatrixRowIterator;
 
-    template <class MatrixType>
+    template <class TMatrix>
     class ConstMatrixRowIterator :
         public MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
+            ConstMatrixRowIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstRowXpr
         >
     {
     public:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
-        ConstMatrixRowIterator(const MatrixType& matrix, Index index);
-        ConstMatrixRowIterator(const ConstMatrixRowIterator<MatrixType>& other);
-        ConstMatrixRowIterator(const MatrixRowIterator<MatrixType>& other);
+        ConstMatrixRowIterator(const TMatrix& matrix, Index index);
+        ConstMatrixRowIterator(const ConstMatrixRowIterator<TMatrix>& other);
+        ConstMatrixRowIterator(const MatrixRowIterator<TMatrix>& other);
         
-        static typename MatrixType::ConstRowXpr block(const MatrixType& matrix, Index index);
+        static typename TMatrix::ConstRowXpr block(const TMatrix& matrix, Index index);
     };
     
-    template <class MatrixType>
+    template <class TMatrix>
     class MatrixRowIterator :
-        public MatrixBlockIterator<
-            MatrixRowIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::RowXpr
-        >
+        public MatrixBlockIterator<MatrixRowIterator<TMatrix>, TMatrix, typename TMatrix::RowXpr>
     {
     public:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
-        MatrixRowIterator(MatrixType& matrix, Index index);
-        MatrixRowIterator(const MatrixRowIterator<MatrixType>& other);
+        MatrixRowIterator(TMatrix& matrix, Index index);
+        MatrixRowIterator(const MatrixRowIterator<TMatrix>& other);
         
-        static typename MatrixType::RowXpr block(MatrixType& matrix, Index index);
+        static typename TMatrix::RowXpr block(TMatrix& matrix, Index index);
     };
 
-    template <class MatrixType>
+    template <class TMatrix>
     class MatrixColIterator;
     
-    template <class MatrixType>
+    template <class TMatrix>
     class ConstMatrixColIterator :
         public MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
+            ConstMatrixColIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstColXpr
         >
     {
     public:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
-        ConstMatrixColIterator(const MatrixType& matrix, Index index);
-        ConstMatrixColIterator(const ConstMatrixColIterator<MatrixType>& other);
-        ConstMatrixColIterator(const MatrixColIterator<MatrixType>& other);
+        ConstMatrixColIterator(const TMatrix& matrix, Index index);
+        ConstMatrixColIterator(const ConstMatrixColIterator<TMatrix>& other);
+        ConstMatrixColIterator(const MatrixColIterator<TMatrix>& other);
         
-        static typename MatrixType::ConstColXpr block(const MatrixType& matrix, Index index);
+        static typename TMatrix::ConstColXpr block(const TMatrix& matrix, Index index);
     };
     
-    template <class MatrixType>
+    template <class TMatrix>
     class MatrixColIterator :
-        public MatrixBlockIterator<
-            MatrixColIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::ColXpr
-        >
+        public MatrixBlockIterator<MatrixColIterator<TMatrix>, TMatrix, typename TMatrix::ColXpr>
     {
     public:
-        typedef typename MatrixType::Index Index;
+        typedef typename TMatrix::Index Index;
         
-        MatrixColIterator(MatrixType& matrix, Index index);
-        MatrixColIterator(const MatrixColIterator<MatrixType>& other);
+        MatrixColIterator(TMatrix& matrix, Index index);
+        MatrixColIterator(const MatrixColIterator<TMatrix>& other);
         
-        static typename MatrixType::ColXpr block(MatrixType& matrix, Index index);
+        static typename TMatrix::ColXpr block(TMatrix& matrix, Index index);
     };
     
-    template <class DerivedType>
-    ConstMatrixIterator<DerivedType> begin(const DenseBase<DerivedType>& argument);
+    template <class TDerived>
+    ConstMatrixIterator<TDerived> begin(const DenseBase<TDerived>& argument);
     
-    template <class DerivedType>
-    ConstMatrixIterator<DerivedType> end(const DenseBase<DerivedType>& argument);
+    template <class TDerived>
+    ConstMatrixIterator<TDerived> end(const DenseBase<TDerived>& argument);
     
-    template <class DerivedType>
-    MatrixIterator<DerivedType> begin(DenseBase<DerivedType>& argument);
+    template <class TDerived>
+    MatrixIterator<TDerived> begin(DenseBase<TDerived>& argument);
     
-    template <class DerivedType>
-    MatrixIterator<DerivedType> end(DenseBase<DerivedType>& argument);
+    template <class TDerived>
+    MatrixIterator<TDerived> end(DenseBase<TDerived>& argument);
     
-    template <class ExpressionType>
-    ConstMatrixRowIterator<ExpressionType> begin(
-        VectorwiseOp<const ExpressionType, Horizontal> argument
-    );
+    template <class TExpression>
+    ConstMatrixRowIterator<TExpression> begin(VectorwiseOp<const TExpression, Horizontal> argument);
     
-    template <class ExpressionType>
-    ConstMatrixRowIterator<ExpressionType> end(
-        VectorwiseOp<const ExpressionType, Horizontal> argument
-    );
+    template <class TExpression>
+    ConstMatrixRowIterator<TExpression> end(VectorwiseOp<const TExpression, Horizontal> argument);
     
-    template <class ExpressionType>
-    MatrixRowIterator<ExpressionType> begin(VectorwiseOp<ExpressionType, Horizontal> argument);
+    template <class TExpression>
+    MatrixRowIterator<TExpression> begin(VectorwiseOp<TExpression, Horizontal> argument);
     
-    template <class ExpressionType>
-    MatrixRowIterator<ExpressionType> end(VectorwiseOp<ExpressionType, Horizontal> argument);
+    template <class TExpression>
+    MatrixRowIterator<TExpression> end(VectorwiseOp<TExpression, Horizontal> argument);
     
-    template <class ExpressionType>
-    ConstMatrixColIterator<ExpressionType> begin(
-        VectorwiseOp<const ExpressionType, Vertical> argument
-    );
+    template <class TExpression>
+    ConstMatrixColIterator<TExpression> begin(VectorwiseOp<const TExpression, Vertical> argument);
     
-    template <class ExpressionType>
-    ConstMatrixColIterator<ExpressionType> end(
-        VectorwiseOp<const ExpressionType, Vertical> argument
-    );
+    template <class TExpression>
+    ConstMatrixColIterator<TExpression> end(VectorwiseOp<const TExpression, Vertical> argument);
     
-    template <class ExpressionType>
-    MatrixColIterator<ExpressionType> begin(VectorwiseOp<ExpressionType, Vertical> argument);
+    template <class TExpression>
+    MatrixColIterator<TExpression> begin(VectorwiseOp<TExpression, Vertical> argument);
     
-    template <class ExpressionType>
-    MatrixColIterator<ExpressionType> end(VectorwiseOp<ExpressionType, Vertical> argument);
+    template <class TExpression>
+    MatrixColIterator<TExpression> end(VectorwiseOp<TExpression, Vertical> argument);
 }
 
 ////////// Implementation //////////
 
 namespace Eigen
 {
-    template <class MatrixType>
-    inline typename MatrixType::Scalar ConstMatrixIterator<MatrixType>::dereference() const {
+    template <class TMatrix>
+    inline typename TMatrix::Scalar ConstMatrixIterator<TMatrix>::dereference() const {
         return (*_matrix)(_index);
     }
     
-    template <class MatrixType>
-    inline bool ConstMatrixIterator<MatrixType>::equal(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
+    template <class TMatrix>
+    inline bool ConstMatrixIterator<TMatrix>::equal(
+        const ConstMatrixIterator<TMatrix>& other
+    ) const {
+        return _index == other._index;
+    }
     
-    template <class MatrixType>
-    inline bool ConstMatrixIterator<MatrixType>::equal(
-        const MatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
+    template <class TMatrix>
+    inline bool ConstMatrixIterator<TMatrix>::equal(
+        const MatrixIterator<TMatrix>& other
+    ) const {
+        return _index == other._index;
+    }
     
-    template <class MatrixType>
-    inline typename MatrixType::Index ConstMatrixIterator<MatrixType>::distance_to(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
+    template <class TMatrix>
+    inline typename TMatrix::Index ConstMatrixIterator<TMatrix>::distance_to(
+        const ConstMatrixIterator<TMatrix>& other
+    ) const {
+        return other._index - _index;
+    }
     
-    template <class MatrixType>
-    inline typename MatrixType::Index ConstMatrixIterator<MatrixType>::distance_to(
-        const MatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
+    template <class TMatrix>
+    inline typename TMatrix::Index ConstMatrixIterator<TMatrix>::distance_to(
+        const MatrixIterator<TMatrix>& other
+    ) const {
+        return other._index - _index;
+    }
     
-    template <class MatrixType>
-    inline void ConstMatrixIterator<MatrixType>::increment() {++_index;}
+    template <class TMatrix>
+    inline void ConstMatrixIterator<TMatrix>::increment() {
+        ++_index;
+    }
     
-    template <class MatrixType>
-    inline void ConstMatrixIterator<MatrixType>::decrement() {--_index;}
+    template <class TMatrix>
+    inline void ConstMatrixIterator<TMatrix>::decrement() {
+        --_index;
+    }
     
-    template <class MatrixType>
-    inline void ConstMatrixIterator<MatrixType>::advance(typename MatrixType::Index argument) {
+    template <class TMatrix>
+    inline void ConstMatrixIterator<TMatrix>::advance(typename TMatrix::Index argument) {
         _index += argument;
     }
     
-    template <class MatrixType>
-    inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const MatrixType& matrix,
-        typename MatrixType::Index index
-    ) : _matrix(&matrix), _index(index) {}
+    template <class TMatrix>
+    inline ConstMatrixIterator<TMatrix>::ConstMatrixIterator(
+        const TMatrix& matrix,
+        typename TMatrix::Index index
+    ) : _matrix(&matrix),
+        _index(index) {
+    }
     
-    template <class MatrixType>
-    inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const ConstMatrixIterator<MatrixType>& other
-    ) : _matrix(other._matrix), _index(other._index) {}
+    template <class TMatrix>
+    inline ConstMatrixIterator<TMatrix>::ConstMatrixIterator(
+        const ConstMatrixIterator<TMatrix>& other
+    ) : _matrix(other._matrix),
+        _index(other._index) {
+    }
     
-    template <class MatrixType>
-    inline ConstMatrixIterator<MatrixType>::ConstMatrixIterator(
-        const MatrixIterator<MatrixType>& other
-    ) : _matrix(other._matrix), _index(other._index) {}
+    template <class TMatrix>
+    inline ConstMatrixIterator<TMatrix>::ConstMatrixIterator(
+        const MatrixIterator<TMatrix>& other
+    ) : _matrix(other._matrix),
+        _index(other._index) {
+    }
     
-    template <class MatrixType>
-    inline typename MatrixType::Scalar& MatrixIterator<MatrixType>::dereference() const {
+    template <class TMatrix>
+    inline typename TMatrix::Scalar& MatrixIterator<TMatrix>::dereference() const {
         return (*_matrix)(_index);
     }
     
-    template <class MatrixType>
-    inline bool MatrixIterator<MatrixType>::equal(
-        const MatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
+    template <class TMatrix>
+    inline bool MatrixIterator<TMatrix>::equal(const MatrixIterator<TMatrix>& other) const {
+        return _index == other._index;
+    }
     
-    template <class MatrixType>
-    inline bool MatrixIterator<MatrixType>::equal(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return _index == other._index;}
+    template <class TMatrix>
+    inline bool MatrixIterator<TMatrix>::equal(const ConstMatrixIterator<TMatrix>& other) const {
+        return _index == other._index;
+    }
     
-    template <class MatrixType>
-    inline typename MatrixType::Index MatrixIterator<MatrixType>::distance_to(
-        const MatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
+    template <class TMatrix>
+    inline typename TMatrix::Index MatrixIterator<TMatrix>::distance_to(
+        const MatrixIterator<TMatrix>& other
+    ) const {
+        return other._index - _index;
+    }
     
-    template <class MatrixType>
-    inline typename MatrixType::Index MatrixIterator<MatrixType>::distance_to(
-        const ConstMatrixIterator<MatrixType>& other
-    ) const {return other._index - _index;}
+    template <class TMatrix>
+    inline typename TMatrix::Index MatrixIterator<TMatrix>::distance_to(
+        const ConstMatrixIterator<TMatrix>& other
+    ) const {
+        return other._index - _index;
+    }
     
-    template <class MatrixType>
-    inline void MatrixIterator<MatrixType>::increment() {++_index;}
+    template <class TMatrix>
+    inline void MatrixIterator<TMatrix>::increment() {
+        ++_index;
+    }
     
-    template <class MatrixType>
-    inline void MatrixIterator<MatrixType>::decrement() {--_index;}
+    template <class TMatrix>
+    inline void MatrixIterator<TMatrix>::decrement() {
+        --_index;
+    }
     
-    template <class MatrixType>
-    inline void MatrixIterator<MatrixType>::advance(typename MatrixType::Index argument) {
+    template <class TMatrix>
+    inline void MatrixIterator<TMatrix>::advance(typename TMatrix::Index argument) {
         _index += argument;
     }
     
-    template <class MatrixType>
-    inline MatrixIterator<MatrixType>::MatrixIterator(
-        MatrixType& matrix,
-        typename MatrixType::Index index
-    ) : _matrix(&matrix), _index(index) {}
-    
-    template <class MatrixType>
-    inline MatrixIterator<MatrixType>::MatrixIterator(const MatrixIterator<MatrixType>& other) :
-        _matrix(other._matrix), _index(other._index) {}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline BlockType MatrixBlockIterator<DerivedType, MatrixType, BlockType>::dereference() const {
-        return DerivedType::block(*_matrix, _index);
+    template <class TMatrix>
+    inline MatrixIterator<TMatrix>::MatrixIterator(
+        TMatrix& matrix,
+        typename TMatrix::Index index
+    ) : _matrix(&matrix),
+        _index(index) {
     }
     
-    template <class DerivedType, class MatrixType, class BlockType>
-    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
-    inline bool MatrixBlockIterator<DerivedType, MatrixType, BlockType>::equal(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
-    ) const {return _index == other._index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
-    inline typename MatrixType::Index
-    MatrixBlockIterator<DerivedType, MatrixType, BlockType>::distance_to(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
-    ) const {return other._index - _index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::increment() {++_index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::decrement() {--_index;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline void MatrixBlockIterator<DerivedType, MatrixType, BlockType>::advance(
-        typename MatrixType::Index argument
-    ) {_index += argument;}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    inline MatrixBlockIterator<DerivedType, MatrixType, BlockType>::MatrixBlockIterator(
-        MatrixType& matrix,
-        typename MatrixType::Index index
-    ) : _matrix(&matrix), _index(index) {}
-    
-    template <class DerivedType, class MatrixType, class BlockType>
-    template <class OtherDerivedType, class OtherMatrixType, class OtherBlockType>
-    inline MatrixBlockIterator<DerivedType, MatrixType, BlockType>::MatrixBlockIterator(
-        const MatrixBlockIterator<OtherDerivedType, OtherMatrixType, OtherBlockType>& other
-    ) : _matrix(other._matrix), _index(other._index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const MatrixType& matrix,
-        typename MatrixType::Index index
-    ) : MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const ConstMatrixRowIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixRowIterator<MatrixType>::ConstMatrixRowIterator(
-        const MatrixRowIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixRowIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstRowXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::ConstRowXpr ConstMatrixRowIterator<MatrixType>::block(
-        const MatrixType& matrix,
-        typename MatrixType::Index index
-    ) {return matrix.row(index);}
-    
-    template <class MatrixType>
-    inline MatrixRowIterator<MatrixType>::MatrixRowIterator(
-        MatrixType& matrix,
-        typename MatrixType::Index index
-    ) : MatrixBlockIterator<
-            MatrixRowIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::RowXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline MatrixRowIterator<MatrixType>::MatrixRowIterator(
-        const MatrixRowIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            MatrixRowIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::RowXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::RowXpr MatrixRowIterator<MatrixType>::block(
-        MatrixType& matrix,
-        typename MatrixType::Index index
-    ) {return matrix.row(index);}
-    
-    template <class MatrixType>
-    inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const MatrixType& matrix,
-        typename MatrixType::Index index
-    ) : MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const ConstMatrixColIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline ConstMatrixColIterator<MatrixType>::ConstMatrixColIterator(
-        const MatrixColIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            ConstMatrixColIterator<MatrixType>,
-            const MatrixType,
-            typename MatrixType::ConstColXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::ConstColXpr ConstMatrixColIterator<MatrixType>::block(
-        const MatrixType& matrix,
-        typename MatrixType::Index index
-    ) {return matrix.col(index);}
-    
-    template <class MatrixType>
-    inline MatrixColIterator<MatrixType>::MatrixColIterator(
-        MatrixType& matrix, 
-        typename MatrixType::Index index
-    ) : MatrixBlockIterator<
-            MatrixColIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::ColXpr
-        >(matrix, index) {}
-    
-    template <class MatrixType>
-    inline MatrixColIterator<MatrixType>::MatrixColIterator(
-        const MatrixColIterator<MatrixType>& other
-    ) : MatrixBlockIterator<
-            MatrixColIterator<MatrixType>,
-            MatrixType,
-            typename MatrixType::ColXpr
-        >(other) {}
-    
-    template <class MatrixType>
-    inline typename MatrixType::ColXpr MatrixColIterator<MatrixType>::block(
-        MatrixType& matrix,
-        typename MatrixType::Index index
-    ) {return matrix.col(index);}
-    
-    template <class DerivedType>
-    ConstMatrixIterator<DerivedType> begin(const DenseBase<DerivedType>& argument) {
-        return ConstMatrixIterator<DerivedType>(argument.derived(), 0);
+    template <class TMatrix>
+    inline MatrixIterator<TMatrix>::MatrixIterator(const MatrixIterator<TMatrix>& other) :
+        _matrix(other._matrix),
+        _index(other._index) {
     }
     
-    template <class DerivedType>
-    ConstMatrixIterator<DerivedType> end(const DenseBase<DerivedType>& argument) {
-        return ConstMatrixIterator<DerivedType>(argument.derived(), argument.size());
+    template <class TDerived, class TMatrix, class TBlock>
+    inline TBlock MatrixBlockIterator<TDerived, TMatrix, TBlock>::dereference() const {
+        return TDerived::block(*_matrix, _index);
     }
     
-    template <class DerivedType>
-    MatrixIterator<DerivedType> begin(DenseBase<DerivedType>& argument) {
-        return MatrixIterator<DerivedType>(argument.derived(), 0);
+    template <class TDerived, class TMatrix, class TBlock>
+    template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
+    inline bool MatrixBlockIterator<TDerived, TMatrix, TBlock>::equal(
+        const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
+    ) const {
+        return _index == other._index;
     }
     
-    template <class DerivedType>
-    MatrixIterator<DerivedType> end(DenseBase<DerivedType>& argument) {
-        return MatrixIterator<DerivedType>(argument.derived(), argument.size());
+    template <class TDerived, class TMatrix, class TBlock>
+    template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
+    inline typename TMatrix::Index
+    MatrixBlockIterator<TDerived, TMatrix, TBlock>::distance_to(
+        const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
+    ) const {
+        return other._index - _index;
     }
     
-    template <class ExpressionType>
-    ConstMatrixRowIterator<ExpressionType> begin(
-        VectorwiseOp<const ExpressionType, Horizontal> argument
-    ) {return ConstMatrixRowIterator<ExpressionType>(argument._expression(), 0);}
+    template <class TDerived, class TMatrix, class TBlock>
+    inline void MatrixBlockIterator<TDerived, TMatrix, TBlock>::increment() {
+        ++_index;
+    }
     
-    template <class ExpressionType>
-    ConstMatrixRowIterator<ExpressionType> end(
-        VectorwiseOp<const ExpressionType, Horizontal> argument
+    template <class TDerived, class TMatrix, class TBlock>
+    inline void MatrixBlockIterator<TDerived, TMatrix, TBlock>::decrement() {
+        --_index;
+    }
+    
+    template <class TDerived, class TMatrix, class TBlock>
+    inline void MatrixBlockIterator<TDerived, TMatrix, TBlock>::advance(
+        typename TMatrix::Index argument
     ) {
-        return ConstMatrixRowIterator<ExpressionType>(
+        _index += argument;
+    }
+    
+    template <class TDerived, class TMatrix, class TBlock>
+    inline MatrixBlockIterator<TDerived, TMatrix, TBlock>::MatrixBlockIterator(
+        TMatrix& matrix,
+        typename TMatrix::Index index
+    ) : _matrix(&matrix),
+        _index(index) {
+    }
+    
+    template <class TDerived, class TMatrix, class TBlock>
+    template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
+    inline MatrixBlockIterator<TDerived, TMatrix, TBlock>::MatrixBlockIterator(
+        const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
+    ) : _matrix(other._matrix),
+        _index(other._index) {
+    }
+    
+    template <class TMatrix>
+    inline ConstMatrixRowIterator<TMatrix>::ConstMatrixRowIterator(
+        const TMatrix& matrix,
+        typename TMatrix::Index index
+    ) : MatrixBlockIterator<
+            ConstMatrixRowIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstRowXpr
+        >(matrix, index) {
+    }
+    
+    template <class TMatrix>
+    inline ConstMatrixRowIterator<TMatrix>::ConstMatrixRowIterator(
+        const ConstMatrixRowIterator<TMatrix>& other
+    ) : MatrixBlockIterator<
+            ConstMatrixRowIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstRowXpr
+        >(other) {
+    }
+    
+    template <class TMatrix>
+    inline ConstMatrixRowIterator<TMatrix>::ConstMatrixRowIterator(
+        const MatrixRowIterator<TMatrix>& other
+    ) : MatrixBlockIterator<
+            ConstMatrixRowIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstRowXpr
+        >(other) {
+    }
+    
+    template <class TMatrix>
+    inline typename TMatrix::ConstRowXpr ConstMatrixRowIterator<TMatrix>::block(
+        const TMatrix& matrix,
+        typename TMatrix::Index index
+    ) {
+        return matrix.row(index);
+    }
+    
+    template <class TMatrix>
+    inline MatrixRowIterator<TMatrix>::MatrixRowIterator(
+        TMatrix& matrix,
+        typename TMatrix::Index index
+    ) : MatrixBlockIterator<
+            MatrixRowIterator<TMatrix>,
+            TMatrix,
+            typename TMatrix::RowXpr
+        >(matrix, index) {
+    }
+    
+    template <class TMatrix>
+    inline MatrixRowIterator<TMatrix>::MatrixRowIterator(
+        const MatrixRowIterator<TMatrix>& other
+    ) : MatrixBlockIterator<
+            MatrixRowIterator<TMatrix>,
+            TMatrix,
+            typename TMatrix::RowXpr
+        >(other) {
+    }
+    
+    template <class TMatrix>
+    inline typename TMatrix::RowXpr MatrixRowIterator<TMatrix>::block(
+        TMatrix& matrix,
+        typename TMatrix::Index index
+    ) {
+        return matrix.row(index);
+    }
+    
+    template <class TMatrix>
+    inline ConstMatrixColIterator<TMatrix>::ConstMatrixColIterator(
+        const TMatrix& matrix,
+        typename TMatrix::Index index
+    ) : MatrixBlockIterator<
+            ConstMatrixColIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstColXpr
+        >(matrix, index) {
+    }
+    
+    template <class TMatrix>
+    inline ConstMatrixColIterator<TMatrix>::ConstMatrixColIterator(
+        const ConstMatrixColIterator<TMatrix>& other
+    ) : MatrixBlockIterator<
+            ConstMatrixColIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstColXpr
+        >(other) {
+    }
+    
+    template <class TMatrix>
+    inline ConstMatrixColIterator<TMatrix>::ConstMatrixColIterator(
+        const MatrixColIterator<TMatrix>& other
+    ) : MatrixBlockIterator<
+            ConstMatrixColIterator<TMatrix>,
+            const TMatrix,
+            typename TMatrix::ConstColXpr
+        >(other) {
+    }
+    
+    template <class TMatrix>
+    inline typename TMatrix::ConstColXpr ConstMatrixColIterator<TMatrix>::block(
+        const TMatrix& matrix,
+        typename TMatrix::Index index
+    ) {
+        return matrix.col(index);
+    }
+    
+    template <class TMatrix>
+    inline MatrixColIterator<TMatrix>::MatrixColIterator(
+        TMatrix& matrix, 
+        typename TMatrix::Index index
+    ) : MatrixBlockIterator<
+            MatrixColIterator<TMatrix>,
+            TMatrix,
+            typename TMatrix::ColXpr
+        >(matrix, index) {
+    }
+    
+    template <class TMatrix>
+    inline MatrixColIterator<TMatrix>::MatrixColIterator(
+        const MatrixColIterator<TMatrix>& other
+    ) : MatrixBlockIterator<
+            MatrixColIterator<TMatrix>,
+            TMatrix,
+            typename TMatrix::ColXpr
+        >(other) {
+    }
+    
+    template <class TMatrix>
+    inline typename TMatrix::ColXpr MatrixColIterator<TMatrix>::block(
+        TMatrix& matrix,
+        typename TMatrix::Index index
+    ) {
+        return matrix.col(index);
+    }
+    
+    template <class TDerived>
+    ConstMatrixIterator<TDerived> begin(const DenseBase<TDerived>& argument) {
+        return ConstMatrixIterator<TDerived>(argument.derived(), 0);
+    }
+    
+    template <class TDerived>
+    ConstMatrixIterator<TDerived> end(const DenseBase<TDerived>& argument) {
+        return ConstMatrixIterator<TDerived>(argument.derived(), argument.size());
+    }
+    
+    template <class TDerived>
+    MatrixIterator<TDerived> begin(DenseBase<TDerived>& argument) {
+        return MatrixIterator<TDerived>(argument.derived(), 0);
+    }
+    
+    template <class TDerived>
+    MatrixIterator<TDerived> end(DenseBase<TDerived>& argument) {
+        return MatrixIterator<TDerived>(argument.derived(), argument.size());
+    }
+    
+    template <class TExpression>
+    ConstMatrixRowIterator<TExpression> begin(
+        VectorwiseOp<const TExpression, Horizontal> argument
+    ) {
+        return ConstMatrixRowIterator<TExpression>(argument._expression(), 0);
+    }
+    
+    template <class TExpression>
+    ConstMatrixRowIterator<TExpression> end(
+        VectorwiseOp<const TExpression, Horizontal> argument
+    ) {
+        return ConstMatrixRowIterator<TExpression>(
             argument._expression(),
             argument._expression().rows()
         );
     }
     
-    template <class ExpressionType>
-    MatrixRowIterator<ExpressionType> begin(VectorwiseOp<ExpressionType, Horizontal> argument) {
-        return MatrixRowIterator<ExpressionType>(
-            const_cast<ExpressionType&>(argument._expression()),
+    template <class TExpression>
+    MatrixRowIterator<TExpression> begin(VectorwiseOp<TExpression, Horizontal> argument) {
+        return MatrixRowIterator<TExpression>(
+            const_cast<TExpression&>(argument._expression()),
             0
         );
     }
     
-    template <class ExpressionType>
-    MatrixRowIterator<ExpressionType> end(VectorwiseOp<ExpressionType, Horizontal> argument) {
-        return MatrixRowIterator<ExpressionType>(
-            const_cast<ExpressionType&>(argument._expression()),
+    template <class TExpression>
+    MatrixRowIterator<TExpression> end(VectorwiseOp<TExpression, Horizontal> argument) {
+        return MatrixRowIterator<TExpression>(
+            const_cast<TExpression&>(argument._expression()),
             argument._expression().rows()
         );
     }
     
-    template <class ExpressionType>
-    ConstMatrixColIterator<ExpressionType> begin(
-        VectorwiseOp<const ExpressionType, Vertical> argument
-    ) {return ConstMatrixColIterator<ExpressionType>(argument._expression(), 0);}
+    template <class TExpression>
+    ConstMatrixColIterator<TExpression> begin(VectorwiseOp<const TExpression, Vertical> argument) {
+        return ConstMatrixColIterator<TExpression>(argument._expression(), 0);
+    }
     
-    template <class ExpressionType>
-    ConstMatrixColIterator<ExpressionType> end(
-        VectorwiseOp<const ExpressionType, Vertical> argument
-    ) {
-        return ConstMatrixColIterator<ExpressionType>(
+    template <class TExpression>
+    ConstMatrixColIterator<TExpression> end(VectorwiseOp<const TExpression, Vertical> argument) {
+        return ConstMatrixColIterator<TExpression>(
             argument._expression(),
             argument._expression().cols()
         );
     }
     
-    template <class ExpressionType>
-    MatrixColIterator<ExpressionType> begin(VectorwiseOp<ExpressionType, Vertical> argument) {
-        return MatrixColIterator<ExpressionType>(
-            const_cast<ExpressionType&>(argument._expression()),
+    template <class TExpression>
+    MatrixColIterator<TExpression> begin(VectorwiseOp<TExpression, Vertical> argument) {
+        return MatrixColIterator<TExpression>(
+            const_cast<TExpression&>(argument._expression()),
             0
         );
     }
     
-    template <class ExpressionType>
-    MatrixColIterator<ExpressionType> end(VectorwiseOp<ExpressionType, Vertical> argument) {
-        return MatrixColIterator<ExpressionType>(
-            const_cast<ExpressionType&>(argument._expression()),
+    template <class TExpression>
+    MatrixColIterator<TExpression> end(VectorwiseOp<TExpression, Vertical> argument) {
+        return MatrixColIterator<TExpression>(
+            const_cast<TExpression&>(argument._expression()),
             argument._expression().cols()
         );
     }

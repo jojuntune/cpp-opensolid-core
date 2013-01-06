@@ -18,14 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-template <class TMatrix, class TVector>
-Matrix<
-    typename internal::traits<Derived>::Scalar,
-    TMatrix::RowsAtCompileTime,
-    internal::traits<Derived>::ColsAtCompileTime
-> transformed(
-    const TMatrix& matrix,
-    const TVector& vector
+template <int iOutputDimensions>
+struct Transformed
+{
+    typedef Matrix<
+        typename internal::traits<Derived>::Scalar,
+        iOutputDimensions,
+        internal::traits<Derived>::ColsAtCompileTime
+    > Type;
+};
+
+template <int iInputDimensions, int iOutputDimensions>
+Transformed<iOutputDimensions>::Type transformed(
+    const Transformation<iInputDimensions, iOutputDimensions>& transformation
 ) const;
 
 template <class TPoint>
@@ -50,6 +55,9 @@ PlainObject rotated(
 
 template <int iNumDimensions, int iNumAxes>
 PlainObject mirrored(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
+
+template <int iNumDimensions, int iNumAxes>
+PlainObject projected(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
 
 template <class TOther>
 TOther as() const;

@@ -22,11 +22,6 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace opensolid
-{
-	template <class TMatrix>
-    class TransformableMatrix;
-}
 namespace Eigen
 {   
     namespace internal

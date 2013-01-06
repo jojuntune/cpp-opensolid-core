@@ -24,6 +24,6 @@
 
 namespace opensolid
 {
-	template <int iNumDimensions, int iNumVertices>
+    template <int iNumDimensions, int iNumVertices>
     class Simplex;
 }

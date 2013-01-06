@@ -22,12 +22,12 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "Matrix/declarations.hpp"
-
-#include <OpenSolid/Utils/Conversion.hpp>
-#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix/declarations.hpp>
+#include <OpenSolid/Core/Matrix/MatrixIterator.hpp>
+#include <OpenSolid/Utils/Conversion.hpp>
 
 namespace Eigen
 {   
@@ -430,13 +430,12 @@ namespace Eigen
         return firstInterval.strictlyContains(secondInterval, _precision);
     }
 
-    template <class TDerived> template <class TMatrix, class TVector>
-    inline Matrix<
-        typename internal::traits<TDerived>::Scalar,
-        TMatrix::RowsAtCompileTime,
-        internal::traits<TDerived>::ColsAtCompileTime
-    > MatrixBase<TDerived>::transformed(const TMatrix& matrix, const TVector& vector) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).transformed(matrix, vector);
+    template <class TDerived> template <int iInputDimensions, int iOutputDimensions>
+    typename MatrixBase<TDerived>::Transformed<iOutputDimensions>::Type
+    MatrixBase<TDerived>::transformed(
+        const Transformation<iInputDimensions, iOutputDimensions>& transformation
+    ) const {
+        return (transformation.matrix() * derived()).colwise() + transformation.vector();
     }
 
     template <class TDerived> template <class TPoint>
@@ -444,14 +443,14 @@ namespace Eigen
         double scale,
         const EigenBase<TPoint>& point
     ) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).scaled(scale, point);
+        return ((derived().colwise() - point.derived()) * scale).colwise() + point.derived();
     }
 
     template <class TDerived> template <class TVector>
     inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::translated(
         const EigenBase<TVector>& vector
     ) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).translated(vector);
+        return derived().colwise() + vector.derived();
     }
 
     template <class TDerived> template <int iNumDimensions, int iNumAxes>
@@ -459,7 +458,7 @@ namespace Eigen
         double distance,
         const opensolid::Datum<iNumDimensions, iNumAxes>& axis
     ) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).translated(distance, axis);
+        return derived().colwise() + distance * axis.directionVector();
     }
 
     template <class TDerived>
@@ -467,7 +466,9 @@ namespace Eigen
         double angle,
         const Vector2d& point
     ) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).rotated(angle, point);
+        Matrix2d rotationMatrix(Rotation2Dd(angle));
+        return ((derived().colwise() - point.derived()) * rotationMatrix).colwise() +
+            point.derived();
     }
 
     template <class TDerived> template <int iNumDimensions, int iNumAxes>
@@ -475,14 +476,17 @@ namespace Eigen
         double angle,
         const opensolid::Datum<iNumDimensions, iNumAxes>& axis
     ) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).rotated(angle, axis);
+        Matrix3d rotationMatrix(AngleAxisd(angle, axis.directionVector()));
+        return ((derived().colwise() - axis.originPoint()) * rotationMatrix).colwise() +
+            axis.originPoint();
     }
 
     template <class TDerived> template <int iNumDimensions, int iNumAxes>
     inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::mirrored(
         const opensolid::Datum<iNumDimensions, iNumAxes>& datum
     ) const {
-        return opensolid::TransformableMatrix<TDerived>(derived()).mirrored(datum);
+        return derived() - 2 * datum.normalVector() *
+            (datum.normalVector().transpose() * (derived().colwise() - datum.originPoint()));
     }
 
     template<class TDerived> template <class TOther>
@@ -687,6 +691,3 @@ namespace opensolid
         assert(matrix.rows() == vector.size());
     }
 }
-
-#include "Matrix/MatrixIterator.hpp"
-#include "Matrix/TransformableMatrix.hpp"
