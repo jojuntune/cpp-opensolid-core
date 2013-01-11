@@ -58,7 +58,8 @@ namespace opensolid
         
         std::size_t size() const;
         bool isEmpty() const;
-        const typename Bounds<TElement>::Type& bounds() const;
+
+        typename Bounds<TElement>::Type bounds() const;
         
         void insert(const TElement& element);
         std::size_t erase(const TElement& element);
@@ -301,10 +302,13 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline const typename Bounds<TElement>::Type&
+    inline typename Bounds<TElement>::Type
     Set<TElement>::bounds() const {
-        assert(!isEmpty());
-        return root()->bounds();
+        if (isEmpty()) {
+            return Bounds<TElement>::Type();
+        } else {
+            return root()->bounds();
+        }
     }
     
     template <class TElement>
