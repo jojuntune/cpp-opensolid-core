@@ -299,7 +299,7 @@ public:
         indices.insert(first_index);
         indices.insert(second_index);
         Interval bounds = indices.bounds();
-        TS_ASSERT_EQUALS(bounds.lower(), 1.0);
-        TS_ASSERT_EQUALS(bounds.upper(), 4.0);
+        TS_ASSERT_EQUALS(bounds.lowerBound(), 1.0);
+        TS_ASSERT_EQUALS(bounds.upperBound(), 4.0);
     }
 };

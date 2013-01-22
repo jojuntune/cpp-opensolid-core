@@ -37,41 +37,32 @@ namespace opensolid
         char _buffer[32];
         int _number;
     
-        Error(int number);
+        OPENSOLID_CORE_EXPORT Error(int number);
     
         template <int iNumber> friend class Error;
     public:
-        const char* what() const;
-        int number() const;
+        OPENSOLID_CORE_EXPORT const char* what() const throw();
+        OPENSOLID_CORE_EXPORT int number() const;
     };
 
     template <int iNumber>
     class Error : public Error<>
     {
     public:
-        static const int NUMBER = iNumber;
+        static const int Number = iNumber;
     
         Error();
     };
 
     template <int iNumber>
-    struct UniqueErrorCode;
+    struct UniqueErrorNumber;
+
+    typedef Error<1> NotImplementedError;
+    template <> struct UniqueErrorNumber<1> {};
 }
 
 namespace opensolid
 {
-    inline Error<0>::Error(int number) : _number(number) {
-        sprintf(_buffer, "OpenSolid error %i", number);
-    }
-
-    inline const char* Error<0>::what() const {
-        return _buffer;
-    }
-
-    inline int Error<0>::number() const {
-        return _number;
-    }
-
     template <int iNumber>
     inline Error<iNumber>::Error() : Error<>(iNumber) {
         UniqueErrorNumber<iNumber> checkForUniqueErrorNumberSpecialization;

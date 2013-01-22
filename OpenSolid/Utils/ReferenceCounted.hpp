@@ -26,51 +26,39 @@
 
 namespace opensolid
 {
-    template <class DerivedType>
     class ReferenceCounted
     {
     private:
-        ReferenceCounted(const ReferenceCounted&);
+        mutable boost::detail::atomic_count _referenceCount;
 
-        mutable boost::detail::atomic_count _count;
-    public:
+        ReferenceCounted(const ReferenceCounted&);
+    protected:
         ReferenceCounted();
 
-        void addReference() const;
-        void removeReference() const;
-    };
+        template <class TReferenceCounted>
+        friend void intrusive_ptr_add_ref(const TReferenceCounted* argument);
 
-    template <class DerivedType>
-    void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument);
-    
-    template <class DerivedType>
-    void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument);
+        template <class TReferenceCounted>
+        friend void intrusive_ptr_release(const TReferenceCounted* argument);
+    };
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
 {
-    template <class DerivedType>
-    inline ReferenceCounted<DerivedType>::ReferenceCounted() : _count(0) {}
-
-    template <class DerivedType>
-    inline void ReferenceCounted<DerivedType>::addReference() const {
-        ++_count;
-    }
-
-    template <class DerivedType>
-    inline void ReferenceCounted<DerivedType>::removeReference() const {
-        if (--_count == 0) {delete static_cast<const DerivedType*>(this);}
+    inline ReferenceCounted::ReferenceCounted() : _referenceCount(0) {
     }
         
-    template <class DerivedType>
-    inline void intrusive_ptr_add_ref(const ReferenceCounted<DerivedType>* argument) {
-        argument->addReference();
+    template <class TReferenceCounted>
+    inline void intrusive_ptr_add_ref(const TReferenceCounted* argument) {
+        ++argument->_referenceCount;
     }
     
-    template <class DerivedType>
-    inline void intrusive_ptr_release(const ReferenceCounted<DerivedType>* argument) {
-        argument->removeReference();
+    template <class TReferenceCounted>
+    inline void intrusive_ptr_release(const TReferenceCounted* argument) {
+        if (--argument->_referenceCount == 0) {
+            delete argument;
+        }
     }
 }

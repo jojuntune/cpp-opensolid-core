@@ -37,7 +37,7 @@ namespace opensolid
     Mesh::Mesh(const Geometry& geometry, double linear_deviation) {
         if (geometry.parameters() != 1) {
             // Only supports curves for now
-            throw NotImplementedError("Mesh.cpp", __LINE__);
+            throw NotImplementedError();
         }
         std::vector<double> temp;
         Function function = geometry.function();
@@ -50,7 +50,7 @@ namespace opensolid
             linear_deviation,
             temp
         );
-        temp.push_back(domain.upper());
+        temp.push_back(domain.upperBound());
         RowVectorXd parameter_values(1, temp.size());
         std::copy(temp.begin(), temp.end(), begin(parameter_values));
         _vertices = function(parameter_values);

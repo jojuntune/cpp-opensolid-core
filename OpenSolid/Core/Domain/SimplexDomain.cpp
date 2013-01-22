@@ -26,22 +26,30 @@
 namespace opensolid
 {
     SimplexDomain::SimplexDomain(const SimplexXd& simplex) : _simplex(simplex) {
-        assert(simplex.dimensions() == simplex.size() - 1);
+        assert(simplex.numDimensions() == simplex.numVertices() - 1);
     }
 
     Set<Geometry> SimplexDomain::boundaries() const {
         Set<Geometry> results;
-        for (int i = 0; i < _simplex.size(); ++i) {results.insert(_simplex.face(i));}
+        for (int i = 0; i < _simplex.numVertices(); ++i) {
+            results.insert(_simplex.face(i));
+        }
         return results;
     }
 
-    bool SimplexDomain::isEmpty() const {return false;}
+    bool SimplexDomain::isEmpty() const {
+        return false;
+    }
 
-    int SimplexDomain::dimensions() const {return _simplex.dimensions();}
+    int SimplexDomain::dimensions() const {
+        return _simplex.numDimensions();
+    }
 
-    VectorXI SimplexDomain::bounds() const {return _simplex.bounds();}
+    VectorXI SimplexDomain::bounds() const {
+        return _simplex.bounds();
+    }
 
     Domain SimplexDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return new SimplexDomain(_simplex.transformed(matrix, vector));
+        return new SimplexDomain(matrix * _simplex + vector);
     }
 }

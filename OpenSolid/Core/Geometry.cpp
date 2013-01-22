@@ -112,6 +112,13 @@ namespace opensolid
         return implementation()->reversed();
     }
 
+    Geometry operator*(double multiplier, const Geometry& geometry) {
+        return geometry.transformed(
+            multiplier * MatrixXd::Identity(geometry.dimensions(), geometry.dimensions()),
+            VectorXd::Zero(geometry.dimensions())
+        );
+    }
+
     VectorXI Bounds<Geometry>::operator()(const Geometry& geometry) const {
         return geometry.bounds();
     }

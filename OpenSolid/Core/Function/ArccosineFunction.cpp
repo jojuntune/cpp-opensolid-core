@@ -34,20 +34,12 @@ namespace opensolid
     {
         inline double operator()(double value) const {
             assert(Interval(-1, 1).contains(value));
-            value = max(-1.0, value);
-            value = min(value, 1.0);
-            return acos(value);
+            return acos(Interval(-1, 1).clamp(value));
         }
         
         inline Interval operator()(const Interval& bounds) const {
             assert(Interval(-1, 1).overlaps(bounds));
-            double lower = bounds.lower();
-            lower = max(-1.0, lower);
-            lower = min(lower, 1.0);
-            double upper = bounds.upper();
-            upper = max(-1.0, upper);
-            upper = min(upper, 1.0);
-            return acos(Interval(lower, upper));
+            return acos(Interval(-1, 1).clamp(bounds));
         }
     };
     

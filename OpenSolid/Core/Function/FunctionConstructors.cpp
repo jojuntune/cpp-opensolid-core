@@ -63,7 +63,7 @@ namespace opensolid
     }
         
     Function FunctionConstructors::Elliptical(const DatumXd& datum) {
-        return new EllipticalFunction(datum, VectorXb::Constant(datum.axes() - 1, true));
+        return new EllipticalFunction(datum, VectorXb::Constant(datum.numAxes() - 1, true));
     }
         
     Function FunctionConstructors::Elliptical(const DatumXd& datum, const VectorXb& convention) {

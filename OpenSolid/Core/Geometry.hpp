@@ -22,17 +22,18 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "Geometry/declarations.hpp"
-#include "Geometry/GeometryConstructors.hpp"
-
-#include <OpenSolid/Utils/Conversion.hpp>
-#include <OpenSolid/Core/Evaulation.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Core/Function/declarations.hpp>
+#include <OpenSolid/Core/Evaluation.hpp>
+#include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
+#include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
+ 
+#include <OpenSolid/Core/Function/declarations.hpp>
+#include <OpenSolid/Core/Geometry/declarations.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -86,6 +87,14 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT Geometry reversed() const;
     };
+
+    OPENSOLID_CORE_EXPORT Geometry operator*(double multiplier, const Geometry& geometry);
+
+    template <class TMatrix>
+    Geometry operator*(const EigenBase<TMatrix>& transformationMatrix, const Geometry& geometry);
+
+    template <class TVector>
+    Geometry operator+(const Geometry& geometry, const EigenBase<TVector>& vector);
 }
 
 ////////// Specializations //////////
@@ -123,6 +132,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT VectorXd operator()(const Geometry& geometry) const;
     };
+
+    template <int iNumTransformedDimensions>
+    struct Transformed<Geometry, iNumTransformedDimensions>
+    {
+        typedef Geometry Type;
+    };
 }
 
 ////////// Implementation //////////
@@ -144,5 +159,21 @@ namespace opensolid
     template <class TArgument>
     inline Evaluation<Geometry, TArgument> Geometry::operator()(const TArgument& argument) const {
         return Evaluation<Geometry, TArgument>(*this, argument);
+    }
+
+    template <class TMatrix>
+    Geometry operator*(const EigenBase<TMatrix>& transformationMatrix, const Geometry& geometry) {
+        return geometry.transformed(
+            transformationMatrix.derived(),
+            VectorXd::Zero(geometry.dimensions())
+        );
+    }
+
+    template <class TVector>
+    Geometry operator+(const Geometry& geometry, const EigenBase<TVector>& vector) {
+        return geometry.transformed(
+            MatrixXd::Identity(geometry.dimensions(), geometry.dimensions()),
+            vector.derived()
+        );
     }
 }

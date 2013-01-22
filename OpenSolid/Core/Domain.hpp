@@ -26,7 +26,7 @@
 #include "Domain/DomainConstructors.hpp"
 #include "Domain/DomainImplementation.hpp"
 
-#include <OpenSolid/Utils/Conversion.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Matrix.hpp>

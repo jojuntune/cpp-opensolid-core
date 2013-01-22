@@ -40,9 +40,9 @@ namespace opensolid
 
     std::string __repr__(const Interval& argument) {
         std::stringstream stream;
-        stream << "Interval(" << __repr__(argument.lower());
-        if (argument.upper() != argument.lower()) {
-            stream << "," << __repr__(argument.upper());
+        stream << "Interval(" << __repr__(argument.lowerBound());
+        if (argument.upperBound() != argument.lowerBound()) {
+            stream << "," << __repr__(argument.upperBound());
         }
         stream << ")";
         return stream.str();

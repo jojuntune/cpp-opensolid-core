@@ -22,15 +22,15 @@
 
 namespace opensolid
 {
-    Error::Error(const std::string& type, const std::string& file, int line) :
-        std::runtime_error(type), m_file(file), m_line(line) {
+    Error<0>::Error(int number) : _number(number) {
+        sprintf(_buffer, "OpenSolid error %i", number);
     }
 
-    std::string Error::file() const {
-        return m_file;
+    const char* Error<0>::what() const throw() {
+        return _buffer;
     }
 
-    int Error::line() const {
-        return m_line;
+    int Error<0>::number() const {
+        return _number;
     }
 }

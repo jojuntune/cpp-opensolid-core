@@ -118,7 +118,7 @@ namespace opensolid
     struct IntervalPickleSuite : public pickle_suite
     {
         static tuple getinitargs(const Interval& argument) {
-            return make_tuple(argument.lower(), argument.upper());
+            return make_tuple(argument.lowerBound(), argument.upperBound());
         }
     };
     

@@ -12,6 +12,7 @@
         Matrix/*.cpp
         Set/*.cpp
         Simplex/*.cpp
+        Transformation/*.cpp
     )
 
     add_library(OpenSolidCore SHARED ${CORE_SOURCES})
@@ -39,4 +40,5 @@
         Matrix/*
         Set/*
         Simplex/*
+        Transformable/*
     )

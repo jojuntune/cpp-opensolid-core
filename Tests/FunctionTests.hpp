@@ -184,7 +184,7 @@ public:
         Function linear = Vector3d::Ones() * t;
         Function product = linear * frame;
         Function quotient = linear / frame;
-        RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval(0, 1));
+        RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);
         MatrixXd quotient_values = (Vector3d(sqrt(2.0), 0, 1) * parameter_values).colwise() +
@@ -205,28 +205,28 @@ public:
         Function f = acos(t);
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
-        TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
-        TS_ASSERT(bounds.upper() - M_PI == Zero());
+        TS_ASSERT(bounds.lowerBound() - M_PI / 2 == Zero());
+        TS_ASSERT(bounds.upperBound() - M_PI == Zero());
         bounds = f(Interval(0.5, 1.5)).value();
-        TS_ASSERT(bounds.lower() == Zero());
-        TS_ASSERT(bounds.upper() - M_PI / 3 == Zero());
+        TS_ASSERT(bounds.lowerBound() == Zero());
+        TS_ASSERT(bounds.upperBound() - M_PI / 3 == Zero());
         bounds = f(Interval(1 + 1e-14, 1 + 1e-10)).value();
-        TS_ASSERT(bounds.lower() == Zero());
-        TS_ASSERT(bounds.upper() == Zero());
+        TS_ASSERT(bounds.lowerBound() == Zero());
+        TS_ASSERT(bounds.upperBound() == Zero());
     }
 
     void testArcsine() {
         Function f = asin(t);
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
-        TS_ASSERT(bounds.lower() + M_PI / 2 == Zero());
-        TS_ASSERT(bounds.upper() == Zero());
+        TS_ASSERT(bounds.lowerBound() + M_PI / 2 == Zero());
+        TS_ASSERT(bounds.upperBound() == Zero());
         bounds = f(Interval(0.5, 1.5)).value();
-        TS_ASSERT(bounds.lower() - M_PI / 6 == Zero());
-        TS_ASSERT(bounds.upper() - M_PI / 2 == Zero());
+        TS_ASSERT(bounds.lowerBound() - M_PI / 6 == Zero());
+        TS_ASSERT(bounds.upperBound() - M_PI / 2 == Zero());
         bounds = f(Interval(1 + 1e-14, 1 + 1e-10)).value();
-        TS_ASSERT(bounds.lower() - M_PI / 2 == Zero());
-        TS_ASSERT(bounds.upper() - M_PI / 2 == Zero());
+        TS_ASSERT(bounds.lowerBound() - M_PI / 2 == Zero());
+        TS_ASSERT(bounds.upperBound() - M_PI / 2 == Zero());
     }
 
     void testMirrored() {

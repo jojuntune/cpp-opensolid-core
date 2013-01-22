@@ -46,8 +46,8 @@ public:
         double value = load_file.get<double>("value");
 
         TS_ASSERT_EQUALS(vector, Vector3d(1, 2, 3));
-        TS_ASSERT_EQUALS(interval.lower(), 4);
-        TS_ASSERT_EQUALS(interval.upper(), 5);
+        TS_ASSERT_EQUALS(interval.lowerBound(), 4);
+        TS_ASSERT_EQUALS(interval.upperBound(), 5);
         TS_ASSERT_EQUALS(value, M_PI);
     }
 

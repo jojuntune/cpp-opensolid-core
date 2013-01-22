@@ -23,39 +23,38 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Matrix.hpp>
+
+#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Transformation/declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumInputDimensions, int iNumOutputDimensions = iNumInputDimensions>
-    class Transformation
-    {
-    public:
-        typedef Matrix<double, iNumOutputDimensions, iNumInputDimensions> MatrixType;
-        typedef Matrix<double, iNumOutputDimensions, 1> VectorType;
+    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    class Transformation{
     private:
-        MatrixType _matrix;
-        VectorType _vector;
+        Matrix<double, iNumSourceDimensions, 1> _sourceOriginPoint;
+        Matrix<double, iNumDestinationDimensions, iNumSourceDimensions> _transformationMatrix;
+        Matrix<double, iNumDestinationDimensions, 1> _destinationOriginPoint;
     public:
-        Transformation(const MatrixType& matrix, const VectorType& vector);
+        template <
+            int iNumSourceDatumDimensions,
+            int iNumSourceDatumAxes,
+            int iNumDestinationDatumDimensions,
+            int iNumDestinationDatumAxes
+        >
+        Transformation(
+            const Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
+            const Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+        );
 
-        const MatrixType& matrix() const;
-        const VectorType& vector() const;
-
-        int numInputDimensions() const;
-        int numOutputDimensions() const;
-
-        Transformation<iNumInputDimensions, iNumOutputDimensions> linear() const;
-
-        template <int iOtherNumInputDimensions, int iOtherNumOutputDimensions>
-        Transformation<iOtherNumInputDimensions, iNumOutputDimensions> operator()(
-            const Transformation<iOtherNumInputDimensions, iOtherNumOutputDimensions>& otherTransformation
-        ) const;
-
-        template <class TTransformable>
-        typename Transformed<TTransformable, iNumOutputDimensions>::Type operator()(
-            const TTransformable& transformable
-        ) const;
+        const Matrix<double, iNumSourceDimensions, 1>&
+        sourceOriginPoint() const;
+        
+        const Matrix<double, iNumDestinationDimensions, iNumSourceDimensions>&
+        transformationMatrix() const;
+        
+        const Matrix<double, iNumDestinationDimensions, 1>&
+        destinationOriginPoint() const;
     };
 }
 
@@ -63,59 +62,36 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumInputDimensions, int iNumOutputDimensions>
-    Transformation<iNumInputDimensions, iNumOutputDimensions>::Transformation(
-        const MatrixType& matrix,
-        const VectorType& vector
-    ) : _matrix(matrix),
-        _vector(vector) {
+    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    template <
+        int iNumSourceDatumDimensions,
+        int iNumSourceDatumAxes,
+        int iNumDestinationDatumDimensions,
+        int iNumDestinationDatumAxes
+    >
+    Transformation<iNumSourceDimensions, iNumDestinationDimensions>::Transformation(
+        const Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
+        const Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+    ) : _sourceOriginPoint(sourceDatum.originPoint()),
+        _transformationMatrix(destinationDatum.basisMatrix() * sourceDatum.inverseMatrix())
+        _destinationOriginPoint(destinationDatum.originPoint()) {
     }
 
-    template <int iNumInputDimensions, int iNumOutputDimensions>
-    const MatrixType& Transformation<iNumInputDimensions, iNumOutputDimensions>::matrix() const {
-        return _matrix;
+    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    const Matrix<double, iNumSourceDimensions, 1>&
+    Transformation<iNumSourceDimensions, iNumDestinationDimensions>::sourceOriginPoint() const {
+        return _sourceOriginPoint;
     }
     
-    template <int iNumInputDimensions, int iNumOutputDimensions>
-    const VectorType& Transformation<iNumInputDimensions, iNumOutputDimensions>::vector() const {
-        return _vector;
-    }
-
-    template <int iNumInputDimensions, int iNumOutputDimensions>
-    int Transformation<iNumInputDimensions, iNumOutputDimensions>::numInputDimensions() const {
-        return matrix().cols();
+    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    const Matrix<double, iNumDestinationDimensions, iNumSourceDimensions>&
+    Transformation<iNumSourceDimensions, iNumDestinationDimensions>::transformationMatrix() const {
+        return _transformationMatrix;
     }
     
-    template <int iNumInputDimensions, int iNumOutputDimensions>
-    int Transformation<iNumInputDimensions, iNumOutputDimensions>::numOutputDimensions() const {
-        return matrix().rows();
-    }
-
-    Transformation<iNumInputDimensions, iNumOutputDimensions>
-    Transformation<iNumInputDimensions, iNumOutputDimensions>::linear() const {
-        return Transformation<iNumInputDimensions, iNumOutputDimensions>(
-            matrix(),
-            VectorType::Zero(vector().size())
-        );
-    }
-
-    template <int iNumInputDimensions, int iNumOutputDimensions>
-    template <int iOtherNumInputDimensions, int iOtherNumOutputDimensions>
-    Transformation<iOtherNumInputDimensions, iNumOutputDimensions>
-    Transformation<iNumInputDimensions, iNumOutputDimensions>::operator()(
-        const Transformation<iOtherNumInputDimensions, iOtherNumOutputDimensions>& otherTransformation
-    ) const {
-        return Transformation<iOtherNumInputDimensions, iOtherNumOutputDimensions>(
-            matrix() * otherTransformation.matrix(),
-            matrix() * otherTransformation.vector() + vector()
-        );
-    }
-
-    template <int iNumInputDimensions, int iNumOutputDimensions> template <class TTransformable>
-    typename Transformed<TTransformable, iNumOutputDimensions>::Type
-    Transformation<iNumInputDimensions, iNumOutputDimensions>::operator()(
-        const TTransformable& transformable
-    ) const {
-        return transformable.transformed(*this);
+    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    const Matrix<double, iNumDestinationDimensions, 1>&
+    Transformation<iNumSourceDimensions, iNumDestinationDimensions>::destinationOriginPoint() const {
+        return _destinationOriginPoint;
     }
 }

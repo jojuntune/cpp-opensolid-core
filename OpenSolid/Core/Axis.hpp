@@ -23,88 +23,48 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
-#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Datum.hpp>
 
 namespace opensolid
 {
-    class Axis2d : public Datum<2, 1>
+    template <>
+    class Axis<2> : public Datum<2, 1>
     {
     public:
-        Axis2d();
+        OPENSOLID_CORE_EXPORT Axis();
 
-        template <class OriginType, class DirectionType>
-        Axis2d(const EigenBase<OriginType>& origin, const EigenBase<DirectionType>& direction);
+        OPENSOLID_CORE_EXPORT Axis(const Vector2d& originPoint, const Vector2d& basisVector);
 
-        template <int dimensions_, int axes_>
-        Axis2d(const Datum<dimensions_, axes_>& datum);
+        template <int iNumDimensions, int iNumAxes>
+        Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis);
     };
 
-    class Axis3d : public Datum<3, 1>
+    typedef Axis<2> Axis2d;
+
+    template <>
+    class Axis<3> : public Datum<3, 1>
     {
     public:
-        Axis3d();
+        OPENSOLID_CORE_EXPORT Axis();
 
-        template <class OriginType, class DirectionType>
-        Axis3d(const EigenBase<OriginType>& origin, const EigenBase<DirectionType>& direction);
+        OPENSOLID_CORE_EXPORT Axis(const Vector3d& originPoint, const Vector3d& basisVector);
 
-        template <int dimensions_, int axes_>
-        Axis3d(const Datum<dimensions_, axes_>& datum);
+        template <int iNumDimensions, int iNumAxes>
+        Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis);
     };
+
+    typedef Axis<3> Axis3d;
 }
 
 ////////// Implementation //////////
 
 namespace opensolid
 {
-    inline Axis2d::Axis2d() {
-        initialize(Vector2d::Zero(), Vector2d::UnitX());
+    template <int iNumDimensions, int iNumAxes>
+    Axis<2>::Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis) : Datum<2, 1>(otherAxis) {
     }
 
-    template <class OriginType, class DirectionType>
-    inline Axis2d::Axis2d(
-        const EigenBase<OriginType>& origin,
-        const EigenBase<DirectionType>& direction
-    ) {
-        bool valid_origin = origin.cols() == 1 && origin.rows() == 2;
-        bool valid_direction = direction.cols() == 1 && direction.rows() == 2 &&
-            !direction.derived().isZero();
-        if (!valid_origin || !valid_direction ) {
-            throw Axis2dConstructionError();
-        }
-        initialize(origin.derived(), direction.derived().normalized());
-    }
-
-    template <int dimensions_, int axes_>
-    inline Axis2d::Axis2d(const Datum<dimensions_, axes_>& datum) {
-        if (datum.dimensions() != 2 || datum.axes() != 1) {
-            throw Axis2dCopyConstructionError();
-        }
-        initialize(datum);
-    }
-
-    inline Axis3d::Axis3d() {
-        initialize(Vector3d::Zero(), Vector3d::UnitX());
-    }
-
-    template <class OriginType, class DirectionType>
-    inline Axis3d::Axis3d(
-        const EigenBase<OriginType>& origin,
-        const EigenBase<DirectionType>& direction
-    ) {
-        bool valid_origin = origin.cols() == 1 && origin.rows() == 3;
-        bool valid_direction = direction.cols() == 1 && direction.rows() == 3 &&
-            !direction.derived().isZero();
-        if (!valid_origin || !valid_direction ) {
-            throw Axis3dConstructionError();
-        }
-        initialize(origin.derived(), direction.derived().normalized());
-    }
-
-    template <int dimensions_, int axes_>
-    inline Axis3d::Axis3d(const Datum<dimensions_, axes_>& datum) {
-        if (datum.dimensions() != 3 || datum.axes() != 1) {
-            throw Axis3dCopyConstructionError();
-        }
-        initialize(datum);
+    template <int iNumDimensions, int iNumAxes>
+    Axis<3>::Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis) : Datum<3, 1>(otherAxis) {
     }
 }

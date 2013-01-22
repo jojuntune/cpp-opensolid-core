@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include "FunctionImplementation.hpp"
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 
 namespace opensolid
 {

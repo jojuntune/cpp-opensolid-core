@@ -102,22 +102,22 @@ namespace opensolid
         
         inline void split(const Interval& interval, int& splitDirection, double& splitValue) {
             splitDirection = 0;
-            splitValue = bounds.median();
+            splitValue = interval.median();
         }
 
         template <class TBounds>
         inline bool isCompatible(const TBounds& bounds, int splitDirection, double splitValue) {
-            double lowerValue = bounds(splitDirection).lowerValue();
-            double upperValue = bounds(splitDirection).upperValue();
-            double splitRatio = (splitValue - lowerValue) / (upperValue - splitValue);
+            double lowerBound = bounds(splitDirection).lowerBound();
+            double upperBound = bounds(splitDirection).upperBound();
+            double splitRatio = (splitValue - lowerBound) / (upperBound - splitValue);
             double widthRatio = bounds.cwiseWidth().maxCoeff() / bounds(splitDirection).width();
-            return splitRatio > 0.5 && split_ratio < 2 && width_ratio < 1.5;
+            return splitRatio > 0.5 && splitRatio < 2 && widthRatio < 1.5;
         }
     
         inline bool isCompatible(const Interval& interval, int splitDirection, double splitValue) {
             assert(splitDirection == 0);
             double splitRatio =
-                (splitValue - interval.lowerValue()) / (interval.upperValue() - splitValue);
+                (splitValue - interval.lowerBound()) / (interval.upperBound() - splitValue);
             return splitRatio > 0.5 && splitRatio < 2;
         }
 
@@ -133,12 +133,12 @@ namespace opensolid
 
         template <class TBounds>
         inline bool hasLesserMedian(
-            const BoundsType& firstBounds,
-            const BoundsType& secondBounds,
+            const TBounds& firstBounds,
+            const TBounds& secondBounds,
             int splitDirection
         ) {
             Interval difference = firstBounds(splitDirection) - secondBounds(splitDirection);
-            return difference.upperValue() < -difference.lowerValue();
+            return difference.upperBound() < -difference.lowerBound();
         }
 
         inline bool hasLesserMedian(
@@ -148,17 +148,17 @@ namespace opensolid
         ) {
             assert(splitDirection == 0);
             Interval difference = firstInterval - secondInterval;
-            return difference.upperValue() < -difference.lowerValue();
+            return difference.upperBound() < -difference.lowerBound();
         }
 
         template <class TBounds>
         inline bool hasGreaterMedian(
-            const BoundsType& firstBounds,
-            const BoundsType& secondBounds,
+            const TBounds& firstBounds,
+            const TBounds& secondBounds,
             int splitDirection
         ) {
             Interval difference = firstBounds(splitDirection) - secondBounds(splitDirection);
-            return difference.upperValue() > -difference.lowerValue();
+            return difference.upperBound() > -difference.lowerBound();
         }
 
         inline bool hasGreaterMedian(
@@ -168,7 +168,7 @@ namespace opensolid
         ) {
             assert(splitDirection == 0);
             Interval difference = firstInterval - secondInterval;
-            return difference.upperValue() > -difference.lowerValue();
+            return difference.upperBound() > -difference.lowerBound();
         }
     }
     
@@ -210,7 +210,7 @@ namespace opensolid
     inline SetNode<TElement>::SetNode(
         const TElement& element,
         const typename Bounds<TElement>::Type& bounds
-    ) : _element(new TElement(object)),
+    ) : _element(new TElement(element)),
         _bounds(bounds),
         _leftChild(OPENSOLID_NULLPTR),
         _rightChild(OPENSOLID_NULLPTR),
@@ -248,7 +248,7 @@ namespace opensolid
             _rightChild = *(begin + 1);
             double rightMedian = detail::median(_rightChild->_bounds, _splitDirection);
             double leftMedian = detail::median(_leftChild->_bounds, _splitDirection);
-            if (right_median < left_median) {
+            if (rightMedian < leftMedian) {
                 std::swap(_leftChild, _rightChild);
             }
         } else {

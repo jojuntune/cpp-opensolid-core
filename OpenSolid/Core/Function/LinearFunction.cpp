@@ -24,29 +24,36 @@
 
 namespace opensolid
 {
-    LinearFunction::LinearFunction(const DatumXd& datum) : _datum(datum) {}
+    LinearFunction::LinearFunction(const DatumXd& datum) : _datum(datum) {
+    }
     
-    int LinearFunction::parameters() const {return datum().axes();}
+    int LinearFunction::parameters() const {
+        return datum().numAxes();
+    }
     
-    int LinearFunction::dimensions() const {return datum().dimensions();}
+    int LinearFunction::dimensions() const {
+        return datum().numDimensions();
+    }
     
     void LinearFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = parameter_values * datum();
+        results = datum() * parameter_values;
     }
     
     void LinearFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = parameter_bounds * datum();
+        results = datum() * parameter_bounds;
     }
 
     void LinearFunction::getDerivative(int index, Function& result) const {
-        result = datum().direction(index);
+        result = datum().basisVector(index);
     }
     
     void LinearFunction::getTransformed(
         const MatrixXd& matrix,
         const VectorXd& vector,
         Function& result
-    ) const {result = new LinearFunction(datum().transformed(matrix, vector));}
+    ) const {
+        result = new LinearFunction(matrix * datum() + vector);
+    }
     
     void LinearFunction::debug(std::ostream& stream, int indent) const {
         stream << "LinearFunction" << std::endl;

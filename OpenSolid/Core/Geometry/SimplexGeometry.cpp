@@ -24,40 +24,51 @@
 
 namespace opensolid
 {
-    SimplexGeometry::SimplexGeometry(const SimplexXd& simplex) : _simplex(simplex) {}
+    SimplexGeometry::SimplexGeometry(const SimplexXd& simplex) : _simplex(simplex) {
+    }
 
     Function SimplexGeometry::function() const {
         return Function::Linear(_simplex.coordinateSystem());
     }
     
-    Domain SimplexGeometry::domain() const {return Domain::UnitSimplex(parameters());}
+    Domain SimplexGeometry::domain() const {
+        return Domain::UnitSimplex(parameters());
+    }
         
-    int SimplexGeometry::parameters() const {return _simplex.size() - 1;}
+    int SimplexGeometry::parameters() const {
+        return _simplex.numVertices() - 1;
+    }
     
-    int SimplexGeometry::dimensions() const {return _simplex.dimensions();}
+    int SimplexGeometry::dimensions() const {
+        return _simplex.numDimensions();
+    }
 
     void SimplexGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        results = parameter_values * _simplex.coordinateSystem();
+        results = _simplex.coordinateSystem() * parameter_values;
     }
 
     void SimplexGeometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = parameter_bounds * _simplex.coordinateSystem();
+        results = _simplex.coordinateSystem() * parameter_bounds;
     }
     
-    bool SimplexGeometry::isConstant() const {return false;}
+    bool SimplexGeometry::isConstant() const {
+        return false;
+    }
     
-    VectorXI SimplexGeometry::bounds() const {return _simplex.bounds();}
+    VectorXI SimplexGeometry::bounds() const {
+        return _simplex.bounds();
+    }
     
     Set<Geometry> SimplexGeometry::boundaries() const {
         Set<Geometry> results;
-        for (int i = 0; i < _simplex.size(); ++i) {
+        for (int i = 0; i < _simplex.numVertices(); ++i) {
             results.insert(new SimplexGeometry(_simplex.face(i)));
         }
         return results;
     }
 
     Geometry SimplexGeometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return new SimplexGeometry(_simplex.transformed(matrix, vector));
+        return new SimplexGeometry(matrix * _simplex + vector);
     }
 
     Geometry SimplexGeometry::reversed() const {

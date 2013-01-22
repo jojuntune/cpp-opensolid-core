@@ -32,7 +32,8 @@ class DatumTests : public CxxTest::TestSuite
 public:
     void testProduct() {
         MatrixXd vectors(3, 2);
-        Frame3d frame(Vector3d(1, 1, 1), Vector3d(1, 1, 0), Vector3d(-1, 1, 0));
+        vectors << Vector3d(1, 1, 0), Vector3d(-1, 1, 0);
+        Frame3d frame(Vector3d(1, 1, 1), vectors);
         std::cout << frame.basis() << std::endl;
         Vector3d product = Vector3d(1, 1, 1) * frame;
         std::cout << product << std::endl;

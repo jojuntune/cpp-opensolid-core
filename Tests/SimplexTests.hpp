@@ -55,7 +55,7 @@ public:
         Triangle2d triangle(Vector2d::Zero(), Vector2d(2, 1), Vector2d(1, 2));
         for (int i = 0; i < 3; ++i) {
             Vector2d vertex = triangle.vertex(i);
-            Line2d edge = triangle.face(i);
+            LineSegment2d edge = triangle.face(i);
             TS_ASSERT((vertex - edge.centroid()).dot(edge.normal()) < Zero());
         }
     }
@@ -110,7 +110,7 @@ public:
     }
     
     void testNormal() {
-        Line2d line(Vector2d(1, 1), Vector2d(3, 2));
+        LineSegment2d line(Vector2d(1, 1), Vector2d(3, 2));
         TS_ASSERT((line.normal() - Vector2d(-1, 2).normalized()).isZero());
         Triangle3d triangle(Vector3d(1, 1, 1), Vector3d(3, 1, 2), Vector3d(2, 2, 4));
         Vector3d expected_normal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
@@ -119,7 +119,7 @@ public:
     
     void testCopyingAndEquality() {
         Triangle2d triangle(Vector2d::Zero(), Vector2d::UnitX(), Vector2d::UnitY());
-        Line2d line = triangle.edge(1, 2);
+        LineSegment2d line = triangle.edge(1, 2);
         SimplexXd simplex = triangle;
         simplex = triangle.edge(1, 2);
         TS_ASSERT_EQUALS(line, simplex);
@@ -138,13 +138,13 @@ public:
         TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero());
     }
     
-    void testLine1d() {
-        Line3d line3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
-        Line1d quotient = line3d / Frame3d().yAxis();
-        Line1d line1d(2, 5);
+    void testLineSegment1d() {
+        LineSegment3d line3d(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+        LineSegment1d quotient = line3d / Frame3d().yAxis();
+        LineSegment1d line1d(2, 5);
         TS_ASSERT((quotient.vertices() - line1d.vertices()).isZero());
-        Line3d product =
-            Line1d(1.0 / 3.0, 2.0 / 3.0) * line3d.coordinateSystem();
+        LineSegment3d product =
+            LineSegment1d(1.0 / 3.0, 2.0 / 3.0) * line3d.coordinateSystem();
         TS_ASSERT((product.vertex(0) - Vector3d(2, 3, 4)).isZero());
         TS_ASSERT((product.vertex(1) - Vector3d(3, 4, 5)).isZero());
     }
@@ -176,17 +176,17 @@ public:
     }
 
     void testVector() {
-        Line3d line(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+        LineSegment3d line(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
         TS_ASSERT((line.vector() - Vector3d::Constant(3)).isZero());
     }
 
     void testBoostGeometry() {
         #if BOOST_VERSION >= 104700
-        Line3d line(Vector3d(1, 1, 1), Vector3d(4, 5, 6));
+        LineSegment3d line(Vector3d(1, 1, 1), Vector3d(4, 5, 6));
         TS_ASSERT(boost::geometry::length(line) - line.length() == Zero());
-        //Line2d line1(Vector2d::Zero(), Vector2d(2, 0));
-        //Line2d line2(Vector2d(1, 1), Vector2d(1, 3));
-        //Line2d line3(Vector2d(0, 1), Vector2d(2, 3));
+        //LineSegment2d line1(Vector2d::Zero(), Vector2d(2, 0));
+        //LineSegment2d line2(Vector2d(1, 1), Vector2d(1, 3));
+        //LineSegment2d line3(Vector2d(0, 1), Vector2d(2, 3));
         //TS_ASSERT(!boost::geometry::intersects(line1, line2));
         //TS_ASSERT(boost::geometry::intersects(line2, line3));
         #endif

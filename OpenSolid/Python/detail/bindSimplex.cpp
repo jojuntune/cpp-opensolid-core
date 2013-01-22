@@ -93,27 +93,27 @@ namespace opensolid
     };
 
     SimplexXd line1d(double first_vertex, double second_vertex) {
-        return Line1d(first_vertex, second_vertex);
+        return LineSegment1d(first_vertex, second_vertex);
     }
 
     SimplexXd line1d2(MatrixXd vertices) {
-        return Line1d(vertices);
+        return LineSegment1d(vertices);
     }
 
     SimplexXd line2d(const MatrixXd& first_vertex, const MatrixXd& second_vertex) {
-        return Line2d(first_vertex, second_vertex);
+        return LineSegment2d(first_vertex, second_vertex);
     }
 
     SimplexXd line2d2(const MatrixXd& vertices) {
-        return Line2d(vertices);
+        return LineSegment2d(vertices);
     }
 
     SimplexXd line3d(const MatrixXd& first_vertex, const MatrixXd& second_vertex) {
-        return Line3d(first_vertex, second_vertex);
+        return LineSegment3d(first_vertex, second_vertex);
     }
 
     SimplexXd line3d2(const MatrixXd& vertices) {
-        return Line3d(vertices);
+        return LineSegment3d(vertices);
     }
 
     SimplexXd triangle2d(
@@ -183,12 +183,12 @@ namespace opensolid
             .def(self / DatumXd())
             .def(self % DatumXd())
             .def_pickle(SimplexPickleSuite());
-        def("Line1d", &line1d);
-        def("Line1d", &line1d2);
-        def("Line2d", &line2d);
-        def("Line2d", &line2d2);
-        def("Line3d", &line3d);
-        def("Line3d", &line3d2);
+        def("LineSegment1d", &line1d);
+        def("LineSegment1d", &line1d2);
+        def("LineSegment2d", &line2d);
+        def("LineSegment2d", &line2d2);
+        def("LineSegment3d", &line3d);
+        def("LineSegment3d", &line3d2);
         def("Triangle2d", &triangle2d);
         def("Triangle2d", &triangle2d2);
         def("Triangle3d", &triangle3d);

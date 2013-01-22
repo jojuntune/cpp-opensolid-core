@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include "GeometryConstructors.hpp"
+#include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
@@ -28,49 +28,56 @@ namespace opensolid
     Geometry GeometryConstructors::Arc2d(
         const Frame2d& frame,
         double radius,
-        double start_angle,
-        double end_angle
+        double startAngle,
+        double endAngle
     ) {
-        Datum2d datum = frame.scaled(radius);
-        Function angle;
-        if (end_angle - start_angle == Zero()) {
-            angle = 2 * M_PI * Function::Parameter();
-            datum = frame.scaled(radius);
-        } else if (end_angle > start_angle) {
-            angle = start_angle + (end_angle - start_angle) * Function::Parameter();
-            datum = frame.scaled(radius);
+        Frame2d datum = frame.scaled(radius, frame.originPoint());
+        Function angleFunction;
+        if (endAngle - startAngle == Zero()) {
+            angleFunction = 2 * M_PI * Function::Parameter();
+        } else if (endAngle > startAngle) {
+            angleFunction = startAngle + (endAngle - startAngle) * Function::Parameter();
         } else {
-            datum = frame.scaled(radius).xReversed();
-            angle = M_PI - start_angle + (start_angle - end_angle) * Function::Parameter();
+            datum = datum.xReversed();
+            angleFunction = M_PI - startAngle + (startAngle - endAngle) * Function::Parameter();
         }
-        return Geometry(Function::Elliptical(datum)(angle), Interval(0, 1));
+
+        return Geometry(Function::Elliptical(datum)(angleFunction), Interval::Unit());
     }
         
     Geometry GeometryConstructors::Arc2d(
         const Vector2d& center,
-        bool counterclockwise,
-        const Vector2d& start,
-        const Vector2d& end
+        bool isCounterclockwise,
+        const Vector2d& startPoint,
+        const Vector2d& endPoint
     ) {
-        Vector2d radial = start - center;
-        double radius = radial.norm();
-        Datum2d datum = Frame2d(center, radial).scaled(radius);
-        if (!counterclockwise) {datum = datum.yReversed();}
-        Vector2d local_end = end / datum;
-        double swept_angle = atan2(local_end.y(), local_end.x());
-        if (swept_angle <= Zero()) {swept_angle += 2 * M_PI;}
-        Function angle = swept_angle * Function::Parameter();
-        return Geometry(Function::Elliptical(datum)(angle), Interval(0, 1));
+        Vector2d radialVector = startPoint - center;
+        double radius = radialVector.norm();
+
+        Frame2d datum = Frame2d::FromXAxis(Axis2d(center, radialVector.normalized()));
+        datum = datum.scaled(radius, center);
+        if (!isCounterclockwise) {
+            datum = datum.yReversed();
+        }
+
+        Vector2d localEndPoint = endPoint / datum;
+        double sweptAngle = atan2(localEndPoint.y(), localEndPoint.x());
+        if (sweptAngle <= Zero()) {
+            sweptAngle += 2 * M_PI;
+        }
+        Function angleFunction = sweptAngle * Function::Parameter();
+
+        return Geometry(Function::Elliptical(datum)(angleFunction), Interval::Unit());
     }
 
     Geometry GeometryConstructors::Arc2d(
-        const Vector2d& start_point,
-        const Vector2d& inner_point,
-        const Vector2d& end_point
+        const Vector2d& startPoint,
+        const Vector2d& innerPoint,
+        const Vector2d& endPoint
     ) {
-        double a = (inner_point - start_point).norm();
-        double b = (end_point - inner_point).norm();
-        double c = (start_point - end_point).norm();
+        double a = (innerPoint - startPoint).norm();
+        double b = (endPoint - innerPoint).norm();
+        double c = (startPoint - endPoint).norm();
         #ifndef NDEBUG
         double s = (a + b + c) / 2;
         assert(s - a > Zero() && s - b > Zero() && s - c > Zero());
@@ -86,85 +93,101 @@ namespace opensolid
         t1 /= sum;
         t2 /= sum;
         t3 /= sum;
-        Vector2d center = t1 * end_point + t2 * start_point + t3 * inner_point;
-        Vector2d first_leg = inner_point - start_point;
-        Vector2d second_leg = end_point - inner_point;
-        bool counterclockwise = (first_leg.x() * second_leg.y() - first_leg.y() - second_leg.x()) >= Zero();
-        Vector2d start_radial_vector = start_point - center;
-        Vector2d end_radial_vector = end_point - center;
-        double start_angle = atan2(start_radial_vector.y(), start_radial_vector.x());
-        double end_angle = atan2(end_radial_vector.y(), end_radial_vector.x());
-        if (counterclockwise && end_angle < start_angle) {
-            end_angle += 2 * M_PI;
-        } else if (!counterclockwise && end_angle > start_angle) {
-            end_angle -= 2 * M_PI;
+        Vector2d center = t1 * endPoint + t2 * startPoint + t3 * innerPoint;
+
+        Vector2d firstLeg = innerPoint - startPoint;
+        Vector2d secondLeg = endPoint - innerPoint;
+        bool isCounterclockwise =
+            (firstLeg.x() * secondLeg.y() - firstLeg.y() - secondLeg.x()) >= Zero();
+        Vector2d startRadialVector = startPoint - center;
+        Vector2d endRadialVector = endPoint - center;
+        double startAngle = atan2(startRadialVector.y(), startRadialVector.x());
+        double endAngle = atan2(endRadialVector.y(), endRadialVector.x());
+        if (isCounterclockwise && endAngle < startAngle) {
+            endAngle += 2 * M_PI;
+        } else if (!isCounterclockwise && endAngle > startAngle) {
+            endAngle -= 2 * M_PI;
         }
-        return Geometry::Arc2d(Frame2d(center), radius, start_angle, end_angle);
+
+        return Geometry::Arc2d(Frame2d::Unit(center), radius, startAngle, endAngle);
     }
 
     Geometry GeometryConstructors::Arc3d(
         const Plane3d& plane,
         double radius,
-        double start_angle,
-        double end_angle
-    ) {return Geometry::Arc2d(Frame2d(), radius, start_angle, end_angle) * plane;}
-
-    Geometry GeometryConstructors::Arc3d(
-        const Axis3d& axis,
-        const Vector3d& start,
-        const Vector3d& end
+        double startAngle,
+        double endAngle
     ) {
-        Vector3d center = start % axis;
-        Plane3d plane = Plane3d(center, axis.direction());
-        return Geometry::Arc2d(Vector2d::Zero(), true, start / plane, end / plane) * plane;
+        return plane * Geometry::Arc2d(Frame2d::Unit(), radius, startAngle, endAngle);
     }
 
     Geometry GeometryConstructors::Arc3d(
-        const Vector3d& start_point,
-        const Vector3d& inner_point,
-        const Vector3d& end_point
+        const Axis3d& axis,
+        const Vector3d& startPoint,
+        const Vector3d& endPoint
     ) {
-        Plane3d plane(inner_point, start_point - inner_point, end_point - inner_point);
-        return Geometry::Arc2d(start_point / plane, inner_point / plane, end_point / plane) * plane;
+        Vector3d center = startPoint.projected(axis);
+        Plane3d plane = Plane3d::FromPointAndNormal(center, axis.basisVector());
+        return plane * Geometry::Arc2d(Vector2d::Zero(), true, startPoint / plane, endPoint / plane);
+    }
+
+    Geometry GeometryConstructors::Arc3d(
+        const Vector3d& startPoint,
+        const Vector3d& innerPoint,
+        const Vector3d& endPoint
+    ) {
+        Plane3d plane = Plane3d::FromPointAndNormal(
+            innerPoint,
+            (startPoint - innerPoint).cross(endPoint - innerPoint).normalized()
+        );
+        return plane * Geometry::Arc2d(startPoint / plane, innerPoint / plane, endPoint / plane);
     }
 
     Geometry GeometryConstructors::Circle2d(
         const Vector2d& center,
         double radius,
-        bool filled
+        bool isFilled
     ) {
-        if (filled) {
-            Function arc_function = Geometry::Arc2d(Frame2d(), radius, 0, 2 * M_PI).function();
+        if (isFilled) {
+            Function arcFunction = Geometry::Arc2d(Frame2d::Unit(), radius, 0, 2 * M_PI).function();
             Function u = Function::Parameter(2, 0);
             Function v = Function::Parameter(2, 1);
-            Function circle_function = center + u * arc_function(v);
-            return Geometry(circle_function, Domain(Interval(0, 1), Interval(0, 1)));
+            Function circleFunction = center + u * arcFunction(v);
+            return Geometry(circleFunction, Domain(Interval::Unit(), Interval::Unit()));
         } else {
-            return Geometry::Arc2d(Frame2d(center), radius, 0, 2 * M_PI);
+            return Geometry::Arc2d(Frame2d::Unit(center), radius, 0, 2 * M_PI);
         }
     }
 
     Geometry GeometryConstructors::Circle3d(
         const Axis3d& axis,
         double radius,
-        bool filled
-    ) {return Geometry::Circle2d(Vector2d::Zero(), radius, filled) * axis.normalPlane();}
+        bool isFilled
+    ) {
+        return axis.normalPlane() * Geometry::Circle2d(Vector2d::Zero(), radius, isFilled);
+    }
 
     Geometry GeometryConstructors::Circle3d(
         const Plane3d& plane,
         double radius,
-        bool filled
-    ) {return Geometry::Circle2d(Vector2d::Zero(), radius, filled) * plane;}
+        bool isFilled
+    ) {
+        return plane * Geometry::Circle2d(Vector2d::Zero(), radius, isFilled);
+    }
         
     Geometry GeometryConstructors::Helix3d(
         const Frame3d& frame,
         double radius,
         double pitch,
-        const Interval& turns
+        Interval turnInterval
     ) {
-        Function angle = 2 * M_PI * Function::Parameter();
-        Function planar = Function::Elliptical(frame.xyPlane().scaled(radius))(angle);
-        Function axial = Function::Linear(frame.zAxis().scaled(pitch));
-        return Geometry(planar + axial, turns);
+        Plane3d plane = frame.xyPlane().scaled(radius, frame.originPoint());
+        Function angleFunction = 2 * M_PI * Function::Parameter();
+        Function planarFunction = Function::Elliptical(plane)(angleFunction);
+
+        Axis3d axis = frame.zAxis().scaled(pitch, frame.originPoint());
+        Function axialFunction = Function::Linear(axis);
+
+        return Geometry(planarFunction + axialFunction, turnInterval);
     }
 }

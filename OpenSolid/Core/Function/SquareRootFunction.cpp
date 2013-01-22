@@ -39,7 +39,7 @@ namespace opensolid
         
         inline Interval operator()(const Interval& bounds) const {
             assert(bounds >= Zero());
-            return Interval(operator()(bounds.lower()), operator()(bounds.upper()));
+            return Interval(operator()(bounds.lowerBound()), operator()(bounds.upperBound()));
         }
     };
     

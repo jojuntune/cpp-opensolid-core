@@ -28,33 +28,39 @@ namespace opensolid
     RectangleDomain::RectangleDomain(const Vector2I& bounds) : _bounds(bounds) {}
 
     Set<Geometry> RectangleDomain::boundaries() const {
-        double x_lower = _bounds.x().lower();
-        double y_lower = _bounds.y().lower();
-        double x_upper = _bounds.x().upper();
-        double y_upper = _bounds.y().upper();
-        Vector2d p0(x_lower, y_lower);
-        Vector2d p1(x_lower, y_upper);
-        Vector2d p2(x_upper, y_upper);
-        Vector2d p3(x_upper, y_lower);
+        double xLower = _bounds.x().lowerBound();
+        double yLower = _bounds.y().lowerBound();
+        double xUpper = _bounds.x().upperBound();
+        double yUpper = _bounds.y().upperBound();
+        Vector2d p0(xLower, yLower);
+        Vector2d p1(xLower, yUpper);
+        Vector2d p2(xUpper, yUpper);
+        Vector2d p3(xUpper, yLower);
         Set<Geometry> results;
-        results.insert(Line2d(p0, p1));
-        results.insert(Line2d(p1, p2));
-        results.insert(Line2d(p2, p3));
-        results.insert(Line2d(p3, p0));
+        results.insert(LineSegment2d(p0, p1));
+        results.insert(LineSegment2d(p1, p2));
+        results.insert(LineSegment2d(p2, p3));
+        results.insert(LineSegment2d(p3, p0));
         return results;
     }
 
-    bool RectangleDomain::isEmpty() const {return _bounds.isEmpty();}
+    bool RectangleDomain::isEmpty() const {
+        return _bounds.isEmpty();
+    }
 
-    int RectangleDomain::dimensions() const {return 2;}
+    int RectangleDomain::dimensions() const {
+        return 2;
+    }
 
-    VectorXI RectangleDomain::bounds() const {return _bounds;}
+    VectorXI RectangleDomain::bounds() const {
+        return _bounds;
+    }
 
     Domain RectangleDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         if (matrix.isDiagonal()) {
-            Interval x_interval = matrix(0, 0) * _bounds.x() + vector.x();
-            Interval y_interval = matrix(1, 1) * _bounds.y() + vector.y();
-            return new RectangleDomain(Vector2I(x_interval, y_interval));
+            Interval xInterval = matrix(0, 0) * _bounds.x() + vector.x();
+            Interval yInterval = matrix(1, 1) * _bounds.y() + vector.y();
+            return new RectangleDomain(Vector2I(xInterval, yInterval));
         } else {
             return DomainImplementation::transformed(matrix, vector);
         }

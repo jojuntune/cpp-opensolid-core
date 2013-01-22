@@ -22,31 +22,55 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 
 namespace opensolid
 {
     class Frame2d : public Datum<2, 2>
     {
     public:
-        Frame2d();
-        explicit Frame2d(const Vector2d& origin);
-        Frame2d(const Vector2d& origin, const Vector2d& x_direction);
+        OPENSOLID_CORE_EXPORT Frame2d();
+
+        Frame2d(const Frame2d& otherFrame);
+
+        OPENSOLID_CORE_EXPORT explicit Frame2d(const Vector2d& originPoint);
         
-        template <int dimensions_, int axes_>
-        Frame2d(const Datum<dimensions_, axes_>& datum);
+        OPENSOLID_CORE_EXPORT Frame2d(const Vector2d& originPoint, const Matrix2d& basisMatrix);
+        
+        template <int iNumDimensions, int iNumAxes>
+        Frame2d(const Datum<iNumDimensions, iNumAxes>& otherFrame);
+
+        OPENSOLID_CORE_EXPORT static Frame2d Unit();
+        OPENSOLID_CORE_EXPORT static Frame2d Unit(const Vector2d& originPoint);
+        OPENSOLID_CORE_EXPORT static Frame2d FromXAxis(const Axis2d& xAxis);
+        OPENSOLID_CORE_EXPORT static Frame2d FromYAxis(const Axis2d& yAxis);
     };
 
     
     class Frame3d : public Datum<3, 3>
     {
     public:
-        Frame3d();
-        explicit Frame3d(const Vector3d& origin);
-        Frame3d(const Vector3d& origin, const Vector3d& x_direction, const Vector3d& y_direction);
+        OPENSOLID_CORE_EXPORT Frame3d();
+
+        Frame3d(const Frame3d& otherFrame);
+
+        OPENSOLID_CORE_EXPORT explicit Frame3d(const Vector3d& originPoint);
         
-        template <int dimensions_, int axes_>
-        Frame3d(const Datum<dimensions_, axes_>& datum);
+        OPENSOLID_CORE_EXPORT Frame3d(const Vector3d& originPoint, const Matrix3d& basisMatrix);
+        
+        template <int iNumDimensions, int iNumAxes>
+        Frame3d(const Datum<iNumDimensions, iNumAxes>& otherFrame);
+
+        OPENSOLID_CORE_EXPORT static Frame3d Unit();
+        OPENSOLID_CORE_EXPORT static Frame3d Unit(const Vector3d& originPoint);
+        OPENSOLID_CORE_EXPORT static Frame3d FromXYPlane(const Plane3d& xyPlane);
+        OPENSOLID_CORE_EXPORT static Frame3d FromXZPlane(const Plane3d& xzPlane);
+        OPENSOLID_CORE_EXPORT static Frame3d FromYXPlane(const Plane3d& yxPlane);
+        OPENSOLID_CORE_EXPORT static Frame3d FromYZPlane(const Plane3d& yzPlane);
+        OPENSOLID_CORE_EXPORT static Frame3d FromZXPlane(const Plane3d& zxPlane);
+        OPENSOLID_CORE_EXPORT static Frame3d FromZYPlane(const Plane3d& zyPlane);
     };
 }
 
@@ -54,48 +78,19 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline Frame2d::Frame2d() {initialize(Vector2d::Zero(), Matrix2d::Identity());}
-
-    inline Frame2d::Frame2d(const Vector2d& origin) {initialize(origin, Matrix2d::Identity());}
-
-    inline Frame2d::Frame2d(const Vector2d& origin, const Vector2d& x_direction) {
-        Matrix2d basis;
-        basis.col(0) = x_direction.normalized();
-        basis.col(1) = x_direction.unitOrthogonal();
-        initialize(origin, basis);
+    inline Frame2d::Frame2d(const Frame2d& otherFrame) : Datum<2, 2>(otherFrame) {
     }
 
-    template <int dimensions_, int axes_>
-    inline Frame2d::Frame2d(const Datum<dimensions_, axes_>& datum) {
-        assertCompatible<2, dimensions_>();
-        assert(datum.dimensions() == 2);
-        assertCompatible<2, axes_>();
-        assert(datum.axes() == 2);
-        initialize(datum);
+    template <int iNumDimensions, int iNumAxes>
+    inline Frame2d::Frame2d(const Datum<iNumDimensions, iNumAxes>& otherFrame) :
+        Datum<2, 2>(otherFrame) {
     }
 
-    inline Frame3d::Frame3d() {initialize(Vector3d::Zero(), Matrix3d::Identity());}
-
-    inline Frame3d::Frame3d(const Vector3d& origin) {initialize(origin, Matrix3d::Identity());}
-
-    inline Frame3d::Frame3d(
-        const Vector3d& origin,
-        const Vector3d& x_direction,
-        const Vector3d& y_direction
-    ) {
-        Matrix3d basis;
-        basis.col(0) = x_direction.normalized();
-        basis.col(1) = (y_direction - y_direction.dot(basis.col(0)) * basis.col(0)).normalized();
-        basis.col(2) = basis.col(0).cross(basis.col(1));
-        initialize(origin, basis);
+    inline Frame3d::Frame3d(const Frame3d& otherFrame) : Datum<3, 3>(otherFrame) {
     }
 
-    template <int dimensions_, int axes_>
-    inline Frame3d::Frame3d(const Datum<dimensions_, axes_>& datum) {
-        assertCompatible<3, dimensions_>();
-        assert(datum.dimensions() == 3);
-        assertCompatible<3, axes_>();
-        assert(datum.axes() == 3);
-        initialize(datum);
+    template <int iNumDimensions, int iNumAxes>
+    inline Frame3d::Frame3d(const Datum<iNumDimensions, iNumAxes>& otherFrame) :
+        Datum<3, 3>(otherFrame) {
     }
 }

@@ -6,3 +6,4 @@ build*/*
 .svn/*
 *kdev4*
 *.pyc
+*.sublime-workspace

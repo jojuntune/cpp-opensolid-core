@@ -49,7 +49,7 @@ namespace opensolid
     Set<Geometry> ConstantGeometry::boundaries() const {return Set<Geometry>();}
 
     Geometry ConstantGeometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return new ConstantGeometry(_vector.transformed(matrix, vector));
+        return new ConstantGeometry(matrix * _vector + vector);
     }
 
     Geometry ConstantGeometry::reversed() const {return this;}

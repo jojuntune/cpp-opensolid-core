@@ -26,12 +26,16 @@ namespace opensolid
 {
     EllipticalFunction::EllipticalFunction(const DatumXd& datum, const VectorXb& convention) :
         _datum(datum), _convention(convention) {
-        assert(convention.size() == _datum.axes() - 1);
+        assert(convention.size() == _datum.numAxes() - 1);
     }
     
-    int EllipticalFunction::parameters() const {return datum().axes() - 1;}
+    int EllipticalFunction::parameters() const {
+        return datum().numAxes() - 1;
+    }
     
-    int EllipticalFunction::dimensions() const {return datum().dimensions();}
+    int EllipticalFunction::dimensions() const {
+        return datum().numDimensions();
+    }
     
     void EllipticalFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd local = MatrixXd::Ones(parameters() + 1, parameter_values.cols());
@@ -46,7 +50,7 @@ namespace opensolid
                     cos(parameter_values.row(i).array()).replicate(parameters() - i, 1);
             }
         }
-        results = local * datum();
+        results = datum() * local;
     }
     
     void EllipticalFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
@@ -62,12 +66,12 @@ namespace opensolid
                     cos(parameter_bounds.row(i).array()).replicate(parameters() - i, 1);
             }
         }
-        results = local * datum();
+        results = datum() * local;
     }
 
     void EllipticalFunction::getDerivative(int index, Function& result) const {
         VectorXd new_origin = VectorXd::Zero(dimensions());
-        MatrixXd new_basis = datum().basis();
+        MatrixXd new_basis = datum().basisMatrix();
         VectorXb new_convention = convention();
         new_convention(index) = !new_convention(index);
         if (convention()(index)) {
@@ -83,7 +87,9 @@ namespace opensolid
         const MatrixXd& matrix,
         const VectorXd& vector,
         Function& result
-    ) const {result = new EllipticalFunction(datum().transformed(matrix, vector), convention());}
+    ) const {
+        result = new EllipticalFunction(matrix * datum() + vector, convention());
+    }
     
     void EllipticalFunction::debug(std::ostream& stream, int indent) const {
         stream << "EllipticalFunction" << std::endl;

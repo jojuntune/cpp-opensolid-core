@@ -24,6 +24,23 @@
 
 namespace opensolid
 {
-    template <int iInputDimensions, int iOutputDimensions = iInputDimensions>
+    template <int iNumDimensions>
+    class Rotation;
+
+    template <int iNumDimensions>
+    class Mirror;
+
+    template <int iNumDimensions>
+    class Projection;
+
+    template <int iNumSourceDimensions, int iNumDestinationDimensions>
     class Transformation;
+
+    template <class TInput, int iTransformedDimensions>
+    struct Transformed;
+
+    enum LinearTag {Linear};
+
+    template <class TDerived>
+    class Transformable;
 }

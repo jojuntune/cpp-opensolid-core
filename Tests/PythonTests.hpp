@@ -148,15 +148,15 @@ public:
         PythonEnvironment environment;
         environment.set("a", Interval(1,2));
         Interval result = environment.get<Interval>("a + Interval(3,4)");
-        TS_ASSERT_EQUALS(result.lower(), 4.0);
-        TS_ASSERT_EQUALS(result.upper(), 6.0);
+        TS_ASSERT_EQUALS(result.lowerBound(), 4.0);
+        TS_ASSERT_EQUALS(result.upperBound(), 6.0);
     }
     
     void testMixedScalarOperations() {
         PythonEnvironment environment;
         Interval result = environment.get<Interval>("2 * Interval(3, 4)");
-        TS_ASSERT_EQUALS(result.lower(), 6.0);
-        TS_ASSERT_EQUALS(result.upper(), 8.0);
+        TS_ASSERT_EQUALS(result.lowerBound(), 6.0);
+        TS_ASSERT_EQUALS(result.upperBound(), 8.0);
     }
     
     void xtestMatrixXd() {
@@ -177,12 +177,12 @@ public:
         environment.set("b", Interval(5.0, 6.0));
         std::string expression("v + a * Vector3d(1, 0, 0) + b * Vector3d(0, 1, 0)");
         Vector3I result = environment.get<VectorXI>(expression);
-        TS_ASSERT_EQUALS(result.x().lower(), 5.0);
-        TS_ASSERT_EQUALS(result.x().upper(), 7.0);
-        TS_ASSERT_EQUALS(result.y().lower(), 7.0);
-        TS_ASSERT_EQUALS(result.y().upper(), 9.0);
-        TS_ASSERT_EQUALS(result.z().lower(), 3.0);
-        TS_ASSERT_EQUALS(result.z().upper(), 4.0);
+        TS_ASSERT_EQUALS(result.x().lowerBound(), 5.0);
+        TS_ASSERT_EQUALS(result.x().upperBound(), 7.0);
+        TS_ASSERT_EQUALS(result.y().lowerBound(), 7.0);
+        TS_ASSERT_EQUALS(result.y().upperBound(), 9.0);
+        TS_ASSERT_EQUALS(result.z().lowerBound(), 3.0);
+        TS_ASSERT_EQUALS(result.z().upperBound(), 4.0);
     }
 
     void testColwise() {
@@ -271,8 +271,8 @@ public:
     void testIntervalConversion() {
         PythonEnvironment environment;
         Interval result = environment.get<Interval>("2 + 2");
-        TS_ASSERT_EQUALS(result.lower(), 4.0);
-        TS_ASSERT_EQUALS(result.upper(), 4.0);
+        TS_ASSERT_EQUALS(result.lowerBound(), 4.0);
+        TS_ASSERT_EQUALS(result.upperBound(), 4.0);
     }
     
     void testErrorTranslation() {
@@ -297,8 +297,10 @@ public:
     
     void testLinSpaced() {
         PythonEnvironment environment;
-        RowVector3d result = environment.get<RowVector3d>("RowVector3d.LinSpaced(Interval(0, 1))");
-        TS_ASSERT_EQUALS(result, RowVector3d::LinSpaced(Interval(0, 1)));
+        RowVector3d result = environment.get<RowVector3d>(
+            "RowVector3d.LinSpaced(Interval::Unit())"
+        );
+        TS_ASSERT_EQUALS(result, RowVector3d::LinSpaced(Interval::Unit()));
         TS_ASSERT_EQUALS(result, RowVector3d(0, 0.5, 1));
     }
     
@@ -341,8 +343,8 @@ public:
         TS_ASSERT_EQUALS(result, 2.0);
         std::string expression =
             "f.derivative(0)(Vector2I(Interval(1, 2), Interval(3, 4))).value()";
-        TS_ASSERT_EQUALS(environment.get<Interval>(expression).lower(), 2);
-        TS_ASSERT_EQUALS(environment.get<Interval>(expression).upper(), 4);
+        TS_ASSERT_EQUALS(environment.get<Interval>(expression).lowerBound(), 2);
+        TS_ASSERT_EQUALS(environment.get<Interval>(expression).upperBound(), 4);
     }
     
     void testIntervalBisected() {
@@ -351,10 +353,10 @@ public:
         environment.run("a, b = x.bisected()");
         Interval a = environment.get<Interval>("a");
         Interval b = environment.get<Interval>("b");
-        TS_ASSERT_EQUALS(a.lower(), 4);
-        TS_ASSERT_EQUALS(a.upper(), 4.5);
-        TS_ASSERT_EQUALS(b.lower(), 4.5);
-        TS_ASSERT_EQUALS(b.upper(), 5);
+        TS_ASSERT_EQUALS(a.lowerBound(), 4);
+        TS_ASSERT_EQUALS(a.upperBound(), 4.5);
+        TS_ASSERT_EQUALS(b.lowerBound(), 4.5);
+        TS_ASSERT_EQUALS(b.upperBound(), 5);
     }
 
     void testIntervalContainment() {
@@ -501,8 +503,8 @@ public:
         environment.set("f2", f2);
         TS_ASSERT(environment.get<double>("f1(2).value()") - 6 == Zero());
         Interval interval_bounds = environment.get<Interval>("f1(Interval(2, 3)).value()");
-        TS_ASSERT(interval_bounds.lower() - 6 == Zero());
-        TS_ASSERT(interval_bounds.upper() - 9 == Zero());
+        TS_ASSERT(interval_bounds.lowerBound() - 6 == Zero());
+        TS_ASSERT(interval_bounds.upperBound() - 9 == Zero());
         Vector3d vector = environment.get<Vector3d>("f2(Vector2d.Ones())");
         TS_ASSERT((vector - Vector3d(2, 0.5, 0)).isZero());
         Vector3I vector_bounds = environment.get<Vector3I>(
@@ -598,8 +600,8 @@ public:
         Frame3d e_extracted = environment.get<DatumXd>("e_unpickled");
         Triangle3d f_extracted = environment.get<SimplexXd>("f_unpickled");
         TS_ASSERT_EQUALS(a, a_extracted);
-        TS_ASSERT_EQUALS(b.lower(), b_extracted.lower());
-        TS_ASSERT_EQUALS(b.upper(), b_extracted.upper());
+        TS_ASSERT_EQUALS(b.lowerBound(), b_extracted.lowerBound());
+        TS_ASSERT_EQUALS(b.upperBound(), b_extracted.upperBound());
         TS_ASSERT_EQUALS(c, c_extracted);
         TS_ASSERT_EQUALS(d.cwiseLower(), d_extracted.cwiseLower());
         TS_ASSERT_EQUALS(d.cwiseUpper(), d_extracted.cwiseUpper());

@@ -25,10 +25,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace Eigen
-{
-    template <class TMatrix>
-    class MatrixIterator;
-    
+{   
     template <class TMatrix>
     class ConstMatrixIterator : 
         public boost::iterator_facade<

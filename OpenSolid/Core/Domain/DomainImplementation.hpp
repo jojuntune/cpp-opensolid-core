@@ -22,16 +22,16 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/util/ReferenceCounted.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
+#include <OpenSolid/Utils/ReferenceCounted.hpp>
 
 namespace opensolid
 {
     class Domain;
     class Geometry;
 
-    class DomainImplementation : public ReferenceCounted<DomainImplementation>
+    class DomainImplementation : public ReferenceCounted
     {
     public:
         virtual ~DomainImplementation();

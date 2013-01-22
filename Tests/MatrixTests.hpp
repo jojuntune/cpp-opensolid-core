@@ -88,7 +88,7 @@ public:
         Frame3d frame;
         frame = frame.translated(Vector3d(1, 1, 1));
         frame = frame.rotated(M_PI / 4, frame.zAxis());
-        RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval(0, 1));
+        RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);
         MatrixXd quotient_values = (Vector3d(sqrt(2.0), 0, 1) * parameter_values).colwise() +

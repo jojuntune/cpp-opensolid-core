@@ -23,174 +23,12 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
+
+#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix/declarations.hpp>
-#include <OpenSolid/Core/Matrix/MatrixIterator.hpp>
-#include <OpenSolid/Utils/Conversion.hpp>
-
-namespace Eigen
-{   
-    namespace internal
-    {
-        template <>
-        struct significant_decimals_default_impl<opensolid::Interval, false>
-        {
-            static inline int run();
-        };
-        
-        template <>
-        struct is_arithmetic<opensolid::Interval>
-        {
-            static const bool value = true;
-        };
-    }
-    
-    template <>
-    struct NumTraits<opensolid::Interval>
-    {
-        typedef opensolid::Interval Real;
-        typedef opensolid::Interval NonInteger;
-        typedef opensolid::Interval Nested;
-        
-        static const int IsComplex = 0;
-        static const int IsInteger = 0;
-        static const int ReadCost = 2;
-        static const int AddCost = 2;
-        static const int MulCost = 10;
-        static const int IsSigned = 1;
-        static const int RequireInitialization = 0;
-        
-        static opensolid::Interval epsilon();
-        static opensolid::Interval dummy_precision();
-        static opensolid::Interval lowest();
-        static opensolid::Interval highest();  
-    };
-
-    struct EmptyOperation
-    {
-        typedef bool result_type;
-
-        bool operator()(opensolid::Interval interval) const;
-    };
-    
-    struct LowerOperation
-    {
-        typedef double result_type;
-        
-        double operator()(opensolid::Interval interval) const;
-    };
-    
-    struct UpperOperation
-    {
-        typedef double result_type;
-        
-        double operator()(opensolid::Interval interval) const;
-    };
-    
-    struct MedianOperation
-    {
-        typedef double result_type;
-        
-        double operator()(opensolid::Interval interval) const;
-    };
-
-    struct RandomOperation
-    {
-        typedef double result_type;
-
-        double operator()(opensolid::Interval interval) const;
-    };
-    
-    struct WidthOperation
-    {
-        typedef double result_type;
-        
-        double operator()(opensolid::Interval interval) const;
-    };
-    
-    struct HullOperation
-    {
-        typedef opensolid::Interval result_type;
-
-        opensolid::Interval operator()(double firstValue, double secondValue) const;
-        
-        opensolid::Interval operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
-    };
-    
-    struct IntersectionOperation
-    {
-        typedef opensolid::Interval result_type;
-        
-        opensolid::Interval operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
-    };
-    
-    class OverlapOperation
-    {
-    private:
-        double _precision;
-    public:
-        typedef bool result_type;
-
-        OverlapOperation(double precision);
-
-        bool operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
-    };
-    
-    class StrictOverlapOperation
-    {
-    private:
-        double _precision;
-    public:
-        typedef bool result_type;
-
-        StrictOverlapOperation(double precision);
-
-        bool operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
-    };
-    
-    class ContainOperation
-    {
-    private:
-        double _precision;
-    public:
-        typedef bool result_type;
-
-        ContainOperation(double precision);
-        
-        bool operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
-    };
-    
-    class StrictContainOperation
-    {
-    private:
-        double _precision;
-    public:
-        typedef bool result_type;
-
-        StrictContainOperation(double precision);
-        
-        bool operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
-    };
-}
+#include <OpenSolid/Core/Transformation/declarations.hpp>
 
 #define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
 #define EIGEN_FAST_MATH 0
@@ -202,9 +40,9 @@ namespace Eigen
 #define EIGEN_MATRIX_PLUGIN "MatrixPlugin.hpp"
 
 #ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include "../../external/eigen/DenseBasePlugin.hpp"
-#include "../../external/eigen/MatrixBasePlugin.hpp"
-#include "../../external/eigen/MatrixPlugin.hpp"
+#include "../../External/Eigen/DenseBasePlugin.hpp"
+#include "../../External/Eigen/MatrixBasePlugin.hpp"
+#include "../../External/Eigen/MatrixPlugin.hpp"
 #endif
 
 #include <Eigen/Core>
@@ -285,8 +123,8 @@ namespace opensolid
     template <int iDestinationSize>
     void assertCompatible(int sourceSize);
 
-    template <class TMatrixType>
-    void assertVector(const TMatrixType& matrix);
+    template <class TMatrix>
+    void assertVector(const TMatrix& matrix);
 
     template <int iNumDimensions, class TMatrix, class TVector>
     void assertValidTransform(int dimensions, const TMatrix& matrix, const TVector& vector);
@@ -294,203 +132,190 @@ namespace opensolid
 
 ////////// Implementation //////////
 
-#include <OpenSolid/Utils/Conversion.hpp>
+#include <OpenSolid/Core/Matrix/ContainOperation.hpp>
+#include <OpenSolid/Core/Matrix/EmptyOperation.hpp>
+#include <OpenSolid/Core/Matrix/HullOperation.hpp>
+#include <OpenSolid/Core/Matrix/IntersectionOperation.hpp>
+#include <OpenSolid/Core/Matrix/LowerOperation.hpp>
+#include <OpenSolid/Core/Matrix/MatrixIterator.hpp>
+#include <OpenSolid/Core/Matrix/MedianOperation.hpp>
+#include <OpenSolid/Core/Matrix/OverlapOperation.hpp>
+#include <OpenSolid/Core/Matrix/RandomOperation.hpp>
+#include <OpenSolid/Core/Matrix/StrictContainOperation.hpp>
+#include <OpenSolid/Core/Matrix/StrictOverlapOperation.hpp>
+#include <OpenSolid/Core/Matrix/UpperOperation.hpp>
+#include <OpenSolid/Core/Matrix/WidthOperation.hpp>
+#include <OpenSolid/Core/Mirror.hpp>
+#include <OpenSolid/Core/Projection.hpp>
+#include <OpenSolid/Core/Rotation.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
 
 namespace Eigen
 {
-    namespace internal
-    {
-        inline int significant_decimals_default_impl<opensolid::Interval, false>::run() {
-            return significant_decimals_default_impl<double, false>::run();
-        }
-
-        template <>
-        struct random_impl<opensolid::Interval>
-        {
-            static opensolid::Interval run(
-                const opensolid::Interval& lowerInterval,
-                const opensolid::Interval& upperInterval
-            ) {
-                opensolid::Interval interval(lowerInterval.lowerValue(), upperInterval.upperValue());
-                double firstRatio = double(std::rand()) / RAND_MAX;
-                double secondRatio = double(std::rand()) / RAND_MAX;
-                return interval.interpolated(opensolid::Interval::Hull(firstRatio, secondRatio));
-            }
-
-            static opensolid::Interval run() {
-                double lower = -1 + 2 * double(std::rand()) / RAND_MAX;
-                double upper = -1 + 2 * double(std::rand()) / RAND_MAX;
-                return opensolid::Interval::Hull(lower, upper);
-            }
-        };
+    template<class TDerived> template <class TPoint>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::scaled(double scale, const EigenBase<TPoint>& originPoint) const {
+        return (scale * (derived().colwise() - originPoint.derived())).colwise() +
+            originPoint.derived();
     }
 
-    inline opensolid::Interval NumTraits<opensolid::Interval>::epsilon() {
-        return NumTraits<double>::epsilon();
-    }
-    
-    inline opensolid::Interval NumTraits<opensolid::Interval>::dummy_precision() {
-        return NumTraits<double>::dummy_precision();
-    }
-    
-    inline opensolid::Interval NumTraits<opensolid::Interval>::lowest() {
-        return NumTraits<double>::lowest();
-    }
-    
-    inline opensolid::Interval NumTraits<opensolid::Interval>::highest() {
-        return NumTraits<double>::highest();
-    }
-
-    inline bool EmptyOperation::operator()(opensolid::Interval interval) const {
-        return interval.isEmpty();
-    }
-        
-    inline double LowerOperation::operator()(opensolid::Interval interval) const {
-        return interval.lowerValue();
-    }
-    
-    inline double UpperOperation::operator()(opensolid::Interval interval) const {
-        return interval.upperValue();
-    }
-    
-    inline double MedianOperation::operator()(opensolid::Interval interval) const {
-        return interval.median();
-    }
-
-    inline double RandomOperation::operator()(opensolid::Interval interval) const {
-        return interval.randomValue();
-    }
-    
-    inline double WidthOperation::operator()(opensolid::Interval interval) const {
-        return interval.width();
-    }
-    
-    inline opensolid::Interval HullOperation::operator()(
-        double firstValue,
-        double secondValue
+    template<class TDerived> template <int iNumDimensions, int iNumAxes>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::translated(
+        double coordinateValue,
+        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
     ) const {
-        return opensolid::Interval::Hull(firstValue, secondValue);
-    }
-    
-    inline opensolid::Interval HullOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.hull(secondInterval);
-    }
-    
-    inline opensolid::Interval IntersectionOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.intersection(secondInterval);
+        return derived().colwise() + (coordinateValue * axis.basisVector()).template cast<Scalar>();
     }
 
-    inline OverlapOperation::OverlapOperation(double precision) :
-        _precision(precision) {
-    }
-    
-    inline bool OverlapOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.overlaps(secondInterval, _precision);
+    template<class TDerived>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(double angle) const {
+        return rotated(opensolid::Rotation<2>(angle, Vector2d::Zero()), opensolid::Linear);
     }
 
-    inline StrictOverlapOperation::StrictOverlapOperation(double precision) :
-        _precision(precision) {
-    }
-    
-    inline bool StrictOverlapOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
+    template<class TDerived>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(
+        double angle,
+        const Matrix<double, 2, 1>& originPoint
     ) const {
-        return firstInterval.strictlyOverlaps(secondInterval, _precision);
+        return rotated(opensolid::Rotation<2>(angle, originPoint));
     }
 
-    inline ContainOperation::ContainOperation(double precision) :
-        _precision(precision) {
-    }
-    
-    inline bool ContainOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.contains(secondInterval, _precision);
+    template<class TDerived>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(const opensolid::Rotation<2>& rotation) const {
+        return (rotation.transformationMatrix().template cast<Scalar>() * (derived().colwise() - rotation.originPoint().template cast<Scalar>())).colwise() +
+            rotation.originPoint().template cast<Scalar>();
     }
 
-    inline StrictContainOperation::StrictContainOperation(double precision)
-        : _precision(precision) {
-    }
-    
-    inline bool StrictContainOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
+    template<class TDerived>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(
+        const opensolid::Rotation<2>& rotation,
+        opensolid::LinearTag
     ) const {
-        return firstInterval.strictlyContains(secondInterval, _precision);
+        return rotation.transformationMatrix().template cast<Scalar>() * derived();
     }
 
-    template <class TDerived> template <int iInputDimensions, int iOutputDimensions>
-    typename MatrixBase<TDerived>::Transformed<iOutputDimensions>::Type
+    template<class TDerived> template <int iNumDimensions, int iNumAxes>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(
+        double angle,
+        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
+    ) const {
+        return rotated(opensolid::Rotation<3>(angle, axis));
+    }
+
+    template<class TDerived>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(const opensolid::Rotation<3>& rotation) const {
+        return (rotation.transformationMatrix().template cast<Scalar>() * (derived().colwise() - rotation.originPoint().template cast<Scalar>())).colwise() +
+            rotation.originPoint().template cast<Scalar>();
+    }
+
+    template<class TDerived>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(
+        const opensolid::Rotation<3>& rotation,
+        opensolid::LinearTag
+    ) const {
+        return rotation.transformationMatrix().template cast<Scalar>() * derived();
+    }
+
+    template<class TDerived> template <int iNumDimensions, int iNumAxes>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::mirrored(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const {
+        return mirrored(opensolid::Mirror<iNumDimensions>(datum));
+    }
+
+    template<class TDerived> template <int iNumDimensions>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::mirrored(const opensolid::Mirror<iNumDimensions>& mirror) const {
+        return (mirror.transformationMatrix().template cast<Scalar>() * (derived().colwise() - mirror.originPoint().template cast<Scalar>())).colwise() +
+            mirror.originPoint().template cast<Scalar>();
+    }
+
+    template<class TDerived> template <int iNumDimensions, class TPoint>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::mirrored(
+        const opensolid::Mirror<iNumDimensions>& mirror,
+        opensolid::LinearTag
+    ) const {
+        return mirror.transformationMatrix().template cast<Scalar>() * derived();
+    }
+
+    template<class TDerived> template <int iNumDimensions, int iNumAxes>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projected(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const {
+        return projected(opensolid::Projection<iNumDimensions>(datum));
+    }
+
+    template<class TDerived> template <int iNumDimensions>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projected(const opensolid::Projection<iNumDimensions>& projection) const {
+        return (projection.transformationMatrix().template cast<Scalar>() * (derived().colwise() - projection.originPoint().template cast<Scalar>())).colwise() +
+            projection.originPoint().template cast<Scalar>();
+    }
+
+    template<class TDerived> template <int iNumDimensions, class TPoint>
+    typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projected(
+        const opensolid::Projection<iNumDimensions>& projection,
+        opensolid::LinearTag
+    ) const {
+        return projection.transformationMatrix().template cast<Scalar>() * derived();
+    }
+
+    template<class TDerived>
+    template <
+        int iNumSourceDatumDimensions,
+        int iNumSourceDatumAxes,
+        int iNumDestinationDatumDimensions,
+        int iNumDestinationDatumAxes
+    >
+    Matrix<
+        typename internal::traits<TDerived>::Scalar,
+        iNumDestinationDatumDimensions,
+        internal::traits<TDerived>::ColsAtCompileTime
+    >
     MatrixBase<TDerived>::transformed(
-        const Transformation<iInputDimensions, iOutputDimensions>& transformation
+        const opensolid::Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
+        const opensolid::Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
     ) const {
-        return (transformation.matrix() * derived()).colwise() + transformation.vector();
+        return destinationDatum * (derived() / sourceDatum);
     }
 
-    template <class TDerived> template <class TPoint>
-    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::scaled(
-        double scale,
-        const EigenBase<TPoint>& point
+    template<class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    Matrix<
+        typename internal::traits<TDerived>::Scalar,
+        iNumDestinationDimensions,
+        internal::traits<TDerived>::ColsAtCompileTime
+    >
+    MatrixBase<TDerived>::transformed(
+        const opensolid::Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation
     ) const {
-        return ((derived().colwise() - point.derived()) * scale).colwise() + point.derived();
+        return transformation.transformationMatrix().template cast<Scalar>() *
+            (derived().colwise() - transformation.sourceOriginPoint().template cast<Scalar>()).colwise() +
+            transformation.destinationOriginPoint().template cast<Scalar>();
     }
 
-    template <class TDerived> template <class TVector>
-    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::translated(
-        const EigenBase<TVector>& vector
+    template<class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    Matrix<
+        typename internal::traits<TDerived>::Scalar,
+        iNumDestinationDimensions,
+        internal::traits<TDerived>::ColsAtCompileTime
+    >
+    MatrixBase<TDerived>::transformed(
+        const opensolid::Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation,
+        opensolid::LinearTag
     ) const {
-        return derived().colwise() + vector.derived();
-    }
-
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::translated(
-        double distance,
-        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
-    ) const {
-        return derived().colwise() + distance * axis.directionVector();
-    }
-
-    template <class TDerived>
-    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::rotated(
-        double angle,
-        const Vector2d& point
-    ) const {
-        Matrix2d rotationMatrix(Rotation2Dd(angle));
-        return ((derived().colwise() - point.derived()) * rotationMatrix).colwise() +
-            point.derived();
-    }
-
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::rotated(
-        double angle,
-        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
-    ) const {
-        Matrix3d rotationMatrix(AngleAxisd(angle, axis.directionVector()));
-        return ((derived().colwise() - axis.originPoint()) * rotationMatrix).colwise() +
-            axis.originPoint();
-    }
-
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    inline typename MatrixBase<TDerived>::PlainObject MatrixBase<TDerived>::mirrored(
-        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
-    ) const {
-        return derived() - 2 * datum.normalVector() *
-            (datum.normalVector().transpose() * (derived().colwise() - datum.originPoint()));
+        return transformation.transformationMatrix().template cast<Scalar>() * derived();
     }
 
     template<class TDerived> template <class TOther>
-    OtherType MatrixBase<TDerived>::as() const {
+    TOther MatrixBase<TDerived>::as() const {
         return opensolid::Conversion<PlainObject, TOther>()(derived());
     }
 
@@ -511,7 +336,7 @@ namespace Eigen
         return derived().unaryExpr(LowerOperation());
     }
 
-    template <class DerivedType>
+    template <class TDerived>
     inline CwiseUnaryOp<UpperOperation, const TDerived> DenseBase<TDerived>::cwiseUpper() const {
         return derived().unaryExpr(UpperOperation());
     }
@@ -581,13 +406,13 @@ namespace Eigen
         typename DenseBase<TDerived>::Index size,
         opensolid::Interval interval
     ) {
-        return LinSpaced(size, Scalar(interval.lower()), Scalar(interval.upper()));
+        return LinSpaced(size, Scalar(interval.lowerBound()), Scalar(interval.upperBound()));
     }
 
     template <class TDerived>
     inline const typename DenseBase<TDerived>::RandomAccessLinSpacedReturnType
     DenseBase<TDerived>::LinSpaced(opensolid::Interval interval) {
-        return LinSpaced(Scalar(interval.lower()), Scalar(interval.upper()));
+        return LinSpaced(Scalar(interval.lowerBound()), Scalar(interval.upperBound()));
     }
 
     template <class TDerived> template <class TFirst, class TSecond>

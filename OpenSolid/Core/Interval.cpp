@@ -41,7 +41,7 @@ namespace opensolid
     struct Conversion<Interval, BoostInterval>
     {
         inline BoostInterval operator()(Interval interval) {
-            return BoostInterval(interval.lowerValue(), interval.upperValue());
+            return BoostInterval(interval.lowerBound(), interval.upperBound());
         }
     };
 
@@ -108,11 +108,11 @@ namespace opensolid
     }
 
     Interval atan2(Interval yInterval, Interval xInterval) {
-        if (xInterval.lowerValue() > 0.0) {
+        if (xInterval.lowerBound() > 0.0) {
             return atan(yInterval / xInterval);
-        } else if (yInterval.lowerValue() > 0.0) {
+        } else if (yInterval.lowerBound() > 0.0) {
             return atan(-xInterval / yInterval) + M_PI / 2;
-        } else if (yInterval.upperValue() < 0.0) {
+        } else if (yInterval.upperBound() < 0.0) {
             return atan(-xInterval / yInterval) - M_PI / 2;
         } else {
             return Interval(-M_PI, M_PI);
@@ -145,9 +145,9 @@ namespace opensolid
         if (interval.isEmpty()) {
             stream << "[]";
         } else if (interval.isSingleton()) {
-            stream << "[" << interval.lowerValue() << "]";
+            stream << "[" << interval.lowerBound() << "]";
         } else {
-            stream << "[" << interval.lowerValue() << "," << interval.upperValue() << "]";
+            stream << "[" << interval.lowerBound() << "," << interval.upperBound() << "]";
         }
         return stream;
     }

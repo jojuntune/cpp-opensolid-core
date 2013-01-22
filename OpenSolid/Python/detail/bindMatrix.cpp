@@ -380,8 +380,10 @@ namespace opensolid
     MatrixXI* normalized(const MatrixXI& argument) {
         if (
             (argument.rows() != 1 && argument.cols() != 1) ||
-            argument.squaredNorm().lower() == Zero()
-        ) {throw MatrixXINormalizedError(argument);}
+            argument.squaredNorm().lowerBound() == Zero()
+        ) {
+            throw MatrixXINormalizedError(argument);
+        }
         return new MatrixXI(argument.col(0).normalized());
     }
     

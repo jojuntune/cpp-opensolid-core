@@ -18,31 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include "DomainConstructors.hpp"
+#include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 
 namespace opensolid
 {
-    Domain DomainConstructors::UnitInterval() {return Domain(Interval(0, 1));}
-
-    Domain DomainConstructors::UnitSquare() {return UnitOrthotope(2);}
-
-    Domain DomainConstructors::UnitCube() {return UnitOrthotope(3);}
-
-    Domain DomainConstructors::UnitTriangle() {return UnitSimplex(2);}
-
-    Domain DomainConstructors::UnitTetrahedron() {return UnitSimplex(3);}
-
-    Domain DomainConstructors::UnitOrthotope(int dimensions) {
-        return Domain(VectorXI::Constant(dimensions, Interval(0, 1)));
+    Domain DomainConstructors::UnitInterval() {
+        return Domain(Interval::Unit());
     }
 
-    Domain DomainConstructors::UnitSimplex(int dimensions) {
-        MatrixXd vertices(dimensions, dimensions + 1);
-        vertices.col(0).setZero();
-        vertices.rightCols(dimensions).setIdentity();
-        return Domain(SimplexXd(vertices));
+    Domain DomainConstructors::UnitSquare() {
+        return UnitOrthotope(2);
+    }
+
+    Domain DomainConstructors::UnitCube() {
+        return UnitOrthotope(3);
+    }
+
+    Domain DomainConstructors::UnitTriangle() {
+        return UnitSimplex(2);
+    }
+
+    Domain DomainConstructors::UnitTetrahedron() {
+        return UnitSimplex(3);
+    }
+
+    Domain DomainConstructors::UnitOrthotope(int numDimensions) {
+        return Domain(VectorXI::Constant(numDimensions, Interval::Unit()));
+    }
+
+    Domain DomainConstructors::UnitSimplex(int numDimensions) {
+        MatrixXd vertices(numDimensions, numDimensions + 1);
+        return Domain(SimplexXd::Unit(numDimensions));
     }
 }

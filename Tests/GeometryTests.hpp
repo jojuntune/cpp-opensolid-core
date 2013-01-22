@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
-#include <OpenSolid/util/Zero.hpp>
+#include <OpenSolid/Utils/Zero.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
 
 #include <cxxtest/TestSuite.h>
@@ -35,7 +35,7 @@ public:
     void testLine() {
         Vector3d start(1, 2, 3);
         Vector3d end(4, 5, 6);
-        Geometry line = Line3d(start, end);
+        Geometry line = LineSegment3d(start, end);
         TS_ASSERT((line(0.5) - Vector3d(2.5, 3.5, 4.5)).isZero());
     }
 
@@ -52,7 +52,7 @@ public:
         Vector3d end(1, -1, 1);
         Geometry arc = Geometry::Arc3d(Axis3d(center, Vector3d::UnitZ()), start, end);
 
-        RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, Interval(0, 1));
+        RowVectorXd parameter_values = RowVectorXd::LinSpaced(13, Interval::Unit());
         TS_ASSERT((arc(0.0) - Vector3d(3, 1, 1)).isZero());
         TS_ASSERT((arc(1.0 / 3.0) - Vector3d(1, 3, 1)).isZero());
         TS_ASSERT((arc(1.0) - Vector3d(1, -1, 1)).isZero());

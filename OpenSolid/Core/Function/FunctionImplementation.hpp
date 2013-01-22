@@ -22,14 +22,14 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/util/ReferenceCounted.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Utils/ReferenceCounted.hpp>
 
 namespace opensolid
 {
     class Function;
     
-    class FunctionImplementation : public ReferenceCounted<FunctionImplementation>
+    class FunctionImplementation : public ReferenceCounted
     {
     public:
         virtual ~FunctionImplementation();

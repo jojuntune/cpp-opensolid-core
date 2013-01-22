@@ -22,18 +22,20 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "Function/declarations.hpp"
-#include "Function/FunctionConstructors.hpp"
-
-#include <OpenSolid/Utils/Conversion.hpp>
 #include <OpenSolid/Core/Evaluation.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Core/Datum/declarations.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Function/FunctionConstructors.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/Domain/declarations.hpp>
-#include <OpenSolid/Core/Geometry/declarations.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
 
+#include <OpenSolid/Core/Datum/declarations.hpp>
+#include <OpenSolid/Core/Domain/declarations.hpp>
+#include <OpenSolid/Core/Function/declarations.hpp>
+#include <OpenSolid/Core/Geometry/declarations.hpp>
+#include <OpenSolid/Core/Transformation/declarations.hpp>
+ 
 #include <boost/intrusive_ptr.hpp>
 
 #include <typeinfo>
@@ -103,6 +105,45 @@ namespace opensolid
     };
 
     OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
+
+    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, double multiplicand);
+    OPENSOLID_CORE_EXPORT Function operator*(double multiplier, const Function& function);
+
+    template <class TMatrix>
+    Function operator*(
+        const Function& function,
+        const EigenBase<TMatrix>& matrix
+    );
+
+    template <class TMatrix>
+    Function operator*(
+        const EigenBase<TMatrix>& matrix,
+        const Function& function
+    );
+
+    template <class TMatrix>
+    Function operator+(
+        const Function& function,
+        const EigenBase<TMatrix>& matrix
+    );
+
+    template <class TMatrix>
+    Function operator+(
+        const EigenBase<TMatrix>& matrix,
+        const Function& function
+    );
+
+    template <class TMatrix>
+    Function operator-(
+        const Function& function,
+        const EigenBase<TMatrix>& matrix
+    );
+
+    template <class TMatrix>
+    Function operator-(
+        const EigenBase<TMatrix>& matrix,
+        const Function& function
+    );
     
     OPENSOLID_CORE_EXPORT Function operator+(
         const Function& first_operand,
@@ -167,6 +208,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
     };
+
+    template <int iNumResultDimensions>
+    struct Transformed<Function, iNumResultDimensions>
+    {
+        typedef Function Type;
+    };
 }
 
 ////////// Implementation //////////
@@ -187,5 +234,53 @@ namespace opensolid
     template <class ArgumentType>
     inline Evaluation<Function, ArgumentType> Function::operator()(const ArgumentType& argument) const {
         return Evaluation<Function, ArgumentType>(*this, argument);
+    }
+
+    template <class TMatrix>
+    Function operator*(
+        const Function& function,
+        const EigenBase<TMatrix>& matrix
+    ) {
+        return function * Function(matrix);
+    }
+
+    template <class TMatrix>
+    Function operator*(
+        const EigenBase<TMatrix>& matrix,
+        const Function& function
+    ) {
+        return function.transformed(matrix, VectorXd::Zero(function.dimensions()));
+    }
+
+    template <class TMatrix>
+    Function operator+(
+        const Function& function,
+        const EigenBase<TMatrix>& matrix
+    ) {
+        return function + Function(matrix);
+    }
+
+    template <class TMatrix>
+    Function operator+(
+        const EigenBase<TMatrix>& matrix,
+        const Function& function
+    ) {
+        return Function(matrix) + function;
+    }
+
+    template <class TMatrix>
+    Function operator-(
+        const Function& function,
+        const EigenBase<TMatrix>& matrix
+    ) {
+        return function - Function(matrix);
+    }
+
+    template <class TMatrix>
+    Function operator-(
+        const EigenBase<TMatrix>& matrix,
+        const Function& function
+    ) {
+        return Function(matrix) - function;
     }
 }

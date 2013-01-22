@@ -287,6 +287,14 @@ namespace opensolid
         }
         return new NegationFunction(operand);
     }
+
+    Function operator*(const Function& function, double multiplicand) {
+        return function * Function(multiplicand);
+    }
+
+    Function operator*(double multiplier, const Function& function) {
+        return Function(multiplier) * function;
+    }
     
     Function operator+(const Function& firstOperand, const Function& secondOperand) {
         if (firstOperand.isConstant() && secondOperand.isConstant()) {
@@ -333,7 +341,7 @@ namespace opensolid
                 return VectorXd::Zero(multiplicand.dimensions());
             } else if (multiplierValue - 1 == Zero()) {
                 return multiplicand;
-            } else if (multiplier_value + 1 == Zero()) {
+            } else if (multiplierValue + 1 == Zero()) {
                 return -multiplicand;
             } else {
                 return new ProductFunction(multiplicand, multiplier);

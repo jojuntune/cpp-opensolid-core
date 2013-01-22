@@ -18,46 +18,87 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-template <int iOutputDimensions>
-struct Transformed
-{
-    typedef Matrix<
-        typename internal::traits<Derived>::Scalar,
-        iOutputDimensions,
-        internal::traits<Derived>::ColsAtCompileTime
-    > Type;
-};
-
-template <int iInputDimensions, int iOutputDimensions>
-Transformed<iOutputDimensions>::Type transformed(
-    const Transformation<iInputDimensions, iOutputDimensions>& transformation
-) const;
-
 template <class TPoint>
-PlainObject scaled(double scale, const EigenBase<TPoint>& point) const;
-
-template <class TVector>
-PlainObject translated(const EigenBase<TVector>& vector) const;
+PlainObject scaled(double scale, const EigenBase<TPoint>& originPoint) const;
 
 template <int iNumDimensions, int iNumAxes>
 PlainObject translated(
-    double distance,
+    double coordinateValue,
     const opensolid::Datum<iNumDimensions, iNumAxes>& axis
 ) const;
 
-PlainObject rotated(double angle, const Matrix<double, 2, 1>& point) const;
+PlainObject rotated(double angle) const;
+
+PlainObject rotated(double angle, const Matrix<double, 2, 1>& originPoint) const;
+
+PlainObject rotated(const opensolid::Rotation<2>& rotation) const;
+
+PlainObject rotated(const opensolid::Rotation<2>& rotation, opensolid::LinearTag) const;
 
 template <int iNumDimensions, int iNumAxes>
-PlainObject rotated(
-    double angle,
-    const opensolid::Datum<iNumDimensions, iNumAxes>& axis
-) const;
+PlainObject rotated(double angle, const opensolid::Datum<iNumDimensions, iNumAxes>& axis) const;
+
+PlainObject rotated(const opensolid::Rotation<3>& rotation) const;
+
+PlainObject rotated(const opensolid::Rotation<3>& rotation, opensolid::LinearTag) const;
 
 template <int iNumDimensions, int iNumAxes>
 PlainObject mirrored(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
 
+template <int iNumDimensions>
+PlainObject mirrored(const opensolid::Mirror<iNumDimensions>& mirror) const;
+
+template <int iNumDimensions, class TPoint>
+PlainObject mirrored(const opensolid::Mirror<iNumDimensions>& mirror, opensolid::LinearTag) const;
+
 template <int iNumDimensions, int iNumAxes>
 PlainObject projected(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
+
+template <int iNumDimensions>
+PlainObject projected(const opensolid::Projection<iNumDimensions>& projection) const;
+
+template <int iNumDimensions, class TPoint>
+PlainObject projected(
+    const opensolid::Projection<iNumDimensions>& projection,
+    opensolid::LinearTag
+) const;
+
+template <
+    int iNumSourceDatumDimensions,
+    int iNumSourceDatumAxes,
+    int iNumDestinationDatumDimensions,
+    int iNumDestinationDatumAxes
+>
+Matrix<
+    typename internal::traits<Derived>::Scalar,
+    iNumDestinationDatumDimensions,
+    internal::traits<Derived>::ColsAtCompileTime
+>
+transformed(
+    const opensolid::Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
+    const opensolid::Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+) const;
+
+template <int iNumSourceDimensions, int iNumDestinationDimensions>
+Matrix<
+    typename internal::traits<Derived>::Scalar,
+    iNumDestinationDimensions,
+    internal::traits<Derived>::ColsAtCompileTime
+>
+transformed(
+    const opensolid::Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation
+) const;
+
+template <int iNumSourceDimensions, int iNumDestinationDimensions>
+Matrix<
+    typename internal::traits<Derived>::Scalar,
+    iNumDestinationDimensions,
+    internal::traits<Derived>::ColsAtCompileTime
+>
+transformed(
+    const opensolid::Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation,
+    opensolid::LinearTag
+) const;
 
 template <class TOther>
 TOther as() const;

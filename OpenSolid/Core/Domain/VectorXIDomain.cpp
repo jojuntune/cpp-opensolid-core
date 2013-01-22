@@ -29,10 +29,10 @@ namespace opensolid
     Set<Geometry> VectorXIDomain::boundaries() const {
         Set<Geometry> results;
         if (_bounds.size() == 1) {
-            results.insert(_bounds.value().lower());
-            results.insert(_bounds.value().upper());
+            results.insert(_bounds.value().lowerBound());
+            results.insert(_bounds.value().upperBound());
         } else {
-            throw NotImplementedError(__FILE__, __LINE__);
+            throw NotImplementedError();
         }
         return results;
     }

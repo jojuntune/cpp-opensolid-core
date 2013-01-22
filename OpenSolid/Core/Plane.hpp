@@ -22,17 +22,23 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum/Datum.hpp>
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Datum.hpp>
 
 namespace opensolid
 {
     class Plane3d : public Datum<3, 2>
     {
-    private:
-        Vector3d _normalVector;
     public:
+        OPENSOLID_CORE_EXPORT Plane3d();
+
+        OPENSOLID_CORE_EXPORT Plane3d(
+            const Vector3d& originPoint,
+            const Matrix<double, 3, 2>& basisMatrix
+        );
+
         template <int iNumDimensions, int iNumAxes>
-        Plane3d(const Datum<iNumDimensions, iNumAxes>& otherDatum);
+        Plane3d(const Datum<iNumDimensions, iNumAxes>& otherPlane);
 
         OPENSOLID_CORE_EXPORT static Plane3d FromPointAndNormal(
             const Vector3d& originPoint,
@@ -70,32 +76,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline Plane3d::Plane3d() {initialize(Vector3d::Zero(), Matrix<double, 3, 2>::Identity());}
-
-    inline Plane3d::Plane3d(const Vector3d& origin, const Vector3d& normal) {
-        Matrix<double, 3, 2> basis;
-        basis.col(0) = normal.unitOrthogonal();
-        basis.col(1) = normal.cross(basis.col(0)).normalized();
-        initialize(origin, basis);
-    }
-
-    inline Plane3d::Plane3d(
-        const Vector3d& origin,
-        const Vector3d& x_direction,
-        const Vector3d& y_direction
-    ) {
-        Matrix<double, 3, 2> basis;
-        basis.col(0) = x_direction.normalized();
-        basis.col(1) = (y_direction - y_direction.dot(basis.col(0)) * basis.col(0)).normalized();
-        initialize(origin, basis);
-    }
-
-    template <int dimensions_, int axes_>
-    inline Plane3d::Plane3d(const Datum<dimensions_, axes_>& datum) {
-        assertCompatible<dimensions_, 3>();
-        assert(datum.dimensions() == 3);
-        assertCompatible<axes_, 2>();
-        assert(datum.axes() == 2);
-        initialize(datum);
+    template <int iNumDimensions, int iNumAxes>
+    inline Plane3d::Plane3d(const Datum<iNumDimensions, iNumAxes>& otherPlane) :
+        Datum<3, 2>(otherPlane) {
     }
 }

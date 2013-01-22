@@ -78,7 +78,8 @@ namespace opensolid
     Geometry GeometryImplementation::reversed() const {
         assert(parameters() == 1);
         Interval interval = domain().as<Interval>();
-        Function reversed_parameter = interval.lower() + interval.upper() - Function::Parameter();
-        return new GenericGeometry(function()(reversed_parameter), domain());
+        Function reversedParameter = interval.lowerBound() +
+            interval.upperBound() - Function::Parameter();
+        return new GenericGeometry(function()(reversedParameter), domain());
     }
 }

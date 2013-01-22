@@ -24,11 +24,11 @@
 
 #include "Simplex/declarations.hpp"
 
-#include <OpenSolid/Utils/Conversion.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
 
 namespace opensolid
 {
@@ -100,7 +100,7 @@ namespace opensolid
         
         Vector vector() const;
         Vector centroid() const;
-        Vector normal() const;
+        Vector normalVector() const;
         
         Edge edge(int index) const;
         Edge edge(int startIndex, int endIndex) const;
@@ -110,19 +110,34 @@ namespace opensolid
         coordinateSystem() const;
         
         Matrix<Interval, iNumDimensions, 1> bounds() const;
-
-        template <class TTransformMatrix, class TTransformVector>
-        Simplex<TTransformMatrix::RowsAtCompileTime, iNumVertices> transformed(
-            const MatrixType& transformMatrix,
-            const TTransformVector& transformVector
-        ) const;
         
         bool operator==(const Simplex<iNumDimensions, iNumVertices>& otherSimplex) const;
+
+        static Simplex<iNumDimensions, iNumVertices> Unit();
+        static Simplex<iNumDimensions, iNumVertices> Unit(int numDimensions);
     };
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices> operator*(
+        double scaleFactor,
+        const Simplex<iNumDimensions, iNumVertices>& simplex
+    );
+
+    template <int iNumDimensions, int iNumVertices, class TVector>
+    Simplex<iNumDimensions, iNumVertices> operator+(
+        const Simplex<iNumDimensions, iNumVertices>& simplex,
+        const EigenBase<TVector>& vector
+    );
+
+    template <int iNumDimensions, int iNumVertices, class TMatrix>
+    Simplex<TMatrix::RowsAtCompileTime, iNumVertices> operator*(
+        const EigenBase<TMatrix>& transformationMatrix,
+        const Simplex<iNumDimensions, iNumVertices>& simplex
+    );
     
-    typedef Simplex<1, 2> Line1d;
-    typedef Simplex<2, 2> Line2d;
-    typedef Simplex<3, 2> Line3d;
+    typedef Simplex<1, 2> LineSegment1d;
+    typedef Simplex<2, 2> LineSegment2d;
+    typedef Simplex<3, 2> LineSegment3d;
     typedef Simplex<2, 3> Triangle2d;
     typedef Simplex<3, 3> Triangle3d;
     typedef Simplex<3, 4> Tetrahedron3d;
@@ -143,11 +158,10 @@ namespace opensolid
         ) const;
     };
 
-
-    template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
-    struct Transformed
+    template <int iNumDimensions, int iNumVertices, int iTransformedDimensions>
+    struct Transformed<Simplex<iNumDimensions, iNumVertices>, iTransformedDimensions>
     {
-        typedef Simplex<iNumTransformedDimensions, iNumVertices> Type;
+        typedef Simplex<iTransformedDimensions, iNumVertices> Type;
     };
 }
 
@@ -156,7 +170,7 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions, int iNumVertices>
-    Simplex<iNumDimensions, iNumVertices>::Simplex() : _vertices() {
+    Simplex<iNumDimensions, iNumVertices>::Simplex() {
     }
 
     template <int iNumDimensions, int iNumVertices>
@@ -280,62 +294,93 @@ namespace opensolid
         return _vertices.col(index);
     }
 
-    template <int iNumDimensions, int iNumVertices>
-    double Simplex<iNumDimensions, iNumVertices>::length() const {
-        assert(numVertices() == 2);
-        if (numDimensions() == 1) {
-            return vertices()(0, 1) - vertices()(0, 0);
-        } else {
-            return (vertex(1) - vertex(0)).norm();
+    namespace detail
+    {
+        inline double simplexLength(const LineSegment1d& lineSegment) {
+            return lineSegment.vertices()(0, 1) - lineSegment.vertices()(0, 0);
         }
+
+        template <int iNumDimensions>
+        inline double simplexLength(const Simplex<iNumDimensions, 2>& lineSegment) {
+            return (lineSegment.vertex(1) - lineSegment.vertex(0)).norm();
+        }
+
+        inline double simplexLength(const SimplexXd& simplex) {
+            if (simplex.numVertices() == 2) {
+                if (simplex.numDimensions() == 1) {
+                    return simplexLength(LineSegment1d(simplex));
+                } else {
+                    return (simplex.vertex(1) - simplex.vertex(0)).norm();
+                }
+            }
+            assert(false);
+            return 0.0;
+        }
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    inline double Simplex<iNumDimensions, iNumVertices>::length() const {
+        return detail::simplexLength(*this);
     }
 
     namespace detail
     {
-        template <class SimplexType>
-        inline double triangleArea2d(const SimplexType& triangle) {
-            Matrix2d edges;
-            edges.col(0) = triangle.vertex(1) - triangle.vertex(0);
-            edges.col(1) = triangle.vertex(2) - triangle.vertex(0);
-            return edges.determinant() / 2;
+        inline double simplexArea(const Triangle2d& triangle) {
+            Matrix2d edgeVectors =
+                triangle.vertices().rightCols<2>().colwise() - triangle.vertex(0);
+            return edgeVectors.determinant() / 2;
         }
 
-        template <class SimplexType>
-        inline double triangleArea3d(const SimplexType& triangle) {
+        inline double simplexArea(const Triangle3d& triangle) {
             Vector3d first_edge = triangle.vertex(1) - triangle.vertex(0);
             Vector3d second_edge = triangle.vertex(2) - triangle.vertex(0);
             return first_edge.cross(second_edge).norm() / 2;
         }
 
-        inline double triangleArea(const Simplex<2, 3>& triangle) {
-            return triangleArea2d(triangle);
-        }
-
-        inline double triangleArea(const Simplex<3, 3>& triangle) {
-            return triangleArea3d(triangle);
-        }
-
-        inline double triangleArea(const Simplex<Dynamic, Dynamic>& triangle) {
-            return triangle.numDimensions() == 2 ? triangleArea2d(triangle) : triangleArea3d(triangle);
+        inline double simplexArea(const SimplexXd& simplex) {
+            if (simplex.numVertices() == 3) {
+                if (simplex.numDimensions() == 2) {
+                    return simplexArea(Triangle2d(simplex));
+                } else if (simplex.numDimensions() == 3) {
+                    return simplexArea(Triangle3d(simplex));
+                }
+            }
+            assert(false);
+            return 0.0;
         }
     }
 
     template <int iNumDimensions, int iNumVertices>
-    double Simplex<iNumDimensions, iNumVertices>::area() const {
-        assert(numVertices() == 3);
-        assert(numDimensions() >= 2);
-        return detail::triangleArea(*this);
+    inline double Simplex<iNumDimensions, iNumVertices>::area() const {
+        return detail::simplexArea(*this);
+    }
+
+    namespace detail
+    {
+        inline double simplexVolume(const Tetrahedron3d& tetrahedron) {
+            Matrix3d edgeVectors =
+                tetrahedron.vertices().rightCols<3>().colwise() - tetrahedron.vertex(0);
+            return edgeVectors.determinant() / 6;
+        }
+
+        inline double simplexVolume(const SimplexXd& simplex) {
+            if (simplex.numDimensions() == 3 && simplex.numVertices() == 4) {
+                return simplexVolume(Tetrahedron3d(simplex));
+            } else {
+                assert(false);
+                return 0.0;
+            }
+        }
     }
 
     template <int iNumDimensions, int iNumVertices>
-    double Simplex<iNumDimensions, iNumVertices>::volume() const {
-        assert(numVertices() == 4);
-        assert(numDimensions() == 3);
-        return (vertices().template rightCols<3>().colwise() - vertex(0)).determinant() / 6;
+    inline double Simplex<iNumDimensions, iNumVertices>::volume() const {
+        return detail::simplexVolume(*this);
     }
 
     template <int iNumDimensions, int iNumVertices>
-    typename Simplex<iNumDimensions, iNumVertices>::Vector Simplex<iNumDimensions, iNumVertices>::vector() const {
+    typename Simplex<iNumDimensions, iNumVertices>::Vector
+    Simplex<iNumDimensions, iNumVertices>::vector() const {
         assert(numVertices() == 2);
         return vertex(1) - vertex(0);
     }
@@ -345,12 +390,44 @@ namespace opensolid
     Simplex<iNumDimensions, iNumVertices>::centroid() const {
         return vertices().rowwise().mean();
     }
+
+    namespace detail
+    {
+        inline Vector2d simplexNormalVector(const LineSegment2d& lineSegment) {
+            return (lineSegment.vertex(1) - lineSegment.vertex(0)).unitOrthogonal();
+        }
+
+        inline Vector3d simplexNormalVector(const LineSegment3d& lineSegment) {
+            return (lineSegment.vertex(1) - lineSegment.vertex(0)).unitOrthogonal();
+        }
+
+        inline Vector3d simplexNormalVector(const Triangle3d& triangle) {
+            Vector3d firstEdgeVector = triangle.vertex(1) - triangle.vertex(0);
+            Vector3d secondEdgeVector = triangle.vertex(2) - triangle.vertex(0);
+            return firstEdgeVector.cross(secondEdgeVector).normalized();
+        }
+
+        inline VectorXd simplexNormalVector(const SimplexXd& simplex) {
+            if (simplex.numDimensions() == 2) {
+                if (simplex.numVertices() == 2) {
+                    return simplexNormalVector(LineSegment2d(simplex));
+                }
+            } else if (simplex.numDimensions() == 3) {
+                if (simplex.numVertices() == 2) {
+                    return simplexNormalVector(LineSegment3d(simplex));
+                } else if (simplex.numVertices() == 3) {
+                    return simplexNormalVector(Triangle3d(simplex));
+                }
+            }
+            assert(false);
+            return VectorXd::Zero(simplex.numDimensions());
+        }
+    }
     
     template <int iNumDimensions, int iNumVertices>
     typename Simplex<iNumDimensions, iNumVertices>::Vector
-    Simplex<iNumDimensions, iNumVertices>::normal() const {
-        assert(numVertices() <= numDimensions());
-        return coordinateSystem().normal();
+    Simplex<iNumDimensions, iNumVertices>::normalVector() const {
+        return detail::simplexNormalVector(*this);
     }
     
     template <int iNumDimensions, int iNumVertices>
@@ -373,7 +450,9 @@ namespace opensolid
     typename Simplex<iNumDimensions, iNumVertices>::Face
     Simplex<iNumDimensions, iNumVertices>::face(int index) const {
         typename Face::Vertices faceVertices(numDimensions(), numVertices() - 1);
-        Matrix<int, 1, (iNumVertices == Dynamic ? Dynamic : iNumVertices - 1)> indices(numVertices() - 1);
+        Matrix<int, 1, (iNumVertices == Dynamic ? Dynamic : iNumVertices - 1)> indices(
+            numVertices() - 1
+        );
         for (int i = 0; i < indices.size(); ++i) {
             indices(i) = (index + 1 + i) % numVertices();
         }
@@ -399,20 +478,6 @@ namespace opensolid
     Matrix<Interval, iNumDimensions, 1> Simplex<iNumDimensions, iNumVertices>::bounds() const {
         return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
     }
-
-    template <int iNumDimensions, int iNumVertices>
-    template <class TTransformMatrix, class TTransformVector>
-    Simplex<MatrixType::RowsAtCompileTime, iNumVertices>
-    Simplex<iNumDimensions, iNumVertices>::transformed(
-        const TTransformMatrix& transformMatrix,
-        const TTransformVector& transformVector
-    ) const {
-        assertValidTransform<iNumDimensions>(numDimensions(), transformMatrix, transformVector);
-        return Simplex<
-            (iNumDimensions == Dynamic ? Dynamic : TTransformMatrix::RowsAtCompileTime),
-            iNumVertices
-        >((transformMatrix * vertices()).colwise() + transformVector);
-    }
         
     template <int iNumDimensions, int iNumVertices>
     bool Simplex<iNumDimensions, iNumVertices>::operator==(
@@ -421,6 +486,55 @@ namespace opensolid
         assert(numDimensions() == otherSimplex.numDimensions());
         assert(numVertices() == otherSimplex.numVertices());
         return vertices() == otherSimplex.vertices();
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices> Simplex<iNumDimensions, iNumVertices>::Unit() {
+        Matrix<double, iNumDimensions, iNumDimensions + 1> vertices;
+        vertices.col(0).setZero();
+        vertices.template rightCols<iNumDimensions>().setIdentity();
+        return Simplex<iNumDimensions, iNumVertices>(vertices);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices> Simplex<iNumDimensions, iNumVertices>::Unit(
+        int numDimensions
+    ) {
+        Matrix<double, iNumDimensions, iNumDimensions == Dynamic ? Dynamic : iNumDimensions + 1> vertices(
+            numDimensions,
+            numDimensions + 1
+        );
+        vertices.col(0).setZero();
+        vertices.rightCols(numDimensions).setIdentity();
+        return Simplex<iNumDimensions, iNumVertices>(vertices);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices> operator*(
+        double scaleFactor,
+        const Simplex<iNumDimensions, iNumVertices>& simplex
+    ) {
+        return Simplex<iNumDimensions, iNumVertices>(scaleFactor * simplex.vertices());
+    }
+
+    template <int iNumDimensions, int iNumVertices, class TVector>
+    Simplex<iNumDimensions, iNumVertices> operator+(
+        const Simplex<iNumDimensions, iNumVertices>& simplex,
+        const EigenBase<TVector>& vector
+    ) {
+        return Simplex<iNumDimensions, iNumVertices>(
+            simplex.vertices().colwise() + vector.derived()
+        );
+    }
+
+    template <int iNumDimensions, int iNumVertices, class TMatrix>
+    Simplex<TMatrix::RowsAtCompileTime, iNumVertices> operator*(
+        const EigenBase<TMatrix>& transformationMatrix,
+        const Simplex<iNumDimensions, iNumVertices>& simplex
+    ) {
+        return Simplex<TMatrix::RowsAtCompileTime, iNumVertices>(
+            transformationMatrix.derived() * simplex.vertices()
+        );
     }
 
     template <int iNumDimensions, int iNumVertices>
