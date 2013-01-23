@@ -26,22 +26,20 @@ namespace opensolid
     Plane3d::Plane3d() : Datum<3, 2>() {
     }
 
-    Plane3d::Plane3d(const Vector3d& originPoint, const Matrix<double, 3, 2>& basisMatrix) :
-        Datum<3, 2>(originPoint, basisMatrix) {
-    }
-
-    namespace detail
-    {
-        Matrix<double, 3, 2> planeBasisFromNormal(const Vector3d& normalVector) {
-            Matrix<double, 3, 2> basisMatrix;
-            basisMatrix.col(0) = normalVector.unitOrthogonal();
-            basisMatrix.col(1) = normalVector.cross(basisMatrix.col(0)).normalized();
-            return basisMatrix;
-        }
+    Plane3d::Plane3d(
+        const Vector3d& originPoint,
+        const Vector3d& xBasisVector,
+        const Vector3d& yBasisVector
+    ) : Datum<3, 2>() {
+        Matrix<double, 3, 2> basisMatrix;
+        basisMatrix << xBasisVector, yBasisVector;
+        initialize(originPoint, basisMatrix);
     }
 
     Plane3d Plane3d::FromPointAndNormal(const Vector3d& originPoint, const Vector3d& normalVector) {
-        return Plane3d(originPoint, detail::planeBasisFromNormal(normalVector));
+        Vector3d xBasisVector = normalVector.unitOrthogonal();
+        Vector3d yBasisVector = normalVector.cross(xBasisVector).normalized();
+        return Plane3d(originPoint, xBasisVector, yBasisVector);
     }
 
     Plane3d Plane3d::ThroughPoints(
@@ -49,47 +47,52 @@ namespace opensolid
         const Vector3d& xAxisPoint,
         const Vector3d& planePoint
     ) {
-        Matrix<double, 3, 2> basisMatrix;
-        basisMatrix.col(0) = xAxisPoint - originPoint;
-        basisMatrix.col(1) = planePoint - originPoint;
-
-        return Plane3d(originPoint, basisMatrix);
+        return Plane3d(
+            originPoint,
+            xAxisPoint - originPoint,
+            planePoint - originPoint
+        ).normalized();
     }
 
     Plane3d Plane3d::Midplane(const Vector3d& pointBelow, const Vector3d& pointAbove) {
-        return Plane3d(
-            pointBelow + 0.5 * (pointAbove - pointBelow),
-            detail::planeBasisFromNormal(pointAbove - pointBelow)
+        Vector3d displacementVector = pointAbove - pointBelow;
+        return Plane3d::FromPointAndNormal(
+            pointBelow + 0.5 * displacementVector,
+            displacementVector
         );
     }
 
     Plane3d Plane3d::Midplane(const Plane3d planeBelow, const Plane3d planeAbove) {
-        Vector3d originPoint = planeBelow.originPoint() +
-            0.5 * (planeAbove.originPoint() - planeBelow.originPoint());
+        Vector3d displacementVector = planeAbove.originPoint() - planeBelow.originPoint();
 
-        Matrix<double, 3, 2> basisMatrix = planeBelow.basisMatrix();
-        Matrix3d checkMatrix;
-        checkMatrix << basisMatrix, planeAbove.originPoint() - planeBelow.originPoint();
-        if (checkMatrix.determinant() < Zero()) {
-            basisMatrix.col(0) = -basisMatrix.col(0);
+        Vector3d originPoint = planeBelow.originPoint() + 0.5 * displacementVector;
+
+        Vector3d belowNormalVector = planeBelow.normalVector();
+        if (belowNormalVector.dot(displacementVector) < Zero()) {
+            belowNormalVector = -belowNormalVector;
         }
 
-        return Plane3d(originPoint, basisMatrix);
+        Vector3d aboveNormalVector = planeAbove.normalVector();
+        if (aboveNormalVector.dot(displacementVector) < Zero()) {
+            aboveNormalVector = -aboveNormalVector;
+        }
+
+        assert(belowNormalVector.cross(aboveNormalVector).isZero());
+
+        Vector3d normalVector = belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector);
+
+        return Plane3d::FromPointAndNormal(originPoint, normalVector);
     }
 
     Plane3d Plane3d::ThroughAxisAndPoint(const Axis3d& axis, const Vector3d& point) {
-        Matrix<double, 3, 2> basisMatrix;
-        basisMatrix.col(0) = axis.basisVector();
-        basisMatrix.col(1) = point - axis.originPoint();
-
-        return Plane3d(axis.originPoint(), basisMatrix);
+        return Plane3d(
+            axis.originPoint(),
+            axis.basisVector(),
+            point - axis.originPoint()
+        ).normalized();
     }
 
     Plane3d Plane3d::ThroughAxis(const Axis3d& axis) {
-        Matrix<double, 3, 2> basisMatrix;
-        basisMatrix.col(0) = axis.basisVector();
-        basisMatrix.col(1) = axis.normalVector();
-
-        return Plane3d(axis.originPoint(), basisMatrix);
+        return Plane3d(axis.originPoint(), axis.basisVector().normalized(), axis.normalVector());
     }
 }

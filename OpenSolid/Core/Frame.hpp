@@ -36,8 +36,12 @@ namespace opensolid
         Frame2d(const Frame2d& otherFrame);
 
         OPENSOLID_CORE_EXPORT explicit Frame2d(const Vector2d& originPoint);
-        
-        OPENSOLID_CORE_EXPORT Frame2d(const Vector2d& originPoint, const Matrix2d& basisMatrix);
+
+        OPENSOLID_CORE_EXPORT Frame2d(
+            const Vector2d& originPoint,
+            const Vector2d& xBasisVector,
+            const Vector2d& yBasisVector
+        );
         
         template <int iNumDimensions, int iNumAxes>
         Frame2d(const Datum<iNumDimensions, iNumAxes>& otherFrame);
@@ -58,7 +62,12 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT explicit Frame3d(const Vector3d& originPoint);
         
-        OPENSOLID_CORE_EXPORT Frame3d(const Vector3d& originPoint, const Matrix3d& basisMatrix);
+        OPENSOLID_CORE_EXPORT Frame3d(
+            const Vector3d& originPoint,
+            const Vector3d& xBasisVector,
+            const Vector3d& yBasisVector,
+            const Vector3d& zBasisVector
+        );
         
         template <int iNumDimensions, int iNumAxes>
         Frame3d(const Datum<iNumDimensions, iNumAxes>& otherFrame);

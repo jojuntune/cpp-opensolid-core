@@ -305,7 +305,7 @@ namespace opensolid
     inline typename Bounds<TElement>::Type
     Set<TElement>::bounds() const {
         if (isEmpty()) {
-            return Bounds<TElement>::Type();
+            return typename Bounds<TElement>::Type();
         } else {
             return root()->bounds();
         }
@@ -770,9 +770,9 @@ namespace opensolid
         if (node.element()) {
             stream << *node.element();
         } else {
-            stream << *node.left();
+            stream << *node.leftChild();
             stream << ",";
-            stream << *node.right();
+            stream << *node.rightChild();
         }
         stream << "}";
         return stream;

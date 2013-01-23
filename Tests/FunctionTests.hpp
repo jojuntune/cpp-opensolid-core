@@ -19,9 +19,9 @@
  *****************************************************************************/
 
 #include <OpenSolid/Core/Frame.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/util/Zero.hpp>
 #include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Utils/Zero.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
@@ -179,10 +179,10 @@ public:
     
     void testTransformation() {
         Frame3d frame;
-        frame = frame.translated(Vector3d(1, 1, 1));
+        frame = frame + Vector3d(1, 1, 1);
         frame = frame.rotated(M_PI / 4, frame.zAxis());
         Function linear = Vector3d::Ones() * t;
-        Function product = linear * frame;
+        Function product = frame * linear;
         Function quotient = linear / frame;
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
@@ -230,7 +230,7 @@ public:
     }
 
     void testMirrored() {
-        Plane3d plane = Frame3d().yzPlane().translated(Vector3d(1, 0, 0));
+        Plane3d plane = Frame3d().yzPlane() + Vector3d(1, 0, 0);
         Function f = Vector3d(1, 1, 1) + t * Vector3d(1, 1, 1);
         Function mirrored = f.mirrored(plane);
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());

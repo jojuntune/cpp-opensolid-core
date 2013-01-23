@@ -119,7 +119,7 @@ public:
     void testRandom() {
         Interval interval(-2, 3);
         for (int i = 0; i < 100; ++i) {
-            double random = interval.random();
+            double random = interval.randomValue();
             TS_ASSERT_LESS_THAN_EQUALS(interval.lowerBound(), random);
             TS_ASSERT_LESS_THAN_EQUALS(random, interval.upperBound());
         }

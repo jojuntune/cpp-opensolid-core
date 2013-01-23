@@ -34,7 +34,8 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT Plane3d(
             const Vector3d& originPoint,
-            const Matrix<double, 3, 2>& basisMatrix
+            const Vector3d& xBasisVector,
+            const Vector3d& yBasisVector
         );
 
         template <int iNumDimensions, int iNumAxes>

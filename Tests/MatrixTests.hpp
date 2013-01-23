@@ -86,7 +86,7 @@ public:
     
     void testTransformation() {
         Frame3d frame;
-        frame = frame.translated(Vector3d(1, 1, 1));
+        frame = frame + Vector3d(1, 1, 1);
         frame = frame.rotated(M_PI / 4, frame.zAxis());
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
@@ -238,27 +238,9 @@ public:
     }
 
     void testTransformed() {
-        Matrix2I argument;
-        argument(0, 0) = Interval(1, 2);
-        argument(1, 0) = Interval(3, 4);
-        argument(0, 1) = Interval(5, 6);
-        argument(1, 1) = Interval(7, 8);
-        Matrix<double, 3, 2> matrix;
-        matrix.col(0) = Vector3d::UnitX();
-        matrix.col(1) = Vector3d::UnitY();
-        Vector3d vector(1, 1, 1);
-        Matrix<Interval, 3, 2> transformed = argument.transformed(matrix, vector);
-        Vector3I first_transformed = transformed.col(0);
-        TS_ASSERT((first_transformed.cwiseLower() - Vector3d(2, 4, 1)).isZero());
-        TS_ASSERT((first_transformed.cwiseUpper() - Vector3d(3, 5, 1)).isZero());
-        Vector3I second_transformed = transformed.col(1);
-        TS_ASSERT((second_transformed.cwiseLower() - Vector3d(6, 8, 1)).isZero());
-        TS_ASSERT((second_transformed.cwiseUpper() - Vector3d(7, 9, 1)).isZero());
-
         Vector3d point(3, 2, 1);
         TS_ASSERT((point.rotated(M_PI / 2, Frame3d().zAxis()) - Vector3d(-2, 3, 1)).isZero());
         TS_ASSERT((point.rotated(M_PI / 2, Frame3d().xAxis()) - Vector3d(3, -1, 2)).isZero());
-        TS_ASSERT((point.translated(Vector3d(1, 1, 1)) - Vector3d(4, 3, 2)).isZero());
         TS_ASSERT((point.mirrored(Frame3d().yzPlane()) - Vector3d(-3, 2, 1)).isZero());
         TS_ASSERT(((2 * point).mirrored(Frame3d().xyPlane()) - Vector3d(6, 4, -2)).isZero());
     }

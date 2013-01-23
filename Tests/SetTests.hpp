@@ -35,16 +35,16 @@ template <class Type>
 void testSet(const SetNode<Type>* node) {
     if (!node) {
         return;
-    } else if (node->object()) {
+    } else if (node->element()) {
         TS_ASSERT(node->size() == 1u);
     } else {
-        const SetNode<Type>* left = node->left();
-        const SetNode<Type>* right = node->right();
-        TS_ASSERT(node->bounds().contains(left->bounds()));
-        TS_ASSERT(node->bounds().contains(right->bounds()));
-        TS_ASSERT_EQUALS(node->size(), left->size() + right->size());
-        testSet(node->left());
-        testSet(node->right());
+        const SetNode<Type>* leftChild = node->leftChild();
+        const SetNode<Type>* rightChild = node->rightChild();
+        TS_ASSERT(node->bounds().contains(leftChild->bounds()));
+        TS_ASSERT(node->bounds().contains(rightChild->bounds()));
+        TS_ASSERT_EQUALS(node->size(), leftChild->size() + rightChild->size());
+        testSet(node->leftChild());
+        testSet(node->rightChild());
     }
 }
 

@@ -587,7 +587,7 @@ namespace opensolid
     ) const {
         assert(axisIndex >= 0 && axisIndex < numAxes());
         Datum<iNumDimensions, iNumAxes> result(*this);
-        result._basisMatrix.col(axisIndex) = -basisMatrix().cols(axisIndex);
+        result._basisMatrix.col(axisIndex) = -basisMatrix().col(axisIndex);
         result._inverseMatrix.row(axisIndex) = -inverseMatrix().row(axisIndex);
         return result;
     }
@@ -689,7 +689,7 @@ namespace opensolid
         const EigenBase<TMatrix>& transformationMatrix,
         const Datum<iNumDimensions, iNumAxes>& datum
     ) {
-        return Datum<iNumDimensions, iNumAxes>(
+        return Datum<TMatrix::RowsAtCompileTime, iNumAxes>(
             transformationMatrix.derived() * datum.originPoint(),
             transformationMatrix.derived() * datum.basisMatrix()
         );

@@ -20,7 +20,7 @@
 
 #include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/util/Zero.hpp>
+#include <OpenSolid/Utils/Zero.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Set.hpp>
 
@@ -50,13 +50,13 @@ public:
         for (int i = 0; i < 4; ++i) {
             Vector3d vertex = tetrahedron.vertex(i);
             Triangle3d face = tetrahedron.face(i);
-            TS_ASSERT((vertex - face.centroid()).dot(face.normal()) < Zero());
+            TS_ASSERT((vertex - face.centroid()).dot(face.normalVector()) < Zero());
         }
         Triangle2d triangle(Vector2d::Zero(), Vector2d(2, 1), Vector2d(1, 2));
         for (int i = 0; i < 3; ++i) {
             Vector2d vertex = triangle.vertex(i);
-            LineSegment2d edge = triangle.face(i);
-            TS_ASSERT((vertex - edge.centroid()).dot(edge.normal()) < Zero());
+            LineSegment2d edge = triangle.edge(i);
+            TS_ASSERT((vertex - edge.centroid()).dot(edge.normalVector()) < Zero());
         }
     }
     
@@ -111,10 +111,10 @@ public:
     
     void testNormal() {
         LineSegment2d line(Vector2d(1, 1), Vector2d(3, 2));
-        TS_ASSERT((line.normal() - Vector2d(-1, 2).normalized()).isZero());
+        TS_ASSERT((line.normalVector() - Vector2d(-1, 2).normalized()).isZero());
         Triangle3d triangle(Vector3d(1, 1, 1), Vector3d(3, 1, 2), Vector3d(2, 2, 4));
         Vector3d expected_normal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
-        TS_ASSERT((triangle.normal() - expected_normal).isZero());
+        TS_ASSERT((triangle.normalVector() - expected_normal).isZero());
     }
     
     void testCopyingAndEquality() {
@@ -128,13 +128,13 @@ public:
     void testCoordinateSystem() {
         Triangle3d triangle(Vector3d::Zero(), Vector3d(2, 0, 0), Vector3d(1, 2, 0));
         Datum<3, 2> coordinate_system = triangle.coordinateSystem();
-        Vector3d product = Vector2d(0.5, 0.5) * coordinate_system;
+        Vector3d product = coordinate_system * Vector2d(0.5, 0.5);
         TS_ASSERT((product - Vector3d(1.5, 1, 0)).isZero());
         Vector2d quotient = Vector3d(1, 0, 0) / coordinate_system;
         TS_ASSERT((quotient - Vector2d(0.5, 0)).isZero());
         quotient = Vector3d(3, 2, 0) / coordinate_system;
         TS_ASSERT((quotient - Vector2d(1, 1)).isZero());
-        Vector3d projection = (Vector3d(3, 4, 5) / coordinate_system) * coordinate_system;
+        Vector3d projection = Vector3d(3, 4, 5).projected(coordinate_system);
         TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero());
     }
     
@@ -144,7 +144,7 @@ public:
         LineSegment1d line1d(2, 5);
         TS_ASSERT((quotient.vertices() - line1d.vertices()).isZero());
         LineSegment3d product =
-            LineSegment1d(1.0 / 3.0, 2.0 / 3.0) * line3d.coordinateSystem();
+            line3d.coordinateSystem() * LineSegment1d(1.0 / 3.0, 2.0 / 3.0);
         TS_ASSERT((product.vertex(0) - Vector3d(2, 3, 4)).isZero());
         TS_ASSERT((product.vertex(1) - Vector3d(3, 4, 5)).isZero());
     }
