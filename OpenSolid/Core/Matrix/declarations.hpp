@@ -43,7 +43,7 @@ namespace Eigen
     class Matrix;
 
     template <class TDerived>
-    class EigenBase;
+    struct EigenBase;
 
     template <class TDerived>
     class DenseBase;
