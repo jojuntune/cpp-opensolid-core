@@ -249,7 +249,7 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix,
         const Function& function
     ) {
-        return function.transformed(matrix, VectorXd::Zero(function.dimensions()));
+        return function.transformed(matrix, VectorXd::Zero(matrix.rows()));
     }
 
     template <class TMatrix>

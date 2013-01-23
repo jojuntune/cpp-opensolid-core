@@ -28,18 +28,18 @@ namespace opensolid
 
     Plane3d::Plane3d(
         const Vector3d& originPoint,
-        const Vector3d& xBasisVector,
-        const Vector3d& yBasisVector
+        const Vector3d& xVector,
+        const Vector3d& yVector
     ) : Datum<3, 2>() {
         Matrix<double, 3, 2> basisMatrix;
-        basisMatrix << xBasisVector, yBasisVector;
-        initialize(originPoint, basisMatrix);
+        basisMatrix << xVector, yVector;
+        *this = Datum<3, 2>(originPoint, basisMatrix).normalized();
     }
 
     Plane3d Plane3d::FromPointAndNormal(const Vector3d& originPoint, const Vector3d& normalVector) {
-        Vector3d xBasisVector = normalVector.unitOrthogonal();
-        Vector3d yBasisVector = normalVector.cross(xBasisVector).normalized();
-        return Plane3d(originPoint, xBasisVector, yBasisVector);
+        Vector3d xVector = normalVector.unitOrthogonal();
+        Vector3d yVector = normalVector.cross(xVector);
+        return Plane3d(originPoint, xVector, yVector);
     }
 
     Plane3d Plane3d::ThroughPoints(
@@ -47,11 +47,7 @@ namespace opensolid
         const Vector3d& xAxisPoint,
         const Vector3d& planePoint
     ) {
-        return Plane3d(
-            originPoint,
-            xAxisPoint - originPoint,
-            planePoint - originPoint
-        ).normalized();
+        return Plane3d(originPoint, xAxisPoint - originPoint, planePoint - originPoint);
     }
 
     Plane3d Plane3d::Midplane(const Vector3d& pointBelow, const Vector3d& pointAbove) {
@@ -85,14 +81,10 @@ namespace opensolid
     }
 
     Plane3d Plane3d::ThroughAxisAndPoint(const Axis3d& axis, const Vector3d& point) {
-        return Plane3d(
-            axis.originPoint(),
-            axis.basisVector(),
-            point - axis.originPoint()
-        ).normalized();
+        return Plane3d(axis.originPoint(), axis.basisVector(), point - axis.originPoint());
     }
 
     Plane3d Plane3d::ThroughAxis(const Axis3d& axis) {
-        return Plane3d(axis.originPoint(), axis.basisVector().normalized(), axis.normalVector());
+        return Plane3d(axis.originPoint(), axis.basisVector(), axis.normalVector());
     }
 }

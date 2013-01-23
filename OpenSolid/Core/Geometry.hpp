@@ -165,7 +165,7 @@ namespace opensolid
     Geometry operator*(const EigenBase<TMatrix>& transformationMatrix, const Geometry& geometry) {
         return geometry.transformed(
             transformationMatrix.derived(),
-            VectorXd::Zero(geometry.dimensions())
+            VectorXd::Zero(transformationMatrix.rows())
         );
     }
 

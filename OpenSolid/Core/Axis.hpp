@@ -33,7 +33,7 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Axis();
 
-        OPENSOLID_CORE_EXPORT Axis(const Vector2d& originPoint, const Vector2d& basisVector);
+        OPENSOLID_CORE_EXPORT Axis(const Vector2d& originPoint, const Vector2d& axisVector);
 
         template <int iNumDimensions, int iNumAxes>
         Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis);
@@ -47,7 +47,7 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Axis();
 
-        OPENSOLID_CORE_EXPORT Axis(const Vector3d& originPoint, const Vector3d& basisVector);
+        OPENSOLID_CORE_EXPORT Axis(const Vector3d& originPoint, const Vector3d& axisVector);
 
         template <int iNumDimensions, int iNumAxes>
         Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis);

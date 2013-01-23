@@ -25,14 +25,14 @@ namespace opensolid
     Axis<2>::Axis() : Datum<2, 1>() {
     }
 
-    Axis<2>::Axis(const Vector2d& originPoint, const Vector2d& basisVector) :
-        Datum<2, 1>(originPoint, basisVector) {
+    Axis<2>::Axis(const Vector2d& originPoint, const Vector2d& axisVector) :
+        Datum<2, 1>(originPoint, axisVector.normalized()) {
     }
 
     Axis<3>::Axis() : Datum<3, 1>() {
     }
 
-    Axis<3>::Axis(const Vector3d& originPoint, const Vector3d& basisVector) :
-        Datum<3, 1>(originPoint, basisVector) {
+    Axis<3>::Axis(const Vector3d& originPoint, const Vector3d& axisVector) :
+        Datum<3, 1>(originPoint, axisVector.normalized()) {
     }
 }

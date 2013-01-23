@@ -52,12 +52,6 @@ public:
             Triangle3d face = tetrahedron.face(i);
             TS_ASSERT((vertex - face.centroid()).dot(face.normalVector()) < Zero());
         }
-        Triangle2d triangle(Vector2d::Zero(), Vector2d(2, 1), Vector2d(1, 2));
-        for (int i = 0; i < 3; ++i) {
-            Vector2d vertex = triangle.vertex(i);
-            LineSegment2d edge = triangle.edge(i);
-            TS_ASSERT((vertex - edge.centroid()).dot(edge.normalVector()) < Zero());
-        }
     }
     
     void testDatumQuotient() {

@@ -30,12 +30,12 @@ namespace opensolid
     
     Frame2d::Frame2d(
         const Vector2d& originPoint,
-        const Vector2d& xBasisVector,
-        const Vector2d& yBasisVector
+        const Vector2d& xVector,
+        const Vector2d& yVector
     ) : Datum<2, 2>() {
         Matrix2d basisMatrix;
-        basisMatrix << xBasisVector, yBasisVector;
-        initialize(originPoint, basisMatrix);
+        basisMatrix << xVector, yVector;
+        *this = Datum<2, 2>(originPoint, basisMatrix).normalized();
     }
 
     Frame2d Frame2d::Unit() {
@@ -49,7 +49,7 @@ namespace opensolid
     Frame2d Frame2d::FromXAxis(const Axis2d& xAxis) {
         return Frame2d(
             xAxis.originPoint(),
-            xAxis.basisVector().normalized(),
+            xAxis.basisVector(),
             xAxis.basisVector().unitOrthogonal()
         );
     }
@@ -58,7 +58,7 @@ namespace opensolid
         return Frame2d(
             yAxis.originPoint(),
             -yAxis.basisVector().unitOrthogonal(),
-            yAxis.basisVector().normalized()
+            yAxis.basisVector()
         );
     }
 
@@ -71,13 +71,13 @@ namespace opensolid
     
     Frame3d::Frame3d(
         const Vector3d& originPoint,
-        const Vector3d& xBasisVector,
-        const Vector3d& yBasisVector,
-        const Vector3d& zBasisVector
+        const Vector3d& xVector,
+        const Vector3d& yVector,
+        const Vector3d& zVector
     ) : Datum<3, 3>() {
         Matrix3d basisMatrix;
-        basisMatrix << xBasisVector, yBasisVector, zBasisVector;
-        initialize(originPoint, basisMatrix);
+        basisMatrix << xVector, yVector, zVector;
+        *this = Datum<3, 3>(originPoint, basisMatrix).normalized();
     }
 
     Frame3d Frame3d::Unit() {
@@ -94,7 +94,7 @@ namespace opensolid
             xyPlane.basisVector(0),
             xyPlane.basisVector(1),
             xyPlane.normalVector()
-        ).normalized();
+        );
     }
 
     Frame3d Frame3d::FromXZPlane(const Plane3d& xzPlane) {
@@ -103,7 +103,7 @@ namespace opensolid
             xzPlane.basisVector(0),
             -xzPlane.normalVector(),
             xzPlane.basisVector(1)
-        ).normalized();
+        );
     }
 
     Frame3d Frame3d::FromYXPlane(const Plane3d& yxPlane) {
@@ -112,7 +112,7 @@ namespace opensolid
             yxPlane.basisVector(1),
             yxPlane.basisVector(0),
             -yxPlane.normalVector()
-        ).normalized();
+        );
     }
 
     Frame3d Frame3d::FromYZPlane(const Plane3d& yzPlane) {
@@ -121,7 +121,7 @@ namespace opensolid
             yzPlane.normalVector(),
             yzPlane.basisVector(0),
             yzPlane.basisVector(1)
-        ).normalized();
+        );
     }
 
     Frame3d Frame3d::FromZXPlane(const Plane3d& zxPlane) {
@@ -130,7 +130,7 @@ namespace opensolid
             zxPlane.basisVector(1),
             zxPlane.normalVector(),
             zxPlane.basisVector(0)
-        ).normalized();
+        );
     }
 
     Frame3d Frame3d::FromZYPlane(const Plane3d& zyPlane) {
@@ -139,6 +139,6 @@ namespace opensolid
             -zyPlane.normalVector(),
             zyPlane.basisVector(1),
             zyPlane.basisVector(0)
-        ).normalized();
+        );
     }
 }

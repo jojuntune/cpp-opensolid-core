@@ -39,8 +39,8 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT Frame2d(
             const Vector2d& originPoint,
-            const Vector2d& xBasisVector,
-            const Vector2d& yBasisVector
+            const Vector2d& xVector,
+            const Vector2d& yVector
         );
         
         template <int iNumDimensions, int iNumAxes>
@@ -64,9 +64,9 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT Frame3d(
             const Vector3d& originPoint,
-            const Vector3d& xBasisVector,
-            const Vector3d& yBasisVector,
-            const Vector3d& zBasisVector
+            const Vector3d& xVector,
+            const Vector3d& yVector,
+            const Vector3d& zVector
         );
         
         template <int iNumDimensions, int iNumAxes>
