@@ -22,7 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
- #include "Interval/declarations.hpp"
+#include <OpenSolid/Core/Interval/declarations.hpp>
 
 namespace opensolid
 {
