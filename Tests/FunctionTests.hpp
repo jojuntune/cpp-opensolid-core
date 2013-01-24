@@ -104,7 +104,7 @@ public:
 
     void testNorm() {
         Function arc = 3 * (cos(t) * Vector2d(1, 0) + Vector2d::UnitY() * sin(t));
-        TS_ASSERT(arc.normalized()(M_PI / 4).isApprox(Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))));
+        TS_ASSERT((arc.normalized()(M_PI / 4) - Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))).isZero());
     }
     
     void testVector() {
@@ -170,9 +170,9 @@ public:
     void testComponent() {
         Function f = Vector3d(1, 2, 3) + t * Vector3d(1, 2, 3);
         RowVector3d result = f.component(1)(RowVector3d(0, 0.5, 1));
-        TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
+        TS_ASSERT((result - RowVector3d(2, 3, 4)).isZero());
         result = f(RowVector3d(0, 0.5, 1)).row(1);
-        TS_ASSERT(result.isApprox(RowVector3d(2, 3, 4)));
+        TS_ASSERT((result - RowVector3d(2, 3, 4)).isZero());
         double value = f.z()(0.5).value();
         TS_ASSERT(value - 4.5 == Zero());
     }
@@ -189,8 +189,8 @@ public:
             Vector3d(1, 1, 1);
         MatrixXd quotient_values = (Vector3d(sqrt(2.0), 0, 1) * parameter_values).colwise() +
             Vector3d(-sqrt(2.0), 0, -1);
-        TS_ASSERT(product(parameter_values).isApprox(product_values));
-        TS_ASSERT(quotient(parameter_values).isApprox(quotient_values));
+        TS_ASSERT((product(parameter_values) - product_values).isZero());
+        TS_ASSERT((quotient(parameter_values) - quotient_values).isZero());
     }
     
     void testConcatenation() {
@@ -198,7 +198,7 @@ public:
         double y = 3;
         Function z = t.squaredNorm();
         Function concatenated = Function::Components(x, y, z);
-        TS_ASSERT(concatenated(2.0).isApprox(Vector3d(2.0, 3.0, 4.0)));
+        TS_ASSERT((concatenated(2.0) - Vector3d(2.0, 3.0, 4.0)).isZero());
     }
 
     void testArccosine() {
