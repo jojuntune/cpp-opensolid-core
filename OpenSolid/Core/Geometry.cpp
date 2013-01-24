@@ -40,7 +40,7 @@ namespace opensolid
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
         _implementation(new GenericGeometry(function, domain)), _type(&typeid(GenericGeometry)) {
-        assert(function.isConstant() || domain.dimensions() == function.parameters());
+        assert(function.isConstant() || domain.numDimensions() == function.parameters());
     }
     
     Geometry::Geometry(int value) :
