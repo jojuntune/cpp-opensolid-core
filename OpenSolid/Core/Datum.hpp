@@ -83,11 +83,15 @@ namespace opensolid
         Matrix<double, iNumDimensions, 1> vector(double x, double y) const;
         Matrix<double, iNumDimensions, 1> vector(double x, double y, double z) const;
 
-        Matrix<double, iNumDimensions, 1> basisVector() const;
-        Matrix<double, iNumDimensions, 1> xBasisVector() const;
-        Matrix<double, iNumDimensions, 1> yBasisVector() const;
-        Matrix<double, iNumDimensions, 1> zBasisVector() const;
-        Matrix<double, iNumDimensions, 1> basisVector(int axisIndex) const;
+        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr basisVector() const;
+        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr xBasisVector() const;
+        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr yBasisVector() const;
+        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr zBasisVector() const;
+        
+        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr basisVector(
+            int axisIndex
+        ) const;
+
         Matrix<double, iNumDimensions, 1> normalVector() const;
         
         Datum<iNumDimensions, 1> xAxis() const;
@@ -188,8 +192,8 @@ namespace opensolid
         assert(originPoint.size() == basisMatrix.rows());
         _originPoint = originPoint;
         _basisMatrix = basisMatrix;
-        _inverseMatrix =
-            (_basisMatrix.transpose() * _basisMatrix).inverse() * _basisMatrix.transpose();
+        _inverseMatrix = (_basisMatrix.transpose() * _basisMatrix).inverse() *
+            _basisMatrix.transpose();
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -339,33 +343,36 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::basisVector() const {
+    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    Datum<iNumDimensions, iNumAxes>::basisVector() const {
         assertCompatible<iNumAxes, 1>();
         assert(numAxes() == 1);
-        return basisMatrix();
+        return basisMatrix().col(0);
     }
 
     template<int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::xBasisVector() const {
+    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    Datum<iNumDimensions, iNumAxes>::xBasisVector() const {
         return basisMatrix().col(0);
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::yBasisVector() const {
+    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    Datum<iNumDimensions, iNumAxes>::yBasisVector() const {
         assert(numAxes() >= 2);
         return basisMatrix().col(1);
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::zBasisVector() const {
+    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    Datum<iNumDimensions, iNumAxes>::zBasisVector() const {
         assert(numAxes() >= 3);
         return basisMatrix().col(2);
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::basisVector(
-        int axisIndex
-    ) const {
+    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    Datum<iNumDimensions, iNumAxes>::basisVector(int axisIndex ) const {
         assert(axisIndex >= 0 && axisIndex < numAxes());
         return basisMatrix().col(axisIndex);
     }
