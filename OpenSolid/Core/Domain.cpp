@@ -32,22 +32,33 @@
 
 namespace opensolid
 {   
-    Domain::Domain() : _implementation(), _type(nullptr) {}
+    Domain::Domain() : _implementation(), _type(nullptr) {
+    }
     
     Domain::Domain(const DomainImplementation* implementation) :
-        _implementation(implementation), _type(&typeid(implementation)) {}
+        _implementation(implementation),
+        _type(&typeid(implementation)) {
+    }
     
     Domain::Domain(const Set<Geometry>& boundaries) :
-        _implementation(new GenericDomain(boundaries)), _type(&typeid(GenericDomain)) {}
+        _implementation(new GenericDomain(boundaries)),
+        _type(&typeid(GenericDomain)) {
+    }
     
-    Domain::Domain(const Interval& interval) :
-        _implementation(new IntervalDomain(interval)), _type(&typeid(IntervalDomain)) {}
+    Domain::Domain(Interval interval) :
+        _implementation(new IntervalDomain(interval)),
+        _type(&typeid(IntervalDomain)) {
+    }
     
-    Domain::Domain(const Interval& u, const Interval& v) :
-        _implementation(new RectangleDomain(Vector2I(u, v))), _type(&typeid(RectangleDomain)) {}
+    Domain::Domain(Interval uInterval, Interval vInterval) :
+        _implementation(new RectangleDomain(Vector2I(uInterval, vInterval))),
+        _type(&typeid(RectangleDomain)) {
+    }
     
-    Domain::Domain(const Interval& u, const Interval& v, const Interval& w) :
-        _implementation(new CuboidDomain(Vector3I(u, v, w))), _type(&typeid(CuboidDomain)) {}
+    Domain::Domain(Interval uInterval, Interval vInterval, Interval wInterval) :
+        _implementation(new CuboidDomain(Vector3I(uInterval, vInterval, wInterval))),
+        _type(&typeid(CuboidDomain)) {
+    }
     
     Domain::Domain(const VectorXI& bounds) {
         assert(bounds.size() == 1 || bounds.size() == 2 || bounds.size() == 3);
@@ -64,30 +75,42 @@ namespace opensolid
     }
 
     Domain::Domain(const SimplexXd& simplex) :
-        _implementation(new SimplexDomain(simplex)), _type(&typeid(SimplexDomain)) {}
+        _implementation(new SimplexDomain(simplex)),
+        _type(&typeid(SimplexDomain)) {
+    }
 
-    const DomainImplementation* Domain::implementation() const {return _implementation.get();}
+    const DomainImplementation* Domain::implementation() const {
+        return _implementation.get();
+    }
     
-    Set<Geometry> Domain::boundaries() const {return implementation()->boundaries();}
+    Set<Geometry> Domain::boundaries() const {
+        return implementation()->boundaries();
+    }
     
-    bool Domain::isEmpty() const {return implementation()->isEmpty();}
+    bool Domain::isEmpty() const {
+        return implementation()->isEmpty();
+    }
     
-    int Domain::dimensions() const {return implementation()->dimensions();}
+    int Domain::numDimensions() const {
+        return implementation()->dimensions();
+    }
     
-    VectorXI Domain::bounds() const {return implementation()->bounds();}
+    VectorXI Domain::bounds() const {
+        return implementation()->bounds();
+    }
 
     Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return implementation()->transformed(matrix, vector);
     }
 
-    VectorXI Bounds<Domain>::operator()(const Domain& argument) const {
-        return argument.bounds();
+    VectorXI Bounds<Domain>::operator()(const Domain& domain) const {
+        return domain.bounds();
     }
     
-    Interval Conversion<Domain, Interval>::operator()(const Domain& argument) const {
-        assert(!argument.isEmpty());
-        assert(argument.dimensions() == 1);
-        assert(argument.boundaries().size() == 2);
-        return argument.bounds().value();
+    Interval Conversion<Domain, Interval>::operator()(const Domain& domain) const {
+        assert(!domain.isEmpty());
+        assert(domain.numDimensions() == 1);
+        assert(domain.boundaries().size() == 2);
+        return domain.bounds().value();
     }
 }

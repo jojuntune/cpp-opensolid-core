@@ -51,23 +51,23 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Domain(const DomainImplementation* implementation);
 
         OPENSOLID_CORE_EXPORT Domain(const Set<Geometry>& boundaries);
-        OPENSOLID_CORE_EXPORT Domain(const Interval& interval);
-        OPENSOLID_CORE_EXPORT Domain(const Interval& u, const Interval& v);
-        OPENSOLID_CORE_EXPORT Domain(const Interval& u, const Interval& v, const Interval& w);
+        OPENSOLID_CORE_EXPORT Domain(Interval interval);
+        OPENSOLID_CORE_EXPORT Domain(Interval uInterval, Interval vInterval);
+        OPENSOLID_CORE_EXPORT Domain(Interval uInterval, Interval vInterval, Interval wInterval);
         OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
         OPENSOLID_CORE_EXPORT Domain(const SimplexXd& simplex);
 
-        template <class DerivedType>
-        Domain(const EigenBase<DerivedType>& bounds);
+        template <class TIntervalVector>
+        Domain(const EigenBase<TIntervalVector>& bounds);
 
-        template <int dimensions_, int size_>
-        Domain(const Simplex<dimensions_, size_>& simplex);
+        template <int iNumDimensions, int iNumVertices>
+        Domain(const Simplex<iNumDimensions, iNumVertices>& simplex);
 
         OPENSOLID_CORE_EXPORT const DomainImplementation* implementation() const;
         
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
         OPENSOLID_CORE_EXPORT bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
         OPENSOLID_CORE_EXPORT VectorXI bounds() const;
 
         OPENSOLID_CORE_EXPORT Domain transformed(
@@ -86,13 +86,13 @@ namespace opensolid
     {
         typedef VectorXI Type;
 
-        OPENSOLID_CORE_EXPORT VectorXI operator()(const Domain& argument) const;
+        OPENSOLID_CORE_EXPORT VectorXI operator()(const Domain& domain) const;
     };
 
     template <>
     struct Conversion<Domain, Interval>
     {
-        OPENSOLID_CORE_EXPORT Interval operator()(const Domain& argument) const;
+        OPENSOLID_CORE_EXPORT Interval operator()(const Domain& domain) const;
     };
 }
 
@@ -102,13 +102,13 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class DerivedType>
-    Domain::Domain(const EigenBase<DerivedType>& bounds) {
+    template <class TIntervalVector>
+    Domain::Domain(const EigenBase<TIntervalVector>& bounds) {
         *this = Domain(VectorXI(bounds));
     }
 
-    template <int dimensions_, int size_>
-    Domain::Domain(const Simplex<dimensions_, size_>& simplex) {
+    template <int iNumDimensions, int iNumVertices>
+    Domain::Domain(const Simplex<iNumDimensions, iNumVertices>& simplex) {
         *this = Domain(SimplexXd(simplex));
     }
 }
