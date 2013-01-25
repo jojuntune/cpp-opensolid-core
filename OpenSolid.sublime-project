@@ -28,6 +28,18 @@
             "cmd": ["make", "-j3"],
             "working_dir": "$project_path/Build/Release",
             "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
+        },
+        {
+            "name": "OpenSolid - Clang Debug",
+            "cmd": ["make", "-j3"],
+            "working_dir": "$project_path/Build/Clang-Debug",
+            "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
+        },
+        {
+            "name": "OpenSolid - Clang Release",
+            "cmd": ["make", "-j3"],
+            "working_dir": "$project_path/Build/Clang-Release",
+            "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
         }
     ]
 }
