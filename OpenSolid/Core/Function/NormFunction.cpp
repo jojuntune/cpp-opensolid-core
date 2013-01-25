@@ -26,7 +26,7 @@ namespace opensolid
 {
     NormFunction::NormFunction(const Function& operand) : UnaryOperation(operand) {}
     
-    int NormFunction::dimensions() const {return 1;}
+    int NormFunction::numDimensions() const {return 1;}
     
     void NormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).colwise().norm();

@@ -74,12 +74,12 @@ namespace opensolid
         _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {
     }
     
-    int Function::parameters() const {
-        return implementation() ? implementation()->parameters() : 0;
+    int Function::numParameters() const {
+        return implementation() ? implementation()->numParameters() : 0;
     }
     
-    int Function::dimensions() const {
-        return implementation() ? implementation()->dimensions() : 0;
+    int Function::numDimensions() const {
+        return implementation() ? implementation()->numDimensions() : 0;
     }
     
     bool Function::isConstant() const {
@@ -107,7 +107,7 @@ namespace opensolid
         const MatrixXd& transformMatrix,
         const VectorXd& transformVector
     ) const {
-        assertValidTransform<Dynamic>(dimensions(), transformMatrix, transformVector);
+        assertValidTransform<Dynamic>(numDimensions(), transformMatrix, transformVector);
         assert(implementation());
         Function result;
         implementation()->getTransformed(transformMatrix, transformVector, result);
@@ -168,9 +168,9 @@ namespace opensolid
         assert(implementation());
         assert(other.implementation());
         if (isConstant() && other.isConstant()) {
-            VectorXd result(dimensions() + other.dimensions());
-            result.head(dimensions()) = this->as<VectorXd>();
-            result.tail(other.dimensions()) = other.as<VectorXd>();
+            VectorXd result(numDimensions() + other.numDimensions());
+            result.head(numDimensions()) = this->as<VectorXd>();
+            result.tail(other.numDimensions()) = other.as<VectorXd>();
             return result;
         } else {
             return new ConcatenationFunction(*this, other);
@@ -180,8 +180,8 @@ namespace opensolid
     Function Function::dot(const Function& other) const {
         assert(implementation());
         assert(other.implementation());
-        if (dimensions() == 1) {
-            assert(other.dimensions() == 1);
+        if (numDimensions() == 1) {
+            assert(other.numDimensions() == 1);
             return (*this) * other;
         } else if (isConstant() && other.isConstant()) {
             return this->as<VectorXd>().dot(other.as<VectorXd>());
@@ -198,7 +198,7 @@ namespace opensolid
     Function Function::cross(const Function& other) const {
         assert(implementation());
         assert(other.implementation());
-        assert(dimensions() == 3 && other.dimensions() == 3);
+        assert(numDimensions() == 3 && other.numDimensions() == 3);
         if (isConstant() && other.isConstant()) {
             return this->as<Vector3d>().cross(other.as<Vector3d>());
         }
@@ -214,7 +214,7 @@ namespace opensolid
     
     Function Function::tangent() const {
         assert(implementation());
-        assert(parameters() == 1);
+        assert(numParameters() == 1);
         Function result;
         implementation()->getTangent(result);
         return result;
@@ -222,7 +222,7 @@ namespace opensolid
     
     Function Function::curvature() const {
         assert(implementation());
-        assert(parameters() == 1);
+        assert(numParameters() == 1);
         Function result;
         implementation()->getCurvature(result);
         return result;
@@ -231,7 +231,7 @@ namespace opensolid
     
     Function Function::normal() const {
         assert(implementation());
-        assert(parameters() == 1 || parameters() == 2);
+        assert(numParameters() == 1 || numParameters() == 2);
         Function result;
         implementation()->getNormal(result);
         return result;
@@ -239,7 +239,7 @@ namespace opensolid
     
     Function Function::binormal() const {
         assert(implementation());
-        assert(parameters() == 1);
+        assert(numParameters() == 1);
         Function result;
         implementation()->getBinormal(result);
         return result;
@@ -251,7 +251,7 @@ namespace opensolid
         if (isConstant()) {
             return *this;
         }
-        assert(parameters() == inner.dimensions());
+        assert(numParameters() == inner.numDimensions());
         if (inner.isConstant()) {
             return operator()(inner.as<VectorXd>());
         }
@@ -276,7 +276,7 @@ namespace opensolid
         for (int i = 0; i < indent; ++i) {
             stream << "  ";
         }
-        stream << "R" << parameters() << " -> R" << dimensions() << " | ";
+        stream << "R" << numParameters() << " -> R" << numDimensions() << " | ";
         stream << implementation() << " | ";
         implementation()->debug(stream, indent);
     }
@@ -323,7 +323,7 @@ namespace opensolid
     Function operator*(const Function& firstOperand, const Function& secondOperand) {
         Function multiplicand;
         Function multiplier;
-        if (secondOperand.dimensions() == 1) {
+        if (secondOperand.numDimensions() == 1) {
             multiplicand = firstOperand;
             multiplier = secondOperand;
         } else {
@@ -338,7 +338,7 @@ namespace opensolid
         } else if (multiplier.isConstant()) {
             double multiplierValue = multiplier.as<double>();
             if (multiplierValue == Zero()) {
-                return VectorXd::Zero(multiplicand.dimensions());
+                return VectorXd::Zero(multiplicand.numDimensions());
             } else if (multiplierValue - 1 == Zero()) {
                 return multiplicand;
             } else if (multiplierValue + 1 == Zero()) {
@@ -454,19 +454,19 @@ namespace opensolid
     
     double Conversion<Function, double>::operator()(const Function& argument) const {
         assert(argument.isConstant());
-        assert(argument.dimensions() == 1);
+        assert(argument.numDimensions() == 1);
         return argument.as<VectorXd>().value();
     }
     
     Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
         assert(argument.isConstant());
-        assert(argument.dimensions() == 2);
+        assert(argument.numDimensions() == 2);
         return argument.as<VectorXd>();
     }
     
     Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
         assert(argument.isConstant());
-        assert(argument.dimensions() == 3);
+        assert(argument.numDimensions() == 3);
         return argument.as<VectorXd>();
     }
     

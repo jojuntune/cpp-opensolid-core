@@ -31,16 +31,20 @@
 namespace opensolid
 {
     Geometry::Geometry() :
-        _implementation(), _type(nullptr) {
+        _implementation(),
+        _type(nullptr) {
     }
 
     Geometry::Geometry(const GeometryImplementation* implementation) :
-        _implementation(implementation), _type(&typeid(implementation)) {
+        _implementation(implementation),
+        _type(&typeid(implementation)) {
     }
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
-        _implementation(new GenericGeometry(function, domain)), _type(&typeid(GenericGeometry)) {
-        assert(function.isConstant() || domain.numDimensions() == function.parameters());
+        _implementation(new GenericGeometry(function, domain)),
+        _type(&typeid(GenericGeometry)) {
+
+        assert(function.isConstant() || domain.numDimensions() == function.numParameters());
     }
     
     Geometry::Geometry(int value) :
@@ -54,11 +58,13 @@ namespace opensolid
     }
     
     Geometry::Geometry(const VectorXd& vector) :
-        _implementation(new ConstantGeometry(vector)), _type(&typeid(ConstantGeometry)) {
+        _implementation(new ConstantGeometry(vector)),
+        _type(&typeid(ConstantGeometry)) {
     }
     
     Geometry::Geometry(const SimplexXd& simplex) :
-        _implementation(new SimplexGeometry(simplex)), _type(&typeid(SimplexGeometry)) {
+        _implementation(new SimplexGeometry(simplex)),
+        _type(&typeid(SimplexGeometry)) {
     }
 
     const GeometryImplementation* Geometry::implementation() const {
@@ -81,12 +87,12 @@ namespace opensolid
         implementation()->evaluate(parameterBounds, results);
     }
     
-    int Geometry::parameters() const {
-        return implementation()->parameters();
+    int Geometry::numParameters() const {
+        return implementation()->numParameters();
     }
     
-    int Geometry::dimensions() const {
-        return implementation()->dimensions();
+    int Geometry::numDimensions() const {
+        return implementation()->numDimensions();
     }
     
     bool Geometry::isConstant() const {
@@ -114,8 +120,8 @@ namespace opensolid
 
     Geometry operator*(double multiplier, const Geometry& geometry) {
         return geometry.transformed(
-            multiplier * MatrixXd::Identity(geometry.dimensions(), geometry.dimensions()),
-            VectorXd::Zero(geometry.dimensions())
+            multiplier * MatrixXd::Identity(geometry.numDimensions(), geometry.numDimensions()),
+            VectorXd::Zero(geometry.numDimensions())
         );
     }
 
@@ -125,19 +131,19 @@ namespace opensolid
     
     double Conversion<Geometry, double>::operator()(const Geometry& geometry) const {
         assert(geometry.isConstant());
-        assert(geometry.dimensions() == 1);
+        assert(geometry.numDimensions() == 1);
         return geometry.function().as<double>();
     }
     
     Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& geometry) const {
         assert(geometry.isConstant());
-        assert(geometry.dimensions() == 2);
+        assert(geometry.numDimensions() == 2);
         return geometry.function().as<Vector2d>();
     }
     
     Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& geometry) const {
         assert(geometry.isConstant());
-        assert(geometry.dimensions() == 3);
+        assert(geometry.numDimensions() == 3);
         return geometry.function().as<Vector3d>();
     }
     

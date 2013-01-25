@@ -27,11 +27,11 @@ namespace opensolid
     LinearFunction::LinearFunction(const DatumXd& datum) : _datum(datum) {
     }
     
-    int LinearFunction::parameters() const {
+    int LinearFunction::numParameters() const {
         return datum().numAxes();
     }
     
-    int LinearFunction::dimensions() const {
+    int LinearFunction::numDimensions() const {
         return datum().numDimensions();
     }
     

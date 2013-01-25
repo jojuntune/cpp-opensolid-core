@@ -25,10 +25,10 @@
 namespace opensolid
 {
     SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
+        assert(operand.numDimensions() == 1);
     }
     
-    int SquareRootFunction::dimensions() const {return 1;}
+    int SquareRootFunction::numDimensions() const {return 1;}
     
     struct SquareRoot
     {

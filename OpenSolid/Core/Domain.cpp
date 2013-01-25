@@ -92,7 +92,7 @@ namespace opensolid
     }
     
     int Domain::numDimensions() const {
-        return implementation()->dimensions();
+        return implementation()->numDimensions();
     }
     
     VectorXI Domain::bounds() const {

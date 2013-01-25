@@ -26,8 +26,8 @@ namespace opensolid
 {
     PowerFunction::PowerFunction(const Function& base, const Function& exponent) :
         BinaryOperation(base, exponent) {
-        assert(base.dimensions() == 1);
-        assert(exponent.dimensions() == 1);
+        assert(base.numDimensions() == 1);
+        assert(exponent.numDimensions() == 1);
         if (exponent.isConstant()) {
             _exponent_is_constant = true;
             _constant_exponent = exponent.as<double>();
@@ -41,7 +41,7 @@ namespace opensolid
         }
     }
         
-    int PowerFunction::dimensions() const {return 1;}
+    int PowerFunction::numDimensions() const {return 1;}
 
     struct IntegerPower
     {

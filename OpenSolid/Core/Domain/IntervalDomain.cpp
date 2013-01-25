@@ -36,7 +36,7 @@ namespace opensolid
 
     bool IntervalDomain::isEmpty() const {return _interval.isEmpty();}
 
-    int IntervalDomain::dimensions() const {return 1;}
+    int IntervalDomain::numDimensions() const {return 1;}
 
     VectorXI IntervalDomain::bounds() const {return _interval.as<VectorXI>();}
 

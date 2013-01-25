@@ -37,8 +37,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        virtual int parameters() const = 0;
-        virtual int dimensions() const = 0;
+        virtual int numParameters() const = 0;
+        virtual int numDimensions() const = 0;
         
         virtual void getValues(const MapXcd& parameter_values, MapXd& results) const = 0;
         virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const = 0;

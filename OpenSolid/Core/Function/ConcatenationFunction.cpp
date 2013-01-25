@@ -29,18 +29,18 @@ namespace opensolid
         const Function& second_operand
     ) : BinaryOperation(first_operand, second_operand) {}
     
-    int ConcatenationFunction::dimensions() const {
-        return firstOperand().dimensions() + secondOperand().dimensions();
+    int ConcatenationFunction::numDimensions() const {
+        return firstOperand().numDimensions() + secondOperand().numDimensions();
     }
     
     void ConcatenationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results.topRows(firstOperand().dimensions()) = firstOperand()(parameter_values);
-        results.bottomRows(secondOperand().dimensions()) = secondOperand()(parameter_values);
+        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameter_values);
+        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameter_values);
     }
     
     void ConcatenationFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results.topRows(firstOperand().dimensions()) = firstOperand()(parameter_bounds);
-        results.bottomRows(secondOperand().dimensions()) = secondOperand()(parameter_bounds);
+        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameter_bounds);
+        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameter_bounds);
     }
     
     void ConcatenationFunction::getDerivative(int index, Function& result) const {
@@ -48,14 +48,14 @@ namespace opensolid
     }
     
     void ConcatenationFunction::getComponents(int index, int num, Function& result) const {
-        if (index < firstOperand().dimensions() && index + num <= firstOperand().dimensions()) {
+        if (index < firstOperand().numDimensions() && index + num <= firstOperand().numDimensions()) {
             result = firstOperand().components(index, num);
-        } else if (index >= firstOperand().dimensions()) {
-            result = secondOperand().components(index - firstOperand().dimensions(), num);
+        } else if (index >= firstOperand().numDimensions()) {
+            result = secondOperand().components(index - firstOperand().numDimensions(), num);
         } else {
             result = new ConcatenationFunction(
-                firstOperand().components(index, firstOperand().dimensions() - index),
-                secondOperand().components(0, num + index - firstOperand().dimensions())
+                firstOperand().components(index, firstOperand().numDimensions() - index),
+                secondOperand().components(0, num + index - firstOperand().numDimensions())
             );
         }
     }

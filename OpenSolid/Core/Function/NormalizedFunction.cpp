@@ -26,7 +26,7 @@ namespace opensolid
 {
     NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryOperation(operand) {}
     
-    int NormalizedFunction::dimensions() const {return operand().dimensions();}
+    int NormalizedFunction::numDimensions() const {return operand().numDimensions();}
 
     void NormalizedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd operand_values = operand()(parameter_values);

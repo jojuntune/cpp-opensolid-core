@@ -29,7 +29,7 @@ namespace opensolid
 
     bool DomainImplementation::isEmpty() const {return boundaries().isEmpty();}
 
-    int DomainImplementation::dimensions() const {return bounds().size();}
+    int DomainImplementation::numDimensions() const {return bounds().size();}
 
     VectorXI DomainImplementation::bounds() const {return boundaries().bounds();}
 
@@ -37,7 +37,7 @@ namespace opensolid
         const MatrixXd& matrix,
         const VectorXd& vector
     ) const {
-        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
+        assertValidTransform<Dynamic>(numDimensions(), matrix, vector);
         Set<Geometry> transformed_boundaries;
         boundaries().transform(
             [&matrix, &vector] (const Geometry& boundary) {

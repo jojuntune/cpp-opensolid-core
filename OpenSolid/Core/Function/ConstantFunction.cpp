@@ -26,9 +26,9 @@ namespace opensolid
 {
     ConstantFunction::ConstantFunction(const VectorXd& vector) : _vector(vector) {}
     
-    int ConstantFunction::parameters() const {return 0;}
+    int ConstantFunction::numParameters() const {return 0;}
     
-    int ConstantFunction::dimensions() const {return vector().size();}
+    int ConstantFunction::numDimensions() const {return vector().size();}
     
     void ConstantFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results.colwise() = vector();

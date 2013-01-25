@@ -74,11 +74,11 @@ namespace opensolid
     }
     
     void FunctionImplementation::getNormal(Function& result) const {
-        assert(parameters() == 1 || parameters() == 2);
-        if (parameters() == 1) {
+        assert(numParameters() == 1 || numParameters() == 2);
+        if (numParameters() == 1) {
             result = Function(this).tangent().derivative().normalized();
         } else {
-            assert(dimensions() == 3);
+            assert(numDimensions() == 3);
             result = Function(this).derivative(0).cross(Function(this).derivative(1)).normalized();
         }
     }

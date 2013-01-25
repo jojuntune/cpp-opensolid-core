@@ -41,7 +41,7 @@ namespace opensolid
         return false;
     }
 
-    int SimplexDomain::dimensions() const {
+    int SimplexDomain::numDimensions() const {
         return _simplex.numDimensions();
     }
 

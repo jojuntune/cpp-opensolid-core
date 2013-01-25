@@ -28,10 +28,10 @@ namespace opensolid
         UnaryOperation(operand), _index(index), _num(num) {
         assert(index >= 0);
         assert(num > 0);
-        assert(index + num <= operand.dimensions());
+        assert(index + num <= operand.numDimensions());
     }
     
-    int ComponentsFunction::dimensions() const {return num();}
+    int ComponentsFunction::numDimensions() const {return num();}
     
     void ComponentsFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd operand_values = operand()(parameter_values);

@@ -534,8 +534,8 @@ public:
         TS_ASSERT(f(0).value() - 1 == Zero());
         TS_ASSERT(f(M_PI / 2).value() - 2 == Zero());
         f = environment.get<Function>("Function.Parameter(2, 0) + 3 * Function.Parameter(2, 1)");
-        TS_ASSERT(f.parameters() == 2);
-        TS_ASSERT(f.dimensions() == 1);
+        TS_ASSERT(f.numParameters() == 2);
+        TS_ASSERT(f.numDimensions() == 1);
         TS_ASSERT(f(Vector2d(1, 2)).value() - 7 == Zero());
     }
 

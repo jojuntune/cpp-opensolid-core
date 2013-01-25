@@ -32,14 +32,14 @@ namespace opensolid
     }
     
     Domain SimplexGeometry::domain() const {
-        return Domain::UnitSimplex(parameters());
+        return Domain::UnitSimplex(numParameters());
     }
         
-    int SimplexGeometry::parameters() const {
+    int SimplexGeometry::numParameters() const {
         return _simplex.numVertices() - 1;
     }
     
-    int SimplexGeometry::dimensions() const {
+    int SimplexGeometry::numDimensions() const {
         return _simplex.numDimensions();
     }
 

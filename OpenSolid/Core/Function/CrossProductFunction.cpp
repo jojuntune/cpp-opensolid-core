@@ -28,10 +28,10 @@ namespace opensolid
         const Function& first_operand,
         const Function& second_operand
     ) : BinaryOperation(first_operand, second_operand) {
-        assert(first_operand.dimensions() == 3 && second_operand.dimensions() == 3);
+        assert(first_operand.numDimensions() == 3 && second_operand.numDimensions() == 3);
     }
     
-    int CrossProductFunction::dimensions() const {return 3;}
+    int CrossProductFunction::numDimensions() const {return 3;}
     
     void CrossProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         Matrix3Xd first_values = firstOperand()(parameter_values);

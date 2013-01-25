@@ -25,10 +25,10 @@
 namespace opensolid
 {
     ArcsineFunction::ArcsineFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
+        assert(operand.numDimensions() == 1);
     }
     
-    int ArcsineFunction::dimensions() const {return 1;}
+    int ArcsineFunction::numDimensions() const {return 1;}
     
     struct Arcsine
     {

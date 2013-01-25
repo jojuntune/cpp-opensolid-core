@@ -26,7 +26,7 @@ namespace opensolid
 {
     SquaredNormFunction::SquaredNormFunction(const Function& operand) : UnaryOperation(operand) {}
     
-    int SquaredNormFunction::dimensions() const {return 1;}
+    int SquaredNormFunction::numDimensions() const {return 1;}
     
     void SquaredNormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).colwise().squaredNorm();

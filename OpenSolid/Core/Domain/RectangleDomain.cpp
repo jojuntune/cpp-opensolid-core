@@ -48,7 +48,7 @@ namespace opensolid
         return _bounds.isEmpty();
     }
 
-    int RectangleDomain::dimensions() const {
+    int RectangleDomain::numDimensions() const {
         return 2;
     }
 

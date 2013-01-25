@@ -25,10 +25,10 @@
 namespace opensolid
 {
     ExponentialFunction::ExponentialFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
+        assert(operand.numDimensions() == 1);
     }
         
-    int ExponentialFunction::dimensions() const {return 1;}
+    int ExponentialFunction::numDimensions() const {return 1;}
         
     void ExponentialFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).array().exp();

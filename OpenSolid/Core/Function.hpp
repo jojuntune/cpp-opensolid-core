@@ -64,8 +64,8 @@ namespace opensolid
         const FunctionImplementation* implementation() const;
         const std::type_info& type() const;
         
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int numParameters() const;
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
         OPENSOLID_CORE_EXPORT bool isConstant() const;
 
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;

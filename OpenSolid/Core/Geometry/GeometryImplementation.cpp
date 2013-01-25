@@ -27,11 +27,16 @@
 
 namespace opensolid
 {
-    GeometryImplementation::~GeometryImplementation() {}
+    GeometryImplementation::~GeometryImplementation() {
+    }
         
-    int GeometryImplementation::parameters() const {return function().parameters();}
+    int GeometryImplementation::numParameters() const {
+        return function().numParameters();
+    }
 
-    int GeometryImplementation::dimensions() const {return function().dimensions();}
+    int GeometryImplementation::numDimensions() const {
+        return function().numDimensions();
+    }
         
     void GeometryImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
         function().evaluate(parameter_values, results);
@@ -41,7 +46,9 @@ namespace opensolid
         function().evaluate(parameter_bounds, results);
     }
 
-    bool GeometryImplementation::isConstant() const {return function().isConstant();}
+    bool GeometryImplementation::isConstant() const {
+        return function().isConstant();
+    }
 
     VectorXI GeometryImplementation::bounds() const {
         Function function = this->function();
@@ -71,15 +78,15 @@ namespace opensolid
         const MatrixXd& matrix,
         const VectorXd& vector
     ) const {
-        assertValidTransform<Dynamic>(dimensions(), matrix, vector);
+        assertValidTransform<Dynamic>(numDimensions(), matrix, vector);
         return new GenericGeometry(function().transformed(matrix, vector), domain());
     }
 
     Geometry GeometryImplementation::reversed() const {
-        assert(parameters() == 1);
+        assert(numParameters() == 1);
         Interval interval = domain().as<Interval>();
-        Function reversedParameter = interval.lowerBound() +
-            interval.upperBound() - Function::Parameter();
+        Function reversedParameter = interval.lowerBound() + interval.upperBound() -
+            Function::Parameter();
         return new GenericGeometry(function()(reversedParameter), domain());
     }
 }

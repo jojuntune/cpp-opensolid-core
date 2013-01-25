@@ -25,11 +25,11 @@
 namespace opensolid
 {
     CompositionFunction::CompositionFunction(const Function& inner, const Function& outer) :
-        _inner(inner), _outer(outer) {assert(inner.dimensions() == outer.parameters());}
+        _inner(inner), _outer(outer) {assert(inner.numDimensions() == outer.numParameters());}
     
-    int CompositionFunction::parameters() const {return inner().parameters();}
+    int CompositionFunction::numParameters() const {return inner().numParameters();}
     
-    int CompositionFunction::dimensions() const {return outer().dimensions();}
+    int CompositionFunction::numDimensions() const {return outer().numDimensions();}
 
     void CompositionFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = outer()(inner()(parameter_values));
@@ -42,7 +42,7 @@ namespace opensolid
     void CompositionFunction::getDerivative(int index, Function& result) const {
         Function inner_derivative = inner().derivative(index);
         result = outer().derivative(0)(inner()) * inner_derivative.component(0);
-        for (int i = 1; i < outer().parameters(); ++i) {
+        for (int i = 1; i < outer().numParameters(); ++i) {
             result = result + outer().derivative(i)(inner()) * inner_derivative.component(i);
         }
     }

@@ -28,19 +28,19 @@ namespace opensolid
         const Function& first_operand,
         const Function& second_operand
     ) : BinaryOperation(first_operand, second_operand) {
-        assert(second_operand.dimensions() == 1);
+        assert(second_operand.numDimensions() == 1);
     }
     
-    int QuotientFunction::dimensions() const {return firstOperand().dimensions();}
+    int QuotientFunction::numDimensions() const {return firstOperand().numDimensions();}
     
     void QuotientFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values).array() /
-            secondOperand()(parameter_values).replicate(dimensions(), 1).array();
+            secondOperand()(parameter_values).replicate(numDimensions(), 1).array();
     }
     
     void QuotientFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
         results = firstOperand()(parameter_bounds).array() /
-            secondOperand()(parameter_bounds).replicate(dimensions(), 1).array();
+            secondOperand()(parameter_bounds).replicate(numDimensions(), 1).array();
     }
 
     void QuotientFunction::getDerivative(int index, Function& result) const {

@@ -39,7 +39,7 @@ namespace opensolid
 
     bool CuboidDomain::isEmpty() const {return _bounds.isEmpty();}
 
-    int CuboidDomain::dimensions() const {return 3;}
+    int CuboidDomain::numDimensions() const {return 3;}
 
     VectorXI CuboidDomain::bounds() const {return _bounds;}
 

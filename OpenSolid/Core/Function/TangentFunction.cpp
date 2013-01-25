@@ -25,10 +25,10 @@
 namespace opensolid
 {
     TangentFunction::TangentFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
+        assert(operand.numDimensions() == 1);
     }
     
-    int TangentFunction::dimensions() const {return 1;}
+    int TangentFunction::numDimensions() const {return 1;}
     
     void TangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         MatrixXd operand_values = operand()(parameter_values);

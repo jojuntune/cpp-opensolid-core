@@ -25,10 +25,10 @@
 namespace opensolid
 {
     LogarithmFunction::LogarithmFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
+        assert(operand.numDimensions() == 1);
     }
         
-    int LogarithmFunction::dimensions() const {return 1;}
+    int LogarithmFunction::numDimensions() const {return 1;}
         
     void LogarithmFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).array().log();

@@ -25,9 +25,9 @@
 namespace opensolid
 {
     CosineFunction::CosineFunction(const Function& operand) :
-        UnaryOperation(operand) {assert(operand.dimensions() == 1);}
+        UnaryOperation(operand) {assert(operand.numDimensions() == 1);}
     
-    int CosineFunction::dimensions() const {return 1;}
+    int CosineFunction::numDimensions() const {return 1;}
     
     void CosineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).array().cos();

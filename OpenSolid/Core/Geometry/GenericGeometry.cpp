@@ -25,15 +25,25 @@
 namespace opensolid
 {
     GenericGeometry::GenericGeometry(const Function& function, const Domain& domain) :
-        _function(function), _domain(domain) {}
+        _function(function),
+        _domain(domain) {
+    }
 
-    Function GenericGeometry::function() const {return _function;}
+    Function GenericGeometry::function() const {
+        return _function;
+    }
 
-    Domain GenericGeometry::domain() const {return _domain;}
+    Domain GenericGeometry::domain() const {
+        return _domain;
+    }
 
-    int GenericGeometry::parameters() const {return _function.parameters();}
+    int GenericGeometry::numParameters() const {
+        return _function.numParameters();
+    }
 
-    int GenericGeometry::dimensions() const {return _function.dimensions();}
+    int GenericGeometry::numDimensions() const {
+        return _function.numDimensions();
+    }
 
     void GenericGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
         _function.evaluate(parameter_values, results);

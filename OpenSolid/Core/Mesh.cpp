@@ -35,7 +35,7 @@ namespace opensolid
     }
 
     Mesh::Mesh(const Geometry& geometry, double linear_deviation) {
-        if (geometry.parameters() != 1) {
+        if (geometry.numParameters() != 1) {
             // Only supports curves for now
             throw NotImplementedError();
         }

@@ -26,7 +26,7 @@ namespace opensolid
 {
     NegationFunction::NegationFunction(const Function& operand) : UnaryOperation(operand) {}
     
-    int NegationFunction::dimensions() const {return operand().dimensions();}
+    int NegationFunction::numDimensions() const {return operand().numDimensions();}
     
     void NegationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = -operand()(parameter_values);

@@ -29,11 +29,11 @@ namespace opensolid
         const MatrixXd& matrix,
         const VectorXd& vector
     ) : UnaryOperation(operand), _matrix(matrix), _vector(vector) {
-        assert(operand.dimensions() == matrix.cols());
+        assert(operand.numDimensions() == matrix.cols());
         assert(vector.size() == matrix.rows());
     }
     
-    int TransformedFunction::dimensions() const {return matrix().rows();}
+    int TransformedFunction::numDimensions() const {return matrix().rows();}
     
     void TransformedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = (matrix() * operand()(parameter_values)).colwise() + vector();
@@ -45,7 +45,7 @@ namespace opensolid
     }
     
     void TransformedFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index).transformed(matrix(), VectorXd::Zero(dimensions()));
+        result = operand().derivative(index).transformed(matrix(), VectorXd::Zero(numDimensions()));
     }
     
     void TransformedFunction::getComposition(const Function& inner, Function& result) const {

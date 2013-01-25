@@ -25,10 +25,10 @@
 namespace opensolid
 {
     SineFunction::SineFunction(const Function& operand) : UnaryOperation(operand) {
-        assert(operand.dimensions() == 1);
+        assert(operand.numDimensions() == 1);
     }
     
-    int SineFunction::dimensions() const {return 1;}
+    int SineFunction::numDimensions() const {return 1;}
     
     void SineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = operand()(parameter_values).array().sin();

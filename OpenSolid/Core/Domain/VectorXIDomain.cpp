@@ -39,7 +39,7 @@ namespace opensolid
 
     bool VectorXIDomain::isEmpty() const {return _bounds.isEmpty();}
 
-    int VectorXIDomain::dimensions() const {return _bounds.size();}
+    int VectorXIDomain::numDimensions() const {return _bounds.size();}
 
     VectorXI VectorXIDomain::bounds() const {return _bounds;}
 

@@ -38,7 +38,7 @@ namespace opensolid
         Set<Geometry> boundaries() const;
 
         bool isEmpty() const;
-        int dimensions() const;
+        int numDimensions() const;
         VectorXI bounds() const;
         Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };

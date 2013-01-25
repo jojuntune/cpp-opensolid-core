@@ -29,9 +29,9 @@ namespace opensolid
         assert(total > 0 && index >= 0 && num > 0 && index + num <= total);
     }
     
-    int ParametersFunction::parameters() const {return total();}
+    int ParametersFunction::numParameters() const {return total();}
     
-    int ParametersFunction::dimensions() const {return num();}
+    int ParametersFunction::numDimensions() const {return num();}
     
     void ParametersFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = parameter_values.middleRows(index(), num());

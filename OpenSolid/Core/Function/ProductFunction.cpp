@@ -28,10 +28,10 @@ namespace opensolid
         const Function& first_operand,
         const Function& second_operand
     ) : BinaryOperation(first_operand, second_operand) {
-        assert(second_operand.dimensions() == 1);
+        assert(second_operand.numDimensions() == 1);
     }
     
-    int ProductFunction::dimensions() const {return firstOperand().dimensions();}
+    int ProductFunction::numDimensions() const {return firstOperand().numDimensions();}
     
     void ProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) *

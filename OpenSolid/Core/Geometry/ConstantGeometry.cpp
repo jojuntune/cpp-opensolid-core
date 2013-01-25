@@ -24,15 +24,24 @@
 
 namespace opensolid
 {
-    ConstantGeometry::ConstantGeometry(const VectorXd& vector) : _vector(vector) {}
+    ConstantGeometry::ConstantGeometry(const VectorXd& vector) : _vector(vector) {
+    }
 
-    Function ConstantGeometry::function() const {return _vector;}
+    Function ConstantGeometry::function() const {
+        return _vector;
+    }
 
-    Domain ConstantGeometry::domain() const {return Domain();}
+    Domain ConstantGeometry::domain() const {
+        return Domain();
+    }
         
-    int ConstantGeometry::parameters() const {return 0;}
+    int ConstantGeometry::numParameters() const {
+        return 0;
+    }
 
-    int ConstantGeometry::dimensions() const {return _vector.size();}
+    int ConstantGeometry::numDimensions() const {
+        return _vector.size();
+    }
 
     void ConstantGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
         results.colwise() = _vector;
@@ -42,15 +51,23 @@ namespace opensolid
         results.colwise() = _vector.cast<Interval>();
     }
 
-    bool ConstantGeometry::isConstant() const {return true;}
+    bool ConstantGeometry::isConstant() const {
+        return true;
+    }
 
-    VectorXI ConstantGeometry::bounds() const {return _vector.cast<Interval>();}
+    VectorXI ConstantGeometry::bounds() const {
+        return _vector.cast<Interval>();
+    }
 
-    Set<Geometry> ConstantGeometry::boundaries() const {return Set<Geometry>();}
+    Set<Geometry> ConstantGeometry::boundaries() const {
+        return Set<Geometry>();
+    }
 
     Geometry ConstantGeometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return new ConstantGeometry(matrix * _vector + vector);
     }
 
-    Geometry ConstantGeometry::reversed() const {return this;}
+    Geometry ConstantGeometry::reversed() const {
+        return this;
+    }
 }

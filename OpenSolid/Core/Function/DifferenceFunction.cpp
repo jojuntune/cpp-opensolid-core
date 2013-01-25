@@ -28,10 +28,10 @@ namespace opensolid
         const Function& first_operand,
         const Function& second_operand
     ) : BinaryOperation(first_operand, second_operand) {
-        assert(first_operand.dimensions() == second_operand.dimensions());
+        assert(first_operand.numDimensions() == second_operand.numDimensions());
     }
     
-    int DifferenceFunction::dimensions() const {return firstOperand().dimensions();}
+    int DifferenceFunction::numDimensions() const {return firstOperand().numDimensions();}
     
     void DifferenceFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
         results = firstOperand()(parameter_values) - secondOperand()(parameter_values);

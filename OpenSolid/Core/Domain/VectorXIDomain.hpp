@@ -35,7 +35,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
         OPENSOLID_CORE_EXPORT bool isEmpty() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
         OPENSOLID_CORE_EXPORT VectorXI bounds() const;
 
         OPENSOLID_CORE_EXPORT Domain transformed(

@@ -37,7 +37,7 @@ namespace opensolid
         const Function& firstOperand() const;
         const Function& secondOperand() const;
         
-        int parameters() const;
+        int numParameters() const;
     };
 }
 

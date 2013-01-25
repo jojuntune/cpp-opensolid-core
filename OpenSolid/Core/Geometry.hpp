@@ -57,8 +57,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
         OPENSOLID_CORE_EXPORT Geometry(const SimplexXd& simplex);
 
-        template <class TDerived>
-        Geometry(const EigenBase<TDerived>& vector);
+        template <class TVector>
+        Geometry(const EigenBase<TVector>& vector);
 
         template <int iNumDimensions, int iNumVertices>
         Geometry(const Simplex<iNumDimensions, iNumVertices>& simplex);
@@ -74,8 +74,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
         
-        OPENSOLID_CORE_EXPORT int parameters() const;
-        OPENSOLID_CORE_EXPORT int dimensions() const;
+        OPENSOLID_CORE_EXPORT int numParameters() const;
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
         OPENSOLID_CORE_EXPORT bool isConstant() const;
         OPENSOLID_CORE_EXPORT VectorXI bounds() const;
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
@@ -146,8 +146,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TDerived>
-    Geometry::Geometry(const EigenBase<TDerived>& vector) {
+    template <class TVector>
+    Geometry::Geometry(const EigenBase<TVector>& vector) {
         *this = Geometry(VectorXd(vector));
     }
 
@@ -172,7 +172,7 @@ namespace opensolid
     template <class TVector>
     Geometry operator+(const Geometry& geometry, const EigenBase<TVector>& vector) {
         return geometry.transformed(
-            MatrixXd::Identity(geometry.dimensions(), geometry.dimensions()),
+            MatrixXd::Identity(geometry.numDimensions(), geometry.numDimensions()),
             vector.derived()
         );
     }

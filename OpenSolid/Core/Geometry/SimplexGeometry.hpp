@@ -40,8 +40,8 @@ namespace opensolid
         Function function() const;
         Domain domain() const;
         
-        int parameters() const;
-        int dimensions() const;
+        int numParameters() const;
+        int numDimensions() const;
         void evaluate(const MapXcd& parameter_values, MapXd& results) const;
         void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         bool isConstant() const;

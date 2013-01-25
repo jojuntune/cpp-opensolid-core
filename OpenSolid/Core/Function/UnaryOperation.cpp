@@ -24,5 +24,5 @@ namespace opensolid
 {
     UnaryOperation::UnaryOperation(const Function& operand) : _operand(operand) {}
     
-    int UnaryOperation::parameters() const {return operand().parameters();}
+    int UnaryOperation::numParameters() const {return operand().numParameters();}
 }

@@ -217,7 +217,7 @@ namespace opensolid
     
     template<class TEvaluated, class TArgument>
     inline int Evaluation<TEvaluated, TArgument>::rows() const {
-        return _evaluated.dimensions();
+        return _evaluated.numDimensions();
     }
     
     template<class TEvaluated, class TArgument>
@@ -276,7 +276,7 @@ namespace opensolid
     
     template <class TEvaluated>
     inline int Evaluation<TEvaluated, int>::rows() const {
-        return _evaluated.dimensions();
+        return _evaluated.numDimensions();
     }
     
     template <class TEvaluated>
@@ -324,7 +324,7 @@ namespace opensolid
     
     template <class TEvaluated>
     inline int Evaluation<TEvaluated, double>::rows() const {
-        return _evaluated.dimensions();
+        return _evaluated.numDimensions();
     }
     
     template <class TEvaluated>
@@ -372,7 +372,7 @@ namespace opensolid
     
     template <class TEvaluated>
     inline int Evaluation<TEvaluated, Interval>::rows() const {
-        return _evaluated.dimensions();
+        return _evaluated.numDimensions();
     }
     
     template <class TEvaluated>
