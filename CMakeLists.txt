@@ -23,7 +23,9 @@
     add_definitions(-D_USE_MATH_DEFINES)
 
     # Set up compiler-specific flags
-    if(CMAKE_COMPILER_IS_GNUCXX)
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        message("Detected GCC compiler")
+
         # Enable pthread
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -48,6 +50,8 @@
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
         endif()
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        message("Detected Clang compiler")
+
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unused-function")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
@@ -64,7 +68,9 @@
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pthread")
             set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -pthread")
         endif()
-    elseif(MSVC)
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        message("Detected Visual Studio compiler")
+
         # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
         # Eigen code), and avoid warning about boost string algorithms
         add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
@@ -81,6 +87,8 @@
         if(CMAKE_SIZEOF_VOID_P EQUAL 8)
             add_definitions(-DWIN64)
         endif()
+    else()
+        message("Compiler type not detected!")
     endif()
 
     # Place all executables, libraries in one directory
