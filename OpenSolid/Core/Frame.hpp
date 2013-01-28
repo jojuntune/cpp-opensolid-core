@@ -33,23 +33,33 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Frame2d();
 
-        Frame2d(const Frame2d& otherFrame);
+        Frame2d(const Datum<2, 2>& otherFrame);
 
         OPENSOLID_CORE_EXPORT explicit Frame2d(const Vector2d& originPoint);
 
         OPENSOLID_CORE_EXPORT Frame2d(
             const Vector2d& originPoint,
             const Vector2d& xVector,
-            const Vector2d& yVector
+            const Vector2d& xyVector
         );
         
-        template <int iNumDimensions, int iNumAxes>
-        Frame2d(const Datum<iNumDimensions, iNumAxes>& otherFrame);
 
-        OPENSOLID_CORE_EXPORT static Frame2d Unit();
-        OPENSOLID_CORE_EXPORT static Frame2d Unit(const Vector2d& originPoint);
+        OPENSOLID_CORE_EXPORT static Frame2d XY();
+        OPENSOLID_CORE_EXPORT static Frame2d XY(const Vector2d& originPoint);
+
         OPENSOLID_CORE_EXPORT static Frame2d FromXAxis(const Axis2d& xAxis);
         OPENSOLID_CORE_EXPORT static Frame2d FromYAxis(const Axis2d& yAxis);
+
+        OPENSOLID_CORE_EXPORT static Frame2d FromBasisVectors(
+            const Vector2d& originPoint,
+            const Vector2d& xBasisVector,
+            const Vector2d& yBasisVector
+        );
+        
+        OPENSOLID_CORE_EXPORT static Frame2d FromBasisMatrix(
+            const Vector2d& originPoint,
+            const Matrix2d& basisMatrix
+        );
     };
 
     
@@ -57,29 +67,39 @@ namespace opensolid
     {
     public:
         OPENSOLID_CORE_EXPORT Frame3d();
-
-        Frame3d(const Frame3d& otherFrame);
+        
+        Frame3d(const Datum<3, 3>& otherFrame);
 
         OPENSOLID_CORE_EXPORT explicit Frame3d(const Vector3d& originPoint);
         
         OPENSOLID_CORE_EXPORT Frame3d(
             const Vector3d& originPoint,
             const Vector3d& xVector,
-            const Vector3d& yVector,
-            const Vector3d& zVector
+            const Vector3d& xyVector,
+            const Vector3d& xyzVector
         );
-        
-        template <int iNumDimensions, int iNumAxes>
-        Frame3d(const Datum<iNumDimensions, iNumAxes>& otherFrame);
 
-        OPENSOLID_CORE_EXPORT static Frame3d Unit();
-        OPENSOLID_CORE_EXPORT static Frame3d Unit(const Vector3d& originPoint);
+        OPENSOLID_CORE_EXPORT static Frame3d XYZ();
+        OPENSOLID_CORE_EXPORT static Frame3d XYZ(const Vector3d& originPoint);
+
         OPENSOLID_CORE_EXPORT static Frame3d FromXYPlane(const Plane3d& xyPlane);
         OPENSOLID_CORE_EXPORT static Frame3d FromXZPlane(const Plane3d& xzPlane);
         OPENSOLID_CORE_EXPORT static Frame3d FromYXPlane(const Plane3d& yxPlane);
         OPENSOLID_CORE_EXPORT static Frame3d FromYZPlane(const Plane3d& yzPlane);
         OPENSOLID_CORE_EXPORT static Frame3d FromZXPlane(const Plane3d& zxPlane);
         OPENSOLID_CORE_EXPORT static Frame3d FromZYPlane(const Plane3d& zyPlane);
+
+        OPENSOLID_CORE_EXPORT static Frame3d FromBasisVectors(
+            const Vector3d& originPoint,
+            const Vector3d& xBasisVector,
+            const Vector3d& yBasisVector,
+            const Vector3d& zBasisVector
+        );
+        
+        OPENSOLID_CORE_EXPORT static Frame3d FromBasisMatrix(
+            const Vector3d& originPoint,
+            const Matrix3d& basisMatrix
+        );
     };
 }
 
@@ -87,19 +107,9 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline Frame2d::Frame2d(const Frame2d& otherFrame) : Datum<2, 2>(otherFrame) {
+    inline Frame2d::Frame2d(const Datum<2, 2>& otherFrame) : Datum<2, 2>(otherFrame) {
     }
 
-    template <int iNumDimensions, int iNumAxes>
-    inline Frame2d::Frame2d(const Datum<iNumDimensions, iNumAxes>& otherFrame) :
-        Datum<2, 2>(otherFrame) {
-    }
-
-    inline Frame3d::Frame3d(const Frame3d& otherFrame) : Datum<3, 3>(otherFrame) {
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    inline Frame3d::Frame3d(const Datum<iNumDimensions, iNumAxes>& otherFrame) :
-        Datum<3, 3>(otherFrame) {
+    inline Frame3d::Frame3d(const Datum<3, 3>& otherFrame) : Datum<3, 3>(otherFrame) {
     }
 }

@@ -28,18 +28,56 @@
 
 namespace opensolid
 {
+    template <int iNumDimensions>
     class SimplexDomain : public DomainImplementation
     {
     private:
-        SimplexXd _simplex;
+        Simplex<iNumDimensions, iNumDimensions + 1> _simplex;
     public:
-        SimplexDomain(const SimplexXd& simplex);
+        SimplexDomain(const Simplex<iNumDimensions, iNumDimensions + 1>& simplex);
 
-        Set<Geometry> boundaries() const;
+        OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
 
         bool isEmpty() const;
         int numDimensions() const;
         VectorXI bounds() const;
         Domain transformed(const MatrixXd& matrix, const VectorXd& vector) const;
     };
+}
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    template <int iNumDimensions>
+    SimplexDomain<iNumDimensions>::SimplexDomain(
+        const Simplex<iNumDimensions, iNumDimensions + 1>& simplex
+    ) : _simplex(simplex) {
+    }
+
+    template <int iNumDimensions>
+    bool SimplexDomain<iNumDimensions>::isEmpty() const {
+        return false;
+    }
+
+    template <int iNumDimensions>
+    int SimplexDomain<iNumDimensions>::numDimensions() const {
+        return iNumDimensions;
+    }
+
+    template <int iNumDimensions>
+    VectorXI SimplexDomain<iNumDimensions>::bounds() const {
+        return _simplex.bounds();
+    }
+
+    template <int iNumDimensions>
+    Domain SimplexDomain<iNumDimensions>::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
+        assert(matrix.rows() == iNumDimensions);
+        assert(matrix.cols() == iNumDimensions);
+        assert(vector.size() == iNumDimensions);
+
+        return new SimplexDomain<iNumDimensions>(
+            matrix.topLeftCorner<iNumDimensions, iNumDimensions>() * _simplex + vector
+        );
+    }
 }

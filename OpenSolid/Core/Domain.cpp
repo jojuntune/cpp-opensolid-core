@@ -20,13 +20,12 @@
 
 #include "Domain.hpp"
 
-#include "Domain/DomainImplementation.hpp"
-#include "Domain/GenericDomain.hpp"
-#include "Domain/IntervalDomain.hpp"
-#include "Domain/RectangleDomain.hpp"
-#include "Domain/CuboidDomain.hpp"
-#include "Domain/SimplexDomain.hpp"
-
+#include <OpenSolid/Core/Domain/CuboidDomain.hpp>
+#include <OpenSolid/Core/Domain/DomainImplementation.hpp>
+#include <OpenSolid/Core/Domain/GenericDomain.hpp>
+#include <OpenSolid/Core/Domain/IntervalDomain.hpp>
+#include <OpenSolid/Core/Domain/RectangleDomain.hpp>
+#include <OpenSolid/Core/Domain/SimplexDomain.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 
@@ -74,9 +73,14 @@ namespace opensolid
         }
     }
 
-    Domain::Domain(const SimplexXd& simplex) :
-        _implementation(new SimplexDomain(simplex)),
-        _type(&typeid(SimplexDomain)) {
+    Domain::Domain(const Triangle2d& triangle) :
+        _implementation(new SimplexDomain<2>(triangle)),
+        _type(&typeid(SimplexDomain<2>)) {
+    }
+
+    Domain::Domain(const Tetrahedron3d& tetrahedron) :
+        _implementation(new SimplexDomain<3>(tetrahedron)),
+        _type(&typeid(SimplexDomain<3>)) {
     }
 
     const DomainImplementation* Domain::implementation() const {

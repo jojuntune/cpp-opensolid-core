@@ -25,14 +25,68 @@ namespace opensolid
     Axis<2>::Axis() : Datum<2, 1>() {
     }
 
-    Axis<2>::Axis(const Vector2d& originPoint, const Vector2d& axisVector) :
-        Datum<2, 1>(originPoint, axisVector.normalized()) {
+    Axis<2>::Axis(const Vector2d& originPoint, const Vector2d& directionVector) :
+        Datum<2, 1>(originPoint, directionVector.normalized()) {
+    }
+
+    Axis<2> Axis<2>::X() {
+        return Axis<2>(Vector2d::Zero(), Vector2d::UnitX());
+    }
+
+    Axis<2> Axis<2>::X(const Vector2d& originPoint) {
+        return Axis<2>(originPoint, Vector2d::UnitX());
+    }
+
+    Axis<2> Axis<2>::Y() {
+        return Axis<2>(Vector2d::Zero(), Vector2d::UnitY());
+    }
+
+    Axis<2> Axis<2>::Y(const Vector2d& originPoint) {
+        return Axis<2>(originPoint, Vector2d::UnitY());
+    }
+
+    Axis<2> Axis<2>::FromBasisVector(
+        const Vector2d& originPoint,
+        const Vector2d& basisVector
+    ) {
+        return Datum<2, 1>(originPoint, basisVector);
     }
 
     Axis<3>::Axis() : Datum<3, 1>() {
     }
 
-    Axis<3>::Axis(const Vector3d& originPoint, const Vector3d& axisVector) :
-        Datum<3, 1>(originPoint, axisVector.normalized()) {
+    Axis<3>::Axis(const Vector3d& originPoint, const Vector3d& directionVector) :
+        Datum<3, 1>(originPoint, directionVector.normalized()) {
+    }
+
+    Axis<3> Axis<3>::X() {
+        return Axis<3>(Vector3d::Zero(), Vector3d::UnitX());
+    }
+
+    Axis<3> Axis<3>::X(const Vector3d& originPoint) {
+        return Axis<3>(originPoint, Vector3d::UnitX());
+    }
+
+    Axis<3> Axis<3>::Y() {
+        return Axis<3>(Vector3d::Zero(), Vector3d::UnitY());
+    }
+
+    Axis<3> Axis<3>::Y(const Vector3d& originPoint) {
+        return Axis<3>(originPoint, Vector3d::UnitY());
+    }
+
+    Axis<3> Axis<3>::Z() {
+        return Axis<3>(Vector3d::Zero(), Vector3d::UnitZ());
+    }
+
+    Axis<3> Axis<3>::Z(const Vector3d& originPoint) {
+        return Axis<3>(originPoint, Vector3d::UnitZ());
+    }
+
+    Axis<3> Axis<3>::FromBasisVector(
+        const Vector3d& originPoint,
+        const Vector3d& basisVector
+    ) {
+        return Datum<3, 1>(originPoint, basisVector);
     }
 }

@@ -53,13 +53,20 @@ namespace opensolid
             const Function& z
         );
         
-        OPENSOLID_CORE_EXPORT static Function Linear(const DatumXd& datum);
+        template <int iNumDimensions, int iNumAxes>
+        OPENSOLID_CORE_EXPORT static Function Linear(
+            const Datum<iNumDimensions, iNumAxes>& datum
+        );
         
-        OPENSOLID_CORE_EXPORT static Function Elliptical(const DatumXd& datum);
-        
+        template <int iNumDimensions, int iNumAxes>
         OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const DatumXd& datum,
-            const VectorXb& convention
+            const Datum<iNumDimensions, iNumAxes>& datum
+        );
+        
+        template <int iNumDimensions, int iNumAxes>
+        OPENSOLID_CORE_EXPORT static Function Elliptical(
+            const Datum<iNumDimensions, iNumAxes>& datum,
+            const Matrix<bool, 1, iNumAxes - 1>& convention
         );
     };
 }

@@ -25,30 +25,31 @@
 
 namespace opensolid
 {
+    template <int iNumDimensions, int iNumAxes>
     class LinearFunction : public FunctionImplementation
     {
     private:
-        DatumXd _datum;
+        Datum<iNumDimensions, iNumAxes> _datum;
     public:
-        OPENSOLID_CORE_EXPORT LinearFunction(const DatumXd& datum);
+        LinearFunction(const Datum<iNumDimensions, iNumAxes>& datum);
         
-        const DatumXd& datum() const;
+        const Datum<iNumDimensions, iNumAxes>& datum() const;
         
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        int numParameters() const;
+        int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        void getValues(const MapXcd& parameter_values, MapXd& results) const;
+        void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
+        void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getTransformed(
+        void getTransformed(
             const MatrixXd& matrix,
             const VectorXd& vector,
             Function& result
         ) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        void debug(std::ostream& stream, int indent) const;
     };
 }
 
@@ -56,5 +57,83 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const DatumXd& LinearFunction::datum() const {return _datum;}
+    template <int iNumDimensions, int iNumAxes>
+    LinearFunction<iNumDimensions, iNumAxes>::LinearFunction(
+        const Datum<iNumDimensions, iNumAxes>& datum
+    ) : _datum(datum) {
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    inline const Datum<iNumDimensions, iNumAxes>&
+    LinearFunction<iNumDimensions, iNumAxes>::datum() const {
+        return _datum;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    int LinearFunction<iNumDimensions, iNumAxes>::numParameters() const {
+        return iNumAxes;
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    int LinearFunction<iNumDimensions, iNumAxes>::numDimensions() const {
+        return iNumDimensions;
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    void LinearFunction<iNumDimensions, iNumAxes>::getValues(
+        const MapXcd& parameter_values,
+        MapXd& results
+    ) const {
+        results = datum() * parameter_values;
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    void LinearFunction<iNumDimensions, iNumAxes>::getBounds(
+        const MapXcI& parameter_bounds,
+        MapXI& results
+    ) const {
+        results = datum() * parameter_bounds;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    void LinearFunction<iNumDimensions, iNumAxes>::getDerivative(
+        int index,
+        Function& result
+    ) const {
+        result = datum().basisVector(index);
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    void LinearFunction<iNumDimensions, iNumAxes>::getTransformed(
+        const MatrixXd& matrix,
+        const VectorXd& vector,
+        Function& result
+    ) const {
+        assert(matrix.rows() == vector.size());
+        assert(matrix.cols() == iNumDimensions);
+
+        int numTransformedDimensions = matrix.rows();
+
+        if (numTransformedDimensions == 1) {
+            result = new LinearFunction<1, iNumAxes>(
+                matrix.topLeftCorner<1, iNumDimensions>() * datum() + vector
+            );
+        } else if (numTransformedDimensions == 2) {
+            result = new LinearFunction<2, iNumAxes>(
+                matrix.topLeftCorner<2, iNumDimensions>() * datum() + vector
+            );
+        } else if (numTransformedDimensions == 3) {
+            result = new LinearFunction<3, iNumAxes>(
+                matrix.topLeftCorner<3, iNumDimensions>() * datum() + vector
+            );
+        } else {
+            assert(false);
+            result = Function();
+        }
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    void LinearFunction<iNumDimensions, iNumAxes>::debug(std::ostream& stream, int indent) const {
+        stream << "LinearFunction<" << iNumDimensions << "," << iNumAxes << ">" << std::endl;
+    }
 }

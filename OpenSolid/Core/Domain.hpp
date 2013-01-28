@@ -55,13 +55,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Domain(Interval uInterval, Interval vInterval);
         OPENSOLID_CORE_EXPORT Domain(Interval uInterval, Interval vInterval, Interval wInterval);
         OPENSOLID_CORE_EXPORT Domain(const VectorXI& bounds);
-        OPENSOLID_CORE_EXPORT Domain(const SimplexXd& simplex);
-
-        template <class TIntervalVector>
-        Domain(const EigenBase<TIntervalVector>& bounds);
-
-        template <int iNumDimensions, int iNumVertices>
-        Domain(const Simplex<iNumDimensions, iNumVertices>& simplex);
+        OPENSOLID_CORE_EXPORT Domain(const Triangle2d& triangle);
+        OPENSOLID_CORE_EXPORT Domain(const Tetrahedron3d& tetrahedron);
 
         OPENSOLID_CORE_EXPORT const DomainImplementation* implementation() const;
         
@@ -96,19 +91,4 @@ namespace opensolid
     };
 }
 
-////////// Implementation //////////
-
 #include <OpenSolid/Core/Geometry.hpp>
-
-namespace opensolid
-{
-    template <class TIntervalVector>
-    Domain::Domain(const EigenBase<TIntervalVector>& bounds) {
-        *this = Domain(VectorXI(bounds));
-    }
-
-    template <int iNumDimensions, int iNumVertices>
-    Domain::Domain(const Simplex<iNumDimensions, iNumVertices>& simplex) {
-        *this = Domain(SimplexXd(simplex));
-    }
-}

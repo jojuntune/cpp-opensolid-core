@@ -50,7 +50,10 @@
 #include <Eigen/LU>
 
 namespace Eigen
-{   
+{
+    typedef Matrix<double, 1, 1> Double1d;
+    typedef Matrix<opensolid::Interval, 1, 1> Interval1d;
+
     typedef Matrix<opensolid::Interval, 2, 1> Vector2I;
     typedef Matrix<opensolid::Interval, 1, 2> RowVector2I;
     typedef Matrix<opensolid::Interval, 2, 2> Matrix2I;

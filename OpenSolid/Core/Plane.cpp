@@ -29,25 +29,25 @@ namespace opensolid
     Plane3d::Plane3d(
         const Vector3d& originPoint,
         const Vector3d& xVector,
-        const Vector3d& yVector
+        const Vector3d& xyVector
     ) : Datum<3, 2>() {
         Matrix<double, 3, 2> basisMatrix;
-        basisMatrix << xVector, yVector;
+        basisMatrix << xVector, xyVector;
         *this = Datum<3, 2>(originPoint, basisMatrix).normalized();
     }
 
     Plane3d Plane3d::FromPointAndNormal(const Vector3d& originPoint, const Vector3d& normalVector) {
-        Vector3d xVector = normalVector.unitOrthogonal();
-        Vector3d yVector = normalVector.cross(xVector);
-        return Plane3d(originPoint, xVector, yVector);
+        Vector3d xBasisVector = normalVector.unitOrthogonal();
+        Vector3d yBasisVector = normalVector.cross(xBasisVector).normalized();
+        return Plane3d::FromBasisVectors(originPoint, xBasisVector, yBasisVector);
     }
 
     Plane3d Plane3d::ThroughPoints(
         const Vector3d& originPoint,
-        const Vector3d& xAxisPoint,
-        const Vector3d& planePoint
+        const Vector3d& xPoint,
+        const Vector3d& xyPoint
     ) {
-        return Plane3d(originPoint, xAxisPoint - originPoint, planePoint - originPoint);
+        return Plane3d(originPoint, xPoint - originPoint, xyPoint - originPoint);
     }
 
     Plane3d Plane3d::Midplane(const Vector3d& pointBelow, const Vector3d& pointAbove) {
@@ -86,5 +86,70 @@ namespace opensolid
 
     Plane3d Plane3d::ThroughAxis(const Axis3d& axis) {
         return Plane3d(axis.originPoint(), axis.basisVector(), axis.normalVector());
+    }
+
+    Plane3d Plane3d::XY() {
+        return Plane3d::FromBasisVectors(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitY());
+    }
+
+    Plane3d Plane3d::XY(const Vector3d& originPoint) {
+        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitX(), Vector3d::UnitY());
+    }
+
+    Plane3d Plane3d::XZ() {
+        return Plane3d::FromBasisVectors(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitZ());
+    }
+
+    Plane3d Plane3d::XZ(const Vector3d& originPoint) {
+        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitX(), Vector3d::UnitZ());
+    }
+
+    Plane3d Plane3d::YX() {
+        return Plane3d::FromBasisVectors(Vector3d::Zero(), Vector3d::UnitY(), Vector3d::UnitX());
+    }
+
+    Plane3d Plane3d::YX(const Vector3d& originPoint) {
+        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitY(), Vector3d::UnitX());
+    }
+
+    Plane3d Plane3d::YZ() {
+        return Plane3d::FromBasisVectors(Vector3d::Zero(), Vector3d::UnitY(), Vector3d::UnitZ());
+    }
+
+    Plane3d Plane3d::YZ(const Vector3d& originPoint) {
+        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitY(), Vector3d::UnitZ());
+    }
+
+    Plane3d Plane3d::ZX() {
+        return Plane3d::FromBasisVectors(Vector3d::Zero(), Vector3d::UnitZ(), Vector3d::UnitX());
+    }
+
+    Plane3d Plane3d::ZX(const Vector3d& originPoint) {
+        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitZ(), Vector3d::UnitX());
+    }
+
+    Plane3d Plane3d::ZY() {
+        return Plane3d::FromBasisVectors(Vector3d::Zero(), Vector3d::UnitZ(), Vector3d::UnitY());
+    }
+
+    Plane3d Plane3d::ZY(const Vector3d& originPoint) {
+        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitZ(), Vector3d::UnitY());
+    }
+
+    Plane3d Plane3d::FromBasisVectors(
+        const Vector3d& originPoint,
+        const Vector3d& xBasisVector,
+        const Vector3d& yBasisVector
+    ) {
+        Matrix<double, 3, 2> basisMatrix;
+        basisMatrix << xBasisVector, yBasisVector;
+        return Datum<3, 2>(originPoint, basisMatrix);
+    }
+
+    Plane3d Plane3d::FromBasisMatrix(
+        const Vector3d& originPoint,
+        const Matrix<double, 3, 2>& basisMatrix
+    ) {
+        return Datum<3, 2>(originPoint, basisMatrix);
     }
 }

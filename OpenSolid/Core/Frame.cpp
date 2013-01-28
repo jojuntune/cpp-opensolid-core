@@ -22,70 +22,87 @@
 
 namespace opensolid
 {
-    Frame2d::Frame2d() : Datum<2, 2>(Vector2d::Zero(), Matrix2d::Identity()) {
+    Frame2d::Frame2d() {
     }
 
-    Frame2d::Frame2d(const Vector2d& originPoint) : Datum<2, 2>(originPoint, Matrix2d::Identity()) {
+    Frame2d::Frame2d(const Vector2d& originPoint) : Datum<2, 2>(originPoint) {
     }
     
     Frame2d::Frame2d(
         const Vector2d& originPoint,
         const Vector2d& xVector,
-        const Vector2d& yVector
+        const Vector2d& xyVector
     ) : Datum<2, 2>() {
+
         Matrix2d basisMatrix;
-        basisMatrix << xVector, yVector;
+        basisMatrix << xVector, xyVector;
         *this = Datum<2, 2>(originPoint, basisMatrix).normalized();
     }
 
-    Frame2d Frame2d::Unit() {
-        return Frame2d(Vector2d::Zero(), Vector2d::UnitX(), Vector2d::UnitY());
+    Frame2d Frame2d::XY() {
+        return Frame2d();
     }
 
-    Frame2d Frame2d::Unit(const Vector2d& originPoint) {
-        return Frame2d(originPoint, Vector2d::UnitX(), Vector2d::UnitY());
+    Frame2d Frame2d::XY(const Vector2d& originPoint) {
+        return Frame2d(originPoint);
     }
 
     Frame2d Frame2d::FromXAxis(const Axis2d& xAxis) {
-        return Frame2d(
+        return Frame2d::FromBasisVectors(
             xAxis.originPoint(),
-            xAxis.basisVector(),
+            xAxis.basisVector().normalized(),
             xAxis.basisVector().unitOrthogonal()
         );
     }
 
     Frame2d Frame2d::FromYAxis(const Axis2d& yAxis) {
-        return Frame2d(
+        return Frame2d::FromBasisVectors(
             yAxis.originPoint(),
             -yAxis.basisVector().unitOrthogonal(),
-            yAxis.basisVector()
+            yAxis.basisVector().normalized()
         );
     }
 
-
-    Frame3d::Frame3d() : Datum<3, 3>(Vector3d::Zero(), Matrix3d::Identity()) {
+    Frame2d Frame2d::FromBasisVectors(
+        const Vector2d& originPoint,
+        const Vector2d& xBasisVector,
+        const Vector2d& yBasisVector
+    ) {
+        Matrix2d basisMatrix;
+        basisMatrix << xBasisVector, yBasisVector;
+        return Datum<2, 2>(originPoint, basisMatrix);
+    }
+    
+    Frame2d Frame2d::FromBasisMatrix(
+        const Vector2d& originPoint,
+        const Matrix2d& basisMatrix
+    ) {
+        return  Datum<2, 2>(originPoint, basisMatrix);
     }
 
-    Frame3d::Frame3d(const Vector3d& originPoint) : Datum<3, 3>(originPoint, Matrix3d::Identity()) {
+    Frame3d::Frame3d() : Datum<3, 3>() {
+    }
+
+    Frame3d::Frame3d(const Vector3d& originPoint) : Datum<3, 3>(originPoint) {
     }
     
     Frame3d::Frame3d(
         const Vector3d& originPoint,
         const Vector3d& xVector,
-        const Vector3d& yVector,
-        const Vector3d& zVector
+        const Vector3d& xyVector,
+        const Vector3d& xyzVector
     ) : Datum<3, 3>() {
         Matrix3d basisMatrix;
-        basisMatrix << xVector, yVector, zVector;
+        basisMatrix << xVector, xyVector, xyzVector;
         *this = Datum<3, 3>(originPoint, basisMatrix).normalized();
     }
 
-    Frame3d Frame3d::Unit() {
-        return Frame3d(Vector3d::Zero(), Vector3d::UnitX(), Vector3d::UnitY(), Vector3d::UnitZ());
+    Frame3d Frame3d::XYZ() {
+        return Frame3d();
     }
 
-    Frame3d Frame3d::Unit(const Vector3d& originPoint) {
-        return Frame3d(originPoint, Vector3d::UnitX(), Vector3d::UnitY(), Vector3d::UnitZ());
+    Frame3d Frame3d::XYZ(const Vector3d& originPoint) {
+        return Frame3d(originPoint);
     }
 
     Frame3d Frame3d::FromXYPlane(const Plane3d& xyPlane) {
@@ -140,5 +157,23 @@ namespace opensolid
             zyPlane.basisVector(1),
             zyPlane.basisVector(0)
         );
+    }
+
+    Frame3d Frame3d::FromBasisVectors(
+        const Vector3d& originPoint,
+        const Vector3d& xBasisVector,
+        const Vector3d& yBasisVector,
+        const Vector3d& zBasisVector
+    ) {
+        Matrix3d basisMatrix;
+        basisMatrix << xBasisVector, yBasisVector, zBasisVector;
+        return Datum<3, 3>(originPoint, basisMatrix);
+    }
+    
+    Frame3d Frame3d::FromBasisMatrix(
+        const Vector3d& originPoint,
+        const Matrix3d& basisMatrix
+    ) {
+        return  Datum<3, 3>(originPoint, basisMatrix);
     }
 }

@@ -33,10 +33,19 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Axis();
 
-        OPENSOLID_CORE_EXPORT Axis(const Vector2d& originPoint, const Vector2d& axisVector);
+        Axis(const Datum<2, 1>& otherAxis);
 
-        template <int iNumDimensions, int iNumAxes>
-        Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis);
+        OPENSOLID_CORE_EXPORT Axis(const Vector2d& originPoint, const Vector2d& directionVector);
+
+        OPENSOLID_CORE_EXPORT static Axis<2> X();
+        OPENSOLID_CORE_EXPORT static Axis<2> X(const Vector2d& originPoint);
+        OPENSOLID_CORE_EXPORT static Axis<2> Y();
+        OPENSOLID_CORE_EXPORT static Axis<2> Y(const Vector2d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Axis<2> FromBasisVector(
+            const Vector2d& originPoint,
+            const Vector2d& basisVector
+        );
     };
 
     typedef Axis<2> Axis2d;
@@ -47,10 +56,21 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Axis();
 
-        OPENSOLID_CORE_EXPORT Axis(const Vector3d& originPoint, const Vector3d& axisVector);
+        Axis(const Datum<3, 1>& otherAxis);
 
-        template <int iNumDimensions, int iNumAxes>
-        Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis);
+        OPENSOLID_CORE_EXPORT Axis(const Vector3d& originPoint, const Vector3d& directionVector);
+
+        OPENSOLID_CORE_EXPORT static Axis<3> X();
+        OPENSOLID_CORE_EXPORT static Axis<3> X(const Vector3d& originPoint);
+        OPENSOLID_CORE_EXPORT static Axis<3> Y();
+        OPENSOLID_CORE_EXPORT static Axis<3> Y(const Vector3d& originPoint);
+        OPENSOLID_CORE_EXPORT static Axis<3> Z();
+        OPENSOLID_CORE_EXPORT static Axis<3> Z(const Vector3d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Axis<3> FromBasisVector(
+            const Vector3d& originPoint,
+            const Vector3d& basisVector
+        );
     };
 
     typedef Axis<3> Axis3d;
@@ -60,11 +80,9 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    Axis<2>::Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis) : Datum<2, 1>(otherAxis) {
+    inline Axis<2>::Axis(const Datum<2, 1>& otherAxis) : Datum<2, 1>(otherAxis) {
     }
 
-    template <int iNumDimensions, int iNumAxes>
-    Axis<3>::Axis(const Datum<iNumDimensions, iNumAxes>& otherAxis) : Datum<3, 1>(otherAxis) {
+    inline Axis<3>::Axis(const Datum<3, 1>& otherAxis) : Datum<3, 1>(otherAxis) {
     }
 }

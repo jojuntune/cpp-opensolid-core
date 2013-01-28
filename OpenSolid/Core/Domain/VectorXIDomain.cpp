@@ -21,6 +21,7 @@
 #include "VectorXIDomain.hpp"
 
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Geometry.hpp>
 
 namespace opensolid
 {

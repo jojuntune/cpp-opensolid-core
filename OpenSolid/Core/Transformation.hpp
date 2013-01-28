@@ -36,15 +36,10 @@ namespace opensolid
         Matrix<double, iNumDestinationDimensions, iNumSourceDimensions> _transformationMatrix;
         Matrix<double, iNumDestinationDimensions, 1> _destinationOriginPoint;
     public:
-        template <
-            int iNumSourceDatumDimensions,
-            int iNumSourceDatumAxes,
-            int iNumDestinationDatumDimensions,
-            int iNumDestinationDatumAxes
-        >
+        template <int iNumAxes>
         Transformation(
-            const Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
-            const Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+            const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+            const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
         );
 
         const Matrix<double, iNumSourceDimensions, 1>&
@@ -62,16 +57,10 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    template <
-        int iNumSourceDatumDimensions,
-        int iNumSourceDatumAxes,
-        int iNumDestinationDatumDimensions,
-        int iNumDestinationDatumAxes
-    >
+    template <int iNumSourceDimensions, int iNumDestinationDimensions> template <int iNumAxes>
     Transformation<iNumSourceDimensions, iNumDestinationDimensions>::Transformation(
-        const Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
-        const Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
     ) : _sourceOriginPoint(sourceDatum.originPoint()),
         _transformationMatrix(destinationDatum.basisMatrix() * sourceDatum.inverseMatrix())
         _destinationOriginPoint(destinationDatum.originPoint()) {

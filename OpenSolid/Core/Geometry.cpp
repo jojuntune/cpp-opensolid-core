@@ -61,10 +61,30 @@ namespace opensolid
         _implementation(new ConstantGeometry(vector)),
         _type(&typeid(ConstantGeometry)) {
     }
-    
-    Geometry::Geometry(const SimplexXd& simplex) :
-        _implementation(new SimplexGeometry(simplex)),
-        _type(&typeid(SimplexGeometry)) {
+
+    Geometry::Geometry(const LineSegment2d& lineSegment) :
+        _implementation(new SimplexGeometry<2, 2>(lineSegment)) ,
+        _type(&typeid(SimplexGeometry<2, 2>)) {
+    }
+
+    Geometry::Geometry(const Triangle2d& triangle) :
+        _implementation(new SimplexGeometry<2, 3>(triangle)) ,
+        _type(&typeid(SimplexGeometry<2, 3>)) {
+    }
+
+    Geometry::Geometry(const LineSegment3d& lineSegment) :
+        _implementation(new SimplexGeometry<3, 2>(lineSegment)) ,
+        _type(&typeid(SimplexGeometry<3, 2>)) {
+    }
+
+    Geometry::Geometry(const Triangle3d& triangle) :
+        _implementation(new SimplexGeometry<3, 3>(triangle)) ,
+        _type(&typeid(SimplexGeometry<3, 3>)) {
+    }
+
+    Geometry::Geometry(const Tetrahedron3d& tetrahedron) :
+        _implementation(new SimplexGeometry<3, 4>(tetrahedron)) ,
+        _type(&typeid(SimplexGeometry<3, 4>)) {
     }
 
     const GeometryImplementation* Geometry::implementation() const {

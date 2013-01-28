@@ -34,8 +34,8 @@ namespace opensolid
         Matrix<double, iNumDimensions, 1> _originPoint;
         Matrix<double, iNumDimensions, iNumDimensions> _transformationMatrix;
     public:
-        template <int iNumDatumDimensions, int iNumDatumAxes>
-        Projection(const Datum<iNumDatumDimensions, iNumDatumAxes>& datum);
+        template <int iNumAxes>
+        Projection(const Datum<iNumDimensions, iNumAxes>& datum);
 
         const Matrix<double, iNumDimensions, 1>& originPoint() const;
         const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix() const;
@@ -46,8 +46,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions> template <int iNumDatumDimensions, int iNumDatumAxes>
-    Projection<iNumDimensions>::Projection(const Datum<iNumDatumDimensions, iNumDatumAxes>& datum) :
+    template <int iNumDimensions> template <int iNumAxes>
+    Projection<iNumDimensions>::Projection(const Datum<iNumDimensions, iNumAxes>& datum) :
         _originPoint(datum.originPoint()),
         _transformationMatrix(datum.basisMatrix() * datum.inverseMatrix()) {
     }

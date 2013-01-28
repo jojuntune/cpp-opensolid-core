@@ -25,31 +25,30 @@
 
 namespace opensolid
 {
-    SimplexDomain::SimplexDomain(const SimplexXd& simplex) : _simplex(simplex) {
-        assert(simplex.numDimensions() == simplex.numVertices() - 1);
-    }
-
-    Set<Geometry> SimplexDomain::boundaries() const {
+    template <>
+    Set<Geometry> SimplexDomain<1>::boundaries() const {
         Set<Geometry> results;
-        for (int i = 0; i < _simplex.numVertices(); ++i) {
-            results.insert(_simplex.face(i));
-        }
+        results.insert(_simplex.vertex(0));
+        results.insert(_simplex.vertex(1));
         return results;
     }
 
-    bool SimplexDomain::isEmpty() const {
-        return false;
+    template <>
+    Set<Geometry> SimplexDomain<2>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.edge(1, 0));
+        results.insert(_simplex.edge(2, 1));
+        results.insert(_simplex.edge(0, 2));
+        return results;
     }
 
-    int SimplexDomain::numDimensions() const {
-        return _simplex.numDimensions();
-    }
-
-    VectorXI SimplexDomain::bounds() const {
-        return _simplex.bounds();
-    }
-
-    Domain SimplexDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return new SimplexDomain(matrix * _simplex + vector);
+    template <>
+    Set<Geometry> SimplexDomain<3>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.face(0));
+        results.insert(_simplex.face(1));
+        results.insert(_simplex.face(2));
+        results.insert(_simplex.face(3));
+        return results;
     }
 }

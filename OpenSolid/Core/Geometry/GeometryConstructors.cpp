@@ -109,7 +109,7 @@ namespace opensolid
             endAngle -= 2 * M_PI;
         }
 
-        return Geometry::Arc2d(Frame2d::Unit(center), radius, startAngle, endAngle);
+        return Geometry::Arc2d(Frame2d::XY(center), radius, startAngle, endAngle);
     }
 
     Geometry GeometryConstructors::Arc3d(
@@ -118,7 +118,7 @@ namespace opensolid
         double startAngle,
         double endAngle
     ) {
-        return plane * Geometry::Arc2d(Frame2d::Unit(), radius, startAngle, endAngle);
+        return plane * Geometry::Arc2d(Frame2d::XY(), radius, startAngle, endAngle);
     }
 
     Geometry GeometryConstructors::Arc3d(
@@ -149,13 +149,13 @@ namespace opensolid
         bool isFilled
     ) {
         if (isFilled) {
-            Function arcFunction = Geometry::Arc2d(Frame2d::Unit(), radius, 0, 2 * M_PI).function();
+            Function arcFunction = Geometry::Arc2d(Frame2d::XY(), radius, 0, 2 * M_PI).function();
             Function u = Function::Parameter(2, 0);
             Function v = Function::Parameter(2, 1);
             Function circleFunction = center + u * arcFunction(v);
             return Geometry(circleFunction, Domain(Interval::Unit(), Interval::Unit()));
         } else {
-            return Geometry::Arc2d(Frame2d::Unit(center), radius, 0, 2 * M_PI);
+            return Geometry::Arc2d(Frame2d::XY(center), radius, 0, 2 * M_PI);
         }
     }
 

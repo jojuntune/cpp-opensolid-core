@@ -111,24 +111,16 @@ public:
         TS_ASSERT((triangle.normalVector() - expected_normal).isZero());
     }
     
-    void testCopyingAndEquality() {
-        Triangle2d triangle(Vector2d::Zero(), Vector2d::UnitX(), Vector2d::UnitY());
-        LineSegment2d line = triangle.edge(1, 2);
-        SimplexXd simplex = triangle;
-        simplex = triangle.edge(1, 2);
-        TS_ASSERT_EQUALS(line, simplex);
-    }
-    
     void testCoordinateSystem() {
         Triangle3d triangle(Vector3d::Zero(), Vector3d(2, 0, 0), Vector3d(1, 2, 0));
-        Datum<3, 2> coordinate_system = triangle.coordinateSystem();
-        Vector3d product = coordinate_system * Vector2d(0.5, 0.5);
+        Datum<3, 2> datum = triangle.datum();
+        Vector3d product = datum * Vector2d(0.5, 0.5);
         TS_ASSERT((product - Vector3d(1.5, 1, 0)).isZero());
-        Vector2d quotient = Vector3d(1, 0, 0) / coordinate_system;
+        Vector2d quotient = Vector3d(1, 0, 0) / datum;
         TS_ASSERT((quotient - Vector2d(0.5, 0)).isZero());
-        quotient = Vector3d(3, 2, 0) / coordinate_system;
+        quotient = Vector3d(3, 2, 0) / datum;
         TS_ASSERT((quotient - Vector2d(1, 1)).isZero());
-        Vector3d projection = Vector3d(3, 4, 5).projected(coordinate_system);
+        Vector3d projection = Vector3d(3, 4, 5).projected(datum);
         TS_ASSERT((projection - Vector3d(3, 4, 0)).isZero());
     }
     
@@ -137,8 +129,7 @@ public:
         LineSegment1d quotient = line3d / Frame3d().yAxis();
         LineSegment1d line1d(2, 5);
         TS_ASSERT((quotient.vertices() - line1d.vertices()).isZero());
-        LineSegment3d product =
-            line3d.coordinateSystem() * LineSegment1d(1.0 / 3.0, 2.0 / 3.0);
+        LineSegment3d product = line3d.datum() * LineSegment1d(1.0 / 3.0, 2.0 / 3.0);
         TS_ASSERT((product.vertex(0) - Vector3d(2, 3, 4)).isZero());
         TS_ASSERT((product.vertex(1) - Vector3d(3, 4, 5)).isZero());
     }

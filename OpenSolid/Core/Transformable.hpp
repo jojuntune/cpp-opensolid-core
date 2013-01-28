@@ -42,11 +42,8 @@ namespace opensolid
         template <class TPoint>
         TDerived scaled(double scale, const EigenBase<TPoint>& originPoint) const;
 
-        template <int iNumDimensions, int iNumAxes>
-        TDerived translated(
-            double coordinateValue,
-            const Datum<iNumDimensions, iNumAxes>& axis
-        ) const;
+        template <int iNumDimensions>
+        TDerived translated(double coordinateValue, const Datum<iNumDimensions, 1>& axis) const;
 
         TDerived rotated(double angle) const;
 
@@ -56,15 +53,15 @@ namespace opensolid
 
         TDerived rotated(const Rotation2d& rotation, LinearTag) const;
 
-        template <int iNumDimensions, int iNumAxes>
-        TDerived rotated(double angle, const Datum<iNumDimensions, iNumAxes>& axis) const;
+        template <int iNumDimensions>
+        TDerived rotated(double angle, const Datum<iNumDimensions, 1>& axis) const;
 
         TDerived rotated(const Rotation3d& rotation) const;
 
         TDerived rotated(const Rotation3d& rotation, LinearTag) const;
 
-        template <int iNumDimensions, int iNumAxes>
-        TDerived mirrored(const Datum<iNumDimensions, iNumAxes>& datum) const;
+        template <int iNumDimensions>
+        TDerived mirrored(const Datum<iNumDimensions, iNumDimensions - 1>& datum) const;
 
         template <int iNumDimensions>
         TDerived mirrored(const Mirror<iNumDimensions>& mirror) const;
@@ -81,15 +78,10 @@ namespace opensolid
         template <int iNumDimensions>
         TDerived projected(const Projection<iNumDimensions>& projection, LinearTag) const;
 
-        template <
-            int iNumSourceDatumDimensions,
-            int iNumSourceDatumAxes,
-            int iNumDestinationDatumDimensions,
-            int iNumDestinationDatumAxes
-        >
-        typename Transformed<TDerived, iNumDestinationDatumDimensions>::Type transformed(
-            const Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
-            const Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+        template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+        typename Transformed<TDerived, iNumDestinationDimensions>::Type transformed(
+            const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+            const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
         ) const;
 
         template <int iNumSourceDimensions, int iNumDestinationDimensions>
@@ -146,10 +138,10 @@ namespace opensolid
         return scale * (derived() - originPoint.derived()) + originPoint.derived();
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    template <class TDerived> template <int iNumDimensions>
     inline TDerived Transformable<TDerived>::translated(
         double coordinateValue,
-        const Datum<iNumDimensions, iNumAxes>& axis
+        const Datum<iNumDimensions, 1>& axis
     ) const {
         return derived() + coordinateValue * axis.basisVector();
     }
@@ -178,10 +170,10 @@ namespace opensolid
         return rotation.transformationMatrix() * derived();
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    template <class TDerived> template <int iNumDimensions>
     inline TDerived Transformable<TDerived>::rotated(
         double angle,
-        const Datum<iNumDimensions, iNumAxes>& axis
+        const Datum<iNumDimensions, 1>& axis
     ) const {
         return rotated(Rotation3d(angle, axis));
     }
@@ -197,9 +189,9 @@ namespace opensolid
         return rotation.transformationMatrix() * derived();
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    template <class TDerived> template <int iNumDimensions>
     inline TDerived Transformable<TDerived>::mirrored(
-        const Datum<iNumDimensions, iNumAxes>& datum
+        const Datum<iNumDimensions, iNumDimensions - 1>& datum
     ) const {
         return mirrored(Mirror<iNumDimensions>(datum));
     }
@@ -242,16 +234,11 @@ namespace opensolid
     }
 
     template <class TDerived>
-    template <
-        int iNumSourceDatumDimensions,
-        int iNumSourceDatumAxes,
-        int iNumDestinationDatumDimensions,
-        int iNumDestinationDatumAxes
-    >
-    typename Transformed<TDerived, iNumDestinationDatumDimensions>::Type
+    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+    typename Transformed<TDerived, iNumDestinationDimensions>::Type
     Transformable<TDerived>::transformed(
-        const Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
-        const Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
     ) const {
         return destinationDatum * (derived() / sourceDatum);
     }

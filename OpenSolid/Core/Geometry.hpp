@@ -55,13 +55,15 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Geometry(int value);
         OPENSOLID_CORE_EXPORT Geometry(double value);
         OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
-        OPENSOLID_CORE_EXPORT Geometry(const SimplexXd& simplex);
 
         template <class TVector>
         Geometry(const EigenBase<TVector>& vector);
 
-        template <int iNumDimensions, int iNumVertices>
-        Geometry(const Simplex<iNumDimensions, iNumVertices>& simplex);
+        OPENSOLID_CORE_EXPORT Geometry(const LineSegment2d& lineSegment);
+        OPENSOLID_CORE_EXPORT Geometry(const Triangle2d& triangle);
+        OPENSOLID_CORE_EXPORT Geometry(const LineSegment3d& lineSegment);
+        OPENSOLID_CORE_EXPORT Geometry(const Triangle3d& triangle);
+        OPENSOLID_CORE_EXPORT Geometry(const Tetrahedron3d& tetrahedron);
 
         OPENSOLID_CORE_EXPORT const GeometryImplementation* implementation() const;
         
@@ -149,11 +151,6 @@ namespace opensolid
     template <class TVector>
     Geometry::Geometry(const EigenBase<TVector>& vector) {
         *this = Geometry(VectorXd(vector));
-    }
-
-    template <int iNumDimensions, int iNumVertices>
-    Geometry::Geometry(const Simplex<iNumDimensions, iNumVertices>& simplex) {
-        *this = Geometry(SimplexXd(simplex));
     }
 
     template <class TArgument>

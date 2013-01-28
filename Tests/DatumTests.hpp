@@ -55,13 +55,13 @@ public:
     }
     
     void testDatumTransformation() {
-        Frame3d global = Frame3d::Unit();
+        Frame3d global = Frame3d::XYZ();
         Frame3d frame = (global + Vector3d(1, 1, 1)).rotated(-M_PI / 2, global.xAxis());
         TS_ASSERT(((frame * Vector3d(1, 2, 3)) - Vector3d(2, 4, -3)).isZero());
     }
     
     void testDatumComposition() {
-        Frame3d frame = Frame3d::Unit(Vector3d::UnitX());
+        Frame3d frame = Frame3d::XYZ(Vector3d::UnitX());
         frame = frame.rotated(-M_PI / 4, frame.yAxis());
         Frame3d product = frame * frame;
         Vector3d expectedProductOrigin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));

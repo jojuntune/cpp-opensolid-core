@@ -21,36 +21,31 @@
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 
 #include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Domain/CuboidDomain.hpp>
+#include <OpenSolid/Core/Domain/IntervalDomain.hpp>
+#include <OpenSolid/Core/Domain/RectangleDomain.hpp>
+#include <OpenSolid/Core/Domain/SimplexDomain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 
 namespace opensolid
 {
     Domain DomainConstructors::UnitInterval() {
-        return Domain(Interval::Unit());
+        return new IntervalDomain(Interval::Unit());
     }
 
     Domain DomainConstructors::UnitSquare() {
-        return UnitOrthotope(2);
+        return new RectangleDomain(Vector2I::Constant(Interval::Unit()));
     }
 
     Domain DomainConstructors::UnitCube() {
-        return UnitOrthotope(3);
+        return new CuboidDomain(Vector3I::Constant(Interval::Unit()));
     }
 
     Domain DomainConstructors::UnitTriangle() {
-        return UnitSimplex(2);
+        return new SimplexDomain<2>(Triangle2d::Unit());
     }
 
     Domain DomainConstructors::UnitTetrahedron() {
-        return UnitSimplex(3);
-    }
-
-    Domain DomainConstructors::UnitOrthotope(int numDimensions) {
-        return Domain(VectorXI::Constant(numDimensions, Interval::Unit()));
-    }
-
-    Domain DomainConstructors::UnitSimplex(int numDimensions) {
-        MatrixXd vertices(numDimensions, numDimensions + 1);
-        return Domain(SimplexXd::Unit(numDimensions));
+        return new SimplexDomain<3>(Tetrahedron3d::Unit());
     }
 }

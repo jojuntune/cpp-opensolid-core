@@ -34,7 +34,5 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT static Domain UnitCube();
         OPENSOLID_CORE_EXPORT static Domain UnitTriangle();
         OPENSOLID_CORE_EXPORT static Domain UnitTetrahedron();
-        OPENSOLID_CORE_EXPORT static Domain UnitOrthotope(int dimensions);
-        OPENSOLID_CORE_EXPORT static Domain UnitSimplex(int dimensions);
     };
 }

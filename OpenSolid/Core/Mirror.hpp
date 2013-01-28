@@ -34,8 +34,7 @@ namespace opensolid
         Matrix<double, iNumDimensions, 1> _originPoint;
         Matrix<double, iNumDimensions, iNumDimensions> _transformationMatrix;
     public:
-        template <int iNumDatumDimensions, int iNumDatumAxes>
-        Mirror(const Datum<iNumDatumDimensions, iNumDatumAxes>& datum);
+        Mirror(const Datum<iNumDimensions, iNumDimensions - 1>& datum);
 
         const Matrix<double, iNumDimensions, 1>& originPoint() const;
         const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix() const;
@@ -46,15 +45,13 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions> template <int iNumDatumDimensions, int iNumDatumAxes>
-    Mirror<iNumDimensions>::Mirror(const Datum<iNumDatumDimensions, iNumDatumAxes>& datum) :
+    template <int iNumDimensions>
+    Mirror<iNumDimensions>::Mirror(const Datum<iNumDimensions, iNumDimensions - 1>& datum) :
         _originPoint(datum.originPoint()) {
 
         Matrix<double, iNumDimensions, 1> normalVector = datum.normalVector();
-        _transformationMatrix = Matrix<double, iNumDimensions, iNumDimensions>::Identity(
-            datum.numDimensions(),
-            datum.numDimensions()
-        ) - 2 * normalVector * normalVector.transpose();
+        _transformationMatrix = Matrix<double, iNumDimensions, iNumDimensions>::Identity() -
+            2 * normalVector * normalVector.transpose();
     }
 
     template <int iNumDimensions>

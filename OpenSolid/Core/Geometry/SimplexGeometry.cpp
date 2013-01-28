@@ -24,54 +24,118 @@
 
 namespace opensolid
 {
-    SimplexGeometry::SimplexGeometry(const SimplexXd& simplex) : _simplex(simplex) {
+    template <>
+    Domain SimplexGeometry<1, 2>::domain() const {
+        return Domain::UnitInterval();
     }
 
-    Function SimplexGeometry::function() const {
-        return Function::Linear(_simplex.coordinateSystem());
-    }
-    
-    Domain SimplexGeometry::domain() const {
-        return Domain::UnitSimplex(numParameters());
-    }
-        
-    int SimplexGeometry::numParameters() const {
-        return _simplex.numVertices() - 1;
-    }
-    
-    int SimplexGeometry::numDimensions() const {
-        return _simplex.numDimensions();
+    template <>
+    Domain SimplexGeometry<1, 3>::domain() const {
+        return Domain::UnitTriangle();
     }
 
-    void SimplexGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        results = _simplex.coordinateSystem() * parameter_values;
+    template <>
+    Domain SimplexGeometry<1, 4>::domain() const {
+        return Domain::UnitTetrahedron();
     }
 
-    void SimplexGeometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = _simplex.coordinateSystem() * parameter_bounds;
+    template <>
+    Domain SimplexGeometry<2, 2>::domain() const {
+        return Domain::UnitInterval();
     }
-    
-    bool SimplexGeometry::isConstant() const {
-        return false;
+
+    template <>
+    Domain SimplexGeometry<2, 3>::domain() const {
+        return Domain::UnitTriangle();
     }
-    
-    VectorXI SimplexGeometry::bounds() const {
-        return _simplex.bounds();
+
+    template <>
+    Domain SimplexGeometry<2, 4>::domain() const {
+        return Domain::UnitTetrahedron();
     }
-    
-    Set<Geometry> SimplexGeometry::boundaries() const {
+
+    template <>
+    Domain SimplexGeometry<3, 2>::domain() const {
+        return Domain::UnitInterval();
+    }
+
+    template <>
+    Domain SimplexGeometry<3, 3>::domain() const {
+        return Domain::UnitTriangle();
+    }
+
+    template <>
+    Domain SimplexGeometry<3, 4>::domain() const {
+        return Domain::UnitTetrahedron();
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<1, 2>::boundaries() const {
         Set<Geometry> results;
-        for (int i = 0; i < _simplex.numVertices(); ++i) {
-            results.insert(new SimplexGeometry(_simplex.face(i)));
-        }
+        results.insert(_simplex.vertex(0));
+        results.insert(_simplex.vertex(1));
         return results;
     }
 
-    Geometry SimplexGeometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return new SimplexGeometry(matrix * _simplex + vector);
+    template <>
+    Set<Geometry> SimplexGeometry<2, 2>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.vertex(0));
+        results.insert(_simplex.vertex(1));
+        return results;
     }
 
-    Geometry SimplexGeometry::reversed() const {
-        return new SimplexGeometry(SimplexXd(_simplex.vertex(1), _simplex.vertex(0)));
+    template <>
+    Set<Geometry> SimplexGeometry<3, 2>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.vertex(0));
+        results.insert(_simplex.vertex(1));
+        return results;
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<1, 3>::boundaries() const {
+        assert(false);
+        return Set<Geometry>();
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<2, 3>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.edge(1, 0));
+        results.insert(_simplex.edge(2, 1));
+        results.insert(_simplex.edge(0, 2));
+        return results;
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<3, 3>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.edge(1, 0));
+        results.insert(_simplex.edge(2, 1));
+        results.insert(_simplex.edge(0, 2));
+        return results;
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<1, 4>::boundaries() const {
+        assert(false);
+        return Set<Geometry>();
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<2, 4>::boundaries() const {
+        assert(false);
+        return Set<Geometry>();
+    }
+
+    template <>
+    Set<Geometry> SimplexGeometry<3, 4>::boundaries() const {
+        Set<Geometry> results;
+        results.insert(_simplex.face(0));
+        results.insert(_simplex.face(1));
+        results.insert(_simplex.face(2));
+        results.insert(_simplex.face(3));
+        return results;
     }
 }

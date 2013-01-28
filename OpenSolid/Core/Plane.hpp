@@ -32,14 +32,13 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT Plane3d();
 
+        Plane3d(const Datum<3, 2>& otherPlane);
+
         OPENSOLID_CORE_EXPORT Plane3d(
             const Vector3d& originPoint,
             const Vector3d& xVector,
-            const Vector3d& yVector
+            const Vector3d& xyVector
         );
-
-        template <int iNumDimensions, int iNumAxes>
-        Plane3d(const Datum<iNumDimensions, iNumAxes>& otherPlane);
 
         OPENSOLID_CORE_EXPORT static Plane3d FromPointAndNormal(
             const Vector3d& originPoint,
@@ -48,8 +47,8 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT static Plane3d ThroughPoints(
             const Vector3d& originPoint,
-            const Vector3d& xAxisPoint,
-            const Vector3d& planePoint
+            const Vector3d& xPoint,
+            const Vector3d& xyPoint
         );
 
         OPENSOLID_CORE_EXPORT static Plane3d Midplane(
@@ -70,6 +69,35 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT static Plane3d ThroughAxis(
             const Axis3d& axis
         );
+
+        OPENSOLID_CORE_EXPORT static Plane3d XY();
+        OPENSOLID_CORE_EXPORT static Plane3d XY(const Vector3d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Plane3d XZ();
+        OPENSOLID_CORE_EXPORT static Plane3d XZ(const Vector3d& originPoint);
+        
+        OPENSOLID_CORE_EXPORT static Plane3d YX();
+        OPENSOLID_CORE_EXPORT static Plane3d YX(const Vector3d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Plane3d YZ();
+        OPENSOLID_CORE_EXPORT static Plane3d YZ(const Vector3d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Plane3d ZX();
+        OPENSOLID_CORE_EXPORT static Plane3d ZX(const Vector3d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Plane3d ZY();
+        OPENSOLID_CORE_EXPORT static Plane3d ZY(const Vector3d& originPoint);
+
+        OPENSOLID_CORE_EXPORT static Plane3d FromBasisVectors(
+            const Vector3d& originPoint,
+            const Vector3d& xBasisVector,
+            const Vector3d& yBasisVector
+        );
+
+        OPENSOLID_CORE_EXPORT static Plane3d FromBasisMatrix(
+            const Vector3d& originPoint,
+            const Matrix<double, 3, 2>& basisMatrix
+        );
     };
 }
 
@@ -77,8 +105,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    inline Plane3d::Plane3d(const Datum<iNumDimensions, iNumAxes>& otherPlane) :
-        Datum<3, 2>(otherPlane) {
+    inline Plane3d::Plane3d(const Datum<3, 2>& otherPlane) : Datum<3, 2>(otherPlane) {
     }
 }
