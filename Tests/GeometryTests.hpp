@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Utils/Zero.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
 
 #include <cxxtest/TestSuite.h>
 

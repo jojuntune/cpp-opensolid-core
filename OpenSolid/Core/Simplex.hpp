@@ -45,26 +45,6 @@ namespace opensolid
         Simplex(const Simplex<iNumDimensions, iNumVertices>& otherSimplex);
         
         explicit Simplex(const Matrix<double, iNumDimensions, iNumVertices>& vertices);
-        
-        Simplex(double firstVertex, double secondVertex);
-        
-        Simplex(
-            const Matrix<double, iNumDimensions, 1>& firstVertex,
-            const Matrix<double, iNumDimensions, 1>& secondVertex
-        );
-        
-        Simplex(
-            const Matrix<double, iNumDimensions, 1>& firstVertex,
-            const Matrix<double, iNumDimensions, 1>& secondVertex,
-            const Matrix<double, iNumDimensions, 1>& thirdVertex
-        );
-        
-        Simplex(
-            const Matrix<double, iNumDimensions, 1>& firstVertex,
-            const Matrix<double, iNumDimensions, 1>& secondVertex,
-            const Matrix<double, iNumDimensions, 1>& thirdVertex,
-            const Matrix<double, iNumDimensions, 1>& fourthVertex
-        );
             
         Simplex<iNumDimensions, iNumVertices>& operator=(
             const Simplex<iNumDimensions, iNumVertices>& otherSimplex
@@ -97,8 +77,6 @@ namespace opensolid
         Matrix<Interval, iNumDimensions, 1> bounds() const;
         
         bool operator==(const Simplex<iNumDimensions, iNumVertices>& otherSimplex) const;
-
-        static Simplex<iNumDimensions, iNumVertices> Unit();
     };
 
     template <int iNumDimensions, int iNumVertices>
@@ -118,13 +96,6 @@ namespace opensolid
         const EigenBase<TMatrix>& transformationMatrix,
         const Simplex<iNumDimensions, iNumVertices>& simplex
     );
-    
-    typedef Simplex<1, 2> LineSegment1d;
-    typedef Simplex<2, 2> LineSegment2d;
-    typedef Simplex<3, 2> LineSegment3d;
-    typedef Simplex<2, 3> Triangle2d;
-    typedef Simplex<3, 3> Triangle3d;
-    typedef Simplex<3, 4> Tetrahedron3d;
 }
 
 ////////// Specializations //////////
@@ -167,65 +138,6 @@ namespace opensolid
     Simplex<iNumDimensions, iNumVertices>::Simplex(
         const Matrix<double, iNumDimensions, iNumVertices>& vertices
     ) : _vertices(vertices) {
-    }
-
-    template <>
-    inline Simplex<1, 2>::Simplex(double firstVertex, double secondVertex) {
-        _vertices(0) = firstVertex;
-        _vertices(1) = secondVertex;
-    }
-
-    template <>
-    inline Simplex<1, 2>::Simplex(const Matrix1d& firstVertex, const Matrix1d& secondVertex) {
-        _vertices.col(0) = firstVertex;
-        _vertices.col(1) = secondVertex;
-    }
-
-    template <>
-    inline Simplex<2, 2>::Simplex(const Vector2d& firstVertex, const Vector2d& secondVertex) {
-        _vertices.col(0) = firstVertex;
-        _vertices.col(1) = secondVertex;
-    }
-
-    template <>
-    inline Simplex<3, 2>::Simplex(const Vector3d& firstVertex, const Vector3d& secondVertex) {
-        _vertices.col(0) = firstVertex;
-        _vertices.col(1) = secondVertex;
-    }
-        
-    template <>
-    inline Simplex<2, 3>::Simplex(
-        const Vector2d& firstVertex,
-        const Vector2d& secondVertex,
-        const Vector2d& thirdVertex
-    ) {
-        _vertices.col(0) = firstVertex;
-        _vertices.col(1) = secondVertex;
-        _vertices.col(2) = thirdVertex;
-    }
-        
-    template <>
-    inline Simplex<3, 3>::Simplex(
-        const Vector3d& firstVertex,
-        const Vector3d& secondVertex,
-        const Vector3d& thirdVertex
-    ) {
-        _vertices.col(0) = firstVertex;
-        _vertices.col(1) = secondVertex;
-        _vertices.col(2) = thirdVertex;
-    }
-
-    template <> 
-    inline Simplex<3, 4>::Simplex(
-        const Vector3d& firstVertex,
-        const Vector3d& secondVertex,
-        const Vector3d& thirdVertex,
-        const Vector3d& fourthVertex
-    ) {
-        _vertices.col(0) = firstVertex;
-        _vertices.col(1) = secondVertex;
-        _vertices.col(2) = thirdVertex;
-        _vertices.col(3) = fourthVertex;
     }
     
     template <int iNumDimensions, int iNumVertices> 
@@ -345,13 +257,17 @@ namespace opensolid
     template <>
     inline Simplex<2, 2> Simplex<2, 3>::edge(int index) const {
         assert(0 <= index && index < 3);
-        return Simplex<2, 2>(vertex(index), vertex((index + 1) % 3));
+        Matrix2d vertices;
+        vertices << vertex(index), vertex((index + 1) % 3);
+        return Simplex<2, 2>(vertices);
     }
     
     template <>
     inline Simplex<3, 2> Simplex<3, 3>::edge(int index) const {
         assert(0 <= index && index < 3);
-        return Simplex<3, 2>(vertex(index), vertex((index + 1) % 3));
+        Matrix<double, 3, 2> vertices;
+        vertices << vertex(index), vertex((index + 1) % 3);
+        return Simplex<3, 2>(vertices);
     }
     
     template <>
@@ -359,7 +275,9 @@ namespace opensolid
         assert(0 <= startIndex && startIndex < 3);
         assert(0 <= endIndex && endIndex < 3);
         assert(startIndex != endIndex);
-        return Simplex<2, 2>(vertex(startIndex), vertex(endIndex));
+        Matrix2d vertices;
+        vertices << vertex(startIndex), vertex(endIndex);
+        return Simplex<2, 2>(vertices);
     }
     
     template <>
@@ -367,7 +285,9 @@ namespace opensolid
         assert(0 <= startIndex && startIndex < 3);
         assert(0 <= endIndex && endIndex < 3);
         assert(startIndex != endIndex);
-        return Simplex<3, 2>(vertex(startIndex), vertex(endIndex));
+        Matrix<double, 3, 2> vertices;
+        vertices << vertex(startIndex), vertex(endIndex);
+        return Simplex<3, 2>(vertices);
     }
     
     template <>
@@ -375,7 +295,9 @@ namespace opensolid
         assert(0 <= startIndex && startIndex < 4);
         assert(0 <= endIndex && endIndex < 4);
         assert(startIndex != endIndex);
-        return Simplex<3, 2>(vertex(startIndex), vertex(endIndex));
+        Matrix<double, 3, 2> vertices;
+        vertices << vertex(startIndex), vertex(endIndex);
+        return Simplex<3, 2>(vertices);
     }
     
     template <>
@@ -428,27 +350,6 @@ namespace opensolid
         const Simplex<iNumDimensions, iNumVertices>& otherSimplex
     ) const {
         return vertices() == otherSimplex.vertices();
-    }
-
-    template <>
-    inline Simplex<1, 2> Simplex<1, 2>::Unit() {
-        return Simplex<1, 2>(RowVector2d(0, 1));
-    }
-
-    template <>
-    inline Simplex<2, 3> Simplex<2, 3>::Unit() {
-        Matrix<double, 2, 3> vertices;
-        vertices.col(0).setZero();
-        vertices.rightCols<2>().setIdentity();
-        return Simplex<2, 3>(vertices);
-    }
-
-    template <>
-    inline Simplex<3, 4> Simplex<3, 4>::Unit() {
-        Matrix<double, 3, 4> vertices;
-        vertices.col(0).setZero();
-        vertices.rightCols<3>().setIdentity();
-        return Simplex<3, 4>(vertices);
     }
 
     template <int iNumDimensions, int iNumVertices>

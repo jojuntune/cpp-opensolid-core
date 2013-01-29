@@ -26,13 +26,14 @@
 #include "Domain/DomainConstructors.hpp"
 #include "Domain/DomainImplementation.hpp"
 
-#include <OpenSolid/Utils/Convertible.hpp>
 #include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
+#include <OpenSolid/Core/Tetrahedron.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Utils/Convertible.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 

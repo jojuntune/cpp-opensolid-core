@@ -139,7 +139,7 @@ namespace opensolid
     Geometry SimplexGeometry<iNumDimensions, iNumVertices>::reversed() const {
         assert(iNumVertices == 2);
         return new SimplexGeometry(
-            Simplex<iNumDimensions, iNumVertices>(_simplex.vertex(1), _simplex.vertex(0))
+            Simplex<iNumDimensions, iNumVertices>(_simplex.vertices().reverse())
         );
     }
 }

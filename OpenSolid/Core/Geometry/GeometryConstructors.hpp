@@ -24,10 +24,9 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Frame.hpp>
-#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 
 namespace opensolid
 {

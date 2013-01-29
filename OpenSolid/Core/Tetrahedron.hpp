@@ -18,37 +18,69 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "SimplexDomain.hpp"
+#pragma once
 
-#include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/Geometry.hpp>
+#include <OpenSolid/Core/Simplex.hpp>
+
+namespace opensolid
+{
+    class Tetrahedron3d : public Simplex<3, 4>
+    {
+    public:
+        Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron);
+
+        Tetrahedron3d(
+            const Vector3d& firstVertex,
+            const Vector3d& secondVertex,
+            const Vector3d& thirdVertex,
+            const Vector3d& fourthVertex
+        );
+
+        static Tetrahedron3d Unit();
+    };
+}
+
+////////// Specializations //////////
 
 namespace opensolid
 {
     template <>
-    Set<Geometry> SimplexDomain<1>::boundaries() const {
-        Set<Geometry> results;
-        results.insert(_simplex.vertex(0));
-        results.insert(_simplex.vertex(1));
-        return results;
+    struct Bounds<Tetrahedron3d> : public Bounds<Simplex<3, 4>>
+    {
+    };
+
+    template <int iNumTransformedDimensions>
+    struct Transformed<Tetrahedron3d, iNumTransformedDimensions> :
+        public Transformed<Simplex<3, 4>, iNumTransformedDimensions>
+    {
+    };
+}
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    inline Tetrahedron3d::Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron) :
+        Simplex<3, 4>(otherTetrahedron) {
     }
 
-    template <>
-    Set<Geometry> SimplexDomain<2>::boundaries() const {
-        Set<Geometry> results;
-        results.insert(LineSegment2d(_simplex.edge(1, 0)));
-        results.insert(LineSegment2d(_simplex.edge(2, 1)));
-        results.insert(LineSegment2d(_simplex.edge(0, 2)));
-        return results;
+    inline Tetrahedron3d::Tetrahedron3d(
+        const Vector3d& firstVertex,
+        const Vector3d& secondVertex,
+        const Vector3d& thirdVertex,
+        const Vector3d& fourthVertex
+    ) {
+        Matrix<double, 3, 4> vertices;
+        vertices << firstVertex, secondVertex, thirdVertex, fourthVertex;
+        *this = Simplex<3, 4>(vertices);
     }
 
-    template <>
-    Set<Geometry> SimplexDomain<3>::boundaries() const {
-        Set<Geometry> results;
-        results.insert(Triangle3d(_simplex.face(0)));
-        results.insert(Triangle3d(_simplex.face(1)));
-        results.insert(Triangle3d(_simplex.face(2)));
-        results.insert(Triangle3d(_simplex.face(3)));
-        return results;
+    inline Tetrahedron3d Tetrahedron3d::Unit() {
+        return Tetrahedron3d(
+            Vector3d::Zero(),
+            Vector3d::UnitX(),
+            Vector3d::UnitY(),
+            Vector3d::UnitZ()
+        );
     }
 }
