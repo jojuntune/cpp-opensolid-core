@@ -242,7 +242,7 @@ namespace opensolid
     }
     
     template <>
-    inline const Double1d& Datum<1, 1>::basisVector() const {
+    inline const Matrix1d& Datum<1, 1>::basisVector() const {
         return basisMatrix();
     }
     
@@ -263,7 +263,7 @@ namespace opensolid
     }
 
     template <>
-    inline Double1d Datum<1, 1>::point(double x) const {
+    inline Matrix1d Datum<1, 1>::point(double x) const {
         return originPoint() + x * basisVector();
     }
 
@@ -293,7 +293,7 @@ namespace opensolid
     }
 
     template <>
-    inline Double1d Datum<1, 1>::vector(double x) const {
+    inline Matrix1d Datum<1, 1>::vector(double x) const {
         return x * basisVector();
     }
 

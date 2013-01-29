@@ -176,7 +176,7 @@ namespace opensolid
     }
 
     template <>
-    inline Simplex<1, 2>::Simplex(const Double1d& firstVertex, const Double1d& secondVertex) {
+    inline Simplex<1, 2>::Simplex(const Matrix1d& firstVertex, const Matrix1d& secondVertex) {
         _vertices.col(0) = firstVertex;
         _vertices.col(1) = secondVertex;
     }
@@ -307,7 +307,7 @@ namespace opensolid
     }
 
     template <>
-    inline Double1d Simplex<1, 2>::vector() const {
+    inline Matrix1d Simplex<1, 2>::vector() const {
         return vertex(1) - vertex(0);
     }
 

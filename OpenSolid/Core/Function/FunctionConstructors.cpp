@@ -57,49 +57,36 @@ namespace opensolid
     ) {
         return x.concatenate(y).concatenate(z);
     }
-    
-    template <int iNumDimensions, int iNumAxes>
-    Function FunctionConstructors::Linear(const Datum<iNumDimensions, iNumAxes>& datum) {
-        return new LinearFunction<iNumDimensions, iNumAxes>(datum);
-    }
-
-    template Function FunctionConstructors::Linear<1, 1>(const Datum<1, 1>&);
-    template Function FunctionConstructors::Linear<1, 2>(const Datum<1, 2>&);
-    template Function FunctionConstructors::Linear<1, 3>(const Datum<1, 3>&);
-    template Function FunctionConstructors::Linear<2, 1>(const Datum<2, 1>&);
-    template Function FunctionConstructors::Linear<2, 2>(const Datum<2, 2>&);
-    template Function FunctionConstructors::Linear<2, 3>(const Datum<2, 3>&);
-    template Function FunctionConstructors::Linear<3, 1>(const Datum<3, 1>&);
-    template Function FunctionConstructors::Linear<3, 2>(const Datum<3, 2>&);
-    template Function FunctionConstructors::Linear<3, 3>(const Datum<3, 3>&);
-    
-    template <int iNumDimensions, int iNumAxes>
-    Function FunctionConstructors::Elliptical(const Datum<iNumDimensions, iNumAxes>& datum) {
-        return new EllipticalFunction<iNumDimensions, iNumAxes>(
-            datum,
-            Matrix<bool, 1, iNumAxes - 1>::Constant(true)
-        );
-    }
-
-    template Function FunctionConstructors::Elliptical<1, 2>(const Datum<1, 2>&);
-    template Function FunctionConstructors::Elliptical<1, 3>(const Datum<1, 3>&);
-    template Function FunctionConstructors::Elliptical<2, 2>(const Datum<2, 2>&);
-    template Function FunctionConstructors::Elliptical<2, 3>(const Datum<2, 3>&);
-    template Function FunctionConstructors::Elliptical<3, 2>(const Datum<3, 2>&);
-    template Function FunctionConstructors::Elliptical<3, 3>(const Datum<3, 3>&);
         
-    template <int iNumDimensions, int iNumAxes>
-    Function FunctionConstructors::Elliptical(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const Matrix<bool, 1, iNumAxes - 1>& convention
-    ) {
-        return new EllipticalFunction<iNumDimensions, iNumAxes>(datum, convention);
+    Function FunctionConstructors::Linear(const Axis2d& axis) {
+        return new LinearFunction<2, 1>(axis);
     }
 
-    template Function FunctionConstructors::Elliptical<1, 2>(const Datum<1, 2>&, const Matrix<bool, 1, 1>&);
-    template Function FunctionConstructors::Elliptical<1, 3>(const Datum<1, 3>&, const Matrix<bool, 1, 2>&);
-    template Function FunctionConstructors::Elliptical<2, 2>(const Datum<2, 2>&, const Matrix<bool, 1, 1>&);
-    template Function FunctionConstructors::Elliptical<2, 3>(const Datum<2, 3>&, const Matrix<bool, 1, 2>&);
-    template Function FunctionConstructors::Elliptical<3, 2>(const Datum<3, 2>&, const Matrix<bool, 1, 1>&);
-    template Function FunctionConstructors::Elliptical<3, 3>(const Datum<3, 3>&, const Matrix<bool, 1, 2>&);
+    Function FunctionConstructors::Linear(const Frame2d& frame) {
+        return new LinearFunction<2, 2>(frame);
+    }
+
+    Function FunctionConstructors::Linear(const Axis3d& axis) {
+        return new LinearFunction<3, 1>(axis);
+    }
+
+    Function FunctionConstructors::Linear(const Plane3d& plane) {
+        return new LinearFunction<3, 2>(plane);
+    }
+
+    Function FunctionConstructors::Linear(const Frame3d& frame) {
+        return new LinearFunction<3, 3>(frame);
+    }
+    
+    Function FunctionConstructors::Elliptical(const Frame2d& frame) {
+        return new EllipticalFunction<2, 2>(frame, Matrix1b::Constant(true));
+    }
+
+    Function FunctionConstructors::Elliptical(const Plane3d& plane) {
+        return new EllipticalFunction<3, 2>(plane, Matrix1b::Constant(true));
+    }
+
+    Function FunctionConstructors::Elliptical(const Frame3d& frame) {
+        return new EllipticalFunction<3, 3>(frame, RowVector2b::Constant(true));
+    }
 }

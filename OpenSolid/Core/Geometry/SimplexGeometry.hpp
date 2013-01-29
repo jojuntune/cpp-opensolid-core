@@ -26,7 +26,7 @@
 
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
-#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Function/LinearFunction.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
 
 namespace opensolid
@@ -68,7 +68,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumVertices>
     Function SimplexGeometry<iNumDimensions, iNumVertices>::function() const {
-        return Function::Linear(_simplexDatum);
+        return new LinearFunction<iNumDimensions, iNumVertices - 1>(_simplexDatum);
     }
         
     template <int iNumDimensions, int iNumVertices>

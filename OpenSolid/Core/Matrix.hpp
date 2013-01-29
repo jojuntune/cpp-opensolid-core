@@ -51,8 +51,10 @@
 
 namespace Eigen
 {
-    typedef Matrix<double, 1, 1> Double1d;
-    typedef Matrix<opensolid::Interval, 1, 1> Interval1d;
+    typedef Matrix<int, 1, 1> Matrix1i;
+    typedef Matrix<double, 1, 1> Matrix1d;
+    typedef Matrix<opensolid::Interval, 1, 1> Matrix1I;
+    typedef Matrix<bool, 1, 1> Matrix1b;
 
     typedef Matrix<opensolid::Interval, 2, 1> Vector2I;
     typedef Matrix<opensolid::Interval, 1, 2> RowVector2I;
@@ -82,10 +84,12 @@ namespace Eigen
     typedef Matrix<bool, 3, Dynamic> Matrix3Xb;
     typedef Matrix<bool, Dynamic, 3> MatrixX3b;
     
+    typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXi;
     typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXd;
     typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
     typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXb;
     
+    typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXci;
     typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcd;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;

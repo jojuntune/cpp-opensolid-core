@@ -22,8 +22,11 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 
 namespace opensolid
 {
@@ -53,20 +56,14 @@ namespace opensolid
             const Function& z
         );
         
-        template <int iNumDimensions, int iNumAxes>
-        OPENSOLID_CORE_EXPORT static Function Linear(
-            const Datum<iNumDimensions, iNumAxes>& datum
-        );
+        OPENSOLID_CORE_EXPORT static Function Linear(const Axis2d& axis);
+        OPENSOLID_CORE_EXPORT static Function Linear(const Frame2d& frame);
+        OPENSOLID_CORE_EXPORT static Function Linear(const Axis3d& axis);
+        OPENSOLID_CORE_EXPORT static Function Linear(const Plane3d& plane);
+        OPENSOLID_CORE_EXPORT static Function Linear(const Frame3d& frame);
         
-        template <int iNumDimensions, int iNumAxes>
-        OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const Datum<iNumDimensions, iNumAxes>& datum
-        );
-        
-        template <int iNumDimensions, int iNumAxes>
-        OPENSOLID_CORE_EXPORT static Function Elliptical(
-            const Datum<iNumDimensions, iNumAxes>& datum,
-            const Matrix<bool, 1, iNumAxes - 1>& convention
-        );
+        OPENSOLID_CORE_EXPORT static Function Elliptical(const Frame2d& frame);
+        OPENSOLID_CORE_EXPORT static Function Elliptical(const Plane3d& plane);
+        OPENSOLID_CORE_EXPORT static Function Elliptical(const Frame3d& frame);
     };
 }
