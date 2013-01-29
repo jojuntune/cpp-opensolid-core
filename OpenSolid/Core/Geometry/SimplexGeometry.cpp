@@ -102,18 +102,18 @@ namespace opensolid
     template <>
     Set<Geometry> SimplexGeometry<2, 3>::boundaries() const {
         Set<Geometry> results;
-        results.insert(LineSegment2d(_simplex.edge(1, 0)));
-        results.insert(LineSegment2d(_simplex.edge(2, 1)));
-        results.insert(LineSegment2d(_simplex.edge(0, 2)));
+        results.insert(new SimplexGeometry<2, 2>(_simplex.edge(1, 0)));
+        results.insert(new SimplexGeometry<2, 2>(_simplex.edge(2, 1)));
+        results.insert(new SimplexGeometry<2, 2>(_simplex.edge(0, 2)));
         return results;
     }
 
     template <>
     Set<Geometry> SimplexGeometry<3, 3>::boundaries() const {
         Set<Geometry> results;
-        results.insert(LineSegment3d(_simplex.edge(1, 0)));
-        results.insert(LineSegment3d(_simplex.edge(2, 1)));
-        results.insert(LineSegment3d(_simplex.edge(0, 2)));
+        results.insert(new SimplexGeometry<3, 2>(_simplex.edge(1, 0)));
+        results.insert(new SimplexGeometry<3, 2>(_simplex.edge(2, 1)));
+        results.insert(new SimplexGeometry<3, 2>(_simplex.edge(0, 2)));
         return results;
     }
 
@@ -132,10 +132,10 @@ namespace opensolid
     template <>
     Set<Geometry> SimplexGeometry<3, 4>::boundaries() const {
         Set<Geometry> results;
-        results.insert(Triangle3d(_simplex.face(0)));
-        results.insert(Triangle3d(_simplex.face(1)));
-        results.insert(Triangle3d(_simplex.face(2)));
-        results.insert(Triangle3d(_simplex.face(3)));
+        results.insert(new SimplexGeometry<3, 3>(_simplex.face(0)));
+        results.insert(new SimplexGeometry<3, 3>(_simplex.face(1)));
+        results.insert(new SimplexGeometry<3, 3>(_simplex.face(2)));
+        results.insert(new SimplexGeometry<3, 3>(_simplex.face(3)));
         return results;
     }
 }
