@@ -30,6 +30,9 @@ namespace opensolid
     template <int iNumber = 0>
     class Error;
 
+    template <int iNumber>
+    struct UniqueErrorNumber;
+
     template <>
     class Error<0> : public std::exception
     {
@@ -37,7 +40,8 @@ namespace opensolid
         char _buffer[32];
         int _number;
     
-        OPENSOLID_CORE_EXPORT Error(int number);
+        template <int iNumber>
+        Error(UniqueErrorNumber<iNumber>);
     
         template <int iNumber> friend class Error;
     public:
@@ -54,9 +58,6 @@ namespace opensolid
         Error();
     };
 
-    template <int iNumber>
-    struct UniqueErrorNumber;
-
     typedef Error<1> NotImplementedError;
     template <> struct UniqueErrorNumber<1> {};
 }
@@ -64,7 +65,11 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumber>
-    inline Error<iNumber>::Error() : Error<>(iNumber) {
-        UniqueErrorNumber<iNumber> checkForUniqueErrorNumberSpecialization;
+    Error<0>::Error(UniqueErrorNumber<iNumber>) : _number(iNumber) {
+        sprintf(_buffer, "OpenSolid error %i", iNumber);
+    }
+
+    template <int iNumber>
+    inline Error<iNumber>::Error() : Error<>(UniqueErrorNumber<iNumber>()) {
     }
 }

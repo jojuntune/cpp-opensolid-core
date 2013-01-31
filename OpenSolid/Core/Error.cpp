@@ -22,10 +22,6 @@
 
 namespace opensolid
 {
-    Error<0>::Error(int number) : _number(number) {
-        sprintf(_buffer, "OpenSolid error %i", number);
-    }
-
     const char* Error<0>::what() const throw() {
         return _buffer;
     }
