@@ -21,6 +21,7 @@
 #pragma once
 
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 
 namespace opensolid
