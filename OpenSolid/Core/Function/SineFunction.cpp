@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "SineFunction.hpp"
+#include <OpenSolid/Core/Function/SineFunction.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid

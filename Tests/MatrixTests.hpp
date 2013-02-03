@@ -41,7 +41,7 @@ void printDirectAccess(const Type& argument) {
 
 struct MyVector
 {
-    MyVector(double x_, double y_, double z_) : x(x_), y(y_), z(_z) {
+    MyVector(double x_, double y_, double z_) : x(x_), y(y_), z(z_) {
     }
 
     double x;
@@ -63,11 +63,7 @@ namespace opensolid
     struct Conversion<Vector3d, MyVector>
     {
         MyVector operator()(const Vector3d& argument) const {
-            MyVector result;
-            result.x = argument.x();
-            result.y = argument.y();
-            result.z = argument.z();
-            return result;
+            return MyVector(argument.x(), argument.y(), argument.z());
         }
     };
 }

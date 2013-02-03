@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "ArccosineFunction.hpp"
+#include <OpenSolid/Core/Function/ArccosineFunction.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
@@ -28,7 +29,9 @@ namespace opensolid
         assert(operand.numDimensions() == 1);
     }
     
-    int ArccosineFunction::numDimensions() const {return 1;}
+    int ArccosineFunction::numDimensions() const {
+        return 1;
+    }
     
     struct Arccosine
     {

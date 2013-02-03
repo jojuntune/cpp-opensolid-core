@@ -20,7 +20,10 @@
 
 #pragma once
 
-#include "FunctionImplementation.hpp"
+#include <OpenSolid/config.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 
 namespace opensolid
 {

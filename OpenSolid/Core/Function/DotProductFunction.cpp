@@ -20,6 +20,7 @@
 
 #include "DotProductFunction.hpp"
 
+// Public headers
 #include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid

@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "ParametersFunction.hpp"
+#include <OpenSolid/Core/Function/ParametersFunction.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid

@@ -20,7 +20,10 @@
 
 #pragma once
 
-#include "BinaryOperation.hpp"
+#include <OpenSolid/config.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/BinaryOperation.hpp>
 
 namespace opensolid
 {

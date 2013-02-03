@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include "FunctionImplementation.hpp"
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 
-#include "ComponentsFunction.hpp"
-#include "CompositionFunction.hpp"
-#include "NormFunction.hpp"
-#include "NormalizedFunction.hpp"
-#include "SquaredNormFunction.hpp"
-#include "TransformedFunction.hpp"
+// Internal headers
+#include <OpenSolid/Core/Function/ComponentsFunction.hpp>
+#include <OpenSolid/Core/Function/CompositionFunction.hpp>
+#include <OpenSolid/Core/Function/NormFunction.hpp>
+#include <OpenSolid/Core/Function/NormalizedFunction.hpp>
+#include <OpenSolid/Core/Function/SquaredNormFunction.hpp>
+#include <OpenSolid/Core/Function/TransformedFunction.hpp>
 
 namespace opensolid
 {
