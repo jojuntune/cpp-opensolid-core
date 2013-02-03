@@ -20,7 +20,7 @@
 
 #include <cxxtest/TestSuite.h>
 
-#include <OpenSolid/Utils/Convertible.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/IO/Object.hpp>
 
 using namespace opensolid;

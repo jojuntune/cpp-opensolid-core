@@ -23,6 +23,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Evaluation.hpp>
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
@@ -32,7 +33,6 @@
 #include <OpenSolid/Core/Tetrahedron.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
  
 #include <OpenSolid/Core/Function/declarations.hpp>
 #include <OpenSolid/Core/Geometry/declarations.hpp>

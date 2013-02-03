@@ -25,7 +25,7 @@
 #include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
-#include <OpenSolid/Utils/Zero.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 #include <cxxtest/TestSuite.h>
 

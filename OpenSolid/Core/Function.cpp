@@ -18,38 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "Function.hpp"
+#include <OpenSolid/Core/Function.hpp>
 
-#include "Function/ArccosineFunction.hpp"
-#include "Function/ArcsineFunction.hpp"
-#include "Function/ComponentsFunction.hpp"
-#include "Function/CompositionFunction.hpp"
-#include "Function/ConcatenationFunction.hpp"
-#include "Function/ConstantFunction.hpp"
-#include "Function/CosineFunction.hpp"
-#include "Function/CrossProductFunction.hpp"
-#include "Function/DifferenceFunction.hpp"
-#include "Function/DotProductFunction.hpp"
-#include "Function/EllipticalFunction.hpp"
-#include "Function/ExponentialFunction.hpp"
-#include "Function/LinearFunction.hpp"
-#include "Function/LogarithmFunction.hpp"
-#include "Function/NegationFunction.hpp"
-#include "Function/NormFunction.hpp"
-#include "Function/NormalizedFunction.hpp"
-#include "Function/ParametersFunction.hpp"
-#include "Function/PowerFunction.hpp"
-#include "Function/ProductFunction.hpp"
-#include "Function/QuotientFunction.hpp"
-#include "Function/SineFunction.hpp"
-#include "Function/SquaredNormFunction.hpp"
-#include "Function/SquareRootFunction.hpp"
-#include "Function/SumFunction.hpp"
-#include "Function/TangentFunction.hpp"
-
-#include <OpenSolid/Utils/Zero.hpp>
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
+#include <OpenSolid/Core/Zero.hpp>
+
+#include <OpenSolid/Core/Function/ArccosineFunction.hpp>
+#include <OpenSolid/Core/Function/ArcsineFunction.hpp>
+#include <OpenSolid/Core/Function/ComponentsFunction.hpp>
+#include <OpenSolid/Core/Function/CompositionFunction.hpp>
+#include <OpenSolid/Core/Function/ConcatenationFunction.hpp>
+#include <OpenSolid/Core/Function/ConstantFunction.hpp>
+#include <OpenSolid/Core/Function/CosineFunction.hpp>
+#include <OpenSolid/Core/Function/CrossProductFunction.hpp>
+#include <OpenSolid/Core/Function/DifferenceFunction.hpp>
+#include <OpenSolid/Core/Function/DotProductFunction.hpp>
+#include <OpenSolid/Core/Function/EllipticalFunction.hpp>
+#include <OpenSolid/Core/Function/ExponentialFunction.hpp>
+#include <OpenSolid/Core/Function/LinearFunction.hpp>
+#include <OpenSolid/Core/Function/LogarithmFunction.hpp>
+#include <OpenSolid/Core/Function/NegationFunction.hpp>
+#include <OpenSolid/Core/Function/NormFunction.hpp>
+#include <OpenSolid/Core/Function/NormalizedFunction.hpp>
+#include <OpenSolid/Core/Function/ParametersFunction.hpp>
+#include <OpenSolid/Core/Function/PowerFunction.hpp>
+#include <OpenSolid/Core/Function/ProductFunction.hpp>
+#include <OpenSolid/Core/Function/QuotientFunction.hpp>
+#include <OpenSolid/Core/Function/SineFunction.hpp>
+#include <OpenSolid/Core/Function/SquareRootFunction.hpp>
+#include <OpenSolid/Core/Function/SquaredNormFunction.hpp>
+#include <OpenSolid/Core/Function/SumFunction.hpp>
+#include <OpenSolid/Core/Function/TangentFunction.hpp>
 
 #include <algorithm>
 

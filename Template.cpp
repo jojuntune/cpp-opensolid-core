@@ -18,12 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "CLASS.hpp"
+#include <CORRESPONDING_HEADER>
 
-#include <opensolid/HEADERS>
+// OpenSolid public headers
+#include <OpenSolid/PUBLIC_HEADERS>
 
+// OpenSolid internal headers
+#include <OpenSolid/INTERNAL/HEADERS>
+
+// External library headers
 #include <EXTERNAL_LIBRARY/HEADERS>
 
+// Standard library headers
 #include <STANDARD_HEADERS>
 
 namespace opensolid

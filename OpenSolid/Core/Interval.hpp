@@ -23,8 +23,8 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
-#include <OpenSolid/Utils/Zero.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 #include <OpenSolid/Core/Interval/declarations.hpp>
 #include <OpenSolid/Core/Matrix/declarations.hpp>

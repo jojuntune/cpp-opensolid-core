@@ -22,13 +22,13 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Evaluation.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
 
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Domain/declarations.hpp>

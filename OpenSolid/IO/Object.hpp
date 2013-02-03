@@ -19,9 +19,10 @@
  ***************************************************************************/
 
 #pragma once
-
+ 
 #include <OpenSolid/config.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
+
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Error.hpp>
 
 #include <string>

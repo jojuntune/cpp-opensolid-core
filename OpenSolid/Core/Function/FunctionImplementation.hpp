@@ -23,7 +23,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Utils/ReferenceCounted.hpp>
+#include <OpenSolid/Core/ReferenceCounted.hpp>
 
 namespace opensolid
 {

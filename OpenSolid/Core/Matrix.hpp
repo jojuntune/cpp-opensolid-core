@@ -23,8 +23,8 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
 
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix/declarations.hpp>
@@ -155,7 +155,7 @@ namespace opensolid
 #include <OpenSolid/Core/Mirror.hpp>
 #include <OpenSolid/Core/Projection.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 
 namespace Eigen
 {

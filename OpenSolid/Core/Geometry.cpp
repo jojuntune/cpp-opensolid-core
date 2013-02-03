@@ -18,15 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "Geometry.hpp"
+#include <OpenSolid/Core/Geometry.hpp>
 
-#include "Geometry/GeometryImplementation.hpp"
-#include "Geometry/ConstantGeometry.hpp"
-#include "Geometry/GenericGeometry.hpp"
-#include "Geometry/SimplexGeometry.hpp"
-
-#include <OpenSolid/Utils/Zero.hpp>
 #include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Geometry/ConstantGeometry.hpp>
+#include <OpenSolid/Core/Geometry/GenericGeometry.hpp>
+#include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
+#include <OpenSolid/Core/Geometry/SimplexGeometry.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
 {

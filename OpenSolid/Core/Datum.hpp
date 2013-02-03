@@ -22,10 +22,10 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
 
 namespace opensolid
 {

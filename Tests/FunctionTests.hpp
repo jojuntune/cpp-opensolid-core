@@ -21,7 +21,7 @@
 #include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Utils/Zero.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>

@@ -22,13 +22,13 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "Simplex/declarations.hpp"
-
 #include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Utils/Convertible.hpp>
+ 
+#include <OpenSolid/Core/Simplex/declarations.hpp>
 
 namespace opensolid
 {
