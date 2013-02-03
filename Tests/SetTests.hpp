@@ -54,7 +54,9 @@ Interval randomInterval() {
     return Interval(mid - width / 2, mid + width / 2);
 }
 
-Vector3I randomVector() {return Vector3I(randomInterval(), randomInterval(), randomInterval());}
+Vector3I randomVector() {
+    return Vector3I(randomInterval(), randomInterval(), randomInterval());
+}
 
 struct IntervalIndex
 {
@@ -70,7 +72,9 @@ namespace opensolid
 
         std::vector<Interval>* intervals;
 
-        Interval operator()(IntervalIndex index) {return intervals->at(index.index);}
+        Interval operator()(IntervalIndex index) {
+            return intervals->at(index.index);
+        }
     };
 }
 
@@ -223,7 +227,9 @@ public:
     
     void testIntervalConstructionTime() {
         std::vector<Interval> intervals(100000);
-        for (auto i = intervals.begin(); i != intervals.end(); ++i) {*i = randomInterval();}
+        for (auto i = intervals.begin(); i != intervals.end(); ++i) {
+            *i = randomInterval();
+        }
         
         boost::timer iterator_timer;
         Set<Interval> iterator_set(intervals.begin(), intervals.end());
@@ -234,7 +240,9 @@ public:
         
         boost::timer insertion_timer;
         Set<Interval> insertion_set;
-        for (auto i = intervals.begin(); i != intervals.end(); ++i) {insertion_set.insert(*i);}
+        for (auto i = intervals.begin(); i != intervals.end(); ++i) {
+            insertion_set.insert(*i);
+        }
         double insertion_time = insertion_timer.elapsed();
         TS_ASSERT_EQUALS(insertion_set.size(), intervals.size());
         testSet(insertion_set.root());
@@ -245,7 +253,9 @@ public:
     
     void testVectorConstructionTime() {
         std::vector<Vector3I> vectors(100000);
-        for (auto i = vectors.begin(); i != vectors.end(); ++i) {*i = randomVector();}
+        for (auto i = vectors.begin(); i != vectors.end(); ++i) {
+            *i = randomVector();
+        }
         
         boost::timer iterator_timer;
         Set<Vector3I> iterator_set(vectors.begin(), vectors.end());
@@ -256,7 +266,9 @@ public:
         
         boost::timer insertion_timer;
         Set<Vector3I> insertion_set;
-        for (auto i = vectors.begin(); i != vectors.end(); ++i) {insertion_set.insert(*i);}
+        for (auto i = vectors.begin(); i != vectors.end(); ++i) {
+            insertion_set.insert(*i);
+        }
         double insertion_time = insertion_timer.elapsed();
         TS_ASSERT_EQUALS(insertion_set.size(), vectors.size());
         testSet(insertion_set.root());

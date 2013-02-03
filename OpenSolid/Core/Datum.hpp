@@ -22,10 +22,13 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+ 
+// Declarations headers
+#include <OpenSolid/Core/Datum/declarations.hpp>
 
 namespace opensolid
 {

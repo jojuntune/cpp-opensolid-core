@@ -22,7 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
-// OpenSolid public headers
+// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Interval.hpp>
@@ -32,14 +32,13 @@
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
-// OpenSolid internal headers
+// Internal headers
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 #include <OpenSolid/Core/Domain/DomainImplementation.hpp>
 
-// OpenSolid declarations headers
+// Declarations headers
 #include <OpenSolid/Core/Domain/declarations.hpp>
 
-// External library headers
 #include <boost/intrusive_ptr.hpp>
 
 namespace opensolid

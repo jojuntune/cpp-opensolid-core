@@ -22,6 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Plane.hpp>

@@ -22,10 +22,12 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 
+// Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Matrix/declarations.hpp>
 #include <OpenSolid/Core/Transformation/declarations.hpp>
@@ -139,6 +141,13 @@ namespace opensolid
 
 ////////// Implementation //////////
 
+// Public headers
+#include <OpenSolid/Core/Mirror.hpp>
+#include <OpenSolid/Core/Projection.hpp>
+#include <OpenSolid/Core/Rotation.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
+
+// Internal headers
 #include <OpenSolid/Core/Matrix/ContainOperation.hpp>
 #include <OpenSolid/Core/Matrix/EmptyOperation.hpp>
 #include <OpenSolid/Core/Matrix/HullOperation.hpp>
@@ -152,10 +161,6 @@ namespace opensolid
 #include <OpenSolid/Core/Matrix/StrictOverlapOperation.hpp>
 #include <OpenSolid/Core/Matrix/UpperOperation.hpp>
 #include <OpenSolid/Core/Matrix/WidthOperation.hpp>
-#include <OpenSolid/Core/Mirror.hpp>
-#include <OpenSolid/Core/Projection.hpp>
-#include <OpenSolid/Core/Rotation.hpp>
-#include <OpenSolid/Core/Convertible.hpp>
 
 namespace Eigen
 {

@@ -22,6 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Error.hpp>
 

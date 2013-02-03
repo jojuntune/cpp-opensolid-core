@@ -20,6 +20,7 @@
 
 #include <OpenSolid/Core/Mesh.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Error.hpp>
 
 namespace opensolid

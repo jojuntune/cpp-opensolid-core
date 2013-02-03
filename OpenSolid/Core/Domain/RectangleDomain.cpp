@@ -25,7 +25,8 @@
 
 namespace opensolid
 {
-    RectangleDomain::RectangleDomain(const Vector2I& bounds) : _bounds(bounds) {}
+    RectangleDomain::RectangleDomain(const Vector2I& bounds) : _bounds(bounds) {
+    }
 
     Set<Geometry> RectangleDomain::boundaries() const {
         double xLower = _bounds.x().lowerBound();

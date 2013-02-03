@@ -22,9 +22,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include "Set/SetNode.hpp"
-
+// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Set/SetNode.hpp>
 
 #include <ostream>
 #include <algorithm>

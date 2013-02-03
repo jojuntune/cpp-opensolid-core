@@ -27,7 +27,8 @@
 
 namespace opensolid
 {
-    CuboidDomain::CuboidDomain(const Vector3I& bounds) : _bounds(bounds) {}
+    CuboidDomain::CuboidDomain(const Vector3I& bounds) : _bounds(bounds) {
+    }
 
     Set<Geometry> CuboidDomain::boundaries() const {
         //Vector3d lower = _bounds.cwiseLower();
@@ -37,11 +38,17 @@ namespace opensolid
         return results;
     }
 
-    bool CuboidDomain::isEmpty() const {return _bounds.isEmpty();}
+    bool CuboidDomain::isEmpty() const {
+        return _bounds.isEmpty();
+    }
 
-    int CuboidDomain::numDimensions() const {return 3;}
+    int CuboidDomain::numDimensions() const {
+        return 3;
+    }
 
-    VectorXI CuboidDomain::bounds() const {return _bounds;}
+    VectorXI CuboidDomain::bounds() const {
+        return _bounds;
+    }
 
     Domain CuboidDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         if (matrix.isDiagonal()) {

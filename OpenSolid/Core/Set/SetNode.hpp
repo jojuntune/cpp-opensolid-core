@@ -371,7 +371,9 @@ namespace opensolid
         typename Bounds<TElement>::Type overallBounds = _bounds.hull(elementBounds);
         if (_element) {
             assert(!_leftChild && !_rightChild);
-            SetNode<TElement>* nodes[2] = {this, new SetNode<TElement>(element, elementBounds)};
+            SetNode<TElement>* nodes[2];
+            nodes[0] = this;
+            nodes[1] = new SetNode<TElement>(element, elementBounds);
             return new SetNode<TElement>(overallBounds, nodes, nodes + 2);
         } else if (detail::isCompatible(overallBounds, _splitDirection, _splitValue)) {
             assert(_leftChild && _rightChild);

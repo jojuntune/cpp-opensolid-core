@@ -22,6 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 

@@ -20,12 +20,15 @@
 
 #include <OpenSolid/Core/Geometry.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Zero.hpp>
+
+// Internal headers
 #include <OpenSolid/Core/Geometry/ConstantGeometry.hpp>
 #include <OpenSolid/Core/Geometry/GenericGeometry.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
 #include <OpenSolid/Core/Geometry/SimplexGeometry.hpp>
-#include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
 {

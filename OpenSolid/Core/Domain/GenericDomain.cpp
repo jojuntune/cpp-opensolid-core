@@ -25,7 +25,11 @@
 
 namespace opensolid
 {
-    GenericDomain::GenericDomain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {}
+    GenericDomain::GenericDomain(const Set<Geometry>& boundaries) : _boundaries(boundaries) {
 
-    Set<Geometry> GenericDomain::boundaries() const {return _boundaries;}
+    }
+
+    Set<Geometry> GenericDomain::boundaries() const {
+        return _boundaries;
+    }
 }

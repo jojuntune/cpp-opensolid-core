@@ -20,6 +20,7 @@
 
 #pragma once
 
+// Public headers
 #include <OpenSolid/Core/Simplex.hpp>
 
 namespace opensolid

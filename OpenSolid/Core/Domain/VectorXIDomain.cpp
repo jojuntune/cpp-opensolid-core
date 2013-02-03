@@ -25,7 +25,8 @@
 
 namespace opensolid
 {
-    VectorXIDomain::VectorXIDomain(const VectorXI& bounds) : _bounds(bounds) {}
+    VectorXIDomain::VectorXIDomain(const VectorXI& bounds) : _bounds(bounds) {
+    }
 
     Set<Geometry> VectorXIDomain::boundaries() const {
         Set<Geometry> results;
@@ -38,11 +39,17 @@ namespace opensolid
         return results;
     }
 
-    bool VectorXIDomain::isEmpty() const {return _bounds.isEmpty();}
+    bool VectorXIDomain::isEmpty() const {
+        return _bounds.isEmpty();
+    }
 
-    int VectorXIDomain::numDimensions() const {return _bounds.size();}
+    int VectorXIDomain::numDimensions() const {
+        return _bounds.size();
+    }
 
-    VectorXI VectorXIDomain::bounds() const {return _bounds;}
+    VectorXI VectorXIDomain::bounds() const {
+        return _bounds;
+    }
 
     Domain VectorXIDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         if (matrix.isDiagonal()) {

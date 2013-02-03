@@ -22,19 +22,17 @@
 
 #include <OpenSolid/config.hpp>
 
-// OpenSolid public headers
+// Public headers
 #include <OpenSolid/PUBLIC_HEADERS>
 
-// OpenSolid internal headers
+// Internal headers
 #include <OpenSolid/INTERNAL/HEADERS>
 
-// OpenSolid declarations headers
+// Declarations headers
 #include <OpenSolid/INTERNAL/DECLARATIONS_HEADERS>
 
-// External library headers
 #include <EXTERNAL_LIBRARY/HEADERS>
 
-// Standard library headers
 #include <STANDARD_HEADERS>
 
 namespace opensolid

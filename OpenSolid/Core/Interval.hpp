@@ -22,10 +22,12 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
+// Declarations headers
 #include <OpenSolid/Core/Interval/declarations.hpp>
 #include <OpenSolid/Core/Matrix/declarations.hpp>
 

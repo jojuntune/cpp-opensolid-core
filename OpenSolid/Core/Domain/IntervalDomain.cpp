@@ -25,7 +25,8 @@
 
 namespace opensolid
 {
-    IntervalDomain::IntervalDomain(const Interval& interval) : _interval(interval) {}
+    IntervalDomain::IntervalDomain(const Interval& interval) : _interval(interval) {
+    }
 
     Set<Geometry> IntervalDomain::boundaries() const {
         Set<Geometry> result;
@@ -34,11 +35,17 @@ namespace opensolid
         return result;
     }
 
-    bool IntervalDomain::isEmpty() const {return _interval.isEmpty();}
+    bool IntervalDomain::isEmpty() const {
+        return _interval.isEmpty();
+    }
 
-    int IntervalDomain::numDimensions() const {return 1;}
+    int IntervalDomain::numDimensions() const {
+        return 1;
+    }
 
-    VectorXI IntervalDomain::bounds() const {return _interval.as<VectorXI>();}
+    VectorXI IntervalDomain::bounds() const {
+        return _interval.as<VectorXI>();
+    }
 
     Domain IntervalDomain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
         return new IntervalDomain(matrix.value() + vector.value() * _interval);

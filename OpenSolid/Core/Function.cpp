@@ -20,10 +20,12 @@
 
 #include <OpenSolid/Core/Function.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
+// Internal headers
 #include <OpenSolid/Core/Function/ArccosineFunction.hpp>
 #include <OpenSolid/Core/Function/ArcsineFunction.hpp>
 #include <OpenSolid/Core/Function/ComponentsFunction.hpp>

@@ -46,9 +46,12 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline Zero::Zero(double precision) : _precision(precision) {}
+    inline Zero::Zero(double precision) : _precision(precision) {
+    }
 
-    inline double Zero::precision() const {return _precision;}
+    inline double Zero::precision() const {
+        return _precision;
+    }
 
     inline bool operator==(double value, Zero zero) {
         return value >= -zero.precision() && value <= zero.precision();

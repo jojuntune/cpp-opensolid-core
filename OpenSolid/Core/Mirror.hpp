@@ -22,6 +22,7 @@
  
 #include <OpenSolid/config.hpp>
 
+// Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Transformation/declarations.hpp>
 

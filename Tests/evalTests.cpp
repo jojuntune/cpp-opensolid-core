@@ -29,27 +29,29 @@ using namespace std;
 
 class graphNodeEvents : public graphNodeEventListener
 {
-    public:
+private:
+    bool property_error;
+    std::string error_message;
+public:
+    graphNodeEvents() : property_error( false ) {
+    }
 
-        graphNodeEvents() : property_error( false ) {}
+    virtual void graphNodePropertyError ( const propertyError& error ) {
+        property_error = true;
+        error_message = error.message();
+    }
+    
+    bool propertyErrorOccurred() {
+        return property_error;
+    }
 
-        virtual void graphNodePropertyError ( const propertyError& error )
-        {
-            property_error = true;
-            error_message = error.message();
-        }
-        
-        bool propertyErrorOccurred() { return property_error; }
+    std::string errorMessage() {
+        return error_message;
+    }
 
-        std::string errorMessage() { return error_message; }
-
-        void reset() { property_error = false; }
-
-    private:
-
-        bool property_error;
-
-        std::string error_message;
+    void reset() {
+        property_error = false;
+    }
 };
 
 bool testParamScoping ( project* proj )
@@ -64,8 +66,7 @@ bool testParamScoping ( project* proj )
 
     pointNode::sptr point;
 
-    try
-    {
+    try {
         comp1 = proj -> addNewComponent( NO_PARENT );
         param1 = proj -> addNewParam( comp1.nodeId() );
         point1 = proj -> addNewPoint( comp1.nodeId() );
@@ -81,9 +82,7 @@ bool testParamScoping ( project* proj )
 
         point = point2.node();
         point -> x( "-param1" );
-    }
-    catch( ... )
-    {
+    } catch( ... ) {
         cout << "An unexpected exception occured while creating param scope isolation graph structure.\n";
         return false;
     }
@@ -93,8 +92,7 @@ bool testParamScoping ( project* proj )
     point = point1.node();
     stk::point locn = point -> location();
 
-    if ( locn.x() != 0.1 )
-    {
+    if ( locn.x() != 0.1 ) {
         cout << "Error in point1 location.\n";
         return false;
     }
@@ -102,20 +100,16 @@ bool testParamScoping ( project* proj )
     point = point2.node();
     locn = point -> location();
 
-    if ( locn.x() != 0.0 )
-    {
+    if ( locn.x() != 0.0 ) {
         cout << "Error in point2 location.\n";
         return false;
     }
 
     // Move param1 to comp2 and re-check evaluated point coordinates.
     
-    try
-    {
+    try {
         param1 = proj -> moveNode ( param1.edgeId(), comp2.nodeId(), 0 );
-    }
-    catch( ... )
-    {
+    } catch( ... ) {
         cout << "An unexpected exception occured while moving param1 to comp2.\n";
         return false;
     }
@@ -123,8 +117,8 @@ bool testParamScoping ( project* proj )
     point = point1.node();
     locn = point -> location();
 
-    if ( locn.x() != 0.1 ) // There should be an error in evaluation and the coordinate will remain unchanged.
-    {
+    if ( locn.x() != 0.1 ) {
+        // There should be an error in evaluation and the coordinate will remain unchanged.
         cout << "Error in point1 location after move.\n";
         return false;
     }
@@ -132,8 +126,7 @@ bool testParamScoping ( project* proj )
     point = point2.node();
     locn = point -> location();
 
-    if ( locn.x() != -0.1 )
-    {
+    if ( locn.x() != -0.1 ) {
         cout << "Error in point2 location after move.\n";
         return false;
     }
@@ -141,8 +134,7 @@ bool testParamScoping ( project* proj )
     return true;
 }
 
-bool testParam ( project* proj )
-{
+bool testParam ( project* proj ) {
     // Test parameter propagation down graph.
 
     // Create nodes.
@@ -161,8 +153,7 @@ bool testParam ( project* proj )
 
     graphNodeEvents events;
 
-    try
-    {
+    try {
         param1 = proj -> addNewParam( "param1", NO_PARENT, "5" );
         (param1.node()) -> addEventListener( &events );
         
@@ -189,9 +180,7 @@ bool testParam ( project* proj )
         point3 = proj -> addNewPoint( "point3", frag2.nodeId(), "param1", "param4",
                                       "param1 + param4", "1" );
         (point3.node()) -> addEventListener( &events );
-    }
-    catch( ... )
-    {
+    } catch( ... ) {
         cout << "An unexpected exception occured while creating param tests graph structure.\n";
         return false;
     }
@@ -201,8 +190,7 @@ bool testParam ( project* proj )
     pointNode::sptr ptNode = point1.node();
     stk::point locn = ptNode -> location();
 
-    if ( locn.x() != 5 || locn.y() != 10 || locn.z() != 15 )
-    {
+    if ( locn.x() != 5 || locn.y() != 10 || locn.z() != 15 ) {
         cout << "\terror: point1 coordinates incorrect.\n";
         return false;
     }
@@ -212,8 +200,7 @@ bool testParam ( project* proj )
     ptNode = point2.node();
     locn = ptNode -> location();
 
-    if ( locn.x() != 5 || locn.y() != 10 || locn.z() != 8 )
-    {
+    if ( locn.x() != 5 || locn.y() != 10 || locn.z() != 8 ) {
         cout << "\terror: point2 coordinates incorrect.\n";
         return false;
     }
@@ -223,8 +210,7 @@ bool testParam ( project* proj )
     ptNode = point3.node();
     locn = ptNode -> location();
 
-    if ( locn.x() != 5 || locn.y() != 7 || locn.z() != 12 )
-    {
+    if ( locn.x() != 5 || locn.y() != 7 || locn.z() != 12 ) {
         cout << "\terror: point3 coordinates incorrect.\n";
         return false;
     }
@@ -235,26 +221,20 @@ bool testParam ( project* proj )
 }
 
 
-bool testPoint ( project* proj )
-{
+bool testPoint ( project* proj ) {
     opensolid::graphNode::nodeInfo pt1NodeInfo;
     opensolid::graphNode::nodeInfo pt2NodeInfo;
     opensolid::graphNode::nodeInfo pt3NodeInfo;
     
-    try
-    {
+    try {
         pt1NodeInfo = proj -> addNewPoint ( "testPoint1", NO_PARENT, "4", "5", "6", "1" );
         pt2NodeInfo = proj -> addNewPoint ( "testPoint2", NO_PARENT, "2*3", "5+2", "48/6", "3^3/3" );
 
         proj -> evaluate();
-    }
-    catch( graphScript::Error )
-    {
+    } catch( graphScript::Error ) {
         cout << "A script error occured while generating points.\n";
         return false;
-    }
-    catch(...)
-    {
+    } catch(...) {
         cout << "An unexpected exception occured while testing point evaluation.\n";
         return false;
     }
@@ -265,8 +245,7 @@ bool testPoint ( project* proj )
     
     stk::point locn = ptNode -> location();
 
-    if ( locn.x() != 4 || locn.y() != 5 || locn.z() != 6 || locn.w() != 1 )
-    {
+    if ( locn.x() != 4 || locn.y() != 5 || locn.z() != 6 || locn.w() != 1 ) {
         cout << "testPoint1 coordinates incorrect.\n";
         return false;
     }
@@ -274,16 +253,14 @@ bool testPoint ( project* proj )
     ptNode = pt2NodeInfo.node();
     locn = ptNode -> location();
 
-    if ( locn.x() != 6 || locn.y() != 7 || locn.z() != 8 || locn.w() != 9 )
-    {
+    if ( locn.x() != 6 || locn.y() != 7 || locn.z() != 8 || locn.w() != 9 ) {
         cout << "testPoint2 coordinates incorrect.\n";
         return false;
     }
 
     // Deliberately cause a script error.
     
-    try
-    {
+    try {
         pt3NodeInfo = proj -> addNewPoint ( "testPoint3", NO_PARENT, "2*/1", "1", "2", "3" );
 
         graphNodeEvents events;
@@ -298,17 +275,14 @@ bool testPoint ( project* proj )
         
             return false;
         }
-    }
-    catch(...)
-    {
+    } catch(...) {
         cout << "An unexpected exception occured while testing script error generation.\n";
         return false;
     }
 
     // Deliberately pass an empty expression to see if it causes a script error.
 
-    try
-    {
+    try {
         ptNode = pt2NodeInfo.node();
 
         graphNodeEvents events;
@@ -316,9 +290,7 @@ bool testPoint ( project* proj )
         ptNode -> addEventListener( &events );
         
         ptNode -> x( "" );
-    }
-    catch(...)
-    {
+    } catch(...) {
         cout << "An unexpected exception occured while testing script error generation.\n";
         return false;
     }
@@ -326,57 +298,47 @@ bool testPoint ( project* proj )
     return true;
 }
 
-void dumpGraph( project* proj )
-{
+void dumpGraph( project* proj ) {
     // Dump graph structure to std out.
 
     proj -> dump();
 }
 
-int main()
-{
+int main() {
     bool success = true;
 
     project* proj1 = 0;
     project* proj2 = 0;
     project* proj3 = 0;
 
-    try
-    {
+    try {
         proj1 = new project( "testProject1" );
         proj2 = new project( "testProject2" );
         proj3 = new project( "testProject3" );
-    }
-    catch(...)
-    {
+    } catch(...) {
         cout << "Unexpected exception occured during project construction.";
         success = false;
     }
 
-    if ( success )
-    {
+    if ( success ) {
         cout << "Testing Point Evaluation:\n";
         success = testPoint( proj1 );
         if ( ! success ) cout << "*** Point Evaluation Failed ***\n";
     }
     
-    if ( success )
-    {
+    if ( success ) {
         cout << "Testing Parameter Propagation:\n";
         success = testParam( proj2 );
-        if ( ! success )
-        {
+        if ( ! success ) {
             cout << "*** Parameter Propagation Failed ***\n";
             dumpGraph( proj2 );
         }
     }
 
-    if ( success )
-    {
+    if ( success ) {
         cout << "Testing Parameter Scope Isolation:\n";
         success = testParamScoping( proj3 );
-        if ( ! success )
-        {
+        if ( ! success ) {
             cout << "*** Parameter Scope IsolationFailed ***\n";
             dumpGraph( proj3 );
         }

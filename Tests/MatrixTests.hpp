@@ -41,6 +41,9 @@ void printDirectAccess(const Type& argument) {
 
 struct MyVector
 {
+    MyVector(double x_, double y_, double z_) : x(x_), y(y_), z(_z) {
+    }
+
     double x;
     double y;
     double z;
@@ -255,7 +258,7 @@ public:
     }
 
     void testConversion() {
-        MyVector my_vector = {1, 2, 3};
+        MyVector my_vector = MyVector(1, 2, 3);
         Vector3d from = Vector3d::from(my_vector);
         TS_ASSERT_EQUALS(from, Vector3d(1, 2, 3));
         MyVector as = Vector3d::Ones().as<MyVector>();

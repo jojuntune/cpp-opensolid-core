@@ -22,6 +22,7 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 
@@ -42,5 +43,7 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline MatrixXd Mesh::vertices() const {return _vertices;}
+    inline MatrixXd Mesh::vertices() const {
+        return _vertices;
+    }
 }

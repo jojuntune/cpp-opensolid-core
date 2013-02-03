@@ -35,7 +35,9 @@
 using namespace opensolid;
 using namespace boost::python;
 
-MatrixXd twice(const MatrixXd& argument) {return 2 * argument;}
+MatrixXd twice(const MatrixXd& argument) {
+    return 2 * argument;
+}
 
 class CustomClass
 {
@@ -47,19 +49,32 @@ public:
     CustomClass() :
         _value(3),
         _function(Function::Parameter() * Vector3d(1, 1, 1)),
-        _vector(1, 2, 3) {}
+        _vector(1, 2, 3) {
+    }
         
-    void setValue(double value) {_value = value;}
+    void setValue(double value) {
+        value = value;
+    }
 
-    double value() const {return _value;}
+    double value() const {
+        return _value;
+    }
     
-    void setFunction(const Function& function) {_function = function;}
+    void setFunction(const Function& function) {
+        _function = function;
+    }
 
-    Function function() const {return _function;}
+    Function function() const {
+        return _function;
+    }
     
-    void setVector(const MatrixXd& vector) {_vector = vector;}
+    void setVector(const MatrixXd& vector) {
+        _vector = vector;
+    }
 
-    MatrixXd vector() const {return _vector;}
+    MatrixXd vector() const {
+        return _vector;
+    }
 };
 
 struct UnregisteredType

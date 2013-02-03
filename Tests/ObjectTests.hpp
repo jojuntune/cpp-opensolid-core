@@ -58,7 +58,9 @@ namespace opensolid
     template <>
     struct TypeName<CustomType>
     {
-        std::string operator()() const {return "CustomType";}
+        std::string operator()() const {
+            return "CustomType";
+        }
     };
 }
 

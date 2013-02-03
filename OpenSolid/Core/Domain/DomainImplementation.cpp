@@ -25,13 +25,20 @@
 
 namespace opensolid
 {
-    DomainImplementation::~DomainImplementation() {}
+    DomainImplementation::~DomainImplementation() {
+    }
 
-    bool DomainImplementation::isEmpty() const {return boundaries().isEmpty();}
+    bool DomainImplementation::isEmpty() const {
+        return boundaries().isEmpty();
+    }
 
-    int DomainImplementation::numDimensions() const {return bounds().size();}
+    int DomainImplementation::numDimensions() const {
+        return bounds().size();
+    }
 
-    VectorXI DomainImplementation::bounds() const {return boundaries().bounds();}
+    VectorXI DomainImplementation::bounds() const {
+        return boundaries().bounds();
+    }
 
     Domain DomainImplementation::transformed(
         const MatrixXd& matrix,
