@@ -26,27 +26,30 @@
 namespace opensolid
 {
     CrossProductFunction::CrossProductFunction(
-        const Function& first_operand,
-        const Function& second_operand
-    ) : BinaryOperation(first_operand, second_operand) {
-        assert(first_operand.numDimensions() == 3 && second_operand.numDimensions() == 3);
+        const Function& firstOperand,
+        const Function& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand.numDimensions() == 3 && secondOperand.numDimensions() == 3);
     }
     
-    int CrossProductFunction::numDimensions() const {return 3;}
+    int CrossProductFunction::numDimensions() const {
+        return 3;
+    }
     
-    void CrossProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        Matrix3Xd first_values = firstOperand()(parameter_values);
-        Matrix3Xd second_values = secondOperand()(parameter_values);
+    void CrossProductFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        Matrix3Xd firstValues = firstOperand()(parameterValues);
+        Matrix3Xd secondValues = secondOperand()(parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = first_values.col(i).cross(second_values.col(i));
+            results.col(i) = firstValues.col(i).cross(secondValues.col(i));
         }
     }
     
-    void CrossProductFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        Matrix3XI first_bounds = firstOperand()(parameter_bounds);
-        Matrix3XI second_bounds = secondOperand()(parameter_bounds);
+    void CrossProductFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        Matrix3XI firstBounds = firstOperand()(parameterBounds);
+        Matrix3XI secondBounds = secondOperand()(parameterBounds);
         for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = first_bounds.col(i).cross(second_bounds.col(i));
+            results.col(i) = firstBounds.col(i).cross(secondBounds.col(i));
         }
     }
 

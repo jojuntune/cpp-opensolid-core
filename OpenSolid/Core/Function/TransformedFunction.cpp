@@ -27,38 +27,53 @@ namespace opensolid
 {
     TransformedFunction::TransformedFunction(
         const Function& operand,
-        const MatrixXd& matrix,
-        const VectorXd& vector
-    ) : UnaryOperation(operand), _matrix(matrix), _vector(vector) {
-        assert(operand.numDimensions() == matrix.cols());
-        assert(vector.size() == matrix.rows());
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector
+    ) : UnaryOperation(operand),
+        _transformationMatrix(transformationMatrix),
+        _translationVector(translationVector) {
+
+        assert(operand.numDimensions() == transformationMatrix.cols());
+        assert(translationVector.size() == transformationMatrix.rows());
     }
     
-    int TransformedFunction::numDimensions() const {return matrix().rows();}
-    
-    void TransformedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = (matrix() * operand()(parameter_values)).colwise() + vector();
+    int TransformedFunction::numDimensions() const {
+        return transformationMatrix().rows();
     }
     
-    void TransformedFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = (matrix().cast<Interval>() * operand()(parameter_bounds)).colwise() +
-            vector().cast<Interval>();
+    void TransformedFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = (transformationMatrix() * operand()(parameterValues)).colwise() +
+            translationVector();
+    }
+    
+    void TransformedFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = (transformationMatrix().cast<Interval>() * operand()(parameterBounds)).colwise() +
+            translationVector().cast<Interval>();
     }
     
     void TransformedFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index).transformed(matrix(), VectorXd::Zero(numDimensions()));
+        result = operand().derivative(index).transformed(
+            transformationMatrix(),
+            VectorXd::Zero(numDimensions())
+        );
     }
     
-    void TransformedFunction::getComposition(const Function& inner, Function& result) const {
-        result = operand()(inner).transformed(matrix(), vector());
+    void TransformedFunction::getComposition(
+        const Function& innerFunction,
+        Function& result
+    ) const {
+        result = operand()(innerFunction).transformed(transformationMatrix(), translationVector());
     }
     
     void TransformedFunction::getTransformed(
-        const MatrixXd& matrix,
-        const VectorXd& vector,
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector,
         Function& result
     ) const {
-        result = operand().transformed(matrix * this->matrix(), matrix * this->vector() + vector);
+        result = operand().transformed(
+            transformationMatrix * this->transformationMatrix(),
+            transformationMatrix * this->translationVector() + translationVector
+        );
     }
     
     void TransformedFunction::debug(std::ostream& stream, int indent) const {

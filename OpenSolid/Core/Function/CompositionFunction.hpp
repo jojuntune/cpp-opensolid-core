@@ -33,23 +33,29 @@ namespace opensolid
     class CompositionFunction : public FunctionImplementation
     {
     private:
-        Function _inner;
-        Function _outer;
+        Function _innerFunction;
+        Function _outerFunction;
     public:
-        OPENSOLID_CORE_EXPORT CompositionFunction(const Function& inner, const Function& outer);
+        OPENSOLID_CORE_EXPORT CompositionFunction(
+            const Function& innerFunction,
+            const Function& outerFunction
+        );
         
-        const Function& inner() const;
-        const Function& outer() const;
+        const Function& innerFunction() const;
+        const Function& outerFunction() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComposition(
+            const Function& newInnerFunction,
+            Function& result
+        ) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
@@ -59,7 +65,11 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const Function& CompositionFunction::inner() const {return _inner;}
+    inline const Function& CompositionFunction::innerFunction() const {
+        return _innerFunction;
+    }
     
-    inline const Function& CompositionFunction::outer() const {return _outer;}
+    inline const Function& CompositionFunction::outerFunction() const {
+        return _outerFunction;
+    }
 }

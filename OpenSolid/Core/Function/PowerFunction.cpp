@@ -25,79 +25,91 @@
 
 namespace opensolid
 {
-    PowerFunction::PowerFunction(const Function& base, const Function& exponent) :
-        BinaryOperation(base, exponent) {
-        assert(base.numDimensions() == 1);
-        assert(exponent.numDimensions() == 1);
-        if (exponent.isConstant()) {
-            _exponent_is_constant = true;
-            _constant_exponent = exponent.as<double>();
-            _integer_exponent = floor(_constant_exponent + 0.5);
-            _exponent_is_integer = (_constant_exponent - _integer_exponent == Zero());
+    PowerFunction::PowerFunction(const Function& baseFunction, const Function& exponentFunction) :
+        BinaryOperation(baseFunction, exponentFunction) {
+        assert(baseFunction.numDimensions() == 1);
+        assert(exponentFunction.numDimensions() == 1);
+        if (exponentFunction.isConstant()) {
+            _exponentIsConstant = true;
+            _constantExponent = exponentFunction.as<double>();
+            _integerExponent = floor(_constantExponent + 0.5);
+            _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
         } else {
-            _exponent_is_constant = false;
-            _exponent_is_integer = false;
-            _constant_exponent = 0.0;
-            _integer_exponent = 0;
+            _exponentIsConstant = false;
+            _exponentIsInteger = false;
+            _constantExponent = 0.0;
+            _integerExponent = 0;
         }
     }
         
-    int PowerFunction::numDimensions() const {return 1;}
+    int PowerFunction::numDimensions() const {
+        return 1;
+    }
 
     struct IntegerPower
     {
         int exponent;
 
-        inline IntegerPower(int exponent_) : exponent(exponent_) {}
+        inline IntegerPower(int exponent_) : exponent(exponent_) {
+        }
 
-        inline double operator()(double base) const {return std::pow(base, exponent);}
+        inline double operator()(double base) const {
+            return std::pow(base, exponent);
+        }
 
-        inline Interval operator()(const Interval& base) const {return pow(base, exponent);}
+        inline Interval operator()(const Interval& base) const {
+            return pow(base, exponent);
+        }
     };
 
     struct ConstantPower
     {
         double exponent;
 
-        inline ConstantPower(double exponent_) : exponent(exponent_) {}
+        inline ConstantPower(double exponent_) : exponent(exponent_) {
+        }
 
-        inline Interval operator()(const Interval& base) const {return pow(base, exponent);}
+        inline Interval operator()(const Interval& base) const {
+            return pow(base, exponent);
+        }
     };
 
     struct Power
     {
-        inline double operator()(double base, double exponent) const {return pow(base, exponent);}
+        inline double operator()(double base, double exponent) const {
+            return pow(base, exponent);
+        }
 
         inline Interval operator()(const Interval& base, const Interval& exponent) const {
             return pow(base, exponent);
         }
     };
         
-    void PowerFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        RowVectorXd base_values = firstOperand()(parameter_values);
-        if (_exponent_is_integer) {
-            results = base_values.unaryExpr(IntegerPower(_integer_exponent));
-        } else if (_exponent_is_constant) {
-            results = base_values.array().pow(_constant_exponent);
+    void PowerFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        RowVectorXd baseValues = firstOperand()(parameterValues);
+        if (_exponentIsInteger) {
+            results = baseValues.unaryExpr(IntegerPower(_integerExponent));
+        } else if (_exponentIsConstant) {
+            results = baseValues.array().pow(_constantExponent);
         } else {
-            results = base_values.binaryExpr(secondOperand()(parameter_values), Power());
+            results = baseValues.binaryExpr(secondOperand()(parameterValues), Power());
         }
     }
 
-    void PowerFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        RowVectorXI base_bounds = firstOperand()(parameter_bounds);
-        if (_exponent_is_integer) {
-            results = base_bounds.unaryExpr(IntegerPower(_integer_exponent));
-        } else if (_exponent_is_constant) {
-            results = base_bounds.array().unaryExpr(ConstantPower(_constant_exponent));
+    void PowerFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        RowVectorXI baseBounds = firstOperand()(parameterBounds);
+        if (_exponentIsInteger) {
+            results = baseBounds.unaryExpr(IntegerPower(_integerExponent));
+        } else if (_exponentIsConstant) {
+            results = baseBounds.array().unaryExpr(ConstantPower(_constantExponent));
         } else {
-            results = base_bounds.binaryExpr(secondOperand()(parameter_bounds), Power());
+            results = baseBounds.binaryExpr(secondOperand()(parameterBounds), Power());
         }
     }
 
     void PowerFunction::getDerivative(int index, Function& result) const {
-        if (_exponent_is_constant) {
-            result = _constant_exponent * pow(firstOperand(), _constant_exponent - 1) *
+        if (_exponentIsConstant) {
+            result = _constantExponent * pow(firstOperand(), _constantExponent - 1) *
                 firstOperand().derivative(index);
         } else {
             result = (

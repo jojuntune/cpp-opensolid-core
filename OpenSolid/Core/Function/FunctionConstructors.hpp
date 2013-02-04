@@ -36,25 +36,29 @@ namespace opensolid
     class FunctionConstructors
     {
     public:
-        OPENSOLID_CORE_EXPORT static Function Identity(int dimensions = 1);
+        OPENSOLID_CORE_EXPORT static Function Identity(int numDimensions = 1);
 
         OPENSOLID_CORE_EXPORT static Function Parameter();
 
-        OPENSOLID_CORE_EXPORT static Function Parameter(int total, int index);
+        OPENSOLID_CORE_EXPORT static Function Parameter(int totalNumParameters, int index);
 
-        OPENSOLID_CORE_EXPORT static Function Parameters(int total);
+        OPENSOLID_CORE_EXPORT static Function Parameters(int totalNumParameters);
 
-        OPENSOLID_CORE_EXPORT static Function Parameters(int total, int index, int num);
-
-        OPENSOLID_CORE_EXPORT static Function Components(
-            const Function& x,
-            const Function& y
+        OPENSOLID_CORE_EXPORT static Function Parameters(
+            int totalNumParameters,
+            int startIndex,
+            int numParameters
         );
 
         OPENSOLID_CORE_EXPORT static Function Components(
-            const Function& x,
-            const Function& y,
-            const Function& z
+            const Function& xFunction,
+            const Function& yFunction
+        );
+
+        OPENSOLID_CORE_EXPORT static Function Components(
+            const Function& xFunction,
+            const Function& yFunction,
+            const Function& zFunction
         );
         
         OPENSOLID_CORE_EXPORT static Function Linear(const Axis2d& axis);

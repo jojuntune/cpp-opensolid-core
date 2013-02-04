@@ -30,34 +30,43 @@
 
 namespace opensolid
 {
-    Function FunctionConstructors::Identity(int dimensions) {
-        return new ParametersFunction(dimensions, 0, dimensions);
+    Function FunctionConstructors::Identity(int numDimensions) {
+        return new ParametersFunction(numDimensions, 0, numDimensions);
     }
 
-    Function FunctionConstructors::Parameter() {return new ParametersFunction(1, 0, 1);}
-
-    Function FunctionConstructors::Parameter(int total, int index) {
-        return new ParametersFunction(total, index, 1);
+    Function FunctionConstructors::Parameter() {
+        return new ParametersFunction(1, 0, 1);
     }
 
-    Function FunctionConstructors::Parameters(int total) {
-        return new ParametersFunction(total, 0, total);
+    Function FunctionConstructors::Parameter(int totalNumParameters, int index) {
+        return new ParametersFunction(totalNumParameters, index, 1);
     }
 
-    Function FunctionConstructors::Parameters(int total, int index, int num) {
-        return new ParametersFunction(total, index, num);
+    Function FunctionConstructors::Parameters(int totalNumParameters) {
+        return new ParametersFunction(totalNumParameters, 0, totalNumParameters);
     }
-    
-    Function FunctionConstructors::Components(const Function& x, const Function& y) {
-        return x.concatenate(y);
+
+    Function FunctionConstructors::Parameters(
+        int totalNumParameters,
+        int startIndex,
+        int numParameters
+    ) {
+        return new ParametersFunction(totalNumParameters, startIndex, numParameters);
     }
     
     Function FunctionConstructors::Components(
-        const Function& x,
-        const Function& y,
-        const Function& z
+        const Function& xFunction,
+        const Function& yFunction
     ) {
-        return x.concatenate(y).concatenate(z);
+        return xFunction.concatenate(yFunction);
+    }
+    
+    Function FunctionConstructors::Components(
+        const Function& xFunction,
+        const Function& yFunction,
+        const Function& zFunction
+    ) {
+        return xFunction.concatenate(yFunction).concatenate(zFunction);
     }
         
     Function FunctionConstructors::Linear(const Axis2d& axis) {

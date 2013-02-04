@@ -29,14 +29,16 @@ namespace opensolid
         assert(operand.numDimensions() == 1);
     }
         
-    int ExponentialFunction::numDimensions() const {return 1;}
+    int ExponentialFunction::numDimensions() const {
+        return 1;
+    }
         
-    void ExponentialFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).array().exp();
+    void ExponentialFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).array().exp();
     }
 
-    void ExponentialFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).array().exp();
+    void ExponentialFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).array().exp();
     }
 
     void ExponentialFunction::getDerivative(int index, Function& result) const {

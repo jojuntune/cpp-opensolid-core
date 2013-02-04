@@ -44,12 +44,20 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getComponents(int index, int num, Function& result) const;
-        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComponents(
+            int startIndex,
+            int numComponents,
+            Function& result
+        ) const;
+
+        OPENSOLID_CORE_EXPORT void getComposition(
+            const Function& innerFunction,
+            Function& result
+        ) const;
 
         OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
+            const MatrixXd& transformationMatrix,
+            const VectorXd& translationVector,
             Function& result
         ) const;
         
@@ -65,5 +73,7 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const VectorXd& ConstantFunction::vector() const {return _vector;}
+    inline const VectorXd& ConstantFunction::vector() const {
+        return _vector;
+    }
 }

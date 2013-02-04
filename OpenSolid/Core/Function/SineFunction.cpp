@@ -29,14 +29,16 @@ namespace opensolid
         assert(operand.numDimensions() == 1);
     }
     
-    int SineFunction::numDimensions() const {return 1;}
-    
-    void SineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).array().sin();
+    int SineFunction::numDimensions() const {
+        return 1;
     }
     
-    void SineFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).array().sin();
+    void SineFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).array().sin();
+    }
+    
+    void SineFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).array().sin();
     }
 
     void SineFunction::getDerivative(int index, Function& result) const {

@@ -26,22 +26,25 @@
 namespace opensolid
 {
     ProductFunction::ProductFunction(
-        const Function& first_operand,
-        const Function& second_operand
-    ) : BinaryOperation(first_operand, second_operand) {
-        assert(second_operand.numDimensions() == 1);
+        const Function& firstOperand,
+        const Function& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(secondOperand.numDimensions() == 1);
     }
     
-    int ProductFunction::numDimensions() const {return firstOperand().numDimensions();}
-    
-    void ProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = firstOperand()(parameter_values) *
-            secondOperand()(parameter_values).eval().asDiagonal();
+    int ProductFunction::numDimensions() const {
+        return firstOperand().numDimensions();
     }
     
-    void ProductFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = firstOperand()(parameter_bounds) *
-            secondOperand()(parameter_bounds).eval().asDiagonal();
+    void ProductFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = firstOperand()(parameterValues) *
+            secondOperand()(parameterValues).eval().asDiagonal();
+    }
+    
+    void ProductFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = firstOperand()(parameterBounds) *
+            secondOperand()(parameterBounds).eval().asDiagonal();
     }
 
     void ProductFunction::getDerivative(int index, Function& result) const {

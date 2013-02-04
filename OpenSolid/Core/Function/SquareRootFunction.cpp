@@ -29,7 +29,9 @@ namespace opensolid
         assert(operand.numDimensions() == 1);
     }
     
-    int SquareRootFunction::numDimensions() const {return 1;}
+    int SquareRootFunction::numDimensions() const {
+        return 1;
+    }
     
     struct SquareRoot
     {
@@ -44,19 +46,21 @@ namespace opensolid
         }
     };
     
-    void SquareRootFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).unaryExpr(SquareRoot());
+    void SquareRootFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).unaryExpr(SquareRoot());
     }
     
-    void SquareRootFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).unaryExpr(SquareRoot());
+    void SquareRootFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).unaryExpr(SquareRoot());
     }
 
     void SquareRootFunction::getDerivative(int index, Function& result) const {
         result = 0.5 * operand().derivative(index) / sqrt(operand());
     }
     
-    void SquareRootFunction::getSquaredNorm(Function& result) const {result = operand().norm();}
+    void SquareRootFunction::getSquaredNorm(Function& result) const {
+        result = operand().norm();
+    }
     
     void SquareRootFunction::debug(std::ostream& stream, int indent) const {
         stream << "SquareRootFunction" << std::endl;

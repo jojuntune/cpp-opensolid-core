@@ -25,36 +25,49 @@
 
 namespace opensolid
 {
-    CompositionFunction::CompositionFunction(const Function& inner, const Function& outer) :
-        _inner(inner), _outer(outer) {assert(inner.numDimensions() == outer.numParameters());}
-    
-    int CompositionFunction::numParameters() const {return inner().numParameters();}
-    
-    int CompositionFunction::numDimensions() const {return outer().numDimensions();}
+    CompositionFunction::CompositionFunction(
+        const Function& innerFunction,
+        const Function& outerFunction
+    ) : _innerFunction(innerFunction), _outerFunction(outerFunction) {
 
-    void CompositionFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = outer()(inner()(parameter_values));
+        assert(innerFunction.numDimensions() == outerFunction.numParameters());
+    }
+    
+    int CompositionFunction::numParameters() const {
+        return innerFunction().numParameters();
+    }
+    
+    int CompositionFunction::numDimensions() const {
+        return outerFunction().numDimensions();
     }
 
-    void CompositionFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = outer()(inner()(parameter_bounds));
+    void CompositionFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = outerFunction()(innerFunction()(parameterValues));
+    }
+
+    void CompositionFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = outerFunction()(innerFunction()(parameterBounds));
     }
 
     void CompositionFunction::getDerivative(int index, Function& result) const {
-        Function inner_derivative = inner().derivative(index);
-        result = outer().derivative(0)(inner()) * inner_derivative.component(0);
-        for (int i = 1; i < outer().numParameters(); ++i) {
-            result = result + outer().derivative(i)(inner()) * inner_derivative.component(i);
+        Function innerDerivative = innerFunction().derivative(index);
+        result = outerFunction().derivative(0)(innerFunction()) * innerDerivative.component(0);
+        for (int i = 1; i < outerFunction().numParameters(); ++i) {
+            Function outerDerivative = outerFunction().derivative(i);
+            result = result + outerDerivative(innerFunction()) * innerDerivative.component(i);
         }
     }
         
-    void CompositionFunction::getComposition(const Function& inner, Function& result) const {
-        result = new CompositionFunction(_inner(inner), outer());
+    void CompositionFunction::getComposition(
+        const Function& newInnerFunction,
+        Function& result
+    ) const {
+        result = outerFunction()(innerFunction()(newInnerFunction));
     }
     
     void CompositionFunction::debug(std::ostream& stream, int indent) const {
         stream << "CompositionFunction" << std::endl;
-        inner().debug(stream, indent + 1);
-        outer().debug(stream, indent + 1);
+        innerFunction().debug(stream, indent + 1);
+        outerFunction().debug(stream, indent + 1);
     }
 }

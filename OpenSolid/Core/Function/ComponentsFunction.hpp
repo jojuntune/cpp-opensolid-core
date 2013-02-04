@@ -30,22 +30,35 @@ namespace opensolid
     class ComponentsFunction : public UnaryOperation
     {
     private:
-        int _index;
-        int _num;
+        int _startIndex;
+        int _numComponents;
     public:
-        OPENSOLID_CORE_EXPORT ComponentsFunction(const Function& operand, int index, int num);
+        OPENSOLID_CORE_EXPORT ComponentsFunction(
+            const Function& operand,
+            int startIndex,
+            int numComponents
+        );
         
-        int index() const;
-        int num() const;
+        int startIndex() const;
+        int numComponents() const;
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int parameter_index, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getDerivative(int parameterIndex, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComponents(
+            int startIndex,
+            int numComponents,
+            Function& result
+        ) const;
+
+        OPENSOLID_CORE_EXPORT void getComposition(
+            const Function& innerFunction,
+            Function& result
+        ) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
@@ -55,7 +68,11 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline int ComponentsFunction::index() const {return _index;}
-    
-    inline int ComponentsFunction::num() const {return _num;}
+    inline int ComponentsFunction::startIndex() const {
+        return _startIndex;
+    }
+
+    inline int ComponentsFunction::numComponents() const {
+        return _numComponents;
+    }
 }

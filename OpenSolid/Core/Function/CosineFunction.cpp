@@ -26,16 +26,21 @@
 namespace opensolid
 {
     CosineFunction::CosineFunction(const Function& operand) :
-        UnaryOperation(operand) {assert(operand.numDimensions() == 1);}
-    
-    int CosineFunction::numDimensions() const {return 1;}
-    
-    void CosineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).array().cos();
+        UnaryOperation(operand) {
+
+        assert(operand.numDimensions() == 1);
     }
     
-    void CosineFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).array().cos();
+    int CosineFunction::numDimensions() const {
+        return 1;
+    }
+    
+    void CosineFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).array().cos();
+    }
+    
+    void CosineFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).array().cos();
     }
 
     void CosineFunction::getDerivative(int index, Function& result) const {

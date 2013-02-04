@@ -5,6 +5,7 @@ import sys
 errorFound = False
 
 def checkLine(filePath, lineNumber, line):
+    global errorFound
     if not line.lstrip().startswith('//'):
         # Strip out contents of string literals
         line = str.join('""', line.split('"')[::2])
@@ -23,22 +24,26 @@ def checkLine(filePath, lineNumber, line):
             if '{' in line and line.rstrip()[-1] != '{':
                 errorString = 'ERROR: Found opening brace not at end of line on line {0} of file {1}'
                 print(errorString.format(lineNumber, filePath))
+                errorFound = True
             # Check to ensure closing braces are always the first character on their line
             # (except in enum definitions)
             if '}' in line and line.lstrip()[0] != '}':
                 errorString = 'ERROR: Found closing brace not at beginning of line on line {0} of file {1}'
                 print(errorString.format(lineNumber, filePath))
+                errorFound = True
 
 def checkHeader(filePath):
+    global errorFound
     for i, line in enumerate(open(filePath, 'rb')):
         checkLine(filePath, i + 1, line)
 
 def checkSource(filePath):
+    global errorFound
     for i, line in enumerate(open(filePath, 'rb')):
         checkLine(filePath, i + 1, line)
 
 for path, directories, files in os.walk(sys.argv[1]):
-    ignoredDirectories = ['External', 'Build', 'IO', 'Python', 'UI', 'Function']
+    ignoredDirectories = ['External', 'Build', 'IO', 'Python', 'UI']
     for ignoredDirectory in ignoredDirectories:
         if ignoredDirectory in directories:
             directories.remove(ignoredDirectory)

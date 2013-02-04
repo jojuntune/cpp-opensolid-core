@@ -30,17 +30,20 @@ namespace opensolid
     class PowerFunction : public BinaryOperation
     {
     private:
-        bool _exponent_is_constant;
-        bool _exponent_is_integer;
-        double _constant_exponent;
-        int _integer_exponent;
+        bool _exponentIsConstant;
+        bool _exponentIsInteger;
+        double _constantExponent;
+        int _integerExponent;
     public:
-        OPENSOLID_CORE_EXPORT PowerFunction(const Function& base, const Function& exponent);
+        OPENSOLID_CORE_EXPORT PowerFunction(
+            const Function& baseFunction,
+            const Function& exponentFunction
+        );
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         

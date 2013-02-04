@@ -31,14 +31,14 @@ namespace opensolid
     {
     public:
         OPENSOLID_CORE_EXPORT QuotientFunction(
-            const Function& first_operand,
-            const Function& second_operand
+            const Function& firstOperand,
+            const Function& secondOperand
         );
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         

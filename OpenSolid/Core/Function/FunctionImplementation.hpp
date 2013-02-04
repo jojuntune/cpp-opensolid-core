@@ -35,14 +35,14 @@ namespace opensolid
     public:
         virtual ~FunctionImplementation();
         
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
         
         virtual int numParameters() const = 0;
         virtual int numDimensions() const = 0;
         
-        virtual void getValues(const MapXcd& parameter_values, MapXd& results) const = 0;
-        virtual void getBounds(const MapXcI& parameter_bounds, MapXI& results) const = 0;
+        virtual void getValues(const MapXcd& parameterValues, MapXd& results) const = 0;
+        virtual void getBounds(const MapXcI& parameterBounds, MapXI& results) const = 0;
         
         virtual void getDerivative(int index, Function& result) const = 0;
 

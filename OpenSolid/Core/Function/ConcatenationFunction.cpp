@@ -26,43 +26,52 @@
 namespace opensolid
 {
     ConcatenationFunction::ConcatenationFunction(
-        const Function& first_operand,
-        const Function& second_operand
-    ) : BinaryOperation(first_operand, second_operand) {}
+        const Function& firstOperand,
+        const Function& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+    }
     
     int ConcatenationFunction::numDimensions() const {
         return firstOperand().numDimensions() + secondOperand().numDimensions();
     }
     
-    void ConcatenationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameter_values);
-        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameter_values);
+    void ConcatenationFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterValues);
+        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterValues);
     }
     
-    void ConcatenationFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameter_bounds);
-        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameter_bounds);
+    void ConcatenationFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterBounds);
+        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterBounds);
     }
     
     void ConcatenationFunction::getDerivative(int index, Function& result) const {
         result = firstOperand().derivative(index).concatenate(secondOperand().derivative(index));
     }
     
-    void ConcatenationFunction::getComponents(int index, int num, Function& result) const {
-        if (index < firstOperand().numDimensions() && index + num <= firstOperand().numDimensions()) {
-            result = firstOperand().components(index, num);
-        } else if (index >= firstOperand().numDimensions()) {
-            result = secondOperand().components(index - firstOperand().numDimensions(), num);
+    void ConcatenationFunction::getComponents(
+        int startIndex,
+        int numComponents,
+        Function& result
+    ) const {
+        int firstDimensions = firstOperand().numDimensions();
+        if (startIndex + numComponents <= firstDimensions) {
+            result = firstOperand().components(startIndex, numComponents);
+        } else if (startIndex >= firstDimensions) {
+            result = secondOperand().components(startIndex - firstDimensions, numComponents);
         } else {
             result = new ConcatenationFunction(
-                firstOperand().components(index, firstOperand().numDimensions() - index),
-                secondOperand().components(0, num + index - firstOperand().numDimensions())
+                firstOperand().components(startIndex, firstDimensions - startIndex),
+                secondOperand().components(0, startIndex + numComponents - firstDimensions)
             );
         }
     }
     
-    void ConcatenationFunction::getComposition(const Function& inner, Function& result) const {
-        result = firstOperand()(inner).concatenate(secondOperand()(inner));
+    void ConcatenationFunction::getComposition(
+        const Function& innerFunction,
+        Function& result
+    ) const {
+        result = firstOperand()(innerFunction).concatenate(secondOperand()(innerFunction));
     }
     
     void ConcatenationFunction::debug(std::ostream& stream, int indent) const {

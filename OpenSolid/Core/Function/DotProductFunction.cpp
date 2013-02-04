@@ -26,24 +26,25 @@
 namespace opensolid
 {
     DotProductFunction::DotProductFunction(
-        const Function& first_operand,
-        const Function& second_operand
-    ) : BinaryOperation(first_operand, second_operand) {
-        assert(first_operand.numDimensions() == second_operand.numDimensions());
+        const Function& firstOperand,
+        const Function& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand.numDimensions() == secondOperand.numDimensions());
     }
     
-    int DotProductFunction::numDimensions() const {return 1;}
-    
-    void DotProductFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = firstOperand()(parameter_values).cwiseProduct(
-            secondOperand()(parameter_values)
-        ).colwise().sum();
+    int DotProductFunction::numDimensions() const {
+        return 1;
     }
     
-    void DotProductFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = firstOperand()(parameter_bounds).cwiseProduct(
-            secondOperand()(parameter_bounds)
-        ).colwise().sum();
+    void DotProductFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = firstOperand()(parameterValues).cwiseProduct(secondOperand()(parameterValues)).
+            colwise().sum();
+    }
+    
+    void DotProductFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = firstOperand()(parameterBounds).cwiseProduct(secondOperand()(parameterBounds)).
+            colwise().sum();
     }
 
     void DotProductFunction::getDerivative(int index, Function& result) const {

@@ -25,16 +25,19 @@
 
 namespace opensolid
 {
-    NormFunction::NormFunction(const Function& operand) : UnaryOperation(operand) {}
-    
-    int NormFunction::numDimensions() const {return 1;}
-    
-    void NormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).colwise().norm();
+    NormFunction::NormFunction(const Function& operand) : UnaryOperation(operand) {
     }
     
-    void NormFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).colwise().norm();
+    int NormFunction::numDimensions() const {
+        return 1;
+    }
+    
+    void NormFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).colwise().norm();
+    }
+    
+    void NormFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).colwise().norm();
     }
 
     void NormFunction::getDerivative(int index, Function& result) const {

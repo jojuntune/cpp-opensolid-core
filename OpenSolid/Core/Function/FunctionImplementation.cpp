@@ -30,29 +30,39 @@
 
 namespace opensolid
 {
-    FunctionImplementation::~FunctionImplementation() {}
+    FunctionImplementation::~FunctionImplementation() {
+    }
 
-    void FunctionImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        getValues(parameter_values, results);
+    void FunctionImplementation::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        getValues(parameterValues, results);
     }
     
-    void FunctionImplementation::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        getBounds(parameter_bounds, results);
+    void FunctionImplementation::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        getBounds(parameterBounds, results);
     }
     
-    void FunctionImplementation::getComponents(int index, int num, Function& result) const {
-        result = new ComponentsFunction(this, index, num);
+    void FunctionImplementation::getComponents(
+        int startIndex,
+        int numComponents,
+        Function& result
+    ) const {
+        result = new ComponentsFunction(this, startIndex, numComponents);
     }
     
-    void FunctionImplementation::getComposition(const Function& inner, Function& result) const {
-        result = new CompositionFunction(inner, this);
+    void FunctionImplementation::getComposition(
+        const Function& innerFunction,
+        Function& result
+    ) const {
+        result = new CompositionFunction(innerFunction, this);
     }
         
     void FunctionImplementation::getTransformed(
-        const MatrixXd& matrix,
-        const VectorXd& vector,
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector,
         Function& result
-    ) const {result = new TransformedFunction(this, matrix, vector);}
+    ) const {
+        result = new TransformedFunction(this, transformationMatrix, translationVector);
+    }
     
     void FunctionImplementation::getNorm(Function& result) const {
         result = new NormFunction(this);

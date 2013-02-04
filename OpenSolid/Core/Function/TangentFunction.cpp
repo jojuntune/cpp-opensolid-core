@@ -29,16 +29,18 @@ namespace opensolid
         assert(operand.numDimensions() == 1);
     }
     
-    int TangentFunction::numDimensions() const {return 1;}
-    
-    void TangentFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd operand_values = operand()(parameter_values);
-        results = operand_values.array().sin() / operand_values.array().cos();
+    int TangentFunction::numDimensions() const {
+        return 1;
     }
     
-    void TangentFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        MatrixXI operand_bounds = operand()(parameter_bounds);
-        results = operand_bounds.array().sin() / operand_bounds.array().cos();
+    void TangentFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        MatrixXd operandValues = operand()(parameterValues);
+        results = operandValues.array().sin() / operandValues.array().cos();
+    }
+    
+    void TangentFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        MatrixXI operandBounds = operand()(parameterBounds);
+        results = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
     void TangentFunction::getDerivative(int index, Function& result) const {

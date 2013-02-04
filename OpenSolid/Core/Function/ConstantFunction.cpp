@@ -25,17 +25,22 @@
 
 namespace opensolid
 {
-    ConstantFunction::ConstantFunction(const VectorXd& vector) : _vector(vector) {}
+    ConstantFunction::ConstantFunction(const VectorXd& vector) : _vector(vector) {
+    }
     
-    int ConstantFunction::numParameters() const {return 0;}
+    int ConstantFunction::numParameters() const {
+        return 0;
+    }
     
-    int ConstantFunction::numDimensions() const {return vector().size();}
+    int ConstantFunction::numDimensions() const {
+        return vector().size();
+    }
     
-    void ConstantFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
+    void ConstantFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
         results.colwise() = vector();
     }
     
-    void ConstantFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
+    void ConstantFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
         results.colwise() = vector().cast<Interval>();
     }
     
@@ -43,21 +48,29 @@ namespace opensolid
         result = VectorXd::Zero(vector().size());
     }
     
-    void ConstantFunction::getComponents(int index, int num, Function& result) const {
-        result = vector().middleRows(index, num);
+    void ConstantFunction::getComponents(
+        int startIndex,
+        int numComponents,
+        Function& result
+    ) const {
+        result = vector().middleRows(startIndex, numComponents);
     }
     
-    void ConstantFunction::getComposition(const Function& inner, Function& result) const {
+    void ConstantFunction::getComposition(const Function& innerFunction, Function& result) const {
         result = vector();
     }
     
     void ConstantFunction::getTransformed(
-        const MatrixXd& matrix,
-        const VectorXd& vector,
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector,
         Function& result
-    ) const {result = matrix * this->vector() + vector;}
+    ) const {
+        result = transformationMatrix * vector() + translationVector;
+    }
     
-    void ConstantFunction::getNorm(Function& result) const {result = vector().norm();}
+    void ConstantFunction::getNorm(Function& result) const {
+        result = vector().norm();
+    }
     
     void ConstantFunction::getNormalized(Function& result) const {
         double norm = vector().norm();
@@ -65,7 +78,9 @@ namespace opensolid
         result = vector() / norm;
     }
     
-    void ConstantFunction::getSquaredNorm(Function& result) const {result = vector().squaredNorm();}
+    void ConstantFunction::getSquaredNorm(Function& result) const {
+        result = vector().squaredNorm();
+    }
     
     void ConstantFunction::debug(std::ostream& stream, int indent) const {
         stream << "ConstantFunction: " << vector().transpose() << std::endl;

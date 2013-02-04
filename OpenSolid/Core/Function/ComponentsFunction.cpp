@@ -25,31 +25,47 @@
 
 namespace opensolid
 {
-    ComponentsFunction::ComponentsFunction(const Function& operand, int index, int num) :
-        UnaryOperation(operand), _index(index), _num(num) {
-        assert(index >= 0);
-        assert(num > 0);
-        assert(index + num <= operand.numDimensions());
-    }
-    
-    int ComponentsFunction::numDimensions() const {return num();}
-    
-    void ComponentsFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd operand_values = operand()(parameter_values);
-        results = operand_values.middleRows(index(), num());
-    }
-    
-    void ComponentsFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        MatrixXI operand_bounds = operand()(parameter_bounds);
-        results = operand_bounds.middleRows(index(), num());
+    ComponentsFunction::ComponentsFunction(
+        const Function& operand,
+        int startIndex,
+        int numComponents
+    ) : UnaryOperation(operand), _startIndex(startIndex), _numComponents(numComponents) {
+
+        assert(startIndex >= 0);
+        assert(numComponents > 0);
+        assert(startIndex + numComponents <= operand.numDimensions());
     }
 
-    void ComponentsFunction::getDerivative(int parameter_index, Function& result) const {
-        result = operand().derivative(parameter_index).components(index(), num());
+    int ComponentsFunction::numDimensions() const {
+        return numComponents();
     }
     
-    void ComponentsFunction::getComposition(const Function& inner, Function& result) const {
-        result = operand()(inner).components(index(), num());
+    void ComponentsFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        MatrixXd operandValues = operand()(parameterValues);
+        results = operandValues.middleRows(startIndex(), numComponents());
+    }
+    
+    void ComponentsFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        MatrixXI operandBounds = operand()(parameterBounds);
+        results = operandBounds.middleRows(startIndex(), numComponents());
+    }
+
+    void ComponentsFunction::getDerivative(int parameterIndex, Function& result) const {
+        result = operand().derivative(parameterIndex).components(startIndex(), numComponents());
+    }
+    
+    void ComponentsFunction::getComponents(
+        int startIndex,
+        int numComponents,
+        Function& result
+    ) const {
+        assert(startIndex >= 0 && startIndex < this->numComponents());
+        assert(numComponents <= this->numComponents());
+        result = operand().components(this->startIndex() + startIndex, numComponents);
+    }
+    
+    void ComponentsFunction::getComposition(const Function& innerFunction, Function& result) const {
+        result = operand()(innerFunction).components(startIndex(), numComponents());
     }
     
     void ComponentsFunction::debug(std::ostream& stream, int indent) const {

@@ -46,12 +46,12 @@ namespace opensolid
         }
     };
     
-    void ArcsineFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).unaryExpr(Arcsine());
+    void ArcsineFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).unaryExpr(Arcsine());
     }
     
-    void ArcsineFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).unaryExpr(Arcsine());
+    void ArcsineFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).unaryExpr(Arcsine());
     }
 
     void ArcsineFunction::getDerivative(int index, Function& result) const {

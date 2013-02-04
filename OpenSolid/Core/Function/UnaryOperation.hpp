@@ -47,5 +47,7 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const Function& UnaryOperation::operand() const {return _operand;}
+    inline const Function& UnaryOperation::operand() const {
+        return _operand;
+    }
 }

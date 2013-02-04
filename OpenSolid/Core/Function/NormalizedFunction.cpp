@@ -25,35 +25,44 @@
 
 namespace opensolid
 {
-    NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryOperation(operand) {}
+    NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryOperation(operand) {
+    }
     
-    int NormalizedFunction::numDimensions() const {return operand().numDimensions();}
-
-    void NormalizedFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        MatrixXd operand_values = operand()(parameter_values);
-        VectorXd squared_norms = operand_values.colwise().squaredNorm();
-        results = operand_values * squared_norms.cwiseSqrt().cwiseInverse().asDiagonal();
+    int NormalizedFunction::numDimensions() const {
+        return operand().numDimensions();
     }
 
-    void NormalizedFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        MatrixXI operand_bounds = operand()(parameter_bounds);
-        VectorXI squared_norms = operand_bounds.colwise().squaredNorm();
-        results = operand_bounds * squared_norms.cwiseSqrt().cwiseInverse().asDiagonal();
+    void NormalizedFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        MatrixXd operandValues = operand()(parameterValues);
+        VectorXd squaredNorms = operandValues.colwise().squaredNorm();
+        results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
+    }
+
+    void NormalizedFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        MatrixXI operandBounds = operand()(parameterBounds);
+        VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
+        results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
     void NormalizedFunction::getDerivative(int index, Function& result) const {
-        Function operand_derivative = operand().derivative(index);
-        Function operand_normalized = operand().normalized();
+        Function operandDerivative = operand().derivative(index);
+        Function operandNormalized = operand().normalized();
         result =
-            (operand_derivative - operand_derivative.dot(operand_normalized) * operand_normalized) /
+            (operandDerivative - operandDerivative.dot(operandNormalized) * operandNormalized) /
             operand().norm();
     }
     
-    void NormalizedFunction::getNorm(Function& result) const {result = 1.0;}
+    void NormalizedFunction::getNorm(Function& result) const {
+        result = 1.0;
+    }
     
-    void NormalizedFunction::getNormalized(Function& result) const {result = this;}
+    void NormalizedFunction::getNormalized(Function& result) const {
+        result = this;
+    }
     
-    void NormalizedFunction::getSquaredNorm(Function& result) const {result = 1.0;}
+    void NormalizedFunction::getSquaredNorm(Function& result) const {
+        result = 1.0;
+    }
     
     void NormalizedFunction::debug(std::ostream& stream, int indent) const {
         stream << "NormalizedFunction" << std::endl;

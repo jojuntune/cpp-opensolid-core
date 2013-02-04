@@ -49,14 +49,14 @@ namespace opensolid
         int numParameters() const;
         int numDimensions() const;
         
-        void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
         void getDerivative(int index, Function& result) const;
         
         void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
+            const MatrixXd& transformationMatrix,
+            const VectorXd& translationVector,
             Function& result
         ) const;
         
@@ -100,19 +100,19 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void EllipticalFunction<iNumDimensions, iNumAxes>::getValues(
-        const MapXcd& parameter_values,
+        const MapXcd& parameterValues,
         MapXd& results
     ) const {
-        MatrixXd local = MatrixXd::Ones(iNumAxes, parameter_values.cols());
+        MatrixXd local = MatrixXd::Ones(iNumAxes, parameterValues.cols());
         for (int i = 0; i < numParameters(); ++i) {
             if (convention()(i)) {
-                local.row(i).array() *= cos(parameter_values.row(i).array());
+                local.row(i).array() *= cos(parameterValues.row(i).array());
                 local.bottomRows(numParameters() - i).array() *=
-                    sin(parameter_values.row(i).array()).replicate(numParameters() - i, 1);
+                    sin(parameterValues.row(i).array()).replicate(numParameters() - i, 1);
             } else {
-                local.row(i).array() *= sin(parameter_values.row(i).array());
+                local.row(i).array() *= sin(parameterValues.row(i).array());
                 local.bottomRows(numParameters() - i).array() *=
-                    cos(parameter_values.row(i).array()).replicate(numParameters() - i, 1);
+                    cos(parameterValues.row(i).array()).replicate(numParameters() - i, 1);
             }
         }
         results = datum() * local;
@@ -120,19 +120,19 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void EllipticalFunction<iNumDimensions, iNumAxes>::getBounds(
-        const MapXcI& parameter_bounds,
+        const MapXcI& parameterBounds,
         MapXI& results
     ) const {
-        MatrixXI local = MatrixXI::Ones(iNumAxes, parameter_bounds.cols());
+        MatrixXI local = MatrixXI::Ones(iNumAxes, parameterBounds.cols());
         for (int i = 0; i < numParameters(); ++i) {
             if (convention()(i)) {
-                local.row(i).array() *= cos(parameter_bounds.row(i).array());
+                local.row(i).array() *= cos(parameterBounds.row(i).array());
                 local.bottomRows(numParameters()- i).array() *=
-                    sin(parameter_bounds.row(i).array()).replicate(numParameters() - i, 1);
+                    sin(parameterBounds.row(i).array()).replicate(numParameters() - i, 1);
             } else {
-                local.row(i).array() *= sin(parameter_bounds.row(i).array());
+                local.row(i).array() *= sin(parameterBounds.row(i).array());
                 local.bottomRows(numParameters() - i).array() *=
-                    cos(parameter_bounds.row(i).array()).replicate(numParameters() - i, 1);
+                    cos(parameterBounds.row(i).array()).replicate(numParameters() - i, 1);
             }
         }
         results = datum() * local;
@@ -166,22 +166,26 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void EllipticalFunction<iNumDimensions, iNumAxes>::getTransformed(
-        const MatrixXd& matrix,
-        const VectorXd& vector,
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector,
         Function& result
     ) const {
-        assert(matrix.rows() == vector.size());
-        assert(matrix.cols() == iNumDimensions);
+        assert(transformationMatrix.rows() == translationVector.size());
+        assert(transformationMatrix.cols() == iNumDimensions);
 
-        int numTransformedDimensions = matrix.rows();
+        int numTransformedDimensions = transformationMatrix.rows();
 
         if (numTransformedDimensions == 2) {
             result = new EllipticalFunction<2, iNumAxes>(
-                matrix.topLeftCorner<2, iNumDimensions>() * datum() + vector, convention()
+                transformationMatrix.topLeftCorner<2, iNumDimensions>() * datum() +
+                    translationVector,
+                convention()
             );
         } else if (numTransformedDimensions == 3) {
             result = new EllipticalFunction<3, iNumAxes>(
-                matrix.topLeftCorner<3, iNumDimensions>() * datum() + vector, convention()
+                transformationMatrix.topLeftCorner<3, iNumDimensions>() * datum() +
+                    translationVector,
+                convention()
             );
         } else {
             assert(false);

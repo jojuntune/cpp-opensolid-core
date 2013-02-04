@@ -25,44 +25,56 @@
 
 namespace opensolid
 {
-    ParametersFunction::ParametersFunction(int total, int index, int num) :
-        _total(total), _index(index), _num(num) {
-        assert(total > 0 && index >= 0 && num > 0 && index + num <= total);
+    ParametersFunction::ParametersFunction(
+        int numParameters,
+        int startIndex,
+        int numDimensions
+    ) : _numParameters(numParameters),
+        _startIndex(startIndex),
+        _numDimensions(numDimensions) {
+
+        assert(numParameters > 0);
+        assert(startIndex >= 0);
+        assert(numDimensions > 0 && startIndex + numDimensions <= numParameters);
     }
     
-    int ParametersFunction::numParameters() const {return total();}
-    
-    int ParametersFunction::numDimensions() const {return num();}
-    
-    void ParametersFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = parameter_values.middleRows(index(), num());
+    void ParametersFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = parameterValues.middleRows(startIndex(), numDimensions());
     }
     
-    void ParametersFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = parameter_bounds.middleRows(index(), num());
+    void ParametersFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = parameterBounds.middleRows(startIndex(), numDimensions());
     }
 
     void ParametersFunction::getDerivative(int index, Function& result) const {
-        if (_index <= index && index < _index + num()) {
-            result = VectorXd::Unit(num(), index - _index);
+        if (startIndex() <= index && index < startIndex() + numDimensions()) {
+            result = VectorXd::Unit(numDimensions(), index - startIndex());
         } else {
-            result = VectorXd::Zero(num());
+            result = VectorXd::Zero(numDimensions());
         }
     }
     
-    void ParametersFunction::getComponents(int index, int num, Function& result) const {
-        result = new ParametersFunction(total(), _index + index, num);
+    void ParametersFunction::getComponents(
+        int startIndex,
+        int numComponents,
+        Function& result
+    ) const {
+        result = new ParametersFunction(
+            numParameters(), 
+            this->startIndex() + startIndex,
+            numComponents
+        );
     }
     
-    void ParametersFunction::getComposition(const Function& inner, Function& result) const {
-        result = inner.components(index(), num());
+    void ParametersFunction::getComposition(const Function& innerFunction, Function& result) const {
+        result = innerFunction.components(startIndex(), numDimensions());
     }
     
     void ParametersFunction::debug(std::ostream& stream, int indent) const {
         stream << "ParametersFunction:";
-        stream << " total = " << _total;
-        stream << ", index = " << _index;
-        stream << ", num = " << _num;
+        stream << " numParameters = " << numParameters();
+        stream << ", startIndex = " << startIndex();
+        stream << ", numDimensions = " << numDimensions();
         stream << std::endl;
     }
 }

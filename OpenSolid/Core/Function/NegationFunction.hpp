@@ -34,14 +34,25 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
+        OPENSOLID_CORE_EXPORT void getComponents(
+            int startIndex,
+            int numComponents,
+            Function& result
+        ) const;
+        
+        OPENSOLID_CORE_EXPORT void getComposition(
+            const Function& innerFunction,
+            Function& result
+        ) const;
+
         OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
+            const MatrixXd& transformationMatrix,
+            const VectorXd& translationVector,
             Function& result
         ) const;
         

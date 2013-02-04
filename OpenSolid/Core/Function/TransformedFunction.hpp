@@ -33,30 +33,33 @@ namespace opensolid
     class TransformedFunction : public UnaryOperation
     {
     private:
-        MatrixXd _matrix;
-        VectorXd _vector;
+        MatrixXd _transformationMatrix;
+        VectorXd _translationVector;
     public:
         OPENSOLID_CORE_EXPORT TransformedFunction(
             const Function& function,
-            const MatrixXd& matrix,
-            const VectorXd& vector
+            const MatrixXd& transformationMatrix,
+            const VectorXd& translationVector
         );
         
-        const MatrixXd& matrix() const;
-        const VectorXd& vector() const;
+        const MatrixXd& transformationMatrix() const;
+        const VectorXd& translationVector() const;
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
         
         OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
         
-        OPENSOLID_CORE_EXPORT void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT void getComposition(
+            const Function& innerFunction,
+            Function& result
+        ) const;
 
         OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
+            const MatrixXd& transformationMatrix,
+            const VectorXd& translationVector,
             Function& result
         ) const;
         
@@ -68,7 +71,11 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const MatrixXd& TransformedFunction::matrix() const {return _matrix;}
+    inline const MatrixXd& TransformedFunction::transformationMatrix() const {
+        return _transformationMatrix;
+    }
 
-    inline const VectorXd& TransformedFunction::vector() const {return _vector;}
+    inline const VectorXd& TransformedFunction::translationVector() const {
+        return _translationVector;
+    }
 }

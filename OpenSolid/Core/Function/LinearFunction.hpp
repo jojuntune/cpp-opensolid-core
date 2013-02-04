@@ -44,14 +44,14 @@ namespace opensolid
         int numParameters() const;
         int numDimensions() const;
         
-        void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        void getValues(const MapXcd& parameterValues, MapXd& results) const;
+        void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
 
         void getDerivative(int index, Function& result) const;
         
         void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
+            const MatrixXd& transformationMatrix,
+            const VectorXd& translationVector,
             Function& result
         ) const;
         
@@ -87,18 +87,18 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void LinearFunction<iNumDimensions, iNumAxes>::getValues(
-        const MapXcd& parameter_values,
+        const MapXcd& parameterValues,
         MapXd& results
     ) const {
-        results = datum() * parameter_values;
+        results = datum() * parameterValues;
     }
     
     template <int iNumDimensions, int iNumAxes>
     void LinearFunction<iNumDimensions, iNumAxes>::getBounds(
-        const MapXcI& parameter_bounds,
+        const MapXcI& parameterBounds,
         MapXI& results
     ) const {
-        results = datum() * parameter_bounds;
+        results = datum() * parameterBounds;
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -111,26 +111,29 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void LinearFunction<iNumDimensions, iNumAxes>::getTransformed(
-        const MatrixXd& matrix,
-        const VectorXd& vector,
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector,
         Function& result
     ) const {
-        assert(matrix.rows() == vector.size());
-        assert(matrix.cols() == iNumDimensions);
+        assert(transformationMatrix.rows() == translationVector.size());
+        assert(transformationMatrix.cols() == iNumDimensions);
 
-        int numTransformedDimensions = matrix.rows();
+        int numTransformedDimensions = transformationMatrix.rows();
 
         if (numTransformedDimensions == 1) {
             result = new LinearFunction<1, iNumAxes>(
-                matrix.topLeftCorner<1, iNumDimensions>() * datum() + vector
+                transformationMatrix.topLeftCorner<1, iNumDimensions>() * datum() +
+                    translationVector
             );
         } else if (numTransformedDimensions == 2) {
             result = new LinearFunction<2, iNumAxes>(
-                matrix.topLeftCorner<2, iNumDimensions>() * datum() + vector
+                transformationMatrix.topLeftCorner<2, iNumDimensions>() * datum() +
+                    translationVector
             );
         } else if (numTransformedDimensions == 3) {
             result = new LinearFunction<3, iNumAxes>(
-                matrix.topLeftCorner<3, iNumDimensions>() * datum() + vector
+                transformationMatrix.topLeftCorner<3, iNumDimensions>() * datum() +
+                    translationVector
             );
         } else {
             assert(false);

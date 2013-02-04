@@ -26,28 +26,31 @@
 namespace opensolid
 {
     QuotientFunction::QuotientFunction(
-        const Function& first_operand,
-        const Function& second_operand
-    ) : BinaryOperation(first_operand, second_operand) {
-        assert(second_operand.numDimensions() == 1);
+        const Function& firstOperand,
+        const Function& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(secondOperand.numDimensions() == 1);
     }
     
-    int QuotientFunction::numDimensions() const {return firstOperand().numDimensions();}
-    
-    void QuotientFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = firstOperand()(parameter_values).array() /
-            secondOperand()(parameter_values).replicate(numDimensions(), 1).array();
+    int QuotientFunction::numDimensions() const {
+        return firstOperand().numDimensions();
     }
     
-    void QuotientFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = firstOperand()(parameter_bounds).array() /
-            secondOperand()(parameter_bounds).replicate(numDimensions(), 1).array();
+    void QuotientFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = firstOperand()(parameterValues).array() /
+            secondOperand()(parameterValues).replicate(numDimensions(), 1).array();
+    }
+    
+    void QuotientFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = firstOperand()(parameterBounds).array() /
+            secondOperand()(parameterBounds).replicate(numDimensions(), 1).array();
     }
 
     void QuotientFunction::getDerivative(int index, Function& result) const {
-        Function first_derivative = firstOperand().derivative(index);
-        Function second_derivative = secondOperand().derivative(index);
-        result =(first_derivative * secondOperand() - firstOperand() * second_derivative) /
+        Function firstDerivative = firstOperand().derivative(index);
+        Function secondDerivative = secondOperand().derivative(index);
+        result =(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
             secondOperand().squaredNorm();
     }
     

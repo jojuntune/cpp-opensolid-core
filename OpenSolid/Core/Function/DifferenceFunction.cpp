@@ -26,25 +26,27 @@
 namespace opensolid
 {
     DifferenceFunction::DifferenceFunction(
-        const Function& first_operand,
-        const Function& second_operand
-    ) : BinaryOperation(first_operand, second_operand) {
-        assert(first_operand.numDimensions() == second_operand.numDimensions());
+        const Function& firstOperand,
+        const Function& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand.numDimensions() == secondOperand.numDimensions());
     }
     
-    int DifferenceFunction::numDimensions() const {return firstOperand().numDimensions();}
-    
-    void DifferenceFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = firstOperand()(parameter_values) - secondOperand()(parameter_values);
+    int DifferenceFunction::numDimensions() const {
+        return firstOperand().numDimensions();
     }
     
-    void DifferenceFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = firstOperand()(parameter_bounds) - secondOperand()(parameter_bounds);
+    void DifferenceFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = firstOperand()(parameterValues) - secondOperand()(parameterValues);
+    }
+    
+    void DifferenceFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = firstOperand()(parameterBounds) - secondOperand()(parameterBounds);
     }
 
     void DifferenceFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index) -
-            secondOperand().derivative(index);
+        result = firstOperand().derivative(index) - secondOperand().derivative(index);
     }
     
     void DifferenceFunction::debug(std::ostream& stream, int indent) const {

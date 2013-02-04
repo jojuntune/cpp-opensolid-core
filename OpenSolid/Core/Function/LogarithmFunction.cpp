@@ -29,14 +29,16 @@ namespace opensolid
         assert(operand.numDimensions() == 1);
     }
         
-    int LogarithmFunction::numDimensions() const {return 1;}
+    int LogarithmFunction::numDimensions() const {
+        return 1;
+    }
         
-    void LogarithmFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).array().log();
+    void LogarithmFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).array().log();
     }
 
-    void LogarithmFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).array().log();
+    void LogarithmFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).array().log();
     }
 
     void LogarithmFunction::getDerivative(int index, Function& result) const {

@@ -25,19 +25,22 @@
 
 namespace opensolid
 {
-    SumFunction::SumFunction(const Function& first_operand, const Function& second_operand) :
-        BinaryOperation(first_operand, second_operand) {
-        assert(first_operand.numDimensions() == second_operand.numDimensions());
+    SumFunction::SumFunction(const Function& firstOperand, const Function& secondOperand) :
+        BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand.numDimensions() == secondOperand.numDimensions());
     }
     
-    int SumFunction::numDimensions() const {return firstOperand().numDimensions();}
-    
-    void SumFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = firstOperand()(parameter_values) + secondOperand()(parameter_values);
+    int SumFunction::numDimensions() const {
+        return firstOperand().numDimensions();
     }
     
-    void SumFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = firstOperand()(parameter_bounds) + secondOperand()(parameter_bounds);
+    void SumFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = firstOperand()(parameterValues) + secondOperand()(parameterValues);
+    }
+    
+    void SumFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = firstOperand()(parameterBounds) + secondOperand()(parameterBounds);
     }
 
     void SumFunction::getDerivative(int index, Function& result) const {

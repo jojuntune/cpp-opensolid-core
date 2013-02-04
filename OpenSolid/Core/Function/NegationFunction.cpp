@@ -25,29 +25,51 @@
 
 namespace opensolid
 {
-    NegationFunction::NegationFunction(const Function& operand) : UnaryOperation(operand) {}
-    
-    int NegationFunction::numDimensions() const {return operand().numDimensions();}
-    
-    void NegationFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = -operand()(parameter_values);
+    NegationFunction::NegationFunction(const Function& operand) : UnaryOperation(operand) {
     }
     
-    void NegationFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = -operand()(parameter_bounds);
+    int NegationFunction::numDimensions() const {
+        return operand().numDimensions();
+    }
+    
+    void NegationFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = -operand()(parameterValues);
+    }
+    
+    void NegationFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = -operand()(parameterBounds);
     }
 
     void NegationFunction::getDerivative(int index, Function& result) const {
         result = -operand().derivative(index);
     }
+
+    void NegationFunction::getComponents(
+        int startIndex,
+        int numComponents,
+        Function& result
+    ) const {
+        result = -operand().components(startIndex, numComponents);
+    }
+    
+    void NegationFunction::getComposition(
+        const Function& innerFunction,
+        Function& result
+    ) const {
+        result = -operand()(innerFunction);
+    }
     
     void NegationFunction::getTransformed(
-        const MatrixXd& matrix,
-        const VectorXd& vector,
+        const MatrixXd& transformationMatrix,
+        const VectorXd& translationVector,
         Function& result
-    ) const {result = operand().transformed(-matrix, vector);}
+    ) const {
+        result = operand().transformed(-transformationMatrix, translationVector);
+    }
     
-    void NegationFunction::getNorm(Function& result) const {result = operand().norm();}
+    void NegationFunction::getNorm(Function& result) const {
+        result = operand().norm();
+    }
     
     void NegationFunction::getSquaredNorm(Function& result) const {
         result = operand().squaredNorm();

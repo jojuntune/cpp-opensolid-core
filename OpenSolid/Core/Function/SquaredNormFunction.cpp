@@ -25,16 +25,19 @@
 
 namespace opensolid
 {
-    SquaredNormFunction::SquaredNormFunction(const Function& operand) : UnaryOperation(operand) {}
-    
-    int SquaredNormFunction::numDimensions() const {return 1;}
-    
-    void SquaredNormFunction::getValues(const MapXcd& parameter_values, MapXd& results) const {
-        results = operand()(parameter_values).colwise().squaredNorm();
+    SquaredNormFunction::SquaredNormFunction(const Function& operand) : UnaryOperation(operand) {
     }
     
-    void SquaredNormFunction::getBounds(const MapXcI& parameter_bounds, MapXI& results) const {
-        results = operand()(parameter_bounds).colwise().squaredNorm();
+    int SquaredNormFunction::numDimensions() const {
+        return 1;
+    }
+    
+    void SquaredNormFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+        results = operand()(parameterValues).colwise().squaredNorm();
+    }
+    
+    void SquaredNormFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+        results = operand()(parameterBounds).colwise().squaredNorm();
     }
 
     void SquaredNormFunction::getDerivative(int index, Function& result) const {

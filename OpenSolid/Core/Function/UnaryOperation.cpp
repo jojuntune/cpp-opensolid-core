@@ -22,7 +22,10 @@
 
 namespace opensolid
 {
-    UnaryOperation::UnaryOperation(const Function& operand) : _operand(operand) {}
+    UnaryOperation::UnaryOperation(const Function& operand) : _operand(operand) {
+    }
     
-    int UnaryOperation::numParameters() const {return operand().numParameters();}
+    int UnaryOperation::numParameters() const {
+        return operand().numParameters();
+    }
 }

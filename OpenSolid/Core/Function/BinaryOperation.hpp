@@ -33,10 +33,10 @@ namespace opensolid
     class BinaryOperation : public FunctionImplementation
     {
     private:
-        Function _first_operand;
-        Function _second_operand;
+        Function _firstOperand;
+        Function _secondOperand;
     public:
-        BinaryOperation(const Function& first_operand, const Function& second_operand);
+        BinaryOperation(const Function& firstOperand, const Function& secondOperand);
         
         const Function& firstOperand() const;
         const Function& secondOperand() const;
@@ -49,7 +49,11 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const Function& BinaryOperation::firstOperand() const {return _first_operand;}
+    inline const Function& BinaryOperation::firstOperand() const {
+        return _firstOperand;
+    }
     
-    inline const Function& BinaryOperation::secondOperand() const {return _second_operand;}
+    inline const Function& BinaryOperation::secondOperand() const {
+        return _secondOperand;
+    }
 }
