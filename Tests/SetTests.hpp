@@ -240,7 +240,7 @@ public:
         double iterator_time = iterator_timer.elapsed();
         TS_ASSERT_EQUALS(iterator_set.size(), intervals.size());
         testSet(iterator_set.root());
-        std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
+        std::cout << "Iterator: " << iterator_time << " s" << std::endl;
         
         boost::timer insertion_timer;
         Set<Interval> insertion_set;
@@ -250,7 +250,7 @@ public:
         double insertion_time = insertion_timer.elapsed();
         TS_ASSERT_EQUALS(insertion_set.size(), intervals.size());
         testSet(insertion_set.root());
-        std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
+        std::cout << "Insertion: " << insertion_time << " s" << std::endl;
         
         std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;
     }
@@ -266,7 +266,7 @@ public:
         double iterator_time = iterator_timer.elapsed();
         TS_ASSERT_EQUALS(iterator_set.size(), vectors.size());
         testSet(iterator_set.root());
-        std::cout << "Iterator: " << ", " << iterator_time << " s" << std::endl;
+        std::cout << "Iterator: " << iterator_time << " s" << std::endl;
         
         boost::timer insertion_timer;
         Set<Vector3I> insertion_set;
@@ -276,7 +276,7 @@ public:
         double insertion_time = insertion_timer.elapsed();
         TS_ASSERT_EQUALS(insertion_set.size(), vectors.size());
         testSet(insertion_set.root());
-        std::cout << "Insertion: " << ", " << insertion_time << " s" << std::endl;
+        std::cout << "Insertion: " << insertion_time << " s" << std::endl;
         
         std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;
     }
@@ -317,5 +317,57 @@ public:
         Interval bounds = indices.bounds();
         TS_ASSERT_EQUALS(bounds.lowerBound(), 1.0);
         TS_ASSERT_EQUALS(bounds.upperBound(), 4.0);
+    }
+
+    void testIndexing() {
+        Set<double> set;
+        set.insert(5);
+        set.insert(1);
+        set.insert(8);
+        set.insert(9);
+        set.insert(2);
+
+        TS_ASSERT_EQUALS(set.indexOf(1), 0);
+        TS_ASSERT_EQUALS(set.indexOf(2), 1);
+        TS_ASSERT_EQUALS(set.indexOf(5), 2);
+        TS_ASSERT_EQUALS(set.indexOf(8), 3);
+        TS_ASSERT_EQUALS(set.indexOf(9), 4);
+
+        TS_ASSERT_EQUALS(set.indexOf(0), -1);
+        TS_ASSERT_EQUALS(set.indexOf(10), -1);
+
+        TS_ASSERT_EQUALS(set.atIndex(0), 1);
+        TS_ASSERT_EQUALS(set.atIndex(1), 2);
+        TS_ASSERT_EQUALS(set.atIndex(2), 5);
+        TS_ASSERT_EQUALS(set.atIndex(3), 8);
+        TS_ASSERT_EQUALS(set.atIndex(4), 9);
+    }
+
+    void testIndexingSpeed() {
+        Set<Vector3d> set;
+        int size = 100000;
+        for (int i = 0; i < size; ++i) {
+            set.insert(Vector3d(rand(), rand(), rand()));
+        }
+
+        boost::timer visitationTimer;
+        double visitationSquaredNorm = 0.0;
+        set.forEach([&] (const Vector3d& vector) {visitationSquaredNorm += vector.squaredNorm();});
+        double visitationTime = visitationTimer.elapsed();
+
+        std::cout << "Visitation: " << visitationTime << " s" << std::endl;
+
+        boost::timer indexingTimer;
+        double indexingSquaredNorm = 0.0;
+        for (int i = 0; i < size; ++i) {
+            indexingSquaredNorm += set.atIndex(i).squaredNorm();
+        }
+        double indexingTime = indexingTimer.elapsed();
+
+        std::cout << "Indexing: " << indexingTime << " s" << std::endl;
+
+        std::cout << "Visitation " << indexingTime / visitationTime << " times faster" << std::endl;
+
+        TS_ASSERT(visitationSquaredNorm - indexingSquaredNorm == Zero());
     }
 };
