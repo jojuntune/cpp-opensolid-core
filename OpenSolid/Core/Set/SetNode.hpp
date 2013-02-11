@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 
+#include <cstdint>
 #include <new>
 #include <vector>
 
@@ -46,7 +47,7 @@ namespace opensolid
         double _splitValue;
         SetNode<TElement>* _leftChild;
         SetNode<TElement>* _rightChild;
-        std::size_t _size;
+        std::int64_t _size;
         
         void getLeaves(std::vector<SetNode<TElement>*>& leaves);
     public:
@@ -76,7 +77,14 @@ namespace opensolid
         double splitValue() const;
         const SetNode<TElement>* leftChild() const;
         const SetNode<TElement>* rightChild() const;
-        std::size_t size() const;
+        std::int64_t size() const;
+
+        const SetNode<TElement>* nodeAtIndex(std::int64_t index) const;
+        
+        std::int64_t indexOf(
+            const TElement& element,
+            const typename Bounds<TElement>::Type& elementBounds
+        ) const;
         
         SetNode<TElement>* insert(
             const TElement& element,
@@ -256,8 +264,8 @@ namespace opensolid
                 std::swap(_leftChild, _rightChild);
             }
         } else {
-            std::size_t leftSize = 0;
-            std::size_t rightSize = 0;
+            std::int64_t leftSize = 0;
+            std::int64_t rightSize = 0;
             typename Bounds<TElement>::Type leftBounds;
             typename Bounds<TElement>::Type rightBounds;
             SetNode<TElement>** lower = begin;
@@ -363,8 +371,49 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline std::size_t SetNode<TElement>::size() const {
+    inline std::int64_t SetNode<TElement>::size() const {
         return _size;
+    }
+
+    template <class TElement>
+    const SetNode<TElement>* SetNode<TElement>::nodeAtIndex(std::int64_t index) const {
+        assert(index >= 0 && index < size());
+        if (element()) {
+            return this;
+        } else if (index < leftChild()->size()) {
+            return leftChild()->nodeAtIndex(index);
+        } else {
+            return rightChild()->nodeAtIndex(index - leftChild()->size());
+        }
+    }
+
+    template <class TElement>
+    std::int64_t SetNode<TElement>::indexOf(
+        const TElement& element,
+        const typename Bounds<TElement>::Type& elementBounds
+    ) const {
+        if (bounds().overlaps(elementBounds)) {
+            if (this->element()) {
+                if (element == *this->element()) {
+                    return 0;
+                }
+            } else {
+                double mid = detail::median(elementBounds, splitDirection());
+                if (mid - splitValue() <= Zero()) {
+                    std::int64_t leftIndex = leftChild()->indexOf(element, elementBounds);
+                    if (leftIndex != -1) {
+                        return leftIndex;
+                    }
+                }
+                if (mid - splitValue() >= Zero()) {
+                    std::int64_t rightIndex = rightChild()->indexOf(element, elementBounds);
+                    if (rightIndex != -1) {
+                        return leftChild()->size() + rightIndex;
+                    }
+                }
+            }
+        }
+        return -1;
     }
     
     template <class TElement>

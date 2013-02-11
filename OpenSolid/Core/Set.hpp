@@ -32,10 +32,11 @@
 // Internal headers
 #include <OpenSolid/Core/Set/SetNode.hpp>
 
-#include <ostream>
 #include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <numeric>
+#include <ostream>
 
 namespace opensolid
 {
@@ -62,19 +63,22 @@ namespace opensolid
         
         void operator=(const Set<TElement>& otherSet);
         
-        std::size_t size() const;
+        std::int64_t size() const;
         bool isEmpty() const;
 
         typename Bounds<TElement>::Type bounds() const;
+
+        TElement atIndex(std::int64_t index) const;
+        std::int64_t indexOf(const TElement& element) const;
         
         void insert(const TElement& element);
-        std::size_t erase(const TElement& element);
+        std::int64_t erase(const TElement& element);
         
         template <class TIterator>
         void insert(TIterator begin, TIterator end);
         
         template <class TIterator>
-        std::size_t erase(TIterator begin, TIterator end);
+        std::int64_t erase(TIterator begin, TIterator end);
         
         void clear();
 
@@ -282,7 +286,7 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline std::size_t Set<TElement>::size() const {
+    inline std::int64_t Set<TElement>::size() const {
         return isEmpty() ? 0 : root()->size();
     }
     
@@ -316,6 +320,29 @@ namespace opensolid
             return root()->bounds();
         }
     }
+
+    template <class TElement>
+    inline TElement Set<TElement>::atIndex(std::int64_t index) const {
+        if (isEmpty()) {
+            return TElement();
+        } else {
+            if (const SetNode<TElement>* nodeAtIndex = root()->nodeAtIndex(index)) {
+                assert(nodeAtIndex->element());
+                return *nodeAtIndex->element();
+            } else {
+                return TElement();
+            }
+        }
+    }
+
+    template <class TElement>
+    inline std::int64_t Set<TElement>::indexOf(const TElement& element) const {
+        if (isEmpty()) {
+            return -1;
+        } else {
+            return root()->indexOf(element, _boundsFunction(element));
+        }
+    }
     
     template <class TElement>
     inline void Set<TElement>::insert(const TElement& element) {
@@ -328,11 +355,11 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline std::size_t Set<TElement>::erase(const TElement& element) {
+    inline std::int64_t Set<TElement>::erase(const TElement& element) {
         if (isEmpty()) {
             return 0;
         } else {
-            std::size_t previousSize = size();
+            std::int64_t previousSize = size();
             _root = _root->erase(element, _boundsFunction(element));
             return previousSize - size();
         }
@@ -350,12 +377,12 @@ namespace opensolid
     }
     
     template <class TElement> template <class TIterator>
-    inline std::size_t Set<TElement>::erase(TIterator begin, TIterator end) {
+    inline std::int64_t Set<TElement>::erase(TIterator begin, TIterator end) {
         return std::accumulate(
             begin,
             end,
-            std::size_t(0),
-            [this] (std::size_t result, const TElement& element) {
+            std::int64_t(0),
+            [this] (std::int64_t result, const TElement& element) {
                 return result + this->erase(element);
             }
         );
