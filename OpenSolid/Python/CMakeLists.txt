@@ -26,7 +26,13 @@
         ${PYTHON_LIBRARIES}
     )
     
-########## Install OpenSolidPython library ##########
+########## Install OpenSolidPython headers and library ##########
+
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DESTINATION include/OpenSolid
+        FILES_MATCHING PATTERN *.hpp
+    )
         
     install(
         TARGETS OpenSolidPython

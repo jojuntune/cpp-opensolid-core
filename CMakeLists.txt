@@ -176,8 +176,8 @@
     
 ########## Install files ##########
     
-    install(DIRECTORY OpenSolid DESTINATION include FILES_MATCHING PATTERN *.hpp)
-    install(FILES license.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
+    install(FILES OpenSolid/config.hpp DESTINATION include/OpenSolid)
+    install(FILES license.txt lgpl-2.1.txt gpl-2.txt DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 ########## Set up source groups for Visual Studio ##########
 

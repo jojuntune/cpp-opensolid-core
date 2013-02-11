@@ -22,7 +22,13 @@
     set_target_properties(OpenSolidIO PROPERTIES DEBUG_POSTFIX d)
     target_link_libraries(OpenSolidIO OpenSolidCore)
     
-########## Install OpenSolidIO library ##########
+########## Install OpenSolidIO headers and library ##########
+
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DESTINATION include/OpenSolid
+        FILES_MATCHING PATTERN *.hpp
+    )
         
     install(
         TARGETS OpenSolidIO
