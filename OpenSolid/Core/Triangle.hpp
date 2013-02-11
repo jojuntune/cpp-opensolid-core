@@ -36,6 +36,8 @@ namespace opensolid
     class Triangle<2> : public Simplex<2, 3>
     {
     public:
+        Triangle();
+
         Triangle(const Simplex<2, 3>& otherTriangle);
 
         Triangle(
@@ -53,6 +55,8 @@ namespace opensolid
     class Triangle<3> : public Simplex<3, 3>
     {
     public:
+        Triangle();
+
         Triangle(const Simplex<3, 3>& otherTriangle);
 
         Triangle(
@@ -85,6 +89,9 @@ namespace opensolid
 
 namespace opensolid
 {
+    inline Triangle<2>::Triangle() {
+    }
+
     inline Triangle<2>::Triangle(const Simplex<2, 3>& otherTriangle) :
         Simplex<2, 3>(otherTriangle) {
     }
@@ -97,6 +104,9 @@ namespace opensolid
         Matrix<double, 2, 3> vertices;
         vertices << firstVertex, secondVertex, thirdVertex;
         *this = Simplex<2, 3>(vertices);
+    }
+
+    inline Triangle<3>::Triangle() {
     }
 
     inline Triangle<3>::Triangle(const Simplex<3, 3>& otherTriangle) :

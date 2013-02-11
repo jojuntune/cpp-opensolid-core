@@ -32,6 +32,8 @@ namespace opensolid
     class Tetrahedron3d : public Simplex<3, 4>
     {
     public:
+        Tetrahedron3d();
+
         Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron);
 
         Tetrahedron3d(
@@ -65,6 +67,9 @@ namespace opensolid
 
 namespace opensolid
 {
+    inline Tetrahedron3d::Tetrahedron3d() {
+    }
+
     inline Tetrahedron3d::Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron) :
         Simplex<3, 4>(otherTetrahedron) {
     }

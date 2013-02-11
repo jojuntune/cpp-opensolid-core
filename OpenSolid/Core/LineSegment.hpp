@@ -33,6 +33,8 @@ namespace opensolid
     class LineSegment : public Simplex<iNumDimensions, 2>
     {
     public:
+        LineSegment();
+
         LineSegment(const Simplex<iNumDimensions, 2>& otherLineSegment);
 
         LineSegment(
@@ -48,6 +50,8 @@ namespace opensolid
     class LineSegment<1> : public Simplex<1, 2>
     {
     public:
+        LineSegment();
+
         LineSegment(const Simplex<1, 2>& otherLineSegment);
 
         LineSegment(double startPoint, double endPoint);
@@ -82,6 +86,10 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions>
+    inline LineSegment<iNumDimensions>::LineSegment() {
+    }
+
+    template <int iNumDimensions>
     inline LineSegment<iNumDimensions>::LineSegment(
         const Simplex<iNumDimensions, 2>& otherLineSegment
     ) : Simplex<iNumDimensions, 2>(otherLineSegment) {
@@ -95,6 +103,9 @@ namespace opensolid
         Matrix<double, iNumDimensions, 2> vertices;
         vertices << firstVertex, secondVertex;
         *this = Simplex<iNumDimensions, 2>(vertices);
+    }
+
+    inline LineSegment<1>::LineSegment() {
     }
 
     inline LineSegment<1>::LineSegment(const Simplex<1, 2>& otherLineSegment) :
