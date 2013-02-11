@@ -352,7 +352,11 @@ public:
 
         boost::timer visitationTimer;
         double visitationSquaredNorm = 0.0;
-        set.forEach([&] (const Vector3d& vector) {visitationSquaredNorm += vector.squaredNorm();});
+        set.forEach(
+            [&] (const Vector3d& vector) {
+                visitationSquaredNorm += vector.squaredNorm();
+            }
+        );
         double visitationTime = visitationTimer.elapsed();
 
         std::cout << "Visitation: " << visitationTime << " s" << std::endl;
