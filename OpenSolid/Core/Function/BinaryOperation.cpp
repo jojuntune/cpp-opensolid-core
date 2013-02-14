@@ -28,9 +28,11 @@ namespace opensolid
 {
     BinaryOperation::BinaryOperation(const Function& firstOperand, const Function& secondOperand) :
         _firstOperand(firstOperand), _secondOperand(secondOperand) {
-            
+        
+        #ifndef NDEBUG    
         bool equalParameters = firstOperand.numParameters() == secondOperand.numParameters();
         assert(equalParameters || firstOperand.isConstant() || secondOperand.isConstant());
+        #endif
     }
     
     int BinaryOperation::numParameters() const {
