@@ -29,7 +29,6 @@
 // Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Evaluation.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -40,6 +39,7 @@
 // Internal headers
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 #include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
+#include <OpenSolid/Core/Matrix/MatrixReturnValue.hpp>
 
 // Declarations headers 
 #include <OpenSolid/Core/Function/declarations.hpp>
@@ -62,9 +62,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Geometry(const GeometryImplementation* implementation);
 
         OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
-        OPENSOLID_CORE_EXPORT Geometry(int value);
-        OPENSOLID_CORE_EXPORT Geometry(double value);
-        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector);
+        OPENSOLID_CORE_EXPORT Geometry(double value, int numParameters);
+        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector, int numParameters);
 
         template <class TVector>
         Geometry(const EigenBase<TVector>& vector);
@@ -81,7 +80,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Domain domain() const;
         
         template <class TArgument>
-        Evaluation<Geometry, TArgument> operator()(const TArgument& argument) const;
+        MatrixReturnValue<Geometry, TArgument> operator()(const TArgument& argument) const;
 
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
@@ -164,8 +163,10 @@ namespace opensolid
     }
 
     template <class TArgument>
-    inline Evaluation<Geometry, TArgument> Geometry::operator()(const TArgument& argument) const {
-        return Evaluation<Geometry, TArgument>(*this, argument);
+    inline MatrixReturnValue<Geometry, TArgument> Geometry::operator()(
+        const TArgument& argument
+    ) const {
+        return MatrixReturnValue<Geometry, TArgument>(*this, argument);
     }
 
     template <class TMatrix>

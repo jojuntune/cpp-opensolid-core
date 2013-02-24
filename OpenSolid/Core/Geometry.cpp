@@ -53,18 +53,13 @@ namespace opensolid
         assert(function.isConstant() || domain.numDimensions() == function.numParameters());
     }
     
-    Geometry::Geometry(int value) :
-        _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
+    Geometry::Geometry(double value, int numParameters) :
+        _implementation(new ConstantGeometry(VectorXd::Constant(1, value), numParameters)),
         _type(&typeid(ConstantGeometry)) {
     }
     
-    Geometry::Geometry(double value) :
-        _implementation(new ConstantGeometry(VectorXd::Constant(1, value))),
-        _type(&typeid(ConstantGeometry)) {
-    }
-    
-    Geometry::Geometry(const VectorXd& vector) :
-        _implementation(new ConstantGeometry(vector)),
+    Geometry::Geometry(const VectorXd& vector, int numParameters) :
+        _implementation(new ConstantGeometry(vector, numParameters)),
         _type(&typeid(ConstantGeometry)) {
     }
 

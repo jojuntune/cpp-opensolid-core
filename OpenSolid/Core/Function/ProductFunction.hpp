@@ -35,16 +35,16 @@ namespace opensolid
     {
     public:
         OPENSOLID_CORE_EXPORT ProductFunction(
-            const Function& firstOperand,
-            const Function& secondOperand
+            const Function& multiplier,
+            const Function& multiplicand
         );
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };

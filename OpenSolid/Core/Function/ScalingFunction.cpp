@@ -22,23 +22,48 @@
  *                                                                                   *
  *************************************************************************************/
 
-#pragma once
+#include <OpenSolid/Core/Function/ScalingFunction.hpp>
 
-#include <OpenSolid/config.hpp>
+// Public headers
+#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    ScalingFunction::ScalingFunction(double scale, const Function& operand) :
+        UnaryOperation(operand),
+        _scale(scale) {
+    }
 
-    template <int iNumDimensions>
-    class Axis;
+    int ScalingFunction::numDimensions() const {
+        return operand().numDimensions();
+    }
+    
+    void ScalingFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        results = scale() * operand()(parameterValues);
+    }
+    
+    void ScalingFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        results = Interval(scale()) * operand()(parameterBounds);
+    }
+    
+    Function ScalingFunction::derivative(int index) const {
+        return scale() * operand().derivative(index);
+    }
+    
+    Function ScalingFunction::compose(const Function& innerFunction) const {
+        return scale() * operand()(innerFunction);
+    }
 
-    class Plane3d;
+    Function ScalingFunction::scaled(double scale) const {
+        return new ScalingFunction(scale * this->scale(), operand());
+    }
 
-    template <int iNumDimensions>
-    class Frame;
-
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+    Function ScalingFunction::transformed(const MatrixXd& transformationMatrix) const {
+        return (scale() * transformationMatrix) * operand();
+    }
+    
+    void ScalingFunction::debug(std::ostream& stream, int indent) const {
+        stream << "ScalingFunction" << std::endl;
+        operand().debug(stream, indent + 1);
+    }
 }

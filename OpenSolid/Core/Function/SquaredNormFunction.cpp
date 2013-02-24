@@ -36,16 +36,16 @@ namespace opensolid
         return 1;
     }
     
-    void SquaredNormFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void SquaredNormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).colwise().squaredNorm();
     }
     
-    void SquaredNormFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void SquaredNormFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).colwise().squaredNorm();
     }
 
-    void SquaredNormFunction::getDerivative(int index, Function& result) const {
-        result = 2.0 * operand().dot(operand().derivative(index));
+    Function SquaredNormFunction::derivative(int index) const {
+        return 2.0 * operand().dot(operand().derivative(index));
     }
     
     void SquaredNormFunction::debug(std::ostream& stream, int indent) const {

@@ -37,16 +37,16 @@ namespace opensolid
         return 1;
     }
         
-    void ExponentialFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void ExponentialFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().exp();
     }
 
-    void ExponentialFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void ExponentialFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).array().exp();
     }
 
-    void ExponentialFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index) * Function(this);
+    Function ExponentialFunction::derivative(int index) const {
+        return operand().derivative(index) * Function(this);
     }
         
     void ExponentialFunction::debug(std::ostream& stream, int indent) const {

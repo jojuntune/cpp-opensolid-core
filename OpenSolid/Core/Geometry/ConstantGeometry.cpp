@@ -28,11 +28,13 @@
 
 namespace opensolid
 {
-    ConstantGeometry::ConstantGeometry(const VectorXd& vector) : _vector(vector) {
+    ConstantGeometry::ConstantGeometry(const VectorXd& vector, int numParameters) :
+        _vector(vector),
+        _numParameters(numParameters) {
     }
 
     Function ConstantGeometry::function() const {
-        return _vector;
+        return Function::Constant(_vector, numParameters());
     }
 
     Domain ConstantGeometry::domain() const {
@@ -40,7 +42,7 @@ namespace opensolid
     }
         
     int ConstantGeometry::numParameters() const {
-        return 0;
+        return _numParameters;
     }
 
     int ConstantGeometry::numDimensions() const {
@@ -68,7 +70,7 @@ namespace opensolid
     }
 
     Geometry ConstantGeometry::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return new ConstantGeometry(matrix * _vector + vector);
+        return new ConstantGeometry(matrix * _vector + vector, numParameters());
     }
 
     Geometry ConstantGeometry::reversed() const {

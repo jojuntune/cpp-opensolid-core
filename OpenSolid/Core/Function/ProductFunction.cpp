@@ -30,29 +30,29 @@
 namespace opensolid
 {
     ProductFunction::ProductFunction(
-        const Function& firstOperand,
-        const Function& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
+        const Function& multiplier,
+        const Function& multiplicand
+    ) : BinaryOperation(multiplier, multiplicand) {
 
-        assert(secondOperand.numDimensions() == 1);
+        assert(multiplier.numDimensions() == 1);
     }
     
     int ProductFunction::numDimensions() const {
-        return firstOperand().numDimensions();
+        return secondOperand().numDimensions();
     }
     
-    void ProductFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
-        results = firstOperand()(parameterValues) *
-            secondOperand()(parameterValues).eval().asDiagonal();
+    void ProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        results = secondOperand()(parameterValues) *
+            firstOperand()(parameterValues).eval().asDiagonal();
     }
     
-    void ProductFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
-        results = firstOperand()(parameterBounds) *
-            secondOperand()(parameterBounds).eval().asDiagonal();
+    void ProductFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        results = secondOperand()(parameterBounds) *
+            firstOperand()(parameterBounds).eval().asDiagonal();
     }
 
-    void ProductFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index) * secondOperand()
+    Function ProductFunction::derivative(int index) const {
+        return firstOperand().derivative(index) * secondOperand()
             + firstOperand() * secondOperand().derivative(index);
     }
     

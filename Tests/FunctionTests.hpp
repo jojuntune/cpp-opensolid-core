@@ -42,13 +42,13 @@ private:
     Function v;
 public:
     void setUp() {
-        t = Function::Parameter();
-        u = Function::Parameter(2, 0);
-        v = Function::Parameter(2, 1);
+        t = Function::t();
+        u = Function::u();
+        v = Function::v();
     }
 
     void testConstant() {
-        Function f = 3.0;
+        Function f = Function::Constant(3.0, 1);
         TS_ASSERT(f.isConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
         TS_ASSERT(f.as<double>() - 3 == Zero());
@@ -112,7 +112,7 @@ public:
     }
     
     void testVector() {
-        Function f = Vector3d(1, 2, 3);
+        Function f = Function::Constant(Vector3d(1, 2, 3), 0);
         TS_ASSERT(f.isConstant());
         TS_ASSERT(f.as<Vector3d>() == Vector3d(1, 2, 3));
         TS_ASSERT(f.as<Vector3d>().transpose() == RowVector3d(1, 2, 3));
@@ -121,7 +121,7 @@ public:
     void testConversion() {
         Function function = u * v;
         TS_ASSERT(function(Vector2d(2, 3)).value() - 6 == Zero());
-        function = Function(2);
+        function = Function::Constant(2.0, 1);
         TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
     }
     
@@ -199,9 +199,9 @@ public:
     
     void testConcatenation() {
         Function x = t;
-        double y = 3;
+        Function y = Function::Constant(3.0, 1);
         Function z = t.squaredNorm();
-        Function concatenated = Function::Components(x, y, z);
+        Function concatenated = Function::FromComponents(x, y, z);
         TS_ASSERT((concatenated(2.0) - Vector3d(2.0, 3.0, 4.0)).isZero());
     }
 
@@ -243,17 +243,18 @@ public:
         TS_ASSERT((derivative.as<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 
-    void testNormal() {
-        Function f = Vector2d(1, 1) + 2 * Function::Components(cos(t), sin(t));
+    void testNormalVector() {
+        Function f = Vector2d(1, 1) + 2 * Function::FromComponents(cos(t), sin(t));
         TS_ASSERT((f(-M_PI / 2) - Vector2d(1, -1)).isZero());
         TS_ASSERT((f(0) - Vector2d(3, 1)).isZero());
         TS_ASSERT((f(M_PI / 2) - Vector2d(1, 3)).isZero());
-        Function normal = f.normal();
-        TS_ASSERT((f(-M_PI / 2) + 2 * normal(-M_PI / 2) - Vector2d(1, 1)).isZero());
-        TS_ASSERT((f(-M_PI / 4) + 2 * normal(-M_PI / 4) - Vector2d(1, 1)).isZero());
-        TS_ASSERT((f(0) + 2 * normal(0) - Vector2d(1, 1)).isZero());
-        TS_ASSERT((f(M_PI / 4) + 2 * normal(M_PI / 4) - Vector2d(1, 1)).isZero());
-        TS_ASSERT((f(M_PI / 2) + 2 * normal(M_PI / 2) - Vector2d(1, 1)).isZero());
+
+        Function normalVector = f.normalVector();
+        TS_ASSERT((f(-M_PI / 2) + 2 * normalVector(-M_PI / 2) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(-M_PI / 4) + 2 * normalVector(-M_PI / 4) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(0) + 2 * normalVector(0) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(M_PI / 4) + 2 * normalVector(M_PI / 4) - Vector2d(1, 1)).isZero());
+        TS_ASSERT((f(M_PI / 2) + 2 * normalVector(M_PI / 2) - Vector2d(1, 1)).isZero());
     }
     
     //void xtestRoots() {

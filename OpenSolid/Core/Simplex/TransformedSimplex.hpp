@@ -26,61 +26,25 @@
 
 #include <OpenSolid/config.hpp>
 
-// Internal headers
-#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
+// Public headers
+#include <OpenSolid/Core/Simplex/declarations.hpp>
+#include <OpenSolid/Core/Function/declarations.hpp>
 
 namespace opensolid
 {
-    class ParametersFunction : public FunctionImplementation
+    template<int iNumDimensions, int iNumVertices>
+    class TransformedSimplex
     {
     private:
-        int _numParameters;
-        int _startIndex;
-        int _numDimensions;
+        const Simplex<iNumDimensions, iNumVertices>& _simplex;
+        const Function& _function;
     public:
-        OPENSOLID_CORE_EXPORT ParametersFunction(
-            int numParameters,
-            int startIndex,
-            int numDimensions
+        TransformedSimplex(
+            const Simplex<iNumDimensions, iNumVertices>& simplex,
+            const Function& function
         );
         
-        int numParameters() const;
-        int startIndex() const;
-        int numDimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
-
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getComponents(
-            int startIndex,
-            int numComponents,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void getComposition(
-            const Function& innerFunction,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        const Simplex<iNumDimensions, iNumVertices>& simplex() const;
+        const Function& function() const;
     };
-}
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    inline int ParametersFunction::numParameters() const {
-        return _numParameters;
-    }
-    
-    inline int ParametersFunction::startIndex() const {
-        return _startIndex;
-    }
-    
-    inline int ParametersFunction::numDimensions() const {
-        return _numDimensions;
-    }
 }

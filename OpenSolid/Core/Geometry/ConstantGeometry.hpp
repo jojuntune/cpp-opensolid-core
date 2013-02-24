@@ -37,8 +37,9 @@ namespace opensolid
     {
     private:
         VectorXd _vector;
+        int _numParameters;
     public:
-        OPENSOLID_CORE_EXPORT ConstantGeometry(const VectorXd& vector);
+        OPENSOLID_CORE_EXPORT ConstantGeometry(const VectorXd& vector, int numParameters);
 
         Function function() const;
         Domain domain() const;

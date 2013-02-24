@@ -53,16 +53,14 @@ namespace opensolid
         int numParameters() const;
         int numDimensions() const;
         
-        void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
+        void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
 
-        void getDerivative(int index, Function& result) const;
+        Function derivative(int index) const;
         
-        void getTransformed(
-            const MatrixXd& transformationMatrix,
-            const VectorXd& translationVector,
-            Function& result
-        ) const;
+        Function scaled(double scale) const;
+        Function transformed(const MatrixXd& transformationMatrix) const;
+        Function translated(const VectorXd& vector) const;
         
         void debug(std::ostream& stream, int indent) const;
     };
@@ -103,7 +101,7 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::getValues(
+    void EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results
     ) const {
@@ -123,7 +121,7 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::getBounds(
+    void EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results
     ) const {
@@ -143,23 +141,19 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::getDerivative(
-        int index,
-        Function& result
-    ) const {
+    Function EllipticalFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
         Matrix<double, iNumDimensions, iNumAxes> derivativeBasisMatrix = datum().basisMatrix();
 
         Matrix<bool, 1, iNumAxes - 1> derivativeConvention = convention();
         derivativeConvention(index) = !derivativeConvention(index);
 
         if (convention()(index)) {
-            derivativeBasisMatrix.col(index) = -derivativeBasisMatrix.col(index);
+            derivativeBasisMatrix.col(index) *= -1;
         } else {
             int numFlipped = numParameters() - index;
-            derivativeBasisMatrix.rightCols(numFlipped) =
-                -derivativeBasisMatrix.rightCols(numFlipped);
+            derivativeBasisMatrix.rightCols(numFlipped) *= -1;
         }
-        result = new EllipticalFunction<iNumDimensions, iNumAxes>(
+        return new EllipticalFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>(
                 Matrix<double, iNumDimensions, 1>::Zero(),
                 derivativeBasisMatrix
@@ -169,32 +163,41 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::getTransformed(
-        const MatrixXd& transformationMatrix,
-        const VectorXd& translationVector,
-        Function& result
+    Function EllipticalFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
+        return new EllipticalFunction<iNumDimensions, iNumAxes>(scale * datum(), convention());
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    Function EllipticalFunction<iNumDimensions, iNumAxes>::transformed(
+        const MatrixXd& transformationMatrix
     ) const {
-        assert(transformationMatrix.rows() == translationVector.size());
-        assert(transformationMatrix.cols() == iNumDimensions);
-
         int numTransformedDimensions = transformationMatrix.rows();
-
-        if (numTransformedDimensions == 2) {
-            result = new EllipticalFunction<2, iNumAxes>(
-                transformationMatrix.topLeftCorner<2, iNumDimensions>() * datum() +
-                    translationVector,
+        if (numTransformedDimensions == 1) {
+            return new EllipticalFunction<1, iNumAxes>(
+                Matrix<double, 1, iNumDimensions>(transformationMatrix) * datum(),
+                convention()
+            );
+        } else if (numTransformedDimensions == 2) {
+            return new EllipticalFunction<2, iNumAxes>(
+                Matrix<double, 2, iNumDimensions>(transformationMatrix) * datum(),
                 convention()
             );
         } else if (numTransformedDimensions == 3) {
-            result = new EllipticalFunction<3, iNumAxes>(
-                transformationMatrix.topLeftCorner<3, iNumDimensions>() * datum() +
-                    translationVector,
+            return new EllipticalFunction<3, iNumAxes>(
+                Matrix<double, 3, iNumDimensions>(transformationMatrix) * datum(),
                 convention()
             );
         } else {
             assert(false);
-            result = Function();
+            return Function();
         }
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    Function EllipticalFunction<iNumDimensions, iNumAxes>::translated(
+        const VectorXd& vector
+    ) const {
+        return new EllipticalFunction<iNumDimensions, iNumAxes>(datum() + vector, convention());
     }
     
     template <int iNumDimensions, int iNumAxes>

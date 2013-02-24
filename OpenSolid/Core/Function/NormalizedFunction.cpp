@@ -36,36 +36,36 @@ namespace opensolid
         return operand().numDimensions();
     }
 
-    void NormalizedFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void NormalizedFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         MatrixXd operandValues = operand()(parameterValues);
         VectorXd squaredNorms = operandValues.colwise().squaredNorm();
         results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    void NormalizedFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void NormalizedFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    void NormalizedFunction::getDerivative(int index, Function& result) const {
+    Function NormalizedFunction::derivative(int index) const {
         Function operandDerivative = operand().derivative(index);
         Function operandNormalized = operand().normalized();
-        result =
+        return
             (operandDerivative - operandDerivative.dot(operandNormalized) * operandNormalized) /
             operand().norm();
     }
     
-    void NormalizedFunction::getNorm(Function& result) const {
-        result = 1.0;
+    Function NormalizedFunction::norm() const {
+        return Function::Constant(1.0, numParameters());
     }
     
-    void NormalizedFunction::getNormalized(Function& result) const {
-        result = this;
+    Function NormalizedFunction::normalized() const {
+        return this;
     }
     
-    void NormalizedFunction::getSquaredNorm(Function& result) const {
-        result = 1.0;
+    Function NormalizedFunction::squaredNorm() const {
+        return Function::Constant(1.0, numParameters());
     }
     
     void NormalizedFunction::debug(std::ostream& stream, int indent) const {

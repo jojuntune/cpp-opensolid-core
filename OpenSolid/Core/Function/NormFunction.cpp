@@ -36,16 +36,16 @@ namespace opensolid
         return 1;
     }
     
-    void NormFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void NormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).colwise().norm();
     }
     
-    void NormFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void NormFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).colwise().norm();
     }
 
-    void NormFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index).dot(operand().normalized());
+    Function NormFunction::derivative(int index) const {
+        return operand().derivative(index).dot(operand().normalized());
     }
     
     void NormFunction::debug(std::ostream& stream, int indent) const {

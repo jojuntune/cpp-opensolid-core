@@ -22,65 +22,48 @@
  *                                                                                   *
  *************************************************************************************/
 
-#include <OpenSolid/Core/Function/NegationFunction.hpp>
+#pragma once
+
+#include <OpenSolid/config.hpp>
 
 // Public headers
-#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/UnaryOperation.hpp>
 
 namespace opensolid
 {
-    NegationFunction::NegationFunction(const Function& operand) : UnaryOperation(operand) {
-    }
-    
-    int NegationFunction::numDimensions() const {
-        return operand().numDimensions();
-    }
-    
-    void NegationFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
-        results = -operand()(parameterValues);
-    }
-    
-    void NegationFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
-        results = -operand()(parameterBounds);
-    }
+    class ScalingFunction : public UnaryOperation
+    {
+    private:
+        double _scale;
+    public:
+        OPENSOLID_CORE_EXPORT ScalingFunction(double scale, const Function& operand);
 
-    void NegationFunction::getDerivative(int index, Function& result) const {
-        result = -operand().derivative(index);
-    }
+        double scale() const;
+        
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
+        
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
 
-    void NegationFunction::getComponents(
-        int startIndex,
-        int numComponents,
-        Function& result
-    ) const {
-        result = -operand().components(startIndex, numComponents);
-    }
-    
-    void NegationFunction::getComposition(
-        const Function& innerFunction,
-        Function& result
-    ) const {
-        result = -operand()(innerFunction);
-    }
-    
-    void NegationFunction::getTransformed(
-        const MatrixXd& transformationMatrix,
-        const VectorXd& translationVector,
-        Function& result
-    ) const {
-        result = operand().transformed(-transformationMatrix, translationVector);
-    }
-    
-    void NegationFunction::getNorm(Function& result) const {
-        result = operand().norm();
-    }
-    
-    void NegationFunction::getSquaredNorm(Function& result) const {
-        result = operand().squaredNorm();
-    }
-    
-    void NegationFunction::debug(std::ostream& stream, int indent) const {
-        stream << "NegationFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        OPENSOLID_CORE_EXPORT Function scaled(double scale) const;
+        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& transformationMatrix) const;
+        
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+    };
+}
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    inline double ScalingFunction::scale() const {
+        return _scale;
     }
 }

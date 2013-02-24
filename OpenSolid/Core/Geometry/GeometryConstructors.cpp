@@ -38,12 +38,12 @@ namespace opensolid
         Frame2d datum = frame.scaled(radius, frame.originPoint());
         Function angleFunction;
         if (endAngle - startAngle == Zero()) {
-            angleFunction = 2 * M_PI * Function::Parameter();
+            angleFunction = 2 * M_PI * Function::t();
         } else if (endAngle > startAngle) {
-            angleFunction = startAngle + (endAngle - startAngle) * Function::Parameter();
+            angleFunction = startAngle + (endAngle - startAngle) * Function::t();
         } else {
             datum = datum.xReversed();
-            angleFunction = M_PI - startAngle + (startAngle - endAngle) * Function::Parameter();
+            angleFunction = M_PI - startAngle + (startAngle - endAngle) * Function::t();
         }
 
         return Geometry(Function::Elliptical(datum)(angleFunction), Interval::Unit());
@@ -69,7 +69,7 @@ namespace opensolid
         if (sweptAngle <= Zero()) {
             sweptAngle += 2 * M_PI;
         }
-        Function angleFunction = sweptAngle * Function::Parameter();
+        Function angleFunction = sweptAngle * Function::t();
 
         return Geometry(Function::Elliptical(datum)(angleFunction), Interval::Unit());
     }
@@ -154,8 +154,8 @@ namespace opensolid
     ) {
         if (isFilled) {
             Function arcFunction = Geometry::Arc2d(Frame2d::XY(), radius, 0, 2 * M_PI).function();
-            Function u = Function::Parameter(2, 0);
-            Function v = Function::Parameter(2, 1);
+            Function u = Function::u();
+            Function v = Function::v();
             Function circleFunction = center + u * arcFunction(v);
             return Geometry(circleFunction, Domain(Interval::Unit(), Interval::Unit()));
         } else {
@@ -186,7 +186,7 @@ namespace opensolid
         Interval turnInterval
     ) {
         Plane3d plane = frame.xyPlane().scaled(radius, frame.originPoint());
-        Function angleFunction = 2 * M_PI * Function::Parameter();
+        Function angleFunction = 2 * M_PI * Function::t();
         Function planarFunction = Function::Elliptical(plane)(angleFunction);
 
         Axis3d axis = frame.zAxis().scaled(pitch, frame.originPoint());

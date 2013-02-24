@@ -83,14 +83,13 @@ namespace opensolid
         const VectorXd& vector
     ) const {
         assertValidTransform<Dynamic>(numDimensions(), matrix, vector);
-        return new GenericGeometry(function().transformed(matrix, vector), domain());
+        return new GenericGeometry(matrix * function() + vector, domain());
     }
 
     Geometry GeometryImplementation::reversed() const {
         assert(numParameters() == 1);
         Interval interval = domain().as<Interval>();
-        Function reversedParameter = interval.lowerBound() + interval.upperBound() -
-            Function::Parameter();
+        Function reversedParameter = interval.lowerBound() + interval.upperBound() - Function::t();
         return new GenericGeometry(function()(reversedParameter), domain());
     }
 }

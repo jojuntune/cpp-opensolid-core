@@ -41,7 +41,7 @@ namespace opensolid
         return 3;
     }
     
-    void CrossProductFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void CrossProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         Matrix3Xd firstValues = firstOperand()(parameterValues);
         Matrix3Xd secondValues = secondOperand()(parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
@@ -49,7 +49,7 @@ namespace opensolid
         }
     }
     
-    void CrossProductFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void CrossProductFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         Matrix3XI firstBounds = firstOperand()(parameterBounds);
         Matrix3XI secondBounds = secondOperand()(parameterBounds);
         for (int i = 0; i < results.cols(); ++i) {
@@ -57,8 +57,8 @@ namespace opensolid
         }
     }
 
-    void CrossProductFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index).cross(secondOperand())
+    Function CrossProductFunction::derivative(int index) const {
+        return firstOperand().derivative(index).cross(secondOperand())
             + firstOperand().cross(secondOperand().derivative(index));
     }
     

@@ -41,18 +41,18 @@ namespace opensolid
         return 1;
     }
     
-    void DotProductFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void DotProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues).cwiseProduct(secondOperand()(parameterValues)).
             colwise().sum();
     }
     
-    void DotProductFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void DotProductFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = firstOperand()(parameterBounds).cwiseProduct(secondOperand()(parameterBounds)).
             colwise().sum();
     }
 
-    void DotProductFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index).dot(secondOperand())
+    Function DotProductFunction::derivative(int index) const {
+        return firstOperand().derivative(index).dot(secondOperand())
             + firstOperand().dot(secondOperand().derivative(index));
     }
     

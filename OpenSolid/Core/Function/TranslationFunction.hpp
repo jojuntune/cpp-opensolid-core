@@ -22,63 +22,47 @@
  *                                                                                   *
  *************************************************************************************/
 
-#include <OpenSolid/Core/Function/ParametersFunction.hpp>
+#pragma once
+
+#include <OpenSolid/config.hpp>
 
 // Public headers
-#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/UnaryOperation.hpp>
 
 namespace opensolid
 {
-    ParametersFunction::ParametersFunction(
-        int numParameters,
-        int startIndex,
-        int numDimensions
-    ) : _numParameters(numParameters),
-        _startIndex(startIndex),
-        _numDimensions(numDimensions) {
+    class TranslationFunction : public UnaryOperation
+    {
+    private:
+        VectorXd _vector;
+    public:
+        OPENSOLID_CORE_EXPORT TranslationFunction(const Function& operand, const VectorXd& vector);
 
-        assert(numParameters > 0);
-        assert(startIndex >= 0);
-        assert(numDimensions > 0 && startIndex + numDimensions <= numParameters);
-    }
-    
-    void ParametersFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
-        results = parameterValues.middleRows(startIndex(), numDimensions());
-    }
-    
-    void ParametersFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
-        results = parameterBounds.middleRows(startIndex(), numDimensions());
-    }
+        const VectorXd& vector() const;
+        
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
+        
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
 
-    void ParametersFunction::getDerivative(int index, Function& result) const {
-        if (startIndex() <= index && index < startIndex() + numDimensions()) {
-            result = VectorXd::Unit(numDimensions(), index - startIndex());
-        } else {
-            result = VectorXd::Zero(numDimensions());
-        }
-    }
-    
-    void ParametersFunction::getComponents(
-        int startIndex,
-        int numComponents,
-        Function& result
-    ) const {
-        result = new ParametersFunction(
-            numParameters(), 
-            this->startIndex() + startIndex,
-            numComponents
-        );
-    }
-    
-    void ParametersFunction::getComposition(const Function& innerFunction, Function& result) const {
-        result = innerFunction.components(startIndex(), numDimensions());
-    }
-    
-    void ParametersFunction::debug(std::ostream& stream, int indent) const {
-        stream << "ParametersFunction:";
-        stream << " numParameters = " << numParameters();
-        stream << ", startIndex = " << startIndex();
-        stream << ", numDimensions = " << numDimensions();
-        stream << std::endl;
+        OPENSOLID_CORE_EXPORT Function translated(const VectorXd& vector) const;
+        
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+    };
+}
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    inline const VectorXd& TranslationFunction::vector() const {
+        return _vector;
     }
 }

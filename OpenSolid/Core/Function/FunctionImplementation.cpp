@@ -27,78 +27,88 @@
 // Internal headers
 #include <OpenSolid/Core/Function/ComponentsFunction.hpp>
 #include <OpenSolid/Core/Function/CompositionFunction.hpp>
+#include <OpenSolid/Core/Function/LinearTransformationFunction.hpp>
 #include <OpenSolid/Core/Function/NormFunction.hpp>
 #include <OpenSolid/Core/Function/NormalizedFunction.hpp>
+#include <OpenSolid/Core/Function/ScalingFunction.hpp>
 #include <OpenSolid/Core/Function/SquaredNormFunction.hpp>
-#include <OpenSolid/Core/Function/TransformedFunction.hpp>
+#include <OpenSolid/Core/Function/TranslationFunction.hpp>
 
 namespace opensolid
 {
+    // TODO
+    void FunctionImplementation::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {
+        throw NotImplementedError();
+    }
+    
+    // TODO
+    void FunctionImplementation::evaluateJacobian(const MapXcI& parameterBounds, MapXI& results) const {
+        throw NotImplementedError();
+    }
+
     FunctionImplementation::~FunctionImplementation() {
     }
 
-    void FunctionImplementation::evaluate(const MapXcd& parameterValues, MapXd& results) const {
-        getValues(parameterValues, results);
+    bool FunctionImplementation::isConstant() const {
+        return false;
+    }
+
+    VectorXd FunctionImplementation::value() const {
+        assert(false);
+        return VectorXd();
     }
     
-    void FunctionImplementation::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
-        getBounds(parameterBounds, results);
+    Function FunctionImplementation::components(int startIndex, int numComponents) const {
+        return new ComponentsFunction(this, startIndex, numComponents);
     }
     
-    void FunctionImplementation::getComponents(
-        int startIndex,
-        int numComponents,
-        Function& result
-    ) const {
-        result = new ComponentsFunction(this, startIndex, numComponents);
-    }
-    
-    void FunctionImplementation::getComposition(
-        const Function& innerFunction,
-        Function& result
-    ) const {
-        result = new CompositionFunction(innerFunction, this);
+    Function FunctionImplementation::compose(const Function& innerFunction) const {
+        return new CompositionFunction(this, innerFunction);
     }
         
-    void FunctionImplementation::getTransformed(
-        const MatrixXd& transformationMatrix,
-        const VectorXd& translationVector,
-        Function& result
-    ) const {
-        result = new TransformedFunction(this, transformationMatrix, translationVector);
+    Function FunctionImplementation::scaled(double scale) const {
+        return new ScalingFunction(scale, this);
+    }
+        
+    Function FunctionImplementation::translated(const VectorXd& vector) const {
+        return new TranslationFunction(this, vector);
+    }
+        
+    Function FunctionImplementation::transformed(const MatrixXd& transformationMatrix) const {
+        return new LinearTransformationFunction(transformationMatrix, this);
     }
     
-    void FunctionImplementation::getNorm(Function& result) const {
-        result = new NormFunction(this);
+    Function FunctionImplementation::norm() const {
+        return new NormFunction(this);
     }
     
-    void FunctionImplementation::getNormalized(Function& result) const {
-        result = new NormalizedFunction(this);
+    Function FunctionImplementation::normalized() const {
+        return new NormalizedFunction(this);
     }
     
-    void FunctionImplementation::getSquaredNorm(Function& result) const {
-        result = new SquaredNormFunction(this);
+    Function FunctionImplementation::squaredNorm() const {
+        return new SquaredNormFunction(this);
     }
     
-    void FunctionImplementation::getTangent(Function& result) const {
-        result = Function(this).derivative().normalized();
+    Function FunctionImplementation::tangentVector() const {
+        return derivative().normalized();
     }
     
-    void FunctionImplementation::getCurvature(Function& result) const {
-        result = Function(this).tangent().derivative().norm() / Function(this).derivative().norm();
+    Function FunctionImplementation::curvature() const {
+        return tangentVector().derivative().norm() / derivative().norm();
     }
     
-    void FunctionImplementation::getNormal(Function& result) const {
+    Function FunctionImplementation::normalVector() const {
         assert(numParameters() == 1 || numParameters() == 2);
         if (numParameters() == 1) {
-            result = Function(this).tangent().derivative().normalized();
+            return tangentVector().derivative().normalized();
         } else {
             assert(numDimensions() == 3);
-            result = Function(this).derivative(0).cross(Function(this).derivative(1)).normalized();
+            return derivative(0).cross(derivative(1)).normalized();
         }
     }
     
-    void FunctionImplementation::getBinormal(Function& result) const {
-        result = Function(this).tangent().cross(Function(this).normal());
+    Function FunctionImplementation::binormalVector() const {
+        return tangentVector().cross(normalVector());
     }
 }

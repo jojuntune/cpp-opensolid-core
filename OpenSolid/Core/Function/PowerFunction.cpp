@@ -89,7 +89,7 @@ namespace opensolid
         }
     };
         
-    void PowerFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void PowerFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         RowVectorXd baseValues = firstOperand()(parameterValues);
         if (_exponentIsInteger) {
             results = baseValues.unaryExpr(IntegerPower(_integerExponent));
@@ -100,7 +100,7 @@ namespace opensolid
         }
     }
 
-    void PowerFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void PowerFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         RowVectorXI baseBounds = firstOperand()(parameterBounds);
         if (_exponentIsInteger) {
             results = baseBounds.unaryExpr(IntegerPower(_integerExponent));
@@ -111,12 +111,16 @@ namespace opensolid
         }
     }
 
-    void PowerFunction::getDerivative(int index, Function& result) const {
+    Function PowerFunction::derivative(int index) const {
         if (_exponentIsConstant) {
-            result = _constantExponent * pow(firstOperand(), _constantExponent - 1) *
+            return _constantExponent *
+                pow(
+                    firstOperand(),
+                    Function::Constant(_constantExponent - 1, firstOperand().numParameters())
+                ) *
                 firstOperand().derivative(index);
         } else {
-            result = (
+            return (
                 secondOperand().derivative(index) * log(firstOperand()) +
                 secondOperand() * firstOperand().derivative(index) / firstOperand()
             ) * Function(this);

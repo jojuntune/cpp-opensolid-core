@@ -30,8 +30,12 @@
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Function/declarations.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Simplex/TransformedSimplex.hpp>
  
 // Declarations headers
 #include <OpenSolid/Core/Simplex/declarations.hpp>
@@ -51,6 +55,10 @@ namespace opensolid
         Simplex(const Simplex<iNumDimensions, iNumVertices>& otherSimplex);
         
         explicit Simplex(const Matrix<double, iNumDimensions, iNumVertices>& vertices);
+
+        // Defined in Function.hpp
+        template <int iArgumentDimensions>
+        Simplex(const TransformedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex);
             
         Simplex<iNumDimensions, iNumVertices>& operator=(
             const Simplex<iNumDimensions, iNumVertices>& otherSimplex
@@ -81,6 +89,10 @@ namespace opensolid
         Datum<3, 2> plane() const;
         
         Matrix<Interval, iNumDimensions, 1> bounds() const;
+
+        TransformedSimplex<iNumDimensions, iNumVertices> transformed(
+            const Function& function
+        ) const;
         
         bool operator==(const Simplex<iNumDimensions, iNumVertices>& otherSimplex) const;
     };
@@ -349,6 +361,12 @@ namespace opensolid
     template <int iNumDimensions, int iNumVertices>
     Matrix<Interval, iNumDimensions, 1> Simplex<iNumDimensions, iNumVertices>::bounds() const {
         return _vertices.rowwise().minCoeff().hull(_vertices.rowwise().maxCoeff());
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    inline TransformedSimplex<iNumDimensions, iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::transformed(const Function& function) const {
+        return TransformedSimplex<iNumDimensions, iNumVertices>(*this, function);
     }
         
     template <int iNumDimensions, int iNumVertices>

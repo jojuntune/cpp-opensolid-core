@@ -22,23 +22,48 @@
  *                                                                                   *
  *************************************************************************************/
 
-#pragma once
+#include <OpenSolid/Core/Function/TranslationFunction.hpp>
 
-#include <OpenSolid/config.hpp>
+// Public headers
+#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    TranslationFunction::TranslationFunction(const Function& operand, const VectorXd& vector) :
+        UnaryOperation(operand),
+        _vector(vector) {
 
-    template <int iNumDimensions>
-    class Axis;
+        assert(vector.size() == operand.numDimensions());
+    }
+    
+    int TranslationFunction::numDimensions() const {
+        return operand().numDimensions();
+    }
+    
+    void TranslationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        MatrixXd operandValues = operand()(parameterValues);
+        results = operandValues.colwise() + vector();
+    }
+    
+    void TranslationFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        MatrixXI operandBounds = operand()(parameterBounds);
+        results = operandBounds.colwise() + vector().cast<Interval>();
+    }
+    
+    Function TranslationFunction::derivative(int index) const {
+        return operand().derivative(index);
+    }
+    
+    Function TranslationFunction::compose(const Function& innerFunction) const {
+        return new TranslationFunction(operand()(innerFunction), vector());
+    }
 
-    class Plane3d;
-
-    template <int iNumDimensions>
-    class Frame;
-
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+    Function TranslationFunction::translated(const VectorXd& vector) const {
+        return new TranslationFunction(operand(), this->vector() + vector);
+    }
+    
+    void TranslationFunction::debug(std::ostream& stream, int indent) const {
+        stream << "TranslationFunction" << std::endl;
+        operand().debug(stream, indent + 1);
+    }
 }

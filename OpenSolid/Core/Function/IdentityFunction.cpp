@@ -22,47 +22,44 @@
  *                                                                                   *
  *************************************************************************************/
 
-#pragma once
+#include <OpenSolid/Core/Function/IdentityFunction.hpp>
 
-#include <OpenSolid/config.hpp>
-
-// Internal headers
-#include <OpenSolid/Core/Function/UnaryOperation.hpp>
+// Public headers
+#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {
-    class NegationFunction : public UnaryOperation
-    {
-    public:
-        OPENSOLID_CORE_EXPORT NegationFunction(const Function& operand);
-        
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
-        
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
+    IdentityFunction::IdentityFunction(int numDimensions) :
+        _numDimensions(numDimensions) {
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getComponents(
-            int startIndex,
-            int numComponents,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void getComposition(
-            const Function& innerFunction,
-            Function& result
-        ) const;
+        assert(_numDimensions > 0);
+    }
 
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& transformationMatrix,
-            const VectorXd& translationVector,
-            Function& result
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
-        OPENSOLID_CORE_EXPORT void getSquaredNorm(Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
-    };
+    int IdentityFunction::numParameters() const {
+        return _numDimensions;
+    }
+
+    int IdentityFunction::numDimensions() const {
+        return _numDimensions;
+    }
+    
+    void IdentityFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        results = parameterValues;
+    }
+    
+    void IdentityFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        results = parameterBounds;
+    }
+
+    Function IdentityFunction::derivative(int index) const {
+        return Function::Constant(VectorXd::Unit(numDimensions(), index), numDimensions());
+    }
+    
+    Function IdentityFunction::compose(const Function& innerFunction) const {
+        return innerFunction;
+    }
+    
+    void IdentityFunction::debug(std::ostream& stream, int indent) const {
+        stream << "IdentityFunction" << std::endl;
+    }
 }

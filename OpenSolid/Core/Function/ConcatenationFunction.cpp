@@ -39,43 +39,36 @@ namespace opensolid
         return firstOperand().numDimensions() + secondOperand().numDimensions();
     }
     
-    void ConcatenationFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void ConcatenationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterValues);
         results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterValues);
     }
     
-    void ConcatenationFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void ConcatenationFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterBounds);
         results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterBounds);
     }
     
-    void ConcatenationFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index).concatenate(secondOperand().derivative(index));
+    Function ConcatenationFunction::derivative(int index) const {
+        return firstOperand().derivative(index).concatenate(secondOperand().derivative(index));
     }
     
-    void ConcatenationFunction::getComponents(
-        int startIndex,
-        int numComponents,
-        Function& result
-    ) const {
+    Function ConcatenationFunction::components(int startIndex, int numComponents) const {
         int firstDimensions = firstOperand().numDimensions();
         if (startIndex + numComponents <= firstDimensions) {
-            result = firstOperand().components(startIndex, numComponents);
+            return firstOperand().components(startIndex, numComponents);
         } else if (startIndex >= firstDimensions) {
-            result = secondOperand().components(startIndex - firstDimensions, numComponents);
+            return secondOperand().components(startIndex - firstDimensions, numComponents);
         } else {
-            result = new ConcatenationFunction(
+            return new ConcatenationFunction(
                 firstOperand().components(startIndex, firstDimensions - startIndex),
                 secondOperand().components(0, startIndex + numComponents - firstDimensions)
             );
         }
     }
     
-    void ConcatenationFunction::getComposition(
-        const Function& innerFunction,
-        Function& result
-    ) const {
-        result = firstOperand()(innerFunction).concatenate(secondOperand()(innerFunction));
+    Function ConcatenationFunction::compose(const Function& innerFunction) const {
+        return firstOperand()(innerFunction).concatenate(secondOperand()(innerFunction));
     }
     
     void ConcatenationFunction::debug(std::ostream& stream, int indent) const {

@@ -26,19 +26,47 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
+#include <OpenSolid/Core/Datum.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/UnaryOperation.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    class LinearTransformationFunction : public UnaryOperation
+    {
+    private:
+        MatrixXd _transformationMatrix;
+    public:
+        OPENSOLID_CORE_EXPORT LinearTransformationFunction(
+            const MatrixXd& transformationMatrix,
+            const Function& operand
+        );
 
-    template <int iNumDimensions>
-    class Axis;
+        const MatrixXd& transformationMatrix() const;
+        
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
+        
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
 
-    class Plane3d;
+        OPENSOLID_CORE_EXPORT Function scaled(double value) const;
+        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& transformationMatrix) const;
+        
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+    };
+}
 
-    template <int iNumDimensions>
-    class Frame;
+////////// Implementation //////////
 
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+namespace opensolid
+{
+    inline const MatrixXd& LinearTransformationFunction::transformationMatrix() const {
+        return _transformationMatrix;
+    }
 }

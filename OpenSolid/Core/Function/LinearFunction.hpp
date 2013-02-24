@@ -48,16 +48,14 @@ namespace opensolid
         int numParameters() const;
         int numDimensions() const;
         
-        void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
+        void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
 
-        void getDerivative(int index, Function& result) const;
+        Function derivative(int index) const;
         
-        void getTransformed(
-            const MatrixXd& transformationMatrix,
-            const VectorXd& translationVector,
-            Function& result
-        ) const;
+        Function scaled(double scale) const;
+        Function transformed(const MatrixXd& transformationMatrix) const;
+        Function translated(const VectorXd& vector) const;
         
         void debug(std::ostream& stream, int indent) const;
     };
@@ -90,7 +88,7 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::getValues(
+    void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results
     ) const {
@@ -98,7 +96,7 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::getBounds(
+    void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results
     ) const {
@@ -106,43 +104,41 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::getDerivative(
-        int index,
-        Function& result
-    ) const {
-        result = datum().basisVector(index);
+    Function LinearFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
+        return Function::Constant(datum().basisVector(index), numParameters());
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    Function LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
+        return new LinearFunction<iNumDimensions, iNumAxes>(scale * datum());
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::getTransformed(
-        const MatrixXd& transformationMatrix,
-        const VectorXd& translationVector,
-        Function& result
+    Function LinearFunction<iNumDimensions, iNumAxes>::transformed(
+        const MatrixXd& transformationMatrix
     ) const {
-        assert(transformationMatrix.rows() == translationVector.size());
-        assert(transformationMatrix.cols() == iNumDimensions);
-
         int numTransformedDimensions = transformationMatrix.rows();
-
         if (numTransformedDimensions == 1) {
-            result = new LinearFunction<1, iNumAxes>(
-                transformationMatrix.topLeftCorner<1, iNumDimensions>() * datum() +
-                    translationVector
+            return new LinearFunction<1, iNumAxes>(
+                Matrix<double, 1, iNumDimensions>(transformationMatrix) * datum()
             );
         } else if (numTransformedDimensions == 2) {
-            result = new LinearFunction<2, iNumAxes>(
-                transformationMatrix.topLeftCorner<2, iNumDimensions>() * datum() +
-                    translationVector
+            return new LinearFunction<2, iNumAxes>(
+                Matrix<double, 2, iNumDimensions>(transformationMatrix) * datum()
             );
         } else if (numTransformedDimensions == 3) {
-            result = new LinearFunction<3, iNumAxes>(
-                transformationMatrix.topLeftCorner<3, iNumDimensions>() * datum() +
-                    translationVector
+            return new LinearFunction<3, iNumAxes>(
+                Matrix<double, 3, iNumDimensions>(transformationMatrix) * datum()
             );
         } else {
             assert(false);
-            result = Function();
+            return Function();
         }
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    Function LinearFunction<iNumDimensions, iNumAxes>::translated(const VectorXd& vector) const {
+        return new LinearFunction<iNumDimensions, iNumAxes>(datum() + vector);
     }
     
     template <int iNumDimensions, int iNumAxes>

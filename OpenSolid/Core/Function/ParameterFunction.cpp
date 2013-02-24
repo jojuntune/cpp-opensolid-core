@@ -22,23 +22,46 @@
  *                                                                                   *
  *************************************************************************************/
 
-#pragma once
+#include <OpenSolid/Core/Function/ParameterFunction.hpp>
 
-#include <OpenSolid/config.hpp>
+// Public headers
+#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    ParameterFunction::ParameterFunction(int numParameters, int index) :
+        _numParameters(numParameters),
+        _index(index) {
 
-    template <int iNumDimensions>
-    class Axis;
+        assert(numParameters > 0);
+        assert(index >= 0 && index < numParameters);
+    }
 
-    class Plane3d;
+    int ParameterFunction::numParameters() const {
+        return _numParameters;
+    }
 
-    template <int iNumDimensions>
-    class Frame;
+    int ParameterFunction::numDimensions() const {
+        return 1;
+    }
+    
+    void ParameterFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        results = parameterValues.row(index());
+    }
+    
+    void ParameterFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        results = parameterBounds.row(index());
+    }
 
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+    Function ParameterFunction::derivative(int index) const {
+        return Function::Constant(index == this->index() ? 1.0 : 0.0, numParameters());
+    }
+    
+    Function ParameterFunction::compose(const Function& innerFunction) const {
+        return innerFunction.components(index(), 1);
+    }
+    
+    void ParameterFunction::debug(std::ostream& stream, int indent) const {
+        stream << "ParameterFunction: index = " << index() << std::endl;
+    }
 }

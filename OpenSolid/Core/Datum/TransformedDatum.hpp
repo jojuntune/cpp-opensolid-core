@@ -26,19 +26,25 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
+#include <OpenSolid/Core/Datum/declarations.hpp>
+#include <OpenSolid/Core/Function/declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
-
-    template <int iNumDimensions>
-    class Axis;
-
-    class Plane3d;
-
-    template <int iNumDimensions>
-    class Frame;
-
     template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+    class TransformedDatum
+    {
+    private:
+        const Datum<iNumDimensions, iNumAxes>& _datum;
+        const Function& _function;
+    public:
+        TransformedDatum(
+            const Datum<iNumDimensions, iNumAxes>& datum,
+            const Function& function
+        );
+        
+        const Datum<iNumDimensions, iNumAxes>& datum() const;
+        const Function& function() const;
+    };
 }

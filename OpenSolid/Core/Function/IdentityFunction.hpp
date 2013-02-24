@@ -26,60 +26,28 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
-#include <OpenSolid/Core/Datum.hpp>
-
 // Internal headers
-#include <OpenSolid/Core/Function/UnaryOperation.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 
 namespace opensolid
 {
-    class TransformedFunction : public UnaryOperation
+    class IdentityFunction : public FunctionImplementation
     {
     private:
-        MatrixXd _transformationMatrix;
-        VectorXd _translationVector;
+        int _numDimensions;
     public:
-        OPENSOLID_CORE_EXPORT TransformedFunction(
-            const Function& function,
-            const MatrixXd& transformationMatrix,
-            const VectorXd& translationVector
-        );
+        OPENSOLID_CORE_EXPORT IdentityFunction(int numDimensions);
         
-        const MatrixXd& transformationMatrix() const;
-        const VectorXd& translationVector() const;
-        
+        OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
-        
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
-        
-        OPENSOLID_CORE_EXPORT void getComposition(
-            const Function& innerFunction,
-            Function& result
-        ) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
 
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& transformationMatrix,
-            const VectorXd& translationVector,
-            Function& result
-        ) const;
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
-}
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    inline const MatrixXd& TransformedFunction::transformationMatrix() const {
-        return _transformationMatrix;
-    }
-
-    inline const VectorXd& TransformedFunction::translationVector() const {
-        return _translationVector;
-    }
 }

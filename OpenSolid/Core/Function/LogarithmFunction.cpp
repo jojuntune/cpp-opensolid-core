@@ -37,16 +37,16 @@ namespace opensolid
         return 1;
     }
         
-    void LogarithmFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void LogarithmFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().log();
     }
 
-    void LogarithmFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void LogarithmFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).array().log();
     }
 
-    void LogarithmFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index) / operand();
+    Function LogarithmFunction::derivative(int index) const {
+        return operand().derivative(index) / operand();
     }
         
     void LogarithmFunction::debug(std::ostream& stream, int indent) const {

@@ -50,20 +50,20 @@ namespace opensolid
         }
     };
     
-    void SquareRootFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void SquareRootFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).unaryExpr(SquareRoot());
     }
     
-    void SquareRootFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void SquareRootFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).unaryExpr(SquareRoot());
     }
 
-    void SquareRootFunction::getDerivative(int index, Function& result) const {
-        result = 0.5 * operand().derivative(index) / sqrt(operand());
+    Function SquareRootFunction::derivative(int index) const {
+        return 0.5 * operand().derivative(index) / Function(this);
     }
     
-    void SquareRootFunction::getSquaredNorm(Function& result) const {
-        result = operand().norm();
+    Function SquareRootFunction::squaredNorm() const {
+        return operand().norm();
     }
     
     void SquareRootFunction::debug(std::ostream& stream, int indent) const {

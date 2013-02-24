@@ -42,12 +42,12 @@
 #include <OpenSolid/Core/Function/DotProductFunction.hpp>
 #include <OpenSolid/Core/Function/EllipticalFunction.hpp>
 #include <OpenSolid/Core/Function/ExponentialFunction.hpp>
+#include <OpenSolid/Core/Function/IdentityFunction.hpp>
 #include <OpenSolid/Core/Function/LinearFunction.hpp>
 #include <OpenSolid/Core/Function/LogarithmFunction.hpp>
-#include <OpenSolid/Core/Function/NegationFunction.hpp>
 #include <OpenSolid/Core/Function/NormFunction.hpp>
 #include <OpenSolid/Core/Function/NormalizedFunction.hpp>
-#include <OpenSolid/Core/Function/ParametersFunction.hpp>
+#include <OpenSolid/Core/Function/ParameterFunction.hpp>
 #include <OpenSolid/Core/Function/PowerFunction.hpp>
 #include <OpenSolid/Core/Function/ProductFunction.hpp>
 #include <OpenSolid/Core/Function/QuotientFunction.hpp>
@@ -61,224 +61,355 @@
 
 namespace opensolid
 {
-    Function::Function() : _implementation(), _type(OPENSOLID_NULLPTR) {
+    Function::Function() : _implementation() {
     }
     
     Function::Function(const FunctionImplementation* implementation) :
-        _implementation(implementation), _type(&typeid(implementation)) {
-    }
-    
-    Function::Function(int value) {
-        *this = Function(VectorXd::Constant(1, value));
-    }
-
-    Function::Function(double value) {
-        *this = Function(VectorXd::Constant(1, value));
-    }
-
-    Function::Function(const VectorXd& vector) :
-        _implementation(new ConstantFunction(vector)), _type(&typeid(ConstantFunction)) {
-    }
-    
-    int Function::numParameters() const {
-        return implementation() ? implementation()->numParameters() : 0;
+        _implementation(implementation) {
     }
     
     int Function::numDimensions() const {
-        return implementation() ? implementation()->numDimensions() : 0;
+        return isValid() ? implementation()->numDimensions() : 0;
+    }
+    
+    int Function::numParameters() const {
+        return isValid() ? implementation()->numParameters() : 0;
     }
     
     bool Function::isConstant() const {
-        assert(implementation());
-        assert(_type);
-        return *_type == typeid(ConstantFunction);
+        return isValid() ? implementation()->isConstant() : false;
+    }
+
+    VectorXd Function::value() const {
+        if (!isValid() || !isConstant()) {
+            assert(false);
+            return VectorXd();
+        }
+        return implementation()->value();
     }
 
     void Function::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        if (!isValid()) {
+            assert(false);
+        }
         implementation()->evaluate(parameterValues, results);
     }
 
     void Function::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        if (!isValid()) {
+            assert(false);
+        }
         implementation()->evaluate(parameterBounds, results);
     }
-    
-    Function Function::derivative(int index) const {
-        assert(implementation());
-        Function result;
-        implementation()->getDerivative(index, result);
-        return result;
+
+    void Function::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {
+        if (!isValid()) {
+            assert(false);
+        }
+        implementation()->evaluateJacobian(parameterValues, results);
+    }
+
+    void Function::evaluateJacobian(const MapXcI& parameterBounds, MapXI& results) const {
+        if (!isValid()) {
+            assert(false);
+        }
+        implementation()->evaluateJacobian(parameterBounds, results);
+    }
+     
+    Function Function::operator()(const Function& other) const {
+        if (!this->isValid() || !other.isValid()) {
+            assert(false);
+            return Function();
+        }
+        if (this->numParameters() != other.numDimensions()) {
+            assert(false);
+            return Function();
+        }
+        if (this->isConstant()) {
+            return *this;
+        } else if (other.isConstant()) {
+            return Function::Constant(operator()(other.value()), numParameters());
+        } else {
+            return this->implementation()->compose(other);
+        }
     }
     
-    Function Function::transformed(
-        const MatrixXd& transformMatrix,
-        const VectorXd& transformVector
-    ) const {
-        assertValidTransform<Dynamic>(numDimensions(), transformMatrix, transformVector);
-        assert(implementation());
-        Function result;
-        implementation()->getTransformed(transformMatrix, transformVector, result);
-        return result;
+    Geometry Function::operator()(const Domain& domain) const {
+        if (!isValid()) {
+            assert(false);
+            return Geometry();
+        }
+        return Geometry(*this, domain);
+    }
+    
+    Function Function::derivative(int parameterIndex) const {
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->derivative(parameterIndex);
     }
     
     Function Function::norm() const {
-        assert(implementation());
-        Function result;
-        implementation()->getNorm(result);
-        return result;
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->norm();
     }
     
     Function Function::normalized() const {
-        assert(implementation());
-        Function result;
-        implementation()->getNormalized(result);
-        return result;
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->normalized();
     }
     
     Function Function::squaredNorm() const {
-        assert(implementation());
-        Function result;
-        implementation()->getSquaredNorm(result);
-        return result;
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->squaredNorm();
     }
 
     Function Function::x() const {
-        assert(implementation());
         return component(0);
     }
 
     Function Function::y() const {
-        assert(implementation());
         return component(1);
     }
 
     Function Function::z() const {
-        assert(implementation());
         return component(2);
     }
     
     Function Function::component(int index) const {
-        assert(implementation());
-        Function result;
-        implementation()->getComponents(index, 1, result);
-        return result;
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        if (numDimensions() == 1) {
+            assert(index == 0);
+            return *this;
+        }
+        return implementation()->components(index, 1);
     }
     
-    Function Function::components(int index, int num) const {
-        assert(implementation());
-        Function result;
-        implementation()->getComponents(index, num, result);
-        return result;
+    Function Function::components(int startIndex, int numComponents) const {
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        if (startIndex == 0 && numComponents == numDimensions()) {
+            return *this;
+        }
+        return implementation()->components(startIndex, numComponents);
+    }
+
+    namespace
+    {
+        inline bool validBinaryOperation(
+            const Function& firstFunction,
+            const Function& secondFunction,
+            bool requireSameNumDimensions
+        ) {
+            if (!firstFunction.isValid()) {
+                return false;
+            }
+            if (!secondFunction.isValid()) {
+                return false;
+            }
+            if (firstFunction.numParameters() != secondFunction.numParameters()) {
+                return false;
+            }
+            if (!requireSameNumDimensions) {
+                return true;
+            }
+            if (firstFunction.numDimensions() != secondFunction.numDimensions()) {
+                return false;
+            }
+            return true;
+        }
     }
     
     Function Function::concatenate(const Function& other) const {
-        assert(implementation());
-        assert(other.implementation());
-        if (isConstant() && other.isConstant()) {
-            VectorXd result(numDimensions() + other.numDimensions());
-            result.head(numDimensions()) = this->as<VectorXd>();
-            result.tail(other.numDimensions()) = other.as<VectorXd>();
-            return result;
+        if (!validBinaryOperation(*this, other, false)) {
+            assert(false);
+            return Function();
+        }
+        if (this->isConstant() && other.isConstant()) {
+            VectorXd vector(this->numDimensions() + other.numDimensions());
+            vector.head(this->numDimensions()) = this->value();
+            vector.tail(other.numDimensions()) = other.value();
+            return Function::Constant(vector, numParameters());
         } else {
             return new ConcatenationFunction(*this, other);
         }
     }
     
     Function Function::dot(const Function& other) const {
-        assert(implementation());
-        assert(other.implementation());
-        if (numDimensions() == 1) {
-            assert(other.numDimensions() == 1);
+        if (!validBinaryOperation(*this, other, true)) {
+            assert(false);
+            return Function();
+        }
+        if (this->isConstant() && other.isConstant()) {
+            return Function::Constant(this->value().dot(other.value()), numParameters());
+        } else if (numDimensions() == 1) {
             return (*this) * other;
-        } else if (isConstant() && other.isConstant()) {
-            return this->as<VectorXd>().dot(other.as<VectorXd>());
-        } else if (
-            (isConstant() && this->as<VectorXd>().isZero()) ||
-            (other.isConstant() && other.as<VectorXd>().isZero())
-        ) {
-            return 0.0;
+        } else if (this->isConstant() && this->value().isZero()) {
+            return Function::Constant(0.0, numParameters());
+        } else if (other.isConstant() && other.value().isZero()) {
+            return Function::Constant(0.0, numParameters());
         } else {
             return new DotProductFunction(*this, other);
         }
     }
     
     Function Function::cross(const Function& other) const {
-        assert(implementation());
-        assert(other.implementation());
-        assert(numDimensions() == 3 && other.numDimensions() == 3);
-        if (isConstant() && other.isConstant()) {
-            return this->as<Vector3d>().cross(other.as<Vector3d>());
+        if (!validBinaryOperation(*this, other, true) || numDimensions() != 3) {
+            assert(false);
+            return Function();
         }
-        else if (
-            (isConstant() && this->as<Vector3d>().isZero()) ||
-            (other.isConstant() && other.as<Vector3d>().isZero())
-        ) {
-            return Vector3d::Zero();
+        if (this->isConstant() && other.isConstant()) {
+            Vector3d value = this->value();
+            Vector3d otherValue = other.value();
+            return Function::Constant(value.cross(otherValue), numParameters());
+        } else if (this->isConstant() && this->value().isZero()) {
+            return Function::Constant(Vector3d::Zero(), numParameters());
+        } else if (other.isConstant() && other.value().isZero()) {
+            return Function::Constant(Vector3d::Zero(), numParameters());
         } else {
             return new CrossProductFunction(*this, other);
         }
     }
     
-    Function Function::tangent() const {
-        assert(implementation());
-        assert(numParameters() == 1);
-        Function result;
-        implementation()->getTangent(result);
-        return result;
+    Function Function::tangentVector() const {
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->tangentVector();
     }
     
     Function Function::curvature() const {
-        assert(implementation());
-        assert(numParameters() == 1);
-        Function result;
-        implementation()->getCurvature(result);
-        return result;
-        
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->curvature();
     }
     
-    Function Function::normal() const {
-        assert(implementation());
-        assert(numParameters() == 1 || numParameters() == 2);
-        Function result;
-        implementation()->getNormal(result);
-        return result;
+    Function Function::normalVector() const {
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->normalVector();
     }
     
-    Function Function::binormal() const {
-        assert(implementation());
-        assert(numParameters() == 1);
-        Function result;
-        implementation()->getBinormal(result);
-        return result;
+    Function Function::binormalVector() const {
+        if (!isValid()) {
+            assert(false);
+            return Function();
+        }
+        return implementation()->binormalVector();
     }
-     
-    Function Function::operator()(const Function& inner) const {
-        assert(implementation());
-        assert(inner.implementation());
-        if (isConstant()) {
+    
+    Function Function::operator+(const Function& other) const {
+        if (!validBinaryOperation(*this, other, true)) {
+            assert(false);
+            return Function();
+        }
+        if (this->isConstant() && other.isConstant()) {
+            return Function::Constant(this->value() + other.value(), numParameters());
+        } else if (this->isConstant() && this->value().isZero()) {
+            return other;
+        } else if (other.isConstant() && other.value().isZero()) {
             return *this;
+        } else {
+            return new SumFunction(*this, other);
         }
-        assert(numParameters() == inner.numDimensions());
-        if (inner.isConstant()) {
-            return operator()(inner.as<VectorXd>());
-        }
-        Function result;
-        implementation()->getComposition(inner, result);
-        return result;
     }
     
-    Geometry Function::operator()(const Domain& domain) const {
-        assert(implementation());
-        assert(isConstant() || !domain.isEmpty());
-        return Geometry(*this, domain);
+    Function Function::operator-(const Function& other) const {
+        if (!validBinaryOperation(*this, other, true)) {
+            assert(false);
+            return Function();
+        }
+        if (this->isConstant() && other.isConstant()) {
+            return Function::Constant(this->value() - other.value(), numParameters());
+        } else if (this->isConstant() && this->value().isZero()) {
+            return -other;
+        } else if (other.isConstant() && other.value().isZero()) {
+            return *this;
+        } else {
+            return new DifferenceFunction(*this, other);
+        }
     }
     
-    Geometry Function::operator()(const Geometry& geometry) const {
-        assert(implementation());
-        return Geometry(operator()(geometry.function()), geometry.domain());
+    Function Function::operator*(const Function& other) const {
+        if (!validBinaryOperation(*this, other, false)) {
+            assert(false);
+            return Function();
+        }
+        Function multiplier;
+        Function multiplicand;
+        if (this->numDimensions() == 1) {
+            multiplier = *this;
+            multiplicand = other;
+        } else if (other.numDimensions() == 1) {
+            multiplier = other;
+            multiplicand = *this;
+        } else {
+            assert(false);
+            return Function();
+        }
+        if (multiplier.isConstant() && multiplicand.isConstant()) {
+            return Function::Constant(
+                multiplier.as<double>() * multiplicand.as<VectorXd>(),
+                numParameters()
+            );
+        } else if (multiplier.isConstant()) {
+            return multiplier.as<double>() * multiplicand;
+        } else if (multiplicand.isConstant() && multiplicand.value().isZero()) {
+            return multiplicand;
+        } else {
+            return new ProductFunction(multiplier, multiplicand);
+        }
+    }
+    
+    Function Function::operator/(const Function& other) const {
+        if (!validBinaryOperation(*this, other, false) || other.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (this->isConstant() && other.isConstant()) {
+            return Function::Constant(
+                this->as<VectorXd>() / other.as<double>(),
+                numParameters()
+            );
+        } else if (this->isConstant() && this->value().isZero()) {
+            return *this;
+        } else if (other.isConstant()) {
+            double divisor = other.as<double>();
+            if (divisor == opensolid::Zero()) {
+                assert(false);
+                return Function();
+            }
+            return (1.0 / divisor) * (*this);
+        } else {
+            return new QuotientFunction(*this, other);
+        }
     }
 
     void Function::debug(std::ostream& stream, int indent) const {
-        assert(implementation());
+        if (!implementation()) {
+            assert(false);
+            return;
+        }
         for (int i = 0; i < indent; ++i) {
             stream << "  ";
         }
@@ -286,198 +417,287 @@ namespace opensolid
         stream << implementation() << " | ";
         implementation()->debug(stream, indent);
     }
-    
-    Function operator-(const Function& operand) {
-        if (operand.isConstant()) {
-            return -operand.as<VectorXd>();
+
+    Function operator*(double value, const Function& function) {
+        if (!function.isValid()) {
+            assert(false);
+            return Function();
         }
-        return new NegationFunction(operand);
+        if (value == opensolid::Zero()) {
+            return Function::Zero(function.numDimensions(), function.numParameters());
+        } else if (value - 1 == opensolid::Zero()) {
+            return function;
+        } else {
+            return function.implementation()->scaled(value);
+        }
     }
 
-    Function operator*(const Function& function, double multiplicand) {
-        return function * Function(multiplicand);
+    Function operator*(const MatrixXd& matrix, const Function& function) {
+        if (!function.isValid()) {
+            assert(false);
+            return Function();
+        }
+        if (matrix.cols() != function.numDimensions()) {
+            assert(false);
+            return Function();
+        }
+        if (matrix.isZero()) {
+            return Function::Zero(matrix.rows(), function.numParameters());
+        } else if (matrix.rows() == matrix.cols() && matrix.isIdentity()) {
+            return function;
+        } else {
+            return function.implementation()->transformed(matrix);
+        }
     }
 
-    Function operator*(double multiplier, const Function& function) {
-        return Function(multiplier) * function;
+    Function operator+(const Function& function, const VectorXd& vector) {
+        if (!function.isValid()) {
+            assert(false);
+            return Function();
+        }
+        if (vector.size() != function.numDimensions()) {
+            assert(false);
+            return Function();
+        }
+        if (vector.isZero()) {
+            return function;
+        } else {
+            return function.implementation()->translated(vector);
+        }
+    }
+
+    Function operator+(const Function& function, double value) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return function + Function::Constant(value, function.numParameters());
+    }
+
+    Function operator+(double value, const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return Function::Constant(value, function.numParameters()) + function;
+    }
+
+    Function operator-(const Function& function, double value) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return function - Function::Constant(value, function.numParameters());
+    }
+
+    Function operator-(double value, const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return Function::Constant(value, function.numParameters()) - function;
+    }
+
+    Function operator*(const Function& function, const VectorXd& vector) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return function * Function::Constant(vector, function.numParameters());
+    }
+
+    Function operator/(double value, const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return Function::Constant(value, function.numParameters()) / function;
+    }
+
+    Function operator/(const VectorXd& vector, const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        return Function::Constant(vector, function.numParameters()) / function;
     }
     
-    Function operator+(const Function& firstOperand, const Function& secondOperand) {
-        if (firstOperand.isConstant() && secondOperand.isConstant()) {
-            return firstOperand.as<VectorXd>() + secondOperand.as<VectorXd>();
-        } else if (firstOperand.isConstant() && firstOperand.as<VectorXd>().isZero()) {
-            return secondOperand;
-        } else if (secondOperand.isConstant() && secondOperand.as<VectorXd>().isZero()) {
-            return firstOperand;
+    Function sin(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            return Function::Constant(sin(value), function.numParameters());
         } else {
-            return new SumFunction(firstOperand, secondOperand);
+            return new SineFunction(function);
         }
     }
     
-    Function operator-(const Function& firstOperand, const Function& secondOperand) {
-        if (firstOperand.isConstant() && secondOperand.isConstant()) {
-            return firstOperand.as<VectorXd>() - secondOperand.as<VectorXd>();
-        } else if (firstOperand.isConstant() && firstOperand.as<VectorXd>().isZero()) {
-            return -secondOperand;
-        } else if (secondOperand.isConstant() && secondOperand.as<VectorXd>().isZero()) {
-            return firstOperand;
+    Function cos(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            return Function::Constant(cos(value), function.numParameters());
         } else {
-            return new DifferenceFunction(firstOperand, secondOperand);
+            return new CosineFunction(function);
         }
     }
     
-    Function operator*(const Function& firstOperand, const Function& secondOperand) {
-        Function multiplicand;
-        Function multiplier;
-        if (secondOperand.numDimensions() == 1) {
-            multiplicand = firstOperand;
-            multiplier = secondOperand;
-        } else {
-            multiplicand = secondOperand;
-            multiplier = firstOperand;
+    Function tan(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
         }
-        if (multiplicand.isConstant() && multiplier.isConstant()) {
-            double multiplierValue = multiplier.as<double>();
-            return multiplicand.as<VectorXd>() * multiplierValue;
-        } else if (multiplicand.isConstant() && multiplicand.as<VectorXd>().isZero()) {
-            return multiplicand;
-        } else if (multiplier.isConstant()) {
-            double multiplierValue = multiplier.as<double>();
-            if (multiplierValue == Zero()) {
-                return VectorXd::Zero(multiplicand.numDimensions());
-            } else if (multiplierValue - 1 == Zero()) {
-                return multiplicand;
-            } else if (multiplierValue + 1 == Zero()) {
-                return -multiplicand;
-            } else {
-                return new ProductFunction(multiplicand, multiplier);
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            if (std::fmod(value - pi() / 2, pi()) == opensolid::Zero()) {
+                assert(false);
+                return Function();
             }
+            return Function::Constant(tan(value), function.numParameters());
         } else {
-            return new ProductFunction(multiplicand, multiplier);
+            return new TangentFunction(function);
         }
     }
     
-    Function operator/(const Function& firstOperand, const Function& secondOperand) {
-        if (firstOperand.isConstant() && secondOperand.isConstant()) {
-            double divisorValue = secondOperand.as<double>();
-            return firstOperand.as<VectorXd>() / divisorValue;
-        } else if (
-            firstOperand.isConstant() &&
-            firstOperand.as<VectorXd>().isZero()
-        ) {
-            return firstOperand;
-        } else if (secondOperand.isConstant()) {
-            double secondValue = secondOperand.as<double>();
-            if (secondValue - 1 == Zero()) {
-                return firstOperand;
-            } else if (secondValue + 1 == Zero()) {
-                return -firstOperand;
-            } else {
-                return new ProductFunction(firstOperand, 1 / secondValue);
+    Function sqrt(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            if (value < opensolid::Zero()) {
+                assert(false);
+                return Function();
             }
+            value = max(value, 0.0);
+            return Function::Constant(sqrt(value), function.numParameters());
         } else {
-            return new QuotientFunction(firstOperand, secondOperand);
+            return new SquareRootFunction(function);
         }
     }
     
-    Function sin(const Function& operand) {
-        if (operand.isConstant()) {
-            return sin(operand.as<double>());
+    Function asin(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            if (!Interval(-1.0, 1.0).contains(value)) {
+                assert(false);
+                return Function();
+            }
+            value = Interval(-1.0, 1.0).clamp(value);
+            return Function::Constant(asin(value), function.numParameters());
         } else {
-            return new SineFunction(operand);
+            return new ArcsineFunction(function);
         }
     }
     
-    Function cos(const Function& operand) {
-        if (operand.isConstant()) {
-            return cos(operand.as<double>());
-        } else {
-            return new CosineFunction(operand);
+    Function acos(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
         }
-    }
-    
-    Function tan(const Function& operand) {
-        if (operand.isConstant()) {
-            return tan(operand.as<double>());
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            if (!Interval(-1.0, 1.0).contains(value)) {
+                assert(false);
+                return Function();
+            }
+            value = Interval(-1.0, 1.0).clamp(value);
+            return Function::Constant(acos(value), function.numParameters());
         } else {
-            return new TangentFunction(operand);
-        }
-    }
-    
-    Function sqrt(const Function& operand) {
-        if (operand.isConstant()) {
-            return sqrt(operand.as<double>());
-        } else {
-            return new SquareRootFunction(operand);
-        }
-    }
-    
-    Function asin(const Function& operand) {
-        if (operand.isConstant()) {
-            return asin(operand.as<double>());
-        } else {
-            return new ArcsineFunction(operand);
-        }
-    }
-    
-    Function acos(const Function& operand) {
-        if (operand.isConstant()) {
-            return acos(operand.as<double>());
-        } else {
-            return new ArccosineFunction(operand);
+            return new ArccosineFunction(function);
         }
     }
 
-    Function exp(const Function& argument) {
-        if (argument.isConstant()) {
-            return exp(argument.as<double>());
+    Function exp(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            return Function::Constant(exp(value), function.numParameters());
         } else {
-            return new ExponentialFunction(argument);
+            return new ExponentialFunction(function);
         }
     }
 
-    Function log(const Function& argument) {
-        if (argument.isConstant()) {
-            return log(argument.as<double>());
+    Function log(const Function& function) {
+        if (!function.isValid() || function.numDimensions() != 1) {
+            assert(false);
+            return Function();
+        }
+        if (function.isConstant()) {
+            double value = function.as<double>();
+            if (value <= opensolid::Zero()) {
+                assert(false);
+                return Function();
+            }
+            return Function::Constant(log(value), function.numParameters());
         } else {
-            return new LogarithmFunction(argument);
+            return new LogarithmFunction(function);
         }
     }
 
-    Function pow(const Function& base, const Function& exponent) {
-        if (base.isConstant() && exponent.isConstant()) {
-            return pow(base.as<double>(), exponent.as<double>());
+    Function pow(const Function& baseFunction, const Function& exponentFunction) {
+        assert(baseFunction.numParameters() == exponentFunction.numParameters());
+        if (baseFunction.isConstant() && exponentFunction.isConstant()) {
+            double baseValue = baseFunction.as<double>();
+            double exponentValue = exponentFunction.as<double>();
+            if (baseValue == opensolid::Zero() && exponentValue < opensolid::Zero()) {
+                assert(false);
+                return Function();
+            }
+            return Function::Constant(pow(baseValue, exponentValue), baseFunction.numParameters());
         } else {
-            return new PowerFunction(base, exponent);
+            return new PowerFunction(baseFunction, exponentFunction);
         }
     }
     
     std::ostream& operator<<(std::ostream& stream, const Function& function) {
-        assert(function.implementation());
         function.debug(stream);
         return stream;
     }
     
     double Conversion<Function, double>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        assert(argument.numDimensions() == 1);
-        return argument.as<VectorXd>().value();
+        if (!argument.isValid() || !argument.isConstant() || argument.numDimensions() != 1) {
+            assert(false);
+            return 0.0;
+        }
+        return argument.value().value();
     }
     
     Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        assert(argument.numDimensions() == 2);
-        return argument.as<VectorXd>();
+        if (!argument.isValid() || !argument.isConstant() || argument.numDimensions() != 2) {
+            assert(false);
+            return Vector2d::Zero();
+        }
+        return argument.value();
     }
     
     Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        assert(argument.numDimensions() == 3);
-        return argument.as<VectorXd>();
+        if (!argument.isValid() || !argument.isConstant() || argument.numDimensions() != 3) {
+            assert(false);
+            return Vector3d::Zero();
+        }
+        return argument.value();
     }
     
-    const VectorXd& Conversion<Function, VectorXd>::operator()(const Function& argument) const {
-        assert(argument.isConstant());
-        return static_cast<const ConstantFunction*>(argument.implementation())->vector();
+    VectorXd Conversion<Function, VectorXd>::operator()(const Function& argument) const {
+        if (!argument.isValid() || !argument.isConstant()) {
+            assert(false);
+            return VectorXd();
+        }
+        return argument.value();
     }
 }

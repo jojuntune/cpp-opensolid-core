@@ -26,19 +26,61 @@
 
 #include <OpenSolid/config.hpp>
 
+// Public headers
+#include <OpenSolid/Core/Matrix.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    template<class Type>
+    class MatrixArgument
+    {
+    private:
+        typename boost::mpl::if_c<
+            Eigen::internal::has_direct_access<Type>::ret,
+            const Type&,
+            typename Type::PlainObject
+        >::type _argument;
+    public:
+        MatrixArgument(const Type& argument);
+    
+        const typename Type::Scalar* data() const;
+        int rows() const;
+        int cols() const;
+        int outerStride() const;
+        int innerStride() const;
+    };
+}
 
-    template <int iNumDimensions>
-    class Axis;
+////////// Implementation //////////
 
-    class Plane3d;
+namespace opensolid
+{
+    template<class Type>
+    inline MatrixArgument<Type>::MatrixArgument(const Type& argument) : _argument(argument) {
+    }
 
-    template <int iNumDimensions>
-    class Frame;
+    template<class Type>
+    inline const typename Type::Scalar* MatrixArgument<Type>::data() const {
+        return _argument.data();
+    }
 
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+    template<class Type>
+    inline int MatrixArgument<Type>::rows() const {
+        return _argument.rows();
+    }
+
+    template<class Type>
+    inline int MatrixArgument<Type>::cols() const {
+        return _argument.cols();
+    }
+
+    template<class Type>
+    inline int MatrixArgument<Type>::outerStride() const {
+        return (Type::Flags & RowMajorBit) ? _argument.innerStride() : _argument.outerStride();
+    }
+
+    template<class Type>
+    inline int MatrixArgument<Type>::innerStride() const {
+        return (Type::Flags & RowMajorBit) ? _argument.outerStride() : _argument.innerStride();
+    }
 }

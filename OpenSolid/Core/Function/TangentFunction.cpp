@@ -37,18 +37,18 @@ namespace opensolid
         return 1;
     }
     
-    void TangentFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void TangentFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         MatrixXd operandValues = operand()(parameterValues);
         results = operandValues.array().sin() / operandValues.array().cos();
     }
     
-    void TangentFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void TangentFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         results = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
-    void TangentFunction::getDerivative(int index, Function& result) const {
-        result = (1 + Function(this).squaredNorm()) * operand().derivative(index);
+    Function TangentFunction::derivative(int index) const {
+        return (1 + Function(this).squaredNorm()) * operand().derivative(index);
     }
     
     void TangentFunction::debug(std::ostream& stream, int indent) const {

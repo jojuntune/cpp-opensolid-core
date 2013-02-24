@@ -34,50 +34,35 @@ namespace opensolid
     class ConstantFunction : public FunctionImplementation
     {
     private:
-        VectorXd _vector;
+        VectorXd _value;
+        int _numParameters;
     public:
-        OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXd& value);
-        
-        const VectorXd& vector() const;
+        OPENSOLID_CORE_EXPORT ConstantFunction(double value, int numParameters);
+        OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXd& vector, int numParameters);
+
+        OPENSOLID_CORE_EXPORT bool isConstant() const;
+        OPENSOLID_CORE_EXPORT VectorXd value() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameter_bounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT void getComponents(
-            int startIndex,
-            int numComponents,
-            Function& result
-        ) const;
+        OPENSOLID_CORE_EXPORT Function components(int startIndex, int numComponents) const;
 
-        OPENSOLID_CORE_EXPORT void getComposition(
-            const Function& innerFunction,
-            Function& result
-        ) const;
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
 
-        OPENSOLID_CORE_EXPORT void getTransformed(
-            const MatrixXd& transformationMatrix,
-            const VectorXd& translationVector,
-            Function& result
-        ) const;
+        OPENSOLID_CORE_EXPORT Function scaled(double scale) const;
+        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& transformationMatrix) const;
+        OPENSOLID_CORE_EXPORT Function translated(const VectorXd& vector) const;
         
-        OPENSOLID_CORE_EXPORT void getNorm(Function& result) const;
-        OPENSOLID_CORE_EXPORT void getNormalized(Function& result) const;
-        OPENSOLID_CORE_EXPORT void getSquaredNorm(Function& result) const;
+        OPENSOLID_CORE_EXPORT Function norm() const;
+        OPENSOLID_CORE_EXPORT Function normalized() const;
+        OPENSOLID_CORE_EXPORT Function squaredNorm() const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
-}
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    inline const VectorXd& ConstantFunction::vector() const {
-        return _vector;
-    }
 }

@@ -28,44 +28,54 @@
 #include <OpenSolid/Core/Function.hpp>
 
 // Internal headers
+#include <OpenSolid/Core/Function/ConstantFunction.hpp>
 #include <OpenSolid/Core/Function/EllipticalFunction.hpp>
+#include <OpenSolid/Core/Function/IdentityFunction.hpp>
 #include <OpenSolid/Core/Function/LinearFunction.hpp>
-#include <OpenSolid/Core/Function/ParametersFunction.hpp>
+#include <OpenSolid/Core/Function/ParameterFunction.hpp>
 
 namespace opensolid
 {
+    Function FunctionConstructors::Zero(int numDimensions, int numParameters) {
+        return Constant(VectorXd::Zero(numDimensions), numParameters);
+    }
+
+    Function FunctionConstructors::Constant(double value, int numParameters) {
+        return Constant(VectorXd::Constant(1, value), numParameters);
+    }
+
+    Function FunctionConstructors::Constant(const VectorXd& vector, int numParameters) {
+        return new ConstantFunction(vector, numParameters);
+    }
+
     Function FunctionConstructors::Identity(int numDimensions) {
-        return new ParametersFunction(numDimensions, 0, numDimensions);
+        return new IdentityFunction(numDimensions);
     }
 
-    Function FunctionConstructors::Parameter() {
-        return new ParametersFunction(1, 0, 1);
+    Function FunctionConstructors::t() {
+        return new ParameterFunction(1, 0);
     }
 
-    Function FunctionConstructors::Parameter(int totalNumParameters, int index) {
-        return new ParametersFunction(totalNumParameters, index, 1);
+    Function FunctionConstructors::u() {
+        return new ParameterFunction(2, 0);
     }
 
-    Function FunctionConstructors::Parameters(int totalNumParameters) {
-        return new ParametersFunction(totalNumParameters, 0, totalNumParameters);
+    Function FunctionConstructors::v() {
+        return new ParameterFunction(2, 1);
     }
 
-    Function FunctionConstructors::Parameters(
-        int totalNumParameters,
-        int startIndex,
-        int numParameters
-    ) {
-        return new ParametersFunction(totalNumParameters, startIndex, numParameters);
+    Function FunctionConstructors::Parameter(int numParameters, int index) {
+        return new ParameterFunction(numParameters, index);
     }
     
-    Function FunctionConstructors::Components(
+    Function FunctionConstructors::FromComponents(
         const Function& xFunction,
         const Function& yFunction
     ) {
         return xFunction.concatenate(yFunction);
     }
     
-    Function FunctionConstructors::Components(
+    Function FunctionConstructors::FromComponents(
         const Function& xFunction,
         const Function& yFunction,
         const Function& zFunction

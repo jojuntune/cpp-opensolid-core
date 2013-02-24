@@ -33,7 +33,9 @@ namespace opensolid
         const Function& operand,
         int startIndex,
         int numComponents
-    ) : UnaryOperation(operand), _startIndex(startIndex), _numComponents(numComponents) {
+    ) : UnaryOperation(operand),
+        _startIndex(startIndex),
+        _numComponents(numComponents) {
 
         assert(startIndex >= 0);
         assert(numComponents > 0);
@@ -44,32 +46,28 @@ namespace opensolid
         return numComponents();
     }
     
-    void ComponentsFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void ComponentsFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         MatrixXd operandValues = operand()(parameterValues);
         results = operandValues.middleRows(startIndex(), numComponents());
     }
     
-    void ComponentsFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void ComponentsFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         results = operandBounds.middleRows(startIndex(), numComponents());
     }
 
-    void ComponentsFunction::getDerivative(int parameterIndex, Function& result) const {
-        result = operand().derivative(parameterIndex).components(startIndex(), numComponents());
+    Function ComponentsFunction::derivative(int parameterIndex) const {
+        return operand().derivative(parameterIndex).components(startIndex(), numComponents());
     }
     
-    void ComponentsFunction::getComponents(
-        int startIndex,
-        int numComponents,
-        Function& result
-    ) const {
+    Function ComponentsFunction::components(int startIndex, int numComponents) const {
         assert(startIndex >= 0 && startIndex < this->numComponents());
         assert(numComponents <= this->numComponents());
-        result = operand().components(this->startIndex() + startIndex, numComponents);
+        return operand().components(this->startIndex() + startIndex, numComponents);
     }
     
-    void ComponentsFunction::getComposition(const Function& innerFunction, Function& result) const {
-        result = operand()(innerFunction).components(startIndex(), numComponents());
+    Function ComponentsFunction::compose(const Function& innerFunction) const {
+        return operand()(innerFunction).components(startIndex(), numComponents());
     }
     
     void ComponentsFunction::debug(std::ostream& stream, int indent) const {

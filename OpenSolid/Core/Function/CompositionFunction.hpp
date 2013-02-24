@@ -37,29 +37,26 @@ namespace opensolid
     class CompositionFunction : public FunctionImplementation
     {
     private:
-        Function _innerFunction;
         Function _outerFunction;
+        Function _innerFunction;
     public:
         OPENSOLID_CORE_EXPORT CompositionFunction(
-            const Function& innerFunction,
-            const Function& outerFunction
+            const Function& outerFunction,
+            const Function& innerFunction
         );
         
-        const Function& innerFunction() const;
         const Function& outerFunction() const;
+        const Function& innerFunction() const;
         
-        OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT int numParameters() const;
 
-        OPENSOLID_CORE_EXPORT void getValues(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void getBounds(const MapXcI& parameterBounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
 
-        OPENSOLID_CORE_EXPORT void getDerivative(int index, Function& result) const;
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT void getComposition(
-            const Function& newInnerFunction,
-            Function& result
-        ) const;
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
@@ -69,11 +66,11 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const Function& CompositionFunction::innerFunction() const {
-        return _innerFunction;
-    }
-    
     inline const Function& CompositionFunction::outerFunction() const {
         return _outerFunction;
+    }
+
+    inline const Function& CompositionFunction::innerFunction() const {
+        return _innerFunction;
     }
 }

@@ -26,19 +26,40 @@
 
 #include <OpenSolid/config.hpp>
 
+// Internal headers
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    class ParameterFunction : public FunctionImplementation
+    {
+    private:
+        int _numParameters;
+        int _index;
+    public:
+        OPENSOLID_CORE_EXPORT ParameterFunction(int numParameters, int index);
+        
+        OPENSOLID_CORE_EXPORT int numParameters() const;
+        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        
+        int index() const;
+        
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
 
-    template <int iNumDimensions>
-    class Axis;
+        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        
+        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        
+        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+    };
+}
 
-    class Plane3d;
+////////// Implementation //////////
 
-    template <int iNumDimensions>
-    class Frame;
-
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+namespace opensolid
+{
+    inline int ParameterFunction::index() const {
+        return _index;
+    }
 }

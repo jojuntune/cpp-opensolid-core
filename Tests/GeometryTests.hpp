@@ -68,7 +68,7 @@ public:
         TS_ASSERT((derivative(2.0 / 3.0) - derivative_magnitude * Vector3d(0, -1, 0)).isZero());
         TS_ASSERT((derivative(1.0) - derivative_magnitude * Vector3d(1, 0, 0)).isZero());
         
-        Function tangent = arc.function().tangent();
+        Function tangent = arc.function().tangentVector();
         TS_ASSERT((tangent(0.0) - Vector3d(0, 1, 0)).isZero());
         TS_ASSERT((tangent(1.0 / 3.0) - Vector3d(-1, 0, 0)).isZero());
         TS_ASSERT((tangent(2.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
@@ -86,7 +86,7 @@ public:
         expected_value = second_derivative_magnitude * Vector3d(0, 1, 0);
         TS_ASSERT((second_derivative(1.0) - expected_value).isZero());
         
-        Function normal = arc.function().tangent().tangent();
+        Function normal = arc.function().tangentVector().tangentVector();
         TS_ASSERT((normal(0.0) - Vector3d(-1, 0, 0)).isZero());
         TS_ASSERT((normal(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
         TS_ASSERT((normal(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
@@ -102,12 +102,15 @@ public:
     }
     
     void testCurveOperations() {
-        Function t = Function::Parameter();
-        Geometry parabola(Function::Components(t, t.squaredNorm(), 0), Interval(-2, 2));
-        TS_ASSERT((parabola.function().tangent()(1) - Vector3d(1, 2, 0).normalized()).isZero());
+        Function t = Function::t();
+        Geometry parabola(
+            Function::FromComponents(t, t.squaredNorm(), Function::Constant(0.0, 1)),
+            Interval(-2, 2)
+        );
+        TS_ASSERT((parabola.function().tangentVector()(1) - Vector3d(1, 2, 0).normalized()).isZero());
         TS_ASSERT(parabola.function().curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
-        TS_ASSERT((parabola.function().normal()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
-        TS_ASSERT((parabola.function().binormal()(1) - Vector3d::UnitZ()).isZero());
+        TS_ASSERT((parabola.function().normalVector()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
+        TS_ASSERT((parabola.function().binormalVector()(1) - Vector3d::UnitZ()).isZero());
         Geometry reversed = parabola.reversed();
         TS_ASSERT((reversed(-1) - Vector3d(1, 1, 0)).isZero());
         TS_ASSERT((reversed(1) - Vector3d(-1, 1, 0)).isZero());

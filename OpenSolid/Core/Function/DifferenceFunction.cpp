@@ -41,16 +41,16 @@ namespace opensolid
         return firstOperand().numDimensions();
     }
     
-    void DifferenceFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void DifferenceFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues) - secondOperand()(parameterValues);
     }
     
-    void DifferenceFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void DifferenceFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = firstOperand()(parameterBounds) - secondOperand()(parameterBounds);
     }
 
-    void DifferenceFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index) - secondOperand().derivative(index);
+    Function DifferenceFunction::derivative(int index) const {
+        return firstOperand().derivative(index) - secondOperand().derivative(index);
     }
     
     void DifferenceFunction::debug(std::ostream& stream, int indent) const {

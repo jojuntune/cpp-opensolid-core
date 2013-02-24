@@ -39,16 +39,16 @@ namespace opensolid
         return 1;
     }
     
-    void CosineFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void CosineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().cos();
     }
     
-    void CosineFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void CosineFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).array().cos();
     }
 
-    void CosineFunction::getDerivative(int index, Function& result) const {
-        result = -sin(operand()) * operand().derivative(index);
+    Function CosineFunction::derivative(int index) const {
+        return -sin(operand()) * operand().derivative(index);
     }
     
     void CosineFunction::debug(std::ostream& stream, int indent) const {

@@ -30,43 +30,57 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
+// Declarations headers
+#include <OpenSolid/Core/Function/declarations.hpp>
+
 namespace opensolid
 {
-    class Function;
-    
     class FunctionImplementation : public ReferenceCounted
     {
     public:
-        virtual ~FunctionImplementation();
-        
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
-        
-        virtual int numParameters() const = 0;
-        virtual int numDimensions() const = 0;
-        
-        virtual void getValues(const MapXcd& parameterValues, MapXd& results) const = 0;
-        virtual void getBounds(const MapXcI& parameterBounds, MapXI& results) const = 0;
-        
-        virtual void getDerivative(int index, Function& result) const = 0;
+        OPENSOLID_CORE_EXPORT virtual ~FunctionImplementation();
 
-        virtual void getComponents(int index, int num, Function& result) const;
-        virtual void getComposition(const Function& inner, Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual int numDimensions() const = 0;
+        OPENSOLID_CORE_EXPORT virtual int numParameters() const = 0;
         
-        virtual void getTransformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector,
-            Function& result
+        OPENSOLID_CORE_EXPORT virtual bool isConstant() const;
+        OPENSOLID_CORE_EXPORT virtual VectorXd value() const;
+
+        OPENSOLID_CORE_EXPORT virtual void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results
+        ) const = 0;
+        
+        OPENSOLID_CORE_EXPORT virtual void evaluate(
+            const MapXcI& parameterBounds,
+            MapXI& results
+        ) const = 0;
+
+        OPENSOLID_CORE_EXPORT virtual void evaluateJacobian(
+            const MapXcd& parameterValues,
+            MapXd& results
         ) const;
         
-        virtual void getNorm(Function& result) const;
-        virtual void getNormalized(Function& result) const;
-        virtual void getSquaredNorm(Function& result) const;
-        virtual void getTangent(Function& result) const;
-        virtual void getCurvature(Function& result) const;
-        virtual void getNormal(Function& result) const;
-        virtual void getBinormal(Function& result) const;
+        OPENSOLID_CORE_EXPORT virtual void evaluateJacobian(
+            const MapXcI& parameterBounds,
+            MapXI& results
+        ) const;
+
+        OPENSOLID_CORE_EXPORT virtual Function derivative(int parameterIndex = 0) const = 0;
+
+        OPENSOLID_CORE_EXPORT virtual Function components(int startIndex, int numComponents) const;
+        OPENSOLID_CORE_EXPORT virtual Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT virtual Function scaled(double scale) const;
+        OPENSOLID_CORE_EXPORT virtual Function translated(const VectorXd& vector) const;
+        OPENSOLID_CORE_EXPORT virtual Function transformed(const MatrixXd& matrix) const;
+        OPENSOLID_CORE_EXPORT virtual Function norm() const;
+        OPENSOLID_CORE_EXPORT virtual Function normalized() const;
+        OPENSOLID_CORE_EXPORT virtual Function squaredNorm() const;
+        OPENSOLID_CORE_EXPORT virtual Function tangentVector() const;
+        OPENSOLID_CORE_EXPORT virtual Function curvature() const;
+        OPENSOLID_CORE_EXPORT virtual Function normalVector() const;
+        OPENSOLID_CORE_EXPORT virtual Function binormalVector() const;
         
-        virtual void debug(std::ostream& stream, int indent) const = 0;
+        OPENSOLID_CORE_EXPORT virtual void debug(std::ostream& stream, int indent) const = 0;
     };
 }

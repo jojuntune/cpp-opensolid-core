@@ -29,7 +29,9 @@
 
 namespace opensolid
 {
-    ArcsineFunction::ArcsineFunction(const Function& operand) : UnaryOperation(operand) {
+    ArcsineFunction::ArcsineFunction(const Function& operand) :
+        UnaryOperation(operand) {
+
         assert(operand.numDimensions() == 1);
     }
     
@@ -50,16 +52,16 @@ namespace opensolid
         }
     };
     
-    void ArcsineFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void ArcsineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).unaryExpr(Arcsine());
     }
     
-    void ArcsineFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void ArcsineFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).unaryExpr(Arcsine());
     }
 
-    void ArcsineFunction::getDerivative(int index, Function& result) const {
-        result = operand().derivative(index) / sqrt(1 - operand().squaredNorm());
+    Function ArcsineFunction::derivative(int index) const {
+        return operand().derivative(index) / sqrt(1 - operand().squaredNorm());
     }
     
     void ArcsineFunction::debug(std::ostream& stream, int indent) const {

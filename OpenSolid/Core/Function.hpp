@@ -28,20 +28,26 @@
 
 // Public headers
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Evaluation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Mirror.hpp>
+#include <OpenSolid/Core/Projection.hpp>
+#include <OpenSolid/Core/Rotation.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Transformation.hpp>
 
 // Internal headers
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Matrix/JacobianReturnValue.hpp>
+#include <OpenSolid/Core/Matrix/MatrixReturnValue.hpp>
 
 // Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Domain/declarations.hpp>
 #include <OpenSolid/Core/Function/declarations.hpp>
 #include <OpenSolid/Core/Geometry/declarations.hpp>
+#include <OpenSolid/Core/Simplex/declarations.hpp>
 #include <OpenSolid/Core/Transformation/declarations.hpp>
  
 #include <boost/intrusive_ptr.hpp>
@@ -57,37 +63,69 @@ namespace opensolid
     {
     private:
         boost::intrusive_ptr<const FunctionImplementation> _implementation;
-        const std::type_info* _type;
     public:
         OPENSOLID_CORE_EXPORT Function();
         OPENSOLID_CORE_EXPORT Function(const FunctionImplementation* function);
 
-        OPENSOLID_CORE_EXPORT Function(int value);
-        OPENSOLID_CORE_EXPORT Function(double value);
-        OPENSOLID_CORE_EXPORT Function(const VectorXd& vector);
+        OPENSOLID_CORE_EXPORT Function(const Rotation2d& rotation);
+        OPENSOLID_CORE_EXPORT Function(const Rotation3d& rotation);
+        OPENSOLID_CORE_EXPORT Function(const Mirror2d& mirror);
+        OPENSOLID_CORE_EXPORT Function(const Mirror3d& mirror);
+        OPENSOLID_CORE_EXPORT Function(const Projection2d& projection);
+        OPENSOLID_CORE_EXPORT Function(const Projection3d& projection);
 
-        template <class DerivedType>
-        Function(const EigenBase<DerivedType>& vector);
+        template <int iNumSourceDimensions, int iNumDestinationDimensions>
+        Function(
+            const Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation
+        );
         
         const FunctionImplementation* implementation() const;
-        const std::type_info& type() const;
+        bool isValid() const;
         
-        OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT int numParameters() const;
+
         OPENSOLID_CORE_EXPORT bool isConstant() const;
+        OPENSOLID_CORE_EXPORT VectorXd value() const;
 
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
-        
-        template <class ArgumentType>
-        Evaluation<Function, ArgumentType> operator()(const ArgumentType& argument) const;
-        
-        OPENSOLID_CORE_EXPORT Function derivative(int index = 0) const;
-
-        OPENSOLID_CORE_EXPORT Function transformed(
-            const MatrixXd& matrix,
-            const VectorXd& vector
+        OPENSOLID_CORE_EXPORT void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results
         ) const;
+        
+        OPENSOLID_CORE_EXPORT void evaluate(
+            const MapXcI& parameterBounds,
+            MapXI& results
+        ) const;
+
+        OPENSOLID_CORE_EXPORT void evaluateJacobian(
+            const MapXcd& parameterValues,
+            MapXd& results
+        ) const;
+        
+        OPENSOLID_CORE_EXPORT void evaluateJacobian(
+            const MapXcI& parameterBounds,
+            MapXI& results
+        ) const;
+
+        MatrixReturnValue<Function, int> operator()(int value) const;
+        MatrixReturnValue<Function, double> operator()(double value) const;
+        MatrixReturnValue<Function, Interval> operator()(Interval interval) const;
+        
+        template <class TDerived>
+        MatrixReturnValue<Function, TDerived> operator()(const EigenBase<TDerived>& matrix) const;
+
+        JacobianReturnValue<Function, int> jacobian(int value) const;
+        JacobianReturnValue<Function, double> jacobian(double value) const;
+        JacobianReturnValue<Function, Interval> jacobian(Interval interval) const;
+        
+        template <class TDerived>
+        JacobianReturnValue<Function, TDerived> jacobian(const EigenBase<TDerived>& vector) const;
+        
+        OPENSOLID_CORE_EXPORT Function operator()(const Function& function) const;
+        OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
+        
+        OPENSOLID_CORE_EXPORT Function derivative(int parameterIndex = 0) const;
         
         OPENSOLID_CORE_EXPORT Function norm() const;
         OPENSOLID_CORE_EXPORT Function normalized() const;
@@ -100,81 +138,33 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function dot(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function cross(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function operator()(const Function& inner) const;
-        OPENSOLID_CORE_EXPORT Function tangent() const;
+        OPENSOLID_CORE_EXPORT Function tangentVector() const;
         OPENSOLID_CORE_EXPORT Function curvature() const;
-        OPENSOLID_CORE_EXPORT Function normal() const;
-        OPENSOLID_CORE_EXPORT Function binormal() const;
-        
-        OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
-        OPENSOLID_CORE_EXPORT Geometry operator()(const Geometry& geometry) const;
+        OPENSOLID_CORE_EXPORT Function normalVector() const;
+        OPENSOLID_CORE_EXPORT Function binormalVector() const;
+
+        OPENSOLID_CORE_EXPORT Function operator+(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function operator-(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function operator*(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function operator/(const Function& other) const;
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
     };
 
-    OPENSOLID_CORE_EXPORT Function operator-(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function operator*(double scale, const Function& function);
+    OPENSOLID_CORE_EXPORT Function operator*(const MatrixXd& matrix, const Function& function);
+    OPENSOLID_CORE_EXPORT Function operator+(const Function& function, const VectorXd& vector);
 
-    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, double multiplicand);
-    OPENSOLID_CORE_EXPORT Function operator*(double multiplier, const Function& function);
-
-    template <class TMatrix>
-    Function operator*(
-        const Function& function,
-        const EigenBase<TMatrix>& matrix
-    );
-
-    template <class TMatrix>
-    Function operator*(
-        const EigenBase<TMatrix>& matrix,
-        const Function& function
-    );
-
-    template <class TMatrix>
-    Function operator+(
-        const Function& function,
-        const EigenBase<TMatrix>& matrix
-    );
-
-    template <class TMatrix>
-    Function operator+(
-        const EigenBase<TMatrix>& matrix,
-        const Function& function
-    );
-
-    template <class TMatrix>
-    Function operator-(
-        const Function& function,
-        const EigenBase<TMatrix>& matrix
-    );
-
-    template <class TMatrix>
-    Function operator-(
-        const EigenBase<TMatrix>& matrix,
-        const Function& function
-    );
+    OPENSOLID_CORE_EXPORT Function operator+(const Function& function, double value);
+    OPENSOLID_CORE_EXPORT Function operator+(double value, const Function& function);
+    OPENSOLID_CORE_EXPORT Function operator-(const Function& function, double value);
+    OPENSOLID_CORE_EXPORT Function operator-(double value, const Function& function);
+    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const VectorXd& vector);
+    OPENSOLID_CORE_EXPORT Function operator/(double value, const Function& function);
+    OPENSOLID_CORE_EXPORT Function operator/(const VectorXd& vector, const Function& function);
     
-    OPENSOLID_CORE_EXPORT Function operator+(
-        const Function& first_operand,
-        const Function& second_operand
-    );
-    
-    OPENSOLID_CORE_EXPORT Function operator-(
-        const Function& first_operand,
-        const Function& second_operand
-    );
-    
-    OPENSOLID_CORE_EXPORT Function operator*(
-        const Function& first_operand,
-        const Function& second_operand
-    );
-    
-    OPENSOLID_CORE_EXPORT Function operator/(
-        const Function& first_operand,
-        const Function& second_operand
-    );
-    
-    OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function sin(const Function& argument);
+    OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
     OPENSOLID_CORE_EXPORT Function tan(const Function& argument);
     OPENSOLID_CORE_EXPORT Function sqrt(const Function& argument);
     OPENSOLID_CORE_EXPORT Function acos(const Function& argument);
@@ -214,7 +204,7 @@ namespace opensolid
     template <>
     struct Conversion<Function, VectorXd>
     {
-        OPENSOLID_CORE_EXPORT const VectorXd& operator()(const Function& argument) const;
+        OPENSOLID_CORE_EXPORT VectorXd operator()(const Function& argument) const;
     };
 
     template <int iNumResultDimensions>
@@ -226,71 +216,144 @@ namespace opensolid
 
 ////////// Implementation //////////
 
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Simplex.hpp>
+
+#include <OpenSolid/Core/Datum/TransformedDatum.hpp>
+#include <OpenSolid/Core/Simplex/TransformedSimplex.hpp>
+
 namespace opensolid
 {
-    template <class DerivedType>
-    Function::Function(const EigenBase<DerivedType>& vector) {
-        *this = Function(VectorXd(vector));
+    // Declared in TransformedSimplex.hpp
+    template <int iNumDimensions, int iNumVertices>
+    inline TransformedSimplex<iNumDimensions, iNumVertices>::TransformedSimplex(
+        const Simplex<iNumDimensions, iNumVertices>& simplex,
+        const Function& function
+    ) : _simplex(simplex),
+        _function(function) {
+
+        assert(function.numParameters() == iNumDimensions);
+    }
+    
+    // Declared in TransformedSimplex.hpp
+    template <int iNumDimensions, int iNumVertices>
+    inline const Simplex<iNumDimensions, iNumVertices>&
+    TransformedSimplex<iNumDimensions, iNumVertices>::simplex() const {
+        return _simplex;
+    }
+    
+    // Declared in TransformedSimplex.hpp
+    template <int iNumDimensions, int iNumVertices>
+    inline const Function&
+    TransformedSimplex<iNumDimensions, iNumVertices>::function() const {
+        return _function;
+    }
+
+    // Declared in Simplex.hpp
+    template <int iNumDimensions, int iNumVertices> template <int iArgumentDimensions>
+    Simplex<iNumDimensions, iNumVertices>::Simplex(
+        const TransformedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex
+    ) {
+        if (transformedSimplex.function().numDimensions() == iNumDimensions) {
+            _vertices = transformedSimplex.function()(transformedSimplex.argument().vertices());
+        } else {
+            assert(false);
+            _vertices.setZero();
+        }
+    }
+
+    // Declared in TransformedDatum.hpp
+    template <int iNumDimensions, int iNumAxes>
+    inline TransformedDatum<iNumDimensions, iNumAxes>::TransformedDatum(
+        const Datum<iNumDimensions, iNumAxes>& datum,
+        const Function& function
+    ) : _datum(datum),
+        _function(function) {
+
+        assert(function.numParameters() == iNumDimensions);
+    }
+    
+    // Declared in TransformedDatum.hpp
+    template <int iNumDimensions, int iNumAxes>
+    inline const Datum<iNumDimensions, iNumAxes>&
+    TransformedDatum<iNumDimensions, iNumAxes>::datum() const {
+        return _datum;
+    }
+    
+    // Declared in TransformedDatum.hpp
+    template <int iNumDimensions, int iNumAxes>
+    inline const Function&
+    TransformedDatum<iNumDimensions, iNumAxes>::function() const {
+        return _function;
+    }
+
+    // Declared in Datum.hpp
+    template <int iNumDimensions, int iNumAxes> template <int iArgumentDimensions>
+    Datum<iNumDimensions, iNumAxes>::Datum(
+        const TransformedDatum<iArgumentDimensions, iNumAxes>& transformedDatum
+    ) {
+        if (transformedDatum.function().numDimensions() == iNumDimensions) {
+            Matrix<double, iArgumentDimensions, 1> argumentOrigin =
+                transformedDatum.argument().originPoint();
+
+            Matrix<double, iNumDimensions, iNumAxes> jacobian =
+                transformedDatum.function().jacobian(argumentOrigin);
+
+            initialize(
+                transformedDatum.function()(argumentOrigin),
+                jacobian * transformedDatum.argument().basisMatrix()
+            );
+        } else {
+            assert(false);
+            _originPoint.setZero();
+            _basisMatrix.setZero();
+            _inverseMatrix.setZero();
+        }
     }
     
     inline const FunctionImplementation* Function::implementation() const {
         return _implementation.get();
     }
 
-    inline const std::type_info& Function::type() const {
-        return *_type;
+    inline bool Function::isValid() const {
+        return implementation();
+    }
+
+    inline MatrixReturnValue<Function, int> Function::operator()(int value) const {
+        return MatrixReturnValue<Function, int>(*this, value);
+    }
+
+    inline MatrixReturnValue<Function, double> Function::operator()(double value) const {
+        return MatrixReturnValue<Function, double>(*this, value);
+    }
+
+    inline MatrixReturnValue<Function, Interval> Function::operator()(Interval interval) const {
+        return MatrixReturnValue<Function, Interval>(*this, interval);
     }
     
-    template <class ArgumentType>
-    inline Evaluation<Function, ArgumentType> Function::operator()(const ArgumentType& argument) const {
-        return Evaluation<Function, ArgumentType>(*this, argument);
+    template <class TDerived>
+    inline MatrixReturnValue<Function, TDerived> Function::operator()(
+        const EigenBase<TDerived>& matrix
+    ) const {
+        return MatrixReturnValue<Function, TDerived>(*this, matrix.derived());
     }
 
-    template <class TMatrix>
-    Function operator*(
-        const Function& function,
-        const EigenBase<TMatrix>& matrix
-    ) {
-        return function * Function(matrix);
+    inline JacobianReturnValue<Function, int> Function::jacobian(int value) const {
+        return JacobianReturnValue<Function, int>(*this, value);
     }
 
-    template <class TMatrix>
-    Function operator*(
-        const EigenBase<TMatrix>& matrix,
-        const Function& function
-    ) {
-        return function.transformed(matrix, VectorXd::Zero(matrix.rows()));
+    inline JacobianReturnValue<Function, double> Function::jacobian(double value) const {
+        return JacobianReturnValue<Function, double>(*this, value);
     }
 
-    template <class TMatrix>
-    Function operator+(
-        const Function& function,
-        const EigenBase<TMatrix>& matrix
-    ) {
-        return function + Function(matrix);
+    inline JacobianReturnValue<Function, Interval> Function::jacobian(Interval interval) const {
+        return JacobianReturnValue<Function, Interval>(*this, interval);
     }
 
-    template <class TMatrix>
-    Function operator+(
-        const EigenBase<TMatrix>& matrix,
-        const Function& function
-    ) {
-        return Function(matrix) + function;
-    }
-
-    template <class TMatrix>
-    Function operator-(
-        const Function& function,
-        const EigenBase<TMatrix>& matrix
-    ) {
-        return function - Function(matrix);
-    }
-
-    template <class TMatrix>
-    Function operator-(
-        const EigenBase<TMatrix>& matrix,
-        const Function& function
-    ) {
-        return Function(matrix) - function;
+    template <class TDerived>
+    inline JacobianReturnValue<Function, TDerived> Function::jacobian(
+        const EigenBase<TDerived>& vector
+    ) const {
+        return JacobianReturnValue<Function, TDerived>(*this, vector.derived());
     }
 }

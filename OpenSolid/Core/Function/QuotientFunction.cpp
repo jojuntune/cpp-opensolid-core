@@ -41,20 +41,20 @@ namespace opensolid
         return firstOperand().numDimensions();
     }
     
-    void QuotientFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void QuotientFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues).array() /
             secondOperand()(parameterValues).replicate(numDimensions(), 1).array();
     }
     
-    void QuotientFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void QuotientFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = firstOperand()(parameterBounds).array() /
             secondOperand()(parameterBounds).replicate(numDimensions(), 1).array();
     }
 
-    void QuotientFunction::getDerivative(int index, Function& result) const {
+    Function QuotientFunction::derivative(int index) const {
         Function firstDerivative = firstOperand().derivative(index);
         Function secondDerivative = secondOperand().derivative(index);
-        result =(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
+        return(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
             secondOperand().squaredNorm();
     }
     

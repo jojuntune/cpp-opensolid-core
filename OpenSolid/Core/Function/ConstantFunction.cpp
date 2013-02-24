@@ -29,64 +29,82 @@
 
 namespace opensolid
 {
-    ConstantFunction::ConstantFunction(const VectorXd& vector) : _vector(vector) {
+    ConstantFunction::ConstantFunction(const VectorXd& vector, int numParameters) :
+        _value(vector),
+        _numParameters(numParameters) {
+    }
+
+    ConstantFunction::ConstantFunction(double value, int numParameters) :
+        _value(VectorXd::Constant(1, value)),
+        _numParameters(numParameters) {
+    }
+
+    bool ConstantFunction::isConstant() const {
+        return true;
+    }
+
+    VectorXd ConstantFunction::value() const {
+        return _value;
     }
     
     int ConstantFunction::numParameters() const {
-        return 0;
+        return _numParameters;
     }
     
     int ConstantFunction::numDimensions() const {
-        return vector().size();
+        return value().size();
     }
     
-    void ConstantFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
-        results.colwise() = vector();
+    void ConstantFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+        results.colwise() = value();
     }
     
-    void ConstantFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
-        results.colwise() = vector().cast<Interval>();
+    void ConstantFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+        results.colwise() = value().cast<Interval>();
     }
     
-    void ConstantFunction::getDerivative(int index, Function& result) const {
-        result = VectorXd::Zero(vector().size());
+    Function ConstantFunction::derivative(int) const {
+        return new ConstantFunction(VectorXd::Zero(numDimensions()), numParameters());
     }
     
-    void ConstantFunction::getComponents(
-        int startIndex,
-        int numComponents,
-        Function& result
-    ) const {
-        result = vector().middleRows(startIndex, numComponents);
+    Function ConstantFunction::components(int startIndex, int numComponents) const {
+        return new ConstantFunction(
+            value().middleRows(startIndex, numComponents),
+            numParameters()
+        );
     }
     
-    void ConstantFunction::getComposition(const Function& innerFunction, Function& result) const {
-        result = vector();
+    Function ConstantFunction::compose(const Function& innerFunction) const {
+        return this;
     }
     
-    void ConstantFunction::getTransformed(
-        const MatrixXd& transformationMatrix,
-        const VectorXd& translationVector,
-        Function& result
-    ) const {
-        result = transformationMatrix * vector() + translationVector;
+    Function ConstantFunction::scaled(double scale) const {
+        return new ConstantFunction(scale * value(), numParameters());
     }
     
-    void ConstantFunction::getNorm(Function& result) const {
-        result = vector().norm();
+    Function ConstantFunction::transformed(const MatrixXd& transformationMatrix) const {
+        return new ConstantFunction(transformationMatrix * value(), numParameters());
     }
     
-    void ConstantFunction::getNormalized(Function& result) const {
-        double norm = vector().norm();
+    Function ConstantFunction::translated(const VectorXd& vector) const {
+        return new ConstantFunction(value() + vector, numParameters());
+    }
+    
+    Function ConstantFunction::norm() const {
+        return new ConstantFunction(value().norm(), numParameters());
+    }
+    
+    Function ConstantFunction::normalized() const {
+        double norm = value().norm();
         assert(norm > Zero());
-        result = vector() / norm;
+        return new ConstantFunction(value() / norm, numParameters());
     }
     
-    void ConstantFunction::getSquaredNorm(Function& result) const {
-        result = vector().squaredNorm();
+    Function ConstantFunction::squaredNorm() const {
+        return new ConstantFunction(value().squaredNorm(), numParameters());
     }
     
     void ConstantFunction::debug(std::ostream& stream, int indent) const {
-        stream << "ConstantFunction: " << vector().transpose() << std::endl;
+        stream << "ConstantFunction: " << value().transpose() << std::endl;
     }
 }

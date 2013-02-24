@@ -29,7 +29,9 @@
 
 namespace opensolid
 {
-    ArccosineFunction::ArccosineFunction(const Function& operand) : UnaryOperation(operand) {
+    ArccosineFunction::ArccosineFunction(const Function& operand) :
+        UnaryOperation(operand) {
+
         assert(operand.numDimensions() == 1);
     }
     
@@ -50,16 +52,16 @@ namespace opensolid
         }
     };
     
-    void ArccosineFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void ArccosineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).unaryExpr(Arccosine());
     }
     
-    void ArccosineFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void ArccosineFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = operand()(parameterBounds).unaryExpr(Arccosine());
     }
 
-    void ArccosineFunction::getDerivative(int index, Function& result) const {
-        result = -operand().derivative(index) / sqrt(1 - operand().squaredNorm());
+    Function ArccosineFunction::derivative(int index) const {
+        return -operand().derivative(index) / sqrt(1.0 - operand().squaredNorm());
     }
     
     void ArccosineFunction::debug(std::ostream& stream, int indent) const {

@@ -39,16 +39,16 @@ namespace opensolid
         return firstOperand().numDimensions();
     }
     
-    void SumFunction::getValues(const MapXcd& parameterValues, MapXd& results) const {
+    void SumFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues) + secondOperand()(parameterValues);
     }
     
-    void SumFunction::getBounds(const MapXcI& parameterBounds, MapXI& results) const {
+    void SumFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
         results = firstOperand()(parameterBounds) + secondOperand()(parameterBounds);
     }
 
-    void SumFunction::getDerivative(int index, Function& result) const {
-        result = firstOperand().derivative(index) + secondOperand().derivative(index);
+    Function SumFunction::derivative(int index) const {
+        return firstOperand().derivative(index) + secondOperand().derivative(index);
     }
     
     void SumFunction::debug(std::ostream& stream, int indent) const {

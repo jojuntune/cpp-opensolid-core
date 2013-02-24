@@ -27,15 +27,13 @@
 namespace opensolid
 {
     BinaryOperation::BinaryOperation(const Function& firstOperand, const Function& secondOperand) :
-        _firstOperand(firstOperand), _secondOperand(secondOperand) {
+        _firstOperand(firstOperand),
+        _secondOperand(secondOperand) {
         
-        #ifndef NDEBUG    
-        bool equalParameters = firstOperand.numParameters() == secondOperand.numParameters();
-        assert(equalParameters || firstOperand.isConstant() || secondOperand.isConstant());
-        #endif
+        assert(firstOperand.numParameters() == secondOperand.numParameters());
     }
     
     int BinaryOperation::numParameters() const {
-        return max(firstOperand().numParameters(), secondOperand().numParameters());
+        return firstOperand().numParameters();
     }
 }
