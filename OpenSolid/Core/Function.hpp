@@ -316,7 +316,7 @@ namespace opensolid
     }
 
     inline bool Function::isValid() const {
-        return implementation();
+        return implementation() != 0;
     }
 
     inline MatrixReturnValue<Function, int> Function::operator()(int value) const {
