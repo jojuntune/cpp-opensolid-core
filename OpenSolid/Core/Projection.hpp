@@ -45,6 +45,9 @@ namespace opensolid
         const Matrix<double, iNumDimensions, 1>& originPoint() const;
         const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix() const;
     };
+
+    typedef Projection<2> Projection2d;
+    typedef Projection<3> Projection3d;
 }
 
 ////////// Implementation //////////

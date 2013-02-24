@@ -44,6 +44,9 @@ namespace opensolid
         const Matrix<double, iNumDimensions, 1>& originPoint() const;
         const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix() const;
     };
+
+    typedef Mirror<2> Mirror2d;
+    typedef Mirror<3> Mirror3d;
 }
 
 ////////// Implementation //////////
