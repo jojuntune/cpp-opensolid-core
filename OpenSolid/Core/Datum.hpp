@@ -30,6 +30,9 @@
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Datum/TransformedDatum.hpp>
  
 // Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
@@ -67,6 +70,10 @@ namespace opensolid
         Datum<iNumDimensions, iNumAxes>& operator=(
             const Datum<iNumDimensions, iNumAxes>& otherDatum
         );
+
+        // Defined in Function.hpp
+        template <int iArgumentDimensions>
+        Datum(const TransformedDatum<iArgumentDimensions, iNumAxes>& transformedDatum);
         
         const Matrix<double, iNumDimensions, 1>& originPoint() const;
         const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix() const;
@@ -113,10 +120,9 @@ namespace opensolid
         Datum<iNumDimensions, iNumAxes> reversed(int index) const;
 
         Datum<iNumDimensions, iNumAxes> offset(double distance) const;
-
         Datum<iNumDimensions, iNumAxes> normalized() const;
-
         Datum<iNumDimensions, iNumAxes> linear() const;
+        TransformedDatum<iNumDimensions, iNumAxes> transformed(const Function& function) const;
     };
 
     template <int iNumDimensions, int iNumAxes, class TMatrix>
@@ -177,6 +183,91 @@ namespace opensolid
 
 namespace opensolid
 {
+    // Declared in Transformable.hpp
+    template <class TDerived> template <int iNumDimensions>
+    inline TDerived Transformable<TDerived>::translated(
+        double coordinateValue,
+        const Datum<iNumDimensions, 1>& axis
+    ) const {
+        return derived() + coordinateValue * axis.basisVector();
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived>
+    inline TDerived Transformable<TDerived>::rotated(
+        double angle,
+        const Datum<3, 1>& axis
+    ) const {
+        return rotated(Rotation3d(angle, axis));
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived>
+    inline TDerived Transformable<TDerived>::rotated(
+        double angle,
+        const Datum<3, 1>& axis,
+        LinearTag
+    ) const {
+        return Matrix3d(AngleAxisd(angle, axis.basisVector())) * derived();
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived> template <int iNumDimensions>
+    inline TDerived Transformable<TDerived>::mirrored(
+        const Datum<iNumDimensions, iNumDimensions - 1>& datum
+    ) const {
+        return mirrored(Mirror<iNumDimensions>(datum));
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived> template <int iNumDimensions>
+    inline TDerived Transformable<TDerived>::mirrored(
+        const Datum<iNumDimensions, iNumDimensions - 1>& datum,
+        LinearTag
+    ) const {
+        return mirrored(Mirror<iNumDimensions>(datum), Linear);
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    TDerived Transformable<TDerived>::projected(
+        const Datum<iNumDimensions, iNumAxes>& datum
+    ) const {
+        return projected(Projection<iNumDimensions>(datum));
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    TDerived Transformable<TDerived>::projected(
+        const Datum<iNumDimensions, iNumAxes>& datum,
+        LinearTag
+    ) const {
+        return (datum.basisMatrix() * datum.inverseMatrix()) * derived();
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived>
+    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+    typename Transformed<TDerived, iNumDestinationDimensions>::Type
+    Transformable<TDerived>::transformed(
+        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
+    ) const {
+        return destinationDatum * (derived() / sourceDatum);
+    }
+
+    // Declared in Transformable.hpp
+    template <class TDerived>
+    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+    typename Transformed<TDerived, iNumDestinationDimensions>::Type
+    Transformable<TDerived>::transformed(
+        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum,
+        LinearTag
+    ) const {
+        return (destinationDatum.basisMatrix() * sourceDatum.inverseMatrix()) * derived();
+    }
+
     template <int iNumDimensions, int iNumAxes>
     void Datum<iNumDimensions, iNumAxes>::initialize(
         const Matrix<double, iNumDimensions, 1>& originPoint,
@@ -540,6 +631,12 @@ namespace opensolid
         Datum<iNumDimensions, iNumAxes> result(*this);
         result._originPoint.setZero();
         return result;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    inline TransformedDatum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::transformed(const Function& function) const {
+        return TransformedDatum<iNumDimensions, iNumAxes>();
     }
 
     template <int iNumDimensions, int iNumAxes, class TMatrix>

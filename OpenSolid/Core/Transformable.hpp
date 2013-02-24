@@ -60,8 +60,9 @@ namespace opensolid
 
         TDerived rotated(const Rotation2d& rotation, LinearTag) const;
 
-        template <int iNumDimensions>
-        TDerived rotated(double angle, const Datum<iNumDimensions, 1>& axis) const;
+        TDerived rotated(double angle, const Datum<3, 1>& axis) const;
+
+        TDerived rotated(double angle, const Datum<3, 1>& axis, LinearTag) const;
 
         TDerived rotated(const Rotation3d& rotation) const;
 
@@ -71,6 +72,9 @@ namespace opensolid
         TDerived mirrored(const Datum<iNumDimensions, iNumDimensions - 1>& datum) const;
 
         template <int iNumDimensions>
+        TDerived mirrored(const Datum<iNumDimensions, iNumDimensions - 1>& datum, LinearTag) const;
+
+        template <int iNumDimensions>
         TDerived mirrored(const Mirror<iNumDimensions>& mirror) const;
 
         template <int iNumDimensions>
@@ -78,6 +82,9 @@ namespace opensolid
 
         template <int iNumDimensions, int iNumAxes>
         TDerived projected(const Datum<iNumDimensions, iNumAxes>& datum) const;
+
+        template <int iNumDimensions, int iNumAxes>
+        TDerived projected(const Datum<iNumDimensions, iNumAxes>& datum, LinearTag) const;
 
         template <int iNumDimensions>
         TDerived projected(const Projection<iNumDimensions>& projection) const;
@@ -89,6 +96,13 @@ namespace opensolid
         typename Transformed<TDerived, iNumDestinationDimensions>::Type transformed(
             const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
             const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
+        ) const;
+
+        template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+        typename Transformed<TDerived, iNumDestinationDimensions>::Type transformed(
+            const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+            const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum,
+            LinearTag
         ) const;
 
         template <int iNumSourceDimensions, int iNumDestinationDimensions>
@@ -107,7 +121,10 @@ namespace opensolid
     TDerived operator-(const Transformable<TDerived>& transformable);
 
     template <class TDerived>
-    TDerived operator*(const Transformable<TDerived>& transformable, double scaleFactor);
+    TDerived operator*(const Transformable<TDerived>& transformable, double scale);
+
+    template <class TDerived>
+    TDerived operator/(const Transformable<TDerived>& transformable, double divisor);
 
     template <class TDerived, class TVector>
     TDerived operator-(
@@ -145,17 +162,9 @@ namespace opensolid
         return scale * (derived() - originPoint.derived()) + originPoint.derived();
     }
 
-    template <class TDerived> template <int iNumDimensions>
-    inline TDerived Transformable<TDerived>::translated(
-        double coordinateValue,
-        const Datum<iNumDimensions, 1>& axis
-    ) const {
-        return derived() + coordinateValue * axis.basisVector();
-    }
-
     template <class TDerived>
     inline TDerived Transformable<TDerived>::rotated(double angle) const {
-        return rotated(Rotation2d(angle, Vector2d::Zero()), Linear);
+        return Matrix2d(Rotation2Dd(angle)) * derived();
     }
 
     template <class TDerived>
@@ -177,14 +186,6 @@ namespace opensolid
         return rotation.transformationMatrix() * derived();
     }
 
-    template <class TDerived> template <int iNumDimensions>
-    inline TDerived Transformable<TDerived>::rotated(
-        double angle,
-        const Datum<iNumDimensions, 1>& axis
-    ) const {
-        return rotated(Rotation3d(angle, axis));
-    }
-
     template <class TDerived>
     TDerived Transformable<TDerived>::rotated(const Rotation3d& rotation) const {
         return rotation.transformationMatrix() * (derived() - rotation.originPoint()) +
@@ -194,13 +195,6 @@ namespace opensolid
     template <class TDerived>
     TDerived Transformable<TDerived>::rotated(const Rotation3d& rotation, LinearTag) const {
         return rotation.transformationMatrix() * derived();
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    inline TDerived Transformable<TDerived>::mirrored(
-        const Datum<iNumDimensions, iNumDimensions - 1>& datum
-    ) const {
-        return mirrored(Mirror<iNumDimensions>(datum));
     }
 
     template <class TDerived> template <int iNumDimensions>
@@ -217,13 +211,6 @@ namespace opensolid
         return mirror.transformationMatrix() * derived();
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    TDerived Transformable<TDerived>::projected(
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) const {
-        return projected(Projection<iNumDimensions>(datum));
-    }
-
     template <class TDerived> template <int iNumDimensions>
     TDerived Transformable<TDerived>::projected(
         const Projection<iNumDimensions>& projection
@@ -238,16 +225,6 @@ namespace opensolid
         LinearTag
     ) const {
         return projection.transformationMatrix() * derived();
-    }
-
-    template <class TDerived>
-    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
-    typename Transformed<TDerived, iNumDestinationDimensions>::Type
-    Transformable<TDerived>::transformed(
-        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
-        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
-    ) const {
-        return destinationDatum * (derived() / sourceDatum);
     }
 
     template <class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
@@ -275,8 +252,13 @@ namespace opensolid
     }
 
     template <class TDerived>
-    inline TDerived operator*(const Transformable<TDerived>& transformable, double scaleFactor) {
-        return scaleFactor * transformable.derived();
+    inline TDerived operator*(const Transformable<TDerived>& transformable, double scale) {
+        return scale * transformable.derived();
+    }
+
+    template <class TDerived>
+    inline TDerived operator/(const Transformable<TDerived>& transformable, double divisor) {
+        return (1.0 / divisor) * transformable.derived();
     }
 
     template <class TDerived, class TVector>
