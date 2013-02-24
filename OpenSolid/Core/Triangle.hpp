@@ -27,11 +27,11 @@
 // Public headers
 #include <OpenSolid/Core/Simplex.hpp>
 
+// Declarations headers
+#include <OpenSolid/Core/Simplex/declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
-
     template <>
     class Triangle<2> : public Simplex<2, 3>
     {

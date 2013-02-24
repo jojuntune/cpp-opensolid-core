@@ -27,6 +27,9 @@
 // Public headers
 #include <OpenSolid/Core/Simplex.hpp>
 
+// Declarations headers
+#include <OpenSolid/Core/Simplex/declarations.hpp>
+
 namespace opensolid
 {
     class Tetrahedron3d : public Simplex<3, 4>
