@@ -68,7 +68,7 @@ namespace opensolid
         const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
         const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
     ) : _sourceOriginPoint(sourceDatum.originPoint()),
-        _transformationMatrix(destinationDatum.basisMatrix() * sourceDatum.inverseMatrix())
+        _transformationMatrix(destinationDatum.basisMatrix() * sourceDatum.inverseMatrix()),
         _destinationOriginPoint(destinationDatum.originPoint()) {
     }
 
