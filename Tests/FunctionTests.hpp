@@ -291,6 +291,12 @@ public:
         function2 = sin(sqrt(u));
         TS_ASSERT(function1.isDuplicate(function2));
     }
+
+    void testDeduplicatedOutput() {
+        Function f = t.squaredNorm() + sin(t.squaredNorm());
+        std::cout << std::endl;
+        f.debug(std::cout, 0);
+    }
     
     //void xtestRoots() {
     //    std::vector<Function> functions(7);
