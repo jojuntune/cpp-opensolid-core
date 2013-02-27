@@ -258,6 +258,7 @@ namespace opensolid
 
     template <class TDerived>
     inline TDerived operator/(const Transformable<TDerived>& transformable, double divisor) {
+        assert(divisor != Zero());
         return (1.0 / divisor) * transformable.derived();
     }
 
