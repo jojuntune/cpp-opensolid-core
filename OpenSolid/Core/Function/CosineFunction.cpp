@@ -44,7 +44,7 @@ namespace opensolid
     }
 
     Function CosineFunction::deduplicated(std::vector<Function>& others) const {
-        return cos(operand().deduplicated(others));
+        return new CosineFunction(operand().deduplicated(others));
     }
     
     void CosineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

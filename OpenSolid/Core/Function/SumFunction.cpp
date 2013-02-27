@@ -46,7 +46,7 @@ namespace opensolid
     Function SumFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
-        return deduplicatedFirstOperand + deduplicatedSecondOperand;
+        return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void SumFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

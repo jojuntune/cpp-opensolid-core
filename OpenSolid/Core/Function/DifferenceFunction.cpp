@@ -48,7 +48,7 @@ namespace opensolid
     Function DifferenceFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
-        return deduplicatedFirstOperand - deduplicatedSecondOperand;
+        return new DifferenceFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void DifferenceFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

@@ -59,7 +59,11 @@ namespace opensolid
     }
 
     Function ComponentsFunction::deduplicated(std::vector<Function>& others) const {
-        return operand().deduplicated(others).components(startIndex(), numComponents());
+        return new ComponentsFunction(
+            operand().deduplicated(others),
+            startIndex(),
+            numComponents()
+        );
     }
     
     void ComponentsFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

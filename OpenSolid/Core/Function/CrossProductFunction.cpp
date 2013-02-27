@@ -48,7 +48,7 @@ namespace opensolid
     Function CrossProductFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
-        return deduplicatedFirstOperand.cross(deduplicatedSecondOperand);
+        return new CrossProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void CrossProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

@@ -41,7 +41,7 @@ namespace opensolid
     }
 
     Function NormFunction::deduplicated(std::vector<Function>& others) const {
-        return operand().deduplicated(others).norm();
+        return new NormFunction(operand().deduplicated(others));
     }
     
     void NormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

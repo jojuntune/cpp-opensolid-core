@@ -46,7 +46,7 @@ namespace opensolid
     Function ConcatenationFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
-        return deduplicatedFirstOperand.concatenate(deduplicatedSecondOperand);
+        return new ConcatenationFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void ConcatenationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

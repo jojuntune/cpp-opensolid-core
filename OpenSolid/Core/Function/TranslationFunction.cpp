@@ -52,7 +52,7 @@ namespace opensolid
     }
 
     Function TranslationFunction::deduplicated(std::vector<Function>& others) const {
-        return operand().deduplicated(others) + vector();
+        return new TranslationFunction(operand().deduplicated(others), vector());
     }
     
     void TranslationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

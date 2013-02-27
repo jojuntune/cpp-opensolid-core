@@ -49,7 +49,7 @@ namespace opensolid
     }
 
     Function ScalingFunction::deduplicated(std::vector<Function>& others) const {
-        return scale() * operand().deduplicated(others);
+        return new ScalingFunction(scale(), operand().deduplicated(others));
     }
     
     void ScalingFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

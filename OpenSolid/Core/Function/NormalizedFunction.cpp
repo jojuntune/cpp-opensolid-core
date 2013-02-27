@@ -41,7 +41,7 @@ namespace opensolid
     }
 
     Function NormalizedFunction::deduplicated(std::vector<Function>& others) const {
-        return operand().deduplicated(others).normalized();
+        return new NormalizedFunction(operand().deduplicated(others));
     }
 
     void NormalizedFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

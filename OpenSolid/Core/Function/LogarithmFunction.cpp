@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     Function LogarithmFunction::deduplicated(std::vector<Function>& others) const {
-        return log(operand().deduplicated(others));
+        return new LogarithmFunction(operand().deduplicated(others));
     }
         
     void LogarithmFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

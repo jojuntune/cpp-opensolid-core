@@ -44,7 +44,7 @@ namespace opensolid
     }
 
     Function ArcsineFunction::deduplicated(std::vector<Function>& others) const {
-        return asin(operand().deduplicated(others));
+        return new ArcsineFunction(operand().deduplicated(others));
     }
     
     struct Arcsine

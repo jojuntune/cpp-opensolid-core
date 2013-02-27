@@ -56,7 +56,10 @@ namespace opensolid
     }
 
     Function LinearTransformationFunction::deduplicated(std::vector<Function>& others) const {
-        return transformationMatrix() * operand().deduplicated(others);
+        return new LinearTransformationFunction(
+            transformationMatrix(),
+            operand().deduplicated(others)
+        );
     }
     
     void LinearTransformationFunction::evaluate(

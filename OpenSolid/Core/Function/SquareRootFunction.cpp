@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     Function SquareRootFunction::deduplicated(std::vector<Function>& others) const {
-        return sqrt(operand().deduplicated(others));
+        return new SquareRootFunction(operand().deduplicated(others));
     }
     
     struct SquareRoot

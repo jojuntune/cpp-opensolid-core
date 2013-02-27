@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     Function ExponentialFunction::deduplicated(std::vector<Function>& others) const {
-        return exp(operand().deduplicated(others));
+        return new ExponentialFunction(operand().deduplicated(others));
     }
         
     void ExponentialFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

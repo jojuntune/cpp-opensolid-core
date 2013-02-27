@@ -44,7 +44,7 @@ namespace opensolid
     }
 
     Function ArccosineFunction::deduplicated(std::vector<Function>& others) const {
-        return acos(operand().deduplicated(others));
+        return new ArccosineFunction(operand().deduplicated(others));
     }
     
     struct Arccosine

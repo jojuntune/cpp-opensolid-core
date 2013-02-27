@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     Function TangentFunction::deduplicated(std::vector<Function>& others) const {
-        return tan(operand().deduplicated(others));
+        return new TangentFunction(operand().deduplicated(others));
     }
     
     void TangentFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

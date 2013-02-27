@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     Function SineFunction::deduplicated(std::vector<Function>& others) const {
-        return sin(operand().deduplicated(others));
+        return new SineFunction(operand().deduplicated(others));
     }
     
     void SineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {

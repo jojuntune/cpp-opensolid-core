@@ -41,7 +41,7 @@ namespace opensolid
     }
 
     Function SquaredNormFunction::deduplicated(std::vector<Function>& others) const {
-        return operand().deduplicated(others).squaredNorm();
+        return new SquaredNormFunction(operand().deduplicated(others));
     }
     
     void SquaredNormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
