@@ -37,12 +37,23 @@
 namespace opensolid
 {
     // TODO
-    void FunctionImplementation::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {
+    bool FunctionImplementation::isDuplicate(const Function& other) const {
+        throw NotImplementedError();
+    }
+
+    // TODO
+    void FunctionImplementation::evaluateJacobian(
+        const MapXcd& parameterValues,
+        MapXd& results
+    ) const {
         throw NotImplementedError();
     }
     
     // TODO
-    void FunctionImplementation::evaluateJacobian(const MapXcI& parameterBounds, MapXI& results) const {
+    void FunctionImplementation::evaluateJacobian(
+        const MapXcI& parameterBounds,
+        MapXI& results
+    ) const {
         throw NotImplementedError();
     }
 

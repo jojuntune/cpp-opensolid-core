@@ -38,6 +38,12 @@ namespace opensolid
     int ConcatenationFunction::numDimensions() const {
         return firstOperand().numDimensions() + secondOperand().numDimensions();
     }
+
+    Function ConcatenationFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
+        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+        return deduplicatedFirstOperand.concatenate(deduplicatedSecondOperand);
+    }
     
     void ConcatenationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterValues);

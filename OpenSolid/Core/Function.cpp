@@ -88,6 +88,58 @@ namespace opensolid
         return implementation()->value();
     }
 
+
+    bool Function::isDuplicate(const Function& other) const {
+        if (!this->isValid() || !other.isValid()) {
+            // Two functions are not duplicates if either one is null
+            return false;
+        }
+        if (this->implementation() == other.implementation()) {
+            // Two functions are not duplicates if they share the same implementation
+            return false;
+        }
+        if (this->numDimensions() != other.numDimensions()) {
+            // Two functions cannot be duplicates if they have different numbers of dimensions
+            return false;
+        }
+        if (this->numParameters() != other.numParameters()) {
+            // Two functions cannot be duplicates if they have different numbers of parameters
+            return false;
+        }
+        return implementation()->isDuplicate(other);
+    }
+
+    Function Function::deduplicated() const {
+        std::vector<Function> temp;
+        return deduplicated(temp);
+    }
+
+    Function Function::deduplicated(std::vector<Function>& others) const {
+        if (!isValid()) {
+            assert(false);
+            return *this;
+        }
+        // Try to find a function matching this function: either the exact same function, or a
+        // duplicate
+        auto iterator = std::find_if(
+            others.begin(),
+            others.end(),
+            [this] (const Function& other) -> bool {
+                return this->implementation() == other.implementation() || this->isDuplicate(other);
+            }
+        );
+        if (iterator < others.end()) {
+            // A matching function was found: return it
+            return *iterator;
+        } else {
+            // No matching function was found: add a deduplicated copy of this function to the list,
+            // then return it
+            Function result = implementation()->deduplicated(others);
+            others.push_back(result);
+            return result;
+        }
+    }
+
     void Function::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         if (!isValid()) {
             assert(false);

@@ -46,6 +46,9 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         
+        OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
+
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameter_values, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
         

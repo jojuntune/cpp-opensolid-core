@@ -38,6 +38,10 @@ namespace opensolid
     int CosineFunction::numDimensions() const {
         return 1;
     }
+
+    Function CosineFunction::deduplicated(std::vector<Function>& others) const {
+        return cos(operand().deduplicated(others));
+    }
     
     void CosineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().cos();

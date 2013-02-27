@@ -256,6 +256,17 @@ public:
         TS_ASSERT((f(M_PI / 4) + 2 * normalVector(M_PI / 4) - Vector2d(1, 1)).isZero());
         TS_ASSERT((f(M_PI / 2) + 2 * normalVector(M_PI / 2) - Vector2d(1, 1)).isZero());
     }
+
+    void testDeduplication() {
+        Function constant1 = Function::Constant(Vector3d(1, 2, 3), 1);
+        Function constant2 = Function::Constant(Vector3d(1, 2, 3), 1);
+        Function constant3 = Function::Constant(Vector3d(1, 2, 4), 1);
+        Function constant4 = Function::Constant(Vector3d(1, 2, 3), 2);
+
+        TS_ASSERT(constant1.isDuplicate(constant2));
+        TS_ASSERT(!constant1.isDuplicate(constant3));
+        TS_ASSERT(!constant1.isDuplicate(constant4));
+    }
     
     //void xtestRoots() {
     //    std::vector<Function> functions(7);

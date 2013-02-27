@@ -36,6 +36,10 @@ namespace opensolid
     int SineFunction::numDimensions() const {
         return 1;
     }
+
+    Function SineFunction::deduplicated(std::vector<Function>& others) const {
+        return sin(operand().deduplicated(others));
+    }
     
     void SineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().sin();

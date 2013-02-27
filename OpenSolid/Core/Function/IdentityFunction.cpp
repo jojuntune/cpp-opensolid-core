@@ -42,6 +42,10 @@ namespace opensolid
     int IdentityFunction::numDimensions() const {
         return _numDimensions;
     }
+
+    Function IdentityFunction::deduplicated(std::vector<Function>&) const {
+        return this;
+    }
     
     void IdentityFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = parameterValues;

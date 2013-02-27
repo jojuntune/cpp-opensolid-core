@@ -44,6 +44,8 @@ namespace opensolid
         const VectorXd& vector() const;
         
         OPENSOLID_CORE_EXPORT int numDimensions() const;
+
+        OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
         
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;

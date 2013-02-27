@@ -47,6 +47,8 @@ namespace opensolid
         
         int numParameters() const;
         int numDimensions() const;
+
+        Function deduplicated(std::vector<Function>& others) const;
         
         void evaluate(const MapXcd& parameterValues, MapXd& results) const;
         void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
@@ -85,6 +87,11 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     int LinearFunction<iNumDimensions, iNumAxes>::numDimensions() const {
         return iNumDimensions;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    Function LinearFunction<iNumDimensions, iNumAxes>::deduplicated(std::vector<Function>&) const {
+        return this;
     }
     
     template <int iNumDimensions, int iNumAxes>

@@ -36,6 +36,10 @@ namespace opensolid
     int ExponentialFunction::numDimensions() const {
         return 1;
     }
+
+    Function ExponentialFunction::deduplicated(std::vector<Function>& others) const {
+        return exp(operand().deduplicated(others));
+    }
         
     void ExponentialFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().exp();

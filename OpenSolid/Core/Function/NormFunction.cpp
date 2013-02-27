@@ -35,6 +35,10 @@ namespace opensolid
     int NormFunction::numDimensions() const {
         return 1;
     }
+
+    Function NormFunction::deduplicated(std::vector<Function>& others) const {
+        return operand().deduplicated(others).norm();
+    }
     
     void NormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).colwise().norm();

@@ -46,6 +46,12 @@ namespace opensolid
         return innerFunction().numParameters();
     }
 
+    Function CompositionFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedInnerFunction = _innerFunction.deduplicated(others);
+        Function deduplicatedOuterFunction = _outerFunction.deduplicated(others);
+        return deduplicatedOuterFunction(deduplicatedInnerFunction);
+    }
+
     void CompositionFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = outerFunction()(innerFunction()(parameterValues));
     }

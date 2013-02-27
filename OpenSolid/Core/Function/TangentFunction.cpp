@@ -36,6 +36,10 @@ namespace opensolid
     int TangentFunction::numDimensions() const {
         return 1;
     }
+
+    Function TangentFunction::deduplicated(std::vector<Function>& others) const {
+        return tan(operand().deduplicated(others));
+    }
     
     void TangentFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         MatrixXd operandValues = operand()(parameterValues);

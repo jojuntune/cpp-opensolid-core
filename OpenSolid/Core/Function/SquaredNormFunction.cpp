@@ -35,6 +35,10 @@ namespace opensolid
     int SquaredNormFunction::numDimensions() const {
         return 1;
     }
+
+    Function SquaredNormFunction::deduplicated(std::vector<Function>& others) const {
+        return operand().deduplicated(others).squaredNorm();
+    }
     
     void SquaredNormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).colwise().squaredNorm();

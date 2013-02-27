@@ -40,6 +40,12 @@ namespace opensolid
     int CrossProductFunction::numDimensions() const {
         return 3;
     }
+
+    Function CrossProductFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
+        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+        return deduplicatedFirstOperand.cross(deduplicatedSecondOperand);
+    }
     
     void CrossProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         Matrix3Xd firstValues = firstOperand()(parameterValues);

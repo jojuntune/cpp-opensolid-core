@@ -40,12 +40,15 @@ namespace opensolid
         Function _firstOperand;
         Function _secondOperand;
     public:
-        BinaryOperation(const Function& firstOperand, const Function& secondOperand);
+        OPENSOLID_CORE_EXPORT BinaryOperation(
+            const Function& firstOperand,
+            const Function& secondOperand
+        );
         
         const Function& firstOperand() const;
         const Function& secondOperand() const;
         
-        int numParameters() const;
+        OPENSOLID_CORE_EXPORT int numParameters() const;
     };
 }
 

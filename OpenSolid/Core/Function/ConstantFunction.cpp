@@ -54,7 +54,21 @@ namespace opensolid
     int ConstantFunction::numDimensions() const {
         return value().size();
     }
-    
+
+    bool ConstantFunction::isDuplicate(const Function& function) const {
+        const ConstantFunction* other =
+            dynamic_cast<const ConstantFunction*>(function.implementation());
+        if (other) {
+            return (this->value() - other->value()).isZero();
+        } else {
+            return false;
+        }
+    }
+
+    Function ConstantFunction::deduplicated(std::vector<Function>&) const {
+        return this;
+    }
+        
     void ConstantFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results.colwise() = value();
     }

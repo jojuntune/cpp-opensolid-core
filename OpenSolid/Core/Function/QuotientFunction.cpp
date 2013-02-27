@@ -40,6 +40,12 @@ namespace opensolid
     int QuotientFunction::numDimensions() const {
         return firstOperand().numDimensions();
     }
+
+    Function QuotientFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
+        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+        return deduplicatedFirstOperand / deduplicatedSecondOperand;
+    }
     
     void QuotientFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues).array() /

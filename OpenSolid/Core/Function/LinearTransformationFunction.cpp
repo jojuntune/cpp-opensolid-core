@@ -41,6 +41,10 @@ namespace opensolid
     int LinearTransformationFunction::numDimensions() const {
         return transformationMatrix().rows();
     }
+
+    Function LinearTransformationFunction::deduplicated(std::vector<Function>& others) const {
+        return transformationMatrix() * operand().deduplicated(others);
+    }
     
     void LinearTransformationFunction::evaluate(
         const MapXcd& parameterValues,

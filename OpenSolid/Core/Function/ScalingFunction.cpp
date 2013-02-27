@@ -37,6 +37,10 @@ namespace opensolid
     int ScalingFunction::numDimensions() const {
         return operand().numDimensions();
     }
+
+    Function ScalingFunction::deduplicated(std::vector<Function>& others) const {
+        return scale() * operand().deduplicated(others);
+    }
     
     void ScalingFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = scale() * operand()(parameterValues);
@@ -55,11 +59,11 @@ namespace opensolid
     }
 
     Function ScalingFunction::scaled(double scale) const {
-        return new ScalingFunction(scale * this->scale(), operand());
+        return (scale * this->scale()) * operand();
     }
 
     Function ScalingFunction::transformed(const MatrixXd& transformationMatrix) const {
-        return (scale() * transformationMatrix) * operand();
+        return (transformationMatrix * scale()) * operand();
     }
     
     void ScalingFunction::debug(std::ostream& stream, int indent) const {

@@ -45,6 +45,10 @@ namespace opensolid
     int ComponentsFunction::numDimensions() const {
         return numComponents();
     }
+
+    Function ComponentsFunction::deduplicated(std::vector<Function>& others) const {
+        return operand().deduplicated(others).components(startIndex(), numComponents());
+    }
     
     void ComponentsFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         MatrixXd operandValues = operand()(parameterValues);

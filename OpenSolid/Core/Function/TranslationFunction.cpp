@@ -39,6 +39,10 @@ namespace opensolid
     int TranslationFunction::numDimensions() const {
         return operand().numDimensions();
     }
+
+    Function TranslationFunction::deduplicated(std::vector<Function>& others) const {
+        return operand().deduplicated(others) + vector();
+    }
     
     void TranslationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         MatrixXd operandValues = operand()(parameterValues);
@@ -55,11 +59,11 @@ namespace opensolid
     }
     
     Function TranslationFunction::compose(const Function& innerFunction) const {
-        return new TranslationFunction(operand()(innerFunction), vector());
+        return operand()(innerFunction) + vector();
     }
 
     Function TranslationFunction::translated(const VectorXd& vector) const {
-        return new TranslationFunction(operand(), this->vector() + vector);
+        return operand() + (this->vector() + vector);
     }
     
     void TranslationFunction::debug(std::ostream& stream, int indent) const {

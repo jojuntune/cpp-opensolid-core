@@ -44,6 +44,10 @@ namespace opensolid
     int ParameterFunction::numDimensions() const {
         return 1;
     }
+
+    Function ParameterFunction::deduplicated(std::vector<Function>&) const {
+        return this;
+    }
     
     void ParameterFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = parameterValues.row(index());

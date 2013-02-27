@@ -40,6 +40,12 @@ namespace opensolid
     int DotProductFunction::numDimensions() const {
         return 1;
     }
+
+    Function DotProductFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
+        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+        return deduplicatedFirstOperand.dot(deduplicatedSecondOperand);
+    }
     
     void DotProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues).cwiseProduct(secondOperand()(parameterValues)).

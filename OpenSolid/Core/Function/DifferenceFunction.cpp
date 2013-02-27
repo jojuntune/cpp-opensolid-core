@@ -40,6 +40,12 @@ namespace opensolid
     int DifferenceFunction::numDimensions() const {
         return firstOperand().numDimensions();
     }
+
+    Function DifferenceFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
+        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+        return deduplicatedFirstOperand - deduplicatedSecondOperand;
+    }
     
     void DifferenceFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = firstOperand()(parameterValues) - secondOperand()(parameterValues);

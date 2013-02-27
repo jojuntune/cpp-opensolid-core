@@ -36,6 +36,10 @@ namespace opensolid
     int SquareRootFunction::numDimensions() const {
         return 1;
     }
+
+    Function SquareRootFunction::deduplicated(std::vector<Function>& others) const {
+        return sqrt(operand().deduplicated(others));
+    }
     
     struct SquareRoot
     {

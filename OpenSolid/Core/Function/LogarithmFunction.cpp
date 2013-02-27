@@ -36,6 +36,10 @@ namespace opensolid
     int LogarithmFunction::numDimensions() const {
         return 1;
     }
+
+    Function LogarithmFunction::deduplicated(std::vector<Function>& others) const {
+        return log(operand().deduplicated(others));
+    }
         
     void LogarithmFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
         results = operand()(parameterValues).array().log();

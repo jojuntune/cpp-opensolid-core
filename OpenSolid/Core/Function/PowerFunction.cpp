@@ -50,6 +50,12 @@ namespace opensolid
         return 1;
     }
 
+    Function PowerFunction::deduplicated(std::vector<Function>& others) const {
+        Function deduplicatedBase = firstOperand().deduplicated(others);
+        Function deduplicatedExponent = secondOperand().deduplicated(others);
+        return pow(deduplicatedBase, deduplicatedExponent);
+    }
+
     struct IntegerPower
     {
         int exponent;

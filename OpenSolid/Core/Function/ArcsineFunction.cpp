@@ -38,6 +38,10 @@ namespace opensolid
     int ArcsineFunction::numDimensions() const {
         return 1;
     }
+
+    Function ArcsineFunction::deduplicated(std::vector<Function>& others) const {
+        return asin(operand().deduplicated(others));
+    }
     
     struct Arcsine
     {

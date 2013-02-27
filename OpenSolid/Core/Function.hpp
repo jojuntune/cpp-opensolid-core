@@ -88,6 +88,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT bool isConstant() const;
         OPENSOLID_CORE_EXPORT VectorXd value() const;
 
+        OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function deduplicated() const;
+        OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
+
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcd& parameterValues,
             MapXd& results
@@ -134,7 +138,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Function y() const;
         OPENSOLID_CORE_EXPORT Function z() const;
         OPENSOLID_CORE_EXPORT Function component(int index) const;
-        OPENSOLID_CORE_EXPORT Function components(int index, int num) const;
+        OPENSOLID_CORE_EXPORT Function components(int startIndex, int numComponents) const;
         OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function dot(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function cross(const Function& other) const;

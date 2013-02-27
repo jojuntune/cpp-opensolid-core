@@ -39,11 +39,11 @@ namespace opensolid
     private:
         Function _operand;
     public:
-        UnaryOperation(const Function& operand);
+        OPENSOLID_CORE_EXPORT UnaryOperation(const Function& operand);
         
         const Function& operand() const;
         
-        int numParameters() const;
+        OPENSOLID_CORE_EXPORT int numParameters() const;
     };
 }
 

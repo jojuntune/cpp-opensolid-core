@@ -39,10 +39,12 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT ParameterFunction(int numParameters, int index);
         
+        int index() const;
+        
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
-        
-        int index() const;
+
+        OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
         
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
