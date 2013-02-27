@@ -41,6 +41,10 @@ namespace opensolid
         return firstOperand().numDimensions();
     }
 
+    bool QuotientFunction::isDuplicate(const Function& function) const {
+        return BinaryOperation::IsDuplicate(this, function, false);
+    }
+
     Function QuotientFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);

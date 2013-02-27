@@ -30,27 +30,22 @@
 #include <OpenSolid/Core/Function.hpp>
 
 // Internal headers
-#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Function/BinaryOperation.hpp>
 
 namespace opensolid
 {
-    class CompositionFunction : public FunctionImplementation
+    class CompositionFunction : public BinaryOperation
     {
-    private:
-        Function _outerFunction;
-        Function _innerFunction;
     public:
         OPENSOLID_CORE_EXPORT CompositionFunction(
             const Function& outerFunction,
             const Function& innerFunction
         );
         
-        const Function& outerFunction() const;
-        const Function& innerFunction() const;
-        
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         OPENSOLID_CORE_EXPORT int numParameters() const;
 
+        OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
 
         OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
@@ -62,17 +57,4 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
-}
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    inline const Function& CompositionFunction::outerFunction() const {
-        return _outerFunction;
-    }
-
-    inline const Function& CompositionFunction::innerFunction() const {
-        return _innerFunction;
-    }
 }

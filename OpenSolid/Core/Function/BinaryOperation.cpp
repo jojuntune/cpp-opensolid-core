@@ -26,6 +26,19 @@
 
 namespace opensolid
 {
+    bool BinaryOperation::duplicateOperands(const BinaryOperation* other, bool commutative) const {
+        bool nonCommutativeCheck = this->firstOperand().isDuplicate(other->firstOperand()) &&
+            this->secondOperand().isDuplicate(other->secondOperand());
+        if (nonCommutativeCheck) {
+            return true;
+        } else if (commutative) {
+            return this->firstOperand().isDuplicate(other->secondOperand()) &&
+                this->secondOperand().isDuplicate(other->firstOperand());
+        } else {
+            return false;
+        }
+    }
+
     BinaryOperation::BinaryOperation(const Function& firstOperand, const Function& secondOperand) :
         _firstOperand(firstOperand),
         _secondOperand(secondOperand) {
@@ -34,6 +47,6 @@ namespace opensolid
     }
     
     int BinaryOperation::numParameters() const {
-        return firstOperand().numParameters();
+        return secondOperand().numParameters();
     }
 }

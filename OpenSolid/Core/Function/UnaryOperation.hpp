@@ -44,6 +44,9 @@ namespace opensolid
         const Function& operand() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
+    protected:
+        template <class TDerived>
+        static bool IsDuplicate(const TDerived* derived, const Function& function);
     };
 }
 
@@ -53,5 +56,19 @@ namespace opensolid
 {
     inline const Function& UnaryOperation::operand() const {
         return _operand;
+    }
+
+    // Performs a simple duplication check by checking whether both arguments have the same type
+    // and duplicate operands. Note that this is only valid for simple unary operations with no
+    // additional associated data, e.g., it is valid for SineFunction but not ScalingFunction (since
+    // ScalingFunction contains a scaling factor in addition to its Function operand).
+    template <class TDerived>
+    bool UnaryOperation::IsDuplicate(const TDerived* derived, const Function& function) {
+        const TDerived* other = dynamic_cast<const TDerived*>(function.implementation());
+        if (other) {
+            return derived->operand().isDuplicate(other->operand());
+        } else {
+            return false;
+        }
     }
 }

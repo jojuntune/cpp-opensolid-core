@@ -39,6 +39,11 @@ namespace opensolid
     private:
         Function _firstOperand;
         Function _secondOperand;
+
+        OPENSOLID_CORE_EXPORT bool duplicateOperands(
+            const BinaryOperation* other,
+            bool commutative
+        ) const;
     public:
         OPENSOLID_CORE_EXPORT BinaryOperation(
             const Function& firstOperand,
@@ -49,6 +54,13 @@ namespace opensolid
         const Function& secondOperand() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
+    protected:
+        template <class TDerived>
+        static bool IsDuplicate(
+            const TDerived* derived,
+            const Function& function,
+            bool commutative
+        );
     };
 }
 
@@ -62,5 +74,22 @@ namespace opensolid
     
     inline const Function& BinaryOperation::secondOperand() const {
         return _secondOperand;
+    }
+
+    // Performs a simple duplication check by checking whether both arguments have the same type
+    // and duplicate operands. Note that this is only valid for simple binary operations with no
+    // additional associated data.
+    template <class TDerived>
+    bool BinaryOperation::IsDuplicate(
+        const TDerived* derived,
+        const Function& function,
+        bool commutative
+    ) {
+        const TDerived* other = dynamic_cast<const TDerived*>(function.implementation());
+        if (other) {
+            return derived->duplicateOperands(other, commutative);
+        } else {
+            return false;
+        }
     }
 }

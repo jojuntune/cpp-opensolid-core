@@ -36,6 +36,10 @@ namespace opensolid
         return operand().numDimensions();
     }
 
+    bool NormalizedFunction::isDuplicate(const Function& function) const {
+        return UnaryOperation::IsDuplicate(this, function);
+    }
+
     Function NormalizedFunction::deduplicated(std::vector<Function>& others) const {
         return operand().deduplicated(others).normalized();
     }

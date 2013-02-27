@@ -38,6 +38,16 @@ namespace opensolid
         return operand().numDimensions();
     }
 
+    bool ScalingFunction::isDuplicate(const Function& function) const {
+        const ScalingFunction* other =
+            dynamic_cast<const ScalingFunction*>(function.implementation());
+        if (other) {
+            return this->scale() == other->scale() && this->operand().isDuplicate(other->operand());
+        } else {
+            return false;
+        }
+    }
+
     Function ScalingFunction::deduplicated(std::vector<Function>& others) const {
         return scale() * operand().deduplicated(others);
     }

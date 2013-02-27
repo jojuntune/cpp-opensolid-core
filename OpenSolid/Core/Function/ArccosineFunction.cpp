@@ -39,6 +39,10 @@ namespace opensolid
         return 1;
     }
 
+    bool ArccosineFunction::isDuplicate(const Function& function) const {
+        return UnaryOperation::IsDuplicate(this, function);
+    }
+
     Function ArccosineFunction::deduplicated(std::vector<Function>& others) const {
         return acos(operand().deduplicated(others));
     }

@@ -41,6 +41,10 @@ namespace opensolid
         return 3;
     }
 
+    bool CrossProductFunction::isDuplicate(const Function& function) const {
+        return BinaryOperation::IsDuplicate(this, function, false);
+    }
+
     Function CrossProductFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);

@@ -32,55 +32,58 @@ namespace opensolid
     CompositionFunction::CompositionFunction(
         const Function& outerFunction,
         const Function& innerFunction
-    ) : _outerFunction(outerFunction),
-        _innerFunction(innerFunction) {
+    ) : BinaryOperation(outerFunction, innerFunction) {
 
-        assert(innerFunction.numDimensions() == outerFunction.numParameters());
+        assert(outerFunction.numParameters() == innerFunction.numDimensions());
     }
     
     int CompositionFunction::numDimensions() const {
-        return outerFunction().numDimensions();
+        return firstOperand().numDimensions();
     }
     
     int CompositionFunction::numParameters() const {
-        return innerFunction().numParameters();
+        return secondOperand().numParameters();
+    }
+
+    bool CompositionFunction::isDuplicate(const Function& function) const {
+        return BinaryOperation::IsDuplicate(this, function, false);
     }
 
     Function CompositionFunction::deduplicated(std::vector<Function>& others) const {
-        Function deduplicatedInnerFunction = _innerFunction.deduplicated(others);
-        Function deduplicatedOuterFunction = _outerFunction.deduplicated(others);
+        Function deduplicatedOuterFunction = firstOperand().deduplicated(others);
+        Function deduplicatedInnerFunction = secondOperand().deduplicated(others);
         return deduplicatedOuterFunction(deduplicatedInnerFunction);
     }
 
     void CompositionFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
-        results = outerFunction()(innerFunction()(parameterValues));
+        results = firstOperand()(secondOperand()(parameterValues));
     }
 
     void CompositionFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
-        results = outerFunction()(innerFunction()(parameterBounds));
+        results = firstOperand()(secondOperand()(parameterBounds));
     }
 
     Function CompositionFunction::derivative(int index) const {
-        Function innerDerivative = innerFunction().derivative(index);
+        Function innerDerivative = secondOperand().derivative(index);
 
-        Function result = outerFunction().derivative(0)(innerFunction()) *
+        Function result = firstOperand().derivative(0)(secondOperand()) *
             innerDerivative.component(0);
 
-        for (int i = 1; i < outerFunction().numParameters(); ++i) {
-            Function outerDerivative = outerFunction().derivative(i);
-            result = result + outerDerivative(innerFunction()) * innerDerivative.component(i);
+        for (int i = 1; i < firstOperand().numParameters(); ++i) {
+            Function outerDerivative = firstOperand().derivative(i);
+            result = result + outerDerivative(secondOperand()) * innerDerivative.component(i);
         }
 
         return result;
     }
         
     Function CompositionFunction::compose(const Function& innerFunction) const {
-        return outerFunction()(this->innerFunction()(innerFunction));
+        return firstOperand()(secondOperand()(innerFunction));
     }
     
     void CompositionFunction::debug(std::ostream& stream, int indent) const {
         stream << "CompositionFunction" << std::endl;
-        innerFunction().debug(stream, indent + 1);
-        outerFunction().debug(stream, indent + 1);
+        firstOperand().debug(stream, indent + 1);
+        secondOperand().debug(stream, indent + 1);
     }
 }

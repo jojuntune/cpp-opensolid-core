@@ -37,6 +37,10 @@ namespace opensolid
         return 1;
     }
 
+    bool SineFunction::isDuplicate(const Function& function) const {
+        return UnaryOperation::IsDuplicate(this, function);
+    }
+
     Function SineFunction::deduplicated(std::vector<Function>& others) const {
         return sin(operand().deduplicated(others));
     }

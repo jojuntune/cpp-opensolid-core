@@ -45,6 +45,18 @@ namespace opensolid
         return 1;
     }
 
+    bool ParameterFunction::isDuplicate(const Function& function) const {
+        const ParameterFunction* other =
+            dynamic_cast<const ParameterFunction*>(function.implementation());
+        if (other) {
+            // Note: check for same overall number of parameters is already performed by
+            // Function::isDuplicate()
+            return this->index() == other->index();
+        } else {
+            return false;
+        }
+    }
+
     Function ParameterFunction::deduplicated(std::vector<Function>&) const {
         return this;
     }

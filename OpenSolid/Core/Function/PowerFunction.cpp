@@ -50,6 +50,10 @@ namespace opensolid
         return 1;
     }
 
+    bool PowerFunction::isDuplicate(const Function& function) const {
+        return BinaryOperation::IsDuplicate(this, function, false);
+    }
+
     Function PowerFunction::deduplicated(std::vector<Function>& others) const {
         Function deduplicatedBase = firstOperand().deduplicated(others);
         Function deduplicatedExponent = secondOperand().deduplicated(others);

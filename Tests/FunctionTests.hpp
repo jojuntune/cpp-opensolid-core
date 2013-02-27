@@ -266,6 +266,30 @@ public:
         TS_ASSERT(constant1.isDuplicate(constant2));
         TS_ASSERT(!constant1.isDuplicate(constant3));
         TS_ASSERT(!constant1.isDuplicate(constant4));
+
+        Function function1;
+        Function function2;
+
+        function1 = t.squaredNorm() + 2 * t;
+        function2 = t * 2 + t.squaredNorm();
+        TS_ASSERT(function1.isDuplicate(function2));
+
+        function1 = cos(u.squaredNorm() + v.squaredNorm());
+        function2 = cos(v.squaredNorm() + u.squaredNorm());
+        TS_ASSERT(function1.isDuplicate(function2));
+
+        function1 = u.squaredNorm();
+        function2 = v.squaredNorm();
+        TS_ASSERT(!function1.isDuplicate(function2));
+
+        function1 = sin(t);
+        function1 = function2;
+        TS_ASSERT(function1.isDuplicate(function1));
+        TS_ASSERT(function1.isDuplicate(function2));
+
+        function1 = sin(sqrt(u));
+        function2 = sin(sqrt(u));
+        TS_ASSERT(function1.isDuplicate(function2));
     }
     
     //void xtestRoots() {
