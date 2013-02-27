@@ -49,9 +49,8 @@ namespace opensolid
         const ParameterFunction* other =
             dynamic_cast<const ParameterFunction*>(function.implementation());
         if (other) {
-            // Note: check for same overall number of parameters is already performed by
-            // Function::isDuplicate()
-            return this->index() == other->index();
+            return this->numParameters() == other->numParameters() &&
+                this->index() == other->index();
         } else {
             return false;
         }
