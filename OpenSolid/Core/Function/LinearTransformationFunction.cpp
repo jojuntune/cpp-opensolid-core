@@ -42,6 +42,19 @@ namespace opensolid
         return transformationMatrix().rows();
     }
 
+    bool LinearTransformationFunction::isDuplicate(const Function& function) const {
+        const LinearTransformationFunction* other =
+            dynamic_cast<const LinearTransformationFunction*>(function.implementation());
+        if (other) {
+            return this->transformationMatrix().rows() == other->transformationMatrix().rows() &&
+                this->transformationMatrix().cols() == other->transformationMatrix().cols() &&
+                (this->transformationMatrix() - other->transformationMatrix()).isZero() &&
+                this->operand().isDuplicate(other->operand());
+        } else {
+            return false;
+        }
+    }
+
     Function LinearTransformationFunction::deduplicated(std::vector<Function>& others) const {
         return transformationMatrix() * operand().deduplicated(others);
     }

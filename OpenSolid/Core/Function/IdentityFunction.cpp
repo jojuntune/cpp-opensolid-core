@@ -43,6 +43,16 @@ namespace opensolid
         return _numDimensions;
     }
 
+    bool IdentityFunction::isDuplicate(const Function& function) const {
+        const IdentityFunction* other =
+            dynamic_cast<const IdentityFunction*>(function.implementation());
+        if (other) {
+            return this->numDimensions() == other->numDimensions();
+        } else {
+            return false;
+        }
+    }
+
     Function IdentityFunction::deduplicated(std::vector<Function>&) const {
         return this;
     }

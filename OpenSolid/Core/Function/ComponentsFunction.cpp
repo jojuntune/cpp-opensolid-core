@@ -46,6 +46,18 @@ namespace opensolid
         return numComponents();
     }
 
+    bool ComponentsFunction::isDuplicate(const Function& function) const {
+        const ComponentsFunction* other =
+            dynamic_cast<const ComponentsFunction*>(function.implementation());
+        if (other) {
+            return this->startIndex() == other->startIndex() &&
+                this->numComponents() == other->numComponents() &&
+                this->operand().isDuplicate(other->operand());
+        } else {
+            return false;
+        }
+    }
+
     Function ComponentsFunction::deduplicated(std::vector<Function>& others) const {
         return operand().deduplicated(others).components(startIndex(), numComponents());
     }

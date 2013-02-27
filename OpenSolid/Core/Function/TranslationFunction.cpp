@@ -40,6 +40,17 @@ namespace opensolid
         return operand().numDimensions();
     }
 
+    bool TranslationFunction::isDuplicate(const Function& function) const {
+        const TranslationFunction* other =
+            dynamic_cast<const TranslationFunction*>(function.implementation());
+        if (other) {
+            return (this->vector() - other->vector()).isZero() &&
+                this->operand().isDuplicate(other->operand());
+        } else {
+            return false;
+        }
+    }
+
     Function TranslationFunction::deduplicated(std::vector<Function>& others) const {
         return operand().deduplicated(others) + vector();
     }

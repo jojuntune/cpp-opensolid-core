@@ -48,7 +48,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT virtual bool isConstant() const;
         OPENSOLID_CORE_EXPORT virtual VectorXd value() const;
 
-        OPENSOLID_CORE_EXPORT virtual bool isDuplicate(const Function& other) const;
+        OPENSOLID_CORE_EXPORT virtual bool isDuplicate(const Function& other) const = 0;
         
         OPENSOLID_CORE_EXPORT virtual Function deduplicated(
             std::vector<Function>& others

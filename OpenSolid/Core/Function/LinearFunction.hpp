@@ -48,6 +48,7 @@ namespace opensolid
         int numParameters() const;
         int numDimensions() const;
 
+        bool isDuplicate(const Function& other) const;
         Function deduplicated(std::vector<Function>& others) const;
         
         void evaluate(const MapXcd& parameterValues, MapXd& results) const;
@@ -87,6 +88,20 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     int LinearFunction<iNumDimensions, iNumAxes>::numDimensions() const {
         return iNumDimensions;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    bool LinearFunction<iNumDimensions, iNumAxes>::isDuplicate(const Function& function) const {
+        const LinearFunction<iNumDimensions, iNumAxes>* other =
+            dynamic_cast<const LinearFunction<iNumDimensions, iNumAxes>*>(
+                function.implementation()
+            );
+        if (other) {
+            return (this->datum().originPoint() - other->datum().originPoint()).isZero() &&
+                (this->datum().basisMatrix() - other->datum().basisMatrix()).isZero();
+        } else {
+            return false;
+        }
     }
 
     template <int iNumDimensions, int iNumAxes>
