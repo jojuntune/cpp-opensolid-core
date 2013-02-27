@@ -95,8 +95,8 @@ namespace opensolid
             return false;
         }
         if (this->implementation() == other.implementation()) {
-            // Two functions are not duplicates if they share the same implementation
-            return false;
+            // Two functions are considered duplicates if they share the same implementation
+            return true;
         }
         if (this->numDimensions() != other.numDimensions()) {
             // Two functions cannot be duplicates if they have different numbers of dimensions
@@ -119,13 +119,12 @@ namespace opensolid
             assert(false);
             return *this;
         }
-        // Try to find a function matching this function: either the exact same function, or a
-        // duplicate
+        // Try to find a function that is a duplicate of this function
         auto iterator = std::find_if(
             others.begin(),
             others.end(),
             [this] (const Function& other) -> bool {
-                return this->implementation() == other.implementation() || this->isDuplicate(other);
+                return this->isDuplicate(other);
             }
         );
         if (iterator < others.end()) {
