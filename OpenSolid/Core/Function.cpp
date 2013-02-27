@@ -181,7 +181,7 @@ namespace opensolid
         } else if (other.isConstant()) {
             return Function::Constant(operator()(other.value()), numParameters());
         } else {
-            return this->implementation()->compose(other);
+            return this->implementation()->compose(other).deduplicated();
         }
     }
     
@@ -198,7 +198,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->derivative(parameterIndex);
+        return implementation()->derivative(parameterIndex).deduplicated();
     }
     
     Function Function::norm() const {
@@ -206,7 +206,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->norm();
+        return implementation()->norm().deduplicated();
     }
     
     Function Function::normalized() const {
@@ -214,7 +214,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->normalized();
+        return implementation()->normalized().deduplicated();
     }
     
     Function Function::squaredNorm() const {
@@ -222,7 +222,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->squaredNorm();
+        return implementation()->squaredNorm().deduplicated();
     }
 
     Function Function::x() const {
@@ -246,7 +246,7 @@ namespace opensolid
             assert(index == 0);
             return *this;
         }
-        return implementation()->components(index, 1);
+        return implementation()->components(index, 1).deduplicated();
     }
     
     Function Function::components(int startIndex, int numComponents) const {
@@ -257,7 +257,7 @@ namespace opensolid
         if (startIndex == 0 && numComponents == numDimensions()) {
             return *this;
         }
-        return implementation()->components(startIndex, numComponents);
+        return implementation()->components(startIndex, numComponents).deduplicated();
     }
 
     namespace
@@ -297,7 +297,7 @@ namespace opensolid
             vector.tail(other.numDimensions()) = other.value();
             return Function::Constant(vector, numParameters());
         } else {
-            return new ConcatenationFunction(*this, other);
+            return Function(new ConcatenationFunction(*this, other)).deduplicated();
         }
     }
     
@@ -315,7 +315,7 @@ namespace opensolid
         } else if (other.isConstant() && other.value().isZero()) {
             return Function::Constant(0.0, numParameters());
         } else {
-            return new DotProductFunction(*this, other);
+            return Function(new DotProductFunction(*this, other)).deduplicated();
         }
     }
     
@@ -333,7 +333,7 @@ namespace opensolid
         } else if (other.isConstant() && other.value().isZero()) {
             return Function::Constant(Vector3d::Zero(), numParameters());
         } else {
-            return new CrossProductFunction(*this, other);
+            return Function(new CrossProductFunction(*this, other)).deduplicated();
         }
     }
     
@@ -342,7 +342,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->tangentVector();
+        return implementation()->tangentVector().deduplicated();
     }
     
     Function Function::curvature() const {
@@ -350,7 +350,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->curvature();
+        return implementation()->curvature().deduplicated();
     }
     
     Function Function::normalVector() const {
@@ -358,7 +358,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->normalVector();
+        return implementation()->normalVector().deduplicated();
     }
     
     Function Function::binormalVector() const {
@@ -366,7 +366,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return implementation()->binormalVector();
+        return implementation()->binormalVector().deduplicated();
     }
     
     Function Function::operator+(const Function& other) const {
@@ -374,14 +374,14 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        if (this->isConstant() && other.isConstant()) {
-            return Function::Constant(this->value() + other.value(), numParameters());
-        } else if (this->isConstant() && this->value().isZero()) {
-            return other;
-        } else if (other.isConstant() && other.value().isZero()) {
-            return *this;
+        if (other.isConstant()) {
+            // Delegate to translation function
+            return *this + other.value();
+        } else if (this->isConstant()) {
+            // Delegate to translation function
+            return this->value() + other;
         } else {
-            return new SumFunction(*this, other);
+            return Function(new SumFunction(*this, other)).deduplicated();
         }
     }
     
@@ -390,14 +390,14 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        if (this->isConstant() && other.isConstant()) {
-            return Function::Constant(this->value() - other.value(), numParameters());
-        } else if (this->isConstant() && this->value().isZero()) {
-            return -other;
-        } else if (other.isConstant() && other.value().isZero()) {
-            return *this;
+        if (other.isConstant()) {
+            // Delegate to translation function
+            return *this - other.value();
+        } else if (this->isConstant()) {
+            // Delegate to translation function
+            return this->value() - other;
         } else {
-            return new DifferenceFunction(*this, other);
+            return Function(new DifferenceFunction(*this, other)).deduplicated();
         }
     }
     
@@ -406,29 +406,45 @@ namespace opensolid
             assert(false);
             return Function();
         }
+        // Determine which operand to use as the multiplier and which to use as the multiplicand:
+        // The multiplier should be a scalar (one dimensional), and if possible should be constant
+        // (to allow construction of a ScalingFunction instead of a generic ProductFunction).
         Function multiplier;
         Function multiplicand;
-        if (this->numDimensions() == 1) {
+        if (this->numDimensions() == 1 && other.numDimensions() == 1) {
+            // Either this or the other could be the multiplier, so pick whichever is constant
+            // (defaulting to this)
+            if (this->isConstant()) {
+                multiplier = *this;
+                multiplicand = other;
+            } else if (other.isConstant()) {
+                multiplier = other;
+                multiplicand = *this;
+            } else {
+                multiplier = *this;
+                multiplicand = other;
+            }
+        } else if (this->numDimensions() == 1) {
+            // Only this is a scalar, so use it as the multiplier
             multiplier = *this;
             multiplicand = other;
         } else if (other.numDimensions() == 1) {
+            // Only the other is a scalar, so use it as the multiplier
             multiplier = other;
             multiplicand = *this;
         } else {
+            // Error - neither operand is a scalar
             assert(false);
             return Function();
         }
-        if (multiplier.isConstant() && multiplicand.isConstant()) {
-            return Function::Constant(
-                multiplier.as<double>() * multiplicand.as<VectorXd>(),
-                numParameters()
-            );
-        } else if (multiplier.isConstant()) {
+        if (multiplier.isConstant()) {
+            // Delegate to scaling function
             return multiplier.as<double>() * multiplicand;
         } else if (multiplicand.isConstant() && multiplicand.value().isZero()) {
+            // Doesn't matter what the multiplier is - return the (zero) multiplicand
             return multiplicand;
         } else {
-            return new ProductFunction(multiplier, multiplicand);
+            return Function(new ProductFunction(multiplier, multiplicand)).deduplicated();
         }
     }
     
@@ -437,22 +453,14 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        if (this->isConstant() && other.isConstant()) {
-            return Function::Constant(
-                this->as<VectorXd>() / other.as<double>(),
-                numParameters()
-            );
+        if (other.isConstant()) {
+            // Delegate to scaling function
+            return *this / other.as<double>();
         } else if (this->isConstant() && this->value().isZero()) {
+            // Doesn't matter what the divisor is - return this (zero) dividend
             return *this;
-        } else if (other.isConstant()) {
-            double divisor = other.as<double>();
-            if (divisor == opensolid::Zero()) {
-                assert(false);
-                return Function();
-            }
-            return (1.0 / divisor) * (*this);
         } else {
-            return new QuotientFunction(*this, other);
+            return Function(new QuotientFunction(*this, other)).deduplicated();
         }
     }
 
@@ -479,7 +487,7 @@ namespace opensolid
         } else if (value - 1 == opensolid::Zero()) {
             return function;
         } else {
-            return function.implementation()->scaled(value);
+            return function.implementation()->scaled(value).deduplicated();
         }
     }
 
@@ -497,7 +505,7 @@ namespace opensolid
         } else if (matrix.rows() == matrix.cols() && matrix.isIdentity()) {
             return function;
         } else {
-            return function.implementation()->transformed(matrix);
+            return function.implementation()->transformed(matrix).deduplicated();
         }
     }
 
@@ -513,7 +521,7 @@ namespace opensolid
         if (vector.isZero()) {
             return function;
         } else {
-            return function.implementation()->translated(vector);
+            return function.implementation()->translated(vector).deduplicated();
         }
     }
 
@@ -522,7 +530,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return function + Function::Constant(value, function.numParameters());
+        return function + VectorXd::Constant(1, value);
     }
 
     Function operator+(double value, const Function& function) {
@@ -530,7 +538,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return Function::Constant(value, function.numParameters()) + function;
+        return VectorXd::Constant(1, value) + function;
     }
 
     Function operator-(const Function& function, double value) {
@@ -538,7 +546,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return function - Function::Constant(value, function.numParameters());
+        return function - VectorXd::Constant(1, value);
     }
 
     Function operator-(double value, const Function& function) {
@@ -546,7 +554,7 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        return Function::Constant(value, function.numParameters()) - function;
+        return VectorXd::Constant(1, value) - function;
     }
 
     Function operator*(const Function& function, const VectorXd& vector) {
@@ -582,7 +590,7 @@ namespace opensolid
             double value = function.as<double>();
             return Function::Constant(sin(value), function.numParameters());
         } else {
-            return new SineFunction(function);
+            return Function(new SineFunction(function)).deduplicated();
         }
     }
     
@@ -595,7 +603,7 @@ namespace opensolid
             double value = function.as<double>();
             return Function::Constant(cos(value), function.numParameters());
         } else {
-            return new CosineFunction(function);
+            return Function(new CosineFunction(function)).deduplicated();
         }
     }
     
@@ -612,7 +620,7 @@ namespace opensolid
             }
             return Function::Constant(tan(value), function.numParameters());
         } else {
-            return new TangentFunction(function);
+            return Function(new TangentFunction(function)).deduplicated();
         }
     }
     
@@ -630,7 +638,7 @@ namespace opensolid
             value = max(value, 0.0);
             return Function::Constant(sqrt(value), function.numParameters());
         } else {
-            return new SquareRootFunction(function);
+            return Function(new SquareRootFunction(function)).deduplicated();
         }
     }
     
@@ -648,7 +656,7 @@ namespace opensolid
             value = Interval(-1.0, 1.0).clamp(value);
             return Function::Constant(asin(value), function.numParameters());
         } else {
-            return new ArcsineFunction(function);
+            return Function(new ArcsineFunction(function)).deduplicated();
         }
     }
     
@@ -666,7 +674,7 @@ namespace opensolid
             value = Interval(-1.0, 1.0).clamp(value);
             return Function::Constant(acos(value), function.numParameters());
         } else {
-            return new ArccosineFunction(function);
+            return Function(new ArccosineFunction(function)).deduplicated();
         }
     }
 
@@ -679,7 +687,7 @@ namespace opensolid
             double value = function.as<double>();
             return Function::Constant(exp(value), function.numParameters());
         } else {
-            return new ExponentialFunction(function);
+            return Function(new ExponentialFunction(function)).deduplicated();
         }
     }
 
@@ -696,7 +704,7 @@ namespace opensolid
             }
             return Function::Constant(log(value), function.numParameters());
         } else {
-            return new LogarithmFunction(function);
+            return Function(new LogarithmFunction(function)).deduplicated();
         }
     }
 
@@ -711,7 +719,7 @@ namespace opensolid
             }
             return Function::Constant(pow(baseValue, exponentValue), baseFunction.numParameters());
         } else {
-            return new PowerFunction(baseFunction, exponentFunction);
+            return Function(new PowerFunction(baseFunction, exponentFunction)).deduplicated();
         }
     }
     
