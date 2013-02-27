@@ -59,7 +59,8 @@ namespace opensolid
         const ConstantFunction* other =
             dynamic_cast<const ConstantFunction*>(function.implementation());
         if (other) {
-            return (this->value() - other->value()).isZero();
+            return this->value().size() == other->value().size() && 
+                (this->value() - other->value()).isZero();
         } else {
             return false;
         }

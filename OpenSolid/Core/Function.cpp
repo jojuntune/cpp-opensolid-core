@@ -119,7 +119,7 @@ namespace opensolid
             assert(false);
             return *this;
         }
-        // Try to find a function that is a duplicate of this function
+        // Try to find a function in the given list that is a duplicate of this function
         auto iterator = std::find_if(
             others.begin(),
             others.end(),
