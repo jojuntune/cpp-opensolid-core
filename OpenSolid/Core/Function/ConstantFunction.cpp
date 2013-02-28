@@ -71,7 +71,7 @@ namespace opensolid
     void ConstantFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd&
     ) const {
         results.colwise() = value();
     }
@@ -79,7 +79,7 @@ namespace opensolid
     void ConstantFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI&
     ) const {
         results.colwise() = bounds();
     }

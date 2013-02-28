@@ -54,19 +54,21 @@ namespace opensolid
     void QuotientFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = firstOperand()(parameterValues).array() /
-            secondOperand()(parameterValues).replicate(numDimensions(), 1).array();
+        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
+        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        results = firstValues.array() / secondValues.replicate(numDimensions(), 1).array();
     }
     
     void QuotientFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = firstOperand()(parameterBounds).array() /
-            secondOperand()(parameterBounds).replicate(numDimensions(), 1).array();
+        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
+        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        results = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
     }
 
     Function QuotientFunction::derivative(int index) const {

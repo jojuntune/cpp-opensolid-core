@@ -53,13 +53,13 @@ namespace opensolid
         void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            ResultCacheXd& resultCache
+            ResultCacheXd& cache
         ) const;
         
         void evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
-            ResultCacheXI& resultCache
+            ResultCacheXI& cache
         ) const;
 
         bool isConstant() const;
@@ -100,7 +100,7 @@ namespace opensolid
     void SimplexGeometry<iNumDimensions, iNumVertices>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
         results = _simplexDatum * parameterValues;
     }
@@ -109,7 +109,7 @@ namespace opensolid
     void SimplexGeometry<iNumDimensions, iNumVertices>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
         results = _simplexDatum * parameterBounds;
     }

@@ -55,17 +55,17 @@ namespace opensolid
     void ScalingFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = scale() * operand()(parameterValues);
+        results = scale() * cache.results(operand(), parameterValues);
     }
     
     void ScalingFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = Interval(scale()) * operand()(parameterBounds);
+        results = Interval(scale()) * cache.results(operand(), parameterBounds);
     }
     
     Function ScalingFunction::derivative(int index) const {

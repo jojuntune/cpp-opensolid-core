@@ -50,17 +50,17 @@ namespace opensolid
     void CosineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).array().cos();
+        results = cache.results(operand(), parameterValues).array().cos();
     }
     
     void CosineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).array().cos();
+        results = cache.results(operand(), parameterBounds).array().cos();
     }
 
     Function CosineFunction::derivative(int index) const {

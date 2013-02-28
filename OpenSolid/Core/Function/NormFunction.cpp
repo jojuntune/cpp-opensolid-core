@@ -47,17 +47,17 @@ namespace opensolid
     void NormFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).colwise().norm();
+        results = cache.results(operand(), parameterValues).colwise().norm();
     }
     
     void NormFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).colwise().norm();
+        results = cache.results(operand(), parameterBounds).colwise().norm();
     }
 
     Function NormFunction::derivative(int index) const {

@@ -103,17 +103,17 @@ namespace opensolid
     void Geometry::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        implementation()->evaluate(parameterValues, results, resultCache);
+        implementation()->evaluate(parameterValues, results, cache);
     }
 
     void Geometry::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        implementation()->evaluate(parameterBounds, results, resultCache);
+        implementation()->evaluate(parameterBounds, results, cache);
     }
     
     int Geometry::numParameters() const {

@@ -54,19 +54,21 @@ namespace opensolid
     void ProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = secondOperand()(parameterValues) *
-            firstOperand()(parameterValues).eval().asDiagonal();
+        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
+        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        results = secondValues * firstValues.topRows<1>().asDiagonal();
     }
     
     void ProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = secondOperand()(parameterBounds) *
-            firstOperand()(parameterBounds).eval().asDiagonal();
+        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
+        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        results = secondBounds * firstBounds.topRows<1>().asDiagonal();
     }
 
     Function ProductFunction::derivative(int index) const {

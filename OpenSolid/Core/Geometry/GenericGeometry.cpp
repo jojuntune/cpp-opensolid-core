@@ -56,16 +56,16 @@ namespace opensolid
     void GenericGeometry::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        _function.evaluate(parameterValues, results, resultCache);
+        _function.evaluate(parameterValues, results, cache);
     }
 
     void GenericGeometry::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        _function.evaluate(parameterBounds, results, resultCache);
+        _function.evaluate(parameterBounds, results, cache);
     }
 }

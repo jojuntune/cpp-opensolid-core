@@ -63,17 +63,17 @@ namespace opensolid
     void ArcsineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).unaryExpr(Arcsine());
+        results = cache.results(operand(), parameterValues).unaryExpr(Arcsine());
     }
     
     void ArcsineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).unaryExpr(Arcsine());
+        results = cache.results(operand(), parameterBounds).unaryExpr(Arcsine());
     }
 
     Function ArcsineFunction::derivative(int index) const {

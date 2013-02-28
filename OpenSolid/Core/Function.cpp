@@ -141,23 +141,23 @@ namespace opensolid
     void Function::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
         if (!isValid()) {
             assert(false);
         }
-        implementation()->evaluate(parameterValues, results, resultCache);
+        implementation()->evaluate(parameterValues, results, cache);
     }
 
     void Function::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
         if (!isValid()) {
             assert(false);
         }
-        implementation()->evaluate(parameterBounds, results, resultCache);
+        implementation()->evaluate(parameterBounds, results, cache);
     }
 
     void Function::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {

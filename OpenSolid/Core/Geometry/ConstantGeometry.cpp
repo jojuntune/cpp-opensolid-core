@@ -52,7 +52,7 @@ namespace opensolid
     void ConstantGeometry::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
         results.colwise() = _vector;
     }
@@ -60,7 +60,7 @@ namespace opensolid
     void ConstantGeometry::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
         results.colwise() = _vector.cast<Interval>();
     }

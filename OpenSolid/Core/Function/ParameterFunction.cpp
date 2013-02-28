@@ -67,7 +67,7 @@ namespace opensolid
     void ParameterFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd&
     ) const {
         results = parameterValues.row(index());
     }
@@ -75,7 +75,7 @@ namespace opensolid
     void ParameterFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI&
     ) const {
         results = parameterBounds.row(index());
     }

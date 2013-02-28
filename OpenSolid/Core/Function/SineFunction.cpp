@@ -48,17 +48,17 @@ namespace opensolid
     void SineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).array().sin();
+        results = cache.results(operand(), parameterValues).array().sin();
     }
     
     void SineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).array().sin();
+        results = cache.results(operand(), parameterBounds).array().sin();
     }
 
     Function SineFunction::derivative(int index) const {

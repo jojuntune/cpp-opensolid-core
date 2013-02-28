@@ -102,40 +102,38 @@ namespace opensolid
     void PowerFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        RowVectorXd baseValues = firstOperand()(parameterValues);
+        MapXcd baseValues = cache.results(firstOperand(), parameterValues);
         if (_exponentIsInteger) {
             results = baseValues.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
             results = baseValues.array().pow(_constantExponent);
         } else {
-            results = baseValues.binaryExpr(secondOperand()(parameterValues), Power());
+            MapXcd exponentValues = cache.results(secondOperand(), parameterValues);
+            results = baseValues.binaryExpr(exponentValues, Power());
         }
     }
 
     void PowerFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        RowVectorXI baseBounds = firstOperand()(parameterBounds);
+        MapXcI baseBounds = cache.results(firstOperand(), parameterBounds);
         if (_exponentIsInteger) {
             results = baseBounds.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
             results = baseBounds.array().unaryExpr(ConstantPower(_constantExponent));
         } else {
-            results = baseBounds.binaryExpr(secondOperand()(parameterBounds), Power());
+            MapXcI exponentBounds = cache.results(secondOperand(), parameterBounds);
+            results = baseBounds.binaryExpr(exponentBounds, Power());
         }
     }
 
     Function PowerFunction::derivative(int index) const {
         if (_exponentIsConstant) {
-            return _constantExponent *
-                pow(
-                    firstOperand(),
-                    Function::Constant(_constantExponent - 1, firstOperand().numParameters())
-                ) *
+            return _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
                 firstOperand().derivative(index);
         } else {
             return (

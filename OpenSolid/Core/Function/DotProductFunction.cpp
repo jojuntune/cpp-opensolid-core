@@ -54,19 +54,21 @@ namespace opensolid
     void DotProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = firstOperand()(parameterValues).cwiseProduct(secondOperand()(parameterValues)).
-            colwise().sum();
+        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
+        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        results = firstValues.cwiseProduct(secondValues).colwise().sum();
     }
     
     void DotProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = firstOperand()(parameterBounds).cwiseProduct(secondOperand()(parameterBounds)).
-            colwise().sum();
+        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
+        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        results = firstBounds.cwiseProduct(secondBounds).colwise().sum();
     }
 
     Function DotProductFunction::derivative(int index) const {

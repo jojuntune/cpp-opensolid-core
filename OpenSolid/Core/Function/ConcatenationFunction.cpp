@@ -52,19 +52,23 @@ namespace opensolid
     void ConcatenationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterValues);
-        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterValues);
+        results.topRows(firstOperand().numDimensions()) =
+            cache.results(firstOperand(), parameterValues);
+        results.bottomRows(secondOperand().numDimensions()) =
+            cache.results(secondOperand(), parameterValues);
     }
     
     void ConcatenationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterBounds);
-        results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterBounds);
+        results.topRows(firstOperand().numDimensions()) =
+            cache.results(firstOperand(), parameterBounds);
+        results.bottomRows(secondOperand().numDimensions()) =
+            cache.results(secondOperand(), parameterBounds);
     }
     
     Function ConcatenationFunction::derivative(int index) const {

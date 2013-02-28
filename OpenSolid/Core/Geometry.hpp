@@ -85,13 +85,13 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            ResultCacheXd& resultCache
+            ResultCacheXd& cache
         ) const;
 
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcI& parameterValues,
             MapXI& results,
-            ResultCacheXI& resultCache
+            ResultCacheXI& cache
         ) const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;

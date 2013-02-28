@@ -47,17 +47,17 @@ namespace opensolid
     void SquaredNormFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).colwise().squaredNorm();
+        results = cache.results(operand(), parameterValues).colwise().squaredNorm();
     }
     
     void SquaredNormFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).colwise().squaredNorm();
+        results = cache.results(operand(), parameterBounds).colwise().squaredNorm();
     }
 
     Function SquaredNormFunction::derivative(int index) const {

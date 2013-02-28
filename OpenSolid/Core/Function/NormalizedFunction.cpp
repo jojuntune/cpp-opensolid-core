@@ -47,9 +47,9 @@ namespace opensolid
     void NormalizedFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        MatrixXd operandValues = operand()(parameterValues);
+        MapXcd operandValues = cache.results(operand(), parameterValues);
         VectorXd squaredNorms = operandValues.colwise().squaredNorm();
         results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
@@ -57,9 +57,9 @@ namespace opensolid
     void NormalizedFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        MatrixXI operandBounds = operand()(parameterBounds);
+        MapXcI operandBounds = cache.results(operand(), parameterBounds);
         VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }

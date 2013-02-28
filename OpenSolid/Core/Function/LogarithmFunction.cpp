@@ -48,17 +48,17 @@ namespace opensolid
     void LogarithmFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).array().log();
+        results = cache.results(operand(), parameterValues).array().log();
     }
 
     void LogarithmFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).array().log();
+        results = cache.results(operand(), parameterBounds).array().log();
     }
 
     Function LogarithmFunction::derivative(int index) const {

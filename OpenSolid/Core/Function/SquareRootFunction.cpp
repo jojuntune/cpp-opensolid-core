@@ -61,17 +61,17 @@ namespace opensolid
     void SquareRootFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = operand()(parameterValues).unaryExpr(SquareRoot());
+        results = cache.results(operand(), parameterValues).unaryExpr(SquareRoot());
     }
     
     void SquareRootFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = operand()(parameterBounds).unaryExpr(SquareRoot());
+        results = cache.results(operand(), parameterBounds).unaryExpr(SquareRoot());
     }
 
     Function SquareRootFunction::derivative(int index) const {

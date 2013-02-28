@@ -214,10 +214,10 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<Scalar> resultCache;
+        ResultCache<Scalar> cache;
 
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, resultCache);
+        _evaluator.evaluate(argumentMap, resultMap, cache);
     }
     
     template<class TEvaluator, class TArgument>
@@ -266,10 +266,10 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<double> resultCache;
+        ResultCache<double> cache;
 
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, resultCache);
+        _evaluator.evaluate(argumentMap, resultMap, cache);
     }
     
     template <class TEvaluator>
@@ -318,10 +318,10 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<double> resultCache;
+        ResultCache<double> cache;
 
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, resultCache);
+        _evaluator.evaluate(argumentMap, resultMap, cache);
     }
     
     template <class TEvaluator>
@@ -370,10 +370,10 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<Interval> resultCache;
+        ResultCache<Interval> cache;
         
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, resultCache);
+        _evaluator.evaluate(argumentMap, resultMap, cache);
     }
     
     template <class TEvaluator>

@@ -50,13 +50,13 @@ namespace opensolid
         virtual void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            ResultCacheXd& resultCache
+            ResultCacheXd& cache
         ) const;
         
         virtual void evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
-            ResultCacheXI& resultCache
+            ResultCacheXI& cache
         ) const;
         
         virtual bool isConstant() const;

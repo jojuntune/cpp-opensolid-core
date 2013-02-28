@@ -65,17 +65,19 @@ namespace opensolid
     void LinearTransformationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = transformationMatrix() * operand()(parameterValues);
+        results = transformationMatrix() *
+            cache.results(operand(), parameterValues);
     }
     
     void LinearTransformationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = transformationMatrix().cast<Interval>() * operand()(parameterBounds);
+        results = transformationMatrix().cast<Interval>() *
+            cache.results(operand(), parameterBounds);
     }
     
     Function LinearTransformationFunction::derivative(int index) const {

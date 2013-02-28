@@ -54,24 +54,24 @@ namespace opensolid
     void CrossProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        Matrix3Xd firstValues = firstOperand()(parameterValues);
-        Matrix3Xd secondValues = secondOperand()(parameterValues);
+        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
+        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = firstValues.col(i).cross(secondValues.col(i));
+            results.col(i) = firstValues.col(i).head<3>().cross(secondValues.col(i).head<3>());
         }
     }
     
     void CrossProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        Matrix3XI firstBounds = firstOperand()(parameterBounds);
-        Matrix3XI secondBounds = secondOperand()(parameterBounds);
+        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
+        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
         for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = firstBounds.col(i).cross(secondBounds.col(i));
+            results.col(i) = firstBounds.col(i).head<3>().cross(secondBounds.col(i).head<3>());
         }
     }
 

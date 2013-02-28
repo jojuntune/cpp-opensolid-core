@@ -58,17 +58,19 @@ namespace opensolid
     void CompositionFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = firstOperand()(secondOperand()(parameterValues));
+        MapXcd innerValues = cache.results(secondOperand(), parameterValues);
+        results = cache.results(firstOperand(), innerValues);
     }
 
     void CompositionFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = firstOperand()(secondOperand()(parameterBounds));
+        MapXcI innerBounds = cache.results(secondOperand(), parameterBounds);
+        results = cache.results(firstOperand(), innerBounds);
     }
 
     Function CompositionFunction::derivative(int index) const {

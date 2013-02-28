@@ -64,7 +64,7 @@ namespace opensolid
     void IdentityFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd&
     ) const {
         results = parameterValues;
     }
@@ -72,7 +72,7 @@ namespace opensolid
     void IdentityFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI&
     ) const {
         results = parameterBounds;
     }

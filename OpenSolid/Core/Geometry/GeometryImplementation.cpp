@@ -48,17 +48,17 @@ namespace opensolid
     void GeometryImplementation::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        function().evaluate(parameterValues, results, resultCache);
+        function().evaluate(parameterValues, results, cache);
     }
         
     void GeometryImplementation::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        function().evaluate(parameterBounds, results, resultCache);
+        function().evaluate(parameterBounds, results, cache);
     }
 
     bool GeometryImplementation::isConstant() const {

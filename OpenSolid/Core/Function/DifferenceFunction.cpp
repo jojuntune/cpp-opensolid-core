@@ -54,17 +54,21 @@ namespace opensolid
     void DifferenceFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& resultCache
+        ResultCacheXd& cache
     ) const {
-        results = firstOperand()(parameterValues) - secondOperand()(parameterValues);
+        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
+        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        results = firstValues - secondValues;
     }
     
     void DifferenceFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& resultCache
+        ResultCacheXI& cache
     ) const {
-        results = firstOperand()(parameterBounds) - secondOperand()(parameterBounds);
+        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
+        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        results = firstBounds - secondBounds;
     }
 
     Function DifferenceFunction::derivative(int index) const {
