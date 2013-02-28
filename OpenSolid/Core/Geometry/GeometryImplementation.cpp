@@ -62,7 +62,7 @@ namespace opensolid
     }
 
     bool GeometryImplementation::isConstant() const {
-        return function().asConstant();
+        return function().asConstant() != 0;
     }
 
     VectorXI GeometryImplementation::bounds() const {
