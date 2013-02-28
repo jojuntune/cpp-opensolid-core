@@ -1,0 +1,113 @@
+/*************************************************************************************
+ *                                                                                   *
+ *  OpenSolid is a generic library for the representation and manipulation of        *
+ *  geometric objects such as points, curves, surfaces, and volumes.                 *
+ *                                                                                   *
+ *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+ *  ian.e.mackenzie@gmail.com                                                        *
+ *                                                                                   *
+ *  This library is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU Lesser General Public                       *
+ *  License as published by the Free Software Foundation; either                     *
+ *  version 2.1 of the License, or (at your option) any later version.               *
+ *                                                                                   *
+ *  This library is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+ *  Lesser General Public License for more details.                                  *
+ *                                                                                   *
+ *  You should have received a copy of the GNU Lesser General Public                 *
+ *  License along with this library; if not, write to the Free Software              *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+ *                                                                                   *
+ *************************************************************************************/
+
+#include <OpenSolid/Core/Function/ResultCache.hpp>
+
+// Public headers
+#include <OpenSolid/Core/Function.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/ConstantFunction.hpp>
+#include <OpenSolid/Core/Function/IdentityFunction.hpp>
+#include <OpenSolid/Core/Function/ParameterFunction.hpp>
+
+#include <unordered_map>
+
+namespace opensolid
+{
+    namespace
+    {
+        template <class TScalar>
+        const TScalar* dataPointer(const ConstantFunction* constantFunction);
+
+        template <>
+        const double* dataPointer<double>(const ConstantFunction* constantFunction) {
+            return &constantFunction->value().coeffRef(0);
+        }
+
+        template <>
+        const Interval* dataPointer<Interval>(const ConstantFunction* constantFunction) {
+            return &constantFunction->bounds().coeffRef(0);
+        }
+    }
+
+    template <class TScalar>
+    typename ResultCache<TScalar>::MapType ResultCache<TScalar>::results(
+        const Function& function,
+        const ResultCache<TScalar>::MapType& parameterValues
+    ) {
+        if (function.asIdentity()) {
+            // Identity function: simply return parameter values map as-is
+            return parameterValues;
+        } else if (const ParameterFunction* parameterFunction = function.asParameter()) {
+            // Parameter function: build map pointing to a single row of data within the given
+            // parameter values
+            int index = parameterFunction->index();
+            Stride<Dynamic, Dynamic> stride(0, parameterValues.outerStride());
+            const TScalar* data = &parameterValues.coeffRef(index, 0);
+            return MapType(data, 1, parameterValues.cols(), stride);
+        } else if (const ConstantFunction* constantFunction = function.asConstant()) {
+            // Constant function: build map pointing to constant data (using an outer stride of
+            // zero allows the single column of data within the ConstantFunction to be used to
+            // represent a matrix of arbitrary number of columns)
+            Stride<Dynamic, Dynamic> stride(1, 0);
+            const TScalar* data = dataPointer<TScalar>(constantFunction);
+            return MapType(data, constantFunction->numDimensions(), parameterValues.cols(), stride);
+        } else {
+            // Generic function: return map to cached data, generating data if necessary
+            Key key(function.implementation(), parameterValues.data());
+            auto iterator = _cachedResults.find(key);
+            if (iterator == _cachedResults.end()) {
+                // Cached results not found - insert new empty entry into cache
+                iterator = _cachedResults.insert(
+                    std::pair<const Key, MatrixType>(key, MatrixType())
+                ).first;
+                MatrixType& resultMatrix = iterator->second;
+                // Resize inserted matrix to the correct size
+                resultMatrix.resize(function.numDimensions(), parameterValues.cols());
+                // Construct map pointing to newly allocated results matrix
+                Map<Matrix<TScalar, Dynamic, Dynamic>, Unaligned, Stride<Dynamic, Dynamic>> resultMap(
+                    resultMatrix.data(),
+                    resultMatrix.rows(),
+                    resultMatrix.cols(),
+                    Stride<Dynamic, Dynamic>(1, resultMatrix.rows())
+                );
+                // Evaluate function into results matrix using map
+                function.evaluate(parameterValues, resultMap);
+            }
+            // Get reference to cached matrix
+            const MatrixType& resultMatrix = iterator->second;
+            // Return map pointing to cached matrix
+            return MapType(
+                resultMatrix.data(),
+                resultMatrix.rows(),
+                resultMatrix.cols(),
+                Stride<Dynamic, Dynamic>(1, resultMatrix.rows())
+            );
+        }
+    }
+
+    template ResultCache<double>::MapType ResultCache<double>::results(const Function&, const MapXcd&);
+    template ResultCache<Interval>::MapType ResultCache<Interval>::results(const Function&, const MapXcI&);
+}
