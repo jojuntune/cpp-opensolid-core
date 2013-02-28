@@ -90,12 +90,12 @@ namespace Eigen
     typedef Matrix<bool, 3, Dynamic> Matrix3Xb;
     typedef Matrix<bool, Dynamic, 3> MatrixX3b;
     
-    typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXi;
+    typedef Map<MatrixXi, Unaligned, Stride<Dynamic, Dynamic>> MapXi;
     typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXd;
     typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
     typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXb;
     
-    typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXci;
+    typedef Map<const MatrixXi, Unaligned, Stride<Dynamic, Dynamic>> MapXci;
     typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcd;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
