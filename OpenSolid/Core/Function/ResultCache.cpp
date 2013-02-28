@@ -56,7 +56,7 @@ namespace opensolid
     template <class TScalar>
     typename ResultCache<TScalar>::MapType ResultCache<TScalar>::results(
         const Function& function,
-        const ResultCache<TScalar>::MapType& parameterValues
+        const typename ResultCache<TScalar>::MapType& parameterValues
     ) {
         if (function.asIdentity()) {
             // Identity function: simply return parameter values map as-is
