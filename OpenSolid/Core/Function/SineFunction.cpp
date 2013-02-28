@@ -45,11 +45,19 @@ namespace opensolid
         return new SineFunction(operand().deduplicated(others));
     }
     
-    void SineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void SineFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).array().sin();
     }
     
-    void SineFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void SineFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).array().sin();
     }
 

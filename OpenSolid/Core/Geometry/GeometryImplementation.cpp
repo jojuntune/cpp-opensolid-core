@@ -22,12 +22,15 @@
  *                                                                                   *
  *************************************************************************************/
 
-#include "GeometryImplementation.hpp"
+#include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
 
-#include "GenericGeometry.hpp"
-
+// Public headers
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Domain.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Geometry/GenericGeometry.hpp>
+#include <OpenSolid/Core/Function/ResultCache.hpp>
 
 namespace opensolid
 {
@@ -42,12 +45,20 @@ namespace opensolid
         return function().numDimensions();
     }
         
-    void GeometryImplementation::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        function().evaluate(parameter_values, results);
+    void GeometryImplementation::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
+        function().evaluate(parameterValues, results, resultCache);
     }
         
-    void GeometryImplementation::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        function().evaluate(parameter_bounds, results);
+    void GeometryImplementation::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
+        function().evaluate(parameterBounds, results, resultCache);
     }
 
     bool GeometryImplementation::isConstant() const {

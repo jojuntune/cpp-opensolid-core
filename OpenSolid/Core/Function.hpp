@@ -95,12 +95,14 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcd& parameterValues,
-            MapXd& results
+            MapXd& results,
+            ResultCacheXd& resultCache
         ) const;
         
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcI& parameterBounds,
-            MapXI& results
+            MapXI& results,
+            ResultCacheXI& resultCache
         ) const;
 
         OPENSOLID_CORE_EXPORT void evaluateJacobian(

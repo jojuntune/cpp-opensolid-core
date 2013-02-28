@@ -58,11 +58,19 @@ namespace opensolid
         }
     };
     
-    void SquareRootFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void SquareRootFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).unaryExpr(SquareRoot());
     }
     
-    void SquareRootFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void SquareRootFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).unaryExpr(SquareRoot());
     }
 

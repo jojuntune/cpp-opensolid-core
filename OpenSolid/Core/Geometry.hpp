@@ -82,8 +82,17 @@ namespace opensolid
         template <class TArgument>
         MatrixReturnValue<Geometry, TArgument> operator()(const TArgument& argument) const;
 
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results,
+            ResultCacheXd& resultCache
+        ) const;
+
+        OPENSOLID_CORE_EXPORT void evaluate(
+            const MapXcI& parameterValues,
+            MapXI& results,
+            ResultCacheXI& resultCache
+        ) const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;

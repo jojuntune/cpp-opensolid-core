@@ -51,12 +51,20 @@ namespace opensolid
         return new ProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void ProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ProductFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = secondOperand()(parameterValues) *
             firstOperand()(parameterValues).eval().asDiagonal();
     }
     
-    void ProductFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ProductFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = secondOperand()(parameterBounds) *
             firstOperand()(parameterBounds).eval().asDiagonal();
     }

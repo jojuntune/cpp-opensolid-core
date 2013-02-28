@@ -49,12 +49,20 @@ namespace opensolid
         return new ConcatenationFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void ConcatenationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ConcatenationFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterValues);
         results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterValues);
     }
     
-    void ConcatenationFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ConcatenationFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results.topRows(firstOperand().numDimensions()) = firstOperand()(parameterBounds);
         results.bottomRows(secondOperand().numDimensions()) = secondOperand()(parameterBounds);
     }

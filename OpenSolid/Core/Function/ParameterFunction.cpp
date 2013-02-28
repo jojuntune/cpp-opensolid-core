@@ -64,11 +64,19 @@ namespace opensolid
         return this;
     }
     
-    void ParameterFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ParameterFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = parameterValues.row(index());
     }
     
-    void ParameterFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ParameterFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = parameterBounds.row(index());
     }
 

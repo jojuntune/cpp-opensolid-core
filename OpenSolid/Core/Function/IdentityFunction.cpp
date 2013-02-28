@@ -61,11 +61,19 @@ namespace opensolid
         return this;
     }
     
-    void IdentityFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void IdentityFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = parameterValues;
     }
     
-    void IdentityFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void IdentityFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = parameterBounds;
     }
 

@@ -55,11 +55,19 @@ namespace opensolid
         return new CompositionFunction(deduplicatedOuterFunction, deduplicatedInnerFunction);
     }
 
-    void CompositionFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void CompositionFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = firstOperand()(secondOperand()(parameterValues));
     }
 
-    void CompositionFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void CompositionFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = firstOperand()(secondOperand()(parameterBounds));
     }
 

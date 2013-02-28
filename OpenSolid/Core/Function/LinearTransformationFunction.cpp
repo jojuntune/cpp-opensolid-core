@@ -64,14 +64,16 @@ namespace opensolid
     
     void LinearTransformationFunction::evaluate(
         const MapXcd& parameterValues,
-        MapXd& results
+        MapXd& results,
+        ResultCacheXd& resultCache
     ) const {
         results = transformationMatrix() * operand()(parameterValues);
     }
     
     void LinearTransformationFunction::evaluate(
         const MapXcI& parameterBounds,
-        MapXI& results
+        MapXI& results,
+        ResultCacheXI& resultCache
     ) const {
         results = transformationMatrix().cast<Interval>() * operand()(parameterBounds);
     }

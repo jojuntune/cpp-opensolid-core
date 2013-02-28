@@ -30,6 +30,9 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
+// Internal headers
+#include <OpenSolid/Core/Function/ResultCache.hpp>
+
 // Declarations headers
 #include <OpenSolid/Core/Function/declarations.hpp>
 
@@ -57,12 +60,14 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT virtual void evaluate(
             const MapXcd& parameterValues,
-            MapXd& results
+            MapXd& results,
+            ResultCacheXd& resultCache
         ) const = 0;
         
         OPENSOLID_CORE_EXPORT virtual void evaluate(
             const MapXcI& parameterBounds,
-            MapXI& results
+            MapXI& results,
+            ResultCacheXI& resultCache
         ) const = 0;
 
         OPENSOLID_CORE_EXPORT virtual void evaluateJacobian(

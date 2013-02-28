@@ -60,11 +60,19 @@ namespace opensolid
         }
     };
     
-    void ArcsineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ArcsineFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).unaryExpr(Arcsine());
     }
     
-    void ArcsineFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ArcsineFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).unaryExpr(Arcsine());
     }
 

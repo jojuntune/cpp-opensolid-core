@@ -46,8 +46,19 @@ namespace opensolid
         
         virtual int numParameters() const;
         virtual int numDimensions() const;
-        virtual void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        virtual void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
+        
+        virtual void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results,
+            ResultCacheXd& resultCache
+        ) const;
+        
+        virtual void evaluate(
+            const MapXcI& parameterBounds,
+            MapXI& results,
+            ResultCacheXI& resultCache
+        ) const;
+        
         virtual bool isConstant() const;
         virtual VectorXI bounds() const;
         virtual Set<Geometry> boundaries() const;

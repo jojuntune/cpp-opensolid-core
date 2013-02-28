@@ -48,8 +48,17 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcd& parameterValues, MapXd& results) const;
-        OPENSOLID_CORE_EXPORT void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
+        OPENSOLID_CORE_EXPORT void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results,
+            ResultCacheXd& resultCache
+        ) const;
+        
+        OPENSOLID_CORE_EXPORT void evaluate(
+            const MapXcI& parameterBounds,
+            MapXI& results,
+            ResultCacheXI& resultCache
+        ) const;
         
         OPENSOLID_CORE_EXPORT Function derivative(int index) const;
         

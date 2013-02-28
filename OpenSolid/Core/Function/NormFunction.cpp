@@ -44,11 +44,19 @@ namespace opensolid
         return new NormFunction(operand().deduplicated(others));
     }
     
-    void NormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void NormFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).colwise().norm();
     }
     
-    void NormFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void NormFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).colwise().norm();
     }
 

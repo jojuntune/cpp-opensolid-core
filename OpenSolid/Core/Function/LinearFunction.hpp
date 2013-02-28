@@ -51,8 +51,17 @@ namespace opensolid
         bool isDuplicate(const Function& other) const;
         Function deduplicated(std::vector<Function>& others) const;
         
-        void evaluate(const MapXcd& parameterValues, MapXd& results) const;
-        void evaluate(const MapXcI& parameterBounds, MapXI& results) const;
+        void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results,
+            ResultCacheXd& resultCache
+        ) const;
+        
+        void evaluate(
+            const MapXcI& parameterBounds,
+            MapXI& results,
+            ResultCacheXI& resultCache
+        ) const;
 
         Function derivative(int index) const;
         
@@ -112,7 +121,8 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
-        MapXd& results
+        MapXd& results,
+        ResultCacheXd& resultCache
     ) const {
         results = datum() * parameterValues;
     }
@@ -120,7 +130,8 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
-        MapXI& results
+        MapXI& results,
+        ResultCacheXI& resultCache
     ) const {
         results = datum() * parameterBounds;
     }

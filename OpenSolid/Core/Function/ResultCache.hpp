@@ -52,4 +52,7 @@ namespace opensolid
             const MapType& parameterValues
         );
     };
+
+    typedef ResultCache<double> ResultCacheXd;
+    typedef ResultCache<Interval> ResultCacheXI;
 }

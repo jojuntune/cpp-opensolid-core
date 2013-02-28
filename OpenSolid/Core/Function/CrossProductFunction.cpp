@@ -51,7 +51,11 @@ namespace opensolid
         return new CrossProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void CrossProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void CrossProductFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         Matrix3Xd firstValues = firstOperand()(parameterValues);
         Matrix3Xd secondValues = secondOperand()(parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
@@ -59,7 +63,11 @@ namespace opensolid
         }
     }
     
-    void CrossProductFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void CrossProductFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         Matrix3XI firstBounds = firstOperand()(parameterBounds);
         Matrix3XI secondBounds = secondOperand()(parameterBounds);
         for (int i = 0; i < results.cols(); ++i) {

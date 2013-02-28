@@ -55,12 +55,20 @@ namespace opensolid
         return new TranslationFunction(operand().deduplicated(others), vector());
     }
     
-    void TranslationFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void TranslationFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         MatrixXd operandValues = operand()(parameterValues);
         results = operandValues.colwise() + vector();
     }
     
-    void TranslationFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void TranslationFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         results = operandBounds.colwise() + vector().cast<Interval>();
     }

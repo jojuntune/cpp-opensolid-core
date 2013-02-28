@@ -45,11 +45,19 @@ namespace opensolid
         return new ExponentialFunction(operand().deduplicated(others));
     }
         
-    void ExponentialFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ExponentialFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).array().exp();
     }
 
-    void ExponentialFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ExponentialFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).array().exp();
     }
 

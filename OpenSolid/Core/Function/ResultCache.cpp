@@ -29,6 +29,7 @@
 
 // Internal headers
 #include <OpenSolid/Core/Function/ConstantFunction.hpp>
+#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Function/IdentityFunction.hpp>
 #include <OpenSolid/Core/Function/ParameterFunction.hpp>
 
@@ -94,7 +95,7 @@ namespace opensolid
                     Stride<Dynamic, Dynamic>(1, resultMatrix.rows())
                 );
                 // Evaluate function into results matrix using map
-                function.evaluate(parameterValues, resultMap);
+                function.evaluate(parameterValues, resultMap, *this);
             }
             // Get reference to cached matrix
             const MatrixType& resultMatrix = iterator->second;

@@ -51,12 +51,20 @@ namespace opensolid
         return new DotProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void DotProductFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void DotProductFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = firstOperand()(parameterValues).cwiseProduct(secondOperand()(parameterValues)).
             colwise().sum();
     }
     
-    void DotProductFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void DotProductFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = firstOperand()(parameterBounds).cwiseProduct(secondOperand()(parameterBounds)).
             colwise().sum();
     }

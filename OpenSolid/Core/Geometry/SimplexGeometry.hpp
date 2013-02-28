@@ -49,8 +49,19 @@ namespace opensolid
         
         int numParameters() const;
         int numDimensions() const;
-        void evaluate(const MapXcd& parameter_values, MapXd& results) const;
-        void evaluate(const MapXcI& parameter_bounds, MapXI& results) const;
+        
+        void evaluate(
+            const MapXcd& parameterValues,
+            MapXd& results,
+            ResultCacheXd& resultCache
+        ) const;
+        
+        void evaluate(
+            const MapXcI& parameterBounds,
+            MapXI& results,
+            ResultCacheXI& resultCache
+        ) const;
+
         bool isConstant() const;
         VectorXI bounds() const;
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
@@ -87,18 +98,20 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumVertices>
     void SimplexGeometry<iNumDimensions, iNumVertices>::evaluate(
-        const MapXcd& parameter_values,
-        MapXd& results
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
     ) const {
-        results = _simplexDatum * parameter_values;
+        results = _simplexDatum * parameterValues;
     }
 
     template <int iNumDimensions, int iNumVertices>
     void SimplexGeometry<iNumDimensions, iNumVertices>::evaluate(
-        const MapXcI& parameter_bounds,
-        MapXI& results
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
     ) const {
-        results = _simplexDatum * parameter_bounds;
+        results = _simplexDatum * parameterBounds;
     }
     
     template <int iNumDimensions, int iNumVertices>

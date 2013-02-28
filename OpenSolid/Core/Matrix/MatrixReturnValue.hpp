@@ -213,8 +213,11 @@ namespace opensolid
             ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        ResultCache<Scalar> resultCache;
+
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap);
+        _evaluator.evaluate(argumentMap, resultMap, resultCache);
     }
     
     template<class TEvaluator, class TArgument>
@@ -262,8 +265,11 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        ResultCache<double> resultCache;
+
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap);
+        _evaluator.evaluate(argumentMap, resultMap, resultCache);
     }
     
     template <class TEvaluator>
@@ -311,8 +317,11 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        ResultCache<double> resultCache;
+
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap);
+        _evaluator.evaluate(argumentMap, resultMap, resultCache);
     }
     
     template <class TEvaluator>
@@ -360,8 +369,11 @@ namespace opensolid
         typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        ResultCache<Interval> resultCache;
+        
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap);
+        _evaluator.evaluate(argumentMap, resultMap, resultCache);
     }
     
     template <class TEvaluator>

@@ -51,12 +51,20 @@ namespace opensolid
         return new QuotientFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void QuotientFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void QuotientFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = firstOperand()(parameterValues).array() /
             secondOperand()(parameterValues).replicate(numDimensions(), 1).array();
     }
     
-    void QuotientFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void QuotientFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = firstOperand()(parameterBounds).array() /
             secondOperand()(parameterBounds).replicate(numDimensions(), 1).array();
     }

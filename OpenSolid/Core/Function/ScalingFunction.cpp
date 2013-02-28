@@ -52,11 +52,19 @@ namespace opensolid
         return new ScalingFunction(scale(), operand().deduplicated(others));
     }
     
-    void ScalingFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ScalingFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = scale() * operand()(parameterValues);
     }
     
-    void ScalingFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ScalingFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = Interval(scale()) * operand()(parameterBounds);
     }
     

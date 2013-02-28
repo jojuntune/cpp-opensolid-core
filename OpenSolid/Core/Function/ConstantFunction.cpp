@@ -68,11 +68,19 @@ namespace opensolid
         return this;
     }
         
-    void ConstantFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ConstantFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results.colwise() = value();
     }
     
-    void ConstantFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ConstantFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results.colwise() = bounds();
     }
     

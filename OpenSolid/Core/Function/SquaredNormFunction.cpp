@@ -44,11 +44,19 @@ namespace opensolid
         return new SquaredNormFunction(operand().deduplicated(others));
     }
     
-    void SquaredNormFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void SquaredNormFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).colwise().squaredNorm();
     }
     
-    void SquaredNormFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void SquaredNormFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).colwise().squaredNorm();
     }
 

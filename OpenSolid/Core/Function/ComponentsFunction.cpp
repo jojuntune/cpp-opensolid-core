@@ -66,12 +66,20 @@ namespace opensolid
         );
     }
     
-    void ComponentsFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void ComponentsFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         MatrixXd operandValues = operand()(parameterValues);
         results = operandValues.middleRows(startIndex(), numComponents());
     }
     
-    void ComponentsFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void ComponentsFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         results = operandBounds.middleRows(startIndex(), numComponents());
     }

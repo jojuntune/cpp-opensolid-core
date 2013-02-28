@@ -47,11 +47,19 @@ namespace opensolid
         return new CosineFunction(operand().deduplicated(others));
     }
     
-    void CosineFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void CosineFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).array().cos();
     }
     
-    void CosineFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void CosineFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).array().cos();
     }
 

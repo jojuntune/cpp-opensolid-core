@@ -45,12 +45,20 @@ namespace opensolid
         return new TangentFunction(operand().deduplicated(others));
     }
     
-    void TangentFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void TangentFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         MatrixXd operandValues = operand()(parameterValues);
         results = operandValues.array().sin() / operandValues.array().cos();
     }
     
-    void TangentFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void TangentFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         results = operandBounds.array().sin() / operandBounds.array().cos();
     }

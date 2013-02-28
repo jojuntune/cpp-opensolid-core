@@ -22,9 +22,13 @@
  *                                                                                   *
  *************************************************************************************/
 
-#include "GenericGeometry.hpp"
+#include <OpenSolid/Core/Geometry/GenericGeometry.hpp>
 
+// Public headers
 #include <OpenSolid/Core/Geometry.hpp>
+
+// Internal headers
+#include <OpenSolid/Core/Function/ResultCache.hpp>
 
 namespace opensolid
 {
@@ -49,11 +53,19 @@ namespace opensolid
         return _function.numDimensions();
     }
 
-    void GenericGeometry::evaluate(const MapXcd& parameter_values, MapXd& results) const {
-        _function.evaluate(parameter_values, results);
+    void GenericGeometry::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
+        _function.evaluate(parameterValues, results, resultCache);
     }
 
-    void GenericGeometry::evaluate(const MapXcI& parameter_bounds, MapXI& results) const {
-        _function.evaluate(parameter_bounds, results);
+    void GenericGeometry::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
+        _function.evaluate(parameterBounds, results, resultCache);
     }
 }

@@ -49,11 +49,19 @@ namespace opensolid
         return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void SumFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void SumFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = firstOperand()(parameterValues) + secondOperand()(parameterValues);
     }
     
-    void SumFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void SumFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = firstOperand()(parameterBounds) + secondOperand()(parameterBounds);
     }
 

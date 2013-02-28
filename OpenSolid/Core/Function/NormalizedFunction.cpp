@@ -44,13 +44,21 @@ namespace opensolid
         return new NormalizedFunction(operand().deduplicated(others));
     }
 
-    void NormalizedFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void NormalizedFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         MatrixXd operandValues = operand()(parameterValues);
         VectorXd squaredNorms = operandValues.colwise().squaredNorm();
         results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    void NormalizedFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void NormalizedFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         MatrixXI operandBounds = operand()(parameterBounds);
         VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();

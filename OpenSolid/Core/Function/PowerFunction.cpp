@@ -99,7 +99,11 @@ namespace opensolid
         }
     };
         
-    void PowerFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void PowerFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         RowVectorXd baseValues = firstOperand()(parameterValues);
         if (_exponentIsInteger) {
             results = baseValues.unaryExpr(IntegerPower(_integerExponent));
@@ -110,7 +114,11 @@ namespace opensolid
         }
     }
 
-    void PowerFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void PowerFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         RowVectorXI baseBounds = firstOperand()(parameterBounds);
         if (_exponentIsInteger) {
             results = baseBounds.unaryExpr(IntegerPower(_integerExponent));

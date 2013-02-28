@@ -100,12 +100,20 @@ namespace opensolid
         return implementation()->domain();
     }
 
-    void Geometry::evaluate(const MapXcd& parameterValues, MapXd& results) const {
-        implementation()->evaluate(parameterValues, results);
+    void Geometry::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
+        implementation()->evaluate(parameterValues, results, resultCache);
     }
 
-    void Geometry::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
-        implementation()->evaluate(parameterBounds, results);
+    void Geometry::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
+        implementation()->evaluate(parameterBounds, results, resultCache);
     }
     
     int Geometry::numParameters() const {

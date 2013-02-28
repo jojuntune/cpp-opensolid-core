@@ -45,11 +45,19 @@ namespace opensolid
         return new LogarithmFunction(operand().deduplicated(others));
     }
         
-    void LogarithmFunction::evaluate(const MapXcd& parameterValues, MapXd& results) const {
+    void LogarithmFunction::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        ResultCacheXd& resultCache
+    ) const {
         results = operand()(parameterValues).array().log();
     }
 
-    void LogarithmFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
+    void LogarithmFunction::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        ResultCacheXI& resultCache
+    ) const {
         results = operand()(parameterBounds).array().log();
     }
 
