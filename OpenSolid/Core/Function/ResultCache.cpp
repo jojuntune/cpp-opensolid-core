@@ -65,14 +65,14 @@ namespace opensolid
             // Parameter function: build map pointing to a single row of data within the given
             // parameter values
             int index = parameterFunction->index();
-            Stride<Dynamic, Dynamic> stride(0, parameterValues.outerStride());
+            Stride<Dynamic, Dynamic> stride(parameterValues.outerStride(), 1);
             const TScalar* data = &parameterValues.coeffRef(index, 0);
             return MapType(data, 1, parameterValues.cols(), stride);
         } else if (const ConstantFunction* constantFunction = function.asConstant()) {
             // Constant function: build map pointing to constant data (using an outer stride of
             // zero allows the single column of data within the ConstantFunction to be used to
             // represent a matrix of arbitrary number of columns)
-            Stride<Dynamic, Dynamic> stride(1, 0);
+            Stride<Dynamic, Dynamic> stride(0, 1);
             const TScalar* data = dataPointer<TScalar>(constantFunction);
             return MapType(data, constantFunction->numDimensions(), parameterValues.cols(), stride);
         } else {
@@ -92,7 +92,7 @@ namespace opensolid
                     resultMatrix.data(),
                     resultMatrix.rows(),
                     resultMatrix.cols(),
-                    Stride<Dynamic, Dynamic>(1, resultMatrix.rows())
+                    Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
                 );
                 // Evaluate function into results matrix using map
                 function.evaluate(parameterValues, resultMap, *this);
@@ -104,7 +104,7 @@ namespace opensolid
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
-                Stride<Dynamic, Dynamic>(1, resultMatrix.rows())
+                Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
             );
         }
     }
