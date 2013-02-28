@@ -27,6 +27,8 @@
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
+#include <OpenSolid/Core/Function/ResultCache.hpp>
+
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
 
@@ -296,6 +298,30 @@ public:
         Function f = t.squaredNorm() + sin(t.squaredNorm());
         std::cout << std::endl;
         f.debug(std::cout, 0);
+    }
+
+    void testResultCacheDouble() {
+        Function f = t.squaredNorm();
+        ResultCache<double> cache;
+        RowVector3d parameterValues(1, 2, 3);
+        MapXcd parameterMap(parameterValues.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
+        MapXcd results1 = cache.results(f, parameterMap);
+        MapXcd results2 = cache.results(f, parameterMap);
+        TS_ASSERT_EQUALS(results1.data(), results2.data());
+        MapXcd results3 = cache.results(f, parameterMap);
+        TS_ASSERT_EQUALS(results1.data(), results3.data());
+    }
+
+    void testResultCacheInterval() {
+        Function f = t.squaredNorm();
+        ResultCache<Interval> cache;
+        RowVector3I parameterBounds(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+        MapXcI parameterMap(parameterBounds.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
+        MapXcI results1 = cache.results(f, parameterMap);
+        MapXcI results2 = cache.results(f, parameterMap);
+        TS_ASSERT_EQUALS(results1.data(), results2.data());
+        MapXcI results3 = cache.results(f, parameterMap);
+        TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
     
     //void xtestRoots() {
