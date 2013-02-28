@@ -37,6 +37,10 @@ namespace opensolid
         assert(index >= 0 && index < numParameters);
     }
 
+    const ParameterFunction* ParameterFunction::asParameter() const {
+        return this;
+    }
+
     int ParameterFunction::numParameters() const {
         return _numParameters;
     }

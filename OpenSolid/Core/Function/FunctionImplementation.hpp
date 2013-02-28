@@ -45,8 +45,9 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT virtual int numDimensions() const = 0;
         OPENSOLID_CORE_EXPORT virtual int numParameters() const = 0;
         
-        OPENSOLID_CORE_EXPORT virtual bool isConstant() const;
-        OPENSOLID_CORE_EXPORT virtual VectorXd value() const;
+        OPENSOLID_CORE_EXPORT virtual const ConstantFunction* asConstant() const;
+        OPENSOLID_CORE_EXPORT virtual const IdentityFunction* asIdentity() const;
+        OPENSOLID_CORE_EXPORT virtual const ParameterFunction* asParameter() const;
 
         OPENSOLID_CORE_EXPORT virtual bool isDuplicate(const Function& other) const = 0;
         

@@ -54,14 +54,17 @@ namespace opensolid
 
     FunctionImplementation::~FunctionImplementation() {
     }
-
-    bool FunctionImplementation::isConstant() const {
-        return false;
+        
+    const ConstantFunction* FunctionImplementation::asConstant() const {
+        return 0;
     }
 
-    VectorXd FunctionImplementation::value() const {
-        assert(false);
-        return VectorXd();
+    const IdentityFunction* FunctionImplementation::asIdentity() const {
+        return 0;
+    }
+
+    const ParameterFunction* FunctionImplementation::asParameter() const {
+        return 0;
     }
     
     Function FunctionImplementation::components(int startIndex, int numComponents) const {

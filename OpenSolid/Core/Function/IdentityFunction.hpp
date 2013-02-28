@@ -37,6 +37,8 @@ namespace opensolid
         int _numDimensions;
     public:
         OPENSOLID_CORE_EXPORT IdentityFunction(int numDimensions);
+
+        OPENSOLID_CORE_EXPORT const IdentityFunction* asIdentity() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;

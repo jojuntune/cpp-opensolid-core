@@ -50,7 +50,7 @@ namespace opensolid
         _implementation(new GenericGeometry(function, domain)),
         _type(&typeid(GenericGeometry)) {
 
-        assert(function.isConstant() || domain.numDimensions() == function.numParameters());
+        assert(domain.numDimensions() == function.numParameters());
     }
     
     Geometry::Geometry(double value, int numParameters) :

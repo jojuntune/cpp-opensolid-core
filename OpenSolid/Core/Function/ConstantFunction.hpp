@@ -35,13 +35,16 @@ namespace opensolid
     {
     private:
         VectorXd _value;
+        VectorXI _bounds;
         int _numParameters;
     public:
         OPENSOLID_CORE_EXPORT ConstantFunction(double value, int numParameters);
         OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXd& vector, int numParameters);
 
-        OPENSOLID_CORE_EXPORT bool isConstant() const;
-        OPENSOLID_CORE_EXPORT VectorXd value() const;
+        const VectorXd& value() const;
+        const VectorXI& bounds() const;
+
+        OPENSOLID_CORE_EXPORT const ConstantFunction* asConstant() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
@@ -68,4 +71,15 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
     };
+}
+
+namespace opensolid
+{
+    inline const VectorXd& ConstantFunction::value() const {
+        return _value;
+    }
+
+    inline const VectorXI& ConstantFunction::bounds() const {
+        return _bounds;
+    }
 }

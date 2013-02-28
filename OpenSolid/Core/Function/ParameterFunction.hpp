@@ -40,6 +40,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT ParameterFunction(int numParameters, int index);
         
         int index() const;
+
+        OPENSOLID_CORE_EXPORT const ParameterFunction* asParameter() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;

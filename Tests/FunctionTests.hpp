@@ -49,7 +49,7 @@ public:
 
     void testConstant() {
         Function f = Function::Constant(3.0, 1);
-        TS_ASSERT(f.isConstant());
+        TS_ASSERT(f.asConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
         TS_ASSERT(f.as<double>() - 3 == Zero());
     }
@@ -113,7 +113,7 @@ public:
     
     void testVector() {
         Function f = Function::Constant(Vector3d(1, 2, 3), 0);
-        TS_ASSERT(f.isConstant());
+        TS_ASSERT(f.asConstant());
         TS_ASSERT(f.as<Vector3d>() == Vector3d(1, 2, 3));
         TS_ASSERT(f.as<Vector3d>().transpose() == RowVector3d(1, 2, 3));
     }
@@ -239,7 +239,7 @@ public:
         Function mirrored = f.mirrored(plane);
         TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
         Function derivative = mirrored.derivative();
-        TS_ASSERT(derivative.isConstant());
+        TS_ASSERT(derivative.asConstant());
         TS_ASSERT((derivative.as<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 

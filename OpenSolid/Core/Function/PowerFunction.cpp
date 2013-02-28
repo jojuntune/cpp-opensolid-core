@@ -33,7 +33,7 @@ namespace opensolid
         BinaryOperation(baseFunction, exponentFunction) {
         assert(baseFunction.numDimensions() == 1);
         assert(exponentFunction.numDimensions() == 1);
-        if (exponentFunction.isConstant()) {
+        if (exponentFunction.asConstant()) {
             _exponentIsConstant = true;
             _constantExponent = exponentFunction.as<double>();
             _integerExponent = floor(_constantExponent + 0.5);

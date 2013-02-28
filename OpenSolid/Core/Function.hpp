@@ -85,8 +85,9 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT int numDimensions() const;
         OPENSOLID_CORE_EXPORT int numParameters() const;
 
-        OPENSOLID_CORE_EXPORT bool isConstant() const;
-        OPENSOLID_CORE_EXPORT VectorXd value() const;
+        OPENSOLID_CORE_EXPORT const ConstantFunction* asConstant() const;
+        OPENSOLID_CORE_EXPORT const IdentityFunction* asIdentity() const;
+        OPENSOLID_CORE_EXPORT const ParameterFunction* asParameter() const;
 
         OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
         OPENSOLID_CORE_EXPORT Function deduplicated() const;

@@ -31,20 +31,18 @@ namespace opensolid
 {
     ConstantFunction::ConstantFunction(const VectorXd& vector, int numParameters) :
         _value(vector),
+        _bounds(vector.cast<Interval>()),
         _numParameters(numParameters) {
     }
 
     ConstantFunction::ConstantFunction(double value, int numParameters) :
         _value(VectorXd::Constant(1, value)),
+        _bounds(VectorXI::Constant(1, Interval(value))),
         _numParameters(numParameters) {
     }
 
-    bool ConstantFunction::isConstant() const {
-        return true;
-    }
-
-    VectorXd ConstantFunction::value() const {
-        return _value;
+    const ConstantFunction* ConstantFunction::asConstant() const {
+        return this;
     }
     
     int ConstantFunction::numParameters() const {
@@ -75,7 +73,7 @@ namespace opensolid
     }
     
     void ConstantFunction::evaluate(const MapXcI& parameterBounds, MapXI& results) const {
-        results.colwise() = value().cast<Interval>();
+        results.colwise() = bounds();
     }
     
     Function ConstantFunction::derivative(int) const {

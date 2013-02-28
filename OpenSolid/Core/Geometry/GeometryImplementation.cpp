@@ -51,12 +51,12 @@ namespace opensolid
     }
 
     bool GeometryImplementation::isConstant() const {
-        return function().isConstant();
+        return function().asConstant();
     }
 
     VectorXI GeometryImplementation::bounds() const {
         Function function = this->function();
-        if (function.isConstant()) {
+        if (function.asConstant()) {
             return function.as<VectorXd>().cast<Interval>();
         } else {
             return function(domain().bounds());

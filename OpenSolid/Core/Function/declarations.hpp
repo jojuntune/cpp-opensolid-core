@@ -30,4 +30,7 @@ namespace opensolid
 {
     class Function;
     class FunctionImplementation;
+    class ConstantFunction;
+    class IdentityFunction;
+    class ParameterFunction;
 }
