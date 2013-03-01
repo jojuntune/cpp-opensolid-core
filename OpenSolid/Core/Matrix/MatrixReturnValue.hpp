@@ -88,10 +88,10 @@ namespace opensolid
     class MatrixReturnValue : public ReturnByValue<MatrixReturnValue<TEvaluator, TArgument>>
     {
     private:
-        const TEvaluator& _evaluator;
+        const TEvaluator* _evaluator;
         const TArgument& _argument;
     public:
-        MatrixReturnValue(const TEvaluator& evaluator, const TArgument& argument);
+        MatrixReturnValue(const TEvaluator* evaluator, const TArgument& argument);
         
         int rows() const;
         int cols() const;
@@ -108,10 +108,10 @@ namespace opensolid
         public ReturnByValue<MatrixReturnValue<TEvaluator, int>>
     {
     private:
-        const TEvaluator& _evaluator;
+        const TEvaluator* _evaluator;
         double _argument;
     public:
-        MatrixReturnValue(const TEvaluator& evaluator, int argument);
+        MatrixReturnValue(const TEvaluator* evaluator, int argument);
         
         int rows() const;
         int cols() const;
@@ -128,10 +128,10 @@ namespace opensolid
         public ReturnByValue<MatrixReturnValue<TEvaluator, double>>
     {
     private:
-        const TEvaluator& _evaluator;
+        const TEvaluator* _evaluator;
         double _argument;
     public:
-        MatrixReturnValue(const TEvaluator& evaluator, double argument);
+        MatrixReturnValue(const TEvaluator* evaluator, double argument);
         
         int rows() const;
         int cols() const;
@@ -148,10 +148,10 @@ namespace opensolid
         public ReturnByValue<MatrixReturnValue<TEvaluator, Interval>>
     {
     private:
-        const TEvaluator& _evaluator;
+        const TEvaluator* _evaluator;
         Interval _argument;
     public:
-        MatrixReturnValue(const TEvaluator& evaluator, Interval argument);
+        MatrixReturnValue(const TEvaluator* evaluator, Interval argument);
         
         int rows() const;
         int cols() const;
@@ -170,14 +170,14 @@ namespace opensolid
 {
     template<class TEvaluator, class TArgument>
     inline MatrixReturnValue<TEvaluator, TArgument>::MatrixReturnValue(
-        const TEvaluator& evaluator,
+        const TEvaluator* evaluator,
         const TArgument& argument
     ) : _evaluator(evaluator), _argument(argument) {
     }
     
     template<class TEvaluator, class TArgument>
     inline int MatrixReturnValue<TEvaluator, TArgument>::rows() const {
-        return _evaluator.numDimensions();
+        return _evaluator->numDimensions();
     }
     
     template<class TEvaluator, class TArgument>
@@ -217,7 +217,7 @@ namespace opensolid
         ResultCache<Scalar> cache;
 
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, cache);
+        _evaluator->evaluate(argumentMap, resultMap, cache);
     }
     
     template<class TEvaluator, class TArgument>
@@ -234,7 +234,7 @@ namespace opensolid
     
     template <class TEvaluator>
     inline MatrixReturnValue<TEvaluator, int>::MatrixReturnValue(
-        const TEvaluator& evaluator,
+        const TEvaluator* evaluator,
         int argument
     ) : _evaluator(evaluator),
         _argument(argument) {
@@ -242,7 +242,7 @@ namespace opensolid
     
     template <class TEvaluator>
     inline int MatrixReturnValue<TEvaluator, int>::rows() const {
-        return _evaluator.numDimensions();
+        return _evaluator->numDimensions();
     }
     
     template <class TEvaluator>
@@ -269,7 +269,7 @@ namespace opensolid
         ResultCache<double> cache;
 
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, cache);
+        _evaluator->evaluate(argumentMap, resultMap, cache);
     }
     
     template <class TEvaluator>
@@ -286,7 +286,7 @@ namespace opensolid
     
     template <class TEvaluator>
     inline MatrixReturnValue<TEvaluator, double>::MatrixReturnValue(
-        const TEvaluator& evaluator,
+        const TEvaluator* evaluator,
         double argument
     ) : _evaluator(evaluator),
         _argument(argument) {
@@ -294,7 +294,7 @@ namespace opensolid
     
     template <class TEvaluator>
     inline int MatrixReturnValue<TEvaluator, double>::rows() const {
-        return _evaluator.numDimensions();
+        return _evaluator->numDimensions();
     }
     
     template <class TEvaluator>
@@ -321,7 +321,7 @@ namespace opensolid
         ResultCache<double> cache;
 
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, cache);
+        _evaluator->evaluate(argumentMap, resultMap, cache);
     }
     
     template <class TEvaluator>
@@ -338,7 +338,7 @@ namespace opensolid
     
     template <class TEvaluator>
     inline MatrixReturnValue<TEvaluator, Interval>::MatrixReturnValue(
-        const TEvaluator& evaluator,
+        const TEvaluator* evaluator,
         Interval argument
     ) : _evaluator(evaluator),
         _argument(argument) {
@@ -346,7 +346,7 @@ namespace opensolid
     
     template <class TEvaluator>
     inline int MatrixReturnValue<TEvaluator, Interval>::rows() const {
-        return _evaluator.numDimensions();
+        return _evaluator->numDimensions();
     }
     
     template <class TEvaluator>
@@ -373,7 +373,7 @@ namespace opensolid
         ResultCache<Interval> cache;
         
         // Evaluate
-        _evaluator.evaluate(argumentMap, resultMap, cache);
+        _evaluator->evaluate(argumentMap, resultMap, cache);
     }
     
     template <class TEvaluator>

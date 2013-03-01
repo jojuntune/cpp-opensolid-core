@@ -80,18 +80,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Domain domain() const;
         
         template <class TArgument>
-        MatrixReturnValue<Geometry, TArgument> operator()(const TArgument& argument) const;
-
-        OPENSOLID_CORE_EXPORT void evaluate(
-            const MapXcd& parameterValues,
-            MapXd& results,
-            ResultCacheXd& cache
-        ) const;
-
-        OPENSOLID_CORE_EXPORT void evaluate(
-            const MapXcI& parameterValues,
-            MapXI& results,
-            ResultCacheXI& cache
+        MatrixReturnValue<GeometryImplementation, TArgument> operator()(
+            const TArgument& argument
         ) const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
@@ -172,10 +162,10 @@ namespace opensolid
     }
 
     template <class TArgument>
-    inline MatrixReturnValue<Geometry, TArgument> Geometry::operator()(
+    inline MatrixReturnValue<GeometryImplementation, TArgument> Geometry::operator()(
         const TArgument& argument
     ) const {
-        return MatrixReturnValue<Geometry, TArgument>(*this, argument);
+        return MatrixReturnValue<GeometryImplementation, TArgument>(implementation(), argument);
     }
 
     template <class TMatrix>

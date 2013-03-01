@@ -58,7 +58,11 @@ namespace opensolid
         MapXd& results,
         ResultCacheXd& cache
     ) const {
-        _function.evaluate(parameterValues, results, cache);
+        if (!_function.isValid()) {
+            assert(false);
+            return;
+        }
+        _function.implementation()->evaluate(parameterValues, results, cache);
     }
 
     void GenericGeometry::evaluate(
@@ -66,6 +70,10 @@ namespace opensolid
         MapXI& results,
         ResultCacheXI& cache
     ) const {
-        _function.evaluate(parameterBounds, results, cache);
+        if (!_function.isValid()) {
+            assert(false);
+            return;
+        }
+        _function.implementation()->evaluate(parameterBounds, results, cache);
     }
 }

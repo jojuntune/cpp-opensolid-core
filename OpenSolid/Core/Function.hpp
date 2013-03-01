@@ -93,34 +93,14 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT Function deduplicated() const;
         OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
 
-        OPENSOLID_CORE_EXPORT void evaluate(
-            const MapXcd& parameterValues,
-            MapXd& results,
-            ResultCacheXd& cache
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void evaluate(
-            const MapXcI& parameterBounds,
-            MapXI& results,
-            ResultCacheXI& cache
-        ) const;
-
-        OPENSOLID_CORE_EXPORT void evaluateJacobian(
-            const MapXcd& parameterValues,
-            MapXd& results
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT void evaluateJacobian(
-            const MapXcI& parameterBounds,
-            MapXI& results
-        ) const;
-
-        MatrixReturnValue<Function, int> operator()(int value) const;
-        MatrixReturnValue<Function, double> operator()(double value) const;
-        MatrixReturnValue<Function, Interval> operator()(Interval interval) const;
+        MatrixReturnValue<FunctionImplementation, int> operator()(int value) const;
+        MatrixReturnValue<FunctionImplementation, double> operator()(double value) const;
+        MatrixReturnValue<FunctionImplementation, Interval> operator()(Interval interval) const;
         
         template <class TDerived>
-        MatrixReturnValue<Function, TDerived> operator()(const EigenBase<TDerived>& matrix) const;
+        MatrixReturnValue<FunctionImplementation, TDerived> operator()(
+            const EigenBase<TDerived>& matrix
+        ) const;
 
         JacobianReturnValue<Function, int> jacobian(int value) const;
         JacobianReturnValue<Function, double> jacobian(double value) const;
@@ -326,23 +306,32 @@ namespace opensolid
         return implementation() != 0;
     }
 
-    inline MatrixReturnValue<Function, int> Function::operator()(int value) const {
-        return MatrixReturnValue<Function, int>(*this, value);
+    inline MatrixReturnValue<FunctionImplementation, int> Function::operator()(
+        int value
+    ) const {
+        return MatrixReturnValue<FunctionImplementation, int>(implementation(), value);
     }
 
-    inline MatrixReturnValue<Function, double> Function::operator()(double value) const {
-        return MatrixReturnValue<Function, double>(*this, value);
+    inline MatrixReturnValue<FunctionImplementation, double> Function::operator()(
+        double value
+    ) const {
+        return MatrixReturnValue<FunctionImplementation, double>(implementation(), value);
     }
 
-    inline MatrixReturnValue<Function, Interval> Function::operator()(Interval interval) const {
-        return MatrixReturnValue<Function, Interval>(*this, interval);
+    inline MatrixReturnValue<FunctionImplementation, Interval> Function::operator()(
+        Interval interval
+    ) const {
+        return MatrixReturnValue<FunctionImplementation, Interval>(implementation(), interval);
     }
     
     template <class TDerived>
-    inline MatrixReturnValue<Function, TDerived> Function::operator()(
+    inline MatrixReturnValue<FunctionImplementation, TDerived> Function::operator()(
         const EigenBase<TDerived>& matrix
     ) const {
-        return MatrixReturnValue<Function, TDerived>(*this, matrix.derived());
+        return MatrixReturnValue<FunctionImplementation, TDerived>(
+            implementation(),
+            matrix.derived()
+        );
     }
 
     inline JacobianReturnValue<Function, int> Function::jacobian(int value) const {

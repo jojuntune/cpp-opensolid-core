@@ -137,42 +137,6 @@ namespace opensolid
             return result;
         }
     }
-
-    void Function::evaluate(
-        const MapXcd& parameterValues,
-        MapXd& results,
-        ResultCacheXd& cache
-    ) const {
-        if (!isValid()) {
-            assert(false);
-        }
-        implementation()->evaluate(parameterValues, results, cache);
-    }
-
-    void Function::evaluate(
-        const MapXcI& parameterBounds,
-        MapXI& results,
-        ResultCacheXI& cache
-    ) const {
-        if (!isValid()) {
-            assert(false);
-        }
-        implementation()->evaluate(parameterBounds, results, cache);
-    }
-
-    void Function::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {
-        if (!isValid()) {
-            assert(false);
-        }
-        implementation()->evaluateJacobian(parameterValues, results);
-    }
-
-    void Function::evaluateJacobian(const MapXcI& parameterBounds, MapXI& results) const {
-        if (!isValid()) {
-            assert(false);
-        }
-        implementation()->evaluateJacobian(parameterBounds, results);
-    }
      
     Function Function::operator()(const Function& other) const {
         if (!this->isValid() || !other.isValid()) {

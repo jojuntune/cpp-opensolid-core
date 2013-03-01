@@ -99,22 +99,6 @@ namespace opensolid
     Domain Geometry::domain() const {
         return implementation()->domain();
     }
-
-    void Geometry::evaluate(
-        const MapXcd& parameterValues,
-        MapXd& results,
-        ResultCacheXd& cache
-    ) const {
-        implementation()->evaluate(parameterValues, results, cache);
-    }
-
-    void Geometry::evaluate(
-        const MapXcI& parameterBounds,
-        MapXI& results,
-        ResultCacheXI& cache
-    ) const {
-        implementation()->evaluate(parameterBounds, results, cache);
-    }
     
     int Geometry::numParameters() const {
         return implementation()->numParameters();

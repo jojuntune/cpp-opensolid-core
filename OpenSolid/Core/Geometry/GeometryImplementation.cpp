@@ -50,7 +50,12 @@ namespace opensolid
         MapXd& results,
         ResultCacheXd& cache
     ) const {
-        function().evaluate(parameterValues, results, cache);
+        const FunctionImplementation* functionImplementation = function().implementation();
+        if (!functionImplementation) {
+            assert(false);
+            return;
+        }
+        functionImplementation->evaluate(parameterValues, results, cache);
     }
         
     void GeometryImplementation::evaluate(
@@ -58,7 +63,12 @@ namespace opensolid
         MapXI& results,
         ResultCacheXI& cache
     ) const {
-        function().evaluate(parameterBounds, results, cache);
+        const FunctionImplementation* functionImplementation = function().implementation();
+        if (!functionImplementation) {
+            assert(false);
+            return;
+        }
+        functionImplementation->evaluate(parameterBounds, results, cache);
     }
 
     bool GeometryImplementation::isConstant() const {
