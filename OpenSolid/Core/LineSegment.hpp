@@ -24,10 +24,8 @@
 
 #pragma once
 
-// Public headers
 #include <OpenSolid/Core/Simplex.hpp>
 
-// Declarations headers
 #include <OpenSolid/Core/Simplex/declarations.hpp>
 
 namespace opensolid

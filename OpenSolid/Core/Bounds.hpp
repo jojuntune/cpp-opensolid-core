@@ -26,7 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-// Declarations headers
 #include <OpenSolid/Core/Interval/declarations.hpp>
 
 namespace opensolid

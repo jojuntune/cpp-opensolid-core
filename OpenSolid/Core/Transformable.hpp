@@ -26,13 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Mirror.hpp>
 #include <OpenSolid/Core/Projection.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
 
-// Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Transformation/declarations.hpp>
 

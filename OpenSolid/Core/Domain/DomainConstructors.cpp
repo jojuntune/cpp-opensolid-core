@@ -25,11 +25,12 @@
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 
 #include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/Domain/CuboidDomain.hpp>
-#include <OpenSolid/Core/Domain/IntervalDomain.hpp>
-#include <OpenSolid/Core/Domain/RectangleDomain.hpp>
-#include <OpenSolid/Core/Domain/SimplexDomain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
+ 
+#include <OpenSolid/Core/DomainImplementation/CuboidDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/IntervalDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/RectangleDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/SimplexDomain.hpp>
 
 namespace opensolid
 {

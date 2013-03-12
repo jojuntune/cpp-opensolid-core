@@ -23,18 +23,16 @@
  *************************************************************************************/
 
 #include <OpenSolid/Core/Domain.hpp>
- 
-// Public headers
+
+#include <OpenSolid/Core/DomainImplementation.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 
-// Internal headers
-#include <OpenSolid/Core/Domain/CuboidDomain.hpp>
-#include <OpenSolid/Core/Domain/DomainImplementation.hpp>
-#include <OpenSolid/Core/Domain/GenericDomain.hpp>
-#include <OpenSolid/Core/Domain/IntervalDomain.hpp>
-#include <OpenSolid/Core/Domain/RectangleDomain.hpp>
-#include <OpenSolid/Core/Domain/SimplexDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/CuboidDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/GenericDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/IntervalDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/RectangleDomain.hpp>
+#include <OpenSolid/Core/DomainImplementation/SimplexDomain.hpp>
 
 namespace opensolid
 {   

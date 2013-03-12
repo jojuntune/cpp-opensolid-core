@@ -26,8 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Mirror.hpp>
@@ -36,13 +36,10 @@
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Transformation.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
-#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Matrix/JacobianReturnValue.hpp>
 #include <OpenSolid/Core/Matrix/MatrixReturnValue.hpp>
 
-// Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
 #include <OpenSolid/Core/Domain/declarations.hpp>
 #include <OpenSolid/Core/Function/declarations.hpp>

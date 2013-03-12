@@ -26,11 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Matrix/MatrixArgument.hpp>
 
 namespace opensolid

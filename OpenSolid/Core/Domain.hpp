@@ -26,9 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/DomainImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -36,11 +36,8 @@
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Domain/DomainConstructors.hpp>
-#include <OpenSolid/Core/Domain/DomainImplementation.hpp>
 
-// Declarations headers
 #include <OpenSolid/Core/Domain/declarations.hpp>
 
 #include <boost/intrusive_ptr.hpp>

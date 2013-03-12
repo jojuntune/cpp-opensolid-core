@@ -24,15 +24,13 @@
 
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Function.hpp>
 
-// Internal headers
-#include <OpenSolid/Core/Function/ConstantFunction.hpp>
-#include <OpenSolid/Core/Function/EllipticalFunction.hpp>
-#include <OpenSolid/Core/Function/IdentityFunction.hpp>
-#include <OpenSolid/Core/Function/LinearFunction.hpp>
-#include <OpenSolid/Core/Function/ParameterFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 
 namespace opensolid
 {

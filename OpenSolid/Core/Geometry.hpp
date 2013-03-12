@@ -26,9 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/GeometryImplementation.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -36,12 +36,9 @@
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
-#include <OpenSolid/Core/Geometry/GeometryImplementation.hpp>
 #include <OpenSolid/Core/Matrix/MatrixReturnValue.hpp>
 
-// Declarations headers 
 #include <OpenSolid/Core/Function/declarations.hpp>
 #include <OpenSolid/Core/Geometry/declarations.hpp>
 

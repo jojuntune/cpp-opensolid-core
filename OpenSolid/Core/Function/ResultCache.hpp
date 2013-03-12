@@ -26,11 +26,10 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Matrix.hpp>
 
-// Declarations headers
 #include <OpenSolid/Core/Function/declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation/declarations.hpp>
 
 #include <boost/unordered_map.hpp>
 

@@ -26,10 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Set/SetNode.hpp>
 
 #include <algorithm>

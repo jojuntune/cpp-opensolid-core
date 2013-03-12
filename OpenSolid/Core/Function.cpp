@@ -24,38 +24,36 @@
 
 #include <OpenSolid/Core/Function.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
-// Internal headers
-#include <OpenSolid/Core/Function/ArccosineFunction.hpp>
-#include <OpenSolid/Core/Function/ArcsineFunction.hpp>
-#include <OpenSolid/Core/Function/ComponentsFunction.hpp>
-#include <OpenSolid/Core/Function/CompositionFunction.hpp>
-#include <OpenSolid/Core/Function/ConcatenationFunction.hpp>
-#include <OpenSolid/Core/Function/ConstantFunction.hpp>
-#include <OpenSolid/Core/Function/CosineFunction.hpp>
-#include <OpenSolid/Core/Function/CrossProductFunction.hpp>
-#include <OpenSolid/Core/Function/DifferenceFunction.hpp>
-#include <OpenSolid/Core/Function/DotProductFunction.hpp>
-#include <OpenSolid/Core/Function/EllipticalFunction.hpp>
-#include <OpenSolid/Core/Function/ExponentialFunction.hpp>
-#include <OpenSolid/Core/Function/IdentityFunction.hpp>
-#include <OpenSolid/Core/Function/LinearFunction.hpp>
-#include <OpenSolid/Core/Function/LogarithmFunction.hpp>
-#include <OpenSolid/Core/Function/NormFunction.hpp>
-#include <OpenSolid/Core/Function/NormalizedFunction.hpp>
-#include <OpenSolid/Core/Function/ParameterFunction.hpp>
-#include <OpenSolid/Core/Function/PowerFunction.hpp>
-#include <OpenSolid/Core/Function/ProductFunction.hpp>
-#include <OpenSolid/Core/Function/QuotientFunction.hpp>
-#include <OpenSolid/Core/Function/SineFunction.hpp>
-#include <OpenSolid/Core/Function/SquareRootFunction.hpp>
-#include <OpenSolid/Core/Function/SquaredNormFunction.hpp>
-#include <OpenSolid/Core/Function/SumFunction.hpp>
-#include <OpenSolid/Core/Function/TangentFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ArcsineFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ComponentsFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/CompositionFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConcatenationFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/CosineFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/CrossProductFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/DifferenceFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/DotProductFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ExponentialFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/LogarithmFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/NormFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/NormalizedFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/PowerFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ProductFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/QuotientFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/SineFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/SquareRootFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/SquaredNormFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/SumFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/TangentFunction.hpp>
 
 #include <algorithm>
 

@@ -22,7 +22,6 @@
  *                                                                                   *
  *************************************************************************************/
 
-// Public headers
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 

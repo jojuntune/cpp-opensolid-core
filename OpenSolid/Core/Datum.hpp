@@ -26,15 +26,12 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Datum/TransformedDatum.hpp>
  
-// Declarations headers
 #include <OpenSolid/Core/Datum/declarations.hpp>
 
 namespace opensolid

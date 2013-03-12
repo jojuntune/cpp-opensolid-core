@@ -29,5 +29,4 @@
 namespace opensolid
 {
     class Geometry;
-    class GeometryImplementation;
 }

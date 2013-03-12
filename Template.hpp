@@ -26,13 +26,10 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/PUBLIC_HEADERS>
 
-// Internal headers
 #include <OpenSolid/INTERNAL/HEADERS>
 
-// Declarations headers
 #include <OpenSolid/INTERNAL/DECLARATIONS_HEADERS>
 
 #include <EXTERNAL_LIBRARY/HEADERS>

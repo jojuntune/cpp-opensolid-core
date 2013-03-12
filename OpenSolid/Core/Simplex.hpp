@@ -26,7 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
@@ -34,10 +33,8 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
-// Internal headers
 #include <OpenSolid/Core/Simplex/TransformedSimplex.hpp>
  
-// Declarations headers
 #include <OpenSolid/Core/Simplex/declarations.hpp>
 
 namespace opensolid

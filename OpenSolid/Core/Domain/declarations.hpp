@@ -29,5 +29,4 @@
 namespace opensolid
 {
     class Domain;
-    class DomainImplementation;
 }

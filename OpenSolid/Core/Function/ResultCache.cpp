@@ -24,14 +24,12 @@
 
 #include <OpenSolid/Core/Function/ResultCache.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 
-// Internal headers
-#include <OpenSolid/Core/Function/ConstantFunction.hpp>
-#include <OpenSolid/Core/Function/FunctionImplementation.hpp>
-#include <OpenSolid/Core/Function/IdentityFunction.hpp>
-#include <OpenSolid/Core/Function/ParameterFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 
 #include <unordered_map>
 

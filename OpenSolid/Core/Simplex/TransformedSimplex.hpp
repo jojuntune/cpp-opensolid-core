@@ -26,7 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-// Public headers
 #include <OpenSolid/Core/Simplex/declarations.hpp>
 #include <OpenSolid/Core/Function/declarations.hpp>
 

@@ -6,8 +6,11 @@
         *.cpp
         Datum/*.cpp
         Domain/*.cpp
+        DomainImplementation/*.cpp
         Function/*.cpp
+        FunctionImplementation/*.cpp
         Geometry/*.cpp
+        GeometryImplementation/*.cpp
         Interval/*.cpp
         Matrix/*.cpp
         Set/*.cpp
@@ -40,8 +43,11 @@
         *
         Datum/*
         Domain/*
+        DomainImplementation/*
         Function/*
+        FunctionImplementation/*
         Geometry/*
+        GeometryImplementation/*
         Interval/*
         Matrix/*
         Set/*
