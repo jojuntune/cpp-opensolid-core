@@ -10,7 +10,6 @@
         Function/*.cpp
         FunctionImplementation/*.cpp
         Geometry/*.cpp
-        GeometryImplementation/*.cpp
         Interval/*.cpp
         Matrix/*.cpp
         Set/*.cpp
@@ -47,7 +46,6 @@
         Function/*
         FunctionImplementation/*
         Geometry/*
-        GeometryImplementation/*
         Interval/*
         Matrix/*
         Set/*

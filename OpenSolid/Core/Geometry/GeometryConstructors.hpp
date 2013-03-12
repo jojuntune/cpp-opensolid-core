@@ -40,6 +40,16 @@ namespace opensolid
     class GeometryConstructors
     {
     public:
+        OPENSOLID_CORE_EXPORT static Geometry Constant(
+            double value,
+            int numParameters
+        );
+
+        OPENSOLID_CORE_EXPORT static Geometry Constant(
+            const VectorXd& vector,
+            int numParameters
+        );
+
         OPENSOLID_CORE_EXPORT static Geometry Arc2d(
             const Frame2d& frame,
             double radius,

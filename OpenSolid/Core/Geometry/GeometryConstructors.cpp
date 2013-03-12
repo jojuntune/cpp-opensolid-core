@@ -29,7 +29,24 @@
 
 namespace opensolid
 {
-    Geometry GeometryConstructors::Arc2d(
+    Geometry
+    GeometryConstructors::Constant(
+        double value,
+        int numParameters
+    ) {
+        return Geometry(Function::Constant(value, numParameters), Domain());
+    }
+
+    Geometry
+    GeometryConstructors::Constant(
+        const VectorXd& vector,
+        int numParameters
+    ) {
+        return Geometry(Function::Constant(vector, numParameters), Domain());
+    }
+
+    Geometry
+    GeometryConstructors::Arc2d(
         const Frame2d& frame,
         double radius,
         double startAngle,
@@ -49,7 +66,8 @@ namespace opensolid
         return Geometry(Function::Elliptical(datum)(angleFunction), Interval::Unit());
     }
         
-    Geometry GeometryConstructors::Arc2d(
+    Geometry
+    GeometryConstructors::Arc2d(
         const Vector2d& center,
         bool isCounterclockwise,
         const Vector2d& startPoint,
@@ -74,7 +92,8 @@ namespace opensolid
         return Geometry(Function::Elliptical(datum)(angleFunction), Interval::Unit());
     }
 
-    Geometry GeometryConstructors::Arc2d(
+    Geometry
+    GeometryConstructors::Arc2d(
         const Vector2d& startPoint,
         const Vector2d& innerPoint,
         const Vector2d& endPoint
@@ -116,7 +135,8 @@ namespace opensolid
         return Geometry::Arc2d(Frame2d::XY(center), radius, startAngle, endAngle);
     }
 
-    Geometry GeometryConstructors::Arc3d(
+    Geometry
+    GeometryConstructors::Arc3d(
         const Plane3d& plane,
         double radius,
         double startAngle,
@@ -125,7 +145,8 @@ namespace opensolid
         return plane * Geometry::Arc2d(Frame2d::XY(), radius, startAngle, endAngle);
     }
 
-    Geometry GeometryConstructors::Arc3d(
+    Geometry
+    GeometryConstructors::Arc3d(
         const Axis3d& axis,
         const Vector3d& startPoint,
         const Vector3d& endPoint
@@ -135,7 +156,8 @@ namespace opensolid
         return plane * Geometry::Arc2d(Vector2d::Zero(), true, startPoint / plane, endPoint / plane);
     }
 
-    Geometry GeometryConstructors::Arc3d(
+    Geometry
+    GeometryConstructors::Arc3d(
         const Vector3d& startPoint,
         const Vector3d& innerPoint,
         const Vector3d& endPoint
@@ -147,7 +169,8 @@ namespace opensolid
         return plane * Geometry::Arc2d(startPoint / plane, innerPoint / plane, endPoint / plane);
     }
 
-    Geometry GeometryConstructors::Circle2d(
+    Geometry
+    GeometryConstructors::Circle2d(
         const Vector2d& center,
         double radius,
         bool isFilled
@@ -163,7 +186,8 @@ namespace opensolid
         }
     }
 
-    Geometry GeometryConstructors::Circle3d(
+    Geometry
+    GeometryConstructors::Circle3d(
         const Axis3d& axis,
         double radius,
         bool isFilled
@@ -171,7 +195,8 @@ namespace opensolid
         return axis.normalPlane() * Geometry::Circle2d(Vector2d::Zero(), radius, isFilled);
     }
 
-    Geometry GeometryConstructors::Circle3d(
+    Geometry
+    GeometryConstructors::Circle3d(
         const Plane3d& plane,
         double radius,
         bool isFilled
@@ -179,7 +204,8 @@ namespace opensolid
         return plane * Geometry::Circle2d(Vector2d::Zero(), radius, isFilled);
     }
         
-    Geometry GeometryConstructors::Helix3d(
+    Geometry
+    GeometryConstructors::Helix3d(
         const Frame3d& frame,
         double radius,
         double pitch,

@@ -35,8 +35,8 @@ namespace opensolid
     Set<Geometry> VectorXIDomain::boundaries() const {
         Set<Geometry> results;
         if (_bounds.size() == 1) {
-            results.insert(Geometry(_bounds.value().lowerBound(), 0));
-            results.insert(Geometry(_bounds.value().upperBound(), 0));
+            results.insert(Geometry::Constant(_bounds.value().lowerBound(), 0));
+            results.insert(Geometry::Constant(_bounds.value().upperBound(), 0));
         } else {
             throw NotImplementedError();
         }

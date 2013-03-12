@@ -26,35 +26,33 @@
 
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
- 
-#include <OpenSolid/Core/GeometryImplementation/SimplexGeometry.hpp>
 
 namespace opensolid
 {
     template <>
     Set<Geometry> SimplexDomain<1>::boundaries() const {
         Set<Geometry> results;
-        results.insert(_simplex.vertex(0));
-        results.insert(_simplex.vertex(1));
+        results.insert(Geometry::Constant(_simplex.vertex(0), 0));
+        results.insert(Geometry::Constant(_simplex.vertex(1), 0));
         return results;
     }
 
     template <>
     Set<Geometry> SimplexDomain<2>::boundaries() const {
         Set<Geometry> results;
-        results.insert(new SimplexGeometry<2, 2>(_simplex.edge(1, 0)));
-        results.insert(new SimplexGeometry<2, 2>(_simplex.edge(2, 1)));
-        results.insert(new SimplexGeometry<2, 2>(_simplex.edge(0, 2)));
+        results.insert(Geometry(_simplex.edge(1, 0)));
+        results.insert(Geometry(_simplex.edge(2, 1)));
+        results.insert(Geometry(_simplex.edge(0, 2)));
         return results;
     }
 
     template <>
     Set<Geometry> SimplexDomain<3>::boundaries() const {
         Set<Geometry> results;
-        results.insert(new SimplexGeometry<3, 3>(_simplex.face(0)));
-        results.insert(new SimplexGeometry<3, 3>(_simplex.face(1)));
-        results.insert(new SimplexGeometry<3, 3>(_simplex.face(2)));
-        results.insert(new SimplexGeometry<3, 3>(_simplex.face(3)));
+        results.insert(Geometry(_simplex.face(0)));
+        results.insert(Geometry(_simplex.face(1)));
+        results.insert(Geometry(_simplex.face(2)));
+        results.insert(Geometry(_simplex.face(3)));
         return results;
     }
 }

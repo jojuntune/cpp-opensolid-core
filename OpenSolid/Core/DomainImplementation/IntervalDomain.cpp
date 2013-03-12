@@ -34,8 +34,8 @@ namespace opensolid
 
     Set<Geometry> IntervalDomain::boundaries() const {
         Set<Geometry> result;
-        result.insert(Geometry(_interval.lowerBound(), 0));
-        result.insert(Geometry(_interval.upperBound(), 0));
+        result.insert(Geometry::Constant(_interval.lowerBound(), 0));
+        result.insert(Geometry::Constant(_interval.upperBound(), 0));
         return result;
     }
 

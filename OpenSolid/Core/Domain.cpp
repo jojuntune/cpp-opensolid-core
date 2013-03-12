@@ -97,19 +97,36 @@ namespace opensolid
     }
     
     bool Domain::isEmpty() const {
-        return implementation()->isEmpty();
+        if (implementation()) {
+            return implementation()->isEmpty();
+        } else {
+            return true;
+        }
     }
     
     int Domain::numDimensions() const {
-        return implementation()->numDimensions();
+        if (implementation()) {
+            return implementation()->numDimensions();
+        } else {
+            return 0;
+        }
     }
     
     VectorXI Domain::bounds() const {
-        return implementation()->bounds();
+        if (implementation()) {
+            return implementation()->bounds();
+        } else {
+            return VectorXI();
+        }
     }
 
     Domain Domain::transformed(const MatrixXd& matrix, const VectorXd& vector) const {
-        return implementation()->transformed(matrix, vector);
+        if (implementation()) {
+            return implementation()->transformed(matrix, vector);
+        } else {
+            assert(false);
+            return Domain();
+        }
     }
 
     VectorXI Bounds<Domain>::operator()(const Domain& domain) const {

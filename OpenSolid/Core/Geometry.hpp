@@ -28,7 +28,8 @@
 
 #include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/GeometryImplementation.hpp>
+#include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -39,7 +40,6 @@
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 #include <OpenSolid/Core/Matrix/MatrixReturnValue.hpp>
 
-#include <OpenSolid/Core/Function/declarations.hpp>
 #include <OpenSolid/Core/Geometry/declarations.hpp>
 
 #include <boost/intrusive_ptr.hpp>
@@ -52,56 +52,39 @@ namespace opensolid
         public Transformable<Geometry>
     {
     private:
-        boost::intrusive_ptr<const GeometryImplementation> _implementation;
-        const std::type_info* _type;
+        Function _function;
+        Domain _domain;
+        VectorXI _bounds;
     public:
         OPENSOLID_CORE_EXPORT Geometry();
-        OPENSOLID_CORE_EXPORT Geometry(const GeometryImplementation* implementation);
-
+        
         OPENSOLID_CORE_EXPORT Geometry(const Function& function, const Domain& domain);
-        OPENSOLID_CORE_EXPORT Geometry(double value, int numParameters);
-        OPENSOLID_CORE_EXPORT Geometry(const VectorXd& vector, int numParameters);
-
-        template <class TVector>
-        Geometry(const EigenBase<TVector>& vector);
 
         OPENSOLID_CORE_EXPORT Geometry(const LineSegment2d& lineSegment);
         OPENSOLID_CORE_EXPORT Geometry(const Triangle2d& triangle);
         OPENSOLID_CORE_EXPORT Geometry(const LineSegment3d& lineSegment);
         OPENSOLID_CORE_EXPORT Geometry(const Triangle3d& triangle);
         OPENSOLID_CORE_EXPORT Geometry(const Tetrahedron3d& tetrahedron);
-
-        OPENSOLID_CORE_EXPORT const GeometryImplementation* implementation() const;
         
-        OPENSOLID_CORE_EXPORT Function function() const;
-        OPENSOLID_CORE_EXPORT Domain domain() const;
+        const Function& function() const;
+        const Domain& domain() const;
+        const VectorXI& bounds() const;
         
         template <class TArgument>
-        MatrixReturnValue<GeometryImplementation, TArgument> operator()(
+        MatrixReturnValue<FunctionImplementation, TArgument> operator()(
             const TArgument& argument
         ) const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
-        OPENSOLID_CORE_EXPORT bool isConstant() const;
-        OPENSOLID_CORE_EXPORT VectorXI bounds() const;
         OPENSOLID_CORE_EXPORT Set<Geometry> boundaries() const;
-        
-        OPENSOLID_CORE_EXPORT Geometry transformed(
-            const MatrixXd& transformMatrix,
-            const VectorXd& transformVector
-        ) const;
         
         OPENSOLID_CORE_EXPORT Geometry reversed() const;
     };
 
     OPENSOLID_CORE_EXPORT Geometry operator*(double multiplier, const Geometry& geometry);
-
-    template <class TMatrix>
-    Geometry operator*(const EigenBase<TMatrix>& transformationMatrix, const Geometry& geometry);
-
-    template <class TVector>
-    Geometry operator+(const Geometry& geometry, const EigenBase<TVector>& vector);
+    OPENSOLID_CORE_EXPORT Geometry operator*(const MatrixXd& matrix, const Geometry& geometry);
+    OPENSOLID_CORE_EXPORT Geometry operator+(const Geometry& geometry, const VectorXd& vector);
 }
 
 ////////// Specializations //////////
@@ -153,31 +136,24 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TVector>
-    Geometry::Geometry(const EigenBase<TVector>& vector) {
-        *this = Geometry(VectorXd(vector));
+    inline const Function&
+    Geometry::function() const {
+        return _function;
+    }
+
+    inline const Domain&
+    Geometry::domain() const {
+        return _domain;
+    }
+
+    inline const VectorXI&
+    Geometry::bounds() const {
+        return _bounds;
     }
 
     template <class TArgument>
-    inline MatrixReturnValue<GeometryImplementation, TArgument> Geometry::operator()(
-        const TArgument& argument
-    ) const {
-        return MatrixReturnValue<GeometryImplementation, TArgument>(implementation(), argument);
-    }
-
-    template <class TMatrix>
-    Geometry operator*(const EigenBase<TMatrix>& transformationMatrix, const Geometry& geometry) {
-        return geometry.transformed(
-            transformationMatrix.derived(),
-            VectorXd::Zero(transformationMatrix.rows())
-        );
-    }
-
-    template <class TVector>
-    Geometry operator+(const Geometry& geometry, const EigenBase<TVector>& vector) {
-        return geometry.transformed(
-            MatrixXd::Identity(geometry.numDimensions(), geometry.numDimensions()),
-            vector.derived()
-        );
+    inline MatrixReturnValue<FunctionImplementation, TArgument>
+    Geometry::operator()(const TArgument& argument) const {
+        return function()(argument);
     }
 }

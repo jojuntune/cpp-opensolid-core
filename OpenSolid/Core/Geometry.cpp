@@ -24,142 +24,125 @@
 
 #include <OpenSolid/Core/Geometry.hpp>
 
-#include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/GeometryImplementation.hpp>
 #include <OpenSolid/Core/Zero.hpp>
-
-#include <OpenSolid/Core/GeometryImplementation/ConstantGeometry.hpp>
-#include <OpenSolid/Core/GeometryImplementation/GenericGeometry.hpp>
-#include <OpenSolid/Core/GeometryImplementation/SimplexGeometry.hpp>
 
 namespace opensolid
 {
-    Geometry::Geometry() :
-        _implementation(),
-        _type(nullptr) {
-    }
-
-    Geometry::Geometry(const GeometryImplementation* implementation) :
-        _implementation(implementation),
-        _type(&typeid(implementation)) {
+    Geometry::Geometry() {
     }
     
     Geometry::Geometry(const Function& function, const Domain& domain) :
-        _implementation(new GenericGeometry(function, domain)),
-        _type(&typeid(GenericGeometry)) {
+        _function(function),
+        _domain(domain),
+        _bounds(function(domain.bounds())) {
 
-        assert(domain.numDimensions() == function.numParameters());
-    }
-    
-    Geometry::Geometry(double value, int numParameters) :
-        _implementation(new ConstantGeometry(VectorXd::Constant(1, value), numParameters)),
-        _type(&typeid(ConstantGeometry)) {
-    }
-    
-    Geometry::Geometry(const VectorXd& vector, int numParameters) :
-        _implementation(new ConstantGeometry(vector, numParameters)),
-        _type(&typeid(ConstantGeometry)) {
+        assert(function.numParameters() == domain.numDimensions());
     }
 
     Geometry::Geometry(const LineSegment2d& lineSegment) :
-        _implementation(new SimplexGeometry<2, 2>(lineSegment)) ,
-        _type(&typeid(SimplexGeometry<2, 2>)) {
+        _function(Function::Linear(lineSegment.datum())),
+        _domain(Interval::Unit()),
+        _bounds(lineSegment.bounds()) {
     }
 
     Geometry::Geometry(const Triangle2d& triangle) :
-        _implementation(new SimplexGeometry<2, 3>(triangle)) ,
-        _type(&typeid(SimplexGeometry<2, 3>)) {
+        _function(Function::Linear(triangle.datum())),
+        _domain(Triangle2d::Unit()),
+        _bounds(triangle.bounds()) {
     }
 
     Geometry::Geometry(const LineSegment3d& lineSegment) :
-        _implementation(new SimplexGeometry<3, 2>(lineSegment)) ,
-        _type(&typeid(SimplexGeometry<3, 2>)) {
+        _function(Function::Linear(lineSegment.datum())),
+        _domain(Interval::Unit()),
+        _bounds(lineSegment.bounds()) {
     }
 
     Geometry::Geometry(const Triangle3d& triangle) :
-        _implementation(new SimplexGeometry<3, 3>(triangle)) ,
-        _type(&typeid(SimplexGeometry<3, 3>)) {
+        _function(Function::Linear(triangle.datum())),
+        _domain(Triangle2d::Unit()),
+        _bounds(triangle.bounds()) {
     }
 
     Geometry::Geometry(const Tetrahedron3d& tetrahedron) :
-        _implementation(new SimplexGeometry<3, 4>(tetrahedron)) ,
-        _type(&typeid(SimplexGeometry<3, 4>)) {
-    }
-
-    const GeometryImplementation* Geometry::implementation() const {
-        return _implementation.get();
+        _function(Function::Linear(tetrahedron.datum())),
+        _domain(Tetrahedron3d::Unit()),
+        _bounds(tetrahedron.bounds()) {
     }
     
-    Function Geometry::function() const {
-        return implementation()->function();
+    int
+    Geometry::numParameters() const {
+        return function().numParameters();
     }
     
-    Domain Geometry::domain() const {
-        return implementation()->domain();
+    int
+    Geometry::numDimensions() const {
+        return function().numDimensions();
     }
     
-    int Geometry::numParameters() const {
-        return implementation()->numParameters();
-    }
-    
-    int Geometry::numDimensions() const {
-        return implementation()->numDimensions();
-    }
-    
-    bool Geometry::isConstant() const {
-        return implementation()->isConstant();
-    }
-    
-    VectorXI Geometry::bounds() const {
-        return implementation()->bounds();
-    }
-    
-    Set<Geometry> Geometry::boundaries() const {
-        return implementation()->boundaries();
-    }
-
-    Geometry Geometry::transformed(
-        const MatrixXd& transformMatrix,
-        const VectorXd& transformVector
-    ) const {
-        return implementation()->transformed(transformMatrix, transformVector);
+    Set<Geometry>
+    Geometry::boundaries() const {
+        Set<Geometry> results;
+        domain().boundaries().transform(
+            [this] (const Geometry& domainBoundary) {
+                return Geometry(function()(domainBoundary.function()), domainBoundary.domain());
+            },
+            results.inserter()
+        );
+        return results;
     }
 
     Geometry Geometry::reversed() const {
-        return implementation()->reversed();
+        if (numParameters() == 1) {
+            Interval interval = domain().as<Interval>();
+            Function reversedParameter =
+                interval.lowerBound() + interval.upperBound() - Function::t();
+            return Geometry(function()(reversedParameter), domain());
+        } else {
+            assert(false);
+            return Geometry();
+        }
     }
 
-    Geometry operator*(double multiplier, const Geometry& geometry) {
-        return geometry.transformed(
-            multiplier * MatrixXd::Identity(geometry.numDimensions(), geometry.numDimensions()),
-            VectorXd::Zero(geometry.numDimensions())
-        );
+    Geometry
+    operator*(double multiplier, const Geometry& geometry) {
+        return Geometry(multiplier * geometry.function(), geometry.domain());
     }
+
+    Geometry
+    operator*(const MatrixXd& matrix, const Geometry& geometry) {
+        return Geometry(matrix * geometry.function(), geometry.domain());
+    }
+
+    Geometry
+    operator+(const Geometry& geometry, const VectorXd& vector) {
+        return Geometry(geometry.function() + vector, geometry.domain());
+    }
+
 
     VectorXI Bounds<Geometry>::operator()(const Geometry& geometry) const {
         return geometry.bounds();
     }
     
     double Conversion<Geometry, double>::operator()(const Geometry& geometry) const {
-        assert(geometry.isConstant());
+        assert(geometry.function().asConstant());
         assert(geometry.numDimensions() == 1);
         return geometry.function().as<double>();
     }
     
     Vector2d Conversion<Geometry, Vector2d>::operator()(const Geometry& geometry) const {
-        assert(geometry.isConstant());
+        assert(geometry.function().asConstant());
         assert(geometry.numDimensions() == 2);
         return geometry.function().as<Vector2d>();
     }
     
     Vector3d Conversion<Geometry, Vector3d>::operator()(const Geometry& geometry) const {
-        assert(geometry.isConstant());
+        assert(geometry.function().asConstant());
         assert(geometry.numDimensions() == 3);
         return geometry.function().as<Vector3d>();
     }
     
     VectorXd Conversion<Geometry, VectorXd>::operator()(const Geometry& geometry) const {
-        assert(geometry.isConstant());
+        assert(geometry.function().asConstant());
         return geometry.function().as<VectorXd>();
     }
 }

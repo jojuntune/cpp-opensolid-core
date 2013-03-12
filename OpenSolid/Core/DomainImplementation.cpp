@@ -52,7 +52,7 @@ namespace opensolid
         Set<Geometry> transformed_boundaries;
         boundaries().transform(
             [&matrix, &vector] (const Geometry& boundary) {
-                return boundary.transformed(matrix, vector);
+                return matrix * boundary + vector;
             },
             transformed_boundaries.inserter()
         );
