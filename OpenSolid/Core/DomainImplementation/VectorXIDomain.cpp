@@ -38,7 +38,7 @@ namespace opensolid
             results.insert(Geometry::Constant(_bounds.value().lowerBound(), 0));
             results.insert(Geometry::Constant(_bounds.value().upperBound(), 0));
         } else {
-            throw NotImplementedError();
+            throw FeatureNotImplemented();
         }
         return results;
     }

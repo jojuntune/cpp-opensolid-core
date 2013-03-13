@@ -40,7 +40,7 @@ namespace opensolid
         const MapXcd& parameterValues,
         MapXd& results
     ) const {
-        throw NotImplementedError();
+        throw FeatureNotImplemented();
     }
     
     // TODO
@@ -48,7 +48,7 @@ namespace opensolid
         const MapXcI& parameterBounds,
         MapXI& results
     ) const {
-        throw NotImplementedError();
+        throw FeatureNotImplemented();
     }
 
     FunctionImplementation::~FunctionImplementation() {

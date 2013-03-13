@@ -41,7 +41,7 @@ namespace opensolid
     Mesh::Mesh(const Geometry& geometry, double linear_deviation) {
         if (geometry.numParameters() != 1) {
             // Only supports curves for now
-            throw NotImplementedError();
+            throw FeatureNotImplemented();
         }
         std::vector<double> temp;
         Function function = geometry.function();

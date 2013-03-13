@@ -31,49 +31,59 @@
 
 namespace opensolid
 {
-    template <int iNumber = 0>
+    template <int iErrorNumber = 0>
     class Error;
 
-    template <int iNumber>
+    template <int iErrorNumber>
     struct UniqueErrorNumber;
 
     template <>
     class Error<0> : public std::exception
     {
     private:
-        char _buffer[32];
-        int _number;
+        int _errorNumber;
     
-        template <int iNumber>
-        Error(UniqueErrorNumber<iNumber>);
+        template <int iErrorNumber>
+        Error(UniqueErrorNumber<iErrorNumber>);
     
-        template <int iNumber> friend class Error;
+        template <int iErrorNumber> friend class Error;
     public:
-        OPENSOLID_CORE_EXPORT const char* what() const throw();
-        OPENSOLID_CORE_EXPORT int number() const;
+        int errorNumber() const;
     };
 
-    template <int iNumber>
+    template <int iErrorNumber>
     class Error : public Error<>
     {
     public:
-        static const int Number = iNumber;
+        static const int ErrorNumber = iErrorNumber;
     
         Error();
     };
 
-    typedef Error<1> NotImplementedError;
-    template <> struct UniqueErrorNumber<1> {};
+    class FeatureNotImplemented : public Error<1>
+    {
+        const char* what() const throw() {
+            return "FeatureNotImplemented";
+        }
+    };
+
+    template <> struct UniqueErrorNumber<FeatureNotImplemented::ErrorNumber> {};
 }
 
 namespace opensolid
 {
-    template <int iNumber>
-    Error<0>::Error(UniqueErrorNumber<iNumber>) : _number(iNumber) {
-        sprintf(_buffer, "OpenSolid error %i", iNumber);
+    template <int iErrorNumber>
+    Error<0>::Error(UniqueErrorNumber<iErrorNumber>) :
+        _errorNumber(iErrorNumber) {
     }
 
-    template <int iNumber>
-    inline Error<iNumber>::Error() : Error<>(UniqueErrorNumber<iNumber>()) {
+    inline int
+    Error<0>::errorNumber() const {
+        return _errorNumber;
+    }
+
+    template <int iErrorNumber>
+    inline Error<iErrorNumber>::Error() :
+        Error<>(UniqueErrorNumber<iErrorNumber>()) {
     }
 }
