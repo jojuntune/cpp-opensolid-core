@@ -27,18 +27,16 @@
 #include <OpenSolid/config.hpp>
 
 #include <exception>
-#include <cstdio>
 
 namespace opensolid
 {
-    template <int iErrorNumber = 0>
-    class Error;
-
     template <int iErrorNumber>
     struct UniqueErrorNumber;
 
-    template <>
-    class Error<0> : public std::exception
+    template <int iErrorNumber>
+    class NumberedError;
+
+    class Error : public std::exception
     {
     private:
         int _errorNumber;
@@ -46,44 +44,47 @@ namespace opensolid
         template <int iErrorNumber>
         Error(UniqueErrorNumber<iErrorNumber>);
     
-        template <int iErrorNumber> friend class Error;
+        template <int iErrorNumber> friend class NumberedError;
     public:
         int errorNumber() const;
     };
 
     template <int iErrorNumber>
-    class Error : public Error<>
+    class NumberedError : public Error
     {
     public:
         static const int ErrorNumber = iErrorNumber;
-    
-        Error();
+    protected:
+        NumberedError();
     };
 
-    class FeatureNotImplemented : public Error<1>
+    class FeatureNotImplemented : public NumberedError<1>
     {
-        const char* what() const throw() {
-            return "FeatureNotImplemented";
+    public:
+        const char* what() const throw() override {
+            return "Feature not implemented";
         }
     };
 
     template <> struct UniqueErrorNumber<FeatureNotImplemented::ErrorNumber> {};
 }
 
+////////// Implementation //////////
+
 namespace opensolid
 {
     template <int iErrorNumber>
-    Error<0>::Error(UniqueErrorNumber<iErrorNumber>) :
+    Error::Error(UniqueErrorNumber<iErrorNumber>) :
         _errorNumber(iErrorNumber) {
     }
 
     inline int
-    Error<0>::errorNumber() const {
+    Error::errorNumber() const {
         return _errorNumber;
     }
 
     template <int iErrorNumber>
-    inline Error<iErrorNumber>::Error() :
-        Error<>(UniqueErrorNumber<iErrorNumber>()) {
+    NumberedError<iErrorNumber>::NumberedError() :
+        Error(UniqueErrorNumber<iErrorNumber>()) {
     }
 }
