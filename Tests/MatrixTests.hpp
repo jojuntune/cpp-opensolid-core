@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
 
 #include <cxxtest/TestSuite.h>
 
@@ -265,5 +266,15 @@ public:
         TS_ASSERT_EQUALS(as.x, 1.0);
         TS_ASSERT_EQUALS(as.y, 1.0);
         TS_ASSERT_EQUALS(as.z, 1.0);
+    }
+
+    void testPoint() {
+        Point3d point1(1, 2, 3);
+        Point3d point2(Vector3d(1, 2, 3));
+        Point3d point3(4, 5, 6);
+        Point3d origin = Point3d::Origin();
+        TS_ASSERT((point1 - point2).isZero());
+        TS_ASSERT(origin.vector().isZero());
+        TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
     }
 };
