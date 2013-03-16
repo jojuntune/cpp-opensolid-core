@@ -38,6 +38,8 @@ namespace opensolid
     private:
         Matrix<double, iNumDimensions, 1> _vector;
     public:
+        Point();
+
         template <class TVector>
         explicit Point(const EigenBase<TVector>& vector);
 
@@ -84,6 +86,9 @@ namespace opensolid
         const Point<iNumDimensions>& point,
         const EigenBase<TVector>& vector
     );
+
+    template <int iNumDimensions>
+    std::ostream& operator<<(std::ostream& stream, const Point<iNumDimensions>& point);
 }
 
 ////////// Specializations //////////
@@ -101,6 +106,11 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    inline Point<iNumDimensions>::Point() :
+        _vector(Matrix<double, iNumDimensions, 1>::Zero()) {
+    }
+
     template <int iNumDimensions> template <class TVector>
     inline Point<iNumDimensions>::Point(const EigenBase<TVector>& vector) :
         _vector(vector) {
@@ -155,13 +165,13 @@ namespace opensolid
     template <int iNumDimensions>
     inline double&
     Point<iNumDimensions>::y() {
-        return _vector.x();
+        return _vector.y();
     }
     
     template <int iNumDimensions>
     inline double
     Point<iNumDimensions>::y() const {
-        return _vector.x();
+        return _vector.y();
     }
 
     template <int iNumDimensions>
@@ -216,5 +226,11 @@ namespace opensolid
     Point<iNumDimensions>
     operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
         return Point<iNumDimensions>(point.vector() + vector.derived());
+    }
+
+    template <int iNumDimensions>
+    std::ostream& operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
+        stream << point.vector();
+        return stream;
     }
 }
