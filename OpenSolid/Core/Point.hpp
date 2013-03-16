@@ -26,8 +26,13 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Bounds.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Position.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+
+#include <OpenSolid/Core/Box/declarations.hpp>
+#include <OpenSolid/Core/Point/declarations.hpp>
 
 namespace opensolid
 {
@@ -44,51 +49,85 @@ namespace opensolid
         explicit Point(const EigenBase<TVector>& vector);
 
         Point(double x, double y);
+
         Point(double x, double y, double z);
 
-        const double* data() const;
-        double* data();
+        const double*
+        data() const;
+        
+        double*
+        data();
 
-        Matrix<double, iNumDimensions, 1>& vector();
-        const Matrix<double, iNumDimensions, 1>& vector() const;
+        Matrix<double, iNumDimensions, 1>&
+        vector();
+        
+        const Matrix<double, iNumDimensions, 1>&
+        vector() const;
 
-        double& x();
-        double x() const;
+        double&
+        x();
+        
+        double
+        x() const;
 
-        double& y();
-        double y() const;
+        double&
+        y();
+        
+        double
+        y() const;
 
-        double& z();
-        double z() const;
+        double&
+        z();
+        
+        double
+        z() const;
 
-        double& operator()(int index);
-        double operator()(int index) const;
+        double&
+        operator()(int index);
+        
+        double
+        operator()(int index) const;
 
-        Matrix<double, iNumDimensions, 1> operator-(const Point<iNumDimensions>& other) const;
+        // Defined in Box.hpp
+        Box<iNumDimensions>
+        hull(const Point<iNumDimensions>& other) const;
 
-        static Point Origin();
+        bool
+        operator==(const Point<iNumDimensions>& other) const;
+
+        Matrix<double, iNumDimensions, 1>
+        operator-(const Point<iNumDimensions>& other) const;
+
+        // Defined in Box.hpp
+        Matrix<Interval, iNumDimensions, 1>
+        operator-(const Box<iNumDimensions>& box) const;
+
+        static Point
+        Origin();
     };
 
     typedef Point<2> Point2d;
     typedef Point<3> Point3d;
 
     template <int iNumDimensions>
-    Point<iNumDimensions> operator*(double scale, const Point<iNumDimensions>& point);
+    Point<iNumDimensions>
+    operator*(double scale, const Point<iNumDimensions>& point);
 
     template <class TMatrix, int iNumDimensions>
-    Point<TMatrix::RowsAtCompileTime> operator*(
-        const EigenBase<TMatrix>& matrix,
-        const Point<iNumDimensions>& point
-    );
+    Point<TMatrix::RowsAtCompileTime>
+    operator*(const EigenBase<TMatrix>& matrix, const Point<iNumDimensions>& point);
 
     template <int iNumDimensions, class TVector>
-    Point<iNumDimensions> operator+(
-        const Point<iNumDimensions>& point,
-        const EigenBase<TVector>& vector
-    );
+    typename Position<typename TVector::Scalar, iNumDimensions>::Type
+    operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
+
+    template <int iNumDimensions, class TVector>
+    typename Position<typename TVector::Scalar, iNumDimensions>::Type
+    operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
 
     template <int iNumDimensions>
-    std::ostream& operator<<(std::ostream& stream, const Point<iNumDimensions>& point);
+    std::ostream&
+    operator<<(std::ostream& stream, const Point<iNumDimensions>& point);
 }
 
 ////////// Specializations //////////
@@ -99,6 +138,16 @@ namespace opensolid
     struct Transformed<Point<iNumDimensions>, iTransformedDimensions>
     {
         typedef Point<iTransformedDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct Bounds<Point<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+
+        // Defined in Box.hpp
+        Box<iNumDimensions>
+        operator()(const Point<iNumDimensions>& point) const;
     };
 }
 
@@ -199,6 +248,12 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline bool
+    Point<iNumDimensions>::operator==(const Point<iNumDimensions>& other) const {
+        return vector() == other.vector();
+    }
+
+    template <int iNumDimensions>
     inline Matrix<double, iNumDimensions, 1>
     Point<iNumDimensions>::operator-(const Point<iNumDimensions>& other) const {
         return _vector - other._vector;
@@ -223,9 +278,19 @@ namespace opensolid
     }
 
     template <int iNumDimensions, class TVector>
-    Point<iNumDimensions>
+    typename Position<typename TVector::Scalar, iNumDimensions>::Type
     operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
-        return Point<iNumDimensions>(point.vector() + vector.derived());
+        return typename Position<typename TVector::Scalar, iNumDimensions>::Type(
+            point.vector().template cast<typename TVector::Scalar>() + vector.derived()
+        );
+    }
+
+    template <int iNumDimensions, class TVector>
+    typename Position<typename TVector::Scalar, iNumDimensions>::Type
+    operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
+        return typename Position<typename TVector::Scalar, iNumDimensions>::Type(
+            point.vector().template cast<typename TVector::Scalar>() - vector.derived()
+        );
     }
 
     template <int iNumDimensions>
