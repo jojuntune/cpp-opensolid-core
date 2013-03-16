@@ -374,4 +374,27 @@ public:
 
         TS_ASSERT(visitationSquaredNorm - indexingSquaredNorm == Zero());
     }
+
+    void testPoint3d() {
+        Set<Point3d> points;
+        points.insert(Point3d(1, 2, 3));
+        points.insert(Point3d(4, 5, 6));
+        points.insert(Point3d(2, 4, 6));
+
+        std::vector<Point3d> overlappingPoints;
+        points.copyOverlapping(
+            Box3d(Interval(1, 3), Interval(1, 5), Interval(1, 7)),
+            std::back_inserter(overlappingPoints)
+        );
+        std::sort(
+            overlappingPoints.begin(),
+            overlappingPoints.end(),
+            [] (const Point3d& firstPoint, const Point3d& secondPoint) {
+                return firstPoint.x() < secondPoint.x();
+            }
+        );
+        TS_ASSERT_EQUALS(overlappingPoints.size(), 2);
+        TS_ASSERT_EQUALS(overlappingPoints[0], Point3d(1, 2, 3));
+        TS_ASSERT_EQUALS(overlappingPoints[1], Point3d(2, 4, 6));
+    }
 };
