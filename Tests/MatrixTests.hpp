@@ -290,4 +290,19 @@ public:
         TS_ASSERT(projected.z().lowerBound() - box1.z().lowerBound() == Zero());
         TS_ASSERT(projected.z().upperBound() - box1.z().upperBound() == Zero());
     }
+
+    void testMixedOperations() {
+        Point3d point(1, 2, 3);
+        Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+        Vector3I difference1 = point - box;
+        Vector3I difference2 = box - point;
+        Box3d reconstructed1 = point - difference1;
+        Box3d reconstructed2 = point + difference2;
+        for (int i = 0; i < 3; ++i) {
+            TS_ASSERT(reconstructed1(i).lowerBound() - box(i).lowerBound() == Zero());
+            TS_ASSERT(reconstructed1(i).upperBound() - box(i).upperBound() == Zero());
+            TS_ASSERT(reconstructed2(i).lowerBound() - box(i).lowerBound() == Zero());
+            TS_ASSERT(reconstructed2(i).upperBound() - box(i).upperBound() == Zero());
+        }
+    }
 };
