@@ -27,7 +27,9 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 #include <cstdint>
 #include <new>
@@ -105,28 +107,44 @@ namespace opensolid
     namespace detail
     {
         template <class TBounds>
-        inline void split(const TBounds& bounds, int& splitDirection, double& splitValue) {
+        inline void
+        split(const TBounds& bounds, int& splitDirection, double& splitValue) {
             typename TBounds::Index index;
             bounds.cwiseWidth().maxCoeff(&index);
             splitDirection = int(index);
             splitValue = bounds(index).median();
         }
+
+        template <int iNumDimensions>
+        inline void
+        split(const Box<iNumDimensions>& box, int& splitDirection, double& splitValue) {
+            split(box.vector(), splitDirection, splitValue);
+        }
         
-        inline void split(const Interval& interval, int& splitDirection, double& splitValue) {
+        inline void
+        split(const Interval& interval, int& splitDirection, double& splitValue) {
             splitDirection = 0;
             splitValue = interval.median();
         }
 
         template <class TBounds>
-        inline bool isCompatible(const TBounds& bounds, int splitDirection, double splitValue) {
+        inline bool
+        isCompatible(const TBounds& bounds, int splitDirection, double splitValue) {
             double lowerBound = bounds(splitDirection).lowerBound();
             double upperBound = bounds(splitDirection).upperBound();
             double splitRatio = (splitValue - lowerBound) / (upperBound - splitValue);
             double widthRatio = bounds.cwiseWidth().maxCoeff() / bounds(splitDirection).width();
             return splitRatio > 0.5 && splitRatio < 2 && widthRatio < 1.5;
         }
+
+        template <int iNumDimensions>
+        inline bool
+        isCompatible(const Box<iNumDimensions>& box, int splitDirection, double splitValue) {
+            return isCompatible(box.vector(), splitDirection, splitValue);
+        }
     
-        inline bool isCompatible(const Interval& interval, int splitDirection, double splitValue) {
+        inline bool
+        isCompatible(const Interval& interval, int splitDirection, double splitValue) {
             assert(splitDirection == 0);
             double splitRatio =
                 (splitValue - interval.lowerBound()) / (interval.upperBound() - splitValue);
@@ -134,17 +152,26 @@ namespace opensolid
         }
 
         template <class TBounds>
-        inline double median(const TBounds& bounds, int splitDirection) {
+        inline double
+        median(const TBounds& bounds, int splitDirection) {
             return bounds(splitDirection).median();
         }
 
-        inline double median(const Interval& bounds, int splitDirection) {
+        template <int iNumDimensions>
+        inline double
+        median(const Box<iNumDimensions>& box, int splitDirection) {
+            return box(splitDirection).median();
+        }
+
+        inline double
+        median(const Interval& bounds, int splitDirection) {
             assert(splitDirection == 0);
             return bounds.median();
         }
 
         template <class TBounds>
-        inline bool hasLesserMedian(
+        inline bool
+        hasLesserMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
             int splitDirection
@@ -153,7 +180,18 @@ namespace opensolid
             return difference.upperBound() < -difference.lowerBound();
         }
 
-        inline bool hasLesserMedian(
+        template <int iNumDimensions>
+        inline bool
+        hasLesserMedian(
+            const Box<iNumDimensions>& firstBox,
+            const Box<iNumDimensions>& secondBox,
+            int splitDirection
+        ) {
+            return hasLesserMedian(firstBox.vector(), secondBox.vector(), splitDirection);
+        }
+
+        inline bool
+        hasLesserMedian(
             const Interval& firstInterval,
             const Interval& secondInterval,
             int splitDirection
@@ -164,7 +202,8 @@ namespace opensolid
         }
 
         template <class TBounds>
-        inline bool hasGreaterMedian(
+        inline bool
+        hasGreaterMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
             int splitDirection
@@ -173,7 +212,18 @@ namespace opensolid
             return difference.upperBound() > -difference.lowerBound();
         }
 
-        inline bool hasGreaterMedian(
+        template <int iNumDimensions>
+        inline bool
+        hasGreaterMedian(
+            const Box<iNumDimensions>& firstBox,
+            const Box<iNumDimensions>& secondBox,
+            int splitDirection
+        ) {
+            return hasGreaterMedian(firstBox.vector(), secondBox.vector(), splitDirection);
+        }
+
+        inline bool
+        hasGreaterMedian(
             const Interval& firstInterval,
             const Interval& secondInterval,
             int splitDirection
