@@ -283,7 +283,6 @@ public:
     void testBox() {
         Box3d box1(Interval(1, 2), Interval(3, 4), Interval(5, 6));
         Box3d projected = box1.projected(Plane3d::YZ());
-        std::cout << "projected:" << std::endl << projected << std::endl;
         TS_ASSERT(projected.x().lowerBound() == Zero());
         TS_ASSERT(projected.x().upperBound() == Zero());
         TS_ASSERT(projected.y().lowerBound() - box1.y().lowerBound() == Zero());
