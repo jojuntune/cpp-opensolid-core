@@ -26,6 +26,7 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Box.hpp>
 
 #include <cxxtest/TestSuite.h>
 
@@ -276,5 +277,18 @@ public:
         TS_ASSERT((point1 - point2).isZero());
         TS_ASSERT(origin.vector().isZero());
         TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
+        TS_ASSERT((point1.rotated(pi() / 2, Axis3d::X()) - Point3d(1, -3, 2)).isZero());
+    }
+
+    void testBox() {
+        Box3d box1(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+        Box3d projected = box1.projected(Plane3d::YZ());
+        std::cout << "projected:" << std::endl << projected << std::endl;
+        TS_ASSERT(projected.x().lowerBound() == Zero());
+        TS_ASSERT(projected.x().upperBound() == Zero());
+        TS_ASSERT(projected.y().lowerBound() - box1.y().lowerBound() == Zero());
+        TS_ASSERT(projected.y().upperBound() - box1.y().upperBound() == Zero());
+        TS_ASSERT(projected.z().lowerBound() - box1.z().lowerBound() == Zero());
+        TS_ASSERT(projected.z().upperBound() - box1.z().upperBound() == Zero());
     }
 };
