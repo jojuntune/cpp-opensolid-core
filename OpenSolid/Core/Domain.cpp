@@ -1,27 +1,28 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
+/*
 #include <OpenSolid/Core/Domain.hpp>
 
 #include <OpenSolid/Core/DomainImplementation.hpp>
@@ -36,45 +37,38 @@
 
 namespace opensolid
 {   
-    Domain::Domain() : _implementation(), _type(nullptr) {
+    Domain::Domain() :
+        _implementation() {
     }
     
     Domain::Domain(const DomainImplementation* implementation) :
-        _implementation(implementation),
-        _type(&typeid(implementation)) {
+        _implementation(implementation) {
     }
     
     Domain::Domain(const Set<Geometry>& boundaries) :
-        _implementation(new GenericDomain(boundaries)),
-        _type(&typeid(GenericDomain)) {
+        _implementation(new GenericDomain(boundaries)) {
     }
     
     Domain::Domain(Interval interval) :
-        _implementation(new IntervalDomain(interval)),
-        _type(&typeid(IntervalDomain)) {
+        _implementation(new IntervalDomain(interval)) {
     }
     
     Domain::Domain(Interval uInterval, Interval vInterval) :
-        _implementation(new RectangleDomain(Vector2I(uInterval, vInterval))),
-        _type(&typeid(RectangleDomain)) {
+        _implementation(new RectangleDomain(Vector2I(uInterval, vInterval))) {
     }
     
     Domain::Domain(Interval uInterval, Interval vInterval, Interval wInterval) :
-        _implementation(new CuboidDomain(Vector3I(uInterval, vInterval, wInterval))),
-        _type(&typeid(CuboidDomain)) {
+        _implementation(new CuboidDomain(Vector3I(uInterval, vInterval, wInterval))) {
     }
     
     Domain::Domain(const VectorXI& bounds) {
         assert(bounds.size() == 1 || bounds.size() == 2 || bounds.size() == 3);
         if (bounds.size() == 1) {
             _implementation = new IntervalDomain(bounds.value());
-            _type = &typeid(IntervalDomain);
         } else if (bounds.size() == 2) {
             _implementation = new RectangleDomain(bounds);
-            _type = &typeid(RectangleDomain);
         } else {
             _implementation = new CuboidDomain(bounds);
-            _type = &typeid(CuboidDomain);
         }
     }
 
@@ -129,14 +123,33 @@ namespace opensolid
         }
     }
 
-    VectorXI Bounds<Domain>::operator()(const Domain& domain) const {
+    OPENSOLID_CORE_EXPORT Domain
+    operator+(const Domain& domain, const VectorXd& vector);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator+(const VectorXd& vector, const Domain& domain);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator-(const Domain& domain, const VectorXd& vector);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator-(const VectorXd& vector, const Domain& domain);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator*(double scaleFactor, const Domain& domain);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator*(const Domain& domain, double scaleFactor);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator*(const MatrixXd& transformationMatrix, const Domain& domain);
+
+    OPENSOLID_CORE_EXPORT Domain
+    operator/(const Domain& domain, double divisor);
+
+    VectorXI
+    BoundsFunction<Domain>::operator()(const Domain& domain) const {
         return domain.bounds();
     }
-    
-    Interval Conversion<Domain, Interval>::operator()(const Domain& domain) const {
-        assert(!domain.isEmpty());
-        assert(domain.numDimensions() == 1);
-        assert(domain.boundaries().size() == 2);
-        return domain.bounds().value();
-    }
 }
+*/

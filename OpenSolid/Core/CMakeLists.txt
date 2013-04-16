@@ -5,11 +5,11 @@
         CORE_SOURCES
         *.cpp
         Datum/*.cpp
-        Domain/*.cpp
-        DomainImplementation/*.cpp
+        #Domain/*.cpp
+        #DomainImplementation/*.cpp
         Function/*.cpp
         FunctionImplementation/*.cpp
-        Geometry/*.cpp
+        #Geometry/*.cpp
         Interval/*.cpp
         Matrix/*.cpp
         Set/*.cpp
@@ -40,6 +40,7 @@
 
     add_to_global_source_list(
         *
+        Box/*
         Datum/*
         Domain/*
         DomainImplementation/*
@@ -48,6 +49,7 @@
         Geometry/*
         Interval/*
         Matrix/*
+        Point/*
         Set/*
         Simplex/*
         Transformable/*

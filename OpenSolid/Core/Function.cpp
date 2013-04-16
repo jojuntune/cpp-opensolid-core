@@ -1,31 +1,29 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #include <OpenSolid/Core/Function.hpp>
 
-#include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
 #include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
@@ -59,34 +57,41 @@
 
 namespace opensolid
 {
-    Function::Function() : _implementation() {
+    Function::Function() :
+        _implementation() {
     }
     
     Function::Function(const FunctionImplementation* implementation) :
         _implementation(implementation) {
     }
     
-    int Function::numDimensions() const {
+    int
+    Function::numDimensions() const {
         return isValid() ? implementation()->numDimensions() : 0;
     }
     
-    int Function::numParameters() const {
+    int
+    Function::numParameters() const {
         return isValid() ? implementation()->numParameters() : 0;
     }
     
-    const ConstantFunction* Function::asConstant() const {
+    const ConstantFunction*
+    Function::asConstant() const {
         return isValid() ? implementation()->asConstant() : 0;
     }
     
-    const IdentityFunction* Function::asIdentity() const {
+    const IdentityFunction*
+    Function::asIdentity() const {
         return isValid() ? implementation()->asIdentity() : 0;
     }
     
-    const ParameterFunction* Function::asParameter() const {
+    const ParameterFunction*
+    Function::asParameter() const {
         return isValid() ? implementation()->asParameter() : 0;
     }
 
-    bool Function::isDuplicate(const Function& other) const {
+    bool
+    Function::isDuplicate(const Function& other) const {
         if (!this->isValid() || !other.isValid()) {
             // Two functions are not duplicates if either one is null
             return false;
@@ -106,12 +111,14 @@ namespace opensolid
         return implementation()->isDuplicate(other);
     }
 
-    Function Function::deduplicated() const {
+    Function
+    Function::deduplicated() const {
         std::vector<Function> temp;
         return deduplicated(temp);
     }
 
-    Function Function::deduplicated(std::vector<Function>& others) const {
+    Function
+    Function::deduplicated(std::vector<Function>& others) const {
         if (!isValid()) {
             assert(false);
             return *this;
@@ -136,7 +143,8 @@ namespace opensolid
         }
     }
      
-    Function Function::operator()(const Function& other) const {
+    Function
+    Function::compose(const Function& other) const {
         if (!this->isValid() || !other.isValid()) {
             assert(false);
             return Function();
@@ -148,21 +156,14 @@ namespace opensolid
         if (this->asConstant()) {
             return *this;
         } else if (other.asConstant()) {
-            return Function::Constant(operator()(other.asConstant()->value()), numParameters());
+            return Function::Constant(operator()(other.asConstant()->vector()), numParameters());
         } else {
             return this->implementation()->compose(other).deduplicated();
         }
     }
     
-    Geometry Function::operator()(const Domain& domain) const {
-        if (!isValid()) {
-            assert(false);
-            return Geometry();
-        }
-        return Geometry(*this, domain);
-    }
-    
-    Function Function::derivative(int parameterIndex) const {
+    Function
+    Function::derivative(int parameterIndex) const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -170,7 +171,8 @@ namespace opensolid
         return implementation()->derivative(parameterIndex).deduplicated();
     }
     
-    Function Function::norm() const {
+    Function
+    Function::norm() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -178,7 +180,8 @@ namespace opensolid
         return implementation()->norm().deduplicated();
     }
     
-    Function Function::normalized() const {
+    Function
+    Function::normalized() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -186,7 +189,8 @@ namespace opensolid
         return implementation()->normalized().deduplicated();
     }
     
-    Function Function::squaredNorm() const {
+    Function
+    Function::squaredNorm() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -194,19 +198,23 @@ namespace opensolid
         return implementation()->squaredNorm().deduplicated();
     }
 
-    Function Function::x() const {
+    Function
+    Function::x() const {
         return component(0);
     }
 
-    Function Function::y() const {
+    Function
+    Function::y() const {
         return component(1);
     }
 
-    Function Function::z() const {
+    Function
+    Function::z() const {
         return component(2);
     }
     
-    Function Function::component(int index) const {
+    Function
+    Function::component(int index) const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -218,7 +226,8 @@ namespace opensolid
         return implementation()->components(index, 1).deduplicated();
     }
     
-    Function Function::components(int startIndex, int numComponents) const {
+    Function
+    Function::components(int startIndex, int numComponents) const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -231,7 +240,8 @@ namespace opensolid
 
     namespace
     {
-        inline bool validBinaryOperation(
+        inline bool
+        validBinaryOperation(
             const Function& firstFunction,
             const Function& secondFunction,
             bool requireSameNumDimensions
@@ -255,61 +265,65 @@ namespace opensolid
         }
     }
     
-    Function Function::concatenate(const Function& other) const {
+    Function
+    Function::concatenate(const Function& other) const {
         if (!validBinaryOperation(*this, other, false)) {
             assert(false);
             return Function();
         }
         if (this->asConstant() && other.asConstant()) {
             VectorXd vector(this->numDimensions() + other.numDimensions());
-            vector.head(this->numDimensions()) = this->asConstant()->value();
-            vector.tail(other.numDimensions()) = other.asConstant()->value();
+            vector.head(this->numDimensions()) = this->asConstant()->vector();
+            vector.tail(other.numDimensions()) = other.asConstant()->vector();
             return Function::Constant(vector, numParameters());
         } else {
             return Function(new ConcatenationFunction(*this, other)).deduplicated();
         }
     }
     
-    Function Function::dot(const Function& other) const {
+    Function
+    Function::dot(const Function& other) const {
         if (!validBinaryOperation(*this, other, true)) {
             assert(false);
             return Function();
         }
         if (this->asConstant() && other.asConstant()) {
             return Function::Constant(
-                this->asConstant()->value().dot(other.asConstant()->value()),
+                this->asConstant()->vector().dot(other.asConstant()->vector()),
                 numParameters()
             );
         } else if (numDimensions() == 1) {
             return (*this) * other;
-        } else if (this->asConstant() && this->asConstant()->value().isZero()) {
+        } else if (this->asConstant() && this->asConstant()->vector().isZero()) {
             return Function::Constant(0.0, numParameters());
-        } else if (other.asConstant() && other.asConstant()->value().isZero()) {
+        } else if (other.asConstant() && other.asConstant()->vector().isZero()) {
             return Function::Constant(0.0, numParameters());
         } else {
             return Function(new DotProductFunction(*this, other)).deduplicated();
         }
     }
     
-    Function Function::cross(const Function& other) const {
+    Function
+    Function::cross(const Function& other) const {
         if (!validBinaryOperation(*this, other, true) || numDimensions() != 3) {
             assert(false);
             return Function();
         }
         if (this->asConstant() && other.asConstant()) {
-            Vector3d value = this->asConstant()->value();
-            Vector3d otherValue = other.asConstant()->value();
+            Vector3d value = this->asConstant()->vector();
+            Vector3d otherValue = other.asConstant()->vector();
             return Function::Constant(value.cross(otherValue), numParameters());
-        } else if (this->asConstant() && this->asConstant()->value().isZero()) {
+        } else if (this->asConstant() && this->asConstant()->vector().isZero()) {
             return Function::Constant(Vector3d::Zero(), numParameters());
-        } else if (other.asConstant() && other.asConstant()->value().isZero()) {
+        } else if (other.asConstant() && other.asConstant()->vector().isZero()) {
             return Function::Constant(Vector3d::Zero(), numParameters());
         } else {
             return Function(new CrossProductFunction(*this, other)).deduplicated();
         }
     }
     
-    Function Function::tangentVector() const {
+    Function
+    Function::tangentVector() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -317,7 +331,8 @@ namespace opensolid
         return implementation()->tangentVector().deduplicated();
     }
     
-    Function Function::curvature() const {
+    Function
+    Function::curvature() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -325,7 +340,8 @@ namespace opensolid
         return implementation()->curvature().deduplicated();
     }
     
-    Function Function::normalVector() const {
+    Function
+    Function::normalVector() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -333,7 +349,8 @@ namespace opensolid
         return implementation()->normalVector().deduplicated();
     }
     
-    Function Function::binormalVector() const {
+    Function
+    Function::binormalVector() const {
         if (!isValid()) {
             assert(false);
             return Function();
@@ -341,39 +358,42 @@ namespace opensolid
         return implementation()->binormalVector().deduplicated();
     }
     
-    Function Function::operator+(const Function& other) const {
+    Function
+    Function::operator+(const Function& other) const {
         if (!validBinaryOperation(*this, other, true)) {
             assert(false);
             return Function();
         }
         if (other.asConstant()) {
             // Delegate to translation function
-            return *this + other.asConstant()->value();
+            return *this + other.asConstant()->vector();
         } else if (this->asConstant()) {
             // Delegate to translation function
-            return this->asConstant()->value() + other;
+            return this->asConstant()->vector() + other;
         } else {
             return Function(new SumFunction(*this, other)).deduplicated();
         }
     }
     
-    Function Function::operator-(const Function& other) const {
+    Function
+    Function::operator-(const Function& other) const {
         if (!validBinaryOperation(*this, other, true)) {
             assert(false);
             return Function();
         }
         if (other.asConstant()) {
             // Delegate to translation function
-            return *this - other.asConstant()->value();
+            return *this - other.asConstant()->vector();
         } else if (this->asConstant()) {
             // Delegate to translation function
-            return this->asConstant()->value() - other;
+            return this->asConstant()->vector() - other;
         } else {
             return Function(new DifferenceFunction(*this, other)).deduplicated();
         }
     }
     
-    Function Function::operator*(const Function& other) const {
+    Function
+    Function::operator*(const Function& other) const {
         if (!validBinaryOperation(*this, other, false)) {
             assert(false);
             return Function();
@@ -409,10 +429,10 @@ namespace opensolid
             assert(false);
             return Function();
         }
-        if (multiplier.asConstant()) {
+        if (const ConstantFunction* constant = multiplier.asConstant()) {
             // Delegate to scaling function
-            return multiplier.as<double>() * multiplicand;
-        } else if (multiplicand.asConstant() && multiplicand.asConstant()->value().isZero()) {
+            return constant->vector().value() * multiplicand;
+        } else if (multiplicand.asConstant() && multiplicand.asConstant()->vector().isZero()) {
             // Doesn't matter what the multiplier is - return the (zero) multiplicand
             return multiplicand;
         } else {
@@ -420,15 +440,16 @@ namespace opensolid
         }
     }
     
-    Function Function::operator/(const Function& other) const {
+    Function
+    Function::operator/(const Function& other) const {
         if (!validBinaryOperation(*this, other, false) || other.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (other.asConstant()) {
+        if (const ConstantFunction* constant = other.asConstant()) {
             // Delegate to scaling function
-            return *this / other.as<double>();
-        } else if (this->asConstant() && this->asConstant()->value().isZero()) {
+            return *this / constant->vector().value();
+        } else if (this->asConstant() && this->asConstant()->vector().isZero()) {
             // Doesn't matter what the divisor is - return this (zero) dividend
             return *this;
         } else {
@@ -436,7 +457,8 @@ namespace opensolid
         }
     }
 
-    void Function::debug(std::ostream& stream, int indent) const {
+    void
+    Function::debug(std::ostream& stream, int indent) const {
         if (!implementation()) {
             assert(false);
             return;
@@ -449,7 +471,65 @@ namespace opensolid
         implementation()->debug(stream, indent);
     }
 
-    Function operator*(double value, const Function& function) {
+    Function
+    operator-(const Function& function) {
+        return -1.0 * function;
+    }
+
+    Function
+    operator+(const Function& function, double value) {
+        return function + VectorXd::Constant(1, value);
+    }
+
+    Function
+    operator+(double value, const Function& function) {
+        return function + value;
+    }
+
+    Function
+    operator+(const Function& function, const VectorXd& vector) {
+        if (!function.isValid()) {
+            assert(false);
+            return Function();
+        }
+        if (vector.size() != function.numDimensions()) {
+            assert(false);
+            return Function();
+        }
+        if (vector.isZero()) {
+            return function;
+        } else {
+            return function.implementation()->translated(vector).deduplicated();
+        }
+    }
+
+    Function
+    operator+(const VectorXd& vector, const Function& function) {
+        return function + vector;
+    }
+
+    Function
+    operator-(const Function& function, double value) {
+        return function + (-value);
+    }
+
+    Function
+    operator-(double value, const Function& function) {
+        return -function + value;
+    }
+
+    Function
+    operator-(const Function& function, const VectorXd& vector) {
+        return function + (-vector);
+    }
+
+    Function
+    operator-(const VectorXd& vector, const Function& function) {
+        return -function + vector;
+    }
+
+    Function
+    operator*(double value, const Function& function) {
         if (!function.isValid()) {
             assert(false);
             return Function();
@@ -463,7 +543,13 @@ namespace opensolid
         }
     }
 
-    Function operator*(const MatrixXd& matrix, const Function& function) {
+    Function
+    operator*(const Function& function, double value) {
+        return value * function;
+    }
+
+    Function
+    operator*(const MatrixXd& matrix, const Function& function) {
         if (!function.isValid()) {
             assert(false);
             return Function();
@@ -481,55 +567,8 @@ namespace opensolid
         }
     }
 
-    Function operator+(const Function& function, const VectorXd& vector) {
-        if (!function.isValid()) {
-            assert(false);
-            return Function();
-        }
-        if (vector.size() != function.numDimensions()) {
-            assert(false);
-            return Function();
-        }
-        if (vector.isZero()) {
-            return function;
-        } else {
-            return function.implementation()->translated(vector).deduplicated();
-        }
-    }
-
-    Function operator+(const Function& function, double value) {
-        if (!function.isValid() || function.numDimensions() != 1) {
-            assert(false);
-            return Function();
-        }
-        return function + VectorXd::Constant(1, value);
-    }
-
-    Function operator+(double value, const Function& function) {
-        if (!function.isValid() || function.numDimensions() != 1) {
-            assert(false);
-            return Function();
-        }
-        return VectorXd::Constant(1, value) + function;
-    }
-
-    Function operator-(const Function& function, double value) {
-        if (!function.isValid() || function.numDimensions() != 1) {
-            assert(false);
-            return Function();
-        }
-        return function - VectorXd::Constant(1, value);
-    }
-
-    Function operator-(double value, const Function& function) {
-        if (!function.isValid() || function.numDimensions() != 1) {
-            assert(false);
-            return Function();
-        }
-        return VectorXd::Constant(1, value) - function;
-    }
-
-    Function operator*(const Function& function, const VectorXd& vector) {
+    Function
+    operator*(const Function& function, const VectorXd& vector) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
@@ -537,7 +576,17 @@ namespace opensolid
         return function * Function::Constant(vector, function.numParameters());
     }
 
-    Function operator/(double value, const Function& function) {
+    Function
+    operator/(const Function& function, double value) {
+        if (value == Zero()) {
+            assert(false);
+            return Function();
+        }
+        return (1.0 / value) * function;
+    }
+
+    Function
+    operator/(double value, const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
@@ -545,7 +594,8 @@ namespace opensolid
         return Function::Constant(value, function.numParameters()) / function;
     }
 
-    Function operator/(const VectorXd& vector, const Function& function) {
+    Function
+    operator/(const VectorXd& vector, const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
@@ -553,39 +603,42 @@ namespace opensolid
         return Function::Constant(vector, function.numParameters()) / function;
     }
     
-    Function sin(const Function& function) {
+    Function
+    sin(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             return Function::Constant(sin(value), function.numParameters());
         } else {
             return Function(new SineFunction(function)).deduplicated();
         }
     }
     
-    Function cos(const Function& function) {
+    Function
+    cos(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             return Function::Constant(cos(value), function.numParameters());
         } else {
             return Function(new CosineFunction(function)).deduplicated();
         }
     }
     
-    Function tan(const Function& function) {
+    Function
+    tan(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             if (std::fmod(value - pi() / 2, pi()) == opensolid::Zero()) {
                 assert(false);
                 return Function();
@@ -596,13 +649,14 @@ namespace opensolid
         }
     }
     
-    Function sqrt(const Function& function) {
+    Function
+    sqrt(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             if (value < opensolid::Zero()) {
                 assert(false);
                 return Function();
@@ -614,13 +668,14 @@ namespace opensolid
         }
     }
     
-    Function asin(const Function& function) {
+    Function
+    asin(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             if (!Interval(-1.0, 1.0).contains(value)) {
                 assert(false);
                 return Function();
@@ -632,13 +687,14 @@ namespace opensolid
         }
     }
     
-    Function acos(const Function& function) {
+    Function
+    acos(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             if (!Interval(-1.0, 1.0).contains(value)) {
                 assert(false);
                 return Function();
@@ -650,26 +706,28 @@ namespace opensolid
         }
     }
 
-    Function exp(const Function& function) {
+    Function
+    exp(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             return Function::Constant(exp(value), function.numParameters());
         } else {
             return Function(new ExponentialFunction(function)).deduplicated();
         }
     }
 
-    Function log(const Function& function) {
+    Function
+    log(const Function& function) {
         if (!function.isValid() || function.numDimensions() != 1) {
             assert(false);
             return Function();
         }
-        if (function.asConstant()) {
-            double value = function.as<double>();
+        if (const ConstantFunction* constant = function.asConstant()) {
+            double value = constant->vector().value();
             if (value <= opensolid::Zero()) {
                 assert(false);
                 return Function();
@@ -680,11 +738,14 @@ namespace opensolid
         }
     }
 
-    Function pow(const Function& baseFunction, const Function& exponentFunction) {
+    Function
+    pow(const Function& baseFunction, const Function& exponentFunction) {
         assert(baseFunction.numParameters() == exponentFunction.numParameters());
-        if (baseFunction.asConstant() && exponentFunction.asConstant()) {
-            double baseValue = baseFunction.as<double>();
-            double exponentValue = exponentFunction.as<double>();
+        const ConstantFunction* constantBase = baseFunction.asConstant();
+        const ConstantFunction* constantExponent = exponentFunction.asConstant();
+        if (constantBase && constantExponent) {
+            double baseValue = constantBase->vector().value();
+            double exponentValue = constantExponent->vector().value();
             if (baseValue == opensolid::Zero() && exponentValue < opensolid::Zero()) {
                 assert(false);
                 return Function();
@@ -695,40 +756,9 @@ namespace opensolid
         }
     }
     
-    std::ostream& operator<<(std::ostream& stream, const Function& function) {
+    std::ostream&
+    operator<<(std::ostream& stream, const Function& function) {
         function.debug(stream);
         return stream;
-    }
-    
-    double Conversion<Function, double>::operator()(const Function& argument) const {
-        if (!argument.isValid() || !argument.asConstant() || argument.numDimensions() != 1) {
-            assert(false);
-            return 0.0;
-        }
-        return argument.asConstant()->value().value();
-    }
-    
-    Vector2d Conversion<Function, Vector2d>::operator()(const Function& argument) const {
-        if (!argument.isValid() || !argument.asConstant() || argument.numDimensions() != 2) {
-            assert(false);
-            return Vector2d::Zero();
-        }
-        return argument.asConstant()->value();
-    }
-    
-    Vector3d Conversion<Function, Vector3d>::operator()(const Function& argument) const {
-        if (!argument.isValid() || !argument.asConstant() || argument.numDimensions() != 3) {
-            assert(false);
-            return Vector3d::Zero();
-        }
-        return argument.asConstant()->value();
-    }
-    
-    VectorXd Conversion<Function, VectorXd>::operator()(const Function& argument) const {
-        if (!argument.isValid() || !argument.asConstant()) {
-            assert(false);
-            return VectorXd();
-        }
-        return argument.asConstant()->value();
     }
 }

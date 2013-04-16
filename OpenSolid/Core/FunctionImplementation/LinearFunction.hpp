@@ -1,26 +1,26 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
@@ -121,7 +121,7 @@ namespace opensolid
         MapXd& results,
         ResultCacheXd&
     ) const {
-        results = datum() * parameterValues;
+        results = parameterValues.globalizedFrom(datum());
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -130,7 +130,7 @@ namespace opensolid
         MapXI& results,
         ResultCacheXI&
     ) const {
-        results = datum() * parameterBounds;
+        results = parameterBounds.globalizedFrom(datum());
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -140,7 +140,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     Function LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
-        return new LinearFunction<iNumDimensions, iNumAxes>(scale * datum());
+        return new LinearFunction<iNumDimensions, iNumAxes>(datum().scaled(scale));
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -150,15 +150,15 @@ namespace opensolid
         int numTransformedDimensions = transformationMatrix.rows();
         if (numTransformedDimensions == 1) {
             return new LinearFunction<1, iNumAxes>(
-                Matrix<double, 1, iNumDimensions>(transformationMatrix) * datum()
+                datum().transformed(Matrix<double, 1, iNumDimensions>(transformationMatrix))
             );
         } else if (numTransformedDimensions == 2) {
             return new LinearFunction<2, iNumAxes>(
-                Matrix<double, 2, iNumDimensions>(transformationMatrix) * datum()
+                datum().transformed(Matrix<double, 2, iNumDimensions>(transformationMatrix))
             );
         } else if (numTransformedDimensions == 3) {
             return new LinearFunction<3, iNumAxes>(
-                Matrix<double, 3, iNumDimensions>(transformationMatrix) * datum()
+                datum().transformed(Matrix<double, 3, iNumDimensions>(transformationMatrix))
             );
         } else {
             assert(false);
@@ -168,7 +168,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     Function LinearFunction<iNumDimensions, iNumAxes>::translated(const VectorXd& vector) const {
-        return new LinearFunction<iNumDimensions, iNumAxes>(datum() + vector);
+        return new LinearFunction<iNumDimensions, iNumAxes>(datum().translated(vector));
     }
     
     template <int iNumDimensions, int iNumAxes>

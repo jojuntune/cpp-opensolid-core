@@ -1,26 +1,26 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #include <OpenSolid/Core/Interval.hpp>
 
@@ -42,7 +42,7 @@ namespace opensolid
     > BoostInterval;
 
     template <>
-    struct Conversion<Interval, BoostInterval>
+    struct ConversionFunction<Interval, BoostInterval>
     {
         inline BoostInterval operator()(Interval interval) {
             return BoostInterval(interval.lowerBound(), interval.upperBound());
@@ -50,7 +50,7 @@ namespace opensolid
     };
 
     template <>
-    struct Conversion<BoostInterval, Interval>
+    struct ConversionFunction<BoostInterval, Interval>
     {
         inline Interval operator()(BoostInterval boostInterval) {
             return Interval(boostInterval.lower(), boostInterval.upper());
@@ -58,57 +58,57 @@ namespace opensolid
     };
     
     Interval& Interval::operator*=(Interval interval) {
-        BoostInterval self = this->as<BoostInterval>();
-        BoostInterval other = interval.as<BoostInterval>();
-        *this = Interval::from(self * other);
+        BoostInterval self = this->convertTo<BoostInterval>();
+        BoostInterval other = interval.convertTo<BoostInterval>();
+        *this = Interval::ConvertFrom(self * other);
         return *this;
     }
     
     Interval& Interval::operator/=(Interval interval) {
-        BoostInterval self = this->as<BoostInterval>();
-        BoostInterval other = interval.as<BoostInterval>();
-        *this = Interval::from(self / other);
+        BoostInterval self = this->convertTo<BoostInterval>();
+        BoostInterval other = interval.convertTo<BoostInterval>();
+        *this = Interval::ConvertFrom(self / other);
         return *this;
     }
     
     Interval operator*(Interval firstInterval, Interval secondInterval) {
-        return Interval::from(
-            firstInterval.as<BoostInterval>() * secondInterval.as<BoostInterval>()
+        return Interval::ConvertFrom(
+            firstInterval.convertTo<BoostInterval>() * secondInterval.convertTo<BoostInterval>()
         );
     }
 
     Interval operator/(double value, Interval interval) {
-        return Interval::from(value / interval.as<BoostInterval>());
+        return Interval::ConvertFrom(value / interval.convertTo<BoostInterval>());
     }
 
     Interval operator/(Interval firstInterval, Interval secondInterval) {
-        return Interval::from(
-            firstInterval.as<BoostInterval>() / secondInterval.as<BoostInterval>()
+        return Interval::ConvertFrom(
+            firstInterval.convertTo<BoostInterval>() / secondInterval.convertTo<BoostInterval>()
         );
     }
 
     Interval sin(Interval interval) {
-        return Interval::from(boost::numeric::sin(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::sin(interval.convertTo<BoostInterval>()));
     }
 
     Interval cos(Interval interval) {
-        return Interval::from(boost::numeric::cos(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::cos(interval.convertTo<BoostInterval>()));
     }
 
     Interval tan(Interval interval) {
-        return Interval::from(boost::numeric::tan(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::tan(interval.convertTo<BoostInterval>()));
     }
 
     Interval asin(Interval interval) {
-        return Interval::from(boost::numeric::asin(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::asin(interval.convertTo<BoostInterval>()));
     }
 
     Interval acos(Interval interval) {
-        return Interval::from(boost::numeric::acos(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::acos(interval.convertTo<BoostInterval>()));
     }
 
     Interval atan(Interval interval) {
-        return Interval::from(boost::numeric::atan(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::atan(interval.convertTo<BoostInterval>()));
     }
 
     Interval atan2(Interval yInterval, Interval xInterval) {
@@ -124,16 +124,16 @@ namespace opensolid
     }
 
     Interval exp(Interval interval) {
-        return Interval::from(boost::numeric::exp(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::exp(interval.convertTo<BoostInterval>()));
     }
 
     Interval log(Interval interval) {
-        return Interval::from(boost::numeric::log(interval.as<BoostInterval>()));
+        return Interval::ConvertFrom(boost::numeric::log(interval.convertTo<BoostInterval>()));
     }
 
     Interval pow(Interval baseInterval, int exponentValue) {
-        return Interval::from(
-            boost::numeric::pow(baseInterval.as<BoostInterval>(), exponentValue)
+        return Interval::ConvertFrom(
+            boost::numeric::pow(baseInterval.convertTo<BoostInterval>(), exponentValue)
         );
     }
     

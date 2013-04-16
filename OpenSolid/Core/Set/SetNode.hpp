@@ -1,32 +1,32 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -41,24 +41,30 @@ namespace opensolid
     class SetNode
     {
     private:
-        void operator=(const SetNode<TElement>& other);
+        void
+        operator=(const SetNode<TElement>& other);
         
         const TElement* _element;
-        typename Bounds<TElement>::Type _bounds;
+        typename BoundsFunction<TElement>::ResultType _bounds;
         int _splitDirection;
         double _splitValue;
         SetNode<TElement>* _leftChild;
         SetNode<TElement>* _rightChild;
         std::int64_t _size;
         
-        void getLeaves(std::vector<SetNode<TElement>*>& leaves);
+        void
+        getLeaves(std::vector<SetNode<TElement>*>& leaves);
     public:
-        explicit SetNode(const SetNode<TElement>& otherNode);
-        
-        SetNode(const TElement& element, const typename Bounds<TElement>::Type& bounds);
+        explicit
+        SetNode(const SetNode<TElement>& otherNode);
         
         SetNode(
-            const typename Bounds<TElement>::Type& overallBounds,
+            const TElement& element,
+            const typename BoundsFunction<TElement>::ResultType& bounds
+        );
+        
+        SetNode(
+            const typename BoundsFunction<TElement>::ResultType& overallBounds,
             int splitDirection,
             double splitValue,
             SetNode<TElement>* leftChildNode,
@@ -66,38 +72,59 @@ namespace opensolid
         );
         
         SetNode(
-            const typename Bounds<TElement>::Type& overallBounds,
+            const typename BoundsFunction<TElement>::ResultType& overallBounds,
             SetNode<TElement>** begin,
             SetNode<TElement>** end
         );
         
         ~SetNode();
         
-        const TElement* element() const;
-        const typename Bounds<TElement>::Type& bounds() const;
-        int splitDirection() const;
-        double splitValue() const;
-        const SetNode<TElement>* leftChild() const;
-        const SetNode<TElement>* rightChild() const;
-        std::int64_t size() const;
-
-        const SetNode<TElement>* nodeAtIndex(std::int64_t index) const;
+        const TElement*
+        element() const;
         
-        std::int64_t indexOf(
+        const typename BoundsFunction<TElement>::ResultType&
+        bounds() const;
+        
+        int
+        splitDirection() const;
+        
+        double
+        splitValue() const;
+        
+        const SetNode<TElement>*
+        leftChild() const;
+        
+        const SetNode<TElement>*
+        rightChild() const;
+        
+        std::int64_t
+        size() const;
+
+        const SetNode<TElement>*
+        nodeAtIndex(std::int64_t index) const;
+        
+        std::int64_t
+        indexOf(
             const TElement& element,
-            const typename Bounds<TElement>::Type& elementBounds
+            const typename BoundsFunction<TElement>::ResultType& elementBounds
         ) const;
         
-        SetNode<TElement>* insert(
+        SetNode<TElement>*
+        insert(
             const TElement& element,
-            const typename Bounds<TElement>::Type& elementBounds
+            const typename BoundsFunction<TElement>::ResultType& elementBounds
         );
 
-        SetNode<TElement>* erase(
+        SetNode<TElement>*
+        erase(
             const TElement& element,
-            const typename Bounds<TElement>::Type& elementBounds
+            const typename BoundsFunction<TElement>::ResultType& elementBounds
         );
     };
+    
+    template <class TElement>
+    std::ostream&
+    operator<<(std::ostream& stream, const SetNode<TElement>& node);
 }
 
 ////////// Implementation //////////
@@ -235,7 +262,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    void SetNode<TElement>::getLeaves(std::vector<SetNode<TElement>*>& leaves) {
+    void
+    SetNode<TElement>::getLeaves(std::vector<SetNode<TElement>*>& leaves) {
         if (_element) {
             assert(!_leftChild && !_rightChild);
             leaves.push_back(this);
@@ -250,7 +278,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline SetNode<TElement>::SetNode(const SetNode<TElement>& otherNode) :
+    inline
+    SetNode<TElement>::SetNode(const SetNode<TElement>& otherNode) :
         _bounds(otherNode._bounds),
         _splitDirection(otherNode._splitDirection),
         _splitValue(otherNode._splitValue),
@@ -269,9 +298,10 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline SetNode<TElement>::SetNode(
+    inline
+    SetNode<TElement>::SetNode(
         const TElement& element,
-        const typename Bounds<TElement>::Type& bounds
+        const typename BoundsFunction<TElement>::ResultType& bounds
     ) : _element(new TElement(element)),
         _bounds(bounds),
         _leftChild(OPENSOLID_NULLPTR),
@@ -280,8 +310,9 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline SetNode<TElement>::SetNode(
-        const typename Bounds<TElement>::Type& overallBounds,
+    inline
+    SetNode<TElement>::SetNode(
+        const typename BoundsFunction<TElement>::ResultType& overallBounds,
         int splitDirection,
         double splitValue,
         SetNode<TElement>* leftChild,
@@ -297,7 +328,7 @@ namespace opensolid
     
     template <class TElement>
     SetNode<TElement>::SetNode(
-        const typename Bounds<TElement>::Type& overallBounds,
+        const typename BoundsFunction<TElement>::ResultType& overallBounds,
         SetNode<TElement>** begin,
         SetNode<TElement>** end
     ) {
@@ -316,8 +347,8 @@ namespace opensolid
         } else {
             std::int64_t leftSize = 0;
             std::int64_t rightSize = 0;
-            typename Bounds<TElement>::Type leftBounds;
-            typename Bounds<TElement>::Type rightBounds;
+            typename BoundsFunction<TElement>::ResultType leftBounds;
+            typename BoundsFunction<TElement>::ResultType rightBounds;
             SetNode<TElement>** lower = begin;
             SetNode<TElement>** upper = end - 1;
             for (SetNode<TElement>** i = lower; i <= upper; ++i) {
@@ -380,7 +411,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline SetNode<TElement>::~SetNode() {
+    inline
+    SetNode<TElement>::~SetNode() {
         if (_element) {
             assert(!_leftChild && !_rightChild);
             delete _element;
@@ -391,42 +423,50 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline const TElement* SetNode<TElement>::element() const {
+    inline const TElement*
+    SetNode<TElement>::element() const {
         return _element;
     }
     
     template <class TElement>
-    inline const typename Bounds<TElement>::Type& SetNode<TElement>::bounds() const {
+    inline const typename BoundsFunction<TElement>::ResultType&
+    SetNode<TElement>::bounds() const {
         return _bounds;
     }
     
     template <class TElement>
-    inline int SetNode<TElement>::splitDirection() const {
+    inline int
+    SetNode<TElement>::splitDirection() const {
         return _splitDirection;
     }
     
     template <class TElement>
-    inline double SetNode<TElement>::splitValue() const {
+    inline double
+    SetNode<TElement>::splitValue() const {
         return _splitValue;
     }
         
     template <class TElement>
-    inline const SetNode<TElement>* SetNode<TElement>::leftChild() const {
+    inline const SetNode<TElement>*
+    SetNode<TElement>::leftChild() const {
         return _leftChild;
     }
     
     template <class TElement>
-    inline const SetNode<TElement>* SetNode<TElement>::rightChild() const {
+    inline const SetNode<TElement>*
+    SetNode<TElement>::rightChild() const {
         return _rightChild;
     }
     
     template <class TElement>
-    inline std::int64_t SetNode<TElement>::size() const {
+    inline std::int64_t
+    SetNode<TElement>::size() const {
         return _size;
     }
 
     template <class TElement>
-    const SetNode<TElement>* SetNode<TElement>::nodeAtIndex(std::int64_t index) const {
+    const SetNode<TElement>*
+    SetNode<TElement>::nodeAtIndex(std::int64_t index) const {
         assert(index >= 0 && index < size());
         if (element()) {
             return this;
@@ -438,9 +478,10 @@ namespace opensolid
     }
 
     template <class TElement>
-    std::int64_t SetNode<TElement>::indexOf(
+    std::int64_t
+    SetNode<TElement>::indexOf(
         const TElement& element,
-        const typename Bounds<TElement>::Type& elementBounds
+        const typename BoundsFunction<TElement>::ResultType& elementBounds
     ) const {
         if (bounds().overlaps(elementBounds)) {
             if (this->element()) {
@@ -467,11 +508,12 @@ namespace opensolid
     }
     
     template <class TElement>
-    SetNode<TElement>* SetNode<TElement>::insert(
+    SetNode<TElement>*
+    SetNode<TElement>::insert(
         const TElement& element,
-        const typename Bounds<TElement>::Type& elementBounds
+        const typename BoundsFunction<TElement>::ResultType& elementBounds
     ) {
-        typename Bounds<TElement>::Type overallBounds = _bounds.hull(elementBounds);
+        typename BoundsFunction<TElement>::ResultType overallBounds = _bounds.hull(elementBounds);
         if (_element) {
             assert(!_leftChild && !_rightChild);
             SetNode<TElement>* nodes[2];
@@ -505,9 +547,10 @@ namespace opensolid
     }
 
     template <class TElement>
-    SetNode<TElement>* SetNode<TElement>::erase(
+    SetNode<TElement>*
+    SetNode<TElement>::erase(
         const TElement& element,
-        const typename Bounds<TElement>::Type& elementBounds
+        const typename BoundsFunction<TElement>::ResultType& elementBounds
     ) {
         if (!_bounds.overlaps(elementBounds)) {
             return this;
@@ -539,7 +582,8 @@ namespace opensolid
                 delete this;
                 return result;
             } else {
-                typename Bounds<TElement>::Type overallBounds = _leftChild->_bounds.hull(_rightChild->_bounds);
+                typename BoundsFunction<TElement>::ResultType overallBounds =
+                    _leftChild->_bounds.hull(_rightChild->_bounds);
                 if (detail::isCompatible(overallBounds, _splitDirection, _splitValue)) {
                     _bounds = overallBounds;
                     _size = _leftChild->size() + _rightChild->size();
@@ -549,9 +593,28 @@ namespace opensolid
                     nodes.reserve(_leftChild->_size + _rightChild->_size);
                     _leftChild->getLeaves(nodes);
                     _rightChild->getLeaves(nodes);
-                    return new(this) SetNode<TElement>(overallBounds, &nodes.front(), &nodes.back() + 1);
+                    return new(this) SetNode<TElement>(
+                        overallBounds,
+                        &nodes.front(),
+                        &nodes.back() + 1
+                    );
                 }
             }
         }
+    }
+
+    template <class TElement>
+    std::ostream&
+    operator<<(std::ostream& stream, const SetNode<TElement>& node) {
+        stream << "{";
+        if (node.element()) {
+            stream << *node.element();
+        } else {
+            stream << *node.leftChild();
+            stream << ",";
+            stream << *node.rightChild();
+        }
+        stream << "}";
+        return stream;
     }
 }

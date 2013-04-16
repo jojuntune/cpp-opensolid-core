@@ -1,26 +1,26 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
@@ -137,19 +137,19 @@ namespace opensolid
         MapXd& results,
         ResultCacheXd&
     ) const {
-        MatrixXd local = MatrixXd::Ones(iNumAxes, parameterValues.cols());
+        MatrixXd localCoordinates = MatrixXd::Ones(iNumAxes, parameterValues.cols());
         for (int i = 0; i < numParameters(); ++i) {
             if (convention()(i)) {
-                local.row(i).array() *= cos(parameterValues.row(i).array());
-                local.bottomRows(numParameters() - i).array() *=
+                localCoordinates.row(i).array() *= cos(parameterValues.row(i).array());
+                localCoordinates.bottomRows(numParameters() - i).array() *=
                     sin(parameterValues.row(i).array()).replicate(numParameters() - i, 1);
             } else {
-                local.row(i).array() *= sin(parameterValues.row(i).array());
-                local.bottomRows(numParameters() - i).array() *=
+                localCoordinates.row(i).array() *= sin(parameterValues.row(i).array());
+                localCoordinates.bottomRows(numParameters() - i).array() *=
                     cos(parameterValues.row(i).array()).replicate(numParameters() - i, 1);
             }
         }
-        results = datum() * local;
+        results = localCoordinates.globalizedFrom(datum());
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -158,19 +158,19 @@ namespace opensolid
         MapXI& results,
         ResultCacheXI&
     ) const {
-        MatrixXI local = MatrixXI::Ones(iNumAxes, parameterBounds.cols());
+        MatrixXI localCoordinates = MatrixXI::Ones(iNumAxes, parameterBounds.cols());
         for (int i = 0; i < numParameters(); ++i) {
             if (convention()(i)) {
-                local.row(i).array() *= cos(parameterBounds.row(i).array());
-                local.bottomRows(numParameters()- i).array() *=
+                localCoordinates.row(i).array() *= cos(parameterBounds.row(i).array());
+                localCoordinates.bottomRows(numParameters()- i).array() *=
                     sin(parameterBounds.row(i).array()).replicate(numParameters() - i, 1);
             } else {
-                local.row(i).array() *= sin(parameterBounds.row(i).array());
-                local.bottomRows(numParameters() - i).array() *=
+                localCoordinates.row(i).array() *= sin(parameterBounds.row(i).array());
+                localCoordinates.bottomRows(numParameters() - i).array() *=
                     cos(parameterBounds.row(i).array()).replicate(numParameters() - i, 1);
             }
         }
-        results = datum() * local;
+        results = localCoordinates.globalizedFrom(datum());
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -188,7 +188,7 @@ namespace opensolid
         }
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>(
-                Matrix<double, iNumDimensions, 1>::Zero(),
+                Point<iNumDimensions>::Origin(),
                 derivativeBasisMatrix
             ),
             derivativeConvention
@@ -197,7 +197,10 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     Function EllipticalFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
-        return new EllipticalFunction<iNumDimensions, iNumAxes>(scale * datum(), convention());
+        return new EllipticalFunction<iNumDimensions, iNumAxes>(
+            datum().scaled(scale),
+            convention()
+        );
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -207,17 +210,17 @@ namespace opensolid
         int numTransformedDimensions = transformationMatrix.rows();
         if (numTransformedDimensions == 1) {
             return new EllipticalFunction<1, iNumAxes>(
-                Matrix<double, 1, iNumDimensions>(transformationMatrix) * datum(),
+                datum().transformed(Matrix<double, 1, iNumDimensions>(transformationMatrix)),
                 convention()
             );
         } else if (numTransformedDimensions == 2) {
             return new EllipticalFunction<2, iNumAxes>(
-                Matrix<double, 2, iNumDimensions>(transformationMatrix) * datum(),
+                datum().transformed(Matrix<double, 2, iNumDimensions>(transformationMatrix)),
                 convention()
             );
         } else if (numTransformedDimensions == 3) {
             return new EllipticalFunction<3, iNumAxes>(
-                Matrix<double, 3, iNumDimensions>(transformationMatrix) * datum(),
+                datum().transformed(Matrix<double, 3, iNumDimensions>(transformationMatrix)),
                 convention()
             );
         } else {
@@ -230,7 +233,10 @@ namespace opensolid
     Function EllipticalFunction<iNumDimensions, iNumAxes>::translated(
         const VectorXd& vector
     ) const {
-        return new EllipticalFunction<iNumDimensions, iNumAxes>(datum() + vector, convention());
+        return new EllipticalFunction<iNumDimensions, iNumAxes>(
+            datum().translated(vector),
+            convention()
+        );
     }
     
     template <int iNumDimensions, int iNumAxes>

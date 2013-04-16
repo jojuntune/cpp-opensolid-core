@@ -1,157 +1,34 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Position.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 
-#include <OpenSolid/Core/Box/declarations.hpp>
-#include <OpenSolid/Core/Point/declarations.hpp>
-
-namespace opensolid
-{
-    template <int iNumDimensions>
-    class Point :
-        public Transformable<Point<iNumDimensions>>
-    {
-    private:
-        Matrix<double, iNumDimensions, 1> _vector;
-    public:
-        Point();
-
-        template <class TVector>
-        explicit Point(const EigenBase<TVector>& vector);
-
-        Point(double x, double y);
-
-        Point(double x, double y, double z);
-
-        const double*
-        data() const;
-        
-        double*
-        data();
-
-        Matrix<double, iNumDimensions, 1>&
-        vector();
-        
-        const Matrix<double, iNumDimensions, 1>&
-        vector() const;
-
-        double&
-        x();
-        
-        double
-        x() const;
-
-        double&
-        y();
-        
-        double
-        y() const;
-
-        double&
-        z();
-        
-        double
-        z() const;
-
-        double&
-        operator()(int index);
-        
-        double
-        operator()(int index) const;
-
-        // Defined in Box.hpp
-        Box<iNumDimensions>
-        hull(const Point<iNumDimensions>& other) const;
-
-        bool
-        operator==(const Point<iNumDimensions>& other) const;
-
-        Matrix<double, iNumDimensions, 1>
-        operator-(const Point<iNumDimensions>& other) const;
-
-        // Defined in Box.hpp
-        Matrix<Interval, iNumDimensions, 1>
-        operator-(const Box<iNumDimensions>& box) const;
-
-        static Point
-        Origin();
-    };
-
-    typedef Point<2> Point2d;
-    typedef Point<3> Point3d;
-
-    template <int iNumDimensions>
-    Point<iNumDimensions>
-    operator*(double scale, const Point<iNumDimensions>& point);
-
-    template <class TMatrix, int iNumDimensions>
-    Point<TMatrix::RowsAtCompileTime>
-    operator*(const EigenBase<TMatrix>& matrix, const Point<iNumDimensions>& point);
-
-    template <int iNumDimensions, class TVector>
-    typename Position<typename TVector::Scalar, iNumDimensions>::Type
-    operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
-
-    template <int iNumDimensions, class TVector>
-    typename Position<typename TVector::Scalar, iNumDimensions>::Type
-    operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
-
-    template <int iNumDimensions>
-    std::ostream&
-    operator<<(std::ostream& stream, const Point<iNumDimensions>& point);
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iTransformedDimensions>
-    struct Transformed<Point<iNumDimensions>, iTransformedDimensions>
-    {
-        typedef Point<iTransformedDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct Bounds<Point<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
-
-        // Defined in Box.hpp
-        Box<iNumDimensions>
-        operator()(const Point<iNumDimensions>& point) const;
-    };
-}
-
-////////// Implementation //////////
+#include <OpenSolid/Core/Box.definitions.hpp>
 
 namespace opensolid
 {
@@ -166,6 +43,11 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline Point<iNumDimensions>::Point(double x) :
+        _vector(Matrix1d::Constant(x)) {    
+    }
+
+    template <int iNumDimensions>
     inline Point<iNumDimensions>::Point(double x, double y) :
         _vector(x, y) {        
     }
@@ -173,18 +55,6 @@ namespace opensolid
     template <int iNumDimensions>
     inline Point<iNumDimensions>::Point(double x, double y, double z) :
         _vector(x, y, z) {        
-    }
-
-    template <int iNumDimensions>
-    inline const double*
-    Point<iNumDimensions>::data() const {
-        return _vector.data();
-    }
-
-    template <int iNumDimensions>
-    inline double*
-    Point<iNumDimensions>::data() {
-        return _vector.data();
     }
 
     template <int iNumDimensions>
@@ -200,51 +70,75 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline const double*
+    Point<iNumDimensions>::data() const {
+        return vector().data();
+    }
+
+    template <int iNumDimensions>
+    inline double*
+    Point<iNumDimensions>::data() {
+        return vector().data();
+    }
+
+    template <int iNumDimensions>
     inline double&
     Point<iNumDimensions>::x() {
-        return _vector.x();
+        return vector().x();
     }
     
     template <int iNumDimensions>
     inline double
     Point<iNumDimensions>::x() const {
-        return _vector.x();
+        return vector().x();
     }
 
     template <int iNumDimensions>
     inline double&
     Point<iNumDimensions>::y() {
-        return _vector.y();
+        return vector().y();
     }
     
     template <int iNumDimensions>
     inline double
     Point<iNumDimensions>::y() const {
-        return _vector.y();
+        return vector().y();
     }
 
     template <int iNumDimensions>
     inline double&
     Point<iNumDimensions>::z() {
-        return _vector.z();
+        return vector().z();
     }
     
     template <int iNumDimensions>
     inline double
     Point<iNumDimensions>::z() const {
-        return _vector.z();
+        return vector().z();
     }
 
     template <int iNumDimensions>
     inline double&
     Point<iNumDimensions>::operator()(int index) {
-        return _vector(index);
+        return vector()(index);
     }
     
     template <int iNumDimensions>
     inline double
     Point<iNumDimensions>::operator()(int index) const {
-        return _vector(index);
+        return vector()(index);
+    }
+
+    template <int iNumDimensions>
+    inline Box<iNumDimensions>
+    Point<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
+        return Box<iNumDimensions>(vector().hull(other.vector()));
+    }
+
+    template <int iNumDimensions>
+    inline bool
+    Point<iNumDimensions>::isOrigin(double precision) const {
+        return vector().isZero(precision);
     }
 
     template <int iNumDimensions>
@@ -256,25 +150,19 @@ namespace opensolid
     template <int iNumDimensions>
     inline Matrix<double, iNumDimensions, 1>
     Point<iNumDimensions>::operator-(const Point<iNumDimensions>& other) const {
-        return _vector - other._vector;
+        return vector() - other.vector();
+    }
+
+    template <int iNumDimensions>
+    inline Matrix<Interval, iNumDimensions, 1>
+    Point<iNumDimensions>::operator-(const Box<iNumDimensions>& box) const {
+        return vector().template cast<Interval>() - box.vector();
     }
 
     template <int iNumDimensions>
     inline Point<iNumDimensions>
     Point<iNumDimensions>::Origin() {
         return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
-    }
-
-    template <int iNumDimensions>
-    inline Point<iNumDimensions>
-    operator*(double scale, const Point<iNumDimensions>& point) {
-        return Point<iNumDimensions>(scale * point.vector());
-    }
-
-    template <class TMatrix, int iNumDimensions>
-    Point<TMatrix::RowsAtCompileTime>
-    operator*(const EigenBase<TMatrix>& matrix, const Point<iNumDimensions>& point) {
-        return Point<iNumDimensions>(matrix.derived() * point.vector());
     }
 
     template <int iNumDimensions, class TVector>
@@ -294,8 +182,42 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    std::ostream& operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
+    std::ostream&
+    operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
         stream << point.vector();
         return stream;
+    }
+
+    template <int iNumDimensions>
+    inline Point<iNumDimensions>
+    ScalingFunction<Point<iNumDimensions>>::operator()(
+        const Point<iNumDimensions>& point,
+        double scale
+    ) const {
+        return Point<iNumDimensions>(scale * point.vector());
+    }
+
+    template <int iNumDimensions> template <class TVector>
+    inline Point<iNumDimensions>
+    TranslationFunction<Point<iNumDimensions>>::operator()(
+        const Point<iNumDimensions>& point,
+        const EigenBase<TVector>& vector
+    ) const {
+        return Point<iNumDimensions>(point.vector() + vector.derived());
+    }
+
+    template <int iNumDimensions, int iTransformedDimensions> template <class TMatrix>
+    inline Point<iTransformedDimensions>
+    TransformationFunction<Point<iNumDimensions>, iTransformedDimensions>::operator()(
+        const Point<iNumDimensions>& point,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return Point<iTransformedDimensions>(matrix.derived() * point.vector());
+    }
+
+    template <int iNumDimensions>
+    inline Box<iNumDimensions>
+    BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
+        return Box<iNumDimensions>(point.vector().template cast<Interval>());
     }
 }

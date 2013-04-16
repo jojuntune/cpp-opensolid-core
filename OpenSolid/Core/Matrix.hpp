@@ -1,152 +1,34 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Bounds.hpp>
-#include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-#include <OpenSolid/Core/Datum/declarations.hpp>
-#include <OpenSolid/Core/Matrix/declarations.hpp>
-#include <OpenSolid/Core/Transformation/declarations.hpp>
-
-#define EIGEN_PERMANENTLY_DISABLE_STUPID_WARNINGS
-#define EIGEN_FAST_MATH 0
-#define EIGEN_DONT_ALIGN
-#define EIGEN_DONT_VECTORIZE
-
-#define EIGEN_DENSEBASE_PLUGIN "DenseBasePlugin.hpp"
-#define EIGEN_MATRIXBASE_PLUGIN "MatrixBasePlugin.hpp"
-#define EIGEN_MATRIX_PLUGIN "MatrixPlugin.hpp"
-
-#ifdef FAKE_INCLUDE_TO_CREATE_CMAKE_DEPENDENCY
-#include "../../External/Eigen/DenseBasePlugin.hpp"
-#include "../../External/Eigen/MatrixBasePlugin.hpp"
-#include "../../External/Eigen/MatrixPlugin.hpp"
-#endif
-
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-#include <Eigen/LU>
-
-namespace Eigen
-{
-    typedef Matrix<int, 1, 1> Matrix1i;
-    typedef Matrix<double, 1, 1> Matrix1d;
-    typedef Matrix<opensolid::Interval, 1, 1> Matrix1I;
-    typedef Matrix<bool, 1, 1> Matrix1b;
-
-    typedef Matrix<opensolid::Interval, 2, 1> Vector2I;
-    typedef Matrix<opensolid::Interval, 1, 2> RowVector2I;
-    typedef Matrix<opensolid::Interval, 2, 2> Matrix2I;
-    typedef Matrix<opensolid::Interval, 3, 1> Vector3I;
-    typedef Matrix<opensolid::Interval, 1, 3> RowVector3I;
-    typedef Matrix<opensolid::Interval, 3, 3> Matrix3I;
-    typedef Matrix<opensolid::Interval, Dynamic, 1> VectorXI;
-    typedef Matrix<opensolid::Interval, 1, Dynamic> RowVectorXI;
-    typedef Matrix<opensolid::Interval, Dynamic, Dynamic> MatrixXI;
-    typedef Matrix<opensolid::Interval, 2, Dynamic> Matrix2XI;
-    typedef Matrix<opensolid::Interval, Dynamic, 2> MatrixX2I;
-    typedef Matrix<opensolid::Interval, 3, Dynamic> Matrix3XI;
-    typedef Matrix<opensolid::Interval, Dynamic, 3> MatrixX3I;
-    
-    typedef Matrix<bool, 2, 1> Vector2b;
-    typedef Matrix<bool, 1, 2> RowVector2b;
-    typedef Matrix<bool, 2, 2> Matrix2b;
-    typedef Matrix<bool, 3, 1> Vector3b;
-    typedef Matrix<bool, 1, 3> RowVector3b;
-    typedef Matrix<bool, 3, 3> Matrix3b;
-    typedef Matrix<bool, Dynamic, 1> VectorXb;
-    typedef Matrix<bool, 1, Dynamic> RowVectorXb;
-    typedef Matrix<bool, Dynamic, Dynamic> MatrixXb;
-    typedef Matrix<bool, 2, Dynamic> Matrix2Xb;
-    typedef Matrix<bool, Dynamic, 2> MatrixX2b;
-    typedef Matrix<bool, 3, Dynamic> Matrix3Xb;
-    typedef Matrix<bool, Dynamic, 3> MatrixX3b;
-    
-    typedef Map<MatrixXi, Unaligned, Stride<Dynamic, Dynamic>> MapXi;
-    typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXd;
-    typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXI;
-    typedef Map<MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXb;
-    
-    typedef Map<const MatrixXi, Unaligned, Stride<Dynamic, Dynamic>> MapXci;
-    typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcd;
-    typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
-    typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
-}
-
-namespace opensolid
-{
-    using namespace Eigen;
-    
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct Bounds<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
-    {
-        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> Type;
-
-        typedef typename internal::conditional<
-            internal::is_same<TScalar, Interval>::value,
-            const Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols>&,
-            const CwiseUnaryOp<
-                internal::scalar_cast_op<TScalar, Interval>,
-                const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-            >
-        >::type CastType;
-
-        CastType operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument
-        ) const;
-    };
-
-    template <>
-    struct Conversion<Interval, VectorXI>
-    {
-        VectorXI operator()(Interval interval) const;
-    };
-
-    template <int iDestinationSize, int iSourceSize>
-    void assertCompatible();
-
-    template <int iDestinationSize>
-    void assertCompatible(int sourceSize);
-
-    template <class TMatrix>
-    void assertVector(const TMatrix& matrix);
-
-    template <int iNumDimensions, class TMatrix, class TVector>
-    void assertValidTransform(int dimensions, const TMatrix& matrix, const TVector& vector);
-}
-
-////////// Implementation //////////
-
-#include <OpenSolid/Core/Mirror.hpp>
-#include <OpenSolid/Core/Projection.hpp>
-#include <OpenSolid/Core/Rotation.hpp>
-#include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Datum.definitions.hpp>
 
 #include <OpenSolid/Core/Matrix/ContainOperation.hpp>
 #include <OpenSolid/Core/Matrix/EmptyOperation.hpp>
@@ -161,181 +43,154 @@ namespace opensolid
 #include <OpenSolid/Core/Matrix/StrictOverlapOperation.hpp>
 #include <OpenSolid/Core/Matrix/UpperOperation.hpp>
 #include <OpenSolid/Core/Matrix/WidthOperation.hpp>
+#include <OpenSolid/Core/Mirror.definitions.hpp>
+#include <OpenSolid/Core/Projection.definitions.hpp>
+#include <OpenSolid/Core/Rotation.definitions.hpp>
+#include <OpenSolid/Core/Transplant.definitions.hpp>
 
 namespace Eigen
 {
-    template<class TDerived> template <class TPoint>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::scaled(double scale, const EigenBase<TPoint>& originPoint) const {
-        return (scale * (derived().colwise() - originPoint.derived())).colwise() +
-            originPoint.derived();
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::scaled(double scale) const {
+        return Scalar(scale) * derived();
     }
 
-    template<class TDerived> template <int iNumDimensions, int iNumAxes>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::translated(
-        double coordinateValue,
-        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
+    template <class TDerived> template <int iNumDimensions>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::scaledAbout(
+        double scale,
+        const opensolid::Point<iNumDimensions>& originPoint
     ) const {
-        return derived().colwise() + (coordinateValue * axis.basisVector()).template cast<Scalar>();
+        return Scalar(scale) * derived();
     }
 
-    template<class TDerived>
+    template <class TDerived> template <class TVector>
+    inline const TDerived&
+    MatrixBase<TDerived>::translated(const EigenBase<TVector>& vector) const {
+        return derived();
+    }
+
+    template <class TDerived>template <int iNumDimensions>
+    inline const TDerived&
+    MatrixBase<TDerived>::translatedAlong(
+        double coordinateValue,
+        const opensolid::Datum<iNumDimensions, 1>& axis
+    ) const {
+        return derived();
+    }
+
+    template <class TDerived>template <class TMatrix>
+    Matrix<typename internal::traits<TDerived>::Scalar, TMatrix::RowsAtCompileTime, internal::traits<TDerived>::ColsAtCompileTime>
+    MatrixBase<TDerived>::transformed(const EigenBase<TMatrix>& matrix) const {
+        return matrix.derived().template cast<Scalar>() * derived();
+    }
+
+    template <class TDerived>
     typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::rotated(double angle) const {
-        return rotated(opensolid::Rotation<2>(angle, Vector2d::Zero()), opensolid::Linear);
+        return Matrix2d(Rotation2Dd(angle)).cast<Scalar>() * derived();
     }
 
-    template<class TDerived>
+    template <class TDerived>
     typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(
-        double angle,
-        const Matrix<double, 2, 1>& originPoint
-    ) const {
-        return rotated(opensolid::Rotation<2>(angle, originPoint));
+    MatrixBase<TDerived>::rotatedAbout(double angle, const opensolid::Point<2>& originPoint) const {
+        return Matrix2d(Rotation2Dd(angle)).cast<Scalar>() * derived();
+
     }
 
-    template<class TDerived>
+    template <class TDerived>
     typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::rotated(const opensolid::Rotation<2>& rotation) const {
-        return (rotation.transformationMatrix().template cast<Scalar>() * (derived().colwise() - rotation.originPoint().template cast<Scalar>())).colwise() +
-            rotation.originPoint().template cast<Scalar>();
+        return rotation.transformationMatrix().cast<Scalar>() * derived();
     }
 
-    template<class TDerived>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(
-        const opensolid::Rotation<2>& rotation,
-        opensolid::LinearTag
-    ) const {
-        return rotation.transformationMatrix().template cast<Scalar>() * derived();
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotatedAbout(double angle, const opensolid::Datum<3, 1>& axis) const {
+        return rotated(opensolid::Rotation3d(angle, axis));
     }
 
-    template<class TDerived> template <int iNumDimensions, int iNumAxes>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(
-        double angle,
-        const opensolid::Datum<iNumDimensions, iNumAxes>& axis
-    ) const {
-        return rotated(opensolid::Rotation<3>(angle, axis));
-    }
-
-    template<class TDerived>
+    template <class TDerived>
     typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::rotated(const opensolid::Rotation<3>& rotation) const {
-        return (rotation.transformationMatrix().template cast<Scalar>() * (derived().colwise() - rotation.originPoint().template cast<Scalar>())).colwise() +
-            rotation.originPoint().template cast<Scalar>();
+        return rotation.transformationMatrix().cast<Scalar>() * derived();
     }
 
-    template<class TDerived>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(
-        const opensolid::Rotation<3>& rotation,
-        opensolid::LinearTag
+    template <class TDerived> template <int iNumDimensions>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::mirroredAbout(
+        const opensolid::Datum<iNumDimensions, iNumDimensions - 1>& datum
     ) const {
-        return rotation.transformationMatrix().template cast<Scalar>() * derived();
-    }
-
-    template<class TDerived> template <int iNumDimensions, int iNumAxes>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::mirrored(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const {
         return mirrored(opensolid::Mirror<iNumDimensions>(datum));
     }
 
-    template<class TDerived> template <int iNumDimensions>
+    template <class TDerived> template <int iNumDimensions>
     typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::mirrored(const opensolid::Mirror<iNumDimensions>& mirror) const {
-        return (mirror.transformationMatrix().template cast<Scalar>() * (derived().colwise() - mirror.originPoint().template cast<Scalar>())).colwise() +
-            mirror.originPoint().template cast<Scalar>();
-    }
-
-    template<class TDerived> template <int iNumDimensions, class TPoint>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::mirrored(
-        const opensolid::Mirror<iNumDimensions>& mirror,
-        opensolid::LinearTag
-    ) const {
         return mirror.transformationMatrix().template cast<Scalar>() * derived();
     }
 
-    template<class TDerived> template <int iNumDimensions, int iNumAxes>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::projected(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const {
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projectedOnto(
+        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
+    ) const {
         return projected(opensolid::Projection<iNumDimensions>(datum));
     }
 
-    template<class TDerived> template <int iNumDimensions>
+    template <class TDerived> template <int iNumDimensions>
     typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::projected(const opensolid::Projection<iNumDimensions>& projection) const {
-        return (projection.transformationMatrix().template cast<Scalar>() * (derived().colwise() - projection.originPoint().template cast<Scalar>())).colwise() +
-            projection.originPoint().template cast<Scalar>();
-    }
-
-    template<class TDerived> template <int iNumDimensions, class TPoint>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::projected(
-        const opensolid::Projection<iNumDimensions>& projection,
-        opensolid::LinearTag
-    ) const {
         return projection.transformationMatrix().template cast<Scalar>() * derived();
     }
 
-    template<class TDerived>
-    template <
-        int iNumSourceDatumDimensions,
-        int iNumSourceDatumAxes,
-        int iNumDestinationDatumDimensions,
-        int iNumDestinationDatumAxes
-    >
-    Matrix<
-        typename internal::traits<TDerived>::Scalar,
-        iNumDestinationDatumDimensions,
-        internal::traits<TDerived>::ColsAtCompileTime
-    >
-    MatrixBase<TDerived>::transformed(
-        const opensolid::Datum<iNumSourceDatumDimensions, iNumSourceDatumAxes>& sourceDatum,
-        const opensolid::Datum<iNumDestinationDatumDimensions, iNumDestinationDatumAxes>& destinationDatum
+    template <class TDerived>
+    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+    Matrix<typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    MatrixBase<TDerived>::transplanted(
+        const opensolid::Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const opensolid::Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
     ) const {
-        return destinationDatum * (derived() / sourceDatum);
+        return destinationDatum.basisMatrix().template cast<Scalar>() *
+            sourceDatum.inverseMatrix().template cast<Scalar>() * derived();
     }
 
-    template<class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    Matrix<
-        typename internal::traits<TDerived>::Scalar,
-        iNumDestinationDimensions,
-        internal::traits<TDerived>::ColsAtCompileTime
-    >
-    MatrixBase<TDerived>::transformed(
-        const opensolid::Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation
+    template <class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    Matrix< typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    MatrixBase<TDerived>::transplanted(
+        const opensolid::Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
     ) const {
-        return transformation.transformationMatrix().template cast<Scalar>() *
-            (derived().colwise() - transformation.sourceOriginPoint().template cast<Scalar>()).colwise() +
-            transformation.destinationOriginPoint().template cast<Scalar>();
+        return transplant.transformationMatrix().template cast<Scalar>() * derived();
     }
 
-    template<class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    Matrix<
-        typename internal::traits<TDerived>::Scalar,
-        iNumDestinationDimensions,
-        internal::traits<TDerived>::ColsAtCompileTime
-    >
-    MatrixBase<TDerived>::transformed(
-        const opensolid::Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation,
-        opensolid::LinearTag
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    Matrix<typename internal::traits<TDerived>::Scalar, iNumAxes, internal::traits<TDerived>::ColsAtCompileTime>
+    MatrixBase<TDerived>::localizedTo(
+        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
     ) const {
-        return transformation.transformationMatrix().template cast<Scalar>() * derived();
+        return datum.inverseMatrix().template cast<Scalar>() * derived();
+    }
+
+    template <class TDerived>template <int iNumDimensions, int iNumAxes>
+    Matrix<typename internal::traits<TDerived>::Scalar, iNumDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    MatrixBase<TDerived>::globalizedFrom(
+        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
+    ) const {
+        return datum.basisMatrix().template cast<Scalar>() * derived();
     }
 
     template<class TDerived> template <class TOther>
-    TOther MatrixBase<TDerived>::as() const {
-        return opensolid::Conversion<PlainObject, TOther>()(derived());
+    TOther
+    MatrixBase<TDerived>::convertTo() const {
+        return opensolid::ConversionFunction<PlainObject, TOther>()(derived());
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     template <class TOther>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::from(const TOther& other) {
-        return opensolid::Conversion<TOther, Matrix>()(other);
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::ConvertFrom(const TOther& other) {
+        return opensolid::ConversionFunction<TOther, Matrix>()(other);
     }
 
     template <class TDerived>
@@ -479,52 +334,12 @@ namespace Eigen
 namespace opensolid
 {
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    inline typename Bounds<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::CastType
-    Bounds<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+    inline typename BoundsFunction<
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    >::CastType
+    BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& matrix
     ) const {
         return matrix.template cast<Interval>();
-    }
-
-    inline VectorXI Conversion<Interval, VectorXI>::operator()(Interval interval) const {
-        return VectorXI::Constant(1, interval);
-    }
-
-    template <int iDestinationSize, int iSourceSize>
-    inline void assertCompatible() {
-        static_assert(
-            iDestinationSize == iSourceSize ||
-            iDestinationSize == Dynamic ||
-            iSourceSize == Dynamic,
-            "Different sizes at compile time"
-        );
-    }
-
-    template <int iDestinationSize>
-    inline void assertCompatible(int sourceSize) {
-        assert(sourceSize == iDestinationSize && "Different sizes");
-    }
-
-    template <>
-    inline void assertCompatible<Dynamic>(int) {
-    }
-
-    template <class TVector>
-    inline void assertVector(const TVector& vector) {
-        assertCompatible<TVector::ColsAtCompileTime, 1>();
-        assert(vector.cols() == 1);
-    }
-
-    template <int iNumDimensions, class TMatrix, class TVector>
-    inline void assertValidTransform(
-        int dimensions,
-        const TMatrix& matrix,
-        const TVector& vector
-    ) {
-        assertCompatible<TMatrix::ColsAtCompileTime, iNumDimensions>();
-        assert(matrix.cols() == dimensions);
-        assertVector(vector);
-        assertCompatible<TMatrix::RowsAtCompileTime, TVector::SizeAtCompileTime>();
-        assert(matrix.rows() == vector.size());
     }
 }

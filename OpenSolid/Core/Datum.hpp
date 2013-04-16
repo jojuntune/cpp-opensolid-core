@@ -1,197 +1,56 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Datum.declarations.hpp>
+
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <OpenSolid/Core/Datum/TransformedDatum.hpp>
- 
-#include <OpenSolid/Core/Datum/declarations.hpp>
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iNumAxes>
-    class Datum :
-        public Transformable<Datum<iNumDimensions, iNumAxes>>,
-        public Convertible<Datum<iNumDimensions, iNumAxes>>
-    {
-    private:
-        Matrix<double, iNumDimensions, 1> _originPoint;
-        Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
-        Matrix<double, iNumAxes, iNumDimensions> _inverseMatrix;
-
-        void initialize(
-            const Matrix<double, iNumDimensions, 1>& originPoint,
-            const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
-        );
-
-        void initialize(const Datum<iNumDimensions, iNumAxes>& otherDatum );
-    public:
-        Datum();
-
-        Datum(const Matrix<double, iNumDimensions, 1>& originPoint);
-
-        Datum(
-            const Matrix<double, iNumDimensions, 1>& originPoint,
-            const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
-        );
-
-        Datum(const Datum<iNumDimensions, iNumAxes>& otherDatum);
-        
-        Datum<iNumDimensions, iNumAxes>& operator=(
-            const Datum<iNumDimensions, iNumAxes>& otherDatum
-        );
-
-        // Defined in Function.hpp
-        template <int iArgumentDimensions>
-        Datum(const TransformedDatum<iArgumentDimensions, iNumAxes>& transformedDatum);
-        
-        const Matrix<double, iNumDimensions, 1>& originPoint() const;
-        const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix() const;
-        const Matrix<double, iNumDimensions, iNumAxes>& basisVector() const;
-        const Matrix<double, iNumAxes, iNumDimensions>& inverseMatrix() const;
-        
-        Matrix<double, iNumDimensions, 1> point(double x) const;
-        Matrix<double, iNumDimensions, 1> point(double x, double y) const;
-        Matrix<double, iNumDimensions, 1> point(double x, double y, double z) const;
-
-        Matrix<double, iNumDimensions, 1> vector(double x) const;
-        Matrix<double, iNumDimensions, 1> vector(double x, double y) const;
-        Matrix<double, iNumDimensions, 1> vector(double x, double y, double z) const;
-
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr xBasisVector() const;
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr yBasisVector() const;
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr zBasisVector() const;
-        
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr basisVector(
-            int axisIndex
-        ) const;
-
-        Matrix<double, iNumDimensions, 1> normalVector() const;
-        
-        Datum<iNumDimensions, 1> xAxis() const;
-        Datum<iNumDimensions, 1> yAxis() const;
-        Datum<iNumDimensions, 1> zAxis() const;
-        Datum<iNumDimensions, 1> axis(int axisIndex) const;
-        Datum<iNumDimensions, 1> normalAxis() const;
-
-        Datum<3, 2> xyPlane() const;
-        Datum<3, 2> xzPlane() const;
-        Datum<3, 2> yxPlane() const;
-        Datum<3, 2> yzPlane() const;
-        Datum<3, 2> zxPlane() const;
-        Datum<3, 2> zyPlane() const;
-        Datum<3, 2> plane(int firstAxisIndex, int secondAxisIndex) const;
-        Datum<3, 2> normalPlane() const;
-        
-        Datum<iNumDimensions, iNumAxes> reversed() const;
-        Datum<iNumDimensions, iNumAxes> xReversed() const;
-        Datum<iNumDimensions, iNumAxes> yReversed() const;
-        Datum<iNumDimensions, iNumAxes> zReversed() const;
-        Datum<iNumDimensions, iNumAxes> reversed(int index) const;
-
-        Datum<iNumDimensions, iNumAxes> offset(double distance) const;
-        Datum<iNumDimensions, iNumAxes> normalized() const;
-        Datum<iNumDimensions, iNumAxes> linear() const;
-        TransformedDatum<iNumDimensions, iNumAxes> transformed(const Function& function) const;
-    };
-
-    template <int iNumDimensions, int iNumAxes, class TMatrix>
-    Matrix<typename TMatrix::Scalar, iNumDimensions, TMatrix::ColsAtCompileTime> operator*(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const EigenBase<TMatrix>& matrix
-    );
-
-    template <class TMatrix, int iNumDimensions, int iNumAxes>
-    Matrix<typename TMatrix::Scalar, iNumAxes, TMatrix::ColsAtCompileTime> operator/(
-        const EigenBase<TMatrix>& matrix,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    );
-
-    template <int iNumDimensions, int iNumAxes, class TTransformable>
-    typename Transformed<TTransformable, iNumDimensions>::Type operator*(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const Transformable<TTransformable>& transformable
-    );
-
-    template <class TTransformable, int iNumDimensions, int iNumAxes>
-    typename Transformed<TTransformable, iNumAxes>::Type operator/(
-        const Transformable<TTransformable>& transformable,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    );
-
-    template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> operator*(
-        double scaleFactor,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    );
-
-    template <int iNumDimensions, int iNumAxes, class TVector>
-    Datum<iNumDimensions, iNumAxes> operator+(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const EigenBase<TVector>& vector
-    );
-
-    template <class TMatrix, int iNumDimensions, int iNumAxes>
-    Datum<TMatrix::RowsAtCompileTime, iNumAxes> operator*(
-        const EigenBase<TMatrix>& transformationMatrix,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    );
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iNumAxes, int iTransformedDimensions>
-    struct Transformed<Datum<iNumDimensions, iNumAxes>, iTransformedDimensions>
-    {
-        typedef Datum<iTransformedDimensions, iNumAxes> Type;
-    };
-}
-
-////////// Implementation //////////
 
 namespace opensolid
 {
     // Declared in Transformable.hpp
     template <class TDerived> template <int iNumDimensions>
-    inline TDerived Transformable<TDerived>::translated(
+    inline TDerived
+    Transformable<TDerived>::translatedAlong(
         double coordinateValue,
         const Datum<iNumDimensions, 1>& axis
     ) const {
-        return derived() + coordinateValue * axis.basisVector();
+        return translated(coordinateValue * axis.basisVector());
     }
 
     // Declared in Transformable.hpp
     template <class TDerived>
-    inline TDerived Transformable<TDerived>::rotated(
+    inline TDerived
+    Transformable<TDerived>::rotatedAbout(
         double angle,
         const Datum<3, 1>& axis
     ) const {
@@ -199,75 +58,27 @@ namespace opensolid
     }
 
     // Declared in Transformable.hpp
-    template <class TDerived>
-    inline TDerived Transformable<TDerived>::rotated(
-        double angle,
-        const Datum<3, 1>& axis,
-        LinearTag
-    ) const {
-        return Matrix3d(AngleAxisd(angle, axis.basisVector())) * derived();
-    }
-
-    // Declared in Transformable.hpp
     template <class TDerived> template <int iNumDimensions>
-    inline TDerived Transformable<TDerived>::mirrored(
+    inline TDerived
+    Transformable<TDerived>::mirroredAbout(
         const Datum<iNumDimensions, iNumDimensions - 1>& datum
     ) const {
         return mirrored(Mirror<iNumDimensions>(datum));
     }
 
     // Declared in Transformable.hpp
-    template <class TDerived> template <int iNumDimensions>
-    inline TDerived Transformable<TDerived>::mirrored(
-        const Datum<iNumDimensions, iNumDimensions - 1>& datum,
-        LinearTag
-    ) const {
-        return mirrored(Mirror<iNumDimensions>(datum), Linear);
-    }
-
-    // Declared in Transformable.hpp
     template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    TDerived Transformable<TDerived>::projected(
+    inline TDerived
+    Transformable<TDerived>::projectedOnto(
         const Datum<iNumDimensions, iNumAxes>& datum
     ) const {
         return projected(Projection<iNumDimensions>(datum));
     }
 
-    // Declared in Transformable.hpp
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    TDerived Transformable<TDerived>::projected(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        LinearTag
-    ) const {
-        return (datum.basisMatrix() * datum.inverseMatrix()) * derived();
-    }
-
-    // Declared in Transformable.hpp
-    template <class TDerived>
-    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
-    typename Transformed<TDerived, iNumDestinationDimensions>::Type
-    Transformable<TDerived>::transformed(
-        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
-        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
-    ) const {
-        return destinationDatum * (derived() / sourceDatum);
-    }
-
-    // Declared in Transformable.hpp
-    template <class TDerived>
-    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
-    typename Transformed<TDerived, iNumDestinationDimensions>::Type
-    Transformable<TDerived>::transformed(
-        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
-        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum,
-        LinearTag
-    ) const {
-        return (destinationDatum.basisMatrix() * sourceDatum.inverseMatrix()) * derived();
-    }
-
     template <int iNumDimensions, int iNumAxes>
-    void Datum<iNumDimensions, iNumAxes>::initialize(
-        const Matrix<double, iNumDimensions, 1>& originPoint,
+    void
+    Datum<iNumDimensions, iNumAxes>::initialize(
+        const Point<iNumDimensions>& originPoint,
         const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
     ) {
         _originPoint = originPoint;
@@ -277,9 +88,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline void Datum<iNumDimensions, iNumAxes>::initialize(
-        const Datum<iNumDimensions, iNumAxes>& otherDatum
-    ) {
+    inline void
+    Datum<iNumDimensions, iNumAxes>::initialize(const Datum<iNumDimensions, iNumAxes>& otherDatum) {
         _originPoint = otherDatum.originPoint();
         _basisMatrix = otherDatum.basisMatrix();
         _inverseMatrix = otherDatum.inverseMatrix();
@@ -287,15 +97,14 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     inline Datum<iNumDimensions, iNumAxes>::Datum() {
-        _originPoint.setZero();
+        _originPoint = Point<iNumDimensions>::Origin();
         _basisMatrix.setIdentity();
         _inverseMatrix.setIdentity();
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, iNumAxes>::Datum(
-        const Matrix<double, iNumDimensions, 1>& originPoint
-    ) : _originPoint(originPoint) {
+    inline Datum<iNumDimensions, iNumAxes>::Datum(const Point<iNumDimensions>& originPoint) :
+        _originPoint(originPoint) {
 
         _basisMatrix.setIdentity();
         _inverseMatrix.setIdentity();
@@ -303,7 +112,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     inline Datum<iNumDimensions, iNumAxes>::Datum(
-        const Matrix<double, iNumDimensions, 1>& originPoint,
+        const Point<iNumDimensions>& originPoint,
         const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
     ) {
         initialize(originPoint, basisMatrix);
@@ -317,15 +126,14 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, iNumAxes>& Datum<iNumDimensions, iNumAxes>::operator=(
-        const Datum<iNumDimensions, iNumAxes>& otherDatum
-    ) {
+    inline Datum<iNumDimensions, iNumAxes>&
+    Datum<iNumDimensions, iNumAxes>::operator=(const Datum<iNumDimensions, iNumAxes>& otherDatum) {
         initialize(otherDatum);
         return *this;
     }
         
     template <int iNumDimensions, int iNumAxes>
-    inline const Matrix<double, iNumDimensions, 1>&
+    inline const Point<iNumDimensions>&
     Datum<iNumDimensions, iNumAxes>::originPoint() const {
         return _originPoint;
     }
@@ -337,17 +145,20 @@ namespace opensolid
     }
     
     template <>
-    inline const Matrix1d& Datum<1, 1>::basisVector() const {
+    inline const Matrix1d&
+    Datum<1, 1>::basisVector() const {
         return basisMatrix();
     }
     
     template <>
-    inline const Vector2d& Datum<2, 1>::basisVector() const {
+    inline const Vector2d&
+    Datum<2, 1>::basisVector() const {
         return basisMatrix();
     }
     
     template <>
-    inline const Vector3d& Datum<3, 1>::basisVector() const {
+    inline const Vector3d&
+    Datum<3, 1>::basisVector() const {
         return basisMatrix();
     }
     
@@ -358,62 +169,74 @@ namespace opensolid
     }
 
     template <>
-    inline Matrix1d Datum<1, 1>::point(double x) const {
+    inline Point<1>
+    Datum<1, 1>::point(double x) const {
         return originPoint() + x * basisVector();
     }
 
     template <>
-    inline Vector2d Datum<2, 1>::point(double x) const {
+    inline Point2d
+    Datum<2, 1>::point(double x) const {
         return originPoint() + x * basisVector();
     }
 
     template <>
-    inline Vector3d Datum<3, 1>::point(double x) const {
+    inline Point3d
+    Datum<3, 1>::point(double x) const {
         return originPoint() + x * basisVector();
     }
 
     template <>
-    inline Vector2d Datum<2, 2>::point(double x, double y) const {
+    inline Point2d
+    Datum<2, 2>::point(double x, double y) const {
         return originPoint() + basisMatrix() * Vector2d(x, y);
     }
 
     template <>
-    inline Vector3d Datum<3, 2>::point(double x, double y) const {
+    inline Point3d
+    Datum<3, 2>::point(double x, double y) const {
         return originPoint() + basisMatrix() * Vector2d(x, y);
     }
     
     template <>
-    inline Vector3d Datum<3, 3>::point(double x, double y, double z) const {
+    inline Point3d
+    Datum<3, 3>::point(double x, double y, double z) const {
         return originPoint() + basisMatrix() * Vector3d(x, y, z);
     }
 
     template <>
-    inline Matrix1d Datum<1, 1>::vector(double x) const {
+    inline Matrix1d
+    Datum<1, 1>::vector(double x) const {
         return x * basisVector();
     }
 
     template <>
-    inline Vector2d Datum<2, 1>::vector(double x) const {
+    inline Vector2d
+    Datum<2, 1>::vector(double x) const {
         return x * basisVector();
     }
 
     template <>
-    inline Vector3d Datum<3, 1>::vector(double x) const {
+    inline Vector3d
+    Datum<3, 1>::vector(double x) const {
         return x * basisVector();
     }
 
     template <>
-    inline Vector2d Datum<2, 2>::vector(double x, double y) const {
+    inline Vector2d
+    Datum<2, 2>::vector(double x, double y) const {
         return basisMatrix() * Vector2d(x, y);
     }
 
     template <>
-    inline Vector3d Datum<3, 2>::vector(double x, double y) const {
+    inline Vector3d
+    Datum<3, 2>::vector(double x, double y) const {
         return basisMatrix() * Vector2d(x, y);
     }
     
     template <>
-    inline Vector3d Datum<3, 3>::vector(double x, double y, double z) const {
+    inline Vector3d
+    Datum<3, 3>::vector(double x, double y, double z) const {
         return basisMatrix() * Vector3d(x, y, z);
     }
 
@@ -442,47 +265,56 @@ namespace opensolid
     }
 
     template <>
-    inline Vector2d Datum<2, 1>::normalVector() const {
+    inline Vector2d
+    Datum<2, 1>::normalVector() const {
         return basisVector().unitOrthogonal();
     }
 
     template <>
-    inline Vector3d Datum<3, 1>::normalVector() const {
+    inline Vector3d
+    Datum<3, 1>::normalVector() const {
         return basisVector().unitOrthogonal();
     }
 
     template <>
-    inline Vector3d Datum<3, 2>::normalVector() const {
+    inline Vector3d
+    Datum<3, 2>::normalVector() const {
         return xBasisVector().cross(yBasisVector()).normalized();
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::xAxis() const {
+    inline Datum<iNumDimensions, 1>
+    Datum<iNumDimensions, iNumAxes>::xAxis() const {
         return Datum<iNumDimensions, 1>(originPoint(), xBasisVector());
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::yAxis() const {
+    inline Datum<iNumDimensions, 1>
+    Datum<iNumDimensions, iNumAxes>::yAxis() const {
         return Datum<iNumDimensions, 1>(originPoint(), yBasisVector());
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::zAxis() const {
+    inline Datum<iNumDimensions, 1>
+    Datum<iNumDimensions, iNumAxes>::zAxis() const {
         return Datum<iNumDimensions, 1>(originPoint(), zBasisVector());
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::axis(int axisIndex) const {
+    inline Datum<iNumDimensions, 1>
+    Datum<iNumDimensions, iNumAxes>::axis(int axisIndex) const {
         return Datum<iNumDimensions, 1>(originPoint(), basisVector(axisIndex));
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, 1> Datum<iNumDimensions, iNumAxes>::normalAxis() const {
+    inline Datum<iNumDimensions, 1>
+    Datum<iNumDimensions, iNumAxes>::normalAxis() const {
         return Datum<iNumDimensions, 1>(originPoint(), normalVector());
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::xyPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 3>::xyPlane() const {
         Matrix<double, 3, 2> planeBasisMatrix;
         planeBasisMatrix << xBasisVector(), yBasisVector();
 
@@ -490,7 +322,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::xzPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 3>::xzPlane() const {
         Matrix<double, 3, 2> planeBasisMatrix;
         planeBasisMatrix << xBasisVector(), zBasisVector();
 
@@ -498,7 +331,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::yxPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 3>::yxPlane() const {
         Matrix<double, 3, 2> planeBasisMatrix;
         planeBasisMatrix << yBasisVector(), xBasisVector();
 
@@ -506,7 +340,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::yzPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 3>::yzPlane() const {
         Matrix<double, 3, 2> planeBasisMatrix;
         planeBasisMatrix << yBasisVector(), zBasisVector();
 
@@ -514,7 +349,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::zxPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 3>::zxPlane() const {
         Matrix<double, 3, 2> planeBasisMatrix;
         planeBasisMatrix << zBasisVector(), xBasisVector();
 
@@ -522,7 +358,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::zyPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 3>::zyPlane() const {
         Matrix<double, 3, 2> planeBasisMatrix;
         planeBasisMatrix << zBasisVector(), yBasisVector();
         
@@ -530,7 +367,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 3>::plane(int firstAxisIndex, int secondAxisIndex) const {
+    inline Datum<3, 2>
+    Datum<3, 3>::plane(int firstAxisIndex, int secondAxisIndex) const {
         assert(firstAxisIndex >= 0 && firstAxisIndex < 3);
         assert(secondAxisIndex >= 0 && secondAxisIndex < 3);
         assert(firstAxisIndex != secondAxisIndex);
@@ -542,7 +380,8 @@ namespace opensolid
     }
 
     template <>
-    inline Datum<3, 2> Datum<3, 1>::normalPlane() const {
+    inline Datum<3, 2>
+    Datum<3, 1>::normalPlane() const {
         Vector3d planeXBasisVector = basisVector().unitOrthogonal();
         Vector3d planeYBasisVector = basisVector().cross(planeXBasisVector).normalized();
 
@@ -553,7 +392,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::reversed() const {
+    Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::reversed() const {
         Datum<iNumDimensions, iNumAxes> result;
         result._originPoint = originPoint();
         result._basisMatrix = -basisMatrix();
@@ -562,7 +402,8 @@ namespace opensolid
     }
         
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::xReversed() const {
+    Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::xReversed() const {
         Datum<iNumDimensions, iNumAxes> result(*this);
         result._basisMatrix.col(0) = -basisMatrix().col(0);
         result._inverseMatrix.row(0) = -inverseMatrix().row(0);
@@ -570,7 +411,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::yReversed() const {
+    Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::yReversed() const {
         Datum<iNumDimensions, iNumAxes> result(*this);
         result._basisMatrix.col(1) = -basisMatrix().col(1);
         result._inverseMatrix.row(1) = -inverseMatrix().row(1);
@@ -578,7 +420,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::zReversed() const {
+    Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::zReversed() const {
         Datum<iNumDimensions, iNumAxes> result(*this);
         result._basisMatrix.col(2) = -basisMatrix().col(2);
         result._inverseMatrix.row(2) = -inverseMatrix().row(2);
@@ -586,9 +429,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::reversed(
-        int axisIndex
-    ) const {
+    Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::reversed(int axisIndex) const {
         assert(axisIndex >= 0 && axisIndex < iNumAxes);
         Datum<iNumDimensions, iNumAxes> result(*this);
         result._basisMatrix.col(axisIndex) = -basisMatrix().col(axisIndex);
@@ -597,14 +439,14 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::offset(
-        double distance
-    ) const {
+    inline Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::offset(double distance) const {
         return *this + distance * normalVector();
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::normalized() const {
+    Datum<iNumDimensions, iNumAxes>
+    Datum<iNumDimensions, iNumAxes>::normalized() const {
         Matrix<double, iNumDimensions, iNumAxes> resultBasisMatrix = basisMatrix();
         for (int i = 0; i < iNumAxes; ++i) {
             Matrix<double, iNumDimensions, 1> resultBasisVector = resultBasisMatrix.col(i);
@@ -622,86 +464,47 @@ namespace opensolid
         }
         return Datum<iNumDimensions, iNumAxes>(originPoint(), resultBasisMatrix);
     }
-    
-    template <int iNumDimensions, int iNumAxes>
-    inline Datum<iNumDimensions, iNumAxes> Datum<iNumDimensions, iNumAxes>::linear() const {
-        Datum<iNumDimensions, iNumAxes> result(*this);
-        result._originPoint.setZero();
-        return result;
-    }
 
     template <int iNumDimensions, int iNumAxes>
     inline TransformedDatum<iNumDimensions, iNumAxes>
-    Datum<iNumDimensions, iNumAxes>::transformed(const Function& function) const {
-        return TransformedDatum<iNumDimensions, iNumAxes>();
-    }
-
-    template <int iNumDimensions, int iNumAxes, class TMatrix>
-    Matrix<typename TMatrix::Scalar, iNumDimensions, TMatrix::ColsAtCompileTime> operator*(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const EigenBase<TMatrix>& matrix
-    ) {
-        typedef typename TMatrix::Scalar MatrixScalar;
-        return (datum.basisMatrix().template cast<MatrixScalar>() * matrix.derived()).colwise() +
-            datum.originPoint().template cast<MatrixScalar>();
-    }
-
-    template <class TMatrix, int iNumDimensions, int iNumAxes>
-    Matrix<typename TMatrix::Scalar, iNumAxes, TMatrix::ColsAtCompileTime> operator/(
-        const EigenBase<TMatrix>& matrix,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) {
-        typedef typename TMatrix::Scalar MatrixScalar;
-        return datum.inverseMatrix().template cast<MatrixScalar>() *
-            (matrix.derived().colwise() - datum.originPoint().template cast<MatrixScalar>());
-    }
-
-    template <int iNumDimensions, int iNumAxes, class TTransformable>
-    inline typename Transformed<TTransformable, iNumDimensions>::Type operator*(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const Transformable<TTransformable>& transformable
-    ) {
-        return datum.basisMatrix() * transformable.derived() + datum.originPoint();
-    }
-
-    template <class TTransformable, int iNumDimensions, int iNumAxes>
-    inline typename Transformed<TTransformable, iNumAxes>::Type operator/(
-        const Transformable<TTransformable>& transformable,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) {
-        return datum.inverseMatrix() * (transformable.derived() - datum.originPoint());
+    Datum<iNumDimensions, iNumAxes>::mapped(const Function& function) const {
+        return TransformedDatum<iNumDimensions, iNumAxes>(*this, function);
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Datum<iNumDimensions, iNumAxes> operator*(
-        double scaleFactor,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) {
+    Datum<iNumDimensions, iNumAxes>
+    ScalingFunction<Datum<iNumDimensions, iNumAxes>>::operator()(
+        const Datum<iNumDimensions, iNumAxes>& datum,
+        double scale
+    ) const {
         return Datum<iNumDimensions, iNumAxes>(
-            scaleFactor * datum.originPoint(),
-            scaleFactor * datum.basisMatrix()
+            datum.originPoint().scaled(scale),
+            scale * datum.basisMatrix()
         );
     }
 
-    template <int iNumDimensions, int iNumAxes, class TVector>
-    Datum<iNumDimensions, iNumAxes> operator+(
+    template <int iNumDimensions, int iNumAxes> template <class TVector>
+    Datum<iNumDimensions, iNumAxes>
+    TranslationFunction<Datum<iNumDimensions, iNumAxes>>::operator()(
         const Datum<iNumDimensions, iNumAxes>& datum,
         const EigenBase<TVector>& vector
-    ) {
+    ) const {
         return Datum<iNumDimensions, iNumAxes>(
             datum.originPoint() + vector.derived(),
             datum.basisMatrix()
         );
     }
 
-    template <class TMatrix, int iNumDimensions, int iNumAxes>
-    Datum<TMatrix::RowsAtCompileTime, iNumAxes> operator*(
-        const EigenBase<TMatrix>& transformationMatrix,
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) {
-        return Datum<TMatrix::RowsAtCompileTime, iNumAxes>(
-            transformationMatrix.derived() * datum.originPoint(),
-            transformationMatrix.derived() * datum.basisMatrix()
+    template <int iNumDimensions, int iNumAxes, int iTransformedDimensions>
+    template <class TMatrix>
+    Datum<iTransformedDimensions, iNumAxes>
+    TransformationFunction<Datum<iNumDimensions, iNumAxes>, iTransformedDimensions>::operator()(
+        const Datum<iNumDimensions, iNumAxes>& datum,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return Datum<iTransformedDimensions, iNumAxes>(
+            datum.originPoint().transformed(matrix.derived()),
+            matrix.derived() * datum.basisMatrix()
         );
     }
 }

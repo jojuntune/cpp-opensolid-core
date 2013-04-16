@@ -1,32 +1,33 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
  
 #include <OpenSolid/Core/Geometry/GeometryConstructors.hpp>
 
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 
+/*
 namespace opensolid
 {
     Geometry
@@ -68,10 +69,10 @@ namespace opensolid
         
     Geometry
     GeometryConstructors::Arc2d(
-        const Vector2d& center,
+        const Point2d& center,
         bool isCounterclockwise,
-        const Vector2d& startPoint,
-        const Vector2d& endPoint
+        const Point2d& startPoint,
+        const Point2d& endPoint
     ) {
         Vector2d radialVector = startPoint - center;
         double radius = radialVector.norm();
@@ -82,7 +83,7 @@ namespace opensolid
             datum = datum.yReversed();
         }
 
-        Vector2d localEndPoint = endPoint / datum;
+        Point2d localEndPoint = endPoint / datum;
         double sweptAngle = atan2(localEndPoint.y(), localEndPoint.x());
         if (sweptAngle <= Zero()) {
             sweptAngle += 2 * M_PI;
@@ -94,9 +95,9 @@ namespace opensolid
 
     Geometry
     GeometryConstructors::Arc2d(
-        const Vector2d& startPoint,
-        const Vector2d& innerPoint,
-        const Vector2d& endPoint
+        const Poin2d& startPoint,
+        const Point2d& innerPoint,
+        const Point2d& endPoint
     ) {
         double a = (innerPoint - startPoint).norm();
         double b = (endPoint - innerPoint).norm();
@@ -116,7 +117,9 @@ namespace opensolid
         t1 /= sum;
         t2 /= sum;
         t3 /= sum;
-        Vector2d center = t1 * endPoint + t2 * startPoint + t3 * innerPoint;
+        Point2d center(
+            t1 * endPoint.vector() + t2 * startPoint.vector() + t3 * innerPoint.vector()
+        );
 
         Vector2d firstLeg = innerPoint - startPoint;
         Vector2d secondLeg = endPoint - innerPoint;
@@ -148,19 +151,24 @@ namespace opensolid
     Geometry
     GeometryConstructors::Arc3d(
         const Axis3d& axis,
-        const Vector3d& startPoint,
-        const Vector3d& endPoint
+        const Point3d& startPoint,
+        const Point3d& endPoint
     ) {
-        Vector3d center = startPoint.projected(axis);
+        Point3d center = startPoint.projected(axis);
         Plane3d plane = Plane3d::FromPointAndNormal(center, axis.basisVector());
-        return plane * Geometry::Arc2d(Vector2d::Zero(), true, startPoint / plane, endPoint / plane);
+        return plane * Geometry::Arc2d(
+            Point2d::Origin(),
+            true,
+            startPoint / plane,
+            endPoint / plane
+        );
     }
 
     Geometry
     GeometryConstructors::Arc3d(
-        const Vector3d& startPoint,
-        const Vector3d& innerPoint,
-        const Vector3d& endPoint
+        const Point3d& startPoint,
+        const Point3d& innerPoint,
+        const Point3d& endPoint
     ) {
         Plane3d plane = Plane3d::FromPointAndNormal(
             innerPoint,
@@ -170,11 +178,7 @@ namespace opensolid
     }
 
     Geometry
-    GeometryConstructors::Circle2d(
-        const Vector2d& center,
-        double radius,
-        bool isFilled
-    ) {
+    GeometryConstructors::Circle2d(const Point2d& center, double radius, bool isFilled) {
         if (isFilled) {
             Function arcFunction = Geometry::Arc2d(Frame2d::XY(), radius, 0, 2 * M_PI).function();
             Function u = Function::u();
@@ -187,21 +191,13 @@ namespace opensolid
     }
 
     Geometry
-    GeometryConstructors::Circle3d(
-        const Axis3d& axis,
-        double radius,
-        bool isFilled
-    ) {
-        return axis.normalPlane() * Geometry::Circle2d(Vector2d::Zero(), radius, isFilled);
+    GeometryConstructors::Circle3d(const Axis3d& axis, double radius, bool isFilled) {
+        return axis.normalPlane() * Geometry::Circle2d(Point2d::Origin(), radius, isFilled);
     }
 
     Geometry
-    GeometryConstructors::Circle3d(
-        const Plane3d& plane,
-        double radius,
-        bool isFilled
-    ) {
-        return plane * Geometry::Circle2d(Vector2d::Zero(), radius, isFilled);
+    GeometryConstructors::Circle3d(const Plane3d& plane, double radius, bool isFilled) {
+        return plane * Geometry::Circle2d(Point2d::Origin(), radius, isFilled);
     }
         
     Geometry
@@ -221,3 +217,4 @@ namespace opensolid
         return Geometry(planarFunction + axialFunction, turnInterval);
     }
 }
+*/

@@ -1,26 +1,26 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Function.hpp>
@@ -28,6 +28,7 @@
 #include <OpenSolid/Core/Zero.hpp>
 
 #include <OpenSolid/Core/Function/ResultCache.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
@@ -53,7 +54,7 @@ public:
         Function f = Function::Constant(3.0, 1);
         TS_ASSERT(f.asConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
-        TS_ASSERT(f.as<double>() - 3 == Zero());
+        TS_ASSERT(f.asConstant()->vector().value() - 3 == Zero());
     }
     
     void testArithmetic() {
@@ -116,8 +117,8 @@ public:
     void testVector() {
         Function f = Function::Constant(Vector3d(1, 2, 3), 0);
         TS_ASSERT(f.asConstant());
-        TS_ASSERT(f.as<Vector3d>() == Vector3d(1, 2, 3));
-        TS_ASSERT(f.as<Vector3d>().transpose() == RowVector3d(1, 2, 3));
+        TS_ASSERT(f.asConstant()->vector() == Vector3d(1, 2, 3));
+        TS_ASSERT(f.asConstant()->vector().transpose() == RowVector3d(1, 2, 3));
     }
     
     void testConversion() {
@@ -185,11 +186,11 @@ public:
     
     void testTransformation() {
         Frame3d frame;
-        frame = frame + Vector3d(1, 1, 1);
-        frame = frame.rotated(M_PI / 4, frame.zAxis());
+        frame = frame.translated(Vector3d(1, 1, 1));
+        frame = frame.rotatedAbout(M_PI / 4, frame.zAxis());
         Function linear = Vector3d::Ones() * t;
-        Function product = frame * linear;
-        Function quotient = linear / frame;
+        Function product = frame.basisMatrix() * linear + frame.originPoint().vector();
+        Function quotient = frame.inverseMatrix() * (linear - frame.originPoint().vector());
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);
@@ -233,16 +234,6 @@ public:
         bounds = f(Interval(1 + 1e-14, 1 + 1e-10)).value();
         TS_ASSERT(bounds.lowerBound() - M_PI / 2 == Zero());
         TS_ASSERT(bounds.upperBound() - M_PI / 2 == Zero());
-    }
-
-    void testMirrored() {
-        Plane3d plane = Frame3d().yzPlane() + Vector3d(1, 0, 0);
-        Function f = Vector3d(1, 1, 1) + t * Vector3d(1, 1, 1);
-        Function mirrored = f.mirrored(plane);
-        TS_ASSERT((mirrored(1) - Vector3d(0, 2, 2)).isZero());
-        Function derivative = mirrored.derivative();
-        TS_ASSERT(derivative.asConstant());
-        TS_ASSERT((derivative.as<Vector3d>() - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testNormalVector() {

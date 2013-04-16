@@ -1,32 +1,34 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Box.hpp>
 
 #include <cxxtest/TestSuite.h>
 
@@ -58,7 +60,7 @@ struct MyVector
 namespace opensolid
 {
     template <>
-    struct Conversion<MyVector, Vector3d>
+    struct ConversionFunction<MyVector, Vector3d>
     {
         Vector3d operator()(const MyVector& argument) const {
             return Vector3d(argument.x, argument.y, argument.z);
@@ -66,7 +68,7 @@ namespace opensolid
     };
 
     template <>
-    struct Conversion<Vector3d, MyVector>
+    struct ConversionFunction<Vector3d, MyVector>
     {
         MyVector operator()(const Vector3d& argument) const {
             return MyVector(argument.x(), argument.y(), argument.z());
@@ -91,8 +93,8 @@ public:
     
     void testTransformation() {
         Frame3d frame;
-        frame = frame + Vector3d(1, 1, 1);
-        frame = frame.rotated(M_PI / 4, frame.zAxis());
+        frame = frame.translated(Vector3d(1, 1, 1));
+        frame = frame.rotatedAbout(M_PI / 4, frame.zAxis());
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);
@@ -220,21 +222,21 @@ public:
 
     void testBoostGeometryPoint() {
         #if BOOST_VERSION >= 104700
-        Vector2d point(3, 4);
+        Point2d point(3, 4);
         TS_ASSERT_EQUALS(boost::geometry::get<0>(point), 3);
         TS_ASSERT_EQUALS(boost::geometry::get<1>(point), 4);
-        Vector2d origin = Vector2d::Zero();
+        Point2d origin = Point2d::Origin();
         TS_ASSERT(boost::geometry::distance(origin, point) - 5 == Zero());
         #endif
     }
 
     void testBoostGeometryBox() {
         #if BOOST_VERSION >= 104700
-        Vector2I first_box(Interval(1, 3), Interval(1, 3));
+        Box2d first_box(Interval(1, 3), Interval(1, 3));
         TS_ASSERT(boost::geometry::area(first_box) - 4 == Zero());
-        Vector2I second_box(Interval(2, 4), Interval(2, 4));
+        Box2d second_box(Interval(2, 4), Interval(2, 4));
         TS_ASSERT(boost::geometry::intersects(first_box, second_box));
-        Vector2I intersection;
+        Box2d intersection;
         boost::geometry::intersection(first_box, second_box, intersection);
         TS_ASSERT(boost::geometry::area(intersection) - 1 == Zero());
         TS_ASSERT(intersection.cwiseLower().isApprox(Vector2d::Constant(2)));
@@ -243,11 +245,10 @@ public:
     }
 
     void testTransformed() {
-        Vector3d point(3, 2, 1);
-        TS_ASSERT((point.rotated(M_PI / 2, Frame3d().zAxis()) - Vector3d(-2, 3, 1)).isZero());
-        TS_ASSERT((point.rotated(M_PI / 2, Frame3d().xAxis()) - Vector3d(3, -1, 2)).isZero());
-        TS_ASSERT((point.mirrored(Frame3d().yzPlane()) - Vector3d(-3, 2, 1)).isZero());
-        TS_ASSERT(((2 * point).mirrored(Frame3d().xyPlane()) - Vector3d(6, 4, -2)).isZero());
+        Point3d point(3, 2, 1);
+        TS_ASSERT((point.rotatedAbout(M_PI / 2, Frame3d().zAxis()) - Point3d(-2, 3, 1)).isZero());
+        TS_ASSERT((point.rotatedAbout(M_PI / 2, Frame3d().xAxis()) - Point3d(3, -1, 2)).isZero());
+        TS_ASSERT((point.mirroredAbout(Frame3d().yzPlane()) - Point3d(-3, 2, 1)).isZero());
     }
 
     void testRandom() {
@@ -261,12 +262,12 @@ public:
 
     void testConversion() {
         MyVector my_vector = MyVector(1, 2, 3);
-        Vector3d from = Vector3d::from(my_vector);
+        Vector3d from = Vector3d::ConvertFrom(my_vector);
         TS_ASSERT_EQUALS(from, Vector3d(1, 2, 3));
-        MyVector as = Vector3d::Ones().as<MyVector>();
-        TS_ASSERT_EQUALS(as.x, 1.0);
-        TS_ASSERT_EQUALS(as.y, 1.0);
-        TS_ASSERT_EQUALS(as.z, 1.0);
+        MyVector to = Vector3d::Ones().convertTo<MyVector>();
+        TS_ASSERT_EQUALS(to.x, 1.0);
+        TS_ASSERT_EQUALS(to.y, 1.0);
+        TS_ASSERT_EQUALS(to.z, 1.0);
     }
 
     void testPoint() {
@@ -277,12 +278,12 @@ public:
         TS_ASSERT((point1 - point2).isZero());
         TS_ASSERT(origin.vector().isZero());
         TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
-        TS_ASSERT((point1.rotated(pi() / 2, Axis3d::X()) - Point3d(1, -3, 2)).isZero());
+        TS_ASSERT((point1.rotatedAbout(pi() / 2, Axis3d::X()) - Point3d(1, -3, 2)).isZero());
     }
 
     void testBox() {
         Box3d box1(Interval(1, 2), Interval(3, 4), Interval(5, 6));
-        Box3d projected = box1.projected(Plane3d::YZ());
+        Box3d projected = box1.projectedOnto(Plane3d::YZ());
         TS_ASSERT(projected.x().lowerBound() == Zero());
         TS_ASSERT(projected.x().upperBound() == Zero());
         TS_ASSERT(projected.y().lowerBound() - box1.y().lowerBound() == Zero());

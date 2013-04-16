@@ -1,216 +1,44 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/FunctionImplementation.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Mirror.hpp>
-#include <OpenSolid/Core/Projection.hpp>
-#include <OpenSolid/Core/Rotation.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
-#include <OpenSolid/Core/Transformation.hpp>
-
-#include <OpenSolid/Core/Function/FunctionConstructors.hpp>
-#include <OpenSolid/Core/Matrix/JacobianReturnValue.hpp>
-#include <OpenSolid/Core/Matrix/MatrixReturnValue.hpp>
-
-#include <OpenSolid/Core/Datum/declarations.hpp>
-#include <OpenSolid/Core/Domain/declarations.hpp>
-#include <OpenSolid/Core/Function/declarations.hpp>
-#include <OpenSolid/Core/Geometry/declarations.hpp>
-#include <OpenSolid/Core/Simplex/declarations.hpp>
-#include <OpenSolid/Core/Transformation/declarations.hpp>
- 
-#include <boost/intrusive_ptr.hpp>
-
-#include <typeinfo>
-
-namespace opensolid
-{
-    class Function :
-        public FunctionConstructors,
-        public Convertible<Function>,
-        public Transformable<Function>
-    {
-    private:
-        boost::intrusive_ptr<const FunctionImplementation> _implementation;
-    public:
-        OPENSOLID_CORE_EXPORT Function();
-        OPENSOLID_CORE_EXPORT Function(const FunctionImplementation* function);
-
-        OPENSOLID_CORE_EXPORT Function(const Rotation2d& rotation);
-        OPENSOLID_CORE_EXPORT Function(const Rotation3d& rotation);
-        OPENSOLID_CORE_EXPORT Function(const Mirror2d& mirror);
-        OPENSOLID_CORE_EXPORT Function(const Mirror3d& mirror);
-        OPENSOLID_CORE_EXPORT Function(const Projection2d& projection);
-        OPENSOLID_CORE_EXPORT Function(const Projection3d& projection);
-
-        template <int iNumSourceDimensions, int iNumDestinationDimensions>
-        Function(
-            const Transformation<iNumSourceDimensions, iNumDestinationDimensions>& transformation
-        );
-        
-        const FunctionImplementation* implementation() const;
-        bool isValid() const;
-        
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-
-        OPENSOLID_CORE_EXPORT const ConstantFunction* asConstant() const;
-        OPENSOLID_CORE_EXPORT const IdentityFunction* asIdentity() const;
-        OPENSOLID_CORE_EXPORT const ParameterFunction* asParameter() const;
-
-        OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated() const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
-
-        MatrixReturnValue<FunctionImplementation, int> operator()(int value) const;
-        MatrixReturnValue<FunctionImplementation, double> operator()(double value) const;
-        MatrixReturnValue<FunctionImplementation, Interval> operator()(Interval interval) const;
-        
-        template <class TDerived>
-        MatrixReturnValue<FunctionImplementation, TDerived> operator()(
-            const EigenBase<TDerived>& matrix
-        ) const;
-
-        JacobianReturnValue<Function, int> jacobian(int value) const;
-        JacobianReturnValue<Function, double> jacobian(double value) const;
-        JacobianReturnValue<Function, Interval> jacobian(Interval interval) const;
-        
-        template <class TDerived>
-        JacobianReturnValue<Function, TDerived> jacobian(const EigenBase<TDerived>& vector) const;
-        
-        OPENSOLID_CORE_EXPORT Function operator()(const Function& function) const;
-        OPENSOLID_CORE_EXPORT Geometry operator()(const Domain& domain) const;
-        
-        OPENSOLID_CORE_EXPORT Function derivative(int parameterIndex = 0) const;
-        
-        OPENSOLID_CORE_EXPORT Function norm() const;
-        OPENSOLID_CORE_EXPORT Function normalized() const;
-        OPENSOLID_CORE_EXPORT Function squaredNorm() const;
-        OPENSOLID_CORE_EXPORT Function x() const;
-        OPENSOLID_CORE_EXPORT Function y() const;
-        OPENSOLID_CORE_EXPORT Function z() const;
-        OPENSOLID_CORE_EXPORT Function component(int index) const;
-        OPENSOLID_CORE_EXPORT Function components(int startIndex, int numComponents) const;
-        OPENSOLID_CORE_EXPORT Function concatenate(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function dot(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function cross(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function tangentVector() const;
-        OPENSOLID_CORE_EXPORT Function curvature() const;
-        OPENSOLID_CORE_EXPORT Function normalVector() const;
-        OPENSOLID_CORE_EXPORT Function binormalVector() const;
-
-        OPENSOLID_CORE_EXPORT Function operator+(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function operator-(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function operator*(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function operator/(const Function& other) const;
-        
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent = 0) const;
-    };
-
-    OPENSOLID_CORE_EXPORT Function operator*(double scale, const Function& function);
-    OPENSOLID_CORE_EXPORT Function operator*(const MatrixXd& matrix, const Function& function);
-    OPENSOLID_CORE_EXPORT Function operator+(const Function& function, const VectorXd& vector);
-
-    OPENSOLID_CORE_EXPORT Function operator+(const Function& function, double value);
-    OPENSOLID_CORE_EXPORT Function operator+(double value, const Function& function);
-    OPENSOLID_CORE_EXPORT Function operator-(const Function& function, double value);
-    OPENSOLID_CORE_EXPORT Function operator-(double value, const Function& function);
-    OPENSOLID_CORE_EXPORT Function operator*(const Function& function, const VectorXd& vector);
-    OPENSOLID_CORE_EXPORT Function operator/(double value, const Function& function);
-    OPENSOLID_CORE_EXPORT Function operator/(const VectorXd& vector, const Function& function);
-    
-    OPENSOLID_CORE_EXPORT Function sin(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function cos(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function tan(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function sqrt(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function acos(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function asin(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function exp(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function log(const Function& argument);
-    OPENSOLID_CORE_EXPORT Function pow(const Function& base, const Function& exponent);
-    
-    OPENSOLID_CORE_EXPORT std::ostream& operator<<(
-        std::ostream& stream,
-        const Function& function
-    );
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct Conversion<Function, double>
-    {
-        OPENSOLID_CORE_EXPORT double operator()(const Function& argument) const;
-    };
-    
-    template <>
-    struct Conversion<Function, Vector2d>
-    {
-        OPENSOLID_CORE_EXPORT Vector2d operator()(const Function& argument) const;
-    };
-    
-    template <>
-    struct Conversion<Function, Vector3d>
-    {
-        OPENSOLID_CORE_EXPORT Vector3d operator()(const Function& argument) const;
-    };
-    
-    template <>
-    struct Conversion<Function, VectorXd>
-    {
-        OPENSOLID_CORE_EXPORT VectorXd operator()(const Function& argument) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct Transformed<Function, iNumResultDimensions>
-    {
-        typedef Function Type;
-    };
-}
-
-////////// Implementation //////////
+#include <OpenSolid/Core/Function.definitions.hpp>
 
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
-
 #include <OpenSolid/Core/Datum/TransformedDatum.hpp>
+#include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Simplex/TransformedSimplex.hpp>
 
 namespace opensolid
 {
     // Declared in TransformedSimplex.hpp
     template <int iNumDimensions, int iNumVertices>
-    inline TransformedSimplex<iNumDimensions, iNumVertices>::TransformedSimplex(
+    inline
+    TransformedSimplex<iNumDimensions, iNumVertices>::TransformedSimplex(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const Function& function
     ) : _simplex(simplex),
@@ -248,7 +76,8 @@ namespace opensolid
 
     // Declared in TransformedDatum.hpp
     template <int iNumDimensions, int iNumAxes>
-    inline TransformedDatum<iNumDimensions, iNumAxes>::TransformedDatum(
+    inline
+    TransformedDatum<iNumDimensions, iNumAxes>::TransformedDatum(
         const Datum<iNumDimensions, iNumAxes>& datum,
         const Function& function
     ) : _datum(datum),
@@ -295,58 +124,77 @@ namespace opensolid
         }
     }
     
-    inline const FunctionImplementation* Function::implementation() const {
+    inline const FunctionImplementation*
+    Function::implementation() const {
         return _implementation.get();
     }
 
-    inline bool Function::isValid() const {
+    inline bool
+    Function::isValid() const {
         return implementation() != 0;
     }
 
-    inline MatrixReturnValue<FunctionImplementation, int> Function::operator()(
-        int value
-    ) const {
-        return MatrixReturnValue<FunctionImplementation, int>(implementation(), value);
+    inline MatrixReturnValue<int>
+    Function::operator()(int value) const {
+        return MatrixReturnValue<int>(implementation(), value);
     }
 
-    inline MatrixReturnValue<FunctionImplementation, double> Function::operator()(
-        double value
-    ) const {
-        return MatrixReturnValue<FunctionImplementation, double>(implementation(), value);
+    inline MatrixReturnValue<double>
+    Function::operator()(double value) const {
+        return MatrixReturnValue<double>(implementation(), value);
     }
 
-    inline MatrixReturnValue<FunctionImplementation, Interval> Function::operator()(
-        Interval interval
-    ) const {
-        return MatrixReturnValue<FunctionImplementation, Interval>(implementation(), interval);
+    inline MatrixReturnValue<Interval>
+    Function::operator()(Interval interval) const {
+        return MatrixReturnValue<Interval>(implementation(), interval);
     }
     
-    template <class TDerived>
-    inline MatrixReturnValue<FunctionImplementation, TDerived> Function::operator()(
-        const EigenBase<TDerived>& matrix
-    ) const {
-        return MatrixReturnValue<FunctionImplementation, TDerived>(
-            implementation(),
-            matrix.derived()
-        );
+    template <class TMatrix>
+    inline MatrixReturnValue<TMatrix>
+    Function::operator()(const EigenBase<TMatrix>& matrix) const {
+        return MatrixReturnValue<TMatrix>(implementation(), matrix.derived());
     }
 
-    inline JacobianReturnValue<Function, int> Function::jacobian(int value) const {
+    inline JacobianReturnValue<Function, int>
+    Function::jacobian(int value) const {
         return JacobianReturnValue<Function, int>(*this, value);
     }
 
-    inline JacobianReturnValue<Function, double> Function::jacobian(double value) const {
+    inline JacobianReturnValue<Function, double>
+    Function::jacobian(double value) const {
         return JacobianReturnValue<Function, double>(*this, value);
     }
 
-    inline JacobianReturnValue<Function, Interval> Function::jacobian(Interval interval) const {
+    inline JacobianReturnValue<Function, Interval>
+    Function::jacobian(Interval interval) const {
         return JacobianReturnValue<Function, Interval>(*this, interval);
     }
 
-    template <class TDerived>
-    inline JacobianReturnValue<Function, TDerived> Function::jacobian(
-        const EigenBase<TDerived>& vector
+    template <class TVector>
+    inline JacobianReturnValue<Function, TVector>
+    Function::jacobian(const EigenBase<TVector>& vector) const {
+        return JacobianReturnValue<Function, TVector>(*this, vector.derived());
+    }
+
+    inline Function
+    ScalingFunction<Function>::operator()(const Function& function, double scale) const {
+        return scale * function;
+    }
+
+    inline Function
+    TranslationFunction<Function>::operator()(
+        const Function& function,
+        const VectorXd& vector
     ) const {
-        return JacobianReturnValue<Function, TDerived>(*this, vector.derived());
+        return function + vector;
+    }
+
+    template <int iTransformedDimensions>
+    inline Function
+    TransformationFunction<Function, iTransformedDimensions>::operator()(
+        const Function& function,
+        const MatrixXd& matrix
+    ) const {
+        return matrix * function;
     }
 }

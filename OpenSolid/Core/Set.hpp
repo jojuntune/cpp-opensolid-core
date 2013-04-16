@@ -1,257 +1,65 @@
-/*************************************************************************************
- *                                                                                   *
- *  OpenSolid is a generic library for the representation and manipulation of        *
- *  geometric objects such as points, curves, surfaces, and volumes.                 *
- *                                                                                   *
- *  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
- *  ian.e.mackenzie@gmail.com                                                        *
- *                                                                                   *
- *  This library is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU Lesser General Public                       *
- *  License as published by the Free Software Foundation; either                     *
- *  version 2.1 of the License, or (at your option) any later version.               *
- *                                                                                   *
- *  This library is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
- *  Lesser General Public License for more details.                                  *
- *                                                                                   *
- *  You should have received a copy of the GNU Lesser General Public                 *
- *  License along with this library; if not, write to the Free Software              *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
- *                                                                                   *
- *************************************************************************************/
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
 
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Bounds.hpp>
+#include <OpenSolid/Core/Set.definitions.hpp>
+
+#include <OpenSolid/Core/Transformable.hpp>
 
 #include <OpenSolid/Core/Set/SetNode.hpp>
+#include <OpenSolid/Core/Set/SetInserter.hpp>
 
 #include <algorithm>
-#include <cstdint>
 #include <functional>
 #include <numeric>
-#include <ostream>
 
-namespace opensolid
-{
-    template <class TElement>
-    class SetInserter;
-
-    template <class TElement>
-    class Set
-    {
-    private:
-        SetNode<TElement>* _root;
-        Bounds<TElement> _boundsFunction;
-    public:
-        Set(Bounds<TElement> boundsFunction = Bounds<TElement>());
-        
-        Set(const Set<TElement>& otherSet);
-        
-        template <class TIterator>
-        Set(TIterator begin, TIterator end, Bounds<TElement> boundsFunction = Bounds<TElement>());
-        
-        ~Set();
-        
-        const SetNode<TElement>* root() const;
-        
-        void operator=(const Set<TElement>& otherSet);
-        
-        std::int64_t size() const;
-        bool isEmpty() const;
-
-        typename Bounds<TElement>::Type bounds() const;
-
-        TElement atIndex(std::int64_t index) const;
-        std::int64_t indexOf(const TElement& element) const;
-        
-        void insert(const TElement& element);
-        std::int64_t erase(const TElement& element);
-        
-        template <class TIterator>
-        void insert(TIterator begin, TIterator end);
-        
-        template <class TIterator>
-        std::int64_t erase(TIterator begin, TIterator end);
-        
-        void clear();
-
-        SetInserter<TElement> inserter();
-
-        template <class TVisitor>
-        void forEach(
-            const TVisitor& visitor
-        ) const;
-
-        template <class TVisitor>
-        void forEachOverlapping(
-            const typename Bounds<TElement>::Type& predicateBounds,
-            const TVisitor& visitor
-        ) const;
-
-        template <class TBoundsPredicate, class TVisitor>
-        void forEachFiltered(
-            const TBoundsPredicate& boundsPredicate,
-            const TVisitor& visitor
-        ) const;
-
-        template <class TElementPredicate, class TVisitor>
-        void forEachIf(
-            const TElementPredicate& elementPredicate,
-            const TVisitor& visitor
-        ) const;
-
-        template <class TElementPredicate, class TVisitor>
-        void forEachOverlappingIf(
-            const typename Bounds<TElement>::Type& predicateBounds,
-            const TElementPredicate& elementPredicate,
-            const TVisitor& visitor
-        ) const;
-
-        template <class TBoundsPredicate, class TElementPredicate, class TVisitor>
-        void forEachFilteredIf(
-            const TBoundsPredicate& boundsPredicate,
-            const TElementPredicate& elementPredicate,
-            const TVisitor& visitor
-        ) const;
-
-        template <class TOutputIterator>
-        void copy(
-            TOutputIterator outputIterator
-        ) const;
-
-        template<class TOutputIterator>
-        void copyOverlapping(
-            const typename Bounds<TElement>::Type& predicateBounds,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TBoundsPredicate, class TOutputIterator>
-        void copyFiltered(
-            const TBoundsPredicate& boundsPredicate,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TElementPredicate, class TOutputIterator>
-        void copyIf(
-            const TElementPredicate& elementPredicate,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TElementPredicate, class TOutputIterator>
-        void copyOverlappingIf(
-            const typename Bounds<TElement>::Type& predicateBounds,
-            const TElementPredicate& elementPredicate,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TBoundsPredicate, class TElementPredicate, class TOutputIterator>
-        void copyFilteredIf(
-            const TBoundsPredicate& boundsPredicate,
-            const TElementPredicate& elementPredicate,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TFunction, class TOutputIterator>
-        void transform(
-            const TFunction& function,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TFunction, class TOutputIterator>
-        void transformOverlapping(
-            const typename Bounds<TElement>::Type& predicateBounds,
-            const TFunction& function,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TBoundsPredicate, class TFunction, class TOutputIterator>
-        void transformFiltered(
-            const TBoundsPredicate& boundsPredicate,
-            const TFunction& function,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TElementPredicate, class TFunction, class TOutputIterator>
-        void transformIf(
-            const TElementPredicate& predicate,
-            const TFunction& function,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TElementPredicate, class TFunction, class TOutputIterator>
-        void transformOverlappingIf(
-            const typename Bounds<TElement>::Type& predicateBounds,
-            const TElementPredicate& elementPredicate,
-            const TFunction& function,
-            TOutputIterator outputIterator
-        ) const;
-
-        template <class TBoundsPredicate, class TElementPredicate, class TFunction, class TOutputIterator>
-        void transformFilteredIf(
-            const TBoundsPredicate& boundsPredicate,
-            const TElementPredicate& elementPredicate,
-            const TFunction& function,
-            TOutputIterator outputIterator
-        ) const;
-    };
-
-    template <class TElement>
-    class SetInserter
-    {
-    private:
-        Set<TElement>* _set;
-    public:
-        SetInserter(Set<TElement>* set);
-
-        SetInserter<TElement>& operator*();
-        void operator=(const TElement& element);
-        SetInserter<TElement>& operator++();
-        SetInserter<TElement>& operator++(int);
-    };
-    
-    template <class TElement>
-    std::ostream& operator<<(std::ostream& stream, const SetNode<TElement>& node);
-    
-    template <class TElement>
-    std::ostream& operator<<(std::ostream& stream, const Set<TElement>& set);
-}
-    
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <class TElement>
-    struct Bounds<Set<TElement>>
-    {
-        typedef typename Bounds<TElement>::Type Type;
-
-        const typename Bounds<TElement>::Type& operator()(const Set<TElement>& set) const;
-    };
-}
-    
-////////// Implementation //////////
-    
 namespace opensolid
 {   
     template <class TElement>
-    inline Set<TElement>::Set(Bounds<TElement> boundsFunction) :
+    inline
+    Set<TElement>::Set(BoundsFunction<TElement> boundsFunction) :
         _root(OPENSOLID_NULLPTR), _boundsFunction(boundsFunction) {
     }
     
     template <class TElement>
-    inline Set<TElement>::Set(const Set<TElement>& otherSet) :
+    inline
+    Set<TElement>::Set(const Set<TElement>& otherSet) :
         _root(otherSet.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<TElement>(*otherSet.root())),
         _boundsFunction(otherSet._boundsFunction) {
     }
         
     template <class TElement> template <class TIterator>
-    inline Set<TElement>::Set(TIterator begin, TIterator end, Bounds<TElement> boundsFunction) :
-        _boundsFunction(boundsFunction) {
+    inline
+    Set<TElement>::Set(
+        TIterator begin,
+        TIterator end,
+        BoundsFunction<TElement> boundsFunction
+    ) : _boundsFunction(boundsFunction) {
+
         std::vector<SetNode<TElement>*> nodes;
         std::transform(
             begin,
@@ -266,7 +74,7 @@ namespace opensolid
         } else if (nodes.size() == 1) {
             _root = nodes[0];
         } else {
-            typename Bounds<TElement>::Type overallBounds = nodes.front()->bounds();
+            typename BoundsFunction<TElement>::ResultType overallBounds = nodes.front()->bounds();
             std::for_each(
                 nodes.begin() + 1,
                 nodes.end(),
@@ -279,27 +87,32 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline Set<TElement>::~Set() {
+    inline
+    Set<TElement>::~Set() {
         clear();
     }
     
     template <class TElement>
-    inline std::int64_t Set<TElement>::size() const {
+    inline std::int64_t
+    Set<TElement>::size() const {
         return isEmpty() ? 0 : root()->size();
     }
     
     template <class TElement>
-    inline bool Set<TElement>::isEmpty() const {
+    inline bool
+    Set<TElement>::isEmpty() const {
         return !root();
     }
     
     template <class TElement>
-    inline const SetNode<TElement>* Set<TElement>::root() const {
+    inline const SetNode<TElement>*
+    Set<TElement>::root() const {
         return _root;
     }
         
     template <class TElement>
-    void Set<TElement>::operator=(const Set<TElement>& otherSet) {
+    void
+    Set<TElement>::operator=(const Set<TElement>& otherSet) {
         if (this == &otherSet) {
             return;
         }
@@ -310,17 +123,18 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline typename Bounds<TElement>::Type
+    inline typename BoundsFunction<TElement>::ResultType
     Set<TElement>::bounds() const {
         if (isEmpty()) {
-            return typename Bounds<TElement>::Type();
+            return typename BoundsFunction<TElement>::ResultType();
         } else {
             return root()->bounds();
         }
     }
 
     template <class TElement>
-    inline TElement Set<TElement>::atIndex(std::int64_t index) const {
+    inline TElement
+    Set<TElement>::atIndex(std::int64_t index) const {
         if (isEmpty()) {
             return TElement();
         } else {
@@ -334,7 +148,8 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline std::int64_t Set<TElement>::indexOf(const TElement& element) const {
+    inline std::int64_t
+    Set<TElement>::indexOf(const TElement& element) const {
         if (isEmpty()) {
             return -1;
         } else {
@@ -343,8 +158,9 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline void Set<TElement>::insert(const TElement& element) {
-        typename Bounds<TElement>::Type bounds = _boundsFunction(element);
+    inline void
+    Set<TElement>::insert(const TElement& element) {
+        typename BoundsFunction<TElement>::ResultType bounds = _boundsFunction(element);
         if (isEmpty()) {
             _root = new SetNode<TElement>(element, bounds);
         } else {
@@ -353,7 +169,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline std::int64_t Set<TElement>::erase(const TElement& element) {
+    inline std::int64_t
+    Set<TElement>::erase(const TElement& element) {
         if (isEmpty()) {
             return 0;
         } else {
@@ -364,7 +181,8 @@ namespace opensolid
     }
     
     template <class TElement> template <class TIterator>
-    inline void Set<TElement>::insert(TIterator begin, TIterator end) {
+    inline void
+    Set<TElement>::insert(TIterator begin, TIterator end) {
         std::for_each(
             begin,
             end,
@@ -375,7 +193,8 @@ namespace opensolid
     }
     
     template <class TElement> template <class TIterator>
-    inline std::int64_t Set<TElement>::erase(TIterator begin, TIterator end) {
+    inline std::int64_t
+    Set<TElement>::erase(TIterator begin, TIterator end) {
         return std::accumulate(
             begin,
             end,
@@ -387,7 +206,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline void Set<TElement>::clear() {
+    inline void
+    Set<TElement>::clear() {
         if (_root) {
             delete _root;
             _root = OPENSOLID_NULLPTR;
@@ -402,7 +222,8 @@ namespace opensolid
     namespace detail
     {
         template <class TElement, class TVisitor>
-        void visitNodes(
+        void
+        visitNodes(
             const SetNode<TElement>* root,
             const TVisitor& visitor
         ) {
@@ -415,7 +236,8 @@ namespace opensolid
         }
 
         template <class TElement, class TBoundsPredicate, class TVisitor>
-        void visitFilteredNodes(
+        void
+        visitFilteredNodes(
             const SetNode<TElement>* root,
             const TBoundsPredicate& boundsPredicate,
             const TVisitor& visitor
@@ -433,7 +255,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TVisitor>
-    void Set<TElement>::forEach(
+    void
+    Set<TElement>::forEach(
         const TVisitor& visitor
     ) const {
         if (root()) {
@@ -446,14 +269,15 @@ namespace opensolid
 
     template <class TElement>
     template <class TVisitor>
-    void Set<TElement>::forEachOverlapping(
-        const typename Bounds<TElement>::Type& predicateBounds,
+    void
+    Set<TElement>::forEachOverlapping(
+        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TVisitor& visitor
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 visitor
@@ -463,7 +287,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TBoundsPredicate, class TVisitor>
-    inline void Set<TElement>::forEachFiltered(
+    void
+    Set<TElement>::forEachFiltered(
         const TBoundsPredicate& boundsPredicate,
         const TVisitor& visitor
     ) const {
@@ -478,7 +303,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TElementPredicate, class TVisitor>
-    void Set<TElement>::forEachIf(
+    void
+    Set<TElement>::forEachIf(
         const TElementPredicate& elementPredicate,
         const TVisitor& visitor
     ) const {
@@ -496,15 +322,16 @@ namespace opensolid
 
     template <class TElement>
     template <class TElementPredicate, class TVisitor>
-    void Set<TElement>::forEachOverlappingIf(
-        const typename Bounds<TElement>::Type& predicateBounds,
+    void
+    Set<TElement>::forEachOverlappingIf(
+        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TElementPredicate& elementPredicate,
         const TVisitor& visitor
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&visitor, &elementPredicate] (const TElement& element) {
@@ -518,7 +345,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TBoundsPredicate, class TElementPredicate, class TVisitor>
-    void Set<TElement>::forEachFilteredIf(
+    void
+    Set<TElement>::forEachFilteredIf(
         const TBoundsPredicate& boundsPredicate,
         const TElementPredicate& elementPredicate,
         const TVisitor& visitor
@@ -537,7 +365,8 @@ namespace opensolid
     }
 
     template <class TElement> template<class TOutputIterator>
-    void Set<TElement>::copy(
+    void
+    Set<TElement>::copy(
         TOutputIterator outputIterator
     ) const {
         if (root()) {
@@ -552,14 +381,15 @@ namespace opensolid
     }
 
     template <class TElement> template<class TOutputIterator>
-    void Set<TElement>::copyOverlapping(
-        const typename Bounds<TElement>::Type& predicateBounds,
+    void
+    Set<TElement>::copyOverlapping(
+        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         TOutputIterator outputIterator
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&outputIterator] (const TElement& element) {
@@ -571,7 +401,8 @@ namespace opensolid
     }
 
     template <class TElement> template <class TBoundsPredicate, class TOutputIterator>
-    void Set<TElement>::copyFiltered(
+    void
+    Set<TElement>::copyFiltered(
         const TBoundsPredicate& boundsPredicate,
         TOutputIterator outputIterator
     ) const {
@@ -588,7 +419,8 @@ namespace opensolid
     }
 
     template <class TElement> template <class TElementPredicate, class TOutputIterator>
-    void Set<TElement>::copyIf(
+    void
+    Set<TElement>::copyIf(
         const TElementPredicate& elementPredicate,
         TOutputIterator outputIterator
     ) const {
@@ -606,15 +438,16 @@ namespace opensolid
     }
 
     template <class TElement> template <class TElementPredicate, class TOutputIterator>
-    void Set<TElement>::copyOverlappingIf(
-        const typename Bounds<TElement>::Type& predicateBounds,
+    void
+    Set<TElement>::copyOverlappingIf(
+        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TElementPredicate& elementPredicate,
         TOutputIterator outputIterator
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&elementPredicate, &outputIterator] (const TElement& element) {
@@ -629,7 +462,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TBoundsPredicate, class TElementPredicate, class TOutputIterator>
-    void Set<TElement>::copyFilteredIf(
+    void
+    Set<TElement>::copyFilteredIf(
         const TBoundsPredicate& boundsPredicate,
         const TElementPredicate& elementPredicate,
         TOutputIterator outputIterator
@@ -650,7 +484,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TFunction, class TOutputIterator>
-    void Set<TElement>::transform(
+    void
+    Set<TElement>::transform(
         const TFunction& function,
         TOutputIterator outputIterator
     ) const {
@@ -667,15 +502,16 @@ namespace opensolid
 
     template <class TElement>
     template <class TFunction, class TOutputIterator>
-    void Set<TElement>::transformOverlapping(
-        const typename Bounds<TElement>::Type& predicateBounds,
+    void
+    Set<TElement>::transformOverlapping(
+        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TFunction& function,
         TOutputIterator outputIterator
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&function, &outputIterator] (const TElement& element) {
@@ -688,7 +524,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TBoundsPredicate, class TFunction, class TOutputIterator>
-    void Set<TElement>::transformFiltered(
+    void
+    Set<TElement>::transformFiltered(
         const TBoundsPredicate& boundsPredicate,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -707,7 +544,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TElementPredicate, class TFunction, class TOutputIterator>
-    void Set<TElement>::transformIf(
+    void
+    Set<TElement>::transformIf(
         const TElementPredicate& elementPredicate,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -727,8 +565,9 @@ namespace opensolid
 
     template <class TElement>
     template <class TElementPredicate, class TFunction, class TOutputIterator>
-    void Set<TElement>::transformOverlappingIf(
-        const typename Bounds<TElement>::Type& predicateBounds,
+    void
+    Set<TElement>::transformOverlappingIf(
+        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TElementPredicate& elementPredicate,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -736,7 +575,7 @@ namespace opensolid
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename Bounds<TElement>::Type& bounds) {
+                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&function, &elementPredicate, &outputIterator] (const TElement& element) {
@@ -751,7 +590,8 @@ namespace opensolid
 
     template <class TElement>
     template <class TBoundsPredicate, class TElementPredicate, class TFunction, class TOutputIterator>
-    void Set<TElement>::transformFilteredIf(
+    void
+    Set<TElement>::transformFilteredIf(
         const TBoundsPredicate& boundsPredicate,
         const TElementPredicate& elementPredicate,
         const TFunction& function,
@@ -772,45 +612,37 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline SetInserter<TElement>::SetInserter(Set<TElement>* set) : _set(set) {
+    inline
+    SetInserter<TElement>::SetInserter(Set<TElement>* set) : _set(set) {
     }
 
     template <class TElement>
-    inline SetInserter<TElement>& SetInserter<TElement>::operator*() {
+    inline SetInserter<TElement>&
+    SetInserter<TElement>::operator*() {
         return *this;
     }
     
     template <class TElement>
-    inline void SetInserter<TElement>::operator=(const TElement& element) {
+    inline void
+    SetInserter<TElement>::operator=(const TElement& element) {
         _set->insert(element);
     }
     
     template <class TElement>
-    inline SetInserter<TElement>& SetInserter<TElement>::operator++() {
+    inline SetInserter<TElement>&
+    SetInserter<TElement>::operator++() {
         return *this;
     }
     
     template <class TElement>
-    inline SetInserter<TElement>& SetInserter<TElement>::operator++(int) {
+    inline SetInserter<TElement>&
+    SetInserter<TElement>::operator++(int) {
         return *this;
-    }
-
-    template <class TElement>
-    std::ostream& operator<<(std::ostream& stream, const SetNode<TElement>& node) {
-        stream << "{";
-        if (node.element()) {
-            stream << *node.element();
-        } else {
-            stream << *node.leftChild();
-            stream << ",";
-            stream << *node.rightChild();
-        }
-        stream << "}";
-        return stream;
     }
     
     template <class TElement>
-    std::ostream& operator<<(std::ostream& stream, const Set<TElement>& set) {
+    std::ostream&
+    operator<<(std::ostream& stream, const Set<TElement>& set) {
         if (set.isEmpty()) {
             stream << "{}";
         } else {
@@ -820,9 +652,59 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline const typename Bounds<TElement>::Type& Bounds<Set<TElement>>::operator()(
-        const Set<TElement>& set
+    Set<TElement>
+    ScalingFunction<Set<TElement>>::operator()(const Set<TElement>& set, double scale) const {
+        ScalingFunction<TElement> scalingFunction;
+        std::vector<TElement> scaledElements;
+        set.transform(
+            [scale, scalingFunction] (const TElement& element) -> TElement {
+                return scalingFunction(element, scale);
+            },
+            std::back_inserter(scaledElements)
+        );
+        return Set<TElement>(scaledElements.begin(), scaledElements.end());
+    }
+
+    template <class TElement> template <class TVector>
+    Set<TElement>
+    TranslationFunction<Set<TElement>>::operator()(
+        const Set<TElement>& set,
+        const EigenBase<TVector>& vector
     ) const {
+        TranslationFunction<TElement> translationFunction;
+        std::vector<TElement> translatedElements;
+        set.transform(
+            [&vector, translationFunction] (const TElement& element) -> TElement {
+                return translationFunction(element, vector);
+            },
+            std::back_inserter(translatedElements)
+        );
+        return Set<TElement>(translatedElements.begin(), translatedElements.end());
+    }
+
+    template <class TElement, int iTransformedDimensions> template <class TMatrix>
+    Set<typename TransformationFunction<TElement, iTransformedDimensions>::ResultType>
+    TransformationFunction<Set<TElement>, iTransformedDimensions>::operator()(
+        const Set<TElement>& set,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        typedef typename TransformationFunction<TElement, iTransformedDimensions>::ResultType
+            TransformedElement;
+
+        TransformationFunction<TElement, iTransformedDimensions> transformationFunction;
+        std::vector<TransformedElement> transformedElements;
+        set.transform(
+            [transformationFunction, &matrix] (const TElement& element) -> TransformedElement {
+                return transformationFunction(element, matrix);
+            },
+            std::back_inserter(transformedElements)
+        );
+        return Set<TransformedElement>(transformedElements.begin(), transformedElements.end());
+    }
+
+    template <class TElement>
+    inline typename BoundsFunction<TElement>::ResultType
+    BoundsFunction<Set<TElement>>::operator()(const Set<TElement>& set) const {
         return set.bounds();
     }
 }

@@ -10,6 +10,9 @@
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
     )
+
+    add_dependencies(eigen_sources eigen_plugin_headers)
+    
     set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)
     
     # Set EIGEN_ROOT in external/ directory (will then be passed up to root)
