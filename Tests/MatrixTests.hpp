@@ -101,7 +101,7 @@ public:
         MatrixXd quotient_values = (Vector3d(sqrt(2.0), 0, 1) * parameter_values).colwise() +
             Vector3d(-sqrt(2.0), 0, -1);
         MatrixXd test_values = MatrixXd::Random(product_values.rows(), product_values.cols());
-        TS_ASSERT(!test_values.isApprox(product_values));
+        TS_ASSERT(!(test_values - product_values).isZero());
     }
 
     void testOverlap() {
