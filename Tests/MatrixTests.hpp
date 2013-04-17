@@ -90,19 +90,6 @@ public:
         u = Vector3d(1, 2, 3);
         v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4));
     }
-    
-    void testTransformation() {
-        Frame3d frame;
-        frame = frame.translated(Vector3d(1, 1, 1));
-        frame = frame.rotatedAbout(M_PI / 4, frame.zAxis());
-        RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
-        MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
-            Vector3d(1, 1, 1);
-        MatrixXd quotient_values = (Vector3d(sqrt(2.0), 0, 1) * parameter_values).colwise() +
-            Vector3d(-sqrt(2.0), 0, -1);
-        MatrixXd test_values = MatrixXd::Random(product_values.rows(), product_values.cols());
-        TS_ASSERT(!(test_values - product_values).isZero());
-    }
 
     void testOverlap() {
         TS_ASSERT(u.cast<Interval>().overlaps(v));
