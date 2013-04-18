@@ -67,6 +67,15 @@ namespace opensolid
         TranslationFunction<TDerived> translationFunction;
         return translationFunction(derived(), vector);
     }
+    
+    template <class TDerived> template <int iNumDimensions>
+    inline TDerived
+    Transformable<TDerived>::translatedAlong(
+        double coordinateValue,
+        const Datum<iNumDimensions, 1>& axis
+    ) const {
+        return translated(coordinateValue * axis.basisVector());
+    }
 
     template <class TDerived> template <class TMatrix>
     inline typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
@@ -94,15 +103,40 @@ namespace opensolid
     }
 
     template <class TDerived>
+    inline TDerived
+    Transformable<TDerived>::rotatedAbout(
+        double angle,
+        const Datum<3, 1>& axis
+    ) const {
+        return rotated(Rotation3d(angle, axis));
+    }
+
+    template <class TDerived>
     TDerived
     Transformable<TDerived>::rotated(const Rotation3d& rotation) const {
         return rotation(derived());
     }
 
     template <class TDerived> template <int iNumDimensions>
+    inline TDerived
+    Transformable<TDerived>::mirroredAbout(
+        const Datum<iNumDimensions, iNumDimensions - 1>& datum
+    ) const {
+        return mirrored(Mirror<iNumDimensions>(datum));
+    }
+
+    template <class TDerived> template <int iNumDimensions>
     TDerived
     Transformable<TDerived>::mirrored(const Mirror<iNumDimensions>& mirror) const {
         return mirror(derived());
+    }
+
+    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    inline TDerived
+    Transformable<TDerived>::projectedOnto(
+        const Datum<iNumDimensions, iNumAxes>& datum
+    ) const {
+        return projected(Projection<iNumDimensions>(datum));
     }
 
     template <class TDerived> template <int iNumDimensions>
