@@ -18,8 +18,11 @@
     )
 
     add_library(OpenSolidCore SHARED ${CORE_SOURCES})
-    set_target_properties(OpenSolidCore PROPERTIES DEBUG_POSTFIX d)
+    add_library(OpenSolidCoreStatic STATIC ${CORE_SOURCES})
+    set_target_properties(OpenSolidCore PROPERTIES DEBUG_POSTFIX Debug)
+    set_target_properties(OpenSolidCoreStatic PROPERTIES DEBUG_POSTFIX Debug)
     add_dependencies(OpenSolidCore eigen_sources)
+    add_dependencies(OpenSolidCoreStatic eigen_sources)
     
 ########## Install OpenSolidCore headers and library ##########
 
@@ -30,7 +33,7 @@
     )
         
     install(
-        TARGETS OpenSolidCore
+        TARGETS OpenSolidCore OpenSolidCoreStatic
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
