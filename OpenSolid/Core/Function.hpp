@@ -29,16 +29,16 @@
 #include <OpenSolid/Core/Function.definitions.hpp>
 
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Datum/TransformedDatum.hpp>
+#include <OpenSolid/Core/Datum/MappedDatum.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
-#include <OpenSolid/Core/Simplex/TransformedSimplex.hpp>
+#include <OpenSolid/Core/Simplex/MappedSimplex.hpp>
 
 namespace opensolid
 {
-    // Declared in TransformedSimplex.hpp
+    // Declared in MappedSimplex.hpp
     template <int iNumDimensions, int iNumVertices>
     inline
-    TransformedSimplex<iNumDimensions, iNumVertices>::TransformedSimplex(
+    MappedSimplex<iNumDimensions, iNumVertices>::MappedSimplex(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const Function& function
     ) : _simplex(simplex),
@@ -47,24 +47,24 @@ namespace opensolid
         assert(function.numParameters() == iNumDimensions);
     }
     
-    // Declared in TransformedSimplex.hpp
+    // Declared in MappedSimplex.hpp
     template <int iNumDimensions, int iNumVertices>
     inline const Simplex<iNumDimensions, iNumVertices>&
-    TransformedSimplex<iNumDimensions, iNumVertices>::simplex() const {
+    MappedSimplex<iNumDimensions, iNumVertices>::simplex() const {
         return _simplex;
     }
     
-    // Declared in TransformedSimplex.hpp
+    // Declared in MappedSimplex.hpp
     template <int iNumDimensions, int iNumVertices>
     inline const Function&
-    TransformedSimplex<iNumDimensions, iNumVertices>::function() const {
+    MappedSimplex<iNumDimensions, iNumVertices>::function() const {
         return _function;
     }
 
     // Declared in Simplex.hpp
     template <int iNumDimensions, int iNumVertices> template <int iArgumentDimensions>
     Simplex<iNumDimensions, iNumVertices>::Simplex(
-        const TransformedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex
+        const MappedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex
     ) {
         if (transformedSimplex.function().numDimensions() == iNumDimensions) {
             _vertices = transformedSimplex.function()(transformedSimplex.argument().vertices());
@@ -74,10 +74,10 @@ namespace opensolid
         }
     }
 
-    // Declared in TransformedDatum.hpp
+    // Declared in MappedDatum.hpp
     template <int iNumDimensions, int iNumAxes>
     inline
-    TransformedDatum<iNumDimensions, iNumAxes>::TransformedDatum(
+    MappedDatum<iNumDimensions, iNumAxes>::MappedDatum(
         const Datum<iNumDimensions, iNumAxes>& datum,
         const Function& function
     ) : _datum(datum),
@@ -86,24 +86,24 @@ namespace opensolid
         assert(function.numParameters() == iNumDimensions);
     }
     
-    // Declared in TransformedDatum.hpp
+    // Declared in MappedDatum.hpp
     template <int iNumDimensions, int iNumAxes>
     inline const Datum<iNumDimensions, iNumAxes>&
-    TransformedDatum<iNumDimensions, iNumAxes>::datum() const {
+    MappedDatum<iNumDimensions, iNumAxes>::datum() const {
         return _datum;
     }
     
-    // Declared in TransformedDatum.hpp
+    // Declared in MappedDatum.hpp
     template <int iNumDimensions, int iNumAxes>
     inline const Function&
-    TransformedDatum<iNumDimensions, iNumAxes>::function() const {
+    MappedDatum<iNumDimensions, iNumAxes>::function() const {
         return _function;
     }
 
     // Declared in Datum.hpp
     template <int iNumDimensions, int iNumAxes> template <int iArgumentDimensions>
     Datum<iNumDimensions, iNumAxes>::Datum(
-        const TransformedDatum<iArgumentDimensions, iNumAxes>& transformedDatum
+        const MappedDatum<iArgumentDimensions, iNumAxes>& transformedDatum
     ) {
         if (transformedDatum.function().numDimensions() == iNumDimensions) {
             Matrix<double, iArgumentDimensions, 1> argumentOrigin =

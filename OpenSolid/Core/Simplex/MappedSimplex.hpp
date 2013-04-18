@@ -26,24 +26,24 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/Simplex.declarations.hpp>
 #include <OpenSolid/Core/Function.declarations.hpp>
 
 namespace opensolid
 {
-    template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum
+    template<int iNumDimensions, int iNumVertices>
+    class MappedSimplex
     {
     private:
-        const Datum<iNumDimensions, iNumAxes>& _datum;
+        const Simplex<iNumDimensions, iNumVertices>& _simplex;
         const Function& _function;
     public:
-        TransformedDatum(
-            const Datum<iNumDimensions, iNumAxes>& datum,
+        MappedSimplex(
+            const Simplex<iNumDimensions, iNumVertices>& simplex,
             const Function& function
         );
         
-        const Datum<iNumDimensions, iNumAxes>& datum() const;
+        const Simplex<iNumDimensions, iNumVertices>& simplex() const;
         const Function& function() const;
     };
 }

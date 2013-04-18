@@ -33,7 +33,7 @@
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
-#include <OpenSolid/Core/Datum/TransformedDatum.hpp>
+#include <OpenSolid/Core/Datum/MappedDatum.hpp>
 
 namespace opensolid
 {
@@ -71,7 +71,7 @@ namespace opensolid
 
         // Defined in Function.hpp
         template <int iArgumentDimensions>
-        Datum(const TransformedDatum<iArgumentDimensions, iNumAxes>& transformedDatum);
+        Datum(const MappedDatum<iArgumentDimensions, iNumAxes>& transformedDatum);
         
         const Point<iNumDimensions>&
         originPoint() const;
@@ -178,7 +178,7 @@ namespace opensolid
         Datum<iNumDimensions, iNumAxes>
         normalized() const;
         
-        TransformedDatum<iNumDimensions, iNumAxes>
+        MappedDatum<iNumDimensions, iNumAxes>
         mapped(const Function& function) const;
     };
 }

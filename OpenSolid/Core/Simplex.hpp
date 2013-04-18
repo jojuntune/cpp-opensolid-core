@@ -36,7 +36,7 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
-#include <OpenSolid/Core/Simplex/TransformedSimplex.hpp>
+#include <OpenSolid/Core/Simplex/MappedSimplex.hpp>
 
 namespace opensolid
 {
@@ -57,7 +57,7 @@ namespace opensolid
 
         // Defined in Function.hpp
         template <int iArgumentDimensions>
-        Simplex(const TransformedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex);
+        Simplex(const MappedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex);
             
         Simplex<iNumDimensions, iNumVertices>&
         operator=(const Simplex<iNumDimensions, iNumVertices>& other);
@@ -113,7 +113,7 @@ namespace opensolid
         Box<iNumDimensions>
         bounds() const;
 
-        TransformedSimplex<iNumDimensions, iNumVertices>
+        MappedSimplex<iNumDimensions, iNumVertices>
         transformed(const Function& function) const;
         
         bool
@@ -422,9 +422,9 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices>
-    inline TransformedSimplex<iNumDimensions, iNumVertices>
+    inline MappedSimplex<iNumDimensions, iNumVertices>
     Simplex<iNumDimensions, iNumVertices>::transformed(const Function& function) const {
-        return TransformedSimplex<iNumDimensions, iNumVertices>(*this, function);
+        return MappedSimplex<iNumDimensions, iNumVertices>(*this, function);
     }
         
     template <int iNumDimensions, int iNumVertices>

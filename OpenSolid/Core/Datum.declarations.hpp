@@ -32,5 +32,5 @@ namespace opensolid
     class Datum;
 
     template<int iNumDimensions, int iNumAxes>
-    class TransformedDatum;
+    class MappedDatum;
 }

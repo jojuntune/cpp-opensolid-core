@@ -40,5 +40,5 @@ namespace opensolid
     class Tetrahedron3d;
 
     template<int iNumDimensions, int iNumVertices>
-    class TransformedSimplex;
+    class MappedSimplex;
 }

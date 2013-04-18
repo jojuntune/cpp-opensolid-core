@@ -33,7 +33,7 @@
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
-#include <OpenSolid/Core/Datum/TransformedDatum.hpp>
+#include <OpenSolid/Core/Datum/MappedDatum.hpp>
 
 namespace opensolid
 {
@@ -466,9 +466,9 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline TransformedDatum<iNumDimensions, iNumAxes>
+    inline MappedDatum<iNumDimensions, iNumAxes>
     Datum<iNumDimensions, iNumAxes>::mapped(const Function& function) const {
-        return TransformedDatum<iNumDimensions, iNumAxes>(*this, function);
+        return MappedDatum<iNumDimensions, iNumAxes>(*this, function);
     }
 
     template <int iNumDimensions, int iNumAxes>
