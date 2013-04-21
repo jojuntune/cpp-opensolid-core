@@ -10,11 +10,10 @@
     
 ########## Set up user configuration options ##########
 
-    set(BUILD_CORE_MODULE OFF CACHE BOOL "Build core module")
-    set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module (depends on core module)")
-    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module (requires Boost.Python, Python, depends on core module)")
-    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on core and Python modules)")
-    set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules")
+    set(BUILD_DYNAMIC_LIBS ON CACHE BOOL "Build dynamic libraries")
+    set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
+    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on I/O module)")
+    set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
     
 ########## Set up common build settings ##########
@@ -22,11 +21,15 @@
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
     add_definitions(-D_USE_MATH_DEFINES)
 
+    # Add preprocessor definition for dynamic libraries to enable propery setup
+    # of dllimport/dllexport in MSVC builds
+    if (${BUILD_DYNAMIC_LIBS})
+        add_definitions(-DOPENSOLID_BUILD_DYNAMIC_LIBS)
+    endif()
+
     # Set up compiler-specific flags
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        message("Detected GCC compiler")
-
-        # Enable pthread
+        # Enable pthreads
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
         
@@ -50,13 +53,18 @@
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
         endif()
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        message("Detected Clang compiler")
-
+        # Enable pthreads
         add_definitions(-DHAVE_PTHREAD)
+
+        # Set up warnings
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unused-function")
+
+        # Enable dynamic loading
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
         set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ldl")
         set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -ldl")
+
+        # Set up proper linking to low-level libraries on different platforms
         if(APPLE)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
@@ -69,10 +77,9 @@
             set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -pthread")
         endif()
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-        message("Detected Visual Studio compiler")
-
-        # Make sure min/max macros are not defined by windows.h (conflicts with interval min/max and
-        # Eigen code), and avoid warning about boost string algorithms
+        # Make sure min/max macros are not defined by windows.h (conflicts with
+        # interval min/max and  Eigen code), and avoid warning about boost
+        # string algorithms
         add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
         
         # Add /MP flag for parallel compilation within projects
@@ -91,7 +98,7 @@
         message("Compiler type not detected!")
     endif()
 
-    # Place all executables, libraries in one directory
+    # Place all executables and libraries in one directory
     if(MSVC_IDE)
         set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
         set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
@@ -108,37 +115,21 @@
 
     # Set up external dependencies
     add_subdirectory(External)
+
+    # Include Eigen root directory to allow inclusion of Eigen headers
+    include_directories(${EIGEN_ROOT})
     
     # Add root directory to include path to allow for #include <OpenSolid/...>
     include_directories(.)
     
-    # Build core library if selected
-    if(${BUILD_CORE_MODULE})
-        include_directories(${EIGEN_ROOT})
-        add_subdirectory(OpenSolid/Core)
-    endif()
+    # Build core library
+    add_subdirectory(OpenSolid/Core)
     
     # Build I/O module if selected
     if(${BUILD_IO_MODULE})
         include_directories(${PROTOBUF_ROOT})
         include_directories(${SQLITE_ROOT})
         add_subdirectory(OpenSolid/IO)
-    endif()
-    
-    # Build Python module if selected
-    if(${BUILD_PYTHON_MODULE})
-        # Set up Python
-        find_package(PythonInterp REQUIRED)
-        find_package(PythonLibs REQUIRED)
-        include_directories(${PYTHON_INCLUDE_DIRS})
-    
-        # Set up Boost
-        find_package(Boost REQUIRED COMPONENTS python)
-        include_directories(${Boost_INCLUDE_DIRS})
-        # Add Boost library directory to link path so auto-linking works when using MSVC
-        link_directories(${Boost_LIBRARY_DIRS})
-        
-        add_subdirectory(OpenSolid/Python)
     endif()
     
     # Build UI if selected
@@ -156,7 +147,8 @@
         include_directories(${OPENGL_INCLUDE_DIR})
         # Most POSIX systems have OpenGL headers in GL/ subdirectory
         include_directories(${OPENGL_INCLUDE_DIR}/GL)
-        # Mac OS X has OpenGL headers in Headers/ subdirectory of framework directory
+        # Mac OS X has OpenGL headers in Headers/ subdirectory of framework
+        # directory
         include_directories(${OPENGL_INCLUDE_DIR}/Headers)
     
         add_subdirectory(OpenSolid/UI)
@@ -164,7 +156,8 @@
     
     # Build tests if selected
     if(${BUILD_TESTS})
-        # Need to call enable_testing at project root for testing to be enabled properly
+        # Need to call enable_testing at project root for testing to be enable
+        # properly
         enable_testing()
         add_subdirectory(Tests)
     endif()

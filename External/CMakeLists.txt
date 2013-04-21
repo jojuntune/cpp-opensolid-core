@@ -5,20 +5,20 @@
 ########## Set up flag to use to disable compiler warnings on external code ##########
 
     set(DISABLE_WARNINGS_FLAG "")
-    if(CMAKE_COMPILER_IS_GNUCXX)
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         set(DISABLE_WARNINGS_FLAG "-w")
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(DISABLE_WARNINGS_FLAG "-w")
-    elseif(MSVC)
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         set(DISABLE_WARNINGS_FLAG "/w")
+    else()
+        message("Compiler type not detected!")
     endif()
     
 ########## Build external projects where required by OpenSolid modules ##########
 
-    if(${BUILD_CORE_MODULE})
-        add_subdirectory(Eigen)
-        set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
-    endif()
+    add_subdirectory(Eigen)
+    set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
     
     if(${BUILD_IO_MODULE})
         add_subdirectory(SQLite)

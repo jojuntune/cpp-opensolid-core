@@ -1,5 +1,6 @@
 ########## Set up SQLite source tree ##########
 
+    # Extract SQLite sources from tarball
     externalproject_add(
         sqlite_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
@@ -9,6 +10,8 @@
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
     )
+
+    # Store location of SQLite root include directory
     set(SQLITE_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/sqlite_sources)
     
     # Set SQLITE_ROOT in external/ directory (will then be passed up to root)
@@ -17,10 +20,10 @@
 ########## Build SQLite library ##########
 
     add_library(sqlite_library STATIC ${SQLITE_ROOT}/sqlite3.c)
-    set_target_properties(sqlite_library PROPERTIES OUTPUT_NAME sqlite3 DEBUG_POSTFIX _debug)
+    set_target_properties(sqlite_library PROPERTIES OUTPUT_NAME sqlite3_static DEBUG_POSTFIX _debug)
     set_source_files_properties(${SQLITE_ROOT}/sqlite3.c PROPERTIES GENERATED TRUE)
     add_dependencies(sqlite_library sqlite_sources)
-    if(CMAKE_COMPILER_IS_GNUCXX)
+    if(${CMAKE_COMPILER_IS_GNUCXX})
         find_package(Threads)
         target_link_libraries(sqlite_library dl ${CMAKE_THREAD_LIBS_INIT})
     endif()

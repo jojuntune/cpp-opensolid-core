@@ -17,12 +17,14 @@
         Transformation/*.cpp
     )
 
-    add_library(OpenSolidCore SHARED ${CORE_SOURCES})
-    add_library(OpenSolidCoreStatic STATIC ${CORE_SOURCES})
+    if(${BUILD_DYNAMIC_LIBS})
+        add_library(OpenSolidCore SHARED ${CORE_SOURCES})
+    else()
+        add_library(OpenSolidCore STATIC ${CORE_SOURCES})
+        set_target_properties(OpenSolidCore PROPERTIES OUTPUT_NAME OpenSolidCoreStatic)
+    endif()
     set_target_properties(OpenSolidCore PROPERTIES DEBUG_POSTFIX Debug)
-    set_target_properties(OpenSolidCoreStatic PROPERTIES DEBUG_POSTFIX Debug)
     add_dependencies(OpenSolidCore eigen_sources)
-    add_dependencies(OpenSolidCoreStatic eigen_sources)
     
 ########## Install OpenSolidCore headers and library ##########
 
@@ -33,7 +35,7 @@
     )
         
     install(
-        TARGETS OpenSolidCore OpenSolidCoreStatic
+        TARGETS OpenSolidCore
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib

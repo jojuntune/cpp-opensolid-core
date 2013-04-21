@@ -1,18 +1,33 @@
 ########## Set up Eigen source tree ##########
 
+    # Extract Eigen sources from tarball
     externalproject_add(
         eigen_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         URL ${CMAKE_CURRENT_SOURCE_DIR}/eigen-3.1.3.tar.gz
         URL_MD5 dc4247efd4f5d796041f999e8774af04
-        PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/patch.cmake
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
     )
 
-    add_dependencies(eigen_sources eigen_plugin_headers)
+    # Add custom eigen_patch step to copy updated plugin headers into the Eigen
+    # extraction directory if the plugin headers change. This will also trigger
+    # a recompile of all targets that depend on Eigen (i.e., everything)
+    externalproject_add_step(
+        eigen_sources
+        eigen_patch
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/patch.cmake
+        DEPENDEES download
+        DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/DenseBasePlugin.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/MatrixBasePlugin.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/MatrixPlugin.hpp
+        WORKING_DIRECTORY
+        ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources
+    )
     
+    # Store location of Eigen root include directory
     set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)
     
     # Set EIGEN_ROOT in external/ directory (will then be passed up to root)
