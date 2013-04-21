@@ -37,77 +37,87 @@
 namespace opensolid
 {
     // TODO
-    void FunctionImplementation::evaluateJacobian(
-        const MapXcd& parameterValues,
-        MapXd& results
-    ) const {
+    void
+    FunctionImplementation::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {
         throw FeatureNotImplemented();
     }
     
     // TODO
-    void FunctionImplementation::evaluateJacobian(
-        const MapXcI& parameterBounds,
-        MapXI& results
-    ) const {
+    void
+    FunctionImplementation::evaluateJacobian(const MapXcI& parameterBounds, MapXI& results) const {
         throw FeatureNotImplemented();
     }
 
     FunctionImplementation::~FunctionImplementation() {
     }
         
-    const ConstantFunction* FunctionImplementation::asConstant() const {
+    const ConstantFunction*
+    FunctionImplementation::asConstant() const {
         return 0;
     }
 
-    const IdentityFunction* FunctionImplementation::asIdentity() const {
+    const IdentityFunction*
+    FunctionImplementation::asIdentity() const {
         return 0;
     }
 
-    const ParameterFunction* FunctionImplementation::asParameter() const {
+    const ParameterFunction*
+    FunctionImplementation::asParameter() const {
         return 0;
     }
     
-    Function FunctionImplementation::components(int startIndex, int numComponents) const {
+    Function
+    FunctionImplementation::components(int startIndex, int numComponents) const {
         return new ComponentsFunction(this, startIndex, numComponents);
     }
     
-    Function FunctionImplementation::compose(const Function& innerFunction) const {
+    Function
+    FunctionImplementation::compose(const Function& innerFunction) const {
         return new CompositionFunction(this, innerFunction);
     }
         
-    Function FunctionImplementation::scaled(double scale) const {
+    Function
+    FunctionImplementation::scaled(double scale) const {
         return new TempScalingFunction(scale, this);
     }
         
-    Function FunctionImplementation::translated(const VectorXd& vector) const {
+    Function
+    FunctionImplementation::translated(const VectorXd& vector) const {
         return new TempTranslationFunction(this, vector);
     }
         
-    Function FunctionImplementation::transformed(const MatrixXd& transformationMatrix) const {
+    Function
+    FunctionImplementation::transformed(const MatrixXd& transformationMatrix) const {
         return new TempTransformationFunction(transformationMatrix, this);
     }
     
-    Function FunctionImplementation::norm() const {
+    Function
+    FunctionImplementation::norm() const {
         return new NormFunction(this);
     }
     
-    Function FunctionImplementation::normalized() const {
+    Function
+    FunctionImplementation::normalized() const {
         return new NormalizedFunction(this);
     }
     
-    Function FunctionImplementation::squaredNorm() const {
+    Function
+    FunctionImplementation::squaredNorm() const {
         return new SquaredNormFunction(this);
     }
     
-    Function FunctionImplementation::tangentVector() const {
+    Function
+    FunctionImplementation::tangentVector() const {
         return derivative().normalized();
     }
     
-    Function FunctionImplementation::curvature() const {
+    Function
+    FunctionImplementation::curvature() const {
         return tangentVector().derivative().norm() / derivative().norm();
     }
     
-    Function FunctionImplementation::normalVector() const {
+    Function
+    FunctionImplementation::normalVector() const {
         assert(numParameters() == 1 || numParameters() == 2);
         if (numParameters() == 1) {
             return tangentVector().derivative().normalized();
@@ -117,7 +127,8 @@ namespace opensolid
         }
     }
     
-    Function FunctionImplementation::binormalVector() const {
+    Function
+    FunctionImplementation::binormalVector() const {
         return tangentVector().cross(normalVector());
     }
 }
