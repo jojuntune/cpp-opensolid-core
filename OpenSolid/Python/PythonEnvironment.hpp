@@ -114,7 +114,7 @@ namespace opensolid
         
         OPENSOLID_PYTHON_EXPORT ~ConversionFromPythonError() throw ();
 
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
         OPENSOLID_PYTHON_EXPORT boost::python::object pythonObject() const;
     };
 
@@ -125,187 +125,187 @@ namespace opensolid
         
         OPENSOLID_PYTHON_EXPORT ~ConversionToPythonError() throw ();
         
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class UnexpectedPythonError : public Error
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonException : public Error
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonArithmeticError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonFloatingPointError : public PythonArithmeticError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonOverflowError : public PythonArithmeticError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonZeroDivisionError : public PythonArithmeticError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonAssertionError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonAttributeError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonBufferError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonEnvironmentError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonIOError : public PythonEnvironmentError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonOSError : public PythonEnvironmentError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonEOFError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonImportError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonLookupError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonIndexError : public PythonLookupError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonKeyError : public PythonLookupError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonMemoryError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonNameError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonUnboundLocalError : public PythonNameError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonReferenceError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonRuntimeError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonNotImplementedError : public PythonRuntimeError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonSyntaxError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonIndentationError : public PythonSyntaxError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonSystemError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonTypeError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonValueError : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonUnicodeError : public PythonValueError
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 
     class PythonWarning : public PythonException
     {
     public:
-        OPENSOLID_PYTHON_EXPORT const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_EXPORT const char* what() const throw() override;
     };
 }
 

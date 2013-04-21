@@ -45,7 +45,7 @@ namespace opensolid
             filename.c_str(),
             &m_handle->database,
             flags,
-            OPENSOLID_NULLPTR
+            nullptr
         );
         if (result != SQLITE_OK) {throw FileOpenError(filename, mode);}
         if (mode != "r") {

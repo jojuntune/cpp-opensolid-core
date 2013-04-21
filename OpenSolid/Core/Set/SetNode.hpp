@@ -271,8 +271,8 @@ namespace opensolid
             assert(_leftChild && _rightChild);
             _leftChild->getLeaves(leaves);
             _rightChild->getLeaves(leaves);
-            _leftChild = OPENSOLID_NULLPTR;
-            _rightChild = OPENSOLID_NULLPTR;
+            _leftChild = nullptr;
+            _rightChild = nullptr;
             delete this;
         }
     }
@@ -287,11 +287,11 @@ namespace opensolid
         if (otherNode._element) {
             assert(!otherNode._leftChild && !otherNode._rightChild);
             _element = new TElement(*otherNode._element);
-            _leftChild = OPENSOLID_NULLPTR;
-            _rightChild = OPENSOLID_NULLPTR;
+            _leftChild = nullptr;
+            _rightChild = nullptr;
         } else {
             assert(otherNode._leftChild && otherNode._rightChild);
-            _element = OPENSOLID_NULLPTR;
+            _element = nullptr;
             _leftChild = new SetNode<TElement>(*otherNode._leftChild);
             _rightChild = new SetNode<TElement>(*otherNode._rightChild);
         }
@@ -304,8 +304,8 @@ namespace opensolid
         const typename BoundsFunction<TElement>::ResultType& bounds
     ) : _element(new TElement(element)),
         _bounds(bounds),
-        _leftChild(OPENSOLID_NULLPTR),
-        _rightChild(OPENSOLID_NULLPTR),
+        _leftChild(nullptr),
+        _rightChild(nullptr),
         _size(1) {
     }
     
@@ -317,7 +317,7 @@ namespace opensolid
         double splitValue,
         SetNode<TElement>* leftChild,
         SetNode<TElement>* rightChild
-    ) : _element(OPENSOLID_NULLPTR),
+    ) : _element(nullptr),
         _bounds(overallBounds),
         _splitDirection(splitDirection),
         _splitValue(splitValue),
@@ -332,7 +332,7 @@ namespace opensolid
         SetNode<TElement>** begin,
         SetNode<TElement>** end
     ) {
-        _element = OPENSOLID_NULLPTR;
+        _element = nullptr;
         _bounds = overallBounds;
         _size = end - begin;
         detail::split(_bounds, _splitDirection, _splitValue);
@@ -558,7 +558,7 @@ namespace opensolid
             assert(!_leftChild && !_rightChild);
             if (*_element == element) {
                 delete this;
-                return OPENSOLID_NULLPTR;
+                return nullptr;
             } else {
                 return this;
             }
@@ -573,12 +573,12 @@ namespace opensolid
             }
             if (!_leftChild) {
                 SetNode<TElement>* result = _rightChild;
-                _rightChild = OPENSOLID_NULLPTR;
+                _rightChild = nullptr;
                 delete this;
                 return result;
             } else if (!_rightChild) {
                 SetNode<TElement>* result = _leftChild;
-                _leftChild = OPENSOLID_NULLPTR;
+                _leftChild = nullptr;
                 delete this;
                 return result;
             } else {

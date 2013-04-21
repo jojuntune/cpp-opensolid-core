@@ -46,7 +46,9 @@ namespace opensolid
         double _upperBound;
     public:
         Interval();
+
         Interval(double value);
+        
         Interval(double lowerBound, double upperBound);
         
         double
@@ -313,6 +315,9 @@ namespace opensolid
     
     Interval
     abs2(Interval interval);
+
+    double
+    infinity();
 
     OPENSOLID_CORE_EXPORT std::ostream&
     operator<<(std::ostream& stream, Interval interval);

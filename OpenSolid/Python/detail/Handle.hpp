@@ -50,7 +50,7 @@ namespace opensolid
     public:
         OPENSOLID_PYTHON_MODULE_EXPORT ~InvalidHandle() throw ();
 
-        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() OPENSOLID_OVERRIDE;
+        OPENSOLID_PYTHON_MODULE_EXPORT virtual const char* what() const throw() override;
     };
 }
 
@@ -59,7 +59,7 @@ namespace opensolid
 namespace opensolid
 {
     template <class Type>
-    Handle<Type>::Handle() : _pointer(OPENSOLID_NULLPTR) {}
+    Handle<Type>::Handle() : _pointer(nullptr) {}
 
     template <class Type>
     Handle<Type>::Handle(Type* argument) : _pointer(argument) {}

@@ -42,13 +42,13 @@ namespace opensolid
     template <class TElement>
     inline
     Set<TElement>::Set(BoundsFunction<TElement> boundsFunction) :
-        _root(OPENSOLID_NULLPTR), _boundsFunction(boundsFunction) {
+        _root(nullptr), _boundsFunction(boundsFunction) {
     }
     
     template <class TElement>
     inline
     Set<TElement>::Set(const Set<TElement>& otherSet) :
-        _root(otherSet.isEmpty() ? OPENSOLID_NULLPTR : new SetNode<TElement>(*otherSet.root())),
+        _root(otherSet.isEmpty() ? nullptr : new SetNode<TElement>(*otherSet.root())),
         _boundsFunction(otherSet._boundsFunction) {
     }
         
@@ -70,7 +70,7 @@ namespace opensolid
             }
         );
         if (nodes.empty()) {
-            _root = OPENSOLID_NULLPTR;
+            _root = nullptr;
         } else if (nodes.size() == 1) {
             _root = nodes[0];
         } else {
@@ -210,7 +210,7 @@ namespace opensolid
     Set<TElement>::clear() {
         if (_root) {
             delete _root;
-            _root = OPENSOLID_NULLPTR;
+            _root = nullptr;
         }
     }
 

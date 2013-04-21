@@ -265,7 +265,7 @@ public:
         TS_ASSERT((point1 - point2).isZero());
         TS_ASSERT(origin.vector().isZero());
         TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
-        TS_ASSERT((point1.rotatedAbout(pi() / 2, Axis3d::X()) - Point3d(1, -3, 2)).isZero());
+        TS_ASSERT((point1.rotatedAbout(M_PI / 2, Axis3d::X()) - Point3d(1, -3, 2)).isZero());
     }
 
     void testBox() {

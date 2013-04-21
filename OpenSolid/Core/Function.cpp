@@ -639,7 +639,7 @@ namespace opensolid
         }
         if (const ConstantFunction* constant = function.asConstant()) {
             double value = constant->vector().value();
-            if (std::fmod(value - pi() / 2, pi()) == opensolid::Zero()) {
+            if (std::fmod(value - M_PI / 2, M_PI) == opensolid::Zero()) {
                 assert(false);
                 return Function();
             }

@@ -490,6 +490,11 @@ namespace opensolid
     abs2(Interval interval) {
         return interval.squared();
     }
+
+    inline double
+    infinity() {
+        return std::numeric_limits<double>::infinity();
+    }
     
     inline Interval
     BoundsFunction<Interval>::operator()(Interval interval) const {
