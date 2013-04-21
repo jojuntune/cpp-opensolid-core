@@ -22,21 +22,17 @@
 *                                                                                   *
 *************************************************************************************/
 
-#pragma once
-
-#include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/Error.definitions.hpp>
+#include <OpenSolid/Core/Error.hpp>
 
 namespace opensolid
 {
-    template <int iErrorNumber>
-    Error::Error(UniqueErrorNumber<iErrorNumber>) :
-        _errorNumber(iErrorNumber) {
+    int
+    Error::errorNumber() const {
+        return _errorNumber;
     }
 
-    template <int iErrorNumber>
-    NumberedError<iErrorNumber>::NumberedError() :
-        Error(UniqueErrorNumber<iErrorNumber>()) {
+    const char*
+    FeatureNotImplemented::what() const throw() {
+        return "Feature not implemented";
     }
 }

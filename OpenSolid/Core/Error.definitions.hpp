@@ -26,17 +26,39 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Error.definitions.hpp>
+#include <OpenSolid/Core/Error.declarations.hpp>
+
+#include <exception>
 
 namespace opensolid
 {
-    template <int iErrorNumber>
-    Error::Error(UniqueErrorNumber<iErrorNumber>) :
-        _errorNumber(iErrorNumber) {
-    }
+    class Error : public std::exception
+    {
+    private:
+        int _errorNumber;
+    
+        template <int iErrorNumber>
+        Error(UniqueErrorNumber<iErrorNumber>);
+    
+        template <int iErrorNumber> friend class NumberedError;
+    public:
+        int errorNumber() const;
+    };
 
     template <int iErrorNumber>
-    NumberedError<iErrorNumber>::NumberedError() :
-        Error(UniqueErrorNumber<iErrorNumber>()) {
-    }
+    class NumberedError : public Error
+    {
+    public:
+        static const int ErrorNumber = iErrorNumber;
+    protected:
+        NumberedError();
+    };
+
+    class FeatureNotImplemented : public NumberedError<1>
+    {
+    public:
+        const char* what() const throw() override;
+    };
+
+    template <> struct UniqueErrorNumber<FeatureNotImplemented::ErrorNumber> {};
 }
