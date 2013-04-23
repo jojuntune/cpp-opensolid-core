@@ -450,14 +450,14 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumAxes, int iTransformedDimensions>
+    template <int iNumDimensions, int iNumAxes, int iNumTransformedDimensions>
     template <class TMatrix>
-    Datum<iTransformedDimensions, iNumAxes>
-    TransformationFunction<Datum<iNumDimensions, iNumAxes>, iTransformedDimensions>::operator()(
+    Datum<iNumTransformedDimensions, iNumAxes>
+    TransformationFunction<Datum<iNumDimensions, iNumAxes>, iNumTransformedDimensions>::operator()(
         const Datum<iNumDimensions, iNumAxes>& datum,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Datum<iTransformedDimensions, iNumAxes>(
+        return Datum<iNumTransformedDimensions, iNumAxes>(
             datum.originPoint().transformed(matrix.derived()),
             matrix.derived() * datum.basisMatrix()
         );

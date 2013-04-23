@@ -168,14 +168,14 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumParameters, int iTransformedDimensions>
+    template <int iNumDimensions, int iNumParameters, int iNumTransformedDimensions>
     template <class TMatrix>
-    Geometry<iTransformedDimensions, iNumParameters>
-    TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iTransformedDimensions>::operator()(
+    Geometry<iNumTransformedDimensions, iNumParameters>
+    TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumTransformedDimensions>::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Geometry<iTransformedDimensions, iNumParameters>(
+        return Geometry<iNumTransformedDimensions, iNumParameters>(
             matrix.derived() * geometry.function(),
             geometry.domain()
         );

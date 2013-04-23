@@ -150,13 +150,13 @@ namespace opensolid
         operator()(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) const;
     };
 
-    template <int iNumDimensions, int iTransformedDimensions>
-    struct TransformationFunction<Point<iNumDimensions>, iTransformedDimensions>
+    template <int iNumDimensions, int iNumTransformedDimensions>
+    struct TransformationFunction<Point<iNumDimensions>, iNumTransformedDimensions>
     {
-        typedef Point<iTransformedDimensions> ResultType;
+        typedef Point<iNumTransformedDimensions> ResultType;
 
         template <class TMatrix>
-        Point<iTransformedDimensions>
+        Point<iNumTransformedDimensions>
         operator()(
             const Point<iNumDimensions>& point,
             const EigenBase<TMatrix>& matrix

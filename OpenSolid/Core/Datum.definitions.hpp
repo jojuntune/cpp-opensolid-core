@@ -196,13 +196,13 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumAxes, int iTransformedDimensions>
-    struct TransformationFunction<Datum<iNumDimensions, iNumAxes>, iTransformedDimensions>
+    template <int iNumDimensions, int iNumAxes, int iNumTransformedDimensions>
+    struct TransformationFunction<Datum<iNumDimensions, iNumAxes>, iNumTransformedDimensions>
     {
-        typedef Datum<iTransformedDimensions, iNumAxes> ResultType;
+        typedef Datum<iNumTransformedDimensions, iNumAxes> ResultType;
 
         template <class TMatrix>
-        Datum<iTransformedDimensions, iNumAxes>
+        Datum<iNumTransformedDimensions, iNumAxes>
         operator()(
             const Datum<iNumDimensions, iNumAxes>& datum,
             const EigenBase<TMatrix>& transformationMatrix

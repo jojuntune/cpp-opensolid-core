@@ -158,9 +158,9 @@ namespace opensolid
     {
     };
 
-    template <int iNumDimensions, int iTransformedDimensions>
-    struct TransformationFunction<Frame<iNumDimensions>, iTransformedDimensions> :
-        public TransformationFunction<Datum<iNumDimensions, iNumDimensions>, iTransformedDimensions>
+    template <int iNumDimensions, int iNumTransformedDimensions>
+    struct TransformationFunction<Frame<iNumDimensions>, iNumTransformedDimensions> :
+        public TransformationFunction<Datum<iNumDimensions, iNumDimensions>, iNumTransformedDimensions>
     {
     };
 }

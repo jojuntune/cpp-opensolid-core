@@ -209,13 +209,13 @@ namespace opensolid
         return Point<iNumDimensions>(point.vector() + vector.derived());
     }
 
-    template <int iNumDimensions, int iTransformedDimensions> template <class TMatrix>
-    inline Point<iTransformedDimensions>
-    TransformationFunction<Point<iNumDimensions>, iTransformedDimensions>::operator()(
+    template <int iNumDimensions, int iNumTransformedDimensions> template <class TMatrix>
+    inline Point<iNumTransformedDimensions>
+    TransformationFunction<Point<iNumDimensions>, iNumTransformedDimensions>::operator()(
         const Point<iNumDimensions>& point,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Point<iTransformedDimensions>(matrix.derived() * point.vector());
+        return Point<iNumTransformedDimensions>(matrix.derived() * point.vector());
     }
 
     template <int iNumDimensions, int iNumDestinationDimensions>

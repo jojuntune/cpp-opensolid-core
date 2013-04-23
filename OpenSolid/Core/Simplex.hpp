@@ -316,14 +316,14 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumVertices, int iTransformedDimensions>
+    template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
     template <class TMatrix>
-    Simplex<iTransformedDimensions, iNumVertices>
-    TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iTransformedDimensions>::operator()(
+    Simplex<iNumTransformedDimensions, iNumVertices>
+    TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumTransformedDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Simplex<iTransformedDimensions, iNumVertices>(matrix.derived() * simplex.vertices());
+        return Simplex<iNumTransformedDimensions, iNumVertices>(matrix.derived() * simplex.vertices());
     }
 
     template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>

@@ -682,16 +682,16 @@ namespace opensolid
         return Set<TElement>(translatedElements.begin(), translatedElements.end());
     }
 
-    template <class TElement, int iTransformedDimensions> template <class TMatrix>
-    Set<typename TransformationFunction<TElement, iTransformedDimensions>::ResultType>
-    TransformationFunction<Set<TElement>, iTransformedDimensions>::operator()(
+    template <class TElement, int iNumTransformedDimensions> template <class TMatrix>
+    Set<typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType>
+    TransformationFunction<Set<TElement>, iNumTransformedDimensions>::operator()(
         const Set<TElement>& set,
         const EigenBase<TMatrix>& matrix
     ) const {
-        typedef typename TransformationFunction<TElement, iTransformedDimensions>::ResultType
+        typedef typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType
             TransformedElementType;
 
-        TransformationFunction<TElement, iTransformedDimensions> transformationFunction;
+        TransformationFunction<TElement, iNumTransformedDimensions> transformationFunction;
         std::vector<TransformedElementType> transformedElements;
         set.transform(
             [transformationFunction, &matrix] (const TElement& element) -> TransformedElementType {

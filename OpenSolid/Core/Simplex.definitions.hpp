@@ -134,13 +134,13 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumVertices, int iTransformedDimensions>
-    struct TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iTransformedDimensions>
+    template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
+    struct TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumTransformedDimensions>
     {
-        typedef Simplex<iTransformedDimensions, iNumVertices> ResultType;
+        typedef Simplex<iNumTransformedDimensions, iNumVertices> ResultType;
 
         template <class TMatrix>
-        Simplex<iTransformedDimensions, iNumVertices>
+        Simplex<iNumTransformedDimensions, iNumVertices>
         operator()(
             const Simplex<iNumDimensions, iNumVertices>& simplex,
             const EigenBase<TMatrix>& matrix

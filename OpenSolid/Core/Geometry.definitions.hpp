@@ -124,13 +124,13 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumParameters, int iTransformedDimensions>
-    struct TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iTransformedDimensions>
+    template <int iNumDimensions, int iNumParameters, int iNumTransformedDimensions>
+    struct TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumTransformedDimensions>
     {
-        typedef Geometry<iTransformedDimensions, iNumParameters> ResultType;
+        typedef Geometry<iNumTransformedDimensions, iNumParameters> ResultType;
 
         template <class TMatrix>
-        Geometry<iTransformedDimensions, iNumParameters>
+        Geometry<iNumTransformedDimensions, iNumParameters>
         operator()(
             const Geometry<iNumDimensions, iNumParameters>& geometry,
             const EigenBase<TMatrix>& matrix

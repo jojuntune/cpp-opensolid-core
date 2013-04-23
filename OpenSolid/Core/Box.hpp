@@ -293,40 +293,40 @@ namespace opensolid
         return Box<iNumDimensions>(box.vector() + vector.derived().template cast<Interval>());
     }
 
-    template <int iTransformedDimensions> template <class TMatrix>
-    Box<iTransformedDimensions>
-    TransformationFunction<Box1d, iTransformedDimensions>::operator()(
+    template <int iNumTransformedDimensions> template <class TMatrix>
+    Box<iNumTransformedDimensions>
+    TransformationFunction<Box1d, iNumTransformedDimensions>::operator()(
         const Box1d& box,
         const EigenBase<TMatrix>& matrix
     ) const {
-        Box<iTransformedDimensions> result;
-        for (int i = 0; i < iTransformedDimensions; ++i) {
+        Box<iNumTransformedDimensions> result;
+        for (int i = 0; i < iNumTransformedDimensions; ++i) {
             result(i) = matrix.derived()(i, 0) * box.x();
         }
         return result;
     }
 
-    template <int iTransformedDimensions> template <class TMatrix>
-    Box<iTransformedDimensions>
-    TransformationFunction<Box2d, iTransformedDimensions>::operator()(
+    template <int iNumTransformedDimensions> template <class TMatrix>
+    Box<iNumTransformedDimensions>
+    TransformationFunction<Box2d, iNumTransformedDimensions>::operator()(
         const Box2d& box,
         const EigenBase<TMatrix>& matrix
     ) const {
-        Box<iTransformedDimensions> result;
-        for (int i = 0; i < iTransformedDimensions; ++i) {
+        Box<iNumTransformedDimensions> result;
+        for (int i = 0; i < iNumTransformedDimensions; ++i) {
             result(i) = matrix.derived()(i, 0) * box.x() + matrix.derived()(i, 1) * box.y();
         }
         return result;
     }
 
-    template <int iTransformedDimensions> template <class TMatrix>
-    Box<iTransformedDimensions>
-    TransformationFunction<Box3d, iTransformedDimensions>::operator()(
+    template <int iNumTransformedDimensions> template <class TMatrix>
+    Box<iNumTransformedDimensions>
+    TransformationFunction<Box3d, iNumTransformedDimensions>::operator()(
         const Box3d& box,
         const EigenBase<TMatrix>& matrix
     ) const {
-        Box<iTransformedDimensions> result;
-        for (int i = 0; i < iTransformedDimensions; ++i) {
+        Box<iNumTransformedDimensions> result;
+        for (int i = 0; i < iNumTransformedDimensions; ++i) {
             result(i) = matrix.derived()(i, 0) * box.x() + matrix.derived()(i, 1) * box.y() +
                 matrix.derived()(i, 2) * box.z();
         }

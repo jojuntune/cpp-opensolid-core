@@ -193,33 +193,33 @@ namespace opensolid
         operator()(const Box<iNumDimensions>& box, const EigenBase<TVector>& vector) const;
     };
 
-    template <int iTransformedDimensions>
-    struct TransformationFunction<Box1d, iTransformedDimensions>
+    template <int iNumTransformedDimensions>
+    struct TransformationFunction<Box1d, iNumTransformedDimensions>
     {
-        typedef Box<iTransformedDimensions> ResultType;
+        typedef Box<iNumTransformedDimensions> ResultType;
 
         template <class TMatrix>
-        Box<iTransformedDimensions>
+        Box<iNumTransformedDimensions>
         operator()(const Box1d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iTransformedDimensions>
-    struct TransformationFunction<Box2d, iTransformedDimensions>
+    template <int iNumTransformedDimensions>
+    struct TransformationFunction<Box2d, iNumTransformedDimensions>
     {
-        typedef Box<iTransformedDimensions> ResultType;
+        typedef Box<iNumTransformedDimensions> ResultType;
 
         template <class TMatrix>
-        Box<iTransformedDimensions>
+        Box<iNumTransformedDimensions>
         operator()(const Box2d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iTransformedDimensions>
-    struct TransformationFunction<Box3d, iTransformedDimensions>
+    template <int iNumTransformedDimensions>
+    struct TransformationFunction<Box3d, iNumTransformedDimensions>
     {
-        typedef Box<iTransformedDimensions> ResultType;
+        typedef Box<iNumTransformedDimensions> ResultType;
 
         template <class TMatrix>
-        Box<iTransformedDimensions>
+        Box<iNumTransformedDimensions>
         operator()(const Box3d& box, const EigenBase<TMatrix>& matrix) const;
     };
 

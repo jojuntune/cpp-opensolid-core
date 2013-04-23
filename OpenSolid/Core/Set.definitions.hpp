@@ -258,10 +258,10 @@ namespace opensolid
         operator()(const Set<TElement>& set, const EigenBase<TVector>& vector) const;
     };
 
-    template <class TElement, int iTransformedDimensions>
-    struct TransformationFunction<Set<TElement>, iTransformedDimensions>
+    template <class TElement, int iNumTransformedDimensions>
+    struct TransformationFunction<Set<TElement>, iNumTransformedDimensions>
     {
-        typedef Set<typename TransformationFunction<TElement, iTransformedDimensions>::ResultType>
+        typedef Set<typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType>
             ResultType;
 
         template <class TMatrix>
