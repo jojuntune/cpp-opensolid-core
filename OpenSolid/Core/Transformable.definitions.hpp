@@ -63,8 +63,8 @@ namespace opensolid
         TDerived
         translatedAlong(double coordinateValue, const Datum<iNumDimensions, 1>& axis) const;
 
-        template <class TMatrix, int iNumTransformedDimensions = TMatrix::RowsAtCompileTime>
-        typename TransformationFunction<TDerived, iNumTransformedDimensions>::ResultType
+        template <class TMatrix>
+        typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
         transformed(const EigenBase<TMatrix>& matrix) const;
 
         TDerived
