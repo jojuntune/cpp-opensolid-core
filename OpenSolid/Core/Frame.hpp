@@ -33,12 +33,12 @@
 namespace opensolid
 {
     inline
-    Frame2d::Frame2d(const Datum<2, 2>& other) :
+    Frame<2>::Frame(const Datum<2, 2>& other) :
         Datum<2, 2>(other) {
     }
 
     inline
-    Frame3d::Frame3d(const Datum<3, 3>& other) :
+    Frame<3>::Frame(const Datum<3, 3>& other) :
         Datum<3, 3>(other) {
     }
 }

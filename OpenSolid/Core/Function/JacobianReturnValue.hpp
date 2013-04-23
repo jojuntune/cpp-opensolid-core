@@ -26,165 +26,40 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Function/JacobianReturnValue.definitions.hpp>
+
+#include <OpenSolid/Core/Function/MatrixArgument.hpp>
+#include <OpenSolid/Core/Function/JacobianCache.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
-#include <OpenSolid/Core/Function/MatrixArgument.hpp>
-
 namespace opensolid
 {
-    template<class TEvaluator, class TArgument>
-    class JacobianReturnValue;
-}
-
-namespace Eigen
-{
-    namespace internal
-    {
-        template <class TEvaluator, class TArgument>
-        struct traits<opensolid::JacobianReturnValue<TEvaluator, TArgument>>
-        {
-            typedef Matrix<typename TArgument::Scalar, Dynamic, TArgument::RowsAtCompileTime>
-                ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template <class TEvaluator>
-        struct traits<opensolid::JacobianReturnValue<TEvaluator, int>>
-        {
-            typedef VectorXd ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template<class TEvaluator>
-        struct traits<opensolid::JacobianReturnValue<TEvaluator, double>>
-        {
-            typedef VectorXd ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template<class TEvaluator>
-        struct traits<opensolid::JacobianReturnValue<TEvaluator, opensolid::Interval>>
-        {
-            typedef VectorXI ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-    }
-}
-
-namespace opensolid
-{
-    template<class TEvaluator, class TArgument>
-    class JacobianReturnValue : public ReturnByValue<JacobianReturnValue<TEvaluator, TArgument>>
-    {
-    private:
-        const TEvaluator& _evaluator;
-        const TArgument& _argument;
-    public:
-        JacobianReturnValue(const TEvaluator& evaluator, const TArgument& argument);
-        
-        int rows() const;
-        int cols() const;
-        
-        template<class TResult>
-        void evalTo(TResult& result) const;
-        
-        typename TArgument::Scalar value() const;
-        bool isZero(double tolerance = 1e-12) const;
-    };
-    
-    template<class TEvaluator>
-    class JacobianReturnValue<TEvaluator, int> :
-        public ReturnByValue<JacobianReturnValue<TEvaluator, int>>
-    {
-    private:
-        const TEvaluator& _evaluator;
-        double _argument;
-    public:
-        JacobianReturnValue(const TEvaluator& evaluator, int argument);
-        
-        int rows() const;
-        int cols() const;
-        
-        template<class TResult>
-        void evalTo(TResult& result) const;
-        
-        double value() const;
-        bool isZero(double precision = 1e-12) const;
-    };
-    
-    template<class TEvaluator>
-    class JacobianReturnValue<TEvaluator, double> :
-        public ReturnByValue<JacobianReturnValue<TEvaluator, double>>
-    {
-    private:
-        const TEvaluator& _evaluator;
-        double _argument;
-    public:
-        JacobianReturnValue(const TEvaluator& evaluator, double argument);
-        
-        int rows() const;
-        int cols() const;
-        
-        template<class TResult>
-        void evalTo(TResult& result) const;
-        
-        double value() const;
-        bool isZero(double precision = 1e-12) const;
-    };
-    
-    template<class TEvaluator>
-    class JacobianReturnValue<TEvaluator, Interval> :
-        public ReturnByValue<JacobianReturnValue<TEvaluator, Interval>>
-    {
-    private:
-        const TEvaluator& _evaluator;
-        Interval _argument;
-    public:
-        JacobianReturnValue(const TEvaluator& evaluator, Interval argument);
-        
-        int rows() const;
-        int cols() const;
-        
-        template<class TResult>
-        void evalTo(TResult& result) const;
-        
-        Interval value() const;
-        bool isZero(double precision = 1e-12) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace opensolid
-{
-    template<class TEvaluator, class TArgument>
-    inline JacobianReturnValue<TEvaluator, TArgument>::JacobianReturnValue(
-        const TEvaluator& evaluator,
+    template <class TArgument>
+    inline
+    JacobianReturnValue<TArgument>::JacobianReturnValue(
+        const FunctionImplementation* functionImplementation,
         const TArgument& argument
-    ) : _evaluator(evaluator), _argument(argument) {
+    ) : _functionImplementation(functionImplementation),
+        _argument(argument) {
     }
     
-    template<class TEvaluator, class TArgument>
-    inline int JacobianReturnValue<TEvaluator, TArgument>::rows() const {
-        return _evaluator.numDimensions();
+    template <class TArgument>
+    inline int
+    JacobianReturnValue<TArgument>::rows() const {
+        return _functionImplementation->numDimensions();
     }
     
-    template<class TEvaluator, class TArgument>
-    inline int JacobianReturnValue<TEvaluator, TArgument>::cols() const {
-        return _evaluator.numParameters();
+    template <class TArgument>
+    inline int
+    JacobianReturnValue<TArgument>::cols() const {
+        return _functionImplementation->numParameters();
     }
     
-    template<class TEvaluator, class TArgument> template<class TResult>
-    inline void JacobianReturnValue<TEvaluator, TArgument>::evalTo(TResult& result) const {
+    template <class TArgument> template <class TResult>
+    inline void
+    JacobianReturnValue<TArgument>::evalTo(TResult& result) const {
         MatrixArgument<TArgument> argument(_argument);
         
         // Common typedefs
@@ -211,42 +86,48 @@ namespace opensolid
             ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        JacobianCache<Scalar> cache;
+
         // Evaluate
-        _evaluator.evaluateJacobian(argumentMap, resultMap);
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
     }
     
-    template<class TEvaluator, class TArgument>
-    inline typename TArgument::Scalar JacobianReturnValue<TEvaluator, TArgument>::value() const {
+    template <class TArgument>
+    inline typename TArgument::Scalar
+    JacobianReturnValue<TArgument>::value() const {
         Matrix<typename TArgument::Scalar, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class TEvaluator, class TArgument>
-    inline bool JacobianReturnValue<TEvaluator, TArgument>::isZero(double precision) const {
+    template <class TArgument>
+    inline bool
+    JacobianReturnValue<TArgument>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    template <class TEvaluator>
-    inline JacobianReturnValue<TEvaluator, int>::JacobianReturnValue(
-        const TEvaluator& evaluator,
+    inline
+    JacobianReturnValue<int>::JacobianReturnValue(
+        const FunctionImplementation* functionImplementation,
         int argument
-    ) : _evaluator(evaluator),
+    ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
-    template <class TEvaluator>
-    inline int JacobianReturnValue<TEvaluator, int>::rows() const {
-        return _evaluator.numDimensions();
+    inline int
+    JacobianReturnValue<int>::rows() const {
+        return _functionImplementation->numDimensions();
     }
     
-    template <class TEvaluator>
-    inline int JacobianReturnValue<TEvaluator, int>::cols() const {
+    inline int
+    JacobianReturnValue<int>::cols() const {
         return 1;
     }
     
-    template <class TEvaluator> template<class TResult>
-    inline void JacobianReturnValue<TEvaluator, int>::evalTo(TResult& result) const {
+    template <class TResult>
+    inline void
+    JacobianReturnValue<int>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -260,42 +141,46 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        JacobianCache<double> cache;
+
         // Evaluate
-        _evaluator.evaluateJacobian(argumentMap, resultMap);
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
     }
     
-    template <class TEvaluator>
-    inline double JacobianReturnValue<TEvaluator, int>::value() const {
+    inline double
+    JacobianReturnValue<int>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class TEvaluator>
-    inline bool JacobianReturnValue<TEvaluator, int>::isZero(double precision) const {
+    inline bool
+    JacobianReturnValue<int>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    template <class TEvaluator>
-    inline JacobianReturnValue<TEvaluator, double>::JacobianReturnValue(
-        const TEvaluator& evaluator,
+    inline
+    JacobianReturnValue<double>::JacobianReturnValue(
+        const FunctionImplementation* functionImplementation,
         double argument
-    ) : _evaluator(evaluator),
+    ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
-    template <class TEvaluator>
-    inline int JacobianReturnValue<TEvaluator, double>::rows() const {
-        return _evaluator.numDimensions();
+    inline int
+    JacobianReturnValue<double>::rows() const {
+        return _functionImplementation->numDimensions();
     }
     
-    template <class TEvaluator>
-    inline int JacobianReturnValue<TEvaluator, double>::cols() const {
+    inline int
+    JacobianReturnValue<double>::cols() const {
         return 1;
     }
     
-    template <class TEvaluator> template<class TResult>
-    inline void JacobianReturnValue<TEvaluator, double>::evalTo(TResult& result) const {
+    template <class TResult>
+    inline void
+    JacobianReturnValue<double>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -309,42 +194,46 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        JacobianCache<double> cache;
+
         // Evaluate
-        _evaluator.evaluateJacobian(argumentMap, resultMap);
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
     }
     
-    template <class TEvaluator>
-    inline double JacobianReturnValue<TEvaluator, double>::value() const {
+    inline double
+    JacobianReturnValue<double>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class TEvaluator>
-    inline bool JacobianReturnValue<TEvaluator, double>::isZero(double precision) const {
+    inline bool
+    JacobianReturnValue<double>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
-    template <class TEvaluator>
-    inline JacobianReturnValue<TEvaluator, Interval>::JacobianReturnValue(
-        const TEvaluator& evaluator,
+    inline
+    JacobianReturnValue<Interval>::JacobianReturnValue(
+        const FunctionImplementation* functionImplementation,
         Interval argument
-    ) : _evaluator(evaluator),
+    ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
-    
-    template <class TEvaluator>
-    inline int JacobianReturnValue<TEvaluator, Interval>::rows() const {
-        return _evaluator.numDimensions();
+
+    inline int
+    JacobianReturnValue<Interval>::rows() const {
+        return _functionImplementation->numDimensions();
     }
     
-    template <class TEvaluator>
-    inline int JacobianReturnValue<TEvaluator, Interval>::cols() const {
+    inline int
+    JacobianReturnValue<Interval>::cols() const {
         return 1;
     }
     
-    template <class TEvaluator> template<class TResult>
-    inline void JacobianReturnValue<TEvaluator, Interval>::evalTo(TResult& result) const {
+    template <class TResult>
+    inline void
+    JacobianReturnValue<Interval>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -358,19 +247,22 @@ namespace opensolid
         typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
+        // Allocate empty result cache
+        JacobianCache<Interval> cache;
+        
         // Evaluate
-        _evaluator.evaluateJacobian(argumentMap, resultMap);
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
     }
     
-    template <class TEvaluator>
-    inline Interval JacobianReturnValue<TEvaluator, Interval>::value() const {
+    inline Interval
+    JacobianReturnValue<Interval>::value() const {
         Matrix<Interval, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class TEvaluator>
-    inline bool JacobianReturnValue<TEvaluator, Interval>::isZero(double precision) const {
+    inline bool
+    JacobianReturnValue<Interval>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
 }

@@ -49,7 +49,7 @@ namespace opensolid
     void CosineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         results = cache.results(operand(), parameterValues).array().cos();
     }
@@ -57,7 +57,7 @@ namespace opensolid
     void CosineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         results = cache.results(operand(), parameterBounds).array().cos();
     }

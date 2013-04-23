@@ -64,7 +64,7 @@ namespace opensolid
     void TempTransformationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         results = transformationMatrix() *
             cache.results(operand(), parameterValues);
@@ -73,7 +73,7 @@ namespace opensolid
     void TempTransformationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         results = transformationMatrix().cast<Interval>() *
             cache.results(operand(), parameterBounds);

@@ -26,24 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Simplex.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
-
 namespace opensolid
 {
-    template<int iNumDimensions, int iNumVertices>
-    class MappedSimplex
-    {
-    private:
-        const Simplex<iNumDimensions, iNumVertices>& _simplex;
-        const Function& _function;
-    public:
-        MappedSimplex(
-            const Simplex<iNumDimensions, iNumVertices>& simplex,
-            const Function& function
-        );
-        
-        const Simplex<iNumDimensions, iNumVertices>& simplex() const;
-        const Function& function() const;
-    };
+    template <class TArgument>
+    class JacobianReturnValue;
 }

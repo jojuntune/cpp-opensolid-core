@@ -28,8 +28,11 @@
 
 #include <OpenSolid/Core/Box.definitions.hpp>
 
-#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 ////////// Implementation //////////
 
@@ -328,6 +331,22 @@ namespace opensolid
                 matrix.derived()(i, 2) * box.z();
         }
         return result;
+    }
+
+    template <int iNumDimensions, int iNumDestinationDimensions>
+    inline Box<iNumDestinationDimensions>
+    MappingFunction<Box<iNumDimensions>, iNumDestinationDimensions>::operator()(
+        const Box<iNumDimensions>& box,
+        const Function& function
+    ) const {
+        bool validInput = function.numParameters() == iNumDimensions;
+        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
+        if (validInput && validOutput) {
+            return Box<iNumDestinationDimensions>(function(box.vector()));
+        } else {
+            assert(false);
+            return Box<iNumDestinationDimensions>();
+        }
     }
 
     template <int iNumDimensions>

@@ -26,6 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Point.declarations.hpp>
+
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
@@ -159,6 +161,15 @@ namespace opensolid
             const Point<iNumDimensions>& point,
             const EigenBase<TMatrix>& matrix
         ) const;
+    };
+
+    template <int iNumDimensions, int iNumDestinationDimensions>
+    struct MappingFunction<Point<iNumDimensions>, iNumDestinationDimensions>
+    {
+        typedef Point<iNumDestinationDimensions> ResultType;
+
+        Point<iNumDestinationDimensions>
+        operator()(const Point<iNumDimensions>& point, const Function& function) const;
     };
 
     template <int iNumDimensions>

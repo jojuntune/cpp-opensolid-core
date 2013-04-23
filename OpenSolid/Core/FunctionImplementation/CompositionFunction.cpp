@@ -57,7 +57,7 @@ namespace opensolid
     void CompositionFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         MapXcd innerValues = cache.results(secondOperand(), parameterValues);
         results = cache.results(firstOperand(), innerValues);
@@ -66,7 +66,7 @@ namespace opensolid
     void CompositionFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         MapXcI innerBounds = cache.results(secondOperand(), parameterBounds);
         results = cache.results(firstOperand(), innerBounds);

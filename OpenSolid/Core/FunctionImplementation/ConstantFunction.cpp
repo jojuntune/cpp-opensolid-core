@@ -70,7 +70,7 @@ namespace opensolid
     void ConstantFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd&
+        EvaluateCache<double>&
     ) const {
         results.colwise() = vector();
     }
@@ -78,7 +78,7 @@ namespace opensolid
     void ConstantFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI&
+        EvaluateCache<Interval>&
     ) const {
         results.colwise() = bounds();
     }

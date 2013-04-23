@@ -33,8 +33,6 @@
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
-#include <OpenSolid/Core/Datum/MappedDatum.hpp>
-
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
@@ -68,10 +66,6 @@ namespace opensolid
         Datum<iNumDimensions, iNumAxes>& operator=(
             const Datum<iNumDimensions, iNumAxes>& otherDatum
         );
-
-        // Defined in Function.hpp
-        template <int iArgumentDimensions>
-        Datum(const MappedDatum<iArgumentDimensions, iNumAxes>& transformedDatum);
         
         const Point<iNumDimensions>&
         originPoint() const;
@@ -177,9 +171,6 @@ namespace opensolid
         
         Datum<iNumDimensions, iNumAxes>
         normalized() const;
-        
-        MappedDatum<iNumDimensions, iNumAxes>
-        mapped(const Function& function) const;
     };
 }
 
@@ -216,5 +207,14 @@ namespace opensolid
             const Datum<iNumDimensions, iNumAxes>& datum,
             const EigenBase<TMatrix>& transformationMatrix
         ) const;
+    };
+
+    template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
+    struct MappingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
+    {
+        typedef Datum<iNumDestinationDimensions, iNumAxes> ResultType;
+
+        Datum<iNumDestinationDimensions, iNumAxes>
+        operator()(const Datum<iNumDimensions, iNumAxes>& datum, const Function& function) const;
     };
 }

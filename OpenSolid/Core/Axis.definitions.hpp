@@ -35,7 +35,8 @@
 namespace opensolid
 {
     template <>
-    class Axis<2> : public Datum<2, 1>
+    class Axis<2> :
+        public Datum<2, 1>
     {
     public:
         OPENSOLID_CORE_EXPORT
@@ -59,7 +60,8 @@ namespace opensolid
     typedef Axis<2> Axis2d;
 
     template <>
-    class Axis<3> : public Datum<3, 1>
+    class Axis<3> :
+        public Datum<3, 1>
     {
     public:
         OPENSOLID_CORE_EXPORT

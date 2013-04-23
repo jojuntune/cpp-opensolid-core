@@ -28,102 +28,16 @@
 
 #include <OpenSolid/Core/Function.definitions.hpp>
 
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Datum/MappedDatum.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
-#include <OpenSolid/Core/Simplex/MappedSimplex.hpp>
+#include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
+#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
-{
-    // Declared in MappedSimplex.hpp
-    template <int iNumDimensions, int iNumVertices>
-    inline
-    MappedSimplex<iNumDimensions, iNumVertices>::MappedSimplex(
-        const Simplex<iNumDimensions, iNumVertices>& simplex,
-        const Function& function
-    ) : _simplex(simplex),
-        _function(function) {
-
-        assert(function.numParameters() == iNumDimensions);
-    }
-    
-    // Declared in MappedSimplex.hpp
-    template <int iNumDimensions, int iNumVertices>
-    inline const Simplex<iNumDimensions, iNumVertices>&
-    MappedSimplex<iNumDimensions, iNumVertices>::simplex() const {
-        return _simplex;
-    }
-    
-    // Declared in MappedSimplex.hpp
-    template <int iNumDimensions, int iNumVertices>
-    inline const Function&
-    MappedSimplex<iNumDimensions, iNumVertices>::function() const {
-        return _function;
-    }
-
-    // Declared in Simplex.hpp
-    template <int iNumDimensions, int iNumVertices> template <int iArgumentDimensions>
-    Simplex<iNumDimensions, iNumVertices>::Simplex(
-        const MappedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex
-    ) {
-        if (transformedSimplex.function().numDimensions() == iNumDimensions) {
-            _vertices = transformedSimplex.function()(transformedSimplex.argument().vertices());
-        } else {
-            assert(false);
-            _vertices.setZero();
-        }
-    }
-
-    // Declared in MappedDatum.hpp
-    template <int iNumDimensions, int iNumAxes>
-    inline
-    MappedDatum<iNumDimensions, iNumAxes>::MappedDatum(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const Function& function
-    ) : _datum(datum),
-        _function(function) {
-
-        assert(function.numParameters() == iNumDimensions);
-    }
-    
-    // Declared in MappedDatum.hpp
-    template <int iNumDimensions, int iNumAxes>
-    inline const Datum<iNumDimensions, iNumAxes>&
-    MappedDatum<iNumDimensions, iNumAxes>::datum() const {
-        return _datum;
-    }
-    
-    // Declared in MappedDatum.hpp
-    template <int iNumDimensions, int iNumAxes>
-    inline const Function&
-    MappedDatum<iNumDimensions, iNumAxes>::function() const {
-        return _function;
-    }
-
-    // Declared in Datum.hpp
-    template <int iNumDimensions, int iNumAxes> template <int iArgumentDimensions>
-    Datum<iNumDimensions, iNumAxes>::Datum(
-        const MappedDatum<iArgumentDimensions, iNumAxes>& transformedDatum
-    ) {
-        if (transformedDatum.function().numDimensions() == iNumDimensions) {
-            Matrix<double, iArgumentDimensions, 1> argumentOrigin =
-                transformedDatum.argument().originPoint();
-
-            Matrix<double, iNumDimensions, iNumAxes> jacobian =
-                transformedDatum.function().jacobian(argumentOrigin);
-
-            initialize(
-                transformedDatum.function()(argumentOrigin),
-                jacobian * transformedDatum.argument().basisMatrix()
-            );
-        } else {
-            assert(false);
-            _originPoint.setZero();
-            _basisMatrix.setZero();
-            _inverseMatrix.setZero();
-        }
-    }
-    
+{   
     inline const FunctionImplementation*
     Function::implementation() const {
         return _implementation.get();
@@ -155,46 +69,24 @@ namespace opensolid
         return MatrixReturnValue<TMatrix>(implementation(), matrix.derived());
     }
 
-    inline JacobianReturnValue<Function, int>
+    inline JacobianReturnValue<int>
     Function::jacobian(int value) const {
-        return JacobianReturnValue<Function, int>(*this, value);
+        return JacobianReturnValue<int>(implementation(), value);
     }
 
-    inline JacobianReturnValue<Function, double>
+    inline JacobianReturnValue<double>
     Function::jacobian(double value) const {
-        return JacobianReturnValue<Function, double>(*this, value);
+        return JacobianReturnValue<double>(implementation(), value);
     }
 
-    inline JacobianReturnValue<Function, Interval>
+    inline JacobianReturnValue<Interval>
     Function::jacobian(Interval interval) const {
-        return JacobianReturnValue<Function, Interval>(*this, interval);
+        return JacobianReturnValue<Interval>(implementation(), interval);
     }
 
     template <class TVector>
-    inline JacobianReturnValue<Function, TVector>
+    inline JacobianReturnValue<TVector>
     Function::jacobian(const EigenBase<TVector>& vector) const {
-        return JacobianReturnValue<Function, TVector>(*this, vector.derived());
-    }
-
-    inline Function
-    ScalingFunction<Function>::operator()(const Function& function, double scale) const {
-        return scale * function;
-    }
-
-    inline Function
-    TranslationFunction<Function>::operator()(
-        const Function& function,
-        const VectorXd& vector
-    ) const {
-        return function + vector;
-    }
-
-    template <int iTransformedDimensions>
-    inline Function
-    TransformationFunction<Function, iTransformedDimensions>::operator()(
-        const Function& function,
-        const MatrixXd& matrix
-    ) const {
-        return matrix * function;
+        return JacobianReturnValue<TVector>(implementation(), vector.derived());
     }
 }

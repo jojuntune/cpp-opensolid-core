@@ -28,7 +28,10 @@
 
 #include <OpenSolid/Core/Point.definitions.hpp>
 
-#include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
@@ -213,6 +216,22 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return Point<iTransformedDimensions>(matrix.derived() * point.vector());
+    }
+
+    template <int iNumDimensions, int iNumDestinationDimensions>
+    inline Point<iNumDestinationDimensions>
+    MappingFunction<Point<iNumDimensions>, iNumDestinationDimensions>::operator()(
+        const Point<iNumDimensions>& point,
+        const Function& function
+    ) const {
+        bool validInput = function.numParameters() == iNumDimensions;
+        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
+        if (validInput && validOutput) {
+            return Point<iNumDestinationDimensions>(function(point.vector()));
+        } else {
+            assert(false);
+            return Point<iNumDestinationDimensions>();
+        }
     }
 
     template <int iNumDimensions>

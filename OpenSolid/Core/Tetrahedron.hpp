@@ -24,60 +24,13 @@
 
 #pragma once
 
+#include <OpenSolid/config.hpp>
+
+#include <OpenSolid/Core/Tetrahedron.definitions.hpp>
+
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
-
-namespace opensolid
-{
-    class Tetrahedron3d :
-        public Simplex<3, 4>
-    {
-    public:
-        Tetrahedron3d();
-
-        Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron);
-
-        Tetrahedron3d(
-            const Point3d& firstVertex,
-            const Point3d& secondVertex,
-            const Point3d& thirdVertex,
-            const Point3d& fourthVertex
-        );
-
-        static Tetrahedron3d
-        Unit();
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct ScalingFunction<Tetrahedron3d> :
-        public ScalingFunction<Simplex<3, 4>>
-    {
-    };
-
-    template <>
-    struct TranslationFunction<Tetrahedron3d> :
-        public TranslationFunction<Simplex<3, 4>>
-    {
-    };
-
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Tetrahedron3d, iNumTransformedDimensions> :
-        public TransformationFunction<Simplex<3, 4>, iNumTransformedDimensions>
-    {
-    };
-
-    template <>
-    struct BoundsFunction<Tetrahedron3d> :
-        public BoundsFunction<Simplex<3, 4>>
-    {
-    };
-}
-
-////////// Implementation //////////
 
 namespace opensolid
 {

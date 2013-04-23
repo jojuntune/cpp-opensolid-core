@@ -28,6 +28,8 @@
 
 #include <OpenSolid/Core/Domain.definitions.hpp>
 
+#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Set.hpp>
 
 namespace opensolid
@@ -78,13 +80,31 @@ namespace opensolid
         return Domain<iNumDimensions>(domain.boundaries().translated(vector));
     }
 
-    template <int iNumDimensions, int iTransformedDimensions> template <class TMatrix>
-    Domain<iTransformedDimensions>
-    TransformationFunction<Domain<iNumDimensions>, iTransformedDimensions>::operator()(
+    template <int iNumDimensions> template <class TMatrix>
+    Domain<iNumDimensions>
+    TransformationFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
         const Domain<iNumDimensions>& domain,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Domain<iTransformedDimensions>(domain.boundaries().transformed(matrix));
+        return Domain<iNumDimensions>(domain.boundaries().transformed(matrix));
+    }
+
+    template <int iNumDimensions>
+    Domain<iNumDimensions>
+    MappingFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
+        const Domain<iNumDimensions>& domain,
+        const Function& function
+    ) const {
+        bool validInput = function.numParameters() == iNumDimensions;
+        bool validOutput = function.numDimensions() == iNumDimensions;
+        if (validInput && validOutput) {
+            return Domain<iNumDimensions>(
+                domain.boundaries().template mapped<iNumDimensions>(function)
+            );
+        } else {
+            assert(false);
+            return Domain<iNumDimensions>();
+        }
     }
 
     template <int iNumDimensions>

@@ -26,171 +26,13 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
+#include <OpenSolid/Core/Function/MatrixReturnValue.definitions.hpp>
 
 #include <OpenSolid/Core/Function/MatrixArgument.hpp>
-
-namespace opensolid
-{
-    template <class TArgument>
-    class MatrixReturnValue;
-}
-
-namespace Eigen
-{
-    namespace internal
-    {
-        template <class TArgument>
-        struct traits<opensolid::MatrixReturnValue<TArgument>>
-        {
-            typedef Matrix<typename TArgument::Scalar, Dynamic, TArgument::ColsAtCompileTime>
-                ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template <>
-        struct traits<opensolid::MatrixReturnValue<int>>
-        {
-            typedef VectorXd ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template<>
-        struct traits<opensolid::MatrixReturnValue<double>>
-        {
-            typedef VectorXd ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-        
-        template<>
-        struct traits<opensolid::MatrixReturnValue<opensolid::Interval>>
-        {
-            typedef VectorXI ReturnType;
-
-            static const int Flags =
-                (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
-        };
-    }
-}
-
-namespace opensolid
-{
-    template <class TArgument>
-    class MatrixReturnValue : public ReturnByValue<MatrixReturnValue<TArgument>>
-    {
-    private:
-        const FunctionImplementation* _functionImplementation;
-        const TArgument& _argument;
-    public:
-        MatrixReturnValue(
-            const FunctionImplementation* functionImplementation,
-            const TArgument& argument
-        );
-        
-        int
-        rows() const;
-        
-        int
-        cols() const;
-        
-        template <class TResult>
-        void
-        evalTo(TResult& result) const;
-        
-        typename TArgument::Scalar value() const;
-        bool
-        isZero(double tolerance = 1e-12) const;
-    };
-    
-    template<>
-    class MatrixReturnValue<int> :
-        public ReturnByValue<MatrixReturnValue<int>>
-    {
-    private:
-        const FunctionImplementation* _functionImplementation;
-        double _argument;
-    public:
-        MatrixReturnValue(const FunctionImplementation* functionImplementation, int argument);
-        
-        int
-        rows() const;
-        
-        int
-        cols() const;
-        
-        template <class TResult>
-        void
-        evalTo(TResult& result) const;
-        
-        double
-        value() const;
-        
-        bool
-        isZero(double precision = 1e-12) const;
-    };
-    
-    template<>
-    class MatrixReturnValue<double> :
-        public ReturnByValue<MatrixReturnValue<double>>
-    {
-    private:
-        const FunctionImplementation* _functionImplementation;
-        double _argument;
-    public:
-        MatrixReturnValue(const FunctionImplementation* functionImplementation, double argument);
-        
-        int
-        rows() const;
-        
-        int
-        cols() const;
-        
-        template <class TResult>
-        void
-        evalTo(TResult& result) const;
-        
-        double
-        value() const;
-        
-        bool
-        isZero(double precision = 1e-12) const;
-    };
-    
-    template<>
-    class MatrixReturnValue<Interval> :
-        public ReturnByValue<MatrixReturnValue<Interval>>
-    {
-    private:
-        const FunctionImplementation* _functionImplementation;
-        Interval _argument;
-    public:
-        MatrixReturnValue(const FunctionImplementation* functionImplementation, Interval argument);
-        
-        int
-        rows() const;
-        
-        int
-        cols() const;
-        
-        template <class TResult>
-        void
-        evalTo(TResult& result) const;
-        
-        Interval value() const;
-        bool
-        isZero(double precision = 1e-12) const;
-    };
-}
-
-////////// Implementation //////////
+#include <OpenSolid/Core/Function/EvaluateCache.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
@@ -245,7 +87,7 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<Scalar> cache;
+        EvaluateCache<Scalar> cache;
 
         // Evaluate
         _functionImplementation->evaluate(argumentMap, resultMap, cache);
@@ -300,7 +142,7 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<double> cache;
+        EvaluateCache<double> cache;
 
         // Evaluate
         _functionImplementation->evaluate(argumentMap, resultMap, cache);
@@ -353,7 +195,7 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<double> cache;
+        EvaluateCache<double> cache;
 
         // Evaluate
         _functionImplementation->evaluate(argumentMap, resultMap, cache);
@@ -406,7 +248,7 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Allocate empty result cache
-        ResultCache<Interval> cache;
+        EvaluateCache<Interval> cache;
         
         // Evaluate
         _functionImplementation->evaluate(argumentMap, resultMap, cache);

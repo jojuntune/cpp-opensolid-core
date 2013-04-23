@@ -68,7 +68,7 @@ namespace opensolid
     void ComponentsFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         MapXcd operandValues = cache.results(operand(), parameterValues);
         results = operandValues.middleRows(startIndex(), numComponents());
@@ -77,7 +77,7 @@ namespace opensolid
     void ComponentsFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         MapXcI operandBounds = cache.results(operand(), parameterBounds);
         results = operandBounds.middleRows(startIndex(), numComponents());

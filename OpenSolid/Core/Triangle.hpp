@@ -24,80 +24,11 @@
 
 #pragma once
 
+#include <OpenSolid/Core/Triangle.definitions.hpp>
+
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
-
-namespace opensolid
-{
-    template <>
-    class Triangle<2> :
-        public Simplex<2, 3>
-    {
-    public:
-        Triangle();
-
-        Triangle(const Simplex<2, 3>& otherTriangle);
-
-        Triangle(
-            const Point2d& firstVertex,
-            const Point2d& secondVertex,
-            const Point2d& thirdVertex
-        );
-
-        static Triangle<2>
-        Unit();
-    };
-
-    typedef Triangle<2> Triangle2d;
-
-    template <>
-    class Triangle<3> :
-        public Simplex<3, 3>
-    {
-    public:
-        Triangle();
-
-        Triangle(const Simplex<3, 3>& otherTriangle);
-
-        Triangle(
-            const Point3d& firstVertex,
-            const Point3d& secondVertex,
-            const Point3d& thirdVertex
-        );
-    };
-
-    typedef Triangle<3> Triangle3d;
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions>
-    struct ScalingFunction<Triangle<iNumDimensions>> :
-        public ScalingFunction<Simplex<iNumDimensions, 3>>
-    {
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<Triangle<iNumDimensions>> :
-        public TranslationFunction<Simplex<iNumDimensions, 3>>
-    {
-    };
-
-    template <int iNumDimensions, int iNumTransformedDimensions>
-    struct TransformationFunction<Triangle<iNumDimensions>, iNumTransformedDimensions> :
-        public TransformationFunction<Simplex<iNumDimensions, 3>, iNumTransformedDimensions>
-    {
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Triangle<iNumDimensions>> :
-        public BoundsFunction<Simplex<iNumDimensions, 3>>
-    {
-    };
-}
-
-////////// Implementation //////////
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {

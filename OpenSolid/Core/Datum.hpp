@@ -26,14 +26,13 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/Datum.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-
-#include <OpenSolid/Core/Datum/MappedDatum.hpp>
 
 namespace opensolid
 {
@@ -428,12 +427,6 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline MappedDatum<iNumDimensions, iNumAxes>
-    Datum<iNumDimensions, iNumAxes>::mapped(const Function& function) const {
-        return MappedDatum<iNumDimensions, iNumAxes>(*this, function);
-    }
-
-    template <int iNumDimensions, int iNumAxes>
     Datum<iNumDimensions, iNumAxes>
     ScalingFunction<Datum<iNumDimensions, iNumAxes>>::operator()(
         const Datum<iNumDimensions, iNumAxes>& datum,
@@ -468,5 +461,24 @@ namespace opensolid
             datum.originPoint().transformed(matrix.derived()),
             matrix.derived() * datum.basisMatrix()
         );
+    }
+
+    template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
+    inline Datum<iNumDestinationDimensions, iNumAxes>
+    MappingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>::operator()(
+        const Datum<iNumDimensions, iNumAxes>& datum,
+        const Function& function
+    ) const {
+        bool validInput = function.numParameters() == iNumDimensions;
+        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
+        if (validInput && validOutput) {
+            return Datum<iNumDestinationDimensions, iNumAxes>(
+                datum.originPoint().template mapped<iNumDestinationDimensions>(function),
+                function.jacobian(datum.originPoint().vector()) * datum.basisMatrix()
+            );
+        } else {
+            assert(false);
+            return Datum<iNumDestinationDimensions, iNumAxes>();
+        }
     }
 }

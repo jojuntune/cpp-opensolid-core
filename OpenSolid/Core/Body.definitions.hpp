@@ -33,7 +33,8 @@
 #include <OpenSolid/Core/Geometry.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Set.declarations.hpp>
-#include <OpenSolid/Core/Simplex.declarations.hpp>
+#include <OpenSolid/Core/Tetrahedron.declarations.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {

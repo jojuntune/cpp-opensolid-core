@@ -46,7 +46,7 @@ namespace opensolid
     void NormalizedFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         MapXcd operandValues = cache.results(operand(), parameterValues);
         VectorXd squaredNorms = operandValues.colwise().squaredNorm();
@@ -56,7 +56,7 @@ namespace opensolid
     void NormalizedFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         MapXcI operandBounds = cache.results(operand(), parameterBounds);
         VectorXI squaredNorms = operandBounds.colwise().squaredNorm();

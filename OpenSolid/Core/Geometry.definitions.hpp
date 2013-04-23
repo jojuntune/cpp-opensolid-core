@@ -32,11 +32,10 @@
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Domain.definitions.hpp>
 #include <OpenSolid/Core/Function.definitions.hpp>
+#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-
-#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -135,6 +134,18 @@ namespace opensolid
         operator()(
             const Geometry<iNumDimensions, iNumParameters>& geometry,
             const EigenBase<TMatrix>& matrix
+        ) const;
+    };
+
+    template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
+    struct MappingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>
+    {
+        typedef Geometry<iNumDestinationDimensions, iNumParameters> ResultType;
+
+        Geometry<iNumDestinationDimensions, iNumParameters>
+        operator()(
+            const Geometry<iNumDimensions, iNumParameters>& geometry,
+            const Function& function
         ) const;
     };
 }

@@ -689,17 +689,37 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         typedef typename TransformationFunction<TElement, iTransformedDimensions>::ResultType
-            TransformedElement;
+            TransformedElementType;
 
         TransformationFunction<TElement, iTransformedDimensions> transformationFunction;
-        std::vector<TransformedElement> transformedElements;
+        std::vector<TransformedElementType> transformedElements;
         set.transform(
-            [transformationFunction, &matrix] (const TElement& element) -> TransformedElement {
+            [transformationFunction, &matrix] (const TElement& element) -> TransformedElementType {
                 return transformationFunction(element, matrix);
             },
             std::back_inserter(transformedElements)
         );
-        return Set<TransformedElement>(transformedElements.begin(), transformedElements.end());
+        return Set<TransformedElementType>(transformedElements.begin(), transformedElements.end());
+    }
+
+    template <class TElement, int iNumDestinationDimensions>
+    Set<typename MappingFunction<TElement, iNumDestinationDimensions>::ResultType>
+    MappingFunction<Set<TElement>, iNumDestinationDimensions>::operator()(
+        const Set<TElement>& set,
+        const Function& function
+    ) const {
+        typedef typename MappingFunction<TElement, iNumDestinationDimensions>::ResultType
+            MappedElementType;
+
+        MappingFunction<TElement, iNumDestinationDimensions> mappingFunction;
+        std::vector<MappedElementType> mappedElements;
+        set.transform(
+            [mappingFunction, &function] (const TElement& element) -> MappedElementType {
+                return mappingFunction(element, function);
+            },
+            std::back_inserter(mappedElements)
+        );
+        return Set<MappedElementType>(mappedElements.begin(), mappedElements.end());
     }
 
     template <class TElement>

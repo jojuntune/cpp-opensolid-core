@@ -38,13 +38,21 @@ namespace opensolid
 {
     // TODO
     void
-    FunctionImplementation::evaluateJacobian(const MapXcd& parameterValues, MapXd& results) const {
+    FunctionImplementation::evaluateJacobian(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        JacobianCacheXd& cache
+    ) const {
         throw FeatureNotImplemented();
     }
     
     // TODO
     void
-    FunctionImplementation::evaluateJacobian(const MapXcI& parameterBounds, MapXI& results) const {
+    FunctionImplementation::evaluateJacobian(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        JacobianCacheXI& cache
+    ) const {
         throw FeatureNotImplemented();
     }
 

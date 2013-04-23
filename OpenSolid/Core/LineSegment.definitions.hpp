@@ -26,31 +26,82 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
-#include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
 
-#include <boost/unordered_map.hpp>
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Simplex.definitions.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    template <class TScalar>
-    class ResultCache
+    template <int iNumDimensions>
+    class LineSegment :
+        public Simplex<iNumDimensions, 2>
     {
     public:
-        typedef Matrix<TScalar, Dynamic, Dynamic> MatrixType;
-        typedef Map<const MatrixType, Unaligned, Stride<Dynamic, Dynamic>> MapType;
-    private:
-        typedef std::pair<const FunctionImplementation*, const TScalar*> Key;
+        LineSegment();
 
-        boost::unordered_map<Key, MatrixType> _cachedResults;
-    public:
-        OPENSOLID_CORE_EXPORT MapType results(
-            const Function& function,
-            const MapType& parameterValues
+        LineSegment(const Simplex<iNumDimensions, 2>& other);
+
+        LineSegment(
+            const Point<iNumDimensions>& firstVertex,
+            const Point<iNumDimensions>& secondVertex
         );
     };
 
-    typedef ResultCache<double> ResultCacheXd;
-    typedef ResultCache<Interval> ResultCacheXI;
+    typedef LineSegment<2> LineSegment2d;
+    typedef LineSegment<3> LineSegment3d;
+
+    template <>
+    class LineSegment<1> :
+        public Simplex<1, 2>
+    {
+    public:
+        LineSegment();
+
+        LineSegment(const Simplex<1, 2>& other);
+
+        LineSegment(double startPoint, double endPoint);
+
+        double
+        startPoint() const;
+        
+        double
+        endPoint() const;
+
+        static LineSegment<1>
+        Unit();
+    };
+
+    typedef LineSegment<1> LineSegment1d;
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <int iNumDimensions>
+    struct ScalingFunction<LineSegment<iNumDimensions>> :
+        public ScalingFunction<Simplex<iNumDimensions, 3>>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct TranslationFunction<LineSegment<iNumDimensions>> :
+        public TranslationFunction<Simplex<iNumDimensions, 3>>
+    {
+    };
+
+    template <int iNumDimensions, int iNumTransformedDimensions>
+    struct TransformationFunction<LineSegment<iNumDimensions>, iNumTransformedDimensions> :
+        public TransformationFunction<Simplex<iNumDimensions, 3>, iNumTransformedDimensions>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct BoundsFunction<LineSegment<iNumDimensions>> :
+        public BoundsFunction<Simplex<iNumDimensions, 2>>
+    {
+    };
 }

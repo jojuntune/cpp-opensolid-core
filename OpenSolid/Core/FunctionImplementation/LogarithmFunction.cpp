@@ -47,7 +47,7 @@ namespace opensolid
     void LogarithmFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         results = cache.results(operand(), parameterValues).array().log();
     }
@@ -55,7 +55,7 @@ namespace opensolid
     void LogarithmFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         results = cache.results(operand(), parameterBounds).array().log();
     }

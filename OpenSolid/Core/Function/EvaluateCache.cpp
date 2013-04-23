@@ -22,14 +22,14 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Function/ResultCache.hpp>
+#include <OpenSolid/Core/Function/EvaluateCache.hpp>
 
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
-
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 #include <unordered_map>
 
@@ -38,23 +38,27 @@ namespace opensolid
     namespace
     {
         template <class TScalar>
-        const TScalar* dataPointer(const ConstantFunction* constantFunction);
+        const TScalar*
+        dataPointer(const ConstantFunction* constantFunction);
 
         template <>
-        const double* dataPointer<double>(const ConstantFunction* constantFunction) {
+        const double*
+        dataPointer<double>(const ConstantFunction* constantFunction) {
             return &constantFunction->vector().coeffRef(0);
         }
 
         template <>
-        const Interval* dataPointer<Interval>(const ConstantFunction* constantFunction) {
+        const Interval*
+        dataPointer<Interval>(const ConstantFunction* constantFunction) {
             return &constantFunction->bounds().coeffRef(0);
         }
     }
 
     template <class TScalar>
-    typename ResultCache<TScalar>::MapType ResultCache<TScalar>::results(
+    typename EvaluateCache<TScalar>::MapType
+    EvaluateCache<TScalar>::results(
         const Function& function,
-        const typename ResultCache<TScalar>::MapType& parameterValues
+        const typename EvaluateCache<TScalar>::MapType& parameterValues
     ) {
         const FunctionImplementation* implementation = function.implementation();
         if (implementation->asIdentity()) {
@@ -108,6 +112,6 @@ namespace opensolid
         }
     }
 
-    template ResultCache<double>::MapType ResultCache<double>::results(const Function&, const MapXcd&);
-    template ResultCache<Interval>::MapType ResultCache<Interval>::results(const Function&, const MapXcI&);
+    template EvaluateCache<double>::MapType EvaluateCache<double>::results(const Function&, const MapXcd&);
+    template EvaluateCache<Interval>::MapType EvaluateCache<Interval>::results(const Function&, const MapXcI&);
 }

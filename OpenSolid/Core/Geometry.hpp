@@ -27,6 +27,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Geometry.definitions.hpp>
+#include <OpenSolid/Core/Geometry/BoundsFunction.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Domain.hpp>
@@ -34,8 +35,6 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-
-#include <OpenSolid/Core/Geometry/BoundsFunction.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -180,5 +179,32 @@ namespace opensolid
             matrix.derived() * geometry.function(),
             geometry.domain()
         );
+    }
+
+    template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
+    Geometry<iNumDestinationDimensions, iNumParameters>
+    MappingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>::operator()(
+        const Geometry<iNumDimensions, iNumParameters>& geometry,
+        const Function& function
+    ) const {
+        bool validInput = function.numParameters() == iNumDimensions;
+        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
+        if (validInput && validOutput) {
+            return Geometry<iNumDestinationDimensions, iNumParameters>(
+                function.compose(geometry.function()),
+                geometry.domain()
+            );
+        } else {
+            assert(false);
+            return Geometry<iNumDestinationDimensions, iNumParameters>();
+        }
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    const Box<iNumDimensions>&
+    BoundsFunction<Geometry<iNumDimensions, iNumParameters>>::operator()(
+        const Geometry<iNumDimensions, iNumParameters>& geometry
+    ) const {
+        return geometry.bounds();
     }
 }

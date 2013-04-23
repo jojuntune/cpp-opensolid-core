@@ -223,6 +223,15 @@ namespace opensolid
         operator()(const Box3d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
+    template <int iNumDimensions, int iNumDestinationDimensions>
+    struct MappingFunction<Box<iNumDimensions>, iNumDestinationDimensions>
+    {
+        typedef Box<iNumDestinationDimensions> ResultType;
+
+        Box<iNumDestinationDimensions>
+        operator()(const Box<iNumDimensions>& box, const Function& function) const;
+    };
+
     template <int iNumDimensions>
     struct BoundsFunction<Box<iNumDimensions>>
     {

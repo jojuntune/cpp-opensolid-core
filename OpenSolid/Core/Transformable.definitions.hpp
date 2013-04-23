@@ -26,7 +26,10 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+
 #include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
 #include <OpenSolid/Core/Localization.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
@@ -60,8 +63,8 @@ namespace opensolid
         TDerived
         translatedAlong(double coordinateValue, const Datum<iNumDimensions, 1>& axis) const;
 
-        template <class TMatrix>
-        typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
+        template <class TMatrix, int iNumTransformedDimensions = TMatrix::RowsAtCompileTime>
+        typename TransformationFunction<TDerived, iNumTransformedDimensions>::ResultType
         transformed(const EigenBase<TMatrix>& matrix) const;
 
         TDerived
@@ -107,6 +110,10 @@ namespace opensolid
         transplanted(
             const Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
         ) const;
+
+        template <int iNumDestinationDimensions>
+        typename MappingFunction<TDerived, iNumDestinationDimensions>::ResultType
+        mapped(const Function& function) const;
 
         template <int iNumDimensions, int iNumAxes>
         typename TransformationFunction<TDerived, iNumAxes>::ResultType

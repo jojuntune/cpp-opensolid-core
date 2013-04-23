@@ -53,7 +53,7 @@ namespace opensolid
     void CrossProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         MapXcd firstValues = cache.results(firstOperand(), parameterValues);
         MapXcd secondValues = cache.results(secondOperand(), parameterValues);
@@ -65,7 +65,7 @@ namespace opensolid
     void CrossProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
         MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);

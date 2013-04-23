@@ -26,24 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
-
 namespace opensolid
 {
-    template<int iNumDimensions, int iNumAxes>
-    class MappedDatum
-    {
-    private:
-        const Datum<iNumDimensions, iNumAxes>& _datum;
-        const Function& _function;
-    public:
-        MappedDatum(
-            const Datum<iNumDimensions, iNumAxes>& datum,
-            const Function& function
-        );
-        
-        const Datum<iNumDimensions, iNumAxes>& datum() const;
-        const Function& function() const;
-    };
+    template <class TScalar>
+    class JacobianCache;
 }

@@ -24,82 +24,14 @@
 
 #pragma once
 
+#include <OpenSolid/config.hpp>
+
+#include <OpenSolid/Core/LineSegment.definitions.hpp>
+
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
-
-namespace opensolid
-{
-    template <int iNumDimensions>
-    class LineSegment :
-        public Simplex<iNumDimensions, 2>
-    {
-    public:
-        LineSegment();
-
-        LineSegment(const Simplex<iNumDimensions, 2>& other);
-
-        LineSegment(
-            const Point<iNumDimensions>& firstVertex,
-            const Point<iNumDimensions>& secondVertex
-        );
-    };
-
-    typedef LineSegment<2> LineSegment2d;
-    typedef LineSegment<3> LineSegment3d;
-
-    template <>
-    class LineSegment<1> :
-        public Simplex<1, 2>
-    {
-    public:
-        LineSegment();
-
-        LineSegment(const Simplex<1, 2>& other);
-
-        LineSegment(double startPoint, double endPoint);
-
-        double
-        startPoint() const;
-        
-        double
-        endPoint() const;
-
-        static LineSegment<1>
-        Unit();
-    };
-
-    typedef LineSegment<1> LineSegment1d;
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions>
-    struct ScalingFunction<LineSegment<iNumDimensions>> :
-        public ScalingFunction<Simplex<iNumDimensions, 3>>
-    {
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<LineSegment<iNumDimensions>> :
-        public TranslationFunction<Simplex<iNumDimensions, 3>>
-    {
-    };
-
-    template <int iNumDimensions, int iNumTransformedDimensions>
-    struct TransformationFunction<LineSegment<iNumDimensions>, iNumTransformedDimensions> :
-        public TransformationFunction<Simplex<iNumDimensions, 3>, iNumTransformedDimensions>
-    {
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<LineSegment<iNumDimensions>> :
-        public BoundsFunction<Simplex<iNumDimensions, 2>>
-    {
-    };
-}
-
-////////// Implementation //////////
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {

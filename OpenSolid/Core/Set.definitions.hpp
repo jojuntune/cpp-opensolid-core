@@ -269,6 +269,16 @@ namespace opensolid
         operator()(const Set<TElement>& set, const EigenBase<TMatrix>& matrix) const;
     };
 
+    template <class TElement, int iNumDestinationDimensions>
+    struct MappingFunction<Set<TElement>, iNumDestinationDimensions>
+    {
+        typedef Set<typename MappingFunction<TElement, iNumDestinationDimensions>::ResultType>
+            ResultType;
+
+        ResultType
+        operator()(const Set<TElement>& set, const Function& function) const;
+    };
+
     template <class TElement>
     struct BoundsFunction<Set<TElement>>
     {

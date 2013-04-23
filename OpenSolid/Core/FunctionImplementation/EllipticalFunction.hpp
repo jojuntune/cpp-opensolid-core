@@ -56,13 +56,13 @@ namespace opensolid
         void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            ResultCacheXd& cache
+            EvaluateCache<double>& cache
         ) const;
         
         void evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
-            ResultCacheXI& cache
+            EvaluateCache<Interval>& cache
         ) const;
 
         Function derivative(int index) const;
@@ -135,7 +135,7 @@ namespace opensolid
     void EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd&
+        EvaluateCache<double>&
     ) const {
         MatrixXd localCoordinates = MatrixXd::Ones(iNumAxes, parameterValues.cols());
         for (int i = 0; i < numParameters(); ++i) {
@@ -156,7 +156,7 @@ namespace opensolid
     void EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI&
+        EvaluateCache<Interval>&
     ) const {
         MatrixXI localCoordinates = MatrixXI::Ones(iNumAxes, parameterBounds.cols());
         for (int i = 0; i < numParameters(); ++i) {

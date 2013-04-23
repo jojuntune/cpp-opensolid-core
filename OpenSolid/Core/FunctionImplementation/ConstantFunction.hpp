@@ -54,13 +54,13 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            ResultCacheXd& cache
+            EvaluateCache<double>& cache
         ) const;
         
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
-            ResultCacheXI& cache
+            EvaluateCache<Interval>& cache
         ) const;
         
         OPENSOLID_CORE_EXPORT Function derivative(int index) const;

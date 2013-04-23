@@ -81,14 +81,23 @@ namespace opensolid
         operator()(const Domain<iNumDimensions>& domain, const EigenBase<TVector>& vector) const;
     };
 
-    template <int iNumDimensions, int iTransformedDimensions>
-    struct TransformationFunction<Domain<iNumDimensions>, iTransformedDimensions>
+    template <int iNumDimensions>
+    struct TransformationFunction<Domain<iNumDimensions>, iNumDimensions>
     {
-        typedef Domain<iTransformedDimensions> ResultType;
+        typedef Domain<iNumDimensions> ResultType;
 
         template <class TMatrix>
-        Domain<iTransformedDimensions>
+        Domain<iNumDimensions>
         operator()(const Domain<iNumDimensions>& domain, const EigenBase<TMatrix>& matrix) const;
+    };
+
+    template <int iNumDimensions>
+    struct MappingFunction<Domain<iNumDimensions>, iNumDimensions>
+    {
+        typedef Domain<iNumDimensions> ResultType;
+
+        Domain<iNumDimensions>
+        operator()(const Domain<iNumDimensions>& domain, const Function& function) const;
     };
 
     template <int iNumDimensions>

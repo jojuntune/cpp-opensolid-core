@@ -28,20 +28,14 @@
  
 #include <OpenSolid/Core/Function.declarations.hpp>
 
-#include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/FunctionImplementation.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Mirror.hpp>
-#include <OpenSolid/Core/Projection.hpp>
-#include <OpenSolid/Core/Rotation.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
-
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
-#include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
-#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
+#include <OpenSolid/Core/Function/JacobianReturnValue.declarations.hpp>
+#include <OpenSolid/Core/Function/MatrixReturnValue.declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
+#include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
  
 #include <boost/intrusive_ptr.hpp>
 
@@ -51,8 +45,7 @@ namespace opensolid
 {
     class Function :
         public FunctionConstructors,
-        public Convertible<Function>,
-        public Transformable<Function>
+        public Convertible<Function>
     {
     private:
         boost::intrusive_ptr<const FunctionImplementation> _implementation;
@@ -62,27 +55,6 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         Function(const FunctionImplementation* function);
-
-        OPENSOLID_CORE_EXPORT
-        Function(const Rotation2d& rotation);
-        
-        OPENSOLID_CORE_EXPORT
-        Function(const Rotation3d& rotation);
-        
-        OPENSOLID_CORE_EXPORT
-        Function(const Mirror2d& mirror);
-        
-        OPENSOLID_CORE_EXPORT
-        Function(const Mirror3d& mirror);
-        
-        OPENSOLID_CORE_EXPORT
-        Function(const Projection2d& projection);
-        
-        OPENSOLID_CORE_EXPORT
-        Function(const Projection3d& projection);
-
-        template <int iNumSourceDimensions, int iNumDestinationDimensions>
-        Function(const Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant);
         
         const FunctionImplementation*
         implementation() const;
@@ -127,17 +99,17 @@ namespace opensolid
         MatrixReturnValue<TMatrix>
         operator()(const EigenBase<TMatrix>& matrix) const;
 
-        JacobianReturnValue<Function, int>
+        JacobianReturnValue<int>
         jacobian(int value) const;
         
-        JacobianReturnValue<Function, double>
+        JacobianReturnValue<double>
         jacobian(double value) const;
         
-        JacobianReturnValue<Function, Interval>
+        JacobianReturnValue<Interval>
         jacobian(Interval interval) const;
         
         template <class TVector>
-        JacobianReturnValue<Function, TVector>
+        JacobianReturnValue<TVector>
         jacobian(const EigenBase<TVector>& vector) const;
         
         OPENSOLID_CORE_EXPORT Function
@@ -284,32 +256,4 @@ namespace opensolid
 
     OPENSOLID_CORE_EXPORT std::ostream&
     operator<<(std::ostream& stream, const Function& function);
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct ScalingFunction<Function>
-    {
-        Function
-        operator()(const Function& function, double scale) const;
-    };
-
-    template <>
-    struct TranslationFunction<Function>
-    {
-        Function
-        operator()(const Function& function, const VectorXd& vector) const;
-    };
-
-    template <int iTransformedDimensions>
-    struct TransformationFunction<Function, iTransformedDimensions>
-    {
-        typedef Function Type;
-
-        Function
-        operator()(const Function& function, const MatrixXd& matrix) const;
-    };
 }

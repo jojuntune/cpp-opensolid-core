@@ -51,7 +51,7 @@ namespace opensolid
     void ConcatenationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        ResultCacheXd& cache
+        EvaluateCache<double>& cache
     ) const {
         results.topRows(firstOperand().numDimensions()) =
             cache.results(firstOperand(), parameterValues);
@@ -62,7 +62,7 @@ namespace opensolid
     void ConcatenationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        ResultCacheXI& cache
+        EvaluateCache<Interval>& cache
     ) const {
         results.topRows(firstOperand().numDimensions()) =
             cache.results(firstOperand(), parameterBounds);

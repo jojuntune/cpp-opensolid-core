@@ -32,14 +32,14 @@
 
 namespace opensolid
 {
-    Frame2d::Frame2d() {
+    Frame<2>::Frame() {
     }
 
-    Frame2d::Frame2d(const Point2d& originPoint) :
+    Frame<2>::Frame(const Point2d& originPoint) :
         Datum<2, 2>(originPoint) {
     }
     
-    Frame2d::Frame2d(
+    Frame<2>::Frame(
         const Point2d& originPoint,
         const Vector2d& xVector,
         const Vector2d& xyVector
@@ -50,36 +50,36 @@ namespace opensolid
         *this = Datum<2, 2>(originPoint, basisMatrix).normalized();
     }
 
-    Frame2d
-    Frame2d::XY() {
-        return Frame2d();
+    Frame<2>
+    Frame<2>::XY() {
+        return Frame<2>();
     }
 
-    Frame2d
-    Frame2d::XY(const Point2d& originPoint) {
-        return Frame2d(originPoint);
+    Frame<2>
+    Frame<2>::XY(const Point2d& originPoint) {
+        return Frame<2>(originPoint);
     }
 
-    Frame2d
-    Frame2d::FromXAxis(const Axis2d& xAxis) {
-        return Frame2d::FromBasisVectors(
+    Frame<2>
+    Frame<2>::FromXAxis(const Axis2d& xAxis) {
+        return Frame<2>::FromBasisVectors(
             xAxis.originPoint(),
             xAxis.basisVector().normalized(),
             xAxis.basisVector().unitOrthogonal()
         );
     }
 
-    Frame2d
-    Frame2d::FromYAxis(const Axis2d& yAxis) {
-        return Frame2d::FromBasisVectors(
+    Frame<2>
+    Frame<2>::FromYAxis(const Axis2d& yAxis) {
+        return Frame<2>::FromBasisVectors(
             yAxis.originPoint(),
             -yAxis.basisVector().unitOrthogonal(),
             yAxis.basisVector().normalized()
         );
     }
 
-    Frame2d
-    Frame2d::FromBasisVectors(
+    Frame<2>
+    Frame<2>::FromBasisVectors(
         const Point2d& originPoint,
         const Vector2d& xBasisVector,
         const Vector2d& yBasisVector
@@ -89,20 +89,20 @@ namespace opensolid
         return Datum<2, 2>(originPoint, basisMatrix);
     }
     
-    Frame2d
-    Frame2d::FromBasisMatrix(const Point2d& originPoint, const Matrix2d& basisMatrix) {
-        return  Datum<2, 2>(originPoint, basisMatrix);
+    Frame<2>
+    Frame<2>::FromBasisMatrix(const Point2d& originPoint, const Matrix2d& basisMatrix) {
+        return Datum<2, 2>(originPoint, basisMatrix);
     }
 
-    Frame3d::Frame3d() :
+    Frame<3>::Frame() :
         Datum<3, 3>() {
     }
 
-    Frame3d::Frame3d(const Point3d& originPoint) :
+    Frame<3>::Frame(const Point3d& originPoint) :
         Datum<3, 3>(originPoint) {
     }
     
-    Frame3d::Frame3d(
+    Frame<3>::Frame(
         const Point3d& originPoint,
         const Vector3d& xVector,
         const Vector3d& xyVector,
@@ -114,19 +114,19 @@ namespace opensolid
         *this = Datum<3, 3>(originPoint, basisMatrix).normalized();
     }
 
-    Frame3d
-    Frame3d::XYZ() {
-        return Frame3d();
+    Frame<3>
+    Frame<3>::XYZ() {
+        return Frame<3>();
     }
 
-    Frame3d
-    Frame3d::XYZ(const Point3d& originPoint) {
-        return Frame3d(originPoint);
+    Frame<3>
+    Frame<3>::XYZ(const Point3d& originPoint) {
+        return Frame<3>(originPoint);
     }
 
-    Frame3d
-    Frame3d::FromXYPlane(const Plane3d& xyPlane) {
-        return Frame3d(
+    Frame<3>
+    Frame<3>::FromXYPlane(const Plane3d& xyPlane) {
+        return Frame<3>(
             xyPlane.originPoint(),
             xyPlane.basisVector(0),
             xyPlane.basisVector(1),
@@ -134,9 +134,9 @@ namespace opensolid
         );
     }
 
-    Frame3d
-    Frame3d::FromXZPlane(const Plane3d& xzPlane) {
-        return Frame3d(
+    Frame<3>
+    Frame<3>::FromXZPlane(const Plane3d& xzPlane) {
+        return Frame<3>(
             xzPlane.originPoint(),
             xzPlane.basisVector(0),
             -xzPlane.normalVector(),
@@ -144,9 +144,9 @@ namespace opensolid
         );
     }
 
-    Frame3d
-    Frame3d::FromYXPlane(const Plane3d& yxPlane) {
-        return Frame3d(
+    Frame<3>
+    Frame<3>::FromYXPlane(const Plane3d& yxPlane) {
+        return Frame<3>(
             yxPlane.originPoint(),
             yxPlane.basisVector(1),
             yxPlane.basisVector(0),
@@ -154,9 +154,9 @@ namespace opensolid
         );
     }
 
-    Frame3d
-    Frame3d::FromYZPlane(const Plane3d& yzPlane) {
-        return Frame3d(
+    Frame<3>
+    Frame<3>::FromYZPlane(const Plane3d& yzPlane) {
+        return Frame<3>(
             yzPlane.originPoint(),
             yzPlane.normalVector(),
             yzPlane.basisVector(0),
@@ -164,9 +164,9 @@ namespace opensolid
         );
     }
 
-    Frame3d
-    Frame3d::FromZXPlane(const Plane3d& zxPlane) {
-        return Frame3d(
+    Frame<3>
+    Frame<3>::FromZXPlane(const Plane3d& zxPlane) {
+        return Frame<3>(
             zxPlane.originPoint(),
             zxPlane.basisVector(1),
             zxPlane.normalVector(),
@@ -174,9 +174,9 @@ namespace opensolid
         );
     }
 
-    Frame3d
-    Frame3d::FromZYPlane(const Plane3d& zyPlane) {
-        return Frame3d(
+    Frame<3>
+    Frame<3>::FromZYPlane(const Plane3d& zyPlane) {
+        return Frame<3>(
             zyPlane.originPoint(),
             -zyPlane.normalVector(),
             zyPlane.basisVector(1),
@@ -184,8 +184,8 @@ namespace opensolid
         );
     }
 
-    Frame3d
-    Frame3d::FromBasisVectors(
+    Frame<3>
+    Frame<3>::FromBasisVectors(
         const Point3d& originPoint,
         const Vector3d& xBasisVector,
         const Vector3d& yBasisVector,
@@ -196,8 +196,8 @@ namespace opensolid
         return Datum<3, 3>(originPoint, basisMatrix);
     }
     
-    Frame3d
-    Frame3d::FromBasisMatrix(const Point3d& originPoint, const Matrix3d& basisMatrix) {
+    Frame<3>
+    Frame<3>::FromBasisMatrix(const Point3d& originPoint, const Matrix3d& basisMatrix) {
         return Datum<3, 3>(originPoint, basisMatrix);
     }
 }

@@ -26,11 +26,12 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.definitions.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Mirror.hpp>
-#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Projection.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
 #include <OpenSolid/Core/Transplant.hpp>
@@ -77,10 +78,10 @@ namespace opensolid
         return translated(coordinateValue * axis.basisVector());
     }
 
-    template <class TDerived> template <class TMatrix>
-    inline typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
+    template <class TDerived> template<class TMatrix, int iNumTransformedDimensions>
+    inline typename TransformationFunction<TDerived, iNumTransformedDimensions>::ResultType
     Transformable<TDerived>::transformed(const EigenBase<TMatrix>& matrix) const {
-        TransformationFunction<TDerived, TMatrix::RowsAtCompileTime> transformationFunction;
+        TransformationFunction<TDerived, iNumTransformedDimensions> transformationFunction;
         return transformationFunction(derived(), matrix);
     }
 
@@ -162,6 +163,13 @@ namespace opensolid
         const Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
     ) const {
         return transplant(derived());
+    }
+
+    template <class TDerived> template <int iNumDestinationDimensions>
+    typename MappingFunction<TDerived, iNumDestinationDimensions>::ResultType
+    Transformable<TDerived>::mapped(const Function& function) const {
+        MappingFunction<TDerived, iNumDestinationDimensions> mappingFunction;
+        return mappingFunction(derived(), function);
     }
 
     template <class TDerived> template <int iNumDimensions, int iNumAxes>

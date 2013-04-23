@@ -27,6 +27,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Interval.definitions.hpp>
 
 namespace opensolid
 {

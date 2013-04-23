@@ -36,93 +36,98 @@
 
 namespace opensolid
 {
-    class Frame2d : public Datum<2, 2>
+    template <>
+    class Frame<2> :
+        public Datum<2, 2>
     {
     public:
         OPENSOLID_CORE_EXPORT
-        Frame2d();
+        Frame();
 
-        Frame2d(const Datum<2, 2>& other);
+        Frame(const Datum<2, 2>& other);
 
         OPENSOLID_CORE_EXPORT explicit
-        Frame2d(const Point2d& originPoint);
+        Frame(const Point2d& originPoint);
 
         OPENSOLID_CORE_EXPORT
-        Frame2d(
+        Frame(
             const Point2d& originPoint,
             const Vector2d& xVector,
             const Vector2d& xyVector
         );
         
 
-        OPENSOLID_CORE_EXPORT static Frame2d
+        OPENSOLID_CORE_EXPORT static Frame<2>
         XY();
 
-        OPENSOLID_CORE_EXPORT static Frame2d
+        OPENSOLID_CORE_EXPORT static Frame<2>
         XY(const Point2d& originPoint);
 
-        OPENSOLID_CORE_EXPORT static Frame2d
+        OPENSOLID_CORE_EXPORT static Frame<2>
         FromXAxis(const Axis<2>& xAxis);
 
-        OPENSOLID_CORE_EXPORT static Frame2d
+        OPENSOLID_CORE_EXPORT static Frame<2>
         FromYAxis(const Axis<2>& yAxis);
 
-        OPENSOLID_CORE_EXPORT static Frame2d
+        OPENSOLID_CORE_EXPORT static Frame<2>
         FromBasisVectors(
             const Point<2>& originPoint,
             const Vector2d& xBasisVector,
             const Vector2d& yBasisVector
         );
         
-        OPENSOLID_CORE_EXPORT static Frame2d 
+        OPENSOLID_CORE_EXPORT static Frame<2> 
         FromBasisMatrix(const Point<2>& originPoint, const Matrix2d& basisMatrix);
     };
 
+    typedef Frame<2> Frame2d;
     
-    class Frame3d : public Datum<3, 3>
+    template <>
+    class Frame<3> :
+        public Datum<3, 3>
     {
     public:
         OPENSOLID_CORE_EXPORT
-        Frame3d();
+        Frame();
         
-        Frame3d(const Datum<3, 3>& other);
+        Frame(const Datum<3, 3>& other);
 
         OPENSOLID_CORE_EXPORT explicit
-        Frame3d(const Point<3>& originPoint);
+        Frame(const Point<3>& originPoint);
         
         OPENSOLID_CORE_EXPORT
-        Frame3d(
+        Frame(
             const Point<3>& originPoint,
             const Vector3d& xVector,
             const Vector3d& xyVector,
             const Vector3d& xyzVector
         );
 
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         XYZ();
         
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         XYZ(const Point<3>& originPoint);
 
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromXYPlane(const Plane3d& xyPlane);
 
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromXZPlane(const Plane3d& xzPlane);
 
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromYXPlane(const Plane3d& yxPlane);
         
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromYZPlane(const Plane3d& yzPlane);
         
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromZXPlane(const Plane3d& zxPlane);
         
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromZYPlane(const Plane3d& zyPlane);
 
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromBasisVectors(
             const Point<3>& originPoint,
             const Vector3d& xBasisVector,
@@ -130,9 +135,11 @@ namespace opensolid
             const Vector3d& zBasisVector
         );
         
-        OPENSOLID_CORE_EXPORT static Frame3d
+        OPENSOLID_CORE_EXPORT static Frame<3>
         FromBasisMatrix(const Point<3>& originPoint, const Matrix3d& basisMatrix);
     };
+
+    typedef Frame<3> Frame3d;
 }
 
 ////////// Specializations //////////

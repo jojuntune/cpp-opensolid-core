@@ -30,15 +30,4 @@ namespace opensolid
 {
     template <int iNumDimensions, int iNumVertices>
     class Simplex;
-
-    template <int iNumDimensions>
-    class LineSegment;
-
-    template <int iNumDimensions>
-    class Triangle;
-
-    class Tetrahedron3d;
-
-    template<int iNumDimensions, int iNumVertices>
-    class MappedSimplex;
 }

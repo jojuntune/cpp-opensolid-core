@@ -27,7 +27,7 @@
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
-#include <OpenSolid/Core/Function/ResultCache.hpp>
+#include <OpenSolid/Core/Function/EvaluateCache.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 
 #include <boost/timer.hpp>
@@ -291,9 +291,9 @@ public:
         f.debug(std::cout, 0);
     }
 
-    void testResultCacheDouble() {
+    void testEvaluateCacheDouble() {
         Function f = t.squaredNorm();
-        ResultCache<double> cache;
+        EvaluateCache<double> cache;
         RowVector3d parameterValues(1, 2, 3);
         MapXcd parameterMap(parameterValues.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
         MapXcd results1 = cache.results(f, parameterMap);
@@ -303,9 +303,9 @@ public:
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
 
-    void testResultCacheInterval() {
+    void testEvaluateCacheInterval() {
         Function f = t.squaredNorm();
-        ResultCache<Interval> cache;
+        EvaluateCache<Interval> cache;
         RowVector3I parameterBounds(Interval(1, 2), Interval(3, 4), Interval(5, 6));
         MapXcI parameterMap(parameterBounds.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
         MapXcI results1 = cache.results(f, parameterMap);

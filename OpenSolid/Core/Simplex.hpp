@@ -26,147 +26,14 @@
 
 #include <OpenSolid/config.hpp>
  
-#include <OpenSolid/Core/Simplex.declarations.hpp>
+#include <OpenSolid/Core/Simplex.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
+#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
-
-#include <OpenSolid/Core/Simplex/MappedSimplex.hpp>
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iNumVertices>
-    class Simplex :
-        public Transformable<Simplex<iNumDimensions, iNumVertices>>,
-        public Convertible<Simplex<iNumDimensions, iNumVertices>>
-    {
-    private:
-        Matrix<double, iNumDimensions, iNumVertices> _vertices;
-    public:
-        Simplex();
-        
-        Simplex(const Simplex<iNumDimensions, iNumVertices>& other);
-        
-        explicit
-        Simplex(const Matrix<double, iNumDimensions, iNumVertices>& vertices);
-
-        // Defined in Function.hpp
-        template <int iArgumentDimensions>
-        Simplex(const MappedSimplex<iArgumentDimensions, iNumVertices>& transformedSimplex);
-            
-        Simplex<iNumDimensions, iNumVertices>&
-        operator=(const Simplex<iNumDimensions, iNumVertices>& other);
-        
-        Matrix<double, iNumDimensions, iNumVertices>&
-        vertices();
-        
-        const Matrix<double, iNumDimensions, iNumVertices>&
-        vertices() const;
-        
-        Point<iNumDimensions>
-        vertex(int index) const;
-        
-        double
-        length() const;
-        
-        double
-        squaredLength() const;
-
-        double
-        area() const;
-
-        double
-        volume() const;
-        
-        Matrix<double, iNumDimensions, 1>
-        vector() const;
-        
-        Point<iNumDimensions>
-        centroid() const;
-        
-        Matrix<double, iNumDimensions, 1>
-        normalVector() const;
-        
-        Simplex<iNumDimensions, 2>
-        edge(int index) const;
-        
-        Simplex<iNumDimensions, 2>
-        edge(int startIndex, int endIndex) const;
-
-        Simplex<iNumDimensions, 3>
-        face(int index) const;
-        
-        Datum<iNumDimensions, iNumVertices - 1>
-        datum() const;
-        
-        Datum<iNumDimensions, 1>
-        axis() const;
-        
-        Datum<3, 2>
-        plane() const;
-        
-        Box<iNumDimensions>
-        bounds() const;
-
-        MappedSimplex<iNumDimensions, iNumVertices>
-        transformed(const Function& function) const;
-        
-        bool
-        operator==(const Simplex<iNumDimensions, iNumVertices>& other) const;
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iNumVertices>
-    struct ScalingFunction<Simplex<iNumDimensions, iNumVertices>>
-    {
-        Simplex<iNumDimensions, iNumVertices>
-        operator()(const Simplex<iNumDimensions, iNumVertices>& simplex, double scale) const;
-    };
-
-    template <int iNumDimensions, int iNumVertices>
-    struct TranslationFunction<Simplex<iNumDimensions, iNumVertices>>
-    {
-        template <class TVector>
-        Simplex<iNumDimensions, iNumVertices>
-        operator()(
-            const Simplex<iNumDimensions, iNumVertices>& simplex,
-            const EigenBase<TVector>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumVertices, int iTransformedDimensions>
-    struct TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iTransformedDimensions>
-    {
-        typedef Simplex<iTransformedDimensions, iNumVertices> ResultType;
-
-        template <class TMatrix>
-        Simplex<iTransformedDimensions, iNumVertices>
-        operator()(
-            const Simplex<iNumDimensions, iNumVertices>& simplex,
-            const EigenBase<TMatrix>& matrix
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumVertices>
-    struct BoundsFunction<Simplex<iNumDimensions, iNumVertices>>
-    {
-        typedef Box<iNumDimensions> ResultType;
-
-        Box<iNumDimensions>
-        operator()(const Simplex<iNumDimensions, iNumVertices>& simplex) const;
-    };
-}
-
-////////// Implementation //////////
 
 namespace opensolid
 {
@@ -420,12 +287,6 @@ namespace opensolid
             vertices().rowwise().minCoeff().hull(vertices().rowwise().maxCoeff())
         );
     }
-
-    template <int iNumDimensions, int iNumVertices>
-    inline MappedSimplex<iNumDimensions, iNumVertices>
-    Simplex<iNumDimensions, iNumVertices>::transformed(const Function& function) const {
-        return MappedSimplex<iNumDimensions, iNumVertices>(*this, function);
-    }
         
     template <int iNumDimensions, int iNumVertices>
     bool
@@ -463,6 +324,22 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return Simplex<iTransformedDimensions, iNumVertices>(matrix.derived() * simplex.vertices());
+    }
+
+    template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>
+    inline Simplex<iNumDestinationDimensions, iNumVertices>
+    MappingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>::operator()(
+        const Simplex<iNumDimensions, iNumVertices>& simplex,
+        const Function& function
+    ) const {
+        bool validInput = function.numParameters() == iNumDimensions;
+        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
+        if (validInput && validOutput) {
+            return Simplex<iNumDestinationDimensions, iNumVertices>(function(simplex.vertices()));
+        } else {
+            assert(false);
+            return Simplex<iNumDestinationDimensions, iNumVertices>();
+        }
     }
 
     template <int iNumDimensions, int iNumVertices>
