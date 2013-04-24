@@ -35,6 +35,8 @@
         #else
             #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
         #endif
+    #else
+        #define OPENSOLID_CORE_EXPORT
     #endif
 #else
     #define OPENSOLID_CORE_EXPORT
@@ -48,6 +50,8 @@
         #else
             #define OPENSOLID_IO_EXPORT __declspec(dllimport)
         #endif
+    #else
+        #define OPENSOLID_IO_EXPORT
     #endif
 #else
     #define OPENSOLID_IO_EXPORT

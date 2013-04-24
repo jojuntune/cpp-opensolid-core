@@ -78,10 +78,10 @@ namespace opensolid
         return translated(coordinateValue * axis.basisVector());
     }
 
-    template <class TDerived> template<class TMatrix, int iNumTransformedDimensions>
-    inline typename TransformationFunction<TDerived, iNumTransformedDimensions>::ResultType
+    template <class TDerived> template<class TMatrix>
+    inline typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
     Transformable<TDerived>::transformed(const EigenBase<TMatrix>& matrix) const {
-        TransformationFunction<TDerived, iNumTransformedDimensions> transformationFunction;
+        TransformationFunction<TDerived, TMatrix::RowsAtCompileTime> transformationFunction;
         return transformationFunction(derived(), matrix);
     }
 

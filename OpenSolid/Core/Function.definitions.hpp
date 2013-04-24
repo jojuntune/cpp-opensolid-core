@@ -40,6 +40,7 @@
 #include <boost/intrusive_ptr.hpp>
 
 #include <typeinfo>
+#include <vector>
 
 namespace opensolid
 {
