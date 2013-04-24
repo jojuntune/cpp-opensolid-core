@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Set.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Set/SetInserter.hpp>
 #include <OpenSolid/Core/Set/SetNode.hpp>
 #include <OpenSolid/Core/Transformable.hpp>

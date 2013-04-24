@@ -22,8 +22,9 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
+
+#include <OpenSolid/Core/Axis.hpp>
 
 namespace opensolid
 {
