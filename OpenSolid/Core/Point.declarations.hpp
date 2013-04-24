@@ -30,4 +30,7 @@ namespace opensolid
 {
     template <int iNumDimensions>
     class Point;
+    
+    template <class TScalar, int iNumDimensions>
+    struct Position;
 }

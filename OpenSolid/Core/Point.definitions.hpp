@@ -32,7 +32,6 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
-#include <OpenSolid/Core/Position.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <ostream>
@@ -179,5 +178,17 @@ namespace opensolid
 
         Box<iNumDimensions>
         operator()(const Point<iNumDimensions>& point) const;
+    };
+
+    template <int iNumDimensions>
+    struct Position<double, iNumDimensions>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct Position<Interval, iNumDimensions>
+    {
+        typedef Box<iNumDimensions> Type;
     };
 }
