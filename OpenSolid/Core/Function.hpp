@@ -1,0 +1,92 @@
+/************************************************************************************
+*                                                                                   *
+*  OpenSolid is a generic library for the representation and manipulation of        *
+*  geometric objects such as points, curves, surfaces, and volumes.                 *
+*                                                                                   *
+*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  ian.e.mackenzie@gmail.com                                                        *
+*                                                                                   *
+*  This library is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU Lesser General Public                       *
+*  License as published by the Free Software Foundation; either                     *
+*  version 2.1 of the License, or (at your option) any later version.               *
+*                                                                                   *
+*  This library is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                *
+*  Lesser General Public License for more details.                                  *
+*                                                                                   *
+*  You should have received a copy of the GNU Lesser General Public                 *
+*  License along with this library; if not, write to the Free Software              *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
+*                                                                                   *
+*************************************************************************************/
+
+#pragma once
+
+#include <OpenSolid/config.hpp>
+
+#include <OpenSolid/Core/Function.definitions.hpp>
+
+#include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
+#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+
+namespace opensolid
+{   
+    inline const FunctionImplementation*
+    Function::implementation() const {
+        return _implementation.get();
+    }
+
+    inline bool
+    Function::isValid() const {
+        return implementation() != 0;
+    }
+
+    inline MatrixReturnValue<int>
+    Function::operator()(int value) const {
+        return MatrixReturnValue<int>(implementation(), value);
+    }
+
+    inline MatrixReturnValue<double>
+    Function::operator()(double value) const {
+        return MatrixReturnValue<double>(implementation(), value);
+    }
+
+    inline MatrixReturnValue<Interval>
+    Function::operator()(Interval interval) const {
+        return MatrixReturnValue<Interval>(implementation(), interval);
+    }
+    
+    template <class TMatrix>
+    inline MatrixReturnValue<TMatrix>
+    Function::operator()(const EigenBase<TMatrix>& matrix) const {
+        return MatrixReturnValue<TMatrix>(implementation(), matrix.derived());
+    }
+
+    inline JacobianReturnValue<int>
+    Function::jacobian(int value) const {
+        return JacobianReturnValue<int>(implementation(), value);
+    }
+
+    inline JacobianReturnValue<double>
+    Function::jacobian(double value) const {
+        return JacobianReturnValue<double>(implementation(), value);
+    }
+
+    inline JacobianReturnValue<Interval>
+    Function::jacobian(Interval interval) const {
+        return JacobianReturnValue<Interval>(implementation(), interval);
+    }
+
+    template <class TVector>
+    inline JacobianReturnValue<TVector>
+    Function::jacobian(const EigenBase<TVector>& vector) const {
+        return JacobianReturnValue<TVector>(implementation(), vector.derived());
+    }
+}
