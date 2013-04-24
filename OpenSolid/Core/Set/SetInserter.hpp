@@ -26,6 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Set.declarations.hpp>
+
 namespace opensolid
 {
     template <class TElement>
@@ -54,5 +56,33 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <class TElement>
+    inline
+    SetInserter<TElement>::SetInserter(Set<TElement>* set) :
+        _set(set) {
+    }
+
+    template <class TElement>
+    inline SetInserter<TElement>&
+    SetInserter<TElement>::operator*() {
+        return *this;
+    }
     
+    template <class TElement>
+    inline void
+    SetInserter<TElement>::operator=(const TElement& element) {
+        _set->insert(element);
+    }
+    
+    template <class TElement>
+    inline SetInserter<TElement>&
+    SetInserter<TElement>::operator++() {
+        return *this;
+    }
+    
+    template <class TElement>
+    inline SetInserter<TElement>&
+    SetInserter<TElement>::operator++(int) {
+        return *this;
+    }
 }

@@ -28,10 +28,9 @@
 
 #include <OpenSolid/Core/Set.definitions.hpp>
 
-#include <OpenSolid/Core/Transformable.hpp>
-
-#include <OpenSolid/Core/Set/SetNode.hpp>
 #include <OpenSolid/Core/Set/SetInserter.hpp>
+#include <OpenSolid/Core/Set/SetNode.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -609,35 +608,6 @@ namespace opensolid
                 }
             );
         }
-    }
-
-    template <class TElement>
-    inline
-    SetInserter<TElement>::SetInserter(Set<TElement>* set) : _set(set) {
-    }
-
-    template <class TElement>
-    inline SetInserter<TElement>&
-    SetInserter<TElement>::operator*() {
-        return *this;
-    }
-    
-    template <class TElement>
-    inline void
-    SetInserter<TElement>::operator=(const TElement& element) {
-        _set->insert(element);
-    }
-    
-    template <class TElement>
-    inline SetInserter<TElement>&
-    SetInserter<TElement>::operator++() {
-        return *this;
-    }
-    
-    template <class TElement>
-    inline SetInserter<TElement>&
-    SetInserter<TElement>::operator++(int) {
-        return *this;
     }
     
     template <class TElement>

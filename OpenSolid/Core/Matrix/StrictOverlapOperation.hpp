@@ -40,10 +40,8 @@ namespace Eigen
 
         StrictOverlapOperation(double precision);
 
-        bool operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
+        bool
+        operator()(opensolid::Interval firstInterval, opensolid::Interval secondInterval) const;
     };
 }
 
@@ -51,11 +49,13 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline StrictOverlapOperation::StrictOverlapOperation(double precision) :
+    inline
+    StrictOverlapOperation::StrictOverlapOperation(double precision) :
         _precision(precision) {
     }
     
-    inline bool StrictOverlapOperation::operator()(
+    inline bool
+    StrictOverlapOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval
     ) const {

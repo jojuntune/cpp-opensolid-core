@@ -35,7 +35,8 @@ namespace Eigen
     {
         typedef double result_type;
         
-        double operator()(opensolid::Interval interval) const;
+        double
+        operator()(opensolid::Interval interval) const;
     };
 }
 
@@ -43,7 +44,8 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline double MedianOperation::operator()(opensolid::Interval interval) const {
+    inline double
+    MedianOperation::operator()(opensolid::Interval interval) const {
         return interval.median();
     }
 }

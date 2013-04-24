@@ -35,7 +35,8 @@ namespace Eigen
     {
         typedef bool result_type;
 
-        bool operator()(opensolid::Interval interval) const;
+        bool
+        operator()(opensolid::Interval interval) const;
     };
 }
 
@@ -43,7 +44,8 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline bool EmptyOperation::operator()(opensolid::Interval interval) const {
+    inline bool
+    EmptyOperation::operator()(opensolid::Interval interval) const {
         return interval.isEmpty();
     }
 }

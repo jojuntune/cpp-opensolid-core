@@ -35,10 +35,8 @@ namespace Eigen
     {
         typedef opensolid::Interval result_type;
         
-        opensolid::Interval operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
+        opensolid::Interval
+        operator()(opensolid::Interval firstInterval, opensolid::Interval secondInterval) const;
     };
 }
 
@@ -46,7 +44,8 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline opensolid::Interval IntersectionOperation::operator()(
+    inline opensolid::Interval
+    IntersectionOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval
     ) const {

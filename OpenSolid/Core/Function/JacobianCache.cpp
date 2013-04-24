@@ -31,8 +31,6 @@
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
-#include <unordered_map>
-
 namespace opensolid
 {
     template <class TScalar>

@@ -40,10 +40,8 @@ namespace Eigen
 
         ContainOperation(double precision);
         
-        bool operator()(
-            opensolid::Interval firstInterval,
-            opensolid::Interval secondInterval
-        ) const;
+        bool
+        operator()(opensolid::Interval firstInterval, opensolid::Interval secondInterval) const;
     };
 }
 
@@ -51,11 +49,13 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline ContainOperation::ContainOperation(double precision) :
+    inline
+    ContainOperation::ContainOperation(double precision) :
         _precision(precision) {
     }
     
-    inline bool ContainOperation::operator()(
+    inline bool
+    ContainOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval
     ) const {
