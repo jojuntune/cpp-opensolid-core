@@ -27,7 +27,6 @@
 #include <boost/numeric/interval.hpp>
 
 #include <cmath>
-#include <sstream>
 
 namespace opensolid
 {
@@ -44,7 +43,8 @@ namespace opensolid
     template <>
     struct ConversionFunction<Interval, BoostInterval>
     {
-        inline BoostInterval operator()(Interval interval) {
+        inline BoostInterval
+        operator()(Interval interval) {
             return BoostInterval(interval.lowerBound(), interval.upperBound());
         }
     };
@@ -52,66 +52,79 @@ namespace opensolid
     template <>
     struct ConversionFunction<BoostInterval, Interval>
     {
-        inline Interval operator()(BoostInterval boostInterval) {
+        inline Interval
+        operator()(BoostInterval boostInterval) {
             return Interval(boostInterval.lower(), boostInterval.upper());
         }
     };
     
-    Interval& Interval::operator*=(Interval interval) {
+    Interval&
+    Interval::operator*=(Interval interval) {
         BoostInterval self = this->convertTo<BoostInterval>();
         BoostInterval other = interval.convertTo<BoostInterval>();
         *this = Interval::ConvertFrom(self * other);
         return *this;
     }
     
-    Interval& Interval::operator/=(Interval interval) {
+    Interval&
+    Interval::operator/=(Interval interval) {
         BoostInterval self = this->convertTo<BoostInterval>();
         BoostInterval other = interval.convertTo<BoostInterval>();
         *this = Interval::ConvertFrom(self / other);
         return *this;
     }
     
-    Interval operator*(Interval firstInterval, Interval secondInterval) {
+    Interval
+    operator*(Interval firstInterval, Interval secondInterval) {
         return Interval::ConvertFrom(
             firstInterval.convertTo<BoostInterval>() * secondInterval.convertTo<BoostInterval>()
         );
     }
 
-    Interval operator/(double value, Interval interval) {
+    Interval
+    operator/(double value, Interval interval) {
         return Interval::ConvertFrom(value / interval.convertTo<BoostInterval>());
     }
 
-    Interval operator/(Interval firstInterval, Interval secondInterval) {
+    Interval
+    operator/(Interval firstInterval, Interval secondInterval) {
         return Interval::ConvertFrom(
             firstInterval.convertTo<BoostInterval>() / secondInterval.convertTo<BoostInterval>()
         );
     }
 
-    Interval sin(Interval interval) {
+    Interval
+    sin(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::sin(interval.convertTo<BoostInterval>()));
     }
 
-    Interval cos(Interval interval) {
+    Interval
+    cos(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::cos(interval.convertTo<BoostInterval>()));
     }
 
-    Interval tan(Interval interval) {
+    Interval
+    tan(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::tan(interval.convertTo<BoostInterval>()));
     }
 
-    Interval asin(Interval interval) {
+    Interval
+    asin(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::asin(interval.convertTo<BoostInterval>()));
     }
 
-    Interval acos(Interval interval) {
+    Interval
+    acos(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::acos(interval.convertTo<BoostInterval>()));
     }
 
-    Interval atan(Interval interval) {
+    Interval
+    atan(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::atan(interval.convertTo<BoostInterval>()));
     }
 
-    Interval atan2(Interval yInterval, Interval xInterval) {
+    Interval
+    atan2(Interval yInterval, Interval xInterval) {
         if (xInterval.lowerBound() > 0.0) {
             return atan(yInterval / xInterval);
         } else if (yInterval.lowerBound() > 0.0) {
@@ -123,29 +136,35 @@ namespace opensolid
         }
     }
 
-    Interval exp(Interval interval) {
+    Interval
+    exp(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::exp(interval.convertTo<BoostInterval>()));
     }
 
-    Interval log(Interval interval) {
+    Interval
+    log(Interval interval) {
         return Interval::ConvertFrom(boost::numeric::log(interval.convertTo<BoostInterval>()));
     }
 
-    Interval pow(Interval baseInterval, int exponentValue) {
+    Interval
+    pow(Interval baseInterval, int exponentValue) {
         return Interval::ConvertFrom(
             boost::numeric::pow(baseInterval.convertTo<BoostInterval>(), exponentValue)
         );
     }
     
-    Interval pow(Interval baseInterval, double exponentValue) {
+    Interval
+    pow(Interval baseInterval, double exponentValue) {
         return exp(log(baseInterval) * exponentValue);
     }
     
-    Interval pow(Interval baseInterval, Interval exponentInterval) {
+    Interval
+    pow(Interval baseInterval, Interval exponentInterval) {
         return exp(log(baseInterval) * exponentInterval);
     }
     
-    std::ostream& operator<<(std::ostream& stream, Interval interval) {
+    std::ostream&
+    operator<<(std::ostream& stream, Interval interval) {
         if (interval.isEmpty()) {
             stream << "[]";
         } else if (interval.isSingleton()) {

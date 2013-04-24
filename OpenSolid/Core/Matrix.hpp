@@ -27,9 +27,8 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
-#include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/Datum.definitions.hpp>
 
+#include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Matrix/ContainOperation.hpp>
 #include <OpenSolid/Core/Matrix/EmptyOperation.hpp>
 #include <OpenSolid/Core/Matrix/HullOperation.hpp>
@@ -43,10 +42,11 @@
 #include <OpenSolid/Core/Matrix/StrictOverlapOperation.hpp>
 #include <OpenSolid/Core/Matrix/UpperOperation.hpp>
 #include <OpenSolid/Core/Matrix/WidthOperation.hpp>
-#include <OpenSolid/Core/Mirror.definitions.hpp>
-#include <OpenSolid/Core/Projection.definitions.hpp>
-#include <OpenSolid/Core/Rotation.definitions.hpp>
-#include <OpenSolid/Core/Transplant.definitions.hpp>
+#include <OpenSolid/Core/Mirror.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Projection.hpp>
+#include <OpenSolid/Core/Rotation.hpp>
+#include <OpenSolid/Core/Transplant.hpp>
 
 namespace Eigen
 {

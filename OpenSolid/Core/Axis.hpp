@@ -29,6 +29,8 @@
 #include <OpenSolid/Core/Axis.definitions.hpp>
 
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
 
 namespace opensolid
 {

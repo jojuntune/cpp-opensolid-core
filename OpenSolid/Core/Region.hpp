@@ -26,71 +26,15 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Region.definitions.hpp>
+
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Domain.hpp>
+#include <OpenSolid/Core/Geometry.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Set.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
-
-namespace opensolid
-{
-    class Region2d : public Domain<2>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Region2d();
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(const Domain<2>& domain);
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(const Set<Geometry<2, 1>>& boundaries);
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(const Set<LineSegment2d>& boundaries);
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(Interval xInterval, Interval yInterval);
-
-        OPENSOLID_CORE_EXPORT explicit
-        Region2d(const Box2d& box);
-
-        OPENSOLID_CORE_EXPORT explicit
-        Region2d(const Triangle2d& triangle);
-
-        OPENSOLID_CORE_EXPORT static Region2d
-        UnitSquare();
-
-        OPENSOLID_CORE_EXPORT static Region2d
-        UnitTriangle();
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct BoundsFunction<Region2d> :
-        public BoundsFunction<Domain<2>>
-    {
-    };
-
-    struct ScalingFunction<Region2d> :
-        public ScalingFunction<Domain<2>>
-    {
-    };
-
-    struct TranslationFunction<Region2d> :
-        public TranslationFunction<Domain<2>>
-    {
-    };
-
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Region2d, iNumTransformedDimensions> :
-        public TransformationFunction<Domain<2>, iNumTransformedDimensions>
-    {
-    };
-}
-
-////////// Implementation //////////
 
 namespace opensolid
 {

@@ -26,40 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Projection.definitions.hpp>
-
-#include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Point.hpp>
-
 namespace opensolid
 {
-    template <int iNumDimensions> template <int iNumAxes>
-    Projection<iNumDimensions>::Projection(const Datum<iNumDimensions, iNumAxes>& datum) :
-        _originPoint(datum.originPoint()),
-        _transformationMatrix(datum.basisMatrix() * datum.inverseMatrix()) {
-    }
-
-    template <int iNumDimensions>
-    inline const Point<iNumDimensions>&
-    Projection<iNumDimensions>::originPoint() const {
-        return _originPoint;
-    }
-
-    template <int iNumDimensions>
-    inline const Matrix<double, iNumDimensions, iNumDimensions>&
-    Projection<iNumDimensions>::transformationMatrix() const {
-        return _transformationMatrix;
-    }
-
-    template <int iNumDimensions> template <class TTransformable>
-    TTransformable
-    Projection<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        TranslationFunction<TTransformable> translation;
-        TransformationFunction<TTransformable, iNumDimensions> transformation;
-
-        TTransformable temp = translation(transformable, -originPoint().vector());
-        temp = transformation(temp, transformationMatrix());
-        return translation(temp, originPoint().vector());
-    }
+    class Region2d;
 }

@@ -122,43 +122,6 @@ namespace Eigen
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
 }
 
-/*
-namespace Eigen
-{   
-    namespace internal
-    {
-        template <class TScalar, bool bIsInteger>
-        struct significant_decimals_default_impl;
-
-        template<class TScalar>
-        struct random_impl;
-        
-        template <class TScalar>
-        struct is_arithmetic;
-    }
-    
-    template <class TScalar>
-    struct NumTraits;
-
-    template <class TMatrix>
-    class MatrixIterator;
-    
-    struct EmptyOperation;
-    struct LowerOperation;
-    struct UpperOperation;
-    struct MedianOperation;
-    struct RandomOperation;
-    struct WidthOperation;
-    struct HullOperation;
-    struct IntersectionOperation;
-    
-    class OverlapOperation;
-    class StrictOverlapOperation;
-    class ContainOperation;
-    class StrictContainOperation;
-}
-*/
-
 namespace opensolid
 {
     using namespace Eigen;

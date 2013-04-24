@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Localization.declarations.hpp>
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 

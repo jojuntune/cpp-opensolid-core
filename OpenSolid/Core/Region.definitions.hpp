@@ -26,40 +26,82 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Projection.definitions.hpp>
+#include <OpenSolid/Core/Region.declarations.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Domain.definitions.hpp>
+#include <OpenSolid/Core/Geometry.declarations.hpp>
+#include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Set.declarations.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions> template <int iNumAxes>
-    Projection<iNumDimensions>::Projection(const Datum<iNumDimensions, iNumAxes>& datum) :
-        _originPoint(datum.originPoint()),
-        _transformationMatrix(datum.basisMatrix() * datum.inverseMatrix()) {
-    }
+    class Region2d :
+        public Domain<2>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT
+        Region2d();
 
-    template <int iNumDimensions>
-    inline const Point<iNumDimensions>&
-    Projection<iNumDimensions>::originPoint() const {
-        return _originPoint;
-    }
+        OPENSOLID_CORE_EXPORT
+        Region2d(const Domain<2>& domain);
 
-    template <int iNumDimensions>
-    inline const Matrix<double, iNumDimensions, iNumDimensions>&
-    Projection<iNumDimensions>::transformationMatrix() const {
-        return _transformationMatrix;
-    }
+        OPENSOLID_CORE_EXPORT
+        Region2d(const Set<Geometry<2, 1>>& boundaries);
 
-    template <int iNumDimensions> template <class TTransformable>
-    TTransformable
-    Projection<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        TranslationFunction<TTransformable> translation;
-        TransformationFunction<TTransformable, iNumDimensions> transformation;
+        OPENSOLID_CORE_EXPORT
+        Region2d(const Set<LineSegment<2>>& boundaries);
 
-        TTransformable temp = translation(transformable, -originPoint().vector());
-        temp = transformation(temp, transformationMatrix());
-        return translation(temp, originPoint().vector());
-    }
+        OPENSOLID_CORE_EXPORT
+        Region2d(Interval xInterval, Interval yInterval);
+
+        OPENSOLID_CORE_EXPORT explicit
+        Region2d(const Box<2>& box);
+
+        OPENSOLID_CORE_EXPORT explicit
+        Region2d(const Triangle<2>& triangle);
+
+        OPENSOLID_CORE_EXPORT static Region2d
+        UnitSquare();
+
+        OPENSOLID_CORE_EXPORT static Region2d
+        UnitTriangle();
+    };
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <>
+    struct ScalingFunction<Region2d> :
+        public ScalingFunction<Domain<2>>
+    {
+    };
+
+    template <>
+    struct TranslationFunction<Region2d> :
+        public TranslationFunction<Domain<2>>
+    {
+    };
+
+    template <int iNumTransformedDimensions>
+    struct TransformationFunction<Region2d, iNumTransformedDimensions> :
+        public TransformationFunction<Domain<2>, iNumTransformedDimensions>
+    {
+    };
+
+    template <>
+    struct MappingFunction<Region2d, 2> :
+        public MappingFunction<Domain<2>, 2>
+    {
+    };
+
+    template <>
+    struct BoundsFunction<Region2d> :
+        public BoundsFunction<Domain<2>>
+    {
+    };
 }

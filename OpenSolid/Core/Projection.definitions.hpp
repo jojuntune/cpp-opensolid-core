@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Projection.declarations.hpp>
 
 #include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 
 namespace opensolid

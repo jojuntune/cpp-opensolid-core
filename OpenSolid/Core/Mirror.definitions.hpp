@@ -29,6 +29,8 @@
 #include <OpenSolid/Core/Mirror.declarations.hpp>
 
 #include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
 
 namespace opensolid
 {

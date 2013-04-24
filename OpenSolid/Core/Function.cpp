@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/Function.hpp>
 
-#include <OpenSolid/Core/Zero.hpp>
-
 #include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ArcsineFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ComponentsFunction.hpp>
@@ -52,6 +50,7 @@
 #include <OpenSolid/Core/FunctionImplementation/SquaredNormFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/SumFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/TangentFunction.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 #include <algorithm>
 

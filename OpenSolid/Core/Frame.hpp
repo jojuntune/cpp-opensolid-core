@@ -28,7 +28,11 @@
 
 #include <OpenSolid/Core/Frame.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {

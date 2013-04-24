@@ -151,6 +151,9 @@ namespace opensolid
         Whole();
     };
 
+    double
+    infinity();
+
     bool
     operator==(double value, Interval interval);
     
@@ -315,9 +318,6 @@ namespace opensolid
     
     Interval
     abs2(Interval interval);
-
-    double
-    infinity();
 
     OPENSOLID_CORE_EXPORT std::ostream&
     operator<<(std::ostream& stream, Interval interval);

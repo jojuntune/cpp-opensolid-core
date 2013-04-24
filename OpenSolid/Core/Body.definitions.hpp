@@ -48,10 +48,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         Body3d(const Domain<3>& domain);
 
-        OPENSOLID_CORE_EXPORT
+        OPENSOLID_CORE_EXPORT explicit
         Body3d(const Set<Geometry<3, 2>>& boundaries);
 
-        OPENSOLID_CORE_EXPORT
+        OPENSOLID_CORE_EXPORT explicit
         Body3d(const Set<Triangle<3>>& boundaries);
 
         OPENSOLID_CORE_EXPORT
@@ -76,12 +76,6 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct BoundsFunction<Body3d> :
-        public BoundsFunction<Domain<3>>
-    {
-    };
-
-    template <>
     struct ScalingFunction<Body3d> :
         public ScalingFunction<Domain<3>>
     {
@@ -96,6 +90,18 @@ namespace opensolid
     template <int iNumTransformedDimensions>
     struct TransformationFunction<Body3d, iNumTransformedDimensions> :
         public TransformationFunction<Domain<3>, iNumTransformedDimensions>
+    {
+    };
+
+    template <>
+    struct MappingFunction<Body3d, 3> :
+        public MappingFunction<Domain<3>, 3>
+    {
+    };
+
+    template <>
+    struct BoundsFunction<Body3d> :
+        public BoundsFunction<Domain<3>>
     {
     };
 }

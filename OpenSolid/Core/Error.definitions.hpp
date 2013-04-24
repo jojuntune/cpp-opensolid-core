@@ -32,7 +32,8 @@
 
 namespace opensolid
 {
-    class Error : public std::exception
+    class Error :
+        public std::exception
     {
     private:
         int _errorNumber;
@@ -42,7 +43,8 @@ namespace opensolid
     
         template <int iErrorNumber> friend class NumberedError;
     public:
-        int errorNumber() const;
+        int
+        errorNumber() const;
     };
 
     template <int iErrorNumber>
@@ -57,7 +59,8 @@ namespace opensolid
     class FeatureNotImplemented : public NumberedError<1>
     {
     public:
-        const char* what() const throw() override;
+        const char*
+        what() const throw() override;
     };
 
     template <> struct UniqueErrorNumber<FeatureNotImplemented::ErrorNumber> {};

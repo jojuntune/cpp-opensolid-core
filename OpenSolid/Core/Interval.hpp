@@ -260,6 +260,11 @@ namespace opensolid
         return Interval(-infinity(), infinity());
     }
 
+    inline double
+    infinity() {
+        return std::numeric_limits<double>::infinity();
+    }
+
     inline bool
     operator==(double value, Interval interval) {
         return value == interval.lowerBound() && value == interval.upperBound();
@@ -489,11 +494,6 @@ namespace opensolid
     inline Interval
     abs2(Interval interval) {
         return interval.squared();
-    }
-
-    inline double
-    infinity() {
-        return std::numeric_limits<double>::infinity();
     }
     
     inline Interval

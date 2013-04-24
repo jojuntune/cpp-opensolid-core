@@ -54,6 +54,7 @@ namespace opensolid
     public:
         Datum();
 
+        explicit
         Datum(const Point<iNumDimensions>& originPoint);
 
         Datum(

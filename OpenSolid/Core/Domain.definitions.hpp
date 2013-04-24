@@ -49,6 +49,7 @@ namespace opensolid
     public:
         Domain();
 
+        explicit
         Domain(const Set<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries);
         
         const Set<Geometry<iNumDimensions, iNumDimensions - 1>>&

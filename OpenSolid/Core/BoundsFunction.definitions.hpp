@@ -37,7 +37,8 @@ namespace opensolid
     {
         typedef Interval ResultType;
 
-        Interval operator()(int argument) const;
+        Interval
+        operator()(int argument) const;
     };
     
     template <>
@@ -45,6 +46,7 @@ namespace opensolid
     {
         typedef Interval ResultType;
 
-        Interval operator()(double argument) const;
+        Interval
+        operator()(double argument) const;
     };
 }

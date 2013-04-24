@@ -28,8 +28,10 @@
 
 #include <OpenSolid/Core/Localization.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {

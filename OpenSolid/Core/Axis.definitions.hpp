@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/Datum.definitions.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 
 namespace opensolid
 {

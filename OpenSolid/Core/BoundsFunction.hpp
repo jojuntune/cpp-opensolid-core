@@ -27,6 +27,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.definitions.hpp>
+
 #include <OpenSolid/Core/Interval.hpp>
 
 namespace opensolid

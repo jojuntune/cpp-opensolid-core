@@ -45,7 +45,8 @@ namespace opensolid
             >
         >::type CastType;
 
-        CastType operator()(
+        CastType
+        operator()(
             const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument
         ) const;
     };
