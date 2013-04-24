@@ -29,7 +29,8 @@
 #include <OpenSolid/Core/Transplant.declarations.hpp>
 
 #include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 
 namespace opensolid
 {
@@ -37,9 +38,9 @@ namespace opensolid
     class Transplant
     {
     private:
-        Matrix<double, iNumSourceDimensions, 1> _sourceOriginPoint;
+        Point<iNumSourceDimensions> _sourceOriginPoint;
         Matrix<double, iNumDestinationDimensions, iNumSourceDimensions> _transformationMatrix;
-        Matrix<double, iNumDestinationDimensions, 1> _destinationOriginPoint;
+        Point<iNumDestinationDimensions> _destinationOriginPoint;
     public:
         template <int iNumAxes>
         Transplant(
@@ -47,13 +48,13 @@ namespace opensolid
             const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
         );
 
-        const Matrix<double, iNumSourceDimensions, 1>&
+        const Point<iNumSourceDimensions>&
         sourceOriginPoint() const;
         
         const Matrix<double, iNumDestinationDimensions, iNumSourceDimensions>&
         transformationMatrix() const;
         
-        const Matrix<double, iNumDestinationDimensions, 1>&
+        const Point<iNumDestinationDimensions>&
         destinationOriginPoint() const;
 
         template <class TTransformable>
