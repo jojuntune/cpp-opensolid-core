@@ -35,7 +35,7 @@ translated(const EigenBase<TVector>& vector) const;
 
 template <int iNumDimensions>
 const Derived&
-translatedAlong(double coordinateValue, const opensolid::Datum<iNumDimensions, 1>& axis ) const;
+translatedAlong(const opensolid::Datum<iNumDimensions, 1>& axis, double coordinateValue) const;
 
 template <class TMatrix>
 Matrix<
@@ -49,13 +49,13 @@ PlainObject
 rotated(double angle) const;
 
 PlainObject
-rotatedAbout(double angle, const opensolid::Point<2>& originPoint) const;
+rotatedAbout(const opensolid::Point<2>& originPoint, double angle) const;
 
 PlainObject
 rotated(const opensolid::Rotation<2>& rotation) const;
 
 PlainObject
-rotatedAbout(double angle, const opensolid::Datum<3, 1>& axis) const;
+rotatedAbout(const opensolid::Datum<3, 1>& axis, double angle) const;
 
 PlainObject
 rotated(const opensolid::Rotation<3>& rotation) const;

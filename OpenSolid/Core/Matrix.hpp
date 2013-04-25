@@ -74,8 +74,8 @@ namespace Eigen
     template <class TDerived>template <int iNumDimensions>
     inline const TDerived&
     MatrixBase<TDerived>::translatedAlong(
-        double coordinateValue,
-        const opensolid::Datum<iNumDimensions, 1>& axis
+        const opensolid::Datum<iNumDimensions, 1>& axis,
+        double coordinateValue
     ) const {
         return derived();
     }
@@ -94,7 +94,7 @@ namespace Eigen
 
     template <class TDerived>
     typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotatedAbout(double angle, const opensolid::Point<2>& originPoint) const {
+    MatrixBase<TDerived>::rotatedAbout(const opensolid::Point<2>& originPoint, double angle) const {
         return Matrix2d(Rotation2Dd(angle)).cast<Scalar>() * derived();
 
     }
@@ -107,8 +107,8 @@ namespace Eigen
 
     template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotatedAbout(double angle, const opensolid::Datum<3, 1>& axis) const {
-        return rotated(opensolid::Rotation3d(angle, axis));
+    MatrixBase<TDerived>::rotatedAbout(const opensolid::Datum<3, 1>& axis, double angle) const {
+        return rotated(opensolid::Rotation3d(axis, angle));
     }
 
     template <class TDerived>
@@ -333,6 +333,35 @@ namespace Eigen
 
 namespace opensolid
 {
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    inline Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    ScalingFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
+        double scale
+    ) const {
+        return scale * argument;
+    }
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    template <class TVector>
+    inline const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+    TranslationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
+        const EigenBase<TVector>& vector
+    ) const {
+        return argument;
+    }
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumTransformedDimensions>
+    template <class TMatrix>
+    inline Matrix<TScalar, iNumTransformedDimensions, iCols, iOptions, iNumTransformedDimensions, iMaxCols>
+    TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumTransformedDimensions>::operator()(
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return matrix.derived() * argument;
+    }
+
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     inline typename BoundsFunction<
         Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>

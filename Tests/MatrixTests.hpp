@@ -233,8 +233,8 @@ public:
 
     void testTransformed() {
         Point3d point(3, 2, 1);
-        TS_ASSERT((point.rotatedAbout(M_PI / 2, Frame3d().zAxis()) - Point3d(-2, 3, 1)).isZero());
-        TS_ASSERT((point.rotatedAbout(M_PI / 2, Frame3d().xAxis()) - Point3d(3, -1, 2)).isZero());
+        TS_ASSERT((point.rotatedAbout(Frame3d().zAxis(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
+        TS_ASSERT((point.rotatedAbout(Frame3d().xAxis(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
         TS_ASSERT((point.mirroredAbout(Frame3d().yzPlane()) - Point3d(-3, 2, 1)).isZero());
     }
 
@@ -265,7 +265,7 @@ public:
         TS_ASSERT((point1 - point2).isZero());
         TS_ASSERT(origin.vector().isZero());
         TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
-        TS_ASSERT((point1.rotatedAbout(M_PI / 2, Axis3d::X()) - Point3d(1, -3, 2)).isZero());
+        TS_ASSERT((point1.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
     }
 
     void testBox() {

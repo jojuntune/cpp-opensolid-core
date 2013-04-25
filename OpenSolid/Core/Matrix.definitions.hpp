@@ -26,11 +26,47 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct ScalingFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    {
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+        operator()(
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
+            double scale
+        ) const;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct TranslationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    {
+        template <class TVector>
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+        operator()(
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
+            const EigenBase<TVector>& vector
+        ) const;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumTransformedDimensions>
+    struct TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumTransformedDimensions>
+    {
+        typedef Matrix<TScalar, iNumTransformedDimensions, iCols, iOptions, iNumTransformedDimensions, iMaxCols>
+            ResultType;
+
+        template <class TMatrix>
+        ResultType
+        operator()(
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
+            const EigenBase<TMatrix>& matrix
+        ) const;
+    };
+
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     struct BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {

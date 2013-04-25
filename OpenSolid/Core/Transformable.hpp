@@ -72,8 +72,8 @@ namespace opensolid
     template <class TDerived> template <int iNumDimensions>
     inline TDerived
     Transformable<TDerived>::translatedAlong(
-        double coordinateValue,
-        const Datum<iNumDimensions, 1>& axis
+        const Datum<iNumDimensions, 1>& axis,
+        double coordinateValue
     ) const {
         return translated(coordinateValue * axis.basisVector());
     }
@@ -93,8 +93,8 @@ namespace opensolid
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::rotatedAbout(double angle, const Point<2>& originPoint) const {
-        return Rotation2d(angle, originPoint)(derived());
+    Transformable<TDerived>::rotatedAbout(const Point<2>& originPoint, double angle) const {
+        return Rotation2d(originPoint, angle)(derived());
     }
 
     template <class TDerived>
@@ -105,11 +105,8 @@ namespace opensolid
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::rotatedAbout(
-        double angle,
-        const Datum<3, 1>& axis
-    ) const {
-        return rotated(Rotation3d(angle, axis));
+    Transformable<TDerived>::rotatedAbout(const Datum<3, 1>& axis, double angle) const {
+        return rotated(Rotation3d(axis, angle));
     }
 
     template <class TDerived>

@@ -187,7 +187,7 @@ public:
     void testTransformation() {
         Frame3d frame;
         frame = frame.translated(Vector3d(1, 1, 1));
-        frame = frame.rotatedAbout(M_PI / 4, frame.zAxis());
+        frame = frame.rotatedAbout(frame.zAxis(), M_PI / 4);
         Function linear = Vector3d::Ones() * t;
         Function product = frame.basisMatrix() * linear + frame.originPoint().vector();
         Function quotient = frame.inverseMatrix() * (linear - frame.originPoint().vector());

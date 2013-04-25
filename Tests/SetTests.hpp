@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Set.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Axis.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
@@ -398,5 +399,29 @@ public:
         TS_ASSERT_EQUALS(overlappingPoints.size(), 2);
         TS_ASSERT_EQUALS(overlappingPoints[0], Point3d(1, 2, 3));
         TS_ASSERT_EQUALS(overlappingPoints[1], Point3d(2, 4, 6));
+    }
+
+    void testPointSetTransformation() {
+        Set<Point3d> points;
+        points.insert(Point3d(1, -1, 1));
+        points.insert(Point3d(1, 0, 1));
+        points.insert(Point3d(1, 1, 1));
+
+        Set<Point3d> rotatedPoints = points.rotatedAbout(Axis3d::Z(Point3d(1, 0, 0)), M_PI / 2);
+        TS_ASSERT((rotatedPoints.atIndex(0) - Point3d(0, 0, 1)).isZero());
+        TS_ASSERT((rotatedPoints.atIndex(1) - Point3d(1, 0, 1)).isZero());
+        TS_ASSERT((rotatedPoints.atIndex(2) - Point3d(2, 0, 1)).isZero());
+    }
+
+    void testVectorSetTransformation() {
+        Set<Vector3d> vectors;
+        vectors.insert(Vector3d(1, -1, 1));
+        vectors.insert(Vector3d(1, 0, 1));
+        vectors.insert(Vector3d(1, 1, 1));
+
+        Set<Vector3d> rotatedVectors = vectors.rotatedAbout(Axis3d::Z(Point3d(1, 0, 0)), M_PI / 2);
+        TS_ASSERT((rotatedVectors.atIndex(0) - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectors.atIndex(1) - Vector3d(0, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectors.atIndex(2) - Vector3d(1, 1, 1)).isZero());
     }
 };

@@ -57,13 +57,13 @@ public:
     
     void testDatumTransformation() {
         Frame3d global = Frame3d::XYZ();
-        Frame3d frame = global.translated(Vector3d(1, 1, 1)).rotatedAbout(-M_PI / 2, global.xAxis());
+        Frame3d frame = global.translated(Vector3d(1, 1, 1)).rotatedAbout(global.xAxis(), -M_PI / 2);
         TS_ASSERT((Point3d(1, 2, 3).globalizedFrom(frame) - Point3d(2, 4, -3)).isZero());
     }
     
     void testDatumComposition() {
         Frame3d frame = Frame3d::XYZ(Point3d(1, 0, 0));
-        frame = frame.rotatedAbout(-M_PI / 4, frame.yAxis());
+        frame = frame.rotatedAbout(frame.yAxis(), -M_PI / 4);
         Frame3d product = frame.globalizedFrom(frame);
         Point3d expectedProductOrigin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
         Frame3d quotient = frame.localizedTo(frame);

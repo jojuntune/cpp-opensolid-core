@@ -28,12 +28,12 @@
 
 namespace opensolid
 {
-    Rotation<2>::Rotation(double angle, const Point2d& originPoint) :
+    Rotation<2>::Rotation(const Point2d& originPoint, double angle) :
         _originPoint(originPoint),
         _transformationMatrix(Rotation2Dd(angle)) {
     }
 
-    Rotation<3>::Rotation(double angle, const Datum<3, 1>& axis) :
+    Rotation<3>::Rotation(const Datum<3, 1>& axis, double angle) :
         _originPoint(axis.originPoint()),
         _transformationMatrix(AngleAxisd(angle, axis.basisVector().normalized())) {
     }

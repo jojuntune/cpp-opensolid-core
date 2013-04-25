@@ -61,7 +61,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         TDerived
-        translatedAlong(double coordinateValue, const Datum<iNumDimensions, 1>& axis) const;
+        translatedAlong(const Datum<iNumDimensions, 1>& axis, double coordinateValue) const;
 
         template <class TMatrix>
         typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
@@ -71,13 +71,13 @@ namespace opensolid
         rotated(double angle) const;
 
         TDerived
-        rotatedAbout(double angle, const Point<2>& originPoint) const;
+        rotatedAbout(const Point<2>& originPoint, double angle) const;
 
         TDerived
         rotated(const Rotation<2>& rotation) const;
 
         TDerived
-        rotatedAbout(double angle, const Datum<3, 1>& axis) const;
+        rotatedAbout(const Datum<3, 1>& axis, double angle) const;
 
         TDerived
         rotated(const Rotation<3>& rotation) const;

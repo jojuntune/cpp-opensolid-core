@@ -42,7 +42,7 @@ namespace opensolid
         Matrix2d _transformationMatrix;
     public:
         OPENSOLID_CORE_EXPORT
-        Rotation(double angle, const Point2d& originPoint);
+        Rotation(const Point2d& originPoint, double angle);
 
         const Point2d&
         originPoint() const;
@@ -65,7 +65,7 @@ namespace opensolid
         Matrix3d _transformationMatrix;
     public:
         OPENSOLID_CORE_EXPORT
-        Rotation(double angle, const Datum<3, 1>& axis);
+        Rotation(const Datum<3, 1>& axis, double angle);
 
         const Point3d&
         originPoint() const;
