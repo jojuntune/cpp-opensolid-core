@@ -83,17 +83,14 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Set<Geometry<iNumDimensions, iNumParameters - 1>>
     Geometry<iNumDimensions, iNumParameters>::boundaries() const {
-        Set<Geometry<iNumDimensions, iNumParameters - 1>> results;
-        domain().boundaries().transform(
+        return domain().boundaries().mapped(
             [this] (const Geometry<iNumParameters, iNumParameters - 1>& domainBoundary) {
                 return Geometry<iNumDimensions, iNumParameters - 1>(
-                    function()(domainBoundary.function()),
+                    function().compose(domainBoundary.function()),
                     domainBoundary.domain()
                 );
-            },
-            results.inserter()
+            }
         );
-        return results;
     }
 
     template <int iNumDimensions>
@@ -183,7 +180,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
     Geometry<iNumDestinationDimensions, iNumParameters>
-    MappingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>::operator()(
+    MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
         const Function& function
     ) const {

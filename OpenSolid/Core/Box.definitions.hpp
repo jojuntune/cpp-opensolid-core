@@ -232,7 +232,7 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumDestinationDimensions>
-    struct MappingFunction<Box<iNumDimensions>, iNumDestinationDimensions>
+    struct MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>
     {
         typedef Box<iNumDestinationDimensions> ResultType;
 

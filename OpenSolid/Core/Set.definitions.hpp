@@ -33,6 +33,7 @@
 
 #include <cstdint>
 #include <ostream>
+#include <type_traits>
 
 namespace opensolid
 {
@@ -97,6 +98,17 @@ namespace opensolid
 
         SetInserter<TElement>
         inserter();
+
+        Set<TElement>
+        overlapping(const typename BoundsFunction<TElement>::ResultType& bounds) const;
+
+        template <class TBoundsPredicate>
+        Set<TElement>
+        filtered(const TBoundsPredicate& boundsPredicate) const;
+
+        template <class TFunction>
+        Set<typename std::decay<typename std::result_of<TFunction(TElement)>::type>::type>
+        mapped(const TFunction& function) const;
 
         template <class TVisitor>
         void
@@ -186,14 +198,14 @@ namespace opensolid
 
         template <class TFunction, class TOutputIterator>
         void
-        transform(
+        map(
             const TFunction& function,
             TOutputIterator outputIterator
         ) const;
 
         template <class TFunction, class TOutputIterator>
         void
-        transformOverlapping(
+        mapOverlapping(
             const typename BoundsFunction<TElement>::ResultType& predicateBounds,
             const TFunction& function,
             TOutputIterator outputIterator
@@ -201,7 +213,7 @@ namespace opensolid
 
         template <class TBoundsPredicate, class TFunction, class TOutputIterator>
         void
-        transformFiltered(
+        mapFiltered(
             const TBoundsPredicate& boundsPredicate,
             const TFunction& function,
             TOutputIterator outputIterator
@@ -209,7 +221,7 @@ namespace opensolid
 
         template <class TElementPredicate, class TFunction, class TOutputIterator>
         void
-        transformIf(
+        mapIf(
             const TElementPredicate& predicate,
             const TFunction& function,
             TOutputIterator outputIterator
@@ -217,7 +229,7 @@ namespace opensolid
 
         template <class TElementPredicate, class TFunction, class TOutputIterator>
         void
-        transformOverlappingIf(
+        mapOverlappingIf(
             const typename BoundsFunction<TElement>::ResultType& predicateBounds,
             const TElementPredicate& elementPredicate,
             const TFunction& function,
@@ -226,7 +238,7 @@ namespace opensolid
 
         template <class TBoundsPredicate, class TElementPredicate, class TFunction, class TOutputIterator>
         void
-        transformFilteredIf(
+        mapFilteredIf(
             const TBoundsPredicate& boundsPredicate,
             const TElementPredicate& elementPredicate,
             const TFunction& function,
@@ -270,9 +282,9 @@ namespace opensolid
     };
 
     template <class TElement, int iNumDestinationDimensions>
-    struct MappingFunction<Set<TElement>, iNumDestinationDimensions>
+    struct MorphingFunction<Set<TElement>, iNumDestinationDimensions>
     {
-        typedef Set<typename MappingFunction<TElement, iNumDestinationDimensions>::ResultType>
+        typedef Set<typename MorphingFunction<TElement, iNumDestinationDimensions>::ResultType>
             ResultType;
 
         ResultType

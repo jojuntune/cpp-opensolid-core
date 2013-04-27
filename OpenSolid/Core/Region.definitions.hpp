@@ -94,8 +94,8 @@ namespace opensolid
     };
 
     template <>
-    struct MappingFunction<Region2d, 2> :
-        public MappingFunction<Domain<2>, 2>
+    struct MorphingFunction<Region2d, 2> :
+        public MorphingFunction<Domain<2>, 2>
     {
     };
 

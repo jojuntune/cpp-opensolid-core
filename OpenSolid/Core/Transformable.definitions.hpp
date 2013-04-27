@@ -112,8 +112,8 @@ namespace opensolid
         ) const;
 
         template <int iNumDestinationDimensions>
-        typename MappingFunction<TDerived, iNumDestinationDimensions>::ResultType
-        mapped(const Function& function) const;
+        typename MorphingFunction<TDerived, iNumDestinationDimensions>::ResultType
+        morphed(const Function& function) const;
 
         template <int iNumDimensions, int iNumAxes>
         typename TransformationFunction<TDerived, iNumAxes>::ResultType

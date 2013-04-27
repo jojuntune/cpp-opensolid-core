@@ -163,10 +163,10 @@ namespace opensolid
     }
 
     template <class TDerived> template <int iNumDestinationDimensions>
-    typename MappingFunction<TDerived, iNumDestinationDimensions>::ResultType
-    Transformable<TDerived>::mapped(const Function& function) const {
-        MappingFunction<TDerived, iNumDestinationDimensions> mappingFunction;
-        return mappingFunction(derived(), function);
+    typename MorphingFunction<TDerived, iNumDestinationDimensions>::ResultType
+    Transformable<TDerived>::morphed(const Function& function) const {
+        MorphingFunction<TDerived, iNumDestinationDimensions> MorphingFunction;
+        return MorphingFunction(derived(), function);
     }
 
     template <class TDerived> template <int iNumDimensions, int iNumAxes>

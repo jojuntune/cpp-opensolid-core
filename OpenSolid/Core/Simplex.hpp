@@ -328,7 +328,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>
     inline Simplex<iNumDestinationDimensions, iNumVertices>
-    MappingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>::operator()(
+    MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const Function& function
     ) const {

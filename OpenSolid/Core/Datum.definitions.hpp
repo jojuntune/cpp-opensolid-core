@@ -211,7 +211,7 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
-    struct MappingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
+    struct MorphingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
     {
         typedef Datum<iNumDestinationDimensions, iNumAxes> ResultType;
 

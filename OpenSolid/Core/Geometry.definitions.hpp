@@ -139,7 +139,7 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
-    struct MappingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>
+    struct MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>
     {
         typedef Geometry<iNumDestinationDimensions, iNumParameters> ResultType;
 

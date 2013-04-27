@@ -94,8 +94,8 @@ namespace opensolid
     };
 
     template <>
-    struct MappingFunction<Body3d, 3> :
-        public MappingFunction<Domain<3>, 3>
+    struct MorphingFunction<Body3d, 3> :
+        public MorphingFunction<Domain<3>, 3>
     {
     };
 

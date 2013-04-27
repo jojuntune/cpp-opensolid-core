@@ -91,7 +91,7 @@ namespace opensolid
 
     template <int iNumDimensions>
     Domain<iNumDimensions>
-    MappingFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
+    MorphingFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
         const Domain<iNumDimensions>& domain,
         const Function& function
     ) const {
@@ -99,7 +99,7 @@ namespace opensolid
         bool validOutput = function.numDimensions() == iNumDimensions;
         if (validInput && validOutput) {
             return Domain<iNumDimensions>(
-                domain.boundaries().template mapped<iNumDimensions>(function)
+                domain.boundaries().template morphed<iNumDimensions>(function)
             );
         } else {
             assert(false);

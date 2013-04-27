@@ -220,7 +220,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumDestinationDimensions>
     inline Point<iNumDestinationDimensions>
-    MappingFunction<Point<iNumDimensions>, iNumDestinationDimensions>::operator()(
+    MorphingFunction<Point<iNumDimensions>, iNumDestinationDimensions>::operator()(
         const Point<iNumDimensions>& point,
         const Function& function
     ) const {

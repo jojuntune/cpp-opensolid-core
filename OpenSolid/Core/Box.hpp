@@ -347,7 +347,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumDestinationDimensions>
     inline Box<iNumDestinationDimensions>
-    MappingFunction<Box<iNumDimensions>, iNumDestinationDimensions>::operator()(
+    MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>::operator()(
         const Box<iNumDimensions>& box,
         const Function& function
     ) const {

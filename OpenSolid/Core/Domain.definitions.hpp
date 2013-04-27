@@ -93,7 +93,7 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct MappingFunction<Domain<iNumDimensions>, iNumDimensions>
+    struct MorphingFunction<Domain<iNumDimensions>, iNumDimensions>
     {
         typedef Domain<iNumDimensions> ResultType;
 

@@ -148,7 +148,7 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>
-    struct MappingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>
+    struct MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>
     {
         typedef Simplex<iNumDestinationDimensions, iNumVertices> ResultType;
 

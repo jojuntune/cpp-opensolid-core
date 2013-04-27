@@ -41,5 +41,5 @@ namespace opensolid
     struct TransformationFunction;
 
     template <class TTransformable, int iNumDestinationDimensions>
-    struct MappingFunction;
+    struct MorphingFunction;
 }

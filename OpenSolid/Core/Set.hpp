@@ -219,6 +219,31 @@ namespace opensolid
         return SetInserter<TElement>(this);
     }
 
+    template <class TElement>
+    inline Set<TElement>
+    Set<TElement>::overlapping(const typename BoundsFunction<TElement>::ResultType& bounds) const {
+        std::vector<TElement> overlappingElements;
+        copyOverlapping(bounds, std::back_inserter(overlappingElements));
+        return Set<TElement>(overlappingElements.begin(), overlappingElements.end());
+    }
+
+    template <class TElement> template <class TBoundsPredicate>
+    inline Set<TElement>
+    Set<TElement>::filtered(const TBoundsPredicate& boundsPredicate) const {
+        std::vector<TElement> filteredElements;
+        copyFiltered(boundsPredicate, std::back_inserter(filteredElements));
+        return Set<TElement>(filteredElements.begin(), filteredElements.end());
+    }
+
+    template <class TElement> template <class TFunction>
+    inline Set<typename std::decay<typename std::result_of<TFunction(TElement)>::type>::type>
+    Set<TElement>::mapped(const TFunction& function) const {
+        typedef typename std::decay<typename std::result_of<TFunction(TElement)>::type>::type MappedElementType;
+        std::vector<MappedElementType> mappedElements(size());
+        map(function, mappedElements.begin());
+        return Set<MappedElementType>(mappedElements.begin(), mappedElements.end());
+    }
+
     namespace detail
     {
         template <class TElement, class TVisitor>
@@ -485,7 +510,7 @@ namespace opensolid
     template <class TElement>
     template <class TFunction, class TOutputIterator>
     void
-    Set<TElement>::transform(
+    Set<TElement>::map(
         const TFunction& function,
         TOutputIterator outputIterator
     ) const {
@@ -503,7 +528,7 @@ namespace opensolid
     template <class TElement>
     template <class TFunction, class TOutputIterator>
     void
-    Set<TElement>::transformOverlapping(
+    Set<TElement>::mapOverlapping(
         const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -525,7 +550,7 @@ namespace opensolid
     template <class TElement>
     template <class TBoundsPredicate, class TFunction, class TOutputIterator>
     void
-    Set<TElement>::transformFiltered(
+    Set<TElement>::mapFiltered(
         const TBoundsPredicate& boundsPredicate,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -545,7 +570,7 @@ namespace opensolid
     template <class TElement>
     template <class TElementPredicate, class TFunction, class TOutputIterator>
     void
-    Set<TElement>::transformIf(
+    Set<TElement>::mapIf(
         const TElementPredicate& elementPredicate,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -566,7 +591,7 @@ namespace opensolid
     template <class TElement>
     template <class TElementPredicate, class TFunction, class TOutputIterator>
     void
-    Set<TElement>::transformOverlappingIf(
+    Set<TElement>::mapOverlappingIf(
         const typename BoundsFunction<TElement>::ResultType& predicateBounds,
         const TElementPredicate& elementPredicate,
         const TFunction& function,
@@ -591,7 +616,7 @@ namespace opensolid
     template <class TElement>
     template <class TBoundsPredicate, class TElementPredicate, class TFunction, class TOutputIterator>
     void
-    Set<TElement>::transformFilteredIf(
+    Set<TElement>::mapFilteredIf(
         const TBoundsPredicate& boundsPredicate,
         const TElementPredicate& elementPredicate,
         const TFunction& function,
@@ -626,14 +651,11 @@ namespace opensolid
     Set<TElement>
     ScalingFunction<Set<TElement>>::operator()(const Set<TElement>& set, double scale) const {
         ScalingFunction<TElement> scalingFunction;
-        std::vector<TElement> scaledElements;
-        set.transform(
-            [scale, scalingFunction] (const TElement& element) -> TElement {
+        return set.mapped(
+            [scalingFunction, scale] (const TElement& element) -> TElement {
                 return scalingFunction(element, scale);
-            },
-            std::back_inserter(scaledElements)
+            }
         );
-        return Set<TElement>(scaledElements.begin(), scaledElements.end());
     }
 
     template <class TElement> template <class TVector>
@@ -643,14 +665,11 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         TranslationFunction<TElement> translationFunction;
-        std::vector<TElement> translatedElements;
-        set.transform(
-            [&vector, translationFunction] (const TElement& element) -> TElement {
+        return set.mapped(
+            [translationFunction, &vector] (const TElement& element) -> TElement {
                 return translationFunction(element, vector);
-            },
-            std::back_inserter(translatedElements)
+            }
         );
-        return Set<TElement>(translatedElements.begin(), translatedElements.end());
     }
 
     template <class TElement, int iNumTransformedDimensions> template <class TMatrix>
@@ -661,36 +680,28 @@ namespace opensolid
     ) const {
         typedef typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType
             TransformedElementType;
-
         TransformationFunction<TElement, iNumTransformedDimensions> transformationFunction;
-        std::vector<TransformedElementType> transformedElements;
-        set.transform(
+        return set.mapped(
             [transformationFunction, &matrix] (const TElement& element) -> TransformedElementType {
                 return transformationFunction(element, matrix);
-            },
-            std::back_inserter(transformedElements)
+            }
         );
-        return Set<TransformedElementType>(transformedElements.begin(), transformedElements.end());
     }
 
     template <class TElement, int iNumDestinationDimensions>
-    Set<typename MappingFunction<TElement, iNumDestinationDimensions>::ResultType>
-    MappingFunction<Set<TElement>, iNumDestinationDimensions>::operator()(
+    Set<typename MorphingFunction<TElement, iNumDestinationDimensions>::ResultType>
+    MorphingFunction<Set<TElement>, iNumDestinationDimensions>::operator()(
         const Set<TElement>& set,
         const Function& function
     ) const {
-        typedef typename MappingFunction<TElement, iNumDestinationDimensions>::ResultType
-            MappedElementType;
-
-        MappingFunction<TElement, iNumDestinationDimensions> mappingFunction;
-        std::vector<MappedElementType> mappedElements;
-        set.transform(
-            [mappingFunction, &function] (const TElement& element) -> MappedElementType {
-                return mappingFunction(element, function);
-            },
-            std::back_inserter(mappedElements)
+        typedef typename MorphingFunction<TElement, iNumDestinationDimensions>::ResultType
+            MorphedElementType;
+        MorphingFunction<TElement, iNumDestinationDimensions> morphingFunction;
+        return set.mapped(
+            [morphingFunction, &function] (const TElement& element) -> MorphedElementType {
+                return morphingFunction(element, function);
+            }
         );
-        return Set<MappedElementType>(mappedElements.begin(), mappedElements.end());
     }
 
     template <class TElement>

@@ -465,7 +465,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
     inline Datum<iNumDestinationDimensions, iNumAxes>
-    MappingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>::operator()(
+    MorphingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>::operator()(
         const Datum<iNumDimensions, iNumAxes>& datum,
         const Function& function
     ) const {
@@ -473,7 +473,7 @@ namespace opensolid
         bool validOutput = function.numDimensions() == iNumDestinationDimensions;
         if (validInput && validOutput) {
             return Datum<iNumDestinationDimensions, iNumAxes>(
-                datum.originPoint().template mapped<iNumDestinationDimensions>(function),
+                datum.originPoint().template morphed<iNumDestinationDimensions>(function),
                 function.jacobian(datum.originPoint().vector()) * datum.basisMatrix()
             );
         } else {
