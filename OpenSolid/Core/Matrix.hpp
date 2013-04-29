@@ -155,7 +155,7 @@ namespace Eigen
     }
 
     template <class TDerived>
-    inline const const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<TDerived>::Scalar>, const TDerived>
+    inline const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<TDerived>::Scalar>, const TDerived>
     MatrixBase<TDerived>::scaling(const TDerived& argument, double scale) {
         return argument * Scalar(scale);
     }
