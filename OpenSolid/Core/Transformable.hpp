@@ -105,9 +105,7 @@ namespace opensolid
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::mirroredAbout(
-        const Datum<NumDimensions<TDerived>::Value, NumDimensions<TDerived>::Value - 1>& datum
-    ) const {
+    Transformable<TDerived>::mirroredAbout(const MirrorDatumType& datum) const {
         return Mirror<NumDimensions<TDerived>::Value>(datum)(derived());
     }
 

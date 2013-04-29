@@ -70,10 +70,11 @@ namespace opensolid
         TDerived
         rotated(const Rotation<NumDimensions<TDerived>::Value>& rotation) const;
 
+        typedef Datum<NumDimensions<TDerived>::Value, NumDimensions<TDerived>::Value - 1>
+            MirrorDatumType;
+
         TDerived
-        mirroredAbout(
-            const Datum<NumDimensions<TDerived>::Value, NumDimensions<TDerived>::Value - 1>& datum
-        ) const;
+        mirroredAbout(const MirrorDatumType& datum) const;
 
         TDerived
         mirrored(const Mirror<NumDimensions<TDerived>::Value>& mirror) const;
