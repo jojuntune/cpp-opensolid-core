@@ -26,17 +26,39 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Curve.declarations.hpp>
+
+#include <OpenSolid/Core/Curve/CurveConstructors.hpp>
+#include <OpenSolid/Core/Geometry.definitions.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
+
 namespace opensolid
 {
-    class Domain;
-
-    class DomainConstructors
+    template <int iNumDimensions>
+    class Curve :
+        public Geometry<iNumDimensions, 1>,
+        public CurveConstructors<iNumDimensions>
     {
     public:
-        OPENSOLID_CORE_EXPORT static Domain UnitInterval();
-        OPENSOLID_CORE_EXPORT static Domain UnitSquare();
-        OPENSOLID_CORE_EXPORT static Domain UnitCube();
-        OPENSOLID_CORE_EXPORT static Domain UnitTriangle();
-        OPENSOLID_CORE_EXPORT static Domain UnitTetrahedron();
+        Curve();
+
+        Curve(const Geometry<iNumDimensions, 1>& other);
+
+        Curve(const Function& function, Interval domain);
+
+        Curve(const LineSegment<iNumDimensions>& lineSegment);
+
+        Curve<iNumDimensions>
+        reversed() const;
+
+        Point<iNumDimensions>
+        startPoint() const;
+
+        Point<iNumDimensions>
+        endPoint() const;
     };
+
+    typedef Curve<2> Curve2d;
+    typedef Curve<3> Curve3d;
 }

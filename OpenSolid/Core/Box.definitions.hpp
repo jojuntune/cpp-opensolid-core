@@ -111,6 +111,18 @@ namespace opensolid
         Matrix<double, iNumDimensions, 1>
         diagonalVector() const;
 
+        Point<iNumDimensions>
+        interpolated(double xValue, double yValue) const;
+
+        Point<iNumDimensions>
+        interpolated(double xValue, double yValue, double zValue) const;
+
+        Box<iNumDimensions>
+        interpolated(Interval xInterval, Interval yInterval) const;
+
+        Box<iNumDimensions>
+        interpolated(Interval xInterval, Interval yInterval, Interval zInterval) const;
+
         bool
         overlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
 
@@ -149,6 +161,9 @@ namespace opensolid
 
         static Box
         Unit();
+
+        static Box
+        Hull(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint);
     };
 
     typedef Box<1> Box1d;
@@ -172,6 +187,18 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct NumDimensions<Box<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct ChangeDimensions<Box<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Box<iNumResultDimensions> Type;
+    };
+
     template <>
     struct ScalingFunction<Box1d>
     {
@@ -204,8 +231,6 @@ namespace opensolid
     template <int iNumTransformedDimensions>
     struct TransformationFunction<Box1d, iNumTransformedDimensions>
     {
-        typedef Box<iNumTransformedDimensions> ResultType;
-
         template <class TMatrix>
         Box<iNumTransformedDimensions>
         operator()(const Box1d& box, const EigenBase<TMatrix>& matrix) const;
@@ -214,8 +239,6 @@ namespace opensolid
     template <int iNumTransformedDimensions>
     struct TransformationFunction<Box2d, iNumTransformedDimensions>
     {
-        typedef Box<iNumTransformedDimensions> ResultType;
-
         template <class TMatrix>
         Box<iNumTransformedDimensions>
         operator()(const Box2d& box, const EigenBase<TMatrix>& matrix) const;
@@ -224,8 +247,6 @@ namespace opensolid
     template <int iNumTransformedDimensions>
     struct TransformationFunction<Box3d, iNumTransformedDimensions>
     {
-        typedef Box<iNumTransformedDimensions> ResultType;
-
         template <class TMatrix>
         Box<iNumTransformedDimensions>
         operator()(const Box3d& box, const EigenBase<TMatrix>& matrix) const;
@@ -234,8 +255,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumDestinationDimensions>
     struct MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>
     {
-        typedef Box<iNumDestinationDimensions> ResultType;
-
         Box<iNumDestinationDimensions>
         operator()(const Box<iNumDimensions>& box, const Function& function) const;
     };

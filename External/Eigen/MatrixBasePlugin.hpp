@@ -22,88 +22,85 @@
 *                                                                                   *
 *************************************************************************************/
 
-PlainObject
-scaled(double scale) const;
+static const int NumDimensions = internal::traits<Derived>::RowsAtCompileTime;
 
-template <int iNumDimensions>
 PlainObject
-scaledAbout(double scale, const opensolid::Point<iNumDimensions>& originPoint) const;
+scaledAbout(const opensolid::Point<NumDimensions>& originPoint, double scale) const;
 
 template <class TVector>
 const Derived&
 translated(const EigenBase<TVector>& vector) const;
 
-template <int iNumDimensions>
 const Derived&
-translatedAlong(const opensolid::Datum<iNumDimensions, 1>& axis, double coordinateValue) const;
-
-template <class TMatrix>
-Matrix<
-    typename internal::traits<Derived>::Scalar,
-    TMatrix::RowsAtCompileTime,
-    internal::traits<Derived>::ColsAtCompileTime
->
-transformed(const EigenBase<TMatrix>& matrix) const;
-
-PlainObject
-rotated(double angle) const;
+translatedAlong(const opensolid::Datum<NumDimensions, 1>& axis, double distance) const;
 
 PlainObject
 rotatedAbout(const opensolid::Point<2>& originPoint, double angle) const;
 
 PlainObject
-rotated(const opensolid::Rotation<2>& rotation) const;
-
-PlainObject
 rotatedAbout(const opensolid::Datum<3, 1>& axis, double angle) const;
 
 PlainObject
-rotated(const opensolid::Rotation<3>& rotation) const;
+rotated(const opensolid::Rotation<NumDimensions>& rotation) const;
 
-template <int iNumDimensions>
 PlainObject
-mirroredAbout(const opensolid::Datum<iNumDimensions, iNumDimensions - 1>& datum) const;
+mirroredAbout(
+    const opensolid::Datum<NumDimensions, NumDimensions - 1>& datum
+) const;
 
-template <int iNumDimensions>
 PlainObject
-mirrored(const opensolid::Mirror<iNumDimensions>& mirror) const;
+mirrored(const opensolid::Mirror<NumDimensions>& mirror) const;
 
-template <int iNumDimensions, int iNumAxes>
+template <int iNumAxes>
 PlainObject
-projectedOnto(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
+projectedOnto(const opensolid::Datum<NumDimensions, iNumAxes>& datum) const;
 
-template <int iNumDimensions>
 PlainObject
-projected(const opensolid::Projection<iNumDimensions>& projection) const;
+projected(const opensolid::Projection<NumDimensions>& projection) const;
 
-template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
+template <int iNumDestinationDimensions, int iNumAxes>
 Matrix<
     typename internal::traits<Derived>::Scalar,
     iNumDestinationDimensions,
     internal::traits<Derived>::ColsAtCompileTime
 >
 transplanted(
-    const opensolid::Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+    const opensolid::Datum<NumDimensions, iNumAxes>& sourceDatum,
     const opensolid::Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
 ) const;
 
-template <int iNumSourceDimensions, int iNumDestinationDimensions>
+template <int iNumDestinationDimensions>
 Matrix<
     typename internal::traits<Derived>::Scalar,
     iNumDestinationDimensions,
     internal::traits<Derived>::ColsAtCompileTime
 >
 transplanted(
-    const opensolid::Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
+    const opensolid::Transplant<NumDimensions, iNumDestinationDimensions>& transplant
 ) const;
 
-template <int iNumDimensions, int iNumAxes>
+template <int iNumAxes>
 Matrix<typename internal::traits<Derived>::Scalar, iNumAxes, internal::traits<Derived>::ColsAtCompileTime>
-localizedTo(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
+localizedTo(const opensolid::Datum<NumDimensions, iNumAxes>& datum) const;
 
-template <int iNumDimensions, int iNumAxes>
+template <int iNumDimensions>
 Matrix<typename internal::traits<Derived>::Scalar, iNumDimensions, internal::traits<Derived>::ColsAtCompileTime>
-globalizedFrom(const opensolid::Datum<iNumDimensions, iNumAxes>& datum) const;
+globalizedFrom(const opensolid::Datum<iNumDimensions, NumDimensions>& datum) const;
+
+static const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<Derived>::Scalar>, const Derived>
+scaling(const Derived& argument, double scale);
+
+template <class TVector>
+const Derived&
+translation(const Derived& argument, const EigenBase<TVector>& vector);
+
+template <class TMatrix>
+static Matrix<
+    typename internal::traits<Derived>::Scalar,
+    TMatrix::RowsAtCompileTime,
+    internal::traits<Derived>::ColsAtCompileTime
+>
+transformation(const Derived& argument, const EigenBase<TMatrix>& matrix);
 
 template <class TOther>
 TOther

@@ -56,6 +56,18 @@ namespace opensolid
 namespace opensolid
 {
     template <>
+    struct NumDimensions<Tetrahedron3d> :
+        public NumDimensions<Simplex<3, 4>>
+    {
+    };
+
+    template <int iNumResultDimensions>
+    struct ChangeDimensions<Tetrahedron3d, iNumResultDimensions> :
+        public ChangeDimensions<Simplex<3, 4>, iNumResultDimensions>
+    {
+    };
+
+    template <>
     struct ScalingFunction<Tetrahedron3d> :
         public ScalingFunction<Simplex<3, 4>>
     {

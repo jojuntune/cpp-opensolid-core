@@ -26,85 +26,61 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Body.declarations.hpp>
-
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Domain.definitions.hpp>
+#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Geometry.declarations.hpp>
-#include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/Set.declarations.hpp>
-#include <OpenSolid/Core/Tetrahedron.declarations.hpp>
-#include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    class Body3d :
-        public Domain<3>
+    template <int iNumDimensions, int iNumParameters>
+    struct NumDimensions<Geometry<iNumDimensions, iNumParameters>>
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Body3d();
-
-        OPENSOLID_CORE_EXPORT
-        Body3d(const Domain<3>& domain);
-
-        OPENSOLID_CORE_EXPORT
-        Body3d(const Set<Geometry<3, 2>>& boundaries);
-
-        OPENSOLID_CORE_EXPORT
-        Body3d(const Set<Triangle<3>>& boundaries);
-
-        OPENSOLID_CORE_EXPORT
-        Body3d(const Box<3>& box);
-
-        OPENSOLID_CORE_EXPORT
-        Body3d(const Tetrahedron3d& tetrahedron);
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct NumDimensions<Body3d> :
-        public NumDimensions<Domain<3>>
-    {
+        static const int Value = iNumDimensions;
     };
 
-    template <>
-    struct ChangeDimensions<Body3d, 3> :
-        public ChangeDimensions<Domain<3>, 3>
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    struct ChangeDimensions<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>
     {
+        typedef Geometry<iNumResultDimensions, iNumParameters> Type;
     };
 
-    template <>
-    struct ScalingFunction<Body3d> :
-        public ScalingFunction<Domain<3>>
+    template <int iNumDimensions, int iNumParameters>
+    struct ScalingFunction<Geometry<iNumDimensions, iNumParameters>>
     {
+        Geometry<iNumDimensions, iNumParameters>
+        operator()(const Geometry<iNumDimensions, iNumParameters>& geometry, double scale) const;
     };
 
-    template <>
-    struct TranslationFunction<Body3d> :
-        public TranslationFunction<Domain<3>>
+    template <int iNumDimensions, int iNumParameters>
+    struct TranslationFunction<Geometry<iNumDimensions, iNumParameters>>
     {
+        template <class TVector>
+        Geometry<iNumDimensions, iNumParameters>
+        operator()(
+            const Geometry<iNumDimensions, iNumParameters>& geometry,
+            const EigenBase<TVector>& vector
+        ) const;
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Body3d, iNumTransformedDimensions> :
-        public TransformationFunction<Domain<3>, iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumParameters, int iNumTransformedDimensions>
+    struct TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumTransformedDimensions>
     {
+        template <class TMatrix>
+        Geometry<iNumTransformedDimensions, iNumParameters>
+        operator()(
+            const Geometry<iNumDimensions, iNumParameters>& geometry,
+            const EigenBase<TMatrix>& matrix
+        ) const;
     };
 
-    template <>
-    struct MorphingFunction<Body3d, 3> :
-        public MorphingFunction<Domain<3>, 3>
+    template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
+    struct MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>
     {
-    };
-
-    template <>
-    struct BoundsFunction<Body3d> :
-        public BoundsFunction<Domain<3>>
-    {
+        Geometry<iNumDestinationDimensions, iNumParameters>
+        operator()(
+            const Geometry<iNumDimensions, iNumParameters>& geometry,
+            const Function& function
+        ) const;
     };
 }

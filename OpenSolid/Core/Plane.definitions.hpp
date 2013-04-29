@@ -100,6 +100,18 @@ namespace opensolid
 namespace opensolid
 {
     template <>
+    struct NumDimensions<Plane3d> :
+        public NumDimensions<Datum<3, 2>>
+    {
+    };
+
+    template <int iNumResultDimensions>
+    struct ChangeDimensions<Plane3d, iNumResultDimensions> :
+        public ChangeDimensions<Datum<3, 2>, iNumResultDimensions>
+    {
+    };
+
+    template <>
     struct ScalingFunction<Plane3d> :
         public ScalingFunction<Datum<3, 2>>
     {

@@ -52,22 +52,13 @@ namespace opensolid
         Region2d(const Set<Geometry<2, 1>>& boundaries);
 
         OPENSOLID_CORE_EXPORT
-        Region2d(const Set<LineSegment<2>>& boundaries);
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(Interval xInterval, Interval yInterval);
-
-        OPENSOLID_CORE_EXPORT explicit
         Region2d(const Box<2>& box);
 
-        OPENSOLID_CORE_EXPORT explicit
+        OPENSOLID_CORE_EXPORT
         Region2d(const Triangle<2>& triangle);
 
         OPENSOLID_CORE_EXPORT static Region2d
-        UnitSquare();
-
-        OPENSOLID_CORE_EXPORT static Region2d
-        UnitTriangle();
+        Disk(const Point<2>& centerPoint, double radius);
     };
 }
 
@@ -75,6 +66,18 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <>
+    struct NumDimensions<Region2d> :
+        public NumDimensions<Domain<2>>
+    {
+    };
+
+    template <>
+    struct ChangeDimensions<Region2d, 2> :
+        public ChangeDimensions<Domain<2>, 2>
+    {
+    };
+
     template <>
     struct ScalingFunction<Region2d> :
         public ScalingFunction<Domain<2>>

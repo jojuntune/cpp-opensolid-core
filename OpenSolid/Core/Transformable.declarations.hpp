@@ -31,6 +31,12 @@ namespace opensolid
     template <class TDerived>
     class Transformable;
 
+    template <class TDerived>
+    struct NumDimensions;
+
+    template <class TDerived, int iNumResultDimensions>
+    struct ChangeDimensions;
+
     template <class TTransformable>
     struct ScalingFunction;
 
@@ -40,6 +46,6 @@ namespace opensolid
     template <class TTransformable, int iNumTransformedDimensions>
     struct TransformationFunction;
 
-    template <class TTransformable, int iNumDestinationDimensions>
+    template <class TTransformable, int iNumMorphedDimensions>
     struct MorphingFunction;
 }

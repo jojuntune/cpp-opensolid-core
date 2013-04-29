@@ -49,9 +49,6 @@ namespace opensolid
             const Point2d& secondVertex,
             const Point2d& thirdVertex
         );
-
-        static Triangle<2>
-        Unit();
     };
 
     typedef Triangle<2> Triangle2d;
@@ -79,6 +76,18 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct NumDimensions<Triangle<iNumDimensions>> :
+        public NumDimensions<Simplex<iNumDimensions, 3>>
+    {
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct ChangeDimensions<Triangle<iNumDimensions>, iNumResultDimensions> :
+        public ChangeDimensions<Simplex<iNumDimensions, 3>, iNumResultDimensions>
+    {
+    };
+
     template <int iNumDimensions>
     struct ScalingFunction<Triangle<iNumDimensions>> :
         public ScalingFunction<Simplex<iNumDimensions, 3>>

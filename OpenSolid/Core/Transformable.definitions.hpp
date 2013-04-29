@@ -49,78 +49,99 @@ namespace opensolid
         derived() const;
 
         TDerived
-        scaled(double scale) const;
-
-        template <int iNumDimensions>
-        TDerived
-        scaledAbout(double scale, const Point<iNumDimensions>& originPoint) const;
+        scaledAbout(const Point<NumDimensions<TDerived>::Value>& originPoint, double scale) const;
 
         template <class TVector>
         TDerived
         translated(const EigenBase<TVector>& vector) const;
 
-        template <int iNumDimensions>
         TDerived
-        translatedAlong(const Datum<iNumDimensions, 1>& axis, double coordinateValue) const;
-
-        template <class TMatrix>
-        typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
-        transformed(const EigenBase<TMatrix>& matrix) const;
-
-        TDerived
-        rotated(double angle) const;
+        translatedAlong(
+            const Datum<NumDimensions<TDerived>::Value, 1>& axis,
+            double distance
+        ) const;
 
         TDerived
         rotatedAbout(const Point<2>& originPoint, double angle) const;
 
         TDerived
-        rotated(const Rotation<2>& rotation) const;
-
-        TDerived
         rotatedAbout(const Datum<3, 1>& axis, double angle) const;
 
         TDerived
-        rotated(const Rotation<3>& rotation) const;
+        rotated(const Rotation<NumDimensions<TDerived>::Value>& rotation) const;
 
-        template <int iNumDimensions>
         TDerived
-        mirroredAbout(const Datum<iNumDimensions, iNumDimensions - 1>& datum) const;
+        mirroredAbout(
+            const Datum<NumDimensions<TDerived>::Value, NumDimensions<TDerived>::Value - 1>& datum
+        ) const;
 
-        template <int iNumDimensions>
         TDerived
-        mirrored(const Mirror<iNumDimensions>& mirror) const;
+        mirrored(const Mirror<NumDimensions<TDerived>::Value>& mirror) const;
 
-        template <int iNumDimensions, int iNumAxes>
+        template <int iNumAxes>
         TDerived
-        projectedOnto(const Datum<iNumDimensions, iNumAxes>& datum) const;
+        projectedOnto(const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum) const;
 
-        template <int iNumDimensions>
         TDerived
-        projected(const Projection<iNumDimensions>& projection) const;
+        projected(const Projection<NumDimensions<TDerived>::Value>& projection) const;
 
-        template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
-        typename TransformationFunction<TDerived, iNumDestinationDimensions>::ResultType
+        template <int iNumDestinationDimensions, int iNumAxes>
+        typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
         transplanted(
-            const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+            const Datum<NumDimensions<TDerived>::Value, iNumAxes>& sourceDatum,
             const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
         ) const;
 
-        template <int iNumSourceDimensions, int iNumDestinationDimensions>
-        typename TransformationFunction<TDerived, iNumDestinationDimensions>::ResultType
+        template <int iNumDestinationDimensions>
+        typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
         transplanted(
-            const Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
+            const Transplant<NumDimensions<TDerived>::Value, iNumDestinationDimensions>& transplant
         ) const;
 
         template <int iNumDestinationDimensions>
-        typename MorphingFunction<TDerived, iNumDestinationDimensions>::ResultType
+        typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
         morphed(const Function& function) const;
 
-        template <int iNumDimensions, int iNumAxes>
-        typename TransformationFunction<TDerived, iNumAxes>::ResultType
-        localizedTo(const Datum<iNumDimensions, iNumAxes>& datum) const;
+        template <int iNumAxes>
+        typename ChangeDimensions<TDerived, iNumAxes>::Type
+        localizedTo(const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum) const;
 
-        template <int iNumDimensions, int iNumAxes>
-        typename TransformationFunction<TDerived, iNumDimensions>::ResultType
-        globalizedFrom(const Datum<iNumDimensions, iNumAxes>& datum) const;
+        template <int iNumDimensions>
+        typename ChangeDimensions<TDerived, iNumDimensions>::Type
+        globalizedFrom(const Datum<iNumDimensions, NumDimensions<TDerived>::Value>& datum) const;
+
+        ///// Low-level static functions /////
+
+        static TDerived
+        scaling(const TDerived& argument, double scale);
+
+        template <class TVector>
+        static TDerived
+        translation(const TDerived& argument, const EigenBase<TVector>& vector);
+
+        template <class TMatrix>
+        static typename ChangeDimensions<TDerived, TMatrix::RowsAtCompileTime>::Type
+        transformation(const TDerived& argument, const EigenBase<TMatrix>& matrix);
+
+        template <int iNumDestinationDimensions>
+        static typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
+        morphing(const TDerived& argument, const Function& function);
+    };
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <>
+    struct NumDimensions<double>
+    {
+        static const int Value = 1;
+    };
+
+    template <>
+    struct NumDimensions<Interval>
+    {
+        static const int Value = 1;
     };
 }

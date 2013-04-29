@@ -63,11 +63,6 @@ namespace opensolid
         Simplex<3, 3>(other) {
     }
 
-    inline Triangle<2>
-    Triangle<2>::Unit() {
-        return Triangle<2>(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
-    }
-
     inline
     Triangle<3>::Triangle(
         const Point3d& firstVertex,

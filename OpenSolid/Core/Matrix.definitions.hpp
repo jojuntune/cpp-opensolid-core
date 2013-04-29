@@ -33,6 +33,18 @@
 namespace opensolid
 {
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct NumDimensions<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    {
+        static const int Value = iRows;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
+    struct ChangeDimensions<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>
+    {
+        typedef Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols> Type;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     struct ScalingFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {
         Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
@@ -56,11 +68,8 @@ namespace opensolid
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumTransformedDimensions>
     struct TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumTransformedDimensions>
     {
-        typedef Matrix<TScalar, iNumTransformedDimensions, iCols, iOptions, iNumTransformedDimensions, iMaxCols>
-            ResultType;
-
         template <class TMatrix>
-        ResultType
+        Matrix<TScalar, iNumTransformedDimensions, iCols, iOptions, iNumTransformedDimensions, iMaxCols>
         operator()(
             const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
             const EigenBase<TMatrix>& matrix

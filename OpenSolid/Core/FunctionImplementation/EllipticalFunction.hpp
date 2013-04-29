@@ -137,7 +137,8 @@ namespace opensolid
         MapXd& results,
         EvaluateCache<double>&
     ) const {
-        MatrixXd localCoordinates = MatrixXd::Ones(iNumAxes, parameterValues.cols());
+        Matrix<double, iNumAxes, Dynamic> localCoordinates =
+            Matrix<double, iNumAxes, Dynamic>::Ones(iNumAxes, parameterValues.cols());
         for (int i = 0; i < numParameters(); ++i) {
             if (convention()(i)) {
                 localCoordinates.row(i).array() *= cos(parameterValues.row(i).array());
@@ -149,7 +150,8 @@ namespace opensolid
                     cos(parameterValues.row(i).array()).replicate(numParameters() - i, 1);
             }
         }
-        results = localCoordinates.globalizedFrom(datum());
+        results = (datum().basisMatrix() * localCoordinates).colwise() +
+            datum().originPoint().vector();
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -158,7 +160,8 @@ namespace opensolid
         MapXI& results,
         EvaluateCache<Interval>&
     ) const {
-        MatrixXI localCoordinates = MatrixXI::Ones(iNumAxes, parameterBounds.cols());
+        Matrix<Interval, iNumAxes, Dynamic> localCoordinates =
+            Matrix<Interval, iNumAxes, Dynamic>::Ones(iNumAxes, parameterBounds.cols());
         for (int i = 0; i < numParameters(); ++i) {
             if (convention()(i)) {
                 localCoordinates.row(i).array() *= cos(parameterBounds.row(i).array());
@@ -170,7 +173,8 @@ namespace opensolid
                     cos(parameterBounds.row(i).array()).replicate(numParameters() - i, 1);
             }
         }
-        results = localCoordinates.globalizedFrom(datum());
+        results = (datum().basisMatrix().template cast<Interval>() * localCoordinates).colwise() +
+            datum().originPoint().vector().template cast<Interval>();
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -198,7 +202,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     Function EllipticalFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
-            datum().scaled(scale),
+            Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale),
             convention()
         );
     }
@@ -210,17 +214,26 @@ namespace opensolid
         int numTransformedDimensions = transformationMatrix.rows();
         if (numTransformedDimensions == 1) {
             return new EllipticalFunction<1, iNumAxes>(
-                datum().transformed(Matrix<double, 1, iNumDimensions>(transformationMatrix)),
+                Datum<iNumDimensions, iNumAxes>::transformation(
+                    datum(),
+                    transformationMatrix.topLeftCorner<1, iNumDimensions>()
+                ),
                 convention()
             );
         } else if (numTransformedDimensions == 2) {
             return new EllipticalFunction<2, iNumAxes>(
-                datum().transformed(Matrix<double, 2, iNumDimensions>(transformationMatrix)),
+                Datum<iNumDimensions, iNumAxes>::transformation(
+                    datum(),
+                    transformationMatrix.topLeftCorner<2, iNumDimensions>()
+                ),
                 convention()
             );
         } else if (numTransformedDimensions == 3) {
             return new EllipticalFunction<3, iNumAxes>(
-                datum().transformed(Matrix<double, 3, iNumDimensions>(transformationMatrix)),
+                Datum<iNumDimensions, iNumAxes>::transformation(
+                    datum(),
+                    transformationMatrix.topLeftCorner<3, iNumDimensions>()
+                ),
                 convention()
             );
         } else {

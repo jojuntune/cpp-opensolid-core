@@ -298,6 +298,15 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumVertices>
     Simplex<iNumDimensions, iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>::Unit() {
+        Matrix<double, iNumDimensions, iNumVertices> vertexMatrix;
+        vertexMatrix.col(0).setZero();
+        vertexMatrix.template rightCols<iNumVertices - 1>().setIdentity();
+        return Simplex<iNumDimensions, iNumVertices>(vertexMatrix);
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    Simplex<iNumDimensions, iNumVertices>
     ScalingFunction<Simplex<iNumDimensions, iNumVertices>>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         double scale
@@ -323,7 +332,9 @@ namespace opensolid
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Simplex<iNumTransformedDimensions, iNumVertices>(matrix.derived() * simplex.vertices());
+        return Simplex<iNumTransformedDimensions, iNumVertices>(
+            matrix.derived() * simplex.vertices()
+        );
     }
 
     template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>

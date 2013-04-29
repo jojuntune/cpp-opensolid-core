@@ -62,15 +62,17 @@ public:
     }
     
     void testDatumComposition() {
-        Frame3d frame = Frame3d::XYZ(Point3d(1, 0, 0));
+        Frame3d frame = Frame3d(Point3d(1, 0, 0));
         frame = frame.rotatedAbout(frame.yAxis(), -M_PI / 4);
+
         Frame3d product = frame.globalizedFrom(frame);
         Point3d expectedProductOrigin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
-        Frame3d quotient = frame.localizedTo(frame);
         TS_ASSERT((product.originPoint() - expectedProductOrigin).isZero());
         TS_ASSERT((product.xAxis().basisVector() - Vector3d(0, 0, 1)).isZero());
         TS_ASSERT((product.yAxis().basisVector() - Vector3d(0, 1, 0)).isZero());
         TS_ASSERT((product.zAxis().basisVector() - Vector3d(-1, 0, 0)).isZero());
+
+        Frame3d quotient = frame.localizedTo(frame);
         TS_ASSERT(quotient.originPoint().isOrigin());
         TS_ASSERT(quotient.basisMatrix().isIdentity());
     }
@@ -79,9 +81,11 @@ public:
         Plane3d plane(Point3d(1, 1, 1), Vector3d(1, 0, 1), Vector3d(0, 1, 0));
         TS_ASSERT(plane.basisMatrix().col(0).norm() - 1 == Zero());
         TS_ASSERT(plane.basisMatrix().col(1).norm() - 1 == Zero());
+
         Datum<3, 2> projected = plane.projectedOnto(Frame3d().xyPlane());
         TS_ASSERT((projected.basisMatrix().col(0) - Vector3d(1 / sqrt(2.0), 0, 0)).isZero());
         TS_ASSERT((projected.basisMatrix().col(1) - Vector3d(0, 1, 0)).isZero());
+
         Axis3d axis = Axis2d(Point2d::Origin(), Vector2d(1, 1)).globalizedFrom(plane);
         TS_ASSERT((axis.originPoint() - plane.originPoint()).isZero());
         Vector3d expectedAxisVector = Vector3d(1 / sqrt(2.0), 1, 1 / sqrt(2.0)).normalized();
@@ -92,8 +96,10 @@ public:
         Frame2d frame = Frame2d::FromXAxis(Axis2d(Point2d(1, 0), Vector2d(1, 1)));
         TS_ASSERT_EQUALS(frame.basisMatrix().rows(), 2);
         TS_ASSERT_EQUALS(frame.basisMatrix().cols(), 2);
+
         TS_ASSERT((frame.basisMatrix().col(0) - Vector2d(1, 1).normalized()).isZero());
         TS_ASSERT((frame.basisMatrix().col(1) - Vector2d(-1, 1).normalized()).isZero());
+
         TS_ASSERT((Point2d(2, 2).globalizedFrom(frame) - Point2d(1, 2 * sqrt(2.0))).isZero());
         TS_ASSERT((Point2d(2, 1).localizedTo(frame) - Point2d(sqrt(2.0), 0)).isZero());
     }
@@ -104,7 +110,9 @@ public:
             Vector3d xDirection = Vector3d::Random();
             Vector3d yDirection = Vector3d::Random();
             Vector3d zDirection = Vector3d::Random();
+
             frame = Frame3d(Point3d(1, 1, 1), xDirection, yDirection, zDirection).normalized();
+
             std::cout << frame.basisMatrix() << std::endl;
             std::cout << std::endl;
             std::cout << frame.basisMatrix() * frame.basisMatrix().transpose() << std::endl;
@@ -126,6 +134,7 @@ public:
         Plane3d plane = Plane3d::FromPointAndNormal(Point3d(1, 1, 1), Vector3d::UnitZ());
         TS_ASSERT(plane.basisMatrix().isUnitary());
         TS_ASSERT((plane.basisVector(0).cross(plane.basisVector(1)) - Vector3d::UnitZ()).isZero());
+
         Point3d point(2, 2, 2);
         Point3d projectedPoint = point.projectedOnto(plane);
         Point3d expectedProjected(2, 2, 1);
@@ -135,6 +144,7 @@ public:
     void testReversed() {
         TS_ASSERT((Frame3d().xAxis().reversed().point(1) - Point3d(-1, 0, 0)).isZero());
         TS_ASSERT((Frame3d().reversed(2).point(1, 2, 3) - Point3d(1, 2, -3)).isZero());
+        
         Point3d point = Frame3d().translated(Vector3d(1, 1, 1)).yReversed().point(1, 2, 3);
         Point3d expected(2, -1, 4);
         TS_ASSERT((point - expected).isZero());

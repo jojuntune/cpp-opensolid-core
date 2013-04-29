@@ -4,12 +4,10 @@
         GLOB
         CORE_SOURCES
         *.cpp
+        Curve/*.cpp
         Datum/*.cpp
-        #Domain/*.cpp
-        #DomainImplementation/*.cpp
         Function/*.cpp
         FunctionImplementation/*.cpp
-        #Geometry/*.cpp
         Interval/*.cpp
         Matrix/*.cpp
         Set/*.cpp

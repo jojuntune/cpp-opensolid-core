@@ -55,11 +55,15 @@ namespace opensolid
     template <int iNumDimensions> template <class TTransformable>
     TTransformable
     Projection<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        TranslationFunction<TTransformable> translation;
-        TransformationFunction<TTransformable, iNumDimensions> transformation;
-
-        TTransformable temp = translation(transformable, -originPoint().vector());
-        temp = transformation(temp, transformationMatrix());
-        return translation(temp, originPoint().vector());
+        return TTransformable::translation(
+            TTransformable::transformation(
+                TTransformable::translation(
+                    transformable,
+                    -originPoint().vector()
+                ),
+                transformationMatrix()
+            ),
+            originPoint().vector()
+        );
     }
 }

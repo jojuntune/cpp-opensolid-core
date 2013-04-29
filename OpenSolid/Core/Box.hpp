@@ -177,6 +177,38 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline Point<iNumDimensions>
+    Box<iNumDimensions>::interpolated(double xValue, double yValue) const {
+        return minPoint() +
+            Vector2d(xValue * x().width(), yValue * y().width());
+    }
+
+    template <int iNumDimensions>
+    inline Point<iNumDimensions>
+    Box<iNumDimensions>::interpolated(double xValue, double yValue, double zValue) const {
+        return minPoint() +
+            Vector3d(xValue * x().width(), yValue * y().width(), zValue * z().width());
+    }
+
+    template <int iNumDimensions>
+    inline Box<iNumDimensions>
+    Box<iNumDimensions>::interpolated(Interval xInterval, Interval yInterval) const {
+        return minPoint() +
+            Vector2I(xInterval * x().width(), yInterval * y().width());
+    }
+
+    template <int iNumDimensions>
+    inline Box<iNumDimensions>
+    Box<iNumDimensions>::interpolated(
+        Interval xInterval,
+        Interval yInterval,
+        Interval zInterval
+    ) const {
+        return minPoint() +
+            Vector3I(xInterval * x().width(), yInterval * y().width(), zInterval * z().width());
+    }
+
+    template <int iNumDimensions>
     inline bool
     Box<iNumDimensions>::overlaps(const Box<iNumDimensions>& other, double precision) const {
         return vector().overlaps(other.vector(), precision);
@@ -261,6 +293,15 @@ namespace opensolid
     inline Box<iNumDimensions>
     Box<iNumDimensions>::Unit() {
         return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit()));
+    }
+
+    template <int iNumDimensions>
+    inline Box<iNumDimensions>
+    Box<iNumDimensions>::Hull(
+        const Point<iNumDimensions>& firstPoint,
+        const Point<iNumDimensions>& secondPoint
+    ) {
+        return firstPoint.hull(secondPoint);
     }
 
     template <int iNumDimensions, class TVector>

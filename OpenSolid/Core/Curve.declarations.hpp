@@ -21,36 +21,13 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
 *                                                                                   *
 *************************************************************************************/
- 
-#include <OpenSolid/Core/Domain/DomainConstructors.hpp>
 
-#include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/Geometry.hpp>
- 
-#include <OpenSolid/Core/DomainImplementation/CuboidDomain.hpp>
-#include <OpenSolid/Core/DomainImplementation/IntervalDomain.hpp>
-#include <OpenSolid/Core/DomainImplementation/RectangleDomain.hpp>
-#include <OpenSolid/Core/DomainImplementation/SimplexDomain.hpp>
+#pragma once
+
+#include <OpenSolid/config.hpp>
 
 namespace opensolid
 {
-    Domain DomainConstructors::UnitInterval() {
-        return new IntervalDomain(Interval::Unit());
-    }
-
-    Domain DomainConstructors::UnitSquare() {
-        return new RectangleDomain(Vector2I::Constant(Interval::Unit()));
-    }
-
-    Domain DomainConstructors::UnitCube() {
-        return new CuboidDomain(Vector3I::Constant(Interval::Unit()));
-    }
-
-    Domain DomainConstructors::UnitTriangle() {
-        return new SimplexDomain<2>(Triangle2d::Unit());
-    }
-
-    Domain DomainConstructors::UnitTetrahedron() {
-        return new SimplexDomain<3>(Tetrahedron3d::Unit());
-    }
+    template <int iNumDimensions>
+    class Curve;
 }

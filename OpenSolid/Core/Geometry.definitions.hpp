@@ -34,8 +34,10 @@
 #include <OpenSolid/Core/Function.definitions.hpp>
 #include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
 #include <OpenSolid/Core/Geometry/BoundsFunction.definitions.hpp>
+#include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Simplex.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>
@@ -55,6 +57,8 @@ namespace opensolid
         Geometry();
         
         Geometry(const Function& function, const Domain<iNumParameters>& domain);
+
+        Geometry(const Simplex<iNumDimensions, iNumParameters + 1>& simplex);
         
         const Function&
         function() const;
@@ -65,16 +69,18 @@ namespace opensolid
         const Box<iNumDimensions>&
         bounds() const;
         
-        template <class TArgument>
-        MatrixReturnValue<TArgument>
-        operator()(const TArgument& argument) const;
+        template <class TVector>
+        Point<iNumDimensions>
+        operator()(const EigenBase<TVector>& parameterValues) const;
 
         Set<Geometry<iNumDimensions, iNumParameters - 1>>
         boundaries() const;
     };
 
     template <int iNumDimensions>
-    class Geometry<iNumDimensions, 1>
+    class Geometry<iNumDimensions, 1> :
+        public Convertible<Geometry<iNumDimensions, 1>>,
+        public Transformable<Geometry<iNumDimensions, 1>>
     {
     private:
         Function _function;
@@ -85,6 +91,8 @@ namespace opensolid
 
         Geometry(const Function& function, Interval domain);
 
+        Geometry(const Simplex<iNumDimensions, 2>& simplex);
+
         const Function&
         function() const;
         
@@ -94,59 +102,10 @@ namespace opensolid
         const Box<iNumDimensions>&
         bounds() const;
 
-        template <class TArgument>
-        MatrixReturnValue<TArgument>
-        operator()(const TArgument& argument) const;
+        Point<iNumDimensions>
+        operator()(double parameterValue) const;
 
         Set<Point<iNumDimensions>>
         boundaries() const;
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iNumParameters>
-    struct ScalingFunction<Geometry<iNumDimensions, iNumParameters>>
-    {
-        Geometry<iNumDimensions, iNumParameters>
-        operator()(const Geometry<iNumDimensions, iNumParameters>& geometry, double scale) const;
-    };
-
-    template <int iNumDimensions, int iNumParameters>
-    struct TranslationFunction<Geometry<iNumDimensions, iNumParameters>>
-    {
-        template <class TVector>
-        Geometry<iNumDimensions, iNumParameters>
-        operator()(
-            const Geometry<iNumDimensions, iNumParameters>& geometry,
-            const EigenBase<TVector>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumParameters, int iNumTransformedDimensions>
-    struct TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumTransformedDimensions>
-    {
-        typedef Geometry<iNumTransformedDimensions, iNumParameters> ResultType;
-
-        template <class TMatrix>
-        Geometry<iNumTransformedDimensions, iNumParameters>
-        operator()(
-            const Geometry<iNumDimensions, iNumParameters>& geometry,
-            const EigenBase<TMatrix>& matrix
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
-    struct MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>
-    {
-        typedef Geometry<iNumDestinationDimensions, iNumParameters> ResultType;
-
-        Geometry<iNumDestinationDimensions, iNumParameters>
-        operator()(
-            const Geometry<iNumDimensions, iNumParameters>& geometry,
-            const Function& function
-        ) const;
     };
 }

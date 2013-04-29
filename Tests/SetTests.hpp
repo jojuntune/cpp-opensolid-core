@@ -72,6 +72,12 @@ struct IntervalIndex
 namespace opensolid
 {
     template <>
+    struct NumDimensions<IntervalIndex>
+    {
+        static const int Value = 1;
+    };
+
+    template <>
     struct BoundsFunction<IntervalIndex>
     {
         typedef Interval ResultType;

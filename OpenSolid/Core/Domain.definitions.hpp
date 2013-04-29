@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Geometry.declarations.hpp>
 #include <OpenSolid/Core/Geometry/BoundsFunction.definitions.hpp>
+#include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Set.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
@@ -68,6 +69,18 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions>
+    struct NumDimensions<Domain<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions>
+    struct ChangeDimensions<Domain<iNumDimensions>, iNumDimensions>
+    {
+        typedef Domain<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct ScalingFunction<Domain<iNumDimensions>>
     {
         Domain<iNumDimensions>
@@ -85,8 +98,6 @@ namespace opensolid
     template <int iNumDimensions>
     struct TransformationFunction<Domain<iNumDimensions>, iNumDimensions>
     {
-        typedef Domain<iNumDimensions> ResultType;
-
         template <class TMatrix>
         Domain<iNumDimensions>
         operator()(const Domain<iNumDimensions>& domain, const EigenBase<TMatrix>& matrix) const;
@@ -95,8 +106,6 @@ namespace opensolid
     template <int iNumDimensions>
     struct MorphingFunction<Domain<iNumDimensions>, iNumDimensions>
     {
-        typedef Domain<iNumDimensions> ResultType;
-
         Domain<iNumDimensions>
         operator()(const Domain<iNumDimensions>& domain, const Function& function) const;
     };

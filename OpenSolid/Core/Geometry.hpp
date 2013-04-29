@@ -57,6 +57,13 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
+    Geometry<iNumDimensions, iNumParameters>::Geometry(
+        const Simplex<iNumDimensions, iNumParameters + 1>& simplex
+    ) : _function(Function::Linear(simplex.datum())),
+        _domain(Simplex<iNumParameters, iNumParameters + 1>::Unit()) {
+    }
+
+    template <int iNumDimensions, int iNumParameters>
     inline const Function&
     Geometry<iNumDimensions, iNumParameters>::function() const {
         return _function;
@@ -74,10 +81,12 @@ namespace opensolid
         return _bounds;
     }
 
-    template <int iNumDimensions, int iNumParameters> template <class TArgument>
-    inline MatrixReturnValue<TArgument>
-    Geometry<iNumDimensions, iNumParameters>::operator()(const TArgument& argument) const {
-        return function()(argument);
+    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    inline Point<iNumDimensions>
+    Geometry<iNumDimensions, iNumParameters>::operator()(
+        const EigenBase<TVector>& parameterValues
+    ) const {
+        return Point<iNumDimensions>(function()(parameterValues));
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -108,6 +117,12 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    Geometry<iNumDimensions, 1>::Geometry(const Simplex<iNumDimensions, 2>& simplex) :
+        _function(Function::Linear(simplex.datum())),
+        _domain(Interval::Unit()) {
+    }
+
+    template <int iNumDimensions>
     const Function&
     Geometry<iNumDimensions, 1>::function() const {
         return _function;
@@ -125,10 +140,10 @@ namespace opensolid
         return _bounds;
     }
 
-    template <int iNumDimensions> template <class TArgument>
-    MatrixReturnValue<TArgument>
-    Geometry<iNumDimensions, 1>::operator()(const TArgument& argument) const {
-        return function()(argument);
+    template <int iNumDimensions>
+    Point<iNumDimensions>
+    Geometry<iNumDimensions, 1>::operator()(double parameterValue) const {
+        return Point<iNumDimensions>(function()(parameterValue));
     }
 
     template <int iNumDimensions>

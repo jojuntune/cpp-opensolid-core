@@ -42,45 +42,5 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT static Geometry
         Constant(const VectorXd& vector, int numParameters);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Arc2d(
-            const Frame2d& frame,
-            double radius,
-            double startAngle,
-            double endAngle
-        );
-        
-        OPENSOLID_CORE_EXPORT static Geometry
-        Arc2d(
-            const Point2d& center,
-            bool isCounterclockwise,
-            const Point2d& startPoint,
-            const Point2d& endPoint
-        );
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Arc2d(const Point2d& startPoint, const Point2d& innerPoint, const Point2d& endPoint);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Arc3d(const Plane3d& plane, double radius, double startAngle, double endAngle);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Arc3d(const Axis3d& axis, const Point3d& startPoint, const Point3d& endPoint);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Arc3d(const Point3d& startPoint, const Point3d& innerPoint, const Point3d& endPoint);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Circle2d(const Point2d& center, double radius, bool isFilled = true);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Circle3d(const Axis3d& axis, double radius, bool isFilled = true);
-
-        OPENSOLID_CORE_EXPORT static Geometry
-        Circle3d(const Plane3d& plane, double radius, bool isFilled = true);
-        
-        OPENSOLID_CORE_EXPORT static Geometry
-        Helix3d(const Frame3d& frame, double radius, double pitch, Interval turnInterval);
     };
 }

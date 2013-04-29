@@ -433,7 +433,7 @@ namespace opensolid
         double scale
     ) const {
         return Datum<iNumDimensions, iNumAxes>(
-            datum.originPoint().scaled(scale),
+            Point<iNumDimensions>::scaling(datum.originPoint(), scale),
             scale * datum.basisMatrix()
         );
     }
@@ -445,7 +445,7 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return Datum<iNumDimensions, iNumAxes>(
-            datum.originPoint() + vector.derived(),
+            Point<iNumDimensions>::translation(datum.originPoint(), vector.derived()),
             datum.basisMatrix()
         );
     }
@@ -458,7 +458,7 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return Datum<iNumTransformedDimensions, iNumAxes>(
-            datum.originPoint().transformed(matrix.derived()),
+            Point<iNumDimensions>::transformation(datum.originPoint(), matrix.derived()),
             matrix.derived() * datum.basisMatrix()
         );
     }

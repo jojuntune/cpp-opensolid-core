@@ -55,13 +55,13 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes> template <class TTransformable>
-    typename TransformationFunction<TTransformable, iNumAxes>::ResultType
+    typename ChangeDimensions<TTransformable, iNumAxes>::Type
     Localization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
-        TransformationFunction<TTransformable, iNumAxes> transform;
-        TranslationFunction<TTransformable> translate;
-
-        return transform(
-            translate(transformable, -originPoint().vector()),
+        return TTransformable::transformation(
+            TTransformable::translation(
+                transformable,
+                -originPoint().vector()
+            ),
             transformationMatrix()
         );
     }

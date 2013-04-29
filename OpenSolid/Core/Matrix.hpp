@@ -52,17 +52,11 @@ namespace Eigen
 {
     template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::scaled(double scale) const {
-        return Scalar(scale) * derived();
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    inline typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::scaledAbout(
-        double scale,
-        const opensolid::Point<iNumDimensions>& originPoint
+        const opensolid::Point<NumDimensions>& originPoint,
+        double scale
     ) const {
-        return Scalar(scale) * derived();
+        return scaling(derived(), scale);
     }
 
     template <class TDerived> template <class TVector>
@@ -71,113 +65,115 @@ namespace Eigen
         return derived();
     }
 
-    template <class TDerived>template <int iNumDimensions>
+    template <class TDerived>
     inline const TDerived&
     MatrixBase<TDerived>::translatedAlong(
-        const opensolid::Datum<iNumDimensions, 1>& axis,
-        double coordinateValue
+        const opensolid::Datum<NumDimensions, 1>& axis,
+        double distance
     ) const {
         return derived();
     }
 
-    template <class TDerived>template <class TMatrix>
-    Matrix<typename internal::traits<TDerived>::Scalar, TMatrix::RowsAtCompileTime, internal::traits<TDerived>::ColsAtCompileTime>
-    MatrixBase<TDerived>::transformed(const EigenBase<TMatrix>& matrix) const {
-        return matrix.derived().template cast<Scalar>() * derived();
-    }
-
     template <class TDerived>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(double angle) const {
-        return Matrix2d(Rotation2Dd(angle)).cast<Scalar>() * derived();
-    }
-
-    template <class TDerived>
-    typename MatrixBase<TDerived>::PlainObject
+    inline typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::rotatedAbout(const opensolid::Point<2>& originPoint, double angle) const {
-        return Matrix2d(Rotation2Dd(angle)).cast<Scalar>() * derived();
-
-    }
-
-    template <class TDerived>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(const opensolid::Rotation<2>& rotation) const {
-        return rotation.transformationMatrix().cast<Scalar>() * derived();
+        return opensolid::Rotation2d(originPoint, angle)(derived());
     }
 
     template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::rotatedAbout(const opensolid::Datum<3, 1>& axis, double angle) const {
-        return rotated(opensolid::Rotation3d(axis, angle));
+        return opensolid::Rotation3d(axis, angle)(derived());
     }
 
     template <class TDerived>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(const opensolid::Rotation<3>& rotation) const {
-        return rotation.transformationMatrix().cast<Scalar>() * derived();
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::rotated(const opensolid::Rotation<NumDimensions>& rotation) const {
+        return rotation(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions>
+    template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
     MatrixBase<TDerived>::mirroredAbout(
-        const opensolid::Datum<iNumDimensions, iNumDimensions - 1>& datum
+        const opensolid::Datum<NumDimensions, NumDimensions - 1>& datum
     ) const {
-        return mirrored(opensolid::Mirror<iNumDimensions>(datum));
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::mirrored(const opensolid::Mirror<iNumDimensions>& mirror) const {
-        return mirror.transformationMatrix().template cast<Scalar>() * derived();
-    }
-
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::projectedOnto(
-        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
-    ) const {
-        return projected(opensolid::Projection<iNumDimensions>(datum));
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::projected(const opensolid::Projection<iNumDimensions>& projection) const {
-        return projection.transformationMatrix().template cast<Scalar>() * derived();
+        return opensolid::Mirror<NumDimensions>(datum)(derived());
     }
 
     template <class TDerived>
-    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
-    Matrix<typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::mirrored(const opensolid::Mirror<NumDimensions>& mirror) const {
+        return mirror(derived());
+    }
+
+    template <class TDerived> template <int iNumAxes>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projectedOnto(
+        const opensolid::Datum<NumDimensions, iNumAxes>& datum
+    ) const {
+        return opensolid::Projection<NumDimensions>(datum)(derived());
+    }
+
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projected(const opensolid::Projection<NumDimensions>& projection) const {
+        return projection(derived());
+    }
+
+    template <class TDerived>
+    template <int iNumDestinationDimensions, int iNumAxes>
+    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::transplanted(
-        const opensolid::Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const opensolid::Datum<NumDimensions, iNumAxes>& sourceDatum,
         const opensolid::Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
     ) const {
-        return destinationDatum.basisMatrix().template cast<Scalar>() *
-            sourceDatum.inverseMatrix().template cast<Scalar>() * derived();
+        return localizedTo(sourceDatum).globalizedFrom(destinationDatum);
     }
 
-    template <class TDerived> template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    Matrix< typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    template <class TDerived> template <int iNumDestinationDimensions>
+    inline Matrix< typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::transplanted(
-        const opensolid::Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
+        const opensolid::Transplant<NumDimensions, iNumDestinationDimensions>& transplant
     ) const {
-        return transplant.transformationMatrix().template cast<Scalar>() * derived();
+        return transplant(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    Matrix<typename internal::traits<TDerived>::Scalar, iNumAxes, internal::traits<TDerived>::ColsAtCompileTime>
+    template <class TDerived> template <int iNumAxes>
+    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumAxes, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::localizedTo(
-        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
+        const opensolid::Datum<NumDimensions, iNumAxes>& datum
     ) const {
-        return datum.inverseMatrix().template cast<Scalar>() * derived();
+        return transformation(derived(), datum.inverseMatrix());
     }
 
-    template <class TDerived>template <int iNumDimensions, int iNumAxes>
-    Matrix<typename internal::traits<TDerived>::Scalar, iNumDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    template <class TDerived> template <int iNumDimensions>
+    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::globalizedFrom(
-        const opensolid::Datum<iNumDimensions, iNumAxes>& datum
+        const opensolid::Datum<iNumDimensions, NumDimensions>& datum
     ) const {
-        return datum.basisMatrix().template cast<Scalar>() * derived();
+        return transformation(derived(), datum.basisMatrix());
+    }
+
+    template <class TDerived>
+    inline const const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<TDerived>::Scalar>, const TDerived>
+    MatrixBase<TDerived>::scaling(const TDerived& argument, double scale) {
+        return argument * Scalar(scale);
+    }
+
+    template <class TDerived> template <class TVector>
+    inline const TDerived&
+    MatrixBase<TDerived>::translation(const TDerived& argument, const EigenBase<TVector>& vector) {
+        return argument;
+    }
+
+    template <class TDerived> template <class TMatrix>
+    Matrix<
+        typename internal::traits<TDerived>::Scalar,
+        TMatrix::RowsAtCompileTime,
+        internal::traits<TDerived>::ColsAtCompileTime
+    >
+    MatrixBase<TDerived>::transformation(const TDerived& argument, const EigenBase<TMatrix>& matrix) {
+        return matrix.derived().template cast<Scalar>() * argument;
     }
 
     template<class TDerived> template <class TOther>

@@ -26,6 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Geometry.declarations.hpp>
+
 #include <OpenSolid/Core/Datum.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
@@ -48,7 +50,7 @@ namespace opensolid
         transformationMatrix() const;
 
         template <class TTransformable>
-        typename TransformationFunction<TTransformable, iNumDimensions>::ResultType
+        typename ChangeDimensions<TTransformable, iNumDimensions>::Type
         operator()(const TTransformable& transformable) const;
     };
 }

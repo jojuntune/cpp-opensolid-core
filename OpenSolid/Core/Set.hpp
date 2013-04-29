@@ -650,10 +650,9 @@ namespace opensolid
     template <class TElement>
     Set<TElement>
     ScalingFunction<Set<TElement>>::operator()(const Set<TElement>& set, double scale) const {
-        ScalingFunction<TElement> scalingFunction;
         return set.mapped(
-            [scalingFunction, scale] (const TElement& element) -> TElement {
-                return scalingFunction(element, scale);
+            [scale] (const TElement& element) {
+                return Transformable<TElement>::scaling(element, scale);
             }
         );
     }
@@ -664,42 +663,35 @@ namespace opensolid
         const Set<TElement>& set,
         const EigenBase<TVector>& vector
     ) const {
-        TranslationFunction<TElement> translationFunction;
         return set.mapped(
-            [translationFunction, &vector] (const TElement& element) -> TElement {
-                return translationFunction(element, vector);
+            [&vector] (const TElement& element) {
+                return Transformable<TElement>::translation(element, vector);
             }
         );
     }
 
     template <class TElement, int iNumTransformedDimensions> template <class TMatrix>
-    Set<typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType>
+    Set<typename ChangeDimensions<TElement, iNumTransformedDimensions>::Type>
     TransformationFunction<Set<TElement>, iNumTransformedDimensions>::operator()(
         const Set<TElement>& set,
         const EigenBase<TMatrix>& matrix
     ) const {
-        typedef typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType
-            TransformedElementType;
-        TransformationFunction<TElement, iNumTransformedDimensions> transformationFunction;
         return set.mapped(
-            [transformationFunction, &matrix] (const TElement& element) -> TransformedElementType {
-                return transformationFunction(element, matrix);
+            [&matrix] (const TElement& element) {
+                return Transformable<TElement>::transformation(element, matrix);
             }
         );
     }
 
     template <class TElement, int iNumDestinationDimensions>
-    Set<typename MorphingFunction<TElement, iNumDestinationDimensions>::ResultType>
+    Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
     MorphingFunction<Set<TElement>, iNumDestinationDimensions>::operator()(
         const Set<TElement>& set,
         const Function& function
     ) const {
-        typedef typename MorphingFunction<TElement, iNumDestinationDimensions>::ResultType
-            MorphedElementType;
-        MorphingFunction<TElement, iNumDestinationDimensions> morphingFunction;
         return set.mapped(
-            [morphingFunction, &function] (const TElement& element) -> MorphedElementType {
-                return morphingFunction(element, function);
+            [&function] (const TElement& element) {
+                return Transformable<TElement>::morphing(element, function);
             }
         );
     }

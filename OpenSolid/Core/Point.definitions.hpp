@@ -135,6 +135,18 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions>
+    struct NumDimensions<Point<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct ChangeDimensions<Point<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Point<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct ScalingFunction<Point<iNumDimensions>>
     {
         Point<iNumDimensions>
@@ -152,8 +164,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumTransformedDimensions>
     struct TransformationFunction<Point<iNumDimensions>, iNumTransformedDimensions>
     {
-        typedef Point<iNumTransformedDimensions> ResultType;
-
         template <class TMatrix>
         Point<iNumTransformedDimensions>
         operator()(
@@ -165,8 +175,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumDestinationDimensions>
     struct MorphingFunction<Point<iNumDimensions>, iNumDestinationDimensions>
     {
-        typedef Point<iNumDestinationDimensions> ResultType;
-
         Point<iNumDestinationDimensions>
         operator()(const Point<iNumDimensions>& point, const Function& function) const;
     };

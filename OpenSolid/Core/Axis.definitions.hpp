@@ -93,6 +93,18 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions>
+    struct NumDimensions<Axis<iNumDimensions>> :
+        public NumDimensions<Datum<iNumDimensions, 1>>
+    {
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct ChangeDimensions<Axis<iNumDimensions>, iNumResultDimensions> :
+        public ChangeDimensions<Datum<iNumDimensions, 1>, iNumResultDimensions>
+    {
+    };
+
+    template <int iNumDimensions>
     struct ScalingFunction<Axis<iNumDimensions>> :
         public ScalingFunction<Datum<iNumDimensions, 1>>
     {

@@ -256,6 +256,18 @@ namespace opensolid
 namespace opensolid
 {
     template <class TElement>
+    struct NumDimensions<Set<TElement>>
+    {
+        static const int Value = NumDimensions<TElement>::Value;
+    };
+
+    template <class TElement, int iNumResultDimensions>
+    struct ChangeDimensions<Set<TElement>, iNumResultDimensions>
+    {
+        typedef Set<typename ChangeDimensions<TElement, iNumResultDimensions>::Type> Type;
+    };
+
+    template <class TElement>
     struct ScalingFunction<Set<TElement>>
     {
         Set<TElement>
@@ -273,21 +285,15 @@ namespace opensolid
     template <class TElement, int iNumTransformedDimensions>
     struct TransformationFunction<Set<TElement>, iNumTransformedDimensions>
     {
-        typedef Set<typename TransformationFunction<TElement, iNumTransformedDimensions>::ResultType>
-            ResultType;
-
         template <class TMatrix>
-        ResultType
+        Set<typename ChangeDimensions<TElement, iNumTransformedDimensions>::Type>
         operator()(const Set<TElement>& set, const EigenBase<TMatrix>& matrix) const;
     };
 
     template <class TElement, int iNumDestinationDimensions>
     struct MorphingFunction<Set<TElement>, iNumDestinationDimensions>
     {
-        typedef Set<typename MorphingFunction<TElement, iNumDestinationDimensions>::ResultType>
-            ResultType;
-
-        ResultType
+        Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
         operator()(const Set<TElement>& set, const Function& function) const;
     };
 

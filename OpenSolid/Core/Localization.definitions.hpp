@@ -50,7 +50,7 @@ namespace opensolid
         transformationMatrix() const;
 
         template <class TTransformable>
-        typename TransformationFunction<TTransformable, iNumAxes>::ResultType
+        typename ChangeDimensions<TTransformable, iNumAxes>::Type
         operator()(const TTransformable& transformable) const;
     };
 }

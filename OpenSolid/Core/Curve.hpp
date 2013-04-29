@@ -23,50 +23,56 @@
 *************************************************************************************/
 
 #pragma once
- 
+
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Mirror.definitions.hpp>
+#include <OpenSolid/Core/Curve.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Geometry.hpp>
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
-    Mirror<iNumDimensions>::Mirror(const Datum<iNumDimensions, iNumDimensions - 1>& datum) :
-        _originPoint(datum.originPoint()) {
-
-        Matrix<double, iNumDimensions, 1> normalVector = datum.normalVector();
-        _transformationMatrix = Matrix<double, iNumDimensions, iNumDimensions>::Identity() -
-            2 * normalVector * normalVector.transpose();
+    Curve<iNumDimensions>::Curve() :
+        Geometry<iNumDimensions, 1>() {
     }
 
     template <int iNumDimensions>
-    inline const Point<iNumDimensions>&
-    Mirror<iNumDimensions>::originPoint() const {
-        return _originPoint;
+    Curve<iNumDimensions>::Curve(const Geometry<iNumDimensions, 1>& other) :
+        Geometry<iNumDimensions, 1>(other) {
     }
 
     template <int iNumDimensions>
-    inline const Matrix<double, iNumDimensions, iNumDimensions>&
-    Mirror<iNumDimensions>::transformationMatrix() const {
-        return _transformationMatrix;
+    Curve<iNumDimensions>::Curve(const Function& function, Interval domain) :
+        Geometry<iNumDimensions, 1>(function, domain) {
     }
 
-    template <int iNumDimensions> template <class TTransformable>
-    TTransformable
-    Mirror<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        return TTransformable::translation(
-            TTransformable::transformation(
-                TTransformable::translation(
-                    transformable,
-                    -originPoint().vector()
-                ),
-                transformationMatrix()
-            ),
-            originPoint().vector()
-        );
+    template <int iNumDimensions>
+    Curve<iNumDimensions>::Curve(const LineSegment<iNumDimensions>& lineSegment) :
+        Geometry<iNumDimensions, 1>(lineSegment) {
+    }
+
+    template <int iNumDimensions>
+    Curve<iNumDimensions>
+    Curve<iNumDimensions>::reversed() const {
+        Function reversedParameter = this->domain().upperBound() + this->domain().lowerBound() - Function::t();
+        return Curve<iNumDimensions>(this->function().compose(reversedParameter), this->domain());
+    }
+
+    template <int iNumDimensions>
+    Point<iNumDimensions>
+    Curve<iNumDimensions>::startPoint() const {
+        return Point<iNumDimensions>(this->function()(this->domain().lowerBound()));
+    }
+
+    template <int iNumDimensions>
+    Point<iNumDimensions>
+    Curve<iNumDimensions>::endPoint() const {
+        return Point<iNumDimensions>(this->function()(this->domain().upperBound()));
     }
 }

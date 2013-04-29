@@ -82,20 +82,32 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions>
+    struct NumDimensions<LineSegment<iNumDimensions>> :
+        public NumDimensions<Simplex<iNumDimensions, 2>>
+    {
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct ChangeDimensions<LineSegment<iNumDimensions>, iNumResultDimensions> :
+        public ChangeDimensions<Simplex<iNumDimensions, 2>, iNumResultDimensions>
+    {
+    };
+
+    template <int iNumDimensions>
     struct ScalingFunction<LineSegment<iNumDimensions>> :
-        public ScalingFunction<Simplex<iNumDimensions, 3>>
+        public ScalingFunction<Simplex<iNumDimensions, 2>>
     {
     };
 
     template <int iNumDimensions>
     struct TranslationFunction<LineSegment<iNumDimensions>> :
-        public TranslationFunction<Simplex<iNumDimensions, 3>>
+        public TranslationFunction<Simplex<iNumDimensions, 2>>
     {
     };
 
     template <int iNumDimensions, int iNumTransformedDimensions>
     struct TransformationFunction<LineSegment<iNumDimensions>, iNumTransformedDimensions> :
-        public TransformationFunction<Simplex<iNumDimensions, 3>, iNumTransformedDimensions>
+        public TransformationFunction<Simplex<iNumDimensions, 2>, iNumTransformedDimensions>
     {
     };
 

@@ -109,6 +109,9 @@ namespace opensolid
         
         bool
         operator==(const Simplex<iNumDimensions, iNumVertices>& other) const;
+
+        static Simplex<iNumDimensions, iNumVertices>
+        Unit();
     };
 }
 
@@ -116,6 +119,18 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <int iNumDimensions, int iNumVertices>
+    struct NumDimensions<Simplex<iNumDimensions, iNumVertices>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
+    struct ChangeDimensions<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>
+    {
+        typedef Simplex<iNumResultDimensions, iNumVertices> Type;
+    };
+
     template <int iNumDimensions, int iNumVertices>
     struct ScalingFunction<Simplex<iNumDimensions, iNumVertices>>
     {
@@ -137,8 +152,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
     struct TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumTransformedDimensions>
     {
-        typedef Simplex<iNumTransformedDimensions, iNumVertices> ResultType;
-
         template <class TMatrix>
         Simplex<iNumTransformedDimensions, iNumVertices>
         operator()(
@@ -150,8 +163,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>
     struct MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>
     {
-        typedef Simplex<iNumDestinationDimensions, iNumVertices> ResultType;
-
         Simplex<iNumDestinationDimensions, iNumVertices>
         operator()(
             const Simplex<iNumDimensions, iNumVertices>& simplex,

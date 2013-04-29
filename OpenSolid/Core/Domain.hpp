@@ -68,7 +68,12 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         double scale
     ) const {
-        return Domain<iNumDimensions>(domain.boundaries().scaled(scale));
+        return Domain<iNumDimensions>(
+            Set<Geometry<iNumDimensions, iNumDimensions - 1>>::scaling(
+                domain.boundaries(),
+                scale
+            )
+        );
     }
 
     template <int iNumDimensions> template <class TVector>
@@ -77,7 +82,12 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const EigenBase<TVector>& vector
     ) const {
-        return Domain<iNumDimensions>(domain.boundaries().translated(vector));
+        return Domain<iNumDimensions>(
+            Set<Geometry<iNumDimensions, iNumDimensions - 1>>::translation(
+                domain.boundaries(),
+                vector.derived()
+            )
+        );
     }
 
     template <int iNumDimensions> template <class TMatrix>
@@ -86,7 +96,12 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Domain<iNumDimensions>(domain.boundaries().transformed(matrix));
+        return Domain<iNumDimensions>(
+            Set<Geometry<iNumDimensions, iNumDimensions - 1>>::transformation(
+                domain.boundaries(),
+                matrix.derived()
+            )
+        );
     }
 
     template <int iNumDimensions>

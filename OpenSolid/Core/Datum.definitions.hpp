@@ -180,6 +180,18 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
+    struct NumDimensions<Datum<iNumDimensions, iNumAxes>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
+    struct ChangeDimensions<Datum<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    {
+        typedef Datum<iNumResultDimensions, iNumAxes> Type;
+    };
+
+    template <int iNumDimensions, int iNumAxes>
     struct ScalingFunction<Datum<iNumDimensions, iNumAxes>>
     {
         Datum<iNumDimensions, iNumAxes>
@@ -200,8 +212,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes, int iNumTransformedDimensions>
     struct TransformationFunction<Datum<iNumDimensions, iNumAxes>, iNumTransformedDimensions>
     {
-        typedef Datum<iNumTransformedDimensions, iNumAxes> ResultType;
-
         template <class TMatrix>
         Datum<iNumTransformedDimensions, iNumAxes>
         operator()(
@@ -213,8 +223,6 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
     struct MorphingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
     {
-        typedef Datum<iNumDestinationDimensions, iNumAxes> ResultType;
-
         Datum<iNumDestinationDimensions, iNumAxes>
         operator()(const Datum<iNumDimensions, iNumAxes>& datum, const Function& function) const;
     };

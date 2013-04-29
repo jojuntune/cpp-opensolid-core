@@ -47,12 +47,16 @@ namespace opensolid
     template <class TTransformable>
     TTransformable
     Rotation2d::operator()(const TTransformable& transformable) const {
-        TranslationFunction<TTransformable> translation;
-        TransformationFunction<TTransformable, 2> transformation;
-
-        TTransformable temp = translation(transformable, -originPoint().vector());
-        temp = transformation(temp, transformationMatrix());
-        return translation(temp, originPoint().vector());
+        return TTransformable::translation(
+            TTransformable::transformation(
+                TTransformable::translation(
+                    transformable,
+                    -originPoint().vector()
+                ),
+                transformationMatrix()
+            ),
+            originPoint().vector()
+        );
     }
     
     inline const Point3d&
@@ -68,11 +72,15 @@ namespace opensolid
     template <class TTransformable>
     TTransformable
     Rotation3d::operator()(const TTransformable& transformable) const {
-        TranslationFunction<TTransformable> translation;
-        TransformationFunction<TTransformable, 3> transformation;
-
-        TTransformable temp = translation(transformable, -originPoint().vector());
-        temp = transformation(temp, transformationMatrix());
-        return translation(temp, originPoint().vector());
+        return TTransformable::translation(
+            TTransformable::transformation(
+                TTransformable::translation(
+                    transformable,
+                    -originPoint().vector()
+                ),
+                transformationMatrix()
+            ),
+            originPoint().vector()
+        );
     }
 }

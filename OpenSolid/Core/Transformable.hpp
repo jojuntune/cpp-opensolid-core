@@ -48,47 +48,39 @@ namespace opensolid
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::scaled(double scale) const {
-        ScalingFunction<TDerived> scalingFunction;
-        return scalingFunction(derived(), scale);
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    inline TDerived
     Transformable<TDerived>::scaledAbout(
-        double scale,
-        const Point<iNumDimensions>& originPoint
+        const Point<NumDimensions<TDerived>::Value>& originPoint,
+        double scale
     ) const {
-        return translated(-originPoint.vector()).scaled(scale).translated(originPoint.vector());
+        if (originPoint.isOrigin()) {
+            return scaling(derived(), scale);
+        } else {
+            return translation(
+                scaling(
+                    translation(
+                        derived(),
+                        -originPoint.vector()
+                    ),
+                    scale
+                ),
+                originPoint.vector()
+            );
+        }
     }
 
     template <class TDerived> template <class TVector>
     inline TDerived
     Transformable<TDerived>::translated(const EigenBase<TVector>& vector) const {
-        TranslationFunction<TDerived> translationFunction;
-        return translationFunction(derived(), vector);
+        return translation(derived(), vector.derived());
     }
     
-    template <class TDerived> template <int iNumDimensions>
-    inline TDerived
-    Transformable<TDerived>::translatedAlong(
-        const Datum<iNumDimensions, 1>& axis,
-        double coordinateValue
-    ) const {
-        return translated(coordinateValue * axis.basisVector());
-    }
-
-    template <class TDerived> template<class TMatrix>
-    inline typename TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>::ResultType
-    Transformable<TDerived>::transformed(const EigenBase<TMatrix>& matrix) const {
-        TransformationFunction<TDerived, TMatrix::RowsAtCompileTime> transformationFunction;
-        return transformationFunction(derived(), matrix);
-    }
-
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::rotated(double angle) const {
-        return transformed(Matrix2d(Rotation2Dd(angle)));
+    Transformable<TDerived>::translatedAlong(
+        const Datum<NumDimensions<TDerived>::Value, 1>& axis,
+        double distance
+    ) const {
+        return translation(derived(), distance * axis.basisVector().normalized());
     }
 
     template <class TDerived>
@@ -98,86 +90,117 @@ namespace opensolid
     }
 
     template <class TDerived>
-    TDerived
-    Transformable<TDerived>::rotated(const Rotation2d& rotation) const {
-        return rotation(derived());
-    }
-
-    template <class TDerived>
     inline TDerived
     Transformable<TDerived>::rotatedAbout(const Datum<3, 1>& axis, double angle) const {
-        return rotated(Rotation3d(axis, angle));
+        return Rotation3d(axis, angle)(derived());
     }
 
     template <class TDerived>
-    TDerived
-    Transformable<TDerived>::rotated(const Rotation3d& rotation) const {
+    inline TDerived
+    Transformable<TDerived>::rotated(
+        const Rotation<NumDimensions<TDerived>::Value>& rotation
+    ) const {
         return rotation(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions>
+    template <class TDerived>
     inline TDerived
     Transformable<TDerived>::mirroredAbout(
-        const Datum<iNumDimensions, iNumDimensions - 1>& datum
+        const Datum<NumDimensions<TDerived>::Value, NumDimensions<TDerived>::Value - 1>& datum
     ) const {
-        return mirrored(Mirror<iNumDimensions>(datum));
+        return Mirror<NumDimensions<TDerived>::Value>(datum)(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions>
-    TDerived
-    Transformable<TDerived>::mirrored(const Mirror<iNumDimensions>& mirror) const {
+    template <class TDerived>
+    inline TDerived
+    Transformable<TDerived>::mirrored(const Mirror<NumDimensions<TDerived>::Value>& mirror) const {
         return mirror(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
+    template <class TDerived> template <int iNumAxes>
     inline TDerived
     Transformable<TDerived>::projectedOnto(
-        const Datum<iNumDimensions, iNumAxes>& datum
+        const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum
     ) const {
-        return projected(Projection<iNumDimensions>(datum));
+        return Projection<NumDimensions<TDerived>::Value>(datum)(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions>
-    TDerived
-    Transformable<TDerived>::projected(const Projection<iNumDimensions>& projection) const {
+    template <class TDerived>
+    inline TDerived
+    Transformable<TDerived>::projected(
+        const Projection<NumDimensions<TDerived>::Value>& projection
+    ) const {
         return projection(derived());
     }
 
     template <class TDerived>
-    template <int iNumSourceDimensions, int iNumDestinationDimensions, int iNumAxes>
-    typename TransformationFunction<TDerived, iNumDestinationDimensions>::ResultType
+    template <int iNumDestinationDimensions, int iNumAxes>
+    inline typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
     Transformable<TDerived>::transplanted(
-        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
+        const Datum<NumDimensions<TDerived>::Value, iNumAxes>& sourceDatum,
         const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
     ) const {
         return localizedTo(sourceDatum).globalizedFrom(destinationDatum);
     }
 
     template <class TDerived>
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    typename TransformationFunction<TDerived, iNumDestinationDimensions>::ResultType
+    template <int iNumDestinationDimensions>
+    inline typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
     Transformable<TDerived>::transplanted(
-        const Transplant<iNumSourceDimensions, iNumDestinationDimensions>& transplant
+        const Transplant<NumDimensions<TDerived>::Value, iNumDestinationDimensions>& transplant
     ) const {
         return transplant(derived());
     }
 
     template <class TDerived> template <int iNumDestinationDimensions>
-    typename MorphingFunction<TDerived, iNumDestinationDimensions>::ResultType
+    inline typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
     Transformable<TDerived>::morphed(const Function& function) const {
-        MorphingFunction<TDerived, iNumDestinationDimensions> MorphingFunction;
-        return MorphingFunction(derived(), function);
+        return morphing(derived(), function);
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    typename TransformationFunction<TDerived, iNumAxes>::ResultType
-    Transformable<TDerived>::localizedTo(const Datum<iNumDimensions, iNumAxes>& datum) const {
-        return Localization<iNumDimensions, iNumAxes>(datum)(derived());
+    template <class TDerived> template <int iNumAxes>
+    inline typename ChangeDimensions<TDerived, iNumAxes>::Type
+    Transformable<TDerived>::localizedTo(
+        const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum
+    ) const {
+        return Localization<NumDimensions<TDerived>::Value, iNumAxes>(datum)(derived());
     }
 
-    template <class TDerived> template <int iNumDimensions, int iNumAxes>
-    typename TransformationFunction<TDerived, iNumDimensions>::ResultType
-    Transformable<TDerived>::globalizedFrom(const Datum<iNumDimensions, iNumAxes>& datum) const {
-        return Globalization<iNumDimensions, iNumAxes>(datum)(derived());
+    template <class TDerived> template <int iNumDimensions>
+    inline typename ChangeDimensions<TDerived, iNumDimensions>::Type
+    Transformable<TDerived>::globalizedFrom(
+        const Datum<iNumDimensions, NumDimensions<TDerived>::Value>& datum
+    ) const {
+        return Globalization<iNumDimensions, NumDimensions<TDerived>::Value>(datum)(derived());
+    }
+
+    template <class TDerived>
+    TDerived
+    Transformable<TDerived>::scaling(const TDerived& argument, double scale) {
+        return ScalingFunction<TDerived>()(argument, scale);
+    }
+
+    template <class TDerived> template <class TVector>
+    TDerived
+    Transformable<TDerived>::translation(
+        const TDerived& argument,
+        const EigenBase<TVector>& vector
+    ) {
+        return TranslationFunction<TDerived>()(argument, vector.derived());
+    }
+
+    template <class TDerived> template <class TMatrix>
+    typename ChangeDimensions<TDerived, TMatrix::RowsAtCompileTime>::Type
+    Transformable<TDerived>::transformation(
+        const TDerived& argument,
+        const EigenBase<TMatrix>& matrix
+    ) {
+        return TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>()(argument, matrix);
+    }
+
+    template <class TDerived> template <int iNumDestinationDimensions>
+    typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
+    Transformable<TDerived>::morphing(const TDerived& argument, const Function& function) {
+        return MorphingFunction<TDerived, iNumDestinationDimensions>()(argument, function);
     }
 }

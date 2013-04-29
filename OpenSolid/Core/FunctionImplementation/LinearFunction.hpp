@@ -121,7 +121,8 @@ namespace opensolid
         MapXd& results,
         EvaluateCache<double>&
     ) const {
-        results = parameterValues.globalizedFrom(datum());
+        results = (datum().basisMatrix() * parameterValues).colwise() +
+            datum().originPoint().vector();
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -130,7 +131,8 @@ namespace opensolid
         MapXI& results,
         EvaluateCache<Interval>&
     ) const {
-        results = parameterBounds.globalizedFrom(datum());
+        results = (datum().basisMatrix().template cast<Interval>() * parameterBounds).colwise() +
+            datum().originPoint().vector().template cast<Interval>();
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -140,7 +142,9 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     Function LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
-        return new LinearFunction<iNumDimensions, iNumAxes>(datum().scaled(scale));
+        return new LinearFunction<iNumDimensions, iNumAxes>(
+            Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale)
+        );
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -150,15 +154,24 @@ namespace opensolid
         int numTransformedDimensions = transformationMatrix.rows();
         if (numTransformedDimensions == 1) {
             return new LinearFunction<1, iNumAxes>(
-                datum().transformed(Matrix<double, 1, iNumDimensions>(transformationMatrix))
+                Datum<iNumDimensions, iNumAxes>::transformation(
+                    datum(),
+                    transformationMatrix.topLeftCorner<1, iNumDimensions>()
+                )
             );
         } else if (numTransformedDimensions == 2) {
             return new LinearFunction<2, iNumAxes>(
-                datum().transformed(Matrix<double, 2, iNumDimensions>(transformationMatrix))
+                Datum<iNumDimensions, iNumAxes>::transformation(
+                    datum(),
+                    transformationMatrix.topLeftCorner<2, iNumDimensions>()
+                )
             );
         } else if (numTransformedDimensions == 3) {
             return new LinearFunction<3, iNumAxes>(
-                datum().transformed(Matrix<double, 3, iNumDimensions>(transformationMatrix))
+                Datum<iNumDimensions, iNumAxes>::transformation(
+                    datum(),
+                    transformationMatrix.topLeftCorner<3, iNumDimensions>()
+                )
             );
         } else {
             assert(false);
