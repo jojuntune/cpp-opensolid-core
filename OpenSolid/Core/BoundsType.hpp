@@ -26,18 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
-#include <OpenSolid/Core/Geometry.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters>
-    struct BoundsFunction<Geometry<iNumDimensions, iNumParameters>>
-    {
-        typedef Box<iNumDimensions> ResultType;
-
-        const Box<iNumDimensions>&
-        operator()(const Geometry<iNumDimensions, iNumParameters>& geometry) const;
-    };
 }

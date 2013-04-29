@@ -26,31 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-
-#include <OpenSolid/Core/Interval.declarations.hpp>
-
 namespace opensolid
 {
     template <class TBounded>
-    struct BoundsFunction
-    {
-        typename BoundsType<TBounded>::Type
-        operator()(const TBounded& argument) const;
-    };
-
-    template <>
-    struct BoundsFunction<int>
-    {
-        Interval
-        operator()(int argument) const;
-    };
-    
-    template <>
-    struct BoundsFunction<double>
-    {
-        Interval
-        operator()(double argument) const;
-    };
+    struct BoundsType;
 }

@@ -45,7 +45,7 @@ namespace opensolid
         operator=(const SetNode<TElement>& other);
         
         const TElement* _element;
-        typename BoundsFunction<TElement>::ResultType _bounds;
+        typename BoundsType<TElement>::Type _bounds;
         int _splitDirection;
         double _splitValue;
         SetNode<TElement>* _leftChild;
@@ -60,11 +60,11 @@ namespace opensolid
         
         SetNode(
             const TElement& element,
-            const typename BoundsFunction<TElement>::ResultType& bounds
+            const typename BoundsType<TElement>::Type& bounds
         );
         
         SetNode(
-            const typename BoundsFunction<TElement>::ResultType& overallBounds,
+            const typename BoundsType<TElement>::Type& overallBounds,
             int splitDirection,
             double splitValue,
             SetNode<TElement>* leftChildNode,
@@ -72,7 +72,7 @@ namespace opensolid
         );
         
         SetNode(
-            const typename BoundsFunction<TElement>::ResultType& overallBounds,
+            const typename BoundsType<TElement>::Type& overallBounds,
             SetNode<TElement>** begin,
             SetNode<TElement>** end
         );
@@ -82,7 +82,7 @@ namespace opensolid
         const TElement*
         element() const;
         
-        const typename BoundsFunction<TElement>::ResultType&
+        const typename BoundsType<TElement>::Type&
         bounds() const;
         
         int
@@ -106,19 +106,19 @@ namespace opensolid
         std::int64_t
         indexOf(
             const TElement& element,
-            const typename BoundsFunction<TElement>::ResultType& elementBounds
+            const typename BoundsType<TElement>::Type& elementBounds
         ) const;
         
         SetNode<TElement>*
         insert(
             const TElement& element,
-            const typename BoundsFunction<TElement>::ResultType& elementBounds
+            const typename BoundsType<TElement>::Type& elementBounds
         );
 
         SetNode<TElement>*
         erase(
             const TElement& element,
-            const typename BoundsFunction<TElement>::ResultType& elementBounds
+            const typename BoundsType<TElement>::Type& elementBounds
         );
     };
     
@@ -301,7 +301,7 @@ namespace opensolid
     inline
     SetNode<TElement>::SetNode(
         const TElement& element,
-        const typename BoundsFunction<TElement>::ResultType& bounds
+        const typename BoundsType<TElement>::Type& bounds
     ) : _element(new TElement(element)),
         _bounds(bounds),
         _leftChild(nullptr),
@@ -312,7 +312,7 @@ namespace opensolid
     template <class TElement>
     inline
     SetNode<TElement>::SetNode(
-        const typename BoundsFunction<TElement>::ResultType& overallBounds,
+        const typename BoundsType<TElement>::Type& overallBounds,
         int splitDirection,
         double splitValue,
         SetNode<TElement>* leftChild,
@@ -328,7 +328,7 @@ namespace opensolid
     
     template <class TElement>
     SetNode<TElement>::SetNode(
-        const typename BoundsFunction<TElement>::ResultType& overallBounds,
+        const typename BoundsType<TElement>::Type& overallBounds,
         SetNode<TElement>** begin,
         SetNode<TElement>** end
     ) {
@@ -347,8 +347,8 @@ namespace opensolid
         } else {
             std::int64_t leftSize = 0;
             std::int64_t rightSize = 0;
-            typename BoundsFunction<TElement>::ResultType leftBounds;
-            typename BoundsFunction<TElement>::ResultType rightBounds;
+            typename BoundsType<TElement>::Type leftBounds;
+            typename BoundsType<TElement>::Type rightBounds;
             SetNode<TElement>** lower = begin;
             SetNode<TElement>** upper = end - 1;
             for (SetNode<TElement>** i = lower; i <= upper; ++i) {
@@ -429,7 +429,7 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline const typename BoundsFunction<TElement>::ResultType&
+    inline const typename BoundsType<TElement>::Type&
     SetNode<TElement>::bounds() const {
         return _bounds;
     }
@@ -481,7 +481,7 @@ namespace opensolid
     std::int64_t
     SetNode<TElement>::indexOf(
         const TElement& element,
-        const typename BoundsFunction<TElement>::ResultType& elementBounds
+        const typename BoundsType<TElement>::Type& elementBounds
     ) const {
         if (bounds().overlaps(elementBounds)) {
             if (this->element()) {
@@ -511,9 +511,9 @@ namespace opensolid
     SetNode<TElement>*
     SetNode<TElement>::insert(
         const TElement& element,
-        const typename BoundsFunction<TElement>::ResultType& elementBounds
+        const typename BoundsType<TElement>::Type& elementBounds
     ) {
-        typename BoundsFunction<TElement>::ResultType overallBounds = _bounds.hull(elementBounds);
+        typename BoundsType<TElement>::Type overallBounds = _bounds.hull(elementBounds);
         if (_element) {
             assert(!_leftChild && !_rightChild);
             SetNode<TElement>* nodes[2];
@@ -550,7 +550,7 @@ namespace opensolid
     SetNode<TElement>*
     SetNode<TElement>::erase(
         const TElement& element,
-        const typename BoundsFunction<TElement>::ResultType& elementBounds
+        const typename BoundsType<TElement>::Type& elementBounds
     ) {
         if (!_bounds.overlaps(elementBounds)) {
             return this;
@@ -582,7 +582,7 @@ namespace opensolid
                 delete this;
                 return result;
             } else {
-                typename BoundsFunction<TElement>::ResultType overallBounds =
+                typename BoundsType<TElement>::Type overallBounds =
                     _leftChild->_bounds.hull(_rightChild->_bounds);
                 if (detail::isCompatible(overallBounds, _splitDirection, _splitValue)) {
                     _bounds = overallBounds;

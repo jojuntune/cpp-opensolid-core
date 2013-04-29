@@ -86,8 +86,8 @@ namespace opensolid
     };
 
     template <>
-    struct BoundsFunction<Tetrahedron3d> :
-        public BoundsFunction<Simplex<3, 4>>
+    struct BoundsType<Tetrahedron3d> :
+        public BoundsType<Simplex<3, 4>>
     {
     };
 }

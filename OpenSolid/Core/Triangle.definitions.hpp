@@ -107,8 +107,8 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct BoundsFunction<Triangle<iNumDimensions>> :
-        public BoundsFunction<Simplex<iNumDimensions, 3>>
+    struct BoundsType<Triangle<iNumDimensions>> :
+        public BoundsType<Simplex<iNumDimensions, 3>>
     {
     };
 }

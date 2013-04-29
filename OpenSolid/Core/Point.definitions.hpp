@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
@@ -180,10 +181,14 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
+    struct BoundsType<Point<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     struct BoundsFunction<Point<iNumDimensions>>
     {
-        typedef Box<iNumDimensions> ResultType;
-
         Box<iNumDimensions>
         operator()(const Point<iNumDimensions>& point) const;
     };

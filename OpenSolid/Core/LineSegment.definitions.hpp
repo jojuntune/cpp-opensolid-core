@@ -112,8 +112,8 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct BoundsFunction<LineSegment<iNumDimensions>> :
-        public BoundsFunction<Simplex<iNumDimensions, 2>>
+    struct BoundsType<LineSegment<iNumDimensions>> :
+        public BoundsType<Simplex<iNumDimensions, 2>>
     {
     };
 }

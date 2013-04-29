@@ -26,31 +26,15 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-
-#include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Geometry.declarations.hpp>
 
 namespace opensolid
 {
-    template <class TBounded>
-    struct BoundsFunction
+    template <int iNumDimensions, int iNumParameters>
+    struct BoundsType<Geometry<iNumDimensions, iNumParameters>>
     {
-        typename BoundsType<TBounded>::Type
-        operator()(const TBounded& argument) const;
-    };
-
-    template <>
-    struct BoundsFunction<int>
-    {
-        Interval
-        operator()(int argument) const;
-    };
-    
-    template <>
-    struct BoundsFunction<double>
-    {
-        Interval
-        operator()(double argument) const;
+        typedef Box<iNumDimensions> Type;
     };
 }

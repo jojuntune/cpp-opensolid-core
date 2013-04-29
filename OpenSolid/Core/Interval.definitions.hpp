@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Interval.declarations.hpp>
  
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Zero.hpp>
@@ -328,10 +329,14 @@ namespace opensolid
 namespace opensolid
 {
     template <>
+    struct BoundsType<Interval>
+    {
+        typedef Interval Type;
+    };
+
+    template <>
     struct BoundsFunction<Interval>
     {
-        typedef Interval ResultType;
-
         Interval
         operator()(Interval interval) const;
     };

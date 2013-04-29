@@ -103,8 +103,8 @@ namespace opensolid
     };
 
     template <>
-    struct BoundsFunction<Body3d> :
-        public BoundsFunction<Domain<3>>
+    struct BoundsType<Body3d> :
+        public BoundsType<Domain<3>>
     {
     };
 }

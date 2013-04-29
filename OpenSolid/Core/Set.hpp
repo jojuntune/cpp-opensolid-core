@@ -74,7 +74,7 @@ namespace opensolid
         } else if (nodes.size() == 1) {
             _root = nodes[0];
         } else {
-            typename BoundsFunction<TElement>::ResultType overallBounds = nodes.front()->bounds();
+            typename BoundsType<TElement>::Type overallBounds = nodes.front()->bounds();
             std::for_each(
                 nodes.begin() + 1,
                 nodes.end(),
@@ -123,10 +123,10 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline typename BoundsFunction<TElement>::ResultType
+    inline typename BoundsType<TElement>::Type
     Set<TElement>::bounds() const {
         if (isEmpty()) {
-            return typename BoundsFunction<TElement>::ResultType();
+            return typename BoundsType<TElement>::Type();
         } else {
             return root()->bounds();
         }
@@ -160,7 +160,7 @@ namespace opensolid
     template <class TElement>
     inline void
     Set<TElement>::insert(const TElement& element) {
-        typename BoundsFunction<TElement>::ResultType bounds = _boundsFunction(element);
+        typename BoundsType<TElement>::Type bounds = _boundsFunction(element);
         if (isEmpty()) {
             _root = new SetNode<TElement>(element, bounds);
         } else {
@@ -221,7 +221,7 @@ namespace opensolid
 
     template <class TElement>
     inline Set<TElement>
-    Set<TElement>::overlapping(const typename BoundsFunction<TElement>::ResultType& bounds) const {
+    Set<TElement>::overlapping(const typename BoundsType<TElement>::Type& bounds) const {
         std::vector<TElement> overlappingElements;
         copyOverlapping(bounds, std::back_inserter(overlappingElements));
         return Set<TElement>(overlappingElements.begin(), overlappingElements.end());
@@ -296,13 +296,13 @@ namespace opensolid
     template <class TVisitor>
     void
     Set<TElement>::forEachOverlapping(
-        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+        const typename BoundsType<TElement>::Type& predicateBounds,
         const TVisitor& visitor
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
+                [&predicateBounds] (const typename BoundsType<TElement>::Type& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 visitor
@@ -349,14 +349,14 @@ namespace opensolid
     template <class TElementPredicate, class TVisitor>
     void
     Set<TElement>::forEachOverlappingIf(
-        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+        const typename BoundsType<TElement>::Type& predicateBounds,
         const TElementPredicate& elementPredicate,
         const TVisitor& visitor
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
+                [&predicateBounds] (const typename BoundsType<TElement>::Type& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&visitor, &elementPredicate] (const TElement& element) {
@@ -408,13 +408,13 @@ namespace opensolid
     template <class TElement> template<class TOutputIterator>
     void
     Set<TElement>::copyOverlapping(
-        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+        const typename BoundsType<TElement>::Type& predicateBounds,
         TOutputIterator outputIterator
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
+                [&predicateBounds] (const typename BoundsType<TElement>::Type& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&outputIterator] (const TElement& element) {
@@ -465,14 +465,14 @@ namespace opensolid
     template <class TElement> template <class TElementPredicate, class TOutputIterator>
     void
     Set<TElement>::copyOverlappingIf(
-        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+        const typename BoundsType<TElement>::Type& predicateBounds,
         const TElementPredicate& elementPredicate,
         TOutputIterator outputIterator
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
+                [&predicateBounds] (const typename BoundsType<TElement>::Type& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&elementPredicate, &outputIterator] (const TElement& element) {
@@ -529,14 +529,14 @@ namespace opensolid
     template <class TFunction, class TOutputIterator>
     void
     Set<TElement>::mapOverlapping(
-        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+        const typename BoundsType<TElement>::Type& predicateBounds,
         const TFunction& function,
         TOutputIterator outputIterator
     ) const {
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
+                [&predicateBounds] (const typename BoundsType<TElement>::Type& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&function, &outputIterator] (const TElement& element) {
@@ -592,7 +592,7 @@ namespace opensolid
     template <class TElementPredicate, class TFunction, class TOutputIterator>
     void
     Set<TElement>::mapOverlappingIf(
-        const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+        const typename BoundsType<TElement>::Type& predicateBounds,
         const TElementPredicate& elementPredicate,
         const TFunction& function,
         TOutputIterator outputIterator
@@ -600,7 +600,7 @@ namespace opensolid
         if (root()) {
             detail::visitFilteredNodes(
                 root(),
-                [&predicateBounds] (const typename BoundsFunction<TElement>::ResultType& bounds) {
+                [&predicateBounds] (const typename BoundsType<TElement>::Type& bounds) {
                     return bounds.overlaps(predicateBounds);
                 },
                 [&function, &elementPredicate, &outputIterator] (const TElement& element) {
@@ -694,11 +694,5 @@ namespace opensolid
                 return Transformable<TElement>::morphing(element, function);
             }
         );
-    }
-
-    template <class TElement>
-    inline typename BoundsFunction<TElement>::ResultType
-    BoundsFunction<Set<TElement>>::operator()(const Set<TElement>& set) const {
-        return set.bounds();
     }
 }

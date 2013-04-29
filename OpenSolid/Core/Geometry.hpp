@@ -27,8 +27,9 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Geometry.definitions.hpp>
-#include <OpenSolid/Core/Geometry/BoundsFunction.definitions.hpp>
+#include <OpenSolid/Core/Geometry/BoundsType.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Domain.hpp>
 #include <OpenSolid/Core/Function.hpp>
@@ -210,13 +211,5 @@ namespace opensolid
             assert(false);
             return Geometry<iNumDestinationDimensions, iNumParameters>();
         }
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    const Box<iNumDimensions>&
-    BoundsFunction<Geometry<iNumDimensions, iNumParameters>>::operator()(
-        const Geometry<iNumDimensions, iNumParameters>& geometry
-    ) const {
-        return geometry.bounds();
     }
 }

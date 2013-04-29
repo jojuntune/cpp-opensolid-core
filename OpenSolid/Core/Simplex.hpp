@@ -28,6 +28,7 @@
  
 #include <OpenSolid/Core/Simplex.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
@@ -351,13 +352,5 @@ namespace opensolid
             assert(false);
             return Simplex<iNumDestinationDimensions, iNumVertices>();
         }
-    }
-
-    template <int iNumDimensions, int iNumVertices>
-    Box<iNumDimensions>
-    BoundsFunction<Simplex<iNumDimensions, iNumVertices>>::operator()(
-        const Simplex<iNumDimensions, iNumVertices>& simplex
-    ) const {
-        return simplex.bounds();
     }
 }

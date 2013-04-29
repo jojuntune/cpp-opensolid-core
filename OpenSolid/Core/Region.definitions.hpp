@@ -103,8 +103,8 @@ namespace opensolid
     };
 
     template <>
-    struct BoundsFunction<Region2d> :
-        public BoundsFunction<Domain<2>>
+    struct BoundsType<Region2d> :
+        public BoundsType<Domain<2>>
     {
     };
 }

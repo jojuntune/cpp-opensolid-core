@@ -29,7 +29,8 @@
 #include <OpenSolid/Core/Set.declarations.hpp>
 
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-#include <OpenSolid/Core/BoundsFunction.hpp>
+#include <OpenSolid/Core/BoundsFunction.definitions.hpp>
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 
 #include <cstdint>
 #include <ostream>
@@ -70,7 +71,7 @@ namespace opensolid
         bool
         isEmpty() const;
 
-        typename BoundsFunction<TElement>::ResultType
+        typename BoundsType<TElement>::Type
         bounds() const;
 
         TElement
@@ -100,7 +101,7 @@ namespace opensolid
         inserter();
 
         Set<TElement>
-        overlapping(const typename BoundsFunction<TElement>::ResultType& bounds) const;
+        overlapping(const typename BoundsType<TElement>::Type& bounds) const;
 
         template <class TBoundsPredicate>
         Set<TElement>
@@ -119,7 +120,7 @@ namespace opensolid
         template <class TVisitor>
         void
         forEachOverlapping(
-            const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+            const typename BoundsType<TElement>::Type& predicateBounds,
             const TVisitor& visitor
         ) const;
 
@@ -140,7 +141,7 @@ namespace opensolid
         template <class TElementPredicate, class TVisitor>
         void
         forEachOverlappingIf(
-            const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+            const typename BoundsType<TElement>::Type& predicateBounds,
             const TElementPredicate& elementPredicate,
             const TVisitor& visitor
         ) const;
@@ -162,7 +163,7 @@ namespace opensolid
         template<class TOutputIterator>
         void
         copyOverlapping(
-            const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+            const typename BoundsType<TElement>::Type& predicateBounds,
             TOutputIterator outputIterator
         ) const;
 
@@ -183,7 +184,7 @@ namespace opensolid
         template <class TElementPredicate, class TOutputIterator>
         void
         copyOverlappingIf(
-            const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+            const typename BoundsType<TElement>::Type& predicateBounds,
             const TElementPredicate& elementPredicate,
             TOutputIterator outputIterator
         ) const;
@@ -206,7 +207,7 @@ namespace opensolid
         template <class TFunction, class TOutputIterator>
         void
         mapOverlapping(
-            const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+            const typename BoundsType<TElement>::Type& predicateBounds,
             const TFunction& function,
             TOutputIterator outputIterator
         ) const;
@@ -230,7 +231,7 @@ namespace opensolid
         template <class TElementPredicate, class TFunction, class TOutputIterator>
         void
         mapOverlappingIf(
-            const typename BoundsFunction<TElement>::ResultType& predicateBounds,
+            const typename BoundsType<TElement>::Type& predicateBounds,
             const TElementPredicate& elementPredicate,
             const TFunction& function,
             TOutputIterator outputIterator
@@ -298,11 +299,8 @@ namespace opensolid
     };
 
     template <class TElement>
-    struct BoundsFunction<Set<TElement>>
+    struct BoundsType<Set<TElement>>
     {
-        typedef typename BoundsFunction<TElement>::ResultType ResultType;
-
-        typename BoundsFunction<TElement>::ResultType
-        operator()(const Set<TElement>& set) const;
+        typedef typename BoundsType<TElement>::Type Type;
     };
 }

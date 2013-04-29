@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Simplex.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Datum.declarations.hpp>
@@ -171,11 +172,8 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumVertices>
-    struct BoundsFunction<Simplex<iNumDimensions, iNumVertices>>
+    struct BoundsType<Simplex<iNumDimensions, iNumVertices>>
     {
-        typedef Box<iNumDimensions> ResultType;
-
-        Box<iNumDimensions>
-        operator()(const Simplex<iNumDimensions, iNumVertices>& simplex) const;
+        typedef Box<iNumDimensions> Type;
     };
 }

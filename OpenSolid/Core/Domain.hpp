@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Domain.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -120,11 +121,5 @@ namespace opensolid
             assert(false);
             return Domain<iNumDimensions>();
         }
-    }
-
-    template <int iNumDimensions>
-    Box<iNumDimensions>
-    BoundsFunction<Domain<iNumDimensions>>::operator()(const Domain<iNumDimensions>& domain) const {
-        return domain.bounds();
     }
 }

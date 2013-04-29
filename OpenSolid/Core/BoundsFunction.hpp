@@ -28,10 +28,17 @@
 
 #include <OpenSolid/Core/BoundsFunction.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 
 namespace opensolid
 {
+    template <class TBounded>
+    inline typename BoundsType<TBounded>::Type
+    BoundsFunction<TBounded>::operator()(const TBounded& argument) const {
+        return argument.bounds();
+    }
+
     inline Interval
     BoundsFunction<int>::operator()(int value) const {
         return Interval(value);

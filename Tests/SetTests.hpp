@@ -22,10 +22,11 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Set.hpp>
-#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Set.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
@@ -78,10 +79,14 @@ namespace opensolid
     };
 
     template <>
+    struct BoundsType<IntervalIndex>
+    {
+        typedef Interval Type;
+    };
+
+    template <>
     struct BoundsFunction<IntervalIndex>
     {
-        typedef Interval ResultType;
-
         std::vector<Interval>* intervals;
 
         Interval

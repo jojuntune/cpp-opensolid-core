@@ -29,10 +29,11 @@
 #include <OpenSolid/Core/Domain.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Geometry.declarations.hpp>
-#include <OpenSolid/Core/Geometry/BoundsFunction.definitions.hpp>
+#include <OpenSolid/Core/Geometry/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Set.definitions.hpp>
@@ -111,11 +112,8 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct BoundsFunction<Domain<iNumDimensions>>
+    struct BoundsType<Domain<iNumDimensions>>
     {
         typedef Box<iNumDimensions> Type;
-
-        Box<iNumDimensions>
-        operator()(const Domain<iNumDimensions>& domain) const;
     };
 }

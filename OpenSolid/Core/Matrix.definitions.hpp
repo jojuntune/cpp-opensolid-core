@@ -26,6 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
@@ -77,10 +79,14 @@ namespace opensolid
     };
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct BoundsType<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    {
+        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> Type;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     struct BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {
-        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> ResultType;
-
         typedef typename internal::conditional<
             internal::is_same<TScalar, Interval>::value,
             const Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols>&,
