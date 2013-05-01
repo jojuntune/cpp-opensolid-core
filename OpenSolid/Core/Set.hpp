@@ -647,14 +647,54 @@ namespace opensolid
         return stream;
     }
 
+    namespace detail
+    {
+        template <class TElement>
+        class SetElementScalingWrapper
+        {
+        private:
+            double _scale;
+        public:
+            typedef TElement result_type;
+
+            inline
+            SetElementScalingWrapper(double scale) :
+                _scale(scale) {
+            }
+
+            inline TElement
+            operator()(const TElement& element) const {
+                return Transformable<TElement>::scaling(element, _scale);
+            }
+        };
+    }
+
     template <class TElement>
     Set<TElement>
     ScalingFunction<Set<TElement>>::operator()(const Set<TElement>& set, double scale) const {
-        return set.mapped(
-            [scale] (const TElement& element) {
-                return Transformable<TElement>::scaling(element, scale);
+        return set.mapped(detail::SetElementScalingWrapper<TElement>(scale));
+    }
+
+    namespace detail
+    {
+        template <class TElement, class TVector>
+        class SetElementTranslationWrapper
+        {
+        private:
+            TVector _vector;
+        public:
+            typedef TElement result_type;
+
+            inline
+            SetElementTranslationWrapper(const EigenBase<TVector>& vector) :
+                _vector(vector.derived()) {
             }
-        );
+
+            inline TElement
+            operator()(const TElement& element) const {
+                return Transformable<TElement>::translation(element, _vector);
+            }
+        };
     }
 
     template <class TElement> template <class TVector>
@@ -664,10 +704,31 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return set.mapped(
-            [&vector] (const TElement& element) {
-                return Transformable<TElement>::translation(element, vector);
-            }
+            detail::SetElementTranslationWrapper<TElement, TVector>(vector.derived())
         );
+    }
+
+    namespace detail
+    {
+        template <class TElement, int iNumTransformedDimensions, class TMatrix>
+        class SetElementTransformationWrapper
+        {
+        private:
+            TMatrix _matrix;
+        public:
+            typedef typename ChangeDimensions<TElement, iNumTransformedDimensions>::Type
+                result_type;
+
+            inline
+            SetElementTransformationWrapper(const EigenBase<TMatrix>& matrix) :
+                _matrix(matrix.derived()) {
+            }
+
+            inline result_type
+            operator()(const TElement& element) const {
+                return Transformable<TElement>::transformation(element, _matrix);
+            }
+        };
     }
 
     template <class TElement, int iNumTransformedDimensions> template <class TMatrix>
@@ -677,10 +738,33 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return set.mapped(
-            [&matrix] (const TElement& element) {
-                return Transformable<TElement>::transformation(element, matrix);
-            }
+            detail::SetElementTransformationWrapper<TElement, iNumTransformedDimensions, TMatrix>(
+                matrix.derived()
+            )
         );
+    }
+
+    namespace detail
+    {
+        template <class TElement, int iNumDestinationDimensions>
+        class SetElementMorphingWrapper
+        {
+        private:
+            Function _function;
+        public:
+            typedef typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type
+                result_type;
+
+            inline
+            SetElementMorphingWrapper(const Function& function) :
+                _function(function) {
+            }
+
+            inline result_type
+            operator()(const TElement& element) const {
+                return Transformable<TElement>::morphing(element, _function);
+            }
+        };
     }
 
     template <class TElement, int iNumDestinationDimensions>
@@ -690,9 +774,7 @@ namespace opensolid
         const Function& function
     ) const {
         return set.mapped(
-            [&function] (const TElement& element) {
-                return Transformable<TElement>::morphing(element, function);
-            }
+            detail::SetElementMorphingWrapper<TElement, iNumDestinationDimensions>(function)
         );
     }
 }
