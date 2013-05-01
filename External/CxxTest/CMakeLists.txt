@@ -3,8 +3,8 @@
     externalproject_add(
         cxxtest_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/cxxtest-4.2.1.tar.gz
-        URL_MD5 d3bbba0fac5a61c594e2f7dd2321b91b
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/cxxtest-4.2.1-patched.tar.gz
+        URL_MD5 f80b7b3daaf0c1e20ec2d62dce06a602
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
