@@ -435,4 +435,45 @@ public:
         TS_ASSERT((rotatedVectors.atIndex(1) - Vector3d(0, 1, 1)).isZero());
         TS_ASSERT((rotatedVectors.atIndex(2) - Vector3d(1, 1, 1)).isZero());
     }
+
+    void testSwap() {
+        Set<double> set1;
+        set1.insert(1);
+        set1.insert(2);
+        set1.insert(3);
+
+        Set<double> set2;
+        set2.insert(4);
+        set2.insert(5);
+
+        set1.swap(set2);
+
+        TS_ASSERT_EQUALS(set1.size(), 2u);
+        TS_ASSERT_EQUALS(set2.size(), 3u);
+        TS_ASSERT_EQUALS(set1.atIndex(0), 4);
+        TS_ASSERT_EQUALS(set2.atIndex(0), 1);
+    }
+
+    void testRValue() {
+        Set<double> set1;
+        set1.insert(1);
+        set1.insert(2);
+        set1.insert(3);
+        const SetNode<double>* root = set1.root();
+
+        Set<double> set2(std::move(set1));
+
+        TS_ASSERT_EQUALS(set1.size(), 0u);
+        TS_ASSERT_EQUALS(set2.size(), 3u);
+        TS_ASSERT_EQUALS(set1.root(), nullptr);
+        TS_ASSERT_EQUALS(set2.root(), root);
+
+        Set<double> set3;
+        set3 = std::move(set2);
+
+        TS_ASSERT_EQUALS(set2.size(), 0u);
+        TS_ASSERT_EQUALS(set3.size(), 3u);
+        TS_ASSERT_EQUALS(set2.root(), nullptr);
+        TS_ASSERT_EQUALS(set3.root(), root);
+    }
 };

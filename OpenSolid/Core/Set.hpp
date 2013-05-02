@@ -51,6 +51,15 @@ namespace opensolid
         _root(otherSet.isEmpty() ? nullptr : new SetNode<TElement>(*otherSet.root())),
         _boundsFunction(otherSet._boundsFunction) {
     }
+
+    template <class TElement>
+    inline
+    Set<TElement>::Set(Set<TElement>&& otherSet) :
+        _root(otherSet._root),
+        _boundsFunction(otherSet._boundsFunction) {
+
+        otherSet._root = nullptr;
+    }
         
     template <class TElement> template <class TIterator>
     inline
@@ -109,6 +118,13 @@ namespace opensolid
     Set<TElement>::root() const {
         return _root;
     }
+
+    template <class TElement>
+    inline void
+    Set<TElement>::swap(Set<TElement>& otherSet) {
+        std::swap(_root, otherSet._root);
+        std::swap(_boundsFunction, otherSet._boundsFunction);
+    }
         
     template <class TElement>
     void
@@ -119,7 +135,14 @@ namespace opensolid
         clear();
         if (!otherSet.isEmpty()) {
             _root = new SetNode<TElement>(*otherSet.root());
+            _boundsFunction = otherSet._boundsFunction;
         }
+    }
+
+    template <class TElement>
+    inline void
+    Set<TElement>::operator=(Set<TElement>&& otherSet) {
+        swap(otherSet);
     }
     
     template <class TElement>

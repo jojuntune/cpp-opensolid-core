@@ -49,6 +49,8 @@ namespace opensolid
         Set(BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>());
         
         Set(const Set<TElement>& otherSet);
+
+        Set(Set<TElement>&& otherSet);
         
         template <class TIterator>
         Set(
@@ -61,9 +63,15 @@ namespace opensolid
         
         const SetNode<TElement>*
         root() const;
+
+        void
+        swap(Set<TElement>& otherSet);
         
         void
         operator=(const Set<TElement>& otherSet);
+        
+        void
+        operator=(Set<TElement>&& otherSet);
         
         std::int64_t
         size() const;
