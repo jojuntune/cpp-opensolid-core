@@ -48,8 +48,7 @@ public:
         Point3d centerPoint(1, 1, 1);
         Point3d startPoint(3, 1, 1);
         Point3d endPoint(1, -1, 1);
-        Axis3d axis(centerPoint, Vector3d::UnitZ());
-        Curve3d arc = Curve3d::ArcFromAxisAndEndpoints(axis, startPoint, endPoint);
+        Curve3d arc = Curve3d::Arc(centerPoint, Vector3d::UnitZ(), startPoint, endPoint);
 
         RowVectorXd parameterValues = RowVectorXd::LinSpaced(13, Interval::Unit());
 
@@ -96,7 +95,7 @@ public:
     void testFullArc() {
         Axis3d axis(Point3d(0, 3, 3), Vector3d::UnitX());
         Point3d point(1, 3, 1);
-        Curve3d arc = Curve3d::ArcFromAxisAndEndpoints(axis, point, point);
+        Curve3d arc = Curve3d::Arc(axis, point, point);
 
         TS_ASSERT((arc(0.25) - Point3d(1, 5, 3)).isZero());
         TS_ASSERT((arc(0.75) - Point3d(1, 1, 3)).isZero());
