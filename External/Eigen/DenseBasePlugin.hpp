@@ -91,5 +91,3 @@ Whole(Index size);
 
 static const ConstantReturnType
 Whole(Index rows, Index cols);
-
-
