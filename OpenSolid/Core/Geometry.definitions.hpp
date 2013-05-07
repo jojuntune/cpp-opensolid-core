@@ -65,6 +65,9 @@ namespace opensolid
         
         const Domain<iNumParameters>&
         domain() const;
+
+        bool
+        isValid() const;
         
         const Box<iNumDimensions>&
         bounds() const;
@@ -98,6 +101,9 @@ namespace opensolid
         
         Interval
         domain() const;
+
+        bool
+        isValid() const;
         
         const Box<iNumDimensions>&
         bounds() const;
