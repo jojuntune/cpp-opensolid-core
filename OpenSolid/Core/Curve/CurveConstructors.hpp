@@ -31,19 +31,33 @@
 #include <OpenSolid/Core/Datum.declarations.hpp>
 #include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
     class CurveConstructors;
 
+    enum WindingDirection {Counterclockwise, Clockwise};
+
     template <>
     class CurveConstructors<2>
     {
     public:
-        enum WindingDirection {Clockwise, Counterclockwise};
+        ///// Arcs /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   radius
+        //   direction
+        //   startPoint
+        //   startAngle
+        //   innerPoint
+        //   endAngle
+        //   endPoint
 
         OPENSOLID_CORE_EXPORT static Curve<2>
         Arc(
@@ -54,7 +68,7 @@ namespace opensolid
         );
         
         OPENSOLID_CORE_EXPORT static Curve<2>
-        ArcFromCenterAndEndpoints(
+        Arc(
             const Point<2>& centerPoint,
             WindingDirection direction,
             const Point<2>& startPoint,
@@ -62,63 +76,234 @@ namespace opensolid
         );
 
         OPENSOLID_CORE_EXPORT static Curve<2>
-        ArcFromThreePoints(
+        Arc(
+            double radius,
+            WindingDirection direction,
+            const Point<2>& startPoint,
+            const Point<2>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<2>
+        Arc(
             const Point<2>& startPoint,
             const Point<2>& innerPoint,
             const Point<2>& endPoint
         );
 
+        ///// Circles /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   radius
+        //   direction
+        //   startAngle
+        //   startPoint
+        //   secondPoint
+        //   thirdPoint
+
         OPENSOLID_CORE_EXPORT static Curve<2>
-        Circle(const Point<2>& centerPoint, double radius);
+        Circle(
+            const Point<2>& centerPoint,
+            double radius
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<2>
+        Circle(
+            const Point<2>& centerPoint,
+            double radius,
+            WindingDirection direction,
+            double startAngle
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<2>
+        Circle(
+            const Point<2>& centerPoint,
+            WindingDirection direction,
+            const Point<2>& startPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<2>
+        Circle(
+            double radius,
+            WindingDirection direction,
+            const Point<2>& startPoint,
+            const Point<2>& secondPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<2>
+        Circle(
+            const Point<2>& startPoint,
+            const Point<2>& secondPoint,
+            const Point<2>& thirdPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<2>
+        Circumcircle(
+            const Triangle<2>& triangle
+        );
     };
 
     template <>
     class CurveConstructors<3>
     {
     public:
-        OPENSOLID_CORE_EXPORT static Curve<3>
-        ArcOnPlane(const Plane3d& plane, double radius, double startAngle, double endAngle);
+        ///// Arcs /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   axis
+        //   axisDirection
+        //   radius
+        //   startPoint
+        //   innerPoint
+        //   endPoint
 
         OPENSOLID_CORE_EXPORT static Curve<3>
-        ArcFromAxisAndEndpoints(
+        Arc(
+            const Point<3>& centerPoint,
+            const Vector3d& axisDirection,
+            const Point<3>& startPoint,
+            const Point<3>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Arc(
             const Axis<3>& axis,
             const Point<3>& startPoint,
             const Point<3>& endPoint
         );
 
         OPENSOLID_CORE_EXPORT static Curve<3>
-        ArcFromThreePoints(
+        Arc(
+            const Vector3d& axisDirection,
+            double radius,
+            const Point<3>& startPoint,
+            const Point<3>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Arc(
             const Point<3>& startPoint,
             const Point<3>& innerPoint,
             const Point<3>& endPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
-        CircleAboutAxis(const Axis<3>& axis, double radius);
+        ///// Circles /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   axis
+        //   axisDirection
+        //   radius
+        //   startPoint
+        //   innerPoint
+        //   endPoint
 
         OPENSOLID_CORE_EXPORT static Curve<3>
-        CircleOnPlane(const Plane3d& plane, double radius);
-        
-        OPENSOLID_CORE_EXPORT static Curve<3>
-        HelixFromDatum(const Datum<3, 3>& datum, double numTurns);
-
-        OPENSOLID_CORE_EXPORT static Curve<3>
-        HelixFromFrame(const Frame<3>& frame, double radius, double pitch, double numTurns);
-
-        OPENSOLID_CORE_EXPORT static Curve<3>
-        HelixAboutAxis(
-            const Axis<3>& axis,
-            const Point<3>& startPoint,
-            double pitch,
-            double numTurns
+        Circle(
+            const Point<3>& centerPoint,
+            const Vector3d& axisDirection,
+            double radius
         );
 
         OPENSOLID_CORE_EXPORT static Curve<3>
-        HelixBetweenPoints(
-            const Point<3>& startBasePoint,
-            const Point<3>& endBasePoint,
+        Circle(
+            const Point<3>& centerPoint,
+            const Vector3d& axisDirection,
+            const Point<3>& startPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Circle(
+            const Axis<3>& axis,
+            const Point<3>& startPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Circle(
+            const Vector3d& axisDirection,
             double radius,
-            double numTurns
+            const Point<3>& startPoint,
+            const Point<3>& secondPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Circle(
+            const Point<3>& startPoint,
+            const Point<3>& secondPoint,
+            const Point<3>& thirdPoint
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Circumcircle(
+            const Triangle<3>& triangle
+        );
+
+        ///// Helices /////
+        //
+        // Argument order:
+        //   startCenterPoint
+        //   endCenterPoint
+        //   axis
+        //   axisDirection
+        //   radius
+        //   windingDirection
+        //   startPoint
+        //   endPoint
+        //   pitch (if <= 0: determine from numTurns/length)
+        //   numTurns (if <= 0: determine from pitch/length)
+        //   length (if <= 0: determine from pitch/numTurns)
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Point<3>& endCenterPoint,
+            double radius,
+            WindingDirection direction,
+            double pitch, // if <= 0: determine from numTurns
+            double numTurns // if <= 0: determine from pitch
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Point<3>& endCenterPoint,
+            WindingDirection direction,
+            const Point<3>& startPoint,
+            double pitch, // if <= 0: determine from numTurns
+            double numTurns // if <= 0: determine from pitch
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Vector3d& axisDirection,
+            double radius,
+            WindingDirection direction,
+            double pitch, // if <= 0: determine from numTurns/length
+            double numTurns, // if <= 0: determine from pitch/length
+            double length // if <= 0: determine from pitch/numTurns
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Vector3d& axisDirection,
+            WindingDirection direction,
+            const Point<3>& startPoint,
+            double pitch, // if <= 0: determine from numTurns/length
+            double numTurns, // if <= 0: determine from pitch/length
+            double length // if <= 0: determine from pitch/numTurns
+        );
+
+        OPENSOLID_CORE_EXPORT static Curve<3>
+        Helix(
+            const Axis<3>& axis,
+            WindingDirection direction,
+            const Point<3>& startPoint,
+            double pitch, // if <= 0: determine from numTurns/length
+            double numTurns, // if <= 0: determine from pitch/length
+            double length // if <= 0: determine from pitch/numTurns
         );
     };
 }
