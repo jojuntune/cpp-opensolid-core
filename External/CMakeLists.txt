@@ -26,6 +26,11 @@
         set(SQLITE_ROOT ${SQLITE_ROOT} PARENT_SCOPE)
         set(PROTOBUF_ROOT ${PROTOBUF_ROOT} PARENT_SCOPE)
     endif()
+
+    if(${BUILD_MESH_MODULE})
+        add_subdirectory(OpenMesh)
+        #set(OPENMESH_ROOT ${OPENMESH_ROOT} PARENT_SCOPE)
+    endif()
     
     if(${BUILD_TESTS})
         add_subdirectory(CxxTest)

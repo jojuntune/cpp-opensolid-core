@@ -11,6 +11,7 @@
 ########## Set up user configuration options ##########
 
     set(BUILD_DYNAMIC_LIBS ON CACHE BOOL "Build dynamic libraries")
+    set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
     set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on I/O module)")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
@@ -118,6 +119,10 @@
 
     # Include Eigen root directory to allow inclusion of Eigen headers
     include_directories(${EIGEN_ROOT})
+
+    if(${BUILD_MESH_MODULE})
+        include_directories(${OPENMESH_ROOT}/include)
+    endif()
     
     # Add root directory to include path to allow for #include <OpenSolid/...>
     include_directories(.)
