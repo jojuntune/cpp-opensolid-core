@@ -91,9 +91,12 @@
         set(CMAKE_SHARED_LINKER_FLAGS "/INCREMENTAL:NO")
         set(CMAKE_MODULE_LINKER_FLAGS "/INCREMENTAL:NO")
         
-        # Explicitly set WIN64 flag
+        # Explicitly set WIN64 compiler flag and /MACHINE linker flag for 64-bit builds
         if(CMAKE_SIZEOF_VOID_P EQUAL 8)
             add_definitions(-DWIN64)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MACHINE:x64")
+            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MACHINE:x64")
+            set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /MACHINE:x64")
         endif()
     else()
         message("Compiler type not detected!")
