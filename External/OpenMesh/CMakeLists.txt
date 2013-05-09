@@ -2,8 +2,8 @@
 externalproject_add(
     OpenMesh
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-    URL ${CMAKE_CURRENT_SOURCE_DIR}/OpenMesh-2.3.1-minus-documentation.tar.gz
-    URL_MD5 caef3ef824c87b52c43274677a8a9d71
+    URL ${CMAKE_CURRENT_SOURCE_DIR}/OpenMesh-2.3.1-patched-minus-documentation.tar.gz
+    URL_MD5 77d7705dfc65c9f513d5f28018a86f45
     CMAKE_ARGS
     -DCMAKE_CXX_FLAGS=${DISABLE_WARNINGS_FLAG}
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
