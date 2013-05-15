@@ -12,6 +12,9 @@
 
     set(BUILD_DYNAMIC_LIBS ON CACHE BOOL "Build dynamic libraries")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
+    set(BUILD_PYTHON_BINDINGS OFF CACHE BOOL "Build Python bindings (requires SWIG, Python)")
+    set(BUILD_RUBY_BINDINGS OFF CACHE BOOL "Build Ruby bindings (requires SWIG, Ruby)")
+    set(BUILD_CSHARP_BINDINGS OFF CACHE BOOL "Build C# bindings (requires SWIG)")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
     set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on I/O module)")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
@@ -33,6 +36,9 @@
         # Enable pthreads
         add_definitions(-DHAVE_PTHREAD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+        # Enable C++11 support
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
         
         # Set up warnings
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-variable -Wno-enum-compare")
@@ -45,20 +51,18 @@
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fpic")
         endif()
-        
-        # Define proper flag to enable C++11 features
-        execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-        if(GCC_VERSION VERSION_LESS 4.7)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-        else()
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-        endif()
+
+        # Initialize disable-warnings flag
+        set(DISABLE_WARNINGS_FLAG "-w")
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         # Enable pthreads
         add_definitions(-DHAVE_PTHREAD)
 
+        # Enable C++11 support
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
         # Set up warnings
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-unused-function")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-function")
 
         # Enable dynamic loading
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
@@ -68,18 +72,21 @@
         # Set up proper linking to low-level libraries on different platforms
         if(APPLE)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
-            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")
-            set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -stdlib=libc++")
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++")
+            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lc++")
+            set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -lc++")
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pthread")
             set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -pthread")
         endif()
+
+        # Initialize disable-warnings flag
+        set(DISABLE_WARNINGS_FLAG "-w")
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         # Make sure min/max macros are not defined by windows.h (conflicts with
-        # interval min/max and  Eigen code), and avoid warning about boost
+        # interval min/max and Eigen code), and avoid warning about boost
         # string algorithms
         add_definitions(-DNOMINMAX -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
         
@@ -98,6 +105,9 @@
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MACHINE:x64")
             set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /MACHINE:x64")
         endif()
+
+        # Initialize disable-warnings flag
+        set(DISABLE_WARNINGS_FLAG "/w")
     else()
         message("Compiler type not detected!")
     endif()
@@ -138,6 +148,10 @@
         include_directories(${PROTOBUF_ROOT})
         include_directories(${SQLITE_ROOT})
         add_subdirectory(OpenSolid/IO)
+    endif()
+
+    if(BUILD_PYTHON_BINDINGS OR BUILD_RUBY_BINDINGS OR BUILD_CSHARP_BINDINGS)
+        add_subdirectory(OpenSolid/SWIG)
     endif()
     
     # Build UI if selected

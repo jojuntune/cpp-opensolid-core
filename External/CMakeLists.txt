@@ -2,19 +2,6 @@
 
     include(ExternalProject)
 
-########## Set up flag to use to disable compiler warnings on external code ##########
-
-    set(DISABLE_WARNINGS_FLAG "")
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        set(DISABLE_WARNINGS_FLAG "-w")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        set(DISABLE_WARNINGS_FLAG "-w")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-        set(DISABLE_WARNINGS_FLAG "/w")
-    else()
-        message("Compiler type not detected!")
-    endif()
-    
 ########## Build external projects where required by OpenSolid modules ##########
 
     add_subdirectory(Eigen)
@@ -29,7 +16,7 @@
 
     if(${BUILD_MESH_MODULE})
         add_subdirectory(OpenMesh)
-        #set(OPENMESH_ROOT ${OPENMESH_ROOT} PARENT_SCOPE)
+        set(OPENMESH_ROOT ${OPENMESH_ROOT} PARENT_SCOPE)
     endif()
     
     if(${BUILD_TESTS})
