@@ -1,7 +1,7 @@
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
-set(CMAKE_SWIG_OUTDIR ${LIBRARY_OUTPUT_PATH})
+set(CMAKE_SWIG_OUTDIR ${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR})
 set(CMAKE_SWIG_FLAGS "-c++")
 
 set(INTERFACE_FILES opensolid_python.i opensolid_ruby.i OpenSolidCSharp.i)
