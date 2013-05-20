@@ -12,11 +12,8 @@
 
     set(BUILD_DYNAMIC_LIBS ON CACHE BOOL "Build dynamic libraries")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
-    set(BUILD_PYTHON_BINDINGS OFF CACHE BOOL "Build Python bindings (requires SWIG, Python)")
-    set(BUILD_RUBY_BINDINGS OFF CACHE BOOL "Build Ruby bindings (requires SWIG, Ruby)")
-    set(BUILD_CSHARP_BINDINGS OFF CACHE BOOL "Build C# bindings (requires SWIG)")
+    set(BUILD_DOTNET_BINDINGS OFF CACHE BOOL "Build .NET bindings (requires SWIG)")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
-    set(BUILD_UI OFF CACHE BOOL "Build UI (requires Qt, depends on I/O module)")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
     
@@ -132,10 +129,6 @@
 
     # Include Eigen root directory to allow inclusion of Eigen headers
     include_directories(${EIGEN_ROOT})
-
-    if(${BUILD_MESH_MODULE})
-        include_directories(${OPENMESH_ROOT}/include)
-    endif()
     
     # Add root directory to include path to allow for #include <OpenSolid/...>
     include_directories(.)
@@ -150,13 +143,18 @@
         add_subdirectory(OpenSolid/IO)
     endif()
 
-    if(BUILD_PYTHON_BINDINGS OR BUILD_RUBY_BINDINGS OR BUILD_CSHARP_BINDINGS)
-        add_subdirectory(OpenSolid/SWIG)
+    # Include OpenMesh include directory if mesh module is enabled
+    if(${BUILD_MESH_MODULE})
+        include_directories(${OPENMESH_ROOT}/include)
+    endif()
+
+    if(BUILD_DOTNET_BINDINGS)
+        add_subdirectory(Bindings)
     endif()
     
     # Build UI if selected
     if(${BUILD_UI})
-        # Se up Qt
+        # Set up Qt
         find_package(Qt4 REQUIRED)
         set(QT_USE_QTOPENGL ON)
         set(QT_USE_QTXML ON)
@@ -173,7 +171,7 @@
         # directory
         include_directories(${OPENGL_INCLUDE_DIR}/Headers)
     
-        add_subdirectory(OpenSolid/UI)
+        add_subdirectory(UI)
     endif()
     
     # Build tests if selected
