@@ -68,16 +68,18 @@
         GeometryTests.hpp
     )
     
-########## Python module tests ##########
+########## .NET binding tests ##########
     
-    if(${BUILD_PYTHON_MODULE})
-        # Set up Python
-        find_package(PythonLibs REQUIRED)
-        include_directories(${PYTHON_INCLUDE_DIRS})
-
-        add_cxxtest(PythonTests PythonTests.hpp OpenSolidPython)
-        
-        add_to_global_source_list(PythonTests.hpp)
+    if(${BUILD_DOTNET_BINDINGS})
+        add_custom_target(
+            CSharpTests ALL
+            ${CSHARP_COMPILER}
+            /r:OpenSolid.dll
+            /out:${EXECUTABLE_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}/CSharpTests.exe
+            ${CMAKE_CURRENT_SOURCE_DIR}/CSharpTests.cs
+            WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}
+        )
+        add_dependencies(CSharpTests OpenSolidDotNet)
     endif()
     
 ########## Graph library tests ##########

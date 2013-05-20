@@ -2,7 +2,7 @@ find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
 # Set up SWIG
-set(CMAKE_SWIG_OUTDIR ${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR})
+set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_SWIG_FLAGS -c++)
 
 # Set up interface file
@@ -12,25 +12,27 @@ set_source_files_properties(
     PROPERTIES
     CPLUSPLUS ON
     SWIG_FLAGS "${OPENSOLID_SWIG_FLAGS}"
+    OBJECT_DEPENDS Zero.i
+    OBJECT_DEPENDS Interval.i
 )
 
 # Build extension DLL
 swig_add_module(OpenSolidPInvoke csharp OpenSolid.i)
 swig_link_libraries(OpenSolidPInvoke OpenSolidCore)
 
-# Set up C# compiler
-if(WIN32)
-    find_program(CSHARP_COMPILER NAMES csc)
-    set(CSHARP_COMPILER_ARGS /out:OpenSolid.dll /target:library)
-else()
-    find_program(CSHARP_COMPILER mcs dmcs)
-    set(CSHARP_COMPILER_ARGS -out:OpenSolid.dll -t:library)
-endif()
+# Create list of C# source files to be compiled into OpenSolid .NET DLL
+set(
+    CSHARP_SOURCE_FILES
+    ${CMAKE_SWIG_OUTDIR}/OpenSolidPINVOKE.cs
+    ${CMAKE_SWIG_OUTDIR}/OpenSolid.cs
+    ${CMAKE_SWIG_OUTDIR}/Zero.cs
+    ${CMAKE_SWIG_OUTDIR}/Interval.cs
+)
 
 # Build .NET DLL
 add_custom_target(
     OpenSolidDotNet ALL
-    ${CSHARP_COMPILER} ${CSHARP_COMPILER_ARGS} *.cs
-    WORKING_DIRECTORY ${CMAKE_SWIG_OUTDIR}
+    ${CSHARP_COMPILER} /target:library /out:OpenSolid.dll ${CSHARP_SOURCE_FILES}
+    WORKING_DIRECTORY ${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}
 )
 add_dependencies(OpenSolidDotNet OpenSolidPInvoke)

@@ -149,6 +149,7 @@
     endif()
 
     if(BUILD_DOTNET_BINDINGS)
+        find_program(CSHARP_COMPILER NAMES mcs dmcs csc)
         add_subdirectory(Bindings)
     endif()
     
