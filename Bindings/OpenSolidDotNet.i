@@ -6,14 +6,34 @@
     #include <sstream>
 %}
 
-// Declare special functions and operators
+// Declare special member functions as private so they can be wrapped with public functions
+// following normal C# conventions
+%csmethodmodifiers Add "private";
+%csmethodmodifiers Sub "private";
+%csmethodmodifiers Mul "private";
+%csmethodmodifiers Div "private";
+%csmethodmodifiers Str "private";
+
+// Declare special functions and operators wrapping the above special functions
 %typemap(cscode) Interval %{
-    static public Interval operator+(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.__add__(secondInterval);
+    public override string ToString()
+    {
+        return Str();
     }
 
-    static public Interval operator+(Interval interval, double value) {
-        return interval.__add__(value);
+    static public Interval operator+(Interval firstInterval, Interval secondInterval)
+    {
+        return firstInterval.Add(secondInterval);
+    }
+
+    static public Interval operator+(Interval interval, double value)
+    {
+        return interval.Add(value);
+    }
+
+    static public Interval operator+(double value, Interval interval)
+    {
+        return interval.Add(value);
     }
 %}
 
@@ -142,47 +162,47 @@
         }
         
         Interval
-        __add__(double value) const {
+        Add(double value) const {
             return _interval + value;
         }
         
         Interval
-        __add__(Interval interval) const {
+        Add(Interval interval) const {
             return _interval + interval._interval;
         }
         
         Interval
-        __sub__(double value) const {
+        Sub(double value) const {
             return _interval - value;
         }
         
         Interval
-        __sub__(Interval interval) const {
+        Sub(Interval interval) const {
             return _interval - interval._interval;
         }
         
         Interval
-        __mul__(double value) const {
+        Mul(double value) const {
             return _interval * value;
         }
         
         Interval
-        __div__(double value) const {
+        Div(double value) const {
             return _interval / value;
         }
         
         Interval
-        __mul__(Interval interval) const {
+        Mul(Interval interval) const {
             return _interval * interval._interval;
         }
         
         Interval
-        __div__(Interval interval) const {
+        Div(Interval interval) const {
             return _interval / interval._interval;
         }
 
         std::string
-        __str__() const {
+        Str() const {
             std::stringstream stream;
             stream << _interval;
             return stream.str();
