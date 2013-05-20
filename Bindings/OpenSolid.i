@@ -1,4 +1,4 @@
-%module OpenSolidDotNet
+%module OpenSolid
 
 %{
     #include "OpenSolid/Core/Interval.hpp"  
