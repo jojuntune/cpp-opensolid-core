@@ -6,5 +6,4 @@
 // Include functionality for creating C# properties
 %include "attribute.i"
 
-%include "Zero.i"
 %include "Interval.i"
