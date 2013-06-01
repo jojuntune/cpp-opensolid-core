@@ -35,11 +35,11 @@ namespace opensolid
         return operand().numDimensions();
     }
 
-    bool NormalizedFunction::isDuplicate(const Function& function) const {
+    bool NormalizedFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function NormalizedFunction::deduplicated(std::vector<Function>& others) const {
+    Function NormalizedFunction::deduplicated(Deduplicator& deduplicator) const {
         return new NormalizedFunction(operand().deduplicated(others));
     }
 

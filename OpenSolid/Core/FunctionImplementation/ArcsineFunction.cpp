@@ -38,11 +38,11 @@ namespace opensolid
         return 1;
     }
 
-    bool ArcsineFunction::isDuplicate(const Function& function) const {
+    bool ArcsineFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function ArcsineFunction::deduplicated(std::vector<Function>& others) const {
+    Function ArcsineFunction::deduplicated(Deduplicator& deduplicator) const {
         return new ArcsineFunction(operand().deduplicated(others));
     }
     

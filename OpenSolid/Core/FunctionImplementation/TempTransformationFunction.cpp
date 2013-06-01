@@ -41,20 +41,20 @@ namespace opensolid
         return transformationMatrix().rows();
     }
 
-    bool TempTransformationFunction::isDuplicate(const Function& function) const {
+    bool TempTransformationFunction::isDuplicateOf(const Function& function) const {
         const TempTransformationFunction* other =
             dynamic_cast<const TempTransformationFunction*>(function.implementation());
         if (other) {
             return this->transformationMatrix().rows() == other->transformationMatrix().rows() &&
                 this->transformationMatrix().cols() == other->transformationMatrix().cols() &&
                 (this->transformationMatrix() - other->transformationMatrix()).isZero() &&
-                this->operand().isDuplicate(other->operand());
+                this->operand().isDuplicateOf(other->operand());
         } else {
             return false;
         }
     }
 
-    Function TempTransformationFunction::deduplicated(std::vector<Function>& others) const {
+    Function TempTransformationFunction::deduplicated(Deduplicator& deduplicator) const {
         return new TempTransformationFunction(
             transformationMatrix(),
             operand().deduplicated(others)

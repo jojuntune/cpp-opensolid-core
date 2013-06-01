@@ -38,11 +38,11 @@ namespace opensolid
         return 1;
     }
 
-    bool CosineFunction::isDuplicate(const Function& function) const {
+    bool CosineFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function CosineFunction::deduplicated(std::vector<Function>& others) const {
+    Function CosineFunction::deduplicated(Deduplicator& deduplicator) const {
         return new CosineFunction(operand().deduplicated(others));
     }
     

@@ -50,8 +50,8 @@ namespace opensolid
         int numParameters() const;
         int numDimensions() const;
 
-        bool isDuplicate(const Function& other) const;
-        Function deduplicated(std::vector<Function>& others) const;
+        bool isDuplicateOf(const Function& other) const;
+        Function deduplicated(Deduplicator& deduplicator) const;
         
         void evaluate(
             const MapXcd& parameterValues,
@@ -110,7 +110,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    bool EllipticalFunction<iNumDimensions, iNumAxes>::isDuplicate(const Function& function) const {
+    bool EllipticalFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const Function& function) const {
         const EllipticalFunction<iNumDimensions, iNumAxes>* other =
             dynamic_cast<const EllipticalFunction<iNumDimensions, iNumAxes>*>(
                 function.implementation()

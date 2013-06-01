@@ -35,11 +35,11 @@ namespace opensolid
         return 1;
     }
 
-    bool SquaredNormFunction::isDuplicate(const Function& function) const {
+    bool SquaredNormFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SquaredNormFunction::deduplicated(std::vector<Function>& others) const {
+    Function SquaredNormFunction::deduplicated(Deduplicator& deduplicator) const {
         return new SquaredNormFunction(operand().deduplicated(others));
     }
     

@@ -36,11 +36,11 @@ namespace opensolid
         return 1;
     }
 
-    bool ExponentialFunction::isDuplicate(const Function& function) const {
+    bool ExponentialFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function ExponentialFunction::deduplicated(std::vector<Function>& others) const {
+    Function ExponentialFunction::deduplicated(Deduplicator& deduplicator) const {
         return new ExponentialFunction(operand().deduplicated(others));
     }
         

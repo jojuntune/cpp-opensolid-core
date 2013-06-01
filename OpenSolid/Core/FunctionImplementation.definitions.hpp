@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 
 #include <OpenSolid/Core/Function.declarations.hpp>
+#include <OpenSolid/Core/Function/Deduplicator.declarations.hpp>
 #include <OpenSolid/Core/Function/EvaluateCache.declarations.hpp>
 #include <OpenSolid/Core/Function/JacobianCache.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
@@ -61,10 +62,10 @@ namespace opensolid
         asParameter() const;
 
         OPENSOLID_CORE_EXPORT virtual bool
-        isDuplicate(const Function& other) const = 0;
+        isDuplicateOf(const Function& other) const = 0;
         
         OPENSOLID_CORE_EXPORT virtual Function
-        deduplicated(std::vector<Function>& others) const = 0;
+        deduplicated(Deduplicator& deduplicator) const = 0;
 
         OPENSOLID_CORE_EXPORT virtual void
         evaluate(

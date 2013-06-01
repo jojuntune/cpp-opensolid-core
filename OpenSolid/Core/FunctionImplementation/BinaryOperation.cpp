@@ -27,13 +27,13 @@
 namespace opensolid
 {
     bool BinaryOperation::duplicateOperands(const BinaryOperation* other, bool commutative) const {
-        bool nonCommutativeCheck = this->firstOperand().isDuplicate(other->firstOperand()) &&
-            this->secondOperand().isDuplicate(other->secondOperand());
+        bool nonCommutativeCheck = this->firstOperand().isDuplicateOf(other->firstOperand()) &&
+            this->secondOperand().isDuplicateOf(other->secondOperand());
         if (nonCommutativeCheck) {
             return true;
         } else if (commutative) {
-            return this->firstOperand().isDuplicate(other->secondOperand()) &&
-                this->secondOperand().isDuplicate(other->firstOperand());
+            return this->firstOperand().isDuplicateOf(other->secondOperand()) &&
+                this->secondOperand().isDuplicateOf(other->firstOperand());
         } else {
             return false;
         }

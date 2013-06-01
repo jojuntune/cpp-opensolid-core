@@ -28,12 +28,12 @@
 
 namespace opensolid
 {
-    ParameterFunction::ParameterFunction(int numParameters, int index) :
+    ParameterFunction::ParameterFunction(int numParameters, int parameterIndex) :
         _numParameters(numParameters),
-        _index(index) {
+        _parameterIndex(parameterIndex) {
 
         assert(numParameters > 0);
-        assert(index >= 0 && index < numParameters);
+        assert(parameterIndex >= 0 && parameterIndex < numParameters);
     }
 
     const ParameterFunction* ParameterFunction::asParameter() const {
@@ -48,7 +48,7 @@ namespace opensolid
         return 1;
     }
 
-    bool ParameterFunction::isDuplicate(const Function& function) const {
+    bool ParameterFunction::isDuplicateOf(const Function& function) const {
         const ParameterFunction* other =
             dynamic_cast<const ParameterFunction*>(function.implementation());
         if (other) {
@@ -59,7 +59,7 @@ namespace opensolid
         }
     }
 
-    Function ParameterFunction::deduplicated(std::vector<Function>&) const {
+    Function ParameterFunction::deduplicated(DeduplicationCache&) const {
         return this;
     }
     
@@ -68,7 +68,7 @@ namespace opensolid
         MapXd& results,
         EvaluateCache<double>&
     ) const {
-        results = parameterValues.row(index());
+        results = parameterValues.row(parameterIndex());
     }
     
     void ParameterFunction::evaluate(
@@ -76,18 +76,18 @@ namespace opensolid
         MapXI& results,
         EvaluateCache<Interval>&
     ) const {
-        results = parameterBounds.row(index());
+        results = parameterBounds.row(parameterIndex());
     }
 
     Function ParameterFunction::derivative(int index) const {
-        return Function::Constant(index == this->index() ? 1.0 : 0.0, numParameters());
+        return Function::Constant(index == this->parameterIndex() ? 1.0 : 0.0, numParameters());
     }
     
     Function ParameterFunction::compose(const Function& innerFunction) const {
-        return innerFunction.components(index(), 1);
+        return innerFunction.components(parameterIndex(), 1);
     }
     
     void ParameterFunction::debug(std::ostream& stream, int indent) const {
-        stream << "ParameterFunction: index = " << index() << std::endl;
+        stream << "ParameterFunction: parameter index = " << parameterIndex() << std::endl;
     }
 }

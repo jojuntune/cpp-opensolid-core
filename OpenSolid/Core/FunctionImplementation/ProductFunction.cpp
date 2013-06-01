@@ -40,11 +40,11 @@ namespace opensolid
         return secondOperand().numDimensions();
     }
 
-    bool ProductFunction::isDuplicate(const Function& function) const {
+    bool ProductFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function ProductFunction::deduplicated(std::vector<Function>& others) const {
+    Function ProductFunction::deduplicated(Deduplicator& deduplicator) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new ProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

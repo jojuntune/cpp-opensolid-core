@@ -34,19 +34,19 @@ namespace opensolid
     {
     private:
         int _numParameters;
-        int _index;
+        int _parameterIndex;
     public:
-        OPENSOLID_CORE_EXPORT ParameterFunction(int numParameters, int index);
+        OPENSOLID_CORE_EXPORT ParameterFunction(int numParameters, int parameterIndex);
         
-        int index() const;
+        int parameterIndex() const;
 
         OPENSOLID_CORE_EXPORT const ParameterFunction* asParameter() const;
         
         OPENSOLID_CORE_EXPORT int numParameters() const;
         OPENSOLID_CORE_EXPORT int numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicate(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(std::vector<Function>& others) const;
+        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
+        OPENSOLID_CORE_EXPORT Function deduplicated(Deduplicator& deduplicator) const;
         
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcd& parameterValues,
@@ -72,7 +72,7 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline int ParameterFunction::index() const {
-        return _index;
+    inline int ParameterFunction::parameterIndex() const {
+        return _parameterIndex;
     }
 }

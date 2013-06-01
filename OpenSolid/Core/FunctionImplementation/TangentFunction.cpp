@@ -36,11 +36,11 @@ namespace opensolid
         return 1;
     }
 
-    bool TangentFunction::isDuplicate(const Function& function) const {
+    bool TangentFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function TangentFunction::deduplicated(std::vector<Function>& others) const {
+    Function TangentFunction::deduplicated(Deduplicator& deduplicator) const {
         return new TangentFunction(operand().deduplicated(others));
     }
     

@@ -40,11 +40,11 @@ namespace opensolid
         return firstOperand().numDimensions();
     }
 
-    bool DifferenceFunction::isDuplicate(const Function& function) const {
+    bool DifferenceFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function DifferenceFunction::deduplicated(std::vector<Function>& others) const {
+    Function DifferenceFunction::deduplicated(Deduplicator& deduplicator) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new DifferenceFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

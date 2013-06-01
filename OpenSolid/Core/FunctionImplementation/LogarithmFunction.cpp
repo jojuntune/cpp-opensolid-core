@@ -36,11 +36,11 @@ namespace opensolid
         return 1;
     }
 
-    bool LogarithmFunction::isDuplicate(const Function& function) const {
+    bool LogarithmFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function LogarithmFunction::deduplicated(std::vector<Function>& others) const {
+    Function LogarithmFunction::deduplicated(Deduplicator& deduplicator) const {
         return new LogarithmFunction(operand().deduplicated(others));
     }
         

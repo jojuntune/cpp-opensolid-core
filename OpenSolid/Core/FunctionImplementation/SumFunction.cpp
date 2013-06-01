@@ -38,11 +38,11 @@ namespace opensolid
         return firstOperand().numDimensions();
     }
 
-    bool SumFunction::isDuplicate(const Function& function) const {
+    bool SumFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function SumFunction::deduplicated(std::vector<Function>& others) const {
+    Function SumFunction::deduplicated(Deduplicator& deduplicator) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

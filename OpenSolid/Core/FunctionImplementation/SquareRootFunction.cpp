@@ -36,11 +36,11 @@ namespace opensolid
         return 1;
     }
 
-    bool SquareRootFunction::isDuplicate(const Function& function) const {
+    bool SquareRootFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SquareRootFunction::deduplicated(std::vector<Function>& others) const {
+    Function SquareRootFunction::deduplicated(Deduplicator& deduplicator) const {
         return new SquareRootFunction(operand().deduplicated(others));
     }
     

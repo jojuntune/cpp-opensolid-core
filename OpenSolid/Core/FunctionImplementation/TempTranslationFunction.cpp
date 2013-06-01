@@ -39,19 +39,19 @@ namespace opensolid
         return operand().numDimensions();
     }
 
-    bool TempTranslationFunction::isDuplicate(const Function& function) const {
+    bool TempTranslationFunction::isDuplicateOf(const Function& function) const {
         const TempTranslationFunction* other =
             dynamic_cast<const TempTranslationFunction*>(function.implementation());
         if (other) {
             return (this->vector() - other->vector()).isZero() &&
-                this->operand().isDuplicate(other->operand());
+                this->operand().isDuplicateOf(other->operand());
         } else {
             return false;
         }
     }
 
-    Function TempTranslationFunction::deduplicated(std::vector<Function>& others) const {
-        return new TempTranslationFunction(operand().deduplicated(others), vector());
+    Function TempTranslationFunction::deduplicated(Deduplicator& deduplicator) const {
+        return new TempTranslationFunction(deduplicator(operand()), vector());
     }
     
     void TempTranslationFunction::evaluate(

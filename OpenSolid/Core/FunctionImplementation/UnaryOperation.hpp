@@ -63,7 +63,7 @@ namespace opensolid
     bool UnaryOperation::IsDuplicate(const TDerived* derived, const Function& function) {
         const TDerived* other = dynamic_cast<const TDerived*>(function.implementation());
         if (other) {
-            return derived->operand().isDuplicate(other->operand());
+            return derived->operand().isDuplicateOf(other->operand());
         } else {
             return false;
         }

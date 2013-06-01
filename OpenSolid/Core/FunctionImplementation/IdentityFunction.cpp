@@ -46,7 +46,7 @@ namespace opensolid
         return _numDimensions;
     }
 
-    bool IdentityFunction::isDuplicate(const Function& function) const {
+    bool IdentityFunction::isDuplicateOf(const Function& function) const {
         const IdentityFunction* other =
             dynamic_cast<const IdentityFunction*>(function.implementation());
         if (other) {

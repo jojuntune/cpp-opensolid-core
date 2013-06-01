@@ -44,11 +44,11 @@ namespace opensolid
         return secondOperand().numParameters();
     }
 
-    bool CompositionFunction::isDuplicate(const Function& function) const {
+    bool CompositionFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function CompositionFunction::deduplicated(std::vector<Function>& others) const {
+    Function CompositionFunction::deduplicated(Deduplicator& deduplicator) const {
         Function deduplicatedOuterFunction = firstOperand().deduplicated(others);
         Function deduplicatedInnerFunction = secondOperand().deduplicated(others);
         return new CompositionFunction(deduplicatedOuterFunction, deduplicatedInnerFunction);

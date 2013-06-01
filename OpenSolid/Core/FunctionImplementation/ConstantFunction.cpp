@@ -52,7 +52,7 @@ namespace opensolid
         return vector().size();
     }
 
-    bool ConstantFunction::isDuplicate(const Function& function) const {
+    bool ConstantFunction::isDuplicateOf(const Function& function) const {
         const ConstantFunction* other =
             dynamic_cast<const ConstantFunction*>(function.implementation());
         if (other) {

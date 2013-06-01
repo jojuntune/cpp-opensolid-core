@@ -35,11 +35,11 @@ namespace opensolid
         return 1;
     }
 
-    bool NormFunction::isDuplicate(const Function& function) const {
+    bool NormFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function NormFunction::deduplicated(std::vector<Function>& others) const {
+    Function NormFunction::deduplicated(Deduplicator& deduplicator) const {
         return new NormFunction(operand().deduplicated(others));
     }
     

@@ -38,11 +38,11 @@ namespace opensolid
         return firstOperand().numDimensions() + secondOperand().numDimensions();
     }
 
-    bool ConcatenationFunction::isDuplicate(const Function& function) const {
+    bool ConcatenationFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function ConcatenationFunction::deduplicated(std::vector<Function>& others) const {
+    Function ConcatenationFunction::deduplicated(Deduplicator& deduplicator) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new ConcatenationFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

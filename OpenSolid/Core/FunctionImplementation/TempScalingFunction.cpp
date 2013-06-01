@@ -37,17 +37,17 @@ namespace opensolid
         return operand().numDimensions();
     }
 
-    bool TempScalingFunction::isDuplicate(const Function& function) const {
+    bool TempScalingFunction::isDuplicateOf(const Function& function) const {
         const TempScalingFunction* other =
             dynamic_cast<const TempScalingFunction*>(function.implementation());
         if (other) {
-            return this->scale() == other->scale() && this->operand().isDuplicate(other->operand());
+            return this->scale() == other->scale() && this->operand().isDuplicateOf(other->operand());
         } else {
             return false;
         }
     }
 
-    Function TempScalingFunction::deduplicated(std::vector<Function>& others) const {
+    Function TempScalingFunction::deduplicated(Deduplicator& deduplicator) const {
         return new TempScalingFunction(scale(), operand().deduplicated(others));
     }
     
