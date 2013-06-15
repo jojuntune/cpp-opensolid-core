@@ -56,6 +56,15 @@ namespace opensolid
         NumberedError();
     };
 
+    class PlaceholderError : public NumberedError<0>
+    {
+    public:
+        const char*
+        what() const throw() override;
+    };
+
+    template <> struct UniqueErrorNumber<PlaceholderError::ErrorNumber> {};
+
     class FeatureNotImplemented : public NumberedError<1>
     {
     public:

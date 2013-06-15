@@ -32,6 +32,11 @@ namespace opensolid
     }
 
     const char*
+    PlaceholderError::what() const throw() {
+        return "Placeholder error";
+    }
+
+    const char*
     FeatureNotImplemented::what() const throw() {
         return "Feature not implemented";
     }
