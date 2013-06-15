@@ -30,231 +30,248 @@
 
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/Function/Deduplicator.declarations.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/JacobianReturnValue.declarations.hpp>
-#include <OpenSolid/Core/Function/MatrixReturnValue.declarations.hpp>
+#include <OpenSolid/Core/Function/FunctionReturnValue.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
- 
-#include <boost/intrusive_ptr.hpp>
 
 #include <typeinfo>
-#include <vector>
 
 namespace opensolid
 {
+    template <int iNumDimensions, int iNumParameters>
     class Function :
-        public FunctionConstructors,
-        public Convertible<Function>
+        public FunctionConstructors<iNumDimensions, iNumParameters>,
+        public Convertible<Function<iNumDimensions, iNumParameters>>
     {
     private:
-        boost::intrusive_ptr<const FunctionImplementation> _implementation;
+        FunctionImplementationPtr _implementation;
     public:
-        OPENSOLID_CORE_EXPORT
         Function();
         
-        OPENSOLID_CORE_EXPORT
         Function(const FunctionImplementation* function);
         
-        const FunctionImplementation*
+        const FunctionImplementationPtr&
         implementation() const;
-        
-        bool
-        isValid() const;
-        
-        OPENSOLID_CORE_EXPORT int
-        numDimensions() const;
-        
-        OPENSOLID_CORE_EXPORT int
-        numParameters() const;
 
-        OPENSOLID_CORE_EXPORT const ConstantFunction*
-        asConstant() const;
-        
-        OPENSOLID_CORE_EXPORT const IdentityFunction*
-        asIdentity() const;
-        
-        OPENSOLID_CORE_EXPORT const ParameterFunction*
-        asParameter() const;
-
-        OPENSOLID_CORE_EXPORT bool
-        isDuplicate(const Function& other) const;
-        
-        OPENSOLID_CORE_EXPORT Function
-        deduplicated() const;
-        
-        OPENSOLID_CORE_EXPORT Function
-        deduplicated(std::vector<Function>& others) const;
-
-        MatrixReturnValue<int>
+        FunctionReturnValue<iNumDimensions, 1, int>
         operator()(int value) const;
         
-        MatrixReturnValue<double>
+        FunctionReturnValue<iNumDimensions, 1, double>
         operator()(double value) const;
         
-        MatrixReturnValue<Interval>
+        FunctionReturnValue<iNumDimensions, 1, Interval>
         operator()(Interval interval) const;
         
         template <class TMatrix>
-        MatrixReturnValue<TMatrix>
+        FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>
         operator()(const EigenBase<TMatrix>& matrix) const;
 
-        JacobianReturnValue<int>
+        JacobianReturnValue<iNumDimensions, 1, int>
         jacobian(int value) const;
         
-        JacobianReturnValue<double>
+        JacobianReturnValue<iNumDimensions, 1, double>
         jacobian(double value) const;
         
-        JacobianReturnValue<Interval>
+        JacobianReturnValue<iNumDimensions, 1, Interval>
         jacobian(Interval interval) const;
         
         template <class TVector>
-        JacobianReturnValue<TVector>
+        JacobianReturnValue<iNumDimensions, iNumParameters, TVector>
         jacobian(const EigenBase<TVector>& vector) const;
         
-        OPENSOLID_CORE_EXPORT Function
-        compose(const Function& function) const;
+        template <int iInnerNumParameters>
+        Function<iNumDimensions, iInnerNumParameters>
+        compose(const Function<iNumParameters, iInnerNumParameters>& innerFunction) const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<int iNumDimensions, int iNumParameters>
         derivative(int parameterIndex = 0) const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, iNumParameters>
         norm() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<iNumDimensions, iNumParameters>
         normalized() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, iNumParameters>
         squaredNorm() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, iNumParameters>
         x() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, iNumParameters>
         y() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, iNumParameters>
         z() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, iNumParameters>
         component(int index) const;
         
-        OPENSOLID_CORE_EXPORT Function
-        components(int startIndex, int numComponents) const;
+        template <int iNumComponents>
+        Function<iNumComponents, iNumParameters>
+        components(int startIndex) const;
         
-        OPENSOLID_CORE_EXPORT Function
-        concatenate(const Function& other) const;
+        template <int iOtherNumDimensions>
+        Function<iNumDimensions + iOtherNumDimensions, iNumParameters>
+        concatenated(const Function<iOtherNumDimensions, iNumParameters>& other) const;
         
-        OPENSOLID_CORE_EXPORT Function
-        dot(const Function& other) const;
+        Function<1, iNumParameters>
+        dot(const Function<iNumDimensions, iNumParameters>& other) const;
         
-        OPENSOLID_CORE_EXPORT Function
-        cross(const Function& other) const;
+        Function<3, iNumParameters>
+        cross(const Function<3, iNumParameters>& other) const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<iNumDimensions, 1>
         tangentVector() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<1, 1>
         curvature() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<iNumDimensions, iNumParameters>
         normalVector() const;
         
-        OPENSOLID_CORE_EXPORT Function
+        Function<3, 1>
         binormalVector() const;
 
-        OPENSOLID_CORE_EXPORT Function
-        operator+(const Function& other) const;
-        
-        OPENSOLID_CORE_EXPORT Function
-        operator-(const Function& other) const;
-        
-        OPENSOLID_CORE_EXPORT Function
-        operator*(const Function& other) const;
-        
-        OPENSOLID_CORE_EXPORT Function
-        operator/(const Function& other) const;
+        Function<iNumDimensions, iNumParameters>
+        operator-() const;
 
-        OPENSOLID_CORE_EXPORT void
-        debug(std::ostream& stream, int indent = 0) const;
+        Function<iNumDimensions, iNumParameters>
+        operator+(const Function<iNumDimensions, iNumParameters>& other) const;
+        
+        Function<iNumDimensions, iNumParameters>
+        operator-(const Function<iNumDimensions, iNumParameters>& other) const;
+        
+        Function<iNumDimensions, iNumParameters>
+        operator*(const Function<1, iNumParameters>& other) const;
+        
+        Function<iNumDimensions, iNumParameters>
+        operator/(const Function<1, iNumParameters>& other) const;
     };
 
-    OPENSOLID_CORE_EXPORT Function
-    operator-(const Function& function);
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    operator+(const Function<1, iNumParameters>& function, double value);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    operator+(double value, const Function<1, iNumParameters>& function);
+    
+    template <int iNumDimensions, int iNumParameters, class TVector>
+    Function<iNumDimensions, iNumParameters>
+    operator+(
+        const Function<iNumDimensions, iNumParameters>& function,
+        const EigenBase<TVector>& vector
+    );
+    
+    template <int iNumDimensions, int iNumParameters, class TVector>
+    Function<iNumDimensions, iNumParameters>
+    operator+(
+        const EigenBase<TVector>& vector,
+        const Function<iNumDimensions, iNumParameters>& function
+    );
 
-    OPENSOLID_CORE_EXPORT Function
-    operator+(const Function& function, double value);
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    operator-(const Function<1, iNumParameters>& function, double value);
     
-    OPENSOLID_CORE_EXPORT Function
-    operator+(double value, const Function& function);
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    operator-(double value, const Function<1, iNumParameters>& function);
     
-    OPENSOLID_CORE_EXPORT Function
-    operator+(const Function& function, const VectorXd& vector);
+    template <int iNumDimensions, int iNumParameters, class TVector>
+    Function<iNumDimensions, iNumParameters>
+    operator-(
+        const Function<iNumDimensions, iNumParameters>& function,
+        const EigenBase<TVector>& vector
+    );
     
-    OPENSOLID_CORE_EXPORT Function
-    operator+(const VectorXd& vector, const Function& function);
+    template <int iNumDimensions, int iNumParameters, class TVector>
+    Function<iNumDimensions, iNumParameters>
+    operator-(
+        const EigenBase<TVector>& vector,
+        const Function<iNumDimensions, iNumParameters>& function
+    );
+    
+    template <int iNumDimensions, iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    operator*(double value, const Function<iNumDimensions, iNumParameters>& function);
 
-    OPENSOLID_CORE_EXPORT Function
-    operator-(const Function& function, double value);
+    template <int iNumDimensions, iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    operator*(const Function<iNumDimensions, iNumParameters>& function, double scale);
     
-    OPENSOLID_CORE_EXPORT Function
-    operator-(double value, const Function& function);
+    template <int iNumDimensions, int iNumParameters, class TMatrix>
+    Function<TMatrix::RowsAtCompileTime, iNumParameters>
+    operator*(
+        const EigenBase<TMatrix>& matrix,
+        const Function<iNumDimensions, iNumParameters>& function
+    );
     
-    OPENSOLID_CORE_EXPORT Function
-    operator-(const Function& function, const VectorXd& vector);
-    
-    OPENSOLID_CORE_EXPORT Function
-    operator-(const VectorXd& vector, const Function& function);
-    
-    OPENSOLID_CORE_EXPORT Function
-    operator*(double value, const Function& function);
+    template <int iNumParameters>
+    Function<TVector::RowsAtCompileTime, iNumParameters>
+    operator*(const Function<1, iNumParameters>& function, const EigenBase<TVector>& vector);
 
-    OPENSOLID_CORE_EXPORT Function
-    operator*(const Function& function, double scale);
+    template <int iNumDimensions, int iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    operator/(const Function<iNumDimensions, iNumParameters>& function, double value);
     
-    OPENSOLID_CORE_EXPORT Function
-    operator*(const MatrixXd& matrix, const Function& function);
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    operator/(double value, const Function<1, iNumParameters>& function);
     
-    OPENSOLID_CORE_EXPORT Function
-    operator*(const Function& function, const VectorXd& vector);
+    Function<TVector::RowsAtCompileTime, iNumParameters>
+    operator/(const EigenBase<TVector>& vector, const Function<1, iNumParameters>& function);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    sin(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    cos(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    tan(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    sqrt(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    acos(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    asin(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    exp(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    log(const Function<1, iNumParameters>& argument);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    pow(const Function<1, iNumParameters>& base, double exponent);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    pow(double base, const Function<1, iNumParameters>& exponent);
+    
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    pow(const Function<1, iNumParameters>& base, const Function<1, iNumParameters>& exponent);
 
-    OPENSOLID_CORE_EXPORT Function
-    operator/(const Function& function, double value);
-    
-    OPENSOLID_CORE_EXPORT Function
-    operator/(double value, const Function& function);
-    
-    OPENSOLID_CORE_EXPORT Function
-    operator/(const VectorXd& vector, const Function& function);
-    
-    OPENSOLID_CORE_EXPORT Function
-    sin(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    cos(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    tan(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    sqrt(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    acos(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    asin(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    exp(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    log(const Function& argument);
-    
-    OPENSOLID_CORE_EXPORT Function
-    pow(const Function& base, const Function& exponent);
-
-    OPENSOLID_CORE_EXPORT std::ostream&
-    operator<<(std::ostream& stream, const Function& function);
+    template <int iNumDimensions, int iNumParameters>
+    std::ostream&
+    operator<<(std::ostream& stream, const Function<iNumDimensions, iNumParameters>& function);
 }

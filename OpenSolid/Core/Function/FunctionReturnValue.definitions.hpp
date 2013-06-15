@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/MatrixReturnValue.declarations.hpp>
+#include <OpenSolid/Core/Function/FunctionReturnValue.declarations.hpp>
 
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
@@ -36,38 +36,38 @@ namespace Eigen
 {
     namespace internal
     {
-        template <class TArgument>
-        struct traits<opensolid::MatrixReturnValue<TArgument>>
+        template <int iNumDimensions, int iNumParameters, class TArgument>
+        struct traits<opensolid::FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>>
         {
-            typedef Matrix<typename TArgument::Scalar, Dynamic, TArgument::ColsAtCompileTime>
+            typedef Matrix<typename TArgument::Scalar, iNumDimensions, TArgument::ColsAtCompileTime>
                 ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template <>
-        struct traits<opensolid::MatrixReturnValue<int>>
+        template <int iNumDimensions>
+        struct traits<opensolid::FunctionReturnValue<iNumDimensions, 1, int>>
         {
-            typedef VectorXd ReturnType;
+            typedef Matrix<double, iNumDimensions, 1> ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<>
-        struct traits<opensolid::MatrixReturnValue<double>>
+        template<int iNumDimensions>
+        struct traits<opensolid::FunctionReturnValue<iNumDimensions, 1, double>>
         {
-            typedef VectorXd ReturnType;
+            typedef Matrix<double, iNumDimensions, 1> ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<>
-        struct traits<opensolid::MatrixReturnValue<opensolid::Interval>>
+        template<int iNumDimensions>
+        struct traits<opensolid::FunctionReturnValue<iNumDimensions, 1, opensolid::Interval>>
         {
-            typedef VectorXI ReturnType;
+            typedef Matrix<opensolid::Interval, iNumDimensions, 1> ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
@@ -77,22 +77,22 @@ namespace Eigen
 
 namespace opensolid
 {
-    template <class TArgument>
-    class MatrixReturnValue :
-        public ReturnByValue<MatrixReturnValue<TArgument>>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
+    class FunctionReturnValue :
+        public ReturnByValue<FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
         const TArgument& _argument;
     public:
-        MatrixReturnValue(
+        FunctionReturnValue(
             const FunctionImplementation* functionImplementation,
             const TArgument& argument
         );
-        
+
         int
         rows() const;
-        
+
         int
         cols() const;
         
@@ -100,24 +100,26 @@ namespace opensolid
         void
         evalTo(TResult& result) const;
         
-        typename TArgument::Scalar value() const;
+        typename TArgument::Scalar
+        value() const;
+
         bool
         isZero(double tolerance = 1e-12) const;
     };
     
-    template<>
-    class MatrixReturnValue<int> :
-        public ReturnByValue<MatrixReturnValue<int>>
+    template <int iNumDimensions>
+    class FunctionReturnValue<iNumDimensions, 1, int> :
+        public ReturnByValue<FunctionReturnValue<iNumDimensions, 1, int>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
         double _argument;
     public:
-        MatrixReturnValue(const FunctionImplementation* functionImplementation, int argument);
-        
+        FunctionReturnValue(const FunctionImplementation* functionImplementation, int argument);
+
         int
         rows() const;
-        
+
         int
         cols() const;
         
@@ -132,19 +134,19 @@ namespace opensolid
         isZero(double precision = 1e-12) const;
     };
     
-    template<>
-    class MatrixReturnValue<double> :
-        public ReturnByValue<MatrixReturnValue<double>>
+    template <int iNumDimensions>
+    class FunctionReturnValue<iNumDimensions, 1, double> :
+        public ReturnByValue<FunctionReturnValue<iNumDimensions, 1, double>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
         double _argument;
     public:
-        MatrixReturnValue(const FunctionImplementation* functionImplementation, double argument);
-        
+        FunctionReturnValue(const FunctionImplementation* functionImplementation, double argument);
+
         int
         rows() const;
-        
+
         int
         cols() const;
         
@@ -159,19 +161,22 @@ namespace opensolid
         isZero(double precision = 1e-12) const;
     };
     
-    template<>
-    class MatrixReturnValue<Interval> :
-        public ReturnByValue<MatrixReturnValue<Interval>>
+    template <int iNumDimensions>
+    class FunctionReturnValue<iNumDimensions, 1, Interval> :
+        public ReturnByValue<FunctionReturnValue<iNumDimensions, 1, Interval>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
         Interval _argument;
     public:
-        MatrixReturnValue(const FunctionImplementation* functionImplementation, Interval argument);
-        
+        FunctionReturnValue(
+            const FunctionImplementation* functionImplementation,
+            Interval argument
+        );
+
         int
         rows() const;
-        
+
         int
         cols() const;
         
@@ -179,7 +184,9 @@ namespace opensolid
         void
         evalTo(TResult& result) const;
         
-        Interval value() const;
+        Interval
+        value() const;
+        
         bool
         isZero(double precision = 1e-12) const;
     };

@@ -27,10 +27,8 @@
 
 namespace opensolid
 {
-    boost::intrusive_ptr<FunctionImplementation>
-    Deduplicator::operator()(
-        const boost::intrusive_ptr<FunctionImplementation>& functionImplementation
-    ) {
+    FunctionImplementationPtr
+    Deduplicator::deduplicate()(const FunctionImplementationPtr& functionImplementation) {
         // If a null pointer is passed, simply return it
         if (!functionImplementation) {
             return functionImplementation;
@@ -42,7 +40,7 @@ namespace opensolid
             _cache.begin(),
             _cache.end(),
             [&functionImplementation] (
-                const boost::intrusive_ptr<FunctionImplementation>& cachedFunctionImplementation
+                const FunctionImplementationPtr& cachedFunctionImplementation
             ) -> bool {
                 return functionImplementation->isDuplicateOf(cachedFunctionImplementation);
             }
@@ -55,8 +53,7 @@ namespace opensolid
 
         // No matching function implementation was found: add a deduplicated copy of this
         // function implementation to the list, then return it
-        boost::intrusive_ptr<FunctionImplementation> result =
-            functionImplementation->deduplicated(*this);
+        FunctionImplementationPtr result = functionImplementation->deduplicated(*this);
         _cache.push_back(result);
         return result;
     }

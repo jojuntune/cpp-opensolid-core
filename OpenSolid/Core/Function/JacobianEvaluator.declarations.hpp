@@ -28,6 +28,5 @@
 
 namespace opensolid
 {
-    template <class TScalar>
-    class JacobianCache;
+    class JacobianEvaluator;
 }

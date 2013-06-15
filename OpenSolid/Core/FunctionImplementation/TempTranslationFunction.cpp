@@ -57,7 +57,7 @@ namespace opensolid
     void TempTranslationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         MapXcd operandValues = cache.results(operand(), parameterValues);
         results = operandValues.colwise() + vector();
@@ -66,7 +66,7 @@ namespace opensolid
     void TempTranslationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         MapXcI operandBounds = cache.results(operand(), parameterBounds);
         results = operandBounds.colwise() + vector().cast<Interval>();

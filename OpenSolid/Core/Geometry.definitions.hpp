@@ -32,7 +32,7 @@
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Domain.definitions.hpp>
 #include <OpenSolid/Core/Function.definitions.hpp>
-#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
+#include <OpenSolid/Core/Function/FunctionReturnValue.hpp>
 #include <OpenSolid/Core/Geometry/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>

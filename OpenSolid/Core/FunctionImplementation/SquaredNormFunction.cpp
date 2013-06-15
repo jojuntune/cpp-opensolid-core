@@ -46,7 +46,7 @@ namespace opensolid
     void SquaredNormFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterValues).colwise().squaredNorm();
     }
@@ -54,7 +54,7 @@ namespace opensolid
     void SquaredNormFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterBounds).colwise().squaredNorm();
     }

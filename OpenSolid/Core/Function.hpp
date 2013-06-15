@@ -30,8 +30,9 @@
 
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Function/Deduplicator.hpp>
 #include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
-#include <OpenSolid/Core/Function/MatrixReturnValue.hpp>
+#include <OpenSolid/Core/Function/FunctionReturnValue.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -48,25 +49,25 @@ namespace opensolid
         return implementation() != 0;
     }
 
-    inline MatrixReturnValue<int>
+    inline FunctionReturnValue<int>
     Function::operator()(int value) const {
-        return MatrixReturnValue<int>(implementation(), value);
+        return FunctionReturnValue<int>(implementation(), value);
     }
 
-    inline MatrixReturnValue<double>
+    inline FunctionReturnValue<double>
     Function::operator()(double value) const {
-        return MatrixReturnValue<double>(implementation(), value);
+        return FunctionReturnValue<double>(implementation(), value);
     }
 
-    inline MatrixReturnValue<Interval>
+    inline FunctionReturnValue<Interval>
     Function::operator()(Interval interval) const {
-        return MatrixReturnValue<Interval>(implementation(), interval);
+        return FunctionReturnValue<Interval>(implementation(), interval);
     }
     
     template <class TMatrix>
-    inline MatrixReturnValue<TMatrix>
+    inline FunctionReturnValue<TMatrix>
     Function::operator()(const EigenBase<TMatrix>& matrix) const {
-        return MatrixReturnValue<TMatrix>(implementation(), matrix.derived());
+        return FunctionReturnValue<TMatrix>(implementation(), matrix.derived());
     }
 
     inline JacobianReturnValue<int>

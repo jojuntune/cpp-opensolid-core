@@ -29,7 +29,70 @@
 #include <OpenSolid/Core/FunctionImplementation.definitions.hpp>
 
 #include <OpenSolid/Core/Function.hpp>
-#include <OpenSolid/Core/Function/EvaluateCache.hpp>
-#include <OpenSolid/Core/Function/JacobianCache.hpp>
+#include <OpenSolid/Core/Function/Evaluator.hpp>
+#include <OpenSolid/Core/Function/JacobianEvaluator.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/ReferenceCounted.hpp>
+
+namespace opensolid
+{
+    inline const ConstantFunction*
+    FunctionImplementation::asConstant() const {
+        return asConstantImpl();
+    }
+    
+    inline const IdentityFunction*
+    FunctionImplementation::asIdentity() const {
+        return asIdentityImpl();
+    }
+    
+    inline const ParameterFunction*
+    FunctionImplementation::asParameter() const {
+        return asParameterImpl();
+    }
+    
+    inline int
+    FunctionImplementation::numDimensions() const {
+        return numDimensionsImpl();
+    }
+    
+    inline int
+    FunctionImplementation::numParameters() const {
+        return numParametersImpl();
+    }
+    
+    inline void
+    FunctionImplementation::evaluate(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        evaluateImpl(parameterValues, results, evaluator);
+    }
+    
+    inline void
+    FunctionImplementation::evaluate(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        evaluateImpl(parameterBounds, results, evaluator);
+    }
+    
+    inline void
+    FunctionImplementation::evaluateJacobian(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        JacobianEvaluator& jacobianEvaluator
+    ) const {
+        evaluateJacobianImpl(parameterValues, results, jacobianEvaluator);
+    }
+
+    inline void
+    FunctionImplementation::evaluateJacobian(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        JacobianEvaluator& jacobianEvaluator
+    ) const {
+        evaluateJacobianImpl(parameterBounds, results, jacobianEvaluator);
+    }
+}

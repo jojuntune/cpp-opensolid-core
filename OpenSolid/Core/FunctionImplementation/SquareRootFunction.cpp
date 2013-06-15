@@ -60,7 +60,7 @@ namespace opensolid
     void SquareRootFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterValues).unaryExpr(SquareRoot());
     }
@@ -68,7 +68,7 @@ namespace opensolid
     void SquareRootFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterBounds).unaryExpr(SquareRoot());
     }

@@ -47,7 +47,7 @@ namespace opensolid
     void SineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterValues).array().sin();
     }
@@ -55,7 +55,7 @@ namespace opensolid
     void SineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterBounds).array().sin();
     }

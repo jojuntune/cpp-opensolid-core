@@ -28,5 +28,6 @@
 
 namespace opensolid
 {
+    template <int iNumDimensions, int iNumParameters>
     class Function;
 }

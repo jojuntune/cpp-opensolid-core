@@ -33,10 +33,10 @@ namespace opensolid
     class ParameterFunction : public FunctionImplementation
     {
     private:
-        int _numParameters;
         int _parameterIndex;
+        int _numParameters;
     public:
-        OPENSOLID_CORE_EXPORT ParameterFunction(int numParameters, int parameterIndex);
+        OPENSOLID_CORE_EXPORT ParameterFunction(int parameterIndex, int numParameters);
         
         int parameterIndex() const;
 
@@ -51,13 +51,13 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            EvaluateCache<double>& cache
+            Evaluator& evaluator
         ) const;
         
         OPENSOLID_CORE_EXPORT void evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
-            EvaluateCache<Interval>& cache
+            Evaluator& evaluator
         ) const;
 
         OPENSOLID_CORE_EXPORT Function derivative(int index) const;

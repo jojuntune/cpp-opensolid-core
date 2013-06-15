@@ -36,9 +36,9 @@ namespace opensolid
     class Deduplicator
     {
     private:
-        std::vector<boost::intrusive_ptr<FunctionImplementation>> _cache;
+        std::vector<FunctionImplementationPtr> _cache;
     public:
-        boost::intrusive_ptr<FunctionImplementation>
-        operator()(const boost::intrusive_ptr<FunctionImplementation>& functionImplementation);
+        FunctionImplementationPtr
+        deduplicate(const FunctionImplementationPtr& functionImplementation);
     };
 }

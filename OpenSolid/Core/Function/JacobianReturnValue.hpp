@@ -29,37 +29,37 @@
 #include <OpenSolid/Core/Function/JacobianReturnValue.definitions.hpp>
 
 #include <OpenSolid/Core/Function/MatrixArgument.hpp>
-#include <OpenSolid/Core/Function/JacobianCache.hpp>
+#include <OpenSolid/Core/Function/JacobianEvaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline
-    JacobianReturnValue<TArgument>::JacobianReturnValue(
+    JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>::JacobianReturnValue(
         const FunctionImplementation* functionImplementation,
         const TArgument& argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline int
-    JacobianReturnValue<TArgument>::rows() const {
-        return _functionImplementation->numDimensions();
+    JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>::rows() const {
+        return iNumDimensions;
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline int
-    JacobianReturnValue<TArgument>::cols() const {
-        return _functionImplementation->numParameters();
+    JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>::cols() const {
+        return iNumParameters;
     }
     
-    template <class TArgument> template <class TResult>
+    template <int iNumDimensions, int iNumParameters, class TArgument> template <class TResult>
     inline void
-    JacobianReturnValue<TArgument>::evalTo(TResult& result) const {
+    JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>::evalTo(TResult& result) const {
         MatrixArgument<TArgument> argument(_argument);
         
         // Common typedefs
@@ -86,48 +86,49 @@ namespace opensolid
             ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        JacobianCache<Scalar> cache;
-
         // Evaluate
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
+        JacobianEvaluator jacobianEvaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline typename TArgument::Scalar
-    JacobianReturnValue<TArgument>::value() const {
+    JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>::value() const {
         Matrix<typename TArgument::Scalar, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline bool
-    JacobianReturnValue<TArgument>::isZero(double precision) const {
+    JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
+    template <int iNumDimensions>
     inline
-    JacobianReturnValue<int>::JacobianReturnValue(
+    JacobianReturnValue<iNumDimensions, 1, int>::JacobianReturnValue(
         const FunctionImplementation* functionImplementation,
         int argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
+    template <int iNumDimensions>
     inline int
-    JacobianReturnValue<int>::rows() const {
-        return _functionImplementation->numDimensions();
+    JacobianReturnValue<iNumDimensions, 1, int>::rows() const {
+        return iNumDimensions;
     }
     
+    template <int iNumDimensions>
     inline int
-    JacobianReturnValue<int>::cols() const {
+    JacobianReturnValue<iNumDimensions, 1, int>::cols() const {
         return 1;
     }
     
-    template <class TResult>
+    template <int iNumDimensions> template <class TResult>
     inline void
-    JacobianReturnValue<int>::evalTo(TResult& result) const {
+    JacobianReturnValue<iNumDimensions, 1, int>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -141,46 +142,49 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        JacobianCache<double> cache;
-
         // Evaluate
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
+        JacobianEvaluator jacobianEvaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
     }
     
+    template <int iNumDimensions>
     inline double
-    JacobianReturnValue<int>::value() const {
+    JacobianReturnValue<iNumDimensions, 1, int>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
+    template <int iNumDimensions>
     inline bool
-    JacobianReturnValue<int>::isZero(double precision) const {
+    JacobianReturnValue<iNumDimensions, 1, int>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
+    template <int iNumDimensions>
     inline
-    JacobianReturnValue<double>::JacobianReturnValue(
+    JacobianReturnValue<iNumDimensions, 1, double>::JacobianReturnValue(
         const FunctionImplementation* functionImplementation,
         double argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
+    template <int iNumDimensions>
     inline int
-    JacobianReturnValue<double>::rows() const {
-        return _functionImplementation->numDimensions();
+    JacobianReturnValue<iNumDimensions, 1, double>::rows() const {
+        return iNumDimensions;
     }
     
+    template <int iNumDimensions>
     inline int
-    JacobianReturnValue<double>::cols() const {
+    JacobianReturnValue<iNumDimensions, 1, double>::cols() const {
         return 1;
     }
     
-    template <class TResult>
+    template <int iNumDimensions> template <class TResult>
     inline void
-    JacobianReturnValue<double>::evalTo(TResult& result) const {
+    JacobianReturnValue<iNumDimensions, 1, double>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -193,47 +197,50 @@ namespace opensolid
         Stride<Dynamic, Dynamic> resultStride(resultOuterStride, resultInnerStride);
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
-        
-        // Allocate empty result cache
-        JacobianCache<double> cache;
 
         // Evaluate
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
+        JacobianEvaluator jacobianEvaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
     }
     
+    template <int iNumDimensions>
     inline double
-    JacobianReturnValue<double>::value() const {
+    JacobianReturnValue<iNumDimensions, 1, double>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
+    template <int iNumDimensions>
     inline bool
-    JacobianReturnValue<double>::isZero(double precision) const {
+    JacobianReturnValue<iNumDimensions, 1, double>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
+    template <int iNumDimensions>
     inline
-    JacobianReturnValue<Interval>::JacobianReturnValue(
+    JacobianReturnValue<iNumDimensions, 1, Interval>::JacobianReturnValue(
         const FunctionImplementation* functionImplementation,
         Interval argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
 
+    template <int iNumDimensions>
     inline int
-    JacobianReturnValue<Interval>::rows() const {
-        return _functionImplementation->numDimensions();
+    JacobianReturnValue<iNumDimensions, 1, Interval>::rows() const {
+        return iNumDimensions;
     }
     
+    template <int iNumDimensions>
     inline int
-    JacobianReturnValue<Interval>::cols() const {
+    JacobianReturnValue<iNumDimensions, 1, Interval>::cols() const {
         return 1;
     }
     
-    template <class TResult>
+    template <int iNumDimensions> template <class TResult>
     inline void
-    JacobianReturnValue<Interval>::evalTo(TResult& result) const {
+    JacobianReturnValue<iNumDimensions, 1, Interval>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -247,22 +254,22 @@ namespace opensolid
         typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        JacobianCache<Interval> cache;
-        
         // Evaluate
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, cache);
+        JacobianEvaluator jacobianEvaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
     }
     
+    template <int iNumDimensions>
     inline Interval
-    JacobianReturnValue<Interval>::value() const {
+    JacobianReturnValue<iNumDimensions, 1, Interval>::value() const {
         Matrix<Interval, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
+    template <int iNumDimensions>
     inline bool
-    JacobianReturnValue<Interval>::isZero(double precision) const {
+    JacobianReturnValue<iNumDimensions, 1, Interval>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
 }

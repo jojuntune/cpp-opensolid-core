@@ -54,7 +54,7 @@ namespace opensolid
     void TempScalingFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         results = scale() * cache.results(operand(), parameterValues);
     }
@@ -62,7 +62,7 @@ namespace opensolid
     void TempScalingFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         results = Interval(scale()) * cache.results(operand(), parameterBounds);
     }

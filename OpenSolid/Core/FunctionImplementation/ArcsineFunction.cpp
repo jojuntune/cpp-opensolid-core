@@ -62,7 +62,7 @@ namespace opensolid
     void ArcsineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterValues).unaryExpr(Arcsine());
     }
@@ -70,7 +70,7 @@ namespace opensolid
     void ArcsineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterBounds).unaryExpr(Arcsine());
     }

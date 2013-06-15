@@ -102,7 +102,7 @@ namespace opensolid
     void PowerFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         MapXcd baseValues = cache.results(firstOperand(), parameterValues);
         if (_exponentIsInteger) {
@@ -118,7 +118,7 @@ namespace opensolid
     void PowerFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         MapXcI baseBounds = cache.results(firstOperand(), parameterBounds);
         if (_exponentIsInteger) {

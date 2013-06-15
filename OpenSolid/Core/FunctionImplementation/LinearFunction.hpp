@@ -51,13 +51,13 @@ namespace opensolid
         void evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
-            EvaluateCache<double>& cache
+            Evaluator& evaluator
         ) const;
         
         void evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
-            EvaluateCache<Interval>& cache
+            Evaluator& evaluator
         ) const;
 
         Function derivative(int index) const;
@@ -119,7 +119,7 @@ namespace opensolid
     void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>&
+        Evaluator&
     ) const {
         results = (datum().basisMatrix() * parameterValues).colwise() +
             datum().originPoint().vector();
@@ -129,7 +129,7 @@ namespace opensolid
     void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>&
+        Evaluator&
     ) const {
         results = (datum().basisMatrix().template cast<Interval>() * parameterBounds).colwise() +
             datum().originPoint().vector().template cast<Interval>();

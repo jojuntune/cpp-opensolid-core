@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     class JacobianReturnValue;
 }

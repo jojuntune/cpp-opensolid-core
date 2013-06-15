@@ -36,38 +36,38 @@ namespace Eigen
 {
     namespace internal
     {
-        template <class TArgument>
-        struct traits<opensolid::JacobianReturnValue<TArgument>>
+        template <int iNumDimensions, int iNumParameters, class TArgument>
+        struct traits<opensolid::JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>>
         {
-            typedef Matrix<typename TArgument::Scalar, Dynamic, TArgument::RowsAtCompileTime>
+            typedef Matrix<typename TArgument::Scalar, iNumDimensions, iNumParameters>
                 ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template <>
-        struct traits<opensolid::JacobianReturnValue<int>>
+        template <int iNumDimensions>
+        struct traits<opensolid::JacobianReturnValue<iNumDimensions, 1, int>>
         {
-            typedef VectorXd ReturnType;
+            typedef Matrix<double, iNumDimensions, 1> ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<>
-        struct traits<opensolid::JacobianReturnValue<double>>
+        template <int iNumDimensions>
+        struct traits<opensolid::JacobianReturnValue<iNumDimensions, 1, double>>
         {
-            typedef VectorXd ReturnType;
+            typedef Matrix<double, iNumDimensions, 1> ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
         };
         
-        template<>
-        struct traits<opensolid::JacobianReturnValue<opensolid::Interval>>
+        template <int iNumDimensions>
+        struct traits<opensolid::JacobianReturnValue<iNumDimensions, 1, opensolid::Interval>>
         {
-            typedef VectorXI ReturnType;
+            typedef Matrix<opensolid::Interval, iNumDimensions, 1> ReturnType;
 
             static const int Flags =
                 (traits<ReturnType>::Flags | EvalBeforeNestingBit) & ~DirectAccessBit;
@@ -77,9 +77,9 @@ namespace Eigen
 
 namespace opensolid
 {
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     class JacobianReturnValue :
-        public ReturnByValue<JacobianReturnValue<TArgument>>
+        public ReturnByValue<JacobianReturnValue<iNumDimensions, iNumParameters, TArgument>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
@@ -100,14 +100,16 @@ namespace opensolid
         void
         evalTo(TResult& result) const;
         
-        typename TArgument::Scalar value() const;
+        typename TArgument::Scalar
+        value() const;
+        
         bool
         isZero(double tolerance = 1e-12) const;
     };
     
-    template<>
-    class JacobianReturnValue<int> :
-        public ReturnByValue<JacobianReturnValue<int>>
+    template <int iNumDimensions>
+    class JacobianReturnValue<iNumDimensions, 1, int> :
+        public ReturnByValue<JacobianReturnValue<iNumDimensions, 1, int>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
@@ -135,9 +137,9 @@ namespace opensolid
         isZero(double precision = 1e-12) const;
     };
     
-    template<>
-    class JacobianReturnValue<double> :
-        public ReturnByValue<JacobianReturnValue<double>>
+    template <int iNumDimensions>
+    class JacobianReturnValue<iNumDimensions, 1, double> :
+        public ReturnByValue<JacobianReturnValue<iNumDimensions, 1, double>>
     {
     private:
         const FunctionImplementation* _functionImplementation;
@@ -165,9 +167,9 @@ namespace opensolid
         isZero(double precision = 1e-12) const;
     };
     
-    template<>
-    class JacobianReturnValue<Interval> :
-        public ReturnByValue<JacobianReturnValue<Interval>>
+    template <int iNumDimensions>
+    class JacobianReturnValue<iNumDimensions, 1, Interval> :
+        public ReturnByValue<JacobianReturnValue<iNumDimensions, 1, Interval>>
     {
     private:
         const FunctionImplementation* _functionImplementation;

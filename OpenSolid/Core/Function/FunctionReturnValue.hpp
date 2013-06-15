@@ -26,40 +26,40 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/MatrixReturnValue.definitions.hpp>
+#include <OpenSolid/Core/Function/FunctionReturnValue.definitions.hpp>
 
 #include <OpenSolid/Core/Function/MatrixArgument.hpp>
-#include <OpenSolid/Core/Function/EvaluateCache.hpp>
+#include <OpenSolid/Core/Function/Evaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline
-    MatrixReturnValue<TArgument>::MatrixReturnValue(
+    FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::FunctionReturnValue(
         const FunctionImplementation* functionImplementation,
         const TArgument& argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline int
-    MatrixReturnValue<TArgument>::rows() const {
-        return _functionImplementation->numDimensions();
+    FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::rows() const {
+        return iNumDimensions;
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline int
-    MatrixReturnValue<TArgument>::cols() const {
+    FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::cols() const {
         return _argument.cols();
     }
     
-    template <class TArgument> template <class TResult>
+    template <int iNumDimensions, int iNumParameters, class TArgument> template <class TResult>
     inline void
-    MatrixReturnValue<TArgument>::evalTo(TResult& result) const {
+    FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::evalTo(TResult& result) const {
         MatrixArgument<TArgument> argument(_argument);
         
         // Common typedefs
@@ -86,48 +86,49 @@ namespace opensolid
             ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        EvaluateCache<Scalar> cache;
-
         // Evaluate
-        _functionImplementation->evaluate(argumentMap, resultMap, cache);
+        Evaluator evaluator;
+        _functionImplementation->evaluate(argumentMap, resultMap, evaluator);
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline typename TArgument::Scalar
-    MatrixReturnValue<TArgument>::value() const {
+    FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::value() const {
         Matrix<typename TArgument::Scalar, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
-    template <class TArgument>
+    template <int iNumDimensions, int iNumParameters, class TArgument>
     inline bool
-    MatrixReturnValue<TArgument>::isZero(double precision) const {
+    FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
+    template <int iNumDimensions>
     inline
-    MatrixReturnValue<int>::MatrixReturnValue(
+    FunctionReturnValue<iNumDimensions, 1, int>::FunctionReturnValue(
         const FunctionImplementation* functionImplementation,
         int argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
+    template <int iNumDimensions>
     inline int
-    MatrixReturnValue<int>::rows() const {
-        return _functionImplementation->numDimensions();
+    FunctionReturnValue<iNumDimensions, 1, int>::rows() const {
+        return iNumDimensions;
     }
     
+    template <int iNumDimensions>
     inline int
-    MatrixReturnValue<int>::cols() const {
+    FunctionReturnValue<iNumDimensions, 1, int>::cols() const {
         return 1;
     }
     
-    template <class TResult>
+    template <int iNumDimensions> template <class TResult>
     inline void
-    MatrixReturnValue<int>::evalTo(TResult& result) const {
+    FunctionReturnValue<iNumDimensions, 1, int>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -141,46 +142,49 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        EvaluateCache<double> cache;
-
         // Evaluate
-        _functionImplementation->evaluate(argumentMap, resultMap, cache);
+        Evaluator evaluator;
+        _functionImplementation->evaluate(argumentMap, resultMap, evaluator);
     }
     
+    template <int iNumDimensions>
     inline double
-    MatrixReturnValue<int>::value() const {
+    FunctionReturnValue<iNumDimensions, 1, int>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
+    template <int iNumDimensions>
     inline bool
-    MatrixReturnValue<int>::isZero(double precision) const {
+    FunctionReturnValue<iNumDimensions, 1, int>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
+    template <int iNumDimensions>
     inline
-    MatrixReturnValue<double>::MatrixReturnValue(
+    FunctionReturnValue<iNumDimensions, 1, double>::FunctionReturnValue(
         const FunctionImplementation* functionImplementation,
         double argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
     
+    template <int iNumDimensions>
     inline int
-    MatrixReturnValue<double>::rows() const {
-        return _functionImplementation->numDimensions();
+    FunctionReturnValue<iNumDimensions, 1, double>::rows() const {
+        return iNumDimensions;
     }
     
+    template <int iNumDimensions>
     inline int
-    MatrixReturnValue<double>::cols() const {
+    FunctionReturnValue<iNumDimensions, 1, double>::cols() const {
         return 1;
     }
     
-    template <class TResult>
+    template <int iNumDimensions> template <class TResult>
     inline void
-    MatrixReturnValue<double>::evalTo(TResult& result) const {
+    FunctionReturnValue<iNumDimensions, 1, double>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -194,46 +198,49 @@ namespace opensolid
         typedef Map<MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        EvaluateCache<double> cache;
-
         // Evaluate
-        _functionImplementation->evaluate(argumentMap, resultMap, cache);
+        Evaluator evaluator;
+        _functionImplementation->evaluate(argumentMap, resultMap, evaluator);
     }
     
+    template <int iNumDimensions>
     inline double
-    MatrixReturnValue<double>::value() const {
+    FunctionReturnValue<iNumDimensions, 1, double>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
+    template <int iNumDimensions>
     inline bool
-    MatrixReturnValue<double>::isZero(double precision) const {
+    FunctionReturnValue<iNumDimensions, 1, double>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
     
+    template <int iNumDimensions>
     inline
-    MatrixReturnValue<Interval>::MatrixReturnValue(
+    FunctionReturnValue<iNumDimensions, 1, Interval>::FunctionReturnValue(
         const FunctionImplementation* functionImplementation,
         Interval argument
     ) : _functionImplementation(functionImplementation),
         _argument(argument) {
     }
 
+    template <int iNumDimensions>
     inline int
-    MatrixReturnValue<Interval>::rows() const {
-        return _functionImplementation->numDimensions();
+    FunctionReturnValue<iNumDimensions, 1, Interval>::rows() const {
+        return iNumDimensions;
     }
     
+    template <int iNumDimensions>
     inline int
-    MatrixReturnValue<Interval>::cols() const {
+    FunctionReturnValue<iNumDimensions, 1, Interval>::cols() const {
         return 1;
     }
     
-    template <class TResult>
+    template <int iNumDimensions> template <class TResult>
     inline void
-    MatrixReturnValue<Interval>::evalTo(TResult& result) const {
+    FunctionReturnValue<iNumDimensions, 1, Interval>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
         ArgumentMapType argumentMap(&_argument, 1, 1, Stride<Dynamic, Dynamic>(0, 0));
@@ -247,22 +254,22 @@ namespace opensolid
         typedef Map<MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ResultMapType;
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
-        // Allocate empty result cache
-        EvaluateCache<Interval> cache;
-        
         // Evaluate
-        _functionImplementation->evaluate(argumentMap, resultMap, cache);
+        Evaluator evaluator;
+        _functionImplementation->evaluate(argumentMap, resultMap, evaluator);
     }
     
+    template <int iNumDimensions>
     inline Interval
-    MatrixReturnValue<Interval>::value() const {
+    FunctionReturnValue<iNumDimensions, 1, Interval>::value() const {
         Matrix<Interval, 1, 1> result;
         this->evalTo(result);
         return result.value();
     }
     
+    template <int iNumDimensions>
     inline bool
-    MatrixReturnValue<Interval>::isZero(double precision) const {
+    FunctionReturnValue<iNumDimensions, 1, Interval>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
 }

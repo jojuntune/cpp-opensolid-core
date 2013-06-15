@@ -30,64 +30,153 @@
 
 namespace opensolid
 {
-    class ConstantFunction : public FunctionImplementation
+    class ConstantFunction :
+        public FunctionImplementation
     {
     private:
         VectorXd _vector;
         VectorXI _bounds;
         int _numParameters;
-    public:
-        OPENSOLID_CORE_EXPORT ConstantFunction(double value, int numParameters);
-        OPENSOLID_CORE_EXPORT ConstantFunction(const VectorXd& vector, int numParameters);
+        
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensionsImpl() const override;
 
-        const VectorXd& vector() const;
-        const VectorXI& bounds() const;
-
-        OPENSOLID_CORE_EXPORT const ConstantFunction* asConstant() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numParametersImpl() const override;
         
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
-        
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(Deduplicator& deduplicator) const;
-        
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
-            EvaluateCache<double>& cache
-        ) const;
+            Evaluator& evaluator
+        ) const override;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
-            EvaluateCache<Interval>& cache
-        ) const;
+            Evaluator& evaluator
+        ) const override;
         
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        derivativeImpl(int index) const override;
         
-        OPENSOLID_CORE_EXPORT Function components(int startIndex, int numComponents) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override;
+        
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        deduplicatedImpl(Deduplicator& deduplicator) const override;
 
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        const ConstantFunction*
+        asConstantImpl() const override;
 
-        OPENSOLID_CORE_EXPORT Function scaled(double scale) const;
-        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& transformationMatrix) const;
-        OPENSOLID_CORE_EXPORT Function translated(const VectorXd& vector) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        composeImpl(const FunctionImplementationPtr& innerFunction) const override;
         
-        OPENSOLID_CORE_EXPORT Function norm() const;
-        OPENSOLID_CORE_EXPORT Function normalized() const;
-        OPENSOLID_CORE_EXPORT Function squaredNorm() const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        componentsImpl(int startIndex, int numComponents) const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        scaledImpl(double scale) const override;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        translatedImpl(const VectorXd& vector) const override;
+        
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        transformedImpl(const MatrixXd& transformationMatrix) const override;
+        
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        normImpl() const override;
+        
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        normalizedImpl() const override;
+        
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        squaredNormImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        sqrtImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        sinImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        cosImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        tanImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        acosImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        asinImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        expImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        logImpl() const override;
+        
+        OPENSOLID_CORE_EXPORT
+        void
+        debugImpl(std::ostream& stream, int indent) const override;
+    public:
+        OPENSOLID_CORE_EXPORT
+        ConstantFunction(const VectorXd& vector, int numParameters);
+
+        OPENSOLID_CORE_EXPORT
+        ConstantFunction(double value, int numParameters);
+        
+        const VectorXd&
+        vector() const;
+
+        double
+        value() const;
+        
+        const VectorXI&
+        bounds() const;
     };
 }
 
 namespace opensolid
 {
-    inline const VectorXd& ConstantFunction::vector() const {
+    inline const VectorXd&
+    ConstantFunction::vector() const {
         return _vector;
     }
 
-    inline const VectorXI& ConstantFunction::bounds() const {
+    inline double
+    ConstantFunction::value() const {
+        return _vector.value();
+    }
+
+    inline const VectorXI&
+    ConstantFunction::bounds() const {
         return _bounds;
     }
 }

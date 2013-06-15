@@ -26,4 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/JacobianCache.definitions.hpp>
+namespace opensolid
+{
+    class Evaluator;
+}

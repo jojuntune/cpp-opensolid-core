@@ -47,7 +47,7 @@ namespace opensolid
     void TangentFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         MapXcd operandValues = cache.results(operand(), parameterValues);
         results = operandValues.array().sin() / operandValues.array().cos();
@@ -56,7 +56,7 @@ namespace opensolid
     void TangentFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         MapXcI operandBounds = cache.results(operand(), parameterBounds);
         results = operandBounds.array().sin() / operandBounds.array().cos();

@@ -26,33 +26,37 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/JacobianCache.declarations.hpp>
+#include <OpenSolid/Core/Function/JacobianEvaluator.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 
-#include <boost/unordered_map.hpp>
-
+#include <unordered_map>
 #include <utility>
 
 namespace opensolid
 {
-    template <class TScalar>
-    class JacobianCache
+    class JacobianEvaluator
     {
-    public:
-        typedef Matrix<TScalar, Dynamic, Dynamic> MatrixType;
-        typedef Map<const MatrixType, Unaligned, Stride<Dynamic, Dynamic>> MapType;
     private:
-        typedef std::pair<const FunctionImplementation*, const TScalar*> Key;
+        typedef std::pair<const FunctionImplementation*, const double*> KeyXd;
+        typedef std::pair<const FunctionImplementation*, const Interval*> KeyXI;
 
-        boost::unordered_map<Key, MatrixType> _cachedResults;
+        std::unordered_map<KeyXd, MatrixXd> _cachedValues;
+        std::unordered_map<KeyXI, MatrixXI> _cachedBounds;
     public:
-        OPENSOLID_CORE_EXPORT MapType
-        results(const Function& function, const MapType& parameterValues);
+        OPENSOLID_CORE_EXPORT
+        MapXcd
+        evaluateJacobian(
+            const FunctionImplementationPtr& functionImplementation,
+            const MapXcd& parameterValues
+        );
+        
+        OPENSOLID_CORE_EXPORT
+        MapXcI
+        evaluateJacobian(
+            const FunctionImplementationPtr& functionImplementation,
+            const MapXcI& parameterBounds
+        );
     };
-
-    typedef JacobianCache<double> JacobianCacheXd;
-    typedef JacobianCache<Interval> JacobianCacheXI;
 }

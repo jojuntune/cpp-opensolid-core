@@ -46,7 +46,7 @@ namespace opensolid
     void NormFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        EvaluateCache<double>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterValues).colwise().norm();
     }
@@ -54,7 +54,7 @@ namespace opensolid
     void NormFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        EvaluateCache<Interval>& cache
+        Evaluator& evaluator
     ) const {
         results = cache.results(operand(), parameterBounds).colwise().norm();
     }

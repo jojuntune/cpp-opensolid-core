@@ -26,30 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/EvaluateCache.declarations.hpp>
-
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
-#include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
-
-#include <boost/unordered_map.hpp>
-
-#include <utility>
-
-namespace opensolid
-{
-    template <class TScalar>
-    class EvaluateCache
-    {
-    public:
-        typedef Matrix<TScalar, Dynamic, Dynamic> MatrixType;
-        typedef Map<const MatrixType, Unaligned, Stride<Dynamic, Dynamic>> MapType;
-    private:
-        typedef std::pair<const FunctionImplementation*, const TScalar*> Key;
-
-        boost::unordered_map<Key, MatrixType> _cachedResults;
-    public:
-        OPENSOLID_CORE_EXPORT MapType
-        results(const Function& function, const MapType& parameterValues);
-    };
-}
+#include <OpenSolid/Core/Function/JacobianEvaluator.definitions.hpp>

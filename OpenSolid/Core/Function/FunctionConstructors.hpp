@@ -26,76 +26,196 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/Frame.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Plane.declarations.hpp>
+#include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
+
+#include <OpenSolid/Core/Function.definitions.hpp>
+#include <OpenSolid/Core/FunctionImplementation/EllipticalFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/LinearFunction.hpp>
 
 namespace opensolid
 {
-    class FunctionConstructors
-    {
-    public:
-        OPENSOLID_CORE_EXPORT static Function
-        Zero(int numDimensions, int numParameters);
-
-        OPENSOLID_CORE_EXPORT static Function
-        Constant(double value, int numParameters);
-
-        OPENSOLID_CORE_EXPORT static Function
-        Constant(const VectorXd& vector, int numParameters);
-
-        OPENSOLID_CORE_EXPORT static Function
-        Identity(int numDimensions = 1);
-
-        OPENSOLID_CORE_EXPORT static Function
-        t();
-
-        OPENSOLID_CORE_EXPORT static Function
-        u();
-
-        OPENSOLID_CORE_EXPORT static Function
-        v();
-
-        OPENSOLID_CORE_EXPORT static Function
-        Parameter(int numParameters, int index);
-
-        OPENSOLID_CORE_EXPORT static Function
-        FromComponents(
-            const Function& xFunction,
-            const Function& yFunction
+    template <int iNumDimensions, int iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    ZeroFunctionConstructor<iNumDimensions, iNumParameters>::Zero() {
+        return Function<iNumDimensions, iNumParameters>(
+            FunctionImplementation::Zero(iNumDimensions, iNumParameters)
         );
+    }
 
-        OPENSOLID_CORE_EXPORT static Function
-        FromComponents(
-            const Function& xFunction,
-            const Function& yFunction,
-            const Function& zFunction
+    template <int iNumDimensions, int iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    ConstantFunctionConstructor<iNumDimensions, iNumParameters>::Constant(
+        const Matrix<double, iNumDimensions, 1>& value
+    ) {
+        return Function<iNumDimensions, iNumParameters>(
+            FunctionImplementation::Constant(value, iNumParameters)
         );
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Linear(const Axis<2>& axis);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Linear(const Frame<2>& frame);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Linear(const Axis<3>& axis);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Linear(const Plane3d& plane);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Linear(const Frame<3>& frame);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Elliptical(const Frame<2>& frame);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Elliptical(const Plane3d& plane);
-        
-        OPENSOLID_CORE_EXPORT static Function
-        Elliptical(const Frame<3>& frame);
-    };
+    }
+
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    ConstantFunctionConstructor<1, iNumParameters>::Constant(double value) {
+        return Function<1, iNumParameters>(
+            FunctionImplementation::Constant(value, iNumParameters)
+        );
+    }
+
+    template <int iNumDimensions>
+    Function<iNumDimensions, iNumDimensions>
+    IdentityFunctionConstructor<iNumDimensions, iNumDimensions>::Identity() {
+        return Function<iNumDimensions, iNumDimensions>(
+            FunctionImplementation::Identity(iNumDimensions)
+        );
+    }
+
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    ParameterFunctionConstructor<1, iNumParameters>::Parameter(int parameterIndex) {
+        if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
+            assert(false);
+            return Function<1, iNumParameters>();
+        }
+        return Function<1, iNumParameters>(
+            FunctionImplementation::Parameter(parameterIndex, iNumParameters)
+        );
+    }
+
+    inline Function<1, 1>
+    NamedParameterFunctionConstructors<1, 1>::t() {
+        return Function<1, 1>(FunctionImplementation::Parameter(0, 1));
+    }
+
+    inline Function<1, 2>
+    NamedParameterFunctionConstructors<1, 2>::u() {
+        return Function<1, 2>(FunctionImplementation::Parameter(0, 2));
+    }
+
+    inline Function<1, 2>
+    NamedParameterFunctionConstructors<1, 2>::u() {
+        return Function<1, 2>(FunctionImplementation::Parameter(1, 2));
+    }
+
+    template <int iNumParameters>
+    Function<2, iNumParameters>
+    FromComponentsFunctionConstructors<2, iNumParameters>::FromComponents(
+        const Function<1, iNumParameters>& x,
+        const Function<1, iNumParameters>& y
+    ) {
+        return x.concatenated(y);
+    }
+
+    template <int iNumParameters>
+    Function<2, iNumParameters>
+    FromComponentsFunctionConstructors<2, iNumParameters>::FromComponents(
+        const Function<1, iNumParameters>& x,
+        double y
+    ) {
+        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        return x.concatenated(yFunction);
+    }
+
+    template <int iNumParameters>
+    Function<2, iNumParameters>
+    FromComponentsFunctionConstructors<2, iNumParameters>::FromComponents(
+        double x,
+        const Function<1, iNumParameters>& y
+    ) {
+        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
+        return xFunction.concatenated(y);
+    }
+
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        const Function<1, iNumParameters>& x,
+        const Function<1, iNumParameters>& y,
+        const Function<1, iNumParameters>& z
+    ) {
+        return x.concatenated(y).concatenated(z);
+    }
+
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        const Function<1, iNumParameters>& x,
+        const Function<1, iNumParameters>& y,
+        double z
+    ) {
+        Function<1, iNumParameters> zFunction(FunctionImplementation::Constant(z, iNumParameters));
+        return x.concatenated(y).concatenated(zFunction);
+    }
+    
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        const Function<1, iNumParameters>& x,
+        double y,
+        const Function<1, iNumParameters>& z
+    ) {
+        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        return x.concatenated(yFunction).concatenated(z);
+    }
+    
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        double x,
+        const Function<1, iNumParameters>& y,
+        const Function<1, iNumParameters>& z
+    ) {
+        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
+        return xFunction.concatenated(y).concatenated(z);
+    }
+    
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        const Function<1, iNumParameters>& x,
+        double y,
+        double z
+    ) {
+        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        Function<1, iNumParameters> zFunction(FunctionImplementation::Constant(z, iNumParameters));
+        return x.concatenated(yFunction).concatenated(zFunction);
+    }
+    
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        double x,
+        const Function<1, iNumParameters>& y,
+        double z
+    ) {
+        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
+        Function<1, iNumParameters> zFunction(FunctionImplementation::Constant(z, iNumParameters));
+        return xFunction.concatenated(y).concatenated(zFunction);
+    }
+    
+    template <int iNumParameters>
+    Function<3, iNumParameters>
+    FromComponentsFunctionConstructors<3, iNumParameters>::FromComponents(
+        double x,
+        double y,
+        const Function<1, iNumParameters>& z
+    ) {
+        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
+        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        return xFunction.concatenated(yFunction).concatenated(z);
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    LinearFunctionConstructors<iNumDimensions, iNumParameters>::Linear(
+        const Datum<iNumDimensions, iNumParameters>& datum
+    ) {
+        return Function<iNumDimensions, iNumParameters>(new LinearFunction(datum));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    Function<iNumDimensions, iNumParameters>
+    EllipticalFunctionConstructors<iNumDimensions, iNumParameters>::Elliptical(
+        const Datum<iNumDimensions, iNumParameters + 1>& datum
+    ) {
+        return Function<iNumDimensions, iNumParameters>(new EllipticalFunction(datum));
+    }
 }
