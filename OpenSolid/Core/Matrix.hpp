@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix/ContainOperation.hpp>
 #include <OpenSolid/Core/Matrix/EmptyOperation.hpp>
 #include <OpenSolid/Core/Matrix/HullOperation.hpp>
@@ -324,6 +325,59 @@ namespace Eigen
         typename DenseBase<TDerived>::Index cols
     ) {
         return Constant(rows, cols, opensolid::Interval::Whole());
+    }
+
+    namespace internal
+    {
+        inline int
+        significant_decimals_default_impl<opensolid::Interval, false>::run() {
+            return 17;
+        }
+
+        template <>
+        struct random_impl<opensolid::Interval>
+        {
+            static opensolid::Interval
+            run(
+                const opensolid::Interval& lowerInterval,
+                const opensolid::Interval& upperInterval
+            ) {
+                opensolid::Interval interval(
+                    lowerInterval.lowerBound(),
+                    upperInterval.upperBound()
+                );
+                double firstRatio = double(std::rand()) / RAND_MAX;
+                double secondRatio = double(std::rand()) / RAND_MAX;
+                return interval.interpolated(opensolid::Interval::Hull(firstRatio, secondRatio));
+            }
+
+            static opensolid::Interval
+            run() {
+                double lower = -1 + 2 * double(std::rand()) / RAND_MAX;
+                double upper = -1 + 2 * double(std::rand()) / RAND_MAX;
+                return opensolid::Interval::Hull(lower, upper);
+            }
+        };
+    }
+
+    inline opensolid::Interval
+    NumTraits<opensolid::Interval>::epsilon() {
+        return std::numeric_limits<double>::epsilon();
+    }
+    
+    inline opensolid::Interval
+    NumTraits<opensolid::Interval>::dummy_precision() {
+        return 1e-12;
+    }
+    
+    inline opensolid::Interval
+    NumTraits<opensolid::Interval>::lowest() {
+        return std::numeric_limits<double>::min();
+    }
+    
+    inline opensolid::Interval
+    NumTraits<opensolid::Interval>::highest() {
+        return std::numeric_limits<double>::max();
     }
 }
 

@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
 #include <ostream>
@@ -339,52 +338,5 @@ namespace opensolid
     {
         Interval
         operator()(Interval interval) const;
-    };
-}
-
-namespace Eigen
-{   
-    namespace internal
-    {
-        template <>
-        struct significant_decimals_default_impl<opensolid::Interval, false>
-        {
-            static inline int
-            run();
-        };
-        
-        template <>
-        struct is_arithmetic<opensolid::Interval>
-        {
-            static const bool value = true;
-        };
-    }
-    
-    template <>
-    struct NumTraits<opensolid::Interval>
-    {
-        typedef opensolid::Interval Real;
-        typedef opensolid::Interval NonInteger;
-        typedef opensolid::Interval Nested;
-        
-        static const int IsComplex = 0;
-        static const int IsInteger = 0;
-        static const int ReadCost = 2;
-        static const int AddCost = 2;
-        static const int MulCost = 10;
-        static const int IsSigned = 1;
-        static const int RequireInitialization = 0;
-        
-        static opensolid::Interval
-        epsilon();
-        
-        static opensolid::Interval
-        dummy_precision();
-        
-        static opensolid::Interval
-        lowest();
-        
-        static opensolid::Interval
-        highest();  
     };
 }
