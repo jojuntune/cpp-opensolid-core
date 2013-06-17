@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation.definitions.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
