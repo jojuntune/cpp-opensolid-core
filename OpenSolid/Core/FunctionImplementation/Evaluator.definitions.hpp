@@ -36,7 +36,6 @@
 
 namespace opensolid
 {
-    template <class TScalar>
     class Evaluator
     {
     private:
