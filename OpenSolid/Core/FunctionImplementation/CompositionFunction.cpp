@@ -48,7 +48,7 @@ namespace opensolid
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function CompositionFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function CompositionFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedOuterFunction = firstOperand().deduplicated(others);
         Function deduplicatedInnerFunction = secondOperand().deduplicated(others);
         return new CompositionFunction(deduplicatedOuterFunction, deduplicatedInnerFunction);

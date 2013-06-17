@@ -34,10 +34,6 @@ namespace opensolid
         assert(_numDimensions > 0);
     }
 
-    const IdentityFunction* IdentityFunction::asIdentity() const {
-        return this;
-    }
-
     int IdentityFunction::numParameters() const {
         return _numDimensions;
     }

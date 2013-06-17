@@ -46,7 +46,7 @@ namespace opensolid
         int numDimensions() const;
 
         bool isDuplicateOf(const Function& other) const;
-        Function deduplicated(Deduplicator& deduplicator) const;
+        Function deduplicated(DeduplicationCache& deduplicationCache) const;
         
         void evaluate(
             const MapXcd& parameterValues,

@@ -26,27 +26,68 @@
 
 namespace opensolid
 {
-    bool BinaryOperation::duplicateOperands(const BinaryOperation* other, bool commutative) const {
-        bool nonCommutativeCheck = this->firstOperand().isDuplicateOf(other->firstOperand()) &&
-            this->secondOperand().isDuplicateOf(other->secondOperand());
+    int
+    BinaryOperation::numParametersImpl() const {
+        return firstOperand().numParameters();
+    }
+
+    bool
+    BinaryOperation::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        FunctionImplementationPtr otherFirstOperand =
+            other->cast<BinaryOperation>()->firstOperand();
+        FunctionImplementationPtr otherSecondOperand =
+            other->cast<BinaryOperation>()->secondOperand();
+
+        bool nonCommutativeCheck = firstOperand()->isDuplicateOf(otherFirstOperand) &&
+            secondOperand()->isDuplicateOf(otherSecondOperand);
+            
         if (nonCommutativeCheck) {
             return true;
-        } else if (commutative) {
-            return this->firstOperand().isDuplicateOf(other->secondOperand()) &&
-                this->secondOperand().isDuplicateOf(other->firstOperand());
+        } else if (isCommutative()) {
+            return firstOperand()->isDuplicateOf(otherSecondOperand) &&
+                secondOperand()->isDuplicateOf(otherFirstOperand);
         } else {
             return false;
         }
     }
 
-    BinaryOperation::BinaryOperation(const Function& firstOperand, const Function& secondOperand) :
-        _firstOperand(firstOperand),
+    FunctionImplementationPtr
+    BinaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return this->withNewOperands(
+            firstOperand()->deduplicated(deduplicationCache),
+            secondOperand()->deduplicated(deduplicationCache)
+        );
+    }
+
+    FunctionImplementationPtr
+    BinaryOperation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+        return this->withNewOperands(
+            firstOperand()->compose(innerFunction),
+            secondOperand()->compose(innerFunction)
+        );
+    }
+
+    BinaryOperation::BinaryOperation(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : _firstOperand(firstOperand),
         _secondOperand(secondOperand) {
         
-        assert(firstOperand.numParameters() == secondOperand.numParameters());
+        if (firstOperand->numParameters() != secondOperand->numParameters()) {
+            throw PlaceholderError();
+        }
     }
-    
-    int BinaryOperation::numParameters() const {
-        return secondOperand().numParameters();
+
+    FunctionImplementationPtr
+    BinaryOperation::withNewOperands(
+        const FunctionImplementationPtr& newFirstOperand,
+        const FunctionImplementationPtr& newSecondOperand
+    ) const {
+        return withNewOperandsImpl(newFirstOperand, newSecondOperand);
+    }
+
+    bool
+    BinaryOperation::isCommutative() const {
+        return isCommutativeImpl();
     }
 }

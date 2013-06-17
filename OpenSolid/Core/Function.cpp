@@ -91,7 +91,7 @@ namespace opensolid
     
     Function
     Function::components(int startIndex, int numComponents) const {
-        return implementation()->components(startIndex, numComponents).deduplicated();
+        return implementation()->components(startIndex, numComponents)->deduplicated();
     }
     
     Function

@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/Evaluator.declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
@@ -36,8 +36,7 @@
 
 namespace opensolid
 {
-    template <class TScalar>
-    class Evaluator
+    class JacobianEvaluator
     {
     private:
         typedef std::pair<const FunctionImplementation*, const double*> KeyXd;
@@ -48,14 +47,14 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT
         MapXcd
-        evaluate(
+        evaluateJacobian(
             const FunctionImplementationPtr& functionImplementation,
             const MapXcd& parameterValues
         );
-
+        
         OPENSOLID_CORE_EXPORT
         MapXcI
-        evaluate(
+        evaluateJacobian(
             const FunctionImplementationPtr& functionImplementation,
             const MapXcI& parameterBounds
         );

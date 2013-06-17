@@ -26,10 +26,32 @@
 
 namespace opensolid
 {
-    UnaryOperation::UnaryOperation(const Function& operand) : _operand(operand) {
+    int
+    UnaryOperation::numParametersImpl() const {
+        return operand()->numParameters();
+    }
+
+    bool
+    UnaryOperation::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return this->operand()->isDuplicateOf(other->cast<UnaryOperation>()->operand());
+    }
+
+    FunctionImplementationPtr
+    UnaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return this->withNewOperand(operand()->deduplicated(deduplicationCache));
+    }
+
+    FunctionImplementationPtr
+    UnaryOperation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+        return this->withNewOperand(operand()->compose(innerFunction));
     }
     
-    int UnaryOperation::numParameters() const {
-        return operand().numParameters();
+    UnaryOperation::UnaryOperation(const FunctionImplementationPtr& operand) :
+        _operand(operand) {
+    }
+
+    FunctionImplementationPtr
+    UnaryOperation::withNewOperand(const FunctionImplementationPtr& newOperand) {
+        return withNewOperandImpl(newOperand);
     }
 }

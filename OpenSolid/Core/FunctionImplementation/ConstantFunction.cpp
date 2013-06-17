@@ -63,20 +63,11 @@ namespace opensolid
     
     bool
     ConstantFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        if (const ConstantFunction* otherConstant = other->asConstant()) {
-            return (this->vector() - otherConstant->vector()).isZero();
-        } else {
-            return false;
-        }
+        return (this->vector() - other->as<ConstantFunction>()->vector()).isZero();
     }
 
     FunctionImplementationPtr
-    ConstantFunction::deduplicatedImpl(Deduplicator& deduplicator) const {
-        return this;
-    }
-
-    const ConstantFunction*
-    ConstantFunction::asConstantImpl() const {
+    ConstantFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
         return this;
     }
     

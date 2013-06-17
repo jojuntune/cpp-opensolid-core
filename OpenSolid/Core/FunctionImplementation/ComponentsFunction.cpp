@@ -57,7 +57,7 @@ namespace opensolid
         }
     }
 
-    Function ComponentsFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function ComponentsFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new ComponentsFunction(
             operand().deduplicated(others),
             startIndex(),

@@ -42,7 +42,7 @@ namespace opensolid
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function ConcatenationFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function ConcatenationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new ConcatenationFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

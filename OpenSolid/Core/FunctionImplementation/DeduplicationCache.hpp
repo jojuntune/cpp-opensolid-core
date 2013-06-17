@@ -26,7 +26,22 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.definitions.hpp>
+
 namespace opensolid
 {
-    class Deduplicator;
+    inline std::vector<FunctionImplementationPtr>::iterator
+    DeduplicationCache::begin() {
+        return _cache.begin();
+    }
+
+    inline std::vector<FunctionImplementationPtr>::iterator
+    DeduplicationCache::end() {
+        return _cache.end();
+    }
+
+    inline void
+    DeduplicationCache::add(const FunctionImplementationPtr& functionImplementation) {
+        _cache.push_back(functionImplementation);
+    }
 }

@@ -32,9 +32,11 @@
 #include <OpenSolid/Core/FunctionImplementation/ConcatenationFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/CosineFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.hpp>
 #include <OpenSolid/Core/FunctionImplementation/DifferenceFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ExponentialFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/LogarithmFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/NegatedFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/NormFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/NormalizedFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/PowerFunction.hpp>
@@ -51,21 +53,6 @@
 
 namespace opensolid
 {
-    const ConstantFunction*
-    FunctionImplementation::asConstantImpl() const {
-        return nullptr;
-    }
-
-    const IdentityFunction*
-    FunctionImplementation::asIdentityImpl() const {
-        return nullptr;
-    }
-
-    const ParameterFunction*
-    FunctionImplementation::asParameterImpl() const {
-        return nullptr;
-    }
-
     // TODO - implement in subclasses and make pure virtual
     void
     FunctionImplementation::evaluateJacobianImpl(
@@ -111,7 +98,7 @@ namespace opensolid
         return new TempTransformationFunction(transformationMatrix, this);
     }
     
-    FunctionImplementationPr
+    FunctionImplementationPtr
     FunctionImplementation::normImpl() const {
         return new NormFunction(this);
     }
@@ -148,6 +135,11 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::binormalVectorImpl() const {
         return tangentVector()->crossProduct(normalVector());
+    }
+
+    FunctionImplementationPtr
+    FunctionImplementation::negatedImpl() const {
+        return new NegatedFunction(this);
     }
 
     FunctionImplementationPtr
@@ -203,8 +195,11 @@ namespace opensolid
 
     bool
     FunctionImplementation::isDuplicateOf(const FunctionImplementationPtr& other) const {
-        if (this == other) {
+        if (this == other.get()) {
             return true;
+        }
+        if (typeid(this) != typeid(other.get())) {
+            return false;
         }
         if (this->numDimensions() != other->numDimensions()) {
             return false;
@@ -216,8 +211,28 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    FunctionImplementation::deduplicated(Deduplicator& deduplicator) const {
-        return deduplicatedImpl(deduplicator);
+    FunctionImplementation::deduplicated(DeduplicationCache& deduplicationCache) const {
+        // Try to find a function implementation in the cache that this is a duplicate of
+        auto iterator = std::find_if(
+            deduplicationCache.begin(),
+            deduplicationCache.end(),
+            [&functionImplementation] (
+                const FunctionImplementationPtr& cachedFunctionImplementation
+            ) -> bool {
+                return this->isDuplicateOf(cachedFunctionImplementation);
+            }
+        );
+
+        // Return the cached duplicate if one was found
+        if (iterator != deduplicationCache.end()) {
+            return *iterator;
+        }
+
+        // No matching function implementation was found: add a deduplicated copy of this
+        // function implementation to the list, then return it.
+        FunctionImplementationPtr result = deduplicatedImpl(deduplicationCache);
+        deduplicationCache.add(result);
+        return result;
     }
     
     FunctionImplementationPtr
@@ -225,10 +240,10 @@ namespace opensolid
         if (innerFunction->numDimensions() != this->numParameters()) {
             throw PlaceholderError();
         }
-        if (const ConstantFunction* constantFunction = innerFunction->asConstant()) {
+        if (innerFunction->isConstant()) {
             MapXcd argumentMap(
-                constantFunction->vector().data(),
-                constantFunction->numDimensions(),
+                innerFunction->cast<ConstantFunction>()->vector().data(),
+                innerFunction->numDimensions(),
                 1,
                 Stride<Dynamic, Dynamic>(1, 1)
             );
@@ -244,7 +259,7 @@ namespace opensolid
             Evaluator evaluator;
             evaluate(argumentMap, resultMap, evaluator);
             
-            return new ConstantFunction(result);
+            return new ConstantFunction(result, innerFunction->numParameters());
         }
         return this->composeImpl(innerFunction);
     }
@@ -282,10 +297,10 @@ namespace opensolid
 
     FunctionImplementationPtr
     FunctionImplementation::concatenated(const FunctionImplementationPtr& other) const {
-        if (this->asConstant() && other->asConstant()) {
+        if (this->isConstant() && other->isConstant()) {
             VectorXd vector(this->numDimensions() + other->numDimensions());
-            vector.head(this->numDimensions()) = this->asConstant()->vector();
-            vector.tail(other->numDimensions()) = other->asConstant()->vector();
+            vector.head(this->numDimensions()) = this->cast<ConstantFunction>()->vector();
+            vector.tail(other->numDimensions()) = other->cast<ConstantFunction>()->vector();
             return new ConstantFunction(vector, numParameters());
         }
         return new ConcatenationFunction(this, other);
@@ -381,244 +396,50 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    FunctionImplementation::negated() const {
-        return negatedImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::sum(const FunctionImplementationPtr& other) const {
+    FunctionImplementation::dot(const FunctionImplementationPtr& other) const {
         if (this->numDimensions() != other->numDimensions()) {
             throw PlaceholderError();
         }
         if (this->numParameters() != other->numParameters()) {
             throw PlaceholderError();
         }
-        if (const ConstantFunction* otherConstant = other->asConstant()) {
-            return this->translated(otherConstant->vector());
-        }
-        if (const ConstantFunction* thisConstant = this->asConstant()) {
-            return other->translated(thisConstant->vector());
-        }
-        return new SumFunction(this, other);
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::difference(const FunctionImplementationPtr& other) const {
-        if (this->numDimensions() != other->numDimensions()) {
-            throw PlaceholderError();
-        }
-        if (this->numParameters() != other->numParameters()) {
-            throw PlaceholderError();
-        }
-        if (const ConstantFunction* otherConstant = other->asConstant()) {
-            return this->translated(-otherConstant->vector());
-        }
-        if (const ConstantFunction* thisConstant = this->asConstant()) {
-            return other->negated()->translated(thisConstant->vector());
-        }
-        return new DifferenceFunction(this, other);
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::product(const FunctionImplementationPtr& other) const {
-        if (this->numParameters() != other->numParameters()) {
-            throw PlaceholderError();
-        }
-        // Determine which operand to use as the multiplier and which to use as the multiplicand:
-        // The multiplier should be a scalar (one dimensional), and if possible should be constant
-        // (to allow construction of a ScalingFunction instead of a generic ProductFunction).
-        FunctionImplementationPtr multiplier;
-        FunctionImplementationPtr multiplicand;
-        if (this->numDimensions() == 1 && other.numDimensions() == 1) {
-            // Either this or the other could be the multiplier, so pick whichever is constant
-            // (defaulting to this)
-            if (this->asConstant()) {
-                multiplier = this;
-                multiplicand = other;
-            } else if (other.asConstant()) {
-                multiplier = other;
-                multiplicand = this;
-            } else {
-                multiplier = this;
-                multiplicand = other;
-            }
-        } else if (this->numDimensions() == 1) {
-            // Only this is a scalar, so use it as the multiplier
-            multiplier = this;
-            multiplicand = other;
-        } else if (other.numDimensions() == 1) {
-            // Only the other is a scalar, so use it as the multiplier
-            multiplier = other;
-            multiplicand = this;
-        } else {
-            // Error - neither operand is a scalar
-            throw PlaceholderError();
-        }
-        if (const ConstantFunction* constant = multiplier->asConstant()) {
-            // Delegate to scaling function
-            return multiplicand->scaled(constant->value());
-        } else if (multiplicand->asConstant() && multiplicand->asConstant()->vector().isZero()) {
-            // Doesn't matter what the multiplier is - return the (zero) multiplicand
-            return multiplicand;
-        } else {
-            return new ProductFunction(multiplier, multiplicand);
-        }
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::quotient(const FunctionImplementationPtr& other) const {
-        if (this->numParameters() != other->numParameters()) {
-            throw PlaceholderError();
-        }
-        if (other->numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        if (const ConstantFunction* otherConstant = other.asConstant()) {
-            double divisorValue = otherConstant->value();
-            if (divisorValue == Zero()) {
-                throw PlaceholderError();
-            }
-            return scaled(1 / divisorValue);
-        } else if (this->asConstant() && this->asConstant()->vector().isZero()) {
-            // Doesn't matter what the divisor is - return this (zero) dividend
-            return this;
-        } else {
-            return new QuotientFunction(this, other);
-        }
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::dotProduct(const FunctionImplementationPtr& other) const {
-        if (this->numDimensions() != other->numDimensions()) {
-            throw PlaceholderError();
-        }
-        if (this->numParameters() != other->numParameters()) {
-            throw PlaceholderError();
-        }
-        if (this->asConstant() && other->asConstant()) {
-            return new ConstantFunction(
-                this->asConstant()->vector().dot(other->asConstant()->vector()),
-                numParameters()
-            );
+        if (this->isConstant() && other->isConstant()) {
+            VectorXd thisVector = this->cast<ConstantFunction>()->vector();
+            VectorXd otherVector = other->cast<ConstantFunction>()->vector();
+            return new ConstantFunction(thisVector.dot(otherVector), numParameters());
         }
         if (numDimensions() == 1) {
             return this->product(other);
         }
-        if (this->asConstant() && this->asConstant()->vector().isZero()) {
+        if (this->isConstant() && this->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(0.0, numParameters());
         }
-        if (other->asConstant() && other->asConstant()->vector().isZero()) {
+        if (other->isConstant() && other->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(0.0, numParameters());
         }
         return new DotProductFunction(this, other);
     }
 
     FunctionImplementationPtr
-    FunctionImplementation::crossProduct(const FunctionImplementationPtr& other) const {
+    FunctionImplementation::cross(const FunctionImplementationPtr& other) const {
         if (!(this->numDimensions() == 3 && other->numDimensions() == 3)) {
             throw PlaceholderError();
         }
         if (this->numParameters() != other->numParameters()) {
             throw PlaceholderError();
         }
-        if (this->asConstant() && other->asConstant()) {
-            Vector3d thisVector = this->asConstant()->vector();
-            Vector3d otherVector = other->asConstant()->vector();
+        if (this->isConstant() && other->isConstant()) {
+            Vector3d thisVector = this->cast<ConstantFunction>()->vector();
+            Vector3d otherVector = other->cast<ConstantFunction>()->vector();
             return new ConstantFunction(thisVector.cross(otherVector), numParameters());
         }
-        if (this->asConstant() && this->asConstant()->vector().isZero()) {
+        if (this->isConstant() && this->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(Vector3d::Zero(), numParameters());
         }
-        if (other->asConstant() && other->asConstant()->value().isZero()) {
+        if (other->isConstant() && other->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(Vector3d::Zero(), numParameters());
         }
         return new CrossProductFunction(this, other);
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::sqrt() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return sqrtImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::sin() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return sinImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::cos() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return cosImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::tan() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return tanImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::acos() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return acosImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::asin() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return asinImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::exp() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return expImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::log() const {
-        if (numDimensions() != 1) {
-            throw PlaceholderError();
-        }
-        return logImpl();
-    }
-
-    FunctionImplementationPtr
-    FunctionImplementation::pow(const FunctionImplementationPtr& other) const {
-        if (this->numParameters() != other.numParameters()) {
-            throw PlaceholderError();
-        }
-        if (!(this->numDimensions() == 1 && other->numDimensions() == 1)) {
-            throw PlaceholderError();
-        }
-        const ConstantFunction* thisConstant = this->asConstant();
-        const ConstantFunction* otherConstant = other->asConstant();
-        if (thisConstant && otherConstant) {
-            double baseValue = thisConstant->value();
-            double exponentValue = otherConstant->value();
-            if (baseValue == Zero() && exponentValue < Zero()) {
-                throw PlaceholderError();
-            }
-            return new ConstantFunction(pow(baseValue, exponentValue), numParameters());
-        } else {
-            return new PowerFunction(this, other);
-        }
     }
 
     void
@@ -629,5 +450,284 @@ namespace opensolid
         stream << "R" << numParameters() << " -> R" << numDimensions() << " | ";
         stream << this << " | ";
         debugImpl(stream, indent);
+    }
+
+    FunctionImplementationPtr
+    operator-(const FunctionImplementationPtr& operand) {
+        return operand->negatedImpl();
+    }
+
+    FunctionImplementationPtr
+    operator+(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) {
+        if (firstOperand->numDimensions() != secondOperand->numDimensions()) {
+            throw PlaceholderError();
+        }
+        if (firstOperand->numParameters() != secondOperand->numParameters()) {
+            throw PlaceholderError();
+        }
+        if (secondOperand->isConstant()) {
+            return firstOperand->translated(secondOperand->cast<ConstantFunction>()->vector());
+        }
+        if (firstOperand->isConstant()) {
+            return secondOperand->translated(firstOperand->cast<ConstantFunction>()->vector());
+        }
+        return new SumFunction(firstOperand, secondOperand);
+    }
+
+    FunctionImplementationPtr
+    operator+(const FunctionImplementationPtr& firstOperand, const VectorXd& secondOperand) {
+        return firstOperand + new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator+(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) + secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator+(const FunctionImplementationPtr& firstOperand, double secondOperand) {
+        return firstOperand + new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator+(double firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) + secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator-(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) {
+        if (firstOperand->numDimensions() != secondOperand->numDimensions()) {
+            throw PlaceholderError();
+        }
+        if (firstOperand->numParameters() != secondOperand->numParameters()) {
+            throw PlaceholderError();
+        }
+        if (secondOperand->isConstant()) {
+            VectorXd secondVector = secondOperand->cast<ConstantFunction>()->vector();
+            return firstOperand->translated(-secondVector);
+        }
+        if (firstOperand->isConstant()) {
+            VectorXd firstVector = firstOperand->cast<ConstantFunction>()->vector();
+            return (-secondOperand)->translated(firstVector);
+        }
+        return new DifferenceFunction(firstOperand, secondOperand);
+    }
+
+    FunctionImplementationPtr
+    operator-(const FunctionImplementationPtr& firstOperand, const VectorXd& secondOperand) {
+        return firstOperand - new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator-(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) - secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator-(const FunctionImplementationPtr& firstOperand, double secondOperand) {
+        return firstOperand - new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator-(double firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) - secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator*(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) {
+        if (firstOperand->numParameters() != secondOperand->numParameters()) {
+            throw PlaceholderError();
+        }
+        // Determine which operand to use as the multiplier and which to use as the multiplicand:
+        // The multiplier should be a scalar (one dimensional), and if possible should be constant
+        // (to allow construction of a ScalingFunction instead of a generic ProductFunction).
+        FunctionImplementationPtr multiplier;
+        FunctionImplementationPtr multiplicand;
+        if (firstOperand->numDimensions() == 1 && secondOperand.numDimensions() == 1) {
+            // Either the first or second argument could be the multiplier, so pick whichever is
+            // constant (defaulting to the first argument)
+            if (firstOperand->isConstant()) {
+                multiplier = firstOperand;
+                multiplicand = secondOperand;
+            } else if (secondOperand->isConstant()) {
+                multiplier = secondOperand;
+                multiplicand = firstOperand;
+            } else {
+                multiplier = firstOperand;
+                multiplicand = secondOperand;
+            }
+        } else if (firstOperand->numDimensions() == 1) {
+            // Only the first argument is a scalar, so use it as the multiplier
+            multiplier = firstOperand;
+            multiplicand = secondOperand;
+        } else if (secondOperand.numDimensions() == 1) {
+            // Only the second argument is a scalar, so use it as the multiplier
+            multiplier = secondOperand;
+            multiplicand = firstOperand;
+        } else {
+            // Error - neither operand is a scalar
+            throw PlaceholderError();
+        }
+        if (multiplier->isConstant()) {
+            // Delegate to scaling function
+            return multiplicand->scaled(multiplier->cast<ConstantFunction>()->value());
+        }
+        if (multiplicand->isConstant() && multiplicand->cast<ConstantFunction>()->isZero()) {
+            // Doesn't matter what the multiplier is - return the (zero) multiplicand
+            return multiplicand;
+        }
+        return new ProductFunction(multiplier, multiplicand);
+    }
+
+    FunctionImplementationPtr
+    operator*(const FunctionImplementationPtr& firstOperand, const VectorXd& secondOperand) {
+        return firstOperand * new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator*(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) * secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator*(const FunctionImplementationPtr& firstOperand, double secondOperand) {
+        return firstOperand * new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator*(double firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) * secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator/(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) const {
+        if (firstOperand->numParameters() != secondOperand->numParameters()) {
+            throw PlaceholderError();
+        }
+        if (secondOperand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        if (secondOperand->isConstant()) {
+            double divisor = secondOperand->cast<ConstantFunction>()->value();
+            if (divisor == Zero()) {
+                throw PlaceholderError();
+            }
+            return firstOperand->scaled(1 / divisor);
+        }
+        if (firstOperand->isConstant() && firstOperand->cast<ConstantFunction>()->isZero()) {
+            // Doesn't matter what the divisor is - return the (zero) dividend
+            return firstOperand;
+        }
+        return new QuotientFunction(firstOperand, secondOperand);
+    }
+
+    FunctionImplementationPtr
+    operator/(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) / secondOperand;
+    }
+
+    FunctionImplementationPtr
+    operator/(const FunctionImplementationPtr& firstOperand, double secondOperand) {
+        return firstOperand / new ConstantFunction(secondOperand, firstOperand->numParameters());
+    }
+
+    FunctionImplementationPtr
+    operator/(double firstOperand, const FunctionImplementationPtr& secondOperand) {
+        return new ConstantFunction(firstOperand, secondOperand->numParameters()) / secondOperand;
+    }
+
+    FunctionImplementationPtr
+    sqrt(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->sqrtImpl();
+    }
+
+    FunctionImplementationPtr
+    sin(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->sinImpl();
+    }
+
+    FunctionImplementationPtr
+    cos(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->cosImpl();
+    }
+
+    FunctionImplementationPtr
+    tan(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->tanImpl();
+    }
+
+    FunctionImplementationPtr
+    acos(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->acosImpl();
+    }
+
+    FunctionImplementationPtr
+    asin(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->asinImpl();
+    }
+
+    FunctionImplementationPtr
+    exp(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->expImpl();
+    }
+
+    FunctionImplementationPtr
+    log(const FunctionImplementationPtr& operand) {
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
+        return operand->logImpl();
+    }
+
+    FunctionImplementationPtr
+    pow(const FunctionImplementationPtr& base, const FunctionImplementationPtr& exponent) {
+        if (base->numParameters() != exponent->numParameters()) {
+            throw PlaceholderError();
+        }
+        if (!(base->numDimensions() == 1 && exponent->numDimensions() == 1)) {
+            throw PlaceholderError();
+        }
+        if (base->isConstant() && exponent->isConstant()) {
+            double baseValue = base->cast<ConstantFunction>()->value();
+            double exponentValue = exponent->cast<ConstantFunction>()->value();
+            if (baseValue == Zero() && exponentValue < Zero()) {
+                throw PlaceholderError();
+            }
+            return new ConstantFunction(pow(baseValue, exponentValue), base->numParameters());
+        }
+        return new PowerFunction(base, exponent);
     }
 }

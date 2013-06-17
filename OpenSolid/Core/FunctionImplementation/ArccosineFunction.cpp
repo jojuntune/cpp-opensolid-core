@@ -24,63 +24,75 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {
-    ArccosineFunction::ArccosineFunction(const Function& operand) :
-        UnaryOperation(operand) {
-
-        assert(operand.numDimensions() == 1);
-    }
-    
-    int ArccosineFunction::numDimensions() const {
+    int
+    ArccosineFunction::numDimensionsImpl() const {
         return 1;
     }
 
-    bool ArccosineFunction::isDuplicateOf(const Function& function) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    Function ArccosineFunction::deduplicated(Deduplicator& deduplicator) const {
-        return new ArccosineFunction(operand().deduplicated(others));
-    }
-    
     struct Arccosine
     {
         inline double operator()(double value) const {
-            assert(Interval(-1, 1).contains(value));
-            return acos(Interval(-1, 1).clamp(value));
+            Interval domain(-1, 1);
+            assert(domain.contains(value));
+            return acos(domain.clamp(value));
         }
         
         inline Interval operator()(const Interval& bounds) const {
-            assert(Interval(-1, 1).overlaps(bounds));
-            return acos(Interval(-1, 1).clamp(bounds));
+            Interval domain(-1, 1);
+            assert(domain.overlaps(bounds));
+            return acos(domain.clamp(bounds));
         }
     };
     
-    void ArccosineFunction::evaluate(
+    void
+    ArccosineFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).unaryExpr(Arccosine());
+        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arccosine());
     }
     
-    void ArccosineFunction::evaluate(
+    void
+    ArccosineFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).unaryExpr(Arccosine());
-    }
-
-    Function ArccosineFunction::derivative(int index) const {
-        return -operand().derivative(index) / sqrt(1.0 - operand().squaredNorm());
+        results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(Arccosine());
     }
     
-    void ArccosineFunction::debug(std::ostream& stream, int indent) const {
+    FunctionImplementationPtr
+    ArccosineFunction::derivativeImpl(int index) const {
+        return -operand()->derivative(index) / sqrt(1.0 - operand()->squaredNorm());
+    }
+    
+    bool
+    ArccosineFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return UnaryOperation::isDuplicateOfImpl(this, other);
+    }
+    
+    void
+    ArccosineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ArccosineFunction" << std::endl;
         operand().debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    ArccosineFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return new ArccosineFunction(newOperand);
+    }
+
+    ArccosineFunction::ArccosineFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+
+        if (operand->numDimensions() != 1) {
+            throw PlaceholderError();
+        }
     }
 }

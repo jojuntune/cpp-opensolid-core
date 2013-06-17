@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Function/FunctionReturnValue.definitions.hpp>
 
 #include <OpenSolid/Core/Function/MatrixArgument.hpp>
-#include <OpenSolid/Core/Function/Evaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>

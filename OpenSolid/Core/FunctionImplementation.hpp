@@ -29,27 +29,37 @@
 #include <OpenSolid/Core/FunctionImplementation.definitions.hpp>
 
 #include <OpenSolid/Core/Function.hpp>
-#include <OpenSolid/Core/Function/Evaluator.hpp>
-#include <OpenSolid/Core/Function/JacobianEvaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
-    inline const ConstantFunction*
-    FunctionImplementation::asConstant() const {
-        return asConstantImpl();
+    inline bool
+    FunctionImplementation::isConstant() const {
+        return typeid(this) == typeid(ConstantFunction);
     }
     
-    inline const IdentityFunction*
-    FunctionImplementation::asIdentity() const {
-        return asIdentityImpl();
+    inline bool
+    FunctionImplementation::isIdentity() const {
+        return typeid(this) == typeid(IdentityFunction);
     }
     
-    inline const ParameterFunction*
-    FunctionImplementation::asParameter() const {
-        return asParameterImpl();
+    inline bool
+    FunctionImplementation::isParameter() const {
+        return typeid(this) == typeid(ParameterFunction);
     }
     
+    template <class TFunctionImplementation>
+    const TFunctionImplementation*
+    FunctionImplementation::cast() const {
+        assert(typeid(this) == typeid(TFunctionImplementation));
+        return static_cast<const TFunctionImplementation*>(this);
+    }
+
     inline int
     FunctionImplementation::numDimensions() const {
         return numDimensionsImpl();

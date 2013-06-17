@@ -40,7 +40,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function ExponentialFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function ExponentialFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new ExponentialFunction(operand().deduplicated(others));
     }
         

@@ -34,30 +34,57 @@ namespace opensolid
     class BinaryOperation : public FunctionImplementation
     {
     private:
-        Function _firstOperand;
-        Function _secondOperand;
+        FunctionImplementationPtr _firstOperand;
+        FunctionImplementationPtr _secondOperand;
+        
+        OPENSOLID_CORE_EXPORT
+        int
+        numParametersImpl() const;
 
-        OPENSOLID_CORE_EXPORT bool duplicateOperands(
-            const BinaryOperation* other,
-            bool commutative
-        ) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override = 0;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        composeImpl(const FunctionImplementationPtr& innerFunction) const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandsImpl(
+            const FunctionImplementationPtr& newFirstOperand,
+            const FunctionImplementationPtr& newSecondOperand
+        ) const = 0;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isCommutativeImpl() const = 0;
     public:
         OPENSOLID_CORE_EXPORT BinaryOperation(
-            const Function& firstOperand,
-            const Function& secondOperand
+            const FunctionImplementationPtr& firstOperand,
+            const FunctionImplementationPtr& secondOperand
         );
         
-        const Function& firstOperand() const;
-        const Function& secondOperand() const;
+        const FunctionImplementationPtr&
+        firstOperand() const;
         
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-    protected:
-        template <class TDerived>
-        static bool IsDuplicate(
-            const TDerived* derived,
-            const Function& function,
-            bool commutative
-        );
+        const FunctionImplementationPtr&
+        secondOperand() const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperands(
+            const FunctionImplementationPtr& newFirstOperand,
+            const FunctionImplementationPtr& newSecondOperand
+        ) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isCommutative() const;
     };
 }
 
@@ -65,28 +92,13 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const Function& BinaryOperation::firstOperand() const {
+    inline const FunctionImplementationPtr&
+    BinaryOperation::firstOperand() const {
         return _firstOperand;
     }
     
-    inline const Function& BinaryOperation::secondOperand() const {
+    inline const FunctionImplementationPtr&
+    BinaryOperation::secondOperand() const {
         return _secondOperand;
-    }
-
-    // Performs a simple duplication check by checking whether both arguments have the same type
-    // and duplicate operands. Note that this is only valid for simple binary operations with no
-    // additional associated data.
-    template <class TDerived>
-    bool BinaryOperation::IsDuplicate(
-        const TDerived* derived,
-        const Function& function,
-        bool commutative
-    ) {
-        const TDerived* other = dynamic_cast<const TDerived*>(function.implementation());
-        if (other) {
-            return derived->duplicateOperands(other, commutative);
-        } else {
-            return false;
-        }
     }
 }

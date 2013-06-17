@@ -44,7 +44,7 @@ namespace opensolid
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function QuotientFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function QuotientFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new QuotientFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

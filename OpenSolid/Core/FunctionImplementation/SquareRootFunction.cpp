@@ -40,7 +40,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SquareRootFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function SquareRootFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new SquareRootFunction(operand().deduplicated(others));
     }
     

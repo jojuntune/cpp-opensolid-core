@@ -42,7 +42,7 @@ namespace opensolid
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function SumFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function SumFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

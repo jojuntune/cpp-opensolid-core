@@ -47,7 +47,7 @@ namespace opensolid
         }
     }
 
-    Function TempScalingFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function TempScalingFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TempScalingFunction(scale(), operand().deduplicated(others));
     }
     

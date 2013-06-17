@@ -50,8 +50,8 @@ namespace opensolid
         }
     }
 
-    Function TempTranslationFunction::deduplicated(Deduplicator& deduplicator) const {
-        return new TempTranslationFunction(deduplicator(operand()), vector());
+    Function TempTranslationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+        return new TempTranslationFunction(deduplicationCache(operand()), vector());
     }
     
     void TempTranslationFunction::evaluate(

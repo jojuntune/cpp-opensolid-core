@@ -39,7 +39,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function NormFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function NormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new NormFunction(operand().deduplicated(others));
     }
     

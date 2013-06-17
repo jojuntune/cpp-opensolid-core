@@ -27,7 +27,7 @@
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
-#include <OpenSolid/Core/Function/Evaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 
 #include <boost/timer.hpp>
@@ -52,9 +52,8 @@ public:
 
     void testConstant() {
         Function f = Function::Constant(3.0, 1);
-        TS_ASSERT(f.asConstant());
+        TS_ASSERT(f.isConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
-        TS_ASSERT(f.asConstant()->vector().value() - 3 == Zero());
     }
     
     void testArithmetic() {
@@ -116,9 +115,7 @@ public:
     
     void testVector() {
         Function f = Function::Constant(Vector3d(1, 2, 3), 0);
-        TS_ASSERT(f.asConstant());
-        TS_ASSERT(f.asConstant()->vector() == Vector3d(1, 2, 3));
-        TS_ASSERT(f.asConstant()->vector().transpose() == RowVector3d(1, 2, 3));
+        TS_ASSERT(f.isConstant());
     }
     
     void testConversion() {

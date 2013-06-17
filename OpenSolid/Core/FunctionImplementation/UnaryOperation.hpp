@@ -31,19 +31,41 @@
 
 namespace opensolid
 {
-    class UnaryOperation : public FunctionImplementation
+    class UnaryOperation :
+        public FunctionImplementation
     {
     private:
-        Function _operand;
+        FunctionImplementationPtr _operand;
+        
+        OPENSOLID_CORE_EXPORT
+        int
+        numParametersImpl() const override;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override = 0;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        composeImpl(const FunctionImplementationPtr& innerFunction) const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandImpl(const FunctionImplementationPtr& newOperand) const = 0;
     public:
-        OPENSOLID_CORE_EXPORT UnaryOperation(const Function& operand);
+        OPENSOLID_CORE_EXPORT
+        UnaryOperation(const FunctionImplementationPtr& operand);
         
-        const Function& operand() const;
-        
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-    protected:
-        template <class TDerived>
-        static bool IsDuplicate(const TDerived* derived, const Function& function);
+        const FunctionImplementationPtr&
+        operand() const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperand(const FunctionImplementationPtr& newOperand) const;
     };
 }
 
@@ -51,21 +73,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const Function& UnaryOperation::operand() const {
+    inline const FunctionImplementationPtr&
+    UnaryOperation::operand() const {
         return _operand;
-    }
-
-    // Performs a simple duplication check by checking whether both arguments have the same type
-    // and duplicate operands. Note that this is only valid for simple unary operations with no
-    // additional associated data, e.g., it is valid for SineFunction but not ScalingFunction (since
-    // ScalingFunction contains a scaling factor in addition to its Function operand).
-    template <class TDerived>
-    bool UnaryOperation::IsDuplicate(const TDerived* derived, const Function& function) {
-        const TDerived* other = dynamic_cast<const TDerived*>(function.implementation());
-        if (other) {
-            return derived->operand().isDuplicateOf(other->operand());
-        } else {
-            return false;
-        }
     }
 }

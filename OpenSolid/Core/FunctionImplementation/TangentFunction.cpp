@@ -40,7 +40,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function TangentFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function TangentFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TangentFunction(operand().deduplicated(others));
     }
     

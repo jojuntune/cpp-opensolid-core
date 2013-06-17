@@ -26,19 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/Deduplicator.declarations.hpp>
-#include <OpenSolid/Core/Function/FunctionImplementation.declarations.hpp>
-
-#include <boost/intrusive_ptr.hpp>
-
-namespace opensolid
-{
-    class Deduplicator
-    {
-    private:
-        std::vector<FunctionImplementationPtr> _cache;
-    public:
-        FunctionImplementationPtr
-        deduplicate(const FunctionImplementationPtr& functionImplementation);
-    };
-}
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.definitions.hpp>

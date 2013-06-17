@@ -54,7 +54,7 @@ namespace opensolid
         }
     }
 
-    Function TempTransformationFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function TempTransformationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TempTransformationFunction(
             transformationMatrix(),
             operand().deduplicated(others)

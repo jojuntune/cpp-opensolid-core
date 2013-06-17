@@ -29,13 +29,17 @@
 
 namespace opensolid
 {
-    PowerFunction::PowerFunction(const Function& baseFunction, const Function& exponentFunction) :
-        BinaryOperation(baseFunction, exponentFunction) {
-        assert(baseFunction.numDimensions() == 1);
-        assert(exponentFunction.numDimensions() == 1);
-        if (const ConstantFunction* constantExponent = exponentFunction.asConstant()) {
+    PowerFunction::PowerFunction(
+        const FunctionImplementationPtr& baseFunction,
+        const FunctionImplementationPtr& exponentFunction
+    ) : BinaryOperation(baseFunction, exponentFunction) {
+
+        assert(baseFunction->numDimensions() == 1);
+        assert(exponentFunction->numDimensions() == 1);
+
+        if (exponentFunction.isConstant()) {
             _exponentIsConstant = true;
-            _constantExponent = constantExponent->vector().value();
+            _constantExponent = exponentFunction->cast<ConstantFunction>()->value();
             _integerExponent = floor(_constantExponent + 0.5);
             _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
         } else {
@@ -54,7 +58,7 @@ namespace opensolid
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function PowerFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function PowerFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedBase = firstOperand().deduplicated(others);
         Function deduplicatedExponent = secondOperand().deduplicated(others);
         return new PowerFunction(deduplicatedBase, deduplicatedExponent);

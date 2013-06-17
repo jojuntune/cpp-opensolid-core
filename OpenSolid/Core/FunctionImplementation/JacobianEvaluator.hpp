@@ -26,4 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function/Evaluator.definitions.hpp>
+#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.definitions.hpp>

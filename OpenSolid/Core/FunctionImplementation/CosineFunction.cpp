@@ -42,7 +42,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function CosineFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function CosineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new CosineFunction(operand().deduplicated(others));
     }
     

@@ -22,39 +22,11 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Function/Deduplicator.hpp>
-#include <OpenSolid/Core/Function.hpp>
+#pragma once
+
+#include <OpenSolid/config.hpp>
 
 namespace opensolid
 {
-    FunctionImplementationPtr
-    Deduplicator::deduplicate()(const FunctionImplementationPtr& functionImplementation) {
-        // If a null pointer is passed, simply return it
-        if (!functionImplementation) {
-            return functionImplementation;
-        }
-
-        // Try to find a function implementation in the cache that is a duplicate of the given
-        // function implementation
-        auto iterator = std::find_if(
-            _cache.begin(),
-            _cache.end(),
-            [&functionImplementation] (
-                const FunctionImplementationPtr& cachedFunctionImplementation
-            ) -> bool {
-                return functionImplementation->isDuplicateOf(cachedFunctionImplementation);
-            }
-        );
-
-        // Return the cached duplicate if one was found
-        if (iterator < _cache.end()) {
-            return *iterator;
-        }
-
-        // No matching function implementation was found: add a deduplicated copy of this
-        // function implementation to the list, then return it
-        FunctionImplementationPtr result = functionImplementation->deduplicated(*this);
-        _cache.push_back(result);
-        return result;
-    }
+    class DeduplicationCache;
 }

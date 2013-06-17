@@ -29,9 +29,9 @@
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 
 #include <OpenSolid/Core/Function.declarations.hpp>
-#include <OpenSolid/Core/Function/Deduplicator.declarations.hpp>
-#include <OpenSolid/Core/Function/Evaluator.declarations.hpp>
-#include <OpenSolid/Core/Function/JacobianEvaluator.declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
@@ -45,18 +45,6 @@ namespace opensolid
         public ReferenceCounted
     {
     private:
-        OPENSOLID_CORE_EXPORT
-        virtual const ConstantFunction*
-        asConstantImpl() const;
-        
-        OPENSOLID_CORE_EXPORT
-        virtual const IdentityFunction*
-        asIdentityImpl() const;
-        
-        OPENSOLID_CORE_EXPORT
-        virtual const ParameterFunction*
-        asParameterImpl() const;
-
         OPENSOLID_CORE_EXPORT
         virtual int
         numDimensionsImpl() const = 0;
@@ -107,7 +95,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
-        deduplicatedImpl(Deduplicator& deduplicator) const = 0;
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const = 0;
 
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
@@ -159,6 +147,10 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
+        negatedImpl() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual FunctionImplementationPtr
         sqrtImpl() const;
 
         OPENSOLID_CORE_EXPORT
@@ -192,19 +184,33 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual void
         debugImpl(std::ostream& stream, int indent) const = 0;
+
+        friend FunctionImplementationPtr operator-(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr sqrt(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr sin(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr cos(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr tan(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr acos(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr asin(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr exp(const FunctionImplementationPtr&);
+        friend FunctionImplementationPtr log(const FunctionImplementationPtr&);
     public:
         OPENSOLID_CORE_EXPORT
         virtual
         ~FunctionImplementation();
 
-        const ConstantFunction*
-        asConstant() const;
+        bool
+        isConstant() const;
         
-        const IdentityFunction*
-        asIdentity() const;
+        bool
+        isIdentity() const;
         
-        const ParameterFunction*
-        asParameter() const;
+        bool
+        isParameter() const;
+
+        template <class TFunctionImplementation>
+        const TFunctionImplementation*
+        cast() const;
 
         int
         numDimensions() const;
@@ -250,7 +256,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        deduplicated(Deduplicator& deduplicator) const;
+        deduplicated(DeduplicationCache& deduplicationCache) const;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
@@ -322,70 +328,190 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        negated() const;
+        dot(const FunctionImplementationPtr& other) const;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        sum(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        difference(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        product(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        quotient(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        dotProduct(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        crossProduct(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        sqrt() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        sin() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        cos() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        tan() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        acos() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        asin() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        exp() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        log() const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        pow(const FunctionImplementationPtr& other) const;
+        cross(const FunctionImplementationPtr& other) const;
 
         OPENSOLID_CORE_EXPORT
         void
         debug(std::ostream& stream, int indent) const;
     };
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator-(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator+(
+        const FunctionImplementationPtr& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator+(
+        const FunctionImplementationPtr& firstArgument,
+        const VectorXd& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator+(
+        const VectorXd& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator+(
+        const FunctionImplementationPtr& firstArgument,
+        double secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator+(
+        double firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator-(
+        const FunctionImplementationPtr& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator-(
+        const FunctionImplementationPtr& firstArgument,
+        const VectorXd& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator-(
+        const VectorXd& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator-(
+        const FunctionImplementationPtr& firstArgument,
+        double secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator-(
+        double firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator*(
+        const FunctionImplementationPtr& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator*(
+        const FunctionImplementationPtr& firstArgument,
+        const VectorXd& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator*(
+        const VectorXd& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator*(
+        const FunctionImplementationPtr& firstArgument,
+        double secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator*(
+        double firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator/(
+        const FunctionImplementationPtr& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator/(
+        const VectorXd& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator/(
+        const FunctionImplementationPtr& firstArgument,
+        double secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    operator/(
+        double firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    sqrt(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    sin(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    cos(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    tan(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    acos(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    asin(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    exp(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    log(const FunctionImplementationPtr& argument);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    pow(
+        const FunctionImplementationPtr& firstArgument,
+        const FunctionImplementationPtr& secondArgument
+    );
 }

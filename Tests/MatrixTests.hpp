@@ -264,6 +264,7 @@ public:
         Point3d origin = Point3d::Origin();
         TS_ASSERT((point1 - point2).isZero());
         TS_ASSERT(origin.vector().isZero());
+        TS_ASSERT(origin.isOrigin());
         TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
         TS_ASSERT((point1.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
     }

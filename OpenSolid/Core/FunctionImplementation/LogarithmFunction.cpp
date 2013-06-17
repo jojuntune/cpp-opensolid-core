@@ -40,7 +40,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function LogarithmFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function LogarithmFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new LogarithmFunction(operand().deduplicated(others));
     }
         

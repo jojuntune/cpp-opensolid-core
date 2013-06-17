@@ -44,7 +44,7 @@ namespace opensolid
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function ProductFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function ProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new ProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);

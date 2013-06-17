@@ -37,7 +37,7 @@ namespace opensolid
         VectorXd _vector;
         VectorXI _bounds;
         int _numParameters;
-        
+
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const override;
@@ -72,11 +72,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        deduplicatedImpl(Deduplicator& deduplicator) const override;
-
-        OPENSOLID_CORE_EXPORT
-        const ConstantFunction*
-        asConstantImpl() const override;
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
@@ -160,6 +156,9 @@ namespace opensolid
         
         const VectorXI&
         bounds() const;
+
+        bool
+        isZero(double tolerance = 1e-12) const;
     };
 }
 
@@ -172,11 +171,16 @@ namespace opensolid
 
     inline double
     ConstantFunction::value() const {
-        return _vector.value();
+        return vector().value();
     }
 
     inline const VectorXI&
     ConstantFunction::bounds() const {
         return _bounds;
+    }
+
+    inline bool
+    ConstantFunction::isZero(double tolerance) const {
+        return vector().isZero(tolerance);
     }
 }

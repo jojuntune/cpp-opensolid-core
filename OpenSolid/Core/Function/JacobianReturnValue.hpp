@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Function/JacobianReturnValue.definitions.hpp>
 
 #include <OpenSolid/Core/Function/MatrixArgument.hpp>
-#include <OpenSolid/Core/Function/JacobianEvaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>

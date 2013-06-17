@@ -42,7 +42,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function ArcsineFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function ArcsineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new ArcsineFunction(operand().deduplicated(others));
     }
     

@@ -39,7 +39,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SquaredNormFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function SquaredNormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new SquaredNormFunction(operand().deduplicated(others));
     }
     

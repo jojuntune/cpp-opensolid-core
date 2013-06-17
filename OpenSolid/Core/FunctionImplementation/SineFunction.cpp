@@ -40,7 +40,7 @@ namespace opensolid
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SineFunction::deduplicated(Deduplicator& deduplicator) const {
+    Function SineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new SineFunction(operand().deduplicated(others));
     }
     

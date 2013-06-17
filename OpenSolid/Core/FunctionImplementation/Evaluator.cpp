@@ -22,7 +22,7 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Function/JacobianEvaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
 
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
@@ -30,10 +30,28 @@
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
+#include <unordered_map>
+
 namespace opensolid
 {
     namespace
     {
+        template <class TScalar>
+        const TScalar*
+        dataPointer(const ConstantFunction* constantFunction);
+
+        template <>
+        const double*
+        dataPointer<double>(const ConstantFunction* constantFunction) {
+            return &constantFunction->vector().coeffRef(0);
+        }
+
+        template <>
+        const Interval*
+        dataPointer<Interval>(const ConstantFunction* constantFunction) {
+            return &constantFunction->bounds().coeffRef(0);
+        }
+
         template <class TScalar>
         struct Types;
 
@@ -56,13 +74,13 @@ namespace opensolid
             typedef std::pair<const FunctionImplementation*, const Interval*> Key;
             typedef std::unordered_map<Key, Matrix> Cache;
         };
-
+    
         template <class TScalar>
         inline typename Types<TScalar>::ConstMap
-        evaluateJacobian(
+        evaluate(
             const FunctionImplementationPtr& functionImplementation,
             const typename Types<TScalar>::ConstMap& parameterValues,
-            const typename Types<TScalar>::Cache& cache
+            const typename Types<TScalar>::Cache& cache 
         ) {
             typedef typename Types<TScalar>::Map Map;
             typedef typename Types<TScalar>::ConstMap ConstMap;
@@ -74,52 +92,80 @@ namespace opensolid
                 assert(false);
                 return ConstMap();
             }
-            Key key(functionImplementation.get(), parameterValues.data());
-            auto iterator = cache.find(key);
-            if (iterator == cache.end()) {
-                // Cached results not found - insert new empty entry into cache
-                iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
-                Matrix& resultMatrix = iterator->second;
-                // Resize inserted matrix to the correct size
-                resultMatrix.resize(
-                    functionImplementation->numDimensions(),
-                    functionImplementation->numParameters()
+            if (functionImplementation->isIdentity()) {
+                // Identity function: simply return parameter values map as-is
+                return parameterValues;
+            } else if (functionImplementation->isParameter()) {
+                // Parameter function: build map pointing to a single row of data within the given
+                // parameter values
+                int parameterIndex =
+                    functionImplementation->cast<ParameterFunction>()->parameterIndex();
+                Stride<Dynamic, Dynamic> stride(parameterValues.outerStride(), 1);
+                const TScalar* data = &parameterValues.coeffRef(parameterIndex, 0);
+                return ConstMap(data, 1, parameterValues.cols(), stride);
+            } else if (functionImplementation->isConstant()) {
+                // Constant function: build map pointing to constant data (using an outer stride of
+                // zero allows the single column of data within the ConstantFunction to be used to
+                // represent a matrix of arbitrary number of columns)
+                Stride<Dynamic, Dynamic> stride(0, 1);
+                const TScalar* data = dataPointer<TScalar>(
+                    functionImplementation->cast<ConstantFunction>()
                 );
-                // Construct map pointing to newly allocated results matrix
-                Map resultMap(
+                return ConstMap(
+                    data,
+                    functionImplementation->numDimensions(),
+                    parameterValues.cols(),
+                    stride
+                );
+            } else {
+                // Generic function: return map to cached data, generating data if necessary
+                Key key(functionImplementation.get(), parameterValues.data());
+                auto iterator = cache.find(key);
+                if (iterator == cache.end()) {
+                    // Cached results not found - insert new empty entry into cache
+                    iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
+                    Matrix& resultMatrix = iterator->second;
+                    // Resize inserted matrix to the correct size
+                    resultMatrix.resize(
+                        functionImplementation->numDimensions(),
+                        parameterValues.cols()
+                    );
+                    // Construct map pointing to newly allocated results matrix
+                    Map resultMap(
+                        resultMatrix.data(),
+                        resultMatrix.rows(),
+                        resultMatrix.cols(),
+                        Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+                    );
+                    // Evaluate function into results matrix using map
+                    functionImplementation->evaluate(parameterValues, resultMap, *this);
+                }
+                // Get reference to cached matrix
+                const Matrix& resultMatrix = iterator->second;
+                // Return map pointing to cached matrix
+                return ConstMap(
                     resultMatrix.data(),
                     resultMatrix.rows(),
                     resultMatrix.cols(),
                     Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
                 );
-                // Jacobian function into results matrix using map
-                functionImplementation->evaluateJacobian(parameterValues, resultMap, *this);
             }
-            // Get reference to cached matrix
-            const Matrix& resultMatrix = iterator->second;
-            // Return map pointing to cached matrix
-            return ConstMap(
-                resultMatrix.data(),
-                resultMatrix.rows(),
-                resultMatrix.cols(),
-                Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
-            );
         }
     }
 
     MapXcd
-    JacobianEvaluator::evaluateJacobian(
+    Evaluator::evaluate(
         const FunctionImplementationPtr& functionImplementation,
         const MapXcd& parameterValues
     ) {
-        return evaluateJacobian<double>(functionImplementation, parameterValues, _cachedValues);
+        return evaluate<double>(functionImplementation, parameterValues, _cachedValues);
     }
 
     MapXcI
-    JacobianEvaluator::evaluateJacobian(
+    Evaluator::evaluate(
         const FunctionImplementationPtr& functionImplementation,
         const MapXcI& parameterBounds
     ) {
-        return evaluateJacobian<Interval>(functionImplementation, parameterBounds, _cachedBounds);
+        return evaluate<Interval>(functionImplementation, parameterBounds, _cachedBounds);
     }
 }
