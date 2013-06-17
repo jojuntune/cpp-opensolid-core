@@ -185,15 +185,15 @@ namespace opensolid
         virtual void
         debugImpl(std::ostream& stream, int indent) const = 0;
 
-        friend FunctionImplementationPtr operator-(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr sqrt(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr sin(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr cos(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr tan(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr acos(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr asin(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr exp(const FunctionImplementationPtr&);
-        friend FunctionImplementationPtr log(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr operator-(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr sqrt(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr sin(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr cos(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr tan(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr acos(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr asin(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr exp(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr log(const FunctionImplementationPtr&);
     public:
         OPENSOLID_CORE_EXPORT
         virtual
