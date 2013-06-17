@@ -80,7 +80,7 @@ namespace opensolid
         Geometry<iNumDestinationDimensions, iNumParameters>
         operator()(
             const Geometry<iNumDimensions, iNumParameters>& geometry,
-            const Function& function
+            const Function<iNumDestinationDimensions, iNumDimensions>& function
         ) const;
     };
 }

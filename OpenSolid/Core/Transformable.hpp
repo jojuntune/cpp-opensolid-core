@@ -152,7 +152,9 @@ namespace opensolid
 
     template <class TDerived> template <int iNumDestinationDimensions>
     inline typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
-    Transformable<TDerived>::morphed(const Function& function) const {
+    Transformable<TDerived>::morphed(
+        const Function<iNumDestinationDimensions, NumDimensions<TDerived>::Value>& function
+    ) const {
         return morphing(derived(), function);
     }
 
@@ -198,7 +200,10 @@ namespace opensolid
 
     template <class TDerived> template <int iNumDestinationDimensions>
     typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
-    Transformable<TDerived>::morphing(const TDerived& argument, const Function& function) {
+    Transformable<TDerived>::morphing(
+        const TDerived& argument,
+        const Function<iNumDestinationDimensions, NumDimensions<TDerived>::Value>& function
+    ) {
         return MorphingFunction<TDerived, iNumDestinationDimensions>()(argument, function);
     }
 }

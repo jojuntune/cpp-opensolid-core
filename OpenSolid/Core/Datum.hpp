@@ -467,18 +467,11 @@ namespace opensolid
     inline Datum<iNumDestinationDimensions, iNumAxes>
     MorphingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>::operator()(
         const Datum<iNumDimensions, iNumAxes>& datum,
-        const Function& function
+        const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
-        bool validInput = function.numParameters() == iNumDimensions;
-        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
-        if (validInput && validOutput) {
-            return Datum<iNumDestinationDimensions, iNumAxes>(
-                datum.originPoint().template morphed<iNumDestinationDimensions>(function),
-                function.jacobian(datum.originPoint().vector()) * datum.basisMatrix()
-            );
-        } else {
-            assert(false);
-            return Datum<iNumDestinationDimensions, iNumAxes>();
-        }
+        return Datum<iNumDestinationDimensions, iNumAxes>(
+            datum.originPoint().morphed(function),
+            function.jacobian(datum.originPoint().vector()) * datum.basisMatrix()
+        );
     }
 }

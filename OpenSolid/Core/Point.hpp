@@ -222,16 +222,9 @@ namespace opensolid
     inline Point<iNumDestinationDimensions>
     MorphingFunction<Point<iNumDimensions>, iNumDestinationDimensions>::operator()(
         const Point<iNumDimensions>& point,
-        const Function& function
+        const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
-        bool validInput = function.numParameters() == iNumDimensions;
-        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
-        if (validInput && validOutput) {
-            return Point<iNumDestinationDimensions>(function(point.vector()));
-        } else {
-            assert(false);
-            return Point<iNumDestinationDimensions>();
-        }
+        return Point<iNumDestinationDimensions>(function(point.vector()));
     }
 
     template <int iNumDimensions>

@@ -390,16 +390,9 @@ namespace opensolid
     inline Box<iNumDestinationDimensions>
     MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>::operator()(
         const Box<iNumDimensions>& box,
-        const Function& function
+        const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
-        bool validInput = function.numParameters() == iNumDimensions;
-        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
-        if (validInput && validOutput) {
-            return Box<iNumDestinationDimensions>(function(box.vector()));
-        } else {
-            assert(false);
-            return Box<iNumDestinationDimensions>();
-        }
+        return Box<iNumDestinationDimensions>(function(box.vector()));
     }
 
     template <int iNumDimensions>

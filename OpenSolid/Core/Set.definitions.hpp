@@ -303,7 +303,10 @@ namespace opensolid
     struct MorphingFunction<Set<TElement>, iNumDestinationDimensions>
     {
         Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
-        operator()(const Set<TElement>& set, const Function& function) const;
+        operator()(
+            const Set<TElement>& set,
+            const Function<iNumDestinationDimensions, iNumDimensions>& function
+        ) const;
     };
 
     template <class TElement>

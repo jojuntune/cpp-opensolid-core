@@ -167,7 +167,7 @@ namespace opensolid
         Simplex<iNumDestinationDimensions, iNumVertices>
         operator()(
             const Simplex<iNumDimensions, iNumVertices>& simplex,
-            const Function& function
+            const Function<iNumDestinationDimensions, iNumDimensions>& function
         ) const;
     };
 

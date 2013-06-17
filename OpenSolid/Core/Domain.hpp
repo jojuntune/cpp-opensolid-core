@@ -109,14 +109,12 @@ namespace opensolid
     Domain<iNumDimensions>
     MorphingFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
         const Domain<iNumDimensions>& domain,
-        const Function& function
+        const Function<iNumDimensions, iNumDimensions>& function
     ) const {
         bool validInput = function.numParameters() == iNumDimensions;
         bool validOutput = function.numDimensions() == iNumDimensions;
         if (validInput && validOutput) {
-            return Domain<iNumDimensions>(
-                domain.boundaries().template morphed<iNumDimensions>(function)
-            );
+            return Domain<iNumDimensions>(domain.boundaries().morphed(function));
         } else {
             assert(false);
             return Domain<iNumDimensions>();

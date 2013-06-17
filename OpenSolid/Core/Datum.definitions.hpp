@@ -224,6 +224,9 @@ namespace opensolid
     struct MorphingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
     {
         Datum<iNumDestinationDimensions, iNumAxes>
-        operator()(const Datum<iNumDimensions, iNumAxes>& datum, const Function& function) const;
+        operator()(
+            const Datum<iNumDimensions, iNumAxes>& datum,
+            const Function<iNumDestinationDimensions, iNumDimensions>& function
+        ) const;
     };
 }

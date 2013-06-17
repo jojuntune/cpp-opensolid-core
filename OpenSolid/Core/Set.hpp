@@ -773,14 +773,15 @@ namespace opensolid
         class SetElementMorphingWrapper
         {
         private:
-            Function _function;
+            Function<iNumDestinationDimensions, NumDimensions<TElement>::Value> _function;
         public:
             typedef typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type
                 result_type;
 
             inline
-            SetElementMorphingWrapper(const Function& function) :
-                _function(function) {
+            SetElementMorphingWrapper(
+                const Function<iNumDestinationDimensions, NumDimensions<TElement>::Value>& function
+            ) : _function(function) {
             }
 
             inline result_type
@@ -794,7 +795,7 @@ namespace opensolid
     Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
     MorphingFunction<Set<TElement>, iNumDestinationDimensions>::operator()(
         const Set<TElement>& set,
-        const Function& function
+        const Function<iNumDestinationDimensions, NumDimensions<TElement>::Value>& function
     ) const {
         return set.mapped(
             detail::SetElementMorphingWrapper<TElement, iNumDestinationDimensions>(function)

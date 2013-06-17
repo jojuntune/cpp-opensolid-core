@@ -101,7 +101,9 @@ namespace opensolid
 
         template <int iNumDestinationDimensions>
         typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
-        morphed(const Function& function) const;
+        morphed(
+            const Function<iNumDestinationDimensions, NumDimensions<TDerived>::Value>& function
+        ) const;
 
         template <int iNumAxes>
         typename ChangeDimensions<TDerived, iNumAxes>::Type
@@ -126,7 +128,10 @@ namespace opensolid
 
         template <int iNumDestinationDimensions>
         static typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
-        morphing(const TDerived& argument, const Function& function);
+        morphing(
+            const TDerived& argument,
+            const Function<iNumDestinationDimensions, NumDimensions<TDerived>::Value>& function
+        );
     };
 }
 

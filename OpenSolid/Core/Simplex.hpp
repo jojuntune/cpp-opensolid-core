@@ -342,15 +342,8 @@ namespace opensolid
     inline Simplex<iNumDestinationDimensions, iNumVertices>
     MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
-        const Function& function
+        const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
-        bool validInput = function.numParameters() == iNumDimensions;
-        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
-        if (validInput && validOutput) {
-            return Simplex<iNumDestinationDimensions, iNumVertices>(function(simplex.vertices()));
-        } else {
-            assert(false);
-            return Simplex<iNumDestinationDimensions, iNumVertices>();
-        }
+         return Simplex<iNumDestinationDimensions, iNumVertices>(function(simplex.vertices()));
     }
 }

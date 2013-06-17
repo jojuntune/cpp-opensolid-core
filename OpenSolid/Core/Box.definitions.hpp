@@ -257,7 +257,10 @@ namespace opensolid
     struct MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>
     {
         Box<iNumDestinationDimensions>
-        operator()(const Box<iNumDimensions>& box, const Function& function) const;
+        operator()(
+            const Box<iNumDimensions>& box,
+            const Function<iNumDestinationDimensions, iNumDimensions>& function
+        ) const;
     };
 
     template <int iNumDimensions>

@@ -108,7 +108,10 @@ namespace opensolid
     struct MorphingFunction<Domain<iNumDimensions>, iNumDimensions>
     {
         Domain<iNumDimensions>
-        operator()(const Domain<iNumDimensions>& domain, const Function& function) const;
+        operator()(
+            const Domain<iNumDimensions>& domain,
+            const Function<iNumDimensions, iNumDimensions>& function
+        ) const;
     };
 
     template <int iNumDimensions>

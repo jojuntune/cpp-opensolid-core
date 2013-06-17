@@ -210,18 +210,11 @@ namespace opensolid
     Geometry<iNumDestinationDimensions, iNumParameters>
     MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
-        const Function& function
+        const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
-        bool validInput = function.numParameters() == iNumDimensions;
-        bool validOutput = function.numDimensions() == iNumDestinationDimensions;
-        if (validInput && validOutput) {
-            return Geometry<iNumDestinationDimensions, iNumParameters>(
-                function.compose(geometry.function()),
-                geometry.domain()
-            );
-        } else {
-            assert(false);
-            return Geometry<iNumDestinationDimensions, iNumParameters>();
-        }
+        return Geometry<iNumDestinationDimensions, iNumParameters>(
+            function.compose(geometry.function()),
+            geometry.domain()
+        );
     }
 }
