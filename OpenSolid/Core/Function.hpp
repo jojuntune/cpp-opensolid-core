@@ -30,10 +30,11 @@
 
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.hpp>
-#include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
+#include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionReturnValue.hpp>
+#include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 

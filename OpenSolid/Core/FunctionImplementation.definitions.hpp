@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 
-#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation/Evaluator.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.declarations.hpp>

@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Datum.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.declarations.hpp>
-#include <OpenSolid/Core/Function/FunctionConstructors.hpp>
+#include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
 #include <OpenSolid/Core/Function/JacobianReturnValue.declarations.hpp>
 #include <OpenSolid/Core/Function/FunctionReturnValue.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
