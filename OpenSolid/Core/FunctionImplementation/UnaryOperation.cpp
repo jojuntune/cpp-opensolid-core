@@ -31,11 +31,6 @@ namespace opensolid
         return operand()->numParameters();
     }
 
-    bool
-    UnaryOperation::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return this->operand()->isDuplicateOf(other->cast<UnaryOperation>()->operand());
-    }
-
     FunctionImplementationPtr
     UnaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
         return this->withNewOperand(operand()->deduplicated(deduplicationCache));
@@ -45,13 +40,18 @@ namespace opensolid
     UnaryOperation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
         return this->withNewOperand(operand()->compose(innerFunction));
     }
+
+    bool
+    UnaryOperation::duplicateOperands(const FunctionImplementationPtr& other) const {
+        return this->operand()->isDuplicateOf(other->cast<UnaryOperation>()->operand());
+    }
     
     UnaryOperation::UnaryOperation(const FunctionImplementationPtr& operand) :
         _operand(operand) {
     }
 
     FunctionImplementationPtr
-    UnaryOperation::withNewOperand(const FunctionImplementationPtr& newOperand) {
+    UnaryOperation::withNewOperand(const FunctionImplementationPtr& newOperand) const {
         return withNewOperandImpl(newOperand);
     }
 }

@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {
     int
@@ -61,7 +63,7 @@ namespace opensolid
     
     bool
     ConstantFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return (this->vector() - other->as<ConstantFunction>()->vector()).isZero();
+        return (this->vector() - other->cast<ConstantFunction>()->vector()).isZero();
     }
 
     FunctionImplementationPtr

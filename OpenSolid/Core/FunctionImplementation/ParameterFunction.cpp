@@ -24,42 +24,20 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
-    ParameterFunction::ParameterFunction(int numParameters, int parameterIndex) :
-        _numParameters(numParameters),
-        _parameterIndex(parameterIndex) {
-
-        assert(numParameters > 0);
-        assert(parameterIndex >= 0 && parameterIndex < numParameters);
-    }
-
-    int ParameterFunction::numParameters() const {
-        return _numParameters;
-    }
-
-    int ParameterFunction::numDimensions() const {
+    int
+    ParameterFunction::numDimensionsImpl() const {
         return 1;
     }
 
-    bool ParameterFunction::isDuplicateOf(const Function& function) const {
-        const ParameterFunction* other =
-            dynamic_cast<const ParameterFunction*>(function.implementation());
-        if (other) {
-            return this->numParameters() == other->numParameters() &&
-                this->index() == other->index();
-        } else {
-            return false;
-        }
-    }
-
-    Function ParameterFunction::deduplicated(DeduplicationCache&) const {
-        return this;
+    int
+    ParameterFunction::numParametersImpl() const {
+        return _numParameters;
     }
     
-    void ParameterFunction::evaluate(
+    void
+    ParameterFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator&
@@ -67,7 +45,8 @@ namespace opensolid
         results = parameterValues.row(parameterIndex());
     }
     
-    void ParameterFunction::evaluate(
+    void
+    ParameterFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator&
@@ -75,15 +54,39 @@ namespace opensolid
         results = parameterBounds.row(parameterIndex());
     }
 
-    Function ParameterFunction::derivative(int index) const {
-        return Function::Constant(index == this->parameterIndex() ? 1.0 : 0.0, numParameters());
+    FunctionImplementationPtr
+    ParameterFunction::derivativeImpl(int parameterIndex) const {
+        return new ConstantFunction(
+            parameterIndex == this->parameterIndex() ? 1.0 : 0.0,
+            numParameters()
+        );
+    }
+
+    bool
+    ParameterFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return this->parameterIndex() == other->cast<ParameterFunction>()->parameterIndex();
+    }
+
+    FunctionImplementationPtr
+    ParameterFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return this;
     }
     
-    Function ParameterFunction::compose(const Function& innerFunction) const {
-        return innerFunction.components(parameterIndex(), 1);
+    FunctionImplementationPtr
+    ParameterFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+        return innerFunction->component(parameterIndex());
     }
     
-    void ParameterFunction::debug(std::ostream& stream, int indent) const {
+    void
+    ParameterFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ParameterFunction: parameter index = " << parameterIndex() << std::endl;
+    }
+
+    ParameterFunction::ParameterFunction(int numParameters, int parameterIndex) :
+        _numParameters(numParameters),
+        _parameterIndex(parameterIndex) {
+
+        assert(numParameters > 0);
+        assert(parameterIndex >= 0 && parameterIndex < numParameters);
     }
 }

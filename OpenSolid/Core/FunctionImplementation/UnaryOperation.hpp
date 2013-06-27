@@ -26,7 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 
 namespace opensolid
@@ -42,10 +41,6 @@ namespace opensolid
         numParametersImpl() const override;
 
         OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override = 0;
-
-        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
 
@@ -54,8 +49,12 @@ namespace opensolid
         composeImpl(const FunctionImplementationPtr& innerFunction) const override;
 
         OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
+        virtual FunctionImplementationPtr
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const = 0;
+    protected:
+        OPENSOLID_CORE_EXPORT
+        bool
+        duplicateOperands(const FunctionImplementationPtr& other) const;
     public:
         OPENSOLID_CORE_EXPORT
         UnaryOperation(const FunctionImplementationPtr& operand);

@@ -24,39 +24,20 @@
 
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
-    IdentityFunction::IdentityFunction(int numDimensions) :
-        _numDimensions(numDimensions) {
-
-        assert(_numDimensions > 0);
-    }
-
-    int IdentityFunction::numParameters() const {
+    int
+    IdentityFunction::numDimensionsImpl() const {
         return _numDimensions;
     }
 
-    int IdentityFunction::numDimensions() const {
+    int
+    IdentityFunction::numParametersImpl() const {
         return _numDimensions;
-    }
-
-    bool IdentityFunction::isDuplicateOf(const Function& function) const {
-        const IdentityFunction* other =
-            dynamic_cast<const IdentityFunction*>(function.implementation());
-        if (other) {
-            return this->numDimensions() == other->numDimensions();
-        } else {
-            return false;
-        }
-    }
-
-    Function IdentityFunction::deduplicated(std::vector<Function>&) const {
-        return this;
     }
     
-    void IdentityFunction::evaluate(
+    void
+    IdentityFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator&
@@ -64,7 +45,8 @@ namespace opensolid
         results = parameterValues;
     }
     
-    void IdentityFunction::evaluate(
+    void
+    IdentityFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator&
@@ -72,15 +54,38 @@ namespace opensolid
         results = parameterBounds;
     }
 
-    Function IdentityFunction::derivative(int index) const {
-        return Function::Constant(VectorXd::Unit(numDimensions(), index), numDimensions());
+    FunctionImplementationPtr
+    IdentityFunction::derivativeImpl(int parameterIndex) const {
+        return new ConstantFunction(
+            VectorXd::Unit(numDimensions(), parameterIndex),
+            numDimensions()
+        );
+    }
+
+    bool
+    IdentityFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        // FunctionImplementation already checks that numbers of parameters/dimensions area equal
+        return true;
+    }
+
+    FunctionImplementationPtr
+    IdentityFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return this;
     }
     
-    Function IdentityFunction::compose(const Function& innerFunction) const {
+    FunctionImplementationPtr
+    IdentityFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
         return innerFunction;
     }
     
-    void IdentityFunction::debug(std::ostream& stream, int indent) const {
+    void
+    IdentityFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "IdentityFunction" << std::endl;
+    }
+
+    IdentityFunction::IdentityFunction(int numDimensions) :
+        _numDimensions(numDimensions) {
+
+        assert(numDimensions > 0);
     }
 }

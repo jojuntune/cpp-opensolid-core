@@ -25,7 +25,6 @@
 #include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
-#include <OpenSolid/Core/Function.hpp>
 
 namespace opensolid
 {
@@ -74,13 +73,13 @@ namespace opensolid
     
     bool
     ArccosineFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::isDuplicateOfImpl(this, other);
+        return duplicateOperands(other);
     }
     
     void
     ArccosineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ArccosineFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 
     FunctionImplementationPtr

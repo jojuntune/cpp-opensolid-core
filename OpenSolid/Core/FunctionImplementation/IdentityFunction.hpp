@@ -30,35 +30,55 @@
 
 namespace opensolid
 {
-    class IdentityFunction : public FunctionImplementation
+    class IdentityFunction :
+        public FunctionImplementation
     {
     private:
         int _numDimensions;
-    public:
-        OPENSOLID_CORE_EXPORT IdentityFunction(int numDimensions);
-        
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensionsImpl() const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        int
+        numParametersImpl() const;
+        
+        OPENSOLID_CORE_EXPORT
+        void evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        derivativeImpl(int index) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        composeImpl(const FunctionImplementationPtr& innerFunction) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debugImpl(std::ostream& stream, int indent) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        IdentityFunction(int numDimensions);
     };
 }
