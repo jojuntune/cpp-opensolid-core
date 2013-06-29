@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/QuotientFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     QuotientFunction::QuotientFunction(

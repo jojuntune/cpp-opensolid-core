@@ -27,13 +27,13 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    class EllipticalFunction : public FunctionImplementation
+    class EllipticalFunction :
+        public FunctionImplementation
     {
     private:
         Datum<iNumDimensions, iNumAxes> _datum;
@@ -44,34 +44,52 @@ namespace opensolid
             const Matrix<bool, 1, iNumAxes - 1>& convention
         );
         
-        const Datum<iNumDimensions, iNumAxes>& datum() const;
-        const Matrix<bool, 1, iNumAxes - 1>& convention() const;
+        const Datum<iNumDimensions, iNumAxes>&
+        datum() const;
         
-        int numParameters() const;
-        int numDimensions() const;
+        const Matrix<bool, 1, iNumAxes - 1>&
+        convention() const;
+        
+        int
+        numParameters() const;
+        
+        int
+        numDimensions() const;
 
-        bool isDuplicateOf(const Function& other) const;
-        Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        bool
+        isDuplicateOf(const Function& other) const;
         
-        void evaluate(
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
+        
+        void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        void evaluate(
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        Function derivative(int index) const;
+        Function
+        derivative(int index) const;
         
-        Function scaled(double scale) const;
-        Function transformed(const MatrixXd& transformationMatrix) const;
-        Function translated(const VectorXd& vector) const;
+        Function
+        scaled(double scale) const;
         
-        void debug(std::ostream& stream, int indent) const;
+        Function
+        transformed(const MatrixXd& transformationMatrix) const;
+        
+        Function
+        translated(const VectorXd& vector) const;
+        
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }
 
@@ -100,17 +118,20 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    int EllipticalFunction<iNumDimensions, iNumAxes>::numParameters() const {
+    int
+    EllipticalFunction<iNumDimensions, iNumAxes>::numParameters() const {
         return iNumAxes - 1;
     }
     
     template <int iNumDimensions, int iNumAxes>
-    int EllipticalFunction<iNumDimensions, iNumAxes>::numDimensions() const {
+    int
+    EllipticalFunction<iNumDimensions, iNumAxes>::numDimensions() const {
         return iNumDimensions;
     }
 
     template <int iNumDimensions, int iNumAxes>
-    bool EllipticalFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const Function& function) const {
+    bool
+    EllipticalFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const Function& function) const {
         const EllipticalFunction<iNumDimensions, iNumAxes>* other =
             dynamic_cast<const EllipticalFunction<iNumDimensions, iNumAxes>*>(
                 function.implementation()
@@ -125,17 +146,19 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function EllipticalFunction<iNumDimensions, iNumAxes>::deduplicated(
-        std::vector<Function>&
+    Function
+    EllipticalFunction<iNumDimensions, iNumAxes>::deduplicated(
+        DeduplicationCache& deduplicationCache
     ) const {
         return this;
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
+    void
+    EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        Evaluator&
+        Evaluator& evaluator
     ) const {
         Matrix<double, iNumAxes, Dynamic> localCoordinates =
             Matrix<double, iNumAxes, Dynamic>::Ones(iNumAxes, parameterValues.cols());
@@ -155,10 +178,11 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
+    void
+    EllipticalFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        Evaluator&
+        Evaluator& evaluator
     ) const {
         Matrix<Interval, iNumAxes, Dynamic> localCoordinates =
             Matrix<Interval, iNumAxes, Dynamic>::Ones(iNumAxes, parameterBounds.cols());
@@ -178,7 +202,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function EllipticalFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
+    Function
+    EllipticalFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
         Matrix<double, iNumDimensions, iNumAxes> derivativeBasisMatrix = datum().basisMatrix();
 
         Matrix<bool, 1, iNumAxes - 1> derivativeConvention = convention();
@@ -200,7 +225,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Function EllipticalFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
+    Function
+    EllipticalFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale),
             convention()
@@ -208,7 +234,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Function EllipticalFunction<iNumDimensions, iNumAxes>::transformed(
+    Function
+    EllipticalFunction<iNumDimensions, iNumAxes>::transformed(
         const MatrixXd& transformationMatrix
     ) const {
         int numTransformedDimensions = transformationMatrix.rows();
@@ -243,7 +270,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Function EllipticalFunction<iNumDimensions, iNumAxes>::translated(
+    Function
+    EllipticalFunction<iNumDimensions, iNumAxes>::translated(
         const VectorXd& vector
     ) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
@@ -253,7 +281,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void EllipticalFunction<iNumDimensions, iNumAxes>::debug(
+    void
+    EllipticalFunction<iNumDimensions, iNumAxes>::debug(
         std::ostream& stream,
         int indent
     ) const {

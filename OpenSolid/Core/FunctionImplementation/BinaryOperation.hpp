@@ -26,12 +26,12 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 
 namespace opensolid
 {
-    class BinaryOperation : public FunctionImplementation
+    class BinaryOperation :
+        public FunctionImplementation
     {
     private:
         FunctionImplementationPtr _firstOperand;
@@ -40,10 +40,6 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         int
         numParametersImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override = 0;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
@@ -59,12 +55,13 @@ namespace opensolid
             const FunctionImplementationPtr& newFirstOperand,
             const FunctionImplementationPtr& newSecondOperand
         ) const = 0;
-
+    protected:
         OPENSOLID_CORE_EXPORT
         bool
-        isCommutativeImpl() const = 0;
+        duplicateOperands(const FunctionImplementationPtr& other, bool isCommutative) const;
     public:
-        OPENSOLID_CORE_EXPORT BinaryOperation(
+        OPENSOLID_CORE_EXPORT
+        BinaryOperation(
             const FunctionImplementationPtr& firstOperand,
             const FunctionImplementationPtr& secondOperand
         );
@@ -81,10 +78,6 @@ namespace opensolid
             const FunctionImplementationPtr& newFirstOperand,
             const FunctionImplementationPtr& newSecondOperand
         ) const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isCommutative() const;
     };
 }
 

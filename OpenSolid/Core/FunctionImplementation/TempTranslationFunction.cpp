@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/TempTranslationFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     TempTranslationFunction::TempTranslationFunction(const Function& operand, const VectorXd& vector) :

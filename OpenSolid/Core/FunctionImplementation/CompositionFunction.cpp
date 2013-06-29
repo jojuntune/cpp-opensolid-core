@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/CompositionFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     CompositionFunction::CompositionFunction(
@@ -36,25 +34,30 @@ namespace opensolid
         assert(outerFunction.numParameters() == innerFunction.numDimensions());
     }
     
-    int CompositionFunction::numDimensions() const {
+    int
+    CompositionFunction::numDimensions() const {
         return firstOperand().numDimensions();
     }
     
-    int CompositionFunction::numParameters() const {
+    int
+    CompositionFunction::numParameters() const {
         return secondOperand().numParameters();
     }
 
-    bool CompositionFunction::isDuplicateOf(const Function& function) const {
+    bool
+    CompositionFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function CompositionFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    CompositionFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedOuterFunction = firstOperand().deduplicated(others);
         Function deduplicatedInnerFunction = secondOperand().deduplicated(others);
         return new CompositionFunction(deduplicatedOuterFunction, deduplicatedInnerFunction);
     }
 
-    void CompositionFunction::evaluate(
+    void
+    CompositionFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -63,7 +66,8 @@ namespace opensolid
         results = cache.results(firstOperand(), innerValues);
     }
 
-    void CompositionFunction::evaluate(
+    void
+    CompositionFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -72,7 +76,8 @@ namespace opensolid
         results = cache.results(firstOperand(), innerBounds);
     }
 
-    Function CompositionFunction::derivative(int index) const {
+    Function
+    CompositionFunction::derivative(int index) const {
         Function innerDerivative = secondOperand().derivative(index);
 
         Function result = firstOperand().derivative(0).compose(secondOperand()) *
@@ -86,11 +91,13 @@ namespace opensolid
         return result;
     }
         
-    Function CompositionFunction::compose(const Function& innerFunction) const {
+    Function
+    CompositionFunction::compose(const Function& innerFunction) const {
         return firstOperand().compose(secondOperand().compose(innerFunction));
     }
     
-    void CompositionFunction::debug(std::ostream& stream, int indent) const {
+    void
+    CompositionFunction::debug(std::ostream& stream, int indent) const {
         stream << "CompositionFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

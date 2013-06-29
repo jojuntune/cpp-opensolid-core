@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ConcatenationFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     ConcatenationFunction::ConcatenationFunction(
@@ -34,21 +32,25 @@ namespace opensolid
     ) : BinaryOperation(firstOperand, secondOperand) {
     }
     
-    int ConcatenationFunction::numDimensions() const {
+    int
+    ConcatenationFunction::numDimensions() const {
         return firstOperand().numDimensions() + secondOperand().numDimensions();
     }
 
-    bool ConcatenationFunction::isDuplicateOf(const Function& function) const {
+    bool
+    ConcatenationFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function ConcatenationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    ConcatenationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new ConcatenationFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void ConcatenationFunction::evaluate(
+    void
+    ConcatenationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -59,7 +61,8 @@ namespace opensolid
             cache.results(secondOperand(), parameterValues);
     }
     
-    void ConcatenationFunction::evaluate(
+    void
+    ConcatenationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -70,11 +73,13 @@ namespace opensolid
             cache.results(secondOperand(), parameterBounds);
     }
     
-    Function ConcatenationFunction::derivative(int index) const {
+    Function
+    ConcatenationFunction::derivative(int index) const {
         return firstOperand().derivative(index).concatenate(secondOperand().derivative(index));
     }
     
-    Function ConcatenationFunction::components(int startIndex, int numComponents) const {
+    Function
+    ConcatenationFunction::components(int startIndex, int numComponents) const {
         int firstDimensions = firstOperand().numDimensions();
         if (startIndex + numComponents <= firstDimensions) {
             return firstOperand().components(startIndex, numComponents);
@@ -88,13 +93,15 @@ namespace opensolid
         }
     }
     
-    Function ConcatenationFunction::compose(const Function& innerFunction) const {
+    Function
+    ConcatenationFunction::compose(const Function& innerFunction) const {
         return firstOperand().compose(innerFunction).concatenate(
             secondOperand().compose(innerFunction)
         );
     }
     
-    void ConcatenationFunction::debug(std::ostream& stream, int indent) const {
+    void
+    ConcatenationFunction::debug(std::ostream& stream, int indent) const {
         stream << "ConcatenationFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

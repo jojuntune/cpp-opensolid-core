@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/TangentFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     TangentFunction::TangentFunction(const Function& operand) : UnaryOperation(operand) {

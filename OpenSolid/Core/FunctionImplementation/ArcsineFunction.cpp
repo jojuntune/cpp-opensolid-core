@@ -24,63 +24,72 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ArcsineFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
-    ArcsineFunction::ArcsineFunction(const Function& operand) :
-        UnaryOperation(operand) {
-
-        assert(operand.numDimensions() == 1);
-    }
-    
-    int ArcsineFunction::numDimensions() const {
+    int
+    ArcsineFunction::numDimensionsImpl() const {
         return 1;
     }
 
-    bool ArcsineFunction::isDuplicateOf(const Function& function) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    Function ArcsineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new ArcsineFunction(operand().deduplicated(others));
-    }
-    
     struct Arcsine
     {
-        inline double operator()(double value) const {
-            assert(Interval(-1, 1).contains(value));
-            return asin(Interval(-1, 1).clamp(value));
+        inline double
+        operator()(double value) const {
+            Interval domain(-1, 1);
+            assert(domain.contains(value));
+            return asin(domain.clamp(value));
         }
         
-        inline Interval operator()(const Interval& bounds) const {
-            assert(Interval(-1, 1).overlaps(bounds));
-            return asin(Interval(-1, 1).clamp(bounds));
+        inline Interval
+        operator()(const Interval& bounds) const {
+            Interval domain(-1, 1);
+            assert(domain.overlaps(bounds));
+            return asin(domain.clamp(bounds));
         }
     };
     
-    void ArcsineFunction::evaluate(
+    void
+    ArcsineFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).unaryExpr(Arcsine());
+        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arcsine());
     }
     
-    void ArcsineFunction::evaluate(
+    void
+    ArcsineFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).unaryExpr(Arcsine());
-    }
-
-    Function ArcsineFunction::derivative(int index) const {
-        return operand().derivative(index) / sqrt(1 - operand().squaredNorm());
+        results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(Arcsine());
     }
     
-    void ArcsineFunction::debug(std::ostream& stream, int indent) const {
+    FunctionImplementationPtr
+    ArcsineFunction::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex) / sqrt(1.0 - operand()->squaredNorm());
+    }
+    
+    bool
+    ArcsineFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other);
+    }
+    
+    void
+    ArcsineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ArcsineFunction" << std::endl;
         operand().debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    ArcsineFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return asin(newOperand);
+    }
+
+    ArcsineFunction::ArcsineFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+
+        assert(operand->numDimensions() == 1);
     }
 }

@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/DifferenceFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     DifferenceFunction::DifferenceFunction(
@@ -36,21 +34,25 @@ namespace opensolid
         assert(firstOperand.numDimensions() == secondOperand.numDimensions());
     }
     
-    int DifferenceFunction::numDimensions() const {
+    int
+    DifferenceFunction::numDimensions() const {
         return firstOperand().numDimensions();
     }
 
-    bool DifferenceFunction::isDuplicateOf(const Function& function) const {
+    bool
+    DifferenceFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function DifferenceFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    DifferenceFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new DifferenceFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void DifferenceFunction::evaluate(
+    void
+    DifferenceFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -60,7 +62,8 @@ namespace opensolid
         results = firstValues - secondValues;
     }
     
-    void DifferenceFunction::evaluate(
+    void
+    DifferenceFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -70,11 +73,13 @@ namespace opensolid
         results = firstBounds - secondBounds;
     }
 
-    Function DifferenceFunction::derivative(int index) const {
+    Function
+    DifferenceFunction::derivative(int index) const {
         return firstOperand().derivative(index) - secondOperand().derivative(index);
     }
     
-    void DifferenceFunction::debug(std::ostream& stream, int indent) const {
+    void
+    DifferenceFunction::debug(std::ostream& stream, int indent) const {
         stream << "DifferenceFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

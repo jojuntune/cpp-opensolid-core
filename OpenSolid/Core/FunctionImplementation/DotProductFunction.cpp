@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/DotProductFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     DotProductFunction::DotProductFunction(
@@ -36,21 +34,25 @@ namespace opensolid
         assert(firstOperand.numDimensions() == secondOperand.numDimensions());
     }
     
-    int DotProductFunction::numDimensions() const {
+    int
+    DotProductFunction::numDimensions() const {
         return 1;
     }
 
-    bool DotProductFunction::isDuplicateOf(const Function& function) const {
+    bool
+    DotProductFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function DotProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    DotProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new DotProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void DotProductFunction::evaluate(
+    void
+    DotProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -60,7 +62,8 @@ namespace opensolid
         results = firstValues.cwiseProduct(secondValues).colwise().sum();
     }
     
-    void DotProductFunction::evaluate(
+    void
+    DotProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -70,12 +73,14 @@ namespace opensolid
         results = firstBounds.cwiseProduct(secondBounds).colwise().sum();
     }
 
-    Function DotProductFunction::derivative(int index) const {
+    Function
+    DotProductFunction::derivative(int index) const {
         return firstOperand().derivative(index).dot(secondOperand())
             + firstOperand().dot(secondOperand().derivative(index));
     }
     
-    void DotProductFunction::debug(std::ostream& stream, int indent) const {
+    void
+    DotProductFunction::debug(std::ostream& stream, int indent) const {
         stream << "DotProductFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

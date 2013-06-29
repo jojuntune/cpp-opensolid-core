@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
 
-#include <OpenSolid/Core/Error.hpp>
-
 namespace opensolid
 {
     int
@@ -35,13 +33,15 @@ namespace opensolid
 
     struct Arccosine
     {
-        inline double operator()(double value) const {
+        inline double
+        operator()(double value) const {
             Interval domain(-1, 1);
             assert(domain.contains(value));
             return acos(domain.clamp(value));
         }
         
-        inline Interval operator()(const Interval& bounds) const {
+        inline Interval
+        operator()(const Interval& bounds) const {
             Interval domain(-1, 1);
             assert(domain.overlaps(bounds));
             return acos(domain.clamp(bounds));
@@ -67,8 +67,8 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    ArccosineFunction::derivativeImpl(int index) const {
-        return -operand()->derivative(index) / sqrt(1.0 - operand()->squaredNorm());
+    ArccosineFunction::derivativeImpl(int parameterIndex) const {
+        return -operand()->derivative(parameterIndex) / sqrt(1.0 - operand()->squaredNorm());
     }
     
     bool
@@ -84,14 +84,12 @@ namespace opensolid
 
     FunctionImplementationPtr
     ArccosineFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
-        return new ArccosineFunction(newOperand);
+        return acos(newOperand);
     }
 
     ArccosineFunction::ArccosineFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
 
-        if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
-        }
+        assert(operand->numDimensions() != 1);
     }
 }

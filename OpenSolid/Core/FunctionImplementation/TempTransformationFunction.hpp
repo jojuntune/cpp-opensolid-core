@@ -27,7 +27,6 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/Datum.hpp>
-
 #include <OpenSolid/Core/FunctionImplementation/UnaryOperation.hpp>
 
 namespace opensolid

@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/TempTransformationFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     TempTransformationFunction::TempTransformationFunction(

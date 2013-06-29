@@ -24,12 +24,63 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ComponentsFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
+    int
+    ComponentsFunction::numDimensionsImpl() const {
+        return numComponents();
+    }
+    
+    void
+    ComponentsFunction::evaluateImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
+        results = operandValues.middleRows(startIndex(), numComponents());
+    }
+    
+    void
+    ComponentsFunction::evaluateImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        results = operandBounds.middleRows(startIndex(), numComponents());
+    }
+
+    FunctionImplementationPtr
+    ComponentsFunction::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex)->components(startIndex(), numComponents());
+    }
+
+    bool
+    ComponentsFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other) &&
+            this->startIndex() == other->cast<ComponentsFunction>()->startIndex() &&
+            this->numComponents() == other->cast<ComponentsFunction>()->numComponents();
+    }
+    
+    FunctionImplementationPtr
+    ComponentsFunction::componentsImpl(int startIndex, int numComponents) const {
+        return operand()->components(this->startIndex() + startIndex, numComponents);
+    }
+    
+    void
+    ComponentsFunction::debugImpl(std::ostream& stream, int indent) const {
+        stream << "ComponentsFunction" << std::endl;
+        operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    ComponentsFunction::withNewOperandImpl(const FunctionImplementationPtr newOperand) const {
+        return newOperand->components(startIndex(), numComponents());
+    }
+
     ComponentsFunction::ComponentsFunction(
-        const Function& operand,
+        const FunctionImplementationPtr& operand,
         int startIndex,
         int numComponents
     ) : UnaryOperation(operand),
@@ -38,67 +89,6 @@ namespace opensolid
 
         assert(startIndex >= 0);
         assert(numComponents > 0);
-        assert(startIndex + numComponents <= operand.numDimensions());
-    }
-
-    int ComponentsFunction::numDimensions() const {
-        return numComponents();
-    }
-
-    bool ComponentsFunction::isDuplicateOf(const Function& function) const {
-        const ComponentsFunction* other =
-            dynamic_cast<const ComponentsFunction*>(function.implementation());
-        if (other) {
-            return this->startIndex() == other->startIndex() &&
-                this->numComponents() == other->numComponents() &&
-                this->operand().isDuplicateOf(other->operand());
-        } else {
-            return false;
-        }
-    }
-
-    Function ComponentsFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new ComponentsFunction(
-            operand().deduplicated(others),
-            startIndex(),
-            numComponents()
-        );
-    }
-    
-    void ComponentsFunction::evaluate(
-        const MapXcd& parameterValues,
-        MapXd& results,
-        Evaluator& evaluator
-    ) const {
-        MapXcd operandValues = cache.results(operand(), parameterValues);
-        results = operandValues.middleRows(startIndex(), numComponents());
-    }
-    
-    void ComponentsFunction::evaluate(
-        const MapXcI& parameterBounds,
-        MapXI& results,
-        Evaluator& evaluator
-    ) const {
-        MapXcI operandBounds = cache.results(operand(), parameterBounds);
-        results = operandBounds.middleRows(startIndex(), numComponents());
-    }
-
-    Function ComponentsFunction::derivative(int parameterIndex) const {
-        return operand().derivative(parameterIndex).components(startIndex(), numComponents());
-    }
-    
-    Function ComponentsFunction::components(int startIndex, int numComponents) const {
-        assert(startIndex >= 0 && startIndex < this->numComponents());
-        assert(numComponents <= this->numComponents());
-        return operand().components(this->startIndex() + startIndex, numComponents);
-    }
-    
-    Function ComponentsFunction::compose(const Function& innerFunction) const {
-        return operand().compose(innerFunction).components(startIndex(), numComponents());
-    }
-    
-    void ComponentsFunction::debug(std::ostream& stream, int indent) const {
-        stream << "ComponentsFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        assert(startIndex + numComponents <= operand->numDimensions());
     }
 }

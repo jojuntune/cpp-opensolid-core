@@ -31,26 +31,6 @@ namespace opensolid
         return firstOperand().numParameters();
     }
 
-    bool
-    BinaryOperation::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        FunctionImplementationPtr otherFirstOperand =
-            other->cast<BinaryOperation>()->firstOperand();
-        FunctionImplementationPtr otherSecondOperand =
-            other->cast<BinaryOperation>()->secondOperand();
-
-        bool nonCommutativeCheck = firstOperand()->isDuplicateOf(otherFirstOperand) &&
-            secondOperand()->isDuplicateOf(otherSecondOperand);
-            
-        if (nonCommutativeCheck) {
-            return true;
-        } else if (isCommutative()) {
-            return firstOperand()->isDuplicateOf(otherSecondOperand) &&
-                secondOperand()->isDuplicateOf(otherFirstOperand);
-        } else {
-            return false;
-        }
-    }
-
     FunctionImplementationPtr
     BinaryOperation::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
         return this->withNewOperands(
@@ -65,6 +45,29 @@ namespace opensolid
             firstOperand()->compose(innerFunction),
             secondOperand()->compose(innerFunction)
         );
+    }
+
+    bool
+    BinaryOperation::duplicateOperands(
+        const FunctionImplementationPtr& other,
+        bool isCommutative
+    ) const {
+        FunctionImplementationPtr otherFirstOperand =
+            other->cast<BinaryOperation>()->firstOperand();
+        FunctionImplementationPtr otherSecondOperand =
+            other->cast<BinaryOperation>()->secondOperand();
+
+        bool nonCommutativeCheck = firstOperand()->isDuplicateOf(otherFirstOperand) &&
+            secondOperand()->isDuplicateOf(otherSecondOperand);
+            
+        if (nonCommutativeCheck) {
+            return true;
+        } else if (isCommutative) {
+            return firstOperand()->isDuplicateOf(otherSecondOperand) &&
+                secondOperand()->isDuplicateOf(otherFirstOperand);
+        } else {
+            return false;
+        }
     }
 
     BinaryOperation::BinaryOperation(
@@ -84,10 +87,5 @@ namespace opensolid
         const FunctionImplementationPtr& newSecondOperand
     ) const {
         return withNewOperandsImpl(newFirstOperand, newSecondOperand);
-    }
-
-    bool
-    BinaryOperation::isCommutative() const {
-        return isCommutativeImpl();
     }
 }

@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/SquareRootFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryOperation(operand) {

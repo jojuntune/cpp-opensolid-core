@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/CrossProductFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     CrossProductFunction::CrossProductFunction(
@@ -36,21 +34,25 @@ namespace opensolid
         assert(firstOperand.numDimensions() == 3 && secondOperand.numDimensions() == 3);
     }
     
-    int CrossProductFunction::numDimensions() const {
+    int
+    CrossProductFunction::numDimensions() const {
         return 3;
     }
 
-    bool CrossProductFunction::isDuplicateOf(const Function& function) const {
+    bool
+    CrossProductFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function CrossProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    CrossProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new CrossProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void CrossProductFunction::evaluate(
+    void
+    CrossProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -62,7 +64,8 @@ namespace opensolid
         }
     }
     
-    void CrossProductFunction::evaluate(
+    void
+    CrossProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -74,12 +77,14 @@ namespace opensolid
         }
     }
 
-    Function CrossProductFunction::derivative(int index) const {
+    Function
+    CrossProductFunction::derivative(int index) const {
         return firstOperand().derivative(index).cross(secondOperand())
             + firstOperand().cross(secondOperand().derivative(index));
     }
     
-    void CrossProductFunction::debug(std::ostream& stream, int indent) const {
+    void
+    CrossProductFunction::debug(std::ostream& stream, int indent) const {
         stream << "CrossProductFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

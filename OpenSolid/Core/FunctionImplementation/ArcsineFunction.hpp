@@ -30,30 +30,47 @@
 
 namespace opensolid
 {
-    class ArcsineFunction : public UnaryOperation
+    class ArcsineFunction :
+        public UnaryOperation
     {
-    public:
-        OPENSOLID_CORE_EXPORT ArcsineFunction(const Function& operand);
+    private:
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensionsImpl() const override;
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
-
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
-        
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
 
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const override;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debugImpl(std::ostream& stream, int indent) const override;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandImpl(const FunctionImplementationPtr& newOperand) const override;
+    public:
+        OPENSOLID_CORE_EXPORT
+        ArcsineFunction(const FunctionImplementationPtr& operand);
     };
 }

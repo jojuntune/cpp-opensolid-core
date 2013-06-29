@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/SumFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     SumFunction::SumFunction(const Function& firstOperand, const Function& secondOperand) :

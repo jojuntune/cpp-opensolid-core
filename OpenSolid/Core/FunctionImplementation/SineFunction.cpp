@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/SineFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     SineFunction::SineFunction(const Function& operand) : UnaryOperation(operand) {

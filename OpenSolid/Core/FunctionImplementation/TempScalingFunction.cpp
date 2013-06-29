@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/TempScalingFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     TempScalingFunction::TempScalingFunction(double scale, const Function& operand) :

@@ -29,8 +29,6 @@
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.declarations.hpp>
 
-#include <boost/intrusive_ptr.hpp>
-
 namespace opensolid
 {
     class DeduplicationCache

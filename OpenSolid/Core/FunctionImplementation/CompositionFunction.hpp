@@ -26,42 +26,65 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
-#include <OpenSolid/Core/FunctionImplementation/BinaryOperation.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 
 namespace opensolid
 {
-    class CompositionFunction : public BinaryOperation
+    class CompositionFunction :
+        public FunctionImplementation
     {
-    public:
-        OPENSOLID_CORE_EXPORT CompositionFunction(
-            const Function& outerFunction,
-            const Function& innerFunction
-        );
+    private:
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensionsImpl() const;
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
-        OPENSOLID_CORE_EXPORT int numParameters() const;
-
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numParametersImpl() const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        composeImpl(const FunctionImplementationPtr& innerFunction) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debugImpl(std::ostream& stream, int indent) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandsImpl(
+            const FunctionImplementationPtr& firstNewOperand,
+            const FunctionImplementationPtr& secondNewOperand
+        ) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        CompositionFunction(
+            const FunctionImplementationPtr& outerFunction,
+            const FunctionImplementationPtr& innerFunction
+        );
     };
 }

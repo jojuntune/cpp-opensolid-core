@@ -56,7 +56,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        derivativeImpl(int index) const override;
+        derivativeImpl(int parameterIndex) const override;
 
         OPENSOLID_CORE_EXPORT
         bool

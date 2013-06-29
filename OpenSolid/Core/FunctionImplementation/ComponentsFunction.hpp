@@ -30,45 +30,65 @@
 
 namespace opensolid
 {
-    class ComponentsFunction : public UnaryOperation
+    class ComponentsFunction :
+        public UnaryOperation
     {
     private:
         int _startIndex;
         int _numComponents;
-    public:
-        OPENSOLID_CORE_EXPORT ComponentsFunction(
-            const Function& operand,
-            int startIndex,
-            int numComponents
-        );
         
-        int startIndex() const;
-        int numComponents() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensionsImpl() const;
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
-
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
-        
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        OPENSOLID_CORE_EXPORT Function derivative(int parameterIndex) const;
-        
-        OPENSOLID_CORE_EXPORT Function components(int startIndex, int numComponents) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const;
 
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        componentsImpl(int startIndex, int numComponents) const;
+        
+        OPENSOLID_CORE_EXPORT
+        void
+        debugImpl(std::ostream& stream, int indent) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandImpl(const FunctionImplementationPtr newOperand) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        ComponentsFunction(
+            const FunctionImplementationPtr& operand,
+            int startIndex,
+            int numComponents
+        );
+        
+        int
+        startIndex() const;
+        
+        int
+        numComponents() const;
     };
 }
 
@@ -76,11 +96,13 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline int ComponentsFunction::startIndex() const {
+    inline int
+    ComponentsFunction::startIndex() const {
         return _startIndex;
     }
 
-    inline int ComponentsFunction::numComponents() const {
+    inline int
+    ComponentsFunction::numComponents() const {
         return _numComponents;
     }
 }

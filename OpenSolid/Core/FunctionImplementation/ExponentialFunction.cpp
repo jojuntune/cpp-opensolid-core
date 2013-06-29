@@ -24,8 +24,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ExponentialFunction.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
-
 namespace opensolid
 {
     ExponentialFunction::ExponentialFunction(const Function& operand) : UnaryOperation(operand) {
