@@ -193,6 +193,9 @@ namespace opensolid
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr asin(const FunctionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr exp(const FunctionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr log(const FunctionImplementationPtr&);
+    protected:
+        FunctionImplementationPtr
+        self() const;
     public:
         OPENSOLID_CORE_EXPORT
         virtual

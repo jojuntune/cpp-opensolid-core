@@ -37,6 +37,11 @@
 
 namespace opensolid
 {
+    inline FunctionImplementationPtr
+    FunctionImplementation::self() const {
+        return this;
+    }
+
     inline bool
     FunctionImplementation::isConstant() const {
         return typeid(this) == typeid(ConstantFunction);
