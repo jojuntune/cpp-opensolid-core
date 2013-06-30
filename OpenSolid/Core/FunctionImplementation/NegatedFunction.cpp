@@ -131,7 +131,7 @@ namespace opensolid
 
     FunctionImplementationPtr
     NegatedFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
-        return new NegatedFunction(newOperand);
+        return -newOperand;
     }
 
     NegatedFunction::NegatedFunction(const FunctionImplementationPtr& operand) :
