@@ -75,7 +75,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        withNewOperandImpl(const FunctionImplementationPtr newOperand) const;
+        withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
     public:
         OPENSOLID_CORE_EXPORT
         ComponentsFunction(

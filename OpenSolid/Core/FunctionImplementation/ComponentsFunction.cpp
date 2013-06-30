@@ -75,7 +75,7 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    ComponentsFunction::withNewOperandImpl(const FunctionImplementationPtr newOperand) const {
+    ComponentsFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
         return newOperand->components(startIndex(), numComponents());
     }
 
