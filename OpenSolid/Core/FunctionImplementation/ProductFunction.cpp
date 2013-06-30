@@ -34,21 +34,25 @@ namespace opensolid
         assert(multiplier.numDimensions() == 1);
     }
     
-    int ProductFunction::numDimensions() const {
+    int
+    ProductFunction::numDimensions() const {
         return secondOperand().numDimensions();
     }
 
-    bool ProductFunction::isDuplicateOf(const Function& function) const {
+    bool
+    ProductFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function ProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    ProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new ProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void ProductFunction::evaluate(
+    void
+    ProductFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -58,7 +62,8 @@ namespace opensolid
         results = secondValues * firstValues.topRows<1>().asDiagonal();
     }
     
-    void ProductFunction::evaluate(
+    void
+    ProductFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -68,12 +73,14 @@ namespace opensolid
         results = secondBounds * firstBounds.topRows<1>().asDiagonal();
     }
 
-    Function ProductFunction::derivative(int index) const {
+    Function
+    ProductFunction::derivative(int index) const {
         return firstOperand().derivative(index) * secondOperand()
             + firstOperand() * secondOperand().derivative(index);
     }
     
-    void ProductFunction::debug(std::ostream& stream, int indent) const {
+    void
+    ProductFunction::debug(std::ostream& stream, int indent) const {
         stream << "ProductFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

@@ -116,7 +116,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        withNewOperand(const FunctionImplementationPtr& newOperand) const override;
+        withNewOperandImpl(const FunctionImplementationPtr& newOperand) const override;
     public:
         OPENSOLID_CORE_EXPORT
         NegatedFunction(const FunctionImplementationPtr& operand);

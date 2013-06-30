@@ -30,33 +30,50 @@
 
 namespace opensolid
 {
-    class ProductFunction : public BinaryOperation
+    class ProductFunction :
+        public BinaryOperation
     {
     public:
-        OPENSOLID_CORE_EXPORT ProductFunction(
+        OPENSOLID_CORE_EXPORT
+        ProductFunction(
             const Function& multiplier,
             const Function& multiplicand
         );
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOf(const Function& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }

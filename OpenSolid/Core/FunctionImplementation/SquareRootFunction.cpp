@@ -26,36 +26,44 @@
 
 namespace opensolid
 {
-    SquareRootFunction::SquareRootFunction(const Function& operand) : UnaryOperation(operand) {
+    SquareRootFunction::SquareRootFunction(const Function& operand) :
+        UnaryOperation(operand) {
+        
         assert(operand.numDimensions() == 1);
     }
     
-    int SquareRootFunction::numDimensions() const {
+    int
+    SquareRootFunction::numDimensions() const {
         return 1;
     }
 
-    bool SquareRootFunction::isDuplicateOf(const Function& function) const {
+    bool
+    SquareRootFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SquareRootFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    SquareRootFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new SquareRootFunction(operand().deduplicated(others));
     }
     
     struct SquareRoot
     {
-        inline double operator()(double value) const {
+        inline double
+        operator()(double value) const {
             assert(value >= Zero());
             return value > 0.0 ? sqrt(value) : 0.0;
         }
         
-        inline Interval operator()(const Interval& bounds) const {
+        inline Interval
+        operator()(const Interval& bounds) const {
             assert(bounds >= Zero());
             return Interval(operator()(bounds.lowerBound()), operator()(bounds.upperBound()));
         }
     };
     
-    void SquareRootFunction::evaluate(
+    void
+    SquareRootFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -63,7 +71,8 @@ namespace opensolid
         results = cache.results(operand(), parameterValues).unaryExpr(SquareRoot());
     }
     
-    void SquareRootFunction::evaluate(
+    void
+    SquareRootFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -71,15 +80,18 @@ namespace opensolid
         results = cache.results(operand(), parameterBounds).unaryExpr(SquareRoot());
     }
 
-    Function SquareRootFunction::derivative(int index) const {
+    Function
+    SquareRootFunction::derivative(int index) const {
         return 0.5 * operand().derivative(index) / Function(this);
     }
     
-    Function SquareRootFunction::squaredNorm() const {
+    Function
+    SquareRootFunction::squaredNorm() const {
         return operand().norm();
     }
     
-    void SquareRootFunction::debug(std::ostream& stream, int indent) const {
+    void
+    SquareRootFunction::debug(std::ostream& stream, int indent) const {
         stream << "SquareRootFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

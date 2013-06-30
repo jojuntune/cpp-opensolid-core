@@ -26,22 +26,27 @@
 
 namespace opensolid
 {
-    NormFunction::NormFunction(const Function& operand) : UnaryOperation(operand) {
+    NormFunction::NormFunction(const Function& operand) :
+        UnaryOperation(operand) {
     }
     
-    int NormFunction::numDimensions() const {
+    int
+    NormFunction::numDimensions() const {
         return 1;
     }
 
-    bool NormFunction::isDuplicateOf(const Function& function) const {
+    bool
+    NormFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function NormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    NormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new NormFunction(operand().deduplicated(others));
     }
     
-    void NormFunction::evaluate(
+    void
+    NormFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -49,7 +54,8 @@ namespace opensolid
         results = cache.results(operand(), parameterValues).colwise().norm();
     }
     
-    void NormFunction::evaluate(
+    void 
+    NormFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -57,11 +63,13 @@ namespace opensolid
         results = cache.results(operand(), parameterBounds).colwise().norm();
     }
 
-    Function NormFunction::derivative(int index) const {
+    Function
+    NormFunction::derivative(int index) const {
         return operand().derivative(index).dot(operand().normalized());
     }
     
-    void NormFunction::debug(std::ostream& stream, int indent) const {
+    void
+    NormFunction::debug(std::ostream& stream, int indent) const {
         stream << "NormFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

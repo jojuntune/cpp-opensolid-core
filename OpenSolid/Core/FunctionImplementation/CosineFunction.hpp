@@ -30,7 +30,8 @@
 
 namespace opensolid
 {
-    class CosineFunction : public UnaryOperation
+    class CosineFunction :
+        public UnaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT

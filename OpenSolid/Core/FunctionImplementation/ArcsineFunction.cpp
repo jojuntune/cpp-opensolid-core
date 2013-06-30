@@ -79,7 +79,7 @@ namespace opensolid
     void
     ArcsineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ArcsineFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 
     FunctionImplementationPtr

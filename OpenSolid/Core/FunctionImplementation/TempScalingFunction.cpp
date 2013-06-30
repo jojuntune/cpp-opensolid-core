@@ -31,11 +31,13 @@ namespace opensolid
         _scale(scale) {
     }
 
-    int TempScalingFunction::numDimensions() const {
+    int
+    TempScalingFunction::numDimensions() const {
         return operand().numDimensions();
     }
 
-    bool TempScalingFunction::isDuplicateOf(const Function& function) const {
+    bool
+    TempScalingFunction::isDuplicateOf(const Function& function) const {
         const TempScalingFunction* other =
             dynamic_cast<const TempScalingFunction*>(function.implementation());
         if (other) {
@@ -45,11 +47,13 @@ namespace opensolid
         }
     }
 
-    Function TempScalingFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    TempScalingFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TempScalingFunction(scale(), operand().deduplicated(others));
     }
     
-    void TempScalingFunction::evaluate(
+    void
+    TempScalingFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -57,7 +61,8 @@ namespace opensolid
         results = scale() * cache.results(operand(), parameterValues);
     }
     
-    void TempScalingFunction::evaluate(
+    void
+    TempScalingFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -65,23 +70,28 @@ namespace opensolid
         results = Interval(scale()) * cache.results(operand(), parameterBounds);
     }
     
-    Function TempScalingFunction::derivative(int index) const {
+    Function
+    TempScalingFunction::derivative(int index) const {
         return scale() * operand().derivative(index);
     }
     
-    Function TempScalingFunction::compose(const Function& innerFunction) const {
+    Function
+    TempScalingFunction::compose(const Function& innerFunction) const {
         return scale() * operand().compose(innerFunction);
     }
 
-    Function TempScalingFunction::scaled(double scale) const {
+    Function
+    TempScalingFunction::scaled(double scale) const {
         return (scale * this->scale()) * operand();
     }
 
-    Function TempScalingFunction::transformed(const MatrixXd& transformationMatrix) const {
+    Function
+    TempScalingFunction::transformed(const MatrixXd& transformationMatrix) const {
         return (transformationMatrix * scale()) * operand();
     }
     
-    void TempScalingFunction::debug(std::ostream& stream, int indent) const {
+    void
+    TempScalingFunction::debug(std::ostream& stream, int indent) const {
         stream << "TempScalingFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

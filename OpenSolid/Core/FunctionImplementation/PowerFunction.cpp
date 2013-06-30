@@ -48,15 +48,18 @@ namespace opensolid
         }
     }
         
-    int PowerFunction::numDimensions() const {
+    int
+    PowerFunction::numDimensions() const {
         return 1;
     }
 
-    bool PowerFunction::isDuplicateOf(const Function& function) const {
+    bool
+    PowerFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function PowerFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    PowerFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedBase = firstOperand().deduplicated(others);
         Function deduplicatedExponent = secondOperand().deduplicated(others);
         return new PowerFunction(deduplicatedBase, deduplicatedExponent);
@@ -66,14 +69,17 @@ namespace opensolid
     {
         int exponent;
 
-        inline IntegerPower(int exponent_) : exponent(exponent_) {
+        inline IntegerPower(int exponent_) :
+            exponent(exponent_) {
         }
 
-        inline double operator()(double base) const {
+        inline double
+        operator()(double base) const {
             return std::pow(base, exponent);
         }
 
-        inline Interval operator()(const Interval& base) const {
+        inline Interval
+        operator()(const Interval& base) const {
             return pow(base, exponent);
         }
     };
@@ -82,26 +88,31 @@ namespace opensolid
     {
         double exponent;
 
-        inline ConstantPower(double exponent_) : exponent(exponent_) {
+        inline ConstantPower(double exponent_) :
+            exponent(exponent_) {
         }
 
-        inline Interval operator()(const Interval& base) const {
+        inline Interval
+        operator()(const Interval& base) const {
             return pow(base, exponent);
         }
     };
 
     struct Power
     {
-        inline double operator()(double base, double exponent) const {
+        inline double
+        operator()(double base, double exponent) const {
             return pow(base, exponent);
         }
 
-        inline Interval operator()(const Interval& base, const Interval& exponent) const {
+        inline Interval
+        operator()(const Interval& base, const Interval& exponent) const {
             return pow(base, exponent);
         }
     };
         
-    void PowerFunction::evaluate(
+    void
+    PowerFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -117,7 +128,8 @@ namespace opensolid
         }
     }
 
-    void PowerFunction::evaluate(
+    void
+    PowerFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -133,7 +145,8 @@ namespace opensolid
         }
     }
 
-    Function PowerFunction::derivative(int index) const {
+    Function
+    PowerFunction::derivative(int index) const {
         if (_exponentIsConstant) {
             return _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
                 firstOperand().derivative(index);
@@ -145,7 +158,8 @@ namespace opensolid
         }
     }
         
-    void PowerFunction::debug(std::ostream& stream, int indent) const {
+    void
+    PowerFunction::debug(std::ostream& stream, int indent) const {
         stream << "PowerFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

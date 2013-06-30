@@ -30,7 +30,8 @@
 
 namespace opensolid
 {
-    class DifferenceFunction : public BinaryOperation
+    class DifferenceFunction :
+        public BinaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT

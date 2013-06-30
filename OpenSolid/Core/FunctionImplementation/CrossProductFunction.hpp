@@ -30,7 +30,8 @@
 
 namespace opensolid
 {
-    class CrossProductFunction : public BinaryOperation
+    class CrossProductFunction :
+        public BinaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT

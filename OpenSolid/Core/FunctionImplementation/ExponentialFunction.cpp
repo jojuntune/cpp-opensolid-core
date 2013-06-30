@@ -26,23 +26,29 @@
 
 namespace opensolid
 {
-    ExponentialFunction::ExponentialFunction(const Function& operand) : UnaryOperation(operand) {
+    ExponentialFunction::ExponentialFunction(const Function& operand) :
+        UnaryOperation(operand) {
+        
         assert(operand.numDimensions() == 1);
     }
         
-    int ExponentialFunction::numDimensions() const {
+    int 
+    ExponentialFunction::numDimensions() const {
         return 1;
     }
 
-    bool ExponentialFunction::isDuplicateOf(const Function& function) const {
+    bool
+    ExponentialFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function ExponentialFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    ExponentialFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new ExponentialFunction(operand().deduplicated(others));
     }
         
-    void ExponentialFunction::evaluate(
+    void
+    ExponentialFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -50,7 +56,8 @@ namespace opensolid
         results = cache.results(operand(), parameterValues).array().exp();
     }
 
-    void ExponentialFunction::evaluate(
+    void
+    ExponentialFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -58,11 +65,13 @@ namespace opensolid
         results = cache.results(operand(), parameterBounds).array().exp();
     }
 
-    Function ExponentialFunction::derivative(int index) const {
+    Function
+    ExponentialFunction::derivative(int index) const {
         return operand().derivative(index) * Function(this);
     }
         
-    void ExponentialFunction::debug(std::ostream& stream, int indent) const {
+    void
+    ExponentialFunction::debug(std::ostream& stream, int indent) const {
         stream << "ExponentialFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

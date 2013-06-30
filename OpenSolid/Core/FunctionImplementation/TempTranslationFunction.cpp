@@ -26,18 +26,22 @@
 
 namespace opensolid
 {
-    TempTranslationFunction::TempTranslationFunction(const Function& operand, const VectorXd& vector) :
-        UnaryOperation(operand),
+    TempTranslationFunction::TempTranslationFunction(
+        const Function& operand,
+        const VectorXd& vector
+    ) : UnaryOperation(operand),
         _vector(vector) {
 
         assert(vector.size() == operand.numDimensions());
     }
     
-    int TempTranslationFunction::numDimensions() const {
+    int
+    TempTranslationFunction::numDimensions() const {
         return operand().numDimensions();
     }
 
-    bool TempTranslationFunction::isDuplicateOf(const Function& function) const {
+    bool
+    TempTranslationFunction::isDuplicateOf(const Function& function) const {
         const TempTranslationFunction* other =
             dynamic_cast<const TempTranslationFunction*>(function.implementation());
         if (other) {
@@ -48,11 +52,13 @@ namespace opensolid
         }
     }
 
-    Function TempTranslationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    TempTranslationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TempTranslationFunction(deduplicationCache(operand()), vector());
     }
     
-    void TempTranslationFunction::evaluate(
+    void
+    TempTranslationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -61,7 +67,8 @@ namespace opensolid
         results = operandValues.colwise() + vector();
     }
     
-    void TempTranslationFunction::evaluate(
+    void
+    TempTranslationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -70,19 +77,23 @@ namespace opensolid
         results = operandBounds.colwise() + vector().cast<Interval>();
     }
     
-    Function TempTranslationFunction::derivative(int index) const {
+    Function
+    TempTranslationFunction::derivative(int index) const {
         return operand().derivative(index);
     }
     
-    Function TempTranslationFunction::compose(const Function& innerFunction) const {
+    Function
+    TempTranslationFunction::compose(const Function& innerFunction) const {
         return operand().compose(innerFunction) + vector();
     }
 
-    Function TempTranslationFunction::translated(const VectorXd& vector) const {
+    Function
+    TempTranslationFunction::translated(const VectorXd& vector) const {
         return operand() + (this->vector() + vector);
     }
     
-    void TempTranslationFunction::debug(std::ostream& stream, int indent) const {
+    void
+    TempTranslationFunction::debug(std::ostream& stream, int indent) const {
         stream << "TempTranslationFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

@@ -25,81 +25,90 @@
 #include <OpenSolid/Core/FunctionImplementation/CompositionFunction.hpp>
 
 namespace opensolid
-{
-    CompositionFunction::CompositionFunction(
-        const Function& outerFunction,
-        const Function& innerFunction
-    ) : BinaryOperation(outerFunction, innerFunction) {
-
-        assert(outerFunction.numParameters() == innerFunction.numDimensions());
+{   
+    int
+    CompositionFunction::numDimensionsImpl() const {
+        return outerFunction()->numDimensions();
     }
     
     int
-    CompositionFunction::numDimensions() const {
-        return firstOperand().numDimensions();
-    }
-    
-    int
-    CompositionFunction::numParameters() const {
-        return secondOperand().numParameters();
-    }
-
-    bool
-    CompositionFunction::isDuplicateOf(const Function& function) const {
-        return BinaryOperation::IsDuplicate(this, function, false);
-    }
-
-    Function
-    CompositionFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedOuterFunction = firstOperand().deduplicated(others);
-        Function deduplicatedInnerFunction = secondOperand().deduplicated(others);
-        return new CompositionFunction(deduplicatedOuterFunction, deduplicatedInnerFunction);
+    CompositionFunction::numParametersImpl() const {
+        return innerFunction()->numParameters();
     }
 
     void
-    CompositionFunction::evaluate(
+    CompositionFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd innerValues = cache.results(secondOperand(), parameterValues);
-        results = cache.results(firstOperand(), innerValues);
+        MapXcd innerValues = evaluator.evaluate(innerFunction(), parameterValues);
+        results = evaluator.evaluate(outerFunction(), innerValues);
     }
 
     void
-    CompositionFunction::evaluate(
+    CompositionFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI innerBounds = cache.results(secondOperand(), parameterBounds);
-        results = cache.results(firstOperand(), innerBounds);
+        MapXcI innerBounds = evaluator.evaluate(innerFunction(), parameterBounds);
+        results = evaluator.evaluate(outerFunction(), innerBounds);
     }
 
-    Function
-    CompositionFunction::derivative(int index) const {
-        Function innerDerivative = secondOperand().derivative(index);
+    FunctionImplementationPtr
+    CompositionFunction::derivativeImpl(int parameterIndex) const {
+        FunctionImplementationPtr innerDerivative =
+            innerFunction()->derivative(parameterIndex);
 
-        Function result = firstOperand().derivative(0).compose(secondOperand()) *
-            innerDerivative.component(0);
+        FunctionImplementationPtr result =
+            outerFunction()->derivative(0)->compose(innerFunction()) *
+            innerDerivative->component(0);
 
-        for (int i = 1; i < firstOperand().numParameters(); ++i) {
-            result = result + firstOperand().derivative(i).compose(secondOperand()) *
-                innerDerivative.component(i);
+        for (int i = 1; i < outerFunction()->numParameters(); ++i) {
+            result = result + outerFunction()->derivative(i)->compose(innerFunction()) *
+                innerDerivative->component(i);
         }
 
         return result;
     }
+
+    bool
+    CompositionFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        FunctionImplementationPtr otherOuterFunction =
+            other->cast<CompositionFunction>()->outerFunction();
+        FunctionImplementationPtr otherInnerFunction =
+            other->cast<CompositionFunction>()->innerFunction();
+
+        return outerFunction()->isDuplicateOf(otherOuterFunction) &&
+            innerFunction()->isDuplicateOf(otherInnerFunction);
+    }
+
+    FunctionImplementationPtr
+    CompositionFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedOuterFunction = outerFunction()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedInnerFunction = innerFunction()->deduplicated(deduplicationCache);
+        return new CompositionFunction(deduplicatedOuterFunction, deduplicatedInnerFunction);
+    }
         
-    Function
-    CompositionFunction::compose(const Function& innerFunction) const {
-        return firstOperand().compose(secondOperand().compose(innerFunction));
+    FunctionImplementationPtr
+    CompositionFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+        return outerFunction()->compose(this->innerFunction()->compose(innerFunction));
     }
     
     void
-    CompositionFunction::debug(std::ostream& stream, int indent) const {
+    CompositionFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "CompositionFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        outerFunction()->debug(stream, indent + 1);
+        innerFunction()->debug(stream, indent + 1);
+    }
+
+    CompositionFunction::CompositionFunction(
+        const FunctionImplementationPtr& outerFunction,
+        const FunctionImplementationPtr& innerFunction
+    ) : _outerFunction(outerFunction),
+        _innerFunction(innerFunction) {
+
+        assert(outerFunction->numParameters() == innerFunction->numDimensions());
     }
 }

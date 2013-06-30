@@ -31,43 +31,68 @@
 
 namespace opensolid
 {
-    class TempTransformationFunction : public UnaryOperation
+    class TempTransformationFunction :
+        public UnaryOperation
     {
     private:
         MatrixXd _transformationMatrix;
     public:
-        OPENSOLID_CORE_EXPORT TempTransformationFunction(
+        OPENSOLID_CORE_EXPORT
+        TempTransformationFunction(
             const MatrixXd& transformationMatrix,
             const Function& operand
         );
 
-        const MatrixXd& transformationMatrix() const;
+        const MatrixXd&
+        transformationMatrix() const;
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOf(const Function& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        compose(const Function& innerFunction) const;
 
-        OPENSOLID_CORE_EXPORT Function scaled(double value) const;
-        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& transformationMatrix) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        scaled(double value) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        transformed(const MatrixXd& transformationMatrix) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }
 
@@ -75,7 +100,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const MatrixXd& TempTransformationFunction::transformationMatrix() const {
+    inline const MatrixXd&
+    TempTransformationFunction::transformationMatrix() const {
         return _transformationMatrix;
     }
 }

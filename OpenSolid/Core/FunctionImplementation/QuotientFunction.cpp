@@ -34,21 +34,25 @@ namespace opensolid
         assert(secondOperand.numDimensions() == 1);
     }
     
-    int QuotientFunction::numDimensions() const {
+    int
+    QuotientFunction::numDimensions() const {
         return firstOperand().numDimensions();
     }
 
-    bool QuotientFunction::isDuplicateOf(const Function& function) const {
+    bool
+    QuotientFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function QuotientFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    QuotientFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new QuotientFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void QuotientFunction::evaluate(
+    void
+    QuotientFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -58,7 +62,8 @@ namespace opensolid
         results = firstValues.array() / secondValues.replicate(numDimensions(), 1).array();
     }
     
-    void QuotientFunction::evaluate(
+    void
+    QuotientFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -68,14 +73,16 @@ namespace opensolid
         results = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
     }
 
-    Function QuotientFunction::derivative(int index) const {
+    Function
+    QuotientFunction::derivative(int index) const {
         Function firstDerivative = firstOperand().derivative(index);
         Function secondDerivative = secondOperand().derivative(index);
         return(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
             secondOperand().squaredNorm();
     }
     
-    void QuotientFunction::debug(std::ostream& stream, int indent) const {
+    void
+    QuotientFunction::debug(std::ostream& stream, int indent) const {
         stream << "QuotientFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

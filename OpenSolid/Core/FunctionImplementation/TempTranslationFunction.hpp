@@ -31,39 +31,60 @@
 
 namespace opensolid
 {
-    class TempTranslationFunction : public UnaryOperation
+    class TempTranslationFunction :
+        public UnaryOperation
     {
     private:
         VectorXd _vector;
     public:
-        OPENSOLID_CORE_EXPORT TempTranslationFunction(const Function& operand, const VectorXd& vector);
+        OPENSOLID_CORE_EXPORT
+        TempTranslationFunction(const Function& operand, const VectorXd& vector);
 
-        const VectorXd& vector() const;
+        const VectorXd&
+        vector() const;
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOf(const Function& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        compose(const Function& innerFunction) const;
 
-        OPENSOLID_CORE_EXPORT Function translated(const VectorXd& vector) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        translated(const VectorXd& vector) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }
 
@@ -71,7 +92,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const VectorXd& TempTranslationFunction::vector() const {
+    inline const VectorXd&
+    TempTranslationFunction::vector() const {
         return _vector;
     }
 }

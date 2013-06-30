@@ -32,21 +32,25 @@ namespace opensolid
         assert(firstOperand.numDimensions() == secondOperand.numDimensions());
     }
     
-    int SumFunction::numDimensions() const {
+    int
+    SumFunction::numDimensions() const {
         return firstOperand().numDimensions();
     }
 
-    bool SumFunction::isDuplicateOf(const Function& function) const {
+    bool
+    SumFunction::isDuplicateOf(const Function& function) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function SumFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    SumFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
         Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
         return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
-    void SumFunction::evaluate(
+    void
+    SumFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -56,7 +60,8 @@ namespace opensolid
         results = firstValues + secondValues;
     }
     
-    void SumFunction::evaluate(
+    void
+    SumFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -66,11 +71,13 @@ namespace opensolid
         results = firstBounds + secondBounds;
     }
 
-    Function SumFunction::derivative(int index) const {
+    Function
+    SumFunction::derivative(int index) const {
         return firstOperand().derivative(index) + secondOperand().derivative(index);
     }
     
-    void SumFunction::debug(std::ostream& stream, int indent) const {
+    void
+    SumFunction::debug(std::ostream& stream, int indent) const {
         stream << "SumFunction" << std::endl;
         firstOperand().debug(stream, indent + 1);
         secondOperand().debug(stream, indent + 1);

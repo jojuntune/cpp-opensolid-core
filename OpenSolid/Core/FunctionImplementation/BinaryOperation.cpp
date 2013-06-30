@@ -28,7 +28,7 @@ namespace opensolid
 {
     int
     BinaryOperation::numParametersImpl() const {
-        return firstOperand().numParameters();
+        return firstOperand()->numParameters();
     }
 
     FunctionImplementationPtr
@@ -76,9 +76,7 @@ namespace opensolid
     ) : _firstOperand(firstOperand),
         _secondOperand(secondOperand) {
         
-        if (firstOperand->numParameters() != secondOperand->numParameters()) {
-            throw PlaceholderError();
-        }
+        assert(firstOperand->numParameters() == secondOperand->numParameters());
     }
 
     FunctionImplementationPtr

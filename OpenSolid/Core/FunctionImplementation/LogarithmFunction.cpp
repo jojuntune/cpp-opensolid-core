@@ -26,23 +26,29 @@
 
 namespace opensolid
 {
-    LogarithmFunction::LogarithmFunction(const Function& operand) : UnaryOperation(operand) {
+    LogarithmFunction::LogarithmFunction(const Function& operand) :
+        UnaryOperation(operand) {
+        
         assert(operand.numDimensions() == 1);
     }
         
-    int LogarithmFunction::numDimensions() const {
+    int
+    LogarithmFunction::numDimensions() const {
         return 1;
     }
 
-    bool LogarithmFunction::isDuplicateOf(const Function& function) const {
+    bool
+    LogarithmFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function LogarithmFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    LogarithmFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new LogarithmFunction(operand().deduplicated(others));
     }
         
-    void LogarithmFunction::evaluate(
+    void
+    LogarithmFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -50,7 +56,8 @@ namespace opensolid
         results = cache.results(operand(), parameterValues).array().log();
     }
 
-    void LogarithmFunction::evaluate(
+    void
+    LogarithmFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -58,11 +65,13 @@ namespace opensolid
         results = cache.results(operand(), parameterBounds).array().log();
     }
 
-    Function LogarithmFunction::derivative(int index) const {
+    Function
+    LogarithmFunction::derivative(int index) const {
         return operand().derivative(index) / operand();
     }
         
-    void LogarithmFunction::debug(std::ostream& stream, int indent) const {
+    void
+    LogarithmFunction::debug(std::ostream& stream, int indent) const {
         stream << "LogarithmFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

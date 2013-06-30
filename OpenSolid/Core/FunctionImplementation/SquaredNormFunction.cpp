@@ -26,22 +26,27 @@
 
 namespace opensolid
 {
-    SquaredNormFunction::SquaredNormFunction(const Function& operand) : UnaryOperation(operand) {
+    SquaredNormFunction::SquaredNormFunction(const Function& operand) :
+        UnaryOperation(operand) {
     }
     
-    int SquaredNormFunction::numDimensions() const {
+    int
+    SquaredNormFunction::numDimensions() const {
         return 1;
     }
 
-    bool SquaredNormFunction::isDuplicateOf(const Function& function) const {
+    bool
+    SquaredNormFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SquaredNormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    SquaredNormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new SquaredNormFunction(operand().deduplicated(others));
     }
     
-    void SquaredNormFunction::evaluate(
+    void
+    SquaredNormFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -49,7 +54,8 @@ namespace opensolid
         results = cache.results(operand(), parameterValues).colwise().squaredNorm();
     }
     
-    void SquaredNormFunction::evaluate(
+    void
+    SquaredNormFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -57,11 +63,13 @@ namespace opensolid
         results = cache.results(operand(), parameterBounds).colwise().squaredNorm();
     }
 
-    Function SquaredNormFunction::derivative(int index) const {
+    Function
+    SquaredNormFunction::derivative(int index) const {
         return 2.0 * operand().dot(operand().derivative(index));
     }
     
-    void SquaredNormFunction::debug(std::ostream& stream, int indent) const {
+    void
+    SquaredNormFunction::debug(std::ostream& stream, int indent) const {
         stream << "SquaredNormFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

@@ -26,23 +26,29 @@
 
 namespace opensolid
 {
-    TangentFunction::TangentFunction(const Function& operand) : UnaryOperation(operand) {
+    TangentFunction::TangentFunction(const Function& operand) :
+        UnaryOperation(operand) {
+        
         assert(operand.numDimensions() == 1);
     }
     
-    int TangentFunction::numDimensions() const {
+    int
+    TangentFunction::numDimensions() const {
         return 1;
     }
 
-    bool TangentFunction::isDuplicateOf(const Function& function) const {
+    bool
+    TangentFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function TangentFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    TangentFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TangentFunction(operand().deduplicated(others));
     }
     
-    void TangentFunction::evaluate(
+    void
+    TangentFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -51,7 +57,8 @@ namespace opensolid
         results = operandValues.array().sin() / operandValues.array().cos();
     }
     
-    void TangentFunction::evaluate(
+    void
+    TangentFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -60,11 +67,13 @@ namespace opensolid
         results = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
-    Function TangentFunction::derivative(int index) const {
+    Function
+    TangentFunction::derivative(int index) const {
         return (1 + Function(this).squaredNorm()) * operand().derivative(index);
     }
     
-    void TangentFunction::debug(std::ostream& stream, int indent) const {
+    void
+    TangentFunction::debug(std::ostream& stream, int indent) const {
         stream << "TangentFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

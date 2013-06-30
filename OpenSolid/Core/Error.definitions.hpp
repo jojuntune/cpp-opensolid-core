@@ -48,7 +48,8 @@ namespace opensolid
     };
 
     template <int iErrorNumber>
-    class NumberedError : public Error
+    class NumberedError :
+        public Error
     {
     public:
         static const int ErrorNumber = iErrorNumber;
@@ -56,7 +57,8 @@ namespace opensolid
         NumberedError();
     };
 
-    class PlaceholderError : public NumberedError<0>
+    class PlaceholderError :
+        public NumberedError<0>
     {
     public:
         const char*
@@ -65,7 +67,8 @@ namespace opensolid
 
     template <> struct UniqueErrorNumber<PlaceholderError::ErrorNumber> {};
 
-    class FeatureNotImplemented : public NumberedError<1>
+    class FeatureNotImplemented :
+        public NumberedError<1>
     {
     public:
         const char*

@@ -35,11 +35,13 @@ namespace opensolid
         assert(transformationMatrix.cols() == operand.numDimensions());
     }
 
-    int TempTransformationFunction::numDimensions() const {
+    int
+    TempTransformationFunction::numDimensions() const {
         return transformationMatrix().rows();
     }
 
-    bool TempTransformationFunction::isDuplicateOf(const Function& function) const {
+    bool
+    TempTransformationFunction::isDuplicateOf(const Function& function) const {
         const TempTransformationFunction* other =
             dynamic_cast<const TempTransformationFunction*>(function.implementation());
         if (other) {
@@ -52,14 +54,16 @@ namespace opensolid
         }
     }
 
-    Function TempTransformationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    TempTransformationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new TempTransformationFunction(
             transformationMatrix(),
             operand().deduplicated(others)
         );
     }
     
-    void TempTransformationFunction::evaluate(
+    void
+    TempTransformationFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -68,7 +72,8 @@ namespace opensolid
             cache.results(operand(), parameterValues);
     }
     
-    void TempTransformationFunction::evaluate(
+    void
+    TempTransformationFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -77,23 +82,28 @@ namespace opensolid
             cache.results(operand(), parameterBounds);
     }
     
-    Function TempTransformationFunction::derivative(int index) const {
+    Function
+    TempTransformationFunction::derivative(int index) const {
         return transformationMatrix() * operand().derivative(index);
     }
     
-    Function TempTransformationFunction::compose(const Function& innerFunction) const {
+    Function
+    TempTransformationFunction::compose(const Function& innerFunction) const {
         return transformationMatrix() * operand().compose(innerFunction);
     }
 
-    Function TempTransformationFunction::scaled(double value) const {
+    Function
+    TempTransformationFunction::scaled(double value) const {
         return (value * transformationMatrix()) * operand();
     }
 
-    Function TempTransformationFunction::transformed(const MatrixXd& transformationMatrix) const {
+    Function
+    TempTransformationFunction::transformed(const MatrixXd& transformationMatrix) const {
         return (transformationMatrix * this->transformationMatrix()) * operand();
     }
     
-    void TempTransformationFunction::debug(std::ostream& stream, int indent) const {
+    void
+    TempTransformationFunction::debug(std::ostream& stream, int indent) const {
         stream << "TempTransformationFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

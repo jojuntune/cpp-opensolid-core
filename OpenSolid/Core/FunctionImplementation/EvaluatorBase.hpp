@@ -26,54 +26,21 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/FunctionImplementation/BinaryOperation.hpp>
+#include <OpenSolid/Core/FunctionImplementation/EvaluatorBase.definitions.hpp>
+
+#include <OpenSolid/Core/Matrix.declarations.hpp>
+
+#include <functional>
 
 namespace opensolid
 {
-    class SumFunction :
-        public BinaryOperation
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        SumFunction(
-            const Function& firstOperand,
-            const Function& secondOperand
-        );
-        
-        OPENSOLID_CORE_EXPORT
-        int
-        numDimensions() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOf(const Function& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        Function
-        deduplicated(DeduplicationCache& deduplicationCache) const;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluate(
-            const MapXcd& parameterValues,
-            MapXd& results,
-            Evaluator& evaluator
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluate(
-            const MapXcI& parameterBounds,
-            MapXI& results,
-            Evaluator& evaluator
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT
-        Function
-        derivative(int index) const;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        debug(std::ostream& stream, int indent) const;
-    };
+    template <class TScalar>
+    inline std::size_t
+    Evaluator::KeyHash::operator()(
+        const std::pair<const FunctionImplementation*, const TScalar*>& key
+    ) const {
+        std::size_t functionHash = std::hash<const FunctionImplementation*>()(key.first);
+        std::size_t parameterHash = std::hash<const TScalar*>()(key.second);
+        return functionHash ^ parameterHash;
+    }
 }

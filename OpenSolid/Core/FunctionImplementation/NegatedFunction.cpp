@@ -32,7 +32,7 @@ namespace opensolid
 {
     int
     NegatedFunction::numDimensionsImpl() const {
-        return operand().numDimensions();
+        return operand()->numDimensions();
     }
 
     void
@@ -60,7 +60,7 @@ namespace opensolid
 
     bool
     NegatedFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::isDuplicateOfImpl(other);
+        return duplicateOperands(other);
     }
  
     FunctionImplementationPtr
@@ -126,11 +126,11 @@ namespace opensolid
     void
     NegatedFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "NegatedFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 
     FunctionImplementationPtr
-    NegatedFunction::withNewOperand(const FunctionImplementationPtr& newOperand) const {
+    NegatedFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
         return new NegatedFunction(newOperand);
     }
 

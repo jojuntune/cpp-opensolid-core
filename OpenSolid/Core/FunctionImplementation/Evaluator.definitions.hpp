@@ -30,20 +30,24 @@
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
-
-#include <unordered_map>
-#include <utility>
+#include <OpenSolid/Core/FunctionImplementation/EvaluatorBase.definitions.hpp>
 
 namespace opensolid
 {
-    class Evaluator
+    class Evaluator :
+        public EvaluatorBase
     {
     private:
-        typedef std::pair<const FunctionImplementation*, const double*> KeyXd;
-        typedef std::pair<const FunctionImplementation*, const Interval*> KeyXI;
+        Types<double>::Cache _valuesCache;
+        Types<Interval>::Cache _boundsCache;
 
-        std::unordered_map<KeyXd, MatrixXd> _cachedValues;
-        std::unordered_map<KeyXI, MatrixXI> _cachedBounds;
+        template <class TScalar>
+        typename Types<TScalar>::ConstMap
+        evaluate(
+            const FunctionImplementationPtr& functionImplementation,
+            const typename Types<TScalar>::ConstMap& parameterMap,
+            typename Types<TScalar>::Cache& cache
+        );
     public:
         OPENSOLID_CORE_EXPORT
         MapXcd

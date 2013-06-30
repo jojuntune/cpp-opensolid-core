@@ -30,7 +30,8 @@
 
 namespace opensolid
 {
-    class ConcatenationFunction : public BinaryOperation
+    class ConcatenationFunction :
+        public BinaryOperation
     {
     public:
         OPENSOLID_CORE_EXPORT

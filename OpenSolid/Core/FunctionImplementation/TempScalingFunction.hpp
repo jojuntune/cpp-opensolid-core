@@ -31,40 +31,65 @@
 
 namespace opensolid
 {
-    class TempScalingFunction : public UnaryOperation
+    class TempScalingFunction :
+        public UnaryOperation
     {
     private:
         double _scale;
     public:
-        OPENSOLID_CORE_EXPORT TempScalingFunction(double scale, const Function& operand);
+        OPENSOLID_CORE_EXPORT
+        TempScalingFunction(double scale, const Function& operand);
 
-        double scale() const;
+        double
+        scale() const;
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOf(const Function& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT Function compose(const Function& innerFunction) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        compose(const Function& innerFunction) const;
 
-        OPENSOLID_CORE_EXPORT Function scaled(double scale) const;
-        OPENSOLID_CORE_EXPORT Function transformed(const MatrixXd& transformationMatrix) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        scaled(double scale) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        transformed(const MatrixXd& transformationMatrix) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }
 

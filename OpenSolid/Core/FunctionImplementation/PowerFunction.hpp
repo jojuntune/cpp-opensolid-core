@@ -30,7 +30,8 @@
 
 namespace opensolid
 {
-    class PowerFunction : public BinaryOperation
+    class PowerFunction :
+        public BinaryOperation
     {
     private:
         bool _exponentIsConstant;
@@ -38,30 +39,46 @@ namespace opensolid
         double _constantExponent;
         int _integerExponent;
     public:
-        OPENSOLID_CORE_EXPORT PowerFunction(
+        OPENSOLID_CORE_EXPORT
+        PowerFunction(
             const Function& baseFunction,
             const Function& exponentFunction
         );
         
-        OPENSOLID_CORE_EXPORT int numDimensions() const;
+        OPENSOLID_CORE_EXPORT
+        int
+        numDimensions() const;
 
-        OPENSOLID_CORE_EXPORT bool isDuplicateOf(const Function& other) const;
-        OPENSOLID_CORE_EXPORT Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOf(const Function& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        OPENSOLID_CORE_EXPORT void evaluate(
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        OPENSOLID_CORE_EXPORT Function derivative(int index) const;
+        OPENSOLID_CORE_EXPORT
+        Function
+        derivative(int index) const;
         
-        OPENSOLID_CORE_EXPORT void debug(std::ostream& stream, int indent) const;
+        OPENSOLID_CORE_EXPORT
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }

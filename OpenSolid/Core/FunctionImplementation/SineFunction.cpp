@@ -26,23 +26,29 @@
 
 namespace opensolid
 {
-    SineFunction::SineFunction(const Function& operand) : UnaryOperation(operand) {
+    SineFunction::SineFunction(const Function& operand) :
+        UnaryOperation(operand) {
+        
         assert(operand.numDimensions() == 1);
     }
     
-    int SineFunction::numDimensions() const {
+    int
+    SineFunction::numDimensions() const {
         return 1;
     }
 
-    bool SineFunction::isDuplicateOf(const Function& function) const {
+    bool
+    SineFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function SineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    SineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new SineFunction(operand().deduplicated(others));
     }
     
-    void SineFunction::evaluate(
+    void
+    SineFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -50,7 +56,8 @@ namespace opensolid
         results = cache.results(operand(), parameterValues).array().sin();
     }
     
-    void SineFunction::evaluate(
+    void
+    SineFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -58,11 +65,13 @@ namespace opensolid
         results = cache.results(operand(), parameterBounds).array().sin();
     }
 
-    Function SineFunction::derivative(int index) const {
+    Function
+    SineFunction::derivative(int index) const {
         return cos(operand()) * operand().derivative(index);
     }
     
-    void SineFunction::debug(std::ostream& stream, int indent) const {
+    void
+    SineFunction::debug(std::ostream& stream, int indent) const {
         stream << "SineFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

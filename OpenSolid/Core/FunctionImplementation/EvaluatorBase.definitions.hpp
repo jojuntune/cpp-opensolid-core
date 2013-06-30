@@ -26,54 +26,54 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/FunctionImplementation/BinaryOperation.hpp>
+#include <OpenSolid/Core/FunctionImplementation/EvaluatorBase.declarations.hpp>
+
+#include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
+
+#include <cstdint>
+#include <unordered_map>
+#include <utility>
 
 namespace opensolid
 {
-    class SumFunction :
-        public BinaryOperation
+    class EvaluatorBase
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        SumFunction(
-            const Function& firstOperand,
-            const Function& secondOperand
-        );
-        
-        OPENSOLID_CORE_EXPORT
-        int
-        numDimensions() const;
+    protected:
+        typedef std::pair<const FunctionImplementation*, const double*> KeyXd;
+        typedef std::pair<const FunctionImplementation*, const Interval*> KeyXI;
 
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOf(const Function& other) const;
+        struct KeyHash
+        {
+            template <class TScalar>
+            std::size_t
+            operator()(const std::pair<const FunctionImplementation*, const TScalar*>& key) const;
+        };
 
-        OPENSOLID_CORE_EXPORT
-        Function
-        deduplicated(DeduplicationCache& deduplicationCache) const;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluate(
-            const MapXcd& parameterValues,
-            MapXd& results,
-            Evaluator& evaluator
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        evaluate(
-            const MapXcI& parameterBounds,
-            MapXI& results,
-            Evaluator& evaluator
-        ) const;
-        
-        OPENSOLID_CORE_EXPORT
-        Function
-        derivative(int index) const;
-        
-        OPENSOLID_CORE_EXPORT
-        void
-        debug(std::ostream& stream, int indent) const;
+        template <class TScalar>
+        struct Types;
+
+        template <class TScalar>
+        friend struct Types;
+    };
+
+    template <>
+    struct EvaluatorBase::Types<double>
+    {
+        typedef MapXd Map;
+        typedef MapXcd ConstMap;
+        typedef MatrixXd Matrix;
+        typedef std::pair<const FunctionImplementation*, const double*> Key;
+        typedef std::unordered_map<Key, Matrix, EvaluatorBase::KeyHash> Cache;
+    };
+
+    template <>
+    struct EvaluatorBase::Types<Interval>
+    {
+        typedef MapXI Map;
+        typedef MapXcI ConstMap;
+        typedef MatrixXI Matrix;
+        typedef std::pair<const FunctionImplementation*, const Interval*> Key;
+        typedef std::unordered_map<Key, Matrix, EvaluatorBase::KeyHash> Cache;
     };
 }

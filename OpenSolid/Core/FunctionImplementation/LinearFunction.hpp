@@ -32,40 +32,57 @@
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    class LinearFunction : public FunctionImplementation
+    class LinearFunction :
+        public FunctionImplementation
     {
     private:
         Datum<iNumDimensions, iNumAxes> _datum;
     public:
         LinearFunction(const Datum<iNumDimensions, iNumAxes>& datum);
         
-        const Datum<iNumDimensions, iNumAxes>& datum() const;
+        const Datum<iNumDimensions, iNumAxes>&
+        datum() const;
         
-        int numParameters() const;
-        int numDimensions() const;
+        int
+        numParameters() const;
+        
+        int
+        numDimensions() const;
 
-        bool isDuplicateOf(const Function& other) const;
-        Function deduplicated(DeduplicationCache& deduplicationCache) const;
+        bool
+        isDuplicateOf(const Function& other) const;
         
-        void evaluate(
+        Function
+        deduplicated(DeduplicationCache& deduplicationCache) const;
+        
+        void
+        evaluate(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
-        void evaluate(
+        void
+        evaluate(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        Function derivative(int index) const;
+        Function
+        derivative(int index) const;
         
-        Function scaled(double scale) const;
-        Function transformed(const MatrixXd& transformationMatrix) const;
-        Function translated(const VectorXd& vector) const;
+        Function
+        scaled(double scale) const;
+
+        Function
+        transformed(const MatrixXd& transformationMatrix) const;
         
-        void debug(std::ostream& stream, int indent) const;
+        Function
+        translated(const VectorXd& vector) const;
+        
+        void
+        debug(std::ostream& stream, int indent) const;
     };
 }
 
@@ -86,17 +103,20 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    int LinearFunction<iNumDimensions, iNumAxes>::numParameters() const {
+    int
+    LinearFunction<iNumDimensions, iNumAxes>::numParameters() const {
         return iNumAxes;
     }
     
     template <int iNumDimensions, int iNumAxes>
-    int LinearFunction<iNumDimensions, iNumAxes>::numDimensions() const {
+    int
+    LinearFunction<iNumDimensions, iNumAxes>::numDimensions() const {
         return iNumDimensions;
     }
 
     template <int iNumDimensions, int iNumAxes>
-    bool LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const Function& function) const {
+    bool
+    LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const Function& function) const {
         const LinearFunction<iNumDimensions, iNumAxes>* other =
             dynamic_cast<const LinearFunction<iNumDimensions, iNumAxes>*>(
                 function.implementation()
@@ -110,44 +130,52 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function LinearFunction<iNumDimensions, iNumAxes>::deduplicated(std::vector<Function>&) const {
+    Function
+    LinearFunction<iNumDimensions, iNumAxes>::deduplicated(
+        DeduplicationCache& deduplicationCache
+    ) const {
         return this;
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
+    void
+    LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
-        Evaluator&
+        Evaluator& evaluator
     ) const {
         results = (datum().basisMatrix() * parameterValues).colwise() +
             datum().originPoint().vector();
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::evaluate(
+    void
+    LinearFunction<iNumDimensions, iNumAxes>::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
-        Evaluator&
+        Evaluator& evaluator
     ) const {
         results = (datum().basisMatrix().template cast<Interval>() * parameterBounds).colwise() +
             datum().originPoint().vector().template cast<Interval>();
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function LinearFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
+    Function
+    LinearFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
         return Function::Constant(datum().basisVector(index), numParameters());
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
+    Function
+    LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale)
         );
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Function LinearFunction<iNumDimensions, iNumAxes>::transformed(
+    Function
+    LinearFunction<iNumDimensions, iNumAxes>::transformed(
         const MatrixXd& transformationMatrix
     ) const {
         int numTransformedDimensions = transformationMatrix.rows();
@@ -179,12 +207,14 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function LinearFunction<iNumDimensions, iNumAxes>::translated(const VectorXd& vector) const {
+    Function
+    LinearFunction<iNumDimensions, iNumAxes>::translated(const VectorXd& vector) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(datum().translated(vector));
     }
     
     template <int iNumDimensions, int iNumAxes>
-    void LinearFunction<iNumDimensions, iNumAxes>::debug(std::ostream& stream, int indent) const {
+    void
+    LinearFunction<iNumDimensions, iNumAxes>::debug(std::ostream& stream, int indent) const {
         stream << "LinearFunction<" << iNumDimensions << "," << iNumAxes << ">" << std::endl;
     }
 }

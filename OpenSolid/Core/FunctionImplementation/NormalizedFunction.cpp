@@ -26,22 +26,27 @@
 
 namespace opensolid
 {
-    NormalizedFunction::NormalizedFunction(const Function& operand) : UnaryOperation(operand) {
+    NormalizedFunction::NormalizedFunction(const Function& operand) :
+        UnaryOperation(operand) {
     }
     
-    int NormalizedFunction::numDimensions() const {
+    int
+    NormalizedFunction::numDimensions() const {
         return operand().numDimensions();
     }
 
-    bool NormalizedFunction::isDuplicateOf(const Function& function) const {
+    bool
+    NormalizedFunction::isDuplicateOf(const Function& function) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function NormalizedFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    Function
+    NormalizedFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
         return new NormalizedFunction(operand().deduplicated(others));
     }
 
-    void NormalizedFunction::evaluate(
+    void
+    NormalizedFunction::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -51,7 +56,8 @@ namespace opensolid
         results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    void NormalizedFunction::evaluate(
+    void
+    NormalizedFunction::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -61,7 +67,8 @@ namespace opensolid
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    Function NormalizedFunction::derivative(int index) const {
+    Function
+    NormalizedFunction::derivative(int index) const {
         Function operandDerivative = operand().derivative(index);
         Function operandNormalized = operand().normalized();
         return
@@ -69,19 +76,23 @@ namespace opensolid
             operand().norm();
     }
     
-    Function NormalizedFunction::norm() const {
+    Function
+    NormalizedFunction::norm() const {
         return Function::Constant(1.0, numParameters());
     }
     
-    Function NormalizedFunction::normalized() const {
+    Function
+    NormalizedFunction::normalized() const {
         return this;
     }
     
-    Function NormalizedFunction::squaredNorm() const {
+    Function
+    NormalizedFunction::squaredNorm() const {
         return Function::Constant(1.0, numParameters());
     }
     
-    void NormalizedFunction::debug(std::ostream& stream, int indent) const {
+    void
+    NormalizedFunction::debug(std::ostream& stream, int indent) const {
         stream << "NormalizedFunction" << std::endl;
         operand().debug(stream, indent + 1);
     }

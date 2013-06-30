@@ -26,89 +26,64 @@
 
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/EvaluatorBase.hpp>
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
-    namespace
-    {
-        template <class TScalar>
-        struct Types;
+    template <class TScalar>
+    inline typename JacobianEvaluator::Types<TScalar>::ConstMap
+    JacobianEvaluator::evaluateJacobian(
+        const FunctionImplementationPtr& functionImplementation,
+        const typename Types<TScalar>::ConstMap& parameterValues,
+        typename Types<TScalar>::Cache& cache
+    ) {
+        typedef typename Types<TScalar>::Map Map;
+        typedef typename Types<TScalar>::ConstMap ConstMap;
+        typedef typename Types<TScalar>::Matrix Matrix;
+        typedef typename Types<TScalar>::Key Key;
+        typedef typename Types<TScalar>::Cache Cache;
 
-        template <>
-        struct Types<double>
-        {
-            typedef MapXd Map;
-            typedef MapXcd ConstMap;
-            typedef MatrixXd Matrix;
-            typedef std::pair<const FunctionImplementation*, const double*> Key;
-            typedef std::unordered_map<Key, Matrix> Cache;
-        };
+        // Attempt to find cached results for the given function/parameter pair
+        Key key(functionImplementation.get(), parameterValues.data());
+        auto iterator = cache.find(key);
 
-        template <>
-        struct Types<Interval>
-        {
-            typedef MapXI Map;
-            typedef MapXcI ConstMap;
-            typedef MatrixXI Matrix;
-            typedef std::pair<const FunctionImplementation*, const Interval*> Key;
-            typedef std::unordered_map<Key, Matrix> Cache;
-        };
+        if (iterator == cache.end()) {
+            // Cached results not found - insert new empty entry into cache and update iterator
+            // to point to the new entry
+            iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
 
-        template <class TScalar>
-        inline typename Types<TScalar>::ConstMap
-        evaluateJacobian(
-            const FunctionImplementationPtr& functionImplementation,
-            const typename Types<TScalar>::ConstMap& parameterValues,
-            const typename Types<TScalar>::Cache& cache
-        ) {
-            typedef typename Types<TScalar>::Map Map;
-            typedef typename Types<TScalar>::ConstMap ConstMap;
-            typedef typename Types<TScalar>::Matrix Matrix;
-            typedef typename Types<TScalar>::Key Key;
-            typedef typename Types<TScalar>::Cache Cache;
+            // Resize inserted matrix to the correct size
+            Matrix& resultMatrix = iterator->second;
+            resultMatrix.resize(
+                functionImplementation->numDimensions(),
+                functionImplementation->numParameters()
+            );
 
-            // Attempt to find cached results for the given function/parameter pair
-            Key key(functionImplementation.get(), parameterValues.data());
-            auto iterator = cache.find(key);
-
-            if (iterator == cache.end()) {
-                // Cached results not found - insert new empty entry into cache and update iterator
-                // to point to the new entry
-                iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
-
-                // Resize inserted matrix to the correct size
-                Matrix& resultMatrix = iterator->second;
-                resultMatrix.resize(
-                    functionImplementation->numDimensions(),
-                    functionImplementation->numParameters()
-                );
-
-                // Construct map pointing to newly allocated results matrix
-                Map resultMap(
-                    resultMatrix.data(),
-                    resultMatrix.rows(),
-                    resultMatrix.cols(),
-                    Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
-                );
-
-                // Evaluate function into results matrix using map
-                functionImplementation->evaluateJacobian(parameterValues, resultMap, *this);
-            }
-
-            // Get reference to cached matrix
-            const Matrix& resultMatrix = iterator->second;
-
-            // Return map pointing to cached matrix
-            return ConstMap(
+            // Construct map pointing to newly allocated results matrix
+            Map resultMap(
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
                 Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
             );
+
+            // Evaluate function into results matrix using map
+            functionImplementation->evaluateJacobian(parameterValues, resultMap, *this);
         }
+
+        // Get reference to cached matrix
+        const Matrix& resultMatrix = iterator->second;
+
+        // Return map pointing to cached matrix
+        return ConstMap(
+            resultMatrix.data(),
+            resultMatrix.rows(),
+            resultMatrix.cols(),
+            Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+        );
     }
 
     MapXcd
@@ -116,7 +91,7 @@ namespace opensolid
         const FunctionImplementationPtr& functionImplementation,
         const MapXcd& parameterValues
     ) {
-        return evaluateJacobian<double>(functionImplementation, parameterValues, _cachedValues);
+        return evaluateJacobian<double>(functionImplementation, parameterValues, _valuesCache);
     }
 
     MapXcI
@@ -124,6 +99,6 @@ namespace opensolid
         const FunctionImplementationPtr& functionImplementation,
         const MapXcI& parameterBounds
     ) {
-        return evaluateJacobian<Interval>(functionImplementation, parameterBounds, _cachedBounds);
+        return evaluateJacobian<Interval>(functionImplementation, parameterBounds, _boundsCache);
     }
 }

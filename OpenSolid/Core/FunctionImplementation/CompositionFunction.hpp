@@ -34,6 +34,9 @@ namespace opensolid
         public FunctionImplementation
     {
     private:
+        FunctionImplementationPtr _outerFunction;
+        FunctionImplementationPtr _innerFunction;
+
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
@@ -65,6 +68,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         bool
         isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
@@ -73,18 +80,32 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         debugImpl(std::ostream& stream, int indent) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        withNewOperandsImpl(
-            const FunctionImplementationPtr& firstNewOperand,
-            const FunctionImplementationPtr& secondNewOperand
-        ) const;
     public:
         OPENSOLID_CORE_EXPORT
         CompositionFunction(
             const FunctionImplementationPtr& outerFunction,
             const FunctionImplementationPtr& innerFunction
         );
+
+        const FunctionImplementationPtr&
+        outerFunction() const;
+
+        const FunctionImplementationPtr&
+        innerFunction() const;
     };
+}
+
+////////// Implementation //////////
+
+namespace opensolid
+{
+    inline const FunctionImplementationPtr&
+    CompositionFunction::outerFunction() const {
+        return _outerFunction;
+    }
+
+    inline const FunctionImplementationPtr&
+    CompositionFunction::innerFunction() const {
+        return _innerFunction;
+    }
 }

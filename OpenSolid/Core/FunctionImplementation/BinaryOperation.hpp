@@ -50,7 +50,7 @@ namespace opensolid
         composeImpl(const FunctionImplementationPtr& innerFunction) const override;
 
         OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
+        virtual FunctionImplementationPtr
         withNewOperandsImpl(
             const FunctionImplementationPtr& newFirstOperand,
             const FunctionImplementationPtr& newSecondOperand
