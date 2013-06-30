@@ -25,30 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/DifferenceFunction.hpp>
 
 namespace opensolid
-{
-    DifferenceFunction::DifferenceFunction(
-        const FunctionImplementationPtr& firstOperand,
-        const FunctionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
-
-        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
-    }
-    
+{   
     int
     DifferenceFunction::numDimensionsImpl() const {
         return firstOperand()->numDimensions();
-    }
-
-    bool
-    DifferenceFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return BinaryOperation::IsDuplicate(this, function, false);
-    }
-
-    FunctionImplementationPtr
-    DifferenceFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
-        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
-        return new DifferenceFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
@@ -77,11 +57,32 @@ namespace opensolid
     DifferenceFunction::derivativeImpl(int parameterIndex) const {
         return firstOperand()->derivative(parameterIndex) - secondOperand()->derivative(parameterIndex);
     }
+
+    bool
+    DifferenceFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, false);
+    }
     
     void
     DifferenceFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "DifferenceFunction" << std::endl;
         firstOperand()->debug(stream, indent + 1);
         secondOperand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    DifferenceFunction::withNewOperandsImpl(
+        const FunctionImplementationPtr& newFirstOperand,
+        const FunctionImplementationPtr& newSecondOperand
+    ) const {
+        return newFirstOperand - newSecondOperand;
+    }
+
+    DifferenceFunction::DifferenceFunction(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
     }
 }

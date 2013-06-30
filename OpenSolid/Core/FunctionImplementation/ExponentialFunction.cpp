@@ -25,13 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/ExponentialFunction.hpp>
 
 namespace opensolid
-{
-    ExponentialFunction::ExponentialFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
-    }
-        
+{       
     int 
     ExponentialFunction::numDimensionsImpl() const {
         return 1;
@@ -39,12 +33,7 @@ namespace opensolid
 
     bool
     ExponentialFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    ExponentialFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new ExponentialFunction(operand()->deduplicated(deduplicationCache));
+        return duplicateOperands(other);
     }
         
     void
@@ -74,5 +63,16 @@ namespace opensolid
     ExponentialFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ExponentialFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    ExponentialFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return exp(newOperand);
+    }
+
+    ExponentialFunction::ExponentialFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+        
+        assert(operand->numDimensions() == 1);
     }
 }

@@ -38,29 +38,12 @@ namespace opensolid
     private:
         Datum<iNumDimensions, iNumAxes> _datum;
         Matrix<bool, 1, iNumAxes - 1> _convention;
-    public:
-        EllipticalFunction(
-            const Datum<iNumDimensions, iNumAxes>& datum,
-            const Matrix<bool, 1, iNumAxes - 1>& convention
-        );
-        
-        const Datum<iNumDimensions, iNumAxes>&
-        datum() const;
-        
-        const Matrix<bool, 1, iNumAxes - 1>&
-        convention() const;
-        
-        int
-        numParametersImpl() const;
         
         int
         numDimensionsImpl() const;
-
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
-        FunctionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
+        int
+        numParametersImpl() const;
         
         void
         evaluateImpl(
@@ -78,18 +61,35 @@ namespace opensolid
 
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
+
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         FunctionImplementationPtr
-        scaled(double scale) const;
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         FunctionImplementationPtr
-        transformed(const MatrixXd& transformationMatrix) const;
+        scaledImpl(double scale) const;
         
         FunctionImplementationPtr
-        translated(const VectorXd& vector) const;
+        transformedImpl(const MatrixXd& transformationMatrix) const;
+        
+        FunctionImplementationPtr
+        translatedImpl(const VectorXd& vector) const;
         
         void
         debugImpl(std::ostream& stream, int indent) const;
+    public:
+        EllipticalFunction(
+            const Datum<iNumDimensions, iNumAxes>& datum,
+            const Matrix<bool, 1, iNumAxes - 1>& convention
+        );
+        
+        const Datum<iNumDimensions, iNumAxes>&
+        datum() const;
+        
+        const Matrix<bool, 1, iNumAxes - 1>&
+        convention() const;
     };
 }
 
@@ -98,59 +98,15 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    EllipticalFunction<iNumDimensions, iNumAxes>::EllipticalFunction(
-        const Datum<iNumDimensions, iNumAxes>& datum,
-        const Matrix<bool, 1, iNumAxes - 1>& convention
-    ) : _datum(datum),
-        _convention(convention) {
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    inline const Datum<iNumDimensions, iNumAxes>&
-    EllipticalFunction<iNumDimensions, iNumAxes>::datum() const {
-        return _datum;
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    inline const Matrix<bool, 1, iNumAxes - 1>&
-    EllipticalFunction<iNumDimensions, iNumAxes>::convention() const {
-        return _convention;
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    int
-    EllipticalFunction<iNumDimensions, iNumAxes>::numParametersImpl() const {
-        return iNumAxes - 1;
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
     int
     EllipticalFunction<iNumDimensions, iNumAxes>::numDimensionsImpl() const {
         return iNumDimensions;
     }
 
     template <int iNumDimensions, int iNumAxes>
-    bool
-    EllipticalFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const FunctionImplementationPtr& function) const {
-        const EllipticalFunction<iNumDimensions, iNumAxes>* other =
-            dynamic_cast<const EllipticalFunction<iNumDimensions, iNumAxes>*>(
-                function.implementation()
-            );
-        if (other) {
-            return (this->datum().originPoint() - other->datum().originPoint()).isZero() &&
-                (this->datum().basisMatrix() - other->datum().basisMatrix()).isZero() &&
-                this->convention() == other->convention();
-        } else {
-            return false;
-        }
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::deduplicated(
-        DeduplicationCache& deduplicationCache
-    ) const {
-        return this;
+    int
+    EllipticalFunction<iNumDimensions, iNumAxes>::numParametersImpl() const {
+        return iNumAxes - 1;
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -225,8 +181,29 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
+    bool
+    EllipticalFunction<iNumDimensions, iNumAxes>::isDuplicateOfImpl(
+        const FunctionImplementationPtr& other
+    ) const {
+        const EllipticalFunction<iNumDimensions, iNumAxes>* otherElliptical =
+            other->cast<EllipticalFunction<iNumDimensions, iNumAxes>>();
+
+        return (this->datum().originPoint() - otherElliptical->datum().originPoint()).isZero() &&
+            (this->datum().basisMatrix() - otherElliptical->datum().basisMatrix()).isZero() &&
+            this->convention() == otherElliptical->convention();
+    }
+
+    template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
+    EllipticalFunction<iNumDimensions, iNumAxes>::deduplicatedImpl(
+        DeduplicationCache& deduplicationCache
+    ) const {
+        return this;
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    FunctionImplementationPtr
+    EllipticalFunction<iNumDimensions, iNumAxes>::scaledImpl(double scale) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale),
             convention()
@@ -235,7 +212,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::transformed(
+    EllipticalFunction<iNumDimensions, iNumAxes>::transformedImpl(
         const MatrixXd& transformationMatrix
     ) const {
         int numTransformedDimensions = transformationMatrix.rows();
@@ -271,7 +248,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::translated(
+    EllipticalFunction<iNumDimensions, iNumAxes>::translatedImpl(
         const VectorXd& vector
     ) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
@@ -287,5 +264,25 @@ namespace opensolid
         int indent
     ) const {
         stream << "EllipticalFunction<" << iNumDimensions << "," << iNumAxes << ">" << std::endl;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    EllipticalFunction<iNumDimensions, iNumAxes>::EllipticalFunction(
+        const Datum<iNumDimensions, iNumAxes>& datum,
+        const Matrix<bool, 1, iNumAxes - 1>& convention
+    ) : _datum(datum),
+        _convention(convention) {
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    inline const Datum<iNumDimensions, iNumAxes>&
+    EllipticalFunction<iNumDimensions, iNumAxes>::datum() const {
+        return _datum;
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    inline const Matrix<bool, 1, iNumAxes - 1>&
+    EllipticalFunction<iNumDimensions, iNumAxes>::convention() const {
+        return _convention;
     }
 }

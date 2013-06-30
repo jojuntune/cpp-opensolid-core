@@ -25,30 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/DotProductFunction.hpp>
 
 namespace opensolid
-{
-    DotProductFunction::DotProductFunction(
-        const FunctionImplementationPtr& firstOperand,
-        const FunctionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
-
-        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
-    }
-    
+{   
     int
     DotProductFunction::numDimensionsImpl() const {
         return 1;
-    }
-
-    bool
-    DotProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return BinaryOperation::IsDuplicate(this, function, true);
-    }
-
-    FunctionImplementationPtr
-    DotProductFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
-        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
-        return new DotProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
@@ -75,8 +55,13 @@ namespace opensolid
 
     FunctionImplementationPtr
     DotProductFunction::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex).dot(secondOperand())
-            + firstOperand().dot(secondOperand()->derivative(parameterIndex));
+        return firstOperand()->derivative(parameterIndex)->dot(secondOperand())
+            + firstOperand()->dot(secondOperand()->derivative(parameterIndex));
+    }
+
+    bool
+    DotProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, true);
     }
     
     void
@@ -84,5 +69,21 @@ namespace opensolid
         stream << "DotProductFunction" << std::endl;
         firstOperand()->debug(stream, indent + 1);
         secondOperand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    DotProductFunction::withNewOperandsImpl(
+        const FunctionImplementationPtr& newFirstOperand,
+        const FunctionImplementationPtr& newSecondOperand
+    ) const {
+        return newFirstOperand->dot(newSecondOperand);
+    }
+
+    DotProductFunction::DotProductFunction(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
     }
 }
