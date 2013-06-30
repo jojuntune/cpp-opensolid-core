@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/Box.definitions.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>

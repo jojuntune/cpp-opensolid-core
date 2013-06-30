@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Datum.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
