@@ -85,4 +85,12 @@ namespace opensolid
         firstOperand()->debug(stream, indent + 1);
         secondOperand()->debug(stream, indent + 1);
     }
+
+    FunctionImplementationPtr
+    ProductFunction::withNewOperandsImpl(
+        const FunctionImplementationPtr& newFirstOperand,
+        const FunctionImplementationPtr& newSecondOperand
+    ) const {
+        return newFirstOperand * newSecondOperand;
+    }
 }
