@@ -52,10 +52,6 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         bool
         isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -80,5 +76,12 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         debugImpl(std::ostream& stream, int indent) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandsImpl(
+            const FunctionImplementationPtr& newFirstOperand,
+            const FunctionImplementationPtr& newSecondOperand
+        ) const;
     };
 }
