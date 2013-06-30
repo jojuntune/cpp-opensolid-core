@@ -27,62 +27,62 @@
 namespace opensolid
 {
     ProductFunction::ProductFunction(
-        const Function& multiplier,
-        const Function& multiplicand
+        const FunctionImplementationPtr& multiplier,
+        const FunctionImplementationPtr& multiplicand
     ) : BinaryOperation(multiplier, multiplicand) {
 
-        assert(multiplier.numDimensions() == 1);
+        assert(multiplier->numDimensions() == 1);
     }
     
     int
-    ProductFunction::numDimensions() const {
-        return secondOperand().numDimensions();
+    ProductFunction::numDimensionsImpl() const {
+        return secondOperand()->numDimensions();
     }
 
     bool
-    ProductFunction::isDuplicateOf(const Function& function) const {
+    ProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function
-    ProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+    FunctionImplementationPtr
+    ProductFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
         return new ProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
-    ProductFunction::evaluate(
+    ProductFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
-        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
         results = secondValues * firstValues.topRows<1>().asDiagonal();
     }
     
     void
-    ProductFunction::evaluate(
+    ProductFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
-        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
         results = secondBounds * firstBounds.topRows<1>().asDiagonal();
     }
 
-    Function
-    ProductFunction::derivative(int index) const {
-        return firstOperand().derivative(index) * secondOperand()
-            + firstOperand() * secondOperand().derivative(index);
+    FunctionImplementationPtr
+    ProductFunction::derivativeImpl(int parameterIndex) const {
+        return firstOperand()->derivative(parameterIndex) * secondOperand()
+            + firstOperand() * secondOperand()->derivative(parameterIndex);
     }
     
     void
-    ProductFunction::debug(std::ostream& stream, int indent) const {
+    ProductFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ProductFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
     }
 }

@@ -26,55 +26,55 @@
 
 namespace opensolid
 {
-    TangentFunction::TangentFunction(const Function& operand) :
+    TangentFunction::TangentFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
         
-        assert(operand.numDimensions() == 1);
+        assert(operand->numDimensions() == 1);
     }
     
     int
-    TangentFunction::numDimensions() const {
+    TangentFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    TangentFunction::isDuplicateOf(const Function& function) const {
+    TangentFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    TangentFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new TangentFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    TangentFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new TangentFunction(operand()->deduplicated(deduplicationCache));
     }
     
     void
-    TangentFunction::evaluate(
+    TangentFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = cache.results(operand(), parameterValues);
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
         results = operandValues.array().sin() / operandValues.array().cos();
     }
     
     void
-    TangentFunction::evaluate(
+    TangentFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = cache.results(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         results = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
-    Function
-    TangentFunction::derivative(int index) const {
-        return (1 + Function(this).squaredNorm()) * operand().derivative(index);
+    FunctionImplementationPtr
+    TangentFunction::derivativeImpl(int parameterIndex) const {
+        return (1 + FunctionImplementationPtr(this).squaredNorm()) * operand()->derivative(parameterIndex);
     }
     
     void
-    TangentFunction::debug(std::ostream& stream, int indent) const {
+    TangentFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TangentFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

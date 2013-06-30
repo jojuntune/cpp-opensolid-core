@@ -38,25 +38,21 @@ namespace opensolid
         VectorXd _vector;
     public:
         OPENSOLID_CORE_EXPORT
-        TempTranslationFunction(const Function& operand, const VectorXd& vector);
+        TempTranslationFunction(const FunctionImplementationPtr& operand, const VectorXd& vector);
 
         const VectorXd&
         vector() const;
         
         OPENSOLID_CORE_EXPORT
         int
-        numDimensions() const;
+        numDimensionsImpl() const;
 
         OPENSOLID_CORE_EXPORT
         bool
-        isDuplicateOf(const Function& other) const;
-
-        OPENSOLID_CORE_EXPORT
-        Function
-        deduplicated(DeduplicationCache& deduplicationCache) const;
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT void
-        evaluate(
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
@@ -64,27 +60,27 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         void
-        evaluate(
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
         
         OPENSOLID_CORE_EXPORT
-        Function
-        derivative(int index) const;
-        
-        OPENSOLID_CORE_EXPORT
-        Function
-        compose(const Function& innerFunction) const;
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const;
 
         OPENSOLID_CORE_EXPORT
-        Function
+        FunctionImplementationPtr
         translated(const VectorXd& vector) const;
         
         OPENSOLID_CORE_EXPORT
         void
-        debug(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
     };
 }
 

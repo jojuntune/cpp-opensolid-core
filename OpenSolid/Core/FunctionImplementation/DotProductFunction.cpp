@@ -27,62 +27,62 @@
 namespace opensolid
 {
     DotProductFunction::DotProductFunction(
-        const Function& firstOperand,
-        const Function& secondOperand
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
     ) : BinaryOperation(firstOperand, secondOperand) {
 
-        assert(firstOperand.numDimensions() == secondOperand.numDimensions());
+        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
     }
     
     int
-    DotProductFunction::numDimensions() const {
+    DotProductFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    DotProductFunction::isDuplicateOf(const Function& function) const {
+    DotProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function
-    DotProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+    FunctionImplementationPtr
+    DotProductFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
         return new DotProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
-    DotProductFunction::evaluate(
+    DotProductFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
-        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstValues.cwiseProduct(secondValues).colwise().sum();
     }
     
     void
-    DotProductFunction::evaluate(
+    DotProductFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
-        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
         results = firstBounds.cwiseProduct(secondBounds).colwise().sum();
     }
 
-    Function
-    DotProductFunction::derivative(int index) const {
-        return firstOperand().derivative(index).dot(secondOperand())
-            + firstOperand().dot(secondOperand().derivative(index));
+    FunctionImplementationPtr
+    DotProductFunction::derivativeImpl(int parameterIndex) const {
+        return firstOperand()->derivative(parameterIndex).dot(secondOperand())
+            + firstOperand().dot(secondOperand()->derivative(parameterIndex));
     }
     
     void
-    DotProductFunction::debug(std::ostream& stream, int indent) const {
+    DotProductFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "DotProductFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
     }
 }

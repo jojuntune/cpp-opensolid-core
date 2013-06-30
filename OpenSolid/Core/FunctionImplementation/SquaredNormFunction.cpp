@@ -26,51 +26,51 @@
 
 namespace opensolid
 {
-    SquaredNormFunction::SquaredNormFunction(const Function& operand) :
+    SquaredNormFunction::SquaredNormFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
     }
     
     int
-    SquaredNormFunction::numDimensions() const {
+    SquaredNormFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    SquaredNormFunction::isDuplicateOf(const Function& function) const {
+    SquaredNormFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    SquaredNormFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new SquaredNormFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    SquaredNormFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new SquaredNormFunction(operand()->deduplicated(deduplicationCache));
     }
     
     void
-    SquaredNormFunction::evaluate(
+    SquaredNormFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).colwise().squaredNorm();
+        results = evaluator.evaluate(operand(), parameterValues).colwise().squaredNorm();
     }
     
     void
-    SquaredNormFunction::evaluate(
+    SquaredNormFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).colwise().squaredNorm();
+        results = evaluator.evaluate(operand(), parameterBounds).colwise().squaredNorm();
     }
 
-    Function
-    SquaredNormFunction::derivative(int index) const {
-        return 2.0 * operand().dot(operand().derivative(index));
+    FunctionImplementationPtr
+    SquaredNormFunction::derivativeImpl(int parameterIndex) const {
+        return 2.0 * operand().dot(operand()->derivative(parameterIndex));
     }
     
     void
-    SquaredNormFunction::debug(std::ostream& stream, int indent) const {
+    SquaredNormFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SquaredNormFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

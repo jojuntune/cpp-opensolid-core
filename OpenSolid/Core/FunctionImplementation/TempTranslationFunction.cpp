@@ -27,21 +27,21 @@
 namespace opensolid
 {
     TempTranslationFunction::TempTranslationFunction(
-        const Function& operand,
+        const FunctionImplementationPtr& operand,
         const VectorXd& vector
     ) : UnaryOperation(operand),
         _vector(vector) {
 
-        assert(vector.size() == operand.numDimensions());
+        assert(vector.size() == operand->numDimensions());
     }
     
     int
-    TempTranslationFunction::numDimensions() const {
-        return operand().numDimensions();
+    TempTranslationFunction::numDimensionsImpl() const {
+        return operand()->numDimensions();
     }
 
     bool
-    TempTranslationFunction::isDuplicateOf(const Function& function) const {
+    TempTranslationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         const TempTranslationFunction* other =
             dynamic_cast<const TempTranslationFunction*>(function.implementation());
         if (other) {
@@ -52,49 +52,49 @@ namespace opensolid
         }
     }
 
-    Function
-    TempTranslationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    FunctionImplementationPtr
+    TempTranslationFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
         return new TempTranslationFunction(deduplicationCache(operand()), vector());
     }
     
     void
-    TempTranslationFunction::evaluate(
+    TempTranslationFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = cache.results(operand(), parameterValues);
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
         results = operandValues.colwise() + vector();
     }
     
     void
-    TempTranslationFunction::evaluate(
+    TempTranslationFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = cache.results(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         results = operandBounds.colwise() + vector().cast<Interval>();
     }
     
-    Function
-    TempTranslationFunction::derivative(int index) const {
-        return operand().derivative(index);
+    FunctionImplementationPtr
+    TempTranslationFunction::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex);
     }
     
-    Function
-    TempTranslationFunction::compose(const Function& innerFunction) const {
-        return operand().compose(innerFunction) + vector();
+    FunctionImplementationPtr
+    TempTranslationFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+        return operand()->compose(innerFunction) + vector();
     }
 
-    Function
+    FunctionImplementationPtr
     TempTranslationFunction::translated(const VectorXd& vector) const {
         return operand() + (this->vector() + vector);
     }
     
     void
-    TempTranslationFunction::debug(std::ostream& stream, int indent) const {
+    TempTranslationFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TempTranslationFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

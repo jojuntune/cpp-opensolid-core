@@ -26,53 +26,53 @@
 
 namespace opensolid
 {
-    SineFunction::SineFunction(const Function& operand) :
+    SineFunction::SineFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
         
-        assert(operand.numDimensions() == 1);
+        assert(operand->numDimensions() == 1);
     }
     
     int
-    SineFunction::numDimensions() const {
+    SineFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    SineFunction::isDuplicateOf(const Function& function) const {
+    SineFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    SineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new SineFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    SineFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new SineFunction(operand()->deduplicated(deduplicationCache));
     }
     
     void
-    SineFunction::evaluate(
+    SineFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).array().sin();
+        results = evaluator.evaluate(operand(), parameterValues).array().sin();
     }
     
     void
-    SineFunction::evaluate(
+    SineFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).array().sin();
+        results = evaluator.evaluate(operand(), parameterBounds).array().sin();
     }
 
-    Function
-    SineFunction::derivative(int index) const {
-        return cos(operand()) * operand().derivative(index);
+    FunctionImplementationPtr
+    SineFunction::derivativeImpl(int parameterIndex) const {
+        return cos(operand()) * operand()->derivative(parameterIndex);
     }
     
     void
-    SineFunction::debug(std::ostream& stream, int indent) const {
+    SineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SineFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

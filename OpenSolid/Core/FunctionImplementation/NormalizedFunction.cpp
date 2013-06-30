@@ -26,74 +26,74 @@
 
 namespace opensolid
 {
-    NormalizedFunction::NormalizedFunction(const Function& operand) :
+    NormalizedFunction::NormalizedFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
     }
     
     int
-    NormalizedFunction::numDimensions() const {
-        return operand().numDimensions();
+    NormalizedFunction::numDimensionsImpl() const {
+        return operand()->numDimensions();
     }
 
     bool
-    NormalizedFunction::isDuplicateOf(const Function& function) const {
+    NormalizedFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    NormalizedFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new NormalizedFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    NormalizedFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new NormalizedFunction(operand()->deduplicated(deduplicationCache));
     }
 
     void
-    NormalizedFunction::evaluate(
+    NormalizedFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = cache.results(operand(), parameterValues);
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
         VectorXd squaredNorms = operandValues.colwise().squaredNorm();
         results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
     void
-    NormalizedFunction::evaluate(
+    NormalizedFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = cache.results(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    Function
-    NormalizedFunction::derivative(int index) const {
-        Function operandDerivative = operand().derivative(index);
-        Function operandNormalized = operand().normalized();
+    FunctionImplementationPtr
+    NormalizedFunction::derivativeImpl(int parameterIndex) const {
+        FunctionImplementationPtr operandDerivative = operand()->derivative(parameterIndex);
+        FunctionImplementationPtr operandNormalized = operand().normalized();
         return
             (operandDerivative - operandDerivative.dot(operandNormalized) * operandNormalized) /
             operand().norm();
     }
     
-    Function
+    FunctionImplementationPtr
     NormalizedFunction::norm() const {
-        return Function::Constant(1.0, numParameters());
+        return FunctionImplementationPtr::Constant(1.0, numParameters());
     }
     
-    Function
+    FunctionImplementationPtr
     NormalizedFunction::normalized() const {
         return this;
     }
     
-    Function
+    FunctionImplementationPtr
     NormalizedFunction::squaredNorm() const {
-        return Function::Constant(1.0, numParameters());
+        return FunctionImplementationPtr::Constant(1.0, numParameters());
     }
     
     void
-    NormalizedFunction::debug(std::ostream& stream, int indent) const {
+    NormalizedFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "NormalizedFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

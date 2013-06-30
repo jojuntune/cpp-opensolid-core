@@ -26,53 +26,53 @@
 
 namespace opensolid
 {
-    LogarithmFunction::LogarithmFunction(const Function& operand) :
+    LogarithmFunction::LogarithmFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
         
-        assert(operand.numDimensions() == 1);
+        assert(operand->numDimensions() == 1);
     }
         
     int
-    LogarithmFunction::numDimensions() const {
+    LogarithmFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    LogarithmFunction::isDuplicateOf(const Function& function) const {
+    LogarithmFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    LogarithmFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new LogarithmFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    LogarithmFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new LogarithmFunction(operand()->deduplicated(deduplicationCache));
     }
         
     void
-    LogarithmFunction::evaluate(
+    LogarithmFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).array().log();
+        results = evaluator.evaluate(operand(), parameterValues).array().log();
     }
 
     void
-    LogarithmFunction::evaluate(
+    LogarithmFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).array().log();
+        results = evaluator.evaluate(operand(), parameterBounds).array().log();
     }
 
-    Function
-    LogarithmFunction::derivative(int index) const {
-        return operand().derivative(index) / operand();
+    FunctionImplementationPtr
+    LogarithmFunction::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex) / operand();
     }
         
     void
-    LogarithmFunction::debug(std::ostream& stream, int indent) const {
+    LogarithmFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "LogarithmFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

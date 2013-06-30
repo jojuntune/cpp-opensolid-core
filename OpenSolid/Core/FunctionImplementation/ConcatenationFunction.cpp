@@ -26,84 +26,80 @@
 
 namespace opensolid
 {
-    ConcatenationFunction::ConcatenationFunction(
-        const Function& firstOperand,
-        const Function& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
-    }
-    
     int
-    ConcatenationFunction::numDimensions() const {
-        return firstOperand().numDimensions() + secondOperand().numDimensions();
-    }
-
-    bool
-    ConcatenationFunction::isDuplicateOf(const Function& function) const {
-        return BinaryOperation::IsDuplicate(this, function, false);
-    }
-
-    Function
-    ConcatenationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
-        return new ConcatenationFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
+    ConcatenationFunction::numDimensionsImpl() const {
+        return firstOperand()->numDimensions() + secondOperand()->numDimensions();
     }
     
     void
-    ConcatenationFunction::evaluate(
+    ConcatenationFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results.topRows(firstOperand().numDimensions()) =
-            cache.results(firstOperand(), parameterValues);
-        results.bottomRows(secondOperand().numDimensions()) =
-            cache.results(secondOperand(), parameterValues);
+        results.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluate(firstOperand(), parameterValues);
+        results.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluate(secondOperand(), parameterValues);
     }
     
     void
-    ConcatenationFunction::evaluate(
+    ConcatenationFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results.topRows(firstOperand().numDimensions()) =
-            cache.results(firstOperand(), parameterBounds);
-        results.bottomRows(secondOperand().numDimensions()) =
-            cache.results(secondOperand(), parameterBounds);
+        results.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluate(firstOperand(), parameterBounds);
+        results.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluate(secondOperand(), parameterBounds);
     }
     
-    Function
-    ConcatenationFunction::derivative(int index) const {
-        return firstOperand().derivative(index).concatenate(secondOperand().derivative(index));
+    FunctionImplementationPtr
+    ConcatenationFunction::derivativeImpl(int parameterIndex) const {
+        return firstOperand()->derivative(parameterIndex)->concatenated(
+            secondOperand()->derivative(parameterIndex)
+        );
+    }
+
+    bool
+    ConcatenationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, false);
     }
     
-    Function
-    ConcatenationFunction::components(int startIndex, int numComponents) const {
-        int firstDimensions = firstOperand().numDimensions();
+    FunctionImplementationPtr
+    ConcatenationFunction::componentsImpl(int startIndex, int numComponents) const {
+        int firstDimensions = firstOperand()->numDimensions();
         if (startIndex + numComponents <= firstDimensions) {
-            return firstOperand().components(startIndex, numComponents);
+            return firstOperand()->components(startIndex, numComponents);
         } else if (startIndex >= firstDimensions) {
-            return secondOperand().components(startIndex - firstDimensions, numComponents);
+            return secondOperand()->components(startIndex - firstDimensions, numComponents);
         } else {
             return new ConcatenationFunction(
-                firstOperand().components(startIndex, firstDimensions - startIndex),
-                secondOperand().components(0, startIndex + numComponents - firstDimensions)
+                firstOperand()->components(startIndex, firstDimensions - startIndex),
+                secondOperand()->components(0, startIndex + numComponents - firstDimensions)
             );
         }
     }
     
-    Function
-    ConcatenationFunction::compose(const Function& innerFunction) const {
-        return firstOperand().compose(innerFunction).concatenate(
-            secondOperand().compose(innerFunction)
-        );
-    }
-    
     void
-    ConcatenationFunction::debug(std::ostream& stream, int indent) const {
+    ConcatenationFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ConcatenationFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    ConcatenationFunction::withNewOperandsImpl(
+        const FunctionImplementationPtr& newFirstOperand,
+        const FunctionImplementationPtr& newSecondOperand
+    ) const {
+        return newFirstOperand->concatenated(newSecondOperand);
+    }
+
+    ConcatenationFunction::ConcatenationFunction(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
     }
 }

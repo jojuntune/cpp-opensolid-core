@@ -26,60 +26,60 @@
 
 namespace opensolid
 {
-    SumFunction::SumFunction(const Function& firstOperand, const Function& secondOperand) :
+    SumFunction::SumFunction(const FunctionImplementationPtr& firstOperand, const FunctionImplementationPtr& secondOperand) :
         BinaryOperation(firstOperand, secondOperand) {
 
-        assert(firstOperand.numDimensions() == secondOperand.numDimensions());
+        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
     }
     
     int
-    SumFunction::numDimensions() const {
-        return firstOperand().numDimensions();
+    SumFunction::numDimensionsImpl() const {
+        return firstOperand()->numDimensions();
     }
 
     bool
-    SumFunction::isDuplicateOf(const Function& function) const {
+    SumFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return BinaryOperation::IsDuplicate(this, function, true);
     }
 
-    Function
-    SumFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+    FunctionImplementationPtr
+    SumFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
         return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
-    SumFunction::evaluate(
+    SumFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
-        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstValues + secondValues;
     }
     
     void
-    SumFunction::evaluate(
+    SumFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
-        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
         results = firstBounds + secondBounds;
     }
 
-    Function
-    SumFunction::derivative(int index) const {
-        return firstOperand().derivative(index) + secondOperand().derivative(index);
+    FunctionImplementationPtr
+    SumFunction::derivativeImpl(int parameterIndex) const {
+        return firstOperand()->derivative(parameterIndex) + secondOperand()->derivative(parameterIndex);
     }
     
     void
-    SumFunction::debug(std::ostream& stream, int indent) const {
+    SumFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SumFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
     }
 }

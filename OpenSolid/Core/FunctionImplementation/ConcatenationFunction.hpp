@@ -33,28 +33,14 @@ namespace opensolid
     class ConcatenationFunction :
         public BinaryOperation
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        ConcatenationFunction(
-            const Function& firstOperand,
-            const Function& secondOperand
-        );
-        
+    private:
         OPENSOLID_CORE_EXPORT
         int
-        numDimensions() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOf(const Function& other) const;
-        
-        OPENSOLID_CORE_EXPORT
-        Function
-        deduplicated(DeduplicationCache& deduplicationCache) const;
+        numDimensionsImpl() const;
         
         OPENSOLID_CORE_EXPORT
         void
-        evaluate(
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
@@ -62,26 +48,39 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         void
-        evaluate(
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
         
         OPENSOLID_CORE_EXPORT
-        Function
-        derivative(int index) const;
-        
-        OPENSOLID_CORE_EXPORT
-        Function
-        components(int startIndex, int numComponents) const;
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const;
 
         OPENSOLID_CORE_EXPORT
-        Function
-        compose(const Function& innerFunction) const;
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+        
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        componentsImpl(int startIndex, int numComponents) const;
         
         OPENSOLID_CORE_EXPORT
         void
-        debug(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        withNewOperandsImpl(
+            const FunctionImplementationPtr& newFirstOperand,
+            const FunctionImplementationPtr& newSecondOperand
+        ) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        ConcatenationFunction(
+            const FunctionImplementationPtr& firstOperand,
+            const FunctionImplementationPtr& secondOperand
+        );
     };
 }

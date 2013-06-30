@@ -26,53 +26,53 @@
 
 namespace opensolid
 {
-    ExponentialFunction::ExponentialFunction(const Function& operand) :
+    ExponentialFunction::ExponentialFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
         
-        assert(operand.numDimensions() == 1);
+        assert(operand->numDimensions() == 1);
     }
         
     int 
-    ExponentialFunction::numDimensions() const {
+    ExponentialFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    ExponentialFunction::isDuplicateOf(const Function& function) const {
+    ExponentialFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    ExponentialFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new ExponentialFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    ExponentialFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new ExponentialFunction(operand()->deduplicated(deduplicationCache));
     }
         
     void
-    ExponentialFunction::evaluate(
+    ExponentialFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).array().exp();
+        results = evaluator.evaluate(operand(), parameterValues).array().exp();
     }
 
     void
-    ExponentialFunction::evaluate(
+    ExponentialFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).array().exp();
+        results = evaluator.evaluate(operand(), parameterBounds).array().exp();
     }
 
-    Function
-    ExponentialFunction::derivative(int index) const {
-        return operand().derivative(index) * Function(this);
+    FunctionImplementationPtr
+    ExponentialFunction::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex) * FunctionImplementationPtr(this);
     }
         
     void
-    ExponentialFunction::debug(std::ostream& stream, int indent) const {
+    ExponentialFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "ExponentialFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

@@ -36,25 +36,25 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT
         ProductFunction(
-            const Function& multiplier,
-            const Function& multiplicand
+            const FunctionImplementationPtr& multiplier,
+            const FunctionImplementationPtr& multiplicand
         );
         
         OPENSOLID_CORE_EXPORT
         int
-        numDimensions() const;
+        numDimensionsImpl() const;
 
         OPENSOLID_CORE_EXPORT
         bool
-        isDuplicateOf(const Function& other) const;
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
 
         OPENSOLID_CORE_EXPORT
-        Function
-        deduplicated(DeduplicationCache& deduplicationCache) const;
+        FunctionImplementationPtr
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         OPENSOLID_CORE_EXPORT
         void
-        evaluate(
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
@@ -62,18 +62,18 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         void
-        evaluate(
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
         OPENSOLID_CORE_EXPORT
-        Function
-        derivative(int index) const;
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const;
         
         OPENSOLID_CORE_EXPORT
         void
-        debug(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const;
     };
 }

@@ -28,20 +28,20 @@ namespace opensolid
 {
     TempTransformationFunction::TempTransformationFunction(
         const MatrixXd& transformationMatrix,
-        const Function& operand
+        const FunctionImplementationPtr& operand
     ) : UnaryOperation(operand),
         _transformationMatrix(transformationMatrix) {
 
-        assert(transformationMatrix.cols() == operand.numDimensions());
+        assert(transformationMatrix.cols() == operand->numDimensions());
     }
 
     int
-    TempTransformationFunction::numDimensions() const {
+    TempTransformationFunction::numDimensionsImpl() const {
         return transformationMatrix().rows();
     }
 
     bool
-    TempTransformationFunction::isDuplicateOf(const Function& function) const {
+    TempTransformationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         const TempTransformationFunction* other =
             dynamic_cast<const TempTransformationFunction*>(function.implementation());
         if (other) {
@@ -54,57 +54,57 @@ namespace opensolid
         }
     }
 
-    Function
-    TempTransformationFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
+    FunctionImplementationPtr
+    TempTransformationFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
         return new TempTransformationFunction(
             transformationMatrix(),
-            operand().deduplicated(others)
+            operand()->deduplicated(deduplicationCache)
         );
     }
     
     void
-    TempTransformationFunction::evaluate(
+    TempTransformationFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
         results = transformationMatrix() *
-            cache.results(operand(), parameterValues);
+            evaluator.evaluate(operand(), parameterValues);
     }
     
     void
-    TempTransformationFunction::evaluate(
+    TempTransformationFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
         results = transformationMatrix().cast<Interval>() *
-            cache.results(operand(), parameterBounds);
+            evaluator.evaluate(operand(), parameterBounds);
     }
     
-    Function
-    TempTransformationFunction::derivative(int index) const {
-        return transformationMatrix() * operand().derivative(index);
+    FunctionImplementationPtr
+    TempTransformationFunction::derivativeImpl(int parameterIndex) const {
+        return transformationMatrix() * operand()->derivative(parameterIndex);
     }
     
-    Function
-    TempTransformationFunction::compose(const Function& innerFunction) const {
-        return transformationMatrix() * operand().compose(innerFunction);
+    FunctionImplementationPtr
+    TempTransformationFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+        return transformationMatrix() * operand()->compose(innerFunction);
     }
 
-    Function
+    FunctionImplementationPtr
     TempTransformationFunction::scaled(double value) const {
         return (value * transformationMatrix()) * operand();
     }
 
-    Function
+    FunctionImplementationPtr
     TempTransformationFunction::transformed(const MatrixXd& transformationMatrix) const {
         return (transformationMatrix * this->transformationMatrix()) * operand();
     }
     
     void
-    TempTransformationFunction::debug(std::ostream& stream, int indent) const {
+    TempTransformationFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TempTransformationFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

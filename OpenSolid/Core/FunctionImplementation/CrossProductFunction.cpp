@@ -25,68 +25,69 @@
 #include <OpenSolid/Core/FunctionImplementation/CrossProductFunction.hpp>
 
 namespace opensolid
-{
-    CrossProductFunction::CrossProductFunction(
-        const Function& firstOperand,
-        const Function& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
-
-        assert(firstOperand.numDimensions() == 3 && secondOperand.numDimensions() == 3);
-    }
-    
+{   
     int
-    CrossProductFunction::numDimensions() const {
+    CrossProductFunction::numDimensionsImpl() const {
         return 3;
-    }
-
-    bool
-    CrossProductFunction::isDuplicateOf(const Function& function) const {
-        return BinaryOperation::IsDuplicate(this, function, false);
-    }
-
-    Function
-    CrossProductFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
-        return new CrossProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
-    CrossProductFunction::evaluate(
+    CrossProductFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
-        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
             results.col(i) = firstValues.col(i).head<3>().cross(secondValues.col(i).head<3>());
         }
     }
     
     void
-    CrossProductFunction::evaluate(
+    CrossProductFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
-        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
         for (int i = 0; i < results.cols(); ++i) {
             results.col(i) = firstBounds.col(i).head<3>().cross(secondBounds.col(i).head<3>());
         }
     }
 
-    Function
-    CrossProductFunction::derivative(int index) const {
-        return firstOperand().derivative(index).cross(secondOperand())
-            + firstOperand().cross(secondOperand().derivative(index));
+    FunctionImplementationPtr
+    CrossProductFunction::derivativeImpl(int parameterIndex) const {
+        return firstOperand()->derivative(parameterIndex)->cross(secondOperand())
+            + firstOperand()->cross(secondOperand()->derivative(parameterIndex));
+    }
+
+    bool
+    CrossProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, false);
     }
     
     void
-    CrossProductFunction::debug(std::ostream& stream, int indent) const {
+    CrossProductFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "CrossProductFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    CrossProductFunction::withNewOperandsImpl(
+        const FunctionImplementationPtr& newFirstOperand,
+        const FunctionImplementationPtr& newSecondOperand
+    ) const {
+        return newFirstOperand->cross(newSecondOperand);
+    }
+
+    CrossProductFunction::CrossProductFunction(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand->numDimensions() == 3 && secondOperand->numDimensions() == 3);
     }
 }

@@ -26,53 +26,53 @@
 
 namespace opensolid
 {
-    CosineFunction::CosineFunction(const Function& operand) :
-        UnaryOperation(operand) {
-
-        assert(operand.numDimensions() == 1);
-    }
-    
     int
-    CosineFunction::numDimensions() const {
+    CosineFunction::numDimensionsImpl() const {
         return 1;
-    }
-
-    bool
-    CosineFunction::isDuplicateOf(const Function& function) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    Function
-    CosineFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new CosineFunction(operand().deduplicated(others));
     }
     
     void
-    CosineFunction::evaluate(
+    CosineFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).array().cos();
+        results = evaluator.evaluate(operand(), parameterValues).array().cos();
     }
     
     void
-    CosineFunction::evaluate(
+    CosineFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).array().cos();
+        results = evaluator.evaluate(operand(), parameterBounds).array().cos();
     }
 
-    Function
-    CosineFunction::derivative(int index) const {
-        return -sin(operand()) * operand().derivative(index);
+    FunctionImplementationPtr
+    CosineFunction::derivativeImpl(int parameterIndex) const {
+        return -sin(operand()) * operand()->derivative(parameterIndex);
+    }
+
+    bool
+    CosineFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other);
     }
     
     void
-    CosineFunction::debug(std::ostream& stream, int indent) const {
+    CosineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "CosineFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    CosineFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return cos(newOperand);
+    }
+
+    CosineFunction::CosineFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+
+        assert(operand->numDimensions() == 1);
     }
 }

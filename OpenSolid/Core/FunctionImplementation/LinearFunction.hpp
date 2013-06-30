@@ -44,45 +44,45 @@ namespace opensolid
         datum() const;
         
         int
-        numParameters() const;
+        numParametersImpl() const;
         
         int
-        numDimensions() const;
+        numDimensionsImpl() const;
 
         bool
-        isDuplicateOf(const Function& other) const;
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
-        Function
-        deduplicated(DeduplicationCache& deduplicationCache) const;
+        FunctionImplementationPtr
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         void
-        evaluate(
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
         ) const;
         
         void
-        evaluate(
+        evaluateImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
         ) const;
 
-        Function
-        derivative(int index) const;
+        FunctionImplementationPtr
+        derivativeImpl(int parameterIndex) const;
         
-        Function
+        FunctionImplementationPtr
         scaled(double scale) const;
 
-        Function
+        FunctionImplementationPtr
         transformed(const MatrixXd& transformationMatrix) const;
         
-        Function
+        FunctionImplementationPtr
         translated(const VectorXd& vector) const;
         
         void
-        debug(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const;
     };
 }
 
@@ -104,19 +104,19 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     int
-    LinearFunction<iNumDimensions, iNumAxes>::numParameters() const {
+    LinearFunction<iNumDimensions, iNumAxes>::numParametersImpl() const {
         return iNumAxes;
     }
     
     template <int iNumDimensions, int iNumAxes>
     int
-    LinearFunction<iNumDimensions, iNumAxes>::numDimensions() const {
+    LinearFunction<iNumDimensions, iNumAxes>::numDimensionsImpl() const {
         return iNumDimensions;
     }
 
     template <int iNumDimensions, int iNumAxes>
     bool
-    LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const Function& function) const {
+    LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const FunctionImplementationPtr& function) const {
         const LinearFunction<iNumDimensions, iNumAxes>* other =
             dynamic_cast<const LinearFunction<iNumDimensions, iNumAxes>*>(
                 function.implementation()
@@ -130,7 +130,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function
+    FunctionImplementationPtr
     LinearFunction<iNumDimensions, iNumAxes>::deduplicated(
         DeduplicationCache& deduplicationCache
     ) const {
@@ -139,7 +139,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void
-    LinearFunction<iNumDimensions, iNumAxes>::evaluate(
+    LinearFunction<iNumDimensions, iNumAxes>::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
@@ -150,7 +150,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     void
-    LinearFunction<iNumDimensions, iNumAxes>::evaluate(
+    LinearFunction<iNumDimensions, iNumAxes>::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
@@ -160,13 +160,13 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function
-    LinearFunction<iNumDimensions, iNumAxes>::derivative(int index) const {
-        return Function::Constant(datum().basisVector(index), numParameters());
+    FunctionImplementationPtr
+    LinearFunction<iNumDimensions, iNumAxes>::derivativeImpl(int parameterIndex) const {
+        return new ConstantFunction(datum().basisVector(index), numParameters());
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function
+    FunctionImplementationPtr
     LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale)
@@ -174,7 +174,7 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    Function
+    FunctionImplementationPtr
     LinearFunction<iNumDimensions, iNumAxes>::transformed(
         const MatrixXd& transformationMatrix
     ) const {
@@ -202,19 +202,19 @@ namespace opensolid
             );
         } else {
             assert(false);
-            return Function();
+            return FunctionImplementationPtr();
         }
     }
 
     template <int iNumDimensions, int iNumAxes>
-    Function
+    FunctionImplementationPtr
     LinearFunction<iNumDimensions, iNumAxes>::translated(const VectorXd& vector) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(datum().translated(vector));
     }
     
     template <int iNumDimensions, int iNumAxes>
     void
-    LinearFunction<iNumDimensions, iNumAxes>::debug(std::ostream& stream, int indent) const {
+    LinearFunction<iNumDimensions, iNumAxes>::debugImpl(std::ostream& stream, int indent) const {
         stream << "LinearFunction<" << iNumDimensions << "," << iNumAxes << ">" << std::endl;
     }
 }

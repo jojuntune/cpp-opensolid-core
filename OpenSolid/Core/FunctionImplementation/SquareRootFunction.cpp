@@ -26,25 +26,25 @@
 
 namespace opensolid
 {
-    SquareRootFunction::SquareRootFunction(const Function& operand) :
+    SquareRootFunction::SquareRootFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
         
-        assert(operand.numDimensions() == 1);
+        assert(operand->numDimensions() == 1);
     }
     
     int
-    SquareRootFunction::numDimensions() const {
+    SquareRootFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    SquareRootFunction::isDuplicateOf(const Function& function) const {
+    SquareRootFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return UnaryOperation::IsDuplicate(this, function);
     }
 
-    Function
-    SquareRootFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        return new SquareRootFunction(operand().deduplicated(others));
+    FunctionImplementationPtr
+    SquareRootFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        return new SquareRootFunction(operand()->deduplicated(deduplicationCache));
     }
     
     struct SquareRoot
@@ -63,36 +63,36 @@ namespace opensolid
     };
     
     void
-    SquareRootFunction::evaluate(
+    SquareRootFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterValues).unaryExpr(SquareRoot());
+        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(SquareRoot());
     }
     
     void
-    SquareRootFunction::evaluate(
+    SquareRootFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = cache.results(operand(), parameterBounds).unaryExpr(SquareRoot());
+        results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(SquareRoot());
     }
 
-    Function
-    SquareRootFunction::derivative(int index) const {
-        return 0.5 * operand().derivative(index) / Function(this);
+    FunctionImplementationPtr
+    SquareRootFunction::derivativeImpl(int parameterIndex) const {
+        return 0.5 * operand()->derivative(parameterIndex) / FunctionImplementationPtr(this);
     }
     
-    Function
+    FunctionImplementationPtr
     SquareRootFunction::squaredNorm() const {
         return operand().norm();
     }
     
     void
-    SquareRootFunction::debug(std::ostream& stream, int indent) const {
+    SquareRootFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SquareRootFunction" << std::endl;
-        operand().debug(stream, indent + 1);
+        operand()->debug(stream, indent + 1);
     }
 }

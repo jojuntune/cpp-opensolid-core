@@ -27,61 +27,61 @@
 namespace opensolid
 {
     DifferenceFunction::DifferenceFunction(
-        const Function& firstOperand,
-        const Function& secondOperand
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
     ) : BinaryOperation(firstOperand, secondOperand) {
 
-        assert(firstOperand.numDimensions() == secondOperand.numDimensions());
+        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
     }
     
     int
-    DifferenceFunction::numDimensions() const {
-        return firstOperand().numDimensions();
+    DifferenceFunction::numDimensionsImpl() const {
+        return firstOperand()->numDimensions();
     }
 
     bool
-    DifferenceFunction::isDuplicateOf(const Function& function) const {
+    DifferenceFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function
-    DifferenceFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+    FunctionImplementationPtr
+    DifferenceFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
         return new DifferenceFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
-    DifferenceFunction::evaluate(
+    DifferenceFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
-        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstValues - secondValues;
     }
     
     void
-    DifferenceFunction::evaluate(
+    DifferenceFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
-        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
         results = firstBounds - secondBounds;
     }
 
-    Function
-    DifferenceFunction::derivative(int index) const {
-        return firstOperand().derivative(index) - secondOperand().derivative(index);
+    FunctionImplementationPtr
+    DifferenceFunction::derivativeImpl(int parameterIndex) const {
+        return firstOperand()->derivative(parameterIndex) - secondOperand()->derivative(parameterIndex);
     }
     
     void
-    DifferenceFunction::debug(std::ostream& stream, int indent) const {
+    DifferenceFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "DifferenceFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
     }
 }

@@ -27,64 +27,64 @@
 namespace opensolid
 {
     QuotientFunction::QuotientFunction(
-        const Function& firstOperand,
-        const Function& secondOperand
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
     ) : BinaryOperation(firstOperand, secondOperand) {
 
-        assert(secondOperand.numDimensions() == 1);
+        assert(secondOperand->numDimensions() == 1);
     }
     
     int
-    QuotientFunction::numDimensions() const {
-        return firstOperand().numDimensions();
+    QuotientFunction::numDimensionsImpl() const {
+        return firstOperand()->numDimensions();
     }
 
     bool
-    QuotientFunction::isDuplicateOf(const Function& function) const {
+    QuotientFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function
-    QuotientFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedFirstOperand = firstOperand().deduplicated(others);
-        Function deduplicatedSecondOperand = secondOperand().deduplicated(others);
+    FunctionImplementationPtr
+    QuotientFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
         return new QuotientFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
-    QuotientFunction::evaluate(
+    QuotientFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = cache.results(firstOperand(), parameterValues);
-        MapXcd secondValues = cache.results(secondOperand(), parameterValues);
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstValues.array() / secondValues.replicate(numDimensions(), 1).array();
     }
     
     void
-    QuotientFunction::evaluate(
+    QuotientFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = cache.results(firstOperand(), parameterBounds);
-        MapXcI secondBounds = cache.results(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
         results = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
     }
 
-    Function
-    QuotientFunction::derivative(int index) const {
-        Function firstDerivative = firstOperand().derivative(index);
-        Function secondDerivative = secondOperand().derivative(index);
+    FunctionImplementationPtr
+    QuotientFunction::derivativeImpl(int parameterIndex) const {
+        FunctionImplementationPtr firstDerivative = firstOperand()->derivative(parameterIndex);
+        FunctionImplementationPtr secondDerivative = secondOperand()->derivative(parameterIndex);
         return(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
             secondOperand().squaredNorm();
     }
     
     void
-    QuotientFunction::debug(std::ostream& stream, int indent) const {
+    QuotientFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "QuotientFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
     }
 }

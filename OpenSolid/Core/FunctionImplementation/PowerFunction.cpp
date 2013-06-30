@@ -49,19 +49,19 @@ namespace opensolid
     }
         
     int
-    PowerFunction::numDimensions() const {
+    PowerFunction::numDimensionsImpl() const {
         return 1;
     }
 
     bool
-    PowerFunction::isDuplicateOf(const Function& function) const {
+    PowerFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return BinaryOperation::IsDuplicate(this, function, false);
     }
 
-    Function
-    PowerFunction::deduplicated(DeduplicationCache& deduplicationCache) const {
-        Function deduplicatedBase = firstOperand().deduplicated(others);
-        Function deduplicatedExponent = secondOperand().deduplicated(others);
+    FunctionImplementationPtr
+    PowerFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
+        FunctionImplementationPtr deduplicatedBase = firstOperand()->deduplicated(deduplicationCache);
+        FunctionImplementationPtr deduplicatedExponent = secondOperand()->deduplicated(deduplicationCache);
         return new PowerFunction(deduplicatedBase, deduplicatedExponent);
     }
 
@@ -112,56 +112,56 @@ namespace opensolid
     };
         
     void
-    PowerFunction::evaluate(
+    PowerFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd baseValues = cache.results(firstOperand(), parameterValues);
+        MapXcd baseValues = evaluator.evaluate(firstOperand(), parameterValues);
         if (_exponentIsInteger) {
             results = baseValues.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
             results = baseValues.array().pow(_constantExponent);
         } else {
-            MapXcd exponentValues = cache.results(secondOperand(), parameterValues);
+            MapXcd exponentValues = evaluator.evaluate(secondOperand(), parameterValues);
             results = baseValues.binaryExpr(exponentValues, Power());
         }
     }
 
     void
-    PowerFunction::evaluate(
+    PowerFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI baseBounds = cache.results(firstOperand(), parameterBounds);
+        MapXcI baseBounds = evaluator.evaluate(firstOperand(), parameterBounds);
         if (_exponentIsInteger) {
             results = baseBounds.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
             results = baseBounds.array().unaryExpr(ConstantPower(_constantExponent));
         } else {
-            MapXcI exponentBounds = cache.results(secondOperand(), parameterBounds);
+            MapXcI exponentBounds = evaluator.evaluate(secondOperand(), parameterBounds);
             results = baseBounds.binaryExpr(exponentBounds, Power());
         }
     }
 
-    Function
-    PowerFunction::derivative(int index) const {
+    FunctionImplementationPtr
+    PowerFunction::derivativeImpl(int parameterIndex) const {
         if (_exponentIsConstant) {
             return _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
-                firstOperand().derivative(index);
+                firstOperand()->derivative(parameterIndex);
         } else {
             return (
-                secondOperand().derivative(index) * log(firstOperand()) +
-                secondOperand() * firstOperand().derivative(index) / firstOperand()
-            ) * Function(this);
+                secondOperand()->derivative(parameterIndex) * log(firstOperand()) +
+                secondOperand() * firstOperand()->derivative(parameterIndex) / firstOperand()
+            ) * FunctionImplementationPtr(this);
         }
     }
         
     void
-    PowerFunction::debug(std::ostream& stream, int indent) const {
+    PowerFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "PowerFunction" << std::endl;
-        firstOperand().debug(stream, indent + 1);
-        secondOperand().debug(stream, indent + 1);
+        firstOperand()->debug(stream, indent + 1);
+        secondOperand()->debug(stream, indent + 1);
     }
 }
