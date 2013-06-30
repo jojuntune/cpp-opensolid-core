@@ -32,8 +32,10 @@
 #include <OpenSolid/Core/FunctionImplementation/ConcatenationFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/CosineFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/CrossProductFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.hpp>
 #include <OpenSolid/Core/FunctionImplementation/DifferenceFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/DotProductFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ExponentialFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/LogarithmFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/NegatedFunction.hpp>
@@ -58,7 +60,7 @@ namespace opensolid
     FunctionImplementation::evaluateJacobianImpl(
         const MapXcd& parameterValues,
         MapXd& results,
-        JacobianEvaluatorXd& cache
+        JacobianEvaluator& jacobianEvaluator
     ) const {
         throw FeatureNotImplemented();
     }
@@ -68,13 +70,13 @@ namespace opensolid
     FunctionImplementation::evaluateJacobianImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
-        JacobianEvaluatorXI& cache
+        JacobianEvaluator& jacobianEvaluator
     ) const {
         throw FeatureNotImplemented();
     }
 
     FunctionImplementationPtr
-    FunctionImplementation::composeImpl(const FunctionImplementation* innerFunction) const {
+    FunctionImplementation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
         return new CompositionFunction(this, innerFunction);
     }
     
@@ -120,7 +122,7 @@ namespace opensolid
     
     FunctionImplementationPtr
     FunctionImplementation::curvatureImpl() const {
-        return tangentVector()->derivative()->norm()->quotient(derivative()->norm());
+        return tangentVector()->derivative()->norm() / derivative()->norm();
     }
     
     FunctionImplementationPtr
@@ -128,13 +130,13 @@ namespace opensolid
         if (numParameters() == 1) {
             return tangentVector()->derivative()->normalized();
         } else {
-            return derivative(0)->crossProduct(derivative(1))->normalized();
+            return derivative(0)->cross(derivative(1))->normalized();
         }
     }
     
     FunctionImplementationPtr
     FunctionImplementation::binormalVectorImpl() const {
-        return tangentVector()->crossProduct(normalVector());
+        return tangentVector()->cross(normalVector());
     }
 
     FunctionImplementationPtr
@@ -216,9 +218,7 @@ namespace opensolid
         auto iterator = std::find_if(
             deduplicationCache.begin(),
             deduplicationCache.end(),
-            [&functionImplementation] (
-                const FunctionImplementationPtr& cachedFunctionImplementation
-            ) -> bool {
+            [this] (const FunctionImplementationPtr& cachedFunctionImplementation) -> bool {
                 return this->isDuplicateOf(cachedFunctionImplementation);
             }
         );
@@ -315,7 +315,7 @@ namespace opensolid
             return this;
         }
         if (scale + 1 == Zero()) {
-            return negated();
+            return -self();
         }
         return scaledImpl(scale);
     }
@@ -409,7 +409,7 @@ namespace opensolid
             return new ConstantFunction(thisVector.dot(otherVector), numParameters());
         }
         if (numDimensions() == 1) {
-            return this->product(other);
+            return self() * other;
         }
         if (this->isConstant() && this->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(0.0, numParameters());
@@ -552,7 +552,7 @@ namespace opensolid
         // (to allow construction of a ScalingFunction instead of a generic ProductFunction).
         FunctionImplementationPtr multiplier;
         FunctionImplementationPtr multiplicand;
-        if (firstOperand->numDimensions() == 1 && secondOperand.numDimensions() == 1) {
+        if (firstOperand->numDimensions() == 1 && secondOperand->numDimensions() == 1) {
             // Either the first or second argument could be the multiplier, so pick whichever is
             // constant (defaulting to the first argument)
             if (firstOperand->isConstant()) {
@@ -569,7 +569,7 @@ namespace opensolid
             // Only the first argument is a scalar, so use it as the multiplier
             multiplier = firstOperand;
             multiplicand = secondOperand;
-        } else if (secondOperand.numDimensions() == 1) {
+        } else if (secondOperand->numDimensions() == 1) {
             // Only the second argument is a scalar, so use it as the multiplier
             multiplier = secondOperand;
             multiplicand = firstOperand;
@@ -612,7 +612,7 @@ namespace opensolid
     operator/(
         const FunctionImplementationPtr& firstOperand,
         const FunctionImplementationPtr& secondOperand
-    ) const {
+    ) {
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
             throw PlaceholderError();
         }
