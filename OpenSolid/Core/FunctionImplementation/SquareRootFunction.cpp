@@ -82,7 +82,7 @@ namespace opensolid
 
     FunctionImplementationPtr
     SquareRootFunction::derivativeImpl(int parameterIndex) const {
-        return 0.5 * operand()->derivative(parameterIndex) / FunctionImplementationPtr(this);
+        return 0.5 * operand()->derivative(parameterIndex) / self();
     }
     
     FunctionImplementationPtr

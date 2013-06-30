@@ -154,7 +154,7 @@ namespace opensolid
             return (
                 secondOperand()->derivative(parameterIndex) * log(firstOperand()) +
                 secondOperand() * firstOperand()->derivative(parameterIndex) / firstOperand()
-            ) * FunctionImplementationPtr(this);
+            ) * self();
         }
     }
         

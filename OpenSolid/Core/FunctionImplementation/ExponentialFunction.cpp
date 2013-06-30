@@ -67,7 +67,7 @@ namespace opensolid
 
     FunctionImplementationPtr
     ExponentialFunction::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex) * FunctionImplementationPtr(this);
+        return operand()->derivative(parameterIndex) * self();
     }
         
     void

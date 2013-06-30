@@ -69,7 +69,7 @@ namespace opensolid
 
     FunctionImplementationPtr
     TangentFunction::derivativeImpl(int parameterIndex) const {
-        return (1 + FunctionImplementationPtr(this).squaredNorm()) * operand()->derivative(parameterIndex);
+        return (1 + this->squaredNorm()) * operand()->derivative(parameterIndex);
     }
     
     void
