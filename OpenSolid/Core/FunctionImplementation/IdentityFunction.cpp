@@ -64,7 +64,7 @@ namespace opensolid
 
     bool
     IdentityFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        // FunctionImplementation already checks that numbers of parameters/dimensions area equal
+        // FunctionImplementation already checks that numbers of parameters/dimensions are equal
         return true;
     }
 
