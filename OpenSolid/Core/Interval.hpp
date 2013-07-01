@@ -471,7 +471,7 @@ namespace opensolid
         } else {
             return Interval(
                 sqrt(max(0.0, interval.lowerBound())),
-                sqrt(max(0.0, interval.upperBound()))
+                sqrt(interval.upperBound())
             );
         }
     }
