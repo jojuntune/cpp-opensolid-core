@@ -25,11 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/NormFunction.hpp>
 
 namespace opensolid
-{
-    NormFunction::NormFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-    }
-    
+{   
     int
     NormFunction::numDimensionsImpl() const {
         return 1;
@@ -37,12 +33,7 @@ namespace opensolid
 
     bool
     NormFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    NormFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new NormFunction(operand()->deduplicated(deduplicationCache));
+        return duplicateOperands(other);
     }
     
     void
@@ -65,12 +56,21 @@ namespace opensolid
 
     FunctionImplementationPtr
     NormFunction::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex).dot(operand().normalized());
+        return operand()->derivative(parameterIndex)->dot(operand()->normalized());
     }
     
     void
     NormFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "NormFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    NormFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return newOperand->norm();
+    }
+
+    NormFunction::NormFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
     }
 }

@@ -26,28 +26,7 @@
 #include <OpenSolid/Core/FunctionImplementation/PowerFunction.hpp>
 
 namespace opensolid
-{
-    PowerFunction::PowerFunction(
-        const FunctionImplementationPtr& baseFunction,
-        const FunctionImplementationPtr& exponentFunction
-    ) : BinaryOperation(baseFunction, exponentFunction) {
-
-        assert(baseFunction->numDimensions() == 1);
-        assert(exponentFunction->numDimensions() == 1);
-
-        if (exponentFunction.isConstant()) {
-            _exponentIsConstant = true;
-            _constantExponent = exponentFunction->cast<ConstantFunction>()->value();
-            _integerExponent = floor(_constantExponent + 0.5);
-            _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
-        } else {
-            _exponentIsConstant = false;
-            _exponentIsInteger = false;
-            _constantExponent = 0.0;
-            _integerExponent = 0;
-        }
-    }
-        
+{       
     int
     PowerFunction::numDimensionsImpl() const {
         return 1;
@@ -55,14 +34,7 @@ namespace opensolid
 
     bool
     PowerFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return BinaryOperation::IsDuplicate(this, function, false);
-    }
-
-    FunctionImplementationPtr
-    PowerFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        FunctionImplementationPtr deduplicatedBase = firstOperand()->deduplicated(deduplicationCache);
-        FunctionImplementationPtr deduplicatedExponent = secondOperand()->deduplicated(deduplicationCache);
-        return new PowerFunction(deduplicatedBase, deduplicatedExponent);
+        return duplicateOperands(other, false);
     }
 
     struct IntegerPower
@@ -171,5 +143,26 @@ namespace opensolid
         const FunctionImplementationPtr& newSecondOperand
     ) const {
         return pow(newFirstOperand, newSecondOperand);
+    }
+
+    PowerFunction::PowerFunction(
+        const FunctionImplementationPtr& baseFunction,
+        const FunctionImplementationPtr& exponentFunction
+    ) : BinaryOperation(baseFunction, exponentFunction) {
+
+        assert(baseFunction->numDimensions() == 1);
+        assert(exponentFunction->numDimensions() == 1);
+
+        if (exponentFunction->isConstant()) {
+            _exponentIsConstant = true;
+            _constantExponent = exponentFunction->cast<ConstantFunction>()->value();
+            _integerExponent = floor(_constantExponent + 0.5);
+            _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
+        } else {
+            _exponentIsConstant = false;
+            _exponentIsInteger = false;
+            _constantExponent = 0.0;
+            _integerExponent = 0;
+        }
     }
 }

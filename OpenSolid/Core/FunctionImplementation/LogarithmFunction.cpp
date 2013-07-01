@@ -25,13 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/LogarithmFunction.hpp>
 
 namespace opensolid
-{
-    LogarithmFunction::LogarithmFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
-    }
-        
+{       
     int
     LogarithmFunction::numDimensionsImpl() const {
         return 1;
@@ -39,12 +33,7 @@ namespace opensolid
 
     bool
     LogarithmFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    LogarithmFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new LogarithmFunction(operand()->deduplicated(deduplicationCache));
+        return duplicateOperands(other);
     }
         
     void
@@ -74,5 +63,16 @@ namespace opensolid
     LogarithmFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "LogarithmFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    LogarithmFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return log(newOperand);
+    }
+
+    LogarithmFunction::LogarithmFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+        
+        assert(operand->numDimensions() == 1);
     }
 }

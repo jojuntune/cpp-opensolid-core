@@ -25,28 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/SumFunction.hpp>
 
 namespace opensolid
-{
-    SumFunction::SumFunction(const FunctionImplementationPtr& firstOperand, const FunctionImplementationPtr& secondOperand) :
-        BinaryOperation(firstOperand, secondOperand) {
-
-        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
-    }
-    
+{   
     int
     SumFunction::numDimensionsImpl() const {
         return firstOperand()->numDimensions();
-    }
-
-    bool
-    SumFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return BinaryOperation::IsDuplicate(this, function, true);
-    }
-
-    FunctionImplementationPtr
-    SumFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
-        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
-        return new SumFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
@@ -73,7 +55,13 @@ namespace opensolid
 
     FunctionImplementationPtr
     SumFunction::derivativeImpl(int parameterIndex) const {
-        return firstOperand()->derivative(parameterIndex) + secondOperand()->derivative(parameterIndex);
+        return firstOperand()->derivative(parameterIndex) +
+            secondOperand()->derivative(parameterIndex);
+    }
+
+    bool
+    SumFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, true);
     }
     
     void
@@ -89,5 +77,13 @@ namespace opensolid
         const FunctionImplementationPtr& newSecondOperand
     ) const {
         return newFirstOperand + newSecondOperand;
+    }
+
+    SumFunction::SumFunction(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(firstOperand->numDimensions() == secondOperand->numDimensions());
     }
 }

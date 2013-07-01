@@ -36,20 +36,10 @@ namespace opensolid
     {
     private:
         VectorXd _vector;
-    public:
-        OPENSOLID_CORE_EXPORT
-        TempTranslationFunction(const FunctionImplementationPtr& operand, const VectorXd& vector);
-
-        const VectorXd&
-        vector() const;
         
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT void
         evaluateImpl(
@@ -71,8 +61,12 @@ namespace opensolid
         derivativeImpl(int parameterIndex) const;
 
         OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        translated(const VectorXd& vector) const;
+        translatedImpl(const VectorXd& vector) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -81,6 +75,12 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        TempTranslationFunction(const FunctionImplementationPtr& operand, const VectorXd& vector);
+
+        const VectorXd&
+        vector() const;
     };
 }
 

@@ -38,20 +38,10 @@ namespace opensolid
         bool _exponentIsInteger;
         double _constantExponent;
         int _integerExponent;
-    public:
-        OPENSOLID_CORE_EXPORT
-        PowerFunction(
-            const FunctionImplementationPtr& baseFunction,
-            const FunctionImplementationPtr& exponentFunction
-        );
         
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -72,6 +62,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -83,5 +77,11 @@ namespace opensolid
             const FunctionImplementationPtr& newFirstOperand,
             const FunctionImplementationPtr& newSecondOperand
         ) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        PowerFunction(
+            const FunctionImplementationPtr& baseFunction,
+            const FunctionImplementationPtr& exponentFunction
+        );
     };
 }

@@ -36,23 +36,10 @@ namespace opensolid
     {
     private:
         MatrixXd _transformationMatrix;
-    public:
-        OPENSOLID_CORE_EXPORT
-        TempTransformationFunction(
-            const MatrixXd& transformationMatrix,
-            const FunctionImplementationPtr& operand
-        );
-
-        const MatrixXd&
-        transformationMatrix() const;
         
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -75,12 +62,16 @@ namespace opensolid
         derivativeImpl(int parameterIndex) const;
 
         OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        scaled(double value) const;
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        transformed(const MatrixXd& transformationMatrix) const;
+        scaledImpl(double value) const;
+
+        OPENSOLID_CORE_EXPORT
+        FunctionImplementationPtr
+        transformedImpl(const MatrixXd& transformationMatrix) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -89,6 +80,15 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        TempTransformationFunction(
+            const MatrixXd& transformationMatrix,
+            const FunctionImplementationPtr& operand
+        );
+
+        const MatrixXd&
+        transformationMatrix() const;
     };
 }
 

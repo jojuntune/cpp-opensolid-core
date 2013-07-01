@@ -25,13 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/SineFunction.hpp>
 
 namespace opensolid
-{
-    SineFunction::SineFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
-    }
-    
+{   
     int
     SineFunction::numDimensionsImpl() const {
         return 1;
@@ -39,12 +33,7 @@ namespace opensolid
 
     bool
     SineFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    SineFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new SineFunction(operand()->deduplicated(deduplicationCache));
+        return duplicateOperands(other);
     }
     
     void
@@ -74,5 +63,16 @@ namespace opensolid
     SineFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SineFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    SineFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return sin(newOperand);
+    }
+
+    SineFunction::SineFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+        
+        assert(operand->numDimensions() == 1);
     }
 }

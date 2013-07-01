@@ -37,23 +37,12 @@ namespace opensolid
     {
     private:
         Datum<iNumDimensions, iNumAxes> _datum;
-    public:
-        LinearFunction(const Datum<iNumDimensions, iNumAxes>& datum);
-        
-        const Datum<iNumDimensions, iNumAxes>&
-        datum() const;
-        
-        int
-        numParametersImpl() const;
         
         int
         numDimensionsImpl() const;
-
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
-        FunctionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
+        int
+        numParametersImpl() const;
         
         void
         evaluateImpl(
@@ -71,18 +60,29 @@ namespace opensolid
 
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
+
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         FunctionImplementationPtr
-        scaled(double scale) const;
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
+        
+        FunctionImplementationPtr
+        scaledImpl(double scale) const;
 
         FunctionImplementationPtr
-        transformed(const MatrixXd& transformationMatrix) const;
+        transformedImpl(const MatrixXd& transformationMatrix) const;
         
         FunctionImplementationPtr
-        translated(const VectorXd& vector) const;
+        translatedImpl(const VectorXd& vector) const;
         
         void
         debugImpl(std::ostream& stream, int indent) const;
+    public:
+        LinearFunction(const Datum<iNumDimensions, iNumAxes>& datum);
+        
+        const Datum<iNumDimensions, iNumAxes>&
+        datum() const;
     };
 }
 
@@ -91,50 +91,15 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    LinearFunction<iNumDimensions, iNumAxes>::LinearFunction(
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) : _datum(datum) {
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    inline const Datum<iNumDimensions, iNumAxes>&
-    LinearFunction<iNumDimensions, iNumAxes>::datum() const {
-        return _datum;
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    int
-    LinearFunction<iNumDimensions, iNumAxes>::numParametersImpl() const {
-        return iNumAxes;
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
     int
     LinearFunction<iNumDimensions, iNumAxes>::numDimensionsImpl() const {
         return iNumDimensions;
     }
 
     template <int iNumDimensions, int iNumAxes>
-    bool
-    LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOf(const FunctionImplementationPtr& function) const {
-        const LinearFunction<iNumDimensions, iNumAxes>* other =
-            dynamic_cast<const LinearFunction<iNumDimensions, iNumAxes>*>(
-                function.implementation()
-            );
-        if (other) {
-            return (this->datum().originPoint() - other->datum().originPoint()).isZero() &&
-                (this->datum().basisMatrix() - other->datum().basisMatrix()).isZero();
-        } else {
-            return false;
-        }
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::deduplicated(
-        DeduplicationCache& deduplicationCache
-    ) const {
-        return this;
+    int
+    LinearFunction<iNumDimensions, iNumAxes>::numParametersImpl() const {
+        return iNumAxes;
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -162,12 +127,32 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
     LinearFunction<iNumDimensions, iNumAxes>::derivativeImpl(int parameterIndex) const {
-        return new ConstantFunction(datum().basisVector(index), numParameters());
+        return new ConstantFunction(datum().basisVector(parameterIndex), numParameters());
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    bool
+    LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOfImpl(
+        const FunctionImplementationPtr& other
+    ) const {
+        const LinearFunction<iNumDimensions, iNumAxes>* otherLinear =
+            other->cast<LinearFunction<iNumDimensions, iNumAxes>>();
+
+        return (this->datum().originPoint() - otherLinear->datum().originPoint()).isZero() &&
+            (this->datum().basisMatrix() - otherLinear->datum().basisMatrix()).isZero();
     }
 
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::scaled(double scale) const {
+    LinearFunction<iNumDimensions, iNumAxes>::deduplicated(
+        DeduplicationCache& deduplicationCache
+    ) const {
+        return this;
+    }
+
+    template <int iNumDimensions, int iNumAxes>
+    FunctionImplementationPtr
+    LinearFunction<iNumDimensions, iNumAxes>::scaledImpl(double scale) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale)
         );
@@ -175,7 +160,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::transformed(
+    LinearFunction<iNumDimensions, iNumAxes>::transformedImpl(
         const MatrixXd& transformationMatrix
     ) const {
         int numTransformedDimensions = transformationMatrix.rows();
@@ -208,7 +193,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::translated(const VectorXd& vector) const {
+    LinearFunction<iNumDimensions, iNumAxes>::translatedImpl(const VectorXd& vector) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(datum().translated(vector));
     }
     
@@ -216,5 +201,17 @@ namespace opensolid
     void
     LinearFunction<iNumDimensions, iNumAxes>::debugImpl(std::ostream& stream, int indent) const {
         stream << "LinearFunction<" << iNumDimensions << "," << iNumAxes << ">" << std::endl;
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    LinearFunction<iNumDimensions, iNumAxes>::LinearFunction(
+        const Datum<iNumDimensions, iNumAxes>& datum
+    ) : _datum(datum) {
+    }
+    
+    template <int iNumDimensions, int iNumAxes>
+    inline const Datum<iNumDimensions, iNumAxes>&
+    LinearFunction<iNumDimensions, iNumAxes>::datum() const {
+        return _datum;
     }
 }

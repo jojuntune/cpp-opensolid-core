@@ -25,36 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/TempTranslationFunction.hpp>
 
 namespace opensolid
-{
-    TempTranslationFunction::TempTranslationFunction(
-        const FunctionImplementationPtr& operand,
-        const VectorXd& vector
-    ) : UnaryOperation(operand),
-        _vector(vector) {
-
-        assert(vector.size() == operand->numDimensions());
-    }
-    
+{   
     int
     TempTranslationFunction::numDimensionsImpl() const {
         return operand()->numDimensions();
-    }
-
-    bool
-    TempTranslationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        const TempTranslationFunction* other =
-            dynamic_cast<const TempTranslationFunction*>(function.implementation());
-        if (other) {
-            return (this->vector() - other->vector()).isZero() &&
-                this->operand().isDuplicateOf(other->operand());
-        } else {
-            return false;
-        }
-    }
-
-    FunctionImplementationPtr
-    TempTranslationFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new TempTranslationFunction(deduplicationCache(operand()), vector());
     }
     
     void
@@ -81,14 +55,15 @@ namespace opensolid
     TempTranslationFunction::derivativeImpl(int parameterIndex) const {
         return operand()->derivative(parameterIndex);
     }
-    
-    FunctionImplementationPtr
-    TempTranslationFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
-        return operand()->compose(innerFunction) + vector();
+
+    bool
+    TempTranslationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other) &&
+            (vector() - other->cast<TempTranslationFunction>()->vector()).isZero();
     }
 
     FunctionImplementationPtr
-    TempTranslationFunction::translated(const VectorXd& vector) const {
+    TempTranslationFunction::translatedImpl(const VectorXd& vector) const {
         return operand() + (this->vector() + vector);
     }
     
@@ -96,5 +71,21 @@ namespace opensolid
     TempTranslationFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TempTranslationFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    TempTranslationFunction::withNewOperandImpl(
+        const FunctionImplementationPtr& newOperand
+    ) const {
+        return newOperand + vector();
+    }
+
+    TempTranslationFunction::TempTranslationFunction(
+        const FunctionImplementationPtr& operand,
+        const VectorXd& vector
+    ) : UnaryOperation(operand),
+        _vector(vector) {
+
+        assert(vector.size() == operand->numDimensions());
     }
 }

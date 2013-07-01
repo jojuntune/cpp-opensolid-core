@@ -25,11 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/NormalizedFunction.hpp>
 
 namespace opensolid
-{
-    NormalizedFunction::NormalizedFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-    }
-    
+{   
     int
     NormalizedFunction::numDimensionsImpl() const {
         return operand()->numDimensions();
@@ -37,12 +33,7 @@ namespace opensolid
 
     bool
     NormalizedFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    NormalizedFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new NormalizedFunction(operand()->deduplicated(deduplicationCache));
+        return duplicateOperands(other);
     }
 
     void
@@ -70,30 +61,39 @@ namespace opensolid
     FunctionImplementationPtr
     NormalizedFunction::derivativeImpl(int parameterIndex) const {
         FunctionImplementationPtr operandDerivative = operand()->derivative(parameterIndex);
-        FunctionImplementationPtr operandNormalized = operand().normalized();
+        FunctionImplementationPtr operandNormalized = operand()->normalized();
         return
-            (operandDerivative - operandDerivative.dot(operandNormalized) * operandNormalized) /
-            operand().norm();
+            (operandDerivative - operandDerivative->dot(operandNormalized) * operandNormalized) /
+            operand()->norm();
     }
     
     FunctionImplementationPtr
-    NormalizedFunction::norm() const {
-        return FunctionImplementationPtr::Constant(1.0, numParameters());
+    NormalizedFunction::normImpl() const {
+        return new ConstantFunction(1.0, numParameters());
     }
     
     FunctionImplementationPtr
-    NormalizedFunction::normalized() const {
+    NormalizedFunction::normalizedImpl() const {
         return this;
     }
     
     FunctionImplementationPtr
-    NormalizedFunction::squaredNorm() const {
-        return FunctionImplementationPtr::Constant(1.0, numParameters());
+    NormalizedFunction::squaredNormImpl() const {
+        return new ConstantFunction(1.0, numParameters());
     }
     
     void
     NormalizedFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "NormalizedFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    NormalizedFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return newOperand->normalized();
+    }
+
+    NormalizedFunction::NormalizedFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
     }
 }

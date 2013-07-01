@@ -33,17 +33,10 @@ namespace opensolid
     class TangentFunction :
         public UnaryOperation
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        TangentFunction(const FunctionImplementationPtr& operand);
-        
+    private:
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -64,6 +57,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -72,5 +69,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        TangentFunction(const FunctionImplementationPtr& operand);
     };
 }

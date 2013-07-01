@@ -25,24 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/SquaredNormFunction.hpp>
 
 namespace opensolid
-{
-    SquaredNormFunction::SquaredNormFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-    }
-    
+{   
     int
     SquaredNormFunction::numDimensionsImpl() const {
         return 1;
-    }
-
-    bool
-    SquaredNormFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    SquaredNormFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new SquaredNormFunction(operand()->deduplicated(deduplicationCache));
     }
     
     void
@@ -65,12 +51,26 @@ namespace opensolid
 
     FunctionImplementationPtr
     SquaredNormFunction::derivativeImpl(int parameterIndex) const {
-        return 2.0 * operand().dot(operand()->derivative(parameterIndex));
+        return 2.0 * operand()->dot(operand()->derivative(parameterIndex));
+    }
+
+    bool
+    SquaredNormFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other);
     }
     
     void
     SquaredNormFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SquaredNormFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    SquaredNormFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return newOperand->squaredNorm();
+    }
+
+    SquaredNormFunction::SquaredNormFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
     }
 }

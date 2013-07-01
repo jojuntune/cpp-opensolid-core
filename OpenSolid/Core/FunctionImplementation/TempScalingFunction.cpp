@@ -26,30 +26,9 @@
 
 namespace opensolid
 {
-    TempScalingFunction::TempScalingFunction(double scale, const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand),
-        _scale(scale) {
-    }
-
     int
     TempScalingFunction::numDimensionsImpl() const {
         return operand()->numDimensions();
-    }
-
-    bool
-    TempScalingFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        const TempScalingFunction* other =
-            dynamic_cast<const TempScalingFunction*>(function.implementation());
-        if (other) {
-            return this->scale() == other->scale() && this->operand().isDuplicateOf(other->operand());
-        } else {
-            return false;
-        }
-    }
-
-    FunctionImplementationPtr
-    TempScalingFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new TempScalingFunction(scale(), operand()->deduplicated(deduplicationCache));
     }
     
     void
@@ -74,19 +53,20 @@ namespace opensolid
     TempScalingFunction::derivativeImpl(int parameterIndex) const {
         return scale() * operand()->derivative(parameterIndex);
     }
-    
-    FunctionImplementationPtr
-    TempScalingFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
-        return scale() * operand()->compose(innerFunction);
+
+    bool
+    TempScalingFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other) &&
+            this->scale() == other->cast<TempScalingFunction>()->scale();
     }
 
     FunctionImplementationPtr
-    TempScalingFunction::scaled(double scale) const {
+    TempScalingFunction::scaledImpl(double scale) const {
         return (scale * this->scale()) * operand();
     }
 
     FunctionImplementationPtr
-    TempScalingFunction::transformed(const MatrixXd& transformationMatrix) const {
+    TempScalingFunction::transformedImpl(const MatrixXd& transformationMatrix) const {
         return (transformationMatrix * scale()) * operand();
     }
     
@@ -94,5 +74,17 @@ namespace opensolid
     TempScalingFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TempScalingFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    TempScalingFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return scale() * newOperand;
+    }
+
+    TempScalingFunction::TempScalingFunction(
+        double scale,
+        const FunctionImplementationPtr& operand
+    ) : UnaryOperation(operand),
+        _scale(scale) {
     }
 }

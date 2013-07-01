@@ -25,30 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/QuotientFunction.hpp>
 
 namespace opensolid
-{
-    QuotientFunction::QuotientFunction(
-        const FunctionImplementationPtr& firstOperand,
-        const FunctionImplementationPtr& secondOperand
-    ) : BinaryOperation(firstOperand, secondOperand) {
-
-        assert(secondOperand->numDimensions() == 1);
-    }
-    
+{   
     int
     QuotientFunction::numDimensionsImpl() const {
         return firstOperand()->numDimensions();
-    }
-
-    bool
-    QuotientFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return BinaryOperation::IsDuplicate(this, function, false);
-    }
-
-    FunctionImplementationPtr
-    QuotientFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
-        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
-        return new QuotientFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
@@ -78,7 +58,12 @@ namespace opensolid
         FunctionImplementationPtr firstDerivative = firstOperand()->derivative(parameterIndex);
         FunctionImplementationPtr secondDerivative = secondOperand()->derivative(parameterIndex);
         return(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
-            secondOperand().squaredNorm();
+            secondOperand()->squaredNorm();
+    }
+
+    bool
+    QuotientFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, false);
     }
     
     void
@@ -94,5 +79,13 @@ namespace opensolid
         const FunctionImplementationPtr& newSecondOperand
     ) const {
         return newFirstOperand / newSecondOperand;
+    }
+
+    QuotientFunction::QuotientFunction(
+        const FunctionImplementationPtr& firstOperand,
+        const FunctionImplementationPtr& secondOperand
+    ) : BinaryOperation(firstOperand, secondOperand) {
+
+        assert(secondOperand->numDimensions() == 1);
     }
 }

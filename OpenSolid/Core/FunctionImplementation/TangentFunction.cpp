@@ -25,26 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/TangentFunction.hpp>
 
 namespace opensolid
-{
-    TangentFunction::TangentFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
-    }
-    
+{   
     int
     TangentFunction::numDimensionsImpl() const {
         return 1;
-    }
-
-    bool
-    TangentFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    TangentFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new TangentFunction(operand()->deduplicated(deduplicationCache));
     }
     
     void
@@ -71,10 +55,26 @@ namespace opensolid
     TangentFunction::derivativeImpl(int parameterIndex) const {
         return (1 + this->squaredNorm()) * operand()->derivative(parameterIndex);
     }
+
+    bool
+    TangentFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other);
+    }
     
     void
     TangentFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TangentFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    TangentFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return tan(newOperand);
+    }
+
+    TangentFunction::TangentFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+        
+        assert(operand->numDimensions() == 1);
     }
 }

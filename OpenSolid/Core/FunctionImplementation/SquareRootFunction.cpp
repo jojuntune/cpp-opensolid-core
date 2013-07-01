@@ -25,26 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/SquareRootFunction.hpp>
 
 namespace opensolid
-{
-    SquareRootFunction::SquareRootFunction(const FunctionImplementationPtr& operand) :
-        UnaryOperation(operand) {
-        
-        assert(operand->numDimensions() == 1);
-    }
-    
+{   
     int
     SquareRootFunction::numDimensionsImpl() const {
         return 1;
-    }
-
-    bool
-    SquareRootFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return UnaryOperation::IsDuplicate(this, function);
-    }
-
-    FunctionImplementationPtr
-    SquareRootFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new SquareRootFunction(operand()->deduplicated(deduplicationCache));
     }
     
     struct SquareRoot
@@ -56,9 +40,9 @@ namespace opensolid
         }
         
         inline Interval
-        operator()(const Interval& bounds) const {
-            assert(bounds >= Zero());
-            return Interval(operator()(bounds.lowerBound()), operator()(bounds.upperBound()));
+        operator()(Interval bounds) const {
+            assert(bounds.upperBound() >= Zero());
+            return sqrt(bounds);
         }
     };
     
@@ -84,15 +68,31 @@ namespace opensolid
     SquareRootFunction::derivativeImpl(int parameterIndex) const {
         return 0.5 * operand()->derivative(parameterIndex) / self();
     }
+
+    bool
+    SquareRootFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other);
+    }
     
     FunctionImplementationPtr
-    SquareRootFunction::squaredNorm() const {
-        return operand().norm();
+    SquareRootFunction::squaredNormImpl() const {
+        return operand();
     }
     
     void
     SquareRootFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "SquareRootFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    SquareRootFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
+        return sqrt(newOperand);
+    }
+
+    SquareRootFunction::SquareRootFunction(const FunctionImplementationPtr& operand) :
+        UnaryOperation(operand) {
+        
+        assert(operand->numDimensions() == 1);
     }
 }

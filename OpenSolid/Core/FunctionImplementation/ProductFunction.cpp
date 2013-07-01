@@ -25,30 +25,10 @@
 #include <OpenSolid/Core/FunctionImplementation/ProductFunction.hpp>
 
 namespace opensolid
-{
-    ProductFunction::ProductFunction(
-        const FunctionImplementationPtr& multiplier,
-        const FunctionImplementationPtr& multiplicand
-    ) : BinaryOperation(multiplier, multiplicand) {
-
-        assert(multiplier->numDimensions() == 1);
-    }
-    
+{   
     int
     ProductFunction::numDimensionsImpl() const {
         return secondOperand()->numDimensions();
-    }
-
-    bool
-    ProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return BinaryOperation::IsDuplicate(this, function, true);
-    }
-
-    FunctionImplementationPtr
-    ProductFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        FunctionImplementationPtr deduplicatedFirstOperand = firstOperand()->deduplicated(deduplicationCache);
-        FunctionImplementationPtr deduplicatedSecondOperand = secondOperand()->deduplicated(deduplicationCache);
-        return new ProductFunction(deduplicatedFirstOperand, deduplicatedSecondOperand);
     }
     
     void
@@ -78,6 +58,11 @@ namespace opensolid
         return firstOperand()->derivative(parameterIndex) * secondOperand()
             + firstOperand() * secondOperand()->derivative(parameterIndex);
     }
+
+    bool
+    ProductFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        return duplicateOperands(other, true);
+    }
     
     void
     ProductFunction::debugImpl(std::ostream& stream, int indent) const {
@@ -92,5 +77,13 @@ namespace opensolid
         const FunctionImplementationPtr& newSecondOperand
     ) const {
         return newFirstOperand * newSecondOperand;
+    }
+
+    ProductFunction::ProductFunction(
+        const FunctionImplementationPtr& multiplier,
+        const FunctionImplementationPtr& multiplicand
+    ) : BinaryOperation(multiplier, multiplicand) {
+
+        assert(multiplier->numDimensions() == 1);
     }
 }

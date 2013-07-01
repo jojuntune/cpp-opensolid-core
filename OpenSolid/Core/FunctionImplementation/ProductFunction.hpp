@@ -33,20 +33,10 @@ namespace opensolid
     class ProductFunction :
         public BinaryOperation
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        ProductFunction(
-            const FunctionImplementationPtr& multiplier,
-            const FunctionImplementationPtr& multiplicand
-        );
-        
+    private:
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -67,6 +57,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -78,5 +72,11 @@ namespace opensolid
             const FunctionImplementationPtr& newFirstOperand,
             const FunctionImplementationPtr& newSecondOperand
         ) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        ProductFunction(
+            const FunctionImplementationPtr& multiplier,
+            const FunctionImplementationPtr& multiplicand
+        );
     };
 }

@@ -26,40 +26,9 @@
 
 namespace opensolid
 {
-    TempTransformationFunction::TempTransformationFunction(
-        const MatrixXd& transformationMatrix,
-        const FunctionImplementationPtr& operand
-    ) : UnaryOperation(operand),
-        _transformationMatrix(transformationMatrix) {
-
-        assert(transformationMatrix.cols() == operand->numDimensions());
-    }
-
     int
     TempTransformationFunction::numDimensionsImpl() const {
         return transformationMatrix().rows();
-    }
-
-    bool
-    TempTransformationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        const TempTransformationFunction* other =
-            dynamic_cast<const TempTransformationFunction*>(function.implementation());
-        if (other) {
-            return this->transformationMatrix().rows() == other->transformationMatrix().rows() &&
-                this->transformationMatrix().cols() == other->transformationMatrix().cols() &&
-                (this->transformationMatrix() - other->transformationMatrix()).isZero() &&
-                this->operand().isDuplicateOf(other->operand());
-        } else {
-            return false;
-        }
-    }
-
-    FunctionImplementationPtr
-    TempTransformationFunction::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return new TempTransformationFunction(
-            transformationMatrix(),
-            operand()->deduplicated(deduplicationCache)
-        );
     }
     
     void
@@ -86,19 +55,22 @@ namespace opensolid
     TempTransformationFunction::derivativeImpl(int parameterIndex) const {
         return transformationMatrix() * operand()->derivative(parameterIndex);
     }
-    
-    FunctionImplementationPtr
-    TempTransformationFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
-        return transformationMatrix() * operand()->compose(innerFunction);
+
+    bool
+    TempTransformationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        MatrixXd otherTransformationMatrix =
+            other->cast<TempTransformationFunction>()->transformationMatrix();
+        return duplicateOperands(other) &&
+            (transformationMatrix() - otherTransformationMatrix).isZero();
     }
 
     FunctionImplementationPtr
-    TempTransformationFunction::scaled(double value) const {
+    TempTransformationFunction::scaledImpl(double value) const {
         return (value * transformationMatrix()) * operand();
     }
 
     FunctionImplementationPtr
-    TempTransformationFunction::transformed(const MatrixXd& transformationMatrix) const {
+    TempTransformationFunction::transformedImpl(const MatrixXd& transformationMatrix) const {
         return (transformationMatrix * this->transformationMatrix()) * operand();
     }
     
@@ -106,5 +78,21 @@ namespace opensolid
     TempTransformationFunction::debugImpl(std::ostream& stream, int indent) const {
         stream << "TempTransformationFunction" << std::endl;
         operand()->debug(stream, indent + 1);
+    }
+
+    FunctionImplementationPtr
+    TempTransformationFunction::withNewOperandImpl(
+        const FunctionImplementationPtr& newOperand
+    ) const {
+        return transformationMatrix() * newOperand;
+    }
+
+    TempTransformationFunction::TempTransformationFunction(
+        const MatrixXd& transformationMatrix,
+        const FunctionImplementationPtr& operand
+    ) : UnaryOperation(operand),
+        _transformationMatrix(transformationMatrix) {
+
+        assert(transformationMatrix.cols() == operand->numDimensions());
     }
 }

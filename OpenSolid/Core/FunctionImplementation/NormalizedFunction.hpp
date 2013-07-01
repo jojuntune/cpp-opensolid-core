@@ -33,17 +33,10 @@ namespace opensolid
     class NormalizedFunction :
         public UnaryOperation
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        NormalizedFunction(const FunctionImplementationPtr& operand);
-        
+    private:   
         OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -64,18 +57,22 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        norm() const;
+        normImpl() const;
         
         OPENSOLID_CORE_EXPORT 
         FunctionImplementationPtr
-        normalized() const;
+        normalizedImpl() const;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        squaredNorm() const;
+        squaredNormImpl() const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -84,5 +81,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
+    public:
+        OPENSOLID_CORE_EXPORT
+        NormalizedFunction(const FunctionImplementationPtr& operand);
     };
 }
