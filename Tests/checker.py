@@ -4,6 +4,13 @@ import sys
 
 errorFound = False
 
+def checkLineEnding(filePath, lineNumber, line):
+    global errorFound
+    # Check for carriage return characters
+    if b'\r' in line:
+        print('ERROR: Found carriage return on line {0} of file {1}'.format(lineNumber, filePath))
+        errorFound = True
+
 def checkLine(filePath, lineNumber, line):
     global errorFound
     if not line.lstrip().startswith('//'):
@@ -12,10 +19,6 @@ def checkLine(filePath, lineNumber, line):
         # Check for tab characters
         if '\t' in line:
             print('ERROR: Found tab character on line {0} of file {1}'.format(lineNumber, filePath))
-            errorFound = True
-        # Check for carriage return characters
-        if '\r' in line:
-            print('ERROR: Found carriage return on line {0} of file {1}'.format(lineNumber, filePath))
             errorFound = True
         # Check for valid brace placement
         if 'enum' not in line and 'UniqueErrorNumber' not in line:
@@ -35,11 +38,15 @@ def checkLine(filePath, lineNumber, line):
 def checkHeader(filePath):
     global errorFound
     for i, line in enumerate(open(filePath, 'rb')):
+        checkLineEnding(filePath, i + 1, line)
+    for i, line in enumerate(open(filePath, 'rt')):
         checkLine(filePath, i + 1, line)
 
 def checkSource(filePath):
     global errorFound
     for i, line in enumerate(open(filePath, 'rb')):
+        checkLineEnding(filePath, i + 1, line)
+    for i, line in enumerate(open(filePath, 'rt')):
         checkLine(filePath, i + 1, line)
 
 for path, directories, files in os.walk(sys.argv[1]):
