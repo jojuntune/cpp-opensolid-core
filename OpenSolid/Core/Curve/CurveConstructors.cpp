@@ -188,13 +188,13 @@ namespace opensolid
             WindingDirection direction,
             double numTurns
         ) {
-            Function theta = 2 * M_PI * numTurns * Function::t();
+            Function<1, 1> theta = 2 * M_PI * numTurns * Function<1, 1>::t();
             Vector3d sidewaysVector = yVector;
             if (direction == Clockwise) {
                 sidewaysVector = -sidewaysVector;
             }
-            Function curveFunction = centerPoint.vector() +
-                cos(theta) * xVector + sin(theta) * sidewaysVector + Function::t() * zVector;
+            Function<3, 1> curveFunction = centerPoint.vector() +
+                cos(theta) * xVector + sin(theta) * sidewaysVector + Function<1, 1>::t() * zVector;
             return Curve3d(curveFunction, Interval::Unit());
         }
     }
@@ -211,17 +211,17 @@ namespace opensolid
             return Curve2d();
         }
         Frame2d datum = Frame2d(centerPoint).scaledAbout(centerPoint, radius);
-        Function angleFunction;
+        Function<1, 1> angleFunction;
         if (endAngle - startAngle == Zero()) {
             assert(false);
             return Curve2d();
         } else if (endAngle > startAngle) {
-            angleFunction = startAngle + (endAngle - startAngle) * Function::t();
+            angleFunction = startAngle + (endAngle - startAngle) * Function<1, 1>::t();
         } else {
             datum = datum.xReversed();
-            angleFunction = M_PI - startAngle + (startAngle - endAngle) * Function::t();
+            angleFunction = M_PI - startAngle + (startAngle - endAngle) * Function<1, 1>::t();
         }
-        return Curve2d(Function::Elliptical(datum).compose(angleFunction), Interval::Unit());
+        return Curve2d(Function<2, 1>::Elliptical(datum).composed(angleFunction), Interval::Unit());
     }
     
     Curve<2>

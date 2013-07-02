@@ -47,25 +47,19 @@ namespace opensolid
     ConstantFunctionConstructor<iNumDimensions, iNumParameters>::Constant(
         const Matrix<double, iNumDimensions, 1>& value
     ) {
-        return Function<iNumDimensions, iNumParameters>(
-            FunctionImplementation::Constant(value, iNumParameters)
-        );
+        return new ConstantFunction(value, iNumParameters);
     }
 
     template <int iNumParameters>
     Function<1, iNumParameters>
     ConstantFunctionConstructor<1, iNumParameters>::Constant(double value) {
-        return Function<1, iNumParameters>(
-            FunctionImplementation::Constant(value, iNumParameters)
-        );
+        return new ConstantFunction(value, iNumParameters);
     }
 
     template <int iNumDimensions>
     Function<iNumDimensions, iNumDimensions>
     IdentityFunctionConstructor<iNumDimensions, iNumDimensions>::Identity() {
-        return Function<iNumDimensions, iNumDimensions>(
-            FunctionImplementation::Identity(iNumDimensions)
-        );
+        return new IdentityFunction(iNumDimensions);
     }
 
     template <int iNumParameters>
@@ -75,24 +69,22 @@ namespace opensolid
             assert(false);
             return Function<1, iNumParameters>();
         }
-        return Function<1, iNumParameters>(
-            FunctionImplementation::Parameter(parameterIndex, iNumParameters)
-        );
+        return new ParameterFunction(iNumParameters, parameterIndex);
     }
 
     inline Function<1, 1>
     NamedParameterFunctionConstructors<1, 1>::t() {
-        return Function<1, 1>(FunctionImplementation::Parameter(0, 1));
+        return new ParameterFunction(1, 0);
     }
 
     inline Function<1, 2>
     NamedParameterFunctionConstructors<1, 2>::u() {
-        return Function<1, 2>(FunctionImplementation::Parameter(0, 2));
+        return new ParameterFunction(2, 0);
     }
 
     inline Function<1, 2>
-    NamedParameterFunctionConstructors<1, 2>::u() {
-        return Function<1, 2>(FunctionImplementation::Parameter(1, 2));
+    NamedParameterFunctionConstructors<1, 2>::v() {
+        return new ParameterFunction(2, 1);
     }
 
     template <int iNumParameters>
@@ -208,7 +200,9 @@ namespace opensolid
     LinearFunctionConstructors<iNumDimensions, iNumParameters>::Linear(
         const Datum<iNumDimensions, iNumParameters>& datum
     ) {
-        return Function<iNumDimensions, iNumParameters>(new LinearFunction(datum));
+        return Function<iNumDimensions, iNumParameters>(
+            new LinearFunction<iNumDimensions, iNumParameters>(datum)
+        );
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -216,6 +210,11 @@ namespace opensolid
     EllipticalFunctionConstructors<iNumDimensions, iNumParameters>::Elliptical(
         const Datum<iNumDimensions, iNumParameters + 1>& datum
     ) {
-        return Function<iNumDimensions, iNumParameters>(new EllipticalFunction(datum));
+        return Function<iNumDimensions, iNumParameters>(
+            new EllipticalFunction<iNumDimensions, iNumParameters + 1>(
+                datum,
+                Matrix<bool, iNumParameters, 1>::Constant(true)
+            )
+        );
     }
 }

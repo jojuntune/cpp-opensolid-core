@@ -48,7 +48,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    Curve<iNumDimensions>::Curve(const Function& function, Interval domain) :
+    Curve<iNumDimensions>::Curve(const Function<iNumDimensions, 1>& function, Interval domain) :
         Geometry<iNumDimensions, 1>(function, domain) {
     }
 
@@ -60,8 +60,9 @@ namespace opensolid
     template <int iNumDimensions>
     Curve<iNumDimensions>
     Curve<iNumDimensions>::reversed() const {
-        Function reversedParameter = this->domain().upperBound() + this->domain().lowerBound() - Function::t();
-        return Curve<iNumDimensions>(this->function().compose(reversedParameter), this->domain());
+        Function<1, 1> reversedParameter =
+            this->domain().upperBound() + this->domain().lowerBound() - Function<1, 1>::t();
+        return Curve<iNumDimensions>(this->function().composed(reversedParameter), this->domain());
     }
 
     template <int iNumDimensions>

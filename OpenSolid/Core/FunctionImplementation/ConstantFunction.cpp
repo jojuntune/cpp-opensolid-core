@@ -72,7 +72,7 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    ConstantFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+    ConstantFunction::composedImpl(const FunctionImplementationPtr& innerFunction) const {
         return this;
     }
     

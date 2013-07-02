@@ -40,10 +40,10 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    BinaryOperation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+    BinaryOperation::composedImpl(const FunctionImplementationPtr& innerFunction) const {
         return this->withNewOperands(
-            firstOperand()->compose(innerFunction),
-            secondOperand()->compose(innerFunction)
+            firstOperand()->composed(innerFunction),
+            secondOperand()->composed(innerFunction)
         );
     }
 

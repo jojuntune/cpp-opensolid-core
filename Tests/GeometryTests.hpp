@@ -56,20 +56,20 @@ public:
         TS_ASSERT((arc(1.0 / 3.0) - Point3d(1, 3, 1)).isZero());
         TS_ASSERT((arc(1.0) - Point3d(1, -1, 1)).isZero());
         
-        Function derivative = arc.function().derivative();
+        Function<3, 1> derivative = arc.function().derivative();
         double derivativeMagnitude = 3 * M_PI;
         TS_ASSERT((derivative(0.0) -  Vector3d(0, derivativeMagnitude, 0)).isZero());
         TS_ASSERT((derivative(1.0 / 3.0) - Vector3d(-derivativeMagnitude, 0, 0)).isZero());
         TS_ASSERT((derivative(2.0 / 3.0) - Vector3d(0, -derivativeMagnitude, 0)).isZero());
         TS_ASSERT((derivative(1.0) - Vector3d(derivativeMagnitude, 0, 0)).isZero());
         
-        Function tangent = arc.function().tangentVector();
+        Function<3, 1> tangent = arc.function().tangentVector();
         TS_ASSERT((tangent(0.0) - Vector3d(0, 1, 0)).isZero());
         TS_ASSERT((tangent(1.0 / 3.0) - Vector3d(-1, 0, 0)).isZero());
         TS_ASSERT((tangent(2.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
         TS_ASSERT((tangent(1.0) - Vector3d(1, 0, 0)).isZero());
         
-        Function secondDerivative = arc.function().derivative().derivative();
+        Function<3, 1> secondDerivative = arc.function().derivative().derivative();
         double secondDerivativeMagnitude = 4.5 * M_PI * M_PI;
         Vector3d expectedValue;
         
@@ -85,7 +85,7 @@ public:
         expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
         TS_ASSERT((secondDerivative(1.0) - expectedValue).isZero());
         
-        Function normal = arc.function().tangentVector().tangentVector();
+        Function<3, 1> normal = arc.function().tangentVector().tangentVector();
         TS_ASSERT((normal(0.0) - Vector3d(-1, 0, 0)).isZero());
         TS_ASSERT((normal(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
         TS_ASSERT((normal(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
@@ -102,9 +102,9 @@ public:
     }
     
     void testCurveOperations() {
-        Function t = Function::t();
+        Function<1, 1> t = Function<1, 1>::t();
         Curve3d parabola(
-            Function::FromComponents(t, t.squaredNorm(), Function::Constant(0.0, 1)),
+            Function<3, 1>::FromComponents(t, t.squaredNorm(), Function<1, 1>::Constant(0.0)),
             Interval(-2, 2)
         );
 

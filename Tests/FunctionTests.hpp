@@ -40,24 +40,24 @@ using namespace opensolid;
 class FunctionTests : public CxxTest::TestSuite
 {
 private:
-    Function t;
-    Function u;
-    Function v;
+    Function<1, 1> t;
+    Function<1, 2> u;
+    Function<1, 2> v;
 public:
     void setUp() {
-        t = Function::t();
-        u = Function::u();
-        v = Function::v();
+        t = Function<1, 1>::t();
+        u = Function<1, 2>::u();
+        v = Function<1, 2>::v();
     }
 
     void testConstant() {
-        Function f = Function::Constant(3.0, 1);
+        Function<1, 1> f = Function<1, 1>::Constant(3.0);
         TS_ASSERT(f.isConstant());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
     }
     
     void testArithmetic() {
-        Function function = 2.0 + u * 1.0 - 1.0 * v;
+        Function<1, 2> function = 2.0 + u * 1.0 - 1.0 * v;
         
         TS_ASSERT(function(Vector2d(0, 0)).value() - 2 == Zero());
         TS_ASSERT(function(Vector2d(1, 0)).value() - 3 == Zero());
@@ -66,7 +66,7 @@ public:
         TS_ASSERT(function.derivative(0)(Vector2d(0, 0)).value() - 1 == Zero());
         TS_ASSERT(function.derivative(1)(Vector2d(0, 0)).value() + 1 == Zero());
         
-        Function negated = -function;
+        Function<1, 2> negated = -function;
         
         TS_ASSERT(negated(Vector2d(0, 0)).value() + 2 == Zero());
         TS_ASSERT(negated(Vector2d(1, 0)).value() + 3 == Zero());
@@ -77,21 +77,21 @@ public:
     }
 
     void testMultiplication() {
-        Function function = 1.0 + u / 1.0 * v / 1.0;
+        Function<1, 2> function = 1.0 + u / 1.0 * v / 1.0;
     
         TS_ASSERT(function(Vector2d(0, 0)).value() - 1 == Zero());
         TS_ASSERT(function(Vector2d(1, 0)).value() - 1 == Zero());
         TS_ASSERT(function(Vector2d(1, 1)).value() - 2 == Zero());
         TS_ASSERT(function(Vector2d(0, 1)).value() - 1 == Zero());
     
-        Function u_derivative = function.derivative(0);
+        Function<1, 2> u_derivative = function.derivative(0);
         
         TS_ASSERT(u_derivative(Vector2d(0, 0)).value() == Zero());
         TS_ASSERT(u_derivative(Vector2d(1, 0)).value() == Zero());
         TS_ASSERT(u_derivative(Vector2d(1, 1)).value() - 1 == Zero());
         TS_ASSERT(u_derivative(Vector2d(0, 1)).value() - 1 == Zero());
     
-        Function v_derivative = function.derivative(1);
+        Function<1, 2> v_derivative = function.derivative(1);
         
         TS_ASSERT(v_derivative(Vector2d(0, 0)).value() == Zero());
         TS_ASSERT(v_derivative(Vector2d(1, 0)).value() - 1 == Zero());
@@ -100,34 +100,38 @@ public:
     }
     
     void testSquare() {
-        Function function = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0;
+        Function<1, 2> function = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0;
         TS_ASSERT(function(Vector2d(1, 2)).value() - 5 == Zero());
-        Function u_derivative = function.derivative(0);
+        Function<1, 2> u_derivative = function.derivative(0);
         TS_ASSERT(u_derivative(Vector2d(3, 4)).value() - 6 == Zero());
-        Function v_second_derivative = function.derivative(1).derivative(1);
+        Function<1, 2> v_second_derivative = function.derivative(1).derivative(1);
         TS_ASSERT(v_second_derivative(Vector2d(5, 6)).value() - 2 == Zero());
     }
 
     void testNorm() {
-        Function arc = 3 * (cos(t) * Vector2d(1, 0) + Vector2d::UnitY() * sin(t));
+        Function<2, 1> arc = 3 * (cos(t) * Vector2d(1, 0) + Vector2d::UnitY() * sin(t));
         TS_ASSERT((arc.normalized()(M_PI / 4) - Vector2d(1 / sqrt(2.0), 1 / sqrt(2.0))).isZero());
     }
     
     void testVector() {
-        Function f = Function::Constant(Vector3d(1, 2, 3), 0);
+        Function<3, 1> f = Function<3, 1>::Constant(Vector3d(1, 2, 3));
         TS_ASSERT(f.isConstant());
     }
     
     void testConversion() {
-        Function function = u * v;
-        TS_ASSERT(function(Vector2d(2, 3)).value() - 6 == Zero());
-        function = Function::Constant(2.0, 1);
-        TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
+        {
+            Function<1, 2> function = u * v;
+            TS_ASSERT(function(Vector2d(2, 3)).value() - 6 == Zero());
+        }
+        {
+            Function<1, 1> function = Function<1, 1>::Constant(2.0);
+            TS_ASSERT(function(RowVector3d(1, 2, 3)) == RowVector3d::Constant(2));
+        }
     }
     
     void testSine() {
         typedef Matrix<Interval, 1, 4> RowVector4I;
-        Function f = sin(t);
+        Function<1, 1> f = sin(t);
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT((result - RowVector4d(0, 1, 0, -1)).isZero());
         RowVector4I bounds = f(
@@ -150,7 +154,7 @@ public:
     
     void testCosine() {
         typedef Matrix<Interval, 1, 4> RowVector4I;
-        Function f = cos(t);
+        Function<1, 1> f = cos(t);
         RowVector4d result = f(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT((result - RowVector4d(1, 0, -1, 0)).isZero());
         RowVector4I bounds = f(
@@ -172,7 +176,7 @@ public:
     }
     
     void testComponent() {
-        Function f = Vector3d(1, 2, 3) + t * Vector3d(1, 2, 3);
+        Function<3, 1> f = Vector3d(1, 2, 3) + t * Vector3d(1, 2, 3);
         RowVector3d result = f.component(1)(RowVector3d(0, 0.5, 1));
         TS_ASSERT((result - RowVector3d(2, 3, 4)).isZero());
         result = f(RowVector3d(0, 0.5, 1)).row(1);
@@ -185,9 +189,9 @@ public:
         Frame3d frame;
         frame = frame.translated(Vector3d(1, 1, 1));
         frame = frame.rotatedAbout(frame.zAxis(), M_PI / 4);
-        Function linear = Vector3d::Ones() * t;
-        Function product = frame.basisMatrix() * linear + frame.originPoint().vector();
-        Function quotient = frame.inverseMatrix() * (linear - frame.originPoint().vector());
+        Function<3, 1> linear = Vector3d::Ones() * t;
+        Function<3, 1> product = frame.basisMatrix() * linear + frame.originPoint().vector();
+        Function<3, 1> quotient = frame.inverseMatrix() * (linear - frame.originPoint().vector());
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);
@@ -198,15 +202,15 @@ public:
     }
     
     void testConcatenation() {
-        Function x = t;
-        Function y = Function::Constant(3.0, 1);
-        Function z = t.squaredNorm();
-        Function concatenated = Function::FromComponents(x, y, z);
+        Function<1, 1> x = t;
+        Function<1, 1> y = Function<1, 1>::Constant(3.0);
+        Function<1, 1> z = t.squaredNorm();
+        Function<3, 1> concatenated = Function<3, 1>::FromComponents(x, y, z);
         TS_ASSERT((concatenated(2.0) - Vector3d(2.0, 3.0, 4.0)).isZero());
     }
 
     void testArccosine() {
-        Function f = acos(t);
+        Function<1, 1> f = acos(t);
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lowerBound() - M_PI / 2 == Zero());
@@ -220,7 +224,7 @@ public:
     }
 
     void testArcsine() {
-        Function f = asin(t);
+        Function<1,1 > f = asin(t);
         Interval bounds;
         bounds = f(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lowerBound() + M_PI / 2 == Zero());
@@ -234,12 +238,12 @@ public:
     }
 
     void testNormalVector() {
-        Function f = Vector2d(1, 1) + 2 * Function::FromComponents(cos(t), sin(t));
+        Function<2, 1> f = Vector2d(1, 1) + 2 * Function<2, 1>::FromComponents(cos(t), sin(t));
         TS_ASSERT((f(-M_PI / 2) - Vector2d(1, -1)).isZero());
         TS_ASSERT((f(0) - Vector2d(3, 1)).isZero());
         TS_ASSERT((f(M_PI / 2) - Vector2d(1, 3)).isZero());
 
-        Function normalVector = f.normalVector();
+        Function<2, 1> normalVector = f.normalVector();
         TS_ASSERT((f(-M_PI / 2) + 2 * normalVector(-M_PI / 2) - Vector2d(1, 1)).isZero());
         TS_ASSERT((f(-M_PI / 4) + 2 * normalVector(-M_PI / 4) - Vector2d(1, 1)).isZero());
         TS_ASSERT((f(0) + 2 * normalVector(0) - Vector2d(1, 1)).isZero());
@@ -248,67 +252,80 @@ public:
     }
 
     void testDeduplication() {
-        Function constant1 = Function::Constant(Vector3d(1, 2, 3), 1);
-        Function constant2 = Function::Constant(Vector3d(1, 2, 3), 1);
-        Function constant3 = Function::Constant(Vector3d(1, 2, 4), 1);
-        Function constant4 = Function::Constant(Vector3d(1, 2, 3), 2);
+        {
+            Function<3, 1> constant1 = Function<3, 1>::Constant(Vector3d(1, 2, 3));
+            Function<3, 1> constant2 = Function<3, 1>::Constant(Vector3d(1, 2, 3));
+            Function<3, 1> constant3 = Function<3, 1>::Constant(Vector3d(1, 2, 4));
+            Function<3, 2> constant4 = Function<3, 2>::Constant(Vector3d(1, 2, 3));
 
-        TS_ASSERT(constant1.isDuplicateOf(constant2));
-        TS_ASSERT(!constant1.isDuplicateOf(constant3));
-        TS_ASSERT(!constant1.isDuplicateOf(constant4));
+            TS_ASSERT(constant1.implementation()->isDuplicateOf(constant2.implementation()));
+            TS_ASSERT(!constant1.implementation()->isDuplicateOf(constant3.implementation()));
+            TS_ASSERT(!constant1.implementation()->isDuplicateOf(constant4.implementation()));
+        }
 
-        Function function1;
-        Function function2;
+        {
+            Function<1, 1> function1 = t.squaredNorm() + 2 * t;
+            Function<1, 1> function2 = t * 2 + t.squaredNorm();
 
-        function1 = t.squaredNorm() + 2 * t;
-        function2 = t * 2 + t.squaredNorm();
-        TS_ASSERT(function1.isDuplicateOf(function2));
+            TS_ASSERT(function1.implementation()->isDuplicateOf(function2.implementation()));
+        }
 
-        function1 = cos(u.squaredNorm() + v.squaredNorm());
-        function2 = cos(v.squaredNorm() + u.squaredNorm());
-        TS_ASSERT(function1.isDuplicateOf(function2));
+        {
+            Function<1, 2> function1 = cos(u.squaredNorm() + v.squaredNorm());
+            Function<1, 2> function2 = cos(v.squaredNorm() + u.squaredNorm());
 
-        function1 = u.squaredNorm();
-        function2 = v.squaredNorm();
-        TS_ASSERT(!function1.isDuplicateOf(function2));
+            TS_ASSERT(function1.implementation()->isDuplicateOf(function2.implementation()));
+        }
 
-        function1 = sin(t);
-        function1 = function2;
-        TS_ASSERT(function1.isDuplicateOf(function1));
-        TS_ASSERT(function1.isDuplicateOf(function2));
+        {
+            Function<1, 2> function1 = u.squaredNorm();
+            Function<1, 2> function2 = v.squaredNorm();
 
-        function1 = sin(sqrt(u));
-        function2 = sin(sqrt(u));
-        TS_ASSERT(function1.isDuplicateOf(function2));
+            TS_ASSERT(!function1.implementation()->isDuplicateOf(function2.implementation()));
+        }
+
+        {
+            Function<1, 1> function1 = sin(t);
+            Function<1, 1> function2 = function1;
+
+            TS_ASSERT(function1.implementation()->isDuplicateOf(function1.implementation()));
+            TS_ASSERT(function1.implementation()->isDuplicateOf(function2.implementation()));
+        }
+
+        {
+            Function<1, 2> function1 = sin(sqrt(u));
+            Function<1, 2> function2 = sin(sqrt(u));
+
+            TS_ASSERT(function1.implementation()->isDuplicateOf(function2.implementation()));
+        }
     }
 
     void testDeduplicatedOutput() {
-        Function f = t.squaredNorm() + sin(t.squaredNorm());
-        std::cout << std::endl;
-        f.debug(std::cout, 0);
+        Function<1, 1> f = t.squaredNorm() + sin(t.squaredNorm());
+        std::cout << f << std::endl;
     }
 
     void testEvaluatorDouble() {
-        Function f = t.squaredNorm();
-        Evaluator cache;
+        Function<1, 1> f = t.squaredNorm();
+        Evaluator evaluator;
         RowVector3d parameterValues(1, 2, 3);
         MapXcd parameterMap(parameterValues.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
-        MapXcd results1 = cache.results(f, parameterMap);
-        MapXcd results2 = cache.results(f, parameterMap);
+        MapXcd results1 = evaluator.evaluate(f.implementation(), parameterMap);
+        MapXcd results2 = evaluator.evaluate(f.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results2.data());
-        MapXcd results3 = cache.results(f, parameterMap);
+        MapXcd results3 = evaluator.evaluate(f.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
 
     void testEvaluatorInterval() {
-        Function f = t.squaredNorm();
-        Evaluator cache;
+        Function<1, 1> f = t.squaredNorm();
+        Evaluator evaluator;
         RowVector3I parameterBounds(Interval(1, 2), Interval(3, 4), Interval(5, 6));
         MapXcI parameterMap(parameterBounds.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
-        MapXcI results1 = cache.results(f, parameterMap);
-        MapXcI results2 = cache.results(f, parameterMap);
+        MapXcI results1 = evaluator.evaluate(f.implementation(), parameterMap);
+        MapXcI results2 = evaluator.evaluate(f.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results2.data());
-        MapXcI results3 = cache.results(f, parameterMap);
+        MapXcI results3 = evaluator.evaluate(f.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
     

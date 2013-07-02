@@ -76,7 +76,7 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    FunctionImplementation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+    FunctionImplementation::composedImpl(const FunctionImplementationPtr& innerFunction) const {
         return new CompositionFunction(this, innerFunction);
     }
     
@@ -200,7 +200,7 @@ namespace opensolid
         if (this == other.get()) {
             return true;
         }
-        if (typeid(this) != typeid(other.get())) {
+        if (typeid(*this) != typeid(*other)) {
             return false;
         }
         if (this->numDimensions() != other->numDimensions()) {
@@ -236,7 +236,7 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    FunctionImplementation::compose(const FunctionImplementationPtr& innerFunction) const {
+    FunctionImplementation::composed(const FunctionImplementationPtr& innerFunction) const {
         if (innerFunction->numDimensions() != this->numParameters()) {
             throw PlaceholderError();
         }
@@ -261,7 +261,7 @@ namespace opensolid
             
             return new ConstantFunction(result, innerFunction->numParameters());
         }
-        return this->composeImpl(innerFunction);
+        return this->composedImpl(innerFunction);
     }
      
     FunctionImplementationPtr
@@ -594,8 +594,8 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    operator*(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
-        return new ConstantFunction(firstOperand, secondOperand->numParameters()) * secondOperand;
+    operator*(const MatrixXd& transformationMatrix, const FunctionImplementationPtr& argument) {
+        return argument->transformed(transformationMatrix);
     }
 
     FunctionImplementationPtr

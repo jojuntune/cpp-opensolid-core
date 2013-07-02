@@ -163,12 +163,12 @@ namespace opensolid
         Matrix<double, iNumDimensions, iNumAxes> derivativeBasisMatrix = datum().basisMatrix();
 
         Matrix<bool, 1, iNumAxes - 1> derivativeConvention = convention();
-        derivativeConvention(index) = !derivativeConvention(index);
+        derivativeConvention(parameterIndex) = !derivativeConvention(parameterIndex);
 
-        if (convention()(index)) {
-            derivativeBasisMatrix.col(index) *= -1;
+        if (convention()(parameterIndex)) {
+            derivativeBasisMatrix.col(parameterIndex) *= -1;
         } else {
-            int numFlipped = numParameters() - index;
+            int numFlipped = numParameters() - parameterIndex;
             derivativeBasisMatrix.rightCols(numFlipped) *= -1;
         }
         return new EllipticalFunction<iNumDimensions, iNumAxes>(

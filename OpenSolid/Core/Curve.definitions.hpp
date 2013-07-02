@@ -45,7 +45,7 @@ namespace opensolid
 
         Curve(const Geometry<iNumDimensions, 1>& other);
 
-        Curve(const Function& function, Interval domain);
+        Curve(const Function<iNumDimensions, 1>& function, Interval domain);
 
         Curve(const LineSegment<iNumDimensions>& lineSegment);
 

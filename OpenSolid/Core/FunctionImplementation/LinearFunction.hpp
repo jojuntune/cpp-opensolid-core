@@ -144,7 +144,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::deduplicated(
+    LinearFunction<iNumDimensions, iNumAxes>::deduplicatedImpl(
         DeduplicationCache& deduplicationCache
     ) const {
         return this;

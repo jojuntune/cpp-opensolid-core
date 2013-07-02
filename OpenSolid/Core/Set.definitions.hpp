@@ -305,7 +305,7 @@ namespace opensolid
         Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
         operator()(
             const Set<TElement>& set,
-            const Function<iNumDestinationDimensions, iNumDimensions>& function
+            const Function<iNumDestinationDimensions, NumDimensions<TElement>::Value>& function
         ) const;
     };
 

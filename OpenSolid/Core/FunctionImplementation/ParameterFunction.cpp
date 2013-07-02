@@ -73,7 +73,7 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    ParameterFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+    ParameterFunction::composedImpl(const FunctionImplementationPtr& innerFunction) const {
         return innerFunction->component(parameterIndex());
     }
     

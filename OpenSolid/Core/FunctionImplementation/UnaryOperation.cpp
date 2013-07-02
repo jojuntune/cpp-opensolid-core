@@ -37,8 +37,8 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    UnaryOperation::composeImpl(const FunctionImplementationPtr& innerFunction) const {
-        return this->withNewOperand(operand()->compose(innerFunction));
+    UnaryOperation::composedImpl(const FunctionImplementationPtr& innerFunction) const {
+        return this->withNewOperand(operand()->composed(innerFunction));
     }
 
     bool

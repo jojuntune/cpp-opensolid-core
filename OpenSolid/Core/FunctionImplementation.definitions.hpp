@@ -98,7 +98,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
-        composeImpl(const FunctionImplementationPtr& innerFunction) const;
+        composedImpl(const FunctionImplementationPtr& innerFunction) const;
 
         OPENSOLID_CORE_EXPORT 
         virtual FunctionImplementationPtr
@@ -262,7 +262,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        compose(const FunctionImplementationPtr& innerFunction) const;
+        composed(const FunctionImplementationPtr& innerFunction) const;
          
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
@@ -432,8 +432,8 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     FunctionImplementationPtr
     operator*(
-        const VectorXd& firstArgument,
-        const FunctionImplementationPtr& secondArgument
+        const MatrixXd& transformationMatrix,
+        const FunctionImplementationPtr& argument
     );
 
     OPENSOLID_CORE_EXPORT

@@ -50,17 +50,20 @@ namespace opensolid
         public Transformable<Geometry<iNumDimensions, iNumParameters>>
     {
     private:
-        Function _function;
+        Function<iNumDimensions, iNumParameters> _function;
         Domain<iNumParameters> _domain;
         Box<iNumDimensions> _bounds;
     public:
         Geometry();
         
-        Geometry(const Function& function, const Domain<iNumParameters>& domain);
+        Geometry(
+            const Function<iNumDimensions, iNumParameters>& function,
+            const Domain<iNumParameters>& domain
+        );
 
         Geometry(const Simplex<iNumDimensions, iNumParameters + 1>& simplex);
         
-        const Function&
+        const Function<iNumDimensions, iNumParameters>&
         function() const;
         
         const Domain<iNumParameters>&
@@ -86,17 +89,17 @@ namespace opensolid
         public Transformable<Geometry<iNumDimensions, 1>>
     {
     private:
-        Function _function;
+        Function<iNumDimensions, 1> _function;
         Interval _domain;
         Box<iNumDimensions> _bounds;
     public:
         Geometry();
 
-        Geometry(const Function& function, Interval domain);
+        Geometry(const Function<iNumDimensions, 1>& function, Interval domain);
 
         Geometry(const Simplex<iNumDimensions, 2>& simplex);
 
-        const Function&
+        const Function<iNumDimensions, 1>&
         function() const;
         
         Interval

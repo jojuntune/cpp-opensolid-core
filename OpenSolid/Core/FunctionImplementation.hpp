@@ -44,23 +44,23 @@ namespace opensolid
 
     inline bool
     FunctionImplementation::isConstant() const {
-        return typeid(this) == typeid(ConstantFunction);
+        return typeid(*this) == typeid(ConstantFunction);
     }
     
     inline bool
     FunctionImplementation::isIdentity() const {
-        return typeid(this) == typeid(IdentityFunction);
+        return typeid(*this) == typeid(IdentityFunction);
     }
     
     inline bool
     FunctionImplementation::isParameter() const {
-        return typeid(this) == typeid(ParameterFunction);
+        return typeid(*this) == typeid(ParameterFunction);
     }
     
     template <class TFunctionImplementation>
     const TFunctionImplementation*
     FunctionImplementation::cast() const {
-        assert(typeid(this) == typeid(TFunctionImplementation));
+        assert(dynamic_cast<const TFunctionImplementation*>(this));
         return static_cast<const TFunctionImplementation*>(this);
     }
 

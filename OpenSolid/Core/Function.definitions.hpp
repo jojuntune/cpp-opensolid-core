@@ -30,7 +30,6 @@
 
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.declarations.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
 #include <OpenSolid/Core/Function/JacobianReturnValue.declarations.hpp>
 #include <OpenSolid/Core/Function/FunctionReturnValue.declarations.hpp>
@@ -52,10 +51,19 @@ namespace opensolid
     public:
         Function();
         
-        Function(const FunctionImplementation* function);
+        Function(const FunctionImplementationPtr& implementation);
         
         const FunctionImplementationPtr&
         implementation() const;
+
+        bool
+        isConstant() const;
+        
+        bool
+        isIdentity() const;
+        
+        bool
+        isParameter() const;
 
         FunctionReturnValue<iNumDimensions, 1, int>
         operator()(int value) const;
@@ -83,11 +91,11 @@ namespace opensolid
         JacobianReturnValue<iNumDimensions, iNumParameters, TVector>
         jacobian(const EigenBase<TVector>& vector) const;
         
-        template <int iInnerNumParameters>
-        Function<iNumDimensions, iInnerNumParameters>
-        compose(const Function<iNumParameters, iInnerNumParameters>& innerFunction) const;
+        template <int iNumInnerParameters>
+        Function<iNumDimensions, iNumInnerParameters>
+        composed(const Function<iNumParameters, iNumInnerParameters>& innerFunction) const;
         
-        Function<int iNumDimensions, int iNumParameters>
+        Function<iNumDimensions, iNumParameters>
         derivative(int parameterIndex = 0) const;
         
         Function<1, iNumParameters>
@@ -115,9 +123,9 @@ namespace opensolid
         Function<iNumComponents, iNumParameters>
         components(int startIndex) const;
         
-        template <int iOtherNumDimensions>
-        Function<iNumDimensions + iOtherNumDimensions, iNumParameters>
-        concatenated(const Function<iOtherNumDimensions, iNumParameters>& other) const;
+        template <int iNumOtherDimensions>
+        Function<iNumDimensions + iNumOtherDimensions, iNumParameters>
+        concatenated(const Function<iNumOtherDimensions, iNumParameters>& other) const;
         
         Function<1, iNumParameters>
         dot(const Function<iNumDimensions, iNumParameters>& other) const;
@@ -136,22 +144,11 @@ namespace opensolid
         
         Function<3, 1>
         binormalVector() const;
-
-        Function<iNumDimensions, iNumParameters>
-        operator-() const;
-
-        Function<iNumDimensions, iNumParameters>
-        operator+(const Function<iNumDimensions, iNumParameters>& other) const;
-        
-        Function<iNumDimensions, iNumParameters>
-        operator-(const Function<iNumDimensions, iNumParameters>& other) const;
-        
-        Function<iNumDimensions, iNumParameters>
-        operator*(const Function<1, iNumParameters>& other) const;
-        
-        Function<iNumDimensions, iNumParameters>
-        operator/(const Function<1, iNumParameters>& other) const;
     };
+
+    template <int iNumParameters, int iNumDimensions>
+    Function<iNumParameters, iNumDimensions>
+    operator-(const Function<iNumParameters, iNumDimensions>& function);
 
     template <int iNumParameters>
     Function<1, iNumParameters>
@@ -175,6 +172,13 @@ namespace opensolid
         const Function<iNumDimensions, iNumParameters>& function
     );
 
+    template <int iNumParameters, int iNumDimensions>
+    Function<iNumDimensions, iNumParameters>
+    operator+(
+        const Function<iNumDimensions, iNumParameters>& firstFunction,
+        const Function<iNumDimensions, iNumParameters>& secondFunction
+    );
+
     template <int iNumParameters>
     Function<1, iNumParameters>
     operator-(const Function<1, iNumParameters>& function, double value);
@@ -196,14 +200,21 @@ namespace opensolid
         const EigenBase<TVector>& vector,
         const Function<iNumDimensions, iNumParameters>& function
     );
+
+    template <int iNumParameters, int iNumDimensions>
+    Function<iNumDimensions, iNumParameters>
+    operator-(
+        const Function<iNumDimensions, iNumParameters>& firstFunction,
+        const Function<iNumDimensions, iNumParameters>& secondFunction
+    );
     
-    template <int iNumDimensions, iNumParameters>
+    template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
     operator*(double value, const Function<iNumDimensions, iNumParameters>& function);
 
-    template <int iNumDimensions, iNumParameters>
+    template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
-    operator*(const Function<iNumDimensions, iNumParameters>& function, double scale);
+    operator*(const Function<iNumDimensions, iNumParameters>& function, double value);
     
     template <int iNumDimensions, int iNumParameters, class TMatrix>
     Function<TMatrix::RowsAtCompileTime, iNumParameters>
@@ -212,9 +223,30 @@ namespace opensolid
         const Function<iNumDimensions, iNumParameters>& function
     );
     
-    template <int iNumParameters>
+    template <class TVector, int iNumParameters>
     Function<TVector::RowsAtCompileTime, iNumParameters>
     operator*(const Function<1, iNumParameters>& function, const EigenBase<TVector>& vector);
+
+    template <int iNumParameters, int iNumDimensions>
+    Function<iNumDimensions, iNumParameters>
+    operator*(
+        const Function<iNumDimensions, iNumParameters>& firstFunction,
+        const Function<1, iNumParameters>& secondFunction
+    );
+
+    template <int iNumParameters, int iNumDimensions>
+    Function<iNumDimensions, iNumParameters>
+    operator*(
+        const Function<1, iNumParameters>& firstFunction,
+        const Function<iNumDimensions, iNumParameters>& secondFunction
+    );
+
+    template <int iNumParameters>
+    Function<1, iNumParameters>
+    operator*(
+        const Function<1, iNumParameters>& firstFunction,
+        const Function<1, iNumParameters>& secondFunction
+    );
 
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
@@ -224,8 +256,16 @@ namespace opensolid
     Function<1, iNumParameters>
     operator/(double value, const Function<1, iNumParameters>& function);
     
+    template <class TVector, int iNumParameters>
     Function<TVector::RowsAtCompileTime, iNumParameters>
     operator/(const EigenBase<TVector>& vector, const Function<1, iNumParameters>& function);
+
+    template <int iNumParameters, int iNumDimensions>
+    Function<iNumDimensions, iNumParameters>
+    operator/(
+        const Function<iNumDimensions, iNumParameters>& firstFunction,
+        const Function<1, iNumParameters>& secondFunction
+    );
     
     template <int iNumParameters>
     Function<1, iNumParameters>

@@ -50,7 +50,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumParameters>
     Geometry<iNumDimensions, iNumParameters>::Geometry(
-        const Function& function, 
+        const Function<iNumDimensions, iNumParameters>& function, 
         const Domain<iNumParameters>& domain
     ) : _function(function),
         _domain(domain),
@@ -60,12 +60,12 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Geometry<iNumDimensions, iNumParameters>::Geometry(
         const Simplex<iNumDimensions, iNumParameters + 1>& simplex
-    ) : _function(Function::Linear(simplex.datum())),
+    ) : _function(Function<iNumDimensions, iNumParameters>::Linear(simplex.datum())),
         _domain(Simplex<iNumParameters, iNumParameters + 1>::Unit()) {
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline const Function&
+    inline const Function<iNumDimensions, iNumParameters>&
     Geometry<iNumDimensions, iNumParameters>::function() const {
         return _function;
     }
@@ -79,7 +79,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     inline bool
     Geometry<iNumDimensions, iNumParameters>::isValid() const {
-        return function().isValid() && !domain().isEmpty();
+        return !domain().isEmpty();
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -102,7 +102,7 @@ namespace opensolid
         return domain().boundaries().mapped(
             [this] (const Geometry<iNumParameters, iNumParameters - 1>& domainBoundary) {
                 return Geometry<iNumDimensions, iNumParameters - 1>(
-                    function().compose(domainBoundary.function()),
+                    function().composed(domainBoundary.function()),
                     domainBoundary.domain()
                 );
             }
@@ -111,26 +111,28 @@ namespace opensolid
 
     template <int iNumDimensions>
     Geometry<iNumDimensions, 1>::Geometry() :
-        _function(Function::Zero(iNumDimensions, 1)),
+        _function(),
         _domain(),
         _bounds() {
     }
 
     template <int iNumDimensions>
-    Geometry<iNumDimensions, 1>::Geometry(const Function& function, Interval domain) :
-        _function(function),
+    Geometry<iNumDimensions, 1>::Geometry(
+        const Function<iNumDimensions, 1>& function,
+        Interval domain
+    ) : _function(function),
         _domain(domain),
         _bounds(function(domain)) {
     }
 
     template <int iNumDimensions>
     Geometry<iNumDimensions, 1>::Geometry(const Simplex<iNumDimensions, 2>& simplex) :
-        _function(Function::Linear(simplex.datum())),
+        _function(Function<iNumDimensions, 1>::Linear(simplex.datum())),
         _domain(Interval::Unit()) {
     }
 
     template <int iNumDimensions>
-    inline const Function&
+    inline const Function<iNumDimensions, 1>&
     Geometry<iNumDimensions, 1>::function() const {
         return _function;
     }
@@ -144,7 +146,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline bool
     Geometry<iNumDimensions, 1>::isValid() const {
-        return function().isValid() && !domain().isEmpty();
+        return !domain().isEmpty();
     }
     
     template <int iNumDimensions>
@@ -213,7 +215,7 @@ namespace opensolid
         const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
         return Geometry<iNumDestinationDimensions, iNumParameters>(
-            function.compose(geometry.function()),
+            function.composed(geometry.function()),
             geometry.domain()
         );
     }

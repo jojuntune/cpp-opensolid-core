@@ -62,11 +62,11 @@ namespace opensolid
             innerFunction()->derivative(parameterIndex);
 
         FunctionImplementationPtr result =
-            outerFunction()->derivative(0)->compose(innerFunction()) *
+            outerFunction()->derivative(0)->composed(innerFunction()) *
             innerDerivative->component(0);
 
         for (int i = 1; i < outerFunction()->numParameters(); ++i) {
-            result = result + outerFunction()->derivative(i)->compose(innerFunction()) *
+            result = result + outerFunction()->derivative(i)->composed(innerFunction()) *
                 innerDerivative->component(i);
         }
 
@@ -92,8 +92,8 @@ namespace opensolid
     }
         
     FunctionImplementationPtr
-    CompositionFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
-        return outerFunction()->compose(this->innerFunction()->compose(innerFunction));
+    CompositionFunction::composedImpl(const FunctionImplementationPtr& innerFunction) const {
+        return outerFunction()->composed(this->innerFunction()->composed(innerFunction));
     }
     
     void

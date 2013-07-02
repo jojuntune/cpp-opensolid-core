@@ -74,7 +74,7 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    IdentityFunction::composeImpl(const FunctionImplementationPtr& innerFunction) const {
+    IdentityFunction::composedImpl(const FunctionImplementationPtr& innerFunction) const {
         return innerFunction;
     }
     

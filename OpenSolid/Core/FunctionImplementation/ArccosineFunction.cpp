@@ -90,6 +90,6 @@ namespace opensolid
     ArccosineFunction::ArccosineFunction(const FunctionImplementationPtr& operand) :
         UnaryOperation(operand) {
 
-        assert(operand->numDimensions() != 1);
+        assert(operand->numDimensions() == 1);
     }
 }

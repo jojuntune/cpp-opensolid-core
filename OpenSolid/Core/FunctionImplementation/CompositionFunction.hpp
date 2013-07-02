@@ -75,7 +75,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        composeImpl(const FunctionImplementationPtr& innerFunction) const;
+        composedImpl(const FunctionImplementationPtr& innerFunction) const;
         
         OPENSOLID_CORE_EXPORT
         void
