@@ -50,6 +50,8 @@ namespace opensolid
         FunctionImplementationPtr _implementation;
     public:
         Function();
+
+        Function(const FunctionImplementation* implementation);
         
         Function(const FunctionImplementationPtr& implementation);
         

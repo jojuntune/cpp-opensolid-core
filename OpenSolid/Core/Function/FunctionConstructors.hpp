@@ -37,9 +37,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
     ZeroFunctionConstructor<iNumDimensions, iNumParameters>::Zero() {
-        return Function<iNumDimensions, iNumParameters>(
-            FunctionImplementation::Zero(iNumDimensions, iNumParameters)
-        );
+        return new ConstantFunction(VectorXd::Zero(iNumDimensions), iNumParameters);
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -102,7 +100,7 @@ namespace opensolid
         const Function<1, iNumParameters>& x,
         double y
     ) {
-        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        Function<1, iNumParameters> yFunction(new ConstantFunction(y, iNumParameters));
         return x.concatenated(yFunction);
     }
 
@@ -112,7 +110,7 @@ namespace opensolid
         double x,
         const Function<1, iNumParameters>& y
     ) {
-        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
+        Function<1, iNumParameters> xFunction(new ConstantFunction(x, iNumParameters));
         return xFunction.concatenated(y);
     }
 
@@ -133,7 +131,7 @@ namespace opensolid
         const Function<1, iNumParameters>& y,
         double z
     ) {
-        Function<1, iNumParameters> zFunction(FunctionImplementation::Constant(z, iNumParameters));
+        Function<1, iNumParameters> zFunction(new ConstantFunction(z, iNumParameters));
         return x.concatenated(y).concatenated(zFunction);
     }
     
@@ -144,7 +142,7 @@ namespace opensolid
         double y,
         const Function<1, iNumParameters>& z
     ) {
-        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        Function<1, iNumParameters> yFunction(new ConstantFunction(y, iNumParameters));
         return x.concatenated(yFunction).concatenated(z);
     }
     
@@ -155,7 +153,7 @@ namespace opensolid
         const Function<1, iNumParameters>& y,
         const Function<1, iNumParameters>& z
     ) {
-        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
+        Function<1, iNumParameters> xFunction(new ConstantFunction(x, iNumParameters));
         return xFunction.concatenated(y).concatenated(z);
     }
     
@@ -166,8 +164,8 @@ namespace opensolid
         double y,
         double z
     ) {
-        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
-        Function<1, iNumParameters> zFunction(FunctionImplementation::Constant(z, iNumParameters));
+        Function<1, iNumParameters> yFunction(new ConstantFunction(y, iNumParameters));
+        Function<1, iNumParameters> zFunction(new ConstantFunction(z, iNumParameters));
         return x.concatenated(yFunction).concatenated(zFunction);
     }
     
@@ -178,8 +176,8 @@ namespace opensolid
         const Function<1, iNumParameters>& y,
         double z
     ) {
-        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
-        Function<1, iNumParameters> zFunction(FunctionImplementation::Constant(z, iNumParameters));
+        Function<1, iNumParameters> xFunction(new ConstantFunction(x, iNumParameters));
+        Function<1, iNumParameters> zFunction(new ConstantFunction(z, iNumParameters));
         return xFunction.concatenated(y).concatenated(zFunction);
     }
     
@@ -190,8 +188,8 @@ namespace opensolid
         double y,
         const Function<1, iNumParameters>& z
     ) {
-        Function<1, iNumParameters> xFunction(FunctionImplementation::Constant(x, iNumParameters));
-        Function<1, iNumParameters> yFunction(FunctionImplementation::Constant(y, iNumParameters));
+        Function<1, iNumParameters> xFunction(new ConstantFunction(x, iNumParameters));
+        Function<1, iNumParameters> yFunction(new ConstantFunction(y, iNumParameters));
         return xFunction.concatenated(yFunction).concatenated(z);
     }
 

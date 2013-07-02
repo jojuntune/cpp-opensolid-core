@@ -47,6 +47,12 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>::Function(
+        const FunctionImplementation* implementation
+    ) : _implementation(implementation) {
+    }
+    
+    template <int iNumDimensions, int iNumParameters>
+    Function<iNumDimensions, iNumParameters>::Function(
         const FunctionImplementationPtr& implementation
     ) : _implementation(implementation) {
     }

@@ -22,8 +22,6 @@
 *                                                                                   *
 *************************************************************************************/
 
-#pragma once
-
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/FunctionImplementation/NegatedFunction.hpp>

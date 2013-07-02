@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+
 namespace opensolid
 {
     int

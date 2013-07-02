@@ -34,8 +34,6 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
-#include <boost/intrusive_ptr.hpp>
-
 #include <vector>
 
 namespace opensolid

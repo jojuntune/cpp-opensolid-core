@@ -43,7 +43,7 @@ namespace opensolid
 {
     template <int iNumDimensions, int iNumParameters>
     Geometry<iNumDimensions, iNumParameters>::Geometry() :
-        _function(Function::Zero(iNumDimensions, iNumParameters)),
+        _function(),
         _domain(),
         _bounds() {
     }

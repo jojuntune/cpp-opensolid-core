@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/FunctionImplementation.definitions.hpp>
 
 namespace opensolid
 {
@@ -34,8 +34,8 @@ namespace opensolid
         public FunctionImplementation
     {
     private:
-        int _parameterIndex;
         int _numParameters;
+        int _parameterIndex;
         
         OPENSOLID_CORE_EXPORT
         int

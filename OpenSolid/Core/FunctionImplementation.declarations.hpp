@@ -26,19 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace boost
-{
-    template <class TReferenceCounted>
-    class intrusive_ptr;
-}
+#include <boost/intrusive_ptr.hpp>
 
 namespace opensolid
 {
     class FunctionImplementation;
     
     typedef boost::intrusive_ptr<const FunctionImplementation> FunctionImplementationPtr;
-    
-    class ConstantFunction;
-    class IdentityFunction;
-    class ParameterFunction;
 }
