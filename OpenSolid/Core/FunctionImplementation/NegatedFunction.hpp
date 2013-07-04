@@ -68,11 +68,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        scaledImpl(double scale) const override;
+        scalarMultiplicationImpl(double scale) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        transformedImpl(const MatrixXd& transformationMatrix) const override;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr

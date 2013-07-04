@@ -104,15 +104,15 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
-        scaledImpl(double scale) const;
+        scalarMultiplicationImpl(double scale) const;
         
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
-        translatedImpl(const VectorXd& vector) const;
+        vectorAdditionImpl(const VectorXd& vector) const;
         
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
-        transformedImpl(const MatrixXd& matrix) const;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const;
         
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr
@@ -183,6 +183,9 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const = 0;
 
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr operator-(const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr operator+(const FunctionImplementationPtr&, const VectorXd&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr operator*(double, const FunctionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr operator*(const MatrixXd&, const FunctionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr sqrt(const FunctionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr sin(const FunctionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT FunctionImplementationPtr cos(const FunctionImplementationPtr&);
@@ -288,18 +291,6 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        scaled(double scale) const;
-        
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        translated(const VectorXd& vector) const;
-        
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
-        transformed(const MatrixXd& matrix) const;
-        
-        OPENSOLID_CORE_EXPORT
-        FunctionImplementationPtr
         norm() const;
         
         OPENSOLID_CORE_EXPORT
@@ -353,8 +344,8 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     FunctionImplementationPtr
     operator+(
-        const FunctionImplementationPtr& firstArgument,
-        const VectorXd& secondArgument
+        const FunctionImplementationPtr& argument,
+        const VectorXd& vector
     );
 
     OPENSOLID_CORE_EXPORT
@@ -430,7 +421,7 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     FunctionImplementationPtr
     operator*(
-        const MatrixXd& transformationMatrix,
+        const MatrixXd& matrix,
         const FunctionImplementationPtr& argument
     );
 
@@ -444,8 +435,8 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     FunctionImplementationPtr
     operator*(
-        double firstArgument,
-        const FunctionImplementationPtr& secondArgument
+        double scale,
+        const FunctionImplementationPtr& argument
     );
 
     OPENSOLID_CORE_EXPORT

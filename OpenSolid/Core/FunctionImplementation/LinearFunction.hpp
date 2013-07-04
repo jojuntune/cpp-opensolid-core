@@ -68,13 +68,13 @@ namespace opensolid
         deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         FunctionImplementationPtr
-        scaledImpl(double scale) const;
+        scalarMultiplicationImpl(double scale) const;
 
         FunctionImplementationPtr
-        transformedImpl(const MatrixXd& transformationMatrix) const;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const;
         
         FunctionImplementationPtr
-        translatedImpl(const VectorXd& vector) const;
+        vectorAdditionImpl(const VectorXd& vector) const;
         
         void
         debugImpl(std::ostream& stream, int indent) const;
@@ -152,7 +152,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::scaledImpl(double scale) const {
+    LinearFunction<iNumDimensions, iNumAxes>::scalarMultiplicationImpl(double scale) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale)
         );
@@ -160,29 +160,29 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::transformedImpl(
-        const MatrixXd& transformationMatrix
+    LinearFunction<iNumDimensions, iNumAxes>::matrixMultiplicationImpl(
+        const MatrixXd& matrix
     ) const {
-        int numTransformedDimensions = transformationMatrix.rows();
+        int numTransformedDimensions = matrix.rows();
         if (numTransformedDimensions == 1) {
             return new LinearFunction<1, iNumAxes>(
                 Datum<iNumDimensions, iNumAxes>::transformation(
                     datum(),
-                    transformationMatrix.topLeftCorner<1, iNumDimensions>()
+                    matrix.topLeftCorner<1, iNumDimensions>()
                 )
             );
         } else if (numTransformedDimensions == 2) {
             return new LinearFunction<2, iNumAxes>(
                 Datum<iNumDimensions, iNumAxes>::transformation(
                     datum(),
-                    transformationMatrix.topLeftCorner<2, iNumDimensions>()
+                    matrix.topLeftCorner<2, iNumDimensions>()
                 )
             );
         } else if (numTransformedDimensions == 3) {
             return new LinearFunction<3, iNumAxes>(
                 Datum<iNumDimensions, iNumAxes>::transformation(
                     datum(),
-                    transformationMatrix.topLeftCorner<3, iNumDimensions>()
+                    matrix.topLeftCorner<3, iNumDimensions>()
                 )
             );
         } else {
@@ -193,7 +193,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::translatedImpl(const VectorXd& vector) const {
+    LinearFunction<iNumDimensions, iNumAxes>::vectorAdditionImpl(const VectorXd& vector) const {
         return new LinearFunction<iNumDimensions, iNumAxes>(datum().translated(vector));
     }
     

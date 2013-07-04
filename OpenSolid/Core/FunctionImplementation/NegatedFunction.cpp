@@ -67,13 +67,13 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    NegatedFunction::scaledImpl(double scale) const {
-        return operand()->scaled(-scale);
+    NegatedFunction::scalarMultiplicationImpl(double scale) const {
+        return (-scale) * operand();
     }
 
     FunctionImplementationPtr
-    NegatedFunction::transformedImpl(const MatrixXd& transformationMatrix) const {
-        return operand()->transformed(-transformationMatrix);
+    NegatedFunction::matrixMultiplicationImpl(const MatrixXd& matrix) const {
+        return (-matrix) * operand();
     }
 
     FunctionImplementationPtr

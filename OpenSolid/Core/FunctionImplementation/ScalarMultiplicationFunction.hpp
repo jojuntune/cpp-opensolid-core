@@ -31,11 +31,11 @@
 
 namespace opensolid
 {
-    class TempTransformationFunction :
+    class ScalarMultiplicationFunction :
         public UnaryOperation
     {
     private:
-        MatrixXd _transformationMatrix;
+        double _scale;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -67,11 +67,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        scaledImpl(double value) const;
+        scalarMultiplicationImpl(double scale) const;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        transformedImpl(const MatrixXd& transformationMatrix) const;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -82,13 +82,10 @@ namespace opensolid
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
     public:
         OPENSOLID_CORE_EXPORT
-        TempTransformationFunction(
-            const MatrixXd& transformationMatrix,
-            const FunctionImplementationPtr& operand
-        );
+        ScalarMultiplicationFunction(double scale, const FunctionImplementationPtr& operand);
 
-        const MatrixXd&
-        transformationMatrix() const;
+        double
+        scale() const;
     };
 }
 
@@ -96,8 +93,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const MatrixXd&
-    TempTransformationFunction::transformationMatrix() const {
-        return _transformationMatrix;
+    inline double
+    ScalarMultiplicationFunction::scale() const {
+        return _scale;
     }
 }

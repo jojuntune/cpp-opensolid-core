@@ -86,18 +86,18 @@ namespace opensolid
     }
     
     FunctionImplementationPtr
-    ConstantFunction::scaledImpl(double scale) const {
+    ConstantFunction::scalarMultiplicationImpl(double scale) const {
         return new ConstantFunction(scale * vector(), numParameters());
     }
     
     FunctionImplementationPtr
-    ConstantFunction::translatedImpl(const VectorXd& vector) const {
+    ConstantFunction::vectorAdditionImpl(const VectorXd& vector) const {
         return new ConstantFunction(this->vector() + vector, numParameters());
     }
     
     FunctionImplementationPtr
-    ConstantFunction::transformedImpl(const MatrixXd& transformationMatrix) const {
-        return new ConstantFunction(transformationMatrix * vector(), numParameters());
+    ConstantFunction::matrixMultiplicationImpl(const MatrixXd& matrix) const {
+        return new ConstantFunction(matrix * vector(), numParameters());
     }
     
     FunctionImplementationPtr

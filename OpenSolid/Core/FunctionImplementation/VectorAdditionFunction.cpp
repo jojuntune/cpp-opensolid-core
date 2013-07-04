@@ -22,69 +22,70 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/FunctionImplementation/TempScalingFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/VectorAdditionFunction.hpp>
 
 namespace opensolid
-{
+{   
     int
-    TempScalingFunction::numDimensionsImpl() const {
+    VectorAdditionFunction::numDimensionsImpl() const {
         return operand()->numDimensions();
     }
     
     void
-    TempScalingFunction::evaluateImpl(
+    VectorAdditionFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = scale() * evaluator.evaluate(operand(), parameterValues);
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
+        results = operandValues.colwise() + vector();
     }
     
     void
-    TempScalingFunction::evaluateImpl(
+    VectorAdditionFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = Interval(scale()) * evaluator.evaluate(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        results = operandBounds.colwise() + vector().cast<Interval>();
     }
     
     FunctionImplementationPtr
-    TempScalingFunction::derivativeImpl(int parameterIndex) const {
-        return scale() * operand()->derivative(parameterIndex);
+    VectorAdditionFunction::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex);
     }
 
     bool
-    TempScalingFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+    VectorAdditionFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return duplicateOperands(other) &&
-            this->scale() == other->cast<TempScalingFunction>()->scale();
+            (vector() - other->cast<VectorAdditionFunction>()->vector()).isZero();
     }
 
     FunctionImplementationPtr
-    TempScalingFunction::scaledImpl(double scale) const {
-        return (scale * this->scale()) * operand();
-    }
-
-    FunctionImplementationPtr
-    TempScalingFunction::transformedImpl(const MatrixXd& transformationMatrix) const {
-        return (transformationMatrix * scale()) * operand();
+    VectorAdditionFunction::vectorAdditionImpl(const VectorXd& vector) const {
+        return operand() + (this->vector() + vector);
     }
     
     void
-    TempScalingFunction::debugImpl(std::ostream& stream, int indent) const {
-        stream << "TempScalingFunction" << std::endl;
+    VectorAdditionFunction::debugImpl(std::ostream& stream, int indent) const {
+        stream << "VectorAdditionFunction" << std::endl;
         operand()->debug(stream, indent + 1);
     }
 
     FunctionImplementationPtr
-    TempScalingFunction::withNewOperandImpl(const FunctionImplementationPtr& newOperand) const {
-        return scale() * newOperand;
+    VectorAdditionFunction::withNewOperandImpl(
+        const FunctionImplementationPtr& newOperand
+    ) const {
+        return newOperand + vector();
     }
 
-    TempScalingFunction::TempScalingFunction(
-        double scale,
-        const FunctionImplementationPtr& operand
+    VectorAdditionFunction::VectorAdditionFunction(
+        const FunctionImplementationPtr& operand,
+        const VectorXd& vector
     ) : UnaryOperation(operand),
-        _scale(scale) {
+        _vector(vector) {
+
+        assert(vector.size() == operand->numDimensions());
     }
 }

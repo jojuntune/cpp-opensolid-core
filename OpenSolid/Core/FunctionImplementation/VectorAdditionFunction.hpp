@@ -31,7 +31,7 @@
 
 namespace opensolid
 {
-    class TempTranslationFunction :
+    class VectorAdditionFunction :
         public UnaryOperation
     {
     private:
@@ -66,7 +66,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        translatedImpl(const VectorXd& vector) const;
+        vectorAdditionImpl(const VectorXd& vector) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -77,7 +77,7 @@ namespace opensolid
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
     public:
         OPENSOLID_CORE_EXPORT
-        TempTranslationFunction(const FunctionImplementationPtr& operand, const VectorXd& vector);
+        VectorAdditionFunction(const FunctionImplementationPtr& operand, const VectorXd& vector);
 
         const VectorXd&
         vector() const;
@@ -89,7 +89,7 @@ namespace opensolid
 namespace opensolid
 {
     inline const VectorXd&
-    TempTranslationFunction::vector() const {
+    VectorAdditionFunction::vector() const {
         return _vector;
     }
 }

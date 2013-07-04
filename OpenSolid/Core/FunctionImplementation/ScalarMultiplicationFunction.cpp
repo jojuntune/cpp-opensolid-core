@@ -22,77 +22,71 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/FunctionImplementation/TempTransformationFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ScalarMultiplicationFunction.hpp>
 
 namespace opensolid
 {
     int
-    TempTransformationFunction::numDimensionsImpl() const {
-        return transformationMatrix().rows();
+    ScalarMultiplicationFunction::numDimensionsImpl() const {
+        return operand()->numDimensions();
     }
     
     void
-    TempTransformationFunction::evaluateImpl(
+    ScalarMultiplicationFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = transformationMatrix() *
-            evaluator.evaluate(operand(), parameterValues);
+        results = scale() * evaluator.evaluate(operand(), parameterValues);
     }
     
     void
-    TempTransformationFunction::evaluateImpl(
+    ScalarMultiplicationFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = transformationMatrix().cast<Interval>() *
-            evaluator.evaluate(operand(), parameterBounds);
+        results = Interval(scale()) * evaluator.evaluate(operand(), parameterBounds);
     }
     
     FunctionImplementationPtr
-    TempTransformationFunction::derivativeImpl(int parameterIndex) const {
-        return transformationMatrix() * operand()->derivative(parameterIndex);
+    ScalarMultiplicationFunction::derivativeImpl(int parameterIndex) const {
+        return scale() * operand()->derivative(parameterIndex);
     }
 
     bool
-    TempTransformationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        MatrixXd otherTransformationMatrix =
-            other->cast<TempTransformationFunction>()->transformationMatrix();
+    ScalarMultiplicationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
         return duplicateOperands(other) &&
-            (transformationMatrix() - otherTransformationMatrix).isZero();
+            this->scale() == other->cast<ScalarMultiplicationFunction>()->scale();
     }
 
     FunctionImplementationPtr
-    TempTransformationFunction::scaledImpl(double value) const {
-        return (value * transformationMatrix()) * operand();
+    ScalarMultiplicationFunction::scalarMultiplicationImpl(double scale) const {
+        return (scale * this->scale()) * operand();
     }
 
     FunctionImplementationPtr
-    TempTransformationFunction::transformedImpl(const MatrixXd& transformationMatrix) const {
-        return (transformationMatrix * this->transformationMatrix()) * operand();
+    ScalarMultiplicationFunction::matrixMultiplicationImpl(const MatrixXd& matrix) const {
+        return (scale() * matrix) * operand();
     }
     
     void
-    TempTransformationFunction::debugImpl(std::ostream& stream, int indent) const {
-        stream << "TempTransformationFunction" << std::endl;
+    ScalarMultiplicationFunction::debugImpl(std::ostream& stream, int indent) const {
+        stream << "ScalarMultiplicationFunction" << std::endl;
         operand()->debug(stream, indent + 1);
     }
 
     FunctionImplementationPtr
-    TempTransformationFunction::withNewOperandImpl(
+    ScalarMultiplicationFunction::withNewOperandImpl(
         const FunctionImplementationPtr& newOperand
     ) const {
-        return transformationMatrix() * newOperand;
+        return scale() * newOperand;
     }
 
-    TempTransformationFunction::TempTransformationFunction(
-        const MatrixXd& transformationMatrix,
+    ScalarMultiplicationFunction::ScalarMultiplicationFunction(
+        double scale,
         const FunctionImplementationPtr& operand
     ) : UnaryOperation(operand),
-        _transformationMatrix(transformationMatrix) {
-
-        assert(transformationMatrix.cols() == operand->numDimensions());
+        _scale(scale) {
     }
 }

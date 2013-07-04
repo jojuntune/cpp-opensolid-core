@@ -31,11 +31,11 @@
 
 namespace opensolid
 {
-    class TempScalingFunction :
+    class MatrixMultiplicationFunction :
         public UnaryOperation
     {
     private:
-        double _scale;
+        MatrixXd _matrix;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -67,11 +67,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        scaledImpl(double scale) const;
+        scalarMultiplicationImpl(double value) const;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        transformedImpl(const MatrixXd& transformationMatrix) const;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -82,10 +82,13 @@ namespace opensolid
         withNewOperandImpl(const FunctionImplementationPtr& newOperand) const;
     public:
         OPENSOLID_CORE_EXPORT
-        TempScalingFunction(double scale, const FunctionImplementationPtr& operand);
+        MatrixMultiplicationFunction(
+            const MatrixXd& matrix,
+            const FunctionImplementationPtr& operand
+        );
 
-        double
-        scale() const;
+        const MatrixXd&
+        matrix() const;
     };
 }
 
@@ -93,8 +96,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline double
-    TempScalingFunction::scale() const {
-        return _scale;
+    inline const MatrixXd&
+    MatrixMultiplicationFunction::matrix() const {
+        return _matrix;
     }
 }

@@ -49,9 +49,9 @@
 #include <OpenSolid/Core/FunctionImplementation/SquaredNormFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/SumFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/TangentFunction.hpp>
-#include <OpenSolid/Core/FunctionImplementation/TempScalingFunction.hpp>
-#include <OpenSolid/Core/FunctionImplementation/TempTransformationFunction.hpp>
-#include <OpenSolid/Core/FunctionImplementation/TempTranslationFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ScalarMultiplicationFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/MatrixMultiplicationFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/VectorAdditionFunction.hpp>
 
 namespace opensolid
 {
@@ -86,18 +86,18 @@ namespace opensolid
     }
         
     FunctionImplementationPtr
-    FunctionImplementation::scaledImpl(double scale) const {
-        return new TempScalingFunction(scale, this);
+    FunctionImplementation::scalarMultiplicationImpl(double scale) const {
+        return new ScalarMultiplicationFunction(scale, this);
     }
         
     FunctionImplementationPtr
-    FunctionImplementation::translatedImpl(const VectorXd& vector) const {
-        return new TempTranslationFunction(this, vector);
+    FunctionImplementation::vectorAdditionImpl(const VectorXd& vector) const {
+        return new VectorAdditionFunction(this, vector);
     }
         
     FunctionImplementationPtr
-    FunctionImplementation::transformedImpl(const MatrixXd& transformationMatrix) const {
-        return new TempTransformationFunction(transformationMatrix, this);
+    FunctionImplementation::matrixMultiplicationImpl(const MatrixXd& matrix) const {
+        return new MatrixMultiplicationFunction(matrix, this);
     }
     
     FunctionImplementationPtr
@@ -305,48 +305,6 @@ namespace opensolid
         }
         return new ConcatenationFunction(this, other);
     }
-
-    FunctionImplementationPtr
-    FunctionImplementation::scaled(double scale) const {
-        if (scale == Zero()) {
-            return new ConstantFunction(VectorXd::Zero(numDimensions()), numParameters());
-        }
-        if (scale - 1 == Zero()) {
-            return this;
-        }
-        if (scale + 1 == Zero()) {
-            return -self();
-        }
-        return scaledImpl(scale);
-    }
-    
-    FunctionImplementationPtr
-    FunctionImplementation::translated(const VectorXd& vector) const {
-        if (vector.size() != numDimensions()) {
-            throw PlaceholderError();
-        }
-        if (vector.isZero()) {
-            return this;
-        }
-        return translatedImpl(vector);
-    }
-    
-    FunctionImplementationPtr
-    FunctionImplementation::transformed(const MatrixXd& matrix) const {
-        if (matrix.size() == 0) {
-            throw PlaceholderError();
-        }
-        if (matrix.cols() != numDimensions()) {
-            throw PlaceholderError();
-        }
-        if (matrix.isZero()) {
-            return new ConstantFunction(VectorXd::Zero(matrix.rows()), numParameters());
-        }
-        if (matrix.rows() == matrix.cols() && matrix.isIdentity()) {
-            return this;
-        }
-        return transformedImpl(matrix);
-    }
     
     FunctionImplementationPtr
     FunctionImplementation::norm() const {
@@ -469,32 +427,38 @@ namespace opensolid
             throw PlaceholderError();
         }
         if (secondOperand->isConstant()) {
-            return firstOperand->translated(secondOperand->cast<ConstantFunction>()->vector());
+            return firstOperand + secondOperand->cast<ConstantFunction>()->vector();
         }
         if (firstOperand->isConstant()) {
-            return secondOperand->translated(firstOperand->cast<ConstantFunction>()->vector());
+            return secondOperand + firstOperand->cast<ConstantFunction>()->vector();
         }
         return new SumFunction(firstOperand, secondOperand);
     }
 
     FunctionImplementationPtr
-    operator+(const FunctionImplementationPtr& firstOperand, const VectorXd& secondOperand) {
-        return firstOperand + new ConstantFunction(secondOperand, firstOperand->numParameters());
+    operator+(const FunctionImplementationPtr& argument, const VectorXd& vector) {
+        if (vector.size() != argument->numDimensions()) {
+            throw PlaceholderError();
+        }
+        if (vector.isZero()) {
+            return argument;
+        }
+        return argument->vectorAdditionImpl(vector);
     }
 
     FunctionImplementationPtr
     operator+(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
-        return new ConstantFunction(firstOperand, secondOperand->numParameters()) + secondOperand;
+        return secondOperand + firstOperand;
     }
 
     FunctionImplementationPtr
     operator+(const FunctionImplementationPtr& firstOperand, double secondOperand) {
-        return firstOperand + new ConstantFunction(secondOperand, firstOperand->numParameters());
+        return firstOperand + VectorXd::Constant(1, secondOperand);
     }
 
     FunctionImplementationPtr
     operator+(double firstOperand, const FunctionImplementationPtr& secondOperand) {
-        return new ConstantFunction(firstOperand, secondOperand->numParameters()) + secondOperand;
+        return secondOperand + VectorXd::Constant(1, firstOperand);
     }
 
     FunctionImplementationPtr
@@ -510,33 +474,33 @@ namespace opensolid
         }
         if (secondOperand->isConstant()) {
             VectorXd secondVector = secondOperand->cast<ConstantFunction>()->vector();
-            return firstOperand->translated(-secondVector);
+            return firstOperand + (-secondVector);
         }
         if (firstOperand->isConstant()) {
             VectorXd firstVector = firstOperand->cast<ConstantFunction>()->vector();
-            return (-secondOperand)->translated(firstVector);
+            return (-secondOperand) + firstVector;
         }
         return new DifferenceFunction(firstOperand, secondOperand);
     }
 
     FunctionImplementationPtr
     operator-(const FunctionImplementationPtr& firstOperand, const VectorXd& secondOperand) {
-        return firstOperand - new ConstantFunction(secondOperand, firstOperand->numParameters());
+        return firstOperand + (-secondOperand);
     }
 
     FunctionImplementationPtr
     operator-(const VectorXd& firstOperand, const FunctionImplementationPtr& secondOperand) {
-        return new ConstantFunction(firstOperand, secondOperand->numParameters()) - secondOperand;
+        return (-secondOperand) + firstOperand;
     }
 
     FunctionImplementationPtr
     operator-(const FunctionImplementationPtr& firstOperand, double secondOperand) {
-        return firstOperand - new ConstantFunction(secondOperand, firstOperand->numParameters());
+        return firstOperand + VectorXd::Constant(1, -secondOperand);
     }
 
     FunctionImplementationPtr
     operator-(double firstOperand, const FunctionImplementationPtr& secondOperand) {
-        return new ConstantFunction(firstOperand, secondOperand->numParameters()) - secondOperand;
+        return (-secondOperand) + VectorXd::Constant(1, firstOperand);
     }
 
     FunctionImplementationPtr
@@ -579,7 +543,7 @@ namespace opensolid
         }
         if (multiplier->isConstant()) {
             // Delegate to scaling function
-            return multiplicand->scaled(multiplier->cast<ConstantFunction>()->value());
+            return multiplier->cast<ConstantFunction>()->value() * multiplicand;
         }
         if (multiplicand->isConstant() && multiplicand->cast<ConstantFunction>()->isZero()) {
             // Doesn't matter what the multiplier is - return the (zero) multiplicand
@@ -594,18 +558,48 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    operator*(const MatrixXd& transformationMatrix, const FunctionImplementationPtr& argument) {
-        return argument->transformed(transformationMatrix);
+    operator*(const MatrixXd& matrix, const FunctionImplementationPtr& argument) {
+        if (matrix.size() == 0) {
+            throw PlaceholderError();
+        }
+        if (matrix.size() == 1) {
+            return matrix.value() * argument;
+        }
+        if (matrix.cols() != argument->numDimensions()) {
+            throw PlaceholderError();
+        }
+        if (matrix.isZero()) {
+            return new ConstantFunction(VectorXd::Zero(matrix.rows()), argument->numParameters());
+        }
+        if (matrix.rows() == matrix.cols() && matrix.isIdentity()) {
+            return argument;
+        }
+        if (matrix.rows() == matrix.cols() && (-matrix).isIdentity()) {
+            return -argument;
+        }
+        return argument->matrixMultiplicationImpl(matrix);
     }
 
     FunctionImplementationPtr
     operator*(const FunctionImplementationPtr& firstOperand, double secondOperand) {
-        return firstOperand * new ConstantFunction(secondOperand, firstOperand->numParameters());
+        return secondOperand * firstOperand;
     }
 
     FunctionImplementationPtr
-    operator*(double firstOperand, const FunctionImplementationPtr& secondOperand) {
-        return new ConstantFunction(firstOperand, secondOperand->numParameters()) * secondOperand;
+    operator*(double scale, const FunctionImplementationPtr& argument) {
+        if (scale == Zero()) {
+            return new ConstantFunction(
+                VectorXd::Zero(argument->numDimensions()),
+                argument->numParameters()
+            );
+        }
+        if (scale - 1 == Zero()) {
+            return argument;
+        }
+        if (scale + 1 == Zero()) {
+            return -argument;
+        }
+        return argument->scalarMultiplicationImpl(scale);
     }
 
     FunctionImplementationPtr
@@ -624,7 +618,7 @@ namespace opensolid
             if (divisor == Zero()) {
                 throw PlaceholderError();
             }
-            return firstOperand->scaled(1 / divisor);
+            return (1 / divisor) * firstOperand;
         }
         if (firstOperand->isConstant() && firstOperand->cast<ConstantFunction>()->isZero()) {
             // Doesn't matter what the divisor is - return the (zero) dividend
@@ -640,7 +634,10 @@ namespace opensolid
 
     FunctionImplementationPtr
     operator/(const FunctionImplementationPtr& firstOperand, double secondOperand) {
-        return firstOperand / new ConstantFunction(secondOperand, firstOperand->numParameters());
+        if (secondOperand == Zero()) {
+            throw PlaceholderError();
+        }
+        return (1 / secondOperand) * firstOperand;
     }
 
     FunctionImplementationPtr

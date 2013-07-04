@@ -22,70 +22,73 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/FunctionImplementation/TempTranslationFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/MatrixMultiplicationFunction.hpp>
 
 namespace opensolid
-{   
+{
     int
-    TempTranslationFunction::numDimensionsImpl() const {
-        return operand()->numDimensions();
+    MatrixMultiplicationFunction::numDimensionsImpl() const {
+        return matrix().rows();
     }
     
     void
-    TempTranslationFunction::evaluateImpl(
+    MatrixMultiplicationFunction::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
-        results = operandValues.colwise() + vector();
+        results = matrix() * evaluator.evaluate(operand(), parameterValues);
     }
     
     void
-    TempTranslationFunction::evaluateImpl(
+    MatrixMultiplicationFunction::evaluateImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
-        results = operandBounds.colwise() + vector().cast<Interval>();
+        results = matrix().cast<Interval>() * evaluator.evaluate(operand(), parameterBounds);
     }
     
     FunctionImplementationPtr
-    TempTranslationFunction::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex);
+    MatrixMultiplicationFunction::derivativeImpl(int parameterIndex) const {
+        return matrix() * operand()->derivative(parameterIndex);
     }
 
     bool
-    TempTranslationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
-        return duplicateOperands(other) &&
-            (vector() - other->cast<TempTranslationFunction>()->vector()).isZero();
+    MatrixMultiplicationFunction::isDuplicateOfImpl(const FunctionImplementationPtr& other) const {
+        MatrixXd otherMatrix = other->cast<MatrixMultiplicationFunction>()->matrix();
+        return duplicateOperands(other) && (matrix() - otherMatrix).isZero();
     }
 
     FunctionImplementationPtr
-    TempTranslationFunction::translatedImpl(const VectorXd& vector) const {
-        return operand() + (this->vector() + vector);
+    MatrixMultiplicationFunction::scalarMultiplicationImpl(double value) const {
+        return (value * matrix()) * operand();
+    }
+
+    FunctionImplementationPtr
+    MatrixMultiplicationFunction::matrixMultiplicationImpl(const MatrixXd& matrix) const {
+        return (matrix * this->matrix()) * operand();
     }
     
     void
-    TempTranslationFunction::debugImpl(std::ostream& stream, int indent) const {
-        stream << "TempTranslationFunction" << std::endl;
+    MatrixMultiplicationFunction::debugImpl(std::ostream& stream, int indent) const {
+        stream << "MatrixMultiplicationFunction" << std::endl;
         operand()->debug(stream, indent + 1);
     }
 
     FunctionImplementationPtr
-    TempTranslationFunction::withNewOperandImpl(
+    MatrixMultiplicationFunction::withNewOperandImpl(
         const FunctionImplementationPtr& newOperand
     ) const {
-        return newOperand + vector();
+        return matrix() * newOperand;
     }
 
-    TempTranslationFunction::TempTranslationFunction(
-        const FunctionImplementationPtr& operand,
-        const VectorXd& vector
+    MatrixMultiplicationFunction::MatrixMultiplicationFunction(
+        const MatrixXd& matrix,
+        const FunctionImplementationPtr& operand
     ) : UnaryOperation(operand),
-        _vector(vector) {
+        _matrix(matrix) {
 
-        assert(vector.size() == operand->numDimensions());
+        assert(matrix.cols() == operand->numDimensions());
     }
 }

@@ -69,13 +69,13 @@ namespace opensolid
         deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
         FunctionImplementationPtr
-        scaledImpl(double scale) const;
+        scalarMultiplicationImpl(double scale) const;
         
         FunctionImplementationPtr
-        transformedImpl(const MatrixXd& transformationMatrix) const;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const;
         
         FunctionImplementationPtr
-        translatedImpl(const VectorXd& vector) const;
+        vectorAdditionImpl(const VectorXd& vector) const;
         
         void
         debugImpl(std::ostream& stream, int indent) const;
@@ -203,7 +203,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::scaledImpl(double scale) const {
+    EllipticalFunction<iNumDimensions, iNumAxes>::scalarMultiplicationImpl(double scale) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
             Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale),
             convention()
@@ -212,15 +212,15 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::transformedImpl(
-        const MatrixXd& transformationMatrix
+    EllipticalFunction<iNumDimensions, iNumAxes>::matrixMultiplicationImpl(
+        const MatrixXd& matrix
     ) const {
-        int numTransformedDimensions = transformationMatrix.rows();
+        int numTransformedDimensions = matrix.rows();
         if (numTransformedDimensions == 1) {
             return new EllipticalFunction<1, iNumAxes>(
                 Datum<iNumDimensions, iNumAxes>::transformation(
                     datum(),
-                    transformationMatrix.topLeftCorner<1, iNumDimensions>()
+                    matrix.topLeftCorner<1, iNumDimensions>()
                 ),
                 convention()
             );
@@ -228,7 +228,7 @@ namespace opensolid
             return new EllipticalFunction<2, iNumAxes>(
                 Datum<iNumDimensions, iNumAxes>::transformation(
                     datum(),
-                    transformationMatrix.topLeftCorner<2, iNumDimensions>()
+                    matrix.topLeftCorner<2, iNumDimensions>()
                 ),
                 convention()
             );
@@ -236,7 +236,7 @@ namespace opensolid
             return new EllipticalFunction<3, iNumAxes>(
                 Datum<iNumDimensions, iNumAxes>::transformation(
                     datum(),
-                    transformationMatrix.topLeftCorner<3, iNumDimensions>()
+                    matrix.topLeftCorner<3, iNumDimensions>()
                 ),
                 convention()
             );
@@ -248,7 +248,7 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     FunctionImplementationPtr
-    EllipticalFunction<iNumDimensions, iNumAxes>::translatedImpl(
+    EllipticalFunction<iNumDimensions, iNumAxes>::vectorAdditionImpl(
         const VectorXd& vector
     ) const {
         return new EllipticalFunction<iNumDimensions, iNumAxes>(
