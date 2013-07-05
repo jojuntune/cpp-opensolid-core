@@ -111,7 +111,7 @@ namespace opensolid
     inline FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>
     Function<iNumDimensions, iNumParameters>::operator()(const EigenBase<TMatrix>& matrix) const {
         static_assert(
-            TMatrix::RowsAtCompileTime == iNumParameters,
+            TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
             "Incorrect number of parameters supplied"
         );
         return FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>(
@@ -145,7 +145,7 @@ namespace opensolid
     inline JacobianReturnValue<iNumDimensions, iNumParameters, TVector>
     Function<iNumDimensions, iNumParameters>::jacobian(const EigenBase<TVector>& vector) const {
         static_assert(
-            TVector::RowsAtCompileTime == iNumParameters,
+            TVector::RowsAtCompileTime == iNumParameters || TVector::RowsAtCompileTime == Dynamic,
             "Incorrect number of parameters supplied"
         );
         return JacobianReturnValue<iNumDimensions, iNumParameters, TVector>(
