@@ -30,7 +30,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation/DeduplicationCache.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation/Evaluator.declarations.hpp>
-#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
@@ -71,7 +70,7 @@ namespace opensolid
         evaluateJacobianImpl(
             const MapXcd& parameterValues,
             MapXd& results,
-            JacobianEvaluator& jacobianEvaluator
+            Evaluator& evaluator
         ) const;
         
         OPENSOLID_CORE_EXPORT
@@ -79,7 +78,7 @@ namespace opensolid
         evaluateJacobianImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
-            JacobianEvaluator& jacobianEvaluator
+            Evaluator& evaluator
         ) const;
 
         OPENSOLID_CORE_EXPORT
@@ -239,14 +238,14 @@ namespace opensolid
         evaluateJacobian(
             const MapXcd& parameterValues,
             MapXd& results,
-            JacobianEvaluator& jacobianEvaluator
+            Evaluator& evaluator
         ) const;
 
         void
         evaluateJacobian(
             const MapXcI& parameterBounds,
             MapXI& results,
-            JacobianEvaluator& jacobianEvaluator
+            Evaluator& evaluator
         ) const;
         
         OPENSOLID_CORE_EXPORT

@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/FunctionImplementation.definitions.hpp>
 
 #include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
-#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
@@ -96,17 +95,17 @@ namespace opensolid
     FunctionImplementation::evaluateJacobian(
         const MapXcd& parameterValues,
         MapXd& results,
-        JacobianEvaluator& jacobianEvaluator
+        Evaluator& evaluator
     ) const {
-        evaluateJacobianImpl(parameterValues, results, jacobianEvaluator);
+        evaluateJacobianImpl(parameterValues, results, evaluator);
     }
 
     inline void
     FunctionImplementation::evaluateJacobian(
         const MapXcI& parameterBounds,
         MapXI& results,
-        JacobianEvaluator& jacobianEvaluator
+        Evaluator& evaluator
     ) const {
-        evaluateJacobianImpl(parameterBounds, results, jacobianEvaluator);
+        evaluateJacobianImpl(parameterBounds, results, evaluator);
     }
 }

@@ -60,7 +60,7 @@ namespace opensolid
     FunctionImplementation::evaluateJacobianImpl(
         const MapXcd& parameterValues,
         MapXd& results,
-        JacobianEvaluator& jacobianEvaluator
+        Evaluator& evaluator
     ) const {
         throw FeatureNotImplemented();
     }
@@ -70,7 +70,7 @@ namespace opensolid
     FunctionImplementation::evaluateJacobianImpl(
         const MapXcI& parameterBounds,
         MapXI& results,
-        JacobianEvaluator& jacobianEvaluator
+        Evaluator& evaluator
     ) const {
         throw FeatureNotImplemented();
     }

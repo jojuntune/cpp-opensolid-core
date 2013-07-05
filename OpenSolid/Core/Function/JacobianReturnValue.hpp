@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Function/JacobianReturnValue.definitions.hpp>
 
 #include <OpenSolid/Core/Function/MatrixArgument.hpp>
-#include <OpenSolid/Core/FunctionImplementation/JacobianEvaluator.hpp>
+#include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -87,8 +87,8 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Evaluate
-        JacobianEvaluator jacobianEvaluator;
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
+        Evaluator evaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument>
@@ -143,8 +143,8 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Evaluate
-        JacobianEvaluator jacobianEvaluator;
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
+        Evaluator evaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions>
@@ -199,8 +199,8 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
 
         // Evaluate
-        JacobianEvaluator jacobianEvaluator;
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
+        Evaluator evaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions>
@@ -255,8 +255,8 @@ namespace opensolid
         ResultMapType resultMap(result.data(), result.rows(), result.cols(), resultStride);
         
         // Evaluate
-        JacobianEvaluator jacobianEvaluator;
-        _functionImplementation->evaluateJacobian(argumentMap, resultMap, jacobianEvaluator);
+        Evaluator evaluator;
+        _functionImplementation->evaluateJacobian(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions>

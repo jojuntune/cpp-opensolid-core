@@ -26,7 +26,6 @@
 
 #include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
-#include <OpenSolid/Core/FunctionImplementation/EvaluatorBase.hpp>
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -35,6 +34,36 @@
 
 namespace opensolid
 {
+    template <class TScalar>
+    inline std::size_t
+    Evaluator::KeyHash::operator()(
+        const std::pair<const FunctionImplementation*, const TScalar*>& key
+    ) const {
+        std::size_t functionHash = std::hash<const FunctionImplementation*>()(key.first);
+        std::size_t parameterHash = std::hash<const TScalar*>()(key.second);
+        return functionHash ^ parameterHash;
+    }
+    
+    template <>
+    struct Evaluator::Types<double>
+    {
+        typedef MapXd Map;
+        typedef MapXcd ConstMap;
+        typedef MatrixXd Matrix;
+        typedef Evaluator::KeyXd Key;
+        typedef Evaluator::CacheXd Cache;
+    };
+
+    template <>
+    struct Evaluator::Types<Interval>
+    {
+        typedef MapXI Map;
+        typedef MapXcI ConstMap;
+        typedef MatrixXI Matrix;
+        typedef Evaluator::KeyXI Key;
+        typedef Evaluator::CacheXI Cache;
+    };
+    
     namespace
     {
         template <class TScalar>
@@ -53,7 +82,7 @@ namespace opensolid
             return &constantFunction->bounds().coeffRef(0);
         }
     }
-    
+
     template <class TScalar>
     inline typename Evaluator::Types<TScalar>::ConstMap
     Evaluator::evaluate(
@@ -100,11 +129,13 @@ namespace opensolid
                 // Cached results not found - insert new empty entry into cache
                 iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
                 Matrix& resultMatrix = iterator->second;
+
                 // Resize inserted matrix to the correct size
                 resultMatrix.resize(
                     functionImplementation->numDimensions(),
                     parameterValues.cols()
                 );
+
                 // Construct map pointing to newly allocated results matrix
                 Map resultMap(
                     resultMatrix.data(),
@@ -112,11 +143,14 @@ namespace opensolid
                     resultMatrix.cols(),
                     Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
                 );
+
                 // Evaluate function into results matrix using map
                 functionImplementation->evaluate(parameterValues, resultMap, *this);
             }
+
             // Get reference to cached matrix
             const Matrix& resultMatrix = iterator->second;
+
             // Return map pointing to cached matrix
             return ConstMap(
                 resultMatrix.data(),
@@ -127,6 +161,59 @@ namespace opensolid
         }
     }
 
+    template <class TScalar>
+    inline typename Evaluator::Types<TScalar>::ConstMap
+    Evaluator::evaluateJacobian(
+        const FunctionImplementationPtr& functionImplementation,
+        const typename Types<TScalar>::ConstMap& parameterValues,
+        typename Types<TScalar>::Cache& cache
+    ) {
+        typedef typename Types<TScalar>::Map Map;
+        typedef typename Types<TScalar>::ConstMap ConstMap;
+        typedef typename Types<TScalar>::Matrix Matrix;
+        typedef typename Types<TScalar>::Key Key;
+        typedef typename Types<TScalar>::Cache Cache;
+
+        // Attempt to find cached results for the given function/parameter pair
+        Key key(functionImplementation.get(), parameterValues.data());
+        auto iterator = cache.find(key);
+
+        if (iterator == cache.end()) {
+            // Cached results not found - insert new empty entry into cache and update iterator
+            // to point to the new entry
+            iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
+
+            // Resize inserted matrix to the correct size
+            Matrix& resultMatrix = iterator->second;
+            resultMatrix.resize(
+                functionImplementation->numDimensions(),
+                functionImplementation->numParameters()
+            );
+
+            // Construct map pointing to newly allocated results matrix
+            Map resultMap(
+                resultMatrix.data(),
+                resultMatrix.rows(),
+                resultMatrix.cols(),
+                Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+            );
+
+            // Evaluate function into results matrix using map
+            functionImplementation->evaluateJacobian(parameterValues, resultMap, *this);
+        }
+
+        // Get reference to cached matrix
+        const Matrix& resultMatrix = iterator->second;
+
+        // Return map pointing to cached matrix
+        return ConstMap(
+            resultMatrix.data(),
+            resultMatrix.rows(),
+            resultMatrix.cols(),
+            Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+        );
+    }
+
     MapXcd
     Evaluator::evaluate(
         const FunctionImplementationPtr& functionImplementation,
@@ -135,11 +222,35 @@ namespace opensolid
         return evaluate<double>(functionImplementation, parameterValues, _valuesCache);
     }
 
+    MapXcd
+    Evaluator::evaluateJacobian(
+        const FunctionImplementationPtr& functionImplementation,
+        const MapXcd& parameterValues
+    ) {
+        return evaluateJacobian<double>(
+            functionImplementation,
+            parameterValues,
+            _jacobianValuesCache
+        );
+    }
+
     MapXcI
     Evaluator::evaluate(
         const FunctionImplementationPtr& functionImplementation,
         const MapXcI& parameterBounds
     ) {
         return evaluate<Interval>(functionImplementation, parameterBounds, _boundsCache);
+    }
+
+    MapXcI
+    Evaluator::evaluateJacobian(
+        const FunctionImplementationPtr& functionImplementation,
+        const MapXcI& parameterBounds
+    ) {
+        return evaluateJacobian<Interval>(
+            functionImplementation,
+            parameterBounds,
+            _jacobianBoundsCache
+        );
     }
 }

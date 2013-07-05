@@ -30,20 +30,49 @@
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/FunctionImplementation.declarations.hpp>
-#include <OpenSolid/Core/FunctionImplementation/EvaluatorBase.definitions.hpp>
+
+#include <unordered_map>
 
 namespace opensolid
 {
-    class Evaluator :
-        public EvaluatorBase
+    class Evaluator
     {
     private:
-        Types<double>::Cache _valuesCache;
-        Types<Interval>::Cache _boundsCache;
+        typedef std::pair<const FunctionImplementation*, const double*> KeyXd;
+        typedef std::pair<const FunctionImplementation*, const Interval*> KeyXI;
+        
+        struct KeyHash
+        {
+            template <class TScalar>
+            std::size_t
+            operator()(const std::pair<const FunctionImplementation*, const TScalar*>& key) const;
+        };
+
+        typedef std::unordered_map<KeyXd, MatrixXd, Evaluator::KeyHash> CacheXd;
+        typedef std::unordered_map<KeyXI, MatrixXI, Evaluator::KeyHash> CacheXI;
+
+        CacheXd _valuesCache;
+        CacheXd _jacobianValuesCache;
+        CacheXI _boundsCache;
+        CacheXI _jacobianBoundsCache;
+
+        template <class TScalar>
+        struct Types;
+
+        template <class TScalar>
+        friend struct Types;
 
         template <class TScalar>
         typename Types<TScalar>::ConstMap
         evaluate(
+            const FunctionImplementationPtr& functionImplementation,
+            const typename Types<TScalar>::ConstMap& parameterMap,
+            typename Types<TScalar>::Cache& cache
+        );
+
+        template <class TScalar>
+        typename Types<TScalar>::ConstMap
+        evaluateJacobian(
             const FunctionImplementationPtr& functionImplementation,
             const typename Types<TScalar>::ConstMap& parameterMap,
             typename Types<TScalar>::Cache& cache
@@ -55,10 +84,24 @@ namespace opensolid
             const FunctionImplementationPtr& functionImplementation,
             const MapXcd& parameterValues
         );
+        
+        OPENSOLID_CORE_EXPORT
+        MapXcd
+        evaluateJacobian(
+            const FunctionImplementationPtr& functionImplementation,
+            const MapXcd& parameterValues
+        );
 
         OPENSOLID_CORE_EXPORT
         MapXcI
         evaluate(
+            const FunctionImplementationPtr& functionImplementation,
+            const MapXcI& parameterBounds
+        );
+        
+        OPENSOLID_CORE_EXPORT
+        MapXcI
+        evaluateJacobian(
             const FunctionImplementationPtr& functionImplementation,
             const MapXcI& parameterBounds
         );
