@@ -56,6 +56,26 @@ namespace opensolid
         results = parameterBounds.row(parameterIndex());
     }
 
+    void
+    ParameterFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results.setZero();
+        results(0, parameterIndex()) = 1;
+    }
+    
+    void
+    ParameterFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results.setZero();
+        results(0, parameterIndex()) = 1;
+    }
+
     FunctionImplementationPtr
     ParameterFunction::derivativeImpl(int parameterIndex) const {
         return new ConstantFunction(

@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ArccosineFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {
     int
@@ -36,14 +38,18 @@ namespace opensolid
         inline double
         operator()(double value) const {
             Interval domain(-1, 1);
-            assert(domain.contains(value));
+            if (!domain.contains(value)) {
+                throw PlaceholderError();
+            }
             return acos(domain.clamp(value));
         }
         
         inline Interval
         operator()(const Interval& bounds) const {
             Interval domain(-1, 1);
-            assert(domain.overlaps(bounds));
+            if (!domain.overlaps(bounds)) {
+                throw PlaceholderError();
+            }
             return acos(domain.clamp(bounds));
         }
     };
@@ -64,6 +70,34 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(Arccosine());
+    }
+
+    void
+    ArccosineFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        if (abs(operandValue) - 1 >= Zero()) {
+            throw PlaceholderError();
+        }
+        results = -operandJacobian / sqrt(1 - operandValue * operandValue);
+    }
+    
+    void
+    ArccosineFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandJacobianBounds = evaluator.evaluateJacobian(operand(), parameterBounds);
+        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        if (abs(operandBounds).lowerBound() - 1 >= Zero()) {
+            throw PlaceholderError();
+        }
+        results = -operandJacobianBounds / sqrt(1 - operandBounds.squared());
     }
     
     FunctionImplementationPtr

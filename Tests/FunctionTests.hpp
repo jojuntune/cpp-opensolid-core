@@ -37,6 +37,27 @@
 
 using namespace opensolid;
 
+template <int iNumDimensions, int iNumParameters>
+void testJacobian(
+    const Function<iNumDimensions, iNumParameters>& function,
+    const MatrixXd& parameterValues
+) {
+    for (int i = 0; i < parameterValues.cols(); ++i) {
+        MatrixXd jacobian = function.jacobian(parameterValues.col(i));
+        MatrixXd expectedJacobian(iNumDimensions, iNumParameters);
+        for (int j = 0; j < iNumParameters; ++j) {
+            expectedJacobian.col(j) = function.derivative(j)(parameterValues.col(i));
+        }
+        std::cout << "Jacobian ";
+        std::cout << "(parameter values " << parameterValues.col(i).transpose() << ")";
+        std::cout << ":" << std::endl;
+        std::cout << jacobian << std::endl;
+        std::cout << "Expected:" << std::endl;
+        std::cout << expectedJacobian << std::endl;
+        TS_ASSERT((jacobian - expectedJacobian).isZero());
+    }
+}
+
 class FunctionTests : public CxxTest::TestSuite
 {
 private:
@@ -221,6 +242,15 @@ public:
         bounds = f(Interval(1 + 1e-14, 1 + 1e-10)).value();
         TS_ASSERT(bounds.lowerBound() == Zero());
         TS_ASSERT(bounds.upperBound() == Zero());
+
+        testJacobian(f, RowVector3d(-0.5, 0.0, 0.5));
+
+        Function<1, 2> f2 = acos(u - v);
+        testJacobian(f2, Vector2d(0.5, 0));
+        testJacobian(f2, Vector2d(0, 0.25));
+        testJacobian(f2, Vector2d(-0.5, 0));
+        testJacobian(f2, Vector2d(0, -0.25));
+        testJacobian(f2, Vector2d(0, 0));
     }
 
     void testArcsine() {

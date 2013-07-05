@@ -53,6 +53,28 @@ namespace opensolid
         results = firstBounds - secondBounds;
     }
 
+    void
+    DifferenceFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        results = firstJacobian - secondJacobian;
+    }
+    
+    void
+    DifferenceFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        results = firstJacobian - secondJacobian;
+    }
+
     FunctionImplementationPtr
     DifferenceFunction::derivativeImpl(int parameterIndex) const {
         return firstOperand()->derivative(parameterIndex) - secondOperand()->derivative(parameterIndex);

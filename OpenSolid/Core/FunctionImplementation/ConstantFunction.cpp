@@ -56,6 +56,24 @@ namespace opensolid
     ) const {
         results.colwise() = bounds();
     }
+
+    void
+    ConstantFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results.setZero();
+    }
+    
+    void
+    ConstantFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results.setZero();
+    }
     
     FunctionImplementationPtr
     ConstantFunction::derivativeImpl(int) const {
