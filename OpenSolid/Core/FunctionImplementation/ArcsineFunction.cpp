@@ -65,6 +65,34 @@ namespace opensolid
     ) const {
         results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(Arcsine());
     }
+
+    void
+    ArcsineFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        if (abs(operandValue) - 1 >= Zero()) {
+            throw PlaceholderError();
+        }
+        results = operandJacobian / sqrt(1 - operandValue * operandValue);
+    }
+    
+    void
+    ArcsineFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandJacobianBounds = evaluator.evaluateJacobian(operand(), parameterBounds);
+        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        if (abs(operandBounds).lowerBound() - 1 >= Zero()) {
+            throw PlaceholderError();
+        }
+        results = operandJacobianBounds / sqrt(1 - operandBounds.squared());
+    }
     
     FunctionImplementationPtr
     ArcsineFunction::derivativeImpl(int parameterIndex) const {
