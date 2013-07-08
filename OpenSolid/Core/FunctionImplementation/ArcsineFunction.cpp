@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ArcsineFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {
     int
