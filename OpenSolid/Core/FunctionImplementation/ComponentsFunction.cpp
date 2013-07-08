@@ -51,6 +51,26 @@ namespace opensolid
         results = operandBounds.middleRows(startIndex(), numComponents());
     }
 
+    void
+    ComponentsFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        results = operandJacobian.middleRows(startIndex(), numComponents());
+    }
+    
+    void
+    ComponentsFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = operandJacobian.middleRows(startIndex(), numComponents());
+    }
+
     FunctionImplementationPtr
     ComponentsFunction::derivativeImpl(int parameterIndex) const {
         return operand()->derivative(parameterIndex)->components(startIndex(), numComponents());
