@@ -63,7 +63,7 @@ namespace opensolid
         ) const override;
 
         OPENSOLID_CORE_EXPORT
-        virtual void
+        void
         evaluateJacobianImpl(
             const MapXcd& parameterValues,
             MapXd& results,
@@ -71,7 +71,7 @@ namespace opensolid
         ) const override;
         
         OPENSOLID_CORE_EXPORT
-        virtual void
+        void
         evaluateJacobianImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
