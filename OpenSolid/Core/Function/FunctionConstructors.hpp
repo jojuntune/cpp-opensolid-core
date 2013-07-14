@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
 
 #include <OpenSolid/Core/Function.definitions.hpp>
-#include <OpenSolid/Core/FunctionImplementation/EllipticalFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/LinearFunction.hpp>
 
 namespace opensolid
@@ -200,20 +199,6 @@ namespace opensolid
     ) {
         return Function<iNumDimensions, iNumParameters>(
             new LinearFunction(datum.originPoint().vector(), datum.basisMatrix())
-        );
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    Function<iNumDimensions, iNumParameters>
-    EllipticalFunctionConstructors<iNumDimensions, iNumParameters>::Elliptical(
-        const Datum<iNumDimensions, iNumParameters + 1>& datum
-    ) {
-        return Function<iNumDimensions, iNumParameters>(
-            new EllipticalFunction(
-                datum.originPoint().vector(),
-                datum.basisMatrix(),
-                Matrix<bool, iNumParameters, 1>::Constant(true)
-            )
         );
     }
 }

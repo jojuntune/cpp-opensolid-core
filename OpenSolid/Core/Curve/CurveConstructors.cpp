@@ -210,18 +210,15 @@ namespace opensolid
             assert(false);
             return Curve2d();
         }
-        Frame2d datum = Frame2d(centerPoint).scaledAbout(centerPoint, radius);
-        Function<1, 1> angleFunction;
         if (endAngle - startAngle == Zero()) {
             assert(false);
             return Curve2d();
-        } else if (endAngle > startAngle) {
-            angleFunction = startAngle + (endAngle - startAngle) * Function<1, 1>::t();
-        } else {
-            datum = datum.xReversed();
-            angleFunction = M_PI - startAngle + (startAngle - endAngle) * Function<1, 1>::t();
         }
-        return Curve2d(Function<2, 1>::Elliptical(datum).composed(angleFunction), Interval::Unit());
+        Function<1, 1> angleFunction = startAngle + (endAngle - startAngle) * Function<1, 1>::t();
+        Function<1, 1> xFunction = centerPoint.x() + radius * cos(angleFunction);
+        Function<1, 1> yFunction = centerPoint.y() + radius * sin(angleFunction);
+        Function<2, 1> curveFunction = Function<2, 1>::FromComponents(xFunction, yFunction);
+        return Curve2d(curveFunction, Interval::Unit());
     }
     
     Curve<2>

@@ -199,14 +199,6 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumParameters>
-    class EllipticalFunctionConstructors
-    {
-    public:
-        static Function<iNumDimensions, iNumParameters>
-        Elliptical(const Datum<iNumDimensions, iNumParameters + 1>& datum);
-    };
-
-    template <int iNumDimensions, int iNumParameters>
     class FunctionConstructors :
         public ZeroFunctionConstructor<iNumDimensions, iNumParameters>,
         public ConstantFunctionConstructor<iNumDimensions, iNumParameters>,
@@ -214,8 +206,7 @@ namespace opensolid
         public ParameterFunctionConstructor<iNumDimensions, iNumParameters>,
         public NamedParameterFunctionConstructors<iNumDimensions, iNumParameters>,
         public FromComponentsFunctionConstructors<iNumDimensions, iNumParameters>,
-        public LinearFunctionConstructors<iNumDimensions, iNumParameters>,
-        public EllipticalFunctionConstructors<iNumDimensions, iNumParameters>
+        public LinearFunctionConstructors<iNumDimensions, iNumParameters>
     {
     };
 }

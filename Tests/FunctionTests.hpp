@@ -358,6 +358,23 @@ public:
         MapXcI results3 = evaluator.evaluate(f.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
+
+    void testEllipseJacobian() {
+        Function<2, 1> ellipseFunction = Vector2d(3, 1) * cos(t) + Vector2d(1, 3) * sin(t);
+        RowVector4d parameterValues = RowVector4d(0.0, M_PI / 4, M_PI / 2, 3 * M_PI / 4);
+        testJacobian(ellipseFunction, parameterValues);
+    }
+
+    void testEllipsoidJacobian() {
+        Function<3, 2> ellipsoidFunction = sin(v) * Vector3d(1, 1, 3) +
+            cos(v) * (sin(u) * Vector3d(1, 3, 1) + cos(u) * Vector3d(3, 1, 1));
+        testJacobian(ellipsoidFunction, Vector2d(0, 0));
+        testJacobian(ellipsoidFunction, Vector2d(M_PI / 4, 0));
+        testJacobian(ellipsoidFunction, Vector2d(0, M_PI / 4));
+        testJacobian(ellipsoidFunction, Vector2d(M_PI / 4, M_PI / 4));
+        testJacobian(ellipsoidFunction, Vector2d(M_PI / 2, 0));
+        testJacobian(ellipsoidFunction, Vector2d(0, 3 * M_PI / 4));
+    }
     
     //void xtestRoots() {
     //    std::vector<Function> functions(7);
