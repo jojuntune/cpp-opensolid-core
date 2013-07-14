@@ -53,6 +53,34 @@ namespace opensolid
         results = firstBounds.cwiseProduct(secondBounds).colwise().sum();
     }
 
+    void
+    DotProductFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd firstValue = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd secondValue = evaluator.evaluate(secondOperand(), parameterValues);
+        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        results = firstValue.transpose() * secondJacobian +
+            secondValue.transpose() * firstJacobian;
+    }
+    
+    void
+    DotProductFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        results = firstBounds.transpose() * secondJacobian +
+            secondBounds.transpose() * firstJacobian;
+    }
+
     FunctionImplementationPtr
     DotProductFunction::derivativeImpl(int parameterIndex) const {
         return firstOperand()->derivative(parameterIndex)->dot(secondOperand())

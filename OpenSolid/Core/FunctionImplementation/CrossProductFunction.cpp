@@ -57,6 +57,38 @@ namespace opensolid
         }
     }
 
+    void
+    CrossProductFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        Vector3d firstValue = evaluator.evaluate(firstOperand(), parameterValues);
+        Vector3d secondValue = evaluator.evaluate(secondOperand(), parameterValues);
+        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        for (int i = 0; i < results.cols(); ++i) {
+            results.col(i) = firstJacobian.col(i).head<3>().cross(secondValue) +
+                firstValue.cross(secondJacobian.col(i).head<3>());
+        }
+    }
+    
+    void
+    CrossProductFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Vector3I firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        Vector3I secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        for (int i = 0; i < results.cols(); ++i) {
+            results.col(i) = firstJacobian.col(i).head<3>().cross(secondBounds) +
+                firstBounds.cross(secondJacobian.col(i).head<3>());
+        }
+    }
+
     FunctionImplementationPtr
     CrossProductFunction::derivativeImpl(int parameterIndex) const {
         return firstOperand()->derivative(parameterIndex)->cross(secondOperand())
