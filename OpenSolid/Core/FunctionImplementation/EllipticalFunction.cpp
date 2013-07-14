@@ -22,8 +22,6 @@
 *                                                                                   *
 *************************************************************************************/
 
-#pragma once
-
 #include <OpenSolid/Core/FunctionImplementation/EllipticalFunction.hpp>
 
 namespace opensolid
