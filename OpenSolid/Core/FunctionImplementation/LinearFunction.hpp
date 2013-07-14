@@ -26,24 +26,27 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
     class LinearFunction :
         public FunctionImplementation
     {
     private:
-        Datum<iNumDimensions, iNumAxes> _datum;
+        VectorXd _originPoint;
+        MatrixXd _basisMatrix;
         
+        OPENSOLID_CORE_EXPORT
         int
         numDimensionsImpl() const;
         
+        OPENSOLID_CORE_EXPORT
         int
         numParametersImpl() const;
         
+        OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
             const MapXcd& parameterValues,
@@ -51,6 +54,7 @@ namespace opensolid
             Evaluator& evaluator
         ) const;
         
+        OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
             const MapXcI& parameterBounds,
@@ -58,31 +62,42 @@ namespace opensolid
             Evaluator& evaluator
         ) const;
 
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
 
+        OPENSOLID_CORE_EXPORT
         bool
         isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
         
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
         
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         scalarMultiplicationImpl(double scale) const;
 
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         matrixMultiplicationImpl(const MatrixXd& matrix) const;
         
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         vectorAdditionImpl(const VectorXd& vector) const;
         
+        OPENSOLID_CORE_EXPORT
         void
         debugImpl(std::ostream& stream, int indent) const;
     public:
-        LinearFunction(const Datum<iNumDimensions, iNumAxes>& datum);
+        OPENSOLID_CORE_EXPORT
+        LinearFunction(const VectorXd& originPoint, const MatrixXd& basisMatrix);
         
-        const Datum<iNumDimensions, iNumAxes>&
-        datum() const;
+        const VectorXd&
+        originPoint() const;
+
+        const MatrixXd&
+        basisMatrix() const;
     };
 }
 
@@ -90,128 +105,13 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    int
-    LinearFunction<iNumDimensions, iNumAxes>::numDimensionsImpl() const {
-        return iNumDimensions;
+    inline const VectorXd&
+    LinearFunction::originPoint() const {
+        return _originPoint;
     }
 
-    template <int iNumDimensions, int iNumAxes>
-    int
-    LinearFunction<iNumDimensions, iNumAxes>::numParametersImpl() const {
-        return iNumAxes;
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    void
-    LinearFunction<iNumDimensions, iNumAxes>::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
-        Evaluator& evaluator
-    ) const {
-        results = (datum().basisMatrix() * parameterValues).colwise() +
-            datum().originPoint().vector();
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    void
-    LinearFunction<iNumDimensions, iNumAxes>::evaluateImpl(
-        const MapXcI& parameterBounds,
-        MapXI& results,
-        Evaluator& evaluator
-    ) const {
-        results = (datum().basisMatrix().template cast<Interval>() * parameterBounds).colwise() +
-            datum().originPoint().vector().template cast<Interval>();
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::derivativeImpl(int parameterIndex) const {
-        return new ConstantFunction(datum().basisVector(parameterIndex), numParameters());
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    bool
-    LinearFunction<iNumDimensions, iNumAxes>::isDuplicateOfImpl(
-        const FunctionImplementationPtr& other
-    ) const {
-        const LinearFunction<iNumDimensions, iNumAxes>* otherLinear =
-            other->cast<LinearFunction<iNumDimensions, iNumAxes>>();
-
-        return (this->datum().originPoint() - otherLinear->datum().originPoint()).isZero() &&
-            (this->datum().basisMatrix() - otherLinear->datum().basisMatrix()).isZero();
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::deduplicatedImpl(
-        DeduplicationCache& deduplicationCache
-    ) const {
-        return this;
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::scalarMultiplicationImpl(double scale) const {
-        return new LinearFunction<iNumDimensions, iNumAxes>(
-            Datum<iNumDimensions, iNumAxes>::scaling(datum(), scale)
-        );
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::matrixMultiplicationImpl(
-        const MatrixXd& matrix
-    ) const {
-        int numTransformedDimensions = matrix.rows();
-        if (numTransformedDimensions == 1) {
-            return new LinearFunction<1, iNumAxes>(
-                Datum<iNumDimensions, iNumAxes>::transformation(
-                    datum(),
-                    matrix.topLeftCorner<1, iNumDimensions>()
-                )
-            );
-        } else if (numTransformedDimensions == 2) {
-            return new LinearFunction<2, iNumAxes>(
-                Datum<iNumDimensions, iNumAxes>::transformation(
-                    datum(),
-                    matrix.topLeftCorner<2, iNumDimensions>()
-                )
-            );
-        } else if (numTransformedDimensions == 3) {
-            return new LinearFunction<3, iNumAxes>(
-                Datum<iNumDimensions, iNumAxes>::transformation(
-                    datum(),
-                    matrix.topLeftCorner<3, iNumDimensions>()
-                )
-            );
-        } else {
-            assert(false);
-            return FunctionImplementationPtr();
-        }
-    }
-
-    template <int iNumDimensions, int iNumAxes>
-    FunctionImplementationPtr
-    LinearFunction<iNumDimensions, iNumAxes>::vectorAdditionImpl(const VectorXd& vector) const {
-        return new LinearFunction<iNumDimensions, iNumAxes>(datum().translated(vector));
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    void
-    LinearFunction<iNumDimensions, iNumAxes>::debugImpl(std::ostream& stream, int indent) const {
-        stream << "LinearFunction<" << iNumDimensions << "," << iNumAxes << ">" << std::endl;
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    LinearFunction<iNumDimensions, iNumAxes>::LinearFunction(
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) : _datum(datum) {
-    }
-    
-    template <int iNumDimensions, int iNumAxes>
-    inline const Datum<iNumDimensions, iNumAxes>&
-    LinearFunction<iNumDimensions, iNumAxes>::datum() const {
-        return _datum;
+    inline const MatrixXd&
+    LinearFunction::basisMatrix() const {
+        return _basisMatrix;
     }
 }

@@ -199,7 +199,7 @@ namespace opensolid
         const Datum<iNumDimensions, iNumParameters>& datum
     ) {
         return Function<iNumDimensions, iNumParameters>(
-            new LinearFunction<iNumDimensions, iNumParameters>(datum)
+            new LinearFunction(datum.originPoint().vector(), datum.basisMatrix())
         );
     }
 
