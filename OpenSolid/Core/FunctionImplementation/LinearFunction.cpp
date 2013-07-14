@@ -51,8 +51,8 @@ namespace opensolid
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = (basisMatrix().template cast<Interval>() * parameterBounds).colwise() +
-            originPoint().template cast<Interval>();
+        results = (basisMatrix().cast<Interval>() * parameterBounds).colwise() +
+            originPoint().cast<Interval>();
     }
 
     FunctionImplementationPtr
