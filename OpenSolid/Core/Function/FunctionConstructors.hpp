@@ -209,8 +209,9 @@ namespace opensolid
         const Datum<iNumDimensions, iNumParameters + 1>& datum
     ) {
         return Function<iNumDimensions, iNumParameters>(
-            new EllipticalFunction<iNumDimensions, iNumParameters + 1>(
-                datum,
+            new EllipticalFunction(
+                datum.originPoint().vector(),
+                datum.basisMatrix(),
                 Matrix<bool, iNumParameters, 1>::Constant(true)
             )
         );
