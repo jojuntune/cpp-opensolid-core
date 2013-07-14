@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/NormFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {   
     int
@@ -52,6 +54,36 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterBounds).colwise().norm();
+    }
+
+    void
+    NormFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
+        if (operandValue.isZero()) {
+            throw PlaceholderError();
+        }
+        VectorXd operandNormalized = operandValue.normalized();
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        results = operandNormalized.transpose() * operandJacobian;
+    }
+    
+    void
+    NormFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        if (operandBounds.isZero()) {
+            throw PlaceholderError();
+        }
+        VectorXI operandNormalized = operandBounds.normalized();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = operandNormalized.transpose() * operandJacobian;
     }
 
     FunctionImplementationPtr

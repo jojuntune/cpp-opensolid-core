@@ -55,6 +55,24 @@ namespace opensolid
             originPoint().cast<Interval>();
     }
 
+    void
+    LinearFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results = basisMatrix();
+    }
+    
+    void
+    LinearFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results = basisMatrix().cast<Interval>();
+    }
+
     FunctionImplementationPtr
     LinearFunction::derivativeImpl(int parameterIndex) const {
         return new ConstantFunction(basisMatrix().col(parameterIndex), numParameters());

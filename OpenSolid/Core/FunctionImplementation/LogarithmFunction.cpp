@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/LogarithmFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {       
     int
@@ -42,7 +44,11 @@ namespace opensolid
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).array().log();
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
+        if (operandValues.minCoeff() <= Zero()) {
+            throw PlaceholderError();
+        }
+        results = operandValues.array().log();
     }
 
     void
@@ -51,7 +57,37 @@ namespace opensolid
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterBounds).array().log();
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        if (operandBounds.cwiseUpper().minCoeff() <= Zero()) {
+            throw PlaceholderError();
+        }
+        results = operandBounds.array().log();
+    }
+
+    void
+    LogarithmFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        if (operandValue <= Zero()) {
+            throw PlaceholderError();
+        }
+        results = evaluator.evaluateJacobian(operand(), parameterValues) / operandValue;
+    }
+    
+    void
+    LogarithmFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        if (operandBounds.upperBound() <= Zero()) {
+            throw PlaceholderError();
+        }
+        results = evaluator.evaluateJacobian(operand(), parameterBounds) / operandBounds;
     }
 
     FunctionImplementationPtr

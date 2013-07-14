@@ -51,6 +51,24 @@ namespace opensolid
         results = -evaluator.evaluate(operand(), parameterBounds);
     }
 
+    void
+    NegatedFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results = -evaluator.evaluateJacobian(operand(), parameterValues);
+    }
+    
+    void
+    NegatedFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results = -evaluator.evaluateJacobian(operand(), parameterBounds);
+    }
+
     FunctionImplementationPtr
     NegatedFunction::derivativeImpl(int parameterIndex) const {
         return -operand()->derivative(parameterIndex);

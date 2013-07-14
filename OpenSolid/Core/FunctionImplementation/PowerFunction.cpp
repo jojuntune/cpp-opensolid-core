@@ -22,8 +22,10 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/PowerFunction.hpp>
+
+#include <OpenSolid/Core/Error.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 
 namespace opensolid
 {       
@@ -115,6 +117,24 @@ namespace opensolid
             MapXcI exponentBounds = evaluator.evaluate(secondOperand(), parameterBounds);
             results = baseBounds.binaryExpr(exponentBounds, Power());
         }
+    }
+
+    void
+    PowerFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        throw FeatureNotImplemented();
+    }
+    
+    void
+    PowerFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        throw FeatureNotImplemented();
     }
 
     FunctionImplementationPtr

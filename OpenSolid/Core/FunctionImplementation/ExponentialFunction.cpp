@@ -54,6 +54,26 @@ namespace opensolid
         results = evaluator.evaluate(operand(), parameterBounds).array().exp();
     }
 
+    void
+    ExponentialFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        double value = exp(evaluator.evaluate(operand(), parameterValues).value());
+        results = value * evaluator.evaluateJacobian(operand(), parameterValues);
+    }
+    
+    void
+    ExponentialFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Interval bounds = exp(evaluator.evaluate(operand(), parameterBounds).value());
+        results = bounds * evaluator.evaluateJacobian(operand(), parameterBounds);
+    }
+
     FunctionImplementationPtr
     ExponentialFunction::derivativeImpl(int parameterIndex) const {
         return operand()->derivative(parameterIndex) * self();

@@ -48,6 +48,24 @@ namespace opensolid
     ) const {
         results = Interval(scale()) * evaluator.evaluate(operand(), parameterBounds);
     }
+
+    void
+    ScalarMultiplicationFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results = scale() * evaluator.evaluateJacobian(operand(), parameterValues);
+    }
+    
+    void
+    ScalarMultiplicationFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results = Interval(scale()) * evaluator.evaluateJacobian(operand(), parameterBounds);
+    }
     
     FunctionImplementationPtr
     ScalarMultiplicationFunction::derivativeImpl(int parameterIndex) const {

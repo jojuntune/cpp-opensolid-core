@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/NormalizedFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {   
     int
@@ -56,6 +58,42 @@ namespace opensolid
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
+    }
+
+    void
+    NormalizedFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
+        double operandNorm = operandValue.norm();
+        if (operandNorm == Zero()) {
+            throw PlaceholderError();
+        }
+        VectorXd operandNormalized = operandValue / operandNorm;
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+
+        results = (operandJacobian - operandNormalized * (operandNormalized.transpose() * operandJacobian)) /
+            operandNorm;
+    }
+    
+    void
+    NormalizedFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        Interval operandNorm = operandBounds.norm();
+        if (operandNorm == Zero()) {
+            throw PlaceholderError();
+        }
+        VectorXI operandNormalized = operandBounds / operandNorm;
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+
+        results = (operandJacobian - operandNormalized * (operandNormalized.transpose() * operandJacobian)) /
+            operandNorm;
     }
 
     FunctionImplementationPtr
