@@ -48,6 +48,25 @@ namespace opensolid
     ) const {
         results = matrix().cast<Interval>() * evaluator.evaluate(operand(), parameterBounds);
     }
+
+    void
+    MatrixMultiplicationFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results = matrix() * evaluator.evaluateJacobian(operand(), parameterValues);
+    }
+    
+    void
+    MatrixMultiplicationFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results = matrix().cast<Interval>() *
+            evaluator.evaluateJacobian(operand(), parameterBounds);
+    }
     
     FunctionImplementationPtr
     MatrixMultiplicationFunction::derivativeImpl(int parameterIndex) const {

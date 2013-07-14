@@ -53,6 +53,32 @@ namespace opensolid
         results = secondBounds * firstBounds.topRows<1>().asDiagonal();
     }
 
+    void
+    ProductFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        double multiplierValue = evaluator.evaluate(firstOperand(), parameterValues).value();
+        MapXcd multiplicandValue = evaluator.evaluate(secondOperand(), parameterValues);
+        MapXcd multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcd multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        results = multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;
+    }
+    
+    void
+    ProductFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Interval multiplierBounds = evaluator.evaluate(firstOperand(), parameterBounds).value();
+        MapXcI multiplicandValue = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        MapXcI multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        results = multiplierBounds * multiplicandJacobian + multiplicandValue * multiplierJacobian;
+    }
+
     FunctionImplementationPtr
     ProductFunction::derivativeImpl(int parameterIndex) const {
         return firstOperand()->derivative(parameterIndex) * secondOperand()
