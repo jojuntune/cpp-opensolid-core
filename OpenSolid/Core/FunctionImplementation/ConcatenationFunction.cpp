@@ -54,6 +54,30 @@ namespace opensolid
         results.bottomRows(secondOperand()->numDimensions()) =
             evaluator.evaluate(secondOperand(), parameterBounds);
     }
+
+    void
+    ConcatenationFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        results.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(secondOperand(), parameterValues);
+    }
+    
+    void
+    ConcatenationFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        results.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+    }
     
     FunctionImplementationPtr
     ConcatenationFunction::derivativeImpl(int parameterIndex) const {

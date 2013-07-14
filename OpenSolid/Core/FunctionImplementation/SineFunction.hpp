@@ -55,6 +55,22 @@ namespace opensolid
         ) const;
 
         OPENSOLID_CORE_EXPORT
+        void
+        evaluateJacobianImpl(
+            const MapXcd& parameterValues,
+            MapXd& results,
+            Evaluator& evaluator
+        ) const override;
+        
+        OPENSOLID_CORE_EXPORT
+        void
+        evaluateJacobianImpl(
+            const MapXcI& parameterBounds,
+            MapXI& results,
+            Evaluator& evaluator
+        ) const override;
+
+        OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         derivativeImpl(int parameterIndex) const;
 

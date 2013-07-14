@@ -49,6 +49,28 @@ namespace opensolid
         results = evaluator.evaluate(operand(), parameterBounds).array().cos();
     }
 
+    void
+    CosineFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        results = -sin(operandValue) * operandJacobian;
+    }
+    
+    void
+    CosineFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = -sin(operandBounds) * operandJacobian;
+    }
+
     FunctionImplementationPtr
     CosineFunction::derivativeImpl(int parameterIndex) const {
         return -sin(operand()) * operand()->derivative(parameterIndex);

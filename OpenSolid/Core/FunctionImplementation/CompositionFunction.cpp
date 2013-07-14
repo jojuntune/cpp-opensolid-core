@@ -56,6 +56,30 @@ namespace opensolid
         results = evaluator.evaluate(outerFunction(), innerBounds);
     }
 
+    void
+    CompositionFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd innerJacobian = evaluator.evaluateJacobian(innerFunction(), parameterValues);
+        MapXcd innerValues = evaluator.evaluate(innerFunction(), parameterValues);
+        MapXcd outerJacobian = evaluator.evaluateJacobian(outerFunction(), innerValues);
+        results = outerJacobian * innerJacobian;
+    }
+    
+    void
+    CompositionFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI innerJacobian = evaluator.evaluateJacobian(innerFunction(), parameterBounds);
+        MapXcI innerBounds = evaluator.evaluate(innerFunction(), parameterBounds);
+        MapXcI outerJacobian = evaluator.evaluateJacobian(outerFunction(), innerBounds);
+        results = outerJacobian * innerJacobian;
+    }
+
     FunctionImplementationPtr
     CompositionFunction::derivativeImpl(int parameterIndex) const {
         FunctionImplementationPtr innerDerivative =
