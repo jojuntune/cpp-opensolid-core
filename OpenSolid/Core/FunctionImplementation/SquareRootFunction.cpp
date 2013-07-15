@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/SquareRootFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {   
     int
@@ -62,6 +64,34 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(SquareRoot());
+    }
+
+    void
+    SquareRootFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        if (operandValue <= Zero()) {
+            throw PlaceholderError();
+        }
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        results = 0.5 * operandJacobian / sqrt(operandValue);
+    }
+    
+    void
+    SquareRootFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        if (operandBounds <= Zero()) {
+            throw PlaceholderError();
+        }
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = Interval(0.5) * operandJacobian / sqrt(operandBounds);
     }
 
     FunctionImplementationPtr

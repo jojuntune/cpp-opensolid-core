@@ -50,6 +50,24 @@ namespace opensolid
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         results = operandBounds.colwise() + vector().cast<Interval>();
     }
+
+    void
+    VectorAdditionFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        results = evaluator.evaluateJacobian(operand(), parameterValues);
+    }
+    
+    void
+    VectorAdditionFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        results = evaluator.evaluateJacobian(operand(), parameterBounds);
+    }
     
     FunctionImplementationPtr
     VectorAdditionFunction::derivativeImpl(int parameterIndex) const {

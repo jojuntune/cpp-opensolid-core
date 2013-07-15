@@ -51,6 +51,30 @@ namespace opensolid
         results = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
+    void
+    TangentFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        double value = tan(operandValue);
+        results = (1 + value * value) * operandJacobian;
+    }
+    
+    void
+    TangentFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        Interval bounds = tan(operandBounds);
+        results = (1 + bounds.squared()) * operandJacobian;
+    }
+
     FunctionImplementationPtr
     TangentFunction::derivativeImpl(int parameterIndex) const {
         return (1 + this->squaredNorm()) * operand()->derivative(parameterIndex);

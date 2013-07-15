@@ -71,7 +71,7 @@ namespace opensolid
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
-        ) const;
+        ) const = 0;
         
         OPENSOLID_CORE_EXPORT
         virtual void
@@ -79,7 +79,7 @@ namespace opensolid
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
-        ) const;
+        ) const = 0;
 
         OPENSOLID_CORE_EXPORT
         virtual FunctionImplementationPtr

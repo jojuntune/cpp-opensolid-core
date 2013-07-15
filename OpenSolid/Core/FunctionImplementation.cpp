@@ -55,26 +55,6 @@
 
 namespace opensolid
 {
-    // TODO - implement in subclasses and make pure virtual
-    void
-    FunctionImplementation::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
-        Evaluator& evaluator
-    ) const {
-        throw FeatureNotImplemented();
-    }
-    
-    // TODO - implement in subclasses and make pure virtual
-    void
-    FunctionImplementation::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
-        MapXI& results,
-        Evaluator& evaluator
-    ) const {
-        throw FeatureNotImplemented();
-    }
-
     FunctionImplementationPtr
     FunctionImplementation::composedImpl(const FunctionImplementationPtr& innerFunction) const {
         return new CompositionFunction(this, innerFunction);
