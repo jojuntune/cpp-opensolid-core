@@ -90,6 +90,11 @@ namespace opensolid
     NormFunction::derivativeImpl(int parameterIndex) const {
         return operand()->derivative(parameterIndex)->dot(operand()->normalized());
     }
+
+    FunctionImplementationPtr
+    NormFunction::normImpl() const {
+        return this;
+    }
     
     void
     NormFunction::debugImpl(std::ostream& stream, int indent) const {

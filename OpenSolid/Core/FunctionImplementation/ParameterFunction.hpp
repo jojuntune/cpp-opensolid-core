@@ -39,18 +39,19 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         int
-        numDimensionsImpl() const;
+        numDimensionsImpl() const override;
         
         OPENSOLID_CORE_EXPORT
         int
-        numParametersImpl() const;
+        numParametersImpl() const override;
         
         OPENSOLID_CORE_EXPORT
-        void evaluateImpl(
+        void
+        evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -58,10 +59,10 @@ namespace opensolid
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
 
         OPENSOLID_CORE_EXPORT
-        virtual void
+        void
         evaluateJacobianImpl(
             const MapXcd& parameterValues,
             MapXd& results,
@@ -69,7 +70,7 @@ namespace opensolid
         ) const override;
         
         OPENSOLID_CORE_EXPORT
-        virtual void
+        void
         evaluateJacobianImpl(
             const MapXcI& parameterBounds,
             MapXI& results,
@@ -78,23 +79,23 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        derivativeImpl(int parameterIndex) const;
+        derivativeImpl(int parameterIndex) const override;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        composedImpl(const FunctionImplementationPtr& innerFunction) const;
+        composedImpl(const FunctionImplementationPtr& innerFunction) const override;
         
         OPENSOLID_CORE_EXPORT
         void
-        debugImpl(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const override;
     public:
         OPENSOLID_CORE_EXPORT ParameterFunction(int parameterIndex, int numParameters);
         

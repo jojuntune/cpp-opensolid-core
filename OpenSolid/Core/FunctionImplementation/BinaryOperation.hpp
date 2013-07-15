@@ -39,7 +39,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         int
-        numParametersImpl() const;
+        numParametersImpl() const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr

@@ -41,7 +41,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         int
-        numDimensionsImpl() const;
+        numDimensionsImpl() const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -49,7 +49,7 @@ namespace opensolid
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -57,7 +57,7 @@ namespace opensolid
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
 
         OPENSOLID_CORE_EXPORT
         void
@@ -77,22 +77,22 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        derivativeImpl(int parameterIndex) const;
+        derivativeImpl(int parameterIndex) const override;
 
         OPENSOLID_CORE_EXPORT
         bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override;
         
         OPENSOLID_CORE_EXPORT
         void
-        debugImpl(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
         withNewOperandsImpl(
             const FunctionImplementationPtr& newFirstOperand,
             const FunctionImplementationPtr& newSecondOperand
-        ) const;
+        ) const override;
     public:
         OPENSOLID_CORE_EXPORT
         PowerFunction(

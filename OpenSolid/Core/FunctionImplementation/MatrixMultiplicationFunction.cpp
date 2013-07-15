@@ -80,8 +80,8 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
-    MatrixMultiplicationFunction::scalarMultiplicationImpl(double value) const {
-        return (value * matrix()) * operand();
+    MatrixMultiplicationFunction::scalarMultiplicationImpl(double scale) const {
+        return (scale * matrix()) * operand();
     }
 
     FunctionImplementationPtr

@@ -40,11 +40,11 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         int
-        numDimensionsImpl() const;
+        numDimensionsImpl() const override;
         
         OPENSOLID_CORE_EXPORT
         int
-        numParametersImpl() const;
+        numParametersImpl() const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -52,7 +52,7 @@ namespace opensolid
             const MapXcd& parameterValues,
             MapXd& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -60,7 +60,7 @@ namespace opensolid
             const MapXcI& parameterBounds,
             MapXI& results,
             Evaluator& evaluator
-        ) const;
+        ) const override;
 
         OPENSOLID_CORE_EXPORT
         void
@@ -80,31 +80,31 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        derivativeImpl(int parameterIndex) const;
+        derivativeImpl(int parameterIndex) const override;
 
         OPENSOLID_CORE_EXPORT
         bool
-        isDuplicateOfImpl(const FunctionImplementationPtr& other) const;
+        isDuplicateOfImpl(const FunctionImplementationPtr& other) const override;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        deduplicatedImpl(DeduplicationCache& deduplicationCache) const;
+        deduplicatedImpl(DeduplicationCache& deduplicationCache) const override;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        scalarMultiplicationImpl(double scale) const;
+        scalarMultiplicationImpl(double scale) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        matrixMultiplicationImpl(const MatrixXd& matrix) const;
+        matrixMultiplicationImpl(const MatrixXd& matrix) const override;
         
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
-        vectorAdditionImpl(const VectorXd& vector) const;
+        vectorAdditionImpl(const VectorXd& vector) const override;
         
         OPENSOLID_CORE_EXPORT
         void
-        debugImpl(std::ostream& stream, int indent) const;
+        debugImpl(std::ostream& stream, int indent) const override;
     public:
         OPENSOLID_CORE_EXPORT
         LinearFunction(const VectorXd& originPoint, const MatrixXd& basisMatrix);

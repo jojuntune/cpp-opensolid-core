@@ -79,8 +79,8 @@ namespace opensolid
         isDuplicateOfImpl(const FunctionImplementationPtr& other) const override;
 
         OPENSOLID_CORE_EXPORT 
-        virtual FunctionImplementationPtr
-        componentsImpl(int startIndex, int numComponents) const;
+        FunctionImplementationPtr
+        componentsImpl(int startIndex, int numComponents) const override;
 
         OPENSOLID_CORE_EXPORT
         FunctionImplementationPtr
