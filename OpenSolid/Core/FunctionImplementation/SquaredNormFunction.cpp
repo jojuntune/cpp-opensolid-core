@@ -49,6 +49,28 @@ namespace opensolid
         results = evaluator.evaluate(operand(), parameterBounds).colwise().squaredNorm();
     }
 
+    void
+    SquaredNormFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        results = 2.0 * operandValue.transpose() * operandJacobian;
+    }
+    
+    void
+    SquaredNormFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = Interval(2.0) * operandBounds.transpose() * operandJacobian;
+    }
+
     FunctionImplementationPtr
     SquaredNormFunction::derivativeImpl(int parameterIndex) const {
         return 2.0 * operand()->dot(operand()->derivative(parameterIndex));

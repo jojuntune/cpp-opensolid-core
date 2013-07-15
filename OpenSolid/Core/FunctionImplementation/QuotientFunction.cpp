@@ -53,6 +53,34 @@ namespace opensolid
         results = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
     }
 
+    void
+    QuotientFunction::evaluateJacobianImpl(
+        const MapXcd& parameterValues,
+        MapXd& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcd dividendValues = evaluator.evaluate(firstOperand(), parameterValues);
+        double divisorValue = evaluator.evaluate(secondOperand(), parameterValues).value();
+        MapXcd dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcd divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        results = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
+            (divisorValue * divisorValue);
+    }
+    
+    void
+    QuotientFunction::evaluateJacobianImpl(
+        const MapXcI& parameterBounds,
+        MapXI& results,
+        Evaluator& evaluator
+    ) const {
+        MapXcI dividendBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        Interval divisorBounds = evaluator.evaluate(secondOperand(), parameterBounds).value();
+        MapXcI dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        MapXcI divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        results = (dividendJacobian * divisorBounds - dividendBounds * divisorJacobian) / 
+            divisorBounds.squared();
+    }
+
     FunctionImplementationPtr
     QuotientFunction::derivativeImpl(int parameterIndex) const {
         FunctionImplementationPtr firstDerivative = firstOperand()->derivative(parameterIndex);

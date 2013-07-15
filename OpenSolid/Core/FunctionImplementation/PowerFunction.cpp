@@ -125,7 +125,19 @@ namespace opensolid
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        throw FeatureNotImplemented();
+        double baseValue = evaluator.evaluate(firstOperand(), parameterValues).value();
+        if (baseValue <= Zero()) {
+            throw PlaceholderError();
+        }
+        MapXcd baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        if (_exponentIsConstant) {
+            results = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
+        } else {
+            double exponentValue = evaluator.evaluate(secondOperand(), parameterValues).value();
+            MapXcd exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
+            results = pow(baseValue, exponentValue) *
+                (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);
+        }
     }
     
     void
@@ -134,7 +146,20 @@ namespace opensolid
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        throw FeatureNotImplemented();
+        Interval baseBounds = evaluator.evaluate(firstOperand(), parameterBounds).value();
+        if (baseBounds.upperBound() <= Zero()) {
+            throw PlaceholderError();
+        }
+        MapXcI baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        if (_exponentIsConstant) {
+            results = _constantExponent * pow(baseBounds, Interval(_constantExponent - 1)) *
+                baseJacobian;
+        } else {
+            Interval exponentBounds = evaluator.evaluate(secondOperand(), parameterBounds).value();
+            MapXcI exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+            results = pow(baseBounds, exponentBounds) *
+                (log(baseBounds) * exponentJacobian + exponentBounds * baseJacobian / baseBounds);
+        }
     }
 
     FunctionImplementationPtr
