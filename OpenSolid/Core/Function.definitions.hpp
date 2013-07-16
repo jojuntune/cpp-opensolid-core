@@ -58,15 +58,6 @@ namespace opensolid
         const FunctionImplementationPtr&
         implementation() const;
 
-        bool
-        isConstant() const;
-        
-        bool
-        isIdentity() const;
-        
-        bool
-        isParameter() const;
-
         FunctionReturnValue<iNumDimensions, 1, int>
         operator()(int value) const;
         

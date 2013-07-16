@@ -29,7 +29,10 @@
 #include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
 
 #include <OpenSolid/Core/Function.definitions.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/LinearFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 
 namespace opensolid
 {

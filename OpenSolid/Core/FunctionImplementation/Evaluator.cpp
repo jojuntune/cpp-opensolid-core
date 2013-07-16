@@ -96,10 +96,10 @@ namespace opensolid
         typedef typename Types<TScalar>::Key Key;
         typedef typename Types<TScalar>::Cache Cache;
 
-        if (functionImplementation->isIdentity()) {
+        if (functionImplementation->isIdentityFunction()) {
             // Identity function: simply return parameter values map as-is
             return parameterValues;
-        } else if (functionImplementation->isParameter()) {
+        } else if (functionImplementation->isParameterFunction()) {
             // Parameter function: build map pointing to a single row of data within the given
             // parameter values
             int parameterIndex =
@@ -107,7 +107,7 @@ namespace opensolid
             Stride<Dynamic, Dynamic> stride(parameterValues.outerStride(), 1);
             const TScalar* data = &parameterValues.coeffRef(parameterIndex, 0);
             return ConstMap(data, 1, parameterValues.cols(), stride);
-        } else if (functionImplementation->isConstant()) {
+        } else if (functionImplementation->isConstantFunction()) {
             // Constant function: build map pointing to constant data (using an outer stride of
             // zero allows the single column of data within the ConstantFunction to be used to
             // represent a matrix of arbitrary number of columns)

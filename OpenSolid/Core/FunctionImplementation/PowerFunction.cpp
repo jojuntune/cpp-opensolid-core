@@ -198,7 +198,7 @@ namespace opensolid
         assert(baseFunction->numDimensions() == 1);
         assert(exponentFunction->numDimensions() == 1);
 
-        if (exponentFunction->isConstant()) {
+        if (exponentFunction->isConstantFunction()) {
             _exponentIsConstant = true;
             _constantExponent = exponentFunction->cast<ConstantFunction>()->value();
             _integerExponent = floor(_constantExponent + 0.5);

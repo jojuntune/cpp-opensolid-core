@@ -220,7 +220,7 @@ namespace opensolid
         if (innerFunction->numDimensions() != this->numParameters()) {
             throw PlaceholderError();
         }
-        if (innerFunction->isConstant()) {
+        if (innerFunction->isConstantFunction()) {
             MapXcd argumentMap(
                 innerFunction->cast<ConstantFunction>()->vector().data(),
                 innerFunction->numDimensions(),
@@ -277,7 +277,7 @@ namespace opensolid
 
     FunctionImplementationPtr
     FunctionImplementation::concatenated(const FunctionImplementationPtr& other) const {
-        if (this->isConstant() && other->isConstant()) {
+        if (this->isConstantFunction() && other->isConstantFunction()) {
             VectorXd vector(this->numDimensions() + other->numDimensions());
             vector.head(this->numDimensions()) = this->cast<ConstantFunction>()->vector();
             vector.tail(other->numDimensions()) = other->cast<ConstantFunction>()->vector();
@@ -341,7 +341,7 @@ namespace opensolid
         if (this->numParameters() != other->numParameters()) {
             throw PlaceholderError();
         }
-        if (this->isConstant() && other->isConstant()) {
+        if (this->isConstantFunction() && other->isConstantFunction()) {
             VectorXd thisVector = this->cast<ConstantFunction>()->vector();
             VectorXd otherVector = other->cast<ConstantFunction>()->vector();
             return new ConstantFunction(thisVector.dot(otherVector), numParameters());
@@ -349,10 +349,10 @@ namespace opensolid
         if (numDimensions() == 1) {
             return self() * other;
         }
-        if (this->isConstant() && this->cast<ConstantFunction>()->isZero()) {
+        if (this->isConstantFunction() && this->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(0.0, numParameters());
         }
-        if (other->isConstant() && other->cast<ConstantFunction>()->isZero()) {
+        if (other->isConstantFunction() && other->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(0.0, numParameters());
         }
         return new DotProductFunction(this, other);
@@ -366,15 +366,15 @@ namespace opensolid
         if (this->numParameters() != other->numParameters()) {
             throw PlaceholderError();
         }
-        if (this->isConstant() && other->isConstant()) {
+        if (this->isConstantFunction() && other->isConstantFunction()) {
             Vector3d thisVector = this->cast<ConstantFunction>()->vector();
             Vector3d otherVector = other->cast<ConstantFunction>()->vector();
             return new ConstantFunction(thisVector.cross(otherVector), numParameters());
         }
-        if (this->isConstant() && this->cast<ConstantFunction>()->isZero()) {
+        if (this->isConstantFunction() && this->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(Vector3d::Zero(), numParameters());
         }
-        if (other->isConstant() && other->cast<ConstantFunction>()->isZero()) {
+        if (other->isConstantFunction() && other->cast<ConstantFunction>()->isZero()) {
             return new ConstantFunction(Vector3d::Zero(), numParameters());
         }
         return new CrossProductFunction(this, other);
@@ -406,10 +406,10 @@ namespace opensolid
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
             throw PlaceholderError();
         }
-        if (secondOperand->isConstant()) {
+        if (secondOperand->isConstantFunction()) {
             return firstOperand + secondOperand->cast<ConstantFunction>()->vector();
         }
-        if (firstOperand->isConstant()) {
+        if (firstOperand->isConstantFunction()) {
             return secondOperand + firstOperand->cast<ConstantFunction>()->vector();
         }
         return new SumFunction(firstOperand, secondOperand);
@@ -452,11 +452,11 @@ namespace opensolid
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
             throw PlaceholderError();
         }
-        if (secondOperand->isConstant()) {
+        if (secondOperand->isConstantFunction()) {
             VectorXd secondVector = secondOperand->cast<ConstantFunction>()->vector();
             return firstOperand + (-secondVector);
         }
-        if (firstOperand->isConstant()) {
+        if (firstOperand->isConstantFunction()) {
             VectorXd firstVector = firstOperand->cast<ConstantFunction>()->vector();
             return (-secondOperand) + firstVector;
         }
@@ -499,10 +499,10 @@ namespace opensolid
         if (firstOperand->numDimensions() == 1 && secondOperand->numDimensions() == 1) {
             // Either the first or second argument could be the multiplier, so pick whichever is
             // constant (defaulting to the first argument)
-            if (firstOperand->isConstant()) {
+            if (firstOperand->isConstantFunction()) {
                 multiplier = firstOperand;
                 multiplicand = secondOperand;
-            } else if (secondOperand->isConstant()) {
+            } else if (secondOperand->isConstantFunction()) {
                 multiplier = secondOperand;
                 multiplicand = firstOperand;
             } else {
@@ -521,13 +521,15 @@ namespace opensolid
             // Error - neither operand is a scalar
             throw PlaceholderError();
         }
-        if (multiplier->isConstant()) {
+        if (multiplier->isConstantFunction()) {
             // Delegate to scaling function
             return multiplier->cast<ConstantFunction>()->value() * multiplicand;
         }
-        if (multiplicand->isConstant() && multiplicand->cast<ConstantFunction>()->isZero()) {
-            // Doesn't matter what the multiplier is - return the (zero) multiplicand
-            return multiplicand;
+        if (multiplicand->isConstantFunction()) {
+            if (multiplicand->cast<ConstantFunction>()->isZero()) {
+                // Doesn't matter what the multiplier is - return the (zero) multiplicand
+                return multiplicand;
+            }
         }
         return new ProductFunction(multiplier, multiplicand);
     }
@@ -593,16 +595,18 @@ namespace opensolid
         if (secondOperand->numDimensions() != 1) {
             throw PlaceholderError();
         }
-        if (secondOperand->isConstant()) {
+        if (secondOperand->isConstantFunction()) {
             double divisor = secondOperand->cast<ConstantFunction>()->value();
             if (divisor == Zero()) {
                 throw PlaceholderError();
             }
             return (1 / divisor) * firstOperand;
         }
-        if (firstOperand->isConstant() && firstOperand->cast<ConstantFunction>()->isZero()) {
-            // Doesn't matter what the divisor is - return the (zero) dividend
-            return firstOperand;
+        if (firstOperand->isConstantFunction()) {
+            if (firstOperand->cast<ConstantFunction>()->isZero()) {
+                // Doesn't matter what the divisor is - return the (zero) dividend
+                return firstOperand;
+            }
         }
         return new QuotientFunction(firstOperand, secondOperand);
     }
@@ -697,7 +701,7 @@ namespace opensolid
         if (!(base->numDimensions() == 1 && exponent->numDimensions() == 1)) {
             throw PlaceholderError();
         }
-        if (base->isConstant() && exponent->isConstant()) {
+        if (base->isConstantFunction() && exponent->isConstantFunction()) {
             double baseValue = base->cast<ConstantFunction>()->value();
             double exponentValue = exponent->cast<ConstantFunction>()->value();
             if (baseValue == Zero() && exponentValue < Zero()) {

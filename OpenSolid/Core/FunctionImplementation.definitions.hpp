@@ -202,13 +202,16 @@ namespace opensolid
         ~FunctionImplementation();
 
         bool
-        isConstant() const;
+        isConstantFunction() const;
         
         bool
-        isIdentity() const;
+        isIdentityFunction() const;
         
         bool
-        isParameter() const;
+        isParameterFunction() const;
+        
+        bool
+        isLinearFunction() const;
 
         template <class TFunctionImplementation>
         const TFunctionImplementation*

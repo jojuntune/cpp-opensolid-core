@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/FunctionImplementation.hpp>
+#include <OpenSolid/Core/FunctionImplementation.definitions.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid

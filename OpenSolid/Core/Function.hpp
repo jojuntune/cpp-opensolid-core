@@ -64,29 +64,6 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    bool
-    Function<iNumDimensions, iNumParameters>::isConstant() const {
-        return implementation()->isConstant();
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    bool
-    Function<iNumDimensions, iNumParameters>::isIdentity() const {
-        static_assert(
-            iNumDimensions == iNumParameters,
-            "Cannot be identity: number of dimensions not equal to number of parameters"
-        );
-        return implementation()->isIdentity();
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    bool
-    Function<iNumDimensions, iNumParameters>::isParameter() const {
-        static_assert(iNumDimensions == 1, "Cannot be parameter: number of dimensions is not 1");
-        return implementation()->isParameter();
-    }
-
-    template <int iNumDimensions, int iNumParameters>
     inline FunctionReturnValue<iNumDimensions, 1, int>
     Function<iNumDimensions, iNumParameters>::operator()(int value) const {
         static_assert(iNumParameters == 1, "Multiple parameters required");

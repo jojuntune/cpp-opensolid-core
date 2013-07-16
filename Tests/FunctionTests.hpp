@@ -73,7 +73,7 @@ public:
 
     void testConstant() {
         Function<1, 1> f = Function<1, 1>::Constant(3.0);
-        TS_ASSERT(f.isConstant());
+        TS_ASSERT(f.implementation()->isConstantFunction());
         TS_ASSERT(f(0.0).value() - 3 == Zero());
     }
     
@@ -136,7 +136,7 @@ public:
     
     void testVector() {
         Function<3, 1> f = Function<3, 1>::Constant(Vector3d(1, 2, 3));
-        TS_ASSERT(f.isConstant());
+        TS_ASSERT(f.implementation()->isConstantFunction());
     }
     
     void testConversion() {

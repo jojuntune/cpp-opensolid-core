@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/FunctionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
+#include <OpenSolid/Core/FunctionImplementation/LinearFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ParameterFunction.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -42,18 +43,23 @@ namespace opensolid
     }
 
     inline bool
-    FunctionImplementation::isConstant() const {
+    FunctionImplementation::isConstantFunction() const {
         return typeid(*this) == typeid(ConstantFunction);
     }
     
     inline bool
-    FunctionImplementation::isIdentity() const {
+    FunctionImplementation::isIdentityFunction() const {
         return typeid(*this) == typeid(IdentityFunction);
     }
     
     inline bool
-    FunctionImplementation::isParameter() const {
+    FunctionImplementation::isParameterFunction() const {
         return typeid(*this) == typeid(ParameterFunction);
+    }
+    
+    inline bool
+    FunctionImplementation::isLinearFunction() const {
+        return typeid(*this) == typeid(LinearFunction);
     }
     
     template <class TFunctionImplementation>
