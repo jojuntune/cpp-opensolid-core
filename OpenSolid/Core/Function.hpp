@@ -543,7 +543,7 @@ namespace opensolid
     Function<1, iNumParameters>
     pow(double base, const Function<1, iNumParameters>& exponent) {
         DeduplicationCache deduplicationCache;
-        return (base, exponent.implementation())->deduplicated(deduplicationCache);
+        return pow(base, exponent.implementation())->deduplicated(deduplicationCache);
     }
     
     template <int iNumParameters>
