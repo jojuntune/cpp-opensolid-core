@@ -694,6 +694,16 @@ namespace opensolid
     }
 
     FunctionImplementationPtr
+    pow(double base, const FunctionImplementationPtr& exponent) {
+        return pow(new ConstantFunction(base, exponent->numParameters()), exponent);
+    }
+
+    FunctionImplementationPtr
+    pow(const FunctionImplementationPtr& base, double exponent) {
+        return pow(base, new ConstantFunction(exponent, base->numParameters()));
+    }
+
+    FunctionImplementationPtr
     pow(const FunctionImplementationPtr& base, const FunctionImplementationPtr& exponent) {
         if (base->numParameters() != exponent->numParameters()) {
             throw PlaceholderError();

@@ -503,8 +503,13 @@ namespace opensolid
 
     OPENSOLID_CORE_EXPORT
     FunctionImplementationPtr
-    pow(
-        const FunctionImplementationPtr& firstArgument,
-        const FunctionImplementationPtr& secondArgument
-    );
+    pow(double base, const FunctionImplementationPtr& exponent);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    pow(const FunctionImplementationPtr& base, double exponent);
+
+    OPENSOLID_CORE_EXPORT
+    FunctionImplementationPtr
+    pow(const FunctionImplementationPtr& base, const FunctionImplementationPtr& exponent);
 }
