@@ -37,6 +37,31 @@
 
 using namespace opensolid;
 
+Function<1, 2>
+scalarSquiggle() {
+    Function<1, 2> u = Function<1, 2>::u();
+    Function<1, 2> v = Function<1, 2>::v();
+    return sin(2 * M_PI * u) + cos(2 * M_PI * v);
+}
+
+Function<3, 2>
+vectorSquiggle() {
+    Function<1, 2> u = Function<1, 2>::u();
+    Function<1, 2> v = Function<1, 2>::v();
+    return Function<3, 2>::FromComponents(u, v, scalarSquiggle());
+}
+
+Matrix2Xd
+squiggleParameterValues() {
+    Matrix2Xd results(2, 25);
+    for (int i = 0; i <= 4; ++i) {
+        for (int j = 0; j <= 4; ++j) {
+            results.col(i * 5 + j) = Vector2d(i / 5.0 + 0.1, j / 5.0 + 0.1);
+        }
+    }
+    return results;
+}
+
 template <int iNumDimensions, int iNumParameters>
 void testJacobian(
     const Function<iNumDimensions, iNumParameters>& function,
@@ -48,13 +73,40 @@ void testJacobian(
         for (int j = 0; j < iNumParameters; ++j) {
             expectedJacobian.col(j) = function.derivative(j)(parameterValues.col(i));
         }
-        std::cout << "Jacobian ";
-        std::cout << "(parameter values " << parameterValues.col(i).transpose() << ")";
-        std::cout << ":" << std::endl;
-        std::cout << jacobian << std::endl;
-        std::cout << "Expected:" << std::endl;
-        std::cout << expectedJacobian << std::endl;
+        TS_ASSERT(jacobian.rows() == expectedJacobian.rows());
+        TS_ASSERT(jacobian.cols() == expectedJacobian.cols());
         TS_ASSERT((jacobian - expectedJacobian).isZero());
+        if (!(jacobian - expectedJacobian).isZero()) {
+            std::cout << "Function:" << std::endl;
+            std::cout << function << std::endl;
+            std::cout << "Jacobian ";
+            std::cout << "(parameter values " << parameterValues.col(i).transpose() << ")";
+            std::cout << ":" << std::endl;
+            std::cout << jacobian << std::endl;
+            std::cout << "Expected:" << std::endl;
+            std::cout << expectedJacobian << std::endl;
+            std::cout << "Difference:" << std::endl;
+            std::cout << jacobian - expectedJacobian << std::endl;
+        }
+        for (int j = 0; j < iNumParameters; ++j) {
+            Matrix<double, iNumParameters, 2> shiftedParameterValues;
+            shiftedParameterValues.col(0) = parameterValues.col(i);
+            shiftedParameterValues(j, 0) -= 1e-6 / 2;
+            shiftedParameterValues.col(1) = parameterValues.col(i);
+            shiftedParameterValues(j, 1) += 1e-6 / 2;
+            Matrix<double, iNumDimensions, 2> shiftedValues = function(shiftedParameterValues);
+            Matrix<double, iNumDimensions, 1> numericalDerivative =
+                (shiftedValues.col(1) - shiftedValues.col(0)) / 1e-6;
+            TS_ASSERT((numericalDerivative - jacobian.col(j)).isZero(1e-3));
+            if (!(numericalDerivative - jacobian.col(j)).isZero(1e-3)) {
+                std::cout << "Function:" << std::endl;
+                std::cout << function << std::endl;
+                std::cout << "Numerical derivative " << j << ": " << std::endl;
+                std::cout << numericalDerivative.transpose() << std::endl;
+                std::cout << "Jacobian derivative: " << std::endl;
+                std::cout << jacobian.col(j).transpose() << std::endl;
+            }
+        }
     }
 }
 
@@ -374,6 +426,44 @@ public:
         testJacobian(ellipsoidFunction, Vector2d(M_PI / 4, M_PI / 4));
         testJacobian(ellipsoidFunction, Vector2d(M_PI / 2, 0));
         testJacobian(ellipsoidFunction, Vector2d(0, 3 * M_PI / 4));
+    }
+
+    void testSquiggleJacobians() {
+        Function<1, 2> scalar = scalarSquiggle();
+        Function<3, 2> vector = vectorSquiggle();
+        Matrix2Xd parameterValues = squiggleParameterValues();
+
+        testJacobian(scalar, parameterValues);
+        testJacobian(vector, parameterValues);
+
+        testJacobian(acos(scalar / 2), parameterValues);
+        testJacobian(asin(scalar / 2), parameterValues);
+        testJacobian(vector.components<2>(1), parameterValues);
+        testJacobian(cos(scalar), parameterValues);
+        testJacobian(vector.cross(vector + Vector3d::UnitZ()), parameterValues);
+        testJacobian(vector - u * Vector3d::UnitZ(), parameterValues);
+        testJacobian(vector.dot(vector + Vector3d::UnitZ()), parameterValues);
+        testJacobian(exp(scalar), parameterValues);
+        testJacobian(log(scalar + 2), parameterValues);
+        testJacobian(Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix() * vector, parameterValues);
+        testJacobian(-vector, parameterValues);
+        testJacobian(vector.normalized(), parameterValues);
+        testJacobian(vector.norm(), parameterValues);
+        testJacobian(v, parameterValues);
+        testJacobian(pow(2.0, scalar), parameterValues);
+        testJacobian(pow(scalar + 2, 3.0), parameterValues);
+        testJacobian(vector * (scalar + 1), parameterValues);
+        testJacobian(vector / (scalar + 2), parameterValues);
+        testJacobian(3.0 * vector, parameterValues);
+        testJacobian(sin(scalar), parameterValues);
+        testJacobian(vector.squaredNorm(), parameterValues);
+        testJacobian(sqrt(scalar + 2), parameterValues);
+        testJacobian(vector + u * Vector3d::UnitZ(), parameterValues);
+        testJacobian(tan(scalar), parameterValues);
+        testJacobian(vector + Vector3d(1, 2, 3), parameterValues);
+
+        // Composition?
+        // Concatenation?
     }
     
     //void xtestRoots() {
