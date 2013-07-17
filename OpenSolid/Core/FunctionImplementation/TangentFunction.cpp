@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/TangentFunction.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
+
 namespace opensolid
 {   
     int
@@ -59,8 +61,11 @@ namespace opensolid
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterValues).value();
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        double value = tan(operandValue);
-        results = (1 + value * value) * operandJacobian;
+        double cosine = cos(operandValue);
+        if (cosine == Zero()) {
+            throw PlaceholderError();
+        }
+        results = operandJacobian / (cosine * cosine);
     }
     
     void
@@ -71,13 +76,16 @@ namespace opensolid
     ) const {
         Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
         MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
-        Interval bounds = tan(operandBounds);
-        results = (1 + bounds.squared()) * operandJacobian;
+        Interval cosine = cos(operandBounds);
+        if (cosine == Zero()) {
+            throw PlaceholderError();
+        }
+        results = operandJacobian / cosine.squared();
     }
 
     FunctionImplementationPtr
     TangentFunction::derivativeImpl(int parameterIndex) const {
-        return (1 + this->squaredNorm()) * operand()->derivative(parameterIndex);
+        return operand()->derivative(parameterIndex) / cos(operand())->squaredNorm();
     }
 
     bool
