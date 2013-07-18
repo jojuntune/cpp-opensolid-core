@@ -49,6 +49,16 @@ namespace opensolid
     private:
         FunctionImplementationPtr _implementation;
     public:
+        static_assert(
+            iNumDimensions > 0 && iNumDimensions != Dynamic,
+            "Invalid number of dimensions for Function object"
+        );
+
+        static_assert(
+            iNumParameters > 0 && iNumDimensions != Dynamic,
+            "Invalid number of parameters for Function object"
+        );
+
         Function();
 
         Function(const FunctionImplementation* implementation);
