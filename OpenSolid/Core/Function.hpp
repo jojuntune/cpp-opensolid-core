@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionReturnValue.hpp>
 #include <OpenSolid/Core/Function/JacobianReturnValue.hpp>
@@ -49,12 +50,30 @@ namespace opensolid
     Function<iNumDimensions, iNumParameters>::Function(
         const FunctionImplementation* implementation
     ) : _implementation(implementation) {
+        if (!implementation) {
+            throw PlaceholderError();
+        }
+        if (implementation->numDimensions() != iNumDimensions) {
+            throw PlaceholderError();
+        }
+        if (implementation->numParameters() != iNumParameters) {
+            throw PlaceholderError();
+        }
     }
     
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>::Function(
         const FunctionImplementationPtr& implementation
     ) : _implementation(implementation) {
+        if (!implementation) {
+            throw PlaceholderError();
+        }
+        if (implementation->numDimensions() != iNumDimensions) {
+            throw PlaceholderError();
+        }
+        if (implementation->numParameters() != iNumParameters) {
+            throw PlaceholderError();
+        }
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -66,21 +85,30 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     inline FunctionReturnValue<iNumDimensions, 1, int>
     Function<iNumDimensions, iNumParameters>::operator()(int value) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        static_assert(
+            iNumParameters == 1,
+            "Multiple parameters required"
+        );
         return FunctionReturnValue<iNumDimensions, 1, int>(implementation().get(), value);
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline FunctionReturnValue<iNumDimensions, 1, double>
     Function<iNumDimensions, iNumParameters>::operator()(double value) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        static_assert(
+            iNumParameters == 1,
+            "Multiple parameters required"
+        );
         return FunctionReturnValue<iNumDimensions, 1, double>(implementation().get(), value);
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline FunctionReturnValue<iNumDimensions, 1, Interval>
     Function<iNumDimensions, iNumParameters>::operator()(Interval interval) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        static_assert(
+            iNumParameters == 1,
+            "Multiple parameters required"
+        );
         return FunctionReturnValue<iNumDimensions, 1, Interval>(implementation().get(), interval);
     }
     
@@ -91,6 +119,9 @@ namespace opensolid
             TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
             "Incorrect number of parameters supplied"
         );
+        if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != numParameters()) {
+            throw PlaceholderError();
+        }
         return FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>(
             implementation().get(),
             matrix.derived()
@@ -100,21 +131,30 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     inline JacobianReturnValue<iNumDimensions, 1, int>
     Function<iNumDimensions, iNumParameters>::jacobian(int value) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        static_assert(
+            iNumParameters == 1,
+            "Multiple parameters required"
+        );
         return JacobianReturnValue<iNumDimensions, 1, int>(implementation().get(), value);
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline JacobianReturnValue<iNumDimensions, 1, double>
     Function<iNumDimensions, iNumParameters>::jacobian(double value) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        static_assert(
+            iNumParameters == 1,
+            "Multiple parameters required"
+        );
         return JacobianReturnValue<iNumDimensions, 1, double>(implementation().get(), value);
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline JacobianReturnValue<iNumDimensions, 1, Interval>
     Function<iNumDimensions, iNumParameters>::jacobian(Interval interval) const {
-        static_assert(iNumParameters == 1, "Multiple parameters required");
+        static_assert(
+            iNumParameters == 1,
+            "Multiple parameters required"
+        );
         return JacobianReturnValue<iNumDimensions, 1, Interval>(implementation().get(), interval);
     }
 
@@ -122,9 +162,16 @@ namespace opensolid
     inline JacobianReturnValue<iNumDimensions, iNumParameters, TVector>
     Function<iNumDimensions, iNumParameters>::jacobian(const EigenBase<TVector>& vector) const {
         static_assert(
-            TVector::RowsAtCompileTime == iNumParameters || TVector::RowsAtCompileTime == Dynamic,
-            "Incorrect number of parameters supplied"
+            TVector::ColsAtCompileTime == 1,
+            "Parameter vector for Jacobian matrix evaluation must have one column"
         );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumParameters || TVector::RowsAtCompileTime == Dynamic,
+            "Incorrect number of parameters supplied for Jacobian matrix evaluation"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.size() != iNumParameters) {
+            throw PlaceholderError();
+        }
         return JacobianReturnValue<iNumDimensions, iNumParameters, TVector>(
             implementation().get(),
             vector.derived()
@@ -143,6 +190,9 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
     Function<iNumDimensions, iNumParameters>::derivative(int parameterIndex) const {
+        if (parameterIndex < 0 || parameterIndex >= numParameters()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return implementation()->derivative(parameterIndex)->deduplicated(deduplicationCache);
     }
@@ -178,7 +228,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<1, iNumParameters>
     Function<iNumDimensions, iNumParameters>::y() const {
-        static_assert(iNumDimensions >= 2, "No Y component exists");
+        static_assert(
+            iNumDimensions >= 2,
+            "No Y component exists"
+        );
         DeduplicationCache deduplicationCache;
         return implementation()->y()->deduplicated(deduplicationCache);
     }
@@ -186,7 +239,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<1, iNumParameters>
     Function<iNumDimensions, iNumParameters>::z() const {
-        static_assert(iNumDimensions >= 3, "No Z component exists");
+        static_assert(
+            iNumDimensions >= 3,
+            "No Z component exists"
+        );
         DeduplicationCache deduplicationCache;
         return implementation()->z()->deduplicated(deduplicationCache);
     }
@@ -194,6 +250,9 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<1, iNumParameters>
     Function<iNumDimensions, iNumParameters>::component(int index) const {
+        if (index < 0 || index >= numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return implementation()->component(index)->deduplicated(deduplicationCache);
     }
@@ -201,8 +260,17 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters> template <int iNumComponents>
     Function<iNumComponents, iNumParameters>
     Function<iNumDimensions, iNumParameters>::components(int startIndex) const {
-        static_assert(iNumComponents <= iNumDimensions, "Too many components requested");
-        static_assert(iNumComponents > 0, "Zero or negative number of components requested");
+        static_assert(
+            iNumComponents <= iNumDimensions,
+            "Too many components requested"
+        );
+        static_assert(
+            iNumComponents > 0,
+            "Zero or negative number of components requested"
+        );
+        if (startIndex < 0 || startIndex + iNumComponents > numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return implementation()->components(startIndex, iNumComponents)->
             deduplicated(deduplicationCache);
@@ -232,7 +300,10 @@ namespace opensolid
     Function<iNumDimensions, iNumParameters>::cross(
         const Function<3, iNumParameters>& other
     ) const {
-        static_assert(iNumDimensions == 3, "Cross product only defined in 3D");
+        static_assert(
+            iNumDimensions == 3,
+            "Cross product only defined in 3D"
+        );
         DeduplicationCache deduplicationCache;
         return implementation()->cross(other.implementation())->deduplicated(deduplicationCache);
     }
@@ -240,7 +311,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, 1>
     Function<iNumDimensions, iNumParameters>::tangentVector() const {
-        static_assert(iNumParameters == 1, "Tangent vector only defined for curves");
+        static_assert(
+            iNumParameters == 1,
+            "Tangent vector only defined for curves"
+        );
         DeduplicationCache deduplicationCache;
         return implementation()->tangentVector()->deduplicated(deduplicationCache);
     }
@@ -248,7 +322,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<1, 1>
     Function<iNumDimensions, iNumParameters>::curvature() const {
-        static_assert(iNumParameters == 1, "Curvature only defined for curves");
+        static_assert(
+            iNumParameters == 1,
+            "Curvature only defined for curves"
+        );
         DeduplicationCache deduplicationCache;
         return implementation()->curvature()->deduplicated(deduplicationCache);
     }
@@ -257,8 +334,7 @@ namespace opensolid
     Function<iNumDimensions, iNumParameters>
     Function<iNumDimensions, iNumParameters>::normalVector() const {
         static_assert(
-            (iNumParameters == 1) ||
-            (iNumDimensions == 3 && iNumParameters == 2),
+            (iNumParameters == 1) || (iNumDimensions == 3 && iNumParameters == 2),
             "Invalid numbers of dimensions/parameters for definition of normal vector"
         );
         DeduplicationCache deduplicationCache;
@@ -303,6 +379,17 @@ namespace opensolid
         const Function<iNumDimensions, iNumParameters>& function,
         const EigenBase<TVector>& vector
     ) {
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
+            "Vector argument must have same number of dimensions as Function object"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return (function.implementation() + VectorXd(vector.derived()))->
             deduplicated(deduplicationCache);
@@ -314,6 +401,17 @@ namespace opensolid
         const EigenBase<TVector>& vector,
         const Function<iNumDimensions, iNumParameters>& function
     ) {
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
+            "Vector argument must have same number of dimensions as Function object"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return (VectorXd(vector.derived()) + function.implementation())->
             deduplicated(deduplicationCache);
@@ -350,6 +448,17 @@ namespace opensolid
         const Function<iNumDimensions, iNumParameters>& function,
         const EigenBase<TVector>& vector
     ) {
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
+            "Vector argument must have same number of dimensions as Function object"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return (function.implementation() - VectorXd(vector.derived()))->
             deduplicated(deduplicationCache);
@@ -361,6 +470,17 @@ namespace opensolid
         const EigenBase<TVector>& vector,
         const Function<iNumDimensions, iNumParameters>& function
     ) {
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
+            "Vector argument must have same number of dimensions as Function object"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return (VectorXd(vector.derived()) - function.implementation())->
             deduplicated(deduplicationCache);
@@ -397,6 +517,18 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix,
         const Function<iNumDimensions, iNumParameters>& function
     ) {
+        static_assert(
+            TMatrix::RowsAtCompileTime != Dynamic,
+            "Transformation matrix must have static number of rows to determine number of "
+            "dimensions in result Function object"
+        );
+        static_assert(
+            TMatrix::ColsAtCompileTime == iNumDimensions || TMatrix::ColsAtCompileTime == Dynamic,
+            "Function transformation matrix must have number of columns equal to function dimension"
+        );
+        if (TMatrix::ColsAtCompileTime == Dynamic && matrix.cols() != numDimensions()) {
+            throw PlaceholderError();
+        }
         DeduplicationCache deduplicationCache;
         return (MatrixXd(matrix.derived()) * function.implementation())->
             deduplicated(deduplicationCache);
@@ -405,6 +537,15 @@ namespace opensolid
     template <class TVector, int iNumParameters>
     Function<TVector::RowsAtCompileTime, iNumParameters>
     operator*(const Function<1, iNumParameters>& function, const EigenBase<TVector>& vector) {
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime != Dynamic,
+            "Vector argument must have static number of rows to determine number of dimensions in "
+            "result Function object"
+        );
         DeduplicationCache deduplicationCache;
         return (function.implementation() * VectorXd(vector.derived()))->
             deduplicated(deduplicationCache);
@@ -417,7 +558,7 @@ namespace opensolid
         const Function<1, iNumParameters>& secondFunction
     ) {
         DeduplicationCache deduplicationCache;
-        return (firstFunction.implementation() * secondFunction.implementation())->\
+        return (firstFunction.implementation() * secondFunction.implementation())->
             deduplicated(deduplicationCache);
     }
 
@@ -460,6 +601,7 @@ namespace opensolid
     template <class TVector, int iNumParameters>
     Function<TVector::RowsAtCompileTime, iNumParameters>
     operator/(const EigenBase<TVector>& vector, const Function<1, iNumParameters>& function) {
+        
         DeduplicationCache deduplicationCache;
         return (VectorXd(vector.derived()) / function.implementation())->
             deduplicated(deduplicationCache);
