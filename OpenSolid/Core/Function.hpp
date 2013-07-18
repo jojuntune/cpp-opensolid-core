@@ -601,7 +601,15 @@ namespace opensolid
     template <class TVector, int iNumParameters>
     Function<TVector::RowsAtCompileTime, iNumParameters>
     operator/(const EigenBase<TVector>& vector, const Function<1, iNumParameters>& function) {
-        
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime != Dynamic,
+            "Vector argument must have static number of rows to determine number of dimensions in "
+            "result Function object"
+        );
         DeduplicationCache deduplicationCache;
         return (VectorXd(vector.derived()) / function.implementation())->
             deduplicated(deduplicationCache);
