@@ -43,6 +43,7 @@ namespace opensolid
     
         template <int iErrorNumber> friend class NumberedError;
     public:
+        OPENSOLID_CORE_EXPORT
         int
         errorNumber() const;
     };
@@ -61,6 +62,7 @@ namespace opensolid
         public NumberedError<0>
     {
     public:
+        OPENSOLID_CORE_EXPORT
         const char*
         what() const throw() override;
     };
@@ -71,6 +73,7 @@ namespace opensolid
         public NumberedError<1>
     {
     public:
+        OPENSOLID_CORE_EXPORT
         const char*
         what() const throw() override;
     };
