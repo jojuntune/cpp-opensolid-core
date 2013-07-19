@@ -129,9 +129,17 @@ namespace opensolid
         template <int iNumOtherDimensions>
         Function<iNumDimensions + iNumOtherDimensions, iNumParameters>
         concatenated(const Function<iNumOtherDimensions, iNumParameters>& other) const;
+
+        template <class TVector>
+        Function<1, iNumParameters>
+        dot(const EigenBase<TVector>& vector) const;
         
         Function<1, iNumParameters>
         dot(const Function<iNumDimensions, iNumParameters>& other) const;
+        
+        template <class TVector>
+        Function<3, iNumParameters>
+        cross(const EigenBase<TVector>& vector) const;
         
         Function<3, iNumParameters>
         cross(const Function<3, iNumParameters>& other) const;

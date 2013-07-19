@@ -119,7 +119,7 @@ namespace opensolid
             TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
             "Incorrect number of parameters supplied"
         );
-        if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != numParameters()) {
+        if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != iNumParameters) {
             throw PlaceholderError();
         }
         return FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>(
@@ -190,7 +190,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
     Function<iNumDimensions, iNumParameters>::derivative(int parameterIndex) const {
-        if (parameterIndex < 0 || parameterIndex >= numParameters()) {
+        if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -250,7 +250,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<1, iNumParameters>
     Function<iNumDimensions, iNumParameters>::component(int index) const {
-        if (index < 0 || index >= numDimensions()) {
+        if (index < 0 || index >= iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -268,7 +268,7 @@ namespace opensolid
             iNumComponents > 0,
             "Zero or negative number of components requested"
         );
-        if (startIndex < 0 || startIndex + iNumComponents > numDimensions()) {
+        if (startIndex < 0 || startIndex + iNumComponents > iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -285,6 +285,25 @@ namespace opensolid
         return implementation()->concatenated(other.implementation())->
             deduplicated(deduplicationCache);
     }
+
+    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    Function<1, iNumParameters>
+    Function<iNumDimensions, iNumParameters>::dot(const EigenBase<TVector>& vector) const {
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
+            "Vector argument must have same number of dimensions as Function object"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
+            throw PlaceholderError();
+        }
+        DeduplicationCache deduplicationCache;
+        return implementation()->dot(new ConstantFunction(vector, iNumParameters))->
+            deduplicated(deduplicationCache);
+    }
     
     template <int iNumDimensions, int iNumParameters>
     Function<1, iNumParameters>
@@ -293,6 +312,29 @@ namespace opensolid
     ) const {
         DeduplicationCache deduplicationCache;
         return implementation()->dot(other.implementation())->deduplicated(deduplicationCache);
+    }
+        
+    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    Function<3, iNumParameters>
+    Function<iNumDimensions, iNumParameters>::cross(const EigenBase<TVector>& vector) const {
+        static_assert(
+            iNumDimensions == 3,
+            "Cross product only defined in 3D"
+        );
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Vector argument must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == 3 || TVector::RowsAtCompileTime == Dynamic,
+            "Vector argument must be 3D"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != 3) {
+            throw PlaceholderError();
+        }
+        DeduplicationCache deduplicationCache;
+        return implementation()->cross(new ConstantFunction(vector, iNumParameters))->
+            deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>
@@ -387,7 +429,7 @@ namespace opensolid
             TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
             "Vector argument must have same number of dimensions as Function object"
         );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -409,7 +451,7 @@ namespace opensolid
             TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
             "Vector argument must have same number of dimensions as Function object"
         );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -456,7 +498,7 @@ namespace opensolid
             TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
             "Vector argument must have same number of dimensions as Function object"
         );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -478,7 +520,7 @@ namespace opensolid
             TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
             "Vector argument must have same number of dimensions as Function object"
         );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != function.numDimensions()) {
+        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;
@@ -526,7 +568,7 @@ namespace opensolid
             TMatrix::ColsAtCompileTime == iNumDimensions || TMatrix::ColsAtCompileTime == Dynamic,
             "Function transformation matrix must have number of columns equal to function dimension"
         );
-        if (TMatrix::ColsAtCompileTime == Dynamic && matrix.cols() != numDimensions()) {
+        if (TMatrix::ColsAtCompileTime == Dynamic && matrix.cols() != iNumDimensions) {
             throw PlaceholderError();
         }
         DeduplicationCache deduplicationCache;

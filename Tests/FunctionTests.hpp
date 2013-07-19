@@ -465,6 +465,20 @@ public:
         // Composition?
         // Concatenation?
     }
+
+    void testDotProductWithConstant() {
+        Function<3, 1> line = Vector3d::Ones() + Vector3d::Ones() * t;
+        Function<1, 1> dotProduct = line.dot(Vector3d::UnitY());
+        TS_ASSERT(dotProduct(0.0).value() - 1.0 == Zero());
+        TS_ASSERT(dotProduct(1.0).value() - 2.0 == Zero());
+    }
+
+    void testCrossProductWithConstant() {
+        Function<3, 1> line = Vector3d::Ones() + Vector3d::Ones() * t;
+        Function<3, 1> crossProduct = line.cross(Vector3d::UnitY());
+        TS_ASSERT((crossProduct(0.0) - Vector3d(-1, 0, -1)).isZero());
+        TS_ASSERT((crossProduct(1.0) - Vector3d(-2, 0, -2)).isZero());
+    }
     
     //void xtestRoots() {
     //    std::vector<Function> functions(7);
