@@ -476,8 +476,8 @@ public:
     void testCrossProductWithConstant() {
         Function<3, 1> line = Vector3d::Ones() + Vector3d::Ones() * t;
         Function<3, 1> crossProduct = line.cross(Vector3d::UnitY());
-        TS_ASSERT((crossProduct(0.0) - Vector3d(-1, 0, -1)).isZero());
-        TS_ASSERT((crossProduct(1.0) - Vector3d(-2, 0, -2)).isZero());
+        TS_ASSERT((crossProduct(0.0) - Vector3d(-1, 0, 1)).isZero());
+        TS_ASSERT((crossProduct(1.0) - Vector3d(-2, 0, 2)).isZero());
     }
     
     //void xtestRoots() {
