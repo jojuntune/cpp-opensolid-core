@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Rotation;
+    class Rotation2d;
+    class Rotation3d;
 }

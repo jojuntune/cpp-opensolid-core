@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Transplant.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 
@@ -36,11 +36,13 @@ namespace opensolid
 {
     template <int iNumSourceDimensions, int iNumDestinationDimensions> template <int iNumAxes>
     Transplant<iNumSourceDimensions, iNumDestinationDimensions>::Transplant(
-        const Datum<iNumSourceDimensions, iNumAxes>& sourceDatum,
-        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
-    ) : _sourceOriginPoint(sourceDatum.originPoint()),
-        _transformationMatrix(destinationDatum.basisMatrix() * sourceDatum.inverseMatrix()),
-        _destinationOriginPoint(destinationDatum.originPoint()) {
+        const CoordinateSystem<iNumSourceDimensions, iNumAxes>& sourceCoordinateSystem,
+        const CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
+    ) : _sourceOriginPoint(sourceCoordinateSystem.originPoint()),
+        _transformationMatrix(
+            destinationCoordinateSystem.basisMatrix() * sourceCoordinateSystem.inverseMatrix()
+        ),
+        _destinationOriginPoint(destinationCoordinateSystem.originPoint()) {
     }
 
     template <int iNumSourceDimensions, int iNumDestinationDimensions>

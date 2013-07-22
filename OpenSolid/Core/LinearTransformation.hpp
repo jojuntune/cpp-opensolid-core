@@ -26,30 +26,45 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Projection.declarations.hpp>
-
-#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/LinearTransformation.definitions.hpp>
-#include <OpenSolid/Core/Plane.declarations.hpp>
+
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Point.hpp>
 
 namespace opensolid
 {
-    class Projection2d :
-        public LinearTransformation<2>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Projection2d(const Axis<2>& axis);
-    };
+    template <int iNumDimensions>
+    LinearTransformation<iNumDimensions>::LinearTransformation(
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix
+    ) : _originPoint(originPoint),
+        _transformationMatrix(transformationMatrix) {
+    }
 
-    class Projection3d :
-        public LinearTransformation<3>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Projection3d(const Axis<3>& axis);
+    template <int iNumDimensions>
+    inline const Point<iNumDimensions>&
+    LinearTransformation<iNumDimensions>::originPoint() const {
+        return _originPoint;
+    }
 
-        OPENSOLID_CORE_EXPORT
-        Projection3d(const Plane3d& plane);
-    };
+    template <int iNumDimensions>
+    inline const Matrix<double, iNumDimensions, iNumDimensions>&
+    LinearTransformation<iNumDimensions>::transformationMatrix() const {
+        return _transformationMatrix;
+    }
+
+    template <int iNumDimensions> template <class TTransformable>
+    TTransformable
+    LinearTransformation<iNumDimensions>::operator()(const TTransformable& transformable) const {
+        return TTransformable::translation(
+            TTransformable::transformation(
+                TTransformable::translation(
+                    transformable,
+                    -originPoint().vector()
+                ),
+                transformationMatrix()
+            ),
+            originPoint().vector()
+        );
+    }
 }

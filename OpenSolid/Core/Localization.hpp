@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Localization.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
@@ -37,9 +37,9 @@ namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
     Localization<iNumDimensions, iNumAxes>::Localization(
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) : _originPoint(datum.originPoint()),
-        _transformationMatrix(datum.inverseMatrix()) {
+        const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem
+    ) : _originPoint(coordinateSystem.originPoint()),
+        _transformationMatrix(coordinateSystem.inverseMatrix()) {
     }
 
     template <int iNumDimensions, int iNumAxes>

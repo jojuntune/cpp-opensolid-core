@@ -28,7 +28,6 @@
 
 #include <OpenSolid/Core/Curve.definitions.hpp>
 
-#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Interval.hpp>

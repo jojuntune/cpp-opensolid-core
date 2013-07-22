@@ -26,23 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Frame.definitions.hpp>
-
-#include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-
 namespace opensolid
 {
-    inline
-    Frame<2>::Frame(const Datum<2, 2>& other) :
-        Datum<2, 2>(other) {
-    }
-
-    inline
-    Frame<3>::Frame(const Datum<3, 3>& other) :
-        Datum<3, 3>(other) {
-    }
+    template <int iNumDimensions>
+    class LinearTransformation;
 }

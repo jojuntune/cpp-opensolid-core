@@ -28,8 +28,6 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Curve.declarations.hpp>
-#include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/Frame.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>

@@ -28,45 +28,4 @@
 
 #include <OpenSolid/Core/Mirror.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Matrix.hpp>
-
-namespace opensolid
-{
-    template <int iNumDimensions>
-    Mirror<iNumDimensions>::Mirror(const Datum<iNumDimensions, iNumDimensions - 1>& datum) :
-        _originPoint(datum.originPoint()) {
-
-        Matrix<double, iNumDimensions, 1> normalVector = datum.normalVector();
-        _transformationMatrix = Matrix<double, iNumDimensions, iNumDimensions>::Identity() -
-            2 * normalVector * normalVector.transpose();
-    }
-
-    template <int iNumDimensions>
-    inline const Point<iNumDimensions>&
-    Mirror<iNumDimensions>::originPoint() const {
-        return _originPoint;
-    }
-
-    template <int iNumDimensions>
-    inline const Matrix<double, iNumDimensions, iNumDimensions>&
-    Mirror<iNumDimensions>::transformationMatrix() const {
-        return _transformationMatrix;
-    }
-
-    template <int iNumDimensions> template <class TTransformable>
-    TTransformable
-    Mirror<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        return TTransformable::translation(
-            TTransformable::transformation(
-                TTransformable::translation(
-                    transformable,
-                    -originPoint().vector()
-                ),
-                transformationMatrix()
-            ),
-            originPoint().vector()
-        );
-    }
-}
+#include <OpenSolid/Core/LinearTransformation.hpp>

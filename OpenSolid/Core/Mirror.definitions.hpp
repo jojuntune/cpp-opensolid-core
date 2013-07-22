@@ -28,32 +28,25 @@
 
 #include <OpenSolid/Core/Mirror.declarations.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Axis.declarations.hpp>
+#include <OpenSolid/Core/LinearTransformation.definitions.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Mirror
+    class Mirror2d :
+        public LinearTransformation<2>
     {
-    private:
-        Point<iNumDimensions> _originPoint;
-        Matrix<double, iNumDimensions, iNumDimensions> _transformationMatrix;
     public:
-        Mirror(const Datum<iNumDimensions, iNumDimensions - 1>& datum);
-
-        const Point<iNumDimensions>&
-        originPoint() const;
-        
-        const Matrix<double, iNumDimensions, iNumDimensions>&
-        transformationMatrix() const;
-
-        template <class TTransformable>
-        TTransformable
-        operator()(const TTransformable& transformable) const;
+        OPENSOLID_CORE_EXPORT
+        Mirror2d(const Axis<2>& axis);
     };
 
-    typedef Mirror<2> Mirror2d;
-    typedef Mirror<3> Mirror3d;
+    class Mirror3d :
+        public LinearTransformation<3>
+    {
+    public:
+        OPENSOLID_CORE_EXPORT
+        Mirror3d(const Plane3d& plane);
+    };
 }

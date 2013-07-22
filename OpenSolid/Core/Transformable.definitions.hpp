@@ -28,16 +28,15 @@
 
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/Axis.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
+#include <OpenSolid/Core/LinearTransformation.declarations.hpp>
 #include <OpenSolid/Core/Localization.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Mirror.declarations.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/Projection.declarations.hpp>
-#include <OpenSolid/Core/Rotation.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
@@ -57,7 +56,7 @@ namespace opensolid
 
         TDerived
         translatedAlong(
-            const Datum<NumDimensions<TDerived>::Value, 1>& axis,
+            const Axis<NumDimensions<TDerived>::Value>& axis,
             double distance
         ) const;
 
@@ -65,32 +64,33 @@ namespace opensolid
         rotatedAbout(const Point<2>& originPoint, double angle) const;
 
         TDerived
-        rotatedAbout(const Datum<3, 1>& axis, double angle) const;
+        rotatedAbout(const Axis<3>& axis, double angle) const;
 
         TDerived
-        rotated(const Rotation<NumDimensions<TDerived>::Value>& rotation) const;
-
-        typedef Datum<NumDimensions<TDerived>::Value, NumDimensions<TDerived>::Value - 1>
-            MirrorDatumType;
+        mirroredAbout(const Axis<2>& axis) const;
 
         TDerived
-        mirroredAbout(const MirrorDatumType& datum) const;
+        mirroredAbout(const Plane3d& plane) const;
 
         TDerived
-        mirrored(const Mirror<NumDimensions<TDerived>::Value>& mirror) const;
-
-        template <int iNumAxes>
-        TDerived
-        projectedOnto(const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum) const;
+        projectedOnto(const Axis<2>& axis) const;
 
         TDerived
-        projected(const Projection<NumDimensions<TDerived>::Value>& projection) const;
+        projectedOnto(const Axis<3>& axis) const;
+
+        TDerived
+        projectedOnto(const Plane3d& plane) const;
+
+        TDerived
+        transformed(
+            const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
+        ) const;
 
         template <int iNumDestinationDimensions, int iNumAxes>
         typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
         transplanted(
-            const Datum<NumDimensions<TDerived>::Value, iNumAxes>& sourceDatum,
-            const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
+            const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
+            const CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
         ) const;
 
         template <int iNumDestinationDimensions>
@@ -107,11 +107,15 @@ namespace opensolid
 
         template <int iNumAxes>
         typename ChangeDimensions<TDerived, iNumAxes>::Type
-        localizedTo(const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum) const;
+        localizedTo(
+            const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+        ) const;
 
         template <int iNumDimensions>
         typename ChangeDimensions<TDerived, iNumDimensions>::Type
-        globalizedFrom(const Datum<iNumDimensions, NumDimensions<TDerived>::Value>& datum) const;
+        globalizedFrom(
+            const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem
+        ) const;
 
         ///// Low-level static functions /////
 

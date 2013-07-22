@@ -22,127 +22,163 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Plane.hpp>
+
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/Point.hpp>
 
 namespace opensolid
 {
     Plane3d::Plane3d() :
-        Datum<3, 2>() {
+        _originPoint(Point3d::Origin()),
+        _normalVector(Vector3d::Zero()) {
     }
 
-    Plane3d::Plane3d(
-        const Point3d& originPoint,
-        const Vector3d& xVector,
-        const Vector3d& xyVector
-    ) : Datum<3, 2>() {
-
-        Matrix<double, 3, 2> basisMatrix;
-        basisMatrix << xVector, xyVector;
-        *this = Datum<3, 2>(originPoint, basisMatrix).normalized();
-    }
-
-    Plane3d
-    Plane3d::FromPointAndNormal(const Point3d& originPoint, const Vector3d& normalVector) {
-        Vector3d xBasisVector = normalVector.unitOrthogonal();
-        Vector3d yBasisVector = normalVector.cross(xBasisVector).normalized();
-        return Plane3d::FromBasisVectors(originPoint, xBasisVector, yBasisVector);
+    Plane3d::Plane3d(const Point<3>& originPoint, const Vector3d& normalVector) :
+        _originPoint(originPoint) {
+    
+        if (normalVector.isZero()) {
+            throw PlaceholderError();
+        }
+        double squaredNorm = normalVector.squaredNorm();
+        if (squaredNorm - 1 == Zero()) {
+            _normalVector = normalVector;
+        } else {
+            _normalVector = normalVector / sqrt(squaredNorm);
+        }
     }
 
     Plane3d
     Plane3d::ThroughPoints(
-        const Point3d& originPoint,
-        const Point3d& xPoint,
-        const Point3d& xyPoint
+        const Point<3>& firstPoint,
+        const Point<3>& secondPoint,
+        const Point<3>& thirdPoint
     ) {
-        return Plane3d(originPoint, xPoint - originPoint, xyPoint - originPoint);
+        Vector3d normalVector = (secondPoint - firstPoint).cross(thirdPoint - firstPoint);
+        return Plane3d(firstPoint, normalVector);
     }
 
     Plane3d
-    Plane3d::Midplane(const Point3d& pointBelow, const Point3d& pointAbove) {
+    Plane3d::Midplane(const Point<3>& pointBelow, const Point<3>& pointAbove) {
         Vector3d displacementVector = pointAbove - pointBelow;
-        return Plane3d::FromPointAndNormal(
-            pointBelow + 0.5 * displacementVector,
-            displacementVector
-        );
+        return Plane3d(pointBelow + 0.5 * displacementVector, displacementVector);
     }
 
     Plane3d
     Plane3d::Midplane(const Plane3d planeBelow, const Plane3d planeAbove) {
+        Vector3d belowNormalVector = planeBelow.normalVector();
+        Vector3d aboveNormalVector = planeAbove.normalVector();
+
+        if (!belowNormalVector.cross(aboveNormalVector).isZero()) {
+            // Planes are not parallel
+            throw PlaceholderError();
+        }
+
         Vector3d displacementVector = planeAbove.originPoint() - planeBelow.originPoint();
+        double belowDotProduct = belowNormalVector.dot(displacementVector);
+        double aboveDotProduct = aboveNormalVector.dot(displacementVector);
+
+        if (belowDotProduct == Zero()) {
+            // Planes are coplanar; flip above normal vector direction if necessary to match below
+            if (aboveNormalVector.dot(belowNormalVector) < 0.0) {
+                aboveNormalVector = -aboveNormalVector;
+            }
+        } else {
+            // Flip both normal vectors if necessary to match displacement between planes
+            if (belowDotProduct < 0.0) {
+                belowNormalVector = -belowNormalVector;
+            }
+            if (aboveDotProduct < 0.0) {
+                aboveNormalVector = -aboveNormalVector;
+            }
+        }
 
         Point3d originPoint = planeBelow.originPoint() + 0.5 * displacementVector;
-
-        Vector3d belowNormalVector = planeBelow.normalVector();
-        if (belowNormalVector.dot(displacementVector) < Zero()) {
-            belowNormalVector = -belowNormalVector;
-        }
-
-        Vector3d aboveNormalVector = planeAbove.normalVector();
-        if (aboveNormalVector.dot(displacementVector) < Zero()) {
-            aboveNormalVector = -aboveNormalVector;
-        }
-
-        assert(belowNormalVector.cross(aboveNormalVector).isZero());
-
         Vector3d normalVector = belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector);
-
-        return Plane3d::FromPointAndNormal(originPoint, normalVector);
+        return Plane3d(originPoint, normalVector);
     }
 
     Plane3d
-    Plane3d::ThroughAxisAndPoint(const Axis3d& axis, const Point3d& point) {
-        return Plane3d(axis.originPoint(), axis.basisVector(), point - axis.originPoint());
+    Plane3d::ThroughAxisAndPoint(const Axis<3>& axis, const Point<3>& point) {
+        Vector3d normalVector = (point - axis.originPoint()).cross(axis.directionVector());
+        if (normalVector.isZero()) {
+            // Point is on axis
+            throw PlaceholderError();
+        }
+        return Plane3d(axis.originPoint(), normalVector);
     }
 
     Plane3d
-    Plane3d::ThroughAxis(const Axis3d& axis) {
-        return Plane3d(axis.originPoint(), axis.basisVector(), axis.normalVector());
+    Plane3d::ThroughAxis(const Axis<3>& axis) {
+        return Plane3d(axis.originPoint(), axis.directionVector().unitOrthogonal());
     }
 
     Plane3d
-    Plane3d::XY(const Point3d& originPoint) {
-        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitX(), Vector3d::UnitY());
+    Plane3d::XY() {
+        return Plane3d(Point3d::Origin(), Vector3d::UnitZ());
     }
 
     Plane3d
-    Plane3d::XZ(const Point3d& originPoint) {
-        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitX(), Vector3d::UnitZ());
+    Plane3d::XZ() {
+        return Plane3d(Point3d::Origin(), -Vector3d::UnitY());
+    }
+    
+    Plane3d
+    Plane3d::YX() {
+        return Plane3d(Point3d::Origin(), -Vector3d::UnitZ());
     }
 
     Plane3d
-    Plane3d::YX(const Point3d& originPoint) {
-        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitY(), Vector3d::UnitX());
+    Plane3d::YZ() {
+        return Plane3d(Point3d::Origin(), Vector3d::UnitX());
     }
 
     Plane3d
-    Plane3d::YZ(const Point3d& originPoint) {
-        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitY(), Vector3d::UnitZ());
+    Plane3d::ZX() {
+        return Plane3d(Point3d::Origin(), Vector3d::UnitY());
+    }
+    
+    Plane3d
+    Plane3d::ZY() {
+        return Plane3d(Point3d::Origin(), -Vector3d::UnitX());
+    }
+    
+    Plane3d
+    Plane3d::offsetBy(double distance) const {
+        return Plane3d(originPoint() + distance * normalVector(), normalVector());
     }
 
     Plane3d
-    Plane3d::ZX(const Point3d& originPoint) {
-        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitZ(), Vector3d::UnitX());
+    Plane3d::flipped() const {
+        return Plane3d(originPoint(), -normalVector());
+    }
+
+    Axis<3>
+    Plane3d::normalAxis() const {
+        return Axis3d(originPoint(), normalVector());
+    }
+
+    PlanarCoordinateSystem3d
+    Plane3d::coordinateSystem() const {
+        Vector3d xVector = normalVector().unitOrthogonal();
+        Vector3d yVector = normalVector().cross(xVector);
+        return PlanarCoordinateSystem3d(originPoint(), xVector, yVector);
     }
 
     Plane3d
-    Plane3d::ZY(const Point3d& originPoint) {
-        return Plane3d::FromBasisVectors(originPoint, Vector3d::UnitZ(), Vector3d::UnitY());
+    ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
+        return Plane3d(Point3d::scaling(plane.originPoint(), scale), plane.normalVector());
     }
 
     Plane3d
-    Plane3d::FromBasisVectors(
-        const Point3d& originPoint,
-        const Vector3d& xBasisVector,
-        const Vector3d& yBasisVector
-    ) {
-        Matrix<double, 3, 2> basisMatrix;
-        basisMatrix << xBasisVector, yBasisVector;
-        return Datum<3, 2>(originPoint, basisMatrix);
-    }
-
-    Plane3d
-    Plane3d::FromBasisMatrix(const Point3d& originPoint, const Matrix<double, 3, 2>& basisMatrix) {
-        return Datum<3, 2>(originPoint, basisMatrix);
+    MorphingFunction<Plane3d, 3>::operator()(
+        const Plane3d& plane,
+        const Function<3, 3>& function
+    ) const {
+        return Plane3d(
+            plane.originPoint().morphed(function),
+            function.jacobian(plane.originPoint().vector()) * plane.normalVector()
+        );
     }
 }

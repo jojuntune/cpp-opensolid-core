@@ -127,7 +127,7 @@ namespace opensolid
 
     template <int iNumDimensions>
     Geometry<iNumDimensions, 1>::Geometry(const Simplex<iNumDimensions, 2>& simplex) :
-        _function(Function<iNumDimensions, 1>::Linear(simplex.datum())),
+        _function(Function<iNumDimensions, 1>::Linear(simplex.coordinateSystem())),
         _domain(Interval::Unit()) {
     }
 

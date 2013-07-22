@@ -26,30 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Projection.declarations.hpp>
-
-#include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/LinearTransformation.definitions.hpp>
-#include <OpenSolid/Core/Plane.declarations.hpp>
-
 namespace opensolid
 {
-    class Projection2d :
-        public LinearTransformation<2>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Projection2d(const Axis<2>& axis);
-    };
-
-    class Projection3d :
-        public LinearTransformation<3>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Projection3d(const Axis<3>& axis);
-
-        OPENSOLID_CORE_EXPORT
-        Projection3d(const Plane3d& plane);
-    };
+    template <int iNumDimensions, int iNumAxes>
+    class CoordinateSystem;
 }

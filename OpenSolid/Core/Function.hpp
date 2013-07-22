@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Function.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.hpp>
 #include <OpenSolid/Core/Function/FunctionReturnValue.hpp>

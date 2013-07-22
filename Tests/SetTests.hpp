@@ -418,7 +418,8 @@ public:
         points.insert(Point3d(1, 0, 1));
         points.insert(Point3d(1, 1, 1));
 
-        Set<Point3d> rotatedPoints = points.rotatedAbout(Axis3d::Z(Point3d(1, 0, 0)), M_PI / 2);
+        Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
+        Set<Point3d> rotatedPoints = points.rotatedAbout(rotationAxis, M_PI / 2);
         TS_ASSERT((rotatedPoints.atIndex(0) - Point3d(0, 0, 1)).isZero());
         TS_ASSERT((rotatedPoints.atIndex(1) - Point3d(1, 0, 1)).isZero());
         TS_ASSERT((rotatedPoints.atIndex(2) - Point3d(2, 0, 1)).isZero());
@@ -429,8 +430,9 @@ public:
         vectors.insert(Vector3d(1, -1, 1));
         vectors.insert(Vector3d(1, 0, 1));
         vectors.insert(Vector3d(1, 1, 1));
-
-        Set<Vector3d> rotatedVectors = vectors.rotatedAbout(Axis3d::Z(Point3d(1, 0, 0)), M_PI / 2);
+        
+        Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
+        Set<Vector3d> rotatedVectors = vectors.rotatedAbout(rotationAxis, M_PI / 2);
         TS_ASSERT((rotatedVectors.atIndex(0) - Vector3d(-1, 1, 1)).isZero());
         TS_ASSERT((rotatedVectors.atIndex(1) - Vector3d(0, 1, 1)).isZero());
         TS_ASSERT((rotatedVectors.atIndex(2) - Vector3d(1, 1, 1)).isZero());

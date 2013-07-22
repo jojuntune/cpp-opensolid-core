@@ -32,31 +32,31 @@ const Derived&
 translated(const EigenBase<TVector>& vector) const;
 
 const Derived&
-translatedAlong(const opensolid::Datum<NumDimensions, 1>& axis, double distance) const;
+translatedAlong(const opensolid::Axis<NumDimensions>& axis, double distance) const;
 
 PlainObject
 rotatedAbout(const opensolid::Point<2>& originPoint, double angle) const;
 
 PlainObject
-rotatedAbout(const opensolid::Datum<3, 1>& axis, double angle) const;
+rotatedAbout(const opensolid::Axis<3>& axis, double angle) const;
 
 PlainObject
-rotated(const opensolid::Rotation<NumDimensions>& rotation) const;
+mirroredAbout(const opensolid::Axis<2>& axis) const;
 
 PlainObject
-mirroredAbout(
-    const opensolid::Datum<NumDimensions, NumDimensions - 1>& datum
-) const;
+mirroredAbout(const opensolid::Plane3d& plane) const;
 
 PlainObject
-mirrored(const opensolid::Mirror<NumDimensions>& mirror) const;
-
-template <int iNumAxes>
-PlainObject
-projectedOnto(const opensolid::Datum<NumDimensions, iNumAxes>& datum) const;
+projectedOnto(const opensolid::Axis<2>& axis) const;
 
 PlainObject
-projected(const opensolid::Projection<NumDimensions>& projection) const;
+projectedOnto(const opensolid::Axis<3>& axis) const;
+
+PlainObject
+projectedOnto(const opensolid::Plane3d& plane) const;
+
+PlainObject
+transformed(const opensolid::LinearTransformation<NumDimensions>& transformation) const;
 
 template <int iNumDestinationDimensions, int iNumAxes>
 Matrix<
@@ -65,8 +65,8 @@ Matrix<
     internal::traits<Derived>::ColsAtCompileTime
 >
 transplanted(
-    const opensolid::Datum<NumDimensions, iNumAxes>& sourceDatum,
-    const opensolid::Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
+    const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& sourceCoordinateSystem,
+    const opensolid::CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
 ) const;
 
 template <int iNumDestinationDimensions>
@@ -81,11 +81,15 @@ transplanted(
 
 template <int iNumAxes>
 Matrix<typename internal::traits<Derived>::Scalar, iNumAxes, internal::traits<Derived>::ColsAtCompileTime>
-localizedTo(const opensolid::Datum<NumDimensions, iNumAxes>& datum) const;
+localizedTo(
+    const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& coordinateSystem
+) const;
 
 template <int iNumDimensions>
 Matrix<typename internal::traits<Derived>::Scalar, iNumDimensions, internal::traits<Derived>::ColsAtCompileTime>
-globalizedFrom(const opensolid::Datum<iNumDimensions, NumDimensions>& datum) const;
+globalizedFrom(
+    const opensolid::CoordinateSystem<iNumDimensions, NumDimensions>& coordinateSystem
+) const;
 
 static const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<Derived>::Scalar>, const Derived>
 scaling(const Derived& argument, double scale);

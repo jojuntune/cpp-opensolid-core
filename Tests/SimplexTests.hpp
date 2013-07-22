@@ -22,8 +22,7 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Datum.hpp>
-#include <OpenSolid/Core/Frame.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -64,24 +63,39 @@ public:
         }
     }
     
-    void testDatumQuotient() {
+    void testLocalization() {
         Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
+        PlanarCoordinateSystem3d xyCoordinateSystem(
+            Point3d::Origin(),
+            Vector3d::UnitX(),
+            Vector3d::UnitY()
+        );
+        PlanarCoordinateSystem3d yzCoordinateSystem(
+            Point3d::Origin(),
+            Vector3d::UnitY(),
+            Vector3d::UnitZ()
+        );
+        PlanarCoordinateSystem3d xzCoordinateSystem(
+            Point3d::Origin(),
+            Vector3d::UnitX(),
+            Vector3d::UnitZ()
+        );
 
-        Triangle2d xyComponents = triangle3d.localizedTo(Frame3d().xyPlane());
+        Triangle2d xyComponents = triangle3d.localizedTo(xyCoordinateSystem);
         TS_ASSERT((xyComponents.vertex(0) - Point2d(1, 1)).isZero());
         TS_ASSERT((xyComponents.vertex(1) - Point2d(3, 1)).isZero());
         TS_ASSERT((xyComponents.vertex(2) - Point2d(2, 2)).isZero());
         double xyArea = xyComponents.area();
         TS_ASSERT(xyArea > 0.0);
 
-        Triangle2d yzComponents = triangle3d.localizedTo(Frame3d().yzPlane());
+        Triangle2d yzComponents = triangle3d.localizedTo(yzCoordinateSystem);
         TS_ASSERT((yzComponents.vertex(0) - Point2d(1, 1)).isZero());
         TS_ASSERT((yzComponents.vertex(1) - Point2d(1, 2)).isZero());
         TS_ASSERT((yzComponents.vertex(2) - Point2d(2, 4)).isZero());
         double yzArea = yzComponents.area();
         TS_ASSERT(yzArea < 0.0);
 
-        double xzArea = (triangle3d.localizedTo(Frame3d().xzPlane())).area();
+        double xzArea = (triangle3d.localizedTo(xzCoordinateSystem)).area();
 
         double areaFromComponents = sqrt(xyArea * xyArea + yzArea * yzArea + xzArea * xzArea);
         TS_ASSERT(triangle3d.area() - areaFromComponents == Zero());
@@ -128,29 +142,30 @@ public:
     
     void testCoordinateSystem() {
         Triangle3d triangle(Point3d::Origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
-        Datum<3, 2> datum = triangle.datum();
+        PlanarCoordinateSystem3d coordinateSystem = triangle.coordinateSystem();
 
-        Point3d globalized = Point2d(0.5, 0.5).globalizedFrom(datum);
+        Point3d globalized = Point2d(0.5, 0.5).globalizedFrom(coordinateSystem);
         TS_ASSERT((globalized - Point3d(1.5, 1, 0)).isZero());
 
-        Point2d localized = Point3d(1, 0, 0).localizedTo(datum);
+        Point2d localized = Point3d(1, 0, 0).localizedTo(coordinateSystem);
         TS_ASSERT((localized - Point2d(0.5, 0)).isZero());
 
-        localized = Point3d(3, 2, 0).localizedTo(datum);
+        localized = Point3d(3, 2, 0).localizedTo(coordinateSystem);
         TS_ASSERT((localized - Point2d(1, 1)).isZero());
 
-        Point3d projection = Point3d(3, 4, 5).projectedOnto(datum);
+        Point3d projection = Point3d(3, 4, 5).projectedOnto(triangle.plane());
         TS_ASSERT((projection - Point3d(3, 4, 0)).isZero());
     }
     
     void testLineSegment1d() {
         LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
+        AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), Vector3d::UnitY());
         
-        LineSegment1d localized = lineSegment3d.localizedTo(Frame3d().yAxis());
+        LineSegment1d localized = lineSegment3d.localizedTo(axialCoordinateSystem);
         TS_ASSERT((localized.vertices() - LineSegment1d(2, 5).vertices()).isZero());
 
         LineSegment3d globalized =
-            LineSegment1d(1.0 / 3.0, 2.0 / 3.0).globalizedFrom(lineSegment3d.datum());
+            LineSegment1d(1.0 / 3.0, 2.0 / 3.0).globalizedFrom(lineSegment3d.coordinateSystem());
         TS_ASSERT((globalized.vertex(0) - Point3d(2, 3, 4)).isZero());
         TS_ASSERT((globalized.vertex(1) - Point3d(3, 4, 5)).isZero());
     }

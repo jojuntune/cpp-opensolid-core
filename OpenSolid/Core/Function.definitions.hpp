@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/Function.declarations.hpp>
 
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
 #include <OpenSolid/Core/Function/JacobianReturnValue.declarations.hpp>
 #include <OpenSolid/Core/Function/FunctionReturnValue.declarations.hpp>

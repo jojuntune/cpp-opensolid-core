@@ -26,46 +26,48 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    class Datum :
-        public Transformable<Datum<iNumDimensions, iNumAxes>>,
-        public Convertible<Datum<iNumDimensions, iNumAxes>>
+    class CoordinateSystem :
+        public Transformable<CoordinateSystem<iNumDimensions, iNumAxes>>,
+        public Convertible<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
     private:
         Point<iNumDimensions> _originPoint;
         Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
         Matrix<double, iNumAxes, iNumDimensions> _inverseMatrix;
-
-        void initialize(
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
-        );
-
-        void initialize(const Datum<iNumDimensions, iNumAxes>& otherDatum );
     public:
-        Datum();
+        CoordinateSystem();
 
         explicit
-        Datum(const Point<iNumDimensions>& originPoint);
+        CoordinateSystem(const Point<iNumDimensions>& originPoint);
 
-        Datum(
+        CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
             const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
         );
 
-        Datum(const Datum<iNumDimensions, iNumAxes>& otherDatum);
-        
-        Datum<iNumDimensions, iNumAxes>& operator=(
-            const Datum<iNumDimensions, iNumAxes>& otherDatum
+        CoordinateSystem(
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumDimensions, 1>& xBasisVector,
+            const Matrix<double, iNumDimensions, 1>& yBasisVector
+        );
+
+        CoordinateSystem(
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumDimensions, 1>& xBasisVector,
+            const Matrix<double, iNumDimensions, 1>& yBasisVector,
+            const Matrix<double, iNumDimensions, 1>& zBasisVector
         );
         
         const Point<iNumDimensions>&
@@ -109,70 +111,55 @@ namespace opensolid
         
         typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
         basisVector(int axisIndex) const;
-
-        Matrix<double, iNumDimensions, 1>
-        normalVector() const;
         
-        Datum<iNumDimensions, 1>
+        Axis<iNumDimensions>
         xAxis() const;
         
-        Datum<iNumDimensions, 1>
+        Axis<iNumDimensions>
         yAxis() const;
         
-        Datum<iNumDimensions, 1>
+        Axis<iNumDimensions>
         zAxis() const;
         
-        Datum<iNumDimensions, 1>
+        Axis<iNumDimensions>
         axis(int axisIndex) const;
-        
-        Datum<iNumDimensions, 1>
-        normalAxis() const;
 
-        Datum<3, 2>
+        Plane3d
         xyPlane() const;
         
-        Datum<3, 2>
+        Plane3d
         xzPlane() const;
         
-        Datum<3, 2>
+        Plane3d
         yxPlane() const;
         
-        Datum<3, 2>
+        Plane3d
         yzPlane() const;
         
-        Datum<3, 2>
+        Plane3d
         zxPlane() const;
         
-        Datum<3, 2>
+        Plane3d
         zyPlane() const;
         
-        Datum<3, 2>
+        Plane3d
         plane(int firstAxisIndex, int secondAxisIndex) const;
         
-        Datum<3, 2>
-        normalPlane() const;
-
-        Datum<iNumDimensions, iNumAxes>
-        reversed() const;
-        
-        Datum<iNumDimensions, iNumAxes>
-        xReversed() const;
-        
-        Datum<iNumDimensions, iNumAxes>
-        yReversed() const;
-        
-        Datum<iNumDimensions, iNumAxes>
-        zReversed() const;
-        
-        Datum<iNumDimensions, iNumAxes>
-        reversed(int index) const;
-
-        Datum<iNumDimensions, iNumAxes>
-        offset(double distance) const;
-        
-        Datum<iNumDimensions, iNumAxes>
+        CoordinateSystem<iNumDimensions, iNumAxes>
         normalized() const;
+
+        static CoordinateSystem<iNumDimensions, iNumAxes>
+        Global();
     };
+
+    typedef CoordinateSystem<1, 1> CoordinateSystem1d;
+
+    typedef CoordinateSystem<2, 1> AxialCoordinateSystem2d;
+    typedef CoordinateSystem<2, 2> CoordinateSystem2d;
+
+    typedef CoordinateSystem<3, 1> AxialCoordinateSystem3d;
+    typedef CoordinateSystem<3, 2> PlanarCoordinateSystem3d;
+    typedef CoordinateSystem<3, 3> CoordinateSystem3d;
 }
 
 ////////// Specializations //////////
@@ -180,52 +167,55 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    struct NumDimensions<Datum<iNumDimensions, iNumAxes>>
+    struct NumDimensions<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
         static const int Value = iNumDimensions;
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct ChangeDimensions<Datum<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    struct ChangeDimensions<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
     {
-        typedef Datum<iNumResultDimensions, iNumAxes> Type;
+        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
     };
 
     template <int iNumDimensions, int iNumAxes>
-    struct ScalingFunction<Datum<iNumDimensions, iNumAxes>>
+    struct ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
-        Datum<iNumDimensions, iNumAxes>
-        operator()(const Datum<iNumDimensions, iNumAxes>& datum, double scale) const;
+        CoordinateSystem<iNumDimensions, iNumAxes>
+        operator()(
+            const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions, int iNumAxes>
-    struct TranslationFunction<Datum<iNumDimensions, iNumAxes>>
+    struct TranslationFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
         template <class TVector>
-        Datum<iNumDimensions, iNumAxes>
+        CoordinateSystem<iNumDimensions, iNumAxes>
         operator()(
-            const Datum<iNumDimensions, iNumAxes>& datum,
+            const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
             const EigenBase<TVector>& vector
         ) const;
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumTransformedDimensions>
-    struct TransformationFunction<Datum<iNumDimensions, iNumAxes>, iNumTransformedDimensions>
+    struct TransformationFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumTransformedDimensions>
     {
         template <class TMatrix>
-        Datum<iNumTransformedDimensions, iNumAxes>
+        CoordinateSystem<iNumTransformedDimensions, iNumAxes>
         operator()(
-            const Datum<iNumDimensions, iNumAxes>& datum,
+            const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
             const EigenBase<TMatrix>& transformationMatrix
         ) const;
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
-    struct MorphingFunction<Datum<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
+    struct MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumDestinationDimensions>
     {
-        Datum<iNumDestinationDimensions, iNumAxes>
+        CoordinateSystem<iNumDestinationDimensions, iNumAxes>
         operator()(
-            const Datum<iNumDimensions, iNumAxes>& datum,
+            const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
             const Function<iNumDestinationDimensions, iNumDimensions>& function
         ) const;
     };

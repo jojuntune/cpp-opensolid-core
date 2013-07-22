@@ -28,15 +28,17 @@
 
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/Globalization.hpp>
+#include <OpenSolid/Core/Localization.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Datum.hpp>
 #include <OpenSolid/Core/Mirror.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Projection.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
 #include <OpenSolid/Core/Transplant.hpp>
-#include <OpenSolid/Core/Localization.hpp>
-#include <OpenSolid/Core/Globalization.hpp>
 
 namespace opensolid
 {
@@ -77,10 +79,10 @@ namespace opensolid
     template <class TDerived>
     inline TDerived
     Transformable<TDerived>::translatedAlong(
-        const Datum<NumDimensions<TDerived>::Value, 1>& axis,
+        const Axis<NumDimensions<TDerived>::Value>& axis,
         double distance
     ) const {
-        return translation(derived(), distance * axis.basisVector().normalized());
+        return translation(derived(), distance * axis.directionVector());
     }
 
     template <class TDerived>
@@ -91,54 +93,56 @@ namespace opensolid
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::rotatedAbout(const Datum<3, 1>& axis, double angle) const {
+    Transformable<TDerived>::rotatedAbout(const Axis<3>& axis, double angle) const {
         return Rotation3d(axis, angle)(derived());
     }
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::rotated(
-        const Rotation<NumDimensions<TDerived>::Value>& rotation
-    ) const {
-        return rotation(derived());
+    Transformable<TDerived>::mirroredAbout(const Axis<2>& axis) const {
+        return Mirror2d(axis)(derived());
     }
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::mirroredAbout(const MirrorDatumType& datum) const {
-        return Mirror<NumDimensions<TDerived>::Value>(datum)(derived());
+    Transformable<TDerived>::mirroredAbout(const Plane3d& plane) const {
+        return Mirror3d(plane)(derived());
     }
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::mirrored(const Mirror<NumDimensions<TDerived>::Value>& mirror) const {
-        return mirror(derived());
-    }
-
-    template <class TDerived> template <int iNumAxes>
-    inline TDerived
-    Transformable<TDerived>::projectedOnto(
-        const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum
-    ) const {
-        return Projection<NumDimensions<TDerived>::Value>(datum)(derived());
+    Transformable<TDerived>::projectedOnto(const Axis<2>& axis) const {
+        return Projection2d(axis)(derived());
     }
 
     template <class TDerived>
     inline TDerived
-    Transformable<TDerived>::projected(
-        const Projection<NumDimensions<TDerived>::Value>& projection
+    Transformable<TDerived>::projectedOnto(const Axis<3>& axis) const {
+        return Projection3d(axis)(derived());
+    }
+
+    template <class TDerived>
+    inline TDerived
+    Transformable<TDerived>::projectedOnto(const Plane3d& plane) const {
+        return Projection3d(plane)(derived());
+    }
+
+    template <class TDerived>
+    inline TDerived
+    Transformable<TDerived>::transformed(
+        const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
     ) const {
-        return projection(derived());
+        return transformation(derived());
     }
 
     template <class TDerived>
     template <int iNumDestinationDimensions, int iNumAxes>
     inline typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
     Transformable<TDerived>::transplanted(
-        const Datum<NumDimensions<TDerived>::Value, iNumAxes>& sourceDatum,
-        const Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
+        const CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
     ) const {
-        return localizedTo(sourceDatum).globalizedFrom(destinationDatum);
+        return localizedTo(sourceCoordinateSystem).globalizedFrom(destinationCoordinateSystem);
     }
 
     template <class TDerived>
@@ -161,17 +165,21 @@ namespace opensolid
     template <class TDerived> template <int iNumAxes>
     inline typename ChangeDimensions<TDerived, iNumAxes>::Type
     Transformable<TDerived>::localizedTo(
-        const Datum<NumDimensions<TDerived>::Value, iNumAxes>& datum
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
     ) const {
-        return Localization<NumDimensions<TDerived>::Value, iNumAxes>(datum)(derived());
+        return Localization<NumDimensions<TDerived>::Value, iNumAxes>(coordinateSystem)(
+            derived()
+        );
     }
 
     template <class TDerived> template <int iNumDimensions>
     inline typename ChangeDimensions<TDerived, iNumDimensions>::Type
     Transformable<TDerived>::globalizedFrom(
-        const Datum<iNumDimensions, NumDimensions<TDerived>::Value>& datum
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem
     ) const {
-        return Globalization<iNumDimensions, NumDimensions<TDerived>::Value>(datum)(derived());
+        return Globalization<iNumDimensions, NumDimensions<TDerived>::Value>(coordinateSystem)(
+            derived()
+        );
     }
 
     template <class TDerived>

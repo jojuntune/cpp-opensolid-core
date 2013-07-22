@@ -22,12 +22,31 @@
 *                                                                                   *
 *************************************************************************************/
 
-#pragma once
+#include <OpenSolid/Core/Projection.hpp>
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumAxes>
-    class Datum;
+    Projection2d::Projection2d(const Axis<2>& axis) :
+        LinearTransformation<2>(
+            axis.originPoint(),
+            axis.directionVector() * axis.directionVector().transpose()
+        ) {
+    }
+
+    Projection3d::Projection3d(const Axis<3>& axis) :
+        LinearTransformation<3>(
+            axis.originPoint(),
+            axis.directionVector() * axis.directionVector().transpose()
+        ) {
+    }
+
+    Projection3d::Projection3d(const Plane3d& plane) :
+        LinearTransformation<3>(
+            plane.originPoint(),
+            Matrix3d::Identity() - plane.normalVector() * plane.normalVector().transpose()
+        ) {
+    }
 }

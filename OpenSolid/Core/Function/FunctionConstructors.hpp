@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Function/FunctionConstructors.definitions.hpp>
 
+#include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Function.definitions.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 #include <OpenSolid/Core/FunctionImplementation/IdentityFunction.hpp>
@@ -198,10 +199,13 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     Function<iNumDimensions, iNumParameters>
     LinearFunctionConstructors<iNumDimensions, iNumParameters>::Linear(
-        const Datum<iNumDimensions, iNumParameters>& datum
+        const CoordinateSystem<iNumDimensions, iNumParameters>& coordinateSystem
     ) {
         return Function<iNumDimensions, iNumParameters>(
-            new LinearFunction(datum.originPoint().vector(), datum.basisMatrix())
+            new LinearFunction(
+                coordinateSystem.originPoint().vector(),
+                coordinateSystem.basisMatrix()
+            )
         );
     }
 }

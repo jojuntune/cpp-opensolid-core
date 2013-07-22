@@ -29,29 +29,30 @@
 #include <OpenSolid/Core/Plane.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Datum.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 
 namespace opensolid
 {
-    class Plane3d :
-        public Datum<3, 2>
+    class Plane3d
     {
+    private:
+        Point<3> _originPoint;
+        Vector3d _normalVector;
     public:
         OPENSOLID_CORE_EXPORT
         Plane3d();
 
-        Plane3d(const Datum<3, 2>& other);
-
         OPENSOLID_CORE_EXPORT
-        Plane3d(const Point<3>& originPoint, const Vector3d& xVector, const Vector3d& xyVector);
+        Plane3d(const Point<3>& originPoint, const Vector3d& normalVector);
 
         OPENSOLID_CORE_EXPORT static Plane3d
-        FromPointAndNormal(const Point<3>& originPoint, const Vector3d& normalVector);
-
-        OPENSOLID_CORE_EXPORT static Plane3d
-        ThroughPoints(const Point<3>& originPoint, const Point<3>& xPoint, const Point<3>& xyPoint);
+        ThroughPoints(
+            const Point<3>& firstPoint,
+            const Point<3>& secondPoint,
+            const Point<3>& thirdPoint
+        );
 
         OPENSOLID_CORE_EXPORT static Plane3d
         Midplane(const Point<3>& pointBelow, const Point<3>& pointAbove);
@@ -66,32 +67,44 @@ namespace opensolid
         ThroughAxis(const Axis<3>& axis);
 
         OPENSOLID_CORE_EXPORT static Plane3d
-        XY(const Point<3>& originPoint = Point<3>::Origin());
+        XY();
 
         OPENSOLID_CORE_EXPORT static Plane3d
-        XZ(const Point<3>& originPoint = Point<3>::Origin());
+        XZ();
         
         OPENSOLID_CORE_EXPORT static Plane3d
-        YX(const Point<3>& originPoint = Point<3>::Origin());
+        YX();
 
         OPENSOLID_CORE_EXPORT static Plane3d
-        YZ(const Point<3>& originPoint = Point<3>::Origin());
+        YZ();
 
         OPENSOLID_CORE_EXPORT static Plane3d
-        ZX(const Point<3>& originPoint = Point<3>::Origin());
+        ZX();
         
         OPENSOLID_CORE_EXPORT static Plane3d
-        ZY(const Point<3>& originPoint = Point<3>::Origin());
+        ZY();
 
-        OPENSOLID_CORE_EXPORT static Plane3d
-        FromBasisVectors(
-            const Point<3>& originPoint,
-            const Vector3d& xBasisVector,
-            const Vector3d& yBasisVector
-        );
+        const Point<3>&
+        originPoint() const;
 
-        OPENSOLID_CORE_EXPORT static Plane3d
-        FromBasisMatrix(const Point<3>& originPoint, const Matrix<double, 3, 2>& basisMatrix);
+        const Vector3d&
+        normalVector() const;
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        offsetBy(double distance) const;
+
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        flipped() const;
+
+        OPENSOLID_CORE_EXPORT
+        Axis<3>
+        normalAxis() const;
+
+        OPENSOLID_CORE_EXPORT
+        PlanarCoordinateSystem3d
+        coordinateSystem() const;
     };
 }
 
@@ -100,32 +113,46 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct NumDimensions<Plane3d> :
-        public NumDimensions<Datum<3, 2>>
+    struct NumDimensions<Plane3d>
     {
-    };
-
-    template <int iNumResultDimensions>
-    struct ChangeDimensions<Plane3d, iNumResultDimensions> :
-        public ChangeDimensions<Datum<3, 2>, iNumResultDimensions>
-    {
+        static const int Value = 3;
     };
 
     template <>
-    struct ScalingFunction<Plane3d> :
-        public ScalingFunction<Datum<3, 2>>
+    struct ChangeDimensions<Plane3d, 3>
     {
+        typedef Plane3d Type;
     };
 
     template <>
-    struct TranslationFunction<Plane3d> :
-        public TranslationFunction<Datum<3, 2>>
+    struct ScalingFunction<Plane3d>
     {
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        operator()(const Plane3d& plane, double scale) const;
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Plane3d, iNumTransformedDimensions> :
-        public TransformationFunction<Datum<3, 2>, iNumTransformedDimensions>
+    template <>
+    struct TranslationFunction<Plane3d>
     {
+        template <class TVector>
+        Plane3d
+        operator()(const Plane3d& plane, const EigenBase<TVector>& vector) const;
+    };
+
+    template <>
+    struct TransformationFunction<Plane3d, 3>
+    {
+        template <class TMatrix>
+        Plane3d
+        operator()(const Plane3d& plane, const EigenBase<TMatrix>& matrix) const;
+    };
+
+    template <>
+    struct MorphingFunction<Plane3d, 3>
+    {
+        OPENSOLID_CORE_EXPORT
+        Plane3d
+        operator()(const Plane3d& plane, const Function<3, 3>& function) const;
     };
 }

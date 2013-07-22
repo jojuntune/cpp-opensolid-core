@@ -22,19 +22,19 @@
 *                                                                                   *
 *************************************************************************************/
 
+#include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
-
-#include <OpenSolid/Core/Axis.hpp>
 
 namespace opensolid
 {
-    Rotation<2>::Rotation(const Point2d& originPoint, double angle) :
-        _originPoint(originPoint),
-        _transformationMatrix(Rotation2Dd(angle)) {
+    Rotation2d::Rotation2d(const Point2d& originPoint, double angle) :
+        LinearTransformation<2>(originPoint, Matrix2d(Rotation2Dd(angle))) {
     }
 
-    Rotation<3>::Rotation(const Datum<3, 1>& axis, double angle) :
-        _originPoint(axis.originPoint()),
-        _transformationMatrix(AngleAxisd(angle, axis.basisVector().normalized())) {
+    Rotation3d::Rotation3d(const Axis<3>& axis, double angle) :
+        LinearTransformation<3>(
+            axis.originPoint(),
+            Matrix3d(AngleAxisd(angle, axis.directionVector()))
+        ) {
     }
 }

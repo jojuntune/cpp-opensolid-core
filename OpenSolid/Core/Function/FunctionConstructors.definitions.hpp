@@ -26,11 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/Frame.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Plane.declarations.hpp>
 
 namespace opensolid
 {
@@ -195,7 +193,7 @@ namespace opensolid
     {
     public:
         static Function<iNumDimensions, iNumParameters>
-        Linear(const Datum<iNumDimensions, iNumParameters>& datum);
+        Linear(const CoordinateSystem<iNumDimensions, iNumParameters>& coordinateSystem);
     };
 
     template <int iNumDimensions, int iNumParameters>

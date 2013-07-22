@@ -28,9 +28,10 @@
 
 #include <OpenSolid/Core/Geometry.declarations.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/transformable.declarations.hpp>
 
 namespace opensolid
 {
@@ -41,7 +42,7 @@ namespace opensolid
         Point<iNumDimensions> _originPoint;
         Matrix<double, iNumDimensions, iNumAxes> _transformationMatrix;
     public:
-        Globalization(const Datum<iNumDimensions, iNumAxes>& datum);
+        Globalization(const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem);
 
         const Point<iNumDimensions>&
         originPoint() const;

@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Globalization.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
@@ -36,9 +36,9 @@ namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
     Globalization<iNumDimensions, iNumAxes>::Globalization(
-        const Datum<iNumDimensions, iNumAxes>& datum
-    ) : _originPoint(datum.originPoint()),
-        _transformationMatrix(datum.basisMatrix()) {
+        const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem
+    ) : _originPoint(coordinateSystem.originPoint()),
+        _transformationMatrix(coordinateSystem.basisMatrix()) {
     }
 
     template <int iNumDimensions, int iNumAxes>

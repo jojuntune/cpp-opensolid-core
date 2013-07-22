@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Mirror;
+    class Mirror2d;
+    class Mirror3d;
 }

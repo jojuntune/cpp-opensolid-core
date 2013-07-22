@@ -30,4 +30,7 @@ namespace opensolid
 {
     template <int iNumDimensions>
     class Axis;
+
+    class Axis2d;
+    class Axis3d;
 }

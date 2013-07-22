@@ -28,55 +28,25 @@
 
 #include <OpenSolid/Core/Rotation.declarations.hpp>
 
-#include <OpenSolid/Core/Datum.declarations.hpp>
-#include <OpenSolid/Core/Matrix.definitions.hpp>
-#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Axis.declarations.hpp>
+#include <OpenSolid/Core/LinearTransformation.definitions.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
 
 namespace opensolid
 {
-    template <>
-    class Rotation<2>
+    class Rotation2d :
+        public LinearTransformation<2>
     {
-    private:
-        Point2d _originPoint;
-        Matrix2d _transformationMatrix;
     public:
         OPENSOLID_CORE_EXPORT
-        Rotation(const Point2d& originPoint, double angle);
-
-        const Point2d&
-        originPoint() const;
-        
-        const Matrix2d&
-        transformationMatrix() const;
-
-        template <class TTransformable>
-        TTransformable
-        operator()(const TTransformable& transformable) const;
+        Rotation2d(const Point2d& originPoint, double angle);
     };
 
-    typedef Rotation<2> Rotation2d;
-
-    template <>
-    class Rotation<3>
+    class Rotation3d :
+        public LinearTransformation<3>
     {
-    private:
-        Point3d _originPoint;
-        Matrix3d _transformationMatrix;
     public:
         OPENSOLID_CORE_EXPORT
-        Rotation(const Datum<3, 1>& axis, double angle);
-
-        const Point3d&
-        originPoint() const;
-        
-        const Matrix3d&
-        transformationMatrix() const;
-
-        template <class TTransformable>
-        TTransformable
-        operator()(const TTransformable& transformable) const;
+        Rotation3d(const Axis<3>& axis, double angle);
     };
-
-    typedef Rotation<3> Rotation3d;
 }

@@ -24,7 +24,6 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.hpp>
@@ -233,9 +232,9 @@ public:
 
     void testTransformed() {
         Point3d point(3, 2, 1);
-        TS_ASSERT((point.rotatedAbout(Frame3d().zAxis(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
-        TS_ASSERT((point.rotatedAbout(Frame3d().xAxis(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
-        TS_ASSERT((point.mirroredAbout(Frame3d().yzPlane()) - Point3d(-3, 2, 1)).isZero());
+        TS_ASSERT((point.rotatedAbout(Axis3d::Z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
+        TS_ASSERT((point.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
+        TS_ASSERT((point.mirroredAbout(Plane3d::YZ()) - Point3d(-3, 2, 1)).isZero());
     }
 
     void testRandom() {

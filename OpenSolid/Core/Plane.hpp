@@ -28,15 +28,39 @@
 
 #include <OpenSolid/Core/Plane.definitions.hpp>
 
-#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Datum.hpp>
 
 namespace opensolid
 {
-    inline
-    Plane3d::Plane3d(const Datum<3, 2>& other) :
-        Datum<3, 2>(other) {
+    inline const Point<3>&
+    Plane3d::originPoint() const {
+        return _originPoint;
+    }
+
+    inline const Vector3d&
+    Plane3d::normalVector() const {
+        return _normalVector;
+    }
+
+    template <class TVector>
+    Plane3d
+    TranslationFunction<Plane3d>::operator()(
+        const Plane3d& plane,
+        const EigenBase<TVector>& vector
+    ) const {
+        return Plane3d(plane.originPoint() + vector.derived(), plane.normalVector());
+    }
+
+    template <class TMatrix>
+    Plane3d
+    TransformationFunction<Plane3d, 3>::operator()(
+        const Plane3d& plane,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return Plane3d(
+            Point<3>::transformation(plane.originPoint(), matrix),
+            matrix.derived() * plane.normalVector()
+        );
     }
 }

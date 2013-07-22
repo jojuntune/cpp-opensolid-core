@@ -26,8 +26,33 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/LinearTransformation.declarations.hpp>
+
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
+
 namespace opensolid
 {
     template <int iNumDimensions>
-    class Frame;
+    class LinearTransformation
+    {
+    private:
+        Point<iNumDimensions> _originPoint;
+        Matrix<double, iNumDimensions, iNumDimensions> _transformationMatrix;
+    protected:
+        LinearTransformation(
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix
+        );
+    public:
+        const Point<iNumDimensions>&
+        originPoint() const;
+        
+        const Matrix<double, iNumDimensions, iNumDimensions>&
+        transformationMatrix() const;
+
+        template <class TTransformable>
+        TTransformable
+        operator()(const TTransformable& transformable) const;
+    };
 }

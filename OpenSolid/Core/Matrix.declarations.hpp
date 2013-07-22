@@ -26,11 +26,14 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Convertible.declarations.hpp>
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
+#include <OpenSolid/Core/LinearTransformation.declarations.hpp>
 #include <OpenSolid/Core/Mirror.declarations.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Projection.declarations.hpp>
 #include <OpenSolid/Core/Rotation.declarations.hpp>

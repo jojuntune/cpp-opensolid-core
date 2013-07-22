@@ -5,14 +5,11 @@
         CORE_SOURCES
         *.cpp
         Curve/*.cpp
-        Datum/*.cpp
         Function/*.cpp
         FunctionImplementation/*.cpp
-        Interval/*.cpp
+        Geometry/*.cpp
         Matrix/*.cpp
         Set/*.cpp
-        Simplex/*.cpp
-        Transformation/*.cpp
     )
 
     if(${BUILD_DYNAMIC_LIBS})
@@ -43,17 +40,10 @@
 
     add_to_global_source_list(
         *
-        Box/*
-        Datum/*
-        Domain/*
-        DomainImplementation/*
+        Curve/*
         Function/*
         FunctionImplementation/*
         Geometry/*
-        Interval/*
         Matrix/*
-        Point/*
         Set/*
-        Simplex/*
-        Transformable/*
     )

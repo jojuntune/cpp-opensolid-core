@@ -24,60 +24,55 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 
 namespace opensolid
 {
-    Axis<2>::Axis() :
-        Datum<2, 1>() {
+    Axis2d::Axis2d(const Point2d& originPoint, const Vector2d& directionVector) :
+        Axis<2>(originPoint, directionVector) {
     }
 
-    Axis<2>::Axis(const Point2d& originPoint, const Vector2d& directionVector) :
-        Datum<2, 1>(originPoint, directionVector.normalized()) {
+    Axis2d::Axis2d(const Axis<2>& other) :
+        Axis<2>(other) {
     }
 
-    Axis<2>
-    Axis<2>::X(const Point2d& originPoint) {
-        return Axis<2>(originPoint, Vector2d::UnitX());
+    Axis2d
+    Axis2d::X() {
+        return Axis2d(Point2d::Origin(), Vector2d::UnitX());
     }
 
-    Axis<2>
-    Axis<2>::Y(const Point2d& originPoint) {
-        return Axis<2>(originPoint, Vector2d::UnitY());
+    Axis2d
+    Axis2d::Y() {
+        return Axis2d(Point2d::Origin(), Vector2d::UnitY());
     }
 
-    Axis<2>
-    Axis<2>::FromBasisVector(const Point2d& originPoint, const Vector2d& basisVector) {
-        return Datum<2, 1>(originPoint, basisVector);
+    Axis3d::Axis3d(const Point3d& originPoint, const Vector3d& directionVector) :
+        Axis<3>(originPoint, directionVector) {
     }
 
-    Axis<3>::Axis() :
-        Datum<3, 1>() {
+    Axis3d::Axis3d(const Axis<3>& other) :
+        Axis<3>(other) {
     }
 
-    Axis<3>::Axis(const Point3d& originPoint, const Vector3d& directionVector) :
-        Datum<3, 1>(originPoint, directionVector.normalized()) {
+    Axis3d
+    Axis3d::X() {
+        return Axis3d(Point3d::Origin(), Vector3d::UnitX());
     }
 
-    Axis<3>
-    Axis<3>::X(const Point3d& originPoint) {
-        return Axis<3>(originPoint, Vector3d::UnitX());
+    Axis3d
+    Axis3d::Y() {
+        return Axis3d(Point3d::Origin(), Vector3d::UnitY());
     }
 
-    Axis<3>
-    Axis<3>::Y(const Point3d& originPoint) {
-        return Axis<3>(originPoint, Vector3d::UnitY());
+    Axis3d
+    Axis3d::Z() {
+        return Axis3d(Point3d::Origin(), Vector3d::UnitZ());
     }
 
-    Axis<3>
-    Axis<3>::Z(const Point3d& originPoint) {
-        return Axis<3>(originPoint, Vector3d::UnitZ());
-    }
-
-    Axis<3>
-    Axis<3>::FromBasisVector(const Point3d& originPoint, const Vector3d& basisVector) {
-        return Datum<3, 1>(originPoint, basisVector);
+    Plane3d
+    Axis3d::normalPlane() const {
+        return Plane3d(originPoint(), directionVector());
     }
 }

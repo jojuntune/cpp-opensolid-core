@@ -28,13 +28,15 @@
  
 #include <OpenSolid/Core/Simplex.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/Datum.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
@@ -96,13 +98,13 @@ namespace opensolid
         Simplex<iNumDimensions, 3>
         face(int index) const;
         
-        Datum<iNumDimensions, iNumVertices - 1>
-        datum() const;
+        CoordinateSystem<iNumDimensions, iNumVertices - 1>
+        coordinateSystem() const;
         
-        Datum<iNumDimensions, 1>
+        Axis<iNumDimensions>
         axis() const;
         
-        Datum<3, 2>
+        Plane3d
         plane() const;
         
         Box<iNumDimensions>

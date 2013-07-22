@@ -52,7 +52,7 @@
 
     add_cxxtest(IntervalTests IntervalTests.hpp OpenSolidCore)
     add_cxxtest(MatrixTests MatrixTests.hpp OpenSolidCore)
-    add_cxxtest(DatumTests DatumTests.hpp OpenSolidCore)
+    add_cxxtest(CoordinateSystemTests CoordinateSystemTests.hpp OpenSolidCore)
     add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
     add_cxxtest(FunctionTests FunctionTests.hpp OpenSolidCore)
@@ -61,7 +61,7 @@
     add_to_global_source_list(
         IntervalTests.hpp
         MatrixTests.hpp
-        DatumTests.hpp
+        CoordinateSystemTests.hpp
         SimplexTests.hpp
         SetTests.hpp
         FunctionTests.hpp

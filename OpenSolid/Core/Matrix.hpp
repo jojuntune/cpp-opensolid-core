@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix/ContainOperation.hpp>
 #include <OpenSolid/Core/Matrix/EmptyOperation.hpp>
@@ -67,7 +67,7 @@ namespace Eigen
     template <class TDerived>
     inline const TDerived&
     MatrixBase<TDerived>::translatedAlong(
-        const opensolid::Datum<NumDimensions, 1>& axis,
+        const opensolid::Axis<NumDimensions>& axis,
         double distance
     ) const {
         return derived();
@@ -81,52 +81,56 @@ namespace Eigen
 
     template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotatedAbout(const opensolid::Datum<3, 1>& axis, double angle) const {
+    MatrixBase<TDerived>::rotatedAbout(const opensolid::Axis<3>& axis, double angle) const {
         return opensolid::Rotation3d(axis, angle)(derived());
     }
 
     template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::rotated(const opensolid::Rotation<NumDimensions>& rotation) const {
-        return rotation(derived());
+    MatrixBase<TDerived>::mirroredAbout(const opensolid::Axis<2>& axis) const {
+        return opensolid::Mirror2d(axis)(derived());
     }
 
     template <class TDerived>
     inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::mirroredAbout(
-        const opensolid::Datum<NumDimensions, NumDimensions - 1>& datum
+    MatrixBase<TDerived>::mirroredAbout(const opensolid::Plane3d& plane) const {
+        return opensolid::Mirror3d(plane)(derived());
+    }
+
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projectedOnto(const opensolid::Axis<2>& axis) const {
+        return opensolid::Projection2d(axis)(derived());
+    }
+
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projectedOnto(const opensolid::Axis<3>& axis) const {
+        return opensolid::Projection3d(axis)(derived());
+    }
+
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::projectedOnto(const opensolid::Plane3d& plane) const {
+        return opensolid::Projection3d(plane)(derived());
+    }
+
+    template <class TDerived>
+    inline typename MatrixBase<TDerived>::PlainObject
+    MatrixBase<TDerived>::transformed(
+        const opensolid::LinearTransformation<NumDimensions>& transformation
     ) const {
-        return opensolid::Mirror<NumDimensions>(datum)(derived());
-    }
-
-    template <class TDerived>
-    inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::mirrored(const opensolid::Mirror<NumDimensions>& mirror) const {
-        return mirror(derived());
-    }
-
-    template <class TDerived> template <int iNumAxes>
-    inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::projectedOnto(
-        const opensolid::Datum<NumDimensions, iNumAxes>& datum
-    ) const {
-        return opensolid::Projection<NumDimensions>(datum)(derived());
-    }
-
-    template <class TDerived>
-    inline typename MatrixBase<TDerived>::PlainObject
-    MatrixBase<TDerived>::projected(const opensolid::Projection<NumDimensions>& projection) const {
-        return projection(derived());
+        return transformation(derived());
     }
 
     template <class TDerived>
     template <int iNumDestinationDimensions, int iNumAxes>
     inline Matrix<typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::transplanted(
-        const opensolid::Datum<NumDimensions, iNumAxes>& sourceDatum,
-        const opensolid::Datum<iNumDestinationDimensions, iNumAxes>& destinationDatum
+        const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& sourceCoordinateSystem,
+        const opensolid::CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
     ) const {
-        return localizedTo(sourceDatum).globalizedFrom(destinationDatum);
+        return localizedTo(sourceCoordinateSystem).globalizedFrom(destinationCoordinateSystem);
     }
 
     template <class TDerived> template <int iNumDestinationDimensions>
@@ -140,17 +144,17 @@ namespace Eigen
     template <class TDerived> template <int iNumAxes>
     inline Matrix<typename internal::traits<TDerived>::Scalar, iNumAxes, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::localizedTo(
-        const opensolid::Datum<NumDimensions, iNumAxes>& datum
+        const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& coordinateSystem
     ) const {
-        return transformation(derived(), datum.inverseMatrix());
+        return transformation(derived(), coordinateSystem.inverseMatrix());
     }
 
     template <class TDerived> template <int iNumDimensions>
     inline Matrix<typename internal::traits<TDerived>::Scalar, iNumDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::globalizedFrom(
-        const opensolid::Datum<iNumDimensions, NumDimensions>& datum
+        const opensolid::CoordinateSystem<iNumDimensions, NumDimensions>& coordinateSystem
     ) const {
-        return transformation(derived(), datum.basisMatrix());
+        return transformation(derived(), coordinateSystem.basisMatrix());
     }
 
     template <class TDerived>

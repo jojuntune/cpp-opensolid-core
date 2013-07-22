@@ -22,7 +22,6 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Frame.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Zero.hpp>
@@ -259,12 +258,14 @@ public:
     }
     
     void testTransformation() {
-        Frame3d frame;
-        frame = frame.translated(Vector3d(1, 1, 1));
-        frame = frame.rotatedAbout(frame.zAxis(), M_PI / 4);
+        CoordinateSystem3d coordinateSystem = CoordinateSystem3d::Global();
+        coordinateSystem = coordinateSystem.translated(Vector3d(1, 1, 1));
+        coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
         Function<3, 1> linear = Vector3d::Ones() * t;
-        Function<3, 1> product = frame.basisMatrix() * linear + frame.originPoint().vector();
-        Function<3, 1> quotient = frame.inverseMatrix() * (linear - frame.originPoint().vector());
+        Function<3, 1> product = coordinateSystem.basisMatrix() * linear +
+            coordinateSystem.originPoint().vector();
+        Function<3, 1> quotient = coordinateSystem.inverseMatrix() *
+            (linear - coordinateSystem.originPoint().vector());
         RowVectorXd parameter_values = RowVectorXd::LinSpaced(5, Interval::Unit());
         MatrixXd product_values = (Vector3d(0, sqrt(2.0), 1) * parameter_values).colwise() +
             Vector3d(1, 1, 1);

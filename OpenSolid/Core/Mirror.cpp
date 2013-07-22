@@ -22,34 +22,31 @@
 *                                                                                   *
 *************************************************************************************/
 
-#pragma once
-
-#include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/Projection.declarations.hpp>
-
-#include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/LinearTransformation.definitions.hpp>
-#include <OpenSolid/Core/Plane.declarations.hpp>
+#include <OpenSolid/Core/Mirror.hpp>
 
 namespace opensolid
 {
-    class Projection2d :
-        public LinearTransformation<2>
+    namespace
     {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Projection2d(const Axis<2>& axis);
-    };
+        template <class TDerived>
+        Matrix<double, TDerived::RowsAtCompileTime, TDerived::RowsAtCompileTime>
+        mirrorTransformationMatrix(const EigenBase<TDerived>& normalVector) {
+            return Matrix<double, TDerived::RowsAtCompileTime, TDerived::RowsAtCompileTime>::Identity() -
+                2 * normalVector.derived() * normalVector.derived().transpose();
+        }
+    }
 
-    class Projection3d :
-        public LinearTransformation<3>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Projection3d(const Axis<3>& axis);
+    Mirror2d::Mirror2d(const Axis<2>& axis) :
+        LinearTransformation<2>(
+            axis.originPoint(),
+            mirrorTransformationMatrix(axis.directionVector().unitOrthogonal())
+        ) {
+    }
 
-        OPENSOLID_CORE_EXPORT
-        Projection3d(const Plane3d& plane);
-    };
+    Mirror3d::Mirror3d(const Plane3d& plane) :
+        LinearTransformation<3>(
+            plane.originPoint(),
+            mirrorTransformationMatrix(plane.normalVector())
+        ) {
+    }
 }

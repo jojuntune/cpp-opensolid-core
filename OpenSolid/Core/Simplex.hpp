@@ -28,11 +28,13 @@
  
 #include <OpenSolid/Core/Simplex.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.definitions.hpp>
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
-#include <OpenSolid/Core/Datum.hpp>
+#include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
@@ -254,30 +256,32 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices>
-    Datum<iNumDimensions, iNumVertices - 1>
-    Simplex<iNumDimensions, iNumVertices>::datum() const {
-        return Datum<iNumDimensions, iNumVertices - 1>(
+    CoordinateSystem<iNumDimensions, iNumVertices - 1>
+    Simplex<iNumDimensions, iNumVertices>::coordinateSystem() const {
+        return CoordinateSystem<iNumDimensions, iNumVertices - 1>(
             vertex(0),
             vertices().template rightCols<iNumVertices - 1>().colwise() - vertices().col(0)
         );
     }
 
-    template <>
-    inline Datum<2, 1>
-    Simplex<2, 2>::axis() const {
-        return datum().normalized();
+    template <int iNumDimensions, int iNumVertices>
+    inline Axis<iNumDimensions>
+    Simplex<iNumDimensions, iNumVertices>::axis() const {
+        static_assert(
+            iNumVertices == 2,
+            "Axis only defined for edges, not other simplex types"
+        );
+        return Axis<iNumDimensions>(vertex(0), vector());
     }
 
-    template <>
-    inline Datum<3, 1>
-    Simplex<3, 2>::axis() const {
-        return datum().normalized();
-    }
-
-    template <>
-    inline Datum<3, 2>
-    Simplex<3, 3>::plane() const {
-        return datum().normalized();
+    template <int iNumDimensions, int iNumVertices>
+    inline Plane3d
+    Simplex<iNumDimensions, iNumVertices>::plane() const {
+        static_assert(
+            iNumDimensions == 3 && iNumVertices == 3,
+            "Plane only defined for 3D triangles, not other simplex types"
+        );
+        return Plane3d(vertex(0), normalVector());
     }
     
     template <int iNumDimensions, int iNumVertices>

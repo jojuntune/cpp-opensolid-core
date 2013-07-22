@@ -28,8 +28,9 @@
 
 #include <OpenSolid/Core/Localization.declarations.hpp>
 
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
-#include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
@@ -41,7 +42,7 @@ namespace opensolid
         Point<iNumDimensions> _originPoint;
         Matrix<double, iNumAxes, iNumDimensions> _transformationMatrix;
     public:
-        Localization(const Datum<iNumDimensions, iNumAxes>& datum);
+        Localization(const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem);
 
         const Point<iNumDimensions>&
         originPoint() const;
