@@ -271,7 +271,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "XY plane requested for non-3D coordinate system"
-        )
+        );
         return Plane3d(originPoint(), xBasisVector().cross(yBasisVector()));
     }
 
@@ -281,7 +281,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "XZ plane requested for non-3D coordinate system"
-        )
+        );
         return Plane3d(originPoint(), xBasisVector().cross(zBasisVector()));
     }
 
@@ -291,7 +291,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "YX plane requested for non-3D coordinate system"
-        )
+        );
         return Plane3d(originPoint(), yBasisVector().cross(xBasisVector()));
     }
 
@@ -301,7 +301,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "YZ plane requested for non-3D coordinate system"
-        )
+        );
         return Plane3d(originPoint(), yBasisVector().cross(zBasisVector()));
     }
 
@@ -311,7 +311,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "ZX plane requested for non-3D coordinate system"
-        )
+        );
         return Plane3d(originPoint(), zBasisVector().cross(xBasisVector()));
     }
 
@@ -321,7 +321,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "ZY plane requested for non-3D coordinate system"
-        )
+        );
         return Plane3d(originPoint(), zBasisVector().cross(yBasisVector()));
     }
 
@@ -331,7 +331,7 @@ namespace opensolid
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "Component plane requested for non-3D coordinate system"
-        )
+        );
 
         if (firstAxisIndex < 0 || firstAxisIndex > 2) {
             throw PlaceholderError();

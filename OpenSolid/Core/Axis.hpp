@@ -121,7 +121,7 @@ namespace opensolid
         const Axis<iNumDimensions>& axis,
         const Function<iNumDestinationDimensions, iNumDimensions>& function
     ) const {
-        return Axis<iNumTransformedDimensions>(
+        return Axis<iNumDestinationDimensions>(
             axis.originPoint().morphed(function),
             function.jacobian(axis.originPoint().vector()) * axis.directionVector()
         );

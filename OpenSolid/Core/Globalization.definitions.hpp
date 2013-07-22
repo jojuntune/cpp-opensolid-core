@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/transformable.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
