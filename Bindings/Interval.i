@@ -3,6 +3,7 @@
 %}
 
 // Make special functions private
+%csmethodmodifiers Interval::OpNegate "private";
 %csmethodmodifiers Interval::OpAdd "private";
 %csmethodmodifiers Interval::OpSubtract "private";
 %csmethodmodifiers Interval::OpMultiply "private";
@@ -17,6 +18,11 @@
 
 // Add arithmetic operators, implicit conversion from double, and ToString
 %typemap(cscode) Interval %{
+static public Interval operator-(Interval interval)
+{
+    return OpNegate(interval);
+}
+
 static public Interval operator+(Interval firstInterval, Interval secondInterval)
 {
     return OpAdd(firstInterval, secondInterval);

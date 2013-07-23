@@ -187,6 +187,12 @@ public:
     Whole() {
         return opensolid::Interval::Whole();
     }
+
+    // Will be converted to unary operator-
+    inline static Interval
+    OpNegate(Interval interval) {
+        return -interval.opensolidInterval();
+    }
     
     // Will be converted to operator+
     inline static Interval
