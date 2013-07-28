@@ -12,7 +12,6 @@
 
     set(BUILD_DYNAMIC_LIBS ON CACHE BOOL "Build dynamic libraries")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
-    set(BUILD_DOTNET_BINDINGS OFF CACHE BOOL "Build .NET bindings (requires SWIG)")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
@@ -146,11 +145,6 @@
     # Include OpenMesh include directory if mesh module is enabled
     if(${BUILD_MESH_MODULE})
         include_directories(${OPENMESH_ROOT}/include)
-    endif()
-
-    if(${BUILD_DOTNET_BINDINGS})
-        find_program(CSHARP_COMPILER NAMES mcs dmcs csc)
-        add_subdirectory(Bindings)
     endif()
     
     # Build UI if selected

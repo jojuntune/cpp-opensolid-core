@@ -68,38 +68,6 @@
         GeometryTests.hpp
     )
     
-########## .NET binding tests ##########
-    
-    file(
-        TO_NATIVE_PATH
-        "${EXECUTABLE_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}/CSharpTests.exe"
-        CSHARPTESTS_OUTPUT_NATIVE_PATH
-    )
-
-    file(
-        TO_NATIVE_PATH
-        "${CMAKE_CURRENT_SOURCE_DIR}/CSharpTests.cs"
-        CSHARPTESTS_SOURCE_FILE_NATIVE_PATH
-    )
-
-    file(
-        TO_NATIVE_PATH
-        "${EXECUTABLE_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}"
-        CSHARPTESTS_WORKING_DIRECTORY_NATIVE_PATH
-    )
-
-    if(${BUILD_DOTNET_BINDINGS})
-        add_custom_target(
-            CSharpTests ALL
-            ${CSHARP_COMPILER}
-            /r:OpenSolid.dll
-            /out:${CSHARPTESTS_OUTPUT_NATIVE_PATH}
-            ${CSHARPTESTS_SOURCE_FILE_NATIVE_PATH}
-            WORKING_DIRECTORY ${CSHARPTESTS_WORKING_DIRECTORY_NATIVE_PATH}
-        )
-        add_dependencies(CSharpTests OpenSolidDotNet)
-    endif()
-    
 ########## Graph library tests ##########
 
     if(${BUILD_UI})
