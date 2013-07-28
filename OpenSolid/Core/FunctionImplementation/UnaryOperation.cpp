@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/UnaryOperation.hpp>
 
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+
 namespace opensolid
 {
     int

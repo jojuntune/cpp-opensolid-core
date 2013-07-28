@@ -22,9 +22,9 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/config.hpp>
-
 #include <OpenSolid/Core/FunctionImplementation/NegatedFunction.hpp>
+
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 
 namespace opensolid
 {

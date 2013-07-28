@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/NormFunction.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 
 namespace opensolid
 {   

@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/FunctionImplementation/PowerFunction.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
+#include <OpenSolid/Core/FunctionImplementation.hpp>
 #include <OpenSolid/Core/FunctionImplementation/ConstantFunction.hpp>
 
 namespace opensolid

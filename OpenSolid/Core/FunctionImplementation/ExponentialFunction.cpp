@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ExponentialFunction.hpp>
 
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+
 namespace opensolid
 {       
     int 

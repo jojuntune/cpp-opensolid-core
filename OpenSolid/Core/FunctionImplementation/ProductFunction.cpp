@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ProductFunction.hpp>
 
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+
 namespace opensolid
 {   
     int

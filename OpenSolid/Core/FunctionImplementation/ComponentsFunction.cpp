@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/FunctionImplementation/ComponentsFunction.hpp>
 
+#include <OpenSolid/Core/FunctionImplementation.hpp>
+
 namespace opensolid
 {
     int
