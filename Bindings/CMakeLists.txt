@@ -33,11 +33,23 @@ set(
     ${CMAKE_CURRENT_SOURCE_DIR}/OpenSolidExtensions.cs
 )
 
+file(
+    TO_NATIVE_PATH
+    "${CSHARP_SOURCE_FILES}"
+    CSHARP_SOURCE_FILES_NATIVE_PATHS
+)
+
+file(
+    TO_NATIVE_PATH
+    "${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}"
+    CSHARP_WORKING_DIRECTORY_NATIVE_PATH
+)
+
 # Build .NET DLL
 add_custom_target(
     OpenSolidDotNet ALL
-    ${CSHARP_COMPILER} /target:library /out:OpenSolid.dll ${CSHARP_SOURCE_FILES}
-    WORKING_DIRECTORY ${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}
+    ${CSHARP_COMPILER} /target:library /out:OpenSolid.dll ${CSHARP_SOURCE_FILES_NATIVE_PATHS}
+    WORKING_DIRECTORY ${CSHARP_WORKING_DIRECTORY_NATIVE_PATH}
     DEPENDS OpenSolidPInvoke OpenSolidExtensions.cs
 )
 add_dependencies(OpenSolidDotNet OpenSolidPInvoke)
