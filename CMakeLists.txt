@@ -148,7 +148,7 @@
         include_directories(${OPENMESH_ROOT}/include)
     endif()
 
-    if(BUILD_DOTNET_BINDINGS)
+    if(${BUILD_DOTNET_BINDINGS})
         find_program(CSHARP_COMPILER NAMES mcs dmcs csc)
         add_subdirectory(Bindings)
     endif()
