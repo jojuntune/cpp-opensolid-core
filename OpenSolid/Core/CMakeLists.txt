@@ -12,11 +12,11 @@
         Set/*.cpp
     )
 
-    if(${BUILD_DYNAMIC_LIBS})
-        add_library(OpenSolidCore SHARED ${CORE_SOURCES})
-    else()
+    if(${BUILD_STATIC_CORE})
         add_library(OpenSolidCore STATIC ${CORE_SOURCES})
         set_target_properties(OpenSolidCore PROPERTIES OUTPUT_NAME OpenSolidCoreStatic)
+    else()
+        add_library(OpenSolidCore SHARED ${CORE_SOURCES})
     endif()
     set_target_properties(OpenSolidCore PROPERTIES DEBUG_POSTFIX Debug)
     add_dependencies(OpenSolidCore eigen_sources)

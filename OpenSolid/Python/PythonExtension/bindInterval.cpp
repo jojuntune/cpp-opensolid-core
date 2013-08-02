@@ -22,147 +22,154 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include "PythonModule.hpp"
-#include "repr.hpp"
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/Python/PythonExtension.hpp>
+#include <OpenSolid/Python/repr.hpp>
 
 using namespace boost::python;
 
 namespace opensolid
 {
-    double clampD(const Interval& interval, double argument) {
+    double
+    clampD(const Interval& interval, double argument) {
         return interval.clamp(argument);
     }
 
-    Interval clampI(const Interval& interval, const Interval& argument) {
+    Interval
+    clampI(const Interval& interval, const Interval& argument) {
         return interval.clamp(argument);
     }
 
-    double interpolatedD(const Interval& interval, double argument) {
+    double
+    interpolatedD(const Interval& interval, double argument) {
         return interval.interpolated(argument);
     }
 
-    Interval interpolatedI(const Interval& interval, const Interval& argument) {
+    Interval
+    interpolatedI(const Interval& interval, const Interval& argument) {
         return interval.interpolated(argument);
     }
 
-    tuple bisected(const Interval& argument) {
+    tuple
+    bisected(const Interval& argument) {
         std::pair<Interval, Interval> bisected = argument.bisected();
         return make_tuple(bisected.first, bisected.second);
     }
 
-    bool overlaps(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.overlaps(second_argument);}
+    bool
+    overlaps(const Interval& firstArgument, const Interval& secondArgument) {
+        return firstArgument.overlaps(secondArgument);
+    }
 
-    bool overlapsP(
-        const Interval& first_argument,
-        const Interval& second_argument,
+    bool
+    overlapsP(const Interval& firstArgument, const Interval& secondArgument, double precision) {
+        return firstArgument.overlaps(secondArgument, precision);
+    }
+
+    bool
+    strictlyOverlaps(const Interval& firstArgument, const Interval& secondArgument) {
+        return firstArgument.strictlyOverlaps(secondArgument);
+    }
+
+    bool
+    strictlyOverlapsP(
+        const Interval& firstArgument,
+        const Interval& secondArgument,
         double precision
-    ) {return first_argument.overlaps(second_argument, precision);}
+    ) {
+        return firstArgument.strictlyOverlaps(secondArgument, precision);
+    }
 
-    bool strictlyOverlaps(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.strictlyOverlaps(second_argument);}
+    bool
+    containsD(const Interval& firstArgument, double secondArgument) {
+        return firstArgument.contains(secondArgument);
+    }
 
-    bool strictlyOverlapsP(
-        const Interval& first_argument,
-        const Interval& second_argument,
+    bool
+    containsDP(const Interval& firstArgument, double secondArgument, double precision) {
+        return firstArgument.contains(secondArgument, precision);
+    }
+
+    bool
+    containsI(const Interval& firstArgument, const Interval& secondArgument) {
+        return firstArgument.contains(secondArgument);
+    }
+
+    bool
+    containsIP(const Interval& firstArgument, const Interval& secondArgument, double precision) {
+        return firstArgument.contains(secondArgument, precision);
+    }
+
+    bool
+    strictlyContainsD(const Interval& firstArgument, double secondArgument) {
+        return firstArgument.strictlyContains(secondArgument);
+    }
+
+    bool
+    strictlyContainsDP(const Interval& firstArgument, double secondArgument, double precision) {
+        return firstArgument.strictlyContains(secondArgument, precision);
+    }
+
+    bool
+    strictlyContainsI(const Interval& firstArgument, const Interval& secondArgument) {
+        return firstArgument.strictlyContains(secondArgument);
+    }
+
+    bool
+    strictlyContainsIP(
+        const Interval& firstArgument,
+        const Interval& secondArgument,
         double precision
-    ) {return first_argument.strictlyOverlaps(second_argument, precision);}
+    ) {
+        return firstArgument.strictlyContains(secondArgument, precision);
+    }
 
-    bool containsD(
-        const Interval& first_argument,
-        double second_argument
-    ) {return first_argument.contains(second_argument);}
-
-    bool containsDP(
-        const Interval& first_argument,
-        double second_argument,
-        double precision
-    ) {return first_argument.contains(second_argument, precision);}
-
-    bool containsI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.contains(second_argument);}
-
-    bool containsIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        double precision
-    ) {return first_argument.contains(second_argument, precision);}
-
-    bool strictlyContainsD(
-        const Interval& first_argument,
-        double second_argument
-    ) {return first_argument.strictlyContains(second_argument);}
-
-    bool strictlyContainsDP(
-        const Interval& first_argument,
-        double second_argument,
-        double precision
-    ) {return first_argument.strictlyContains(second_argument, precision);}
-
-    bool strictlyContainsI(
-        const Interval& first_argument,
-        const Interval& second_argument
-    ) {return first_argument.strictlyContains(second_argument);}
-
-    bool strictlyContainsIP(
-        const Interval& first_argument,
-        const Interval& second_argument,
-        double precision
-    ) {return first_argument.strictlyContains(second_argument, precision);}
-
-    std::string repr(const Interval& argument) {return __repr__(argument);}
-
-    struct IntervalPickleSuite : public pickle_suite
-    {
-        static tuple getinitargs(const Interval& argument) {
-            return make_tuple(argument.lowerBound(), argument.upperBound());
-        }
-    };
+    std::string
+    repr(const Interval& argument) {
+        return __repr__(argument);
+    }
     
-    void bindInterval() {
+    void
+    bindInterval() {
         class_<Interval>("Interval")
             .def(init<Interval>())
             .def(init<double, double>())
-            .def("lower", &Interval::lower)
-            .def("upper", &Interval::upper)
-            .def("median", &Interval::median)
-            .def("width", &Interval::width)
+            .add_property("lower_bound", &Interval::lowerBound)
+            .add_property("upper_bound", &Interval::upperBound)
+            .add_property("median", &Interval::median)
+            .add_property("width", &Interval::width)
+            .def("random_value", &Interval::randomValue)
             .def("clamp", &clampI)
             .def("clamp", &clampD)
             .def("interpolated", &interpolatedI)
             .def("interpoloated", &interpolatedD)
-            .def("random", &Interval::random)
             .def("squared", &Interval::squared)
-            .def("isEmpty", &Interval::isEmpty)
-            .def("isSingleton", &Interval::isSingleton)
+            .add_property("is_empty", &Interval::isEmpty)
+            .add_property("is_singleton", &Interval::isSingleton)
             .def("bisected", &bisected)
             .def("hull", &Interval::hull)
             .def("intersection", &Interval::intersection)
-            .def("overlaps", &overlaps)
-            .def("overlaps", &overlapsP)
-            .def("strictlyOverlaps", &strictlyOverlaps)
-            .def("strictlyOverlaps", &strictlyOverlapsP)
             .def("contains", &containsI)
             .def("contains", &containsIP)
             .def("contains", &containsD)
             .def("contains", &containsDP)
             .def("__contains__", &containsI)
             .def("__contains__", &containsD)
-            .def("strictlyContains", &strictlyContainsI)
-            .def("strictlyContains", &strictlyContainsIP)
-            .def("strictlyContains", &strictlyContainsD)
-            .def("strictlyContains", &strictlyContainsDP)
-            .def("Empty", &Interval::Empty)
-                .staticmethod("Empty")
-            .def("Whole", &Interval::Whole)
-                .staticmethod("Whole")
+            .def("strictly_contains", &strictlyContainsI)
+            .def("strictly_contains", &strictlyContainsIP)
+            .def("strictly_contains", &strictlyContainsD)
+            .def("strictly_contains", &strictlyContainsDP)
+            .def("overlaps", &overlaps)
+            .def("overlaps", &overlapsP)
+            .def("strictly_overlaps", &strictlyOverlaps)
+            .def("strictly_overlaps", &strictlyOverlapsP)
+            .def("unit", &Interval::Unit)
+                .staticmethod("unit")
+            .def("empty", &Interval::Empty)
+                .staticmethod("empty")
+            .def("whole", &Interval::Whole)
+                .staticmethod("whole")
             .def(self == self)
             .def(self == double())
             .def(double() == self)
@@ -181,21 +188,34 @@ namespace opensolid
             .def(self >= self)
             .def(self >= double())
             .def(double() >= self)
+            .def(self == Zero())
+            .def(self != Zero())
+            .def(self < Zero())
+            .def(self > Zero())
+            .def(self <= Zero())
+            .def(self >= Zero())
             .def(-self)
+            .def(self += self)
+            .def(self += double())
             .def(self + self)
             .def(self + double())
             .def(double() + self)
+            .def(self -= self)
+            .def(self -= double())
             .def(self - self)
             .def(self - double())
             .def(double() - self)
+            .def(self *= self)
+            .def(self *= double())
             .def(self * self)
             .def(self * double())
             .def(double() * self)
+            .def(self /= self)
+            .def(self /= double())
             .def(self / self)
             .def(self / double())
             .def(double() / self)
-            .def("__repr__", &repr)
-            .def_pickle(IntervalPickleSuite());
+            .def("__repr__", &repr);
         
         implicitly_convertible<double, Interval>();
         

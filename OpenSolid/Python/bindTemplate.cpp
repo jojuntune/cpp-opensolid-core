@@ -22,13 +22,14 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include "PythonModule.hpp"
+#include <OpenSolid/Python/PythonExtension.hpp>
 
 using namespace boost::python;
 
 namespace opensolid
 {
-    void bindTemplate() {
+    void
+    bindTemplate() {
         class_<Template>("Template")
             .def("", &Template::);
     }

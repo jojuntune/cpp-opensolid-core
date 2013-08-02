@@ -30,13 +30,13 @@
 
 namespace opensolid
 {
-    template <int iErrorNumber>
-    Error::Error(UniqueErrorNumber<iErrorNumber>) :
-        _errorNumber(iErrorNumber) {
+    template <int iErrorCode>
+    ErrorConditionBase::ErrorConditionBase(UniqueErrorCode<iErrorCode>) :
+        _errorCode(iErrorCode) {
     }
 
-    template <int iErrorNumber>
-    NumberedError<iErrorNumber>::NumberedError() :
-        Error(UniqueErrorNumber<iErrorNumber>()) {
+    template <int iErrorCode>
+    ErrorCondition<iErrorCode>::ErrorCondition() :
+        ErrorConditionBase(UniqueErrorCode<iErrorCode>()) {
     }
 }

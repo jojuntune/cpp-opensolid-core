@@ -26,18 +26,45 @@
 
 namespace opensolid
 {
+    Error::Error(ErrorConditionBase* condition) :
+        _condition(condition),
+        _code(condition->errorCode()),
+        _what(condition->name()) {
+    }
+
+    Error::Error(const ErrorConditionPtr& condition) :
+        _condition(condition),
+        _code(condition->errorCode()),
+        _what(condition->name()) {
+    }
+
+    const ErrorConditionPtr&
+    Error::condition() const {
+        return _condition;
+    }
+
     int
-    Error::errorNumber() const {
-        return _errorNumber;
+    Error::code() const {
+        return _code;
     }
 
     const char*
-    PlaceholderError::what() const throw() {
-        return "Placeholder error";
+    Error::what() const throw() {
+        return _what.c_str();
     }
 
-    const char*
-    FeatureNotImplemented::what() const throw() {
-        return "Feature not implemented";
+    int
+    ErrorConditionBase::errorCode() const {
+        return _errorCode;
+    }
+
+    std::string
+    PlaceholderError::name() const {
+        return "PlaceholderError";
+    }
+
+    std::string
+    FeatureNotImplemented::name() const {
+        return "FeatureNotImplemented";
     }
 }

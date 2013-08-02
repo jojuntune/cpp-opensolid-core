@@ -47,7 +47,7 @@ namespace opensolid
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
         if (operandValues.minCoeff() <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         results = operandValues.array().log();
     }
@@ -60,7 +60,7 @@ namespace opensolid
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         if (operandBounds.cwiseUpper().minCoeff() <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         results = operandBounds.array().log();
     }
@@ -73,7 +73,7 @@ namespace opensolid
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterValues).value();
         if (operandValue <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         results = evaluator.evaluateJacobian(operand(), parameterValues) / operandValue;
     }
@@ -86,7 +86,7 @@ namespace opensolid
     ) const {
         Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
         if (operandBounds.upperBound() <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         results = evaluator.evaluateJacobian(operand(), parameterBounds) / operandBounds;
     }

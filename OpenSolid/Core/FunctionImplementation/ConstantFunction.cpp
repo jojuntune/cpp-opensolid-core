@@ -127,7 +127,7 @@ namespace opensolid
     ConstantFunction::normalizedImpl() const {
         double norm = vector().norm();
         if (norm == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return new ConstantFunction(vector() / norm, numParameters());
     }
@@ -141,7 +141,7 @@ namespace opensolid
     ConstantFunction::sqrtImpl() const {
         Interval domain(0, infinity());
         if (!domain.contains(value())) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return new ConstantFunction(sqrt(domain.clamp(value())), numParameters());
     }
@@ -159,7 +159,7 @@ namespace opensolid
     FunctionImplementationPtr
     ConstantFunction::tanImpl() const {
         if (std::fmod(value() - M_PI / 2, M_PI) == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return new ConstantFunction(tan(value()), numParameters());
     }
@@ -168,7 +168,7 @@ namespace opensolid
     ConstantFunction::acosImpl() const {
         Interval domain(-1, 1);
         if (!domain.contains(value())) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return new ConstantFunction(acos(domain.clamp(value())), numParameters());
     }
@@ -177,7 +177,7 @@ namespace opensolid
     ConstantFunction::asinImpl() const {
         Interval domain(-1, 1);
         if (!domain.contains(value())) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return new ConstantFunction(asin(domain.clamp(value())), numParameters());
     }
@@ -190,7 +190,7 @@ namespace opensolid
     FunctionImplementationPtr
     ConstantFunction::logImpl() const {
         if (value() <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return new ConstantFunction(log(value()), numParameters());
     }

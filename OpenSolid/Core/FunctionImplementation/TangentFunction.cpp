@@ -64,7 +64,7 @@ namespace opensolid
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         double cosine = cos(operandValue);
         if (cosine == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         results = operandJacobian / (cosine * cosine);
     }
@@ -79,7 +79,7 @@ namespace opensolid
         MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
         Interval cosine = cos(operandBounds);
         if (cosine == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         results = operandJacobian / cosine.squared();
     }

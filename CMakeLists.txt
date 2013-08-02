@@ -10,9 +10,10 @@
     
 ########## Set up user configuration options ##########
 
-    set(BUILD_DYNAMIC_LIBS ON CACHE BOOL "Build dynamic libraries")
+    set(BUILD_STATIC_CORE OFF CACHE BOOL "Build static core module")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
+    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
     
@@ -23,8 +24,8 @@
 
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds
-    if (${BUILD_DYNAMIC_LIBS})
-        add_definitions(-DOPENSOLID_BUILD_DYNAMIC_LIBS)
+    if (${BUILD_STATIC_CORE})
+        add_definitions(-DOPENSOLID_BUILD_STATIC_CORE)
     endif()
 
     # Set up compiler-specific flags
@@ -120,7 +121,7 @@
 ########## Build and install subprojects ##########
     
     # Set up Boost
-    find_package(Boost)
+    find_package(Boost REQUIRED)
     include_directories(${Boost_INCLUDE_DIRS})
 
     # Set up external dependencies
@@ -145,6 +146,15 @@
     # Include OpenMesh include directory if mesh module is enabled
     if(${BUILD_MESH_MODULE})
         include_directories(${OPENMESH_ROOT}/include)
+    endif()
+
+    # Build Python bindings if selected
+    if(${BUILD_PYTHON_MODULE})
+        find_package(Boost REQUIRED COMPONENTS Python)
+        find_package(PythonInterp REQUIRED)
+        find_package(PythonLibs REQUIRED)
+        include_directories(${PYTHON_INCLUDE_PATH})
+        add_subdirectory(OpenSolid/Python)
     endif()
     
     # Build UI if selected

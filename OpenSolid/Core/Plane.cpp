@@ -39,7 +39,7 @@ namespace opensolid
         _originPoint(originPoint) {
     
         if (normalVector.isZero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         double squaredNorm = normalVector.squaredNorm();
         if (squaredNorm - 1 == Zero()) {
@@ -72,7 +72,7 @@ namespace opensolid
 
         if (!belowNormalVector.cross(aboveNormalVector).isZero()) {
             // Planes are not parallel
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
 
         Vector3d displacementVector = planeAbove.originPoint() - planeBelow.originPoint();
@@ -104,7 +104,7 @@ namespace opensolid
         Vector3d normalVector = (point - axis.originPoint()).cross(axis.directionVector());
         if (normalVector.isZero()) {
             // Point is on axis
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return Plane3d(axis.originPoint(), normalVector);
     }

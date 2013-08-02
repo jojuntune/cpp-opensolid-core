@@ -51,13 +51,13 @@ namespace opensolid
         const FunctionImplementation* implementation
     ) : _implementation(implementation) {
         if (!implementation) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (implementation->numDimensions() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (implementation->numParameters() != iNumParameters) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
     }
     
@@ -66,13 +66,13 @@ namespace opensolid
         const FunctionImplementationPtr& implementation
     ) : _implementation(implementation) {
         if (!implementation) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (implementation->numDimensions() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (implementation->numParameters() != iNumParameters) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
     }
 
@@ -120,7 +120,7 @@ namespace opensolid
             "Incorrect number of parameters supplied"
         );
         if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != iNumParameters) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>(
             implementation().get(),
@@ -170,7 +170,7 @@ namespace opensolid
             "Incorrect number of parameters supplied for Jacobian matrix evaluation"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.size() != iNumParameters) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return JacobianReturnValue<iNumDimensions, iNumParameters, TVector>(
             implementation().get(),
@@ -191,7 +191,7 @@ namespace opensolid
     Function<iNumDimensions, iNumParameters>
     Function<iNumDimensions, iNumParameters>::derivative(int parameterIndex) const {
         if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return implementation()->derivative(parameterIndex)->deduplicated(deduplicationCache);
@@ -251,7 +251,7 @@ namespace opensolid
     Function<1, iNumParameters>
     Function<iNumDimensions, iNumParameters>::component(int index) const {
         if (index < 0 || index >= iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return implementation()->component(index)->deduplicated(deduplicationCache);
@@ -269,7 +269,7 @@ namespace opensolid
             "Zero or negative number of components requested"
         );
         if (startIndex < 0 || startIndex + iNumComponents > iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return implementation()->components(startIndex, iNumComponents)->
@@ -298,7 +298,7 @@ namespace opensolid
             "Vector argument must have same number of dimensions as Function object"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return implementation()->dot(new ConstantFunction(vector, iNumParameters))->
@@ -330,7 +330,7 @@ namespace opensolid
             "Vector argument must be 3D"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != 3) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return implementation()->cross(new ConstantFunction(vector, iNumParameters))->
@@ -430,7 +430,7 @@ namespace opensolid
             "Vector argument must have same number of dimensions as Function object"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return (function.implementation() + VectorXd(vector.derived()))->
@@ -452,7 +452,7 @@ namespace opensolid
             "Vector argument must have same number of dimensions as Function object"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return (VectorXd(vector.derived()) + function.implementation())->
@@ -499,7 +499,7 @@ namespace opensolid
             "Vector argument must have same number of dimensions as Function object"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return (function.implementation() - VectorXd(vector.derived()))->
@@ -521,7 +521,7 @@ namespace opensolid
             "Vector argument must have same number of dimensions as Function object"
         );
         if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return (VectorXd(vector.derived()) - function.implementation())->
@@ -569,7 +569,7 @@ namespace opensolid
             "Function transformation matrix must have number of columns equal to function dimension"
         );
         if (TMatrix::ColsAtCompileTime == Dynamic && matrix.cols() != iNumDimensions) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return (MatrixXd(matrix.derived()) * function.implementation())->

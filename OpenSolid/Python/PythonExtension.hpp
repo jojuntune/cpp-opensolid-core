@@ -24,73 +24,26 @@
 
 #pragma once
 
-#include <algorithm>
-#include <cmath>
+#include <OpenSolid/config.hpp>
 
-// Create DLL import/export declaration macros for core module
-// (unless static core has been selected)
-#ifdef _WIN32
-    #ifdef OPENSOLID_BUILD_STATIC_CORE
-        #define OPENSOLID_CORE_EXPORT
-    #else
-        #ifdef OpenSolidCore_EXPORTS
-            #define OPENSOLID_CORE_EXPORT __declspec(dllexport)
-        #else
-            #define OPENSOLID_CORE_EXPORT __declspec(dllimport)
-        #endif
-    #endif
-#else
-    #define OPENSOLID_CORE_EXPORT
-#endif
+#include <OpenSolid/Core/Error.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
 
-// Create DLL import/export declaration macros for I/O module
-#ifdef _WIN32
-    #ifdef OpenSolidIO_EXPORTS
-        #define OPENSOLID_IO_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_IO_EXPORT __declspec(dllimport)
-    #endif
-#else
-    #define OPENSOLID_IO_EXPORT
-#endif
+#include <boost/python.hpp>
+#include <boost/python/handle.hpp>
+#include <boost/python/slice.hpp>
+#include <boost/python/return_value_policy.hpp>
+#include <boost/python/manage_new_object.hpp>
+#include <boost/python/raw_function.hpp>
+#include <boost/python/converter/pytype_function.hpp>
 
-// Create DLL import/export declaration macros for Python module
-#ifdef _WIN32
-    #ifdef OpenSolidPython_EXPORTS
-        #define OPENSOLID_PYTHON_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_PYTHON_EXPORT __declspec(dllimport)
-    #endif
-#else
-    #define OPENSOLID_PYTHON_EXPORT
-#endif
-
-// Create DLL import/export declaration macros for Python extension
-#ifdef _WIN32
-    #ifdef python_extension_EXPORTS
-        #define OPENSOLID_PYTHON_EXTENSION_EXPORT __declspec(dllexport)
-    #else
-        #define OPENSOLID_PYTHON_EXTENSION_EXPORT __declspec(dllimport)
-    #endif
-#else
-    #define OPENSOLID_PYTHON_EXTENSION_EXPORT
-#endif
-
-// Explicitly use math functions from C++ standard library
 namespace opensolid
 {
-    using std::min;
-    using std::max;
-    using std::abs;
-    using std::sqrt;
-    using std::sin;
-    using std::cos;
-    using std::tan;
-    using std::asin;
-    using std::acos;
-    using std::atan;
-    using std::atan2;
-    using std::exp;
-    using std::log;
-    using std::pow;
+    class PythonExtension
+    {
+    public:
+        OPENSOLID_PYTHON_EXTENSION_EXPORT
+        static void
+        initialize();
+    };
 }

@@ -22,14 +22,14 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include "PythonModule.hpp"
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Python/PythonExtension.hpp>
 
 using namespace boost::python;
 
 namespace opensolid
 {
-    void bindDouble() {
+    void
+    bindDouble() {
         def("abs", (double (*)(double)) &abs);
         def("sqrt", (double (*)(double)) &sqrt);
         def("sin", (double (*)(double)) &sin);

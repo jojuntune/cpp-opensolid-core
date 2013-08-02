@@ -30,11 +30,14 @@ namespace opensolid
 {
     class Error;
 
-    template <int iErrorNumber>
-    class NumberedError;
-    
-    template <int iErrorNumber>
-    struct UniqueErrorNumber;
+    class ErrorConditionBase;
 
+    template <int iErrorCode>
+    class ErrorCondition;
+    
+    template <int iErrorCode>
+    struct UniqueErrorCode;
+
+    class PlaceholderError;
     class FeatureNotImplemented;
 }

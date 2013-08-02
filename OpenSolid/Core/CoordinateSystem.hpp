@@ -225,7 +225,7 @@ namespace opensolid
     inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
     CoordinateSystem<iNumDimensions, iNumAxes>::basisVector(int axisIndex ) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return basisMatrix().col(axisIndex);
     }
@@ -260,7 +260,7 @@ namespace opensolid
     inline Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::axis(int axisIndex) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return Axis<iNumDimensions>(originPoint(), basisVector(axisIndex));
     }
@@ -334,13 +334,13 @@ namespace opensolid
         );
 
         if (firstAxisIndex < 0 || firstAxisIndex > 2) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (secondAxisIndex < 0 || secondAxisIndex > 2) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (firstAxisIndex == secondAxisIndex) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
 
         Vector3d normalVector = basisVector(firstAxisIndex).cross(basisVector(secondAxisIndex));
@@ -360,7 +360,7 @@ namespace opensolid
             }
             if (resultBasisVector.isZero()) {
                 // Cannot normalize: basis matrix does not have full rank
-                throw PlaceholderError();
+                throw Error(new PlaceholderError());
             } else {
                 resultBasisVector = resultBasisVector.normalized();
             }

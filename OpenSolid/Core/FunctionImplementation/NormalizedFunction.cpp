@@ -70,7 +70,7 @@ namespace opensolid
         MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
         double operandNorm = operandValue.norm();
         if (operandNorm == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         VectorXd operandNormalized = operandValue / operandNorm;
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
@@ -88,7 +88,7 @@ namespace opensolid
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
         Interval operandNorm = operandBounds.norm();
         if (operandNorm == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         VectorXI operandNormalized = operandBounds / operandNorm;
         MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);

@@ -170,7 +170,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::derivative(int parameterIndex) const {
         if (parameterIndex < 0 || parameterIndex >= numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return derivativeImpl(parameterIndex);
     }
@@ -218,7 +218,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::composed(const FunctionImplementationPtr& innerFunction) const {
         if (innerFunction->numDimensions() != this->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (innerFunction->isConstantFunction()) {
             MapXcd argumentMap(
@@ -247,7 +247,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::components(int startIndex, int numComponents) const {
         if (startIndex < 0 || numComponents < 1 || startIndex + numComponents > numDimensions()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (numComponents == numDimensions()) {
             return this;
@@ -304,7 +304,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::tangentVector() const {
         if (numParameters() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return tangentVectorImpl();
     }
@@ -312,7 +312,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::curvature() const {
         if (numParameters() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return curvatureImpl();
     }
@@ -320,7 +320,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::normalVector() const {
         if (!(numParameters() == 1 || (numParameters() == 2 && numDimensions() == 3))) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return normalVectorImpl();   
     }
@@ -328,7 +328,7 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::binormalVector() const {
         if (!(numParameters() == 1 && numDimensions() == 3)) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return binormalVectorImpl();
     }
@@ -336,10 +336,10 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::dot(const FunctionImplementationPtr& other) const {
         if (this->numDimensions() != other->numDimensions()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (this->numParameters() != other->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (this->isConstantFunction() && other->isConstantFunction()) {
             VectorXd thisVector = this->cast<ConstantFunction>()->vector();
@@ -361,10 +361,10 @@ namespace opensolid
     FunctionImplementationPtr
     FunctionImplementation::cross(const FunctionImplementationPtr& other) const {
         if (!(this->numDimensions() == 3 && other->numDimensions() == 3)) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (this->numParameters() != other->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (this->isConstantFunction() && other->isConstantFunction()) {
             Vector3d thisVector = this->cast<ConstantFunction>()->vector();
@@ -401,10 +401,10 @@ namespace opensolid
         const FunctionImplementationPtr& secondOperand
     ) {
         if (firstOperand->numDimensions() != secondOperand->numDimensions()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (secondOperand->isConstantFunction()) {
             return firstOperand + secondOperand->cast<ConstantFunction>()->vector();
@@ -418,7 +418,7 @@ namespace opensolid
     FunctionImplementationPtr
     operator+(const FunctionImplementationPtr& argument, const VectorXd& vector) {
         if (vector.size() != argument->numDimensions()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (vector.isZero()) {
             return argument;
@@ -447,10 +447,10 @@ namespace opensolid
         const FunctionImplementationPtr& secondOperand
     ) {
         if (firstOperand->numDimensions() != secondOperand->numDimensions()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (secondOperand->isConstantFunction()) {
             VectorXd secondVector = secondOperand->cast<ConstantFunction>()->vector();
@@ -489,7 +489,7 @@ namespace opensolid
         const FunctionImplementationPtr& secondOperand
     ) {
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         // Determine which operand to use as the multiplier and which to use as the multiplicand:
         // The multiplier should be a scalar (one dimensional), and if possible should be constant
@@ -519,7 +519,7 @@ namespace opensolid
             multiplicand = firstOperand;
         } else {
             // Error - neither operand is a scalar
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (multiplier->isConstantFunction()) {
             // Delegate to scaling function
@@ -542,13 +542,13 @@ namespace opensolid
     FunctionImplementationPtr
     operator*(const MatrixXd& matrix, const FunctionImplementationPtr& argument) {
         if (matrix.size() == 0) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (matrix.size() == 1) {
             return matrix.value() * argument;
         }
         if (matrix.cols() != argument->numDimensions()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (matrix.isZero()) {
             return new ConstantFunction(VectorXd::Zero(matrix.rows()), argument->numParameters());
@@ -590,15 +590,15 @@ namespace opensolid
         const FunctionImplementationPtr& secondOperand
     ) {
         if (firstOperand->numParameters() != secondOperand->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (secondOperand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (secondOperand->isConstantFunction()) {
             double divisor = secondOperand->cast<ConstantFunction>()->value();
             if (divisor == Zero()) {
-                throw PlaceholderError();
+                throw Error(new PlaceholderError());
             }
             return (1 / divisor) * firstOperand;
         }
@@ -619,7 +619,7 @@ namespace opensolid
     FunctionImplementationPtr
     operator/(const FunctionImplementationPtr& firstOperand, double secondOperand) {
         if (secondOperand == Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return (1 / secondOperand) * firstOperand;
     }
@@ -632,7 +632,7 @@ namespace opensolid
     FunctionImplementationPtr
     sqrt(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->sqrtImpl();
     }
@@ -640,7 +640,7 @@ namespace opensolid
     FunctionImplementationPtr
     sin(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->sinImpl();
     }
@@ -648,7 +648,7 @@ namespace opensolid
     FunctionImplementationPtr
     cos(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->cosImpl();
     }
@@ -656,7 +656,7 @@ namespace opensolid
     FunctionImplementationPtr
     tan(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->tanImpl();
     }
@@ -664,7 +664,7 @@ namespace opensolid
     FunctionImplementationPtr
     acos(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->acosImpl();
     }
@@ -672,7 +672,7 @@ namespace opensolid
     FunctionImplementationPtr
     asin(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->asinImpl();
     }
@@ -680,7 +680,7 @@ namespace opensolid
     FunctionImplementationPtr
     exp(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->expImpl();
     }
@@ -688,7 +688,7 @@ namespace opensolid
     FunctionImplementationPtr
     log(const FunctionImplementationPtr& operand) {
         if (operand->numDimensions() != 1) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         return operand->logImpl();
     }
@@ -706,16 +706,16 @@ namespace opensolid
     FunctionImplementationPtr
     pow(const FunctionImplementationPtr& base, const FunctionImplementationPtr& exponent) {
         if (base->numParameters() != exponent->numParameters()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (!(base->numDimensions() == 1 && exponent->numDimensions() == 1)) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         if (base->isConstantFunction() && exponent->isConstantFunction()) {
             double baseValue = base->cast<ConstantFunction>()->value();
             double exponentValue = exponent->cast<ConstantFunction>()->value();
             if (baseValue == Zero() && exponentValue < Zero()) {
-                throw PlaceholderError();
+                throw Error(new PlaceholderError());
             }
             return new ConstantFunction(pow(baseValue, exponentValue), base->numParameters());
         }

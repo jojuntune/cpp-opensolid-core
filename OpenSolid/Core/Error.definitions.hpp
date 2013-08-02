@@ -29,54 +29,86 @@
 #include <OpenSolid/Core/Error.declarations.hpp>
 
 #include <exception>
+#include <memory>
+#include <string>
 
 namespace opensolid
 {
+    typedef std::shared_ptr<ErrorConditionBase> ErrorConditionPtr;
+
     class Error :
         public std::exception
     {
     private:
-        int _errorNumber;
-    
-        template <int iErrorNumber>
-        Error(UniqueErrorNumber<iErrorNumber>);
-    
-        template <int iErrorNumber> friend class NumberedError;
+        ErrorConditionPtr _condition;
+        int _code;
+        std::string _what;
+    public:
+        OPENSOLID_CORE_EXPORT
+        Error(ErrorConditionBase* condition);
+
+        OPENSOLID_CORE_EXPORT
+        Error(const ErrorConditionPtr& condition);
+
+        OPENSOLID_CORE_EXPORT
+        const ErrorConditionPtr&
+        condition() const;
+
+        OPENSOLID_CORE_EXPORT
+        int
+        code() const;
+
+        OPENSOLID_CORE_EXPORT
+        const char*
+        what() const throw() override;
+    };
+
+    class ErrorConditionBase
+    {
+    private:
+        int _errorCode;
+    protected:
+        template <int iErrorCode>
+        ErrorConditionBase(UniqueErrorCode<iErrorCode>);
     public:
         OPENSOLID_CORE_EXPORT
         int
-        errorNumber() const;
+        errorCode() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual std::string
+        name() const = 0;
     };
 
-    template <int iErrorNumber>
-    class NumberedError :
-        public Error
+    template <int iErrorCode>
+    class ErrorCondition :
+        public ErrorConditionBase
     {
     public:
-        static const int ErrorNumber = iErrorNumber;
+        static const int ErrorCode = iErrorCode;
     protected:
-        NumberedError();
+        ErrorCondition();
     };
 
     class PlaceholderError :
-        public NumberedError<0>
+        public ErrorCondition<0>
     {
     public:
         OPENSOLID_CORE_EXPORT
-        const char*
-        what() const throw() override;
+        std::string
+        name() const override;
     };
 
-    template <> struct UniqueErrorNumber<PlaceholderError::ErrorNumber> {};
+    template <> struct UniqueErrorCode<PlaceholderError::ErrorCode> {};
 
     class FeatureNotImplemented :
-        public NumberedError<1>
+        public ErrorCondition<1>
     {
     public:
         OPENSOLID_CORE_EXPORT
-        const char*
-        what() const throw() override;
+        std::string
+        name() const override;
     };
 
-    template <> struct UniqueErrorNumber<FeatureNotImplemented::ErrorNumber> {};
+    template <> struct UniqueErrorCode<FeatureNotImplemented::ErrorCode> {};
 }

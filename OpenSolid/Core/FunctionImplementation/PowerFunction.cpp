@@ -128,7 +128,7 @@ namespace opensolid
     ) const {
         double baseValue = evaluator.evaluate(firstOperand(), parameterValues).value();
         if (baseValue <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         MapXcd baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
         if (_exponentIsConstant) {
@@ -149,7 +149,7 @@ namespace opensolid
     ) const {
         Interval baseBounds = evaluator.evaluate(firstOperand(), parameterBounds).value();
         if (baseBounds.upperBound() <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         MapXcI baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
         if (_exponentIsConstant) {

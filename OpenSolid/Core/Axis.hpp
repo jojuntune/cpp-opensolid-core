@@ -48,7 +48,7 @@ namespace opensolid
     ) : _originPoint(originPoint) {
 
         if (directionVector.isZero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         double squaredNorm = directionVector.squaredNorm();
         if (squaredNorm - 1 == Zero()) {

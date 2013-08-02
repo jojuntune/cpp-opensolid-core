@@ -75,7 +75,7 @@ namespace opensolid
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterValues).value();
         if (operandValue <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = 0.5 * operandJacobian / sqrt(operandValue);
@@ -89,7 +89,7 @@ namespace opensolid
     ) const {
         Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
         if (operandBounds <= Zero()) {
-            throw PlaceholderError();
+            throw Error(new PlaceholderError());
         }
         MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
         results = Interval(0.5) * operandJacobian / sqrt(operandBounds);

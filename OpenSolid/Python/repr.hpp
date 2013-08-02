@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 #include <boost/python.hpp>
 
@@ -36,12 +37,35 @@
 
 namespace opensolid
 {
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(bool argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(int argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(double argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const std::string& argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const Interval& argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const MatrixXd& argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const MatrixXI& argument);
-    OPENSOLID_PYTHON_MODULE_EXPORT std::string __repr__(const boost::python::object& argument);
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(bool argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(int argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(double argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(const std::string& argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(Zero argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(Interval argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(const MatrixXd& argument);
+
+    OPENSOLID_PYTHON_EXTENSION_EXPORT
+    std::string
+    __repr__(const MatrixXI& argument);
 }

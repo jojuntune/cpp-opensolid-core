@@ -22,7 +22,7 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include "repr.hpp"
+#include <OpenSolid/Python/repr.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -30,19 +30,23 @@
 
 namespace opensolid
 {
-    std::string __repr__(bool argument) {
+    std::string
+    __repr__(bool argument) {
         return argument ? "True" : "False";
     }
 
-    std::string __repr__(int argument) {
+    std::string
+    __repr__(int argument) {
         return boost::lexical_cast<std::string>(argument);
     }
 
-    std::string __repr__(double argument) {
+    std::string
+    __repr__(double argument) {
         return boost::lexical_cast<std::string>(argument);
     }
 
-    std::string __repr__(const Interval& argument) {
+    std::string
+    __repr__(Interval argument) {
         std::stringstream stream;
         stream << "Interval(" << __repr__(argument.lowerBound());
         if (argument.upperBound() != argument.lowerBound()) {
@@ -52,8 +56,16 @@ namespace opensolid
         return stream.str();
     }
 
-    template <class MatrixType, char type_character_>
-    std::string __repr__(const MatrixType& argument) {
+    std::string
+    __repr__(Zero argument) {
+        std::stringstream stream;
+        stream << "Zero(" << __repr__(argument.precision()) << ")";
+        return stream.str();
+    }
+
+    template <class TMatrix, char cTypeCharacter>
+    std::string
+    __repr__(const TMatrix& argument) {
         std::stringstream stream;
         int rows = argument.rows();
         int cols = argument.cols();
@@ -67,7 +79,7 @@ namespace opensolid
             } else {
                 stream << size;
             }
-            stream << type_character_;
+            stream << cTypeCharacter;
             stream << '(';
             if (dynamic) {stream << '[';}
             for (int i = 0; i < size; ++i) {
@@ -84,7 +96,7 @@ namespace opensolid
             } else {
                 stream << cols;
             }
-            stream << type_character_;
+            stream << cTypeCharacter;
             stream << "([";
             for (int j = 0; j < cols; ++j) {
                 stream << '[';
@@ -100,11 +112,13 @@ namespace opensolid
         return stream.str();
     }
 
-    std::string __repr__(const MatrixXd& argument) {
+    std::string
+    __repr__(const MatrixXd& argument) {
         return __repr__<MatrixXd, 'd'>(argument);
     }
 
-    std::string __repr__(const MatrixXI& argument) {
+    std::string
+    __repr__(const MatrixXI& argument) {
         return __repr__<MatrixXI, 'I'>(argument);
     }
 }

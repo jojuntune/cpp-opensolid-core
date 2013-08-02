@@ -21,7 +21,7 @@ def checkLine(filePath, lineNumber, line):
             print('ERROR: Found tab character on line {0} of file {1}'.format(lineNumber, filePath))
             errorFound = True
         # Check for valid brace placement
-        if 'enum' not in line and 'UniqueErrorNumber' not in line:
+        if 'enum' not in line and 'UniqueErrorCode' not in line:
             # Check to ensure opening braces are always the last character on their line
             # (except in enum definitions)
             if '{' in line and line.rstrip()[-1] != '{':
