@@ -22,24 +22,142 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include "dart_api.h"
+#include <OpenSolid/Dart/opensolid_extension.hpp>
 
-Dart_NativeFunction
-resolveZeroName(Dart_Handle name, int argumentCount);
+namespace opensolid
+{
+    void
+    abortIfError(Dart_Handle handle) {
+        if (Dart_IsError(handle)) {
+            Dart_PropagateError(handle);
+        }
+    }
 
-Dart_NativeFunction
-resolveIntervalName(Dart_Handle name, int argumentCount);
+    Dart_Handle
+    initObject(
+        Dart_NativeArguments arguments,
+        int index,
+        void* object,
+        int typeCode,
+        Dart_WeakPersistentHandleFinalizer finalizer
+    ) {
+        Dart_EnterScope();
 
-Dart_NativeFunction
-resolveName(Dart_Handle name, int argumentCount) {
-    Dart_NativeFunction result = nullptr;
-    if (result = resolveZeroName(name, argumentCount)) {
+        // Get handle to argument at given index
+        Dart_Handle argumentHandle = Dart_GetNativeArgument(arguments, index);
+        if (Dart_IsError(argumentHandle)) {
+            return argumentHandle;
+        }
+
+        // Handle used for checking for error return codes
+        Dart_Handle handle = nullptr;
+
+        // Set object field
+        handle = Dart_SetNativeInstanceField(argumentHandle, 0, reinterpret_cast<intptr_t>(object));
+        if (Dart_IsError(handle)) {
+            return handle;
+        }
+
+        // Set type code field
+        handle = Dart_SetNativeInstanceField(argumentHandle, 1, typeCode);
+        if (Dart_IsError(handle)) {
+            return handle;
+        }
+
+        // Create new weak persistent handle
+        handle = Dart_HandleFromWeakPersistent(
+            Dart_NewWeakPersistentHandle(argumentHandle, object, finalizer)
+        );
+        if (Dart_IsError(handle)) {
+            return handle;
+        }
+
+        Dart_ExitScope();
+
+        return Dart_Null();
+    }
+
+    void*
+    getObject(Dart_NativeArguments arguments, int index, int typeCode) {
+        Dart_EnterScope();
+
+        // Get handle to argument at given index
+        Dart_Handle argumentHandle = Dart_GetNativeArgument(arguments, index);
+        abortIfError(argumentHandle);
+
+        Dart_Handle handle = nullptr;
+        intptr_t fieldValue = 0;
+
+        // Get type field
+        handle = Dart_GetNativeInstanceField(argumentHandle, 1, &fieldValue);
+        abortIfError(handle);
+
+        // Check type code
+        if (fieldValue != typeCode) {
+            assert(false);
+            Dart_PropagateError(Dart_NewApiError("OpenSolid internal error: wrong type code"));
+        }
+
+        // Get object field
+        handle = Dart_GetNativeInstanceField(argumentHandle, 0, &fieldValue);
+        abortIfError(handle);
+
+        Dart_ExitScope();
+
+        void* result = reinterpret_cast<void*>(fieldValue);
+        if (result == nullptr) {
+            assert(false);
+            Dart_PropagateError(Dart_NewApiError("OpenSolid internal error: null native field"));
+        }
         return result;
     }
-    if (result = resolveIntervalName(name, argumentCount)) {
+
+    int64_t
+    getInt(Dart_NativeArguments arguments, int index) {
+        // Get handle to Dart argument at given index
+        Dart_Handle argumentHandle = Dart_GetNativeArgument(arguments, index);
+        abortIfError(argumentHandle);
+
+        // Get value from argument
+        int64_t value = 0;
+        Dart_Handle handle = Dart_IntegerToInt64(argumentHandle, &value);
+        abortIfError(handle);
+
+        return value;
+
+    }
+
+    double
+    getDouble(Dart_NativeArguments arguments, int index) {
+        // Get handle to Dart argument at given index
+        Dart_Handle argumentHandle = Dart_GetNativeArgument(arguments, index);
+        abortIfError(argumentHandle);
+
+        // Get value from argument
+        double value = 0.0;
+        Dart_Handle handle = Dart_DoubleValue(argumentHandle, &value);
+        abortIfError(handle);
+
+        return value;
+    }
+
+    Dart_NativeFunction
+    resolveZeroName(Dart_Handle name, int argumentCount);
+
+    Dart_NativeFunction
+    resolveIntervalName(Dart_Handle name, int argumentCount);
+
+    Dart_NativeFunction
+    resolveName(Dart_Handle name, int argumentCount) {
+        Dart_NativeFunction result = nullptr;
+        if (result = resolveZeroName(name, argumentCount)) {
+            return result;
+        }
+        if (result = resolveIntervalName(name, argumentCount)) {
+            return result;
+        }
         return result;
     }
-    return result;
 }
 
 DART_EXPORT
@@ -48,7 +166,7 @@ opensolid_extension_Init(Dart_Handle parentLibrary) {
     if (Dart_IsError(parentLibrary)) {
         return parentLibrary;
     }
-    Dart_Handle resultCode = Dart_SetNativeResolver(parentLibrary, resolveName);
+    Dart_Handle resultCode = Dart_SetNativeResolver(parentLibrary, opensolid::resolveName);
     if (Dart_IsError(resultCode)) {
         return resultCode;
     }

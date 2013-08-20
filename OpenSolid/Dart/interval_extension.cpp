@@ -23,10 +23,12 @@
 *************************************************************************************/
 
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Dart/opensolid_extension.hpp>
 
-using namespace opensolid;
-
-Dart_NativeFunction
-resolveIntervalName(Dart_Handle name, int argumentCount) {
-    return nullptr;
+namespace opensolid
+{
+    Dart_NativeFunction
+    resolveIntervalName(Dart_Handle name, int argumentCount) {
+        return nullptr;
+    }
 }
