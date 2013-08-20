@@ -13,6 +13,7 @@
     set(BUILD_STATIC_CORE OFF CACHE BOOL "Build static core module")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
+    set(BUILD_DART_MODULE OFF CACHE BOOL "Build Dart module (DART_SDK_DIR environment variable must be set)")
     set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
@@ -67,7 +68,7 @@
         set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -ldl")
 
         # Set up proper linking to low-level libraries on different platforms
-        if(APPLE)
+        if(${APPLE})
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lc++")
@@ -110,7 +111,7 @@
     endif()
 
     # Place all executables and libraries in one directory
-    if(MSVC_IDE)
+    if(${MSVC_IDE})
         set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
         set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
     else()
@@ -146,6 +147,11 @@
     # Include OpenMesh include directory if mesh module is enabled
     if(${BUILD_MESH_MODULE})
         include_directories(${OPENMESH_ROOT}/include)
+    endif()
+
+    # Build Dart bindings if selected
+    if(${BUILD_DART_MODULE})
+        add_subdirectory(OpenSolid/Dart)
     endif()
 
     # Build Python bindings if selected
