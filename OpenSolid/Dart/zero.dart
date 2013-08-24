@@ -1,8 +1,7 @@
 part of opensolid;
 
 class Zero extends NativeFieldWrapperClass2 {
-    _init(double precision) native 'zeroInit';
-
+    void _init(double precision) native 'zeroInit';
     bool _equalsDouble(double value) native 'zeroEqualsDouble';
     bool _equalsInterval(Interval value) native 'zeroEqualsInterval';
     bool _lessThanDouble(double value) native 'zeroLessThanDouble';
