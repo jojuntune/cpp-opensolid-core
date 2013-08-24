@@ -149,14 +149,13 @@ namespace opensolid
 
     Dart_NativeFunction
     resolveName(Dart_Handle name, int argumentCount) {
-        Dart_NativeFunction result = nullptr;
-        if (result = resolveZeroName(name, argumentCount)) {
+        if (Dart_NativeFunction result = resolveZeroName(name, argumentCount)) {
             return result;
         }
-        if (result = resolveIntervalName(name, argumentCount)) {
+        if (Dart_NativeFunction result = resolveIntervalName(name, argumentCount)) {
             return result;
         }
-        return result;
+        return nullptr;
     }
 }
 
