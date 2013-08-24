@@ -1,10 +1,4 @@
-# Check for valid DART_SDK_DIR environment variable
-if(NOT EXISTS "$ENV{DART_SDK_DIR}/include/dart_api.h")
-    message(SEND_ERROR "DART_SDK_DIR environment variable is not set to a valid Dart SDK directory")
-    return()
-endif()
-
-include_directories("$ENV{DART_SDK_DIR}/include")
+include_directories("${DART_ROOT}/include")
 
 file(GLOB EXTENSION_SOURCES *.cpp)
 
@@ -13,7 +7,7 @@ add_library(opensolid_extension SHARED ${EXTENSION_SOURCES})
 set_target_properties(opensolid_extension PROPERTIES DEBUG_POSTFIX _debug)
 if (${WIN32})
     add_definitions(-DDART_SHARED_LIB)
-    find_library(DART_LIBRARY dart "${DART_SDK_DIR}/lib")
+    find_library(DART_LIBRARY dart "${DART_ROOT}/lib")
     target_link_libraries(opensolid_extension OpenSolidCore ${DART_LIBRARY})
 else ()
     target_link_libraries(opensolid_extension OpenSolidCore)

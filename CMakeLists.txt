@@ -13,7 +13,7 @@
     set(BUILD_STATIC_CORE OFF CACHE BOOL "Build static core module")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
-    set(BUILD_DART_MODULE OFF CACHE BOOL "Build Dart module (DART_SDK_DIR environment variable must be set)")
+    set(BUILD_DART_MODULE OFF CACHE BOOL "Build Dart module")
     set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
