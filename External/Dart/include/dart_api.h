@@ -1410,12 +1410,6 @@ DART_EXPORT Dart_Handle Dart_NewStringFromUTF32(const int32_t* utf32_array,
                                                 intptr_t length);
 
 /**
- * Retrieves the peer pointer associated with an external String.
- */
-DART_EXPORT Dart_Handle Dart_ExternalStringGetPeer(Dart_Handle object,
-                                                   void** peer);
-
-/**
  * Returns a String which references an external array of
  * Latin-1 (ISO-8859-1) encoded characters.
  *
@@ -1523,7 +1517,6 @@ DART_EXPORT Dart_Handle Dart_StringToUTF16(Dart_Handle str,
  */
 DART_EXPORT Dart_Handle Dart_StringStorageSize(Dart_Handle str, intptr_t* size);
 
-
 /**
  * Converts a String into an ExternalString.
  * The original object is morphed into an external string object.
@@ -1537,8 +1530,9 @@ DART_EXPORT Dart_Handle Dart_StringStorageSize(Dart_Handle str, intptr_t* size);
  * \return the converted ExternalString object if no error occurs.
  *   Otherwise returns an error handle.
  *   If the object is a valid string but if it cannot be externalized
- *   then Dart_Null() is returned and the string data is copied into
- *   the external space specified.
+ *   the string data is copied into the external space specified
+ *   and the passed in peer is setup as a peer for this string object.
+ *   In this case the function returns the original String object as is.
  *
  * For example:
  *  intptr_t size;
@@ -1554,6 +1548,24 @@ DART_EXPORT Dart_Handle Dart_MakeExternalString(Dart_Handle str,
                                                 void* peer,
                                                 Dart_PeerFinalizer cback);
 
+/**
+ * Retrieves some properties associated with a String.
+ * Properties retrieved are:
+ * - character size of the string (one or two byte)
+ * - length of the string
+ * - peer pointer of string if it is an external string.
+ * \param str A String.
+ * \param char_size Returns the character size of the String.
+ * \param str_len Returns the length of the String.
+ * \param peer Returns the peer pointer associated with the String or 0 if
+ *   there is no peer pointer for it.
+ * \return Success if no error occurs. Otherwise returns
+ *   an error handle.
+ */
+DART_EXPORT Dart_Handle Dart_StringGetProperties(Dart_Handle str,
+                                                 intptr_t* char_size,
+                                                 intptr_t* str_len,
+                                                 void** peer);
 
 /*
  * =====
@@ -1982,16 +1994,65 @@ DART_EXPORT Dart_Handle Dart_GetNativeReceiver(Dart_NativeArguments args,
                                                intptr_t* value);
 
 /**
+ * Gets a string native argument at some index.
+ * \param args Native arguments structure.
+ * \param arg_index Index of the desired argument in the structure above.
+ * \param peer Returns the peer pointer if the string argument has one.
+ * \return Success if the string argument has a peer, if it does not
+ *   have a peer then the String object is returned. Otherwise returns
+ *   an error handle (argument is not a String object).
+ */
+DART_EXPORT Dart_Handle Dart_GetNativeStringArgument(Dart_NativeArguments args,
+                                                     int arg_index,
+                                                     void** peer);
+
+/**
+ * Gets an integer native argument at some index.
+ * \param args Native arguments structure.
+ * \param arg_index Index of the desired argument in the structure above.
+ * \param value Returns the integer value if the argument is an Integer.
+ * \return Success if no error occurs. Otherwise returns an error handle.
+ */
+DART_EXPORT Dart_Handle Dart_GetNativeIntegerArgument(Dart_NativeArguments args,
+                                                      int index,
+                                                      int64_t* value);
+
+/**
+ * Gets a boolean native argument at some index.
+ * \param args Native arguments structure.
+ * \param arg_index Index of the desired argument in the structure above.
+ * \param value Returns the boolean value if the argument is a Boolean.
+ * \return Success if no error occurs. Otherwise returns an error handle.
+ */
+DART_EXPORT Dart_Handle Dart_GetNativeBooleanArgument(Dart_NativeArguments args,
+                                                      int index,
+                                                      bool* value);
+
+/**
+ * Gets a double native argument at some index.
+ * \param args Native arguments structure.
+ * \param arg_index Index of the desired argument in the structure above.
+ * \param value Returns the double value if the argument is a double.
+ * \return Success if no error occurs. Otherwise returns an error handle.
+ */
+DART_EXPORT Dart_Handle Dart_GetNativeDoubleArgument(Dart_NativeArguments args,
+                                                     int index,
+                                                     double* value);
+
+/**
  * Sets the return value for a native function.
  */
 DART_EXPORT void Dart_SetReturnValue(Dart_NativeArguments args,
                                      Dart_Handle retval);
 
+DART_EXPORT void Dart_SetWeakHandleReturnValue(Dart_NativeArguments args,
+                                               Dart_WeakPersistentHandle rval);
+
 DART_EXPORT void Dart_SetBooleanReturnValue(Dart_NativeArguments args,
                                             bool retval);
 
 DART_EXPORT void Dart_SetIntegerReturnValue(Dart_NativeArguments args,
-                                            intptr_t retval);
+                                            int64_t retval);
 
 DART_EXPORT void Dart_SetDoubleReturnValue(Dart_NativeArguments args,
                                            double retval);

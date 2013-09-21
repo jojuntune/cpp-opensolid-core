@@ -390,7 +390,7 @@ DART_EXPORT Dart_Handle Dart_GetActivationFrame(
 
 
 /**
- * DEPRECATED -- Use Dart_ActivationframeGetLocation instead.
+ * DEPRECATED -- Use Dart_ActivationFrameGetLocation instead.
  *
  * Returns information about the given activation frame.
  * \function_name receives a string handle with the qualified
@@ -420,6 +420,7 @@ DART_EXPORT Dart_Handle Dart_ActivationFrameInfo(
  *
  * \function_name receives a string handle with the qualified
  *    function name.
+ * \function receives a handle to the function.
  * \location.script_url receives a string handle with the url of
  *    the source script that contains the frame's function.
  *    Receives a null handle if there is no textual location
@@ -440,6 +441,7 @@ DART_EXPORT Dart_Handle Dart_ActivationFrameInfo(
 DART_EXPORT Dart_Handle Dart_ActivationFrameGetLocation(
                             Dart_ActivationFrame activation_frame,
                             Dart_Handle* function_name,
+                            Dart_Handle* function,
                             Dart_CodeLocation* location);
 
 
@@ -469,6 +471,27 @@ DART_EXPORT Dart_Handle Dart_GetLocalVariables(
  * values at offset 2*n+1.
  */
 DART_EXPORT Dart_Handle Dart_GetGlobalVariables(intptr_t library_id);
+
+
+/**
+ * Execute the expression given in string \expr in the context
+ * of \target.
+ *
+ * Requires there to be a current isolate.
+ *
+ * The expression is evaluated in the context of \target.
+ * If \target is a Dart object, the expression is evaluated as if
+ * it were an instance method of the class of the object.
+ * If \target is a Class, the expression is evaluated as if it
+ * were a static method of that class.
+ * TODO(hausner): add 'library' execution context.
+ * 
+ * \return A handle to the computed value, or an error object if
+ * the compilation of the expression fails, or if the evaluation throws
+ * an error.
+ */
+DART_EXPORT Dart_Handle Dart_EvaluateExpr(Dart_Handle target,
+                                          Dart_Handle expr);
 
 
 /**
@@ -511,6 +534,16 @@ DART_EXPORT Dart_Handle Dart_GetSuperclass(Dart_Handle cls);
  * \return A handle to the type object.
  */
 DART_EXPORT Dart_Handle Dart_GetSupertype(Dart_Handle type);
+
+
+/**
+ * Returns handle to class with class id \class_id.
+ *
+ * Requires there to be a current isolate.
+ *
+ * \return A handle to the class if no error occurs.
+ */
+DART_EXPORT Dart_Handle Dart_GetClassFromId(intptr_t class_id);
 
 
 /**
@@ -564,6 +597,16 @@ DART_EXPORT Dart_Handle Dart_GetInstanceFields(Dart_Handle object);
  * error object if an error was encountered evaluating the field.
  */
 DART_EXPORT Dart_Handle Dart_GetStaticFields(Dart_Handle target);
+
+
+/**
+ * Returns a handle to the library \library_id.
+ *
+ * Requires there to be a current isolate.
+ *
+ * \return A library handle if the id is valid.
+ */
+DART_EXPORT Dart_Handle Dart_GetLibraryFromId(intptr_t library_id);
 
 
 /**
