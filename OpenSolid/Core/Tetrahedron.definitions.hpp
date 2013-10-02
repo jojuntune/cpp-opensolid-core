@@ -79,9 +79,9 @@ namespace opensolid
     {
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Tetrahedron3d, iNumTransformedDimensions> :
-        public TransformationFunction<Simplex<3, 4>, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Tetrahedron3d, iNumResultDimensions> :
+        public TransformationFunction<Simplex<3, 4>, iNumResultDimensions>
     {
     };
 

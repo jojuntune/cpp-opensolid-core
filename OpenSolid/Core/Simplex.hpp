@@ -329,24 +329,24 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
     template <class TMatrix>
-    Simplex<iNumTransformedDimensions, iNumVertices>
-    TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumTransformedDimensions>::operator()(
+    Simplex<iNumResultDimensions, iNumVertices>
+    TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Simplex<iNumTransformedDimensions, iNumVertices>(
+        return Simplex<iNumResultDimensions, iNumVertices>(
             matrix.derived() * simplex.vertices()
         );
     }
 
-    template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>
-    inline Simplex<iNumDestinationDimensions, iNumVertices>
-    MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>::operator()(
+    template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
+    inline Simplex<iNumResultDimensions, iNumVertices>
+    MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
-        const Function<iNumDestinationDimensions, iNumDimensions>& function
+        const Function<iNumResultDimensions, iNumDimensions>& function
     ) const {
-         return Simplex<iNumDestinationDimensions, iNumVertices>(function(simplex.vertices()));
+         return Simplex<iNumResultDimensions, iNumVertices>(function(simplex.vertices()));
     }
 }

@@ -733,13 +733,13 @@ namespace opensolid
 
     namespace detail
     {
-        template <class TElement, int iNumTransformedDimensions, class TMatrix>
+        template <class TElement, int iNumResultDimensions, class TMatrix>
         class SetElementTransformationWrapper
         {
         private:
             TMatrix _matrix;
         public:
-            typedef typename ChangeDimensions<TElement, iNumTransformedDimensions>::Type
+            typedef typename ChangeDimensions<TElement, iNumResultDimensions>::Type
                 result_type;
 
             inline
@@ -754,14 +754,14 @@ namespace opensolid
         };
     }
 
-    template <class TElement, int iNumTransformedDimensions> template <class TMatrix>
-    Set<typename ChangeDimensions<TElement, iNumTransformedDimensions>::Type>
-    TransformationFunction<Set<TElement>, iNumTransformedDimensions>::operator()(
+    template <class TElement, int iNumResultDimensions> template <class TMatrix>
+    Set<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
+    TransformationFunction<Set<TElement>, iNumResultDimensions>::operator()(
         const Set<TElement>& set,
         const EigenBase<TMatrix>& matrix
     ) const {
         return set.mapped(
-            detail::SetElementTransformationWrapper<TElement, iNumTransformedDimensions, TMatrix>(
+            detail::SetElementTransformationWrapper<TElement, iNumResultDimensions, TMatrix>(
                 matrix.derived()
             )
         );
@@ -769,18 +769,18 @@ namespace opensolid
 
     namespace detail
     {
-        template <class TElement, int iNumDestinationDimensions>
+        template <class TElement, int iNumResultDimensions>
         class SetElementMorphingWrapper
         {
         private:
-            Function<iNumDestinationDimensions, NumDimensions<TElement>::Value> _function;
+            Function<iNumResultDimensions, NumDimensions<TElement>::Value> _function;
         public:
-            typedef typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type
+            typedef typename ChangeDimensions<TElement, iNumResultDimensions>::Type
                 result_type;
 
             inline
             SetElementMorphingWrapper(
-                const Function<iNumDestinationDimensions, NumDimensions<TElement>::Value>& function
+                const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
             ) : _function(function) {
             }
 
@@ -791,14 +791,14 @@ namespace opensolid
         };
     }
 
-    template <class TElement, int iNumDestinationDimensions>
-    Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
-    MorphingFunction<Set<TElement>, iNumDestinationDimensions>::operator()(
+    template <class TElement, int iNumResultDimensions>
+    Set<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
+    MorphingFunction<Set<TElement>, iNumResultDimensions>::operator()(
         const Set<TElement>& set,
-        const Function<iNumDestinationDimensions, NumDimensions<TElement>::Value>& function
+        const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
     ) const {
         return set.mapped(
-            detail::SetElementMorphingWrapper<TElement, iNumDestinationDimensions>(function)
+            detail::SetElementMorphingWrapper<TElement, iNumResultDimensions>(function)
         );
     }
 }

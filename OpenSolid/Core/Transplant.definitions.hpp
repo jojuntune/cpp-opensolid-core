@@ -34,31 +34,31 @@
 
 namespace opensolid
 {
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    template <int iNumSourceDimensions, int iNumResultDimensions>
     class Transplant
     {
     private:
         Point<iNumSourceDimensions> _sourceOriginPoint;
-        Matrix<double, iNumDestinationDimensions, iNumSourceDimensions> _transformationMatrix;
-        Point<iNumDestinationDimensions> _destinationOriginPoint;
+        Matrix<double, iNumResultDimensions, iNumSourceDimensions> _transformationMatrix;
+        Point<iNumResultDimensions> _destinationOriginPoint;
     public:
         template <int iNumAxes>
         Transplant(
             const CoordinateSystem<iNumSourceDimensions, iNumAxes>& sourceCoordinateSystem,
-            const CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
+            const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
         );
 
         const Point<iNumSourceDimensions>&
         sourceOriginPoint() const;
         
-        const Matrix<double, iNumDestinationDimensions, iNumSourceDimensions>&
+        const Matrix<double, iNumResultDimensions, iNumSourceDimensions>&
         transformationMatrix() const;
         
-        const Point<iNumDestinationDimensions>&
+        const Point<iNumResultDimensions>&
         destinationOriginPoint() const;
 
         template <class TTransformable>
-        typename ChangeDimensions<TTransformable, iNumDestinationDimensions>::Type
+        typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type
         operator()(const TTransformable& transformable) const;
     };
 }

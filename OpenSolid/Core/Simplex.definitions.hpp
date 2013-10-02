@@ -152,24 +152,24 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumVertices, int iNumTransformedDimensions>
-    struct TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
+    struct TransformationFunction<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>
     {
         template <class TMatrix>
-        Simplex<iNumTransformedDimensions, iNumVertices>
+        Simplex<iNumResultDimensions, iNumVertices>
         operator()(
             const Simplex<iNumDimensions, iNumVertices>& simplex,
             const EigenBase<TMatrix>& matrix
         ) const;
     };
 
-    template <int iNumDimensions, int iNumVertices, int iNumDestinationDimensions>
-    struct MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumDestinationDimensions>
+    template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
+    struct MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>
     {
-        Simplex<iNumDestinationDimensions, iNumVertices>
+        Simplex<iNumResultDimensions, iNumVertices>
         operator()(
             const Simplex<iNumDimensions, iNumVertices>& simplex,
-            const Function<iNumDestinationDimensions, iNumDimensions>& function
+            const Function<iNumResultDimensions, iNumDimensions>& function
         ) const;
     };
 

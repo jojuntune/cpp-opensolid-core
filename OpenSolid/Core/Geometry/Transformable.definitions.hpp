@@ -63,24 +63,24 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumParameters, int iNumTransformedDimensions>
-    struct TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    struct TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>
     {
         template <class TMatrix>
-        Geometry<iNumTransformedDimensions, iNumParameters>
+        Geometry<iNumResultDimensions, iNumParameters>
         operator()(
             const Geometry<iNumDimensions, iNumParameters>& geometry,
             const EigenBase<TMatrix>& matrix
         ) const;
     };
 
-    template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
-    struct MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    struct MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>
     {
-        Geometry<iNumDestinationDimensions, iNumParameters>
+        Geometry<iNumResultDimensions, iNumParameters>
         operator()(
             const Geometry<iNumDimensions, iNumParameters>& geometry,
-            const Function<iNumDestinationDimensions, iNumDimensions>& function
+            const Function<iNumResultDimensions, iNumDimensions>& function
         ) const;
     };
 }

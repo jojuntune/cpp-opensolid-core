@@ -58,25 +58,25 @@ projectedOnto(const opensolid::Plane3d& plane) const;
 PlainObject
 transformed(const opensolid::LinearTransformation<NumDimensions>& transformation) const;
 
-template <int iNumDestinationDimensions, int iNumAxes>
+template <int iNumResultDimensions, int iNumAxes>
 Matrix<
     typename internal::traits<Derived>::Scalar,
-    iNumDestinationDimensions,
+    iNumResultDimensions,
     internal::traits<Derived>::ColsAtCompileTime
 >
 transplanted(
     const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& sourceCoordinateSystem,
-    const opensolid::CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
+    const opensolid::CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
 ) const;
 
-template <int iNumDestinationDimensions>
+template <int iNumResultDimensions>
 Matrix<
     typename internal::traits<Derived>::Scalar,
-    iNumDestinationDimensions,
+    iNumResultDimensions,
     internal::traits<Derived>::ColsAtCompileTime
 >
 transplanted(
-    const opensolid::Transplant<NumDimensions, iNumDestinationDimensions>& transplant
+    const opensolid::Transplant<NumDimensions, iNumResultDimensions>& transplant
 ) const;
 
 template <int iNumAxes>

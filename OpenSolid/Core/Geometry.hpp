@@ -195,26 +195,26 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumParameters, int iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
     template <class TMatrix>
-    Geometry<iNumTransformedDimensions, iNumParameters>
-    TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumTransformedDimensions>::operator()(
+    Geometry<iNumResultDimensions, iNumParameters>
+    TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Geometry<iNumTransformedDimensions, iNumParameters>(
+        return Geometry<iNumResultDimensions, iNumParameters>(
             matrix.derived() * geometry.function(),
             geometry.domain()
         );
     }
 
-    template <int iNumDimensions, int iNumParameters, int iNumDestinationDimensions>
-    Geometry<iNumDestinationDimensions, iNumParameters>
-    MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumDestinationDimensions>::operator()(
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    Geometry<iNumResultDimensions, iNumParameters>
+    MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
-        const Function<iNumDestinationDimensions, iNumDimensions>& function
+        const Function<iNumResultDimensions, iNumDimensions>& function
     ) const {
-        return Geometry<iNumDestinationDimensions, iNumParameters>(
+        return Geometry<iNumResultDimensions, iNumParameters>(
             function.composed(geometry.function()),
             geometry.domain()
         );

@@ -43,7 +43,7 @@ namespace opensolid
     template <class TTransformable>
     struct TranslationFunction;
 
-    template <class TTransformable, int iNumTransformedDimensions>
+    template <class TTransformable, int iNumResultDimensions>
     struct TransformationFunction;
 
     template <class TTransformable, int iNumMorphedDimensions>

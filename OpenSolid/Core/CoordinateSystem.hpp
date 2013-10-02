@@ -406,26 +406,26 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumAxes, int iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     template <class TMatrix>
-    CoordinateSystem<iNumTransformedDimensions, iNumAxes>
-    TransformationFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumTransformedDimensions>::operator()(
+    CoordinateSystem<iNumResultDimensions, iNumAxes>
+    TransformationFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return CoordinateSystem<iNumTransformedDimensions, iNumAxes>(
+        return CoordinateSystem<iNumResultDimensions, iNumAxes>(
             Point<iNumDimensions>::transformation(coordinateSystem.originPoint(), matrix.derived()),
             matrix.derived() * coordinateSystem.basisMatrix()
         );
     }
 
-    template <int iNumDimensions, int iNumAxes, int iNumDestinationDimensions>
-    inline CoordinateSystem<iNumDestinationDimensions, iNumAxes>
-    MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumDestinationDimensions>::operator()(
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
+    inline CoordinateSystem<iNumResultDimensions, iNumAxes>
+    MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const Function<iNumDestinationDimensions, iNumDimensions>& function
+        const Function<iNumResultDimensions, iNumDimensions>& function
     ) const {
-        return CoordinateSystem<iNumDestinationDimensions, iNumAxes>(
+        return CoordinateSystem<iNumResultDimensions, iNumAxes>(
             coordinateSystem.originPoint().morphed(function),
             function.jacobian(coordinateSystem.originPoint().vector()) *
                 coordinateSystem.basisMatrix()

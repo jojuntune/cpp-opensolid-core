@@ -345,53 +345,53 @@ namespace opensolid
         return Box<iNumDimensions>(box.vector() + vector.derived().template cast<Interval>());
     }
 
-    template <int iNumTransformedDimensions> template <class TMatrix>
-    Box<iNumTransformedDimensions>
-    TransformationFunction<Box1d, iNumTransformedDimensions>::operator()(
+    template <int iNumResultDimensions> template <class TMatrix>
+    Box<iNumResultDimensions>
+    TransformationFunction<Box1d, iNumResultDimensions>::operator()(
         const Box1d& box,
         const EigenBase<TMatrix>& matrix
     ) const {
-        Box<iNumTransformedDimensions> result;
-        for (int i = 0; i < iNumTransformedDimensions; ++i) {
+        Box<iNumResultDimensions> result;
+        for (int i = 0; i < iNumResultDimensions; ++i) {
             result(i) = matrix.derived()(i, 0) * box.x();
         }
         return result;
     }
 
-    template <int iNumTransformedDimensions> template <class TMatrix>
-    Box<iNumTransformedDimensions>
-    TransformationFunction<Box2d, iNumTransformedDimensions>::operator()(
+    template <int iNumResultDimensions> template <class TMatrix>
+    Box<iNumResultDimensions>
+    TransformationFunction<Box2d, iNumResultDimensions>::operator()(
         const Box2d& box,
         const EigenBase<TMatrix>& matrix
     ) const {
-        Box<iNumTransformedDimensions> result;
-        for (int i = 0; i < iNumTransformedDimensions; ++i) {
+        Box<iNumResultDimensions> result;
+        for (int i = 0; i < iNumResultDimensions; ++i) {
             result(i) = matrix.derived()(i, 0) * box.x() + matrix.derived()(i, 1) * box.y();
         }
         return result;
     }
 
-    template <int iNumTransformedDimensions> template <class TMatrix>
-    Box<iNumTransformedDimensions>
-    TransformationFunction<Box3d, iNumTransformedDimensions>::operator()(
+    template <int iNumResultDimensions> template <class TMatrix>
+    Box<iNumResultDimensions>
+    TransformationFunction<Box3d, iNumResultDimensions>::operator()(
         const Box3d& box,
         const EigenBase<TMatrix>& matrix
     ) const {
-        Box<iNumTransformedDimensions> result;
-        for (int i = 0; i < iNumTransformedDimensions; ++i) {
+        Box<iNumResultDimensions> result;
+        for (int i = 0; i < iNumResultDimensions; ++i) {
             result(i) = matrix.derived()(i, 0) * box.x() + matrix.derived()(i, 1) * box.y() +
                 matrix.derived()(i, 2) * box.z();
         }
         return result;
     }
 
-    template <int iNumDimensions, int iNumDestinationDimensions>
-    inline Box<iNumDestinationDimensions>
-    MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>::operator()(
+    template <int iNumDimensions, int iNumResultDimensions>
+    inline Box<iNumResultDimensions>
+    MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
         const Box<iNumDimensions>& box,
-        const Function<iNumDestinationDimensions, iNumDimensions>& function
+        const Function<iNumResultDimensions, iNumDimensions>& function
     ) const {
-        return Box<iNumDestinationDimensions>(function(box.vector()));
+        return Box<iNumResultDimensions>(function(box.vector()));
     }
 
     template <int iNumDimensions>

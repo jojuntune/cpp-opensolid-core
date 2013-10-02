@@ -86,23 +86,23 @@ namespace opensolid
             const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
         ) const;
 
-        template <int iNumDestinationDimensions, int iNumAxes>
-        typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
+        template <int iNumResultDimensions, int iNumAxes>
+        typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
         transplanted(
             const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
-            const CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
+            const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
         ) const;
 
-        template <int iNumDestinationDimensions>
-        typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
+        template <int iNumResultDimensions>
+        typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
         transplanted(
-            const Transplant<NumDimensions<TDerived>::Value, iNumDestinationDimensions>& transplant
+            const Transplant<NumDimensions<TDerived>::Value, iNumResultDimensions>& transplant
         ) const;
 
-        template <int iNumDestinationDimensions>
-        typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
+        template <int iNumResultDimensions>
+        typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
         morphed(
-            const Function<iNumDestinationDimensions, NumDimensions<TDerived>::Value>& function
+            const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
         ) const;
 
         template <int iNumAxes>
@@ -130,11 +130,11 @@ namespace opensolid
         static typename ChangeDimensions<TDerived, TMatrix::RowsAtCompileTime>::Type
         transformation(const TDerived& argument, const EigenBase<TMatrix>& matrix);
 
-        template <int iNumDestinationDimensions>
-        static typename ChangeDimensions<TDerived, iNumDestinationDimensions>::Type
+        template <int iNumResultDimensions>
+        static typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
         morphing(
             const TDerived& argument,
-            const Function<iNumDestinationDimensions, NumDimensions<TDerived>::Value>& function
+            const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
         );
     };
 }

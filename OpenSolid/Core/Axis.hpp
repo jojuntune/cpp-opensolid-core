@@ -103,25 +103,25 @@ namespace opensolid
         return Axis<iNumDimensions>(axis.originPoint() + vector.derived(), axis.directionVector());
     }
 
-    template <int iNumDimensions, int iNumTransformedDimensions> template <class TMatrix>
-    Axis<iNumTransformedDimensions>
-    TransformationFunction<Axis<iNumDimensions>, iNumTransformedDimensions>::operator()(
+    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    Axis<iNumResultDimensions>
+    TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Axis<iNumTransformedDimensions>(
+        return Axis<iNumResultDimensions>(
             Point<iNumDimensions>::transformed(axis.originPoint(), matrix.derived()),
             matrix.derived() * axis.directionVector()
         );
     }
 
-    template <int iNumDimensions, int iNumDestinationDimensions>
-    Axis<iNumDestinationDimensions>
-    MorphingFunction<Axis<iNumDimensions>, iNumDestinationDimensions>::operator()(
+    template <int iNumDimensions, int iNumResultDimensions>
+    Axis<iNumResultDimensions>
+    MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
-        const Function<iNumDestinationDimensions, iNumDimensions>& function
+        const Function<iNumResultDimensions, iNumDimensions>& function
     ) const {
-        return Axis<iNumDestinationDimensions>(
+        return Axis<iNumResultDimensions>(
             axis.originPoint().morphed(function),
             function.jacobian(axis.originPoint().vector()) * axis.directionVector()
         );

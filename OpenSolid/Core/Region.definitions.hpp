@@ -90,9 +90,9 @@ namespace opensolid
     {
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Region2d, iNumTransformedDimensions> :
-        public TransformationFunction<Domain<2>, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Region2d, iNumResultDimensions> :
+        public TransformationFunction<Domain<2>, iNumResultDimensions>
     {
     };
 

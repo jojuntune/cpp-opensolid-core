@@ -229,37 +229,37 @@ namespace opensolid
         operator()(const Box<iNumDimensions>& box, const EigenBase<TVector>& vector) const;
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Box1d, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Box1d, iNumResultDimensions>
     {
         template <class TMatrix>
-        Box<iNumTransformedDimensions>
+        Box<iNumResultDimensions>
         operator()(const Box1d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Box2d, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Box2d, iNumResultDimensions>
     {
         template <class TMatrix>
-        Box<iNumTransformedDimensions>
+        Box<iNumResultDimensions>
         operator()(const Box2d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Box3d, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Box3d, iNumResultDimensions>
     {
         template <class TMatrix>
-        Box<iNumTransformedDimensions>
+        Box<iNumResultDimensions>
         operator()(const Box3d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iNumDimensions, int iNumDestinationDimensions>
-    struct MorphingFunction<Box<iNumDimensions>, iNumDestinationDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>
     {
-        Box<iNumDestinationDimensions>
+        Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const Function<iNumDestinationDimensions, iNumDimensions>& function
+            const Function<iNumResultDimensions, iNumDimensions>& function
         ) const;
     };
 

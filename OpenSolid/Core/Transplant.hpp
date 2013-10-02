@@ -34,10 +34,10 @@
 
 namespace opensolid
 {
-    template <int iNumSourceDimensions, int iNumDestinationDimensions> template <int iNumAxes>
-    Transplant<iNumSourceDimensions, iNumDestinationDimensions>::Transplant(
+    template <int iNumSourceDimensions, int iNumResultDimensions> template <int iNumAxes>
+    Transplant<iNumSourceDimensions, iNumResultDimensions>::Transplant(
         const CoordinateSystem<iNumSourceDimensions, iNumAxes>& sourceCoordinateSystem,
-        const CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
+        const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
     ) : _sourceOriginPoint(sourceCoordinateSystem.originPoint()),
         _transformationMatrix(
             destinationCoordinateSystem.basisMatrix() * sourceCoordinateSystem.inverseMatrix()
@@ -45,31 +45,31 @@ namespace opensolid
         _destinationOriginPoint(destinationCoordinateSystem.originPoint()) {
     }
 
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    template <int iNumSourceDimensions, int iNumResultDimensions>
     const Point<iNumSourceDimensions>&
-    Transplant<iNumSourceDimensions, iNumDestinationDimensions>::sourceOriginPoint() const {
+    Transplant<iNumSourceDimensions, iNumResultDimensions>::sourceOriginPoint() const {
         return _sourceOriginPoint;
     }
     
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    const Matrix<double, iNumDestinationDimensions, iNumSourceDimensions>&
-    Transplant<iNumSourceDimensions, iNumDestinationDimensions>::transformationMatrix() const {
+    template <int iNumSourceDimensions, int iNumResultDimensions>
+    const Matrix<double, iNumResultDimensions, iNumSourceDimensions>&
+    Transplant<iNumSourceDimensions, iNumResultDimensions>::transformationMatrix() const {
         return _transformationMatrix;
     }
     
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
-    const Point<iNumDestinationDimensions>&
-    Transplant<iNumSourceDimensions, iNumDestinationDimensions>::destinationOriginPoint() const {
+    template <int iNumSourceDimensions, int iNumResultDimensions>
+    const Point<iNumResultDimensions>&
+    Transplant<iNumSourceDimensions, iNumResultDimensions>::destinationOriginPoint() const {
         return _destinationOriginPoint;
     }
 
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    template <int iNumSourceDimensions, int iNumResultDimensions>
     template <class TTransformable>
-    typename ChangeDimensions<TTransformable, iNumDestinationDimensions>::Type
-    Transplant<iNumSourceDimensions, iNumDestinationDimensions>::operator()(
+    typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type
+    Transplant<iNumSourceDimensions, iNumResultDimensions>::operator()(
         const TTransformable& transformable
     ) const {
-        typedef typename ChangeDimensions<TTransformable, iNumDestinationDimensions>::Type ResultType;
+        typedef typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type ResultType;
         return ResultType::translation(
             TTransformable::transformation(
                 TTransformable::translation(

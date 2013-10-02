@@ -105,9 +105,9 @@ namespace opensolid
     {
     };
 
-    template <int iNumDimensions, int iNumTransformedDimensions>
-    struct TransformationFunction<LineSegment<iNumDimensions>, iNumTransformedDimensions> :
-        public TransformationFunction<Simplex<iNumDimensions, 2>, iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions> :
+        public TransformationFunction<Simplex<iNumDimensions, 2>, iNumResultDimensions>
     {
     };
 

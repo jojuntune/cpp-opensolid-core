@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <int iNumSourceDimensions, int iNumDestinationDimensions>
+    template <int iNumSourceDimensions, int iNumResultDimensions>
     class Transplant;
 }

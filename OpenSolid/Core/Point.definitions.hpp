@@ -162,24 +162,24 @@ namespace opensolid
         operator()(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) const;
     };
 
-    template <int iNumDimensions, int iNumTransformedDimensions>
-    struct TransformationFunction<Point<iNumDimensions>, iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>
     {
         template <class TMatrix>
-        Point<iNumTransformedDimensions>
+        Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
             const EigenBase<TMatrix>& matrix
         ) const;
     };
 
-    template <int iNumDimensions, int iNumDestinationDimensions>
-    struct MorphingFunction<Point<iNumDimensions>, iNumDestinationDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>
     {
-        Point<iNumDestinationDimensions>
+        Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
-            const Function<iNumDestinationDimensions, iNumDimensions>& function
+            const Function<iNumResultDimensions, iNumDimensions>& function
         ) const;
     };
 

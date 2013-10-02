@@ -140,21 +140,21 @@ namespace opensolid
         operator()(const Axis<iNumDimensions>& axis, const EigenBase<TVector>& vector) const;
     };
 
-    template <int iNumDimensions, int iNumTransformedDimensions>
-    struct TransformationFunction<Axis<iNumDimensions>, iNumTransformedDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
         template <class TMatrix>
-        Axis<iNumTransformedDimensions>
+        Axis<iNumResultDimensions>
         operator()(const Axis<iNumDimensions>& axis, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iNumDimensions, int iNumDestinationDimensions>
-    struct MorphingFunction<Axis<iNumDimensions>, iNumDestinationDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
-        Axis<iNumDestinationDimensions>
+        Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
-            const Function<iNumDestinationDimensions, iNumDimensions>& function
+            const Function<iNumResultDimensions, iNumDimensions>& function
         ) const;
     };
 
@@ -182,15 +182,15 @@ namespace opensolid
     {
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Axis2d, iNumTransformedDimensions> :
-        public TransformationFunction<Axis<2>, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Axis2d, iNumResultDimensions> :
+        public TransformationFunction<Axis<2>, iNumResultDimensions>
     {
     };
 
-    template <int iNumDestinationDimensions>
-    struct MorphingFunction<Axis2d, iNumDestinationDimensions> :
-        public MorphingFunction<Axis<2>, iNumDestinationDimensions>
+    template <int iNumResultDimensions>
+    struct MorphingFunction<Axis2d, iNumResultDimensions> :
+        public MorphingFunction<Axis<2>, iNumResultDimensions>
     {
     };
 
@@ -218,15 +218,15 @@ namespace opensolid
     {
     };
 
-    template <int iNumTransformedDimensions>
-    struct TransformationFunction<Axis3d, iNumTransformedDimensions> :
-        public TransformationFunction<Axis<3>, iNumTransformedDimensions>
+    template <int iNumResultDimensions>
+    struct TransformationFunction<Axis3d, iNumResultDimensions> :
+        public TransformationFunction<Axis<3>, iNumResultDimensions>
     {
     };
 
-    template <int iNumDestinationDimensions>
-    struct MorphingFunction<Axis3d, iNumDestinationDimensions> :
-        public MorphingFunction<Axis<3>, iNumDestinationDimensions>
+    template <int iNumResultDimensions>
+    struct MorphingFunction<Axis3d, iNumResultDimensions> :
+        public MorphingFunction<Axis<3>, iNumResultDimensions>
     {
     };
 }

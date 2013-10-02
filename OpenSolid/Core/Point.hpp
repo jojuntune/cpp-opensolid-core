@@ -208,22 +208,22 @@ namespace opensolid
         return Point<iNumDimensions>(point.vector() + vector.derived());
     }
 
-    template <int iNumDimensions, int iNumTransformedDimensions> template <class TMatrix>
-    inline Point<iNumTransformedDimensions>
-    TransformationFunction<Point<iNumDimensions>, iNumTransformedDimensions>::operator()(
+    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    inline Point<iNumResultDimensions>
+    TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Point<iNumTransformedDimensions>(matrix.derived() * point.vector());
+        return Point<iNumResultDimensions>(matrix.derived() * point.vector());
     }
 
-    template <int iNumDimensions, int iNumDestinationDimensions>
-    inline Point<iNumDestinationDimensions>
-    MorphingFunction<Point<iNumDimensions>, iNumDestinationDimensions>::operator()(
+    template <int iNumDimensions, int iNumResultDimensions>
+    inline Point<iNumResultDimensions>
+    MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
-        const Function<iNumDestinationDimensions, iNumDimensions>& function
+        const Function<iNumResultDimensions, iNumDimensions>& function
     ) const {
-        return Point<iNumDestinationDimensions>(function(point.vector()));
+        return Point<iNumResultDimensions>(function(point.vector()));
     }
 
     template <int iNumDimensions>

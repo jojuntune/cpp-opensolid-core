@@ -67,11 +67,11 @@ namespace opensolid
         ) const;
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumTransformedDimensions>
-    struct TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumTransformedDimensions>
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
+    struct TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>
     {
         template <class TMatrix>
-        Matrix<TScalar, iNumTransformedDimensions, iCols, iOptions, iNumTransformedDimensions, iMaxCols>
+        Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols>
         operator()(
             const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
             const EigenBase<TMatrix>& matrix

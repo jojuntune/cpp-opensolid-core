@@ -291,21 +291,21 @@ namespace opensolid
         operator()(const Set<TElement>& set, const EigenBase<TVector>& vector) const;
     };
 
-    template <class TElement, int iNumTransformedDimensions>
-    struct TransformationFunction<Set<TElement>, iNumTransformedDimensions>
+    template <class TElement, int iNumResultDimensions>
+    struct TransformationFunction<Set<TElement>, iNumResultDimensions>
     {
         template <class TMatrix>
-        Set<typename ChangeDimensions<TElement, iNumTransformedDimensions>::Type>
+        Set<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
         operator()(const Set<TElement>& set, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <class TElement, int iNumDestinationDimensions>
-    struct MorphingFunction<Set<TElement>, iNumDestinationDimensions>
+    template <class TElement, int iNumResultDimensions>
+    struct MorphingFunction<Set<TElement>, iNumResultDimensions>
     {
-        Set<typename ChangeDimensions<TElement, iNumDestinationDimensions>::Type>
+        Set<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
         operator()(
             const Set<TElement>& set,
-            const Function<iNumDestinationDimensions, NumDimensions<TElement>::Value>& function
+            const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
         ) const;
     };
 

@@ -124,19 +124,19 @@ namespace Eigen
     }
 
     template <class TDerived>
-    template <int iNumDestinationDimensions, int iNumAxes>
-    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    template <int iNumResultDimensions, int iNumAxes>
+    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumResultDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::transplanted(
         const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& sourceCoordinateSystem,
-        const opensolid::CoordinateSystem<iNumDestinationDimensions, iNumAxes>& destinationCoordinateSystem
+        const opensolid::CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
     ) const {
         return localizedTo(sourceCoordinateSystem).globalizedFrom(destinationCoordinateSystem);
     }
 
-    template <class TDerived> template <int iNumDestinationDimensions>
-    inline Matrix< typename internal::traits<TDerived>::Scalar, iNumDestinationDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    template <class TDerived> template <int iNumResultDimensions>
+    inline Matrix< typename internal::traits<TDerived>::Scalar, iNumResultDimensions, internal::traits<TDerived>::ColsAtCompileTime>
     MatrixBase<TDerived>::transplanted(
-        const opensolid::Transplant<NumDimensions, iNumDestinationDimensions>& transplant
+        const opensolid::Transplant<NumDimensions, iNumResultDimensions>& transplant
     ) const {
         return transplant(derived());
     }
@@ -404,10 +404,10 @@ namespace opensolid
         return argument;
     }
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumTransformedDimensions>
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
     template <class TMatrix>
-    inline Matrix<TScalar, iNumTransformedDimensions, iCols, iOptions, iNumTransformedDimensions, iMaxCols>
-    TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumTransformedDimensions>::operator()(
+    inline Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols>
+    TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>::operator()(
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
         const EigenBase<TMatrix>& matrix
     ) const {
