@@ -63,9 +63,9 @@ namespace opensolid
 
         void
         init(
-			std::vector<spatialset::BoundsData<TElement>>& boundsData,
-			const spatialset::Subtree& subtree
-		);
+            std::vector<spatialset::BoundsData<typename BoundsType<TElement>::Type>>& boundsData,
+            const spatialset::Subtree& subtree
+        );
 
         void
         init(const BoundsFunction<TElement>& boundsFunction);

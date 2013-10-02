@@ -188,6 +188,20 @@ public:
         TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
     }
     
+    void testVector2dOverlappingSpatialSet() {
+        std::vector<Vector2d> list(4);
+        list[0] = Vector2d(1, 1);
+        list[1] = Vector2d(5, 1);
+        list[2] = Vector2d(1, 3);
+        list[3] = Vector2d(5, 3);
+        SpatialSet<Vector2d> set(list.begin(), list.end());
+        std::vector<Vector2d> temp = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
+        SpatialSet<Vector2d> overlapping(temp);
+        TS_ASSERT_EQUALS(overlapping.size(), 2u);
+        TS_ASSERT_EQUALS(overlapping[0], Vector2d(1, 3));
+        TS_ASSERT_EQUALS(overlapping[1], Vector2d(5, 3));
+    }
+    
     void testdoubleInsertion() {
         Set<double> set;
         set.insert(3);

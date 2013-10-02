@@ -69,7 +69,7 @@ namespace opensolid
             std::pair<Subtree, Subtree> results;
 
             std::int64_t leftElementCount = spatialset::leftElementCount(subtree.elementCount);
-			std::int64_t rightElementCount = subtree.elementCount - leftElementCount;
+            std::int64_t rightElementCount = subtree.elementCount - leftElementCount;
 
             results.first.nodeIndex = 2 * subtree.nodeIndex + 1;
             results.first.nodeCount = 2 * leftElementCount - 1;
@@ -133,8 +133,8 @@ namespace opensolid
                 begin + 1,
                 end,
                 [&overallBounds, &maxElementWidths] (
-					const BoundsData<TBounds>& boundsData
-				) -> void {
+                    const BoundsData<TBounds>& boundsData
+                ) -> void {
                     overallBounds = overallBounds.hull(boundsData.bounds);
                     maxElementWidths = maxElementWidths.cwiseMax(boundsData.bounds.cwiseWidth());
                 }
@@ -171,7 +171,7 @@ namespace opensolid
     template <class TElement>
     void
     SpatialSet<TElement>::init(
-        std::vector<spatialset::BoundsData<TElement>>& boundsData,
+        std::vector<spatialset::BoundsData<typename BoundsType<TElement>::Type>>& boundsData,
         const spatialset::Subtree& subtree
     ) {
         assert(subtree.nodeCount > 0 && subtree.elementCount > 0);
@@ -186,12 +186,12 @@ namespace opensolid
 
             auto begin = boundsData.begin() + subtree.startElementIndex;
             auto end = begin + subtree.elementCount;
-			_nodeBounds[subtree.nodeIndex] =
-				spatialset::sortBoundsData<typename BoundsType<TElement>::Type>(
-					begin,
-					end,
-					childSubtrees.first.elementCount
-				);
+            _nodeBounds[subtree.nodeIndex] =
+                spatialset::sortBoundsData<typename BoundsType<TElement>::Type>(
+                    begin,
+                    end,
+                    childSubtrees.first.elementCount
+                );
 
             init(boundsData, childSubtrees.first);
             init(boundsData, childSubtrees.second);
@@ -201,7 +201,7 @@ namespace opensolid
     template <class TElement>
     void
     SpatialSet<TElement>::init(const BoundsFunction<TElement>& boundsFunction) {
-		std::int64_t numElements = _elements.size();
+        std::int64_t numElements = _elements.size();
 
         if (numElements == 0) {
             _nodeBounds.clear();
@@ -209,7 +209,9 @@ namespace opensolid
         }
 
         // Initialize temporary bounds data array
-        std::vector<spatialset::BoundsData<TElement>> boundsData(numElements);
+        std::vector<spatialset::BoundsData<typename BoundsType<TElement>::Type>> boundsData(
+            numElements
+        );
         for (std::int64_t index = 0; index < numElements; ++index) {
             boundsData[index].bounds = boundsFunction(_elements[index]);
             boundsData[index].elementIndex = index;
@@ -238,9 +240,10 @@ namespace opensolid
             if (subtree.nodeCount == 1) {
                 const_cast<TVisitor&>(visitor)(_elements[subtree.startElementIndex]);
             } else {
-                std::pair<Subtree, Subtree> childSubtrees = spatialset::childSubtrees(subtree);
+                std::pair<spatialset::Subtree, spatialset::Subtree> childSubtrees =
+                    spatialset::childSubtrees(subtree);
                 visit(childSubtrees.first, predicate, visitor);
-                visit(childSubtrees.first, predicate, visitor);
+                visit(childSubtrees.second, predicate, visitor);
             }
         }
     }
@@ -376,7 +379,7 @@ namespace opensolid
     std::vector<TElement>
     SpatialSet<TElement>::overlapping(const typename BoundsType<TElement>::Type& bounds) const {
         std::vector<TElement> results;
-        auto predicate = [&bounds] (const typename BoundsType<TElement>& elementBounds) -> bool {
+        auto predicate = [&bounds] (const typename BoundsType<TElement>::Type& elementBounds) -> bool {
             return bounds.overlaps(elementBounds);
         };
         auto visitor = [&results] (const TElement& element) {
