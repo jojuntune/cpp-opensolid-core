@@ -27,6 +27,7 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Set.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
 
 #include <boost/timer.hpp>
 #include <cxxtest/TestSuite.h>
@@ -291,6 +292,12 @@ public:
         TS_ASSERT_EQUALS(insertion_set.size(), vectors.size());
         testSet(insertion_set.root());
         std::cout << "Insertion: " << insertion_time << " s" << std::endl;
+        
+        boost::timer spatial_timer;
+        SpatialSet<Vector3I> spatial_set(vectors.begin(), vectors.end());
+        double spatial_time = spatial_timer.elapsed();
+        TS_ASSERT_EQUALS(spatial_set.size(), vectors.size());
+        std::cout << "Spatial set: " << spatial_time << " s" << std::endl;
         
         std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;
     }
