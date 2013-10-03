@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <vector>
 #include <cstdlib>
+#include <iostream>
 
 using namespace opensolid;
 
@@ -285,35 +286,114 @@ public:
     }
     
     void testVectorConstructionTime() {
-        std::vector<Vector3I> vectors(100000);
-        for (auto i = vectors.begin(); i != vectors.end(); ++i) {
-            *i = randomVector();
+        typedef std::pair<std::int64_t, std::int64_t> TestCase;
+
+        std::vector<TestCase> testCases;
+        testCases.push_back(TestCase(1000, 1000));
+        testCases.push_back(TestCase(10000, 100));
+        testCases.push_back(TestCase(100000, 10));
+        testCases.push_back(TestCase(1000000, 1));
+        testCases.push_back(TestCase(10000000, 1));
+
+        std::cout << std::endl;
+        std::cout << "===== Construction time =====" << std::endl;
+        std::cout << std::endl;
+
+        for (int testIndex = 0; testIndex < testCases.size(); ++testIndex) {
+            std::int64_t numElements = testCases[testIndex].first;
+            std::int64_t numIterations = testCases[testIndex].second;
+
+            std::cout << "Elements: " << numElements << ", Iterations: " << numIterations << std::endl;
+
+            std::vector<Vector3I> vectors(numElements);
+            for (auto i = vectors.begin(); i != vectors.end(); ++i) {
+                *i = randomVector();
+            }
+        
+            boost::timer spatialSetTimer;
+            for (std::int64_t i = 0; i < numIterations; ++i) {
+                SpatialSet<Vector3I> spatialSet(vectors.begin(), vectors.end());
+                TS_ASSERT_EQUALS(spatialSet.size(), vectors.size());
+            }
+            double spatialSetTime = spatialSetTimer.elapsed();
+            std::cout << "SpatialSet: " << spatialSetTime << " s" << std::endl;
+        
+            boost::timer setTimer;
+            for (std::int64_t i = 0; i < numIterations; ++i) {
+                Set<Vector3I> set(vectors.begin(), vectors.end());
+                TS_ASSERT_EQUALS(set.size(), vectors.size());
+            }
+            double setTime = setTimer.elapsed();
+            std::cout << "Set: " << setTime << " s" << std::endl;
+
+            std::cout << std::endl;
         }
+        std::cout << std::endl;
+    }
+
+    void testVectorQueryTime() {
+        typedef std::pair<std::int64_t, std::int64_t> TestCase;
+
+        std::vector<TestCase> testCases;
+        testCases.push_back(TestCase(1000, 1000000));
+        testCases.push_back(TestCase(10000, 1000000));
+        testCases.push_back(TestCase(100000, 100000));
+        testCases.push_back(TestCase(1000000, 10000));
+        testCases.push_back(TestCase(10000000, 1000));
         
-        boost::timer iterator_timer;
-        Set<Vector3I> iterator_set(vectors.begin(), vectors.end());
-        double iterator_time = iterator_timer.elapsed();
-        TS_ASSERT_EQUALS(iterator_set.size(), vectors.size());
-        testSet(iterator_set.root());
-        std::cout << "Iterator: " << iterator_time << " s" << std::endl;
+        std::cout << std::endl;
+        std::cout << "===== Query time =====" << std::endl;
+        std::cout << std::endl;
+
+        for (int testIndex = 0; testIndex < testCases.size(); ++testIndex) {
+            std::int64_t numElements = testCases[testIndex].first;
+            std::int64_t numQueries = testCases[testIndex].second;
+
+            std::cout << "Elements: " << numElements << ", Queries: " << numQueries << std::endl;
+
+            std::vector<Vector3I> elements(numElements);
+            std::for_each(
+                elements.begin(),
+                elements.end(),
+                [] (Vector3I& element) {
+                    element = randomVector();
+                }
+            );
         
-        boost::timer insertion_timer;
-        Set<Vector3I> insertion_set;
-        for (auto i = vectors.begin(); i != vectors.end(); ++i) {
-            insertion_set.insert(*i);
+            std::vector<Vector3I> queryBoxes(numQueries);
+            std::for_each(
+                queryBoxes.begin(),
+                queryBoxes.end(),
+                [] (Vector3I& queryBox) {
+                    queryBox = randomVector();
+                }
+            );
+
+            SpatialSet<Vector3I> spatialSet(elements);
+            std::int64_t spatialSetChecksum = 0;
+            boost::timer spatialSetTimer;
+            for (std::int64_t i = 0; i < numQueries; ++i) {
+                spatialSetChecksum += spatialSet.overlapping(queryBoxes[i]).size();
+            }
+            double spatialSetTime = spatialSetTimer.elapsed();
+            std::cout << "SpatialSet: " << spatialSetTime << "s, checksum: " << spatialSetChecksum << std::endl;
+
+            Set<Vector3I> set(elements.begin(), elements.end());
+            std::int64_t setChecksum = 0;
+            boost::timer setTimer;
+            for (std::int64_t i = 0; i < numQueries; ++i) {
+                set.forEachOverlapping(
+                    queryBoxes[i],
+                    [&setChecksum] (const Vector3I& element) {
+                        ++setChecksum;
+                    }
+                );
+            }
+            double setTime = setTimer.elapsed();
+            std::cout << "Set: " << setTime << "s, checksum: " << setChecksum << std::endl;
+
+            std::cout << std::endl;
         }
-        double insertion_time = insertion_timer.elapsed();
-        TS_ASSERT_EQUALS(insertion_set.size(), vectors.size());
-        testSet(insertion_set.root());
-        std::cout << "Insertion: " << insertion_time << " s" << std::endl;
-        
-        boost::timer spatial_timer;
-        SpatialSet<Vector3I> spatial_set(vectors.begin(), vectors.end());
-        double spatial_time = spatial_timer.elapsed();
-        TS_ASSERT_EQUALS(spatial_set.size(), vectors.size());
-        std::cout << "Spatial set: " << spatial_time << " s" << std::endl;
-        
-        std::cout << "Iterator " << insertion_time / iterator_time << " times faster" << std::endl;
     }
     
     void testRangeOperations() {
