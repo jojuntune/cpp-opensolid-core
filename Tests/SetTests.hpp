@@ -299,7 +299,7 @@ public:
         std::cout << "===== Construction time =====" << std::endl;
         std::cout << std::endl;
 
-        for (int testIndex = 0; testIndex < testCases.size(); ++testIndex) {
+        for (std::size_t testIndex = 0; testIndex < testCases.size(); ++testIndex) {
             std::int64_t numElements = testCases[testIndex].first;
             std::int64_t numIterations = testCases[testIndex].second;
 
@@ -345,7 +345,7 @@ public:
         std::cout << "===== Query time =====" << std::endl;
         std::cout << std::endl;
 
-        for (int testIndex = 0; testIndex < testCases.size(); ++testIndex) {
+        for (std::size_t testIndex = 0; testIndex < testCases.size(); ++testIndex) {
             std::int64_t numElements = testCases[testIndex].first;
             std::int64_t numQueries = testCases[testIndex].second;
 
