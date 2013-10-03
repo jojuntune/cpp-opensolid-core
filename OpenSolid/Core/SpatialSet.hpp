@@ -281,7 +281,7 @@ namespace opensolid
     inline
     SpatialSet<TElement>::SpatialSet(
         std::vector<TElement>&& elements,
-        BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>()
+        BoundsFunction<TElement> boundsFunction
     ) : _elements(elements) {
 
         init(boundsFunction);
@@ -392,7 +392,7 @@ namespace opensolid
     namespace spatialset
     {
         template <class TElement>
-        std::ostream&
+        void
         print(std::ostream& stream, const SpatialSet<TElement>& set, const Subtree& subtree) {
             stream << "{";
             if (subtree.nodeCount == 1) {
@@ -406,11 +406,12 @@ namespace opensolid
         }
     }
     
-    // template <class TElement>
-    // std::ostream&
-    // operator<<(std::ostream& stream, const SpatialSet<TElement>& set) {
-    //     spatialset::print(stream, set, spatialset::tree(set.size()));
-    // }
+    template <class TElement>
+    std::ostream&
+    operator<<(std::ostream& stream, const SpatialSet<TElement>& set) {
+        spatialset::print(stream, set, spatialset::tree(set.size()));
+        return stream;
+    }
 
     // template <class TElement>
     // struct ScalingFunction<SpatialSet<TElement>>
