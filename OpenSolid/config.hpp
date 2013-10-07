@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 
 // Create DLL import/export declaration macros for core module
 // (unless static core has been selected)
