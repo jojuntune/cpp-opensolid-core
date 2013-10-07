@@ -37,169 +37,133 @@ namespace opensolid
 {
     namespace spatialset
     {
-        inline
-        std::int64_t
-        greaterOrEqualPowerOfTwo(std::int64_t num) {
-            --num;
-            num |= num >> 1;
-            num |= num >> 2;
-            num |= num >> 4;
-            num |= num >> 8;
-            num |= num >> 16;
-            num |= num >> 32;
-            return (num + 1);
+        template <class TBounds>
+        inline bool
+        hasLesserMedian(
+            const TBounds& firstBounds,
+            const TBounds& secondBounds,
+            std::int64_t index
+        ) {
+            Interval difference = firstBounds(index) - secondBounds(index);
+            return difference.upperBound() < -difference.lowerBound();
         }
 
-        inline
-        std::int64_t
-        leftElementCount(std::int64_t elementCount) {
-            std::int64_t fullElementCount = spatialset::greaterOrEqualPowerOfTwo(elementCount);
-            std::int64_t gapSize = 2 * (fullElementCount - elementCount);
-
-            if (gapSize <= fullElementCount / 2) {
-                return fullElementCount / 2;
-            } else {
-                return elementCount - fullElementCount / 4;
-            }
-        }
-
-        inline
-        std::pair<Subtree, Subtree>
-        childSubtrees(const Subtree& subtree) {
-            std::pair<Subtree, Subtree> results;
-
-            std::int64_t leftElementCount = spatialset::leftElementCount(subtree.elementCount);
-            std::int64_t rightElementCount = subtree.elementCount - leftElementCount;
-
-            results.first.nodeIndex = 2 * subtree.nodeIndex + 1;
-            results.first.nodeCount = 2 * leftElementCount - 1;
-            results.first.startElementIndex = subtree.startElementIndex;
-            results.first.elementCount = leftElementCount;
-
-            results.second.nodeIndex = 2 * subtree.nodeIndex + 2;
-            results.second.nodeCount = 2 * rightElementCount - 1;
-            results.second.startElementIndex = subtree.startElementIndex + leftElementCount;
-            results.second.elementCount = rightElementCount;
-
-            return results;
-        }
-
-        template <class TBounds, class TVector>
-        std::int64_t
-        sortIndex(const TBounds& overallBounds, const TVector& maxElementWidths) {
-            double maxOverallWidth = 0.0;
-            double maxWidthRatio = 0.0;
-            std::int64_t maxOverallWidthIndex = -1;
-            std::int64_t maxWidthRatioIndex = -1;
-
-            for (std::int64_t i = 0; i < overallBounds.size(); ++i) {
-                double overallWidth = overallBounds(i).width();
-                double maxElementWidth = maxElementWidths(i);
-
-                if (maxElementWidth > Zero()) {
-                    double widthRatio = overallWidth / maxElementWidth;
-                    if (widthRatio > maxWidthRatio) {
-                        maxWidthRatio = widthRatio;
-                        maxWidthRatioIndex = i;
-                    }
-                } else {
-                    if (overallWidth > maxOverallWidth) {
-                        maxOverallWidth = overallWidth;
-                        maxOverallWidthIndex = i;
-                    }
-                }
-            }
-            if (maxOverallWidthIndex >= 0) {
-                // At least one direction was found with a zero maximum element width,
-                // so ratio is not an appropriate metric
-                return maxOverallWidthIndex;
-            } else {
-                return maxWidthRatioIndex;
-            }
+        inline bool
+        hasLesserMedian(
+            Interval firstInterval,
+            Interval secondInterval,
+            std::int64_t index
+        ) {
+            assert(index == 0);
+            Interval difference = firstInterval - secondInterval;
+            return difference.upperBound() < -difference.lowerBound();
         }
 
         template <class TBounds>
-        TBounds
-        sortBoundsData(
-            typename std::vector<BoundsData<TBounds>>::iterator begin,
-            typename std::vector<BoundsData<TBounds>>::iterator end,
-            std::int64_t leftElementCount
+        inline bool
+        hasGreaterMedian(
+            const TBounds& firstBounds,
+            const TBounds& secondBounds,
+            std::int64_t index
         ) {
-            typedef Matrix<double, TBounds::RowsAtCompileTime, TBounds::ColsAtCompileTime> TVector;
-
-            TBounds overallBounds = begin->bounds;
-            TVector maxElementWidths = begin->bounds.cwiseWidth();
-            std::for_each(
-                begin + 1,
-                end,
-                [&overallBounds, &maxElementWidths] (
-                    const BoundsData<TBounds>& boundsData
-                ) -> void {
-                    overallBounds = overallBounds.hull(boundsData.bounds);
-                    maxElementWidths = maxElementWidths.cwiseMax(boundsData.bounds.cwiseWidth());
-                }
-            );
-            std::int64_t sortIndex = spatialset::sortIndex(overallBounds, maxElementWidths);
-            std::for_each(
-                begin,
-                end,
-                [sortIndex] (BoundsData<TBounds>& boundsData) {
-                    boundsData.medianValue = boundsData.bounds(sortIndex).median();
-                }
-            );
-            std::nth_element(
-                begin,
-                begin + leftElementCount,
-                end,
-                [sortIndex] (
-                    const BoundsData<TBounds>& firstBoundsData,
-                    const BoundsData<TBounds>& secondBoundsData
-                ) -> bool {
-                    return firstBoundsData.medianValue < secondBoundsData.medianValue;
-                }
-            );
-
-            return overallBounds;
+            Interval difference = firstBounds(index) - secondBounds(index);
+            return difference.upperBound() > -difference.lowerBound();
         }
 
-        Subtree
-        tree(std::int64_t numElements) {
-            Subtree result;
-            result.nodeIndex = 0;
-            result.nodeCount = 2 * numElements - 1;
-            result.startElementIndex = 0;
-            result.elementCount = numElements;
-            return result;
+        inline bool
+        hasGreaterMedian(
+            Interval firstInterval,
+            Interval secondInterval,
+            std::int64_t index
+        ) {
+            assert(index == 0);
+            Interval difference = firstInterval - secondInterval;
+            return difference.upperBound() > -difference.lowerBound();
         }
     }
 
     template <class TElement>
-    void
+    typename SpatialSet<TElement>::Node*
     SpatialSet<TElement>::init(
-        std::vector<spatialset::BoundsData<typename BoundsType<TElement>::Type>>& boundsData,
-        const spatialset::Subtree& subtree
+        Node* node,
+        BoundsData** begin,
+        BoundsData** end,
+        typename BoundsType<TElement>::Type& overallBounds,
+        std::int64_t sortIndex
     ) {
-        assert(subtree.nodeCount > 0 && subtree.elementCount > 0);
-        assert((subtree.nodeCount == 1) == (subtree.elementCount == 1));
-
-        if (subtree.nodeCount == 1) {
-            // Leaf node: get bounds from corresponding element
-            _nodeBounds[subtree.nodeIndex] = boundsData[subtree.startElementIndex].bounds;
+        node->bounds = overallBounds;
+        std::int64_t size = end - begin;
+        if (size == 1) {
+            // Leaf node
+            node->left = nullptr;
+            node->right = (*begin)->element;
+            return node + 1;
         } else {
-            std::pair<spatialset::Subtree, spatialset::Subtree> childSubtrees =
-                spatialset::childSubtrees(subtree);
+            // Partition bounds data and find left/right bounds
+            std::int64_t leftSize = 0;
+            std::int64_t rightSize = 0;
+            typename BoundsType<TElement>::Type leftBounds;
+            typename BoundsType<TElement>::Type rightBounds;
+            BoundsData** lower = begin;
+            BoundsData** upper = end - 1;
+            for (BoundsData** i = lower; i <= upper; ++i) {
+                if (spatialset::hasLesserMedian((*i)->bounds, overallBounds, sortIndex)) {
+                    if (leftSize == 0) {
+                        leftBounds = (*i)->bounds;
+                    } else {
+                        leftBounds = leftBounds.hull((*i)->bounds);
+                    }
 
-            auto begin = boundsData.begin() + subtree.startElementIndex;
-            auto end = begin + subtree.elementCount;
-            _nodeBounds[subtree.nodeIndex] =
-                spatialset::sortBoundsData<typename BoundsType<TElement>::Type>(
-                    begin,
-                    end,
-                    childSubtrees.first.elementCount
-                );
+                    ++leftSize;
+                    if (i != lower) {
+                        std::swap(*i, *lower);
+                    }
+                    ++lower;
+                }
+            }
+            for (BoundsData** i = upper; i >= lower; --i) {
+                if (spatialset::hasGreaterMedian((*i)->bounds, overallBounds, sortIndex)) {
+                    if (rightSize == 0) {
+                        rightBounds = (*i)->bounds;
+                    } else {
+                        rightBounds = rightBounds.hull((*i)->bounds);
+                    }
+                    ++rightSize;
+                    if (i != upper) {
+                        std::swap(*i, *upper);
+                    }
+                    --upper;
+                }
+            }
+            while (leftSize < size / 2 && lower <= upper) {
+                if (leftSize == 0) {
+                    leftBounds = (*lower)->bounds;
+                } else {
+                    leftBounds = leftBounds.hull((*lower)->bounds);
+                }
+                ++leftSize;
+                ++lower;
+            }
+            while (rightSize < size - size / 2 && lower <= upper) {
+                if (rightSize == 0) {
+                    rightBounds = (*upper)->bounds;
+                } else {
+                    rightBounds = rightBounds.hull((*upper)->bounds);
+                }
+                ++rightSize;
+                --upper;
+            }
 
-            init(boundsData, childSubtrees.first);
-            init(boundsData, childSubtrees.second);
+            // Recurse into chid nodes
+            std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TElement>::Value;
+            Node* leftNode = node + 1;
+            Node* rightNode = init(leftNode, begin, lower, leftBounds, nextSortIndex);
+            Node* nextNode = init(rightNode, lower, end, rightBounds, nextSortIndex);
+
+            // Store child indices and return next available node index to parent
+            node->left = leftNode;
+            node->right = rightNode;
+            return nextNode;
         }
     }
 
@@ -209,46 +173,78 @@ namespace opensolid
         std::int64_t numElements = _elements.size();
 
         if (numElements == 0) {
-            _nodeBounds.clear();
+            _nodes.clear();
             return;
         }
 
-        // Initialize temporary bounds data array
-        std::vector<spatialset::BoundsData<typename BoundsType<TElement>::Type>> boundsData(
-            numElements
+        // Initialize bounds data
+        std::vector<BoundsData> boundsData(numElements);
+        std::vector<BoundsData*> boundsDataPointers(numElements);
+        typename BoundsType<TElement>::Type overallBounds;
+        for (std::int64_t i = 0; i < numElements; ++i) {
+            typename BoundsType<TElement>::Type bounds = boundsFunction(_elements[i]);
+
+            boundsData[i].bounds = bounds;
+            boundsData[i].element = &_elements[i];
+            boundsDataPointers[i] = &boundsData[i];
+            overallBounds = i == 0 ? bounds : overallBounds.hull(bounds);
+        }
+
+        // Recursively construct tree
+        _nodes.resize(2 * numElements - 1);
+        Node* endNode = init(
+            _nodes.data(),
+            &boundsDataPointers.front(),
+            &boundsDataPointers.back() + 1,
+            overallBounds,
+            0
         );
-        for (std::int64_t index = 0; index < numElements; ++index) {
-            boundsData[index].bounds = boundsFunction(_elements[index]);
-            boundsData[index].elementIndex = index;
-        }
+        assert(endNode == &_nodes.back() + 1);
+    }
 
-        spatialset::Subtree tree = spatialset::tree(numElements);
-        _nodeBounds.resize(tree.nodeCount);
-        init(boundsData, tree);
+    template <class TElement>
+    void
+    SpatialSet<TElement>::copy(const SpatialSet<TElement>& otherSet) {
+        _elements = otherSet._elements;
+        _nodes = otherSet._nodes;
 
-        // Use bounds data array to re-sort elements
-        std::vector<TElement> elements(numElements);
-        for (std::int64_t index = 0; index < numElements; ++index) {
-            elements[index] = std::move(_elements[boundsData[index].elementIndex]);
-        }
-        _elements.swap(elements);
+        // Fix up node pointers
+        std::int64_t elementOffset = _elements.data() - otherSet._elements.data();
+        std::int64_t nodeOffset = _nodes.data() - otherSet._nodes.data();
+        std::for_each(
+            _nodes.begin(),
+            _nodes.end(),
+            [elementOffset, nodeOffset] (Node& node) {
+                if (node.left) {
+                    node.left += nodeOffset;
+                    node.right += nodeOffset;
+                } else {
+                    node.right += elementOffset;
+                }
+            }
+        );
+    }
+
+    template <class TElement>
+    inline
+    const typename SpatialSet<TElement>::Node*
+    SpatialSet<TElement>::rootNode() const {
+        return _nodes.data();
     }
 
     template <class TElement> template <class TPredicate, class TVisitor>
     void
     SpatialSet<TElement>::visit(
-        const spatialset::Subtree& subtree,
+        const Node* node,
         const TPredicate& predicate,
         const TVisitor& visitor
     ) const {
-        if (predicate(_nodeBounds[subtree.nodeIndex])) {
-            if (subtree.nodeCount == 1) {
-                const_cast<TVisitor&>(visitor)(_elements[subtree.startElementIndex]);
+        if (predicate(node->bounds)) {
+            if (!node->left) {
+                const_cast<TVisitor&>(visitor)(*((const TElement*) node->right));
             } else {
-                std::pair<spatialset::Subtree, spatialset::Subtree> childSubtrees =
-                    spatialset::childSubtrees(subtree);
-                visit(childSubtrees.first, predicate, visitor);
-                visit(childSubtrees.second, predicate, visitor);
+                visit((const Node*) node->left, predicate, visitor);
+                visit((const Node*) node->right, predicate, visitor);
             }
         }
     }
@@ -260,16 +256,15 @@ namespace opensolid
 
     template <class TElement>
     inline
-    SpatialSet<TElement>::SpatialSet(const SpatialSet<TElement>& otherSet) :
-        _elements(otherSet._elements),
-        _nodeBounds(otherSet._nodeBounds) {
+    SpatialSet<TElement>::SpatialSet(const SpatialSet<TElement>& otherSet) {
+        copy(otherSet);
     }
 
     template <class TElement>
     inline
     SpatialSet<TElement>::SpatialSet(SpatialSet<TElement>&& otherSet) :
         _elements(std::move(otherSet._elements)),
-        _nodeBounds(std::move(otherSet._nodeBounds)) {
+        _nodes(std::move(otherSet._nodes)) {
     }
 
     template <class TElement>
@@ -287,7 +282,7 @@ namespace opensolid
     SpatialSet<TElement>::SpatialSet(
         std::vector<TElement>&& elements,
         BoundsFunction<TElement> boundsFunction
-    ) : _elements(elements) {
+    ) : _elements(std::move(elements)) {
 
         init(boundsFunction);
     }
@@ -320,6 +315,22 @@ namespace opensolid
     template <class TElement>
     inline
     const TElement&
+    SpatialSet<TElement>::front() const {
+        assert(!isEmpty());
+        return _elements.front();
+    }
+
+    template <class TElement>
+    inline
+    const TElement&
+    SpatialSet<TElement>::back() const {
+        assert(!isEmpty());
+        return _elements.back();
+    }
+
+    template <class TElement>
+    inline
+    const TElement&
     SpatialSet<TElement>::operator[](std::int64_t index) const {
         return _elements[index];
     }
@@ -329,15 +340,14 @@ namespace opensolid
     void
     SpatialSet<TElement>::swap(SpatialSet<TElement>& otherSet) {
         _elements.swap(otherSet._elements);
-        _nodeBounds.swap(otherSet._nodeBounds);
+        _nodes.swap(otherSet._nodes);
     }
     
     template <class TElement>
     inline
     void
     SpatialSet<TElement>::operator=(const SpatialSet<TElement>& otherSet) {
-        _elements = otherSet._elements;
-        _nodeBounds = otherSet._nodeBounds;
+        copy(otherSet);
     }
     
     template <class TElement>
@@ -345,7 +355,7 @@ namespace opensolid
     void
     SpatialSet<TElement>::operator=(SpatialSet<TElement>&& otherSet) {
         _elements = std::move(otherSet._elements);
-        _nodeBounds = std::move(otherSet._nodeBounds);
+        _nodes = std::move(otherSet._nodes);
     }
     
     template <class TElement>
@@ -369,7 +379,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename BoundsType<TElement>::Type();
         } else {
-            return _nodeBounds.front();
+            return _nodes.front().bounds;
         }
     }
 
@@ -377,77 +387,132 @@ namespace opensolid
     void
     SpatialSet<TElement>::clear() {
         _elements.clear();
-        _nodeBounds.clear();
+        _nodes.clear();
+    }
+
+
+    template <class TElement> template <class TVisitor>
+    void
+    SpatialSet<TElement>::forEachOverlapping(
+        const typename BoundsType<TElement>::Type& predicateBounds,
+        const TVisitor& visitor
+    ) const {
+        if (isEmpty()) {
+            return;
+        }
+        visit(
+            rootNode(),
+            [&predicateBounds] (const typename BoundsType<TElement>::Type& elementBounds) -> bool {
+                return elementBounds.overlaps(predicateBounds);
+            },
+            visitor
+        );
     }
 
     template <class TElement>
     std::vector<TElement>
-    SpatialSet<TElement>::overlapping(const typename BoundsType<TElement>::Type& bounds) const {
+    SpatialSet<TElement>::overlapping(
+        const typename BoundsType<TElement>::Type& predicateBounds
+    ) const {
         std::vector<TElement> results;
-        auto predicate = [&bounds] (const typename BoundsType<TElement>::Type& elementBounds) -> bool {
-            return bounds.overlaps(elementBounds);
-        };
-        auto visitor = [&results] (const TElement& element) {
-            results.push_back(element);
-        };
-        visit(spatialset::tree(size()), predicate, visitor);
-        return results;
-    }
-
-    namespace spatialset
-    {
-        template <class TElement>
-        void
-        print(std::ostream& stream, const SpatialSet<TElement>& set, const Subtree& subtree) {
-            stream << "{";
-            if (subtree.nodeCount == 1) {
-                stream << set[subtree.startElementIndex];
-            } else {
-                std::pair<Subtree, Subtree> childSubtrees = spatialset::childSubtrees(subtree);
-                print(stream, set, childSubtrees.first);
-                print(stream, set, childSubtrees.second);
+        forEachOverlapping(
+            predicateBounds,
+            [&results] (const TElement& element) -> void {
+                results.push_back(element);
             }
-            stream << "}";
-        }
+        );
+        return results;
     }
     
     template <class TElement>
     std::ostream&
     operator<<(std::ostream& stream, const SpatialSet<TElement>& set) {
-        spatialset::print(stream, set, spatialset::tree(set.size()));
+        stream << "{";
+        if (!set.isEmpty()) {
+            std::for_each(
+                set.begin(),
+                set.end() - 1,
+                [&stream] (const TElement& element) {
+                    stream << element << ",";
+                }
+            );
+            stream << set.back();
+        }
+        stream << "}";
         return stream;
     }
 
-    // template <class TElement>
-    // struct ScalingFunction<SpatialSet<TElement>>
-    // {
-    //     SpatialSet<TElement>
-    //     operator()(const SpatialSet<TElement>& set, double scale) const;
-    // };
+    template <class TElement>
+    SpatialSet<TElement>
+    ScalingFunction<SpatialSet<TElement>>::operator()(
+        const SpatialSet<TElement>& set,
+        double scale
+    ) const {
+        std::vector<TElement> scaledElements(set.size());
+        std::transform(
+            set.begin(),
+            set.end(),
+            scaledElements.begin(),
+            [scale] (const TElement& element) -> TElement {
+                return Transformable<TElement>::scaling(element, scale);
+            }
+        );
+        return SpatialSet<TElement>(scaledElements);
+    }
 
-    // template <class TElement>
-    // struct TranslationFunction<SpatialSet<TElement>>
-    // {
-    //     template <class TVector>
-    //     SpatialSet<TElement>
-    //     operator()(const SpatialSet<TElement>& set, const EigenBase<TVector>& vector) const;
-    // };
+    template <class TElement> template <class TVector>
+    SpatialSet<TElement>
+    TranslationFunction<SpatialSet<TElement>>::operator()(
+        const SpatialSet<TElement>& set,
+        const EigenBase<TVector>& vector
+    ) const {
+        std::vector<TElement> translatedElements(set.size());
+        std::transform(
+            set.begin(),
+            set.end(),
+            translatedElements.begin(),
+            [&vector] (const TElement& element) -> TElement {
+                return Transformable<TElement>::translation(element, vector.derived());
+            }
+        );
+        return SpatialSet<TElement>(translatedElements);
+    }
 
-    // template <class TElement, int iNumResultDimensions>
-    // struct TransformationFunction<SpatialSet<TElement>, iNumResultDimensions>
-    // {
-    //     template <class TMatrix>
-    //     SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
-    //     operator()(const SpatialSet<TElement>& set, const EigenBase<TMatrix>& matrix) const;
-    // };
+    template <class TElement, int iNumResultDimensions> template <class TMatrix>
+    SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
+    TransformationFunction<SpatialSet<TElement>, iNumResultDimensions>::operator()(
+        const SpatialSet<TElement>& set,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        typedef typename ChangeDimensions<TElement, iNumResultDimensions>::Type TransformedElement;
+        std::vector<TransformedElement> transformedElements(set.size());
+        std::transform(
+            set.begin(),
+            set.end(),
+            transformedElements.begin(),
+            [&matrix] (const TElement& element) -> TransformedElement {
+                return Transformable<TElement>::transformation(element, matrix.derived());
+            }
+        );
+        return SpatialSet<TransformedElement>(transformedElements);
+    }
 
-    // template <class TElement, int iNumResultDimensions>
-    // struct MorphingFunction<SpatialSet<TElement>, iNumResultDimensions>
-    // {
-    //     SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
-    //     operator()(
-    //         const SpatialSet<TElement>& set,
-    //         const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
-    //     ) const;
-    // };
+    template <class TElement, int iNumResultDimensions>
+    SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
+    MorphingFunction<SpatialSet<TElement>, iNumResultDimensions>::operator()(
+        const SpatialSet<TElement>& set,
+        const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
+    ) const {
+        typedef typename ChangeDimensions<TElement, iNumResultDimensions>::Type MorphedElement;
+        std::vector<MorphedElement> morphedElements(set.size());
+        std::transform(
+            set.begin(),
+            set.end(),
+            morphedElements.begin(),
+            [&function] (const TElement& element) -> MorphedElement {
+                return Transformable<TElement>::morphing(element, function);
+            }
+        );
+        return SpatialSet<MorphedElement>(morphedElements);
+    }
 }

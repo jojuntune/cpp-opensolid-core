@@ -14,9 +14,9 @@
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
     set(BUILD_DART_MODULE OFF CACHE BOOL "Build Dart module")
-    set(BUILD_PYTHON_MODULE OFF CACHE BOOL "Build Python module")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
     set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation (requires Doxygen)")
+    set(BUILD_SANDBOX_EXECUTABLES OFF CACHE BOOL "Build sandbox executables (only useful for OpenSolid developers)")
     
 ########## Set up common build settings ##########
 
@@ -191,6 +191,11 @@
         # properly
         enable_testing()
         add_subdirectory(Tests)
+    endif()
+
+    # Build sandbox executables if selected
+    if(${BUILD_SANDBOX_EXECUTABLES})
+        add_subdirectory(Sandbox)
     endif()
     
     # Build documentation if selected

@@ -35,46 +35,49 @@
 
 namespace opensolid
 {
-    namespace spatialset
-    {
-        struct Subtree
-        {
-            std::int64_t nodeIndex;
-            std::int64_t nodeCount;
-            std::int64_t startElementIndex;
-            std::int64_t elementCount;
-        };
-
-        template <class TBounds>
-        struct BoundsData
-        {
-            TBounds bounds;
-            std::int64_t elementIndex;
-            double medianValue;
-        };
-    }
-
     template <class TElement>
     class SpatialSet :
         public Transformable<SpatialSet<TElement>>
     {
     private:
-        std::vector<TElement> _elements;
-        std::vector<typename BoundsType<TElement>::Type> _nodeBounds;
+        struct Node
+        {
+            typename BoundsType<TElement>::Type bounds;
+            const void* left;
+            const void* right;
+        };
 
-        void
+        struct BoundsData
+        {
+            typename BoundsType<TElement>::Type bounds;
+            const TElement* element;
+        };
+
+        std::vector<TElement> _elements;
+        std::vector<Node> _nodes;
+
+        Node*
         init(
-            std::vector<spatialset::BoundsData<typename BoundsType<TElement>::Type>>& boundsData,
-            const spatialset::Subtree& subtree
+            Node* node,
+            BoundsData** begin,
+            BoundsData** end,
+            typename BoundsType<TElement>::Type& overallBounds,
+            std::int64_t sortIndex
         );
 
         void
         init(const BoundsFunction<TElement>& boundsFunction);
 
+        void
+        copy(const SpatialSet<TElement>& otherSet);
+
+        const Node*
+        rootNode() const;
+        
         template <class TPredicate, class TVisitor>
         void
         visit(
-            const spatialset::Subtree& subtree,
+            const Node* node,
             const TPredicate& predicate,
             const TVisitor& visitor
         ) const;
@@ -111,6 +114,12 @@ namespace opensolid
         end() const;
 
         const TElement&
+        front() const;
+
+        const TElement&
+        back() const;
+
+        const TElement&
         operator[](std::int64_t index) const;
 
         void
@@ -134,8 +143,15 @@ namespace opensolid
         void
         clear();
 
+        template <class TVisitor>
+        void
+        forEachOverlapping(
+            const typename BoundsType<TElement>::Type& predicateBounds,
+            const TVisitor& visitor
+        ) const;
+
         std::vector<TElement>
-        overlapping(const typename BoundsType<TElement>::Type& bounds) const;
+        overlapping(const typename BoundsType<TElement>::Type& predicateBounds) const;
 
         // TODO: filtered? mapped?
     };
