@@ -98,6 +98,35 @@ namespace opensolid
             node->left = nullptr;
             node->right = (*begin)->element;
             return node + 1;
+        } else if (size == 2) {
+            // Node with two leaf children
+            Node* leftNode = node + 1;
+            Node* rightNode = node + 2;
+            node->left = leftNode;
+            node->right = rightNode;
+            leftNode->left = nullptr;
+            rightNode->left = nullptr;
+            BoundsData* firstBoundsData = *begin;
+            BoundsData* secondBoundsData = *(begin + 1);
+            bool reversed = spatialset::hasLesserMedian(
+                secondBoundsData->bounds,
+                firstBoundsData->bounds,
+                sortIndex
+            );
+            if (reversed) {
+                leftNode->bounds = secondBoundsData->bounds;
+                rightNode->bounds = firstBoundsData->bounds;
+
+                leftNode->right = secondBoundsData->element;
+                rightNode->right = firstBoundsData->element;
+            } else {
+                leftNode->bounds = firstBoundsData->bounds;
+                rightNode->bounds = secondBoundsData->bounds;
+
+                leftNode->right = firstBoundsData->element;
+                rightNode->right = secondBoundsData->element;
+            }
+            return node + 3;
         } else {
             // Partition bounds data and find left/right bounds
             std::int64_t leftSize = 0;
