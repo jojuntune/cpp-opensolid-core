@@ -35,10 +35,10 @@ namespace opensolid
     {
         template <class TOther>
         TOther
-        convertTo() const;
+        to() const;
 
         template <class TOther>
         static TDerived
-        ConvertFrom(const TOther& argument);
+        From(const TOther& argument);
     };
 }

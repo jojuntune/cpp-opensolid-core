@@ -108,4 +108,4 @@ transformation(const Derived& argument, const EigenBase<TMatrix>& matrix);
 
 template <class TOther>
 TOther
-convertTo() const;
+to() const;

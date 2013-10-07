@@ -181,14 +181,14 @@ namespace Eigen
 
     template<class TDerived> template <class TOther>
     TOther
-    MatrixBase<TDerived>::convertTo() const {
+    MatrixBase<TDerived>::to() const {
         return opensolid::ConversionFunction<PlainObject, TOther>()(derived());
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     template <class TOther>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::ConvertFrom(const TOther& other) {
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::From(const TOther& other) {
         return opensolid::ConversionFunction<TOther, Matrix>()(other);
     }
 

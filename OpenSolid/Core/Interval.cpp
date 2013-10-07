@@ -60,67 +60,67 @@ namespace opensolid
     
     Interval&
     Interval::operator*=(Interval interval) {
-        BoostInterval self = this->convertTo<BoostInterval>();
-        BoostInterval other = interval.convertTo<BoostInterval>();
-        *this = Interval::ConvertFrom(self * other);
+        BoostInterval self = this->to<BoostInterval>();
+        BoostInterval other = interval.to<BoostInterval>();
+        *this = Interval::From(self * other);
         return *this;
     }
     
     Interval&
     Interval::operator/=(Interval interval) {
-        BoostInterval self = this->convertTo<BoostInterval>();
-        BoostInterval other = interval.convertTo<BoostInterval>();
-        *this = Interval::ConvertFrom(self / other);
+        BoostInterval self = this->to<BoostInterval>();
+        BoostInterval other = interval.to<BoostInterval>();
+        *this = Interval::From(self / other);
         return *this;
     }
     
     Interval
     operator*(Interval firstInterval, Interval secondInterval) {
-        return Interval::ConvertFrom(
-            firstInterval.convertTo<BoostInterval>() * secondInterval.convertTo<BoostInterval>()
+        return Interval::From(
+            firstInterval.to<BoostInterval>() * secondInterval.to<BoostInterval>()
         );
     }
 
     Interval
     operator/(double value, Interval interval) {
-        return Interval::ConvertFrom(value / interval.convertTo<BoostInterval>());
+        return Interval::From(value / interval.to<BoostInterval>());
     }
 
     Interval
     operator/(Interval firstInterval, Interval secondInterval) {
-        return Interval::ConvertFrom(
-            firstInterval.convertTo<BoostInterval>() / secondInterval.convertTo<BoostInterval>()
+        return Interval::From(
+            firstInterval.to<BoostInterval>() / secondInterval.to<BoostInterval>()
         );
     }
 
     Interval
     sin(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::sin(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::sin(interval.to<BoostInterval>()));
     }
 
     Interval
     cos(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::cos(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::cos(interval.to<BoostInterval>()));
     }
 
     Interval
     tan(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::tan(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::tan(interval.to<BoostInterval>()));
     }
 
     Interval
     asin(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::asin(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::asin(interval.to<BoostInterval>()));
     }
 
     Interval
     acos(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::acos(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::acos(interval.to<BoostInterval>()));
     }
 
     Interval
     atan(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::atan(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::atan(interval.to<BoostInterval>()));
     }
 
     Interval
@@ -138,18 +138,18 @@ namespace opensolid
 
     Interval
     exp(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::exp(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::exp(interval.to<BoostInterval>()));
     }
 
     Interval
     log(Interval interval) {
-        return Interval::ConvertFrom(boost::numeric::log(interval.convertTo<BoostInterval>()));
+        return Interval::From(boost::numeric::log(interval.to<BoostInterval>()));
     }
 
     Interval
     pow(Interval baseInterval, int exponentValue) {
-        return Interval::ConvertFrom(
-            boost::numeric::pow(baseInterval.convertTo<BoostInterval>(), exponentValue)
+        return Interval::From(
+            boost::numeric::pow(baseInterval.to<BoostInterval>(), exponentValue)
         );
     }
     

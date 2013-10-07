@@ -24,4 +24,4 @@
 
 template <class TOther>
 static Matrix
-ConvertFrom(const TOther& argument);
+From(const TOther& argument);
