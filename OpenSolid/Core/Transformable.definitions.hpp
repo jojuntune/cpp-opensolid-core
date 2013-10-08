@@ -105,18 +105,6 @@ namespace opensolid
             const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
         ) const;
 
-        template <int iNumAxes>
-        typename ChangeDimensions<TDerived, iNumAxes>::Type
-        localizedTo(
-            const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
-        ) const;
-
-        template <int iNumDimensions>
-        typename ChangeDimensions<TDerived, iNumDimensions>::Type
-        globalizedFrom(
-            const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem
-        ) const;
-
         ///// Low-level static functions /////
 
         static TDerived
@@ -137,6 +125,20 @@ namespace opensolid
             const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
         );
     };
+
+    template <class TDerived, int iNumAxes>
+    typename ChangeDimensions<TDerived, iNumAxes>::Type
+    operator/(
+        const Transformable<TDerived>& transformable,
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    );
+
+    template <class TDerived, int iNumDimensions>
+    typename ChangeDimensions<TDerived, iNumDimensions>::Type
+    operator*(
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
+        const Transformable<TDerived>& transformable
+    );
 }
 
 ////////// Specializations //////////

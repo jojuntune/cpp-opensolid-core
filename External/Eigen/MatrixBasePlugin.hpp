@@ -79,18 +79,6 @@ transplanted(
     const opensolid::Transplant<NumDimensions, iNumResultDimensions>& transplant
 ) const;
 
-template <int iNumAxes>
-Matrix<typename internal::traits<Derived>::Scalar, iNumAxes, internal::traits<Derived>::ColsAtCompileTime>
-localizedTo(
-    const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& coordinateSystem
-) const;
-
-template <int iNumDimensions>
-Matrix<typename internal::traits<Derived>::Scalar, iNumDimensions, internal::traits<Derived>::ColsAtCompileTime>
-globalizedFrom(
-    const opensolid::CoordinateSystem<iNumDimensions, NumDimensions>& coordinateSystem
-) const;
-
 static const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<Derived>::Scalar>, const Derived>
 scaling(const Derived& argument, double scale);
 

@@ -130,7 +130,7 @@ namespace Eigen
         const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& sourceCoordinateSystem,
         const opensolid::CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
     ) const {
-        return localizedTo(sourceCoordinateSystem).globalizedFrom(destinationCoordinateSystem);
+        return destinationCoordinateSystem * (derived() / sourceCoordinateSystem);
     }
 
     template <class TDerived> template <int iNumResultDimensions>
@@ -139,22 +139,6 @@ namespace Eigen
         const opensolid::Transplant<NumDimensions, iNumResultDimensions>& transplant
     ) const {
         return transplant(derived());
-    }
-
-    template <class TDerived> template <int iNumAxes>
-    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumAxes, internal::traits<TDerived>::ColsAtCompileTime>
-    MatrixBase<TDerived>::localizedTo(
-        const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& coordinateSystem
-    ) const {
-        return transformation(derived(), coordinateSystem.inverseMatrix());
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    inline Matrix<typename internal::traits<TDerived>::Scalar, iNumDimensions, internal::traits<TDerived>::ColsAtCompileTime>
-    MatrixBase<TDerived>::globalizedFrom(
-        const opensolid::CoordinateSystem<iNumDimensions, NumDimensions>& coordinateSystem
-    ) const {
-        return transformation(derived(), coordinateSystem.basisMatrix());
     }
 
     template <class TDerived>
@@ -183,6 +167,172 @@ namespace Eigen
     TOther
     MatrixBase<TDerived>::to() const {
         return opensolid::ConversionFunction<PlainObject, TOther>()(derived());
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::operator%(
+        const Matrix& other
+    ) const {
+        return cross(other);
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::operator|(
+        const Matrix& other
+    ) const {
+        return dot(other);
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    template <class TFunction>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::apply(
+        const TFunction& function
+    ) const {
+        return unaryExpr(function);
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::vectorize(const Scalar& value) {
+        fill(value);
+        return *this;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::length() const {
+        return norm();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::sqrnorm() const {
+        return squaredNorm();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::normalize() {
+        MatrixBase<Matrix>::normalize();
+        return *this;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::normalize_cond() {
+        if (!isZero()) {
+            normalize();
+        }
+        return *this;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::l1_norm() const {
+        return lpNorm<1>();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::l8_norm() const {
+        return lpNorm<Eigen::Infinity>();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::max() const {
+        return maxCoeff();   
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::max_abs() const {
+        return cwiseAbs().maxCoeff();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::min() const {
+        return minCoeff();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::min_abs() const {
+        return cwiseAbs().minCoeff();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::mean_abs() const {
+        return cwiseAbs().mean();
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::minimize(const Matrix& other) {
+        *this = cwiseMin(other);
+        return *this;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    bool
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::minimized(const Matrix& other) {
+        bool result = false;
+        auto minimizer = [&result] (TScalar value, TScalar otherValue) {
+            if (otherValue < value) {
+                result = true;
+                return otherValue;
+            } else {
+                return value;
+            }
+        };
+        *this = binaryExpr(other, minimizer);
+        return result;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::maximize(const Matrix& other) {
+        *this = cwiseMax(other);
+        return *this;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    bool
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::maximized(const Matrix& other) {
+        bool result = false;
+        auto maximizer = [&result] (TScalar value, TScalar otherValue) {
+            if (otherValue > value) {
+                result = true;
+                return otherValue;
+            } else {
+                return value;
+            }
+        };
+        *this = binaryExpr(other, maximizer);
+        return result;
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::min(const Matrix& other) const {
+        return cwiseMin(other);
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::max(const Matrix& other) const {
+        return cwiseMax(other);
+    }
+
+    template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::vectorized(const Scalar& value) {
+        return Constant(value);
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -380,6 +530,50 @@ namespace Eigen
     inline opensolid::Interval
     NumTraits<opensolid::Interval>::highest() {
         return std::numeric_limits<double>::max();
+    }
+    
+    template <class TDerived, int iNumAxes>
+    inline
+    Matrix<typename TDerived::Scalar, iNumAxes, TDerived::ColsAtCompileTime>
+    operator/(
+        const EigenBase<TDerived>& matrix,
+        const opensolid::CoordinateSystem<TDerived::RowsAtCompileTime, iNumAxes>& coordinateSystem
+    ) {
+        return coordinateSystem.inverseMatrix() * matrix.derived();
+    }
+
+    template <class TDerived, int iNumDimensions>
+    inline
+    Matrix<typename TDerived::Scalar, iNumDimensions, TDerived::ColsAtCompileTime>
+    operator*(
+        const opensolid::CoordinateSystem<iNumDimensions, TDerived::RowsAtCompileTime>& coordinateSystem,
+        const EigenBase<TDerived>& matrix
+    ) {
+        return coordinateSystem.basisMatrix() * matrix.derived();
+    }
+
+    inline
+    double
+    dot(const Vector3d& firstVector, const Vector3d& secondVector) {
+        return firstVector.dot(secondVector);
+    }
+
+    inline
+    float
+    dot(const Vector3f& firstVector, const Vector3f& secondVector) {
+        return firstVector.dot(secondVector);
+    }
+
+    inline
+    Vector3d
+    cross(const Vector3d& firstVector, const Vector3d& secondVector) {
+        return firstVector.cross(secondVector);
+    }
+
+    inline
+    Vector3f
+    cross(const Vector3f& firstVector, const Vector3f& secondVector) {
+        return firstVector.cross(secondVector);
     }
 }
 

@@ -22,6 +22,77 @@
 *                                                                                   *
 *************************************************************************************/
 
+typedef Matrix vector_type;
+typedef Scalar value_type;
+static const int size_ = MaxSizeAtCompileTime;
+
+Matrix
+operator%(const Matrix& other) const;
+
+Scalar
+operator|(const Matrix& other) const;
+
+template <class TFunction>
+Matrix
+apply(const TFunction& function) const;
+
+Matrix&
+vectorize(const Scalar& value);
+
+Scalar
+length() const;
+
+Scalar
+sqrnorm() const;
+
+Matrix&
+normalize();
+
+Matrix&
+normalize_cond();
+
+Scalar
+l1_norm() const;
+
+Scalar
+l8_norm() const;
+
+Scalar
+max() const;
+
+Scalar
+max_abs() const;
+
+Scalar
+min() const;
+
+Scalar
+min_abs() const;
+
+Scalar
+mean_abs() const;
+
+Matrix&
+minimize(const Matrix& other);
+
+bool
+minimized(const Matrix& other);
+
+Matrix&
+maximize(const Matrix& other);
+
+bool
+maximized(const Matrix& other);
+
+Matrix
+min(const Matrix& other) const;
+
+Matrix
+max(const Matrix& other) const;
+
+static Matrix
+vectorized(const Scalar& value);
+
 template <class TOther>
 static Matrix
 From(const TOther& argument);

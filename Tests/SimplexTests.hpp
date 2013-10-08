@@ -81,21 +81,21 @@ public:
             Vector3d::UnitZ()
         );
 
-        Triangle2d xyComponents = triangle3d.localizedTo(xyCoordinateSystem);
+        Triangle2d xyComponents = triangle3d / xyCoordinateSystem;
         TS_ASSERT((xyComponents.vertex(0) - Point2d(1, 1)).isZero());
         TS_ASSERT((xyComponents.vertex(1) - Point2d(3, 1)).isZero());
         TS_ASSERT((xyComponents.vertex(2) - Point2d(2, 2)).isZero());
         double xyArea = xyComponents.area();
         TS_ASSERT(xyArea > 0.0);
 
-        Triangle2d yzComponents = triangle3d.localizedTo(yzCoordinateSystem);
+        Triangle2d yzComponents = triangle3d / yzCoordinateSystem;
         TS_ASSERT((yzComponents.vertex(0) - Point2d(1, 1)).isZero());
         TS_ASSERT((yzComponents.vertex(1) - Point2d(1, 2)).isZero());
         TS_ASSERT((yzComponents.vertex(2) - Point2d(2, 4)).isZero());
         double yzArea = yzComponents.area();
         TS_ASSERT(yzArea < 0.0);
 
-        double xzArea = (triangle3d.localizedTo(xzCoordinateSystem)).area();
+        double xzArea = (triangle3d / xzCoordinateSystem).area();
 
         double areaFromComponents = sqrt(xyArea * xyArea + yzArea * yzArea + xzArea * xzArea);
         TS_ASSERT(triangle3d.area() - areaFromComponents == Zero());
@@ -144,13 +144,13 @@ public:
         Triangle3d triangle(Point3d::Origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
         PlanarCoordinateSystem3d coordinateSystem = triangle.coordinateSystem();
 
-        Point3d globalized = Point2d(0.5, 0.5).globalizedFrom(coordinateSystem);
+        Point3d globalized = coordinateSystem * Point2d(0.5, 0.5);
         TS_ASSERT((globalized - Point3d(1.5, 1, 0)).isZero());
 
-        Point2d localized = Point3d(1, 0, 0).localizedTo(coordinateSystem);
+        Point2d localized = Point3d(1, 0, 0) / coordinateSystem;
         TS_ASSERT((localized - Point2d(0.5, 0)).isZero());
 
-        localized = Point3d(3, 2, 0).localizedTo(coordinateSystem);
+        localized = Point3d(3, 2, 0) / coordinateSystem;
         TS_ASSERT((localized - Point2d(1, 1)).isZero());
 
         Point3d projection = Point3d(3, 4, 5).projectedOnto(triangle.plane());
@@ -161,11 +161,11 @@ public:
         LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
         AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), Vector3d::UnitY());
         
-        LineSegment1d localized = lineSegment3d.localizedTo(axialCoordinateSystem);
+        LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
         TS_ASSERT((localized.vertices() - LineSegment1d(2, 5).vertices()).isZero());
 
         LineSegment3d globalized =
-            LineSegment1d(1.0 / 3.0, 2.0 / 3.0).globalizedFrom(lineSegment3d.coordinateSystem());
+            lineSegment3d.coordinateSystem() * LineSegment1d(1.0 / 3.0, 2.0 / 3.0);
         TS_ASSERT((globalized.vertex(0) - Point3d(2, 3, 4)).isZero());
         TS_ASSERT((globalized.vertex(1) - Point3d(3, 4, 5)).isZero());
     }

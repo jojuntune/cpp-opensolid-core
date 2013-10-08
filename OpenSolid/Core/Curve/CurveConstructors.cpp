@@ -396,12 +396,12 @@ namespace opensolid
             startRadialVector.normalized(),
             axisDirection.cross(startRadialVector).normalized()
         );
-        return CurveConstructors<2>::Arc(
+        return planarCoordinateSystem * CurveConstructors<2>::Arc(
             Point2d::Origin(),
             Counterclockwise,
-            startPoint.localizedTo(planarCoordinateSystem),
-            endPoint.localizedTo(planarCoordinateSystem)
-        ).globalizedFrom(planarCoordinateSystem);
+            startPoint / planarCoordinateSystem,
+            endPoint / planarCoordinateSystem
+        );
     }
 
     Curve<3>
@@ -471,12 +471,12 @@ namespace opensolid
             displacementVector.cross(axisDirection).normalized(),
             displacementVector.normalized()
         );
-        return CurveConstructors<2>::Arc(
+        return planarCoordinateSystem * CurveConstructors<2>::Arc(
             radius,
             Counterclockwise,
-            startPoint.localizedTo(planarCoordinateSystem),
-            endPoint.localizedTo(planarCoordinateSystem)
-        ).globalizedFrom(planarCoordinateSystem);
+            startPoint / planarCoordinateSystem,
+            endPoint / planarCoordinateSystem
+        );
     }
 
     Curve<3>
@@ -492,11 +492,11 @@ namespace opensolid
         }
         PlanarCoordinateSystem3d planarCoordinateSystem =
             Plane3d(innerPoint, normalVector.normalized()).coordinateSystem();
-        return CurveConstructors<2>::Arc(
-            startPoint.localizedTo(planarCoordinateSystem),
-            innerPoint.localizedTo(planarCoordinateSystem),
-            endPoint.localizedTo(planarCoordinateSystem)
-        ).globalizedFrom(planarCoordinateSystem);
+        return planarCoordinateSystem * CurveConstructors<2>::Arc(
+            startPoint / planarCoordinateSystem,
+            innerPoint / planarCoordinateSystem,
+            endPoint / planarCoordinateSystem
+        );
     }
 
     Curve<3>
@@ -576,12 +576,12 @@ namespace opensolid
             displacementVector.cross(axisDirection).normalized(),
             displacementVector.normalized()
         );
-        return CurveConstructors<2>::Circle(
+        return planarCoordinateSystem * CurveConstructors<2>::Circle(
             radius,
             Counterclockwise,
-            startPoint.localizedTo(planarCoordinateSystem),
-            secondPoint.localizedTo(planarCoordinateSystem)
-        ).globalizedFrom(planarCoordinateSystem);   
+            startPoint / planarCoordinateSystem,
+            secondPoint / planarCoordinateSystem
+        );   
     }
 
     Curve<3>
@@ -597,11 +597,11 @@ namespace opensolid
         }
         PlanarCoordinateSystem3d planarCoordinateSystem =
             Plane3d(secondPoint, normalVector).coordinateSystem();
-        return CurveConstructors<2>::Arc(
-            startPoint.localizedTo(planarCoordinateSystem),
-            secondPoint.localizedTo(planarCoordinateSystem),
-            thirdPoint.localizedTo(planarCoordinateSystem)
-        ).globalizedFrom(planarCoordinateSystem);
+        return planarCoordinateSystem * CurveConstructors<2>::Arc(
+            startPoint / planarCoordinateSystem,
+            secondPoint / planarCoordinateSystem,
+            thirdPoint / planarCoordinateSystem
+        );
     }
 
     Curve<3>
