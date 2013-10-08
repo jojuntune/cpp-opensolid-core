@@ -83,12 +83,7 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const EigenBase<TVector>& vector
     ) const {
-        return Domain<iNumDimensions>(
-            Set<Geometry<iNumDimensions, iNumDimensions - 1>>::translation(
-                domain.boundaries(),
-                vector.derived()
-            )
-        );
+        return Domain<iNumDimensions>(domain.boundaries().translated(vector.derived()));
     }
 
     template <int iNumDimensions> template <class TMatrix>
@@ -111,13 +106,6 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const Function<iNumDimensions, iNumDimensions>& function
     ) const {
-        bool validInput = function.numParameters() == iNumDimensions;
-        bool validOutput = function.numDimensions() == iNumDimensions;
-        if (validInput && validOutput) {
-            return Domain<iNumDimensions>(domain.boundaries().morphed(function));
-        } else {
-            assert(false);
-            return Domain<iNumDimensions>();
-        }
+        return Domain<iNumDimensions>(domain.boundaries().morphed(function));
     }
 }

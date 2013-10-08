@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
@@ -56,9 +57,9 @@ namespace opensolid
     template <int iNumDimensions> template <class TTransformable>
     TTransformable
     LinearTransformation<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        return TTransformable::translation(
-            TTransformable::transformation(
-                TTransformable::translation(
+        return Transformable<TTransformable>::translation(
+            Transformable<TTransformable>::transformation(
+                Transformable<TTransformable>::translation(
                     transformable,
                     -originPoint().vector()
                 ),

@@ -57,8 +57,8 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes> template <class TTransformable>
     typename ChangeDimensions<TTransformable, iNumAxes>::Type
     Localization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
-        return TTransformable::transformation(
-            TTransformable::translation(
+        return Transformable<TTransformable>::transformation(
+            Transformable<TTransformable>::translation(
                 transformable,
                 -originPoint().vector()
             ),

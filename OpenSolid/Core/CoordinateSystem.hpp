@@ -401,7 +401,7 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            Point<iNumDimensions>::translation(coordinateSystem.originPoint(), vector.derived()),
+            coordinateSystem.originPoint().translated(vector.derived()),
             coordinateSystem.basisMatrix()
         );
     }

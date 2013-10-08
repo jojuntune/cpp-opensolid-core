@@ -57,8 +57,8 @@ namespace opensolid
     typename ChangeDimensions<TTransformable, iNumDimensions>::Type
     Globalization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
         typedef typename ChangeDimensions<TTransformable, iNumDimensions>::Type ResultType;
-        return ResultType::translation(
-            TTransformable::transformation(
+        return Transformable<ResultType>::translation(
+            Transformable<TTransformable>::transformation(
                 transformable,
                 transformationMatrix()
             ),

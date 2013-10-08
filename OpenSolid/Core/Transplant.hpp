@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
@@ -70,9 +71,9 @@ namespace opensolid
         const TTransformable& transformable
     ) const {
         typedef typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type ResultType;
-        return ResultType::translation(
-            TTransformable::transformation(
-                TTransformable::translation(
+        return Transformable<ResultType>::translation(
+            Transformable<TTransformable>::transformation(
+                Transformable<TTransformable>::translation(
                     transformable,
                     -sourceOriginPoint().vector()
                 ),

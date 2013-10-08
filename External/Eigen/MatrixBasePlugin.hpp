@@ -79,21 +79,6 @@ transplanted(
     const opensolid::Transplant<NumDimensions, iNumResultDimensions>& transplant
 ) const;
 
-static const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<Derived>::Scalar>, const Derived>
-scaling(const Derived& argument, double scale);
-
-template <class TVector>
-const Derived&
-translation(const Derived& argument, const EigenBase<TVector>& vector);
-
-template <class TMatrix>
-static Matrix<
-    typename internal::traits<Derived>::Scalar,
-    TMatrix::RowsAtCompileTime,
-    internal::traits<Derived>::ColsAtCompileTime
->
-transformation(const Derived& argument, const EigenBase<TMatrix>& matrix);
-
 template <class TOther>
 TOther
 to() const;

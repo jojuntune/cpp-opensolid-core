@@ -141,28 +141,6 @@ namespace Eigen
         return transplant(derived());
     }
 
-    template <class TDerived>
-    inline const CwiseUnaryOp<internal::scalar_multiple_op<typename internal::traits<TDerived>::Scalar>, const TDerived>
-    MatrixBase<TDerived>::scaling(const TDerived& argument, double scale) {
-        return argument * Scalar(scale);
-    }
-
-    template <class TDerived> template <class TVector>
-    inline const TDerived&
-    MatrixBase<TDerived>::translation(const TDerived& argument, const EigenBase<TVector>& vector) {
-        return argument;
-    }
-
-    template <class TDerived> template <class TMatrix>
-    Matrix<
-        typename internal::traits<TDerived>::Scalar,
-        TMatrix::RowsAtCompileTime,
-        internal::traits<TDerived>::ColsAtCompileTime
-    >
-    MatrixBase<TDerived>::transformation(const TDerived& argument, const EigenBase<TMatrix>& matrix) {
-        return matrix.derived().template cast<Scalar>() * argument;
-    }
-
     template<class TDerived> template <class TOther>
     TOther
     MatrixBase<TDerived>::to() const {
@@ -585,7 +563,7 @@ namespace opensolid
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
         double scale
     ) const {
-        return scale * argument;
+        return TScalar(scale) * argument;
     }
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -605,7 +583,7 @@ namespace opensolid
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return matrix.derived() * argument;
+        return matrix.derived().cast<TScalar>() * argument;
     }
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
