@@ -152,6 +152,18 @@ namespace opensolid
     };
 
     template <>
+    struct NumDimensions<float>
+    {
+        static const int Value = 1;
+    };
+
+    template <>
+    struct NumDimensions<int>
+    {
+        static const int Value = 1;
+    };
+
+    template <>
     struct NumDimensions<Interval>
     {
         static const int Value = 1;
