@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
@@ -41,6 +42,7 @@ namespace opensolid
 {
     template <int iNumDimensions>
     class Point :
+        public Convertible<Point<iNumDimensions>>,
         public Transformable<Point<iNumDimensions>>
     {
     private:
