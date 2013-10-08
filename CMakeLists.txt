@@ -26,7 +26,7 @@
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds
     if (${BUILD_STATIC_CORE})
-        add_definitions(-DOPENSOLID_BUILD_STATIC_CORE)
+        add_definitions(-DOPENSOLID_STATIC_CORE)
     endif()
 
     # Set up compiler-specific flags

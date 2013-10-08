@@ -167,6 +167,32 @@ namespace Eigen
     typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> MapXcd;
     typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> MapXcI;
     typedef Map<const MatrixXb, Unaligned, Stride<Dynamic, Dynamic>> MapXcb;
+    
+    template <class TDerived, int iNumAxes>
+    Matrix<typename TDerived::Scalar, iNumAxes, TDerived::ColsAtCompileTime>
+    operator/(
+        const EigenBase<TDerived>& matrix,
+        const opensolid::CoordinateSystem<TDerived::RowsAtCompileTime, iNumAxes>& coordinateSystem
+    );
+
+    template <class TDerived, int iNumDimensions>
+    Matrix<typename TDerived::Scalar, iNumDimensions, TDerived::ColsAtCompileTime>
+    operator*(
+        const opensolid::CoordinateSystem<iNumDimensions, TDerived::RowsAtCompileTime>& coordinateSystem,
+        const EigenBase<TDerived>& matrix
+    );
+
+    double
+    dot(const Vector3d& firstVector, const Vector3d& secondVector);
+
+    float
+    dot(const Vector3f& firstVector, const Vector3f& secondVector);
+
+    Vector3d
+    cross(const Vector3d& firstVector, const Vector3d& secondVector);
+
+    Vector3f
+    cross(const Vector3f& firstVector, const Vector3f& secondVector);
 }
 
 namespace opensolid

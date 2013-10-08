@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Point.definitions.hpp>
 
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Transformable.hpp>

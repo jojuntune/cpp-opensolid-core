@@ -31,7 +31,7 @@
 // Create DLL import/export declaration macros for core module
 // (unless static core has been selected)
 #ifdef _WIN32
-    #ifdef OPENSOLID_BUILD_STATIC_CORE
+    #ifdef OPENSOLID_STATIC_CORE
         #define OPENSOLID_CORE_EXPORT
     #else
         #ifdef OpenSolidCore_EXPORTS

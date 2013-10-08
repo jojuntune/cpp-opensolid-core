@@ -142,7 +142,7 @@ namespace opensolid
         const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
         const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
     ) const {
-        return localizedTo(sourceCoordinateSystem).globalizedFrom(destinationCoordinateSystem);
+        return destinationCoordinateSystem * (derived() / sourceCoordinateSystem);
     }
 
     template <class TDerived>
@@ -160,26 +160,6 @@ namespace opensolid
         const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
     ) const {
         return morphing(derived(), function);
-    }
-
-    template <class TDerived> template <int iNumAxes>
-    inline typename ChangeDimensions<TDerived, iNumAxes>::Type
-    Transformable<TDerived>::localizedTo(
-        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
-    ) const {
-        return Localization<NumDimensions<TDerived>::Value, iNumAxes>(coordinateSystem)(
-            derived()
-        );
-    }
-
-    template <class TDerived> template <int iNumDimensions>
-    inline typename ChangeDimensions<TDerived, iNumDimensions>::Type
-    Transformable<TDerived>::globalizedFrom(
-        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem
-    ) const {
-        return Globalization<iNumDimensions, NumDimensions<TDerived>::Value>(coordinateSystem)(
-            derived()
-        );
     }
 
     template <class TDerived>
@@ -213,5 +193,27 @@ namespace opensolid
         const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
     ) {
         return MorphingFunction<TDerived, iNumResultDimensions>()(argument, function);
+    }
+
+    template <class TDerived, int iNumAxes>
+    inline typename ChangeDimensions<TDerived, iNumAxes>::Type
+    operator/(
+        const Transformable<TDerived>& transformable,
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    ) {
+        return Localization<NumDimensions<TDerived>::Value, iNumAxes>(coordinateSystem)(
+            transformable.derived()
+        );
+    }
+
+    template <class TDerived, int iNumDimensions>
+    inline typename ChangeDimensions<TDerived, iNumDimensions>::Type
+    operator*(
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
+        const Transformable<TDerived>& transformable
+    ) {
+        return Globalization<iNumDimensions, NumDimensions<TDerived>::Value>(coordinateSystem)(
+            transformable.derived()
+        );
     }
 }
