@@ -60,6 +60,9 @@ namespace opensolid
 
         Box(Interval x, Interval y, Interval z);
 
+        explicit
+        Box(const Point<iNumDimensions>& point);
+
         const Interval*
         data() const;
         
