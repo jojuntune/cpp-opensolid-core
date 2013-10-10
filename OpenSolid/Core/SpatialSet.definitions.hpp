@@ -28,8 +28,9 @@
 
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSubset.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-#include <OpenSolid/Core/BoundsFunction.definitions.hpp>
 
 #include <vector>
 
@@ -37,24 +38,15 @@ namespace opensolid
 {
     template <class TElement>
     class SpatialSet :
+        public SpatialSubset<TElement, NullPredicate, NullPredicate>,
         public Transformable<SpatialSet<TElement>>
     {
     private:
-        struct Node
-        {
-            typename BoundsType<TElement>::Type bounds;
-            const void* left;
-            const void* right;
-        };
-
         struct BoundsData
         {
             typename BoundsType<TElement>::Type bounds;
             const TElement* element;
         };
-
-        std::vector<TElement> _elements;
-        std::vector<Node> _nodes;
 
         Node*
         init(
@@ -67,9 +59,6 @@ namespace opensolid
 
         void
         init(const BoundsFunction<TElement>& boundsFunction);
-
-        void
-        copy(const SpatialSet<TElement>& otherSet);
 
         const Node*
         rootNode() const;

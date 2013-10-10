@@ -232,29 +232,6 @@ namespace opensolid
     }
 
     template <class TElement>
-    void
-    SpatialSet<TElement>::copy(const SpatialSet<TElement>& otherSet) {
-        _elements = otherSet._elements;
-        _nodes = otherSet._nodes;
-
-        // Fix up node pointers
-        std::int64_t elementOffset = _elements.data() - otherSet._elements.data();
-        std::int64_t nodeOffset = _nodes.data() - otherSet._nodes.data();
-        std::for_each(
-            _nodes.begin(),
-            _nodes.end(),
-            [elementOffset, nodeOffset] (Node& node) {
-                if (node.left) {
-                    node.left += nodeOffset;
-                    node.right += nodeOffset;
-                } else {
-                    node.right += elementOffset;
-                }
-            }
-        );
-    }
-
-    template <class TElement>
     inline
     const typename SpatialSet<TElement>::Node*
     SpatialSet<TElement>::rootNode() const {
