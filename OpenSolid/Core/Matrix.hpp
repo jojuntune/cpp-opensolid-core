@@ -152,7 +152,7 @@ namespace Eigen
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::operator%(
         const Matrix& other
     ) const {
-        return cross(other);
+        return this->cross(other);
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -160,7 +160,7 @@ namespace Eigen
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::operator|(
         const Matrix& other
     ) const {
-        return dot(other);
+        return this->dot(other);
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -169,26 +169,26 @@ namespace Eigen
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::apply(
         const TFunction& function
     ) const {
-        return unaryExpr(function);
+        return this->unaryExpr(function);
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::vectorize(const Scalar& value) {
-        fill(value);
+        this->fill(value);
         return *this;
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::length() const {
-        return norm();
+        return this->norm();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::sqrnorm() const {
-        return squaredNorm();
+        return this->squaredNorm();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -201,8 +201,8 @@ namespace Eigen
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::normalize_cond() {
-        if (!isZero()) {
-            normalize();
+        if (!this->isZero()) {
+            this->normalize();
         }
         return *this;
     }
@@ -210,49 +210,49 @@ namespace Eigen
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::l1_norm() const {
-        return lpNorm<1>();
+        return this->template lpNorm<1>();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::l8_norm() const {
-        return lpNorm<Eigen::Infinity>();
+        return this->template lpNorm<Eigen::Infinity>();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::max() const {
-        return maxCoeff();   
+        return this->maxCoeff();   
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::max_abs() const {
-        return cwiseAbs().maxCoeff();
+        return this->cwiseAbs().maxCoeff();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::min() const {
-        return minCoeff();
+        return this->minCoeff();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::min_abs() const {
-        return cwiseAbs().minCoeff();
+        return this->cwiseAbs().minCoeff();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     typename Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::Scalar
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::mean_abs() const {
-        return cwiseAbs().mean();
+        return this->cwiseAbs().mean();
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::minimize(const Matrix& other) {
-        *this = cwiseMin(other);
+        *this = this->cwiseMin(other);
         return *this;
     }
 
@@ -260,7 +260,7 @@ namespace Eigen
     bool
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::minimized(const Matrix& other) {
         bool result = false;
-        auto minimizer = [&result] (TScalar value, TScalar otherValue) {
+        auto minimizer = [&result] (TScalar value, TScalar otherValue) -> TScalar {
             if (otherValue < value) {
                 result = true;
                 return otherValue;
@@ -268,14 +268,14 @@ namespace Eigen
                 return value;
             }
         };
-        *this = binaryExpr(other, minimizer);
+        *this = this->binaryExpr(other, minimizer);
         return result;
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::maximize(const Matrix& other) {
-        *this = cwiseMax(other);
+        *this = this->cwiseMax(other);
         return *this;
     }
 
@@ -283,7 +283,7 @@ namespace Eigen
     bool
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::maximized(const Matrix& other) {
         bool result = false;
-        auto maximizer = [&result] (TScalar value, TScalar otherValue) {
+        auto maximizer = [&result] (TScalar value, TScalar otherValue) -> TScalar {
             if (otherValue > value) {
                 result = true;
                 return otherValue;
@@ -291,20 +291,20 @@ namespace Eigen
                 return value;
             }
         };
-        *this = binaryExpr(other, maximizer);
+        *this = this->binaryExpr(other, maximizer);
         return result;
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::min(const Matrix& other) const {
-        return cwiseMin(other);
+        return this->cwiseMin(other);
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>::max(const Matrix& other) const {
-        return cwiseMax(other);
+        return this->cwiseMax(other);
     }
 
     template<class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -583,7 +583,7 @@ namespace opensolid
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return matrix.derived().cast<TScalar>() * argument;
+        return matrix.derived().template cast<TScalar>() * argument;
     }
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>

@@ -71,7 +71,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     Box<iNumDimensions>::Box(const Point<iNumDimensions>& point) :
-        _vector(point.vector().cast<Interval>()) {
+        _vector(point.vector().template cast<Interval>()) {
     }
 
     template <int iNumDimensions>
