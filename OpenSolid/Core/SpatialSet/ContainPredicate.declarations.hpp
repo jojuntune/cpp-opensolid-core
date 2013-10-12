@@ -31,6 +31,6 @@ namespace opensolid
     namespace spatialset
     {
         template <class TElement>
-        struct SetData;
+        class ContainPredicate;
     }
 }

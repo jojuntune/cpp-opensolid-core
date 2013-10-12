@@ -26,11 +26,26 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/SpatialSet/ContainPredicate.definitions.hpp>
+
 namespace opensolid
 {
     namespace spatialset
     {
         template <class TElement>
-        struct SetData;
+        inline
+        ContainPredicate<TElement>::ContainPredicate(
+            const typename BoundsType<TElement>::Type& predicateBounds
+        ) : _predicateBounds(predicateBounds) {
+        }
+
+        template <class TElement>
+        inline
+        bool
+        ContainPredicate<TElement>::operator()(
+            const typename BoundsType<TElement>::Type& bounds
+        ) const {
+            return bounds.contains(_predicateBounds);
+        }
     }
 }

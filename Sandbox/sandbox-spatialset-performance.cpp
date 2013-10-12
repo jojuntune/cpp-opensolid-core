@@ -126,12 +126,8 @@ testQueryTime() {
         std::int64_t checksum = 0;
         boost::timer timer;
         for (std::int64_t i = 0; i < numQueries; ++i) {
-            set.forEachOverlapping(
-                queryBoxes[i],
-                [&checksum] (const Vector3I& element) {
-                    ++checksum;
-                }
-            );
+            auto subset = set.overlapping(queryBoxes[i]);
+            checksum += std::distance(subset.begin(), subset.end());
         }
         double time = timer.elapsed();
         std::cout << "Time: " << time << "s, checksum: " << checksum << std::endl;

@@ -29,7 +29,14 @@
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/FilteredSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SetData.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+
+#include <boost/intrusive_ptr.hpp>
 
 #include <vector>
 
@@ -40,15 +47,17 @@ namespace opensolid
         public Transformable<SpatialSet<TElement>>
     {
     private:
+        boost::intrusive_ptr<spatialset::SetData<TElement>> _setData;
+
         struct BoundsData
         {
             typename BoundsType<TElement>::Type bounds;
             const TElement* element;
         };
 
-        Node*
+        spatialset::SetNode<TElement>*
         init(
-            Node* node,
+            spatialset::SetNode<TElement>* node,
             BoundsData** begin,
             BoundsData** end,
             typename BoundsType<TElement>::Type& overallBounds,
@@ -58,16 +67,8 @@ namespace opensolid
         void
         init(const BoundsFunction<TElement>& boundsFunction);
 
-        const Node*
+        const spatialset::SetNode<TElement>*
         rootNode() const;
-        
-        template <class TPredicate, class TVisitor>
-        void
-        visit(
-            const Node* node,
-            const TPredicate& predicate,
-            const TVisitor& visitor
-        ) const;
     public:
         typedef typename std::vector<TElement>::const_iterator Iterator;
 
@@ -130,17 +131,15 @@ namespace opensolid
         void
         clear();
 
-        template <class TVisitor>
-        void
-        forEachOverlapping(
-            const typename BoundsType<TElement>::Type& predicateBounds,
-            const TVisitor& visitor
-        ) const;
-
-        std::vector<TElement>
+        spatialset::FilteredSet<TElement, spatialset::OverlapPredicate<TElement>>
         overlapping(const typename BoundsType<TElement>::Type& predicateBounds) const;
 
-        // TODO: filtered? mapped?
+        spatialset::FilteredSet<TElement, spatialset::ContainPredicate<TElement>>
+        containing(const typename BoundsType<TElement>::Type& predicateBounds) const;
+
+        template <class TBoundsPredicate>
+        spatialset::FilteredSet<TElement, TBoundsPredicate>
+        filtered(TBoundsPredicate boundsPredicate) const;
     };
     
     template <class TElement>

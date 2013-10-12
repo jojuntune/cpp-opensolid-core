@@ -28,10 +28,8 @@
 
 #include <OpenSolid/Core/SpatialSet/FilteredSet.declarations.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SetData.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
 
-#include <boost/intrusive_ptr.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 
 #include <stack>
@@ -44,13 +42,14 @@ namespace opensolid
         class FilteredSet
         {
         private:
-            boost::intrusive_ptr<SetData<TElement>> _setData;
+            const SetNode<TElement>* _rootNode;
             TBoundsPredicate _boundsPredicate;
+            mutable std::stack<const SetNode<TElement>*> _nodeStack;
         public:
             typedef FilteredSetIterator<TElement, TBoundsPredicate> Iterator;
 
             FilteredSet(
-                const boost::intrusive_ptr<SpatialSetData<TElement>>& setData,
+                const SetNode<TElement>* rootNode,
                 TBoundsPredicate boundsPredicate
             );
 
@@ -65,16 +64,19 @@ namespace opensolid
         class FilteredSetIterator :
             public boost::iterator_facade<
                 FilteredSetIterator<TElement, TBoundsPredicate>,
-                TElement,
+                const TElement,
                 boost::forward_traversal_tag
             >
         {
         private:
-            SetNode<TElement>* _node;
+            const SetNode<TElement>* _currentNode;
             TBoundsPredicate _boundsPredicate;
-            std::stack<SetNode<TElement>*> _stack;
+            std::stack<const SetNode<TElement>*>* _nodeStack;
 
             friend class boost::iterator_core_access;
+
+            void
+            descendFrom(const SetNode<TElement>* candidateNode);
 
             void
             increment();
@@ -87,7 +89,11 @@ namespace opensolid
         public:
             FilteredSetIterator();
 
-            FilteredSetIterator(SetNode<TElement>* root, TBoundsPredicate boundsPredicate);
+            FilteredSetIterator(
+                const SetNode<TElement>* rootNode,
+                TBoundsPredicate boundsPredicate,
+                std::stack<const SetNode<TElement>*>* nodeStack
+            );
 
             FilteredSetIterator(const FilteredSetIterator<TElement, TBoundsPredicate>& other);
 

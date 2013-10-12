@@ -26,11 +26,26 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/SpatialSet/OverlapPredicate.definitions.hpp>
+
 namespace opensolid
 {
     namespace spatialset
     {
         template <class TElement>
-        struct SetData;
+        inline
+        OverlapPredicate<TElement>::OverlapPredicate(
+            const typename BoundsType<TElement>::Type& predicateBounds
+        ) : _predicateBounds(predicateBounds) {
+        }
+
+        template <class TElement>
+        inline
+        bool
+        OverlapPredicate<TElement>::operator()(
+            const typename BoundsType<TElement>::Type& bounds
+        ) const {
+            return bounds.overlaps(_predicateBounds);
+        }
     }
 }
