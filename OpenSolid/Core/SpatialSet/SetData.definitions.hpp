@@ -26,20 +26,21 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SetData.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsType.definitions.hpp>
+#include <OpenSolid/Core/ReferenceCounted.hpp>
+#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
 
 namespace opensolid
 {
     namespace spatialset
     {
         template <class TElement>
-        struct SpatialSetNode
+        struct SetData :
+            public ReferenceCounted
         {
-            typename BoundsType<TElement>::Type bounds;
-            const void* left;
-            const void* right;
+            std::vector<SetNode<TElement>> nodes;
+            std::vector<TElement> elements;
         };
     }
 }

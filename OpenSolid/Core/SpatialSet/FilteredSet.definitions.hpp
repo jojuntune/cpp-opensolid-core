@@ -26,52 +26,78 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSubset.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/FilteredSet.declarations.hpp>
 
-#include <OpenSolid/Core/SpatialSetNode.definitions.hpp>
+#include <OpenSolid/Core/SpatialSet/SetData.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
 
 #include <boost/intrusive_ptr.hpp>
+#include <boost/iterator/iterator_facade.hpp>
+
+#include <stack>
 
 namespace opensolid
 {
     namespace spatialset
     {
-        template <class TElement, class TBoundsPredicate, class TElementPredicate>
-        class SpatialSubset
+        template <class TElement, class TBoundsPredicate>
+        class FilteredSet
         {
         private:
-            boost::intrusive_ptr<SpatialSetData<TElement>> _setData;
+            boost::intrusive_ptr<SetData<TElement>> _setData;
             TBoundsPredicate _boundsPredicate;
-            TElementPredicate _elementPredicate;
         public:
-            SpatialSubset();
+            typedef FilteredSetIterator<TElement, TBoundsPredicate> Iterator;
 
-            SpatialSubset(
+            FilteredSet(
                 const boost::intrusive_ptr<SpatialSetData<TElement>>& setData,
-                TBoundsPredicate boundsPredicate = TBoundsPredicate(),
-                TElementPredicate elementPredicate = TElementPredicate()
+                TBoundsPredicate boundsPredicate
             );
+
+            FilteredSetIterator<TElement, TBoundsPredicate>
+            begin() const;
+
+            FilteredSetIterator<TElement, TBoundsPredicate>
+            end() const;
         };
 
-        struct NullPredicate
-        {
-            template <class TArgument>
-            bool
-            operator()(const TArgument& argument) const;
-        };
-
-        template <class TFirstPredicate, class TSecondPredicate>
-        class CombinedPredicate
+        template <class TElement, class TBoundsPredicate>
+        class FilteredSetIterator :
+            public boost::iterator_facade<
+                FilteredSetIterator<TElement, TBoundsPredicate>,
+                TElement,
+                boost::forward_traversal_tag
+            >
         {
         private:
-            TFirstPredicate _firstPredicate;
-            TSecondPredicate _secondPredicate;
-        public:
-            CombinedPredicate(TFirstPredicate firstPredicate, TSecondPredicate secondPredicate);
+            SetNode<TElement>* _node;
+            TBoundsPredicate _boundsPredicate;
+            std::stack<SetNode<TElement>*> _stack;
 
-            template <class TArgument>
+            friend class boost::iterator_core_access;
+
+            void
+            increment();
+
             bool
-            operator()(const TArgument& argument) const;
+            equal(const FilteredSetIterator<TElement, TBoundsPredicate>& other) const;;
+
+            const TElement&
+            dereference() const;
+        public:
+            FilteredSetIterator();
+
+            FilteredSetIterator(SetNode<TElement>* root, TBoundsPredicate boundsPredicate);
+
+            FilteredSetIterator(const FilteredSetIterator<TElement, TBoundsPredicate>& other);
+
+            FilteredSetIterator(FilteredSetIterator<TElement, TBoundsPredicate>&& other);
+
+            void
+            operator=(const FilteredSetIterator<TElement, TBoundsPredicate>& other);
+
+            void
+            operator=(FilteredSetIterator<TElement, TBoundsPredicate>&& other);
         };
     }
 }

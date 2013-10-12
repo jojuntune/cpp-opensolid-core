@@ -26,11 +26,20 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
+
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
+
 namespace opensolid
 {
     namespace spatialset
     {
         template <class TElement>
-        struct SpatialSetNode;
+        struct SetNode
+        {
+            typename BoundsType<TElement>::Type bounds;
+            const void* left;
+            const void* right;
+        };
     }
 }

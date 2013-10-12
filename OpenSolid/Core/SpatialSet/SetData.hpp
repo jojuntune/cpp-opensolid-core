@@ -26,13 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace opensolid
-{
-    namespace spatialset
-    {
-        template <class TElement, class TBoundsPredicate, class TElementPredicate>
-        class SpatialSubset;
-
-        struct NullPredicate;
-    }
-}
+#include <OpenSolid/Core/SpatialSet/SetData.definitions.hpp>

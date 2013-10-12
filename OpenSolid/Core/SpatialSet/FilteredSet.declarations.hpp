@@ -30,7 +30,10 @@ namespace opensolid
 {
     namespace spatialset
     {
-        template <class TElement>
-        class SpatialSetData;
+        template <class TElement, class TBoundsPredicate>
+        class FilteredSet;
+
+        template <class TElement, class TBoundsPredicate>
+        class FilteredSetIterator;
     }
 }

@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSubset.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <vector>
@@ -38,7 +37,6 @@ namespace opensolid
 {
     template <class TElement>
     class SpatialSet :
-        public SpatialSubset<TElement, NullPredicate, NullPredicate>,
         public Transformable<SpatialSet<TElement>>
     {
     private:
