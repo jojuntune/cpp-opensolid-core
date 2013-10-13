@@ -92,7 +92,7 @@ namespace opensolid
         std::vector<Interval>* intervals;
 
         Interval
-        operator()(IntervalIndex index) {
+        operator()(IntervalIndex index) const {
             return intervals->at(index.index);
         }
     };
@@ -157,17 +157,16 @@ public:
         testSet(set.root());
     }
     
-    void testdoubleOverlapping() {
+    void testDoubleOverlapping() {
         std::vector<double> list(5);
         list[0] = 5;
         list[1] = 3;
         list[2] = 1;
         list[3] = 4;
         list[4] = 2;
-        Set<double> set(list.begin(), list.end());
-        std::cout << set << std::endl;
-        std::vector<double> overlapping;
-        set.copyOverlapping(Interval(2.5, 4.5), std::back_inserter(overlapping));
+        SpatialSet<double> set(list.begin(), list.end());
+        auto subset = set.overlapping(Interval(2.5, 4.5));
+        std::vector<double> overlapping(subset.begin(), subset.end());
         TS_ASSERT_EQUALS(overlapping.size(), 2u);
         TS_ASSERT_EQUALS(overlapping.front(), 3);
         TS_ASSERT_EQUALS(overlapping.back(), 4);
@@ -179,28 +178,12 @@ public:
         list[1] = Vector2d(5, 1);
         list[2] = Vector2d(1, 3);
         list[3] = Vector2d(5, 3);
-        Set<Vector2d> set(list.begin(), list.end());
-        Set<Vector2d> overlapping;
-        set.copyOverlapping(Vector2I(Interval(1, 5), Interval(2, 4)), overlapping.inserter());
-        TS_ASSERT_EQUALS(overlapping.size(), 2u);
-        std::vector<Vector2d> check(2);
-        overlapping.copy(check.begin());
+        SpatialSet<Vector2d> set(list.begin(), list.end());
+        auto subset = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
+        std::vector<Vector2d> check(subset.begin(), subset.end());
+        TS_ASSERT_EQUALS(check.size(), 2u);
         TS_ASSERT_EQUALS(check[0], Vector2d(1, 3));
         TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
-    }
-    
-    void testVector2dOverlappingSpatialSet() {
-        std::vector<Vector2d> list(4);
-        list[0] = Vector2d(1, 1);
-        list[1] = Vector2d(5, 1);
-        list[2] = Vector2d(1, 3);
-        list[3] = Vector2d(5, 3);
-        SpatialSet<Vector2d> set(list.begin(), list.end());
-        auto temp = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
-        SpatialSet<Vector2d> overlapping(temp.begin(), temp.end());
-        TS_ASSERT_EQUALS(overlapping.size(), 2u);
-        TS_ASSERT_EQUALS(overlapping[0], Vector2d(1, 3));
-        TS_ASSERT_EQUALS(overlapping[1], Vector2d(5, 3));
     }
     
     void testdoubleInsertion() {
@@ -283,16 +266,13 @@ public:
         std::vector<Interval> intervals(2);
         intervals[0] = Interval(1, 2);
         intervals[1] = Interval(3, 4);
-        IntervalIndex first_index;
-        first_index.index = 0;
-        IntervalIndex second_index;
-        second_index.index = 1;
-        BoundsFunction<IntervalIndex> bounds_function;
-        bounds_function.intervals = &intervals;
-        Set<IntervalIndex> indices(bounds_function);
-        indices.insert(first_index);
-        indices.insert(second_index);
-        Interval bounds = indices.bounds();
+        std::vector<IntervalIndex> intervalIndices(2);
+        intervalIndices[0].index = 0;
+        intervalIndices[1].index = 1;
+        BoundsFunction<IntervalIndex> boundsFunction;
+        boundsFunction.intervals = &intervals;
+        SpatialSet<IntervalIndex> indexSet(intervalIndices, boundsFunction);
+        Interval bounds = indexSet.bounds();
         TS_ASSERT_EQUALS(bounds.lowerBound(), 1.0);
         TS_ASSERT_EQUALS(bounds.upperBound(), 4.0);
     }
@@ -354,16 +334,15 @@ public:
     }
 
     void testPoint3d() {
-        Set<Point3d> points;
-        points.insert(Point3d(1, 2, 3));
-        points.insert(Point3d(4, 5, 6));
-        points.insert(Point3d(2, 4, 6));
+        std::vector<Point3d> pointList(3);
+        pointList[0] = Point3d(1, 2, 3);
+        pointList[1] = Point3d(4, 5, 6);
+        pointList[2] = Point3d(2, 4, 6);
 
-        std::vector<Point3d> overlappingPoints;
-        points.copyOverlapping(
-            Box3d(Interval(1, 3), Interval(1, 5), Interval(1, 7)),
-            std::back_inserter(overlappingPoints)
-        );
+        SpatialSet<Point3d> pointSet(pointList);
+        auto subset = pointSet.overlapping(Box3d(Interval(1, 3), Interval(1, 5), Interval(1, 7)));
+
+        std::vector<Point3d> overlappingPoints(subset.begin(), subset.end());
         std::sort(
             overlappingPoints.begin(),
             overlappingPoints.end(),
@@ -377,47 +356,53 @@ public:
     }
 
     void testPointSetTransformation() {
-        Set<Point3d> points;
-        points.insert(Point3d(1, -1, 1));
-        points.insert(Point3d(1, 0, 1));
-        points.insert(Point3d(1, 1, 1));
+        std::vector<Point3d> pointList(3);
+        pointList[0] = Point3d(1, -1, 1);
+        pointList[1] = Point3d(1, 0, 1);
+        pointList[2] = Point3d(1, 1, 1);
 
+        SpatialSet<Point3d> pointSet(pointList);
         Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
-        Set<Point3d> rotatedPoints = points.rotatedAbout(rotationAxis, M_PI / 2);
-        TS_ASSERT((rotatedPoints.atIndex(0) - Point3d(0, 0, 1)).isZero());
-        TS_ASSERT((rotatedPoints.atIndex(1) - Point3d(1, 0, 1)).isZero());
-        TS_ASSERT((rotatedPoints.atIndex(2) - Point3d(2, 0, 1)).isZero());
+        SpatialSet<Point3d> rotatedPointSet = pointSet.rotatedAbout(rotationAxis, M_PI / 2);
+
+        TS_ASSERT((rotatedPointSet[0] - Point3d(2, 0, 1)).isZero());
+        TS_ASSERT((rotatedPointSet[1] - Point3d(1, 0, 1)).isZero());
+        TS_ASSERT((rotatedPointSet[2] - Point3d(0, 0, 1)).isZero());
     }
 
     void testVectorSetTransformation() {
-        Set<Vector3d> vectors;
-        vectors.insert(Vector3d(1, -1, 1));
-        vectors.insert(Vector3d(1, 0, 1));
-        vectors.insert(Vector3d(1, 1, 1));
-        
+        std::vector<Vector3d> vectorList(3);
+        vectorList[0] = Vector3d(1, -1, 1);
+        vectorList[1] = Vector3d(1, 0, 1);
+        vectorList[2] = Vector3d(1, 1, 1);
+
+        SpatialSet<Vector3d> vectorSet(vectorList);
         Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
-        Set<Vector3d> rotatedVectors = vectors.rotatedAbout(rotationAxis, M_PI / 2);
-        TS_ASSERT((rotatedVectors.atIndex(0) - Vector3d(-1, 1, 1)).isZero());
-        TS_ASSERT((rotatedVectors.atIndex(1) - Vector3d(0, 1, 1)).isZero());
-        TS_ASSERT((rotatedVectors.atIndex(2) - Vector3d(1, 1, 1)).isZero());
+        SpatialSet<Vector3d> rotatedVectorSet = vectorSet.rotatedAbout(rotationAxis, M_PI / 2);
+
+        TS_ASSERT((rotatedVectorSet[0] - Vector3d(1, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectorSet[1] - Vector3d(0, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectorSet[2] - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testSwap() {
-        Set<double> set1;
-        set1.insert(1);
-        set1.insert(2);
-        set1.insert(3);
+        std::vector<double> firstValues(3);
+        firstValues[0] = 1;
+        firstValues[1] = 2;
+        firstValues[2] = 3;
+        SpatialSet<double> firstSet(firstValues);
 
-        Set<double> set2;
-        set2.insert(4);
-        set2.insert(5);
+        std::vector<double> secondValues(2);
+        secondValues[0] = 4;
+        secondValues[1] = 5;
+        SpatialSet<double> secondSet(secondValues);
 
-        set1.swap(set2);
+        firstSet.swap(secondSet);
 
-        TS_ASSERT_EQUALS(set1.size(), 2u);
-        TS_ASSERT_EQUALS(set2.size(), 3u);
-        TS_ASSERT_EQUALS(set1.atIndex(0), 4);
-        TS_ASSERT_EQUALS(set2.atIndex(0), 1);
+        TS_ASSERT_EQUALS(firstSet.size(), 2u);
+        TS_ASSERT_EQUALS(secondSet.size(), 3u);
+        TS_ASSERT_EQUALS(firstSet[0], 4);
+        TS_ASSERT_EQUALS(secondSet[0], 1);
     }
 
     void testRValue() {
