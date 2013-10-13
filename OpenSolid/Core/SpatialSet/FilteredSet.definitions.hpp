@@ -38,13 +38,65 @@ namespace opensolid
 {
     namespace spatialset
     {
+        template <class TElement>
+        class NodeStack
+        {
+        private:
+            const SetNode<TElement>* _stack[64];
+            const SetNode<TElement>** _top;
+        public:
+            inline
+            NodeStack() :
+                _top(_stack) {
+                *_top = nullptr;
+            }
+
+            inline
+            NodeStack(const NodeStack<TElement>& other) :
+                _top(_stack) {
+                *_top = nullptr;
+            }
+
+            inline
+            void
+            operator=(const NodeStack<TElement>& other) {
+                _top = _stack;
+                *_top = nullptr;
+            }
+
+            inline
+            bool
+            empty() const {
+                return _top == _stack;
+            }
+
+            inline
+            void
+            push(const SetNode<TElement>* node) {
+                ++_top;
+                *_top = node;
+            }
+
+            inline
+            void
+            pop() {
+                --_top;
+            }
+
+            inline
+            const SetNode<TElement>*
+            top() const {
+                return *_top;
+            }
+        };
+
         template <class TElement, class TBoundsPredicate>
         class FilteredSet
         {
         private:
             const SetNode<TElement>* _rootNode;
             TBoundsPredicate _boundsPredicate;
-            mutable std::stack<const SetNode<TElement>*> _nodeStack;
+            mutable NodeStack<TElement> _nodeStack;
         public:
             typedef FilteredSetIterator<TElement, TBoundsPredicate> Iterator;
 
@@ -71,7 +123,7 @@ namespace opensolid
         private:
             const SetNode<TElement>* _currentNode;
             TBoundsPredicate _boundsPredicate;
-            std::stack<const SetNode<TElement>*>* _nodeStack;
+            NodeStack<TElement>* _nodeStack;
 
             friend class boost::iterator_core_access;
 
@@ -92,7 +144,7 @@ namespace opensolid
             FilteredSetIterator(
                 const SetNode<TElement>* rootNode,
                 TBoundsPredicate boundsPredicate,
-                std::stack<const SetNode<TElement>*>* nodeStack
+                NodeStack<TElement>* nodeStack
             );
 
             FilteredSetIterator(const FilteredSetIterator<TElement, TBoundsPredicate>& other);

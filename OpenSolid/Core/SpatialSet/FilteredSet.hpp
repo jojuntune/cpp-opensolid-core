@@ -45,7 +45,7 @@ namespace opensolid
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>
         FilteredSet<TElement, TBoundsPredicate>::begin() const {
-            _nodeStack =  std::stack<const SetNode<TElement>*>();
+            _nodeStack =  NodeStack<TElement>();
             return FilteredSetIterator<TElement, TBoundsPredicate>(
                 _rootNode,
                 _boundsPredicate,
@@ -140,7 +140,7 @@ namespace opensolid
         FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator(
             const SetNode<TElement>* rootNode,
             TBoundsPredicate boundsPredicate,
-            std::stack<const SetNode<TElement>*>* nodeStack
+            NodeStack<TElement>* nodeStack
         ) : _currentNode(nullptr),
             _boundsPredicate(boundsPredicate),
             _nodeStack(nodeStack) {
