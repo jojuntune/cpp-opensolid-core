@@ -247,19 +247,7 @@ namespace opensolid
 
     template <class TElement>
     inline
-    const spatialset::SetNode<TElement>*
-    SpatialSet<TElement>::rootNode() const {
-        if (isEmpty()) {
-            return nullptr;
-        } else {
-            return _setData->nodes.data();
-        }
-    }
-
-    template <class TElement>
-    inline
-    SpatialSet<TElement>::SpatialSet() :
-        _setData(new spatialset::SetData<TElement>()) {
+    SpatialSet<TElement>::SpatialSet() {
     }
 
     template <class TElement>
@@ -310,16 +298,35 @@ namespace opensolid
 
     template <class TElement>
     inline
+    const spatialset::SetNode<TElement>*
+    SpatialSet<TElement>::rootNode() const {
+        if (isEmpty()) {
+            return nullptr;
+        } else {
+            return _setData->nodes.data();
+        }
+    }
+
+    template <class TElement>
+    inline
     typename SpatialSet<TElement>::Iterator
     SpatialSet<TElement>::begin() const {
-        return _setData->elements.begin();
+        if (isEmpty()) {
+            return Iterator();
+        } else {
+            return _setData->elements.begin();
+        }
     }
 
     template <class TElement>
     inline
     typename SpatialSet<TElement>::Iterator
     SpatialSet<TElement>::end() const {
-        return _setData->elements.end();
+        if (isEmpty()) {
+            return Iterator();
+        } else {
+            return _setData->elements.end();
+        }
     }
 
     template <class TElement>
@@ -342,6 +349,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::operator[](std::int64_t index) const {
+        assert(!isEmpty());
         return _setData->elements[index];
     }
 
@@ -370,14 +378,18 @@ namespace opensolid
     inline
     std::int64_t
     SpatialSet<TElement>::size() const {
-        return _setData->elements.size();
+        if (isEmpty()) {
+            return 0;
+        } else {
+            return _setData->elements.size();
+        }
     }
 
     template <class TElement>
     inline
     bool
     SpatialSet<TElement>::isEmpty() const {
-        return _setData->elements.empty();
+        return !_setData || _setData->elements.empty();
     }
 
     template <class TElement>
@@ -395,8 +407,10 @@ namespace opensolid
     inline
     void
     SpatialSet<TElement>::clear() {
-        _setData->elements.clear();
-        _setData->nodes.clear();
+        if (!isEmpty()) {
+            _setData->elements.clear();
+            _setData->nodes.clear();
+        }
     }
 
     template <class TElement>

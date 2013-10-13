@@ -57,6 +57,22 @@ void testSet(const SetNode<Type>* node) {
     }
 }
 
+template <class TElement>
+void testSet(const spatialset::SetNode<TElement>* node) {
+    if (!node) {
+        return;
+    } else if (node->leftChild) {
+        const spatialset::SetNode<TElement>* leftChild = node->leftChild;
+        const spatialset::SetNode<TElement>* rightChild = node->leftChild->next;
+        TS_ASSERT(leftChild != nullptr);
+        TS_ASSERT(rightChild != nullptr);
+        TS_ASSERT(node->bounds.contains(leftChild->bounds));
+        TS_ASSERT(node->bounds.contains(rightChild->bounds));
+        testSet(leftChild);
+        testSet(rightChild);
+    }
+}
+
 Interval randomInterval() {
     double mid = 10 * double(rand()) / RAND_MAX;
     double width = double(rand()) / RAND_MAX;
@@ -108,31 +124,32 @@ public:
         list[2] = 7;
         list[3] = 2;
         list[4] = 5;
-        Set<double> set(list.begin(), list.end());
-        std::cout << set << std::endl;
-        testSet(set.root());
-        std::vector<double> sorted(list.size());
-        set.copy(sorted.begin());
-        std::sort(list.begin(), list.end());
-        TS_ASSERT_EQUALS(sorted, list);
+        SpatialSet<double> set(list.begin(), list.end());
+        testSet(set.rootNode());
+
+        std::vector<double> expected(list);
+        std::sort(expected.begin(), expected.end());
+
+        auto temp = set.filtered([] (Interval bounds) {return true;});
+        std::vector<double> actual(temp.begin(), temp.end());
+
+        TS_ASSERT_EQUALS(actual, expected);
     }
     
     void testInterval() {
         std::vector<Interval> list(2);
         list[0] = Interval(1, 2);
         list[1] = Interval(0, 2);
-        Set<Interval> set(list.begin(), list.end());
-        std::cout << set << std::endl;
-        testSet(set.root());
+        SpatialSet<Interval> set(list.begin(), list.end());
+        testSet(set.rootNode());
     }
     
     void testInterval2() {
         std::vector<Interval> list;
         list.push_back(Interval(0, 2));
         list.push_back(Interval(1, 2));
-        Set<Interval> set(list.begin(), list.end());
-        std::cout << set << std::endl;
-        testSet(set.root());
+        SpatialSet<Interval> set(list.begin(), list.end());
+        testSet(set.rootNode());
     }
     
     void testInterval3() {
@@ -140,9 +157,8 @@ public:
         list[0] = Interval(0, 1);
         list[1] = Interval(0, 4);
         list[2] = Interval(0, 2);
-        Set<Interval> set(list.begin(), list.end());
-        std::cout << set << std::endl;
-        testSet(set.root());
+        SpatialSet<Interval> set(list.begin(), list.end());
+        testSet(set.rootNode());
     }
     
     void testVector2I() {
@@ -152,9 +168,8 @@ public:
         list[2] = Vector2I(Interval(4, 7), Interval(3, 6));
         list[3] = Vector2I(Interval(6, 9), Interval(5, 8));
         list[4] = Vector2I(Interval(8, 10), Interval(2, 6));
-        Set<Vector2I> set(list.begin(), list.end());
-        std::cout << set << std::endl;
-        testSet(set.root());
+        SpatialSet<Vector2I> set(list.begin(), list.end());
+        testSet(set.rootNode());
     }
     
     void testDoubleOverlapping() {
@@ -406,25 +421,27 @@ public:
     }
 
     void testRValue() {
-        Set<double> set1;
-        set1.insert(1);
-        set1.insert(2);
-        set1.insert(3);
-        const SetNode<double>* root = set1.root();
+        std::vector<double> values(3);
+        values[0] = 1;
+        values[1] = 2;
+        values[2] = 3;
 
-        Set<double> set2(std::move(set1));
+        SpatialSet<double> set1(values);
+        const spatialset::SetNode<double>* root = set1.rootNode();
+
+        SpatialSet<double> set2(std::move(set1));
 
         TS_ASSERT_EQUALS(set1.size(), 0u);
         TS_ASSERT_EQUALS(set2.size(), 3u);
-        TS_ASSERT_EQUALS(set1.root(), nullptr);
-        TS_ASSERT_EQUALS(set2.root(), root);
+        TS_ASSERT_EQUALS(set1.rootNode(), nullptr);
+        TS_ASSERT_EQUALS(set2.rootNode(), root);
 
-        Set<double> set3;
+        SpatialSet<double> set3;
         set3 = std::move(set2);
 
         TS_ASSERT_EQUALS(set2.size(), 0u);
         TS_ASSERT_EQUALS(set3.size(), 3u);
-        TS_ASSERT_EQUALS(set2.root(), nullptr);
-        TS_ASSERT_EQUALS(set3.root(), root);
+        TS_ASSERT_EQUALS(set2.rootNode(), nullptr);
+        TS_ASSERT_EQUALS(set3.rootNode(), root);
     }
 };

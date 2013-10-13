@@ -67,9 +67,6 @@ namespace opensolid
 
         void
         init(const BoundsFunction<TElement>& boundsFunction);
-
-        const spatialset::SetNode<TElement>*
-        rootNode() const;
     public:
         typedef typename std::vector<TElement>::const_iterator Iterator;
 
@@ -95,6 +92,9 @@ namespace opensolid
             TIterator end,
             BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>()
         );
+
+        const spatialset::SetNode<TElement>*
+        rootNode() const;
 
         Iterator
         begin() const;
