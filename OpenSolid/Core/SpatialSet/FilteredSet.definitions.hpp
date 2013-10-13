@@ -38,65 +38,12 @@ namespace opensolid
 {
     namespace spatialset
     {
-        template <class TElement>
-        class NodeStack
-        {
-        private:
-            const SetNode<TElement>* _stack[64];
-            const SetNode<TElement>** _top;
-        public:
-            inline
-            NodeStack() :
-                _top(_stack) {
-                *_top = nullptr;
-            }
-
-            inline
-            NodeStack(const NodeStack<TElement>& other) :
-                _top(_stack) {
-                *_top = nullptr;
-            }
-
-            inline
-            void
-            operator=(const NodeStack<TElement>& other) {
-                _top = _stack;
-                *_top = nullptr;
-            }
-
-            inline
-            bool
-            empty() const {
-                return _top == _stack;
-            }
-
-            inline
-            void
-            push(const SetNode<TElement>* node) {
-                ++_top;
-                *_top = node;
-            }
-
-            inline
-            void
-            pop() {
-                --_top;
-            }
-
-            inline
-            const SetNode<TElement>*
-            top() const {
-                return *_top;
-            }
-        };
-
         template <class TElement, class TBoundsPredicate>
         class FilteredSet
         {
         private:
             const SetNode<TElement>* _rootNode;
             TBoundsPredicate _boundsPredicate;
-            mutable NodeStack<TElement> _nodeStack;
         public:
             typedef FilteredSetIterator<TElement, TBoundsPredicate> Iterator;
 
@@ -122,8 +69,7 @@ namespace opensolid
         {
         private:
             const SetNode<TElement>* _currentNode;
-            TBoundsPredicate _boundsPredicate;
-            NodeStack<TElement>* _nodeStack;
+            const TBoundsPredicate* _boundsPredicate;
 
             friend class boost::iterator_core_access;
 
@@ -143,19 +89,8 @@ namespace opensolid
 
             FilteredSetIterator(
                 const SetNode<TElement>* rootNode,
-                TBoundsPredicate boundsPredicate,
-                NodeStack<TElement>* nodeStack
+                const TBoundsPredicate* boundsPredicate
             );
-
-            FilteredSetIterator(const FilteredSetIterator<TElement, TBoundsPredicate>& other);
-
-            FilteredSetIterator(FilteredSetIterator<TElement, TBoundsPredicate>&& other);
-
-            void
-            operator=(const FilteredSetIterator<TElement, TBoundsPredicate>& other);
-
-            void
-            operator=(FilteredSetIterator<TElement, TBoundsPredicate>&& other);
         };
     }
 }

@@ -38,8 +38,9 @@ namespace opensolid
         struct SetNode
         {
             typename BoundsType<TElement>::Type bounds;
-            const void* left;
-            const void* right;
+            const SetNode<TElement>* leftChild;
+            const SetNode<TElement>* next;
+            const TElement* element;
         };
     }
 }

@@ -88,30 +88,32 @@ namespace opensolid
     }
 
     template <class TElement>
-    spatialset::SetNode<TElement>*
+    void
     SpatialSet<TElement>::init(
         spatialset::SetNode<TElement>* node,
+        spatialset::SetNode<TElement>* next,
         BoundsData** begin,
         BoundsData** end,
         typename BoundsType<TElement>::Type& overallBounds,
         std::int64_t sortIndex
     ) {
         node->bounds = overallBounds;
+        node->next = next;
         std::int64_t size = end - begin;
         if (size == 1) {
             // Leaf node
-            node->left = nullptr;
-            node->right = (*begin)->element;
-            return node + 1;
+            node->leftChild = nullptr;
+            node->element = (*begin)->element;
         } else if (size == 2) {
             // Node with two leaf children
             spatialset::SetNode<TElement>* leftChild = node + 1;
             spatialset::SetNode<TElement>* rightChild = node + 2;
 
-            node->left = leftChild;
-            node->right = rightChild;
-            leftChild->left = nullptr;
-            rightChild->left = nullptr;
+            node->leftChild = leftChild;
+            node->element = nullptr;
+
+            leftChild->leftChild = nullptr;
+            rightChild->leftChild = nullptr;
             BoundsData* firstBoundsData = *begin;
             BoundsData* secondBoundsData = *(begin + 1);
             bool reversed = spatialset::hasLesserMedian(
@@ -123,16 +125,17 @@ namespace opensolid
                 leftChild->bounds = secondBoundsData->bounds;
                 rightChild->bounds = firstBoundsData->bounds;
 
-                leftChild->right = secondBoundsData->element;
-                rightChild->right = firstBoundsData->element;
+                leftChild->element = secondBoundsData->element;
+                rightChild->element = firstBoundsData->element;
             } else {
                 leftChild->bounds = firstBoundsData->bounds;
                 rightChild->bounds = secondBoundsData->bounds;
 
-                leftChild->right = firstBoundsData->element;
-                rightChild->right = secondBoundsData->element;
+                leftChild->element = firstBoundsData->element;
+                rightChild->element = secondBoundsData->element;
             }
-            return node + 3;
+            leftChild->next = rightChild;
+            rightChild->next = next;
         } else {
             // Partition bounds data and find left/right bounds
             std::int64_t leftSize = 0;
@@ -192,19 +195,14 @@ namespace opensolid
             // Recurse into chid nodes
             std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TElement>::Value;
             
-            spatialset::SetNode<TElement>* leftChild =
-                node + 1;
+            spatialset::SetNode<TElement>* leftChild = node + 1;
+            spatialset::SetNode<TElement>* rightChild = leftChild + (2 * leftSize - 1);
             
-            spatialset::SetNode<TElement>* rightChild =
-                init(leftChild, begin, lower, leftBounds, nextSortIndex);
+            node->leftChild = leftChild;
+            node->element = nullptr;
             
-            spatialset::SetNode<TElement>* nextNode =
-                init(rightChild, lower, end, rightBounds, nextSortIndex);
-
-            // Store child indices and return next available node index to parent
-            node->left = leftChild;
-            node->right = rightChild;
-            return nextNode;
+            init(leftChild, rightChild, begin, lower, leftBounds, nextSortIndex);
+            init(rightChild, next, lower, end, rightBounds, nextSortIndex);
         }
     }
 
@@ -239,6 +237,7 @@ namespace opensolid
         _setData->nodes.resize(2 * numElements - 1);
         init(
             _setData->nodes.data(),
+            nullptr,
             &boundsDataPointers.front(),
             &boundsDataPointers.back() + 1,
             overallBounds,

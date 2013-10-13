@@ -45,23 +45,14 @@ namespace opensolid
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>
         FilteredSet<TElement, TBoundsPredicate>::begin() const {
-            _nodeStack =  NodeStack<TElement>();
-            return FilteredSetIterator<TElement, TBoundsPredicate>(
-                _rootNode,
-                _boundsPredicate,
-                &_nodeStack
-            );
+            return FilteredSetIterator<TElement, TBoundsPredicate>(_rootNode, &_boundsPredicate);
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>
         FilteredSet<TElement, TBoundsPredicate>::end() const {
-            return FilteredSetIterator<TElement, TBoundsPredicate>(
-                nullptr,
-                _boundsPredicate,
-                &_nodeStack
-            );
+            return FilteredSetIterator<TElement, TBoundsPredicate>(nullptr, &_boundsPredicate);
         }
 
         template <class TElement, class TBoundsPredicate>
@@ -70,45 +61,23 @@ namespace opensolid
         FilteredSetIterator<TElement, TBoundsPredicate>::descendFrom(
             const SetNode<TElement>* candidateNode
         ) {
-            do {
-                if (_boundsPredicate(candidateNode->bounds)) {
-                    if (candidateNode->left) {
-                        // Get child nodes
-                        const SetNode<TElement>* leftChild =
-                            static_cast<const SetNode<TElement>*>(candidateNode->left);
-                        const SetNode<TElement>* rightChild =
-                            static_cast<const SetNode<TElement>*>(candidateNode->right);
-
-                        // Push right child node onto stack for future iteration
-                        _nodeStack->push(rightChild);
-
-                        // Recurse into left child
-                        candidateNode = leftChild;
-                    } else {
-                        // Found first filtered leaf node
-                        _currentNode = candidateNode;
-                    }
-                } else if (!_nodeStack->empty()) {
-                    // Get next candidate node from stack
-                    candidateNode = _nodeStack->top();
-                    _nodeStack->pop();
+            _currentNode = candidateNode;
+            while (candidateNode) {
+                if ((*_boundsPredicate)(candidateNode->bounds)) {
+                    _currentNode = candidateNode;
+                    candidateNode = candidateNode->leftChild;
                 } else {
-                    // No more candidate nodes
-                    candidateNode = nullptr;
+                    candidateNode = candidateNode->next;
+                    _currentNode = candidateNode;
                 }
-            } while (candidateNode && !_currentNode);
+            }
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         void
         FilteredSetIterator<TElement, TBoundsPredicate>::increment() {
-            _currentNode = nullptr;
-            if (_nodeStack && !_nodeStack->empty()) {
-                const SetNode<TElement>* candidateNode = _nodeStack->top();
-                _nodeStack->pop();
-                descendFrom(candidateNode);
-            }
+            descendFrom(_currentNode->next);
         }
 
         template <class TElement, class TBoundsPredicate>
@@ -117,7 +86,6 @@ namespace opensolid
         FilteredSetIterator<TElement, TBoundsPredicate>::equal(
             const FilteredSetIterator<TElement, TBoundsPredicate>& other
         ) const {
-            assert(_nodeStack == other._nodeStack);
             return _currentNode == other._currentNode;
         }
 
@@ -125,70 +93,26 @@ namespace opensolid
         inline
         const TElement&
         FilteredSetIterator<TElement, TBoundsPredicate>::dereference() const {
-            return *static_cast<const TElement*>(_currentNode->right);
+            return *(_currentNode->element);
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator() :
-            _currentNode(nullptr),
-            _nodeStack(nullptr) {
+            _currentNode(nullptr) {
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator(
             const SetNode<TElement>* rootNode,
-            TBoundsPredicate boundsPredicate,
-            NodeStack<TElement>* nodeStack
+            const TBoundsPredicate* boundsPredicate
         ) : _currentNode(nullptr),
-            _boundsPredicate(boundsPredicate),
-            _nodeStack(nodeStack) {
+            _boundsPredicate(boundsPredicate) {
 
             if (rootNode) {
                 descendFrom(rootNode);
             }
-        }
-
-        template <class TElement, class TBoundsPredicate>
-        inline
-        FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator(
-            const FilteredSetIterator<TElement, TBoundsPredicate>& other
-        ) : _currentNode(other._currentNode),
-            _boundsPredicate(other._boundsPredicate),
-            _nodeStack(other._nodeStack) {
-            
-        }
-
-        template <class TElement, class TBoundsPredicate>
-        inline
-        FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator(
-            FilteredSetIterator<TElement, TBoundsPredicate>&& other
-        ) : _currentNode(other._currentNode),
-            _boundsPredicate(other._boundsPredicate),
-            _nodeStack(other._nodeStack) {
-        }
-
-        template <class TElement, class TBoundsPredicate>
-        inline
-        void
-        FilteredSetIterator<TElement, TBoundsPredicate>::operator=(
-            const FilteredSetIterator<TElement, TBoundsPredicate>& other
-        ) {
-            _currentNode = other._currentNode;
-            _boundsPredicate = other._boundsPredicate;
-            _nodeStack = other._nodeStack;
-        }
-
-        template <class TElement, class TBoundsPredicate>
-        inline
-        void
-        FilteredSetIterator<TElement, TBoundsPredicate>::operator=(
-            FilteredSetIterator<TElement, TBoundsPredicate>&& other
-        ) {
-            _currentNode = other._currentNode;
-            _boundsPredicate = other._boundsPredicate;
-            _nodeStack = other._nodeStack;
         }
     }
 }

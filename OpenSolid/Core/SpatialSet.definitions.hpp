@@ -55,9 +55,10 @@ namespace opensolid
             const TElement* element;
         };
 
-        spatialset::SetNode<TElement>*
+        void
         init(
             spatialset::SetNode<TElement>* node,
+            spatialset::SetNode<TElement>* next,
             BoundsData** begin,
             BoundsData** end,
             typename BoundsType<TElement>::Type& overallBounds,
