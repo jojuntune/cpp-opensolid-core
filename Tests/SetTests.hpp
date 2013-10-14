@@ -130,7 +130,11 @@ public:
         std::vector<double> expected(list);
         std::sort(expected.begin(), expected.end());
 
-        auto temp = set.filtered([] (Interval bounds) {return true;});
+        auto temp = set.filtered(
+            [] (Interval bounds) -> bool {
+                return true;
+            }
+        );
         std::vector<double> actual(temp.begin(), temp.end());
 
         TS_ASSERT_EQUALS(actual, expected);
