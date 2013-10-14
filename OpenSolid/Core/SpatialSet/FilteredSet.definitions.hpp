@@ -32,8 +32,6 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
-#include <stack>
-
 namespace opensolid
 {
     namespace spatialset
