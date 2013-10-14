@@ -50,10 +50,13 @@ def checkSource(filePath):
         checkLine(filePath, i + 1, line)
 
 for path, directories, files in os.walk(sys.argv[1]):
-    ignoredDirectories = ['External', 'Build', 'IO', 'Python', 'UI']
-    for ignoredDirectory in ignoredDirectories:
-        if ignoredDirectory in directories:
-            directories.remove(ignoredDirectory)
+    i = 0
+    while i < len(directories):
+        directory = directories[i]
+        if directory in ['External', 'IO', 'Python', 'UI'] or directory.lower().startswith('build'):
+            del directories[i]
+        else:
+            i = i + 1
     for filename in files:
         filePath = os.path.join(path, filename)
         if filename.endswith('.hpp'):
