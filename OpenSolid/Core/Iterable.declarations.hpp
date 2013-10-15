@@ -33,4 +33,7 @@ namespace opensolid
 
     template <class TIterable>
     struct ElementType;
+
+    template <class TIterable>
+    struct IteratorType;
 }

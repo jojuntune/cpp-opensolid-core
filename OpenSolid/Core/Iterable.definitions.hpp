@@ -28,9 +28,9 @@
 
 #include <OpenSolid/Core/Iterable.declarations.hpp>
 
+#include <OpenSolid/Core/Iterable/FilteredIterable.declarations.hpp>
+
 #include <vector>
-#include <set>
-#include <unordered_set>
 
 namespace opensolid
 {
@@ -41,6 +41,32 @@ namespace opensolid
         const TDerived&
         derived() const;
     public:
+        typedef typename ElementType<TDerived>::Type value_type;
+        typedef const value_type& reference;
+        typedef reference const_reference;
+        typedef typename IteratorType<TDerived>::Type iterator;
+        typedef iterator const_iterator;
+        typedef std::int64_t difference_type;
+        typedef std::int64_t size_type;
+
+        typename IteratorType<TDerived>::Type
+        begin() const;
+
+        typename IteratorType<TDerived>::Type
+        end() const;
+
+        typename IteratorType<TDerived>::Type
+        cbegin() const;
+
+        typename IteratorType<TDerived>::Type
+        cend() const;
+
+        bool
+        empty() const;
+
+        std::int64_t
+        size() const;
+
         template <class TPredicate>
         bool
         any(TPredicate predicate) const;
@@ -57,18 +83,14 @@ namespace opensolid
         void
         forEach(TFunction function) const;
 
-        // TODO map
-
         template <class TFunction>
         typename ElementType<TDerived>::Type
         reduce(TFunction function) const;
 
-        // TOOD where
+        template <class TPredicate>
+        iterable::FilteredIterable<TDerived, TPredicate>
+        where(TPredicate predicate) const;
 
-        operator std::vector<typename ElementType<TDerived>>() const;
-
-        operator std::set<typename ElementType<TDerived>>() const;
-        
-        operator std::unordered_set<typename ElementType<TDerived>>() const;
+        operator std::vector<typename ElementType<TDerived>::Type>() const;
     };
 }

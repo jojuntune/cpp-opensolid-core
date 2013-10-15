@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Iterable/FilteredIterabled.declarations.hpp>
+#include <OpenSolid/Core/Iterable/FilteredIterable.declarations.hpp>
 
 #include <OpenSolid/Core/Iterable.definitions.hpp>
 
@@ -34,43 +34,81 @@
 
 namespace opensolid
 {
-    template <class TIterable, class TPredicate>
-    class FilteredIterable :
-        public Iterable<FilteredIterable<TIterable, TPredicate>>
+    namespace iterable
     {
-    private:
-        TIterable _baseIterable;
-        TPredicate _predicate;
-    public:
-        typedef FilteredIterableIterator<TIterable, TPredicate> Iterator;
+        template <class TBaseIterable, class TPredicate>
+        class FilteredIterable :
+            public Iterable<FilteredIterable<TBaseIterable, TPredicate>>
+        {
+        private:
+            TBaseIterable _baseIterable;
+            TPredicate _predicate;
+        public:
+            FilteredIterable(const TBaseIterable& baseIterable, TPredicate predicate);
 
-        FilteredIterable(const TIterable& baseIterable, const TPredicate& predicate);
+            FilteredIterable(TBaseIterable&& baseIterable, TPredicate predicate);
 
-        FilteredIterableIterator
-        begin() const;
+            FilteredIterableIterator<TBaseIterable, TPredicate>
+            begin() const;
 
-        FilteredIterableIterator
-        end() const;
+            FilteredIterableIterator<TBaseIterable, TPredicate>
+            end() const;
 
-        bool
-        empty() const;
+            bool
+            empty() const;
 
-        std::int64_t
-        size() const;
+            std::int64_t
+            size() const;
+        };
+
+        template <class TBaseIterable, class TPredicate>
+        class FilteredIterableIterator :
+            public boost::iterator_facade<
+                FilteredIterableIterator<TBaseIterable, TPredicate>,
+                const typename ElementType<TBaseIterable>::Type,
+                boost::forward_traversal_tag
+            >
+        {
+        private:
+            typename IteratorType<TBaseIterable>::Type _baseIterator;
+            typename IteratorType<TBaseIterable>::Type _baseEnd;
+            const TPredicate* _predicate;
+
+            friend class boost::iterator_core_access;
+
+            void
+            increment();
+
+            bool
+            equal(const FilteredIterableIterator<TBaseIterable, TPredicate>& other) const;
+
+            const typename ElementType<TBaseIterable>::Type&
+            dereference() const;
+        public:
+            FilteredIterableIterator();
+
+            FilteredIterableIterator(
+                typename IteratorType<TBaseIterable>::Type baseIterator,
+                typename IteratorType<TBaseIterable>::Type baseEnd,
+                const TPredicate* predicate
+            );
+        };
+    }
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <class TBaseIterable, class TPredicate>
+    struct ElementType<iterable::FilteredIterable<TBaseIterable, TPredicate>>
+    {
+        typedef typename ElementType<TBaseIterable>::Type Type;
     };
 
-    template <class TIterable, class TPredicate>
-    class FilteredIterableIterator :
-        public boost::iterator_facade<
-            FilteredSetIterator<TElement, TBoundsPredicate>,
-            const TElement,
-            boost::forward_traversal_tag
-        >
+    template <class TBaseIterable, class TPredicate>
+    struct IteratorType<iterable::FilteredIterable<TBaseIterable, TPredicate>>
     {
-    private:
-        const TIterable* _baseIterable;
-        const TPredicate* _predicate;
-    public:
-        FilteredIterableIterator(const TIterable* baseIterable, const TPredicate* predicate);
+        typedef iterable::FilteredIterableIterator<TBaseIterable, TPredicate> Type;
     };
 }

@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/Iterable.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/FilteredSet.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
@@ -44,6 +45,7 @@ namespace opensolid
 {
     template <class TElement>
     class SpatialSet :
+        public Iterable<SpatialSet<TElement>>,
         public Transformable<SpatialSet<TElement>>
     {
     private:
@@ -68,8 +70,6 @@ namespace opensolid
         void
         init(const BoundsFunction<TElement>& boundsFunction);
     public:
-        typedef typename std::vector<TElement>::const_iterator Iterator;
-
         SpatialSet();
 
         SpatialSet(const SpatialSet<TElement>& otherSet);
@@ -96,10 +96,10 @@ namespace opensolid
         const spatialset::SetNode<TElement>*
         rootNode() const;
 
-        Iterator
+        typename std::vector<TElement>::const_iterator
         begin() const;
 
-        Iterator
+        typename std::vector<TElement>::const_iterator
         end() const;
 
         const TElement&
@@ -124,7 +124,7 @@ namespace opensolid
         size() const;
 
         bool
-        isEmpty() const;
+        empty() const;
 
         typename BoundsType<TElement>::Type
         bounds() const;
@@ -152,6 +152,18 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <class TElement>
+    struct ElementType<SpatialSet<TElement>>
+    {
+        typedef TElement Type;
+    };
+
+    template <class TElement>
+    struct IteratorType<SpatialSet<TElement>>
+    {
+        typedef typename std::vector<TElement>::const_iterator Type;
+    };
+
     template <class TElement>
     struct NumDimensions<SpatialSet<TElement>>
     {

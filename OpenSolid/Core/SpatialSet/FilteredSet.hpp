@@ -28,6 +28,9 @@
 
 #include <OpenSolid/Core/SpatialSet/FilteredSet.definitions.hpp>
 
+#include <OpenSolid/Core/Iterable.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
+
 namespace opensolid
 {
     namespace spatialset
@@ -35,24 +38,69 @@ namespace opensolid
         template <class TElement, class TBoundsPredicate>
         inline
         FilteredSet<TElement, TBoundsPredicate>::FilteredSet(
-            const SetNode<TElement>* rootNode,
+            const SpatialSet<TElement>& set,
             TBoundsPredicate boundsPredicate
-        ) : _rootNode(rootNode),
+        ) : _set(set),
             _boundsPredicate(boundsPredicate) {
+        }
+
+        template <class TElement, class TBoundsPredicate>
+        inline
+        FilteredSet<TElement, TBoundsPredicate>::FilteredSet(
+            SpatialSet<TElement>&& set,
+            TBoundsPredicate boundsPredicate
+        ) : _set(std::move(set)),
+            _boundsPredicate(boundsPredicate) {
+        }
+
+        template <class TElement, class TBoundsPredicate>
+        inline
+        FilteredSet<TElement, TBoundsPredicate>::FilteredSet(
+            const FilteredSet<TElement, TBoundsPredicate>& other
+        ) : _set(other._set),
+            _boundsPredicate(other._boundsPredicate) {
+        }
+
+        template <class TElement, class TBoundsPredicate>
+        inline
+        FilteredSet<TElement, TBoundsPredicate>::FilteredSet(
+            FilteredSet<TElement, TBoundsPredicate>&& other
+        ) : _set(std::move(other._set)),
+            _boundsPredicate(other._boundsPredicate) {
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>
         FilteredSet<TElement, TBoundsPredicate>::begin() const {
-            return FilteredSetIterator<TElement, TBoundsPredicate>(_rootNode, &_boundsPredicate);
+            return FilteredSetIterator<TElement, TBoundsPredicate>(
+                _set.rootNode(),
+                &_boundsPredicate
+            );
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         FilteredSetIterator<TElement, TBoundsPredicate>
         FilteredSet<TElement, TBoundsPredicate>::end() const {
-            return FilteredSetIterator<TElement, TBoundsPredicate>(nullptr, &_boundsPredicate);
+            return FilteredSetIterator<TElement, TBoundsPredicate>(
+                nullptr,
+                &_boundsPredicate
+            );
+        }
+
+        template <class TElement, class TBoundsPredicate>
+        inline
+        bool
+        FilteredSet<TElement, TBoundsPredicate>::empty() const {
+            return begin() == end();
+        }
+
+        template <class TElement, class TBoundsPredicate>
+        inline
+        std::int64_t
+        FilteredSet<TElement, TBoundsPredicate>::size() const {
+            return std::distance(begin(), end());
         }
 
         template <class TElement, class TBoundsPredicate>

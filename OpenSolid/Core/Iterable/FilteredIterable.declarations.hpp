@@ -28,9 +28,12 @@
 
 namespace opensolid
 {
-    template <class TIterable, class TPredicate>
-    class FilteredIterable;
+    namespace iterable
+    {
+        template <class TIterable, class TPredicate>
+        class FilteredIterable;
 
-    template <class TIterable, class TPredicate>
-    class FilteredIterableIterator;    
+        template <class TIterable, class TPredicate>
+        class FilteredIterableIterator;
+    }
 }

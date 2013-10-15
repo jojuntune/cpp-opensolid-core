@@ -28,7 +28,8 @@
 
 #include <OpenSolid/Core/SpatialSet/FilteredSet.declarations.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
+#include <OpenSolid/Core/Iterable.definitions.hpp>
+#include <OpenSolid/Core/SpatialSet.definitions.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -37,24 +38,38 @@ namespace opensolid
     namespace spatialset
     {
         template <class TElement, class TBoundsPredicate>
-        class FilteredSet
+        class FilteredSet :
+            public Iterable<FilteredSet<TElement, TBoundsPredicate>>
         {
         private:
-            const SetNode<TElement>* _rootNode;
+            SpatialSet<TElement> _set;
             TBoundsPredicate _boundsPredicate;
         public:
-            typedef FilteredSetIterator<TElement, TBoundsPredicate> Iterator;
-
             FilteredSet(
-                const SetNode<TElement>* rootNode,
+                const SpatialSet<TElement>& set,
                 TBoundsPredicate boundsPredicate
             );
+
+            FilteredSet(
+                SpatialSet<TElement>&& set,
+                TBoundsPredicate boundsPredicate
+            );
+
+            FilteredSet(const FilteredSet<TElement, TBoundsPredicate>& other);
+
+            FilteredSet(FilteredSet<TElement, TBoundsPredicate>&& other);
 
             FilteredSetIterator<TElement, TBoundsPredicate>
             begin() const;
 
             FilteredSetIterator<TElement, TBoundsPredicate>
             end() const;
+
+            bool
+            empty() const;
+
+            std::int64_t
+            size() const;
         };
 
         template <class TElement, class TBoundsPredicate>
@@ -91,4 +106,21 @@ namespace opensolid
             );
         };
     }
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <class TElement, class TBoundsPredicate>
+    struct ElementType<spatialset::FilteredSet<TElement, TBoundsPredicate>>
+    {
+        typedef TElement Type;
+    };
+
+    template <class TElement, class TBoundsPredicate>
+    struct IteratorType<spatialset::FilteredSet<TElement, TBoundsPredicate>>
+    {
+        typedef spatialset::FilteredSetIterator<TElement, TBoundsPredicate> Type;
+    };
 }

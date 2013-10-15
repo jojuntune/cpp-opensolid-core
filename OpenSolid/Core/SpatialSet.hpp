@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
+#include <OpenSolid/Core/Iterable.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.hpp>
 #include <OpenSolid/Core/SpatialSet/FilteredSet.hpp>
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
@@ -300,7 +301,7 @@ namespace opensolid
     inline
     const spatialset::SetNode<TElement>*
     SpatialSet<TElement>::rootNode() const {
-        if (isEmpty()) {
+        if (empty()) {
             return nullptr;
         } else {
             return _setData->nodes.data();
@@ -309,10 +310,10 @@ namespace opensolid
 
     template <class TElement>
     inline
-    typename SpatialSet<TElement>::Iterator
+    typename std::vector<TElement>::const_iterator
     SpatialSet<TElement>::begin() const {
-        if (isEmpty()) {
-            return Iterator();
+        if (empty()) {
+            return typename std::vector<TElement>::const_iterator();
         } else {
             return _setData->elements.begin();
         }
@@ -320,10 +321,10 @@ namespace opensolid
 
     template <class TElement>
     inline
-    typename SpatialSet<TElement>::Iterator
+    typename std::vector<TElement>::const_iterator
     SpatialSet<TElement>::end() const {
-        if (isEmpty()) {
-            return Iterator();
+        if (empty()) {
+            return typename std::vector<TElement>::const_iterator();
         } else {
             return _setData->elements.end();
         }
@@ -333,7 +334,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::front() const {
-        assert(!isEmpty());
+        assert(!empty());
         return _setData->elements.front();
     }
 
@@ -341,7 +342,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::back() const {
-        assert(!isEmpty());
+        assert(!empty());
         return _setData->elements.back();
     }
 
@@ -349,7 +350,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::operator[](std::int64_t index) const {
-        assert(!isEmpty());
+        assert(!empty());
         return _setData->elements[index];
     }
 
@@ -378,7 +379,7 @@ namespace opensolid
     inline
     std::int64_t
     SpatialSet<TElement>::size() const {
-        if (isEmpty()) {
+        if (empty()) {
             return 0;
         } else {
             return _setData->elements.size();
@@ -388,7 +389,7 @@ namespace opensolid
     template <class TElement>
     inline
     bool
-    SpatialSet<TElement>::isEmpty() const {
+    SpatialSet<TElement>::empty() const {
         return !_setData || _setData->elements.empty();
     }
 
@@ -396,7 +397,7 @@ namespace opensolid
     inline
     typename BoundsType<TElement>::Type
     SpatialSet<TElement>::bounds() const {
-        if (isEmpty()) {
+        if (empty()) {
             return typename BoundsType<TElement>::Type();
         } else {
             return _setData->nodes.front().bounds;
@@ -407,7 +408,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TElement>::clear() {
-        if (!isEmpty()) {
+        if (!empty()) {
             _setData->elements.clear();
             _setData->nodes.clear();
         }
@@ -420,7 +421,7 @@ namespace opensolid
         const typename BoundsType<TElement>::Type& predicateBounds
     ) const {
         return spatialset::FilteredSet<TElement, spatialset::OverlapPredicate<TElement>>(
-            rootNode(),
+            *this,
             spatialset::OverlapPredicate<TElement>(predicateBounds)
         );
     }
@@ -432,7 +433,7 @@ namespace opensolid
         const typename BoundsType<TElement>::Type& predicateBounds
     ) const {
         return spatialset::FilteredSet<TElement, spatialset::ContainPredicate<TElement>>(
-            rootNode(),
+            *this,
             spatialset::ContainPredicate<TElement>(predicateBounds)
         );
     }
@@ -441,14 +442,14 @@ namespace opensolid
     inline
     spatialset::FilteredSet<TElement, TBoundsPredicate>
     SpatialSet<TElement>::filtered(TBoundsPredicate boundsPredicate) const {
-        return spatialset::FilteredSet<TElement, TBoundsPredicate>(rootNode(), boundsPredicate);
+        return spatialset::FilteredSet<TElement, TBoundsPredicate>(*this, boundsPredicate);
     }
     
     template <class TElement>
     std::ostream&
     operator<<(std::ostream& stream, const SpatialSet<TElement>& set) {
         stream << "{";
-        if (!set.isEmpty()) {
+        if (!set.empty()) {
             std::for_each(
                 set.begin(),
                 set.end() - 1,
