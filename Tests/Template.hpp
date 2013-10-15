@@ -22,16 +22,11 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include "MODULE/CLASS.hpp"
-
-#include <opensolid/HEADERS>
+#include <OpenSolid/CLASS.hpp>
 
 #include <cxxtest/TestSuite.h>
-#include <EXTERNAL_LIBRARY/HEADERS>
 
-#include <STANDARD_HEADERS>
-
-using namespace opensolid::MODULE;
+using namespace opensolid;
 
 class CLASSTests : public CxxTest::TestSuite
 {
