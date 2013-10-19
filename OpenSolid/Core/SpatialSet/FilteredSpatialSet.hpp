@@ -59,14 +59,14 @@ namespace opensolid
         inline
         bool
         FilteredSpatialSet<TElement, TBoundsPredicate>::isEmptyImpl() const {
-            return begin() == end();
+            return this->begin() == this->end();
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         std::int64_t
         FilteredSpatialSet<TElement, TBoundsPredicate>::sizeImpl() const {
-            return std::distance(begin(), end());
+            return std::distance(this->begin(), this->end());
         }
 
         template <class TElement, class TBoundsPredicate>

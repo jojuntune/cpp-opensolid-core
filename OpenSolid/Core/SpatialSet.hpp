@@ -45,7 +45,7 @@ namespace opensolid
     inline
     typename std::vector<TElement>::const_iterator
     SpatialSet<TElement>::beginImpl() const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return typename std::vector<TElement>::const_iterator();
         } else {
             return _data->elements.begin();
@@ -56,7 +56,7 @@ namespace opensolid
     inline
     typename std::vector<TElement>::const_iterator
     SpatialSet<TElement>::endImpl() const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return typename std::vector<TElement>::const_iterator();
         } else {
             return _data->elements.end();
@@ -74,7 +74,7 @@ namespace opensolid
     inline
     std::int64_t
     SpatialSet<TElement>::sizeImpl() const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return 0;
         } else {
             return _data->elements.size();
@@ -341,7 +341,7 @@ namespace opensolid
     inline
     const detail::SpatialSetNode<TElement>*
     SpatialSet<TElement>::rootNode() const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return nullptr;
         } else {
             return _data->nodes.data();
@@ -366,7 +366,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::first() const {
-        assert(!isEmpty());
+        assert(!this->isEmpty());
         return _data->elements.front();
     }
 
@@ -374,7 +374,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::last() const {
-        assert(!isEmpty());
+        assert(!this->isEmpty());
         return _data->elements.back();
     }
 
@@ -382,7 +382,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::operator[](std::int64_t index) const {
-        assert(!isEmpty());
+        assert(!this->isEmpty());
         return _data->elements[index];
     }
 
@@ -411,7 +411,7 @@ namespace opensolid
     inline
     typename BoundsType<TElement>::Type
     SpatialSet<TElement>::bounds() const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return typename BoundsType<TElement>::Type();
         } else {
             return _data->nodes.front().bounds;
@@ -422,7 +422,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TElement>::clear() {
-        if (!isEmpty()) {
+        if (!this->isEmpty()) {
             _data->elements.clear();
             _data->nodes.clear();
         }

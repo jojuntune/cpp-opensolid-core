@@ -60,14 +60,14 @@ namespace opensolid
         inline
         bool
         FilteredIterable<TBaseIterable, TPredicate>::isEmptyImpl() const {
-            return begin() == end();
+            return this->begin() == this->end();
         }
 
         template <class TBaseIterable, class TPredicate>
         inline
         std::int64_t
         FilteredIterable<TBaseIterable, TPredicate>::sizeImpl() const {
-            return std::distance(begin(), end());
+            return std::distance(this->begin(), this->end());
         }
 
         template <class TBaseIterable, class TPredicate>
