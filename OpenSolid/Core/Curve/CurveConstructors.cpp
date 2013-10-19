@@ -290,7 +290,8 @@ namespace opensolid
         }
         WindingDirection direction = Counterclockwise;
         if (!detail::computeWindingDirection(startPoint, innerPoint, endPoint, &direction)) {
-
+            assert(false);
+            return Curve2d();
         }
         return Arc(centerPoint, direction, startPoint, endPoint);
     }
