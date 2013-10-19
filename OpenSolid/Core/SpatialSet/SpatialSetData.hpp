@@ -26,21 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SetData.declarations.hpp>
-
-#include <OpenSolid/Core/ReferenceCounted.hpp>
-#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
-
-namespace opensolid
-{
-    namespace spatialset
-    {
-        template <class TElement>
-        struct SetData :
-            public ReferenceCounted
-        {
-            std::vector<SetNode<TElement>> nodes;
-            std::vector<TElement> elements;
-        };
-    }
-}
+#include <OpenSolid/Core/SpatialSet/SpatialSetData.definitions.hpp>

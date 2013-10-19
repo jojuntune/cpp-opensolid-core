@@ -31,10 +31,10 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Iterable.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.hpp>
-#include <OpenSolid/Core/SpatialSet/FilteredSet.hpp>
+#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.hpp>
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
-#include <OpenSolid/Core/SpatialSet/SetData.hpp>
-#include <OpenSolid/Core/SpatialSet/SetNode.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSetData.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSetNode.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>
@@ -48,7 +48,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename std::vector<TElement>::const_iterator();
         } else {
-            return _setData->elements.begin();
+            return _data->elements.begin();
         }
     }
 
@@ -59,7 +59,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename std::vector<TElement>::const_iterator();
         } else {
-            return _setData->elements.end();
+            return _data->elements.end();
         }
     }
 
@@ -67,7 +67,7 @@ namespace opensolid
     inline
     bool
     SpatialSet<TElement>::isEmptyImpl() const {
-        return !_setData || _setData->elements.empty();
+        return !_data || _data->elements.empty();
     }
     
     template <class TElement>
@@ -77,11 +77,11 @@ namespace opensolid
         if (isEmpty()) {
             return 0;
         } else {
-            return _setData->elements.size();
+            return _data->elements.size();
         }
     }
 
-    namespace spatialset
+    namespace detail
     {
         template <class TBounds>
         inline bool
@@ -131,8 +131,8 @@ namespace opensolid
     template <class TElement>
     void
     SpatialSet<TElement>::init(
-        spatialset::SetNode<TElement>* node,
-        spatialset::SetNode<TElement>* next,
+        detail::SpatialSetNode<TElement>* node,
+        detail::SpatialSetNode<TElement>* next,
         BoundsData** begin,
         BoundsData** end,
         typename BoundsType<TElement>::Type& overallBounds,
@@ -147,8 +147,8 @@ namespace opensolid
             node->element = (*begin)->element;
         } else if (size == 2) {
             // Node with two leaf children
-            spatialset::SetNode<TElement>* leftChild = node + 1;
-            spatialset::SetNode<TElement>* rightChild = node + 2;
+            detail::SpatialSetNode<TElement>* leftChild = node + 1;
+            detail::SpatialSetNode<TElement>* rightChild = node + 2;
 
             node->leftChild = leftChild;
             node->element = nullptr;
@@ -157,7 +157,7 @@ namespace opensolid
             rightChild->leftChild = nullptr;
             BoundsData* firstBoundsData = *begin;
             BoundsData* secondBoundsData = *(begin + 1);
-            bool reversed = spatialset::hasLesserMedian(
+            bool reversed = detail::hasLesserMedian(
                 secondBoundsData->bounds,
                 firstBoundsData->bounds,
                 sortIndex
@@ -186,7 +186,7 @@ namespace opensolid
             BoundsData** lower = begin;
             BoundsData** upper = end - 1;
             for (BoundsData** i = lower; i <= upper; ++i) {
-                if (spatialset::hasLesserMedian((*i)->bounds, overallBounds, sortIndex)) {
+                if (detail::hasLesserMedian((*i)->bounds, overallBounds, sortIndex)) {
                     if (leftSize == 0) {
                         leftBounds = (*i)->bounds;
                     } else {
@@ -201,7 +201,7 @@ namespace opensolid
                 }
             }
             for (BoundsData** i = upper; i >= lower; --i) {
-                if (spatialset::hasGreaterMedian((*i)->bounds, overallBounds, sortIndex)) {
+                if (detail::hasGreaterMedian((*i)->bounds, overallBounds, sortIndex)) {
                     if (rightSize == 0) {
                         rightBounds = (*i)->bounds;
                     } else {
@@ -236,8 +236,8 @@ namespace opensolid
             // Recurse into chid nodes
             std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TElement>::Value;
             
-            spatialset::SetNode<TElement>* leftChild = node + 1;
-            spatialset::SetNode<TElement>* rightChild = leftChild + (2 * leftSize - 1);
+            detail::SpatialSetNode<TElement>* leftChild = node + 1;
+            detail::SpatialSetNode<TElement>* rightChild = leftChild + (2 * leftSize - 1);
             
             node->leftChild = leftChild;
             node->element = nullptr;
@@ -250,10 +250,10 @@ namespace opensolid
     template <class TElement>
     void
     SpatialSet<TElement>::init(const BoundsFunction<TElement>& boundsFunction) {
-        std::int64_t numElements = _setData->elements.size();
+        std::int64_t numElements = _data->elements.size();
 
         if (numElements == 0) {
-            _setData->nodes.clear();
+            _data->nodes.clear();
             return;
         }
 
@@ -262,10 +262,10 @@ namespace opensolid
         std::vector<BoundsData*> boundsDataPointers(numElements);
         typename BoundsType<TElement>::Type overallBounds;
         for (std::int64_t i = 0; i < numElements; ++i) {
-            typename BoundsType<TElement>::Type bounds = boundsFunction(_setData->elements[i]);
+            typename BoundsType<TElement>::Type bounds = boundsFunction(_data->elements[i]);
 
             boundsData[i].bounds = bounds;
-            boundsData[i].element = &(_setData->elements[i]);
+            boundsData[i].element = &(_data->elements[i]);
             boundsDataPointers[i] = &boundsData[i];
             if (i == 0) {
                 overallBounds = bounds;
@@ -275,9 +275,9 @@ namespace opensolid
         }
 
         // Recursively construct tree
-        _setData->nodes.resize(2 * numElements - 1);
+        _data->nodes.resize(2 * numElements - 1);
         init(
-            _setData->nodes.data(),
+            _data->nodes.data(),
             nullptr,
             &boundsDataPointers.front(),
             &boundsDataPointers.back() + 1,
@@ -293,14 +293,14 @@ namespace opensolid
 
     template <class TElement>
     inline
-    SpatialSet<TElement>::SpatialSet(const SpatialSet<TElement>& otherSet) :
-        _setData(otherSet._setData) {
+    SpatialSet<TElement>::SpatialSet(const SpatialSet<TElement>& other) :
+        _data(other._data) {
     }
 
     template <class TElement>
     inline
-    SpatialSet<TElement>::SpatialSet(SpatialSet<TElement>&& otherSet) :
-        _setData(std::move(otherSet._setData)) {
+    SpatialSet<TElement>::SpatialSet(SpatialSet<TElement>&& other) :
+        _data(std::move(other._data)) {
     }
 
     template <class TElement>
@@ -308,9 +308,9 @@ namespace opensolid
     SpatialSet<TElement>::SpatialSet(
         const std::vector<TElement>& elements,
         BoundsFunction<TElement> boundsFunction
-    ) : _setData(new spatialset::SetData<TElement>()) {
+    ) : _data(new detail::SpatialSetData<TElement>()) {
 
-        _setData->elements = elements;
+        _data->elements = elements;
         init(boundsFunction);
     }
 
@@ -319,9 +319,9 @@ namespace opensolid
     SpatialSet<TElement>::SpatialSet(
         std::vector<TElement>&& elements,
         BoundsFunction<TElement> boundsFunction
-    ) : _setData(new spatialset::SetData<TElement>()) {
+    ) : _data(new detail::SpatialSetData<TElement>()) {
 
-        _setData->elements = std::move(elements);
+        _data->elements = std::move(elements);
         init(boundsFunction);
     }
     
@@ -331,20 +331,20 @@ namespace opensolid
         TIterator begin,
         TIterator end,
         BoundsFunction<TElement> boundsFunction
-    ) : _setData(new spatialset::SetData<TElement>()) {
+    ) : _data(new detail::SpatialSetData<TElement>()) {
 
-        _setData->elements = std::vector<TElement>(begin, end);
+        _data->elements = std::vector<TElement>(begin, end);
         init(boundsFunction);
     }
 
     template <class TElement>
     inline
-    const spatialset::SetNode<TElement>*
+    const detail::SpatialSetNode<TElement>*
     SpatialSet<TElement>::rootNode() const {
         if (isEmpty()) {
             return nullptr;
         } else {
-            return _setData->nodes.data();
+            return _data->nodes.data();
         }
     }
 
@@ -367,7 +367,7 @@ namespace opensolid
     const TElement&
     SpatialSet<TElement>::first() const {
         assert(!isEmpty());
-        return _setData->elements.front();
+        return _data->elements.front();
     }
 
     template <class TElement>
@@ -375,7 +375,7 @@ namespace opensolid
     const TElement&
     SpatialSet<TElement>::last() const {
         assert(!isEmpty());
-        return _setData->elements.back();
+        return _data->elements.back();
     }
 
     template <class TElement>
@@ -383,28 +383,28 @@ namespace opensolid
     const TElement&
     SpatialSet<TElement>::operator[](std::int64_t index) const {
         assert(!isEmpty());
-        return _setData->elements[index];
+        return _data->elements[index];
     }
 
     template <class TElement>
     inline
     void
-    SpatialSet<TElement>::swap(SpatialSet<TElement>& otherSet) {
-        _setData.swap(otherSet._setData);
+    SpatialSet<TElement>::swap(SpatialSet<TElement>& other) {
+        _data.swap(other._data);
     }
     
     template <class TElement>
     inline
     void
-    SpatialSet<TElement>::operator=(const SpatialSet<TElement>& otherSet) {
-        _setData = otherSet._setData;
+    SpatialSet<TElement>::operator=(const SpatialSet<TElement>& other) {
+        _data = other._data;
     }
     
     template <class TElement>
     inline
     void
-    SpatialSet<TElement>::operator=(SpatialSet<TElement>&& otherSet) {
-        _setData = std::move(otherSet._setData);
+    SpatialSet<TElement>::operator=(SpatialSet<TElement>&& other) {
+        _data = std::move(other._data);
     }
 
     template <class TElement>
@@ -414,7 +414,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename BoundsType<TElement>::Type();
         } else {
-            return _setData->nodes.front().bounds;
+            return _data->nodes.front().bounds;
         }
     }
 
@@ -423,40 +423,40 @@ namespace opensolid
     void
     SpatialSet<TElement>::clear() {
         if (!isEmpty()) {
-            _setData->elements.clear();
-            _setData->nodes.clear();
+            _data->elements.clear();
+            _data->nodes.clear();
         }
     }
 
     template <class TElement>
     inline
-    spatialset::FilteredSet<TElement, spatialset::OverlapPredicate<TElement>>
+    detail::FilteredSpatialSet<TElement, detail::OverlapPredicate<TElement>>
     SpatialSet<TElement>::overlapping(
         const typename BoundsType<TElement>::Type& predicateBounds
     ) const {
-        return spatialset::FilteredSet<TElement, spatialset::OverlapPredicate<TElement>>(
+        return detail::FilteredSpatialSet<TElement, detail::OverlapPredicate<TElement>>(
             *this,
-            spatialset::OverlapPredicate<TElement>(predicateBounds)
+            detail::OverlapPredicate<TElement>(predicateBounds)
         );
     }
 
     template <class TElement>
     inline
-    spatialset::FilteredSet<TElement, spatialset::ContainPredicate<TElement>>
+    detail::FilteredSpatialSet<TElement, detail::ContainPredicate<TElement>>
     SpatialSet<TElement>::containing(
         const typename BoundsType<TElement>::Type& predicateBounds
     ) const {
-        return spatialset::FilteredSet<TElement, spatialset::ContainPredicate<TElement>>(
+        return detail::FilteredSpatialSet<TElement, detail::ContainPredicate<TElement>>(
             *this,
-            spatialset::ContainPredicate<TElement>(predicateBounds)
+            detail::ContainPredicate<TElement>(predicateBounds)
         );
     }
 
     template <class TElement> template <class TBoundsPredicate>
     inline
-    spatialset::FilteredSet<TElement, TBoundsPredicate>
+    detail::FilteredSpatialSet<TElement, TBoundsPredicate>
     SpatialSet<TElement>::filtered(TBoundsPredicate boundsPredicate) const {
-        return spatialset::FilteredSet<TElement, TBoundsPredicate>(*this, boundsPredicate);
+        return detail::FilteredSpatialSet<TElement, TBoundsPredicate>(*this, boundsPredicate);
     }
     
     template <class TElement>

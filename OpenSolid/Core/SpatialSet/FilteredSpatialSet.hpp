@@ -26,20 +26,20 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/FilteredSet.definitions.hpp>
+#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.definitions.hpp>
 
 #include <OpenSolid/Core/Iterable.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 namespace opensolid
 {
-    namespace spatialset
+    namespace detail
     {
         template <class TElement, class TBoundsPredicate>
         inline
-        FilteredSetIterator<TElement, TBoundsPredicate>
-        FilteredSet<TElement, TBoundsPredicate>::beginImpl() const {
-            return FilteredSetIterator<TElement, TBoundsPredicate>(
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>
+        FilteredSpatialSet<TElement, TBoundsPredicate>::beginImpl() const {
+            return FilteredSpatialSetIterator<TElement, TBoundsPredicate>(
                 _set.rootNode(),
                 &_boundsPredicate
             );
@@ -47,9 +47,9 @@ namespace opensolid
 
         template <class TElement, class TBoundsPredicate>
         inline
-        FilteredSetIterator<TElement, TBoundsPredicate>
-        FilteredSet<TElement, TBoundsPredicate>::endImpl() const {
-            return FilteredSetIterator<TElement, TBoundsPredicate>(
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>
+        FilteredSpatialSet<TElement, TBoundsPredicate>::endImpl() const {
+            return FilteredSpatialSetIterator<TElement, TBoundsPredicate>(
                 nullptr,
                 &_boundsPredicate
             );
@@ -58,28 +58,28 @@ namespace opensolid
         template <class TElement, class TBoundsPredicate>
         inline
         bool
-        FilteredSet<TElement, TBoundsPredicate>::isEmptyImpl() const {
+        FilteredSpatialSet<TElement, TBoundsPredicate>::isEmptyImpl() const {
             return begin() == end();
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         std::int64_t
-        FilteredSet<TElement, TBoundsPredicate>::sizeImpl() const {
+        FilteredSpatialSet<TElement, TBoundsPredicate>::sizeImpl() const {
             return std::distance(begin(), end());
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
-        FilteredSet<TElement, TBoundsPredicate>::FilteredSet(
-            const FilteredSet<TElement, TBoundsPredicate>& other
+        FilteredSpatialSet<TElement, TBoundsPredicate>::FilteredSpatialSet(
+            const FilteredSpatialSet<TElement, TBoundsPredicate>& other
         ) : _set(other._set),
             _boundsPredicate(other._boundsPredicate) {
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
-        FilteredSet<TElement, TBoundsPredicate>::FilteredSet(
+        FilteredSpatialSet<TElement, TBoundsPredicate>::FilteredSpatialSet(
             const SpatialSet<TElement>& set,
             TBoundsPredicate boundsPredicate
         ) : _set(set),
@@ -89,8 +89,8 @@ namespace opensolid
         template <class TElement, class TBoundsPredicate>
         inline
         void
-        FilteredSetIterator<TElement, TBoundsPredicate>::descendFrom(
-            const SetNode<TElement>* candidateNode
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::descendFrom(
+            const SpatialSetNode<TElement>* candidateNode
         ) {
             _currentNode = candidateNode;
             while (candidateNode) {
@@ -107,15 +107,15 @@ namespace opensolid
         template <class TElement, class TBoundsPredicate>
         inline
         void
-        FilteredSetIterator<TElement, TBoundsPredicate>::increment() {
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::increment() {
             descendFrom(_currentNode->next);
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
         bool
-        FilteredSetIterator<TElement, TBoundsPredicate>::equal(
-            const FilteredSetIterator<TElement, TBoundsPredicate>& other
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::equal(
+            const FilteredSpatialSetIterator<TElement, TBoundsPredicate>& other
         ) const {
             return _currentNode == other._currentNode;
         }
@@ -123,20 +123,20 @@ namespace opensolid
         template <class TElement, class TBoundsPredicate>
         inline
         const TElement&
-        FilteredSetIterator<TElement, TBoundsPredicate>::dereference() const {
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::dereference() const {
             return *(_currentNode->element);
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
-        FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator() :
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::FilteredSpatialSetIterator() :
             _currentNode(nullptr) {
         }
 
         template <class TElement, class TBoundsPredicate>
         inline
-        FilteredSetIterator<TElement, TBoundsPredicate>::FilteredSetIterator(
-            const SetNode<TElement>* rootNode,
+        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::FilteredSpatialSetIterator(
+            const SpatialSetNode<TElement>* rootNode,
             const TBoundsPredicate* boundsPredicate
         ) : _currentNode(nullptr),
             _boundsPredicate(boundsPredicate) {

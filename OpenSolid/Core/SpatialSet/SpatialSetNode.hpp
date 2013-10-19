@@ -26,14 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace opensolid
-{
-    namespace spatialset
-    {
-        template <class TElement, class TBoundsPredicate>
-        class FilteredSet;
-
-        template <class TElement, class TBoundsPredicate>
-        class FilteredSetIterator;
-    }
-}
+#include <OpenSolid/Core/SpatialSet/SpatialSetNode.definitions.hpp>

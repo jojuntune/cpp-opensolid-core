@@ -58,12 +58,12 @@ void testSet(const SetNode<Type>* node) {
 }
 
 template <class TElement>
-void testSet(const spatialset::SetNode<TElement>* node) {
+void testSet(const detail::SpatialSetNode<TElement>* node) {
     if (!node) {
         return;
     } else if (node->leftChild) {
-        const spatialset::SetNode<TElement>* leftChild = node->leftChild;
-        const spatialset::SetNode<TElement>* rightChild = node->leftChild->next;
+        const detail::SpatialSetNode<TElement>* leftChild = node->leftChild;
+        const detail::SpatialSetNode<TElement>* rightChild = node->leftChild->next;
         TS_ASSERT(leftChild != nullptr);
         TS_ASSERT(rightChild != nullptr);
         TS_ASSERT(node->bounds.contains(leftChild->bounds));
@@ -427,7 +427,7 @@ public:
         values[2] = 3;
 
         SpatialSet<double> set1(values);
-        const spatialset::SetNode<double>* root = set1.rootNode();
+        const detail::SpatialSetNode<double>* root = set1.rootNode();
 
         SpatialSet<double> set2(std::move(set1));
 

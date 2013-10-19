@@ -26,4 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SetData.definitions.hpp>
+namespace opensolid
+{
+    namespace detail
+    {
+        template <class TElement>
+        struct SpatialSetData;
+    }
+}

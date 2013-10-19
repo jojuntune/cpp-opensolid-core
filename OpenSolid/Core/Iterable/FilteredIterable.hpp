@@ -32,7 +32,7 @@
 
 namespace opensolid
 {
-    namespace iterable
+    namespace detail
     {
         template <class TBaseIterable, class TPredicate>
         inline

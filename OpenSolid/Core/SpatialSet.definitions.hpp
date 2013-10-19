@@ -31,10 +31,10 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Iterable.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/FilteredSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SetData.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSetData.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>
@@ -49,7 +49,7 @@ namespace opensolid
         public Transformable<SpatialSet<TElement>>
     {
     private:
-        boost::intrusive_ptr<spatialset::SetData<TElement>> _setData;
+        boost::intrusive_ptr<detail::SpatialSetData<TElement>> _data;
 
         template <class TDerived>
         friend class Iterable;
@@ -74,8 +74,8 @@ namespace opensolid
 
         void
         init(
-            spatialset::SetNode<TElement>* node,
-            spatialset::SetNode<TElement>* next,
+            detail::SpatialSetNode<TElement>* node,
+            detail::SpatialSetNode<TElement>* next,
             BoundsData** begin,
             BoundsData** end,
             typename BoundsType<TElement>::Type& overallBounds,
@@ -87,9 +87,9 @@ namespace opensolid
     public:
         SpatialSet();
 
-        SpatialSet(const SpatialSet<TElement>& otherSet);
+        SpatialSet(const SpatialSet<TElement>& other);
 
-        SpatialSet(SpatialSet<TElement>&& otherSet);
+        SpatialSet(SpatialSet<TElement>&& other);
 
         SpatialSet(
             const std::vector<TElement>& elements,
@@ -108,7 +108,7 @@ namespace opensolid
             BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>()
         );
 
-        const spatialset::SetNode<TElement>*
+        const detail::SpatialSetNode<TElement>*
         rootNode() const;
 
         typename std::vector<TElement>::const_iterator
@@ -127,13 +127,13 @@ namespace opensolid
         operator[](std::int64_t index) const;
 
         void
-        swap(SpatialSet<TElement>& otherSet);
+        swap(SpatialSet<TElement>& other);
         
         void
-        operator=(const SpatialSet<TElement>& otherSet);
+        operator=(const SpatialSet<TElement>& other);
         
         void
-        operator=(SpatialSet<TElement>&& otherSet);
+        operator=(SpatialSet<TElement>&& other);
 
         typename BoundsType<TElement>::Type
         bounds() const;
@@ -141,14 +141,14 @@ namespace opensolid
         void
         clear();
 
-        spatialset::FilteredSet<TElement, spatialset::OverlapPredicate<TElement>>
+        detail::FilteredSpatialSet<TElement, detail::OverlapPredicate<TElement>>
         overlapping(const typename BoundsType<TElement>::Type& predicateBounds) const;
 
-        spatialset::FilteredSet<TElement, spatialset::ContainPredicate<TElement>>
+        detail::FilteredSpatialSet<TElement, detail::ContainPredicate<TElement>>
         containing(const typename BoundsType<TElement>::Type& predicateBounds) const;
 
         template <class TBoundsPredicate>
-        spatialset::FilteredSet<TElement, TBoundsPredicate>
+        detail::FilteredSpatialSet<TElement, TBoundsPredicate>
         filtered(TBoundsPredicate boundsPredicate) const;
     };
     

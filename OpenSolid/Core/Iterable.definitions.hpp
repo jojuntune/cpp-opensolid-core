@@ -42,7 +42,7 @@ namespace opensolid
         derived() const;
     protected:
         template <class TBaseIterable, class TPredicate>
-        friend class iterable::FilteredIterable;
+        friend class detail::FilteredIterable;
 
         typename IteratorType<TDerived>::Type
         begin() const;
@@ -77,7 +77,7 @@ namespace opensolid
         reduce(TFunction function) const;
 
         template <class TPredicate>
-        iterable::FilteredIterable<TDerived, TPredicate>
+        detail::FilteredIterable<TDerived, TPredicate>
         where(TPredicate predicate) const;
 
         operator std::vector<typename ElementType<TDerived>::Type>() const;

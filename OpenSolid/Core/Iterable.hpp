@@ -114,9 +114,9 @@ namespace opensolid
 
     template <class TDerived> template <class TPredicate>
     inline
-    iterable::FilteredIterable<TDerived, TPredicate>
+    detail::FilteredIterable<TDerived, TPredicate>
     Iterable<TDerived>::where(TPredicate predicate) const {
-        return iterable::FilteredIterable<TDerived, TPredicate>(derived(), predicate);
+        return detail::FilteredIterable<TDerived, TPredicate>(derived(), predicate);
     }
 
     template <class TDerived>

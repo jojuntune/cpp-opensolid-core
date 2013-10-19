@@ -26,4 +26,21 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SetNode.definitions.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
+
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
+
+namespace opensolid
+{
+    namespace detail
+    {
+        template <class TElement>
+        struct SpatialSetNode
+        {
+            typename BoundsType<TElement>::Type bounds;
+            const SpatialSetNode<TElement>* leftChild;
+            const SpatialSetNode<TElement>* next;
+            const TElement* element;
+        };
+    }
+}

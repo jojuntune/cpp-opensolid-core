@@ -26,21 +26,14 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SetNode.declarations.hpp>
-
-#include <OpenSolid/Core/BoundsType.definitions.hpp>
-
 namespace opensolid
 {
-    namespace spatialset
+    namespace detail
     {
-        template <class TElement>
-        struct SetNode
-        {
-            typename BoundsType<TElement>::Type bounds;
-            const SetNode<TElement>* leftChild;
-            const SetNode<TElement>* next;
-            const TElement* element;
-        };
+        template <class TElement, class TBoundsPredicate>
+        class FilteredSpatialSet;
+
+        template <class TElement, class TBoundsPredicate>
+        class FilteredSpatialSetIterator;
     }
 }

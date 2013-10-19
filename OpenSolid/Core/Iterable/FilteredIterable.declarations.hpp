@@ -28,7 +28,7 @@
 
 namespace opensolid
 {
-    namespace iterable
+    namespace detail
     {
         template <class TIterable, class TPredicate>
         class FilteredIterable;

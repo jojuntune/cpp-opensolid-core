@@ -31,7 +31,7 @@
 
 namespace opensolid
 {
-    namespace spatialset
+    namespace detail
     {
         template <class TElement>
         class ContainPredicate

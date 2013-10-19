@@ -34,7 +34,7 @@
 
 namespace opensolid
 {
-    namespace iterable
+    namespace detail
     {
         template <class TBaseIterable, class TPredicate>
         class FilteredIterable :
@@ -104,14 +104,14 @@ namespace opensolid
 namespace opensolid
 {
     template <class TBaseIterable, class TPredicate>
-    struct ElementType<iterable::FilteredIterable<TBaseIterable, TPredicate>>
+    struct ElementType<detail::FilteredIterable<TBaseIterable, TPredicate>>
     {
         typedef typename ElementType<TBaseIterable>::Type Type;
     };
 
     template <class TBaseIterable, class TPredicate>
-    struct IteratorType<iterable::FilteredIterable<TBaseIterable, TPredicate>>
+    struct IteratorType<detail::FilteredIterable<TBaseIterable, TPredicate>>
     {
-        typedef iterable::FilteredIterableIterator<TBaseIterable, TPredicate> Type;
+        typedef detail::FilteredIterableIterator<TBaseIterable, TPredicate> Type;
     };
 }
