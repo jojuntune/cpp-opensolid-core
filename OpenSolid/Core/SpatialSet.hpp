@@ -41,6 +41,46 @@
 
 namespace opensolid
 {
+    template <class TElement>
+    inline
+    typename std::vector<TElement>::const_iterator
+    SpatialSet<TElement>::beginImpl() const {
+        if (isEmpty()) {
+            return typename std::vector<TElement>::const_iterator();
+        } else {
+            return _setData->elements.begin();
+        }
+    }
+
+    template <class TElement>
+    inline
+    typename std::vector<TElement>::const_iterator
+    SpatialSet<TElement>::endImpl() const {
+        if (isEmpty()) {
+            return typename std::vector<TElement>::const_iterator();
+        } else {
+            return _setData->elements.end();
+        }
+    }
+
+    template <class TElement>
+    inline
+    bool
+    SpatialSet<TElement>::isEmptyImpl() const {
+        return !_setData || _setData->elements.empty();
+    }
+    
+    template <class TElement>
+    inline
+    std::int64_t
+    SpatialSet<TElement>::sizeImpl() const {
+        if (isEmpty()) {
+            return 0;
+        } else {
+            return _setData->elements.size();
+        }
+    }
+
     namespace spatialset
     {
         template <class TBounds>
@@ -301,7 +341,7 @@ namespace opensolid
     inline
     const spatialset::SetNode<TElement>*
     SpatialSet<TElement>::rootNode() const {
-        if (empty()) {
+        if (isEmpty()) {
             return nullptr;
         } else {
             return _setData->nodes.data();
@@ -312,37 +352,29 @@ namespace opensolid
     inline
     typename std::vector<TElement>::const_iterator
     SpatialSet<TElement>::begin() const {
-        if (empty()) {
-            return typename std::vector<TElement>::const_iterator();
-        } else {
-            return _setData->elements.begin();
-        }
+        return beginImpl();
     }
 
     template <class TElement>
     inline
     typename std::vector<TElement>::const_iterator
     SpatialSet<TElement>::end() const {
-        if (empty()) {
-            return typename std::vector<TElement>::const_iterator();
-        } else {
-            return _setData->elements.end();
-        }
+        return endImpl();
     }
 
     template <class TElement>
     inline
     const TElement&
-    SpatialSet<TElement>::front() const {
-        assert(!empty());
+    SpatialSet<TElement>::first() const {
+        assert(!isEmpty());
         return _setData->elements.front();
     }
 
     template <class TElement>
     inline
     const TElement&
-    SpatialSet<TElement>::back() const {
-        assert(!empty());
+    SpatialSet<TElement>::last() const {
+        assert(!isEmpty());
         return _setData->elements.back();
     }
 
@@ -350,7 +382,7 @@ namespace opensolid
     inline
     const TElement&
     SpatialSet<TElement>::operator[](std::int64_t index) const {
-        assert(!empty());
+        assert(!isEmpty());
         return _setData->elements[index];
     }
 
@@ -374,30 +406,12 @@ namespace opensolid
     SpatialSet<TElement>::operator=(SpatialSet<TElement>&& otherSet) {
         _setData = std::move(otherSet._setData);
     }
-    
-    template <class TElement>
-    inline
-    std::int64_t
-    SpatialSet<TElement>::size() const {
-        if (empty()) {
-            return 0;
-        } else {
-            return _setData->elements.size();
-        }
-    }
-
-    template <class TElement>
-    inline
-    bool
-    SpatialSet<TElement>::empty() const {
-        return !_setData || _setData->elements.empty();
-    }
 
     template <class TElement>
     inline
     typename BoundsType<TElement>::Type
     SpatialSet<TElement>::bounds() const {
-        if (empty()) {
+        if (isEmpty()) {
             return typename BoundsType<TElement>::Type();
         } else {
             return _setData->nodes.front().bounds;
@@ -408,7 +422,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TElement>::clear() {
-        if (!empty()) {
+        if (!isEmpty()) {
             _setData->elements.clear();
             _setData->nodes.clear();
         }
@@ -449,7 +463,7 @@ namespace opensolid
     std::ostream&
     operator<<(std::ostream& stream, const SpatialSet<TElement>& set) {
         stream << "{";
-        if (!set.empty()) {
+        if (!set.isEmpty()) {
             std::for_each(
                 set.begin(),
                 set.end() - 1,

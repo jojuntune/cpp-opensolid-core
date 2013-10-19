@@ -42,34 +42,32 @@ namespace opensolid
             public Iterable<FilteredSet<TElement, TBoundsPredicate>>
         {
         private:
-            SpatialSet<TElement> _set;
+            const SpatialSet<TElement>& _set;
             TBoundsPredicate _boundsPredicate;
+
+            template <class TDerived>
+            friend class Iterable;
+
+            friend class SpatialSet<TElement>;
+
+            FilteredSetIterator<TElement, TBoundsPredicate>
+            beginImpl() const;
+
+            FilteredSetIterator<TElement, TBoundsPredicate>
+            endImpl() const;
+
+            bool
+            isEmptyImpl() const;
+
+            std::int64_t
+            sizeImpl() const;
+
+            FilteredSet(const FilteredSet<TElement, TBoundsPredicate>& other);
         public:
             FilteredSet(
                 const SpatialSet<TElement>& set,
                 TBoundsPredicate boundsPredicate
             );
-
-            FilteredSet(
-                SpatialSet<TElement>&& set,
-                TBoundsPredicate boundsPredicate
-            );
-
-            FilteredSet(const FilteredSet<TElement, TBoundsPredicate>& other);
-
-            FilteredSet(FilteredSet<TElement, TBoundsPredicate>&& other);
-
-            FilteredSetIterator<TElement, TBoundsPredicate>
-            begin() const;
-
-            FilteredSetIterator<TElement, TBoundsPredicate>
-            end() const;
-
-            bool
-            empty() const;
-
-            std::int64_t
-            size() const;
         };
 
         template <class TElement, class TBoundsPredicate>

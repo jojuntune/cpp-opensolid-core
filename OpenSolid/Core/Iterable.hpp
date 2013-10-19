@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Iterable.definitions.hpp>
 
+#include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Iterable/FilteredIterable.hpp>
 
 #include <algorithm>
@@ -46,41 +47,28 @@ namespace opensolid
     inline
     typename IteratorType<TDerived>::Type
     Iterable<TDerived>::begin() const {
-        return derived().begin();
+        return derived().beginImpl();
     }
 
     template <class TDerived>
     inline
     typename IteratorType<TDerived>::Type
     Iterable<TDerived>::end() const {
-        return derived().end();
-    }
-
-    template <class TDerived>
-    typename IteratorType<TDerived>::Type
-    Iterable<TDerived>::cbegin() const {
-        return begin();
-    }
-
-    template <class TDerived>
-    inline
-    typename IteratorType<TDerived>::Type
-    Iterable<TDerived>::cend() const {
-        return end();
+        return derived().endImpl();
     }
 
     template <class TDerived>
     inline
     bool
-    Iterable<TDerived>::empty() const {
-        return derived().empty();
+    Iterable<TDerived>::isEmpty() const {
+        return derived().isEmptyImpl();
     }
 
     template <class TDerived>
     inline
     std::int64_t
     Iterable<TDerived>::size() const {
-        return derived().size();
+        return derived().sizeImpl();
     }
 
     template <class TDerived> template <class TPredicate>
@@ -115,13 +103,12 @@ namespace opensolid
     inline
     typename ElementType<TDerived>::Type
     Iterable<TDerived>::reduce(TFunction function) const {
-        if (empty()) {
-            return typename ElementType<TDerived>::Type();
+        if (isEmpty()) {
+            throw PlaceholderError();
         } else {
-            typename IteratorType<TDerived>::Type start = begin();
-            const typename ElementType<TDerived>::Type& firstElement = *start;
-            ++start;
-            return std::accumulate(start, end(), firstElement, function);
+            typename IteratorType<TDerived>::Type begin = this->begin();
+            const typename ElementType<TDerived>::Type& firstElement = *begin;
+            return std::accumulate(++begin, end(), firstElement, function);
         }
     }
 

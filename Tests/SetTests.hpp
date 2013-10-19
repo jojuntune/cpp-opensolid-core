@@ -130,12 +130,11 @@ public:
         std::vector<double> expected(list);
         std::sort(expected.begin(), expected.end());
 
-        auto temp = set.filtered(
+        std::vector<double> actual = set.filtered(
             [] (Interval bounds) -> bool {
                 return true;
             }
         );
-        std::vector<double> actual(temp.begin(), temp.end());
 
         TS_ASSERT_EQUALS(actual, expected);
     }
@@ -183,9 +182,8 @@ public:
         list[2] = 1;
         list[3] = 4;
         list[4] = 2;
-        SpatialSet<double> set(list.begin(), list.end());
-        auto subset = set.overlapping(Interval(2.5, 4.5));
-        std::vector<double> overlapping(subset.begin(), subset.end());
+        SpatialSet<double> set(list);
+        std::vector<double> overlapping = set.overlapping(Interval(2.5, 4.5));
         TS_ASSERT_EQUALS(overlapping.size(), 2u);
         TS_ASSERT_EQUALS(overlapping.front(), 3);
         TS_ASSERT_EQUALS(overlapping.back(), 4);
@@ -198,8 +196,7 @@ public:
         list[2] = Vector2d(1, 3);
         list[3] = Vector2d(5, 3);
         SpatialSet<Vector2d> set(list.begin(), list.end());
-        auto subset = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
-        std::vector<Vector2d> check(subset.begin(), subset.end());
+        std::vector<Vector2d> check = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
         TS_ASSERT_EQUALS(check.size(), 2u);
         TS_ASSERT_EQUALS(check[0], Vector2d(1, 3));
         TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
@@ -359,9 +356,8 @@ public:
         pointList[2] = Point3d(2, 4, 6);
 
         SpatialSet<Point3d> pointSet(pointList);
-        auto subset = pointSet.overlapping(Box3d(Interval(1, 3), Interval(1, 5), Interval(1, 7)));
-
-        std::vector<Point3d> overlappingPoints(subset.begin(), subset.end());
+        Box3d testBox(Interval(1, 3), Interval(1, 5), Interval(1, 7));
+        std::vector<Point3d> overlappingPoints = pointSet.overlapping(testBox);
         std::sort(
             overlappingPoints.begin(),
             overlappingPoints.end(),

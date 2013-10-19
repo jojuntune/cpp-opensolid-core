@@ -97,10 +97,10 @@ public:
                 }
             )
         );
-        auto overlapping = vectorSet().overlapping(Vector2I(Interval(1), Interval::Whole()));
-        TS_ASSERT_EQUALS(overlapping.size(), 2u);
+        Vector2I testBounds(Interval(1), Interval::Whole());
+        TS_ASSERT_EQUALS(vectorSet().overlapping(testBounds).size(), 2u);
         TS_ASSERT(
-            overlapping.every(
+            vectorSet().overlapping(testBounds).every(
                 [] (const Vector2d& vector) -> bool {
                     return vector.x() - 1 == Zero();
                 }
@@ -141,14 +141,11 @@ public:
     }
 
     void testWhere() {
-        auto filtered = boxSet().containing(Box2d(0, 0)).where(
-            [] (const Box2d& box) -> bool {
-                return box.diagonalVector().minCoeff() - 2.0 >= Zero();
-            }
-        );
-        TS_ASSERT_EQUALS(filtered.size(), 1);
-
-        TS_ASSERT(!filtered.empty());
+        auto predicate = [] (const Box2d& box) -> bool {
+            return box.diagonalVector().minCoeff() - 2.0 >= Zero();
+        };
+        std::int64_t testSize = boxSet().containing(Box2d(0, 0)).where(predicate).size();
+        TS_ASSERT_EQUALS(testSize, 1);
     }
 
     void testVectorConversion() {
@@ -163,65 +160,9 @@ public:
     }
 
     void testEmpty() {
-        auto subset = vectorSet().where(
-            [] (const Vector2d& vector) -> bool {
-                return vector.x() < Zero() && vector.y() < Zero();
-            }
-        );
-        TS_ASSERT(subset.empty());
-        TS_ASSERT_EQUALS(subset.size(), 0);
-        TS_ASSERT(subset.begin() == subset.end());
-    }
-
-    void testIndependentIterators() {
-        auto boxIsUnit = [] (const Box2d& box) -> bool {
-            return (box.diagonalVector() - Vector2d(1, 1)).isZero();
+        auto isInNegativeQuadrant = [] (const Vector2d& vector) -> bool {
+            return vector.x() < Zero() && vector.y() < Zero();
         };
-        auto subset = boxSet().containing(Box2d(1, 1)).where(boxIsUnit);
-
-        std::vector<Box2d> firstList;
-        std::vector<Box2d> secondList;
-
-        auto firstIterator = subset.begin();
-        auto firstEnd = subset.end();
-
-        firstList.push_back(*firstIterator);
-        ++firstIterator;
-        firstList.push_back(*firstIterator);
-        ++firstIterator;
-
-        auto secondIterator = subset.begin();
-        auto secondEnd = subset.end();
-
-        secondList.push_back(*secondIterator);
-        ++secondIterator;
-
-        firstList.push_back(*firstIterator);
-        ++firstIterator;
-        
-        secondList.push_back(*secondIterator);
-        ++secondIterator;
-        secondList.push_back(*secondIterator);
-        ++secondIterator;
-
-        TS_ASSERT_EQUALS(firstIterator, firstEnd);
-        TS_ASSERT_EQUALS(secondIterator, firstEnd);
-        TS_ASSERT_EQUALS(firstEnd, firstEnd);
-        TS_ASSERT_EQUALS(secondEnd, firstEnd);
-        TS_ASSERT(
-            std::equal(
-                firstList.begin(),
-                firstList.end(),
-                secondList.begin(),
-                [] (const Box2d& firstBox, const Box2d& secondBox) -> bool {
-                    bool result = true;
-                    result &= (firstBox.x().lowerBound() == secondBox.x().lowerBound());
-                    result &= (firstBox.x().upperBound() == secondBox.x().upperBound());
-                    result &= (firstBox.y().lowerBound() == secondBox.y().lowerBound());
-                    result &= (firstBox.y().upperBound() == secondBox.y().upperBound());
-                    return result;
-                }
-            )
-        );
+        TS_ASSERT(vectorSet().where(isInNegativeQuadrant).isEmpty());
     }
 };

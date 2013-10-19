@@ -36,26 +36,8 @@ namespace opensolid
     {
         template <class TBaseIterable, class TPredicate>
         inline
-        FilteredIterable<TBaseIterable, TPredicate>::FilteredIterable(
-            const TBaseIterable& baseIterable,
-            TPredicate predicate
-        ) : _baseIterable(baseIterable),
-            _predicate(predicate) {
-        }
-
-        template <class TBaseIterable, class TPredicate>
-        inline
-        FilteredIterable<TBaseIterable, TPredicate>::FilteredIterable(
-            TBaseIterable&& baseIterable,
-            TPredicate predicate
-        ) : _baseIterable(std::move(baseIterable)),
-            _predicate(predicate) {
-        }
-
-        template <class TBaseIterable, class TPredicate>
-        inline
         FilteredIterableIterator<TBaseIterable, TPredicate>
-        FilteredIterable<TBaseIterable, TPredicate>::begin() const {
+        FilteredIterable<TBaseIterable, TPredicate>::beginImpl() const {
             return FilteredIterableIterator<TBaseIterable, TPredicate>(
                 _baseIterable.begin(),
                 _baseIterable.end(),
@@ -66,7 +48,7 @@ namespace opensolid
         template <class TBaseIterable, class TPredicate>
         inline
         FilteredIterableIterator<TBaseIterable, TPredicate>
-        FilteredIterable<TBaseIterable, TPredicate>::end() const {
+        FilteredIterable<TBaseIterable, TPredicate>::endImpl() const {
             return FilteredIterableIterator<TBaseIterable, TPredicate>(
                 _baseIterable.end(),
                 _baseIterable.end(),
@@ -77,15 +59,31 @@ namespace opensolid
         template <class TBaseIterable, class TPredicate>
         inline
         bool
-        FilteredIterable<TBaseIterable, TPredicate>::empty() const {
+        FilteredIterable<TBaseIterable, TPredicate>::isEmptyImpl() const {
             return begin() == end();
         }
 
         template <class TBaseIterable, class TPredicate>
         inline
         std::int64_t
-        FilteredIterable<TBaseIterable, TPredicate>::size() const {
+        FilteredIterable<TBaseIterable, TPredicate>::sizeImpl() const {
             return std::distance(begin(), end());
+        }
+
+        template <class TBaseIterable, class TPredicate>
+        FilteredIterable<TBaseIterable, TPredicate>::FilteredIterable(
+            const FilteredIterable<TBaseIterable, TPredicate>& other
+        ) : _baseIterable(other._baseIterable),
+            _predicate(other._predicate) {
+        }
+
+        template <class TBaseIterable, class TPredicate>
+        inline
+        FilteredIterable<TBaseIterable, TPredicate>::FilteredIterable(
+            const TBaseIterable& baseIterable,
+            TPredicate predicate
+        ) : _baseIterable(baseIterable),
+            _predicate(predicate) {
         }
 
         template <class TBaseIterable, class TPredicate>

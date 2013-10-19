@@ -40,29 +40,18 @@ namespace opensolid
     private:
         const TDerived&
         derived() const;
-    public:
-        typedef typename ElementType<TDerived>::Type value_type;
-        typedef const value_type& reference;
-        typedef reference const_reference;
-        typedef typename IteratorType<TDerived>::Type iterator;
-        typedef iterator const_iterator;
-        typedef std::int64_t difference_type;
-        typedef std::int64_t size_type;
+    protected:
+        template <class TBaseIterable, class TPredicate>
+        friend class iterable::FilteredIterable;
 
         typename IteratorType<TDerived>::Type
         begin() const;
 
         typename IteratorType<TDerived>::Type
         end() const;
-
-        typename IteratorType<TDerived>::Type
-        cbegin() const;
-
-        typename IteratorType<TDerived>::Type
-        cend() const;
-
+    public:
         bool
-        empty() const;
+        isEmpty() const;
 
         std::int64_t
         size() const;

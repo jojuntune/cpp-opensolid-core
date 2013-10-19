@@ -51,6 +51,21 @@ namespace opensolid
     private:
         boost::intrusive_ptr<spatialset::SetData<TElement>> _setData;
 
+        template <class TDerived>
+        friend class Iterable;
+
+        typename std::vector<TElement>::const_iterator
+        beginImpl() const;
+
+        typename std::vector<TElement>::const_iterator
+        endImpl() const;
+
+        bool
+        isEmptyImpl() const;
+        
+        std::int64_t
+        sizeImpl() const;
+
         struct BoundsData
         {
             typename BoundsType<TElement>::Type bounds;
@@ -103,10 +118,10 @@ namespace opensolid
         end() const;
 
         const TElement&
-        front() const;
+        first() const;
 
         const TElement&
-        back() const;
+        last() const;
 
         const TElement&
         operator[](std::int64_t index) const;
@@ -119,12 +134,6 @@ namespace opensolid
         
         void
         operator=(SpatialSet<TElement>&& otherSet);
-        
-        std::int64_t
-        size() const;
-
-        bool
-        empty() const;
 
         typename BoundsType<TElement>::Type
         bounds() const;

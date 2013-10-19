@@ -41,24 +41,27 @@ namespace opensolid
             public Iterable<FilteredIterable<TBaseIterable, TPredicate>>
         {
         private:
-            TBaseIterable _baseIterable;
+            const TBaseIterable& _baseIterable;
             TPredicate _predicate;
-        public:
-            FilteredIterable(const TBaseIterable& baseIterable, TPredicate predicate);
 
-            FilteredIterable(TBaseIterable&& baseIterable, TPredicate predicate);
-
-            FilteredIterableIterator<TBaseIterable, TPredicate>
-            begin() const;
+            template <class TDerived>
+            friend class Iterable;
 
             FilteredIterableIterator<TBaseIterable, TPredicate>
-            end() const;
+            beginImpl() const;
+
+            FilteredIterableIterator<TBaseIterable, TPredicate>
+            endImpl() const;
 
             bool
-            empty() const;
+            isEmptyImpl() const;
 
             std::int64_t
-            size() const;
+            sizeImpl() const;
+
+            FilteredIterable(const FilteredIterable<TBaseIterable, TPredicate>& other);
+        public:
+            FilteredIterable(const TBaseIterable& baseIterable, TPredicate predicate);
         };
 
         template <class TBaseIterable, class TPredicate>
