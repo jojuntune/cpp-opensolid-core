@@ -185,9 +185,13 @@ typedef unsigned __int64 uint64_t;
  * can be used to store objects across scopes. Persistent handles have
  * the lifetime of the current isolate unless they are explicitly
  * deallocated (see Dart_DeletePersistentHandle).
+ * The type Dart_Handle represents a handle (both local and persistent).
+ * The type Dart_PersistentHandle is a Dart_Handle and it is used to
+ * document that a persistent handle is expected as a parameter to a call
+ * or the return value from a call is a persistent handle.
  */
 typedef struct _Dart_Handle* Dart_Handle;
-typedef struct _Dart_PersistentHandle* Dart_PersistentHandle;
+typedef Dart_Handle Dart_PersistentHandle;
 typedef struct _Dart_WeakPersistentHandle* Dart_WeakPersistentHandle;
 
 typedef void (*Dart_WeakPersistentHandleFinalizer)(
@@ -280,10 +284,9 @@ DART_EXPORT Dart_Handle Dart_ErrorGetStacktrace(Dart_Handle handle);
  *
  * Requires there to be a current isolate.
  *
- * \param format A printf style format specifier used to construct the
- *   error message.
+ * \param error the error message.
  */
-DART_EXPORT Dart_Handle Dart_NewApiError(const char* format, ...);
+DART_EXPORT Dart_Handle Dart_NewApiError(const char* error);
 
 /**
  * Produces a new unhandled exception error handle.
@@ -296,7 +299,7 @@ DART_EXPORT Dart_Handle Dart_NewUnhandledExceptionError(Dart_Handle exception);
 
 /* Deprecated. */
 /* TODO(turnidge): Remove all uses and delete. */
-DART_EXPORT Dart_Handle Dart_Error(const char* format, ...);
+DART_EXPORT Dart_Handle Dart_Error(const char* error);
 
 /**
  * Propagates an error.
@@ -365,7 +368,9 @@ DART_EXPORT Dart_Handle Dart_ToString(Dart_Handle object);
 /**
  * Checks to see if two handles refer to identically equal objects.
  *
- * This is equivalent to using the triple-equals (===) operator.
+ * If both handles refer to instances, this is equivalent to using the top-level
+ * function identical() from dart:core. Otherwise, returns whether the two
+ * argument handles refer to the same object.
  *
  * \param obj1 An object to be compared.
  * \param obj2 An object to be compared.
@@ -742,6 +747,13 @@ DART_EXPORT bool Dart_Initialize(
     Dart_FileReadCallback file_read,
     Dart_FileWriteCallback file_write,
     Dart_FileCloseCallback file_close);
+
+/**
+ * Cleanup state in the VM before process termination.
+ *
+ * \return True if cleanup is successful.
+ */
+DART_EXPORT bool Dart_Cleanup();
 
 /**
  * Sets command line flags. Should be called before Dart_Initialize.
@@ -1143,7 +1155,6 @@ DART_EXPORT bool Dart_IsExternalString(Dart_Handle object);
 DART_EXPORT bool Dart_IsList(Dart_Handle object);
 DART_EXPORT bool Dart_IsLibrary(Dart_Handle object);
 DART_EXPORT bool Dart_IsType(Dart_Handle handle);
-DART_EXPORT bool Dart_IsClass(Dart_Handle handle);
 DART_EXPORT bool Dart_IsFunction(Dart_Handle handle);
 DART_EXPORT bool Dart_IsVariable(Dart_Handle handle);
 DART_EXPORT bool Dart_IsTypeVariable(Dart_Handle handle);
@@ -1173,18 +1184,6 @@ DART_EXPORT bool Dart_IsClosure(Dart_Handle object);
  *   error handle is returned.
  */
 DART_EXPORT Dart_Handle Dart_InstanceGetType(Dart_Handle instance);
-
-/**
- * TODO(asiva): Deprecate this method once all use cases have switched
- *              to using Dart_InstanceGetType
- * Gets the class for some Dart language object.
- *
- * \param instance Some Dart object.
- *
- * \return If no error occurs, the class is returned. Otherwise an
- *   error handle is returned.
- */
-DART_EXPORT Dart_Handle Dart_InstanceGetClass(Dart_Handle instance);
 
 
 /*
@@ -1829,6 +1828,30 @@ DART_EXPORT Dart_Handle Dart_InvokeClosure(Dart_Handle closure,
                                            Dart_Handle* arguments);
 
 /**
+ * Invokes a Generative Constructor on an object that was previously
+ * allocated using Dart_Allocate.
+ *
+ * The 'target' parameter must be an object.
+ *
+ * This function ignores visibility (leading underscores in names).
+ *
+ * May generate an unhandled exception error.
+ *
+ * \param target An object.
+ * \param name The name of the constructor to invoke.
+ * \param number_of_arguments Size of the arguments array.
+ * \param arguments An array of arguments to the function.
+ *
+ * \return If the constructor is called and completes
+ *   successfully, then the object is returned. If an error
+ *   occurs during execution, then an error handle is returned.
+ */
+DART_EXPORT Dart_Handle Dart_InvokeConstructor(Dart_Handle object,
+                                               Dart_Handle name,
+                                               int number_of_arguments,
+                                               Dart_Handle* arguments);
+
+/**
  * Gets the value of a field.
  *
  * The 'container' parameter may be an object, type, or library.  If
@@ -1966,6 +1989,11 @@ DART_EXPORT Dart_Handle Dart_SetNativeInstanceField(Dart_Handle obj,
  * native function to be set.
  */
 typedef struct _Dart_NativeArguments* Dart_NativeArguments;
+
+/**
+ * Extracts current isolate data from the native arguments structure.
+ */
+DART_EXPORT void* Dart_GetNativeIsolateData(Dart_NativeArguments args);
 
 /**
  * Gets the native argument at some index.
@@ -2247,9 +2275,9 @@ DART_EXPORT Dart_Handle Dart_LoadSource(Dart_Handle library,
  * \param url A url identifying the origin of the patch source
  * \param source A string of Dart patch source
  */
-DART_EXPORT Dart_Handle Dart_LoadPatch(Dart_Handle library,
-                                       Dart_Handle url,
-                                       Dart_Handle patch_source);
+DART_EXPORT Dart_Handle Dart_LibraryLoadPatch(Dart_Handle library,
+                                              Dart_Handle url,
+                                              Dart_Handle patch_source);
 
 
 /*
