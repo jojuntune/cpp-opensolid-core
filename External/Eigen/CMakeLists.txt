@@ -4,8 +4,8 @@
     externalproject_add(
         eigen_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/eigen-3.1.3.tar.gz
-        URL_MD5 dc4247efd4f5d796041f999e8774af04
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/eigen-3.2.0.tar.gz
+        URL_MD5 7c04a56bab71a9a6f2ed0af57fb25491
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
