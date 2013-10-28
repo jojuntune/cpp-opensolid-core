@@ -460,25 +460,132 @@ namespace opensolid
         return detail::FilteredSpatialSet<TElement, TBoundsPredicate>(*this, boundsPredicate);
     }
 
+    namespace detail
+    {
+        template <class TElement>
+        const SpatialSetNode<TElement>*
+        nextLeafNode(const SpatialSetNode<TElement>* leafNode) {
+            assert(leafNode);
+            assert(leafNode->element);
+            const SpatialSetNode<TElement>* node = leafNode->next;
+            if (!node) {
+                return node;
+            }
+            while (node->leftChild) {
+                node = node->leftChild;
+            }
+            return node;
+        }
+
+        template <class TElement, class TElementComparator>
+        void
+        markDuplicateElements(
+            const SpatialSetNode<TElement>* anchorNode,
+            const TElement* firstElement,
+            const TElementComparator& elementComparator,
+            std::vector<const TElement*>& elementMap
+        ) {
+            // Ensure anchor node is a valid leaf node
+            assert(anchorNode);
+            assert(anchorNode->element);
+
+            const TElement* anchorElement = anchorNode->element;
+            std::int64_t anchorIndex = anchorElement - firstElement;
+            elementMap[anchorIndex] = anchorElement;
+            const SpatialSetNode<TElement>* candidateNode = anchorNode->next;
+            while (candidateNode && candidateNode->bounds.overlaps(anchorNode->bounds)) {
+                if (candidateNode->leftChild) {
+                    // Internal node: descend into left child
+                    candidateNode = candidateNode->leftChild;
+                } else {
+                    // Leaf node: check for duplicate elements, then move to next node
+                    if (elementComparator(*anchorElement, *candidateNode->element)) {
+                        std::int64_t candidateIndex = candidateNode->element - firstElement;
+						assert(elementMap[candidateIndex] == nullptr);
+                        elementMap[candidateIndex] = anchorElement;
+                    }
+                    candidateNode = candidateNode->next;
+                }
+            }
+        }
+
+        template <class TElement, class TElementComparator, class TVisitor>
+        void
+        visitUniqueElements(
+            const SpatialSetNode<TElement>* rootNode,
+            const TElement* firstElement,
+            std::int64_t numElements,
+            const TElementComparator& elementComparator,
+            const TVisitor& visitor
+        ) {
+            std::vector<const TElement*> elementMap(numElements);
+            std::fill(elementMap.begin(), elementMap.end(), nullptr);
+
+            const SpatialSetNode<TElement>* node = rootNode;
+            while (node->leftChild) {
+                node = node->leftChild;
+            }
+            do {
+                std::int64_t elementIndex = node->element - firstElement;
+                if (elementMap[elementIndex] == nullptr) {
+                    markDuplicateElements(node, firstElement, elementComparator, elementMap);
+                }
+                visitor(node->element, elementMap[elementIndex]);
+            } while (node = nextLeafNode(node));
+			return;
+        }
+    }
 
     template <class TElement> template <class TElementComparator>
-    detail::SpatialSubset<TElement, TElementComparator>
+    detail::SpatialSubset<TElement>
     SpatialSet<TElement>::uniqueElements(TElementComparator elementComparator) const {
         if (isEmpty()) {
             return detail::SpatialSubset<TElement>();
         } else {
-            std::vector<const TElement*> mapping(size());
-            std::vector<const TElement*> elementPointers;
-
-            std::fill(mapping.begin(), mapping.end(), nullptr);
-            
+            std::vector<const TElement*> elements;
+            auto visitor = [&elements] (
+                const TElement* anchorElement,
+                const TElement* duplicateElement
+            ) {
+                if (anchorElement == duplicateElement) {
+                    elements.push_back(anchorElement);
+                }
+            };
+            detail::visitUniqueElements(
+                rootNode(),
+                &_data->elements.front(),
+                size(),
+                elementComparator,
+                visitor
+            );
+            return detail::SpatialSubset<TElement>(std::move(elements));
         }
     }
 
     template <class TElement> template <class TElementComparator>
     std::vector<std::int64_t>
     SpatialSet<TElement>::uniqueMapping(TElementComparator elementComparator) const {
-        // TODO
+        if (isEmpty()) {
+            return std::vector<std::int64_t>();
+        } else {
+            const TElement* firstElement = &_data->elements.front();
+            std::vector<std::int64_t> results(size());
+            auto visitor = [&results, firstElement] (
+                const TElement* anchorElement,
+                const TElement* duplicateElement
+            ) {
+                std::int64_t anchorIndex = anchorElement - firstElement;
+                std::int64_t duplicateIndex = duplicateElement - firstElement;
+                results[duplicateIndex] = anchorIndex;
+            };
+            detail::visitUniqueElements(
+                rootNode(),
+                firstElement,
+                size(),
+                elementComparator,
+                visitor
+            );
+        }
     }
     
     template <class TElement>

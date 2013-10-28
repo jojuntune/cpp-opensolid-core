@@ -317,7 +317,7 @@ public:
         TS_ASSERT_EQUALS(set.atIndex(4), 9);
     }
 
-    void testIndexingSpeed() {
+    void xtestIndexingSpeed() {
         Set<Vector3d> set;
         int size = 100000;
         for (int i = 0; i < size; ++i) {
@@ -443,5 +443,77 @@ public:
         TS_ASSERT_EQUALS(set3.size(), 3u);
         TS_ASSERT_EQUALS(set2.rootNode(), nullptr);
         TS_ASSERT_EQUALS(set3.rootNode(), root);
+    }
+
+    void testUnique() {
+        std::vector<Point2d> originalPoints(3);
+        originalPoints[0] = Point2d(2, 1);
+        originalPoints[1] = Point2d(2, 2);
+        originalPoints[2] = Point2d(1, 2);
+
+        std::vector<Point2d> rotatedPoints(6);
+        std::transform(
+            originalPoints.begin(),
+            originalPoints.end(),
+            rotatedPoints.begin(),
+            [] (const Point2d& point) {
+                return point.rotatedAbout(Point2d::Origin(), M_PI / 3);
+            }
+        );
+        std::transform(
+            originalPoints.begin(),
+            originalPoints.end(),
+            rotatedPoints.begin() + 3,
+            [] (const Point2d& point) {
+                return point.rotatedAbout(Point2d::Origin(), -2 * M_PI / 3);
+            }
+        );
+
+        std::vector<Point2d> testPoints(8);
+        std::transform(
+            rotatedPoints.begin(),
+            rotatedPoints.end(),
+            testPoints.begin(),
+            [] (const Point2d& point) {
+                return point.rotatedAbout(Point2d::Origin(), 5 * M_PI / 3);
+            }
+        );
+        testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
+        testPoints[7] = Point2d(0, 2);
+
+        auto exactComparator = [] (
+            const Point2d& firstPoint,
+            const Point2d& secondPoint
+        ) -> bool {
+            return firstPoint == secondPoint;
+        };
+
+        auto tolerantComparator = [] (
+            const Point2d& firstPoint,
+            const Point2d& secondPoint
+        ) -> bool {
+            return (firstPoint - secondPoint).isZero();
+        };
+
+        std::vector<Point2d> uniquePointsExact =
+            SpatialSet<Point2d>(testPoints).uniqueElements(exactComparator);
+        std::vector<Point2d> uniquePointsTolerant =
+            SpatialSet<Point2d>(testPoints).uniqueElements(tolerantComparator);
+
+        TS_ASSERT_EQUALS(uniquePointsTolerant.size(), 4u);
+        TS_ASSERT_LESS_THAN(uniquePointsTolerant.size(), uniquePointsExact.size());
+
+        std::sort(
+            uniquePointsTolerant.begin(),
+            uniquePointsTolerant.end(),
+            [] (const Point2d& firstPoint, const Point2d& secondPoint) {
+                return (firstPoint.y() - firstPoint.x()) < (secondPoint.y() - secondPoint.x());
+            }
+        );
+
+        //TS_ASSERT((uniquePointsTolerant[0] - Point2d(2, 1)).isZero());
+        //TS_ASSERT((uniquePointsTolerant[1] - Point2d(2, 2)).isZero());
+        //TS_ASSERT((uniquePointsTolerant[2] - Point2d(1, 2)).isZero());
+        //TS_ASSERT((uniquePointsTolerant[3] - Point2d(0, 2)).isZero());
     }
 };

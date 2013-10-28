@@ -44,7 +44,7 @@ namespace opensolid
             public Iterable<SpatialSubset<TElement>>
         {
         private:
-            std::vector<std::vector<TElement>::const_iterator> _elementPositions;
+            std::vector<const TElement*> _elements;
 
             template <class TDerived>
             friend class Iterable;
@@ -70,7 +70,7 @@ namespace opensolid
 
             SpatialSubset(SpatialSubset<TElement>&& other);
         public:
-            SpatialSubset(std::vector<std::vector<TElement>::const_iterator>&& elementPositions);
+            SpatialSubset(std::vector<const TElement*>&& elements);
         };
 
         template <class TElement>
@@ -82,7 +82,7 @@ namespace opensolid
             >
         {
         private:
-            std::vector<std::vector<TElement>::const_iterator>::const_iterator _iterator;
+            typename std::vector<const TElement*>::const_iterator _iterator;
 
             friend class boost::iterator_core_access;
 
@@ -97,9 +97,7 @@ namespace opensolid
         public:
             SpatialSubsetIterator();
 
-            SpatialSubsetIterator(
-                std::vector<std::vector<TElement>::const_iterator>::const_iterator iterator
-            );
+            SpatialSubsetIterator(typename std::vector<const TElement*>::const_iterator iterator);
         };
     }
 }

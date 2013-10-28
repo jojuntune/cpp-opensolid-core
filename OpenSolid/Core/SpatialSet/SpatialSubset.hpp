@@ -39,28 +39,28 @@ namespace opensolid
         inline
         SpatialSubsetIterator<TElement>
         SpatialSubset<TElement>::beginImpl() const {
-            return SpatialSubsetIterator<TElement>(_elementPositions.begin());
+            return SpatialSubsetIterator<TElement>(_elements.begin());
         }
 
         template <class TElement>
         inline
         SpatialSubsetIterator<TElement>
         SpatialSubset<TElement>::endImpl() const {
-            return SpatialSubsetIterator<TElement>(_elementPositions.end());
+            return SpatialSubsetIterator<TElement>(_elements.end());
         }
 
         template <class TElement>
         inline
         bool
         SpatialSubset<TElement>::isEmptyImpl() const {
-            return _elementPositions.empty();
+            return _elements.empty();
         }
 
         template <class TElement>
         inline
         std::int64_t
         SpatialSubset<TElement>::sizeImpl() const {
-            return _elementPositions.size();
+            return _elements.size();
         }
 
         template <class TElement>
@@ -72,14 +72,13 @@ namespace opensolid
         template <class TElement>
         inline
         SpatialSubset<TElement>::SpatialSubset(SpatialSubset<TElement>&& other) :
-            _elementPositions(std::move(other._elementPositions)) {
+            _elements(std::move(other._elements)) {
         }
 
         template <class TElement>
         inline
-        SpatialSubset<TElement>::SpatialSubset(
-            std::vector<std::vector<TElement>::const_iterator>&& elementPositions
-        ) : _elementPositions(std::move(elementPositions)) {
+        SpatialSubset<TElement>::SpatialSubset(std::vector<const TElement*>&& elements) :
+            _elements(std::move(elements)) {
         }
 
         template <class TElement>
@@ -112,7 +111,7 @@ namespace opensolid
         template <class TElement>
         inline
         SpatialSubsetIterator<TElement>::SpatialSubsetIterator(
-            std::vector<std::vector<TElement>::const_iterator>::const_iterator iterator
+            typename std::vector<const TElement*>::const_iterator iterator
         ) : _iterator(iterator) {
         }
     }
