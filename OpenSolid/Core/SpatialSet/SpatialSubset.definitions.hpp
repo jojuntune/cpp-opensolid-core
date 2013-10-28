@@ -26,35 +26,35 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
 
 #include <OpenSolid/Core/Iterable.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
+
+#include <vector>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <class TElement, class TBoundsPredicate>
-        class FilteredSpatialSet :
-            public Iterable<FilteredSpatialSet<TElement, TBoundsPredicate>>
+        template <class TElement>
+        class SpatialSubset :
+            public Iterable<SpatialSubset<TElement>>
         {
         private:
-            const SpatialSet<TElement>& _set;
-            TBoundsPredicate _boundsPredicate;
+            std::vector<std::vector<TElement>::const_iterator> _elementPositions;
 
             template <class TDerived>
             friend class Iterable;
 
             friend class SpatialSet<TElement>;
 
-            FilteredSpatialSetIterator<TElement, TBoundsPredicate>
+            SpatialSubsetIterator<TElement>
             beginImpl() const;
 
-            FilteredSpatialSetIterator<TElement, TBoundsPredicate>
+            SpatialSubsetIterator<TElement>
             endImpl() const;
 
             bool
@@ -63,45 +63,42 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            FilteredSpatialSet(const FilteredSpatialSet<TElement, TBoundsPredicate>& other);
+            SpatialSubset();
+
+            // Not implemented - copying not allowed
+            SpatialSubset(const SpatialSubset<TElement>& other);
+
+            SpatialSubset(SpatialSubset<TElement>&& other);
         public:
-            FilteredSpatialSet(
-                const SpatialSet<TElement>& set,
-                TBoundsPredicate boundsPredicate
-            );
+            SpatialSubset(std::vector<std::vector<TElement>::const_iterator>&& elementPositions);
         };
 
-        template <class TElement, class TBoundsPredicate>
-        class FilteredSpatialSetIterator :
+        template <class TElement>
+        class SpatialSubsetIterator :
             public boost::iterator_facade<
-                FilteredSpatialSetIterator<TElement, TBoundsPredicate>,
+                SpatialSubsetIterator<TElement>,
                 const TElement,
                 boost::forward_traversal_tag
             >
         {
         private:
-            const SpatialSetNode<TElement>* _currentNode;
-            const TBoundsPredicate* _boundsPredicate;
+            std::vector<std::vector<TElement>::const_iterator>::const_iterator _iterator;
 
             friend class boost::iterator_core_access;
-
-            void
-            descendFrom(const SpatialSetNode<TElement>* candidateNode);
 
             void
             increment();
 
             bool
-            equal(const FilteredSpatialSetIterator<TElement, TBoundsPredicate>& other) const;
+            equal(const SpatialSubsetIterator<TElement>& other) const;
 
             const TElement&
             dereference() const;
         public:
-            FilteredSpatialSetIterator();
+            SpatialSubsetIterator();
 
-            FilteredSpatialSetIterator(
-                const SpatialSetNode<TElement>* rootNode,
-                const TBoundsPredicate* boundsPredicate
+            SpatialSubsetIterator(
+                std::vector<std::vector<TElement>::const_iterator>::const_iterator iterator
             );
         };
     }
@@ -111,15 +108,15 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TElement, class TBoundsPredicate>
-    struct ElementType<detail::FilteredSpatialSet<TElement, TBoundsPredicate>>
+    template <class TElement>
+    struct ElementType<detail::SpatialSubset<TElement>>
     {
         typedef TElement Type;
     };
 
-    template <class TElement, class TBoundsPredicate>
-    struct IteratorType<detail::FilteredSpatialSet<TElement, TBoundsPredicate>>
+    template <class TElement>
+    struct IteratorType<detail::SpatialSubset<TElement>>
     {
-        typedef detail::FilteredSpatialSetIterator<TElement, TBoundsPredicate> Type;
+        typedef detail::SpatialSubsetIterator<TElement> Type;
     };
 }

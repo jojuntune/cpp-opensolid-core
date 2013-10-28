@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetData.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>
@@ -150,6 +151,14 @@ namespace opensolid
         template <class TBoundsPredicate>
         detail::FilteredSpatialSet<TElement, TBoundsPredicate>
         filtered(TBoundsPredicate boundsPredicate) const;
+
+        template <class TElementComparator>
+        detail::SpatialSubset<TElement>
+        uniqueElements(TElementComparator elementComparator) const;
+
+        template <class TElementComparator>
+        std::vector<std::int64_t>
+        uniqueMapping(TElementComparator elementComparator) const;
     };
     
     template <class TElement>

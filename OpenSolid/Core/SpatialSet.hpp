@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetData.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.hpp>
+#include <OpenSolid/Core/SpatialSet/SpatialSubset.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>
@@ -457,6 +458,27 @@ namespace opensolid
     detail::FilteredSpatialSet<TElement, TBoundsPredicate>
     SpatialSet<TElement>::filtered(TBoundsPredicate boundsPredicate) const {
         return detail::FilteredSpatialSet<TElement, TBoundsPredicate>(*this, boundsPredicate);
+    }
+
+
+    template <class TElement> template <class TElementComparator>
+    detail::SpatialSubset<TElement, TElementComparator>
+    SpatialSet<TElement>::uniqueElements(TElementComparator elementComparator) const {
+        if (isEmpty()) {
+            return detail::SpatialSubset<TElement>();
+        } else {
+            std::vector<const TElement*> mapping(size());
+            std::vector<const TElement*> elementPointers;
+
+            std::fill(mapping.begin(), mapping.end(), nullptr);
+            
+        }
+    }
+
+    template <class TElement> template <class TElementComparator>
+    std::vector<std::int64_t>
+    SpatialSet<TElement>::uniqueMapping(TElementComparator elementComparator) const {
+        // TODO
     }
     
     template <class TElement>

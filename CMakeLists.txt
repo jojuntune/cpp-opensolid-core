@@ -40,7 +40,7 @@
 ########## Set up common build settings ##########
 
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
-    add_definitions(-D_USE_MATH_DEFINES)
+    add_definitions(-D_USE_MATH_DEFINES -DEIGEN_MPL2_ONLY)
 
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds
