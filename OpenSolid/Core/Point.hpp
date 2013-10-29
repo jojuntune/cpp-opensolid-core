@@ -187,7 +187,7 @@ namespace opensolid
     template <int iNumDimensions>
     std::ostream&
     operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
-        stream << point.vector();
+        stream << point.vector().transpose();
         return stream;
     }
 

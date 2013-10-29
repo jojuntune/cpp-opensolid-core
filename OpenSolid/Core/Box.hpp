@@ -324,7 +324,7 @@ namespace opensolid
 
     template <int iNumDimensions>
     std::ostream& operator<<(std::ostream& stream, const Box<iNumDimensions>& box) {
-        stream << box.vector();
+        stream << box.vector().transpose();
         return stream;
     }
 
