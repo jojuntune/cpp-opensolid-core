@@ -553,7 +553,7 @@ namespace opensolid
             detail::visitUniqueItems(
                 rootNode(),
                 &_data->items.front(),
-                size(),
+                this->size(),
                 itemComparator,
                 visitor
             );
@@ -580,7 +580,7 @@ namespace opensolid
             detail::visitUniqueItems(
                 rootNode(),
                 firstItem,
-                size(),
+                this->size(),
                 itemComparator,
                 visitor
             );
