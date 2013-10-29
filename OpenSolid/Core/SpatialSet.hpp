@@ -538,7 +538,7 @@ namespace opensolid
     template <class TItem> template <class TItemComparator>
     detail::SpatialSubset<TItem>
     SpatialSet<TItem>::uniqueItems(TItemComparator itemComparator) const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return detail::SpatialSubset<TItem>();
         } else {
             std::vector<const TItem*> items;
@@ -564,7 +564,7 @@ namespace opensolid
     template <class TItem> template <class TItemComparator>
     std::vector<std::int64_t>
     SpatialSet<TItem>::uniqueMapping(TItemComparator itemComparator) const {
-        if (isEmpty()) {
+        if (this->isEmpty()) {
             return std::vector<std::int64_t>();
         } else {
             const TItem* firstItem = &_data->items.front();
