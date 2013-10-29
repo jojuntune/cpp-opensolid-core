@@ -568,7 +568,7 @@ namespace opensolid
             return std::vector<std::int64_t>();
         } else {
             const TItem* firstItem = &_data->items.front();
-            std::vector<std::int64_t> results(size());
+            std::vector<std::int64_t> results(this->size());
             auto visitor = [&results, firstItem] (
                 const TItem* item,
                 const TItem* anchorItem
