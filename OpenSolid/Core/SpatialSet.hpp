@@ -501,7 +501,7 @@ namespace opensolid
                     // Leaf node: check for duplicate elements, then move to next node
                     if (elementComparator(*anchorElement, *candidateNode->element)) {
                         std::int64_t candidateIndex = candidateNode->element - firstElement;
-						assert(elementMap[candidateIndex] == nullptr);
+                        assert(elementMap[candidateIndex] == nullptr);
                         elementMap[candidateIndex] = anchorElement;
                     }
                     candidateNode = candidateNode->next;
@@ -532,7 +532,6 @@ namespace opensolid
                 }
                 visitor(node->element, elementMap[elementIndex]);
             } while (node = nextLeafNode(node));
-			return;
         }
     }
 
@@ -544,11 +543,11 @@ namespace opensolid
         } else {
             std::vector<const TElement*> elements;
             auto visitor = [&elements] (
-                const TElement* anchorElement,
-                const TElement* duplicateElement
+                const TElement* element,
+                const TElement* anchorElement
             ) {
-                if (anchorElement == duplicateElement) {
-                    elements.push_back(anchorElement);
+                if (element == anchorElement) {
+                    elements.push_back(element);
                 }
             };
             detail::visitUniqueElements(
@@ -571,12 +570,12 @@ namespace opensolid
             const TElement* firstElement = &_data->elements.front();
             std::vector<std::int64_t> results(size());
             auto visitor = [&results, firstElement] (
-                const TElement* anchorElement,
-                const TElement* duplicateElement
+                const TElement* element,
+                const TElement* anchorElement
             ) {
+                std::int64_t elementIndex = element - firstElement;
                 std::int64_t anchorIndex = anchorElement - firstElement;
-                std::int64_t duplicateIndex = duplicateElement - firstElement;
-                results[duplicateIndex] = anchorIndex;
+                results[elementIndex] = anchorIndex;
             };
             detail::visitUniqueElements(
                 rootNode(),
@@ -585,6 +584,7 @@ namespace opensolid
                 elementComparator,
                 visitor
             );
+            return results;
         }
     }
     

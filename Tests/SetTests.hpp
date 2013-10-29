@@ -457,7 +457,7 @@ public:
             originalPoints.end(),
             rotatedPoints.begin(),
             [] (const Point2d& point) {
-                return point.rotatedAbout(Point2d::Origin(), M_PI / 3);
+                return point.rotatedAbout(Point2d::Origin(), 2 * M_PI / 3);
             }
         );
         std::transform(
@@ -465,7 +465,7 @@ public:
             originalPoints.end(),
             rotatedPoints.begin() + 3,
             [] (const Point2d& point) {
-                return point.rotatedAbout(Point2d::Origin(), -2 * M_PI / 3);
+                return point.rotatedAbout(Point2d::Origin(), -4 * M_PI / 3);
             }
         );
 
@@ -475,7 +475,7 @@ public:
             rotatedPoints.end(),
             testPoints.begin(),
             [] (const Point2d& point) {
-                return point.rotatedAbout(Point2d::Origin(), 5 * M_PI / 3);
+                return point.rotatedAbout(Point2d::Origin(), 10 * M_PI / 3);
             }
         );
         testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
@@ -511,9 +511,30 @@ public:
             }
         );
 
-        //TS_ASSERT((uniquePointsTolerant[0] - Point2d(2, 1)).isZero());
-        //TS_ASSERT((uniquePointsTolerant[1] - Point2d(2, 2)).isZero());
-        //TS_ASSERT((uniquePointsTolerant[2] - Point2d(1, 2)).isZero());
-        //TS_ASSERT((uniquePointsTolerant[3] - Point2d(0, 2)).isZero());
+        TS_ASSERT((uniquePointsTolerant[0] - Point2d(2, 1)).isZero());
+        TS_ASSERT((uniquePointsTolerant[1] - Point2d(2, 2)).isZero());
+        TS_ASSERT((uniquePointsTolerant[2] - Point2d(1, 2)).isZero());
+        TS_ASSERT((uniquePointsTolerant[3] - Point2d(0, 2)).isZero());
+    }
+
+    void testUniqueMapping() {
+        std::vector<double> values(5);
+        values[0] = 1.0;
+        values[1] = 2.0;
+        values[2] = 2.0 + 1e-14;
+        values[3] = 3.0;
+        values[4] = 3.0;
+
+        auto comparator = [] (double firstValue, double secondValue) -> bool {
+            return firstValue - secondValue == Zero();
+        };
+        std::vector<std::int64_t> mapping = SpatialSet<double>(values).uniqueMapping(comparator);
+
+        TS_ASSERT_EQUALS(mapping.size(), 5);
+        TS_ASSERT_EQUALS(mapping[0], 0);
+        TS_ASSERT_EQUALS(mapping[1], 1);
+        TS_ASSERT_EQUALS(mapping[2], 1);
+        TS_ASSERT_EQUALS(mapping[3], 3);
+        TS_ASSERT_EQUALS(mapping[4], 3);
     }
 };
