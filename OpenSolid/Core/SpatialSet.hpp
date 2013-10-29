@@ -251,7 +251,7 @@ namespace opensolid
 
     template <class TItem>
     void
-    SpatialSet<TItem>::init(const BoundsFunction<TItem>& boundsFunction) {
+    SpatialSet<TItem>::init() {
         std::int64_t numItems = _data->items.size();
 
         if (numItems == 0) {
@@ -264,7 +264,7 @@ namespace opensolid
         std::vector<BoundsData*> boundsDataPointers(numItems);
         typename BoundsType<TItem>::Type overallBounds;
         for (std::int64_t i = 0; i < numItems; ++i) {
-            typename BoundsType<TItem>::Type bounds = boundsFunction(_data->items[i]);
+            typename BoundsType<TItem>::Type bounds = _boundsFunction(_data->items[i]);
 
             boundsData[i].bounds = bounds;
             boundsData[i].item = &(_data->items[i]);
@@ -296,12 +296,14 @@ namespace opensolid
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(const SpatialSet<TItem>& other) :
+        _boundsFunction(other._boundsFunction),
         _data(other._data) {
     }
 
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(SpatialSet<TItem>&& other) :
+        _boundsFunction(other._boundsFunction),
         _data(std::move(other._data)) {
     }
 
@@ -310,10 +312,11 @@ namespace opensolid
     SpatialSet<TItem>::SpatialSet(
         const std::vector<TItem>& items,
         BoundsFunction<TItem> boundsFunction
-    ) : _data(new detail::SpatialSetData<TItem>()) {
+    ) : _boundsFunction(boundsFunction),
+        _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = items;
-        init(boundsFunction);
+        init();
     }
 
     template <class TItem>
@@ -321,10 +324,11 @@ namespace opensolid
     SpatialSet<TItem>::SpatialSet(
         std::vector<TItem>&& items,
         BoundsFunction<TItem> boundsFunction
-    ) : _data(new detail::SpatialSetData<TItem>()) {
+    ) : _boundsFunction(boundsFunction),
+        _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = std::move(items);
-        init(boundsFunction);
+        init();
     }
     
     template <class TItem> template <class TIterator>
@@ -333,10 +337,18 @@ namespace opensolid
         TIterator begin,
         TIterator end,
         BoundsFunction<TItem> boundsFunction
-    ) : _data(new detail::SpatialSetData<TItem>()) {
+    ) : _boundsFunction(boundsFunction),
+        _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = std::vector<TItem>(begin, end);
-        init(boundsFunction);
+        init();
+    }
+
+    template <class TItem>
+    inline
+    BoundsFunction<TItem>
+    SpatialSet<TItem>::boundsFunction() const {
+        return _boundsFunction;
     }
 
     template <class TItem>

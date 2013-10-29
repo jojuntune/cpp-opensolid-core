@@ -50,6 +50,7 @@ namespace opensolid
         public Transformable<SpatialSet<TItem>>
     {
     private:
+        BoundsFunction<TItem> _boundsFunction;
         boost::intrusive_ptr<detail::SpatialSetData<TItem>> _data;
 
         template <class TDerived>
@@ -84,7 +85,7 @@ namespace opensolid
         );
 
         void
-        init(const BoundsFunction<TItem>& boundsFunction);
+        init();
     public:
         SpatialSet();
 
@@ -108,6 +109,9 @@ namespace opensolid
             TIterator end,
             BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
         );
+
+        BoundsFunction<TItem>
+        boundsFunction() const;
 
         const detail::SpatialSetNode<TItem>*
         rootNode() const;
