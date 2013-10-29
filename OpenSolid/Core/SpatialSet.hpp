@@ -404,6 +404,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::swap(SpatialSet<TItem>& other) {
+        std::swap(_boundsFunction, other._boundsFunction);
         _data.swap(other._data);
     }
     
@@ -411,6 +412,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::operator=(const SpatialSet<TItem>& other) {
+        _boundsFunction = other._boundsFunction;
         _data = other._data;
     }
     
@@ -418,6 +420,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
+        _boundsFunction = other._boundsFunction;
         _data = std::move(other._data);
     }
 
