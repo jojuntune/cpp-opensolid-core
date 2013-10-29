@@ -33,16 +33,16 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         class ContainPredicate
         {
         private:
-            typename BoundsType<TElement>::Type _predicateBounds;
+            typename BoundsType<TItem>::Type _predicateBounds;
         public:
-            ContainPredicate(const typename BoundsType<TElement>::Type& predicateBounds);
+            ContainPredicate(const typename BoundsType<TItem>::Type& predicateBounds);
 
             bool
-            operator()(const typename BoundsType<TElement>::Type& bounds) const;
+            operator()(const typename BoundsType<TItem>::Type& bounds) const;
         };
     }
 }

@@ -35,83 +35,83 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubsetIterator<TElement>
-        SpatialSubset<TElement>::beginImpl() const {
-            return SpatialSubsetIterator<TElement>(_elements.begin());
+        SpatialSubsetIterator<TItem>
+        SpatialSubset<TItem>::beginImpl() const {
+            return SpatialSubsetIterator<TItem>(_items.begin());
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubsetIterator<TElement>
-        SpatialSubset<TElement>::endImpl() const {
-            return SpatialSubsetIterator<TElement>(_elements.end());
+        SpatialSubsetIterator<TItem>
+        SpatialSubset<TItem>::endImpl() const {
+            return SpatialSubsetIterator<TItem>(_items.end());
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
         bool
-        SpatialSubset<TElement>::isEmptyImpl() const {
-            return _elements.empty();
+        SpatialSubset<TItem>::isEmptyImpl() const {
+            return _items.empty();
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
         std::int64_t
-        SpatialSubset<TElement>::sizeImpl() const {
-            return _elements.size();
+        SpatialSubset<TItem>::sizeImpl() const {
+            return _items.size();
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubset<TElement>::SpatialSubset() {
+        SpatialSubset<TItem>::SpatialSubset() {
             // Do nothing
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubset<TElement>::SpatialSubset(SpatialSubset<TElement>&& other) :
-            _elements(std::move(other._elements)) {
+        SpatialSubset<TItem>::SpatialSubset(SpatialSubset<TItem>&& other) :
+            _items(std::move(other._items)) {
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubset<TElement>::SpatialSubset(std::vector<const TElement*>&& elements) :
-            _elements(std::move(elements)) {
+        SpatialSubset<TItem>::SpatialSubset(std::vector<const TItem*>&& items) :
+            _items(std::move(items)) {
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
         void
-        SpatialSubsetIterator<TElement>::increment() {
+        SpatialSubsetIterator<TItem>::increment() {
             ++_iterator;
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
         bool
-        SpatialSubsetIterator<TElement>::equal(const SpatialSubsetIterator<TElement>& other) const {
+        SpatialSubsetIterator<TItem>::equal(const SpatialSubsetIterator<TItem>& other) const {
             return _iterator == other._iterator;
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        const TElement&
-        SpatialSubsetIterator<TElement>::dereference() const {
+        const TItem&
+        SpatialSubsetIterator<TItem>::dereference() const {
             return *(*_iterator);
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubsetIterator<TElement>::SpatialSubsetIterator() {
+        SpatialSubsetIterator<TItem>::SpatialSubsetIterator() {
             // Do nothing
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
-        SpatialSubsetIterator<TElement>::SpatialSubsetIterator(
-            typename std::vector<const TElement*>::const_iterator iterator
+        SpatialSubsetIterator<TItem>::SpatialSubsetIterator(
+            typename std::vector<const TItem*>::const_iterator iterator
         ) : _iterator(iterator) {
         }
     }

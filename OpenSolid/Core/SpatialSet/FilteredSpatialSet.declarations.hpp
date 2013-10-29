@@ -30,10 +30,10 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         class FilteredSpatialSet;
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         class FilteredSpatialSetIterator;
     }
 }

@@ -107,7 +107,7 @@ namespace opensolid
 
         template <class TBaseIterable, class TPredicate>
         inline
-        const typename ElementType<TBaseIterable>::Type&
+        const typename ItemType<TBaseIterable>::Type&
         FilteredIterableIterator<TBaseIterable, TPredicate>::dereference() const {
             return *_baseIterator;
         }

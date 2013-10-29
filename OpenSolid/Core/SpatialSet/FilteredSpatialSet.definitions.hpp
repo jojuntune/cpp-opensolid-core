@@ -38,23 +38,23 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         class FilteredSpatialSet :
-            public Iterable<FilteredSpatialSet<TElement, TBoundsPredicate>>
+            public Iterable<FilteredSpatialSet<TItem, TBoundsPredicate>>
         {
         private:
-            const SpatialSet<TElement>& _set;
+            const SpatialSet<TItem>& _set;
             TBoundsPredicate _boundsPredicate;
 
             template <class TDerived>
             friend class Iterable;
 
-            friend class SpatialSet<TElement>;
+            friend class SpatialSet<TItem>;
 
-            FilteredSpatialSetIterator<TElement, TBoundsPredicate>
+            FilteredSpatialSetIterator<TItem, TBoundsPredicate>
             beginImpl() const;
 
-            FilteredSpatialSetIterator<TElement, TBoundsPredicate>
+            FilteredSpatialSetIterator<TItem, TBoundsPredicate>
             endImpl() const;
 
             bool
@@ -63,44 +63,44 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            FilteredSpatialSet(const FilteredSpatialSet<TElement, TBoundsPredicate>& other);
+            FilteredSpatialSet(const FilteredSpatialSet<TItem, TBoundsPredicate>& other);
         public:
             FilteredSpatialSet(
-                const SpatialSet<TElement>& set,
+                const SpatialSet<TItem>& set,
                 TBoundsPredicate boundsPredicate
             );
         };
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         class FilteredSpatialSetIterator :
             public boost::iterator_facade<
-                FilteredSpatialSetIterator<TElement, TBoundsPredicate>,
-                const TElement,
+                FilteredSpatialSetIterator<TItem, TBoundsPredicate>,
+                const TItem,
                 boost::forward_traversal_tag
             >
         {
         private:
-            const SpatialSetNode<TElement>* _currentNode;
+            const SpatialSetNode<TItem>* _currentNode;
             const TBoundsPredicate* _boundsPredicate;
 
             friend class boost::iterator_core_access;
 
             void
-            descendFrom(const SpatialSetNode<TElement>* candidateNode);
+            descendFrom(const SpatialSetNode<TItem>* candidateNode);
 
             void
             increment();
 
             bool
-            equal(const FilteredSpatialSetIterator<TElement, TBoundsPredicate>& other) const;
+            equal(const FilteredSpatialSetIterator<TItem, TBoundsPredicate>& other) const;
 
-            const TElement&
+            const TItem&
             dereference() const;
         public:
             FilteredSpatialSetIterator();
 
             FilteredSpatialSetIterator(
-                const SpatialSetNode<TElement>* rootNode,
+                const SpatialSetNode<TItem>* rootNode,
                 const TBoundsPredicate* boundsPredicate
             );
         };
@@ -111,15 +111,15 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TElement, class TBoundsPredicate>
-    struct ElementType<detail::FilteredSpatialSet<TElement, TBoundsPredicate>>
+    template <class TItem, class TBoundsPredicate>
+    struct ItemType<detail::FilteredSpatialSet<TItem, TBoundsPredicate>>
     {
-        typedef TElement Type;
+        typedef TItem Type;
     };
 
-    template <class TElement, class TBoundsPredicate>
-    struct IteratorType<detail::FilteredSpatialSet<TElement, TBoundsPredicate>>
+    template <class TItem, class TBoundsPredicate>
+    struct IteratorType<detail::FilteredSpatialSet<TItem, TBoundsPredicate>>
     {
-        typedef detail::FilteredSpatialSetIterator<TElement, TBoundsPredicate> Type;
+        typedef detail::FilteredSpatialSetIterator<TItem, TBoundsPredicate> Type;
     };
 }

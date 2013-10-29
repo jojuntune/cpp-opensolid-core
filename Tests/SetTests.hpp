@@ -57,13 +57,13 @@ void testSet(const SetNode<Type>* node) {
     }
 }
 
-template <class TElement>
-void testSet(const detail::SpatialSetNode<TElement>* node) {
+template <class TItem>
+void testSet(const detail::SpatialSetNode<TItem>* node) {
     if (!node) {
         return;
     } else if (node->leftChild) {
-        const detail::SpatialSetNode<TElement>* leftChild = node->leftChild;
-        const detail::SpatialSetNode<TElement>* rightChild = node->leftChild->next;
+        const detail::SpatialSetNode<TItem>* leftChild = node->leftChild;
+        const detail::SpatialSetNode<TItem>* rightChild = node->leftChild->next;
         TS_ASSERT(leftChild != nullptr);
         TS_ASSERT(rightChild != nullptr);
         TS_ASSERT(node->bounds.contains(leftChild->bounds));
@@ -496,9 +496,9 @@ public:
         };
 
         std::vector<Point2d> uniquePointsExact =
-            SpatialSet<Point2d>(testPoints).uniqueElements(exactComparator);
+            SpatialSet<Point2d>(testPoints).uniqueItems(exactComparator);
         std::vector<Point2d> uniquePointsTolerant =
-            SpatialSet<Point2d>(testPoints).uniqueElements(tolerantComparator);
+            SpatialSet<Point2d>(testPoints).uniqueItems(tolerantComparator);
 
         TS_ASSERT_EQUALS(uniquePointsTolerant.size(), 4u);
         TS_ASSERT_LESS_THAN(uniquePointsTolerant.size(), uniquePointsExact.size());

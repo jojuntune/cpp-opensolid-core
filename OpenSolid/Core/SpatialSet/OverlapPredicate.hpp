@@ -32,19 +32,17 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         inline
-        OverlapPredicate<TElement>::OverlapPredicate(
-            const typename BoundsType<TElement>::Type& predicateBounds
+        OverlapPredicate<TItem>::OverlapPredicate(
+            const typename BoundsType<TItem>::Type& predicateBounds
         ) : _predicateBounds(predicateBounds) {
         }
 
-        template <class TElement>
+        template <class TItem>
         inline
         bool
-        OverlapPredicate<TElement>::operator()(
-            const typename BoundsType<TElement>::Type& bounds
-        ) const {
+        OverlapPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
             return bounds.overlaps(_predicateBounds);
         }
     }

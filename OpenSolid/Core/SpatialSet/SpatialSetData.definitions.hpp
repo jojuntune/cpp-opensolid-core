@@ -35,12 +35,12 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         struct SpatialSetData :
             public ReferenceCounted
         {
-            std::vector<SpatialSetNode<TElement>> nodes;
-            std::vector<TElement> elements;
+            std::vector<SpatialSetNode<TItem>> nodes;
+            std::vector<TItem> items;
         };
     }
 }

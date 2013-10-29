@@ -60,12 +60,12 @@ testConstructionTime() {
     std::cout << std::endl;
 
     for (std::size_t testIndex = 0; testIndex < testCases.size(); ++testIndex) {
-        std::int64_t numElements = testCases[testIndex].first;
+        std::int64_t numItems = testCases[testIndex].first;
         std::int64_t numIterations = testCases[testIndex].second;
 
-        std::cout << "Elements: " << numElements << ", Iterations: " << numIterations << std::endl;
+        std::cout << "Items: " << numItems << ", Iterations: " << numIterations << std::endl;
 
-        std::vector<Vector3I> vectors(numElements);
+        std::vector<Vector3I> vectors(numItems);
         for (auto i = vectors.begin(); i != vectors.end(); ++i) {
             *i = randomVector();
         }
@@ -99,17 +99,17 @@ testQueryTime() {
     std::cout << std::endl;
 
     for (std::size_t testIndex = 0; testIndex < testCases.size(); ++testIndex) {
-        std::int64_t numElements = testCases[testIndex].first;
+        std::int64_t numItems = testCases[testIndex].first;
         std::int64_t numQueries = testCases[testIndex].second;
 
-        std::cout << "Elements: " << numElements << ", Queries: " << numQueries << std::endl;
+        std::cout << "Items: " << numItems << ", Queries: " << numQueries << std::endl;
 
-        std::vector<Vector3I> elements(numElements);
+        std::vector<Vector3I> items(numItems);
         std::for_each(
-            elements.begin(),
-            elements.end(),
-            [] (Vector3I& element) {
-                element = randomVector();
+            items.begin(),
+            items.end(),
+            [] (Vector3I& item) {
+                item = randomVector();
             }
         );
     
@@ -122,7 +122,7 @@ testQueryTime() {
             }
         );
 
-        SpatialSet<Vector3I> set(elements.begin(), elements.end());
+        SpatialSet<Vector3I> set(items.begin(), items.end());
         std::int64_t checksum = 0;
         boost::timer timer;
         for (std::int64_t i = 0; i < numQueries; ++i) {

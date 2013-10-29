@@ -35,62 +35,62 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>
-        FilteredSpatialSet<TElement, TBoundsPredicate>::beginImpl() const {
-            return FilteredSpatialSetIterator<TElement, TBoundsPredicate>(
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>
+        FilteredSpatialSet<TItem, TBoundsPredicate>::beginImpl() const {
+            return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
                 _set.rootNode(),
                 &_boundsPredicate
             );
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>
-        FilteredSpatialSet<TElement, TBoundsPredicate>::endImpl() const {
-            return FilteredSpatialSetIterator<TElement, TBoundsPredicate>(
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>
+        FilteredSpatialSet<TItem, TBoundsPredicate>::endImpl() const {
+            return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
                 nullptr,
                 &_boundsPredicate
             );
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
         bool
-        FilteredSpatialSet<TElement, TBoundsPredicate>::isEmptyImpl() const {
+        FilteredSpatialSet<TItem, TBoundsPredicate>::isEmptyImpl() const {
             return this->begin() == this->end();
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
         std::int64_t
-        FilteredSpatialSet<TElement, TBoundsPredicate>::sizeImpl() const {
+        FilteredSpatialSet<TItem, TBoundsPredicate>::sizeImpl() const {
             return std::distance(this->begin(), this->end());
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSet<TElement, TBoundsPredicate>::FilteredSpatialSet(
-            const FilteredSpatialSet<TElement, TBoundsPredicate>& other
+        FilteredSpatialSet<TItem, TBoundsPredicate>::FilteredSpatialSet(
+            const FilteredSpatialSet<TItem, TBoundsPredicate>& other
         ) : _set(other._set),
             _boundsPredicate(other._boundsPredicate) {
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSet<TElement, TBoundsPredicate>::FilteredSpatialSet(
-            const SpatialSet<TElement>& set,
+        FilteredSpatialSet<TItem, TBoundsPredicate>::FilteredSpatialSet(
+            const SpatialSet<TItem>& set,
             TBoundsPredicate boundsPredicate
         ) : _set(set),
             _boundsPredicate(boundsPredicate) {
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
         void
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::descendFrom(
-            const SpatialSetNode<TElement>* candidateNode
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::descendFrom(
+            const SpatialSetNode<TItem>* candidateNode
         ) {
             _currentNode = candidateNode;
             while (candidateNode) {
@@ -104,39 +104,39 @@ namespace opensolid
             }
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
         void
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::increment() {
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::increment() {
             descendFrom(_currentNode->next);
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
         bool
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::equal(
-            const FilteredSpatialSetIterator<TElement, TBoundsPredicate>& other
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::equal(
+            const FilteredSpatialSetIterator<TItem, TBoundsPredicate>& other
         ) const {
             return _currentNode == other._currentNode;
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        const TElement&
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::dereference() const {
-            return *(_currentNode->element);
+        const TItem&
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::dereference() const {
+            return *(_currentNode->item);
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::FilteredSpatialSetIterator() :
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::FilteredSpatialSetIterator() :
             _currentNode(nullptr) {
         }
 
-        template <class TElement, class TBoundsPredicate>
+        template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSetIterator<TElement, TBoundsPredicate>::FilteredSpatialSetIterator(
-            const SpatialSetNode<TElement>* rootNode,
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>::FilteredSpatialSetIterator(
+            const SpatialSetNode<TItem>* rootNode,
             const TBoundsPredicate* boundsPredicate
         ) : _currentNode(nullptr),
             _boundsPredicate(boundsPredicate) {

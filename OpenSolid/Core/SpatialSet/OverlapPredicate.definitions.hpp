@@ -33,16 +33,16 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         class OverlapPredicate
         {
         private:
-            typename BoundsType<TElement>::Type _predicateBounds;
+            typename BoundsType<TItem>::Type _predicateBounds;
         public:
-            OverlapPredicate(const typename BoundsType<TElement>::Type& predicateBounds);
+            OverlapPredicate(const typename BoundsType<TItem>::Type& predicateBounds);
 
             bool
-            operator()(const typename BoundsType<TElement>::Type& bounds) const;
+            operator()(const typename BoundsType<TItem>::Type& bounds) const;
         };
     }
 }

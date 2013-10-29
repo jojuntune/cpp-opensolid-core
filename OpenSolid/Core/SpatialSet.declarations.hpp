@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <class TElement>
+    template <class TItem>
     class SpatialSet;
 }

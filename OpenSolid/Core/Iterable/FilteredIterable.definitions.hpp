@@ -68,7 +68,7 @@ namespace opensolid
         class FilteredIterableIterator :
             public boost::iterator_facade<
                 FilteredIterableIterator<TBaseIterable, TPredicate>,
-                const typename ElementType<TBaseIterable>::Type,
+                const typename ItemType<TBaseIterable>::Type,
                 boost::forward_traversal_tag
             >
         {
@@ -85,7 +85,7 @@ namespace opensolid
             bool
             equal(const FilteredIterableIterator<TBaseIterable, TPredicate>& other) const;
 
-            const typename ElementType<TBaseIterable>::Type&
+            const typename ItemType<TBaseIterable>::Type&
             dereference() const;
         public:
             FilteredIterableIterator();
@@ -104,9 +104,9 @@ namespace opensolid
 namespace opensolid
 {
     template <class TBaseIterable, class TPredicate>
-    struct ElementType<detail::FilteredIterable<TBaseIterable, TPredicate>>
+    struct ItemType<detail::FilteredIterable<TBaseIterable, TPredicate>>
     {
-        typedef typename ElementType<TBaseIterable>::Type Type;
+        typedef typename ItemType<TBaseIterable>::Type Type;
     };
 
     template <class TBaseIterable, class TPredicate>

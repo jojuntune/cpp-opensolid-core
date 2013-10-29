@@ -73,13 +73,13 @@ namespace opensolid
         forEach(TFunction function) const;
 
         template <class TFunction>
-        typename ElementType<TDerived>::Type
+        typename ItemType<TDerived>::Type
         reduce(TFunction function) const;
 
         template <class TPredicate>
         detail::FilteredIterable<TDerived, TPredicate>
         where(TPredicate predicate) const;
 
-        operator std::vector<typename ElementType<TDerived>::Type>() const;
+        operator std::vector<typename ItemType<TDerived>::Type>() const;
     };
 }

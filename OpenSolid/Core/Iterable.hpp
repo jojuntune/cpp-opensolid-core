@@ -101,14 +101,14 @@ namespace opensolid
 
     template <class TDerived> template <class TFunction>
     inline
-    typename ElementType<TDerived>::Type
+    typename ItemType<TDerived>::Type
     Iterable<TDerived>::reduce(TFunction function) const {
         if (isEmpty()) {
             throw PlaceholderError();
         } else {
             typename IteratorType<TDerived>::Type begin = this->begin();
-            const typename ElementType<TDerived>::Type& firstElement = *begin;
-            return std::accumulate(++begin, end(), firstElement, function);
+            const typename ItemType<TDerived>::Type& firstItem = *begin;
+            return std::accumulate(++begin, end(), firstItem, function);
         }
     }
 
@@ -121,7 +121,7 @@ namespace opensolid
 
     template <class TDerived>
     inline
-    Iterable<TDerived>::operator std::vector<typename ElementType<TDerived>::Type>() const {
-        return std::vector<typename ElementType<TDerived>::Type>(begin(), end());
+    Iterable<TDerived>::operator std::vector<typename ItemType<TDerived>::Type>() const {
+        return std::vector<typename ItemType<TDerived>::Type>(begin(), end());
     }
 }

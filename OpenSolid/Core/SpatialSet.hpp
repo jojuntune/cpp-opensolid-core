@@ -42,43 +42,43 @@
 
 namespace opensolid
 {
-    template <class TElement>
+    template <class TItem>
     inline
-    typename std::vector<TElement>::const_iterator
-    SpatialSet<TElement>::beginImpl() const {
+    typename std::vector<TItem>::const_iterator
+    SpatialSet<TItem>::beginImpl() const {
         if (this->isEmpty()) {
-            return typename std::vector<TElement>::const_iterator();
+            return typename std::vector<TItem>::const_iterator();
         } else {
-            return _data->elements.begin();
+            return _data->items.begin();
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    typename std::vector<TElement>::const_iterator
-    SpatialSet<TElement>::endImpl() const {
+    typename std::vector<TItem>::const_iterator
+    SpatialSet<TItem>::endImpl() const {
         if (this->isEmpty()) {
-            return typename std::vector<TElement>::const_iterator();
+            return typename std::vector<TItem>::const_iterator();
         } else {
-            return _data->elements.end();
+            return _data->items.end();
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
     bool
-    SpatialSet<TElement>::isEmptyImpl() const {
-        return !_data || _data->elements.empty();
+    SpatialSet<TItem>::isEmptyImpl() const {
+        return !_data || _data->items.empty();
     }
     
-    template <class TElement>
+    template <class TItem>
     inline
     std::int64_t
-    SpatialSet<TElement>::sizeImpl() const {
+    SpatialSet<TItem>::sizeImpl() const {
         if (this->isEmpty()) {
             return 0;
         } else {
-            return _data->elements.size();
+            return _data->items.size();
         }
     }
 
@@ -129,14 +129,14 @@ namespace opensolid
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     void
-    SpatialSet<TElement>::init(
-        detail::SpatialSetNode<TElement>* node,
-        detail::SpatialSetNode<TElement>* next,
+    SpatialSet<TItem>::init(
+        detail::SpatialSetNode<TItem>* node,
+        detail::SpatialSetNode<TItem>* next,
         BoundsData** begin,
         BoundsData** end,
-        typename BoundsType<TElement>::Type& overallBounds,
+        typename BoundsType<TItem>::Type& overallBounds,
         std::int64_t sortIndex
     ) {
         node->bounds = overallBounds;
@@ -145,14 +145,14 @@ namespace opensolid
         if (size == 1) {
             // Leaf node
             node->leftChild = nullptr;
-            node->element = (*begin)->element;
+            node->item = (*begin)->item;
         } else if (size == 2) {
             // Node with two leaf children
-            detail::SpatialSetNode<TElement>* leftChild = node + 1;
-            detail::SpatialSetNode<TElement>* rightChild = node + 2;
+            detail::SpatialSetNode<TItem>* leftChild = node + 1;
+            detail::SpatialSetNode<TItem>* rightChild = node + 2;
 
             node->leftChild = leftChild;
-            node->element = nullptr;
+            node->item = nullptr;
 
             leftChild->leftChild = nullptr;
             rightChild->leftChild = nullptr;
@@ -167,14 +167,14 @@ namespace opensolid
                 leftChild->bounds = secondBoundsData->bounds;
                 rightChild->bounds = firstBoundsData->bounds;
 
-                leftChild->element = secondBoundsData->element;
-                rightChild->element = firstBoundsData->element;
+                leftChild->item = secondBoundsData->item;
+                rightChild->item = firstBoundsData->item;
             } else {
                 leftChild->bounds = firstBoundsData->bounds;
                 rightChild->bounds = secondBoundsData->bounds;
 
-                leftChild->element = firstBoundsData->element;
-                rightChild->element = secondBoundsData->element;
+                leftChild->item = firstBoundsData->item;
+                rightChild->item = secondBoundsData->item;
             }
             leftChild->next = rightChild;
             rightChild->next = next;
@@ -182,8 +182,8 @@ namespace opensolid
             // Partition bounds data and find left/right bounds
             std::int64_t leftSize = 0;
             std::int64_t rightSize = 0;
-            typename BoundsType<TElement>::Type leftBounds;
-            typename BoundsType<TElement>::Type rightBounds;
+            typename BoundsType<TItem>::Type leftBounds;
+            typename BoundsType<TItem>::Type rightBounds;
             BoundsData** lower = begin;
             BoundsData** upper = end - 1;
             for (BoundsData** i = lower; i <= upper; ++i) {
@@ -235,38 +235,38 @@ namespace opensolid
             }
 
             // Recurse into chid nodes
-            std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TElement>::Value;
+            std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TItem>::Value;
             
-            detail::SpatialSetNode<TElement>* leftChild = node + 1;
-            detail::SpatialSetNode<TElement>* rightChild = leftChild + (2 * leftSize - 1);
+            detail::SpatialSetNode<TItem>* leftChild = node + 1;
+            detail::SpatialSetNode<TItem>* rightChild = leftChild + (2 * leftSize - 1);
             
             node->leftChild = leftChild;
-            node->element = nullptr;
+            node->item = nullptr;
             
             init(leftChild, rightChild, begin, lower, leftBounds, nextSortIndex);
             init(rightChild, next, lower, end, rightBounds, nextSortIndex);
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     void
-    SpatialSet<TElement>::init(const BoundsFunction<TElement>& boundsFunction) {
-        std::int64_t numElements = _data->elements.size();
+    SpatialSet<TItem>::init(const BoundsFunction<TItem>& boundsFunction) {
+        std::int64_t numItems = _data->items.size();
 
-        if (numElements == 0) {
+        if (numItems == 0) {
             _data->nodes.clear();
             return;
         }
 
         // Initialize bounds data
-        std::vector<BoundsData> boundsData(numElements);
-        std::vector<BoundsData*> boundsDataPointers(numElements);
-        typename BoundsType<TElement>::Type overallBounds;
-        for (std::int64_t i = 0; i < numElements; ++i) {
-            typename BoundsType<TElement>::Type bounds = boundsFunction(_data->elements[i]);
+        std::vector<BoundsData> boundsData(numItems);
+        std::vector<BoundsData*> boundsDataPointers(numItems);
+        typename BoundsType<TItem>::Type overallBounds;
+        for (std::int64_t i = 0; i < numItems; ++i) {
+            typename BoundsType<TItem>::Type bounds = boundsFunction(_data->items[i]);
 
             boundsData[i].bounds = bounds;
-            boundsData[i].element = &(_data->elements[i]);
+            boundsData[i].item = &(_data->items[i]);
             boundsDataPointers[i] = &boundsData[i];
             if (i == 0) {
                 overallBounds = bounds;
@@ -276,7 +276,7 @@ namespace opensolid
         }
 
         // Recursively construct tree
-        _data->nodes.resize(2 * numElements - 1);
+        _data->nodes.resize(2 * numItems - 1);
         init(
             _data->nodes.data(),
             nullptr,
@@ -287,61 +287,61 @@ namespace opensolid
         );
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    SpatialSet<TElement>::SpatialSet() {
+    SpatialSet<TItem>::SpatialSet() {
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    SpatialSet<TElement>::SpatialSet(const SpatialSet<TElement>& other) :
+    SpatialSet<TItem>::SpatialSet(const SpatialSet<TItem>& other) :
         _data(other._data) {
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    SpatialSet<TElement>::SpatialSet(SpatialSet<TElement>&& other) :
+    SpatialSet<TItem>::SpatialSet(SpatialSet<TItem>&& other) :
         _data(std::move(other._data)) {
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    SpatialSet<TElement>::SpatialSet(
-        const std::vector<TElement>& elements,
-        BoundsFunction<TElement> boundsFunction
-    ) : _data(new detail::SpatialSetData<TElement>()) {
+    SpatialSet<TItem>::SpatialSet(
+        const std::vector<TItem>& items,
+        BoundsFunction<TItem> boundsFunction
+    ) : _data(new detail::SpatialSetData<TItem>()) {
 
-        _data->elements = elements;
+        _data->items = items;
         init(boundsFunction);
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    SpatialSet<TElement>::SpatialSet(
-        std::vector<TElement>&& elements,
-        BoundsFunction<TElement> boundsFunction
-    ) : _data(new detail::SpatialSetData<TElement>()) {
+    SpatialSet<TItem>::SpatialSet(
+        std::vector<TItem>&& items,
+        BoundsFunction<TItem> boundsFunction
+    ) : _data(new detail::SpatialSetData<TItem>()) {
 
-        _data->elements = std::move(elements);
+        _data->items = std::move(items);
         init(boundsFunction);
     }
     
-    template <class TElement> template <class TIterator>
+    template <class TItem> template <class TIterator>
     inline
-    SpatialSet<TElement>::SpatialSet(
+    SpatialSet<TItem>::SpatialSet(
         TIterator begin,
         TIterator end,
-        BoundsFunction<TElement> boundsFunction
-    ) : _data(new detail::SpatialSetData<TElement>()) {
+        BoundsFunction<TItem> boundsFunction
+    ) : _data(new detail::SpatialSetData<TItem>()) {
 
-        _data->elements = std::vector<TElement>(begin, end);
+        _data->items = std::vector<TItem>(begin, end);
         init(boundsFunction);
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    const detail::SpatialSetNode<TElement>*
-    SpatialSet<TElement>::rootNode() const {
+    const detail::SpatialSetNode<TItem>*
+    SpatialSet<TItem>::rootNode() const {
         if (this->isEmpty()) {
             return nullptr;
         } else {
@@ -349,125 +349,125 @@ namespace opensolid
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    typename std::vector<TElement>::const_iterator
-    SpatialSet<TElement>::begin() const {
+    typename std::vector<TItem>::const_iterator
+    SpatialSet<TItem>::begin() const {
         return beginImpl();
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    typename std::vector<TElement>::const_iterator
-    SpatialSet<TElement>::end() const {
+    typename std::vector<TItem>::const_iterator
+    SpatialSet<TItem>::end() const {
         return endImpl();
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    const TElement&
-    SpatialSet<TElement>::first() const {
+    const TItem&
+    SpatialSet<TItem>::first() const {
         assert(!this->isEmpty());
-        return _data->elements.front();
+        return _data->items.front();
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    const TElement&
-    SpatialSet<TElement>::last() const {
+    const TItem&
+    SpatialSet<TItem>::last() const {
         assert(!this->isEmpty());
-        return _data->elements.back();
+        return _data->items.back();
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    const TElement&
-    SpatialSet<TElement>::operator[](std::int64_t index) const {
+    const TItem&
+    SpatialSet<TItem>::operator[](std::int64_t index) const {
         assert(!this->isEmpty());
-        return _data->elements[index];
+        return _data->items[index];
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
     void
-    SpatialSet<TElement>::swap(SpatialSet<TElement>& other) {
+    SpatialSet<TItem>::swap(SpatialSet<TItem>& other) {
         _data.swap(other._data);
     }
     
-    template <class TElement>
+    template <class TItem>
     inline
     void
-    SpatialSet<TElement>::operator=(const SpatialSet<TElement>& other) {
+    SpatialSet<TItem>::operator=(const SpatialSet<TItem>& other) {
         _data = other._data;
     }
     
-    template <class TElement>
+    template <class TItem>
     inline
     void
-    SpatialSet<TElement>::operator=(SpatialSet<TElement>&& other) {
+    SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
         _data = std::move(other._data);
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    typename BoundsType<TElement>::Type
-    SpatialSet<TElement>::bounds() const {
+    typename BoundsType<TItem>::Type
+    SpatialSet<TItem>::bounds() const {
         if (this->isEmpty()) {
-            return typename BoundsType<TElement>::Type();
+            return typename BoundsType<TItem>::Type();
         } else {
             return _data->nodes.front().bounds;
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
     void
-    SpatialSet<TElement>::clear() {
+    SpatialSet<TItem>::clear() {
         if (!this->isEmpty()) {
-            _data->elements.clear();
+            _data->items.clear();
             _data->nodes.clear();
         }
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    detail::FilteredSpatialSet<TElement, detail::OverlapPredicate<TElement>>
-    SpatialSet<TElement>::overlapping(
-        const typename BoundsType<TElement>::Type& predicateBounds
+    detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>
+    SpatialSet<TItem>::overlapping(
+        const typename BoundsType<TItem>::Type& predicateBounds
     ) const {
-        return detail::FilteredSpatialSet<TElement, detail::OverlapPredicate<TElement>>(
+        return detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>(
             *this,
-            detail::OverlapPredicate<TElement>(predicateBounds)
+            detail::OverlapPredicate<TItem>(predicateBounds)
         );
     }
 
-    template <class TElement>
+    template <class TItem>
     inline
-    detail::FilteredSpatialSet<TElement, detail::ContainPredicate<TElement>>
-    SpatialSet<TElement>::containing(
-        const typename BoundsType<TElement>::Type& predicateBounds
+    detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>
+    SpatialSet<TItem>::containing(
+        const typename BoundsType<TItem>::Type& predicateBounds
     ) const {
-        return detail::FilteredSpatialSet<TElement, detail::ContainPredicate<TElement>>(
+        return detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>(
             *this,
-            detail::ContainPredicate<TElement>(predicateBounds)
+            detail::ContainPredicate<TItem>(predicateBounds)
         );
     }
 
-    template <class TElement> template <class TBoundsPredicate>
+    template <class TItem> template <class TBoundsPredicate>
     inline
-    detail::FilteredSpatialSet<TElement, TBoundsPredicate>
-    SpatialSet<TElement>::filtered(TBoundsPredicate boundsPredicate) const {
-        return detail::FilteredSpatialSet<TElement, TBoundsPredicate>(*this, boundsPredicate);
+    detail::FilteredSpatialSet<TItem, TBoundsPredicate>
+    SpatialSet<TItem>::filtered(TBoundsPredicate boundsPredicate) const {
+        return detail::FilteredSpatialSet<TItem, TBoundsPredicate>(*this, boundsPredicate);
     }
 
     namespace detail
     {
-        template <class TElement>
-        const SpatialSetNode<TElement>*
-        nextLeafNode(const SpatialSetNode<TElement>* leafNode) {
+        template <class TItem>
+        const SpatialSetNode<TItem>*
+        nextLeafNode(const SpatialSetNode<TItem>* leafNode) {
             assert(leafNode);
-            assert(leafNode->element);
-            const SpatialSetNode<TElement>* node = leafNode->next;
+            assert(leafNode->item);
+            const SpatialSetNode<TItem>* node = leafNode->next;
             if (!node) {
                 return node;
             }
@@ -477,127 +477,127 @@ namespace opensolid
             return node;
         }
 
-        template <class TElement, class TElementComparator>
+        template <class TItem, class TItemComparator>
         void
-        markDuplicateElements(
-            const SpatialSetNode<TElement>* anchorNode,
-            const TElement* firstElement,
-            const TElementComparator& elementComparator,
-            std::vector<const TElement*>& elementMap
+        markDuplicateItems(
+            const SpatialSetNode<TItem>* anchorNode,
+            const TItem* firstItem,
+            const TItemComparator& itemComparator,
+            std::vector<const TItem*>& itemMap
         ) {
             // Ensure anchor node is a valid leaf node
             assert(anchorNode);
-            assert(anchorNode->element);
+            assert(anchorNode->item);
 
-            const TElement* anchorElement = anchorNode->element;
-            std::int64_t anchorIndex = anchorElement - firstElement;
-            elementMap[anchorIndex] = anchorElement;
-            const SpatialSetNode<TElement>* candidateNode = anchorNode->next;
+            const TItem* anchorItem = anchorNode->item;
+            std::int64_t anchorIndex = anchorItem - firstItem;
+            itemMap[anchorIndex] = anchorItem;
+            const SpatialSetNode<TItem>* candidateNode = anchorNode->next;
             while (candidateNode && candidateNode->bounds.overlaps(anchorNode->bounds)) {
                 if (candidateNode->leftChild) {
                     // Internal node: descend into left child
                     candidateNode = candidateNode->leftChild;
                 } else {
-                    // Leaf node: check for duplicate elements, then move to next node
-                    if (elementComparator(*anchorElement, *candidateNode->element)) {
-                        std::int64_t candidateIndex = candidateNode->element - firstElement;
-                        assert(elementMap[candidateIndex] == nullptr);
-                        elementMap[candidateIndex] = anchorElement;
+                    // Leaf node: check for duplicate items, then move to next node
+                    if (itemComparator(*anchorItem, *candidateNode->item)) {
+                        std::int64_t candidateIndex = candidateNode->item - firstItem;
+                        assert(itemMap[candidateIndex] == nullptr);
+                        itemMap[candidateIndex] = anchorItem;
                     }
                     candidateNode = candidateNode->next;
                 }
             }
         }
 
-        template <class TElement, class TElementComparator, class TVisitor>
+        template <class TItem, class TItemComparator, class TVisitor>
         void
-        visitUniqueElements(
-            const SpatialSetNode<TElement>* rootNode,
-            const TElement* firstElement,
-            std::int64_t numElements,
-            const TElementComparator& elementComparator,
+        visitUniqueItems(
+            const SpatialSetNode<TItem>* rootNode,
+            const TItem* firstItem,
+            std::int64_t numItems,
+            const TItemComparator& itemComparator,
             const TVisitor& visitor
         ) {
-            std::vector<const TElement*> elementMap(numElements);
-            std::fill(elementMap.begin(), elementMap.end(), nullptr);
+            std::vector<const TItem*> itemMap(numItems);
+            std::fill(itemMap.begin(), itemMap.end(), nullptr);
 
-            const SpatialSetNode<TElement>* node = rootNode;
+            const SpatialSetNode<TItem>* node = rootNode;
             while (node->leftChild) {
                 node = node->leftChild;
             }
             do {
-                std::int64_t elementIndex = node->element - firstElement;
-                if (elementMap[elementIndex] == nullptr) {
-                    markDuplicateElements(node, firstElement, elementComparator, elementMap);
+                std::int64_t itemIndex = node->item - firstItem;
+                if (itemMap[itemIndex] == nullptr) {
+                    markDuplicateItems(node, firstItem, itemComparator, itemMap);
                 }
-                visitor(node->element, elementMap[elementIndex]);
+                visitor(node->item, itemMap[itemIndex]);
             } while (node = nextLeafNode(node));
         }
     }
 
-    template <class TElement> template <class TElementComparator>
-    detail::SpatialSubset<TElement>
-    SpatialSet<TElement>::uniqueElements(TElementComparator elementComparator) const {
+    template <class TItem> template <class TItemComparator>
+    detail::SpatialSubset<TItem>
+    SpatialSet<TItem>::uniqueItems(TItemComparator itemComparator) const {
         if (isEmpty()) {
-            return detail::SpatialSubset<TElement>();
+            return detail::SpatialSubset<TItem>();
         } else {
-            std::vector<const TElement*> elements;
-            auto visitor = [&elements] (
-                const TElement* element,
-                const TElement* anchorElement
+            std::vector<const TItem*> items;
+            auto visitor = [&items] (
+                const TItem* item,
+                const TItem* anchorItem
             ) {
-                if (element == anchorElement) {
-                    elements.push_back(element);
+                if (item == anchorItem) {
+                    items.push_back(item);
                 }
             };
-            detail::visitUniqueElements(
+            detail::visitUniqueItems(
                 rootNode(),
-                &_data->elements.front(),
+                &_data->items.front(),
                 size(),
-                elementComparator,
+                itemComparator,
                 visitor
             );
-            return detail::SpatialSubset<TElement>(std::move(elements));
+            return detail::SpatialSubset<TItem>(std::move(items));
         }
     }
 
-    template <class TElement> template <class TElementComparator>
+    template <class TItem> template <class TItemComparator>
     std::vector<std::int64_t>
-    SpatialSet<TElement>::uniqueMapping(TElementComparator elementComparator) const {
+    SpatialSet<TItem>::uniqueMapping(TItemComparator itemComparator) const {
         if (isEmpty()) {
             return std::vector<std::int64_t>();
         } else {
-            const TElement* firstElement = &_data->elements.front();
+            const TItem* firstItem = &_data->items.front();
             std::vector<std::int64_t> results(size());
-            auto visitor = [&results, firstElement] (
-                const TElement* element,
-                const TElement* anchorElement
+            auto visitor = [&results, firstItem] (
+                const TItem* item,
+                const TItem* anchorItem
             ) {
-                std::int64_t elementIndex = element - firstElement;
-                std::int64_t anchorIndex = anchorElement - firstElement;
-                results[elementIndex] = anchorIndex;
+                std::int64_t itemIndex = item - firstItem;
+                std::int64_t anchorIndex = anchorItem - firstItem;
+                results[itemIndex] = anchorIndex;
             };
-            detail::visitUniqueElements(
+            detail::visitUniqueItems(
                 rootNode(),
-                firstElement,
+                firstItem,
                 size(),
-                elementComparator,
+                itemComparator,
                 visitor
             );
             return results;
         }
     }
     
-    template <class TElement>
+    template <class TItem>
     std::ostream&
-    operator<<(std::ostream& stream, const SpatialSet<TElement>& set) {
+    operator<<(std::ostream& stream, const SpatialSet<TItem>& set) {
         stream << "{";
         if (!set.isEmpty()) {
             std::for_each(
                 set.begin(),
                 set.end() - 1,
-                [&stream] (const TElement& element) {
-                    stream << element << ",";
+                [&stream] (const TItem& item) {
+                    stream << item << ",";
                 }
             );
             stream << set.back();
@@ -606,77 +606,77 @@ namespace opensolid
         return stream;
     }
 
-    template <class TElement>
-    SpatialSet<TElement>
-    ScalingFunction<SpatialSet<TElement>>::operator()(
-        const SpatialSet<TElement>& set,
+    template <class TItem>
+    SpatialSet<TItem>
+    ScalingFunction<SpatialSet<TItem>>::operator()(
+        const SpatialSet<TItem>& set,
         double scale
     ) const {
-        std::vector<TElement> scaledElements(set.size());
+        std::vector<TItem> scaledItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
-            scaledElements.begin(),
-            [scale] (const TElement& element) -> TElement {
-                return Transformable<TElement>::scaling(element, scale);
+            scaledItems.begin(),
+            [scale] (const TItem& item) -> TItem {
+                return Transformable<TItem>::scaling(item, scale);
             }
         );
-        return SpatialSet<TElement>(std::move(scaledElements));
+        return SpatialSet<TItem>(std::move(scaledItems));
     }
 
-    template <class TElement> template <class TVector>
-    SpatialSet<TElement>
-    TranslationFunction<SpatialSet<TElement>>::operator()(
-        const SpatialSet<TElement>& set,
+    template <class TItem> template <class TVector>
+    SpatialSet<TItem>
+    TranslationFunction<SpatialSet<TItem>>::operator()(
+        const SpatialSet<TItem>& set,
         const EigenBase<TVector>& vector
     ) const {
-        std::vector<TElement> translatedElements(set.size());
+        std::vector<TItem> translatedItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
-            translatedElements.begin(),
-            [&vector] (const TElement& element) -> TElement {
-                return Transformable<TElement>::translation(element, vector.derived());
+            translatedItems.begin(),
+            [&vector] (const TItem& item) -> TItem {
+                return Transformable<TItem>::translation(item, vector.derived());
             }
         );
-        return SpatialSet<TElement>(std::move(translatedElements));
+        return SpatialSet<TItem>(std::move(translatedItems));
     }
 
-    template <class TElement, int iNumResultDimensions> template <class TMatrix>
-    SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
-    TransformationFunction<SpatialSet<TElement>, iNumResultDimensions>::operator()(
-        const SpatialSet<TElement>& set,
+    template <class TItem, int iNumResultDimensions> template <class TMatrix>
+    SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+    TransformationFunction<SpatialSet<TItem>, iNumResultDimensions>::operator()(
+        const SpatialSet<TItem>& set,
         const EigenBase<TMatrix>& matrix
     ) const {
-        typedef typename ChangeDimensions<TElement, iNumResultDimensions>::Type TransformedElement;
-        std::vector<TransformedElement> transformedElements(set.size());
+        typedef typename ChangeDimensions<TItem, iNumResultDimensions>::Type TransformedItem;
+        std::vector<TransformedItem> transformedItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
-            transformedElements.begin(),
-            [&matrix] (const TElement& element) -> TransformedElement {
-                return Transformable<TElement>::transformation(element, matrix.derived());
+            transformedItems.begin(),
+            [&matrix] (const TItem& item) -> TransformedItem {
+                return Transformable<TItem>::transformation(item, matrix.derived());
             }
         );
-        return SpatialSet<TransformedElement>(std::move(transformedElements));
+        return SpatialSet<TransformedItem>(std::move(transformedItems));
     }
 
-    template <class TElement, int iNumResultDimensions>
-    SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
-    MorphingFunction<SpatialSet<TElement>, iNumResultDimensions>::operator()(
-        const SpatialSet<TElement>& set,
-        const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
+    template <class TItem, int iNumResultDimensions>
+    SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+    MorphingFunction<SpatialSet<TItem>, iNumResultDimensions>::operator()(
+        const SpatialSet<TItem>& set,
+        const Function<iNumResultDimensions, NumDimensions<TItem>::Value>& function
     ) const {
-        typedef typename ChangeDimensions<TElement, iNumResultDimensions>::Type MorphedElement;
-        std::vector<MorphedElement> morphedElements(set.size());
+        typedef typename ChangeDimensions<TItem, iNumResultDimensions>::Type MorphedItem;
+        std::vector<MorphedItem> morphedItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
-            morphedElements.begin(),
-            [&function] (const TElement& element) -> MorphedElement {
-                return Transformable<TElement>::morphing(element, function);
+            morphedItems.begin(),
+            [&function] (const TItem& item) -> MorphedItem {
+                return Transformable<TItem>::morphing(item, function);
             }
         );
-        return SpatialSet<MorphedElement>(std::move(morphedElements));
+        return SpatialSet<MorphedItem>(std::move(morphedItems));
     }
 }

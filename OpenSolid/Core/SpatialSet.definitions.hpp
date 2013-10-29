@@ -44,21 +44,21 @@
 
 namespace opensolid
 {
-    template <class TElement>
+    template <class TItem>
     class SpatialSet :
-        public Iterable<SpatialSet<TElement>>,
-        public Transformable<SpatialSet<TElement>>
+        public Iterable<SpatialSet<TItem>>,
+        public Transformable<SpatialSet<TItem>>
     {
     private:
-        boost::intrusive_ptr<detail::SpatialSetData<TElement>> _data;
+        boost::intrusive_ptr<detail::SpatialSetData<TItem>> _data;
 
         template <class TDerived>
         friend class Iterable;
 
-        typename std::vector<TElement>::const_iterator
+        typename std::vector<TItem>::const_iterator
         beginImpl() const;
 
-        typename std::vector<TElement>::const_iterator
+        typename std::vector<TItem>::const_iterator
         endImpl() const;
 
         bool
@@ -69,167 +69,167 @@ namespace opensolid
 
         struct BoundsData
         {
-            typename BoundsType<TElement>::Type bounds;
-            const TElement* element;
+            typename BoundsType<TItem>::Type bounds;
+            const TItem* item;
         };
 
         void
         init(
-            detail::SpatialSetNode<TElement>* node,
-            detail::SpatialSetNode<TElement>* next,
+            detail::SpatialSetNode<TItem>* node,
+            detail::SpatialSetNode<TItem>* next,
             BoundsData** begin,
             BoundsData** end,
-            typename BoundsType<TElement>::Type& overallBounds,
+            typename BoundsType<TItem>::Type& overallBounds,
             std::int64_t sortIndex
         );
 
         void
-        init(const BoundsFunction<TElement>& boundsFunction);
+        init(const BoundsFunction<TItem>& boundsFunction);
     public:
         SpatialSet();
 
-        SpatialSet(const SpatialSet<TElement>& other);
+        SpatialSet(const SpatialSet<TItem>& other);
 
-        SpatialSet(SpatialSet<TElement>&& other);
+        SpatialSet(SpatialSet<TItem>&& other);
 
         SpatialSet(
-            const std::vector<TElement>& elements,
-            BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>()
+            const std::vector<TItem>& items,
+            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
         );
 
         SpatialSet(
-            std::vector<TElement>&& elements,
-            BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>()
+            std::vector<TItem>&& items,
+            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
         );
         
         template <class TIterator>
         SpatialSet(
             TIterator begin,
             TIterator end,
-            BoundsFunction<TElement> boundsFunction = BoundsFunction<TElement>()
+            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
         );
 
-        const detail::SpatialSetNode<TElement>*
+        const detail::SpatialSetNode<TItem>*
         rootNode() const;
 
-        typename std::vector<TElement>::const_iterator
+        typename std::vector<TItem>::const_iterator
         begin() const;
 
-        typename std::vector<TElement>::const_iterator
+        typename std::vector<TItem>::const_iterator
         end() const;
 
-        const TElement&
+        const TItem&
         first() const;
 
-        const TElement&
+        const TItem&
         last() const;
 
-        const TElement&
+        const TItem&
         operator[](std::int64_t index) const;
 
         void
-        swap(SpatialSet<TElement>& other);
+        swap(SpatialSet<TItem>& other);
         
         void
-        operator=(const SpatialSet<TElement>& other);
+        operator=(const SpatialSet<TItem>& other);
         
         void
-        operator=(SpatialSet<TElement>&& other);
+        operator=(SpatialSet<TItem>&& other);
 
-        typename BoundsType<TElement>::Type
+        typename BoundsType<TItem>::Type
         bounds() const;
 
         void
         clear();
 
-        detail::FilteredSpatialSet<TElement, detail::OverlapPredicate<TElement>>
-        overlapping(const typename BoundsType<TElement>::Type& predicateBounds) const;
+        detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>
+        overlapping(const typename BoundsType<TItem>::Type& predicateBounds) const;
 
-        detail::FilteredSpatialSet<TElement, detail::ContainPredicate<TElement>>
-        containing(const typename BoundsType<TElement>::Type& predicateBounds) const;
+        detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>
+        containing(const typename BoundsType<TItem>::Type& predicateBounds) const;
 
         template <class TBoundsPredicate>
-        detail::FilteredSpatialSet<TElement, TBoundsPredicate>
+        detail::FilteredSpatialSet<TItem, TBoundsPredicate>
         filtered(TBoundsPredicate boundsPredicate) const;
 
-        template <class TElementComparator>
-        detail::SpatialSubset<TElement>
-        uniqueElements(TElementComparator elementComparator) const;
+        template <class TItemComparator>
+        detail::SpatialSubset<TItem>
+        uniqueItems(TItemComparator itemComparator) const;
 
-        template <class TElementComparator>
+        template <class TItemComparator>
         std::vector<std::int64_t>
-        uniqueMapping(TElementComparator elementComparator) const;
+        uniqueMapping(TItemComparator itemComparator) const;
     };
     
-    template <class TElement>
+    template <class TItem>
     std::ostream&
-    operator<<(std::ostream& stream, const SpatialSet<TElement>& set);
+    operator<<(std::ostream& stream, const SpatialSet<TItem>& set);
 }
     
 ////////// Specializations //////////
 
 namespace opensolid
 {
-    template <class TElement>
-    struct ElementType<SpatialSet<TElement>>
+    template <class TItem>
+    struct ItemType<SpatialSet<TItem>>
     {
-        typedef TElement Type;
+        typedef TItem Type;
     };
 
-    template <class TElement>
-    struct IteratorType<SpatialSet<TElement>>
+    template <class TItem>
+    struct IteratorType<SpatialSet<TItem>>
     {
-        typedef typename std::vector<TElement>::const_iterator Type;
+        typedef typename std::vector<TItem>::const_iterator Type;
     };
 
-    template <class TElement>
-    struct NumDimensions<SpatialSet<TElement>>
+    template <class TItem>
+    struct NumDimensions<SpatialSet<TItem>>
     {
-        static const int Value = NumDimensions<TElement>::Value;
+        static const int Value = NumDimensions<TItem>::Value;
     };
 
-    template <class TElement, int iNumResultDimensions>
-    struct ChangeDimensions<SpatialSet<TElement>, iNumResultDimensions>
+    template <class TItem, int iNumResultDimensions>
+    struct ChangeDimensions<SpatialSet<TItem>, iNumResultDimensions>
     {
-        typedef SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type> Type;
+        typedef SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type> Type;
     };
 
-    template <class TElement>
-    struct ScalingFunction<SpatialSet<TElement>>
+    template <class TItem>
+    struct ScalingFunction<SpatialSet<TItem>>
     {
-        SpatialSet<TElement>
-        operator()(const SpatialSet<TElement>& set, double scale) const;
+        SpatialSet<TItem>
+        operator()(const SpatialSet<TItem>& set, double scale) const;
     };
 
-    template <class TElement>
-    struct TranslationFunction<SpatialSet<TElement>>
+    template <class TItem>
+    struct TranslationFunction<SpatialSet<TItem>>
     {
         template <class TVector>
-        SpatialSet<TElement>
-        operator()(const SpatialSet<TElement>& set, const EigenBase<TVector>& vector) const;
+        SpatialSet<TItem>
+        operator()(const SpatialSet<TItem>& set, const EigenBase<TVector>& vector) const;
     };
 
-    template <class TElement, int iNumResultDimensions>
-    struct TransformationFunction<SpatialSet<TElement>, iNumResultDimensions>
+    template <class TItem, int iNumResultDimensions>
+    struct TransformationFunction<SpatialSet<TItem>, iNumResultDimensions>
     {
         template <class TMatrix>
-        SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
-        operator()(const SpatialSet<TElement>& set, const EigenBase<TMatrix>& matrix) const;
+        SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+        operator()(const SpatialSet<TItem>& set, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <class TElement, int iNumResultDimensions>
-    struct MorphingFunction<SpatialSet<TElement>, iNumResultDimensions>
+    template <class TItem, int iNumResultDimensions>
+    struct MorphingFunction<SpatialSet<TItem>, iNumResultDimensions>
     {
-        SpatialSet<typename ChangeDimensions<TElement, iNumResultDimensions>::Type>
+        SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
         operator()(
-            const SpatialSet<TElement>& set,
-            const Function<iNumResultDimensions, NumDimensions<TElement>::Value>& function
+            const SpatialSet<TItem>& set,
+            const Function<iNumResultDimensions, NumDimensions<TItem>::Value>& function
         ) const;
     };
 
-    template <class TElement>
-    struct BoundsType<SpatialSet<TElement>>
+    template <class TItem>
+    struct BoundsType<SpatialSet<TItem>>
     {
-        typedef typename BoundsType<TElement>::Type Type;
+        typedef typename BoundsType<TItem>::Type Type;
     };
 }

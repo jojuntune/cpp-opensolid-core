@@ -39,22 +39,22 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         class SpatialSubset :
-            public Iterable<SpatialSubset<TElement>>
+            public Iterable<SpatialSubset<TItem>>
         {
         private:
-            std::vector<const TElement*> _elements;
+            std::vector<const TItem*> _items;
 
             template <class TDerived>
             friend class Iterable;
 
-            friend class SpatialSet<TElement>;
+            friend class SpatialSet<TItem>;
 
-            SpatialSubsetIterator<TElement>
+            SpatialSubsetIterator<TItem>
             beginImpl() const;
 
-            SpatialSubsetIterator<TElement>
+            SpatialSubsetIterator<TItem>
             endImpl() const;
 
             bool
@@ -66,23 +66,23 @@ namespace opensolid
             SpatialSubset();
 
             // Not implemented - copying not allowed
-            SpatialSubset(const SpatialSubset<TElement>& other);
+            SpatialSubset(const SpatialSubset<TItem>& other);
 
-            SpatialSubset(SpatialSubset<TElement>&& other);
+            SpatialSubset(SpatialSubset<TItem>&& other);
         public:
-            SpatialSubset(std::vector<const TElement*>&& elements);
+            SpatialSubset(std::vector<const TItem*>&& items);
         };
 
-        template <class TElement>
+        template <class TItem>
         class SpatialSubsetIterator :
             public boost::iterator_facade<
-                SpatialSubsetIterator<TElement>,
-                const TElement,
+                SpatialSubsetIterator<TItem>,
+                const TItem,
                 boost::forward_traversal_tag
             >
         {
         private:
-            typename std::vector<const TElement*>::const_iterator _iterator;
+            typename std::vector<const TItem*>::const_iterator _iterator;
 
             friend class boost::iterator_core_access;
 
@@ -90,14 +90,14 @@ namespace opensolid
             increment();
 
             bool
-            equal(const SpatialSubsetIterator<TElement>& other) const;
+            equal(const SpatialSubsetIterator<TItem>& other) const;
 
-            const TElement&
+            const TItem&
             dereference() const;
         public:
             SpatialSubsetIterator();
 
-            SpatialSubsetIterator(typename std::vector<const TElement*>::const_iterator iterator);
+            SpatialSubsetIterator(typename std::vector<const TItem*>::const_iterator iterator);
         };
     }
 }
@@ -106,15 +106,15 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TElement>
-    struct ElementType<detail::SpatialSubset<TElement>>
+    template <class TItem>
+    struct ItemType<detail::SpatialSubset<TItem>>
     {
-        typedef TElement Type;
+        typedef TItem Type;
     };
 
-    template <class TElement>
-    struct IteratorType<detail::SpatialSubset<TElement>>
+    template <class TItem>
+    struct IteratorType<detail::SpatialSubset<TItem>>
     {
-        typedef detail::SpatialSubsetIterator<TElement> Type;
+        typedef detail::SpatialSubsetIterator<TItem> Type;
     };
 }

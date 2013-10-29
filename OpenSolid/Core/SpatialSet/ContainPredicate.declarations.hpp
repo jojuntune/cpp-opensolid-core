@@ -30,7 +30,7 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         class ContainPredicate;
     }
 }

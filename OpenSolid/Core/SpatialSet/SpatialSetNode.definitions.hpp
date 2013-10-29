@@ -34,13 +34,13 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TElement>
+        template <class TItem>
         struct SpatialSetNode
         {
-            typename BoundsType<TElement>::Type bounds;
-            const SpatialSetNode<TElement>* leftChild;
-            const SpatialSetNode<TElement>* next;
-            const TElement* element;
+            typename BoundsType<TItem>::Type bounds;
+            const SpatialSetNode<TItem>* leftChild;
+            const SpatialSetNode<TItem>* next;
+            const TItem* item;
         };
     }
 }
