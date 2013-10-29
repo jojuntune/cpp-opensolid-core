@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Set.hpp>
@@ -525,5 +526,25 @@ public:
         TS_ASSERT_EQUALS(mapping[2], 1);
         TS_ASSERT_EQUALS(mapping[3], 3);
         TS_ASSERT_EQUALS(mapping[4], 3);
+    }
+
+    void testFind() {
+        std::vector<LineSegment2d> lineSegments(5);
+        lineSegments[0] = LineSegment2d(Point2d(1, 1), Point2d(3, 1));
+        lineSegments[1] = LineSegment2d(Point2d(2, 2), Point2d(4, 2));
+        lineSegments[2] = LineSegment2d(Point2d(3, 3), Point2d(5, 3));
+        lineSegments[3] = LineSegment2d(Point2d(4, 4), Point2d(6, 4));
+        lineSegments[4] = LineSegment2d(Point2d(5, 5), Point2d(7, 5));
+
+        SpatialSet<LineSegment2d> set(lineSegments);
+        auto iterator = set.find(LineSegment2d(Point2d(3 + 1e-14, 3), Point2d(5, 3 - 1e-14)));
+        TS_ASSERT_DIFFERS(iterator, set.end());
+        LineSegment2d foundSegment = *iterator;
+        TS_ASSERT_EQUALS(foundSegment.vertex(0).x(), 3.0);
+        TS_ASSERT_EQUALS(foundSegment.vertex(0).y(), 3.0);
+        TS_ASSERT_EQUALS(foundSegment.vertex(1).x(), 5.0);
+        TS_ASSERT_EQUALS(foundSegment.vertex(1).y(), 3.0);
+
+        TS_ASSERT_EQUALS(set.find(LineSegment2d(Point2d(1, 1), Point2d(7, 5))), set.end());
     }
 };

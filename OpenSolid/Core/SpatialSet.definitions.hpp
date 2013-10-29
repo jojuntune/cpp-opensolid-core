@@ -156,6 +156,13 @@ namespace opensolid
         detail::FilteredSpatialSet<TItem, TBoundsPredicate>
         filtered(TBoundsPredicate boundsPredicate) const;
 
+        typename std::vector<TItem>::const_iterator
+        find(const TItem& item, double precision = 1e-12) const;
+
+        template <class TItemComparator>
+        typename std::vector<TItem>::const_iterator
+        find(const TItem& item, TItemComparator itemComparator) const;
+
         detail::SpatialSubset<TItem>
         uniqueItems(double precision = 1e-12) const;
 

@@ -476,6 +476,38 @@ namespace opensolid
         return detail::FilteredSpatialSet<TItem, TBoundsPredicate>(*this, boundsPredicate);
     }
 
+    template <class TItem>
+    inline
+    typename std::vector<TItem>::const_iterator
+    SpatialSet<TItem>::find(const TItem& item, double precision) const {
+        return find(item, TolerantComparator<TItem>(precision));
+    }
+
+    template <class TItem> template <class TItemComparator>
+    typename std::vector<TItem>::const_iterator
+    SpatialSet<TItem>::find(const TItem& item, TItemComparator itemComparator) const {
+        if (this->isEmpty()) {
+            return end();
+        } else {
+            detail::OverlapPredicate<TItem> overlapPredicate(_boundsFunction(item));
+            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> iterator(
+                rootNode(),
+                &overlapPredicate
+            );
+            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> end(
+                nullptr,
+                &overlapPredicate
+            );
+            while (iterator != end) {
+                if (itemComparator(item, *iterator)) {
+                    return begin() + (&(*iterator) - &first());
+                }
+                ++iterator;
+            }
+            return this->end();
+        }
+    }
+
     namespace detail
     {
         template <class TItem>
