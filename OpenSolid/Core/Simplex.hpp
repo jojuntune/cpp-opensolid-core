@@ -349,4 +349,19 @@ namespace opensolid
     ) const {
          return Simplex<iNumResultDimensions, iNumVertices>(function(simplex.vertices()));
     }
+
+    template <int iNumDimensions, int iNumVertices>
+    TolerantComparator<Simplex<iNumDimensions, iNumVertices>>::TolerantComparator(
+        double precision
+    ) : _precision(precision) {
+    }
+
+    template <int iNumDimensions, int iNumVertices>
+    bool
+    TolerantComparator<Simplex<iNumDimensions, iNumVertices>>::operator()(
+        const Simplex<iNumDimensions, iNumVertices>& firstSimplex,
+        const Simplex<iNumDimensions, iNumVertices>& secondSimplex
+    ) const {
+        return (firstSimplex.vertices() - secondSimplex.vertices()).isZero(_precision);
+    }
 }

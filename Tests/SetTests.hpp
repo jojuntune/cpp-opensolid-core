@@ -481,24 +481,16 @@ public:
         testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
         testPoints[7] = Point2d(0, 2);
 
+        std::vector<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
+
         auto exactComparator = [] (
             const Point2d& firstPoint,
             const Point2d& secondPoint
         ) -> bool {
             return firstPoint == secondPoint;
         };
-
-        auto tolerantComparator = [] (
-            const Point2d& firstPoint,
-            const Point2d& secondPoint
-        ) -> bool {
-            return (firstPoint - secondPoint).isZero();
-        };
-
         std::vector<Point2d> uniquePointsExact =
             SpatialSet<Point2d>(testPoints).uniqueItems(exactComparator);
-        std::vector<Point2d> uniquePointsTolerant =
-            SpatialSet<Point2d>(testPoints).uniqueItems(tolerantComparator);
 
         TS_ASSERT_EQUALS(uniquePointsTolerant.size(), 4u);
         TS_ASSERT_LESS_THAN(uniquePointsTolerant.size(), uniquePointsExact.size());
@@ -525,10 +517,7 @@ public:
         values[3] = 3.0;
         values[4] = 3.0;
 
-        auto comparator = [] (double firstValue, double secondValue) -> bool {
-            return firstValue - secondValue == Zero();
-        };
-        std::vector<std::int64_t> mapping = SpatialSet<double>(values).uniqueMapping(comparator);
+        std::vector<std::int64_t> mapping = SpatialSet<double>(values).uniqueMapping();
 
         TS_ASSERT_EQUALS(mapping.size(), 5);
         TS_ASSERT_EQUALS(mapping[0], 0);

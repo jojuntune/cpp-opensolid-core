@@ -58,7 +58,8 @@ namespace opensolid
         *this = Simplex<3, 4>(vertices);
     }
 
-    inline Tetrahedron3d
+    inline
+    Tetrahedron3d
     Tetrahedron3d::Unit() {
         return Tetrahedron3d(
             Point3d::Origin(),
@@ -66,5 +67,10 @@ namespace opensolid
             Point3d(0, 1, 0),
             Point3d(0, 0, 1)
         );
+    }
+
+    inline
+    TolerantComparator<Tetrahedron3d>::TolerantComparator(double precision) :
+        TolerantComparator<Simplex<3, 4>>(precision) {
     }
 }

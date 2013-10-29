@@ -232,4 +232,20 @@ namespace opensolid
     BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
         return Box<iNumDimensions>(point.vector().template cast<Interval>());
     }
+
+    template <int iNumDimensions>
+    inline
+    TolerantComparator<Point<iNumDimensions>>::TolerantComparator(double precision) :
+        _precision(precision) {
+    }
+
+    template <int iNumDimensions>
+    inline
+    bool
+    TolerantComparator<Point<iNumDimensions>>::operator()(
+        const Point<iNumDimensions>& firstPoint,
+        const Point<iNumDimensions>& secondPoint
+    ) const {
+        return (firstPoint - secondPoint).isZero(_precision);
+    }
 }

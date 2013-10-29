@@ -36,6 +36,7 @@
 #include <OpenSolid/Core/SpatialSet/SpatialSetData.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSubset.hpp>
+#include <OpenSolid/Core/TolerantComparator.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>
@@ -535,6 +536,13 @@ namespace opensolid
         }
     }
 
+    template <class TItem>
+    inline
+    detail::SpatialSubset<TItem>
+    SpatialSet<TItem>::uniqueItems(double precision) const {
+        return uniqueItems(TolerantComparator<TItem>(precision));
+    }
+
     template <class TItem> template <class TItemComparator>
     detail::SpatialSubset<TItem>
     SpatialSet<TItem>::uniqueItems(TItemComparator itemComparator) const {
@@ -559,6 +567,13 @@ namespace opensolid
             );
             return detail::SpatialSubset<TItem>(std::move(items));
         }
+    }
+
+    template <class TItem>
+    inline
+    std::vector<std::int64_t>
+    SpatialSet<TItem>::uniqueMapping(double precision) const {
+        return uniqueMapping(TolerantComparator<TItem>(precision));
     }
 
     template <class TItem> template <class TItemComparator>

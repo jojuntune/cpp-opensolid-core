@@ -116,4 +116,12 @@ namespace opensolid
         public BoundsType<Simplex<iNumDimensions, 2>>
     {
     };
+
+    template <int iNumDimensions>
+    class TolerantComparator<LineSegment<iNumDimensions>> :
+        public TolerantComparator<Simplex<iNumDimensions, 2>>
+    {
+    public:
+        TolerantComparator(double precision);
+    };
 }

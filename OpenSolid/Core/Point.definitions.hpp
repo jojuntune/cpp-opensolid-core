@@ -34,6 +34,7 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/TolerantComparator.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <ostream>
@@ -196,6 +197,21 @@ namespace opensolid
     {
         Box<iNumDimensions>
         operator()(const Point<iNumDimensions>& point) const;
+    };
+
+    template <int iNumDimensions>
+    class TolerantComparator<Point<iNumDimensions>>
+    {
+    private:
+        double _precision;
+    public:
+        TolerantComparator(double precision);
+
+        bool
+        operator()(
+            const Point<iNumDimensions>& firstPoint,
+            const Point<iNumDimensions>& secondPoint
+        ) const;
     };
 
     template <int iNumDimensions>

@@ -86,4 +86,10 @@ namespace opensolid
     LineSegment<1>::Unit() {
         return LineSegment<1>(0.0, 1.0);
     }
+
+    template <int iNumDimensions>
+    inline
+    TolerantComparator<LineSegment<iNumDimensions>>::TolerantComparator(double precision) :
+        TolerantComparator<Simplex<iNumDimensions, 2>>(precision) {
+    }
 }

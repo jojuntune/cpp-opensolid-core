@@ -24,61 +24,23 @@
 
 #pragma once
 
-#include <OpenSolid/Core/Triangle.definitions.hpp>
+#include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/TolerantComparator.declarations.hpp>
+
+#include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
 {
-    inline
-    Triangle<2>::Triangle() {
-    }
+    template <>
+    class TolerantComparator<double>
+    {
+    private:
+        Zero _zero;
+    public:
+        TolerantComparator(double precision);
 
-    inline
-    Triangle<2>::Triangle(const Simplex<2, 3>& other) :
-        Simplex<2, 3>(other) {
-    }
-
-    inline
-    Triangle<2>::Triangle(
-        const Point2d& firstVertex,
-        const Point2d& secondVertex,
-        const Point2d& thirdVertex
-    ) {
-        Matrix<double, 2, 3> vertices;
-        vertices.col(0) = firstVertex.vector();
-        vertices.col(1) = secondVertex.vector();
-        vertices.col(2) = thirdVertex.vector();
-        *this = Simplex<2, 3>(vertices);
-    }
-
-    inline
-    Triangle<3>::Triangle() {
-    }
-
-    inline
-    Triangle<3>::Triangle(const Simplex<3, 3>& other) :
-        Simplex<3, 3>(other) {
-    }
-
-    inline
-    Triangle<3>::Triangle(
-        const Point3d& firstVertex,
-        const Point3d& secondVertex,
-        const Point3d& thirdVertex
-    ) {
-        Matrix3d vertices;
-        vertices.col(0) = firstVertex.vector();
-        vertices.col(1) = secondVertex.vector();
-        vertices.col(2) = thirdVertex.vector();
-        *this = Simplex<3, 3>(vertices);
-    }
-
-    template <int iNumDimensions>
-    inline
-    TolerantComparator<Triangle<iNumDimensions>>::TolerantComparator(double precision) :
-        TolerantComparator<Simplex<iNumDimensions, 3>>(precision) {
-    }
+        bool
+        operator()(double firstValue, double secondValue) const;
+    };
 }

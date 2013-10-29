@@ -111,4 +111,12 @@ namespace opensolid
         public BoundsType<Simplex<iNumDimensions, 3>>
     {
     };
+
+    template <int iNumDimensions>
+    class TolerantComparator<Triangle<iNumDimensions>> :
+        public TolerantComparator<Simplex<iNumDimensions, 3>>
+    {
+    public:
+        TolerantComparator(double precision);
+    };
 }

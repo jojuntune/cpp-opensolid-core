@@ -90,4 +90,12 @@ namespace opensolid
         public BoundsType<Simplex<3, 4>>
     {
     };
+
+    template <>
+    class TolerantComparator<Tetrahedron3d> :
+        public TolerantComparator<Simplex<3, 4>>
+    {
+    public:
+        TolerantComparator(double precision);
+    };
 }

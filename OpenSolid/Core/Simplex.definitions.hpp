@@ -37,6 +37,7 @@
 #include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
+#include <OpenSolid/Core/TolerantComparator.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
@@ -177,5 +178,20 @@ namespace opensolid
     struct BoundsType<Simplex<iNumDimensions, iNumVertices>>
     {
         typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumVertices>
+    class TolerantComparator<Simplex<iNumDimensions, iNumVertices>>
+    {
+    private:
+        double _precision;
+    public:
+        TolerantComparator(double precision);
+
+        bool
+        operator()(
+            const Simplex<iNumDimensions, iNumVertices>& firstSimplex,
+            const Simplex<iNumDimensions, iNumVertices>& secondSimplex
+        ) const;
     };
 }
