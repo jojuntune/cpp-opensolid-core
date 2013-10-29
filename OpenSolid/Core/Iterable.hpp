@@ -81,7 +81,7 @@ namespace opensolid
     template <class TDerived> template <class TPredicate>
     inline
     bool
-    Iterable<TDerived>::every(TPredicate predicate) const {
+    Iterable<TDerived>::all(TPredicate predicate) const {
         return std::all_of(begin(), end(), predicate);
     }
 

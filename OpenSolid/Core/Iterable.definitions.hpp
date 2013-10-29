@@ -62,7 +62,7 @@ namespace opensolid
 
         template <class TPredicate>
         bool
-        every(TPredicate predicate) const;
+        all(TPredicate predicate) const;
 
         template <class TValue, class TFunction>
         TValue

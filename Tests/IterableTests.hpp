@@ -84,14 +84,14 @@ public:
 
     void testEvery() {
         TS_ASSERT(
-            vectorSet().every(
+            vectorSet().all(
                 [] (const Vector2d& vector) -> bool {
                     return vector.norm() < 2;
                 }
             )
         );
         TS_ASSERT(
-            !vectorSet().every(
+            !vectorSet().all(
                 [] (const Vector2d& vector) -> bool {
                     return vector.x() >= Zero();
                 }
@@ -100,7 +100,7 @@ public:
         Vector2I testBounds(Interval(1), Interval::Whole());
         TS_ASSERT_EQUALS(vectorSet().overlapping(testBounds).size(), 2u);
         TS_ASSERT(
-            vectorSet().overlapping(testBounds).every(
+            vectorSet().overlapping(testBounds).all(
                 [] (const Vector2d& vector) -> bool {
                     return vector.x() - 1 == Zero();
                 }
