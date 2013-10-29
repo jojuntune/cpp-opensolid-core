@@ -39,13 +39,6 @@ namespace opensolid
         typename BoundsType<TBounded>::Type
         operator()(const TBounded& argument) const;
     };
-
-    template <>
-    struct BoundsFunction<int>
-    {
-        Interval
-        operator()(int argument) const;
-    };
     
     template <>
     struct BoundsFunction<double>

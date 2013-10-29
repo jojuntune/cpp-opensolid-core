@@ -40,11 +40,6 @@ namespace opensolid
     }
 
     inline Interval
-    BoundsFunction<int>::operator()(int value) const {
-        return Interval(value);
-    }
-
-    inline Interval
     BoundsFunction<double>::operator()(double value) const {
         return Interval(value);
     }
