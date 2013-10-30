@@ -26,47 +26,36 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Zero.definitions.hpp>
+#include <OpenSolid/Core/Zero.declarations.hpp>
 
 namespace opensolid
 {
-    inline
-    Zero::Zero(double precision) :
-        _precision(precision) {
-    }
+    class Zero
+    {
+    private:
+        double _precision;
+    public:
+        Zero(double precision = 1e-12);
 
-    inline double
-    Zero::precision() const {
-        return _precision;
-    }
+        double
+        precision() const;
+    };
 
-    inline bool
-    operator==(double value, Zero zero) {
-        return value >= -zero.precision() && value <= zero.precision();
-    }
-
-    inline bool
-    operator!=(double value, Zero zero) {
-        return value > zero.precision() || value < -zero.precision();
-    }
-
-    inline bool
-    operator<(double value, Zero zero) {
-        return value < -zero.precision();
-    }
-
-    inline bool
-    operator>(double value, Zero zero) {
-        return value > zero.precision();
-    }
-
-    inline bool
-    operator<=(double value, Zero zero) {
-        return value <= zero.precision();
-    }
-
-    inline bool
-    operator>=(double value, Zero zero) {
-        return value >= -zero.precision();
-    }
+    bool
+    operator==(double value, Zero zero);
+    
+    bool
+    operator!=(double value, Zero zero);
+    
+    bool
+    operator<(double value, Zero zero);
+    
+    bool
+    operator>(double value, Zero zero);
+    
+    bool
+    operator<=(double value, Zero zero);
+    
+    bool
+    operator>=(double value, Zero zero);
 }

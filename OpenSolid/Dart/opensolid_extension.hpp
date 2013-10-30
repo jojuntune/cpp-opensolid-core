@@ -26,14 +26,13 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/Core/Zero.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 
 #include "dart_api.h"
 
 namespace opensolid
 {
-
     enum {
         INVALID = 0,
         ZERO,

@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Interval.definitions.hpp>
 
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 #include <cassert>
 #include <cstdlib>

@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/TolerantComparator.declarations.hpp>
 
-#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/Core/Zero.definitions.hpp>
 
 namespace opensolid
 {

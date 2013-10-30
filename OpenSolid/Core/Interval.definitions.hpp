@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/Core/Zero.declarations.hpp>
 
 #include <ostream>
 #include <utility>
