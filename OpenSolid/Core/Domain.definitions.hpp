@@ -36,7 +36,7 @@
 #include <OpenSolid/Core/Geometry/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Set.definitions.hpp>
+#include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
@@ -47,14 +47,14 @@ namespace opensolid
         public Convertible<Domain<iNumDimensions>>
     {
     private:
-        Set<Geometry<iNumDimensions, iNumDimensions - 1>> _boundaries;
+        SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>> _boundaries;
     public:
         Domain();
 
         explicit
-        Domain(const Set<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries);
+        Domain(const SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries);
         
-        const Set<Geometry<iNumDimensions, iNumDimensions - 1>>&
+        const SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>&
         boundaries() const;
 
         bool

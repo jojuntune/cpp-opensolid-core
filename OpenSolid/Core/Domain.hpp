@@ -31,7 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
-#include <OpenSolid/Core/Set.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
 
 namespace opensolid
 {
@@ -43,13 +43,13 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     Domain<iNumDimensions>::Domain(
-        const Set<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries
+        const SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries
     ) : _boundaries(boundaries) {
     }
     
     template <int iNumDimensions>
     inline
-    const Set<Geometry<iNumDimensions, iNumDimensions - 1>>&
+    const SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>&
     Domain<iNumDimensions>::boundaries() const {
         return _boundaries;
     }
@@ -75,7 +75,7 @@ namespace opensolid
         double scale
     ) const {
         return Domain<iNumDimensions>(
-            Set<Geometry<iNumDimensions, iNumDimensions - 1>>::scaling(
+            SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>::scaling(
                 domain.boundaries(),
                 scale
             )
@@ -100,7 +100,7 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return Domain<iNumDimensions>(
-            Set<Geometry<iNumDimensions, iNumDimensions - 1>>::transformation(
+            SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>::transformation(
                 domain.boundaries(),
                 matrix.derived()
             )

@@ -33,7 +33,7 @@
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
-#include <OpenSolid/Core/Set.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
 namespace opensolid

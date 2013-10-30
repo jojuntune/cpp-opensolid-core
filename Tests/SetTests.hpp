@@ -27,7 +27,6 @@
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Set.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 #include <boost/timer.hpp>
@@ -40,23 +39,6 @@
 #include <iostream>
 
 using namespace opensolid;
-
-template <class Type>
-void testSet(const SetNode<Type>* node) {
-    if (!node) {
-        return;
-    } else if (node->element()) {
-        TS_ASSERT(node->size() == 1u);
-    } else {
-        const SetNode<Type>* leftChild = node->leftChild();
-        const SetNode<Type>* rightChild = node->rightChild();
-        TS_ASSERT(node->bounds().contains(leftChild->bounds()));
-        TS_ASSERT(node->bounds().contains(rightChild->bounds()));
-        TS_ASSERT_EQUALS(node->size(), leftChild->size() + rightChild->size());
-        testSet(node->leftChild());
-        testSet(node->rightChild());
-    }
-}
 
 template <class TItem>
 void testSet(const detail::SpatialSetNode<TItem>* node) {
@@ -202,82 +184,6 @@ public:
         TS_ASSERT_EQUALS(check[0], Vector2d(1, 3));
         TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
     }
-    
-    void testdoubleInsertion() {
-        Set<double> set;
-        set.insert(3);
-        set.insert(1);
-        set.insert(7);
-        set.insert(2);
-        set.insert(5);
-        std::cout << set << std::endl;
-        testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 5u);
-        TS_ASSERT_EQUALS(set.erase(3), 1u);
-        std::cout << "3 removed" << std::endl;
-        std::cout << set << std::endl;
-        testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 4u);
-        set.erase(5);
-        std::cout << "5 removed" << std::endl;
-        std::cout << set << std::endl;
-        testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 3u);
-        set.erase(7);
-        std::cout << "7 removed" << std::endl;
-        std::cout << set << std::endl;
-        testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 2u);
-    }
-    
-    void testRebalance() {
-        Set<double> set;
-        for (int i = 1; i <= 12; ++i) {
-            set.insert(i);
-            std::cout << set << std::endl;
-            testSet(set.root());
-            TS_ASSERT_EQUALS(set.size(), unsigned(i));
-        }
-        for (int i = 12; i >= 1; --i) {
-            set.erase(i);
-            std::cout << set << std::endl;
-            testSet(set.root());
-            TS_ASSERT_EQUALS(set.size(), unsigned(i - 1));
-        }
-    }
-    
-    void testLeafParentBug() {
-        Set<Interval> set;
-        set.insert(Interval(-2, 2));
-        set.insert(Interval(2, 6));
-        std::cout << set << std::endl;
-        testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 2u);
-        set.insert(Interval(-1, 1));
-        std::cout << set << std::endl;
-        testSet(set.root());
-        TS_ASSERT_EQUALS(set.size(), 3u);
-    }
-    
-    void testRangeOperations() {
-        Set<double> set;
-        std::vector<double> insertion_list(5);
-        insertion_list[0] = 5;
-        insertion_list[1] = 1;
-        insertion_list[2] = 3;
-        insertion_list[3] = 2;
-        insertion_list[4] = 4;
-        std::vector<double> erasure_list(5);
-        erasure_list[0] = 1;
-        erasure_list[1] = 3;
-        erasure_list[2] = 5;
-        erasure_list[3] = 7;
-        erasure_list[4] = 9;
-        set.insert(insertion_list.begin(), insertion_list.end());
-        TS_ASSERT_EQUALS(set.size(), 5u);
-        TS_ASSERT_EQUALS(set.erase(erasure_list.begin(), erasure_list.end()), 3u);
-        TS_ASSERT_EQUALS(set.size(), 2u);
-    }
 
     void testCustomBoundsFunction() {
         std::vector<Interval> intervals(2);
@@ -292,62 +198,6 @@ public:
         Interval bounds = indexSet.bounds();
         TS_ASSERT_EQUALS(bounds.lowerBound(), 1.0);
         TS_ASSERT_EQUALS(bounds.upperBound(), 4.0);
-    }
-
-    void testIndexing() {
-        Set<double> set;
-        set.insert(5);
-        set.insert(1);
-        set.insert(8);
-        set.insert(9);
-        set.insert(2);
-
-        TS_ASSERT_EQUALS(set.indexOf(1), 0);
-        TS_ASSERT_EQUALS(set.indexOf(2), 1);
-        TS_ASSERT_EQUALS(set.indexOf(5), 2);
-        TS_ASSERT_EQUALS(set.indexOf(8), 3);
-        TS_ASSERT_EQUALS(set.indexOf(9), 4);
-
-        TS_ASSERT_EQUALS(set.indexOf(0), -1);
-        TS_ASSERT_EQUALS(set.indexOf(10), -1);
-
-        TS_ASSERT_EQUALS(set.atIndex(0), 1);
-        TS_ASSERT_EQUALS(set.atIndex(1), 2);
-        TS_ASSERT_EQUALS(set.atIndex(2), 5);
-        TS_ASSERT_EQUALS(set.atIndex(3), 8);
-        TS_ASSERT_EQUALS(set.atIndex(4), 9);
-    }
-
-    void xtestIndexingSpeed() {
-        Set<Vector3d> set;
-        int size = 100000;
-        for (int i = 0; i < size; ++i) {
-            set.insert(Vector3d(rand(), rand(), rand()));
-        }
-
-        boost::timer visitationTimer;
-        double visitationSquaredNorm = 0.0;
-        set.forEach(
-            [&] (const Vector3d& vector) {
-                visitationSquaredNorm += vector.squaredNorm();
-            }
-        );
-        double visitationTime = visitationTimer.elapsed();
-
-        std::cout << "Visitation: " << visitationTime << " s" << std::endl;
-
-        boost::timer indexingTimer;
-        double indexingSquaredNorm = 0.0;
-        for (int i = 0; i < size; ++i) {
-            indexingSquaredNorm += set.atIndex(i).squaredNorm();
-        }
-        double indexingTime = indexingTimer.elapsed();
-
-        std::cout << "Indexing: " << indexingTime << " s" << std::endl;
-
-        std::cout << "Visitation " << indexingTime / visitationTime << " times faster" << std::endl;
-
-        TS_ASSERT(visitationSquaredNorm - indexingSquaredNorm == Zero());
     }
 
     void testPoint3d() {

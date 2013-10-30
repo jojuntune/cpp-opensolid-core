@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <boost/intrusive_ptr.hpp>
@@ -103,16 +104,9 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    Set<Geometry<iNumDimensions, iNumParameters - 1>>
+    SpatialSet<Geometry<iNumDimensions, iNumParameters - 1>>
     Geometry<iNumDimensions, iNumParameters>::boundaries() const {
-        return domain().boundaries().mapped(
-            [this] (const Geometry<iNumParameters, iNumParameters - 1>& domainBoundary) {
-                return Geometry<iNumDimensions, iNumParameters - 1>(
-                    function().composed(domainBoundary.function()),
-                    domainBoundary.domain()
-                );
-            }
-        );
+        return domain().boundaries().morphed(function());
     }
 
     template <int iNumDimensions>
@@ -173,12 +167,12 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    Set<Point<iNumDimensions>>
+    SpatialSet<Point<iNumDimensions>>
     Geometry<iNumDimensions, 1>::boundaries() const {
-        Set<Point<iNumDimensions>> results;
-        results.insert(Point<iNumDimensions>(function()(domain().lowerBound())));
-        results.insert(Point<iNumDimensions>(function()(domain().upperBound())));
-        return results;
+        Point<iNumDimensions> results[2];
+        results[0] = Point<iNumDimensions>(function()(domain().lowerBound()));
+        results[1] = Point<iNumDimensions>(function()(domain().upperBound()));
+        return SpatialSet<Point<iNumDimensions>>(results, results + 2);
     }
 
     template <int iNumDimensions, int iNumParameters>

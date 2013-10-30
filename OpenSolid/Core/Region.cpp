@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/Region.hpp>
 
 #include <OpenSolid/Core/Curve.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
 
 namespace opensolid
 {
@@ -36,30 +37,26 @@ namespace opensolid
         Domain<2>(domain) {
     }
 
-    Region2d::Region2d(const Set<Geometry<2, 1>>& boundaries) :
+    Region2d::Region2d(const SpatialSet<Geometry<2, 1>>& boundaries) :
         Domain<2>(boundaries) {
     }
 
     namespace
     {
-        Set<Geometry<2, 1>>
+        SpatialSet<Geometry<2, 1>>
         boxBoundaries(const Box<2>& box) {
             Point2d lowerLeft = box.interpolated(0, 0);
             Point2d lowerRight = box.interpolated(1, 0);
             Point2d upperRight = box.interpolated(1, 1);
             Point2d upperLeft = box.interpolated(0, 1);
 
-            LineSegment2d lowerEdge(lowerLeft, lowerRight);
-            LineSegment2d rightEdge(lowerRight, upperRight);
-            LineSegment2d upperEdge(upperRight, upperLeft);
-            LineSegment2d leftEdge(upperLeft, lowerLeft);
+            LineSegment2d edges[4];
+            edges[0] = LineSegment2d(lowerLeft, lowerRight);
+            edges[1] = LineSegment2d(lowerRight, upperRight);
+            edges[2] = LineSegment2d(upperRight, upperLeft);
+            edges[3] = LineSegment2d(upperLeft, lowerLeft);
 
-            Set<Geometry<2, 1>> results;
-            results.insert(lowerEdge);
-            results.insert(rightEdge);
-            results.insert(upperEdge);
-            results.insert(leftEdge);
-            return results;
+            return SpatialSet<Geometry<2, 1>>(edges, edges + 4);
         }
     }
 
@@ -69,13 +66,14 @@ namespace opensolid
 
     namespace
     {
-        Set<Geometry<2, 1>>
+        SpatialSet<Geometry<2, 1>>
         triangleBoundaries(const Triangle<2>& triangle) {
-            Set<Geometry<2, 1>> results;
-            results.insert(triangle.edge(0));
-            results.insert(triangle.edge(1));
-            results.insert(triangle.edge(2));
-            return results;
+            LineSegment2d edges[3];
+            edges[0] = triangle.edge(0);
+            edges[1] = triangle.edge(1);
+            edges[2] = triangle.edge(2);
+
+            return SpatialSet<Geometry<2, 1>>(edges, edges + 3);
         }
     }
  
@@ -85,8 +83,7 @@ namespace opensolid
 
     Region2d
     Region2d::Disk(const Point2d& centerPoint, double radius) {
-        Set<Geometry<2, 1>> boundaries;
-        boundaries.insert(Curve2d::Circle(centerPoint, radius));
-        return Region2d(boundaries);
+        Curve2d boundary = Curve2d::Circle(centerPoint, radius);
+        return Region2d(SpatialSet<Geometry<2, 1>>(&boundary, &boundary + 1));
     }
 }

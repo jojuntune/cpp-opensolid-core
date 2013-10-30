@@ -33,7 +33,7 @@
 #include <OpenSolid/Core/Geometry.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
-#include <OpenSolid/Core/Set.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet.declarations.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
@@ -49,7 +49,7 @@ namespace opensolid
         Region2d(const Domain<2>& domain);
 
         OPENSOLID_CORE_EXPORT
-        Region2d(const Set<Geometry<2, 1>>& boundaries);
+        Region2d(const SpatialSet<Geometry<2, 1>>& boundaries);
 
         OPENSOLID_CORE_EXPORT
         Region2d(const Box<2>& box);

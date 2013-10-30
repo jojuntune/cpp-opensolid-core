@@ -32,7 +32,7 @@
 #include <OpenSolid/Core/Domain.definitions.hpp>
 #include <OpenSolid/Core/Geometry.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/Set.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet.declarations.hpp>
 #include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
@@ -49,10 +49,10 @@ namespace opensolid
         Body3d(const Domain<3>& domain);
 
         OPENSOLID_CORE_EXPORT
-        Body3d(const Set<Geometry<3, 2>>& boundaries);
+        Body3d(const SpatialSet<Geometry<3, 2>>& boundaries);
 
         OPENSOLID_CORE_EXPORT
-        Body3d(const Set<Triangle<3>>& boundaries);
+        Body3d(const SpatialSet<Triangle<3>>& boundaries);
 
         OPENSOLID_CORE_EXPORT
         Body3d(const Box<3>& box);

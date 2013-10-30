@@ -25,7 +25,7 @@
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Set.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
@@ -171,31 +171,16 @@ public:
     }
 
     void testSet() {
-        Set<Triangle3d> set;
-        Triangle3d firstTriangle(
-            Point3d::Origin(),
-            Point3d(1, 0, 0),
-            Point3d(0, 1, 0)
-        );
-        Triangle3d secondTriangle(
-            Point3d(2, 1, 0),
-            Point3d(3, 0, 0),
-            Point3d(3, 1, 0)
-        );
-        Triangle3d thirdTriangle(
-            Point3d(0, 0, 1),
-            Point3d(1, 0, 1),
-            Point3d(1, 1, 1)
-        );
+        std::vector<Triangle3d> triangles(3);
+        triangles[0] = Triangle3d(Point3d::Origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
+        triangles[1] = Triangle3d(Point3d(2, 1, 0), Point3d(3, 0, 0), Point3d(3, 1, 0));
+        triangles[2] = Triangle3d(Point3d(0, 0, 1), Point3d(1, 0, 1), Point3d(1, 1, 1));
 
-        set.insert(firstTriangle);
-        set.insert(secondTriangle);
-        set.insert(thirdTriangle);
+        SpatialSet<Triangle3d> set(triangles);
 
-        std::vector<Triangle3d> overlapping;
-        set.copyOverlapping(firstTriangle.bounds(), std::back_inserter(overlapping));
+        std::vector<Triangle3d> overlapping = set.overlapping(triangles[0].bounds());
         TS_ASSERT_EQUALS(overlapping.size(), 1u);
-        TS_ASSERT_EQUALS(overlapping.front(), firstTriangle);
+        TS_ASSERT_EQUALS(overlapping.front(), triangles[0]);
     }
 
     void testVector() {

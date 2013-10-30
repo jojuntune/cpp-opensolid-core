@@ -38,6 +38,7 @@
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Simplex.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>
@@ -79,7 +80,7 @@ namespace opensolid
         Point<iNumDimensions>
         operator()(const EigenBase<TVector>& parameterValues) const;
 
-        Set<Geometry<iNumDimensions, iNumParameters - 1>>
+        SpatialSet<Geometry<iNumDimensions, iNumParameters - 1>>
         boundaries() const;
     };
 
@@ -114,7 +115,7 @@ namespace opensolid
         Point<iNumDimensions>
         operator()(double parameterValue) const;
 
-        Set<Point<iNumDimensions>>
+        SpatialSet<Point<iNumDimensions>>
         boundaries() const;
     };
 }

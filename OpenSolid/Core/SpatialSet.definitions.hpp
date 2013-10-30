@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsFunction.definitions.hpp>
 #include <OpenSolid/Core/Iterable.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
