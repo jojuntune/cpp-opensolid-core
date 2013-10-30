@@ -35,15 +35,17 @@ namespace opensolid
         template <class TItem>
         inline
         ContainPredicate<TItem>::ContainPredicate(
-            const typename BoundsType<TItem>::Type& predicateBounds
-        ) : _predicateBounds(predicateBounds) {
+            const typename BoundsType<TItem>::Type& predicateBounds,
+            double precision
+        ) : _predicateBounds(predicateBounds),
+            _precision(precision) {
         }
 
         template <class TItem>
         inline
         bool
         ContainPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
-            return bounds.contains(_predicateBounds);
+            return bounds.contains(_predicateBounds, _precision);
         }
     }
 }

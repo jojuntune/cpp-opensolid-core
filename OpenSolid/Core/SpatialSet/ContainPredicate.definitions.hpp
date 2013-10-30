@@ -38,8 +38,12 @@ namespace opensolid
         {
         private:
             typename BoundsType<TItem>::Type _predicateBounds;
+            double _precision;
         public:
-            ContainPredicate(const typename BoundsType<TItem>::Type& predicateBounds);
+            ContainPredicate(
+                const typename BoundsType<TItem>::Type& predicateBounds,
+                double precision
+            );
 
             bool
             operator()(const typename BoundsType<TItem>::Type& bounds) const;

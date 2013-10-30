@@ -147,10 +147,16 @@ namespace opensolid
         clear();
 
         detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>
-        overlapping(const typename BoundsType<TItem>::Type& predicateBounds) const;
+        overlapping(
+            const typename BoundsType<TItem>::Type& predicateBounds,
+            double precision = 1e-12
+        ) const;
 
         detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>
-        containing(const typename BoundsType<TItem>::Type& predicateBounds) const;
+        containing(
+            const typename BoundsType<TItem>::Type& predicateBounds,
+            double precision = 1e-12
+        ) const;
 
         template <class TBoundsPredicate>
         detail::FilteredSpatialSet<TItem, TBoundsPredicate>
@@ -159,23 +165,11 @@ namespace opensolid
         typename std::vector<TItem>::const_iterator
         find(const TItem& item, double precision = 1e-12) const;
 
-        template <class TItemComparator>
-        typename std::vector<TItem>::const_iterator
-        find(const TItem& item, TItemComparator itemComparator) const;
-
         detail::SpatialSubset<TItem>
         uniqueItems(double precision = 1e-12) const;
 
-        template <class TItemComparator>
-        detail::SpatialSubset<TItem>
-        uniqueItems(TItemComparator itemComparator) const;
-
         std::vector<std::int64_t>
         uniqueMapping(double precision = 1e-12) const;
-
-        template <class TItemComparator>
-        std::vector<std::int64_t>
-        uniqueMapping(TItemComparator itemComparator) const;
     };
     
     template <class TItem>

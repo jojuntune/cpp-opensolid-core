@@ -449,11 +449,12 @@ namespace opensolid
     inline
     detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>
     SpatialSet<TItem>::overlapping(
-        const typename BoundsType<TItem>::Type& predicateBounds
+        const typename BoundsType<TItem>::Type& predicateBounds,
+        double precision
     ) const {
         return detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>(
             *this,
-            detail::OverlapPredicate<TItem>(predicateBounds)
+            detail::OverlapPredicate<TItem>(predicateBounds, precision)
         );
     }
 
@@ -461,11 +462,12 @@ namespace opensolid
     inline
     detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>
     SpatialSet<TItem>::containing(
-        const typename BoundsType<TItem>::Type& predicateBounds
+        const typename BoundsType<TItem>::Type& predicateBounds,
+        double precision
     ) const {
         return detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>(
             *this,
-            detail::ContainPredicate<TItem>(predicateBounds)
+            detail::ContainPredicate<TItem>(predicateBounds, precision)
         );
     }
 
@@ -480,31 +482,26 @@ namespace opensolid
     inline
     typename std::vector<TItem>::const_iterator
     SpatialSet<TItem>::find(const TItem& item, double precision) const {
-        return find(item, TolerantComparator<TItem>(precision));
-    }
-
-    template <class TItem> template <class TItemComparator>
-    typename std::vector<TItem>::const_iterator
-    SpatialSet<TItem>::find(const TItem& item, TItemComparator itemComparator) const {
         if (this->isEmpty()) {
             return end();
         } else {
-            detail::OverlapPredicate<TItem> overlapPredicate(_boundsFunction(item));
-            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> iterator(
+            detail::OverlapPredicate<TItem> overlapPredicate(_boundsFunction(item), precision);
+            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> filteredIterator(
                 rootNode(),
                 &overlapPredicate
             );
-            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> end(
+            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> filteredEnd(
                 nullptr,
                 &overlapPredicate
             );
-            while (iterator != end) {
-                if (itemComparator(item, *iterator)) {
-                    return begin() + (&(*iterator) - &first());
+            TolerantComparator<TItem> itemComparator(precision);
+            while (filteredIterator != filteredEnd) {
+                if (itemComparator(item, *filteredIterator)) {
+                    return begin() + (&(*filteredIterator) - &first());
                 }
-                ++iterator;
+                ++filteredIterator;
             }
-            return this->end();
+            return end();
         }
     }
 
@@ -525,12 +522,12 @@ namespace opensolid
             return node;
         }
 
-        template <class TItem, class TItemComparator>
+        template <class TItem>
         void
         markDuplicateItems(
             const SpatialSetNode<TItem>* anchorNode,
             const TItem* firstItem,
-            const TItemComparator& itemComparator,
+            const TolerantComparator<TItem>& itemComparator,
             std::vector<const TItem*>& itemMap
         ) {
             // Ensure anchor node is a valid leaf node
@@ -557,13 +554,13 @@ namespace opensolid
             }
         }
 
-        template <class TItem, class TItemComparator, class TVisitor>
+        template <class TItem, class TVisitor>
         void
         visitUniqueItems(
             const SpatialSetNode<TItem>* rootNode,
+            double precision,
             const TItem* firstItem,
             std::int64_t numItems,
-            const TItemComparator& itemComparator,
             const TVisitor& visitor
         ) {
             std::vector<const TItem*> itemMap(numItems);
@@ -573,6 +570,8 @@ namespace opensolid
             while (node->leftChild) {
                 node = node->leftChild;
             }
+
+            TolerantComparator<TItem> itemComparator(precision);
             do {
                 std::int64_t itemIndex = node->item - firstItem;
                 if (itemMap[itemIndex] == nullptr) {
@@ -587,12 +586,6 @@ namespace opensolid
     inline
     detail::SpatialSubset<TItem>
     SpatialSet<TItem>::uniqueItems(double precision) const {
-        return uniqueItems(TolerantComparator<TItem>(precision));
-    }
-
-    template <class TItem> template <class TItemComparator>
-    detail::SpatialSubset<TItem>
-    SpatialSet<TItem>::uniqueItems(TItemComparator itemComparator) const {
         if (this->isEmpty()) {
             return detail::SpatialSubset<TItem>();
         } else {
@@ -607,9 +600,9 @@ namespace opensolid
             };
             detail::visitUniqueItems(
                 rootNode(),
+                precision,
                 &_data->items.front(),
                 this->size(),
-                itemComparator,
                 visitor
             );
             return detail::SpatialSubset<TItem>(std::move(items));
@@ -620,12 +613,6 @@ namespace opensolid
     inline
     std::vector<std::int64_t>
     SpatialSet<TItem>::uniqueMapping(double precision) const {
-        return uniqueMapping(TolerantComparator<TItem>(precision));
-    }
-
-    template <class TItem> template <class TItemComparator>
-    std::vector<std::int64_t>
-    SpatialSet<TItem>::uniqueMapping(TItemComparator itemComparator) const {
         if (this->isEmpty()) {
             return std::vector<std::int64_t>();
         } else {
@@ -641,9 +628,9 @@ namespace opensolid
             };
             detail::visitUniqueItems(
                 rootNode(),
+                precision,
                 firstItem,
                 this->size(),
-                itemComparator,
                 visitor
             );
             return results;
