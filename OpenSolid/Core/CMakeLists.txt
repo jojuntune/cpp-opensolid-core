@@ -44,6 +44,7 @@
         Function/*
         FunctionImplementation/*
         Geometry/*
+        Iterable/*
         Matrix/*
-        Set/*
+        SpatialSet/*
     )
