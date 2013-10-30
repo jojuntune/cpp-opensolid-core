@@ -63,25 +63,29 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline SetInserter<TElement>&
+    inline
+    SetInserter<TElement>&
     SetInserter<TElement>::operator*() {
         return *this;
     }
     
     template <class TElement>
-    inline void
+    inline
+    void
     SetInserter<TElement>::operator=(const TElement& element) {
         _set->insert(element);
     }
     
     template <class TElement>
-    inline SetInserter<TElement>&
+    inline
+    SetInserter<TElement>&
     SetInserter<TElement>::operator++() {
         return *this;
     }
     
     template <class TElement>
-    inline SetInserter<TElement>&
+    inline
+    SetInserter<TElement>&
     SetInserter<TElement>::operator++(int) {
         return *this;
     }

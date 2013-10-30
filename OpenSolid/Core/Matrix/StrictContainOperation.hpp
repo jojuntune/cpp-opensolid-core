@@ -54,7 +54,8 @@ namespace Eigen
         _precision(precision) {
     }
     
-    inline bool
+    inline
+    bool
     StrictContainOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval

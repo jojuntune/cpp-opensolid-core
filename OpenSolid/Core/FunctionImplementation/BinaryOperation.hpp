@@ -85,12 +85,14 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const FunctionImplementationPtr&
+    inline
+    const FunctionImplementationPtr&
     BinaryOperation::firstOperand() const {
         return _firstOperand;
     }
     
-    inline const FunctionImplementationPtr&
+    inline
+    const FunctionImplementationPtr&
     BinaryOperation::secondOperand() const {
         return _secondOperand;
     }

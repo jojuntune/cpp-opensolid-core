@@ -31,13 +31,15 @@
 namespace opensolid
 {
     template <class TDerived> template <class TOther>
-    inline TOther
+    inline
+    TOther
     Convertible<TDerived>::to() const {
         return ConversionFunction<TDerived, TOther>()(static_cast<const TDerived&>(*this));
     }
 
     template <class TDerived> template <class TOther>
-    inline TDerived
+    inline
+    TDerived
     Convertible<TDerived>::From(const TOther& argument) {
         return ConversionFunction<TOther, TDerived>()(argument);
     }

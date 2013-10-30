@@ -121,12 +121,14 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const VectorXd&
+    inline
+    const VectorXd&
     LinearFunction::originPoint() const {
         return _originPoint;
     }
 
-    inline const MatrixXd&
+    inline
+    const MatrixXd&
     LinearFunction::basisMatrix() const {
         return _basisMatrix;
     }

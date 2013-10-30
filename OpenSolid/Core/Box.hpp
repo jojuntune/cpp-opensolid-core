@@ -34,8 +34,6 @@
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
-////////// Implementation //////////
-
 namespace opensolid
 {
     template <int iNumDimensions>
@@ -75,136 +73,158 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline const Interval*
+    inline
+    const Interval*
     Box<iNumDimensions>::data() const {
         return vector().data();
     }
 
     template <int iNumDimensions>
-    inline Interval*
+    inline
+    Interval*
     Box<iNumDimensions>::data() {
         return vector().data();
     }
 
     template <int iNumDimensions>
-    inline Matrix<Interval, iNumDimensions, 1>&
+    inline
+    Matrix<Interval, iNumDimensions, 1>&
     Box<iNumDimensions>::vector() {
         return _vector;
     }
 
     template <int iNumDimensions>
-    inline const Matrix<Interval, iNumDimensions, 1>&
+    inline
+    const Matrix<Interval, iNumDimensions, 1>&
     Box<iNumDimensions>::vector() const {
         return _vector;
     }
 
     template <int iNumDimensions>
-    inline Interval&
+    inline
+    Interval&
     Box<iNumDimensions>::x() {
         return vector().x();
     }
     
     template <int iNumDimensions>
-    inline Interval
+    inline
+    Interval
     Box<iNumDimensions>::x() const {
         return vector().x();
     }
 
     template <int iNumDimensions>
-    inline Interval&
+    inline
+    Interval&
     Box<iNumDimensions>::y() {
         return vector().y();
     }
     
     template <int iNumDimensions>
-    inline Interval
+    inline
+    Interval
     Box<iNumDimensions>::y() const {
         return vector().y();
     }
 
     template <int iNumDimensions>
-    inline Interval&
+    inline
+    Interval&
     Box<iNumDimensions>::z() {
         return vector().z();
     }
     
     template <int iNumDimensions>
-    inline Interval
+    inline
+    Interval
     Box<iNumDimensions>::z() const {
         return vector().z();
     }
 
     template <int iNumDimensions>
-    inline Interval&
+    inline
+    Interval&
     Box<iNumDimensions>::operator()(int index) {
         return vector()(index);
     }
     
     template <int iNumDimensions>
-    inline Interval
+    inline
+    Interval
     Box<iNumDimensions>::operator()(int index) const {
         return vector()(index);
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::isEmpty() const {
         return vector().isEmpty();
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Box<iNumDimensions>::minPoint() const {
         return Point<iNumDimensions>(vector().cwiseLower());
     }
     
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Box<iNumDimensions>::maxPoint() const {
         return Point<iNumDimensions>(vector().cwiseUpper());
     }
     
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Box<iNumDimensions>::midPoint() const {
         return Point<iNumDimensions>(vector().cwiseMedian());
     }
     
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Box<iNumDimensions>::randomPoint() const {
         return Point<iNumDimensions>(vector().cwiseRandom());
     }
 
     template <int iNumDimensions>
-    inline Matrix<double, iNumDimensions, 1>
+    inline
+    Matrix<double, iNumDimensions, 1>
     Box<iNumDimensions>::diagonalVector() const {
         return vector().cwiseWidth();
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Box<iNumDimensions>::interpolated(double xValue, double yValue) const {
         return minPoint() +
             Vector2d(xValue * x().width(), yValue * y().width());
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Box<iNumDimensions>::interpolated(double xValue, double yValue, double zValue) const {
         return minPoint() +
             Vector3d(xValue * x().width(), yValue * y().width(), zValue * z().width());
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::interpolated(Interval xInterval, Interval yInterval) const {
         return minPoint() +
             Vector2I(xInterval * x().width(), yInterval * y().width());
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::interpolated(
         Interval xInterval,
         Interval yInterval,
@@ -215,13 +235,15 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::overlaps(const Box<iNumDimensions>& other, double precision) const {
         return vector().overlaps(other.vector(), precision);
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::strictlyOverlaps(
         const Box<iNumDimensions>& other,
         double precision
@@ -230,13 +252,15 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::contains(const Point<iNumDimensions>& point, double precision) const {
         return vector().contains(point.vector().template cast<Interval>(), precision);
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::strictlyContains(
         const Point<iNumDimensions>& point,
         double precision
@@ -245,13 +269,15 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::contains(const Box<iNumDimensions>& other, double precision) const {
         return vector().contains(other.vector(), precision);
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Box<iNumDimensions>::strictlyContains(
         const Box<iNumDimensions>& other,
         double precision
@@ -260,49 +286,57 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::hull(const Point<iNumDimensions>& point) const {
         return Box<iNumDimensions>(vector().hull(point.vector().template cast<Interval>()));
     }
     
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::hull(const Box<iNumDimensions>& other) const {
         return Box<iNumDimensions>(vector().hull(other.vector()));
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::intersection(const Box<iNumDimensions>& other) const {
         return Box<iNumDimensions>(vector().intersection(other.vector()));
     }
 
     template <int iNumDimensions>
-    inline Matrix<Interval, iNumDimensions, 1>
+    inline
+    Matrix<Interval, iNumDimensions, 1>
     Box<iNumDimensions>::operator-(const Point<iNumDimensions>& point) const {
         return vector() - point.vector().template cast<Interval>();
     }
 
     template <int iNumDimensions>
-    inline Matrix<Interval, iNumDimensions, 1>
+    inline
+    Matrix<Interval, iNumDimensions, 1>
     Box<iNumDimensions>::operator-(const Box<iNumDimensions>& other) const {
         return vector() - other.vector();
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::Empty() {
         return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Empty());
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::Unit() {
         return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit()));
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Box<iNumDimensions>::Hull(
         const Point<iNumDimensions>& firstPoint,
         const Point<iNumDimensions>& secondPoint
@@ -311,39 +345,46 @@ namespace opensolid
     }
 
     template <int iNumDimensions, class TVector>
+    inline
     Box<iNumDimensions>
     operator+(const Box<iNumDimensions>& box, const EigenBase<TVector>& vector) {
         return Box<iNumDimensions>(box.vector() + vector.derived().template cast<Interval>());
     }
 
     template <int iNumDimensions, class TVector>
+    inline
     Box<iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const EigenBase<TVector>& vector) {
         return Box<iNumDimensions>(box.vector() - vector.derived().template cast<Interval>());
     }
 
     template <int iNumDimensions>
-    std::ostream& operator<<(std::ostream& stream, const Box<iNumDimensions>& box) {
+    std::ostream&
+    operator<<(std::ostream& stream, const Box<iNumDimensions>& box) {
         stream << box.vector().transpose();
         return stream;
     }
 
-    inline Box1d
+    inline
+    Box1d
     ScalingFunction<Box1d>::operator()(const Box1d& box, double scale) const {
         return Box1d(scale * box.x());
     }
 
-    inline Box2d
+    inline
+    Box2d
     ScalingFunction<Box2d>::operator()(const Box2d& box, double scale) const {
         return Box2d(scale * box.x(), scale * box.y());
     }
 
-    inline Box3d
+    inline
+    Box3d
     ScalingFunction<Box3d>::operator()(const Box3d& box, double scale) const {
         return Box3d(scale * box.x(), scale * box.y(), scale * box.z());
     }
 
     template <int iNumDimensions> template <class TVector>
+    inline
     Box<iNumDimensions>
     TranslationFunction<Box<iNumDimensions>>::operator()(
         const Box<iNumDimensions>& box,
@@ -393,7 +434,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
-    inline Box<iNumResultDimensions>
+    inline
+    Box<iNumResultDimensions>
     MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
         const Box<iNumDimensions>& box,
         const Function<iNumResultDimensions, iNumDimensions>& function
@@ -402,7 +444,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline const Box<iNumDimensions>&
+    inline
+    const Box<iNumDimensions>&
     BoundsFunction<Box<iNumDimensions>>::operator()(const Box<iNumDimensions>& box) const {
         return box;
     }

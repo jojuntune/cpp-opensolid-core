@@ -43,13 +43,15 @@
 namespace opensolid
 {
     template <class TDerived>
-    inline const TDerived&
+    inline
+    const TDerived&
     Transformable<TDerived>::derived() const {
         return static_cast<const TDerived&>(*this);
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::scaledAbout(
         const Point<NumDimensions<TDerived>::Value>& originPoint,
         double scale
@@ -71,13 +73,15 @@ namespace opensolid
     }
 
     template <class TDerived> template <class TVector>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::translated(const EigenBase<TVector>& vector) const {
         return translation(derived(), vector.derived());
     }
     
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::translatedAlong(
         const Axis<NumDimensions<TDerived>::Value>& axis,
         double distance
@@ -86,49 +90,57 @@ namespace opensolid
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::rotatedAbout(const Point<2>& originPoint, double angle) const {
         return Rotation2d(originPoint, angle)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::rotatedAbout(const Axis<3>& axis, double angle) const {
         return Rotation3d(axis, angle)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::mirroredAbout(const Axis<2>& axis) const {
         return Mirror2d(axis)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::mirroredAbout(const Plane3d& plane) const {
         return Mirror3d(plane)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::projectedOnto(const Axis<2>& axis) const {
         return Projection2d(axis)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::projectedOnto(const Axis<3>& axis) const {
         return Projection3d(axis)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::projectedOnto(const Plane3d& plane) const {
         return Projection3d(plane)(derived());
     }
 
     template <class TDerived>
-    inline TDerived
+    inline
+    TDerived
     Transformable<TDerived>::transformed(
         const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
     ) const {
@@ -137,7 +149,8 @@ namespace opensolid
 
     template <class TDerived>
     template <int iNumResultDimensions, int iNumAxes>
-    inline typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+    inline
+    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::transplanted(
         const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
         const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
@@ -147,7 +160,8 @@ namespace opensolid
 
     template <class TDerived>
     template <int iNumResultDimensions>
-    inline typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+    inline
+    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::transplanted(
         const Transplant<NumDimensions<TDerived>::Value, iNumResultDimensions>& transplant
     ) const {
@@ -155,7 +169,8 @@ namespace opensolid
     }
 
     template <class TDerived> template <int iNumResultDimensions>
-    inline typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+    inline
+    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::morphed(
         const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
     ) const {
@@ -163,12 +178,14 @@ namespace opensolid
     }
 
     template <class TDerived>
+    inline
     TDerived
     Transformable<TDerived>::scaling(const TDerived& argument, double scale) {
         return ScalingFunction<TDerived>()(argument, scale);
     }
 
     template <class TDerived> template <class TVector>
+    inline
     TDerived
     Transformable<TDerived>::translation(
         const TDerived& argument,
@@ -178,6 +195,7 @@ namespace opensolid
     }
 
     template <class TDerived> template <class TMatrix>
+    inline
     typename ChangeDimensions<TDerived, TMatrix::RowsAtCompileTime>::Type
     Transformable<TDerived>::transformation(
         const TDerived& argument,
@@ -187,6 +205,7 @@ namespace opensolid
     }
 
     template <class TDerived> template <int iNumResultDimensions>
+    inline
     typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::morphing(
         const TDerived& argument,
@@ -196,7 +215,8 @@ namespace opensolid
     }
 
     template <class TDerived, int iNumAxes>
-    inline typename ChangeDimensions<TDerived, iNumAxes>::Type
+    inline
+    typename ChangeDimensions<TDerived, iNumAxes>::Type
     operator/(
         const Transformable<TDerived>& transformable,
         const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
@@ -207,7 +227,8 @@ namespace opensolid
     }
 
     template <class TDerived, int iNumDimensions>
-    inline typename ChangeDimensions<TDerived, iNumDimensions>::Type
+    inline
+    typename ChangeDimensions<TDerived, iNumDimensions>::Type
     operator*(
         const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
         const Transformable<TDerived>& transformable

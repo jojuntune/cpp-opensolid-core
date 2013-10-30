@@ -57,7 +57,8 @@ namespace opensolid
         //   endAngle
         //   endPoint
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Arc(
             const Point<2>& centerPoint,
             double radius,
@@ -65,7 +66,8 @@ namespace opensolid
             double endAngle
         );
         
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Arc(
             const Point<2>& centerPoint,
             WindingDirection direction,
@@ -73,7 +75,8 @@ namespace opensolid
             const Point<2>& endPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Arc(
             double radius,
             WindingDirection direction,
@@ -81,7 +84,8 @@ namespace opensolid
             const Point<2>& endPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Arc(
             const Point<2>& startPoint,
             const Point<2>& innerPoint,
@@ -99,13 +103,15 @@ namespace opensolid
         //   secondPoint
         //   thirdPoint
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Circle(
             const Point<2>& centerPoint,
             double radius
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Circle(
             const Point<2>& centerPoint,
             double radius,
@@ -113,14 +119,16 @@ namespace opensolid
             double startAngle
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Circle(
             const Point<2>& centerPoint,
             WindingDirection direction,
             const Point<2>& startPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Circle(
             double radius,
             WindingDirection direction,
@@ -128,14 +136,16 @@ namespace opensolid
             const Point<2>& secondPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Circle(
             const Point<2>& startPoint,
             const Point<2>& secondPoint,
             const Point<2>& thirdPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<2>
+        OPENSOLID_CORE_EXPORT
+        static Curve<2>
         Circumcircle(
             const Triangle<2>& triangle
         );
@@ -156,7 +166,8 @@ namespace opensolid
         //   innerPoint
         //   endPoint
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Arc(
             const Point<3>& centerPoint,
             const Vector3d& axisDirection,
@@ -164,14 +175,16 @@ namespace opensolid
             const Point<3>& endPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Arc(
             const Axis<3>& axis,
             const Point<3>& startPoint,
             const Point<3>& endPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Arc(
             const Vector3d& axisDirection,
             double radius,
@@ -179,7 +192,8 @@ namespace opensolid
             const Point<3>& endPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Arc(
             const Point<3>& startPoint,
             const Point<3>& innerPoint,
@@ -197,27 +211,31 @@ namespace opensolid
         //   innerPoint
         //   endPoint
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Circle(
             const Point<3>& centerPoint,
             const Vector3d& axisDirection,
             double radius
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Circle(
             const Point<3>& centerPoint,
             const Vector3d& axisDirection,
             const Point<3>& startPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Circle(
             const Axis<3>& axis,
             const Point<3>& startPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Circle(
             const Vector3d& axisDirection,
             double radius,
@@ -225,14 +243,16 @@ namespace opensolid
             const Point<3>& secondPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Circle(
             const Point<3>& startPoint,
             const Point<3>& secondPoint,
             const Point<3>& thirdPoint
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Circumcircle(
             const Triangle<3>& triangle
         );
@@ -252,7 +272,8 @@ namespace opensolid
         //   numTurns (if <= 0: determine from pitch/length)
         //   length (if <= 0: determine from pitch/numTurns)
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Helix(
             const Point<3>& startCenterPoint,
             const Point<3>& endCenterPoint,
@@ -262,7 +283,8 @@ namespace opensolid
             double numTurns // if <= 0: determine from pitch
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Helix(
             const Point<3>& startCenterPoint,
             const Point<3>& endCenterPoint,
@@ -272,7 +294,8 @@ namespace opensolid
             double numTurns // if <= 0: determine from pitch
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Helix(
             const Point<3>& startCenterPoint,
             const Vector3d& axisDirection,
@@ -283,7 +306,8 @@ namespace opensolid
             double length // if <= 0: determine from pitch/numTurns
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Helix(
             const Point<3>& startCenterPoint,
             const Vector3d& axisDirection,
@@ -294,7 +318,8 @@ namespace opensolid
             double length // if <= 0: determine from pitch/numTurns
         );
 
-        OPENSOLID_CORE_EXPORT static Curve<3>
+        OPENSOLID_CORE_EXPORT
+        static Curve<3>
         Helix(
             const Axis<3>& axis,
             WindingDirection direction,

@@ -43,7 +43,8 @@ namespace opensolid
     template <>
     struct ConversionFunction<Interval, BoostInterval>
     {
-        inline BoostInterval
+        inline
+        BoostInterval
         operator()(Interval interval) {
             return BoostInterval(interval.lowerBound(), interval.upperBound());
         }
@@ -52,7 +53,8 @@ namespace opensolid
     template <>
     struct ConversionFunction<BoostInterval, Interval>
     {
-        inline Interval
+        inline
+        Interval
         operator()(BoostInterval boostInterval) {
             return Interval(boostInterval.lower(), boostInterval.upper());
         }

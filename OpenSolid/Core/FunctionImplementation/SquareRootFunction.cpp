@@ -36,13 +36,15 @@ namespace opensolid
     
     struct SquareRoot
     {
-        inline double
+        inline
+        double
         operator()(double value) const {
             assert(value >= Zero());
             return value > 0.0 ? sqrt(value) : 0.0;
         }
         
-        inline Interval
+        inline
+        Interval
         operator()(Interval bounds) const {
             assert(bounds.upperBound() >= Zero());
             return sqrt(bounds);

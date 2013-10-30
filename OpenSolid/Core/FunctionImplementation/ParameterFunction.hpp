@@ -97,7 +97,8 @@ namespace opensolid
         void
         debugImpl(std::ostream& stream, int indent) const override;
     public:
-        OPENSOLID_CORE_EXPORT ParameterFunction(int parameterIndex, int numParameters);
+        OPENSOLID_CORE_EXPORT
+        ParameterFunction(int parameterIndex, int numParameters);
         
         int parameterIndex() const;
     };
@@ -107,7 +108,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline int
+    inline
+    int
     ParameterFunction::parameterIndex() const {
         return _parameterIndex;
     }

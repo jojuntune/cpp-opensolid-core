@@ -180,22 +180,26 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const VectorXd&
+    inline
+    const VectorXd&
     ConstantFunction::vector() const {
         return _vector;
     }
 
-    inline double
+    inline
+    double
     ConstantFunction::value() const {
         return vector().value();
     }
 
-    inline const VectorXI&
+    inline
+    const VectorXI&
     ConstantFunction::bounds() const {
         return _bounds;
     }
 
-    inline bool
+    inline
+    bool
     ConstantFunction::isZero(double tolerance) const {
         return vector().isZero(tolerance);
     }

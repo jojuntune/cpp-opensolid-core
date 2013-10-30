@@ -44,16 +44,19 @@ namespace opensolid
     {
         int exponent;
 
-        inline IntegerPower(int exponent_) :
+        inline
+        IntegerPower(int exponent_) :
             exponent(exponent_) {
         }
 
-        inline double
+        inline
+        double
         operator()(double base) const {
             return std::pow(base, exponent);
         }
 
-        inline Interval
+        inline
+        Interval
         operator()(const Interval& base) const {
             return pow(base, exponent);
         }
@@ -63,11 +66,13 @@ namespace opensolid
     {
         double exponent;
 
-        inline ConstantPower(double exponent_) :
+        inline
+        ConstantPower(double exponent_) :
             exponent(exponent_) {
         }
 
-        inline Interval
+        inline
+        Interval
         operator()(const Interval& base) const {
             return pow(base, exponent);
         }
@@ -75,12 +80,14 @@ namespace opensolid
 
     struct Power
     {
-        inline double
+        inline
+        double
         operator()(double base, double exponent) const {
             return pow(base, exponent);
         }
 
-        inline Interval
+        inline
+        Interval
         operator()(const Interval& base, const Interval& exponent) const {
             return pow(base, exponent);
         }

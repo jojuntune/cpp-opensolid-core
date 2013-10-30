@@ -35,7 +35,8 @@
 namespace opensolid
 {
     template <class TScalar>
-    inline std::size_t
+    inline
+    std::size_t
     Evaluator::KeyHash::operator()(
         const std::pair<const FunctionImplementation*, const TScalar*>& key
     ) const {
@@ -84,7 +85,8 @@ namespace opensolid
     }
 
     template <class TScalar>
-    inline typename Evaluator::Types<TScalar>::ConstMap
+    inline
+    typename Evaluator::Types<TScalar>::ConstMap
     Evaluator::evaluate(
         const FunctionImplementationPtr& functionImplementation,
         const typename Types<TScalar>::ConstMap& parameterValues,
@@ -162,7 +164,8 @@ namespace opensolid
     }
 
     template <class TScalar>
-    inline typename Evaluator::Types<TScalar>::ConstMap
+    inline
+    typename Evaluator::Types<TScalar>::ConstMap
     Evaluator::evaluateJacobian(
         const FunctionImplementationPtr& functionImplementation,
         const typename Types<TScalar>::ConstMap& parameterValues,

@@ -40,7 +40,8 @@ namespace opensolid
         int
         numDimensionsImpl() const override;
         
-        OPENSOLID_CORE_EXPORT void
+        OPENSOLID_CORE_EXPORT
+        void
         evaluateImpl(
             const MapXcd& parameterValues,
             MapXd& results,
@@ -103,7 +104,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const VectorXd&
+    inline
+    const VectorXd&
     VectorAdditionFunction::vector() const {
         return _vector;
     }

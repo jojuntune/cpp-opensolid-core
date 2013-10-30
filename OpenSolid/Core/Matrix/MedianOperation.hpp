@@ -44,7 +44,8 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline double
+    inline
+    double
     MedianOperation::operator()(opensolid::Interval interval) const {
         return interval.median();
     }

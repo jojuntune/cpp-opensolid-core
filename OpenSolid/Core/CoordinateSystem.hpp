@@ -68,7 +68,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
+    inline
+    CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
         const Point<iNumDimensions>& originPoint,
         const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
     ) : _originPoint(originPoint),
@@ -77,6 +78,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
+    inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
         const Point<iNumDimensions>& originPoint,
         const Matrix<double, iNumDimensions, 1>& xBasisVector,
@@ -92,6 +94,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
+    inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
         const Point<iNumDimensions>& originPoint,
         const Matrix<double, iNumDimensions, 1>& xBasisVector,
@@ -108,19 +111,22 @@ namespace opensolid
     }
         
     template <int iNumDimensions, int iNumAxes>
-    inline const Point<iNumDimensions>&
+    inline
+    const Point<iNumDimensions>&
     CoordinateSystem<iNumDimensions, iNumAxes>::originPoint() const {
         return _originPoint;
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline const Matrix<double, iNumDimensions, iNumAxes>&
+    inline
+    const Matrix<double, iNumDimensions, iNumAxes>&
     CoordinateSystem<iNumDimensions, iNumAxes>::basisMatrix() const {
         return _basisMatrix;
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline const Matrix<double, iNumDimensions, iNumAxes>&
+    inline
+    const Matrix<double, iNumDimensions, iNumAxes>&
     CoordinateSystem<iNumDimensions, iNumAxes>::basisVector() const {
         static_assert(
             iNumAxes == 1,
@@ -130,13 +136,15 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline const Matrix<double, iNumAxes, iNumDimensions>&
+    inline
+    const Matrix<double, iNumAxes, iNumDimensions>&
     CoordinateSystem<iNumDimensions, iNumAxes>::inverseMatrix() const {
         return _inverseMatrix;
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::point(double x) const {
         static_assert(
             iNumAxes == 1,
@@ -146,7 +154,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::point(double x, double y) const {
         static_assert(
             iNumAxes == 2,
@@ -156,7 +165,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::point(double x, double y, double z) const {
         static_assert(
             iNumAxes == 3,
@@ -166,7 +176,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1>
+    inline
+    Matrix<double, iNumDimensions, 1>
     CoordinateSystem<iNumDimensions, iNumAxes>::vector(double x) const {
         static_assert(
             iNumAxes == 1,
@@ -176,7 +187,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1>
+    inline
+    Matrix<double, iNumDimensions, 1>
     CoordinateSystem<iNumDimensions, iNumAxes>::vector(double x, double y) const {
         static_assert(
             iNumAxes == 2,
@@ -186,7 +198,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Matrix<double, iNumDimensions, 1>
+    inline
+    Matrix<double, iNumDimensions, 1>
     CoordinateSystem<iNumDimensions, iNumAxes>::vector(double x, double y, double z) const {
         static_assert(
             iNumAxes == 3,
@@ -196,13 +209,15 @@ namespace opensolid
     }
 
     template<int iNumDimensions, int iNumAxes>
-    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    inline
+    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
     CoordinateSystem<iNumDimensions, iNumAxes>::xBasisVector() const {
         return basisMatrix().col(0);
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    inline
+    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
     CoordinateSystem<iNumDimensions, iNumAxes>::yBasisVector() const {
         static_assert(
             iNumAxes >= 2,
@@ -212,7 +227,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    inline
+    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
     CoordinateSystem<iNumDimensions, iNumAxes>::zBasisVector() const {
         static_assert(
             iNumAxes >= 3,
@@ -222,7 +238,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    inline
+    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
     CoordinateSystem<iNumDimensions, iNumAxes>::basisVector(int axisIndex ) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
             throw Error(new PlaceholderError());
@@ -231,13 +248,15 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Axis<iNumDimensions>
+    inline
+    Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::xAxis() const {
         return Axis<iNumDimensions>(originPoint(), xBasisVector());
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Axis<iNumDimensions>
+    inline
+    Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::yAxis() const {
         static_assert(
             iNumAxes >= 2,
@@ -247,7 +266,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Axis<iNumDimensions>
+    inline
+    Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::zAxis() const {
         static_assert(
             iNumAxes >= 3,
@@ -257,7 +277,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumAxes>
-    inline Axis<iNumDimensions>
+    inline
+    Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::axis(int axisIndex) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
             throw Error(new PlaceholderError());
@@ -266,7 +287,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::xyPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -276,7 +298,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::xzPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -286,7 +309,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::yxPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -296,7 +320,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::yzPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -306,7 +331,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::zxPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -316,7 +342,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::zyPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -326,7 +353,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
-    inline Plane3d
+    inline
+    Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::plane(int firstAxisIndex, int secondAxisIndex) const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -370,6 +398,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
+    inline
     CoordinateSystem<iNumDimensions, iNumAxes>
     CoordinateSystem<iNumDimensions, iNumAxes>::Global() {
         static_assert(
@@ -383,6 +412,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
+    inline
     CoordinateSystem<iNumDimensions, iNumAxes>
     ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
@@ -395,6 +425,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes> template <class TVector>
+    inline
     CoordinateSystem<iNumDimensions, iNumAxes>
     TranslationFunction<CoordinateSystem<iNumDimensions, iNumAxes>>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
@@ -420,7 +451,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    inline CoordinateSystem<iNumResultDimensions, iNumAxes>
+    inline
+    CoordinateSystem<iNumResultDimensions, iNumAxes>
     MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
         const Function<iNumResultDimensions, iNumDimensions>& function

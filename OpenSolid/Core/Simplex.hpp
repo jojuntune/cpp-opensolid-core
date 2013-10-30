@@ -60,7 +60,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumVertices> 
-    inline Simplex<iNumDimensions, iNumVertices>&
+    inline
+    Simplex<iNumDimensions, iNumVertices>&
     Simplex<iNumDimensions, iNumVertices>::operator=(
         const Simplex<iNumDimensions, iNumVertices>& other
     ) {
@@ -69,68 +70,79 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices>
-    inline Matrix<double, iNumDimensions, iNumVertices>&
+    inline
+    Matrix<double, iNumDimensions, iNumVertices>&
     Simplex<iNumDimensions, iNumVertices>::vertices() {
         return _vertices;
     }
 
     template <int iNumDimensions, int iNumVertices>
-    inline const Matrix<double, iNumDimensions, iNumVertices>&
+    inline
+    const Matrix<double, iNumDimensions, iNumVertices>&
     Simplex<iNumDimensions, iNumVertices>::vertices() const {
         return _vertices;
     }
 
     template <int iNumDimensions, int iNumVertices>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Simplex<iNumDimensions, iNumVertices>::vertex(int index) const {
         return Point<iNumDimensions>(vertices().col(index));
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<1, 2>::length() const {
         return abs(vertices()(0, 1) - vertices()(0, 0));
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<2, 2>::length() const {
         return (vertices().col(1) - vertices().col(0)).norm();
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<3, 2>::length() const {
         return (vertices().col(1) - vertices().col(0)).norm();
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<1, 2>::squaredLength() const {
         double length = vertices()(0, 1) - vertices()(0, 0);
         return length * length;
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<2, 2>::squaredLength() const {
         return (vertices().col(1) - vertices().col(0)).squaredNorm();
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<3, 2>::squaredLength() const {
         return (vertices().col(1) - vertices().col(0)).squaredNorm();
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<2, 3>::area() const {
         return (vertices().rightCols<2>().colwise() - vertices().col(0)).determinant() / 2;
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<3, 3>::area() const {
         Vector3d firstEdge = vertices().col(1) - vertices().col(0);
         Vector3d secondEdge = vertices().col(2) - vertices().col(0);
@@ -138,49 +150,57 @@ namespace opensolid
     }
 
     template <>
-    inline double
+    inline
+    double
     Simplex<3, 4>::volume() const {
         return (vertices().rightCols<3>().colwise() - vertices().col(0)).determinant() / 6;
     }
 
     template <>
-    inline Matrix1d
+    inline
+    Matrix1d
     Simplex<1, 2>::vector() const {
         return vertices().col(1) - vertices().col(0);
     }
 
     template <>
-    inline Vector2d
+    inline
+    Vector2d
     Simplex<2, 2>::vector() const {
         return vertices().col(1) - vertices().col(0);
     }
 
     template <>
-    inline Vector3d
+    inline
+    Vector3d
     Simplex<3, 2>::vector() const {
         return vertices().col(1) - vertices().col(0);
     }
     
     template <int iNumDimensions, int iNumVertices>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Simplex<iNumDimensions, iNumVertices>::centroid() const {
         return Point<iNumDimensions>(vertices().rowwise().mean());
     }
 
     template <>
-    inline Vector2d
+    inline
+    Vector2d
     Simplex<2, 2>::normalVector() const {
         return (vertices().col(1) - vertices().col(0)).unitOrthogonal();
     }
 
     template <>
-    inline Vector3d
+    inline
+    Vector3d
     Simplex<3, 2>::normalVector() const {
         return (vertices().col(1) - vertices().col(0)).unitOrthogonal();
     }
 
     template <>
-    inline Vector3d
+    inline
+    Vector3d
     Simplex<3, 3>::normalVector() const {
         Vector3d firstEdge = vertices().col(1) - vertices().col(0);
         Vector3d secondEdge = vertices().col(2) - vertices().col(0);
@@ -188,7 +208,8 @@ namespace opensolid
     }
     
     template <>
-    inline Simplex<2, 2>
+    inline
+    Simplex<2, 2>
     Simplex<2, 3>::edge(int index) const {
         assert(0 <= index && index < 3);
         Matrix2d edgeVertices;
@@ -197,7 +218,8 @@ namespace opensolid
     }
     
     template <>
-    inline Simplex<3, 2>
+    inline
+    Simplex<3, 2>
     Simplex<3, 3>::edge(int index) const {
         assert(0 <= index && index < 3);
         Matrix<double, 3, 2> edgeVertices;
@@ -206,7 +228,8 @@ namespace opensolid
     }
     
     template <>
-    inline Simplex<2, 2>
+    inline
+    Simplex<2, 2>
     Simplex<2, 3>::edge(int startIndex, int endIndex) const {
         assert(0 <= startIndex && startIndex < 3);
         assert(0 <= endIndex && endIndex < 3);
@@ -217,7 +240,8 @@ namespace opensolid
     }
     
     template <>
-    inline Simplex<3, 2>
+    inline
+    Simplex<3, 2>
     Simplex<3, 3>::edge(int startIndex, int endIndex) const {
         assert(0 <= startIndex && startIndex < 3);
         assert(0 <= endIndex && endIndex < 3);
@@ -228,7 +252,8 @@ namespace opensolid
     }
     
     template <>
-    inline Simplex<3, 2>
+    inline
+    Simplex<3, 2>
     Simplex<3, 4>::edge(int startIndex, int endIndex) const {
         assert(0 <= startIndex && startIndex < 4);
         assert(0 <= endIndex && endIndex < 4);
@@ -239,7 +264,8 @@ namespace opensolid
     }
     
     template <>
-    inline Simplex<3, 3>
+    inline
+    Simplex<3, 3>
     Simplex<3, 4>::face(int index) const {
         Matrix3d faceVertices;
         RowVector3i indices;
@@ -265,7 +291,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices>
-    inline Axis<iNumDimensions>
+    inline
+    Axis<iNumDimensions>
     Simplex<iNumDimensions, iNumVertices>::axis() const {
         static_assert(
             iNumVertices == 2,
@@ -275,7 +302,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices>
-    inline Plane3d
+    inline
+    Plane3d
     Simplex<iNumDimensions, iNumVertices>::plane() const {
         static_assert(
             iNumDimensions == 3 && iNumVertices == 3,
@@ -293,6 +321,7 @@ namespace opensolid
     }
         
     template <int iNumDimensions, int iNumVertices>
+    inline
     bool
     Simplex<iNumDimensions, iNumVertices>::operator==(
         const Simplex<iNumDimensions, iNumVertices>& other
@@ -342,7 +371,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
-    inline Simplex<iNumResultDimensions, iNumVertices>
+    inline
+    Simplex<iNumResultDimensions, iNumVertices>
     MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
         const Function<iNumResultDimensions, iNumDimensions>& function
@@ -351,12 +381,14 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumVertices>
+    inline
     TolerantComparator<Simplex<iNumDimensions, iNumVertices>>::TolerantComparator(
         double precision
     ) : _precision(precision) {
     }
 
     template <int iNumDimensions, int iNumVertices>
+    inline
     bool
     TolerantComparator<Simplex<iNumDimensions, iNumVertices>>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& firstSimplex,

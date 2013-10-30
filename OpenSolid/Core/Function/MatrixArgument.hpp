@@ -37,31 +37,36 @@ namespace opensolid
     }
 
     template<class Type>
-    inline const typename Type::Scalar*
+    inline
+    const typename Type::Scalar*
     MatrixArgument<Type>::data() const {
         return _argument.data();
     }
 
     template<class Type>
-    inline int
+    inline
+    int
     MatrixArgument<Type>::rows() const {
         return _argument.rows();
     }
 
     template<class Type>
-    inline int
+    inline
+    int
     MatrixArgument<Type>::cols() const {
         return _argument.cols();
     }
 
     template<class Type>
-    inline int
+    inline
+    int
     MatrixArgument<Type>::outerStride() const {
         return (Type::Flags & RowMajorBit) ? _argument.innerStride() : _argument.outerStride();
     }
 
     template<class Type>
-    inline int
+    inline
+    int
     MatrixArgument<Type>::innerStride() const {
         return (Type::Flags & RowMajorBit) ? _argument.outerStride() : _argument.innerStride();
     }

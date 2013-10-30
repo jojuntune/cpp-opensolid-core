@@ -42,6 +42,7 @@
 namespace opensolid
 {
     template <int iNumDimensions, int iNumParameters>
+    inline
     Geometry<iNumDimensions, iNumParameters>::Geometry() :
         _function(),
         _domain(),
@@ -65,31 +66,36 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline const Function<iNumDimensions, iNumParameters>&
+    inline
+    const Function<iNumDimensions, iNumParameters>&
     Geometry<iNumDimensions, iNumParameters>::function() const {
         return _function;
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline const Domain<iNumParameters>&
+    inline
+    const Domain<iNumParameters>&
     Geometry<iNumDimensions, iNumParameters>::domain() const {
         return _domain;
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline bool
+    inline
+    bool
     Geometry<iNumDimensions, iNumParameters>::isValid() const {
         return !domain().isEmpty();
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline const Box<iNumDimensions>&
+    inline
+    const Box<iNumDimensions>&
     Geometry<iNumDimensions, iNumParameters>::bounds() const {
         return _bounds;
     }
 
     template <int iNumDimensions, int iNumParameters> template <class TVector>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Geometry<iNumDimensions, iNumParameters>::operator()(
         const EigenBase<TVector>& parameterValues
     ) const {
@@ -132,31 +138,36 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline const Function<iNumDimensions, 1>&
+    inline
+    const Function<iNumDimensions, 1>&
     Geometry<iNumDimensions, 1>::function() const {
         return _function;
     }
     
     template <int iNumDimensions>
-    inline Interval
+    inline
+    Interval
     Geometry<iNumDimensions, 1>::domain() const {
         return _domain;
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Geometry<iNumDimensions, 1>::isValid() const {
         return !domain().isEmpty();
     }
     
     template <int iNumDimensions>
-    inline const Box<iNumDimensions>&
+    inline
+    const Box<iNumDimensions>&
     Geometry<iNumDimensions, 1>::bounds() const {
         return _bounds;
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Geometry<iNumDimensions, 1>::operator()(double parameterValue) const {
         return Point<iNumDimensions>(function()(parameterValue));
     }

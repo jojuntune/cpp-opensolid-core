@@ -86,7 +86,8 @@ namespace opensolid
     namespace detail
     {
         template <class TBounds>
-        inline bool
+        inline
+        bool
         hasLesserMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
@@ -96,19 +97,17 @@ namespace opensolid
             return difference.upperBound() < -difference.lowerBound();
         }
 
-        inline bool
-        hasLesserMedian(
-            Interval firstInterval,
-            Interval secondInterval,
-            std::int64_t index
-        ) {
+        inline
+        bool
+        hasLesserMedian(Interval firstInterval, Interval secondInterval, std::int64_t index) {
             assert(index == 0);
             Interval difference = firstInterval - secondInterval;
             return difference.upperBound() < -difference.lowerBound();
         }
 
         template <class TBounds>
-        inline bool
+        inline
+        bool
         hasGreaterMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
@@ -118,12 +117,9 @@ namespace opensolid
             return difference.upperBound() > -difference.lowerBound();
         }
 
-        inline bool
-        hasGreaterMedian(
-            Interval firstInterval,
-            Interval secondInterval,
-            std::int64_t index
-        ) {
+        inline
+        bool
+        hasGreaterMedian(Interval firstInterval, Interval secondInterval, std::int64_t index) {
             assert(index == 0);
             Interval difference = firstInterval - secondInterval;
             return difference.upperBound() > -difference.lowerBound();

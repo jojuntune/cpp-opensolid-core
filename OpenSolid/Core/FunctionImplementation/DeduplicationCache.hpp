@@ -30,17 +30,20 @@
 
 namespace opensolid
 {
-    inline std::vector<FunctionImplementationPtr>::iterator
+    inline
+    std::vector<FunctionImplementationPtr>::iterator
     DeduplicationCache::begin() {
         return _cache.begin();
     }
 
-    inline std::vector<FunctionImplementationPtr>::iterator
+    inline
+    std::vector<FunctionImplementationPtr>::iterator
     DeduplicationCache::end() {
         return _cache.end();
     }
 
-    inline void
+    inline
+    void
     DeduplicationCache::add(const FunctionImplementationPtr& functionImplementation) {
         _cache.push_back(functionImplementation);
     }

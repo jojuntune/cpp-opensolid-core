@@ -36,139 +36,163 @@
 namespace opensolid
 {
     template <int iNumDimensions>
-    inline Point<iNumDimensions>::Point() :
+    inline
+    Point<iNumDimensions>::Point() :
         _vector(Matrix<double, iNumDimensions, 1>::Zero()) {
     }
 
     template <int iNumDimensions> template <class TVector>
-    inline Point<iNumDimensions>::Point(const EigenBase<TVector>& vector) :
+    inline
+    Point<iNumDimensions>::Point(const EigenBase<TVector>& vector) :
         _vector(vector) {
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>::Point(double x) :
+    inline
+    Point<iNumDimensions>::Point(double x) :
         _vector(Matrix1d::Constant(x)) {    
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>::Point(double x, double y) :
+    inline
+    Point<iNumDimensions>::Point(double x, double y) :
         _vector(x, y) {        
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>::Point(double x, double y, double z) :
+    inline
+    Point<iNumDimensions>::Point(double x, double y, double z) :
         _vector(x, y, z) {        
     }
 
     template <int iNumDimensions>
-    inline Matrix<double, iNumDimensions, 1>&
+    inline
+    Matrix<double, iNumDimensions, 1>&
     Point<iNumDimensions>::vector() {
         return _vector;
     }
 
     template <int iNumDimensions>
-    inline const Matrix<double, iNumDimensions, 1>&
+    inline
+    const Matrix<double, iNumDimensions, 1>&
     Point<iNumDimensions>::vector() const {
         return _vector;
     }
 
     template <int iNumDimensions>
-    inline const double*
+    inline
+    const double*
     Point<iNumDimensions>::data() const {
         return vector().data();
     }
 
     template <int iNumDimensions>
-    inline double*
+    inline
+    double*
     Point<iNumDimensions>::data() {
         return vector().data();
     }
 
     template <int iNumDimensions>
-    inline double&
+    inline
+    double&
     Point<iNumDimensions>::x() {
         return vector().x();
     }
     
     template <int iNumDimensions>
-    inline double
+    inline
+    double
     Point<iNumDimensions>::x() const {
         return vector().x();
     }
 
     template <int iNumDimensions>
-    inline double&
+    inline
+    double&
     Point<iNumDimensions>::y() {
         return vector().y();
     }
     
     template <int iNumDimensions>
-    inline double
+    inline
+    double
     Point<iNumDimensions>::y() const {
         return vector().y();
     }
 
     template <int iNumDimensions>
-    inline double&
+    inline
+    double&
     Point<iNumDimensions>::z() {
         return vector().z();
     }
     
     template <int iNumDimensions>
-    inline double
+    inline
+    double
     Point<iNumDimensions>::z() const {
         return vector().z();
     }
 
     template <int iNumDimensions>
-    inline double&
+    inline
+    double&
     Point<iNumDimensions>::operator()(int index) {
         return vector()(index);
     }
     
     template <int iNumDimensions>
-    inline double
+    inline
+    double
     Point<iNumDimensions>::operator()(int index) const {
         return vector()(index);
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Point<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
         return Box<iNumDimensions>(vector().hull(other.vector()));
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Point<iNumDimensions>::isOrigin(double precision) const {
         return vector().isZero(precision);
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Point<iNumDimensions>::operator==(const Point<iNumDimensions>& other) const {
         return vector() == other.vector();
     }
 
     template <int iNumDimensions>
-    inline Matrix<double, iNumDimensions, 1>
+    inline
+    Matrix<double, iNumDimensions, 1>
     Point<iNumDimensions>::operator-(const Point<iNumDimensions>& other) const {
         return vector() - other.vector();
     }
 
     template <int iNumDimensions>
-    inline Matrix<Interval, iNumDimensions, 1>
+    inline
+    Matrix<Interval, iNumDimensions, 1>
     Point<iNumDimensions>::operator-(const Box<iNumDimensions>& box) const {
         return vector().template cast<Interval>() - box.vector();
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     Point<iNumDimensions>::Origin() {
         return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
     }
 
     template <int iNumDimensions, class TVector>
+    inline
     typename Position<typename TVector::Scalar, iNumDimensions>::Type
     operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
         return typename Position<typename TVector::Scalar, iNumDimensions>::Type(
@@ -177,6 +201,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, class TVector>
+    inline
     typename Position<typename TVector::Scalar, iNumDimensions>::Type
     operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
         return typename Position<typename TVector::Scalar, iNumDimensions>::Type(
@@ -192,7 +217,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     ScalingFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& point,
         double scale
@@ -201,7 +227,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions> template <class TVector>
-    inline Point<iNumDimensions>
+    inline
+    Point<iNumDimensions>
     TranslationFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& point,
         const EigenBase<TVector>& vector
@@ -210,7 +237,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
-    inline Point<iNumResultDimensions>
+    inline
+    Point<iNumResultDimensions>
     TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
         const EigenBase<TMatrix>& matrix
@@ -219,7 +247,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
-    inline Point<iNumResultDimensions>
+    inline
+    Point<iNumResultDimensions>
     MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
         const Function<iNumResultDimensions, iNumDimensions>& function
@@ -228,7 +257,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
         return Box<iNumDimensions>(point.vector().template cast<Interval>());
     }

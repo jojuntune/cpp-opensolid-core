@@ -36,14 +36,16 @@ namespace opensolid
 
     struct Arcsine
     {
-        inline double
+        inline
+        double
         operator()(double value) const {
             Interval domain(-1, 1);
             assert(domain.contains(value));
             return asin(domain.clamp(value));
         }
         
-        inline Interval
+        inline
+        Interval
         operator()(const Interval& bounds) const {
             Interval domain(-1, 1);
             assert(domain.overlaps(bounds));

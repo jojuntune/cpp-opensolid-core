@@ -43,13 +43,15 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline const Point<iNumDimensions>&
+    inline
+    const Point<iNumDimensions>&
     LinearTransformation<iNumDimensions>::originPoint() const {
         return _originPoint;
     }
 
     template <int iNumDimensions>
-    inline const Matrix<double, iNumDimensions, iNumDimensions>&
+    inline
+    const Matrix<double, iNumDimensions, iNumDimensions>&
     LinearTransformation<iNumDimensions>::transformationMatrix() const {
         return _transformationMatrix;
     }

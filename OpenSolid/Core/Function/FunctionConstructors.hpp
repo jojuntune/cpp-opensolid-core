@@ -73,17 +73,20 @@ namespace opensolid
         return new ParameterFunction(iNumParameters, parameterIndex);
     }
 
-    inline Function<1, 1>
+    inline
+    Function<1, 1>
     NamedParameterFunctionConstructors<1, 1>::t() {
         return new ParameterFunction(1, 0);
     }
 
-    inline Function<1, 2>
+    inline
+    Function<1, 2>
     NamedParameterFunctionConstructors<1, 2>::u() {
         return new ParameterFunction(2, 0);
     }
 
-    inline Function<1, 2>
+    inline
+    Function<1, 2>
     NamedParameterFunctionConstructors<1, 2>::v() {
         return new ParameterFunction(2, 1);
     }

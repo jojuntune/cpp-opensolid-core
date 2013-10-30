@@ -111,7 +111,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const MatrixXd&
+    inline
+    const MatrixXd&
     MatrixMultiplicationFunction::matrix() const {
         return _matrix;
     }

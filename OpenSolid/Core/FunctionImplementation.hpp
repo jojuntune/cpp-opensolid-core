@@ -37,27 +37,32 @@
 
 namespace opensolid
 {
-    inline FunctionImplementationPtr
+    inline
+    FunctionImplementationPtr
     FunctionImplementation::self() const {
         return this;
     }
 
-    inline bool
+    inline
+    bool
     FunctionImplementation::isConstantFunction() const {
         return typeid(*this) == typeid(ConstantFunction);
     }
     
-    inline bool
+    inline
+    bool
     FunctionImplementation::isIdentityFunction() const {
         return typeid(*this) == typeid(IdentityFunction);
     }
     
-    inline bool
+    inline
+    bool
     FunctionImplementation::isParameterFunction() const {
         return typeid(*this) == typeid(ParameterFunction);
     }
     
-    inline bool
+    inline
+    bool
     FunctionImplementation::isLinearFunction() const {
         return typeid(*this) == typeid(LinearFunction);
     }
@@ -69,17 +74,20 @@ namespace opensolid
         return static_cast<const TFunctionImplementation*>(this);
     }
 
-    inline int
+    inline
+    int
     FunctionImplementation::numDimensions() const {
         return numDimensionsImpl();
     }
     
-    inline int
+    inline
+    int
     FunctionImplementation::numParameters() const {
         return numParametersImpl();
     }
     
-    inline void
+    inline
+    void
     FunctionImplementation::evaluate(
         const MapXcd& parameterValues,
         MapXd& results,
@@ -88,7 +96,8 @@ namespace opensolid
         evaluateImpl(parameterValues, results, evaluator);
     }
     
-    inline void
+    inline
+    void
     FunctionImplementation::evaluate(
         const MapXcI& parameterBounds,
         MapXI& results,
@@ -97,7 +106,8 @@ namespace opensolid
         evaluateImpl(parameterBounds, results, evaluator);
     }
     
-    inline void
+    inline
+    void
     FunctionImplementation::evaluateJacobian(
         const MapXcd& parameterValues,
         MapXd& results,
@@ -106,7 +116,8 @@ namespace opensolid
         evaluateJacobianImpl(parameterValues, results, evaluator);
     }
 
-    inline void
+    inline
+    void
     FunctionImplementation::evaluateJacobian(
         const MapXcI& parameterBounds,
         MapXI& results,

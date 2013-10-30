@@ -35,37 +35,44 @@ namespace opensolid
         _precision(precision) {
     }
 
-    inline double
+    inline
+    double
     Zero::precision() const {
         return _precision;
     }
 
-    inline bool
+    inline
+    bool
     operator==(double value, Zero zero) {
         return value >= -zero.precision() && value <= zero.precision();
     }
 
-    inline bool
+    inline
+    bool
     operator!=(double value, Zero zero) {
         return value > zero.precision() || value < -zero.precision();
     }
 
-    inline bool
+    inline
+    bool
     operator<(double value, Zero zero) {
         return value < -zero.precision();
     }
 
-    inline bool
+    inline
+    bool
     operator>(double value, Zero zero) {
         return value > zero.precision();
     }
 
-    inline bool
+    inline
+    bool
     operator<=(double value, Zero zero) {
         return value <= zero.precision();
     }
 
-    inline bool
+    inline
+    bool
     operator>=(double value, Zero zero) {
         return value >= -zero.precision();
     }

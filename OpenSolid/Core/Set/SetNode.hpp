@@ -134,7 +134,8 @@ namespace opensolid
     namespace detail
     {
         template <class TBounds>
-        inline void
+        inline
+        void
         split(const TBounds& bounds, int& splitDirection, double& splitValue) {
             typename TBounds::Index index;
             bounds.cwiseWidth().maxCoeff(&index);
@@ -143,19 +144,22 @@ namespace opensolid
         }
 
         template <int iNumDimensions>
-        inline void
+        inline
+        void
         split(const Box<iNumDimensions>& box, int& splitDirection, double& splitValue) {
             split(box.vector(), splitDirection, splitValue);
         }
         
-        inline void
+        inline
+        void
         split(const Interval& interval, int& splitDirection, double& splitValue) {
             splitDirection = 0;
             splitValue = interval.median();
         }
 
         template <class TBounds>
-        inline bool
+        inline
+        bool
         isCompatible(const TBounds& bounds, int splitDirection, double splitValue) {
             double lowerBound = bounds(splitDirection).lowerBound();
             double upperBound = bounds(splitDirection).upperBound();
@@ -165,12 +169,14 @@ namespace opensolid
         }
 
         template <int iNumDimensions>
-        inline bool
+        inline
+        bool
         isCompatible(const Box<iNumDimensions>& box, int splitDirection, double splitValue) {
             return isCompatible(box.vector(), splitDirection, splitValue);
         }
     
-        inline bool
+        inline
+        bool
         isCompatible(const Interval& interval, int splitDirection, double splitValue) {
             assert(splitDirection == 0);
             double splitRatio =
@@ -179,25 +185,29 @@ namespace opensolid
         }
 
         template <class TBounds>
-        inline double
+        inline
+        double
         median(const TBounds& bounds, int splitDirection) {
             return bounds(splitDirection).median();
         }
 
         template <int iNumDimensions>
-        inline double
+        inline
+        double
         median(const Box<iNumDimensions>& box, int splitDirection) {
             return box(splitDirection).median();
         }
 
-        inline double
+        inline
+        double
         median(const Interval& bounds, int splitDirection) {
             assert(splitDirection == 0);
             return bounds.median();
         }
 
         template <class TBounds>
-        inline bool
+        inline
+        bool
         hasLesserMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
@@ -208,7 +218,8 @@ namespace opensolid
         }
 
         template <int iNumDimensions>
-        inline bool
+        inline
+        bool
         hasLesserMedian(
             const Box<iNumDimensions>& firstBox,
             const Box<iNumDimensions>& secondBox,
@@ -217,7 +228,8 @@ namespace opensolid
             return hasLesserMedian(firstBox.vector(), secondBox.vector(), splitDirection);
         }
 
-        inline bool
+        inline
+        bool
         hasLesserMedian(
             const Interval& firstInterval,
             const Interval& secondInterval,
@@ -229,7 +241,8 @@ namespace opensolid
         }
 
         template <class TBounds>
-        inline bool
+        inline
+        bool
         hasGreaterMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
@@ -240,7 +253,8 @@ namespace opensolid
         }
 
         template <int iNumDimensions>
-        inline bool
+        inline
+        bool
         hasGreaterMedian(
             const Box<iNumDimensions>& firstBox,
             const Box<iNumDimensions>& secondBox,
@@ -249,7 +263,8 @@ namespace opensolid
             return hasGreaterMedian(firstBox.vector(), secondBox.vector(), splitDirection);
         }
 
-        inline bool
+        inline
+        bool
         hasGreaterMedian(
             const Interval& firstInterval,
             const Interval& secondInterval,
@@ -423,43 +438,50 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline const TElement*
+    inline
+    const TElement*
     SetNode<TElement>::element() const {
         return _element;
     }
     
     template <class TElement>
-    inline const typename BoundsType<TElement>::Type&
+    inline
+    const typename BoundsType<TElement>::Type&
     SetNode<TElement>::bounds() const {
         return _bounds;
     }
     
     template <class TElement>
-    inline int
+    inline
+    int
     SetNode<TElement>::splitDirection() const {
         return _splitDirection;
     }
     
     template <class TElement>
-    inline double
+    inline
+    double
     SetNode<TElement>::splitValue() const {
         return _splitValue;
     }
         
     template <class TElement>
-    inline const SetNode<TElement>*
+    inline
+    const SetNode<TElement>*
     SetNode<TElement>::leftChild() const {
         return _leftChild;
     }
     
     template <class TElement>
-    inline const SetNode<TElement>*
+    inline
+    const SetNode<TElement>*
     SetNode<TElement>::rightChild() const {
         return _rightChild;
     }
     
     template <class TElement>
-    inline std::int64_t
+    inline
+    std::int64_t
     SetNode<TElement>::size() const {
         return _size;
     }

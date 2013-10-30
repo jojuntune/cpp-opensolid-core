@@ -33,12 +33,14 @@
 
 namespace opensolid
 {
-    inline const Point<3>&
+    inline
+    const Point<3>&
     Plane3d::originPoint() const {
         return _originPoint;
     }
 
-    inline const Vector3d&
+    inline
+    const Vector3d&
     Plane3d::normalVector() const {
         return _normalVector;
     }

@@ -72,7 +72,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const FunctionImplementationPtr&
+    inline
+    const FunctionImplementationPtr&
     UnaryOperation::operand() const {
         return _operand;
     }

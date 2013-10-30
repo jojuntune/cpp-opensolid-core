@@ -47,12 +47,14 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline opensolid::Interval
+    inline
+    opensolid::Interval
     HullOperation::operator()(double firstValue, double secondValue) const {
         return opensolid::Interval::Hull(firstValue, secondValue);
     }
     
-    inline opensolid::Interval
+    inline
+    opensolid::Interval
     HullOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval

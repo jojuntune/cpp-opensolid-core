@@ -46,19 +46,22 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::rows() const {
         return iNumDimensions;
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::cols() const {
         return _argument.cols();
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument> template <class TResult>
-    inline void
+    inline
+    void
     FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::evalTo(TResult& result) const {
         MatrixArgument<TArgument> argument(_argument);
         
@@ -92,7 +95,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument>
-    inline typename TArgument::Scalar
+    inline
+    typename TArgument::Scalar
     FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::value() const {
         Matrix<typename TArgument::Scalar, 1, 1> result;
         this->evalTo(result);
@@ -100,7 +104,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument>
-    inline bool
+    inline
+    bool
     FunctionReturnValue<iNumDimensions, iNumParameters, TArgument>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
@@ -115,19 +120,22 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, 1, int>::rows() const {
         return iNumDimensions;
     }
     
     template <int iNumDimensions>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, 1, int>::cols() const {
         return 1;
     }
     
     template <int iNumDimensions> template <class TResult>
-    inline void
+    inline
+    void
     FunctionReturnValue<iNumDimensions, 1, int>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
@@ -148,7 +156,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline double
+    inline
+    double
     FunctionReturnValue<iNumDimensions, 1, int>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
@@ -156,7 +165,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     FunctionReturnValue<iNumDimensions, 1, int>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
@@ -171,19 +181,22 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, 1, double>::rows() const {
         return iNumDimensions;
     }
     
     template <int iNumDimensions>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, 1, double>::cols() const {
         return 1;
     }
     
     template <int iNumDimensions> template <class TResult>
-    inline void
+    inline
+    void
     FunctionReturnValue<iNumDimensions, 1, double>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXd, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
@@ -204,7 +217,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline double
+    inline
+    double
     FunctionReturnValue<iNumDimensions, 1, double>::value() const {
         Matrix<double, 1, 1> result;
         this->evalTo(result);
@@ -212,7 +226,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     FunctionReturnValue<iNumDimensions, 1, double>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }
@@ -227,19 +242,22 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, 1, Interval>::rows() const {
         return iNumDimensions;
     }
     
     template <int iNumDimensions>
-    inline int
+    inline
+    int
     FunctionReturnValue<iNumDimensions, 1, Interval>::cols() const {
         return 1;
     }
     
     template <int iNumDimensions> template <class TResult>
-    inline void
+    inline
+    void
     FunctionReturnValue<iNumDimensions, 1, Interval>::evalTo(TResult& result) const {
         // Create argument map
         typedef Map<const MatrixXI, Unaligned, Stride<Dynamic, Dynamic>> ArgumentMapType;
@@ -260,7 +278,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline Interval
+    inline
+    Interval
     FunctionReturnValue<iNumDimensions, 1, Interval>::value() const {
         Matrix<Interval, 1, 1> result;
         this->evalTo(result);
@@ -268,7 +287,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     FunctionReturnValue<iNumDimensions, 1, Interval>::isZero(double precision) const {
         return this->eval().isZero(precision);
     }

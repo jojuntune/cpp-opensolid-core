@@ -36,29 +36,34 @@
 namespace opensolid
 {
     template <int iNumDimensions>
+    inline
     Domain<iNumDimensions>::Domain() {
     }
 
     template <int iNumDimensions>
+    inline
     Domain<iNumDimensions>::Domain(
         const Set<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries
     ) : _boundaries(boundaries) {
     }
     
     template <int iNumDimensions>
-    inline const Set<Geometry<iNumDimensions, iNumDimensions - 1>>&
+    inline
+    const Set<Geometry<iNumDimensions, iNumDimensions - 1>>&
     Domain<iNumDimensions>::boundaries() const {
         return _boundaries;
     }
 
     template <int iNumDimensions>
-    inline bool
+    inline
+    bool
     Domain<iNumDimensions>::isEmpty() const {
         return boundaries().isEmpty();
     }
 
     template <int iNumDimensions>
-    inline Box<iNumDimensions>
+    inline
+    Box<iNumDimensions>
     Domain<iNumDimensions>::bounds() const {
         return boundaries().bounds();
     }
@@ -78,6 +83,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions> template <class TVector>
+    inline
     Domain<iNumDimensions>
     TranslationFunction<Domain<iNumDimensions>>::operator()(
         const Domain<iNumDimensions>& domain,
@@ -87,6 +93,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions> template <class TMatrix>
+    inline
     Domain<iNumDimensions>
     TransformationFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
         const Domain<iNumDimensions>& domain,
@@ -101,6 +108,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
     Domain<iNumDimensions>
     MorphingFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
         const Domain<iNumDimensions>& domain,

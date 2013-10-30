@@ -77,13 +77,15 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline const FunctionImplementationPtr&
+    inline
+    const FunctionImplementationPtr&
     Function<iNumDimensions, iNumParameters>::implementation() const {
         return _implementation;
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline FunctionReturnValue<iNumDimensions, 1, int>
+    inline
+    FunctionReturnValue<iNumDimensions, 1, int>
     Function<iNumDimensions, iNumParameters>::operator()(int value) const {
         static_assert(
             iNumParameters == 1,
@@ -93,7 +95,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline FunctionReturnValue<iNumDimensions, 1, double>
+    inline
+    FunctionReturnValue<iNumDimensions, 1, double>
     Function<iNumDimensions, iNumParameters>::operator()(double value) const {
         static_assert(
             iNumParameters == 1,
@@ -103,7 +106,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline FunctionReturnValue<iNumDimensions, 1, Interval>
+    inline
+    FunctionReturnValue<iNumDimensions, 1, Interval>
     Function<iNumDimensions, iNumParameters>::operator()(Interval interval) const {
         static_assert(
             iNumParameters == 1,
@@ -113,7 +117,8 @@ namespace opensolid
     }
     
     template <int iNumDimensions, int iNumParameters> template <class TMatrix>
-    inline FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>
+    inline
+    FunctionReturnValue<iNumDimensions, iNumParameters, TMatrix>
     Function<iNumDimensions, iNumParameters>::operator()(const EigenBase<TMatrix>& matrix) const {
         static_assert(
             TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
@@ -129,7 +134,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline JacobianReturnValue<iNumDimensions, 1, int>
+    inline
+    JacobianReturnValue<iNumDimensions, 1, int>
     Function<iNumDimensions, iNumParameters>::jacobian(int value) const {
         static_assert(
             iNumParameters == 1,
@@ -139,7 +145,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline JacobianReturnValue<iNumDimensions, 1, double>
+    inline
+    JacobianReturnValue<iNumDimensions, 1, double>
     Function<iNumDimensions, iNumParameters>::jacobian(double value) const {
         static_assert(
             iNumParameters == 1,
@@ -149,7 +156,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters>
-    inline JacobianReturnValue<iNumDimensions, 1, Interval>
+    inline
+    JacobianReturnValue<iNumDimensions, 1, Interval>
     Function<iNumDimensions, iNumParameters>::jacobian(Interval interval) const {
         static_assert(
             iNumParameters == 1,
@@ -159,7 +167,8 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumParameters> template <class TVector>
-    inline JacobianReturnValue<iNumDimensions, iNumParameters, TVector>
+    inline
+    JacobianReturnValue<iNumDimensions, iNumParameters, TVector>
     Function<iNumDimensions, iNumParameters>::jacobian(const EigenBase<TVector>& vector) const {
         static_assert(
             TVector::ColsAtCompileTime == 1,

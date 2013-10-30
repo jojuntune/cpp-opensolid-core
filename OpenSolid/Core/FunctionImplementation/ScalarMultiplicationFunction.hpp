@@ -108,7 +108,8 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline double
+    inline
+    double
     ScalarMultiplicationFunction::scale() const {
         return _scale;
     }

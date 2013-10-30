@@ -314,49 +314,57 @@ namespace Eigen
 namespace Eigen
 {
     template <class TMatrix>
-    inline typename TMatrix::Scalar
+    inline
+    typename TMatrix::Scalar
     ConstMatrixIterator<TMatrix>::dereference() const {
         return (*_matrix)(_index);
     }
     
     template <class TMatrix>
-    inline bool
+    inline
+    bool
     ConstMatrixIterator<TMatrix>::equal(const ConstMatrixIterator<TMatrix>& other) const {
         return _index == other._index;
     }
     
     template <class TMatrix>
-    inline bool
+    inline
+    bool
     ConstMatrixIterator<TMatrix>::equal(const MatrixIterator<TMatrix>& other) const {
         return _index == other._index;
     }
     
     template <class TMatrix>
-    inline typename TMatrix::Index
+    inline
+    typename TMatrix::Index
     ConstMatrixIterator<TMatrix>::distance_to(const ConstMatrixIterator<TMatrix>& other) const {
         return other._index - _index;
     }
     
     template <class TMatrix>
-    inline typename TMatrix::Index
+    inline
+    typename TMatrix::Index
     ConstMatrixIterator<TMatrix>::distance_to(const MatrixIterator<TMatrix>& other) const {
         return other._index - _index;
     }
     
     template <class TMatrix>
-    inline void
+    inline
+    void
     ConstMatrixIterator<TMatrix>::increment() {
         ++_index;
     }
     
     template <class TMatrix>
-    inline void
+    inline
+    void
     ConstMatrixIterator<TMatrix>::decrement() {
         --_index;
     }
     
     template <class TMatrix>
-    inline void
+    inline
+    void
     ConstMatrixIterator<TMatrix>::advance(typename TMatrix::Index argument) {
         _index += argument;
     }
@@ -385,49 +393,57 @@ namespace Eigen
     }
     
     template <class TMatrix>
-    inline typename TMatrix::Scalar&
+    inline
+    typename TMatrix::Scalar&
     MatrixIterator<TMatrix>::dereference() const {
         return (*_matrix)(_index);
     }
     
     template <class TMatrix>
-    inline bool
+    inline
+    bool
     MatrixIterator<TMatrix>::equal(const MatrixIterator<TMatrix>& other) const {
         return _index == other._index;
     }
     
     template <class TMatrix>
-    inline bool
+    inline
+    bool
     MatrixIterator<TMatrix>::equal(const ConstMatrixIterator<TMatrix>& other) const {
         return _index == other._index;
     }
     
     template <class TMatrix>
-    inline typename TMatrix::Index
+    inline
+    typename TMatrix::Index
     MatrixIterator<TMatrix>::distance_to(const MatrixIterator<TMatrix>& other) const {
         return other._index - _index;
     }
     
     template <class TMatrix>
-    inline typename TMatrix::Index
+    inline
+    typename TMatrix::Index
     MatrixIterator<TMatrix>::distance_to(const ConstMatrixIterator<TMatrix>& other) const {
         return other._index - _index;
     }
     
     template <class TMatrix>
-    inline void
+    inline
+    void
     MatrixIterator<TMatrix>::increment() {
         ++_index;
     }
     
     template <class TMatrix>
-    inline void
+    inline
+    void
     MatrixIterator<TMatrix>::decrement() {
         --_index;
     }
     
     template <class TMatrix>
-    inline void
+    inline
+    void
     MatrixIterator<TMatrix>::advance(typename TMatrix::Index argument) {
         _index += argument;
     }
@@ -447,14 +463,16 @@ namespace Eigen
     }
     
     template <class TDerived, class TMatrix, class TBlock>
-    inline TBlock
+    inline
+    TBlock
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::dereference() const {
         return TDerived::block(*_matrix, _index);
     }
     
     template <class TDerived, class TMatrix, class TBlock>
     template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
-    inline bool
+    inline
+    bool
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::equal(
         const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
     ) const {
@@ -463,7 +481,8 @@ namespace Eigen
     
     template <class TDerived, class TMatrix, class TBlock>
     template <class TOtherDerived, class TOtherMatrix, class TOtherBlock>
-    inline typename TMatrix::Index
+    inline
+    typename TMatrix::Index
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::distance_to(
         const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
     ) const {
@@ -471,19 +490,22 @@ namespace Eigen
     }
     
     template <class TDerived, class TMatrix, class TBlock>
-    inline void
+    inline
+    void
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::increment() {
         ++_index;
     }
     
     template <class TDerived, class TMatrix, class TBlock>
-    inline void
+    inline
+    void
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::decrement() {
         --_index;
     }
     
     template <class TDerived, class TMatrix, class TBlock>
-    inline void
+    inline
+    void
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::advance(typename TMatrix::Index argument) {
         _index += argument;
     }
@@ -541,7 +563,8 @@ namespace Eigen
     }
     
     template <class TMatrix>
-    inline typename TMatrix::ConstRowXpr
+    inline
+    typename TMatrix::ConstRowXpr
     ConstMatrixRowIterator<TMatrix>::block(const TMatrix& matrix, typename TMatrix::Index index) {
         return matrix.row(index);
     }
@@ -567,7 +590,8 @@ namespace Eigen
     }
     
     template <class TMatrix>
-    inline typename TMatrix::RowXpr
+    inline
+    typename TMatrix::RowXpr
     MatrixRowIterator<TMatrix>::block(TMatrix& matrix, typename TMatrix::Index index) {
         return matrix.row(index);
     }
@@ -607,7 +631,8 @@ namespace Eigen
     }
     
     template <class TMatrix>
-    inline typename TMatrix::ConstColXpr
+    inline
+    typename TMatrix::ConstColXpr
     ConstMatrixColIterator<TMatrix>::block(const TMatrix& matrix, typename TMatrix::Index index) {
         return matrix.col(index);
     }
@@ -633,7 +658,8 @@ namespace Eigen
     }
     
     template <class TMatrix>
-    inline typename TMatrix::ColXpr
+    inline
+    typename TMatrix::ColXpr
     MatrixColIterator<TMatrix>::block(TMatrix& matrix, typename TMatrix::Index index) {
         return matrix.col(index);
     }

@@ -44,7 +44,8 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline double
+    inline
+    double
     RandomOperation::operator()(opensolid::Interval interval) const {
         return interval.randomValue();
     }

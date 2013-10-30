@@ -102,25 +102,29 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline std::int64_t
+    inline
+    std::int64_t
     Set<TElement>::size() const {
         return isEmpty() ? 0 : root()->size();
     }
     
     template <class TElement>
-    inline bool
+    inline
+    bool
     Set<TElement>::isEmpty() const {
         return !root();
     }
     
     template <class TElement>
-    inline const SetNode<TElement>*
+    inline
+    const SetNode<TElement>*
     Set<TElement>::root() const {
         return _root;
     }
 
     template <class TElement>
-    inline void
+    inline
+    void
     Set<TElement>::swap(Set<TElement>& otherSet) {
         std::swap(_root, otherSet._root);
         std::swap(_boundsFunction, otherSet._boundsFunction);
@@ -140,13 +144,15 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline void
+    inline
+    void
     Set<TElement>::operator=(Set<TElement>&& otherSet) {
         swap(otherSet);
     }
     
     template <class TElement>
-    inline typename BoundsType<TElement>::Type
+    inline
+    typename BoundsType<TElement>::Type
     Set<TElement>::bounds() const {
         if (isEmpty()) {
             return typename BoundsType<TElement>::Type();
@@ -156,7 +162,8 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline TElement
+    inline
+    TElement
     Set<TElement>::atIndex(std::int64_t index) const {
         if (isEmpty()) {
             return TElement();
@@ -171,7 +178,8 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline std::int64_t
+    inline
+    std::int64_t
     Set<TElement>::indexOf(const TElement& element) const {
         if (isEmpty()) {
             return -1;
@@ -181,7 +189,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline void
+    inline
+    void
     Set<TElement>::insert(const TElement& element) {
         typename BoundsType<TElement>::Type bounds = _boundsFunction(element);
         if (isEmpty()) {
@@ -192,7 +201,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline std::int64_t
+    inline
+    std::int64_t
     Set<TElement>::erase(const TElement& element) {
         if (isEmpty()) {
             return 0;
@@ -204,7 +214,8 @@ namespace opensolid
     }
     
     template <class TElement> template <class TIterator>
-    inline void
+    inline
+    void
     Set<TElement>::insert(TIterator begin, TIterator end) {
         std::for_each(
             begin,
@@ -216,7 +227,8 @@ namespace opensolid
     }
     
     template <class TElement> template <class TIterator>
-    inline std::int64_t
+    inline
+    std::int64_t
     Set<TElement>::erase(TIterator begin, TIterator end) {
         return std::accumulate(
             begin,
@@ -229,7 +241,8 @@ namespace opensolid
     }
     
     template <class TElement>
-    inline void
+    inline
+    void
     Set<TElement>::clear() {
         if (_root) {
             delete _root;
@@ -238,12 +251,14 @@ namespace opensolid
     }
 
     template <class TElement>
-    inline SetInserter<TElement> Set<TElement>::inserter() {
+    inline
+    SetInserter<TElement> Set<TElement>::inserter() {
         return SetInserter<TElement>(this);
     }
 
     template <class TElement>
-    inline Set<TElement>
+    inline
+    Set<TElement>
     Set<TElement>::overlapping(const typename BoundsType<TElement>::Type& bounds) const {
         std::vector<TElement> overlappingElements;
         copyOverlapping(bounds, std::back_inserter(overlappingElements));
@@ -251,7 +266,8 @@ namespace opensolid
     }
 
     template <class TElement> template <class TBoundsPredicate>
-    inline Set<TElement>
+    inline
+    Set<TElement>
     Set<TElement>::filtered(const TBoundsPredicate& boundsPredicate) const {
         std::vector<TElement> filteredElements;
         copyFiltered(boundsPredicate, std::back_inserter(filteredElements));
@@ -259,7 +275,8 @@ namespace opensolid
     }
 
     template <class TElement> template <class TFunction>
-    inline Set<typename std::decay<typename std::result_of<TFunction(TElement)>::type>::type>
+    inline
+    Set<typename std::decay<typename std::result_of<TFunction(TElement)>::type>::type>
     Set<TElement>::mapped(const TFunction& function) const {
         typedef typename std::decay<typename std::result_of<TFunction(TElement)>::type>::type MappedElementType;
         std::vector<MappedElementType> mappedElements(size());
@@ -685,7 +702,8 @@ namespace opensolid
                 _scale(scale) {
             }
 
-            inline TElement
+            inline
+            TElement
             operator()(const TElement& element) const {
                 return Transformable<TElement>::scaling(element, _scale);
             }
@@ -713,7 +731,8 @@ namespace opensolid
                 _vector(vector.derived()) {
             }
 
-            inline TElement
+            inline
+            TElement
             operator()(const TElement& element) const {
                 return Transformable<TElement>::translation(element, _vector);
             }
@@ -747,7 +766,8 @@ namespace opensolid
                 _matrix(matrix.derived()) {
             }
 
-            inline result_type
+            inline
+            result_type
             operator()(const TElement& element) const {
                 return Transformable<TElement>::transformation(element, _matrix);
             }
@@ -784,7 +804,8 @@ namespace opensolid
             ) : _function(function) {
             }
 
-            inline result_type
+            inline
+            result_type
             operator()(const TElement& element) const {
                 return Transformable<TElement>::morphing(element, _function);
             }

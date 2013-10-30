@@ -115,12 +115,14 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline const FunctionImplementationPtr&
+    inline
+    const FunctionImplementationPtr&
     CompositionFunction::outerFunction() const {
         return _outerFunction;
     }
 
-    inline const FunctionImplementationPtr&
+    inline
+    const FunctionImplementationPtr&
     CompositionFunction::innerFunction() const {
         return _innerFunction;
     }

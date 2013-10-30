@@ -86,7 +86,8 @@ namespace Eigen
         template <>
         struct significant_decimals_default_impl<opensolid::Interval, false>
         {
-            static inline int
+            inline
+            static int
             run();
         };
         

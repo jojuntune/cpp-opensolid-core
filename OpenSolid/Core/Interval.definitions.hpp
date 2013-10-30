@@ -132,10 +132,12 @@ namespace opensolid
         Interval&
         operator/=(double value);
         
-        OPENSOLID_CORE_EXPORT Interval&
+        OPENSOLID_CORE_EXPORT
+        Interval&
         operator*=(Interval interval);
         
-        OPENSOLID_CORE_EXPORT Interval&
+        OPENSOLID_CORE_EXPORT
+        Interval&
         operator/=(Interval interval);
         
         static Interval
@@ -253,16 +255,19 @@ namespace opensolid
     Interval
     operator*(Interval interval, double value);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     operator*(Interval firstInterval, Interval secondInterval);
 
     Interval
     operator/(Interval interval, double value);
 
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     operator/(double value, Interval interval);
 
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     operator/(Interval firstInterval, Interval secondInterval);
 
     Interval
@@ -271,40 +276,52 @@ namespace opensolid
     Interval
     sqrt(Interval interval);
 
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     sin(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     cos(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     tan(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     asin(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     acos(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     atan(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     atan2(Interval yInterval, Interval xInterval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     exp(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     log(Interval interval);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     pow(Interval baseInterval, int exponentValue);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     pow(Interval baseInterval, double exponentValue);
     
-    OPENSOLID_CORE_EXPORT Interval
+    OPENSOLID_CORE_EXPORT
+    Interval
     pow(Interval baseInterval, Interval exponentInterval);
 
     Interval
@@ -319,7 +336,8 @@ namespace opensolid
     Interval
     abs2(Interval interval);
 
-    OPENSOLID_CORE_EXPORT std::ostream&
+    OPENSOLID_CORE_EXPORT
+    std::ostream&
     operator<<(std::ostream& stream, Interval interval);
 }
 

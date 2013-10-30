@@ -44,7 +44,8 @@ namespace Eigen
 
 namespace Eigen
 {
-    inline opensolid::Interval
+    inline
+    opensolid::Interval
     IntersectionOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval

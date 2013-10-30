@@ -72,17 +72,20 @@ namespace opensolid
         Simplex<1, 2>(RowVector2d(startPoint, endPoint)) {
     }
 
-    inline double
+    inline
+    double
     LineSegment<1>::startPoint() const {
         return vertices()(0);
     }
 
-    inline double
+    inline
+    double
     LineSegment<1>::endPoint() const {
         return vertices()(1);
     }
 
-    inline LineSegment<1>
+    inline
+    LineSegment<1>
     LineSegment<1>::Unit() {
         return LineSegment<1>(0.0, 1.0);
     }

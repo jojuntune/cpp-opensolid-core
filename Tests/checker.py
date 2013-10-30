@@ -4,6 +4,13 @@ import sys
 
 errorFound = False
 
+singleLineTerms = []
+singleLineTerms.append('inline')
+singleLineTerms.append('OPENSOLID_CORE_EXPORT')
+singleLineTerms.append('OPENSOLID_IO_EXPORT')
+singleLineTerms.append('OPENSOLID_PYTHON_EXPORT')
+singleLineTerms.append('OPENSOLID_PYTHON_EXTENSION_EXPORT')
+
 def checkLineEnding(filePath, lineNumber, line):
     global errorFound
     # Check for carriage return characters
@@ -13,6 +20,7 @@ def checkLineEnding(filePath, lineNumber, line):
 
 def checkLine(filePath, lineNumber, line):
     global errorFound
+    global singleLineTerms
     if not line.lstrip().startswith('//'):
         # Strip out contents of string literals
         line = str.join('""', line.split('"')[::2])
@@ -34,6 +42,14 @@ def checkLine(filePath, lineNumber, line):
                 errorString = 'ERROR: Found closing brace not at beginning of line on line {0} of file {1}'
                 print(errorString.format(lineNumber, filePath))
                 errorFound = True
+        # Check for terms that should be on their own line
+        # (ignore config.hpp where export macros are defined)
+        if 'config.hpp' not in filePath and 'friend' not in line:
+            for term in singleLineTerms:
+                if term in line and line.strip() != term:
+                    errorString = 'ERROR: Found \'{0}\' not on own line on line {1} of file {2}'
+                    print(errorString.format(term, lineNumber, filePath))
+                    errorFound = True
 
 def checkHeader(filePath):
     global errorFound

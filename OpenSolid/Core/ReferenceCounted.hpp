@@ -35,11 +35,8 @@ namespace opensolid
     private:
         mutable boost::detail::atomic_count _referenceCount;
 
-        template <class TReferenceCounted>
-        friend void intrusive_ptr_add_ref(const TReferenceCounted* argument);
-
-        template <class TReferenceCounted>
-        friend void intrusive_ptr_release(const TReferenceCounted* argument);
+        template <class TReferenceCounted> friend void intrusive_ptr_add_ref(const TReferenceCounted* argument);
+        template <class TReferenceCounted> friend void intrusive_ptr_release(const TReferenceCounted* argument);
 
         ReferenceCounted(const ReferenceCounted&);
     protected:
@@ -52,17 +49,23 @@ namespace opensolid
 namespace opensolid
 {
     template <class TReferenceCounted>
-    inline void intrusive_ptr_add_ref(const TReferenceCounted* argument) {
+    inline
+    void
+    intrusive_ptr_add_ref(const TReferenceCounted* argument) {
         ++argument->_referenceCount;
     }
     
     template <class TReferenceCounted>
-    inline void intrusive_ptr_release(const TReferenceCounted* argument) {
+    inline
+    void
+    intrusive_ptr_release(const TReferenceCounted* argument) {
         if (--argument->_referenceCount == 0) {
             delete argument;
         }
     }
 
-    inline ReferenceCounted::ReferenceCounted() : _referenceCount(0) {
+    inline
+    ReferenceCounted::ReferenceCounted() :
+        _referenceCount(0) {
     }
 }

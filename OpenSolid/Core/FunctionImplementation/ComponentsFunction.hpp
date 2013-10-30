@@ -112,12 +112,14 @@ namespace opensolid
 
 namespace opensolid
 {
-    inline int
+    inline
+    int
     ComponentsFunction::startIndex() const {
         return _startIndex;
     }
 
-    inline int
+    inline
+    int
     ComponentsFunction::numComponents() const {
         return _numComponents;
     }

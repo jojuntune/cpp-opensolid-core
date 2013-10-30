@@ -57,7 +57,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         Region2d(const Triangle<2>& triangle);
 
-        OPENSOLID_CORE_EXPORT static Region2d
+        OPENSOLID_CORE_EXPORT
+        static Region2d
         Disk(const Point<2>& centerPoint, double radius);
     };
 }

@@ -54,7 +54,8 @@ namespace Eigen
         _precision(precision) {
     }
     
-    inline bool
+    inline
+    bool
     OverlapOperation::operator()(
         opensolid::Interval firstInterval,
         opensolid::Interval secondInterval

@@ -36,7 +36,8 @@ namespace opensolid
 
     struct Arccosine
     {
-        inline double
+        inline
+        double
         operator()(double value) const {
             Interval domain(-1, 1);
             if (!domain.contains(value)) {
@@ -45,7 +46,8 @@ namespace opensolid
             return acos(domain.clamp(value));
         }
         
-        inline Interval
+        inline
+        Interval
         operator()(const Interval& bounds) const {
             Interval domain(-1, 1);
             if (!domain.overlaps(bounds)) {
