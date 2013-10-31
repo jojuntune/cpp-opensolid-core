@@ -172,7 +172,7 @@ public:
     }
     
     void testSquare() {
-        Function<1, 2> function = u.squaredNorm() * 1.0 + v.squaredNorm() * 1.0;
+        Function<1, 2> function = u.squared() * 1.0 + v.squared() * 1.0;
         TS_ASSERT(function(Vector2d(1, 2)).value() - 5 == Zero());
         Function<1, 2> u_derivative = function.derivative(0);
         TS_ASSERT(u_derivative(Vector2d(3, 4)).value() - 6 == Zero());
@@ -278,7 +278,7 @@ public:
     void testConcatenation() {
         Function<1, 1> x = t;
         Function<1, 1> y = Function<1, 1>::Constant(3.0);
-        Function<1, 1> z = t.squaredNorm();
+        Function<1, 1> z = t.squared();
         Function<3, 1> concatenated = Function<3, 1>::FromComponents(x, y, z);
         TS_ASSERT((concatenated(2.0) - Vector3d(2.0, 3.0, 4.0)).isZero());
     }
@@ -347,22 +347,22 @@ public:
         }
 
         {
-            Function<1, 1> function1 = t.squaredNorm() + 2 * t;
-            Function<1, 1> function2 = t * 2 + t.squaredNorm();
+            Function<1, 1> function1 = t.squared() + 2 * t;
+            Function<1, 1> function2 = t * 2 + t.squared();
 
             TS_ASSERT(function1.implementation()->isDuplicateOf(function2.implementation()));
         }
 
         {
-            Function<1, 2> function1 = cos(u.squaredNorm() + v.squaredNorm());
-            Function<1, 2> function2 = cos(v.squaredNorm() + u.squaredNorm());
+            Function<1, 2> function1 = cos(u.squared() + v.squared());
+            Function<1, 2> function2 = cos(v.squared() + u.squared());
 
             TS_ASSERT(function1.implementation()->isDuplicateOf(function2.implementation()));
         }
 
         {
-            Function<1, 2> function1 = u.squaredNorm();
-            Function<1, 2> function2 = v.squaredNorm();
+            Function<1, 2> function1 = u.squared();
+            Function<1, 2> function2 = v.squared();
 
             TS_ASSERT(!function1.implementation()->isDuplicateOf(function2.implementation()));
         }
@@ -384,12 +384,12 @@ public:
     }
 
     void testDeduplicatedOutput() {
-        Function<1, 1> f = t.squaredNorm() + sin(t.squaredNorm());
+        Function<1, 1> f = t.squared() + sin(t.squared());
         std::cout << f << std::endl;
     }
 
     void testEvaluatorDouble() {
-        Function<1, 1> f = t.squaredNorm();
+        Function<1, 1> f = t.squared();
         Evaluator evaluator;
         RowVector3d parameterValues(1, 2, 3);
         MapXcd parameterMap(parameterValues.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
@@ -401,7 +401,7 @@ public:
     }
 
     void testEvaluatorInterval() {
-        Function<1, 1> f = t.squaredNorm();
+        Function<1, 1> f = t.squared();
         Evaluator evaluator;
         RowVector3I parameterBounds(Interval(1, 2), Interval(3, 4), Interval(5, 6));
         MapXcI parameterMap(parameterBounds.data(), 1, 3, Stride<Dynamic, Dynamic>(1, 1));
@@ -496,7 +496,7 @@ public:
     //    expected_derivative_zeros[0] = RowVectorXd();
     //    expected_second_derivative_zeros[0] = RowVectorXd();
 
-    //    functions[1] = x.squaredNorm() - 1;
+    //    functions[1] = x.squared() - 1;
     //    domains[1] = Interval(-2, 2);
     //    expected_function_zeros[1] = RowVector2d(-1, 1);
     //    expected_derivative_zeros[1] = RowVectorXd::Constant(1, 0.0);
@@ -508,7 +508,7 @@ public:
     //    expected_derivative_zeros[2] = RowVector2d(1, 5.0 / 3.0);
     //    expected_second_derivative_zeros[2] = RowVectorXd::Constant(1, 4.0 / 3.0);
 
-    //    functions[3] = sin(x).squaredNorm() + 2 * sin(x) + 1;
+    //    functions[3] = sin(x).squared() + 2 * sin(x) + 1;
     //    domains[3] = Interval(-M_PI, 2 * M_PI);
     //    expected_function_zeros[3] = RowVector2d(-M_PI / 2, 3 * M_PI / 2);
     //    expected_derivative_zeros[3] = RowVector3d(-M_PI / 2, M_PI / 2, 3 * M_PI / 2);

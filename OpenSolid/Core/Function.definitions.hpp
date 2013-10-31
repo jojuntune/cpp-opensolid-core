@@ -109,6 +109,9 @@ namespace opensolid
         
         Function<1, iNumParameters>
         squaredNorm() const;
+
+        Function<1, iNumParameters>
+        squared() const;
         
         Function<1, iNumParameters>
         x() const;

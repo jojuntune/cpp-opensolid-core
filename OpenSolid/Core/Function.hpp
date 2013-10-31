@@ -229,6 +229,16 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumParameters>
     Function<1, iNumParameters>
+    Function<iNumDimensions, iNumParameters>::squared() const {
+        static_assert(
+            iNumDimensions == 1,
+            "Use squaredNorm() for vectors (squared() is only for scalars)"
+        );
+        return squaredNorm();
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    Function<1, iNumParameters>
     Function<iNumDimensions, iNumParameters>::x() const {
         DeduplicationCache deduplicationCache;
         return implementation()->x()->deduplicated(deduplicationCache);
