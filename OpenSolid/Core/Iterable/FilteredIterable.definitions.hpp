@@ -45,7 +45,7 @@ namespace opensolid
             TPredicate _predicate;
 
             template <class TDerived>
-            friend class Iterable;
+            friend class opensolid::Iterable;
 
             FilteredIterableIterator<TBaseIterable, TPredicate>
             beginImpl() const;

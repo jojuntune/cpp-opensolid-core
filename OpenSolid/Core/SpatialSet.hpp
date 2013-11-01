@@ -574,7 +574,8 @@ namespace opensolid
                     markDuplicateItems(node, firstItem, itemComparator, itemMap);
                 }
                 visitor(node->item, itemMap[itemIndex]);
-            } while (node = nextLeafNode(node));
+                node = nextLeafNode(node);
+            } while (node);
         }
     }
 

@@ -47,7 +47,7 @@ namespace opensolid
             TBoundsPredicate _boundsPredicate;
 
             template <class TDerived>
-            friend class Iterable;
+            friend class opensolid::Iterable;
 
             friend class SpatialSet<TItem>;
 

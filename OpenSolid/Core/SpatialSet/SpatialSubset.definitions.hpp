@@ -47,7 +47,7 @@ namespace opensolid
             std::vector<const TItem*> _items;
 
             template <class TDerived>
-            friend class Iterable;
+            friend class opensolid::Iterable;
 
             friend class SpatialSet<TItem>;
 
