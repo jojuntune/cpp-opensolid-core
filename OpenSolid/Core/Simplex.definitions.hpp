@@ -130,7 +130,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
-    struct ChangeDimensions<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>
+    struct TransformedType<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>
+    {
+        typedef Simplex<iNumResultDimensions, iNumVertices> Type;
+    };
+
+    template <int iNumDimensions, int iNumVertices, int iNumResultDimensions>
+    struct MorphedType<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>
     {
         typedef Simplex<iNumResultDimensions, iNumVertices> Type;
     };

@@ -83,8 +83,14 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct ChangeDimensions<Triangle<iNumDimensions>, iNumResultDimensions> :
-        public ChangeDimensions<Simplex<iNumDimensions, 3>, iNumResultDimensions>
+    struct TransformedType<Triangle<iNumDimensions>, iNumResultDimensions> :
+        public TransformedType<Simplex<iNumDimensions, 3>, iNumResultDimensions>
+    {
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Triangle<iNumDimensions>, iNumResultDimensions> :
+        public MorphedType<Simplex<iNumDimensions, 3>, iNumResultDimensions>
     {
     };
 

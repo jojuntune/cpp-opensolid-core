@@ -61,7 +61,7 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return Plane3d(
-            Point<3>::transformation(plane.originPoint(), matrix),
+            detail::transformed(plane.originPoint(), matrix),
             matrix.derived() * plane.normalVector()
         );
     }

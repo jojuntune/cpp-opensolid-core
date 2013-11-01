@@ -419,7 +419,7 @@ namespace opensolid
         double scale
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            Point<iNumDimensions>::scaling(coordinateSystem.originPoint(), scale),
+            detail::scaled(coordinateSystem.originPoint(), scale),
             scale * coordinateSystem.basisMatrix()
         );
     }
@@ -445,7 +445,7 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            Point<iNumDimensions>::transformation(coordinateSystem.originPoint(), matrix.derived()),
+            detail::transformed(coordinateSystem.originPoint(), matrix.derived()),
             matrix.derived() * coordinateSystem.basisMatrix()
         );
     }

@@ -47,94 +47,96 @@ namespace opensolid
         const TDerived&
         derived() const;
 
-        TDerived
+        typename ScaledAboutPointType<TDerived>::Type
         scaledAbout(const Point<NumDimensions<TDerived>::Value>& originPoint, double scale) const;
 
         template <class TVector>
-        TDerived
+        typename TranslatedType<TDerived>::Type
         translated(const EigenBase<TVector>& vector) const;
 
-        TDerived
+        typename TranslatedType<TDerived>::Type
         translatedAlong(
             const Axis<NumDimensions<TDerived>::Value>& axis,
             double distance
         ) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         rotatedAbout(const Point<2>& originPoint, double angle) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         rotatedAbout(const Axis<3>& axis, double angle) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         mirroredAbout(const Axis<2>& axis) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         mirroredAbout(const Plane3d& plane) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         projectedOnto(const Axis<2>& axis) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         projectedOnto(const Axis<3>& axis) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         projectedOnto(const Plane3d& plane) const;
 
-        TDerived
+        typename TransformedAboutPointType<TDerived>::Type
         transformed(
             const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
         ) const;
 
         template <int iNumResultDimensions, int iNumAxes>
-        typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+        typename TransplantedType<TDerived, iNumResultDimensions>::Type
         transplanted(
             const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
             const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
         ) const;
 
         template <int iNumResultDimensions>
-        typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+        typename TransplantedType<TDerived, iNumResultDimensions>::Type
         transplanted(
             const Transplant<NumDimensions<TDerived>::Value, iNumResultDimensions>& transplant
         ) const;
 
         template <int iNumResultDimensions>
-        typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+        typename MorphedType<TDerived, iNumResultDimensions>::Type
         morphed(
             const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
         ) const;
-
-        ///// Low-level static functions /////
-
-        static TDerived
-        scaling(const TDerived& argument, double scale);
-
-        template <class TVector>
-        static TDerived
-        translation(const TDerived& argument, const EigenBase<TVector>& vector);
-
-        template <class TMatrix>
-        static typename ChangeDimensions<TDerived, TMatrix::RowsAtCompileTime>::Type
-        transformation(const TDerived& argument, const EigenBase<TMatrix>& matrix);
-
-        template <int iNumResultDimensions>
-        static typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
-        morphing(
-            const TDerived& argument,
-            const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
-        );
     };
 
+    namespace detail
+    {
+        template <class TTransformable>
+        typename ScaledType<TTransformable>::Type
+        scaled(const TTransformable& transformable, double scale);
+
+        template <class TTransformable, class TVector>
+        typename TranslatedType<TTransformable>::Type
+        translated(const TTransformable& transformable, const EigenBase<TVector>& vector);
+
+        template <class TTransformable, class TMatrix>
+        typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
+        transformed(const TTransformable& transformable, const EigenBase<TMatrix>& matrix);
+
+        template <class TTransformable, int iNumResultDimensions>
+        typename MorphedType<TTransformable, iNumResultDimensions>::Type
+        morphed(
+            const TTransformable& transformable,
+            const Function<iNumResultDimensions, NumDimensions<TTransformable>::Value>& function
+        );
+    }
+
     template <class TDerived, int iNumAxes>
-    typename ChangeDimensions<TDerived, iNumAxes>::Type
+    typename LocalizedType<TDerived, iNumAxes>::Type
     operator/(
         const Transformable<TDerived>& transformable,
         const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
     );
 
     template <class TDerived, int iNumDimensions>
-    typename ChangeDimensions<TDerived, iNumDimensions>::Type
+    typename GlobalizedType<TDerived, iNumDimensions>::Type
     operator*(
         const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
         const Transformable<TDerived>& transformable
@@ -152,20 +154,98 @@ namespace opensolid
     };
 
     template <>
-    struct NumDimensions<float>
-    {
-        static const int Value = 1;
-    };
-
-    template <>
-    struct NumDimensions<int>
-    {
-        static const int Value = 1;
-    };
-
-    template <>
     struct NumDimensions<Interval>
     {
         static const int Value = 1;
+    };
+
+    template <class TTransformable>
+    struct ScaledType
+    {
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable>
+    struct TranslatedType
+    {
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct TransformedType
+    {
+        static_assert(
+            iNumResultDimensions == NumDimensions<TTransformable>::Value,
+            "Must specialize TransformedType<TTransformable, iNumResultDimensions> "
+            "when transforming into a different number of dimensions"
+        );
+
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct MorphedType
+    {
+        static_assert(
+            iNumResultDimensions == NumDimensions<TTransformable>::Value,
+            "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
+            "when morphing into a different number of dimensions"
+        );
+
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable>
+    struct ScaledAboutPointType
+    {
+        typedef typename TranslatedType<
+            typename ScaledType<
+                typename TranslatedType<
+                    TTransformable
+                >::Type
+            >::Type
+        >::Type Type;
+    };
+
+    template <class TTransformable>
+    struct TransformedAboutPointType
+    {
+        typedef typename TranslatedType<
+            typename TransformedType<
+                typename TranslatedType<TTransformable>::Type,
+                NumDimensions<TTransformable>::Value
+            >::Type
+        >::Type Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct LocalizedType
+    {
+        typedef typename TransformedType<
+            typename TranslatedType<TTransformable>::Type,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct GlobalizedType
+    {
+        typedef typename TranslatedType<
+            typename TransformedType<
+                TTransformable,
+                iNumResultDimensions
+            >::Type
+        >::Type Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct TransplantedType
+    {
+        typedef typename TranslatedType<
+            typename TransformedType<
+                typename TranslatedType<TTransformable>::Type,
+                iNumResultDimensions
+            >::Type
+        >::Type Type;
     };
 }

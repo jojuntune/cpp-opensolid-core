@@ -199,16 +199,34 @@ namespace opensolid
         static const int Value = NumDimensions<TItem>::Value;
     };
 
-    template <class TItem, int iNumResultDimensions>
-    struct ChangeDimensions<SpatialSet<TItem>, iNumResultDimensions>
+    template <class TItem>
+    struct ScaledType<SpatialSet<TItem>>
     {
-        typedef SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type> Type;
+        typedef SpatialSet<typename ScaledType<TItem>::Type> Type;
+    };
+
+    template <class TItem>
+    struct TranslatedType<SpatialSet<TItem>>
+    {
+        typedef SpatialSet<typename TranslatedType<TItem>::Type> Type;
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct TransformedType<SpatialSet<TItem>, iNumResultDimensions>
+    {
+        typedef SpatialSet<typename TransformedType<TItem, iNumResultDimensions>::Type> Type;
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct MorphedType<SpatialSet<TItem>, iNumResultDimensions>
+    {
+        typedef SpatialSet<typename MorphedType<TItem, iNumResultDimensions>::Type> Type;
     };
 
     template <class TItem>
     struct ScalingFunction<SpatialSet<TItem>>
     {
-        SpatialSet<TItem>
+        SpatialSet<typename ScaledType<TItem>::Type>
         operator()(const SpatialSet<TItem>& set, double scale) const;
     };
 
@@ -216,7 +234,7 @@ namespace opensolid
     struct TranslationFunction<SpatialSet<TItem>>
     {
         template <class TVector>
-        SpatialSet<TItem>
+        SpatialSet<typename TranslatedType<TItem>::Type>
         operator()(const SpatialSet<TItem>& set, const EigenBase<TVector>& vector) const;
     };
 
@@ -224,14 +242,14 @@ namespace opensolid
     struct TransformationFunction<SpatialSet<TItem>, iNumResultDimensions>
     {
         template <class TMatrix>
-        SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+        SpatialSet<typename TransformedType<TItem, iNumResultDimensions>::Type>
         operator()(const SpatialSet<TItem>& set, const EigenBase<TMatrix>& matrix) const;
     };
 
     template <class TItem, int iNumResultDimensions>
     struct MorphingFunction<SpatialSet<TItem>, iNumResultDimensions>
     {
-        SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+        SpatialSet<typename MorphedType<TItem, iNumResultDimensions>::Type>
         operator()(
             const SpatialSet<TItem>& set,
             const Function<iNumResultDimensions, NumDimensions<TItem>::Value>& function

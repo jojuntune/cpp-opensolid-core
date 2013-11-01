@@ -74,12 +74,7 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         double scale
     ) const {
-        return Domain<iNumDimensions>(
-            SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>::scaling(
-                domain.boundaries(),
-                scale
-            )
-        );
+        return Domain<iNumDimensions>(detail::scaled(domain.boundaries(), scale));
     }
 
     template <int iNumDimensions> template <class TVector>
@@ -99,12 +94,7 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return Domain<iNumDimensions>(
-            SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>::transformation(
-                domain.boundaries(),
-                matrix.derived()
-            )
-        );
+        return Domain<iNumDimensions>(detail::transformed(domain.boundaries(), matrix.derived()));
     }
 
     template <int iNumDimensions>

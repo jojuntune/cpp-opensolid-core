@@ -66,17 +66,13 @@ namespace opensolid
 
     template <int iNumSourceDimensions, int iNumResultDimensions>
     template <class TTransformable>
-    typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type
+    typename TransplantedType<TTransformable, iNumResultDimensions>::Type
     Transplant<iNumSourceDimensions, iNumResultDimensions>::operator()(
         const TTransformable& transformable
     ) const {
-        typedef typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type ResultType;
-        return Transformable<ResultType>::translation(
-            Transformable<TTransformable>::transformation(
-                Transformable<TTransformable>::translation(
-                    transformable,
-                    -sourceOriginPoint().vector()
-                ),
+        return detail::translated(
+            detail::transformed(
+                detail::translated(transformable, -sourceOriginPoint().vector()),
                 transformationMatrix()
             ),
             destinationOriginPoint().vector()

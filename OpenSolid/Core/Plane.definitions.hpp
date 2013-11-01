@@ -130,12 +130,6 @@ namespace opensolid
     };
 
     template <>
-    struct ChangeDimensions<Plane3d, 3>
-    {
-        typedef Plane3d Type;
-    };
-
-    template <>
     struct ScalingFunction<Plane3d>
     {
         OPENSOLID_CORE_EXPORT

@@ -51,7 +51,7 @@ namespace opensolid
         transformationMatrix() const;
 
         template <class TTransformable>
-        typename ChangeDimensions<TTransformable, iNumAxes>::Type
+        typename LocalizedType<TTransformable, iNumAxes>::Type
         operator()(const TTransformable& transformable) const;
     };
 }

@@ -120,7 +120,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct ChangeDimensions<Axis<iNumDimensions>, iNumResultDimensions>
+    struct TransformedType<Axis<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Axis<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Axis<iNumDimensions>, iNumResultDimensions>
     {
         typedef Axis<iNumResultDimensions> Type;
     };
@@ -165,8 +171,14 @@ namespace opensolid
     };
 
     template <int iNumResultDimensions>
-    struct ChangeDimensions<Axis2d, iNumResultDimensions> :
-        public ChangeDimensions<Axis<2>, iNumResultDimensions>
+    struct TransformedType<Axis2d, iNumResultDimensions> :
+        public TransformedType<Axis<2>, iNumResultDimensions>
+    {
+    };
+
+    template <int iNumResultDimensions>
+    struct MorphedType<Axis2d, iNumResultDimensions> :
+        public MorphedType<Axis<2>, iNumResultDimensions>
     {
     };
 
@@ -201,8 +213,14 @@ namespace opensolid
     };
 
     template <int iNumResultDimensions>
-    struct ChangeDimensions<Axis3d, iNumResultDimensions> :
-        public ChangeDimensions<Axis<3>, iNumResultDimensions>
+    struct TransformedType<Axis3d, iNumResultDimensions> :
+        public TransformedType<Axis<3>, iNumResultDimensions>
+    {
+    };
+
+    template <int iNumResultDimensions>
+    struct MorphedType<Axis3d, iNumResultDimensions> :
+        public MorphedType<Axis<3>, iNumResultDimensions>
     {
     };
 

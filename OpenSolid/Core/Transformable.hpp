@@ -51,96 +51,91 @@ namespace opensolid
 
     template <class TDerived>
     inline
-    TDerived
+    typename ScaledAboutPointType<TDerived>::Type
     Transformable<TDerived>::scaledAbout(
         const Point<NumDimensions<TDerived>::Value>& originPoint,
         double scale
     ) const {
-        if (originPoint.isOrigin()) {
-            return scaling(derived(), scale);
-        } else {
-            return translation(
-                scaling(
-                    translation(
-                        derived(),
-                        -originPoint.vector()
-                    ),
-                    scale
-                ),
-                originPoint.vector()
-            );
-        }
+        return detail::translated(
+            detail::scaled(
+                detail::translated(
+                    derived(),
+                    -originPoint.vector()
+                )
+            ),
+            originPoint.vector()
+        );
     }
 
     template <class TDerived> template <class TVector>
     inline
-    TDerived
+    typename TranslatedType<TDerived>::Type
     Transformable<TDerived>::translated(const EigenBase<TVector>& vector) const {
-        return translation(derived(), vector.derived());
+        return detail::translated(derived(), vector.derived());
     }
     
     template <class TDerived>
     inline
-    TDerived
+    typename TranslatedType<TDerived>::Type
     Transformable<TDerived>::translatedAlong(
         const Axis<NumDimensions<TDerived>::Value>& axis,
         double distance
     ) const {
-        return translation(derived(), distance * axis.directionVector());
+        return detail::translated(derived(), distance * axis.directionVector());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::rotatedAbout(const Point<2>& originPoint, double angle) const {
         return Rotation2d(originPoint, angle)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::rotatedAbout(const Axis<3>& axis, double angle) const {
         return Rotation3d(axis, angle)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::mirroredAbout(const Axis<2>& axis) const {
         return Mirror2d(axis)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::mirroredAbout(const Plane3d& plane) const {
         return Mirror3d(plane)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::projectedOnto(const Axis<2>& axis) const {
         return Projection2d(axis)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::projectedOnto(const Axis<3>& axis) const {
         return Projection3d(axis)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::projectedOnto(const Plane3d& plane) const {
         return Projection3d(plane)(derived());
     }
 
     template <class TDerived>
     inline
-    TDerived
+    typename TransformedAboutPointType<TDerived>::Type
     Transformable<TDerived>::transformed(
         const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
     ) const {
@@ -150,7 +145,7 @@ namespace opensolid
     template <class TDerived>
     template <int iNumResultDimensions, int iNumAxes>
     inline
-    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+    typename TransplantedType<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::transplanted(
         const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
         const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
@@ -161,7 +156,7 @@ namespace opensolid
     template <class TDerived>
     template <int iNumResultDimensions>
     inline
-    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+    typename TransplantedType<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::transplanted(
         const Transplant<NumDimensions<TDerived>::Value, iNumResultDimensions>& transplant
     ) const {
@@ -170,53 +165,56 @@ namespace opensolid
 
     template <class TDerived> template <int iNumResultDimensions>
     inline
-    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
+    typename MorphedType<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::morphed(
         const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
     ) const {
-        return morphing(derived(), function);
+        return detail::morphed(derived(), function);
     }
 
-    template <class TDerived>
-    inline
-    TDerived
-    Transformable<TDerived>::scaling(const TDerived& argument, double scale) {
-        return ScalingFunction<TDerived>()(argument, scale);
-    }
+    namespace detail
+    {
+        template <class TTransformable>
+        inline
+        typename ScaledType<TTransformable>::Type
+        scaled(const TTransformable& transformable, double scale) {
+            return ScalingFunction<TTransformable>()(transformable, scale);
+        }
 
-    template <class TDerived> template <class TVector>
-    inline
-    TDerived
-    Transformable<TDerived>::translation(
-        const TDerived& argument,
-        const EigenBase<TVector>& vector
-    ) {
-        return TranslationFunction<TDerived>()(argument, vector.derived());
-    }
+        template <class TTransformable, class TVector>
+        inline
+        typename TranslatedType<TTransformable>::Type
+        translated(const TTransformable& transformable, const EigenBase<TVector>& vector) {
+            return TranslationFunction<TTransformable>()(transformable, vector.derived());
+        }
 
-    template <class TDerived> template <class TMatrix>
-    inline
-    typename ChangeDimensions<TDerived, TMatrix::RowsAtCompileTime>::Type
-    Transformable<TDerived>::transformation(
-        const TDerived& argument,
-        const EigenBase<TMatrix>& matrix
-    ) {
-        return TransformationFunction<TDerived, TMatrix::RowsAtCompileTime>()(argument, matrix);
-    }
+        template <class TTransformable, class TMatrix>
+        inline
+        typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
+        transformed(const TTransformable& transformable, const EigenBase<TMatrix>& matrix) {
+            return TransformationFunction<TTransformable, TMatrix::RowsAtCompileTime>()(
+                transformable,
+                matrix.derived()
+            );
+        }
 
-    template <class TDerived> template <int iNumResultDimensions>
-    inline
-    typename ChangeDimensions<TDerived, iNumResultDimensions>::Type
-    Transformable<TDerived>::morphing(
-        const TDerived& argument,
-        const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
-    ) {
-        return MorphingFunction<TDerived, iNumResultDimensions>()(argument, function);
+        template <class TTransformable, int iNumResultDimensions>
+        inline
+        typename MorphedType<TTransformable, iNumResultDimensions>::Type
+        morphed(
+            const TTransformable& transformable,
+            const Function<iNumResultDimensions, NumDimensions<TTransformable>::Value>& function
+        ) {
+            return MorphingFunction<TTransformable, iNumResultDimensions>()(
+                transformable,
+                function
+            );
+        }
     }
 
     template <class TDerived, int iNumAxes>
     inline
-    typename ChangeDimensions<TDerived, iNumAxes>::Type
+    typename LocalizedType<TDerived, iNumAxes>::Type
     operator/(
         const Transformable<TDerived>& transformable,
         const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
@@ -228,7 +226,7 @@ namespace opensolid
 
     template <class TDerived, int iNumDimensions>
     inline
-    typename ChangeDimensions<TDerived, iNumDimensions>::Type
+    typename GlobalizedType<TDerived, iNumDimensions>::Type
     operator*(
         const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
         const Transformable<TDerived>& transformable

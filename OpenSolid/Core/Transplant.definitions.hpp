@@ -58,7 +58,7 @@ namespace opensolid
         destinationOriginPoint() const;
 
         template <class TTransformable>
-        typename ChangeDimensions<TTransformable, iNumResultDimensions>::Type
+        typename TransplantedType<TTransformable, iNumResultDimensions>::Type
         operator()(const TTransformable& transformable) const;
     };
 }

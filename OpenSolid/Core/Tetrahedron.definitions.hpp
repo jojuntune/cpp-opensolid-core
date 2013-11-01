@@ -62,8 +62,14 @@ namespace opensolid
     };
 
     template <int iNumResultDimensions>
-    struct ChangeDimensions<Tetrahedron3d, iNumResultDimensions> :
-        public ChangeDimensions<Simplex<3, 4>, iNumResultDimensions>
+    struct TransformedType<Tetrahedron3d, iNumResultDimensions> :
+        public TransformedType<Simplex<3, 4>, iNumResultDimensions>
+    {
+    };
+
+    template <int iNumResultDimensions>
+    struct MorphedType<Tetrahedron3d, iNumResultDimensions> :
+        public MorphedType<Simplex<3, 4>, iNumResultDimensions>
     {
     };
 

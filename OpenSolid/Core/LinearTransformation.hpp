@@ -59,9 +59,9 @@ namespace opensolid
     template <int iNumDimensions> template <class TTransformable>
     TTransformable
     LinearTransformation<iNumDimensions>::operator()(const TTransformable& transformable) const {
-        return Transformable<TTransformable>::translation(
-            Transformable<TTransformable>::transformation(
-                Transformable<TTransformable>::translation(
+        return detail::translated(
+            detail::transformed(
+                detail::translated(
                     transformable,
                     -originPoint().vector()
                 ),

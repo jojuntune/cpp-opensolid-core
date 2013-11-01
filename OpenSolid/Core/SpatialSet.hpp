@@ -653,74 +653,76 @@ namespace opensolid
     }
 
     template <class TItem>
-    SpatialSet<TItem>
+    SpatialSet<typename ScaledType<TItem>::Type>
     ScalingFunction<SpatialSet<TItem>>::operator()(
         const SpatialSet<TItem>& set,
         double scale
     ) const {
-        std::vector<TItem> scaledItems(set.size());
+        typedef typename ScaledType<TItem>::Type ScaledItem;
+        std::vector<ScaledItem> scaledItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
             scaledItems.begin(),
-            [scale] (const TItem& item) -> TItem {
-                return Transformable<TItem>::scaling(item, scale);
+            [scale] (const TItem& item) -> ScaledItem {
+                return detail::scaled(item, scale);
             }
         );
-        return SpatialSet<TItem>(std::move(scaledItems));
+        return SpatialSet<ScaledItem>(std::move(scaledItems));
     }
 
     template <class TItem> template <class TVector>
-    SpatialSet<TItem>
+    SpatialSet<typename TranslatedType<TItem>::Type>
     TranslationFunction<SpatialSet<TItem>>::operator()(
         const SpatialSet<TItem>& set,
         const EigenBase<TVector>& vector
     ) const {
-        std::vector<TItem> translatedItems(set.size());
+        typedef typename TranslatedType<TItem>::Type TranslatedItem;
+        std::vector<TranslatedItem> translatedItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
             translatedItems.begin(),
-            [&vector] (const TItem& item) -> TItem {
-                return Transformable<TItem>::translation(item, vector.derived());
+            [&vector] (const TItem& item) -> TranslatedItem {
+                return detail::translated(item, vector.derived());
             }
         );
-        return SpatialSet<TItem>(std::move(translatedItems));
+        return SpatialSet<TranslatedItem>(std::move(translatedItems));
     }
 
     template <class TItem, int iNumResultDimensions> template <class TMatrix>
-    SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+    SpatialSet<typename TransformedType<TItem, iNumResultDimensions>::Type>
     TransformationFunction<SpatialSet<TItem>, iNumResultDimensions>::operator()(
         const SpatialSet<TItem>& set,
         const EigenBase<TMatrix>& matrix
     ) const {
-        typedef typename ChangeDimensions<TItem, iNumResultDimensions>::Type TransformedItem;
+        typedef typename TransformedType<TItem, iNumResultDimensions>::Type TransformedItem;
         std::vector<TransformedItem> transformedItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
             transformedItems.begin(),
             [&matrix] (const TItem& item) -> TransformedItem {
-                return Transformable<TItem>::transformation(item, matrix.derived());
+                return detail::transformed(item, matrix.derived());
             }
         );
         return SpatialSet<TransformedItem>(std::move(transformedItems));
     }
 
     template <class TItem, int iNumResultDimensions>
-    SpatialSet<typename ChangeDimensions<TItem, iNumResultDimensions>::Type>
+    SpatialSet<typename MorphedType<TItem, iNumResultDimensions>::Type>
     MorphingFunction<SpatialSet<TItem>, iNumResultDimensions>::operator()(
         const SpatialSet<TItem>& set,
         const Function<iNumResultDimensions, NumDimensions<TItem>::Value>& function
     ) const {
-        typedef typename ChangeDimensions<TItem, iNumResultDimensions>::Type MorphedItem;
+        typedef typename MorphedType<TItem, iNumResultDimensions>::Type MorphedItem;
         std::vector<MorphedItem> morphedItems(set.size());
         std::transform(
             set.begin(),
             set.end(),
             morphedItems.begin(),
             [&function] (const TItem& item) -> MorphedItem {
-                return Transformable<TItem>::morphing(item, function);
+                return detail::morphed(item, function);
             }
         );
         return SpatialSet<MorphedItem>(std::move(morphedItems));

@@ -145,7 +145,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct ChangeDimensions<Point<iNumDimensions>, iNumResultDimensions>
+    struct TransformedType<Point<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Point<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Point<iNumDimensions>, iNumResultDimensions>
     {
         typedef Point<iNumResultDimensions> Type;
     };

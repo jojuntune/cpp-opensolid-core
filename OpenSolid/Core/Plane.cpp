@@ -168,7 +168,7 @@ namespace opensolid
 
     Plane3d
     ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
-        return Plane3d(Point3d::scaling(plane.originPoint(), scale), plane.normalVector());
+        return Plane3d(detail::scaled(plane.originPoint(), scale), plane.normalVector());
     }
 
     Plane3d

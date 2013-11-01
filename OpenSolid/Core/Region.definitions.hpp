@@ -74,12 +74,6 @@ namespace opensolid
     };
 
     template <>
-    struct ChangeDimensions<Region2d, 2> :
-        public ChangeDimensions<Domain<2>, 2>
-    {
-    };
-
-    template <>
     struct ScalingFunction<Region2d> :
         public ScalingFunction<Domain<2>>
     {

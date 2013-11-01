@@ -54,14 +54,10 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes> template <class TTransformable>
-    typename ChangeDimensions<TTransformable, iNumDimensions>::Type
+    typename GlobalizedType<TTransformable, iNumDimensions>::Type
     Globalization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
-        typedef typename ChangeDimensions<TTransformable, iNumDimensions>::Type ResultType;
-        return Transformable<ResultType>::translation(
-            Transformable<TTransformable>::transformation(
-                transformable,
-                transformationMatrix()
-            ),
+        return detail::translated(
+            detail::transformed(transformable, transformationMatrix()),
             originPoint().vector()
         );
     }

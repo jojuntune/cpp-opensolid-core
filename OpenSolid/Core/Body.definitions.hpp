@@ -73,8 +73,14 @@ namespace opensolid
     };
 
     template <>
-    struct ChangeDimensions<Body3d, 3> :
-        public ChangeDimensions<Domain<3>, 3>
+    struct TransformedType<Body3d, 3> :
+        public TransformedType<Domain<3>, 3>
+    {
+    };
+
+    template <>
+    struct MorphedType<Body3d, 3> :
+        public MorphedType<Domain<3>, 3>
     {
     };
 

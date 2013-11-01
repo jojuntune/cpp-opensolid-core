@@ -40,7 +40,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
-    struct ChangeDimensions<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>
+    struct TransformedType<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>
+    {
+        typedef Geometry<iNumResultDimensions, iNumParameters> Type;
+    };
+
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    struct MorphedType<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>
     {
         typedef Geometry<iNumResultDimensions, iNumParameters> Type;
     };

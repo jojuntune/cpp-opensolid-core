@@ -173,7 +173,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct ChangeDimensions<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    struct TransformedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    {
+        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
+    };
+
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
+    struct MorphedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
     {
         typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
     };

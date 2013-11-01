@@ -76,12 +76,6 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct ChangeDimensions<Domain<iNumDimensions>, iNumDimensions>
-    {
-        typedef Domain<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
     struct ScalingFunction<Domain<iNumDimensions>>
     {
         Domain<iNumDimensions>

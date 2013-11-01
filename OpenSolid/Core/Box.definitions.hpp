@@ -200,7 +200,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct ChangeDimensions<Box<iNumDimensions>, iNumResultDimensions>
+    struct TransformedType<Box<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Box<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Box<iNumDimensions>, iNumResultDimensions>
     {
         typedef Box<iNumResultDimensions> Type;
     };

@@ -89,7 +89,7 @@ namespace opensolid
         double scale
     ) const {
         return Axis<iNumDimensions>(
-            Point<iNumDimensions>::scaling(axis.originPoint(), scale),
+            detail::scaled(axis.originPoint(), scale),
             scale * axis.directionVector() // Necessary since scale could be negative
         );
     }
