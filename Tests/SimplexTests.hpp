@@ -187,4 +187,12 @@ public:
         LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(4, 5, 6));
         TS_ASSERT((lineSegment.vector() - Vector3d::Constant(3)).isZero());
     }
+
+    void testScaling() {
+        Triangle2d triangle(Point2d(2, 2), Point2d(4, 2), Point2d(3, 3));
+        Triangle2d scaled = triangle.scaledAbout(Point2d(1, 1), 2.0);
+        TS_ASSERT((scaled.vertex(0) - Point2d(3, 3)).isZero());
+        TS_ASSERT((scaled.vertex(1) - Point2d(7, 3)).isZero());
+        TS_ASSERT((scaled.vertex(2) - Point2d(5, 5)).isZero());
+    }
 };

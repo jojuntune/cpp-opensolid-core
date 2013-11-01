@@ -61,7 +61,8 @@ namespace opensolid
                 detail::translated(
                     derived(),
                     -originPoint.vector()
-                )
+                ),
+                scale
             ),
             originPoint.vector()
         );
