@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/images" >
+        <file>align_custom.png</file>
+        <file>align_xy.png</file>
+        <file>align_xz.png</file>
+        <file>align_yz.png</file>
+        <file>component.png</file>
+        <file>component_add.png</file>
+        <file>component_new.png</file>
+        <file>curve.png</file>
+        <file>curve_add.png</file>
+        <file>document-new.png</file>
+        <file>document-open.png</file>
+        <file>document-save-as.png</file>
+        <file>document-save.png</file>
+        <file>error.png</file>
+        <file>error_small.png</file>
+        <file>fragment.png</file>
+        <file>fragment_add.png</file>
+        <file>fragment_new.png</file>
+        <file>ortho.png</file>
+        <file>param.png</file>
+        <file>param_new.png</file>
+        <file>point.png</file>
+        <file>point_add.png</file>
+        <file>surface.png</file>
+        <file>surface_add.png</file>
+    </qresource>
+</RCC>
