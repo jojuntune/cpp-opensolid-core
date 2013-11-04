@@ -26,10 +26,10 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Iterable.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
-#include <OpenSolid/Core/Iterable/FilteredIterable.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredCollection.hpp>
 
 #include <algorithm>
 #include <numeric>
@@ -39,89 +39,134 @@ namespace opensolid
     template <class TDerived>
     inline
     const TDerived&
-    Iterable<TDerived>::derived() const {
+    SpatialCollection<TDerived>::derived() const {
         return static_cast<const TDerived&>(*this);
     }
 
     template <class TDerived>
     inline
     typename IteratorType<TDerived>::Type
-    Iterable<TDerived>::begin() const {
+    SpatialCollection<TDerived>::begin() const {
         return derived().beginImpl();
     }
 
     template <class TDerived>
     inline
     typename IteratorType<TDerived>::Type
-    Iterable<TDerived>::end() const {
+    SpatialCollection<TDerived>::end() const {
         return derived().endImpl();
     }
 
     template <class TDerived>
     inline
     bool
-    Iterable<TDerived>::isEmpty() const {
+    SpatialCollection<TDerived>::isEmptyDefaultImpl() const {
+        return begin() == end();
+    }
+
+    template <class TDerived>
+    inline
+    std::int64_t
+    SpatialCollection<TDerived>::sizeDefaultImpl() const {
+        return std::distance(begin(), end());
+    }
+
+    template <class TDerived>
+    inline
+    typename BoundsType<typename ItemType<TDerived>::Type>::Type
+    SpatialCollection<TDerived>::boundsDefaultImpl() const {
+        typedef typename ItemType<TDerived>::Type ItemType;
+        typedef typename BoundsType<ItemType>::Type BoundsType;
+
+        typename IteratorType<TDerived>::Type iterator = this->begin();
+        typename IteratorType<TDerived>::Type end = this->end();
+        
+        if (iterator == end) {
+            return BoundsType();
+        } else {
+            BoundsFunction<ItemType> boundsFunction;
+            BoundsType result = boundsFunction(*iterator);
+            while (++iterator != end) {
+                result = result.hull(*iterator);
+            }
+            return result;
+        }
+    }
+
+    template <class TDerived>
+    inline
+    bool
+    SpatialCollection<TDerived>::isEmpty() const {
         return derived().isEmptyImpl();
     }
 
     template <class TDerived>
     inline
     std::int64_t
-    Iterable<TDerived>::size() const {
+    SpatialCollection<TDerived>::size() const {
         return derived().sizeImpl();
+    }
+
+    template <class TDerived>
+    inline
+    typename BoundsType<typename ItemType<TDerived>::Type>::Type
+    SpatialCollection<TDerived>::bounds() const {
+        return derived().boundsImpl();
     }
 
     template <class TDerived> template <class TPredicate>
     inline
     bool
-    Iterable<TDerived>::any(TPredicate predicate) const {
+    SpatialCollection<TDerived>::any(TPredicate predicate) const {
         return std::any_of(begin(), end(), predicate);
     }
 
     template <class TDerived> template <class TPredicate>
     inline
     bool
-    Iterable<TDerived>::all(TPredicate predicate) const {
+    SpatialCollection<TDerived>::all(TPredicate predicate) const {
         return std::all_of(begin(), end(), predicate);
     }
 
     template <class TDerived> template <class TValue, class TFunction>
     inline
     TValue
-    Iterable<TDerived>::fold(const TValue& initialValue, TFunction function) const {
+    SpatialCollection<TDerived>::fold(const TValue& initialValue, TFunction function) const {
         return std::accumulate(begin(), end(), initialValue, function);
     }
 
     template <class TDerived> template <class TFunction>
     inline
     void
-    Iterable<TDerived>::forEach(TFunction function) const {
+    SpatialCollection<TDerived>::forEach(TFunction function) const {
         std::for_each(begin(), end(), function);
     }
 
     template <class TDerived> template <class TFunction>
     inline
     typename ItemType<TDerived>::Type
-    Iterable<TDerived>::reduce(TFunction function) const {
-        if (isEmpty()) {
+    SpatialCollection<TDerived>::reduce(TFunction function) const {
+        typename IteratorType<TDerived>::Type begin = this->begin();
+        typename IteratorType<TDerived>::Type end = this->end();
+
+        if (begin == end) {
             throw PlaceholderError();
         } else {
-            typename IteratorType<TDerived>::Type begin = this->begin();
             const typename ItemType<TDerived>::Type& firstItem = *begin;
-            return std::accumulate(++begin, end(), firstItem, function);
+            return std::accumulate(++begin, end, firstItem, function);
         }
     }
 
     template <class TDerived> template <class TPredicate>
     inline
-    detail::FilteredIterable<TDerived, TPredicate>
-    Iterable<TDerived>::where(TPredicate predicate) const {
-        return detail::FilteredIterable<TDerived, TPredicate>(derived(), predicate);
+    detail::FilteredCollection<TDerived, TPredicate>
+    SpatialCollection<TDerived>::where(TPredicate predicate) const {
+        return detail::FilteredCollection<TDerived, TPredicate>(derived(), predicate);
     }
 
     template <class TDerived>
     inline
-    Iterable<TDerived>::operator std::vector<typename ItemType<TDerived>::Type>() const {
+    SpatialCollection<TDerived>::operator std::vector<typename ItemType<TDerived>::Type>() const {
         return std::vector<typename ItemType<TDerived>::Type>(begin(), end());
     }
 }

@@ -26,35 +26,32 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
+#include <OpenSolid/Core/SpatialColleciton/TranslatedCollection.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialSet.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
-
-#include <vector>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <class TItem>
-        class SpatialSubset :
-            public SpatialCollection<SpatialSubset<TItem>>
+        template <class TBaseCollection>
+        class TranslatedCollection :
+            public SpatialCollection<TranslatedCollection<TBaseCollection>>
         {
         private:
-            std::vector<const TItem*> _items;
+            const TBaseCollection& _baseCollection;
+            Matrix<double, NumDimensions<TBaseCollection>::Value, 1> _vector;
 
             template <class TDerived>
             friend class opensolid::SpatialCollection;
 
-            friend class SpatialSet<TItem>;
-
-            SpatialSubsetIterator<TItem>
+            TranslatedCollectionIterator<TBaseCollection>
             beginImpl() const;
 
-            SpatialSubsetIterator<TItem>
+            TranslatedCollectionIterator<TBaseCollection>
             endImpl() const;
 
             bool
@@ -63,24 +60,33 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            // Not implemented - copying not allowed
-            SpatialSubset(const SpatialSubset<TItem>& other);
+            typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
+            boundsImpl() const;
         public:
-            SpatialSubset(std::vector<const TItem*>&& items);
+            template <class TVector>
+            TranslatedCollection(
+                const TBaseCollection& baseCollection,
+                const EigenBase<TVector>& vector
+            );
 
-            SpatialSubset(SpatialSubset<TItem>&& other);
+            const TBaseCollection&
+            baseCollection() const;
+
+            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>&
+            vector() const;
         };
 
-        template <class TItem>
-        class SpatialSubsetIterator :
+        template <class TBaseCollection>
+        class TranslatedCollectionIterator :
             public boost::iterator_facade<
-                SpatialSubsetIterator<TItem>,
-                const TItem,
+                TranslatedCollectionIterator<TBaseCollection>,
+                typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type,
                 boost::forward_traversal_tag
             >
         {
         private:
-            typename std::vector<const TItem*>::const_iterator _iterator;
+            typename IteratorType<TBaseCollection>::Type _baseIterator;
+            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* _vector;
 
             friend class boost::iterator_core_access;
 
@@ -88,31 +94,17 @@ namespace opensolid
             increment();
 
             bool
-            equal(const SpatialSubsetIterator<TItem>& other) const;
+            equal(const TranslatedCollectionIterator<TBaseCollection>& other) const;
 
-            const TItem&
+            typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type
             dereference() const;
         public:
-            SpatialSubsetIterator();
+            TranslatedCollectionIterator();
 
-            SpatialSubsetIterator(typename std::vector<const TItem*>::const_iterator iterator);
+            TranslatedCollectionIterator(
+                typename IteratorType<TBaseCollection>::Type baseIterator,
+                const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* vector
+            );
         };
     }
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <class TItem>
-    struct ItemType<detail::SpatialSubset<TItem>>
-    {
-        typedef TItem Type;
-    };
-
-    template <class TItem>
-    struct IteratorType<detail::SpatialSubset<TItem>>
-    {
-        typedef detail::SpatialSubsetIterator<TItem> Type;
-    };
 }

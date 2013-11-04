@@ -57,7 +57,7 @@
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
     add_cxxtest(FunctionTests FunctionTests.hpp OpenSolidCore)
     add_cxxtest(GeometryTests GeometryTests.hpp OpenSolidCore)
-    add_cxxtest(IterableTests IterableTests.hpp OpenSolidCore)
+    add_cxxtest(CollectionTests CollectionTests.hpp OpenSolidCore)
     
     add_to_global_source_list(
         IntervalTests.hpp
@@ -67,7 +67,7 @@
         SetTests.hpp
         FunctionTests.hpp
         GeometryTests.hpp
-        IterableTests.hpp
+        CollectionTests.hpp
     )
     
 ########## Graph library tests ##########

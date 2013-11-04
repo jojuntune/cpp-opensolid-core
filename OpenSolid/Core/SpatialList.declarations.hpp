@@ -26,60 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Iterable.declarations.hpp>
-
-#include <OpenSolid/Core/Iterable/FilteredIterable.declarations.hpp>
-
-#include <vector>
-
 namespace opensolid
 {
-    template <class TDerived>
-    class Iterable
-    {
-    private:
-        const TDerived&
-        derived() const;
-    protected:
-        template <class TBaseIterable, class TPredicate>
-        friend class detail::FilteredIterable;
-
-        typename IteratorType<TDerived>::Type
-        begin() const;
-
-        typename IteratorType<TDerived>::Type
-        end() const;
-    public:
-        bool
-        isEmpty() const;
-
-        std::int64_t
-        size() const;
-
-        template <class TPredicate>
-        bool
-        any(TPredicate predicate) const;
-
-        template <class TPredicate>
-        bool
-        all(TPredicate predicate) const;
-
-        template <class TValue, class TFunction>
-        TValue
-        fold(const TValue& initialValue, TFunction function) const;
-
-        template <class TFunction>
-        void
-        forEach(TFunction function) const;
-
-        template <class TFunction>
-        typename ItemType<TDerived>::Type
-        reduce(TFunction function) const;
-
-        template <class TPredicate>
-        detail::FilteredIterable<TDerived, TPredicate>
-        where(TPredicate predicate) const;
-
-        operator std::vector<typename ItemType<TDerived>::Type>() const;
-    };
+    template <class TItem>
+    class SpatialList;
 }

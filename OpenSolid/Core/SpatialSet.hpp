@@ -29,7 +29,8 @@
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
-#include <OpenSolid/Core/Iterable.hpp>
+#include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.hpp>
 #include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.hpp>
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
@@ -80,6 +81,17 @@ namespace opensolid
             return 0;
         } else {
             return _data->items.size();
+        }
+    }
+
+    template <class TItem>
+    inline
+    typename BoundsType<TItem>::Type
+    SpatialSet<TItem>::boundsImpl() const {
+        if (this->isEmpty()) {
+            return typename BoundsType<TItem>::Type();
+        } else {
+            return _data->nodes.front().bounds;
         }
     }
 
@@ -375,22 +387,6 @@ namespace opensolid
     template <class TItem>
     inline
     const TItem&
-    SpatialSet<TItem>::first() const {
-        assert(!this->isEmpty());
-        return _data->items.front();
-    }
-
-    template <class TItem>
-    inline
-    const TItem&
-    SpatialSet<TItem>::last() const {
-        assert(!this->isEmpty());
-        return _data->items.back();
-    }
-
-    template <class TItem>
-    inline
-    const TItem&
     SpatialSet<TItem>::operator[](std::int64_t index) const {
         assert(!this->isEmpty());
         return _data->items[index];
@@ -418,17 +414,6 @@ namespace opensolid
     SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
         _boundsFunction = other._boundsFunction;
         _data = std::move(other._data);
-    }
-
-    template <class TItem>
-    inline
-    typename BoundsType<TItem>::Type
-    SpatialSet<TItem>::bounds() const {
-        if (this->isEmpty()) {
-            return typename BoundsType<TItem>::Type();
-        } else {
-            return _data->nodes.front().bounds;
-        }
     }
 
     template <class TItem>
@@ -493,7 +478,7 @@ namespace opensolid
             TolerantComparator<TItem> itemComparator(precision);
             while (filteredIterator != filteredEnd) {
                 if (itemComparator(item, *filteredIterator)) {
-                    return begin() + (&(*filteredIterator) - &first());
+                    return begin() + (&(*filteredIterator) - _data->elements.data());
                 }
                 ++filteredIterator;
             }
