@@ -26,33 +26,21 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialList.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.definitions.hpp>
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialList.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetData.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-
-#include <boost/intrusive_ptr.hpp>
-
-#include <vector>
 
 namespace opensolid
 {
     template <class TItem>
-    class SpatialSet :
-        public SpatialCollection<SpatialSet<TItem>>
+    class SpatialList :
+        public SpatialCollection<SpatialList<TItem>>
     {
     private:
-        BoundsFunction<TItem> _boundsFunction;
-        boost::intrusive_ptr<detail::SpatialSetData<TItem>> _data;
+        std::vector<TItem> _items;
 
         template <class TDerived>
         friend class SpatialCollection;
@@ -71,69 +59,34 @@ namespace opensolid
 
         typename BoundsType<TItem>::Type
         boundsImpl() const;
-
-        struct BoundsData
-        {
-            typename BoundsType<TItem>::Type bounds;
-            const TItem* item;
-        };
-
-        void
-        init(
-            detail::SpatialSetNode<TItem>* node,
-            detail::SpatialSetNode<TItem>* next,
-            BoundsData** begin,
-            BoundsData** end,
-            typename BoundsType<TItem>::Type& overallBounds,
-            std::int64_t sortIndex
-        );
-
-        void
-        init();
     public:
-        SpatialSet();
+        SpatialList();
 
-        SpatialSet(const SpatialSet<TItem>& other);
+        SpatialList(const SpatialList<TItem>& other);
 
-        SpatialSet(SpatialSet<TItem>&& other);
+        SpatialList(SpatialList<TItem>&& other);
 
-        explicit
-        SpatialSet(
-            const std::vector<TItem>& items,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
+        SpatialList(const std::vector<TItem>& items);
 
-        explicit
-        SpatialSet(
-            std::vector<TItem>&& items,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
+        SpatialList(std::vector<TItem>&& items);
 
         template <class TDerived>
-        explicit
-        SpatialSet(
-            const SpatialCollection<TDerived>& collection,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
-        
+        SpatialList(const SpatialCollection<TDerived>& collection);
+
         template <class TIterator>
-        SpatialSet(
-            TIterator begin,
-            TIterator end,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
-
-        BoundsFunction<TItem>
-        boundsFunction() const;
-
-        const detail::SpatialSetNode<TItem>*
-        rootNode() const;
+        SpatialList(TIterator begin, TIterator end);
 
         typename std::vector<TItem>::const_iterator
         begin() const;
 
         typename std::vector<TItem>::const_iterator
         end() const;
+
+        const TItem&
+        first() const;
+
+        const TItem&
+        last() const;
 
         const TItem&
         operator[](std::int64_t index) const;
@@ -149,38 +102,9 @@ namespace opensolid
 
         void
         clear();
-
-        detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>
-        overlapping(
-            const typename BoundsType<TItem>::Type& predicateBounds,
-            double precision = 1e-12
-        ) const;
-
-        detail::FilteredSpatialSet<TItem, detail::ContainPredicate<TItem>>
-        containing(
-            const typename BoundsType<TItem>::Type& predicateBounds,
-            double precision = 1e-12
-        ) const;
-
-        template <class TBoundsPredicate>
-        detail::FilteredSpatialSet<TItem, TBoundsPredicate>
-        filtered(TBoundsPredicate boundsPredicate) const;
-
-        typename std::vector<TItem>::const_iterator
-        find(const TItem& item, double precision = 1e-12) const;
-
-        detail::SpatialSubset<TItem>
-        uniqueItems(double precision = 1e-12) const;
-
-        std::vector<std::int64_t>
-        uniqueMapping(double precision = 1e-12) const;
     };
-    
-    template <class TItem>
-    std::ostream&
-    operator<<(std::ostream& stream, const SpatialSet<TItem>& set);
 }
-    
+
 ////////// Specializations //////////
 
 namespace opensolid

@@ -30,10 +30,10 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TIterable, class TPredicate>
-        class FilteredIterable;
+        template <class TBaseCollection, class TPredicate>
+        class FilteredCollection;
 
-        template <class TIterable, class TPredicate>
-        class FilteredIterableIterator;
+        template <class TBaseCollection, class TPredicate>
+        class FilteredCollectionIterator;
     }
 }

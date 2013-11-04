@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/SpatialSet/SpatialSubset.definitions.hpp>
 
-#include <OpenSolid/Core/Iterable.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 namespace opensolid
@@ -65,20 +65,14 @@ namespace opensolid
 
         template <class TItem>
         inline
-        SpatialSubset<TItem>::SpatialSubset() {
-            // Do nothing
+        SpatialSubset<TItem>::SpatialSubset(std::vector<const TItem*>&& items) :
+            _items(std::move(items)) {
         }
 
         template <class TItem>
         inline
         SpatialSubset<TItem>::SpatialSubset(SpatialSubset<TItem>&& other) :
             _items(std::move(other._items)) {
-        }
-
-        template <class TItem>
-        inline
-        SpatialSubset<TItem>::SpatialSubset(std::vector<const TItem*>&& items) :
-            _items(std::move(items)) {
         }
 
         template <class TItem>

@@ -26,15 +26,14 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-
-#include <OpenSolid/Core/Interval.declarations.hpp>
-
 namespace opensolid
 {
-    template <>
-    struct BoundsType<double>
+    namespace detail
     {
-        typedef Interval Type;
-    };
+        template <class TBaseCollection>
+        class ScaledCollection;
+
+        template <class TBaseCollection>
+        class ScaledCollectionIterator;
+    }
 }

@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
 
-#include <OpenSolid/Core/Iterable.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
 
@@ -40,14 +40,14 @@ namespace opensolid
     {
         template <class TItem, class TBoundsPredicate>
         class FilteredSpatialSet :
-            public Iterable<FilteredSpatialSet<TItem, TBoundsPredicate>>
+            public SpatialCollection<FilteredSpatialSet<TItem, TBoundsPredicate>>
         {
         private:
             const SpatialSet<TItem>& _set;
             TBoundsPredicate _boundsPredicate;
 
             template <class TDerived>
-            friend class opensolid::Iterable;
+            friend class opensolid::SpatialCollection;
 
             friend class SpatialSet<TItem>;
 
@@ -62,8 +62,6 @@ namespace opensolid
 
             std::int64_t
             sizeImpl() const;
-
-            FilteredSpatialSet(const FilteredSpatialSet<TItem, TBoundsPredicate>& other);
         public:
             FilteredSpatialSet(
                 const SpatialSet<TItem>& set,

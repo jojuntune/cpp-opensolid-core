@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.definitions.hpp>
 
-#include <OpenSolid/Core/Iterable.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 namespace opensolid
@@ -67,14 +67,6 @@ namespace opensolid
         std::int64_t
         FilteredSpatialSet<TItem, TBoundsPredicate>::sizeImpl() const {
             return std::distance(this->begin(), this->end());
-        }
-
-        template <class TItem, class TBoundsPredicate>
-        inline
-        FilteredSpatialSet<TItem, TBoundsPredicate>::FilteredSpatialSet(
-            const FilteredSpatialSet<TItem, TBoundsPredicate>& other
-        ) : _set(other._set),
-            _boundsPredicate(other._boundsPredicate) {
         }
 
         template <class TItem, class TBoundsPredicate>

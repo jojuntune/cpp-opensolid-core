@@ -26,103 +26,103 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Iterable/FilteredIterable.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredCollection.definitions.hpp>
 
-#include <OpenSolid/Core/Iterable.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
-        FilteredIterableIterator<TBaseIterable, TPredicate>
-        FilteredIterable<TBaseIterable, TPredicate>::beginImpl() const {
-            return FilteredIterableIterator<TBaseIterable, TPredicate>(
-                _baseIterable.begin(),
-                _baseIterable.end(),
+        FilteredCollectionIterator<TBaseCollection, TPredicate>
+        FilteredCollection<TBaseCollection, TPredicate>::beginImpl() const {
+            return FilteredCollectionIterator<TBaseCollection, TPredicate>(
+                _baseCollection.begin(),
+                _baseCollection.end(),
                 &_predicate
             );
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
-        FilteredIterableIterator<TBaseIterable, TPredicate>
-        FilteredIterable<TBaseIterable, TPredicate>::endImpl() const {
-            return FilteredIterableIterator<TBaseIterable, TPredicate>(
-                _baseIterable.end(),
-                _baseIterable.end(),
+        FilteredCollectionIterator<TBaseCollection, TPredicate>
+        FilteredCollection<TBaseCollection, TPredicate>::endImpl() const {
+            return FilteredCollectionIterator<TBaseCollection, TPredicate>(
+                _baseCollection.end(),
+                _baseCollection.end(),
                 &_predicate
             );
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
         bool
-        FilteredIterable<TBaseIterable, TPredicate>::isEmptyImpl() const {
-            return this->begin() == this->end();
+        FilteredCollection<TBaseCollection, TPredicate>::isEmptyImpl() const {
+            return this->isEmptyDefaultImpl();
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
         std::int64_t
-        FilteredIterable<TBaseIterable, TPredicate>::sizeImpl() const {
-            return std::distance(this->begin(), this->end());
+        FilteredCollection<TBaseCollection, TPredicate>::sizeImpl() const {
+            return this->sizeDefaultImpl();
         }
 
-        template <class TBaseIterable, class TPredicate>
-        FilteredIterable<TBaseIterable, TPredicate>::FilteredIterable(
-            const FilteredIterable<TBaseIterable, TPredicate>& other
-        ) : _baseIterable(other._baseIterable),
-            _predicate(other._predicate) {
-        }
-
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
-        FilteredIterable<TBaseIterable, TPredicate>::FilteredIterable(
-            const TBaseIterable& baseIterable,
+        typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
+        FilteredCollection<TBaseCollection, TPredicate>::boundsImpl() const {
+            return this->boundsDefaultImpl();
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        FilteredCollection<TBaseCollection, TPredicate>::FilteredCollection(
+            const TBaseCollection& baseCollection,
             TPredicate predicate
-        ) : _baseIterable(baseIterable),
+        ) : _baseCollection(baseCollection),
             _predicate(predicate) {
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
         void
-        FilteredIterableIterator<TBaseIterable, TPredicate>::increment() {
+        FilteredCollectionIterator<TBaseCollection, TPredicate>::increment() {
             do {
                 ++_baseIterator;
             } while (_baseIterator != _baseEnd && !(*_predicate)(*_baseIterator));
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
         bool
-        FilteredIterableIterator<TBaseIterable, TPredicate>::equal(
-            const FilteredIterableIterator<TBaseIterable,
+        FilteredCollectionIterator<TBaseCollection, TPredicate>::equal(
+            const FilteredCollectionIterator<TBaseCollection,
             TPredicate>& other
         ) const {
             return _baseIterator == other._baseIterator;
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
-        const typename ItemType<TBaseIterable>::Type&
-        FilteredIterableIterator<TBaseIterable, TPredicate>::dereference() const {
+        const typename ItemType<TBaseCollection>::Type&
+        FilteredCollectionIterator<TBaseCollection, TPredicate>::dereference() const {
             return *_baseIterator;
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
-        FilteredIterableIterator<TBaseIterable, TPredicate>::FilteredIterableIterator() :
+        FilteredCollectionIterator<TBaseCollection, TPredicate>::FilteredCollectionIterator() :
             _predicate(nullptr) {
         }
 
-        template <class TBaseIterable, class TPredicate>
+        template <class TBaseCollection, class TPredicate>
         inline
-        FilteredIterableIterator<TBaseIterable, TPredicate>::FilteredIterableIterator(
-            typename IteratorType<TBaseIterable>::Type baseIterator,
-            typename IteratorType<TBaseIterable>::Type baseEnd,
+        FilteredCollectionIterator<TBaseCollection, TPredicate>::FilteredCollectionIterator(
+            typename IteratorType<TBaseCollection>::Type baseIterator,
+            typename IteratorType<TBaseCollection>::Type baseEnd,
             const TPredicate* predicate
         ) : _baseIterator(baseIterator),
             _baseEnd(baseEnd),

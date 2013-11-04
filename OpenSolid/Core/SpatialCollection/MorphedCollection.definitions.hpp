@@ -26,9 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Iterable/FilteredIterable.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/MorphedCollection.declarations.hpp>
 
-#include <OpenSolid/Core/Iterable.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -36,21 +36,21 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TBaseIterable, class TPredicate>
-        class FilteredIterable :
-            public Iterable<FilteredIterable<TBaseIterable, TPredicate>>
+        template <class TBaseCollection>
+        class MorphedCollection :
+            public SpatialCollection<MorphedCollection<TBaseCollection>>
         {
         private:
-            const TBaseIterable& _baseIterable;
-            TPredicate _predicate;
+            const TBaseCollection& _baseCollection;
+            Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value> _function;
 
             template <class TDerived>
-            friend class opensolid::Iterable;
+            friend class opensolid::SpatialCollection;
 
-            FilteredIterableIterator<TBaseIterable, TPredicate>
+            MorphedCollectionIterator<TBaseCollection>
             beginImpl() const;
 
-            FilteredIterableIterator<TBaseIterable, TPredicate>
+            MorphedCollectionIterator<TBaseCollection>
             endImpl() const;
 
             bool
@@ -59,23 +59,37 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            FilteredIterable(const FilteredIterable<TBaseIterable, TPredicate>& other);
+            typename MorphedType<typename BoundsType<TBaseCollection>::Type>::Type Type;
+            boundsImpl() const;
+
+            MorphedCollection(const MorphedCollection<TBaseCollection>& other);
         public:
-            FilteredIterable(const TBaseIterable& baseIterable, TPredicate predicate);
+            MorphedCollection(
+                const TBaseCollection& baseCollection,
+                const Function<
+                    iNumResultDimensions,
+                    NumDimensions<TBaseCollection>::Value
+                >& function
+            );
+
+            const TBaseCollection&
+            baseCollection() const;
+
+            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
+            function() const;
         };
 
-        template <class TBaseIterable, class TPredicate>
-        class FilteredIterableIterator :
+        template <class TBaseCollection>
+        class MorphedCollectionIterator :
             public boost::iterator_facade<
-                FilteredIterableIterator<TBaseIterable, TPredicate>,
-                const typename ItemType<TBaseIterable>::Type,
+                MorphedCollectionIterator<TBaseCollection>,
+                const typename ItemType<TBaseCollection>::Type,
                 boost::forward_traversal_tag
             >
         {
         private:
-            typename IteratorType<TBaseIterable>::Type _baseIterator;
-            typename IteratorType<TBaseIterable>::Type _baseEnd;
-            const TPredicate* _predicate;
+            typename IteratorType<TBaseCollection>::Type _baseIterator;
+            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>* _function;
 
             friend class boost::iterator_core_access;
 
@@ -83,35 +97,17 @@ namespace opensolid
             increment();
 
             bool
-            equal(const FilteredIterableIterator<TBaseIterable, TPredicate>& other) const;
+            equal(const MorphedCollectionIterator<TBaseCollection>& other) const;
 
-            const typename ItemType<TBaseIterable>::Type&
+            const typename ItemType<TBaseCollection>::Type&
             dereference() const;
         public:
-            FilteredIterableIterator();
+            MorphedCollectionIterator();
 
-            FilteredIterableIterator(
-                typename IteratorType<TBaseIterable>::Type baseIterator,
-                typename IteratorType<TBaseIterable>::Type baseEnd,
-                const TPredicate* predicate
+            MorphedCollectionIterator(
+                typename IteratorType<TBaseCollection>::Type baseIterator,
+                double scale
             );
         };
     }
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <class TBaseIterable, class TPredicate>
-    struct ItemType<detail::FilteredIterable<TBaseIterable, TPredicate>>
-    {
-        typedef typename ItemType<TBaseIterable>::Type Type;
-    };
-
-    template <class TBaseIterable, class TPredicate>
-    struct IteratorType<detail::FilteredIterable<TBaseIterable, TPredicate>>
-    {
-        typedef detail::FilteredIterableIterator<TBaseIterable, TPredicate> Type;
-    };
 }

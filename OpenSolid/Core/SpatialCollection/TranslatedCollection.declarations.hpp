@@ -28,12 +28,12 @@
 
 namespace opensolid
 {
-    template <class TDerived>
-    class Iterable;
+    namespace detail
+    {
+        template <class TCollection>
+        class TranslatedCollection;
 
-    template <class TIterable>
-    struct ItemType;
-
-    template <class TIterable>
-    struct IteratorType;
+        template <class TCollection>
+        class TranslatedCollectionIterator;
+    }
 }

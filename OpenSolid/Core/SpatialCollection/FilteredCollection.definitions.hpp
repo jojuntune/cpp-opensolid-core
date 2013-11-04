@@ -26,35 +26,31 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredCollection.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialSet.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
-
-#include <vector>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <class TItem>
-        class SpatialSubset :
-            public SpatialCollection<SpatialSubset<TItem>>
+        template <class TBaseCollection, class TPredicate>
+        class FilteredCollection :
+            public SpatialCollection<FilteredCollection<TBaseCollection, TPredicate>>
         {
         private:
-            std::vector<const TItem*> _items;
+            const TBaseCollection& _baseCollection;
+            TPredicate _predicate;
 
             template <class TDerived>
             friend class opensolid::SpatialCollection;
 
-            friend class SpatialSet<TItem>;
-
-            SpatialSubsetIterator<TItem>
+            FilteredCollectionIterator<TBaseCollection, TPredicate>
             beginImpl() const;
 
-            SpatialSubsetIterator<TItem>
+            FilteredCollectionIterator<TBaseCollection, TPredicate>
             endImpl() const;
 
             bool
@@ -63,24 +59,24 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            // Not implemented - copying not allowed
-            SpatialSubset(const SpatialSubset<TItem>& other);
+            typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
+            boundsImpl() const;
         public:
-            SpatialSubset(std::vector<const TItem*>&& items);
-
-            SpatialSubset(SpatialSubset<TItem>&& other);
+            FilteredCollection(const TBaseCollection& baseCollection, TPredicate predicate);
         };
 
-        template <class TItem>
-        class SpatialSubsetIterator :
+        template <class TBaseCollection, class TPredicate>
+        class FilteredCollectionIterator :
             public boost::iterator_facade<
-                SpatialSubsetIterator<TItem>,
-                const TItem,
+                FilteredCollectionIterator<TBaseCollection, TPredicate>,
+                const typename ItemType<TBaseCollection>::Type,
                 boost::forward_traversal_tag
             >
         {
         private:
-            typename std::vector<const TItem*>::const_iterator _iterator;
+            typename IteratorType<TBaseCollection>::Type _baseIterator;
+            typename IteratorType<TBaseCollection>::Type _baseEnd;
+            const TPredicate* _predicate;
 
             friend class boost::iterator_core_access;
 
@@ -88,14 +84,18 @@ namespace opensolid
             increment();
 
             bool
-            equal(const SpatialSubsetIterator<TItem>& other) const;
+            equal(const FilteredCollectionIterator<TBaseCollection, TPredicate>& other) const;
 
-            const TItem&
+            const typename ItemType<TBaseCollection>::Type&
             dereference() const;
         public:
-            SpatialSubsetIterator();
+            FilteredCollectionIterator();
 
-            SpatialSubsetIterator(typename std::vector<const TItem*>::const_iterator iterator);
+            FilteredCollectionIterator(
+                typename IteratorType<TBaseCollection>::Type baseIterator,
+                typename IteratorType<TBaseCollection>::Type baseEnd,
+                const TPredicate* predicate
+            );
         };
     }
 }
@@ -104,15 +104,15 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TItem>
-    struct ItemType<detail::SpatialSubset<TItem>>
+    template <class TBaseCollection, class TPredicate>
+    struct ItemType<detail::FilteredCollection<TBaseCollection, TPredicate>>
     {
-        typedef TItem Type;
+        typedef typename ItemType<TBaseCollection>::Type Type;
     };
 
-    template <class TItem>
-    struct IteratorType<detail::SpatialSubset<TItem>>
+    template <class TBaseCollection, class TPredicate>
+    struct IteratorType<detail::FilteredCollection<TBaseCollection, TPredicate>>
     {
-        typedef detail::SpatialSubsetIterator<TItem> Type;
+        typedef detail::FilteredCollectionIterator<TBaseCollection, TPredicate> Type;
     };
 }
