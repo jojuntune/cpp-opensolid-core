@@ -32,7 +32,7 @@
 
 using namespace opensolid;
 
-class IterableTests : public CxxTest::TestSuite
+class CollectionTests : public CxxTest::TestSuite
 {
 private:
     SpatialSet<double> valueSet() {

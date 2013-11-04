@@ -44,7 +44,7 @@
         Function/*
         FunctionImplementation/*
         Geometry/*
-        Iterable/*
+        SpatialCollection/*
         Matrix/*
         SpatialSet/*
     )
