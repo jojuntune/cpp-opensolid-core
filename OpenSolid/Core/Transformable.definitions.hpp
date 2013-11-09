@@ -174,11 +174,11 @@ namespace opensolid
     template <class TTransformable, int iNumResultDimensions>
     struct TransformedType
     {
-        // static_assert(
-        //     iNumResultDimensions == NumDimensions<TTransformable>::Value,
-        //     "Must specialize TransformedType<TTransformable, iNumResultDimensions> "
-        //     "when transforming into a different number of dimensions"
-        // );
+        static_assert(
+            iNumResultDimensions == NumDimensions<TTransformable>::Value,
+            "Must specialize TransformedType<TTransformable, iNumResultDimensions> "
+            "when transforming into a different number of dimensions"
+        );
 
         typedef TTransformable Type;
     };
@@ -186,11 +186,11 @@ namespace opensolid
     template <class TTransformable, int iNumResultDimensions>
     struct MorphedType
     {
-        // static_assert(
-        //     iNumResultDimensions == NumDimensions<TTransformable>::Value,
-        //     "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
-        //     "when morphing into a different number of dimensions"
-        // );
+        static_assert(
+            iNumResultDimensions == NumDimensions<TTransformable>::Value,
+            "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
+            "when morphing into a different number of dimensions"
+        );
 
         typedef TTransformable Type;
     };

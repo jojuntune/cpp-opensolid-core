@@ -111,57 +111,6 @@ namespace opensolid
 namespace opensolid
 {
     template <class TBaseCollection>
-    struct ItemType<detail::ScaledCollection<TBaseCollection>>
-    {
-        typedef typename ScaledType<typename ItemType<TBaseCollection>::Type>::Type Type;
-    };
-
-    template <class TBaseCollection>
-    struct IteratorType<detail::ScaledCollection<TBaseCollection>>
-    {
-        typedef detail::ScaledCollectionIterator<TBaseCollection> Type;
-    };
-
-    template <class TBaseCollection>
-    struct NumDimensions<detail::ScaledCollection<TBaseCollection>>
-    {
-        static const int Value = NumDimensions<TBaseCollection>::Value;
-    };
-
-    template <class TBaseCollection>
-    struct BoundsType<detail::ScaledCollection<TBaseCollection>>
-    {
-        typedef typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type Type;
-    };
-
-    template <class TBaseCollection>
-    struct ScaledType<detail::ScaledCollection<TBaseCollection>>
-    {
-        typedef detail::ScaledCollection<TBaseCollection> Type;
-    };
-
-    template <class TBaseCollection>
-    struct TranslatedType<detail::ScaledCollection<TBaseCollection>> :
-        public TranslatedType<SpatialCollection<detail::ScaledCollection<TBaseCollection>>>
-    {
-    };
-
-    template <class TBaseCollection, int iNumResultDimensions>
-    struct TransformedType<detail::ScaledCollection<TBaseCollection>, iNumResultDimensions>
-    {
-        typedef detail::TransformedCollection<TBaseCollection, iNumResultDimensions> Type;
-    };
-
-    template <class TBaseCollection, int iNumResultDimensions>
-    struct MorphedType<detail::ScaledCollection<TBaseCollection>, iNumResultDimensions> :
-        public MorphedType<
-            SpatialCollection<detail::ScaledCollection<TBaseCollection>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TBaseCollection>
     struct ScalingFunction<detail::ScaledCollection<TBaseCollection>>
     {
         detail::ScaledCollection<TBaseCollection>
