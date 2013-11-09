@@ -57,7 +57,7 @@ namespace opensolid
         bool
         isEmpty() const;
 
-        const Box<2>&
+        Box<2>
         bounds() const;
     };
 }
