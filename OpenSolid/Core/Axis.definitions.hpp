@@ -115,18 +115,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Axis<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Axis<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Axis<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Axis<iNumResultDimensions> Type;
-    };
-
     template <int iNumDimensions>
     struct ScalingFunction<Axis<iNumDimensions>>
     {
