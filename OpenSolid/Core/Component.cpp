@@ -23,6 +23,7 @@
 ************************************************************************************/
 
 #include <OpenSolid/Core/Component.hpp>
+#include <OpenSolid/Core/Variant.hpp>
 
 #include <OpenSolid/Core/Error.hpp>
 

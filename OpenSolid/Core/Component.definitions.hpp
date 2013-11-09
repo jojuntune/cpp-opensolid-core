@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/Component.declarations.hpp>
 
-#include <OpenSolid/Core/Variant.declarations.hpp>
+#include <OpenSolid/Core/Variant.definitions.hpp>
 
 #include <string>
 #include <unordered_map>
