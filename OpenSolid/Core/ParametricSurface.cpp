@@ -48,7 +48,7 @@ namespace opensolid
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().vector())) {
+        _bounds(expression.evaluateBounds(domain.bounds().vector())) {
     }
 
     Point3d
@@ -58,7 +58,7 @@ namespace opensolid
 
     Box3d
     ParametricSurface3d::evaluate(Interval u, Interval v) const {
-        return Box3d(expression().evaluate(Vector2I(u, v)));
+        return Box3d(expression().evaluateBounds(Vector2I(u, v)));
     }
 
     ParametricExpression<3, 2>
