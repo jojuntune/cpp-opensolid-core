@@ -107,7 +107,7 @@ namespace opensolid
         inline
         typename BoundsType<MappedCollection<TBaseCollection, TMappingFunction>>::Type
         MappedCollection<TBaseCollection, TMappingFunction>::bounds() const {
-            return boundsDefaultImpl();
+            return this->boundsDefaultImpl();
         }
 
         template <class TBaseCollection, class TMappingFunction>
