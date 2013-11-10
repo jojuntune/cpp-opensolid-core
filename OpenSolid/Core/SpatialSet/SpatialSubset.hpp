@@ -65,6 +65,11 @@ namespace opensolid
 
         template <class TItem>
         inline
+        SpatialSubset<TItem>::SpatialSubset() {
+        }
+
+        template <class TItem>
+        inline
         SpatialSubset<TItem>::SpatialSubset(std::vector<const TItem*>&& items) :
             _items(std::move(items)) {
         }

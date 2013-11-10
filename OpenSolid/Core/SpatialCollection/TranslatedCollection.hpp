@@ -35,101 +35,120 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        TranslatedCollectionIterator<TCollection>
-        TranslatedCollection<TCollection>::beginImpl() const {
-            return TranslatedCollectionIterator<TCollection>(_baseCollection.begin(), &vector());
+        TranslatedCollectionIterator<TBaseCollection>
+        TranslatedCollection<TBaseCollection>::beginImpl() const {
+            return TranslatedCollectionIterator<TBaseCollection>(
+                _baseCollection.begin(),
+                &vector()
+            );
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        TranslatedCollectionIterator<TCollection>
-        TranslatedCollection<TCollection>::endImpl() const {
-            return TranslatedCollectionIterator<TCollection>(_baseCollection.end(), &vector());
+        TranslatedCollectionIterator<TBaseCollection>
+        TranslatedCollection<TBaseCollection>::endImpl() const {
+            return TranslatedCollectionIterator<TBaseCollection>(
+                _baseCollection.end(),
+                &vector()
+            );
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
         bool
-        TranslatedCollection<TCollection>::isEmptyImpl() const {
+        TranslatedCollection<TBaseCollection>::isEmptyImpl() const {
             return _baseCollection.isEmpty();
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
         std::int64_t
-        TranslatedCollection<TCollection>::sizeImpl() const {
+        TranslatedCollection<TBaseCollection>::sizeImpl() const {
             return _baseCollection.size();
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        typename BoundsType<typename ItemType<TCollection>::Type>::Type
-        TranslatedCollection<TCollection>::boundsImpl() const {
+        typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
+        TranslatedCollection<TBaseCollection>::boundsImpl() const {
             return detail::translated(_baseCollection.bounds(), vector());
         }
 
-        template <class TCollection> template <class TVector>
+        template <class TBaseCollection> template <class TVector>
         inline
-        TranslatedCollection<TCollection>::TranslatedCollection(
-            const TCollection& baseCollection,
+        TranslatedCollection<TBaseCollection>::TranslatedCollection(
+            const TBaseCollection& baseCollection,
             const EigenBase<TVector>& vector
         ) : _baseCollection(baseCollection), 
             _vector(vector.derived()) {
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        const TCollection&
-        TranslatedCollection<TCollection>::baseCollection() const {
+        const TBaseCollection&
+        TranslatedCollection<TBaseCollection>::baseCollection() const {
             return _baseCollection;
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        const Matrix<double, NumDimensions<TCollection>::Value, 1>&
-        TranslatedCollection<TCollection>::vector() const {
+        const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>&
+        TranslatedCollection<TBaseCollection>::vector() const {
             return _vector;
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
         void
-        TranslatedCollectionIterator<TCollection>::increment() {
+        TranslatedCollectionIterator<TBaseCollection>::increment() {
             ++_baseIterator;
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
         bool
-        TranslatedCollectionIterator<TCollection>::equal(
-            const TranslatedCollectionIterator<TCollection>& other
+        TranslatedCollectionIterator<TBaseCollection>::equal(
+            const TranslatedCollectionIterator<TBaseCollection>& other
         ) const {
             assert(*_vector == *other._vector);
             return _baseIterator == other._baseIterator;
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        const typename ItemType<TCollection>::Type&
-        TranslatedCollectionIterator<TCollection>::dereference() const {
+        typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type
+        TranslatedCollectionIterator<TBaseCollection>::dereference() const {
             return detail::translated(*_baseIterator, *_vector);
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        TranslatedCollectionIterator<TCollection>::TranslatedCollectionIterator() {
-            _vector.setZero();
+        TranslatedCollectionIterator<TBaseCollection>::TranslatedCollectionIterator() :
+            _vector(nullptr) {
         }
 
-        template <class TCollection>
+        template <class TBaseCollection>
         inline
-        TranslatedCollectionIterator<TCollection>::TranslatedCollectionIterator(
-            typename IteratorType<TCollection>::Type baseIterator,
-            const Matrix<double, NumDimensions<TCollection>::Value, 1>* vector
+        TranslatedCollectionIterator<TBaseCollection>::TranslatedCollectionIterator(
+            typename IteratorType<TBaseCollection>::Type baseIterator,
+            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* vector
         ) : _baseIterator(baseIterator),
             _vector(vector) {
         }
+    }
+
+    template <class TBaseCollection> template <class TVector>
+    inline
+    detail::TranslatedCollection<TBaseCollection>
+    TranslationFunction<detail::TranslatedCollection<TBaseCollection>>::operator()(
+        const detail::TranslatedCollection<TBaseCollection>& translatedCollection,
+        const EigenBase<TVector>& vector
+    ) const {
+        return detail::TranslatedCollection<TBaseCollection>(
+            translatedCollection.baseCollection(),
+            translatedCollection.vector() + vector.derived()
+        );
     }
 }

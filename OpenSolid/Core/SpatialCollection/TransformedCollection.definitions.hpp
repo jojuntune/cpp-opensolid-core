@@ -65,7 +65,10 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            typename TransformedType<typename BoundsType<TBaseCollection>::Type>::Type
+            typename TransformedType<
+                typename BoundsType<TBaseCollection>::Type,
+                iNumResultDimensions
+            >::Type
             boundsImpl() const;
         public:
             template <class TMatrix>
@@ -159,7 +162,7 @@ namespace opensolid
     template <class TBaseCollection, int iNumResultDimensions>
     struct BoundsType<detail::TransformedCollection<TBaseCollection, iNumResultDimensions>>
     {
-        typedef TransformedType<
+        typedef typename TransformedType<
             typename BoundsType<TBaseCollection>::Type,
             iNumResultDimensions
         >::Type Type;
@@ -172,7 +175,7 @@ namespace opensolid
     };
 
     template <class TBaseCollection, int iNumResultDimensions>
-    struct TranslatedType<TransformedCollection<TBaseCollection, iNumResultDimensions>> :
+    struct TranslatedType<detail::TransformedCollection<TBaseCollection, iNumResultDimensions>> :
         public TranslatedType<
             SpatialCollection<
                 detail::TransformedCollection<TBaseCollection, iNumResultDimensions>
@@ -183,14 +186,14 @@ namespace opensolid
 
     template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
     struct TransformedType<
-        detail::TransformedCollection<TBaseCollection, iNumInnerResultDimensions>
+        detail::TransformedCollection<TBaseCollection, iNumInnerResultDimensions>,
         iNumOuterResultDimensions
     >
     {
         typedef detail::TransformedCollection<TBaseCollection, iNumOuterResultDimensions> Type;
     };
 
-    template <class TBaseCollection, iNumInnerResultDimensions, int iNumOuterResultDimensions>
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
     struct MorphedType<
         detail::TransformedCollection<TBaseCollection, iNumInnerResultDimensions>,
         iNumOuterResultDimensions
@@ -203,17 +206,20 @@ namespace opensolid
     {
     };
 
-    template <class TBaseCollection, iNumResultDimensions>
+    template <class TBaseCollection, int iNumResultDimensions>
     struct ScalingFunction<detail::TransformedCollection<TBaseCollection, iNumResultDimensions>>
     {
         detail::TransformedCollection<TBaseCollection, iNumResultDimensions>
         operator()(
-            const detail::TransformedCollection<TBaseCollection, iNumResultDimensions>& transformedCollection,
+            const detail::TransformedCollection<
+                TBaseCollection,
+                iNumResultDimensions
+            >& transformedCollection,
             double scale
         ) const;
     };
 
-    template <class TBaseCollection, iNumResultDimensions>
+    template <class TBaseCollection, int iNumResultDimensions>
     struct TranslationFunction<
         detail::TransformedCollection<TBaseCollection, iNumResultDimensions>
     > : public TranslationFunction<
@@ -241,7 +247,7 @@ namespace opensolid
         ) const;
     };
 
-    template <class TBaseCollection, int iNumInnerResultDimensions>
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
     struct MorphingFunction<
         detail::TransformedCollection<TBaseCollection, iNumInnerResultDimensions>,
         iNumOuterResultDimensions

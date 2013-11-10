@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/SpatialCollection/ScaledCollection.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -129,7 +130,7 @@ namespace opensolid
     template <class TBaseCollection>
     struct BoundsType<detail::ScaledCollection<TBaseCollection>>
     {
-        typedef ScaledType<typename BoundsType<TBaseCollection>::Type>::Type Type;
+        typedef typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type Type;
     };
 
     template <class TBaseCollection>
@@ -139,7 +140,7 @@ namespace opensolid
     };
 
     template <class TBaseCollection>
-    struct TranslatedType<ScaledCollection<TBaseCollection>> :
+    struct TranslatedType<detail::ScaledCollection<TBaseCollection>> :
         public TranslatedType<SpatialCollection<detail::ScaledCollection<TBaseCollection>>>
     {
     };

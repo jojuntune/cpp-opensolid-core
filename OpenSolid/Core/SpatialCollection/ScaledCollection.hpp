@@ -65,7 +65,7 @@ namespace opensolid
 
         template <class TBaseCollection>
         inline
-        typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
+        typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type
         ScaledCollection<TBaseCollection>::boundsImpl() const {
             return detail::scaled(baseCollection().bounds(), scale());
         }
@@ -149,7 +149,7 @@ namespace opensolid
     template <class TBaseCollection, int iNumResultDimensions> template <class TMatrix>
     inline
     detail::TransformedCollection<TBaseCollection, iNumResultDimensions>
-    TransformationFunction<detail::ScaledCollection<TBaseCollection>>::operator()(
+    TransformationFunction<detail::ScaledCollection<TBaseCollection>, iNumResultDimensions>::operator()(
         const detail::ScaledCollection<TBaseCollection>& scaledCollection,
         const EigenBase<TMatrix>& matrix
     ) const {

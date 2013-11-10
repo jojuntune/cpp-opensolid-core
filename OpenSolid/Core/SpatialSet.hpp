@@ -478,7 +478,7 @@ namespace opensolid
             TolerantComparator<TItem> itemComparator(precision);
             while (filteredIterator != filteredEnd) {
                 if (itemComparator(item, *filteredIterator)) {
-                    return begin() + (&(*filteredIterator) - _data->elements.data());
+                    return begin() + (&(*filteredIterator) - _data->items.data());
                 }
                 ++filteredIterator;
             }

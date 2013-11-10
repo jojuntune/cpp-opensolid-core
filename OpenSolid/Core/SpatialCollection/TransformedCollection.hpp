@@ -71,7 +71,10 @@ namespace opensolid
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        typename TransformedType<typename BoundsType<TBaseCollection>::Type>::Type
+        typename TransformedType<
+            typename BoundsType<TBaseCollection>::Type,
+            iNumResultDimensions
+        >::Type
         TransformedCollection<TBaseCollection, iNumResultDimensions>::boundsImpl() const {
             return detail::transformed(baseCollection().bounds(), transformationMatrix());
         }
@@ -128,13 +131,13 @@ namespace opensolid
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        TransformedCollectionIterator<TBaseCollection>::TransformedCollectionIterator() :
+        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::TransformedCollectionIterator() :
             _transformationMatrix(nullptr) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        TransformedCollectionIterator<TBaseCollection>::TransformedCollectionIterator(
+        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::TransformedCollectionIterator(
             typename IteratorType<TBaseCollection>::Type baseIterator,
             const Matrix<
                 double,
@@ -146,7 +149,7 @@ namespace opensolid
         }
     }
 
-    template <class TBaseCollection, iNumResultDimensions>
+    template <class TBaseCollection, int iNumResultDimensions>
     inline
     detail::TransformedCollection<TBaseCollection, iNumResultDimensions>
     ScalingFunction<

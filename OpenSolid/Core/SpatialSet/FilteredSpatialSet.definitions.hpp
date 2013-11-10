@@ -120,4 +120,78 @@ namespace opensolid
     {
         typedef detail::FilteredSpatialSetIterator<TItem, TBoundsPredicate> Type;
     };
+
+    template <class TItem, class TPredicate>
+    struct NumDimensions<detail::FilteredSpatialSet<TItem, TPredicate>>
+    {
+        static const int Value = NumDimensions<TItem>::Value;
+    };
+
+    template <class TItem, class TPredicate>
+    struct ScaledType<detail::FilteredSpatialSet<TItem, TPredicate>> :
+        public ScaledType<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
+    {
+    };
+
+    template <class TItem, class TPredicate>
+    struct TranslatedType<detail::FilteredSpatialSet<TItem, TPredicate>> :
+        public TranslatedType<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
+    {
+    };
+
+    template <class TItem, class TPredicate, int iNumResultDimensions>
+    struct TransformedType<
+        detail::FilteredSpatialSet<TItem, TPredicate>,
+        iNumResultDimensions
+    > : public TransformedType<
+            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <class TItem, class TPredicate, int iNumResultDimensions>
+    struct MorphedType<
+        detail::FilteredSpatialSet<TItem, TPredicate>,
+        iNumResultDimensions
+    > : public MorphedType<
+            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <class TItem, class TPredicate>
+    struct ScalingFunction<detail::FilteredSpatialSet<TItem, TPredicate>> :
+        public ScalingFunction<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
+    {
+    };
+
+    template <class TItem, class TPredicate>
+    struct TranslationFunction<detail::FilteredSpatialSet<TItem, TPredicate>> :
+        public TranslationFunction<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
+    {
+    };
+
+    template <class TItem, class TPredicate, int iNumResultDimensions>
+    struct TransformationFunction<
+        detail::FilteredSpatialSet<TItem, TPredicate>,
+        iNumResultDimensions
+    > : public TransformationFunction<
+            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <class TItem, class TPredicate, int iNumResultDimensions>
+    struct MorphingFunction<
+        detail::FilteredSpatialSet<TItem, TPredicate>,
+        iNumResultDimensions
+    > : public MorphingFunction<
+            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
+            iNumResultDimensions
+        >
+    {
+    };
 }

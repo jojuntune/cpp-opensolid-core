@@ -35,104 +35,123 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection>
-        MorphedCollection<TBaseCollection>::beginImpl() const {
-            return MorphedCollectionIterator<TBaseCollection>(
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::beginImpl() const {
+            return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
                 baseCollection().begin(),
                 &function()
             );
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection>
-        MorphedCollection<TBaseCollection>::endImpl() const {
-            return MorphedCollectionIterator<TBaseCollection>(
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::endImpl() const {
+            return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
                 baseCollection().end(),
                 &function()
             );
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
         bool
-        MorphedCollection<TBaseCollection>::isEmptyImpl() const {
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::isEmptyImpl() const {
             return baseCollection().isEmpty();
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
         std::int64_t
-        MorphedCollection<TBaseCollection>::sizeImpl() const {
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::sizeImpl() const {
             return baseCollection().size();
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
-        MorphedCollection<TBaseCollection>::boundsImpl() const {
+        typename MorphedType<typename BoundsType<TBaseCollection>::Type, iNumResultDimensions>::Type
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::boundsImpl() const {
             return detail::morphed(baseCollection().bounds(), function());
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollection<TBaseCollection>::MorphedCollection(
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
             const TBaseCollection& baseCollection,
             const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>& function
         ) : _baseCollection(baseCollection), 
             _function(function) {
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         const TBaseCollection&
-        MorphedCollection<TBaseCollection>::baseCollection() const {
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::baseCollection() const {
             return _baseCollection;
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
-        MorphedCollection<TBaseCollection>::function() const {
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::function() const {
             return _function;
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
         void
-        MorphedCollectionIterator<TBaseCollection>::increment() {
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::increment() {
             ++_baseIterator;
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
         bool
-        MorphedCollectionIterator<TBaseCollection>::equal(
-            const MorphedCollectionIterator<TBaseCollection>& other
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::equal(
+            const MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>& other
         ) const {
             return _baseIterator == other._baseIterator;
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        const typename MorphedType<typename ItemType<TBaseCollection>::Type>::Type&
-        MorphedCollectionIterator<TBaseCollection>::dereference() const {
+        typename MorphedType<typename ItemType<TBaseCollection>::Type, iNumResultDimensions>::Type
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::dereference() const {
             return detail::morphed(*_baseIterator, *_function);
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection>::MorphedCollectionIterator() :
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::MorphedCollectionIterator() :
             _function(nullptr) {
         }
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection>::MorphedCollectionIterator(
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::MorphedCollectionIterator(
             typename IteratorType<TBaseCollection>::Type baseIterator,
             const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>* function
         ) : _baseIterator(baseIterator),
             _function(function) {
         }
+    }
+
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
+    inline
+    detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>
+    MorphingFunction<
+        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
+        iNumOuterResultDimensions
+    >::operator()(
+        const detail::MorphedCollection<
+            TBaseCollection,
+            iNumInnerResultDimensions
+        >& morphedCollection,
+        const Function<iNumOuterResultDimensions, iNumInnerResultDimensions>& function
+    ) const {
+        return detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>(
+            morphedCollection.baseCollection(),
+            function.composed(morphedCollection.function())
+        );
     }
 }

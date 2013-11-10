@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/SpatialCollection/MorphedCollection.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -36,9 +37,9 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         class MorphedCollection :
-            public SpatialCollection<MorphedCollection<TBaseCollection>>
+            public SpatialCollection<MorphedCollection<TBaseCollection, iNumResultDimensions>>
         {
         private:
             const TBaseCollection& _baseCollection;
@@ -47,10 +48,10 @@ namespace opensolid
             template <class TDerived>
             friend class opensolid::SpatialCollection;
 
-            MorphedCollectionIterator<TBaseCollection>
+            MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
             beginImpl() const;
 
-            MorphedCollectionIterator<TBaseCollection>
+            MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
             endImpl() const;
 
             bool
@@ -59,10 +60,11 @@ namespace opensolid
             std::int64_t
             sizeImpl() const;
 
-            typename MorphedType<typename BoundsType<TBaseCollection>::Type>::Type Type;
+            typename MorphedType<
+                typename BoundsType<TBaseCollection>::Type,
+                iNumResultDimensions
+            >::Type
             boundsImpl() const;
-
-            MorphedCollection(const MorphedCollection<TBaseCollection>& other);
         public:
             MorphedCollection(
                 const TBaseCollection& baseCollection,
@@ -79,11 +81,14 @@ namespace opensolid
             function() const;
         };
 
-        template <class TBaseCollection>
+        template <class TBaseCollection, int iNumResultDimensions>
         class MorphedCollectionIterator :
             public boost::iterator_facade<
-                MorphedCollectionIterator<TBaseCollection>,
-                const typename ItemType<TBaseCollection>::Type,
+                MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>,
+                typename MorphedType<
+                    typename ItemType<TBaseCollection>::Type,
+                    iNumResultDimensions
+                >::Type,
                 boost::forward_traversal_tag
             >
         {
@@ -97,17 +102,143 @@ namespace opensolid
             increment();
 
             bool
-            equal(const MorphedCollectionIterator<TBaseCollection>& other) const;
+            equal(
+                const MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>& other
+            ) const;
 
-            const typename ItemType<TBaseCollection>::Type&
+            typename MorphedType<
+                typename ItemType<TBaseCollection>::Type,
+                iNumResultDimensions
+            >::Type
             dereference() const;
         public:
             MorphedCollectionIterator();
 
             MorphedCollectionIterator(
                 typename IteratorType<TBaseCollection>::Type baseIterator,
-                double scale
+                const Function<
+                    iNumResultDimensions,
+                    NumDimensions<TBaseCollection>::Value
+                >* function
             );
         };
     }
+}
+
+////////// Specializations //////////
+
+namespace opensolid
+{
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct ItemType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+    {
+        typedef typename MorphedType<
+            typename ItemType<TBaseCollection>::Type,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct IteratorType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+    {
+        typedef detail::MorphedCollectionIterator<TBaseCollection, iNumResultDimensions> Type;
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct NumDimensions<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+    {
+        static const int Value = iNumResultDimensions;
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct BoundsType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+    {
+        typedef typename MorphedType<
+            typename BoundsType<TBaseCollection>::Type,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct ScaledType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>> :
+        public ScaledType<
+            SpatialCollection<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+        >
+    {
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct TranslatedType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>> :
+        public TranslatedType<
+            SpatialCollection<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+        >
+    {
+    };
+
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
+    struct TransformedType<
+        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
+        iNumOuterResultDimensions
+    > : public TransformedType<
+            SpatialCollection<
+                detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>
+            >,
+            iNumOuterResultDimensions
+        >
+    {
+    };
+
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
+    struct MorphedType<
+        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
+        iNumOuterResultDimensions
+    >
+    {
+        typedef detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions> Type;
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct ScalingFunction<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>> :
+        public ScalingFunction<
+            SpatialCollection<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+        >
+    {
+    };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct TranslationFunction<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>> :
+        public TranslationFunction<
+            SpatialCollection<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
+        >
+    {
+    };
+
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
+    struct TransformationFunction<
+        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
+        iNumOuterResultDimensions
+    > : public TransformationFunction<
+            SpatialCollection<
+                detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>
+            >,
+            iNumOuterResultDimensions
+        >
+    {
+    };
+
+    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
+    struct MorphingFunction<
+        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
+        iNumOuterResultDimensions
+    > 
+    {
+        detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>
+        operator()(
+            const detail::MorphedCollection<
+                TBaseCollection,
+                iNumInnerResultDimensions
+            >& morphedCollection,
+            const Function<iNumOuterResultDimensions, iNumInnerResultDimensions>& function
+        ) const;
+    };
 }

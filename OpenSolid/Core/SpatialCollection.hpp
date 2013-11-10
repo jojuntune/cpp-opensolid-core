@@ -30,6 +30,10 @@
 
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/SpatialCollection/FilteredCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/MorphedCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/ScaledCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/TransformedCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/TranslatedCollection.hpp>
 
 #include <algorithm>
 #include <numeric>
@@ -168,5 +172,51 @@ namespace opensolid
     inline
     SpatialCollection<TDerived>::operator std::vector<typename ItemType<TDerived>::Type>() const {
         return std::vector<typename ItemType<TDerived>::Type>(begin(), end());
+    }
+
+    template <class TDerived>
+    inline
+    detail::ScaledCollection<TDerived>
+    ScalingFunction<SpatialCollection<TDerived>>::operator()(
+        const SpatialCollection<TDerived>& collection,
+        double scale
+    ) const {
+        return detail::ScaledCollection<TDerived>(collection.derived(), scale);
+    }
+
+    template <class TDerived> template <class TVector>
+    inline
+    detail::TranslatedCollection<TDerived>
+    TranslationFunction<SpatialCollection<TDerived>>::operator()(
+        const SpatialCollection<TDerived>& collection,
+        const EigenBase<TVector>& vector
+    ) const {
+        return detail::TranslatedCollection<TDerived>(collection.derived(), vector.derived());
+    }
+
+    template <class TDerived, int iNumResultDimensions> template <class TMatrix>
+    inline
+    detail::TransformedCollection<TDerived, iNumResultDimensions>
+    TransformationFunction<SpatialCollection<TDerived>, iNumResultDimensions>::operator()(
+        const SpatialCollection<TDerived>& collection,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return detail::TransformedCollection<TDerived, iNumResultDimensions>(
+            collection.derived(),
+            matrix.derived()
+        );
+    }
+
+    template <class TDerived, int iNumResultDimensions>
+    inline
+    detail::MorphedCollection<TDerived, iNumResultDimensions>
+    MorphingFunction<SpatialCollection<TDerived>, iNumResultDimensions>::operator()(
+        const SpatialCollection<TDerived>& collection,
+        const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
+    ) const {
+        return detail::MorphedCollection<TDerived, iNumResultDimensions>(
+            collection.derived(),
+            function
+        );
     }
 }

@@ -41,7 +41,7 @@ namespace opensolid
 {
     template <class TDerived>
     class SpatialCollection :
-        public Transformable<SpatialCollection<TDerived>>
+        public Transformable<TDerived>
     {
     private:
         const TDerived&

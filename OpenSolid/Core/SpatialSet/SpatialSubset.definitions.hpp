@@ -66,6 +66,8 @@ namespace opensolid
             // Not implemented - copying not allowed
             SpatialSubset(const SpatialSubset<TItem>& other);
         public:
+            SpatialSubset();
+
             SpatialSubset(std::vector<const TItem*>&& items);
 
             SpatialSubset(SpatialSubset<TItem>&& other);
@@ -114,5 +116,71 @@ namespace opensolid
     struct IteratorType<detail::SpatialSubset<TItem>>
     {
         typedef detail::SpatialSubsetIterator<TItem> Type;
+    };
+
+    template <class TItem>
+    struct NumDimensions<detail::SpatialSubset<TItem>>
+    {
+        static const int Value = NumDimensions<TItem>::Value;
+    };
+
+    template <class TItem>
+    struct ScaledType<detail::SpatialSubset<TItem>> :
+        public ScaledType<SpatialCollection<detail::SpatialSubset<TItem>>>
+    {
+    };
+
+    template <class TItem>
+    struct TranslatedType<detail::SpatialSubset<TItem>> :
+        public TranslatedType<SpatialCollection<detail::SpatialSubset<TItem>>>
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct TransformedType<detail::SpatialSubset<TItem>, iNumResultDimensions> :
+        public TransformedType<
+            SpatialCollection<detail::SpatialSubset<TItem>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct MorphedType<detail::SpatialSubset<TItem>, iNumResultDimensions> :
+        public MorphedType<
+            SpatialCollection<detail::SpatialSubset<TItem>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <class TItem>
+    struct ScalingFunction<detail::SpatialSubset<TItem>> :
+        public ScalingFunction<SpatialCollection<detail::SpatialSubset<TItem>>>
+    {
+    };
+
+    template <class TItem>
+    struct TranslationFunction<detail::SpatialSubset<TItem>> :
+        public TranslationFunction<SpatialCollection<detail::SpatialSubset<TItem>>>
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct TransformationFunction<detail::SpatialSubset<TItem>, iNumResultDimensions> :
+        public TransformationFunction<
+            SpatialCollection<detail::SpatialSubset<TItem>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct MorphingFunction<detail::SpatialSubset<TItem>, iNumResultDimensions> :
+        public MorphingFunction<
+            SpatialCollection<detail::SpatialSubset<TItem>>,
+            iNumResultDimensions
+        >
+    {
     };
 }

@@ -30,10 +30,10 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TCollection>
+        template <class TBaseCollection>
         class TranslatedCollection;
 
-        template <class TCollection>
+        template <class TBaseCollection>
         class TranslatedCollectionIterator;
     }
 }
