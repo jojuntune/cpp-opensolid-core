@@ -77,7 +77,8 @@ namespace opensolid
             public boost::iterator_facade<
                 ScaledCollectionIterator<TBaseCollection>,
                 typename ScaledType<typename ItemType<TBaseCollection>::Type>::Type,
-                boost::forward_traversal_tag
+                boost::forward_traversal_tag,
+                typename ScaledType<typename ItemType<TBaseCollection>::Type>::Type
             >
         {
         private:

@@ -52,7 +52,7 @@ namespace opensolid
         transformationMatrix() const;
 
         template <class TTransformable>
-        TTransformable
+        typename TransformedAboutPointType<TTransformable>::Type
         operator()(const TTransformable& transformable) const;
     };
 }

@@ -40,7 +40,7 @@ namespace opensolid
         TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
         TransformedCollection<TBaseCollection, iNumResultDimensions>::beginImpl() const {
             return TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                baseCollection().begin(), 
+                detail::begin(baseCollection()), 
                 &transformationMatrix()
             );
         }
@@ -50,7 +50,7 @@ namespace opensolid
         TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
         TransformedCollection<TBaseCollection, iNumResultDimensions>::endImpl() const {
             return TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                baseCollection().end(),
+                detail::end(baseCollection()),
                 &transformationMatrix()
             );
         }

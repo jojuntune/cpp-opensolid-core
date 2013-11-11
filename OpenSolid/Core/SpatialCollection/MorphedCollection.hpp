@@ -40,7 +40,7 @@ namespace opensolid
         MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
         MorphedCollection<TBaseCollection, iNumResultDimensions>::beginImpl() const {
             return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                baseCollection().begin(),
+                detail::begin(baseCollection()),
                 &function()
             );
         }
@@ -50,7 +50,7 @@ namespace opensolid
         MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
         MorphedCollection<TBaseCollection, iNumResultDimensions>::endImpl() const {
             return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                baseCollection().end(),
+                detail::end(baseCollection()),
                 &function()
             );
         }

@@ -62,7 +62,11 @@ namespace opensolid
 
             typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
             boundsImpl() const;
+
+            TranslatedCollection();
         public:
+            TranslatedCollection(const TranslatedCollection<TBaseCollection>& other);
+
             template <class TVector>
             TranslatedCollection(
                 const TBaseCollection& baseCollection,
@@ -81,7 +85,8 @@ namespace opensolid
             public boost::iterator_facade<
                 TranslatedCollectionIterator<TBaseCollection>,
                 typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type,
-                boost::forward_traversal_tag
+                boost::forward_traversal_tag,
+                typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type
             >
         {
         private:

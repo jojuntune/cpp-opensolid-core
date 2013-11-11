@@ -73,8 +73,9 @@ namespace opensolid
         class FilteredSpatialSetIterator :
             public boost::iterator_facade<
                 FilteredSpatialSetIterator<TItem, TBoundsPredicate>,
-                const TItem,
-                boost::forward_traversal_tag
+                TItem,
+                boost::forward_traversal_tag,
+                const TItem&
             >
         {
         private:

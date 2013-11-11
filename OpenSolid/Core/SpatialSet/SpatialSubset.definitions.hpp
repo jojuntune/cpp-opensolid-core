@@ -77,8 +77,9 @@ namespace opensolid
         class SpatialSubsetIterator :
             public boost::iterator_facade<
                 SpatialSubsetIterator<TItem>,
-                const TItem,
-                boost::forward_traversal_tag
+                TItem,
+                boost::forward_traversal_tag,
+                const TItem&
             >
         {
         private:

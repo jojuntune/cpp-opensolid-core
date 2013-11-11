@@ -39,14 +39,20 @@ namespace opensolid
         inline
         ScaledCollectionIterator<TBaseCollection>
         ScaledCollection<TBaseCollection>::beginImpl() const {
-            return ScaledCollectionIterator<TBaseCollection>(baseCollection().begin(), scale());
+            return ScaledCollectionIterator<TBaseCollection>(
+                detail::begin(baseCollection()),
+                scale()
+            );
         }
 
         template <class TBaseCollection>
         inline
         ScaledCollectionIterator<TBaseCollection>
         ScaledCollection<TBaseCollection>::endImpl() const {
-            return ScaledCollectionIterator<TBaseCollection>(baseCollection().end(), scale());
+            return ScaledCollectionIterator<TBaseCollection>(
+                detail::end(baseCollection()),
+                scale()
+            );
         }
 
         template <class TBaseCollection>

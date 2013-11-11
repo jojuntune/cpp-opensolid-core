@@ -39,8 +39,8 @@ namespace opensolid
         FilteredCollectionIterator<TBaseCollection, TPredicate>
         FilteredCollection<TBaseCollection, TPredicate>::beginImpl() const {
             return FilteredCollectionIterator<TBaseCollection, TPredicate>(
-                _baseCollection.begin(),
-                _baseCollection.end(),
+                detail::begin(_baseCollection),
+                detail::end(_baseCollection),
                 &_predicate
             );
         }
@@ -50,8 +50,8 @@ namespace opensolid
         FilteredCollectionIterator<TBaseCollection, TPredicate>
         FilteredCollection<TBaseCollection, TPredicate>::endImpl() const {
             return FilteredCollectionIterator<TBaseCollection, TPredicate>(
-                _baseCollection.end(),
-                _baseCollection.end(),
+                detail::end(_baseCollection),
+                detail::end(_baseCollection),
                 &_predicate
             );
         }

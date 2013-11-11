@@ -89,7 +89,11 @@ namespace opensolid
                     typename ItemType<TBaseCollection>::Type,
                     iNumResultDimensions
                 >::Type,
-                boost::forward_traversal_tag
+                boost::forward_traversal_tag,
+                typename MorphedType<
+                    typename ItemType<TBaseCollection>::Type,
+                    iNumResultDimensions
+                >::Type
             >
         {
         private:

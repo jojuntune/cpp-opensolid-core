@@ -229,11 +229,11 @@ public:
 
         SpatialSet<Point3d> pointSet(pointList);
         Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
-        SpatialSet<Point3d> rotatedPointSet = pointSet.rotatedAbout(rotationAxis, M_PI / 2);
+        std::vector<Point3d> rotatedPoints = pointSet.rotatedAbout(rotationAxis, M_PI / 2);
 
-        TS_ASSERT((rotatedPointSet[0] - Point3d(2, 0, 1)).isZero());
-        TS_ASSERT((rotatedPointSet[1] - Point3d(1, 0, 1)).isZero());
-        TS_ASSERT((rotatedPointSet[2] - Point3d(0, 0, 1)).isZero());
+        TS_ASSERT((rotatedPoints[0] - Point3d(2, 0, 1)).isZero());
+        TS_ASSERT((rotatedPoints[1] - Point3d(1, 0, 1)).isZero());
+        TS_ASSERT((rotatedPoints[2] - Point3d(0, 0, 1)).isZero());
     }
 
     void testVectorSetTransformation() {
@@ -244,11 +244,11 @@ public:
 
         SpatialSet<Vector3d> vectorSet(vectorList);
         Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
-        SpatialSet<Vector3d> rotatedVectorSet = vectorSet.rotatedAbout(rotationAxis, M_PI / 2);
+        std::vector<Vector3d> rotatedVectors = vectorSet.rotatedAbout(rotationAxis, M_PI / 2);
 
-        TS_ASSERT((rotatedVectorSet[0] - Vector3d(1, 1, 1)).isZero());
-        TS_ASSERT((rotatedVectorSet[1] - Vector3d(0, 1, 1)).isZero());
-        TS_ASSERT((rotatedVectorSet[2] - Vector3d(-1, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectors[0] - Vector3d(1, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectors[1] - Vector3d(0, 1, 1)).isZero());
+        TS_ASSERT((rotatedVectors[2] - Vector3d(-1, 1, 1)).isZero());
     }
 
     void testSwap() {

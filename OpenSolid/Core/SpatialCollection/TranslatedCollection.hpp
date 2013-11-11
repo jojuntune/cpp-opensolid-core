@@ -40,7 +40,7 @@ namespace opensolid
         TranslatedCollectionIterator<TBaseCollection>
         TranslatedCollection<TBaseCollection>::beginImpl() const {
             return TranslatedCollectionIterator<TBaseCollection>(
-                _baseCollection.begin(),
+                detail::begin(baseCollection()),
                 &vector()
             );
         }
@@ -50,7 +50,7 @@ namespace opensolid
         TranslatedCollectionIterator<TBaseCollection>
         TranslatedCollection<TBaseCollection>::endImpl() const {
             return TranslatedCollectionIterator<TBaseCollection>(
-                _baseCollection.end(),
+                detail::end(baseCollection()),
                 &vector()
             );
         }
@@ -59,21 +59,21 @@ namespace opensolid
         inline
         bool
         TranslatedCollection<TBaseCollection>::isEmptyImpl() const {
-            return _baseCollection.isEmpty();
+            return baseCollection().isEmpty();
         }
 
         template <class TBaseCollection>
         inline
         std::int64_t
         TranslatedCollection<TBaseCollection>::sizeImpl() const {
-            return _baseCollection.size();
+            return baseCollection().size();
         }
 
         template <class TBaseCollection>
         inline
         typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
         TranslatedCollection<TBaseCollection>::boundsImpl() const {
-            return detail::translated(_baseCollection.bounds(), vector());
+            return detail::translated(baseCollection().bounds(), vector());
         }
 
         template <class TBaseCollection> template <class TVector>

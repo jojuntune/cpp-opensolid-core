@@ -338,6 +338,18 @@ namespace opensolid
         _data->items = std::move(items);
         init();
     }
+
+    template <class TItem> template <class TDerived>
+    inline
+    SpatialSet<TItem>::SpatialSet(
+        const SpatialCollection<TDerived>& collection,
+        BoundsFunction<TItem> boundsFunction
+    ) : _boundsFunction(boundsFunction),
+        _data(new detail::SpatialSetData<TItem>()) {
+
+        _data->items = std::vector<TItem>(collection.derived());
+        init();        
+    }
     
     template <class TItem> template <class TIterator>
     inline
@@ -635,81 +647,5 @@ namespace opensolid
         }
         stream << "}";
         return stream;
-    }
-
-    template <class TItem>
-    SpatialSet<typename ScaledType<TItem>::Type>
-    ScalingFunction<SpatialSet<TItem>>::operator()(
-        const SpatialSet<TItem>& set,
-        double scale
-    ) const {
-        typedef typename ScaledType<TItem>::Type ScaledItem;
-        std::vector<ScaledItem> scaledItems(set.size());
-        std::transform(
-            set.begin(),
-            set.end(),
-            scaledItems.begin(),
-            [scale] (const TItem& item) -> ScaledItem {
-                return detail::scaled(item, scale);
-            }
-        );
-        return SpatialSet<ScaledItem>(std::move(scaledItems));
-    }
-
-    template <class TItem> template <class TVector>
-    SpatialSet<typename TranslatedType<TItem>::Type>
-    TranslationFunction<SpatialSet<TItem>>::operator()(
-        const SpatialSet<TItem>& set,
-        const EigenBase<TVector>& vector
-    ) const {
-        typedef typename TranslatedType<TItem>::Type TranslatedItem;
-        std::vector<TranslatedItem> translatedItems(set.size());
-        std::transform(
-            set.begin(),
-            set.end(),
-            translatedItems.begin(),
-            [&vector] (const TItem& item) -> TranslatedItem {
-                return detail::translated(item, vector.derived());
-            }
-        );
-        return SpatialSet<TranslatedItem>(std::move(translatedItems));
-    }
-
-    template <class TItem, int iNumResultDimensions> template <class TMatrix>
-    SpatialSet<typename TransformedType<TItem, iNumResultDimensions>::Type>
-    TransformationFunction<SpatialSet<TItem>, iNumResultDimensions>::operator()(
-        const SpatialSet<TItem>& set,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        typedef typename TransformedType<TItem, iNumResultDimensions>::Type TransformedItem;
-        std::vector<TransformedItem> transformedItems(set.size());
-        std::transform(
-            set.begin(),
-            set.end(),
-            transformedItems.begin(),
-            [&matrix] (const TItem& item) -> TransformedItem {
-                return detail::transformed(item, matrix.derived());
-            }
-        );
-        return SpatialSet<TransformedItem>(std::move(transformedItems));
-    }
-
-    template <class TItem, int iNumResultDimensions>
-    SpatialSet<typename MorphedType<TItem, iNumResultDimensions>::Type>
-    MorphingFunction<SpatialSet<TItem>, iNumResultDimensions>::operator()(
-        const SpatialSet<TItem>& set,
-        const Function<iNumResultDimensions, NumDimensions<TItem>::Value>& function
-    ) const {
-        typedef typename MorphedType<TItem, iNumResultDimensions>::Type MorphedItem;
-        std::vector<MorphedItem> morphedItems(set.size());
-        std::transform(
-            set.begin(),
-            set.end(),
-            morphedItems.begin(),
-            [&function] (const TItem& item) -> MorphedItem {
-                return detail::morphed(item, function);
-            }
-        );
-        return SpatialSet<MorphedItem>(std::move(morphedItems));
     }
 }

@@ -69,8 +69,9 @@ namespace opensolid
         class FilteredCollectionIterator :
             public boost::iterator_facade<
                 FilteredCollectionIterator<TBaseCollection, TPredicate>,
-                const typename ItemType<TBaseCollection>::Type,
-                boost::forward_traversal_tag
+                typename ItemType<TBaseCollection>::Type,
+                boost::forward_traversal_tag,
+                typename ItemType<TBaseCollection>::Type
             >
         {
         private:

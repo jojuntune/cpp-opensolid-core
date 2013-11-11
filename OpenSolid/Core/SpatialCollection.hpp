@@ -40,11 +40,21 @@
 
 namespace opensolid
 {
-    template <class TDerived>
-    inline
-    const TDerived&
-    SpatialCollection<TDerived>::derived() const {
-        return static_cast<const TDerived&>(*this);
+    namespace detail
+    {
+        template <class TDerived>
+        inline
+        typename IteratorType<TDerived>::Type
+        begin(const opensolid::SpatialCollection<TDerived>& collection) {
+            return collection.begin();
+        }
+
+        template <class TDerived>
+        inline
+        typename IteratorType<TDerived>::Type
+        end(const opensolid::SpatialCollection<TDerived>& collection) {
+            return collection.end();
+        }
     }
 
     template <class TDerived>
@@ -95,6 +105,13 @@ namespace opensolid
             }
             return result;
         }
+    }
+
+    template <class TDerived>
+    inline
+    const TDerived&
+    SpatialCollection<TDerived>::derived() const {
+        return static_cast<const TDerived&>(*this);
     }
 
     template <class TDerived>
