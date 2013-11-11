@@ -117,12 +117,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TCollection>
-    struct NestedType
-    {
-        typedef TCollection Type;
-    };
-
     template <class TDerived>
     struct NumDimensions<SpatialCollection<TDerived>>
     {

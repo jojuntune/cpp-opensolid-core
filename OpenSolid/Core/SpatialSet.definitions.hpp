@@ -198,12 +198,6 @@ namespace opensolid
     };
 
     template <class TItem>
-    struct NestedType<SpatialSet<TItem>>
-    {
-        typedef const SpatialSet<TItem>& Type;
-    };
-
-    template <class TItem>
     struct NumDimensions<SpatialSet<TItem>>
     {
         static const int Value = NumDimensions<TItem>::Value;

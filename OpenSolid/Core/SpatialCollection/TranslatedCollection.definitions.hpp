@@ -42,7 +42,7 @@ namespace opensolid
             public SpatialCollection<TranslatedCollection<TBaseCollection>>
         {
         private:
-            typename NestedType<TBaseCollection>::Type _baseCollection;
+            TBaseCollection _baseCollection;
             Matrix<double, NumDimensions<TBaseCollection>::Value, 1> _vector;
 
             template <class TDerived>
