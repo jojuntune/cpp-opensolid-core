@@ -42,7 +42,7 @@ namespace opensolid
             public SpatialCollection<TransformedCollection<TBaseCollection, iNumResultDimensions>>
         {
         private:
-            typename TBaseCollection _baseCollection;
+            TBaseCollection _baseCollection;
 
             Matrix<
                 double,
