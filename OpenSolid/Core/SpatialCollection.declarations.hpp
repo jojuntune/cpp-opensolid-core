@@ -36,4 +36,7 @@ namespace opensolid
 
     template <class TCollection>
     struct IteratorType;
+
+    template <class TCollection>
+    struct NestedType;
 }

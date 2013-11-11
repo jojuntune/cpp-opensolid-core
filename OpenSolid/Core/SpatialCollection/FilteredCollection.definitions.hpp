@@ -41,7 +41,7 @@ namespace opensolid
             public SpatialCollection<FilteredCollection<TBaseCollection, TPredicate>>
         {
         private:
-            const TBaseCollection& _baseCollection;
+            typename NestedType<TBaseCollection>::Type _baseCollection;
             TPredicate _predicate;
 
             template <class TDerived>

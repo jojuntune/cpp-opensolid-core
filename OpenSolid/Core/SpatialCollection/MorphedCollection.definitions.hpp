@@ -42,7 +42,7 @@ namespace opensolid
             public SpatialCollection<MorphedCollection<TBaseCollection, iNumResultDimensions>>
         {
         private:
-            const TBaseCollection& _baseCollection;
+            typename NestedType<TBaseCollection>::Type _baseCollection;
             Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value> _function;
 
             template <class TDerived>

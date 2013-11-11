@@ -42,7 +42,7 @@ namespace opensolid
             public SpatialCollection<ScaledCollection<TBaseCollection>>
         {
         private:
-            const TBaseCollection& _baseCollection;
+            typename NestedType<TBaseCollection>::Type _baseCollection;
             double _scale;
 
             template <class TDerived>
