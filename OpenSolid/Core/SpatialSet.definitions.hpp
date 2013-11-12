@@ -90,6 +90,15 @@ namespace opensolid
         
         template <class TIterator>
         SpatialSet(TIterator begin, TIterator end);
+        
+        void
+        operator=(const SpatialSet<TItem>& other);
+        
+        void
+        operator=(SpatialSet<TItem>&& other);
+
+        void
+        swap(SpatialSet<TItem>& other);
 
         const detail::SpatialSetNode<TItem>*
         rootNode() const;
@@ -113,15 +122,6 @@ namespace opensolid
         operator[](std::int64_t index) const;
 
         void
-        swap(SpatialSet<TItem>& other);
-        
-        void
-        operator=(const SpatialSet<TItem>& other);
-        
-        void
-        operator=(SpatialSet<TItem>&& other);
-
-        void
         clear();
 
         detail::FilteredSpatialSet<TItem, detail::OverlapPredicate<TItem>>
@@ -143,11 +143,11 @@ namespace opensolid
         typename std::vector<TItem>::const_iterator
         find(const TItem& item, double precision = 1e-12) const;
 
-        detail::SpatialSubset<TItem>
+        SpatialList<TItem>
         uniqueItems(double precision = 1e-12) const;
 
-        std::vector<std::int64_t>
-        uniqueMapping(double precision = 1e-12) const;
+        SpatialList<TItem>
+        uniqueItems(std::vector<std::int64_t>& mapping, double precision = 1e-12) const;
     };
     
     template <class TItem>

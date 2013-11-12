@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/SpatialList.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.hpp>
 #include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.hpp>
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
@@ -298,6 +299,27 @@ namespace opensolid
         _data->items = std::vector<TItem>(begin, end);
         init();
     }
+    
+    template <class TItem>
+    inline
+    void
+    SpatialSet<TItem>::operator=(const SpatialSet<TItem>& other) {
+        _data = other._data;
+    }
+    
+    template <class TItem>
+    inline
+    void
+    SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
+        _data = std::move(other._data);
+    }
+
+    template <class TItem>
+    inline
+    void
+    SpatialSet<TItem>::swap(SpatialSet<TItem>& other) {
+        _data.swap(other._data);
+    }
 
     template <class TItem>
     inline
@@ -372,32 +394,8 @@ namespace opensolid
     template <class TItem>
     inline
     void
-    SpatialSet<TItem>::swap(SpatialSet<TItem>& other) {
-        _data.swap(other._data);
-    }
-    
-    template <class TItem>
-    inline
-    void
-    SpatialSet<TItem>::operator=(const SpatialSet<TItem>& other) {
-        _data = other._data;
-    }
-    
-    template <class TItem>
-    inline
-    void
-    SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
-        _data = std::move(other._data);
-    }
-
-    template <class TItem>
-    inline
-    void
     SpatialSet<TItem>::clear() {
-        if (!isEmpty()) {
-            _data->items.clear();
-            _data->nodes.clear();
-        }
+        _data.reset();
     }
 
     template <class TItem>
@@ -482,17 +480,12 @@ namespace opensolid
         void
         markDuplicateItems(
             const SpatialSetNode<TItem>* anchorNode,
+            const TItem* anchorItem,
+            std::int64_t uniqueIndex,
             const TItem* firstItem,
             const TolerantComparator<TItem>& itemComparator,
-            std::vector<const TItem*>& itemMap
+            std::vector<std::int64_t>& mapping
         ) {
-            // Ensure anchor node is a valid leaf node
-            assert(anchorNode);
-            assert(anchorNode->item);
-
-            const TItem* anchorItem = anchorNode->item;
-            std::int64_t anchorIndex = anchorItem - firstItem;
-            itemMap[anchorIndex] = anchorItem;
             const SpatialSetNode<TItem>* candidateNode = anchorNode->next;
             while (candidateNode && candidateNode->bounds.overlaps(anchorNode->bounds)) {
                 if (candidateNode->leftChild) {
@@ -500,97 +493,69 @@ namespace opensolid
                     candidateNode = candidateNode->leftChild;
                 } else {
                     // Leaf node: check for duplicate items, then move to next node
-                    if (itemComparator(*anchorItem, *candidateNode->item)) {
-                        std::int64_t candidateIndex = candidateNode->item - firstItem;
-                        assert(itemMap[candidateIndex] == nullptr);
-                        itemMap[candidateIndex] = anchorItem;
+                    const TItem* candidateItem = candidateNode->item;
+                    if (itemComparator(*anchorItem, *candidateItem)) {
+                        std::int64_t candidateItemIndex = candidateItem - firstItem;
+                        assert(mapping[candidateItemIndex] == -1);
+                        mapping[candidateItemIndex] = uniqueIndex;
                     }
                     candidateNode = candidateNode->next;
                 }
             }
         }
+    }
 
-        template <class TItem, class TVisitor>
-        void
-        visitUniqueItems(
-            const SpatialSetNode<TItem>* rootNode,
-            double precision,
-            const TItem* firstItem,
-            std::int64_t numItems,
-            const TVisitor& visitor
-        ) {
-            std::vector<const TItem*> itemMap(numItems);
-            std::fill(itemMap.begin(), itemMap.end(), nullptr);
+    template <class TItem>
+    inline
+    SpatialList<TItem>
+    SpatialSet<TItem>::uniqueItems(double precision) const {
+        std::vector<std::int64_t> dummy;
+        return uniqueItems(dummy, precision);
+    }
 
-            const SpatialSetNode<TItem>* node = rootNode;
+    template <class TItem>
+    inline
+    SpatialList<TItem>
+    SpatialSet<TItem>::uniqueItems(std::vector<std::int64_t>& mapping, double precision) const {
+        if (isEmpty()) {
+            mapping.clear();
+            return SpatialList<TItem>();
+        } else {
+            // Initialize unique item mapping
+            mapping.resize(size());
+            std::fill(mapping.begin(), mapping.end(), -1);
+            std::int64_t uniqueIndex = 0;
+
+            // Get first item for calculating item indices
+            const TItem* firstItem = &_data->items.front();
+
+            // Descend to left-most node
+            const detail::SpatialSetNode<TItem>* node = rootNode();
             while (node->leftChild) {
                 node = node->leftChild;
             }
 
+            std::vector<TItem> results;
             TolerantComparator<TItem> itemComparator(precision);
             do {
-                std::int64_t itemIndex = node->item - firstItem;
-                if (itemMap[itemIndex] == nullptr) {
-                    markDuplicateItems(node, firstItem, itemComparator, itemMap);
-                }
-                visitor(node->item, itemMap[itemIndex]);
-                node = nextLeafNode(node);
-            } while (node);
-        }
-    }
-
-    template <class TItem>
-    inline
-    detail::SpatialSubset<TItem>
-    SpatialSet<TItem>::uniqueItems(double precision) const {
-        if (isEmpty()) {
-            return detail::SpatialSubset<TItem>();
-        } else {
-            std::vector<const TItem*> items;
-            auto visitor = [&items] (
-                const TItem* item,
-                const TItem* anchorItem
-            ) {
-                if (item == anchorItem) {
-                    items.push_back(item);
-                }
-            };
-            detail::visitUniqueItems(
-                rootNode(),
-                precision,
-                &_data->items.front(),
-                size(),
-                visitor
-            );
-            return detail::SpatialSubset<TItem>(*this, std::move(items));
-        }
-    }
-
-    template <class TItem>
-    inline
-    std::vector<std::int64_t>
-    SpatialSet<TItem>::uniqueMapping(double precision) const {
-        if (isEmpty()) {
-            return std::vector<std::int64_t>();
-        } else {
-            const TItem* firstItem = &_data->items.front();
-            std::vector<std::int64_t> results(size());
-            auto visitor = [&results, firstItem] (
-                const TItem* item,
-                const TItem* anchorItem
-            ) {
+                const TItem* item = node->item;
                 std::int64_t itemIndex = item - firstItem;
-                std::int64_t anchorIndex = anchorItem - firstItem;
-                results[itemIndex] = anchorIndex;
-            };
-            detail::visitUniqueItems(
-                rootNode(),
-                precision,
-                firstItem,
-                size(),
-                visitor
-            );
-            return results;
+                if (mapping[itemIndex] == -1) {
+                    results.push_back(*item);
+                    mapping[itemIndex] = uniqueIndex;
+                    detail::markDuplicateItems(
+                        node,
+                        item,
+                        uniqueIndex,
+                        firstItem,
+                        itemComparator,
+                        mapping
+                    );
+                    ++uniqueIndex;
+                }
+                node = detail::nextLeafNode(node);
+            } while (node);
+            return SpatialList<TItem>(std::move(results));
         }
     }
     

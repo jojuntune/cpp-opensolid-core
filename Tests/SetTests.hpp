@@ -27,6 +27,7 @@
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/SpatialList.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 #include <boost/timer.hpp>
@@ -286,24 +287,25 @@ public:
         testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
         testPoints[7] = Point2d(0, 2);
 
-        std::vector<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
-        std::vector<Point2d> uniquePointsExact = SpatialSet<Point2d>(testPoints).uniqueItems(0.0);
+        SpatialList<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
+        SpatialList<Point2d> uniquePointsExact = SpatialSet<Point2d>(testPoints).uniqueItems(0.0);
 
-        TS_ASSERT_EQUALS(uniquePointsTolerant.size(), 4u);
+        TS_ASSERT_EQUALS(uniquePointsTolerant.size(), 4);
         TS_ASSERT_LESS_THAN(uniquePointsTolerant.size(), uniquePointsExact.size());
 
+        std::vector<Point2d> sortedPoints = uniquePointsTolerant;
         std::sort(
-            uniquePointsTolerant.begin(),
-            uniquePointsTolerant.end(),
+            sortedPoints.begin(),
+            sortedPoints.end(),
             [] (const Point2d& firstPoint, const Point2d& secondPoint) {
                 return (firstPoint.y() - firstPoint.x()) < (secondPoint.y() - secondPoint.x());
             }
         );
 
-        TS_ASSERT((uniquePointsTolerant[0] - Point2d(2, 1)).isZero());
-        TS_ASSERT((uniquePointsTolerant[1] - Point2d(2, 2)).isZero());
-        TS_ASSERT((uniquePointsTolerant[2] - Point2d(1, 2)).isZero());
-        TS_ASSERT((uniquePointsTolerant[3] - Point2d(0, 2)).isZero());
+        TS_ASSERT((sortedPoints[0] - Point2d(2, 1)).isZero());
+        TS_ASSERT((sortedPoints[1] - Point2d(2, 2)).isZero());
+        TS_ASSERT((sortedPoints[2] - Point2d(1, 2)).isZero());
+        TS_ASSERT((sortedPoints[3] - Point2d(0, 2)).isZero());
     }
 
     void testUniqueMapping() {
@@ -314,14 +316,15 @@ public:
         values[3] = 3.0;
         values[4] = 3.0;
 
-        std::vector<std::int64_t> mapping = SpatialSet<double>(values).uniqueMapping();
+        std::vector<std::int64_t> mapping;
+        SpatialList<double> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
 
         TS_ASSERT_EQUALS(mapping.size(), 5);
         TS_ASSERT_EQUALS(mapping[0], 0);
         TS_ASSERT_EQUALS(mapping[1], 1);
         TS_ASSERT_EQUALS(mapping[2], 1);
-        TS_ASSERT_EQUALS(mapping[3], 3);
-        TS_ASSERT_EQUALS(mapping[4], 3);
+        TS_ASSERT_EQUALS(mapping[3], 2);
+        TS_ASSERT_EQUALS(mapping[4], 2);
     }
 
     void testFind() {
