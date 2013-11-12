@@ -49,31 +49,24 @@ namespace opensolid
                 iNumResultDimensions,
                 NumDimensions<TBaseCollection>::Value
             > _transformationMatrix;
-
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
-
-            TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
-            beginImpl() const;
-
-            TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
-            endImpl() const;
-
-            bool
-            isEmptyImpl() const;
-
-            std::int64_t
-            sizeImpl() const;
-
-            typename TransformedType<
-                typename BoundsType<TBaseCollection>::Type,
-                iNumResultDimensions
-            >::Type
-            boundsImpl() const;
         public:
+            TransformedCollection(
+                const TransformedCollection<TBaseCollection, iNumResultDimensions>& other
+            );
+            
+            TransformedCollection(
+                TransformedCollection<TBaseCollection, iNumResultDimensions>&& other
+            );
+
             template <class TMatrix>
             TransformedCollection(
                 const TBaseCollection& baseCollection,
+                const EigenBase<TMatrix>& transformationMatrix
+            );
+
+            template <class TMatrix>
+            TransformedCollection(
+                TBaseCollection&& baseCollection,
                 const EigenBase<TMatrix>& transformationMatrix
             );
 
@@ -82,6 +75,24 @@ namespace opensolid
 
             const Matrix<double, iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
             transformationMatrix() const;
+
+            TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
+            begin() const;
+
+            TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            typename TransformedType<
+                typename BoundsType<TBaseCollection>::Type,
+                iNumResultDimensions
+            >::Type
+            bounds() const;
         };
 
         template <class TBaseCollection, int iNumResultDimensions>

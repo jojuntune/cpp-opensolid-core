@@ -37,47 +37,74 @@ namespace opensolid
     {
         template <class TItem>
         inline
+        SpatialSubset<TItem>::SpatialSubset() {
+        }
+
+        template <class TItem>
+        inline
+        SpatialSubset<TItem>::SpatialSubset(const SpatialSubset<TItem>& other) :
+            _set(other._set),
+            _items(std::move(other._items)) {
+        }
+
+        template <class TItem>
+        inline
+        SpatialSubset<TItem>::SpatialSubset(SpatialSubset<TItem>&& other) :
+            _set(std::move(other._set)),
+            _items(std::move(other._items)) {
+        }
+
+        template <class TItem>
+        inline
+        SpatialSubset<TItem>::SpatialSubset(
+            const SpatialSet<TItem>& set,
+            std::vector<const TItem*>&& items
+        ) : _set(set),
+            _items(std::move(items)) {
+        }
+
+        template <class TItem>
+        inline
+        SpatialSubset<TItem>::SpatialSubset(
+            SpatialSet<TItem>&& set,
+            std::vector<const TItem*>&& items
+        ) : _set(std::move(set)),
+            _items(std::move(items)) {
+        }
+
+        template <class TItem>
+        inline
         SpatialSubsetIterator<TItem>
-        SpatialSubset<TItem>::beginImpl() const {
+        SpatialSubset<TItem>::begin() const {
             return SpatialSubsetIterator<TItem>(_items.begin());
         }
 
         template <class TItem>
         inline
         SpatialSubsetIterator<TItem>
-        SpatialSubset<TItem>::endImpl() const {
+        SpatialSubset<TItem>::end() const {
             return SpatialSubsetIterator<TItem>(_items.end());
         }
 
         template <class TItem>
         inline
         bool
-        SpatialSubset<TItem>::isEmptyImpl() const {
+        SpatialSubset<TItem>::isEmpty() const {
             return _items.empty();
         }
 
         template <class TItem>
         inline
         std::int64_t
-        SpatialSubset<TItem>::sizeImpl() const {
+        SpatialSubset<TItem>::size() const {
             return _items.size();
         }
 
         template <class TItem>
         inline
-        SpatialSubset<TItem>::SpatialSubset() {
-        }
-
-        template <class TItem>
-        inline
-        SpatialSubset<TItem>::SpatialSubset(std::vector<const TItem*>&& items) :
-            _items(std::move(items)) {
-        }
-
-        template <class TItem>
-        inline
-        SpatialSubset<TItem>::SpatialSubset(SpatialSubset<TItem>&& other) :
-            _items(std::move(other._items)) {
+        typename BoundsType<TItem>::Type
+        SpatialSubset<TItem>::bounds() const {
+            return this->boundsDefaultImpl();
         }
 
         template <class TItem>

@@ -37,43 +37,18 @@ namespace opensolid
     {
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
-        MorphedCollection<TBaseCollection, iNumResultDimensions>::beginImpl() const {
-            return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                detail::begin(baseCollection()),
-                &function()
-            );
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
+            const MorphedCollection<TBaseCollection, iNumResultDimensions>& other
+        ) : _baseCollection(other._baseCollection),
+            _function(std::move(other._function)) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
-        MorphedCollection<TBaseCollection, iNumResultDimensions>::endImpl() const {
-            return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                detail::end(baseCollection()),
-                &function()
-            );
-        }
-
-        template <class TBaseCollection, int iNumResultDimensions>
-        inline
-        bool
-        MorphedCollection<TBaseCollection, iNumResultDimensions>::isEmptyImpl() const {
-            return baseCollection().isEmpty();
-        }
-
-        template <class TBaseCollection, int iNumResultDimensions>
-        inline
-        std::int64_t
-        MorphedCollection<TBaseCollection, iNumResultDimensions>::sizeImpl() const {
-            return baseCollection().size();
-        }
-
-        template <class TBaseCollection, int iNumResultDimensions>
-        inline
-        typename MorphedType<typename BoundsType<TBaseCollection>::Type, iNumResultDimensions>::Type
-        MorphedCollection<TBaseCollection, iNumResultDimensions>::boundsImpl() const {
-            return detail::morphed(baseCollection().bounds(), function());
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
+            MorphedCollection<TBaseCollection, iNumResultDimensions>&& other
+        ) : _baseCollection(std::move(other._baseCollection)),
+            _function(std::move(other._function)) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -82,6 +57,15 @@ namespace opensolid
             const TBaseCollection& baseCollection,
             const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>& function
         ) : _baseCollection(baseCollection), 
+            _function(function) {
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
+            TBaseCollection&& baseCollection,
+            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>& function
+        ) : _baseCollection(std::move(baseCollection)), 
             _function(function) {
         }
 
@@ -95,6 +79,47 @@ namespace opensolid
         const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
         MorphedCollection<TBaseCollection, iNumResultDimensions>::function() const {
             return _function;
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::begin() const {
+            return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
+                baseCollection().begin(),
+                &function()
+            );
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::end() const {
+            return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
+                baseCollection().end(),
+                &function()
+            );
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        bool
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::isEmpty() const {
+            return baseCollection().isEmpty();
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        std::int64_t
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::size() const {
+            return baseCollection().size();
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        typename MorphedType<typename BoundsType<TBaseCollection>::Type, iNumResultDimensions>::Type
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::bounds() const {
+            return detail::morphed(baseCollection().bounds(), function());
         }
 
         template <class TBaseCollection, int iNumResultDimensions>

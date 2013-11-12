@@ -40,37 +40,6 @@
 
 namespace opensolid
 {
-    namespace detail
-    {
-        template <class TDerived>
-        inline
-        typename IteratorType<TDerived>::Type
-        begin(const opensolid::SpatialCollection<TDerived>& collection) {
-            return collection.begin();
-        }
-
-        template <class TDerived>
-        inline
-        typename IteratorType<TDerived>::Type
-        end(const opensolid::SpatialCollection<TDerived>& collection) {
-            return collection.end();
-        }
-    }
-
-    template <class TDerived>
-    inline
-    typename IteratorType<TDerived>::Type
-    SpatialCollection<TDerived>::begin() const {
-        return derived().beginImpl();
-    }
-
-    template <class TDerived>
-    inline
-    typename IteratorType<TDerived>::Type
-    SpatialCollection<TDerived>::end() const {
-        return derived().endImpl();
-    }
-
     template <class TDerived>
     inline
     bool
@@ -116,23 +85,37 @@ namespace opensolid
 
     template <class TDerived>
     inline
+    typename IteratorType<TDerived>::Type
+    SpatialCollection<TDerived>::begin() const {
+        return derived().begin();
+    }
+
+    template <class TDerived>
+    inline
+    typename IteratorType<TDerived>::Type
+    SpatialCollection<TDerived>::end() const {
+        return derived().end();
+    }
+
+    template <class TDerived>
+    inline
     bool
     SpatialCollection<TDerived>::isEmpty() const {
-        return derived().isEmptyImpl();
+        return derived().isEmpty();
     }
 
     template <class TDerived>
     inline
     std::int64_t
     SpatialCollection<TDerived>::size() const {
-        return derived().sizeImpl();
+        return derived().size();
     }
 
     template <class TDerived>
     inline
     typename BoundsType<typename ItemType<TDerived>::Type>::Type
     SpatialCollection<TDerived>::bounds() const {
-        return derived().boundsImpl();
+        return derived().bounds();
     }
 
     template <class TDerived> template <class TPredicate>

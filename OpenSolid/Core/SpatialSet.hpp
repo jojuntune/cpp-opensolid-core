@@ -44,57 +44,6 @@
 
 namespace opensolid
 {
-    template <class TItem>
-    inline
-    typename std::vector<TItem>::const_iterator
-    SpatialSet<TItem>::beginImpl() const {
-        if (this->isEmpty()) {
-            return typename std::vector<TItem>::const_iterator();
-        } else {
-            return _data->items.begin();
-        }
-    }
-
-    template <class TItem>
-    inline
-    typename std::vector<TItem>::const_iterator
-    SpatialSet<TItem>::endImpl() const {
-        if (this->isEmpty()) {
-            return typename std::vector<TItem>::const_iterator();
-        } else {
-            return _data->items.end();
-        }
-    }
-
-    template <class TItem>
-    inline
-    bool
-    SpatialSet<TItem>::isEmptyImpl() const {
-        return !_data || _data->items.empty();
-    }
-    
-    template <class TItem>
-    inline
-    std::int64_t
-    SpatialSet<TItem>::sizeImpl() const {
-        if (this->isEmpty()) {
-            return 0;
-        } else {
-            return _data->items.size();
-        }
-    }
-
-    template <class TItem>
-    inline
-    typename BoundsType<TItem>::Type
-    SpatialSet<TItem>::boundsImpl() const {
-        if (this->isEmpty()) {
-            return typename BoundsType<TItem>::Type();
-        } else {
-            return _data->nodes.front().bounds;
-        }
-    }
-
     namespace detail
     {
         template <class TBounds>
@@ -375,7 +324,7 @@ namespace opensolid
     inline
     const detail::SpatialSetNode<TItem>*
     SpatialSet<TItem>::rootNode() const {
-        if (this->isEmpty()) {
+        if (isEmpty()) {
             return nullptr;
         } else {
             return _data->nodes.data();
@@ -386,21 +335,58 @@ namespace opensolid
     inline
     typename std::vector<TItem>::const_iterator
     SpatialSet<TItem>::begin() const {
-        return beginImpl();
+        if (isEmpty()) {
+            return typename std::vector<TItem>::const_iterator();
+        } else {
+            return _data->items.begin();
+        }
     }
 
     template <class TItem>
     inline
     typename std::vector<TItem>::const_iterator
     SpatialSet<TItem>::end() const {
-        return endImpl();
+        if (isEmpty()) {
+            return typename std::vector<TItem>::const_iterator();
+        } else {
+            return _data->items.end();
+        }
+    }
+
+    template <class TItem>
+    inline
+    bool
+    SpatialSet<TItem>::isEmpty() const {
+        return !_data || _data->items.empty();
+    }
+    
+    template <class TItem>
+    inline
+    std::int64_t
+    SpatialSet<TItem>::size() const {
+        if (isEmpty()) {
+            return 0;
+        } else {
+            return _data->items.size();
+        }
+    }
+
+    template <class TItem>
+    inline
+    typename BoundsType<TItem>::Type
+    SpatialSet<TItem>::bounds() const {
+        if (isEmpty()) {
+            return typename BoundsType<TItem>::Type();
+        } else {
+            return _data->nodes.front().bounds;
+        }
     }
 
     template <class TItem>
     inline
     const TItem&
     SpatialSet<TItem>::operator[](std::int64_t index) const {
-        assert(!this->isEmpty());
+        assert(!isEmpty());
         return _data->items[index];
     }
 
@@ -432,7 +418,7 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::clear() {
-        if (!this->isEmpty()) {
+        if (!isEmpty()) {
             _data->items.clear();
             _data->nodes.clear();
         }
@@ -475,7 +461,7 @@ namespace opensolid
     inline
     typename std::vector<TItem>::const_iterator
     SpatialSet<TItem>::find(const TItem& item, double precision) const {
-        if (this->isEmpty()) {
+        if (isEmpty()) {
             return end();
         } else {
             detail::OverlapPredicate<TItem> overlapPredicate(_boundsFunction(item), precision);
@@ -580,7 +566,7 @@ namespace opensolid
     inline
     detail::SpatialSubset<TItem>
     SpatialSet<TItem>::uniqueItems(double precision) const {
-        if (this->isEmpty()) {
+        if (isEmpty()) {
             return detail::SpatialSubset<TItem>();
         } else {
             std::vector<const TItem*> items;
@@ -596,7 +582,7 @@ namespace opensolid
                 rootNode(),
                 precision,
                 &_data->items.front(),
-                this->size(),
+                size(),
                 visitor
             );
             return detail::SpatialSubset<TItem>(std::move(items));
@@ -607,11 +593,11 @@ namespace opensolid
     inline
     std::vector<std::int64_t>
     SpatialSet<TItem>::uniqueMapping(double precision) const {
-        if (this->isEmpty()) {
+        if (isEmpty()) {
             return std::vector<std::int64_t>();
         } else {
             const TItem* firstItem = &_data->items.front();
-            std::vector<std::int64_t> results(this->size());
+            std::vector<std::int64_t> results(size());
             auto visitor = [&results, firstItem] (
                 const TItem* item,
                 const TItem* anchorItem
@@ -624,7 +610,7 @@ namespace opensolid
                 rootNode(),
                 precision,
                 firstItem,
-                this->size(),
+                size(),
                 visitor
             );
             return results;

@@ -39,31 +39,11 @@
 
 namespace opensolid
 {
-    namespace detail
-    {
-        template <class TDerived>
-        typename IteratorType<TDerived>::Type
-        begin(const opensolid::SpatialCollection<TDerived>& collection);
-
-        template <class TDerived>
-        typename IteratorType<TDerived>::Type
-        end(const opensolid::SpatialCollection<TDerived>& collection);
-    }
-
     template <class TDerived>
     class SpatialCollection :
         public Transformable<TDerived>
     {
     protected:
-        template <class TOtherDerived> friend typename IteratorType<TOtherDerived>::Type detail::begin(const opensolid::SpatialCollection<TOtherDerived>& collection);
-        template <class TOtherDerived> friend typename IteratorType<TOtherDerived>::Type detail::end(const opensolid::SpatialCollection<TOtherDerived>& collection);
-
-        typename IteratorType<TDerived>::Type
-        begin() const;
-
-        typename IteratorType<TDerived>::Type
-        end() const;
-
         bool
         isEmptyDefaultImpl() const;
 
@@ -75,6 +55,12 @@ namespace opensolid
     public:
         const TDerived&
         derived() const;
+
+        typename IteratorType<TDerived>::Type
+        begin() const;
+
+        typename IteratorType<TDerived>::Type
+        end() const;
 
         bool
         isEmpty() const;

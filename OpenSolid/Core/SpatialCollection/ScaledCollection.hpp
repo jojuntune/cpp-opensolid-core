@@ -37,43 +37,18 @@ namespace opensolid
     {
         template <class TBaseCollection>
         inline
-        ScaledCollectionIterator<TBaseCollection>
-        ScaledCollection<TBaseCollection>::beginImpl() const {
-            return ScaledCollectionIterator<TBaseCollection>(
-                detail::begin(baseCollection()),
-                scale()
-            );
+        ScaledCollection<TBaseCollection>::ScaledCollection(
+            const ScaledCollection<TBaseCollection>& other
+        ) : _baseCollection(other._baseCollection),
+            _scale(other._scale) {
         }
 
         template <class TBaseCollection>
         inline
-        ScaledCollectionIterator<TBaseCollection>
-        ScaledCollection<TBaseCollection>::endImpl() const {
-            return ScaledCollectionIterator<TBaseCollection>(
-                detail::end(baseCollection()),
-                scale()
-            );
-        }
-
-        template <class TBaseCollection>
-        inline
-        bool
-        ScaledCollection<TBaseCollection>::isEmptyImpl() const {
-            return baseCollection().isEmpty();
-        }
-
-        template <class TBaseCollection>
-        inline
-        std::int64_t
-        ScaledCollection<TBaseCollection>::sizeImpl() const {
-            return baseCollection().size();
-        }
-
-        template <class TBaseCollection>
-        inline
-        typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type
-        ScaledCollection<TBaseCollection>::boundsImpl() const {
-            return detail::scaled(baseCollection().bounds(), scale());
+        ScaledCollection<TBaseCollection>::ScaledCollection(
+            ScaledCollection<TBaseCollection>&& other
+        ) : _baseCollection(std::move(other._baseCollection)),
+            _scale(other._scale) {
         }
 
         template <class TBaseCollection>
@@ -82,6 +57,15 @@ namespace opensolid
             const TBaseCollection& baseCollection,
             double scale
         ) : _baseCollection(baseCollection), 
+            _scale(scale) {
+        }
+
+        template <class TBaseCollection>
+        inline
+        ScaledCollection<TBaseCollection>::ScaledCollection(
+            TBaseCollection&& baseCollection,
+            double scale
+        ) : _baseCollection(std::move(baseCollection)),
             _scale(scale) {
         }
 
@@ -97,6 +81,41 @@ namespace opensolid
         double
         ScaledCollection<TBaseCollection>::scale() const {
             return _scale;
+        }
+
+        template <class TBaseCollection>
+        inline
+        ScaledCollectionIterator<TBaseCollection>
+        ScaledCollection<TBaseCollection>::begin() const {
+            return ScaledCollectionIterator<TBaseCollection>(baseCollection().begin(), scale());
+        }
+
+        template <class TBaseCollection>
+        inline
+        ScaledCollectionIterator<TBaseCollection>
+        ScaledCollection<TBaseCollection>::end() const {
+            return ScaledCollectionIterator<TBaseCollection>(baseCollection().end(), scale());
+        }
+
+        template <class TBaseCollection>
+        inline
+        bool
+        ScaledCollection<TBaseCollection>::isEmpty() const {
+            return baseCollection().isEmpty();
+        }
+
+        template <class TBaseCollection>
+        inline
+        std::int64_t
+        ScaledCollection<TBaseCollection>::size() const {
+            return baseCollection().size();
+        }
+
+        template <class TBaseCollection>
+        inline
+        typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type
+        ScaledCollection<TBaseCollection>::bounds() const {
+            return detail::scaled(baseCollection().bounds(), scale());
         }
 
         template <class TBaseCollection>

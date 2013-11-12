@@ -37,46 +37,18 @@ namespace opensolid
     {
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
-        TransformedCollection<TBaseCollection, iNumResultDimensions>::beginImpl() const {
-            return TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                detail::begin(baseCollection()), 
-                &transformationMatrix()
-            );
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::TransformedCollection(
+            const TransformedCollection<TBaseCollection, iNumResultDimensions>& other
+        ) : _baseCollection(other._baseCollection),
+            _transformationMatrix(other._transformationMatrix) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
-        TransformedCollection<TBaseCollection, iNumResultDimensions>::endImpl() const {
-            return TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>(
-                detail::end(baseCollection()),
-                &transformationMatrix()
-            );
-        }
-
-        template <class TBaseCollection, int iNumResultDimensions>
-        inline
-        bool
-        TransformedCollection<TBaseCollection, iNumResultDimensions>::isEmptyImpl() const {
-            return baseCollection().isEmpty();
-        }
-
-        template <class TBaseCollection, int iNumResultDimensions>
-        inline
-        std::int64_t
-        TransformedCollection<TBaseCollection, iNumResultDimensions>::sizeImpl() const {
-            return baseCollection().size();
-        }
-
-        template <class TBaseCollection, int iNumResultDimensions>
-        inline
-        typename TransformedType<
-            typename BoundsType<TBaseCollection>::Type,
-            iNumResultDimensions
-        >::Type
-        TransformedCollection<TBaseCollection, iNumResultDimensions>::boundsImpl() const {
-            return detail::transformed(baseCollection().bounds(), transformationMatrix());
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::TransformedCollection(
+            TransformedCollection<TBaseCollection, iNumResultDimensions>&& other
+        ) : _baseCollection(std::move(other._baseCollection)),
+            _transformationMatrix(other._transformationMatrix) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions> template <class TMatrix>
@@ -85,6 +57,15 @@ namespace opensolid
             const TBaseCollection& baseCollection,
             const EigenBase<TMatrix>& transformationMatrix
         ) : _baseCollection(baseCollection), 
+            _transformationMatrix(transformationMatrix.derived()) {
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions> template <class TMatrix>
+        inline
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::TransformedCollection(
+            TBaseCollection&& baseCollection,
+            const EigenBase<TMatrix>& transformationMatrix
+        ) : _baseCollection(std::move(baseCollection)), 
             _transformationMatrix(transformationMatrix.derived()) {
         }
 
@@ -100,6 +81,50 @@ namespace opensolid
         const Matrix<double, iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
         TransformedCollection<TBaseCollection, iNumResultDimensions>::transformationMatrix() const {
             return _transformationMatrix;
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::begin() const {
+            return TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>(
+                baseCollection().begin(),
+                &transformationMatrix()
+            );
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::end() const {
+            return TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>(
+                baseCollection().end(),
+                &transformationMatrix()
+            );
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        bool
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::isEmpty() const {
+            return baseCollection().isEmpty();
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        std::int64_t
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::size() const {
+            return baseCollection().size();
+        }
+
+        template <class TBaseCollection, int iNumResultDimensions>
+        inline
+        typename TransformedType<
+            typename BoundsType<TBaseCollection>::Type,
+            iNumResultDimensions
+        >::Type
+        TransformedCollection<TBaseCollection, iNumResultDimensions>::bounds() const {
+            return detail::transformed(baseCollection().bounds(), transformationMatrix());
         }
 
         template <class TBaseCollection, int iNumResultDimensions>

@@ -43,26 +43,29 @@ namespace opensolid
         private:
             TBaseCollection _baseCollection;
             TPredicate _predicate;
+        public:
+            FilteredCollection(const FilteredCollection<TBaseCollection, TPredicate>& other);
 
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
+            FilteredCollection(FilteredCollection<TBaseCollection, TPredicate>&& other);
+
+            FilteredCollection(const TBaseCollection& baseCollection, TPredicate predicate);
+
+            FilteredCollection(TBaseCollection&& baseCollection, TPredicate predicate);
 
             FilteredCollectionIterator<TBaseCollection, TPredicate>
-            beginImpl() const;
+            begin() const;
 
             FilteredCollectionIterator<TBaseCollection, TPredicate>
-            endImpl() const;
+            end() const;
 
             bool
-            isEmptyImpl() const;
+            isEmpty() const;
 
             std::int64_t
-            sizeImpl() const;
+            size() const;
 
             typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
-            boundsImpl() const;
-        public:
-            FilteredCollection(const TBaseCollection& baseCollection, TPredicate predicate);
+            bounds() const;
         };
 
         template <class TBaseCollection, class TPredicate>

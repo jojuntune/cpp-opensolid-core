@@ -37,36 +37,18 @@ namespace opensolid
     {
         template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSetIterator<TItem, TBoundsPredicate>
-        FilteredSpatialSet<TItem, TBoundsPredicate>::beginImpl() const {
-            return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
-                _set.rootNode(),
-                &_boundsPredicate
-            );
+        FilteredSpatialSet<TItem, TBoundsPredicate>::FilteredSpatialSet(
+            const FilteredSpatialSet<TItem, TBoundsPredicate>& other
+        ) : _set(other._set),
+            _boundsPredicate(other._boundsPredicate) {
         }
 
         template <class TItem, class TBoundsPredicate>
         inline
-        FilteredSpatialSetIterator<TItem, TBoundsPredicate>
-        FilteredSpatialSet<TItem, TBoundsPredicate>::endImpl() const {
-            return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
-                nullptr,
-                &_boundsPredicate
-            );
-        }
-
-        template <class TItem, class TBoundsPredicate>
-        inline
-        bool
-        FilteredSpatialSet<TItem, TBoundsPredicate>::isEmptyImpl() const {
-            return this->begin() == this->end();
-        }
-
-        template <class TItem, class TBoundsPredicate>
-        inline
-        std::int64_t
-        FilteredSpatialSet<TItem, TBoundsPredicate>::sizeImpl() const {
-            return std::distance(this->begin(), this->end());
+        FilteredSpatialSet<TItem, TBoundsPredicate>::FilteredSpatialSet(
+            FilteredSpatialSet<TItem, TBoundsPredicate>&& other
+        ) : _set(std::move(other._set)),
+            _boundsPredicate(other._boundsPredicate) {
         }
 
         template <class TItem, class TBoundsPredicate>
@@ -76,6 +58,56 @@ namespace opensolid
             TBoundsPredicate boundsPredicate
         ) : _set(set),
             _boundsPredicate(boundsPredicate) {
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        FilteredSpatialSet<TItem, TBoundsPredicate>::FilteredSpatialSet(
+            SpatialSet<TItem>&& set,
+            TBoundsPredicate boundsPredicate
+        ) : _set(std::move(set)),
+            _boundsPredicate(boundsPredicate) {
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>
+        FilteredSpatialSet<TItem, TBoundsPredicate>::begin() const {
+            return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
+                _set.rootNode(),
+                &_boundsPredicate
+            );
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        FilteredSpatialSetIterator<TItem, TBoundsPredicate>
+        FilteredSpatialSet<TItem, TBoundsPredicate>::end() const {
+            return FilteredSpatialSetIterator<TItem, TBoundsPredicate>(
+                nullptr,
+                &_boundsPredicate
+            );
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        bool
+        FilteredSpatialSet<TItem, TBoundsPredicate>::isEmpty() const {
+            return this->isEmptyDefaultImpl();
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        std::int64_t
+        FilteredSpatialSet<TItem, TBoundsPredicate>::size() const {
+            return this->sizeDefaultImpl();
+        }
+
+        template <class TItem, class TBoundsPredicate>
+        inline
+        typename BoundsType<TItem>::Type
+        FilteredSpatialSet<TItem, TBoundsPredicate>::bounds() const {
+            return this->boundsDefaultImpl();
         }
 
         template <class TItem, class TBoundsPredicate>

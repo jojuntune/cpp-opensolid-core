@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet.definitions.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -44,33 +44,33 @@ namespace opensolid
             public SpatialCollection<SpatialSubset<TItem>>
         {
         private:
+            SpatialSet<TItem> _set;
             std::vector<const TItem*> _items;
-
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
-
-            friend class SpatialSet<TItem>;
-
-            SpatialSubsetIterator<TItem>
-            beginImpl() const;
-
-            SpatialSubsetIterator<TItem>
-            endImpl() const;
-
-            bool
-            isEmptyImpl() const;
-
-            std::int64_t
-            sizeImpl() const;
-
-            // Not implemented - copying not allowed
-            SpatialSubset(const SpatialSubset<TItem>& other);
         public:
             SpatialSubset();
 
-            SpatialSubset(std::vector<const TItem*>&& items);
+            SpatialSubset(const SpatialSubset<TItem>& other);
 
             SpatialSubset(SpatialSubset<TItem>&& other);
+
+            SpatialSubset(const SpatialSet<TItem>& set, std::vector<const TItem*>&& items);
+
+            SpatialSubset(SpatialSet<TItem>&& set, std::vector<const TItem*>&& items);
+
+            SpatialSubsetIterator<TItem>
+            begin() const;
+
+            SpatialSubsetIterator<TItem>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            typename BoundsType<TItem>::Type
+            bounds() const;
         };
 
         template <class TItem>
@@ -123,6 +123,12 @@ namespace opensolid
     struct NumDimensions<detail::SpatialSubset<TItem>>
     {
         static const int Value = NumDimensions<TItem>::Value;
+    };
+
+    template <class TItem>
+    struct BoundsType<detail::SpatialSubset<TItem>>
+    {
+        typedef typename BoundsType<TItem>::Type Type;
     };
 
     template <class TItem>

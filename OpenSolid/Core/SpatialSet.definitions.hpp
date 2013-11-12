@@ -54,24 +54,6 @@ namespace opensolid
         BoundsFunction<TItem> _boundsFunction;
         boost::intrusive_ptr<detail::SpatialSetData<TItem>> _data;
 
-        template <class TDerived>
-        friend class SpatialCollection;
-
-        typename std::vector<TItem>::const_iterator
-        beginImpl() const;
-
-        typename std::vector<TItem>::const_iterator
-        endImpl() const;
-
-        bool
-        isEmptyImpl() const;
-        
-        std::int64_t
-        sizeImpl() const;
-
-        typename BoundsType<TItem>::Type
-        boundsImpl() const;
-
         struct BoundsData
         {
             typename BoundsType<TItem>::Type bounds;
@@ -134,6 +116,15 @@ namespace opensolid
 
         typename std::vector<TItem>::const_iterator
         end() const;
+
+        bool
+        isEmpty() const;
+        
+        std::int64_t
+        size() const;
+
+        typename BoundsType<TItem>::Type
+        bounds() const;
 
         const TItem&
         operator[](std::int64_t index) const;

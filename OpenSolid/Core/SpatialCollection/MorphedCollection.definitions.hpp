@@ -44,30 +44,25 @@ namespace opensolid
         private:
             TBaseCollection _baseCollection;
             Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value> _function;
-
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
-
-            MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
-            beginImpl() const;
-
-            MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
-            endImpl() const;
-
-            bool
-            isEmptyImpl() const;
-
-            std::int64_t
-            sizeImpl() const;
-
-            typename MorphedType<
-                typename BoundsType<TBaseCollection>::Type,
-                iNumResultDimensions
-            >::Type
-            boundsImpl() const;
         public:
             MorphedCollection(
+                const MorphedCollection<TBaseCollection, iNumResultDimensions>& other
+            );
+
+            MorphedCollection(
+                MorphedCollection<TBaseCollection, iNumResultDimensions>&& other
+            );
+
+            MorphedCollection(
                 const TBaseCollection& baseCollection,
+                const Function<
+                    iNumResultDimensions,
+                    NumDimensions<TBaseCollection>::Value
+                >& function
+            );
+
+            MorphedCollection(
+                TBaseCollection&& baseCollection,
                 const Function<
                     iNumResultDimensions,
                     NumDimensions<TBaseCollection>::Value
@@ -79,6 +74,24 @@ namespace opensolid
 
             const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
             function() const;
+
+            MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
+            begin() const;
+
+            MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            typename MorphedType<
+                typename BoundsType<TBaseCollection>::Type,
+                iNumResultDimensions
+            >::Type
+            bounds() const;
         };
 
         template <class TBaseCollection, int iNumResultDimensions>

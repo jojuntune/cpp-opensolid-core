@@ -44,32 +44,35 @@ namespace opensolid
         private:
             TBaseCollection _baseCollection;
             double _scale;
-
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
-
-            ScaledCollectionIterator<TBaseCollection>
-            beginImpl() const;
-
-            ScaledCollectionIterator<TBaseCollection>
-            endImpl() const;
-
-            bool
-            isEmptyImpl() const;
-
-            std::int64_t
-            sizeImpl() const;
-
-            typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type
-            boundsImpl() const;
         public:
+            ScaledCollection(const ScaledCollection<TBaseCollection>& other);
+            
+            ScaledCollection(ScaledCollection<TBaseCollection>&& other);
+
             ScaledCollection(const TBaseCollection& baseCollection, double scale);
+
+            ScaledCollection(TBaseCollection&& baseCollection, double scale);
 
             const TBaseCollection&
             baseCollection() const;
 
             double
             scale() const;
+
+            ScaledCollectionIterator<TBaseCollection>
+            begin() const;
+
+            ScaledCollectionIterator<TBaseCollection>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type
+            bounds() const;
         };
 
         template <class TBaseCollection>

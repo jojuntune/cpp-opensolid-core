@@ -37,43 +37,18 @@ namespace opensolid
     {
         template <class TBaseCollection>
         inline
-        TranslatedCollectionIterator<TBaseCollection>
-        TranslatedCollection<TBaseCollection>::beginImpl() const {
-            return TranslatedCollectionIterator<TBaseCollection>(
-                detail::begin(baseCollection()),
-                &vector()
-            );
+        TranslatedCollection<TBaseCollection>::TranslatedCollection(
+            const TranslatedCollection<TBaseCollection>& other
+        ) : _baseCollection(other._baseCollection),
+            _vector(other._vector) {
         }
 
         template <class TBaseCollection>
         inline
-        TranslatedCollectionIterator<TBaseCollection>
-        TranslatedCollection<TBaseCollection>::endImpl() const {
-            return TranslatedCollectionIterator<TBaseCollection>(
-                detail::end(baseCollection()),
-                &vector()
-            );
-        }
-
-        template <class TBaseCollection>
-        inline
-        bool
-        TranslatedCollection<TBaseCollection>::isEmptyImpl() const {
-            return baseCollection().isEmpty();
-        }
-
-        template <class TBaseCollection>
-        inline
-        std::int64_t
-        TranslatedCollection<TBaseCollection>::sizeImpl() const {
-            return baseCollection().size();
-        }
-
-        template <class TBaseCollection>
-        inline
-        typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
-        TranslatedCollection<TBaseCollection>::boundsImpl() const {
-            return detail::translated(baseCollection().bounds(), vector());
+        TranslatedCollection<TBaseCollection>::TranslatedCollection(
+            TranslatedCollection<TBaseCollection>&& other
+        ) : _baseCollection(std::move(other._baseCollection)),
+            _vector(other._vector) {
         }
 
         template <class TBaseCollection> template <class TVector>
@@ -82,6 +57,15 @@ namespace opensolid
             const TBaseCollection& baseCollection,
             const EigenBase<TVector>& vector
         ) : _baseCollection(baseCollection), 
+            _vector(vector.derived()) {
+        }
+
+        template <class TBaseCollection> template <class TVector>
+        inline
+        TranslatedCollection<TBaseCollection>::TranslatedCollection(
+            TBaseCollection&& baseCollection,
+            const EigenBase<TVector>& vector
+        ) : _baseCollection(std::move(baseCollection)), 
             _vector(vector.derived()) {
         }
 
@@ -97,6 +81,47 @@ namespace opensolid
         const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>&
         TranslatedCollection<TBaseCollection>::vector() const {
             return _vector;
+        }
+
+        template <class TBaseCollection>
+        inline
+        TranslatedCollectionIterator<TBaseCollection>
+        TranslatedCollection<TBaseCollection>::begin() const {
+            return TranslatedCollectionIterator<TBaseCollection>(
+                baseCollection().begin(),
+                &vector()
+            );
+        }
+
+        template <class TBaseCollection>
+        inline
+        TranslatedCollectionIterator<TBaseCollection>
+        TranslatedCollection<TBaseCollection>::end() const {
+            return TranslatedCollectionIterator<TBaseCollection>(
+                baseCollection().end(),
+                &vector()
+            );
+        }
+
+        template <class TBaseCollection>
+        inline
+        bool
+        TranslatedCollection<TBaseCollection>::isEmpty() const {
+            return baseCollection().isEmpty();
+        }
+
+        template <class TBaseCollection>
+        inline
+        std::int64_t
+        TranslatedCollection<TBaseCollection>::size() const {
+            return baseCollection().size();
+        }
+
+        template <class TBaseCollection>
+        inline
+        typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
+        TranslatedCollection<TBaseCollection>::bounds() const {
+            return detail::translated(baseCollection().bounds(), vector());
         }
 
         template <class TBaseCollection>

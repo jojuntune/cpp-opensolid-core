@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
@@ -43,30 +43,37 @@ namespace opensolid
             public SpatialCollection<FilteredSpatialSet<TItem, TBoundsPredicate>>
         {
         private:
-            const SpatialSet<TItem>& _set;
+            SpatialSet<TItem> _set;
             TBoundsPredicate _boundsPredicate;
-
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
-
-            friend class SpatialSet<TItem>;
-
-            FilteredSpatialSetIterator<TItem, TBoundsPredicate>
-            beginImpl() const;
-
-            FilteredSpatialSetIterator<TItem, TBoundsPredicate>
-            endImpl() const;
-
-            bool
-            isEmptyImpl() const;
-
-            std::int64_t
-            sizeImpl() const;
         public:
+            FilteredSpatialSet(const FilteredSpatialSet<TItem, TBoundsPredicate>& other);
+            
+            FilteredSpatialSet(FilteredSpatialSet<TItem, TBoundsPredicate>&& other);
+
             FilteredSpatialSet(
                 const SpatialSet<TItem>& set,
                 TBoundsPredicate boundsPredicate
             );
+
+            FilteredSpatialSet(
+                SpatialSet<TItem>&& set,
+                TBoundsPredicate boundsPredicate
+            );
+
+            FilteredSpatialSetIterator<TItem, TBoundsPredicate>
+            begin() const;
+
+            FilteredSpatialSetIterator<TItem, TBoundsPredicate>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            typename BoundsType<TItem>::Type
+            bounds() const;
         };
 
         template <class TItem, class TBoundsPredicate>
@@ -126,6 +133,12 @@ namespace opensolid
     struct NumDimensions<detail::FilteredSpatialSet<TItem, TPredicate>>
     {
         static const int Value = NumDimensions<TItem>::Value;
+    };
+
+    template <class TItem, class TPredicate>
+    struct BoundsType<detail::FilteredSpatialSet<TItem, TPredicate>>
+    {
+        typedef typename BoundsType<TItem>::Type Type;
     };
 
     template <class TItem, class TPredicate>

@@ -44,28 +44,20 @@ namespace opensolid
         private:
             TBaseCollection _baseCollection;
             Matrix<double, NumDimensions<TBaseCollection>::Value, 1> _vector;
-
-            template <class TDerived>
-            friend class opensolid::SpatialCollection;
-
-            TranslatedCollectionIterator<TBaseCollection>
-            beginImpl() const;
-
-            TranslatedCollectionIterator<TBaseCollection>
-            endImpl() const;
-
-            bool
-            isEmptyImpl() const;
-
-            std::int64_t
-            sizeImpl() const;
-
-            typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
-            boundsImpl() const;
         public:
+            TranslatedCollection(const TranslatedCollection<TBaseCollection>& other);
+            
+            TranslatedCollection(TranslatedCollection<TBaseCollection>&& other);
+
             template <class TVector>
             TranslatedCollection(
                 const TBaseCollection& baseCollection,
+                const EigenBase<TVector>& vector
+            );
+
+            template <class TVector>
+            TranslatedCollection(
+                TBaseCollection&& baseCollection,
                 const EigenBase<TVector>& vector
             );
 
@@ -74,6 +66,21 @@ namespace opensolid
 
             const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>&
             vector() const;
+
+            TranslatedCollectionIterator<TBaseCollection>
+            begin() const;
+
+            TranslatedCollectionIterator<TBaseCollection>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
+            bounds() const;
         };
 
         template <class TBaseCollection>

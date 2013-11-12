@@ -36,45 +36,18 @@ namespace opensolid
     {
         template <class TBaseCollection, class TPredicate>
         inline
-        FilteredCollectionIterator<TBaseCollection, TPredicate>
-        FilteredCollection<TBaseCollection, TPredicate>::beginImpl() const {
-            return FilteredCollectionIterator<TBaseCollection, TPredicate>(
-                detail::begin(_baseCollection),
-                detail::end(_baseCollection),
-                &_predicate
-            );
+        FilteredCollection<TBaseCollection, TPredicate>::FilteredCollection(
+            const FilteredCollection<TBaseCollection, TPredicate>& other
+        ) : _baseCollection(other._baseCollection),
+            _predicate(other._predicate) {
         }
 
         template <class TBaseCollection, class TPredicate>
         inline
-        FilteredCollectionIterator<TBaseCollection, TPredicate>
-        FilteredCollection<TBaseCollection, TPredicate>::endImpl() const {
-            return FilteredCollectionIterator<TBaseCollection, TPredicate>(
-                detail::end(_baseCollection),
-                detail::end(_baseCollection),
-                &_predicate
-            );
-        }
-
-        template <class TBaseCollection, class TPredicate>
-        inline
-        bool
-        FilteredCollection<TBaseCollection, TPredicate>::isEmptyImpl() const {
-            return this->isEmptyDefaultImpl();
-        }
-
-        template <class TBaseCollection, class TPredicate>
-        inline
-        std::int64_t
-        FilteredCollection<TBaseCollection, TPredicate>::sizeImpl() const {
-            return this->sizeDefaultImpl();
-        }
-
-        template <class TBaseCollection, class TPredicate>
-        inline
-        typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
-        FilteredCollection<TBaseCollection, TPredicate>::boundsImpl() const {
-            return this->boundsDefaultImpl();
+        FilteredCollection<TBaseCollection, TPredicate>::FilteredCollection(
+            FilteredCollection<TBaseCollection, TPredicate>&& other
+        ) : _baseCollection(std::move(other._baseCollection)),
+            _predicate(other._predicate) {
         }
 
         template <class TBaseCollection, class TPredicate>
@@ -84,6 +57,58 @@ namespace opensolid
             TPredicate predicate
         ) : _baseCollection(baseCollection),
             _predicate(predicate) {
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        FilteredCollection<TBaseCollection, TPredicate>::FilteredCollection(
+            TBaseCollection&& baseCollection,
+            TPredicate predicate
+        ) : _baseCollection(std::move(baseCollection)),
+            _predicate(predicate) {
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        FilteredCollectionIterator<TBaseCollection, TPredicate>
+        FilteredCollection<TBaseCollection, TPredicate>::begin() const {
+            return FilteredCollectionIterator<TBaseCollection, TPredicate>(
+                _baseCollection.begin(),
+                _baseCollection.end(),
+                &_predicate
+            );
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        FilteredCollectionIterator<TBaseCollection, TPredicate>
+        FilteredCollection<TBaseCollection, TPredicate>::end() const {
+            return FilteredCollectionIterator<TBaseCollection, TPredicate>(
+                _baseCollection.end(),
+                _baseCollection.end(),
+                &_predicate
+            );
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        bool
+        FilteredCollection<TBaseCollection, TPredicate>::isEmpty() const {
+            return this->isEmptyDefaultImpl();
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        std::int64_t
+        FilteredCollection<TBaseCollection, TPredicate>::size() const {
+            return this->sizeDefaultImpl();
+        }
+
+        template <class TBaseCollection, class TPredicate>
+        inline
+        typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
+        FilteredCollection<TBaseCollection, TPredicate>::bounds() const {
+            return this->boundsDefaultImpl();
         }
 
         template <class TBaseCollection, class TPredicate>
