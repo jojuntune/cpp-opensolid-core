@@ -219,9 +219,10 @@ namespace opensolid
         // Initialize bounds data
         std::vector<BoundsData> boundsData(numItems);
         std::vector<BoundsData*> boundsDataPointers(numItems);
+        BoundsFunction<TItem> boundsFunction;
         typename BoundsType<TItem>::Type overallBounds;
         for (std::int64_t i = 0; i < numItems; ++i) {
-            typename BoundsType<TItem>::Type bounds = _boundsFunction(_data->items[i]);
+            typename BoundsType<TItem>::Type bounds = boundsFunction(_data->items[i]);
 
             boundsData[i].bounds = bounds;
             boundsData[i].item = &(_data->items[i]);
@@ -253,23 +254,18 @@ namespace opensolid
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(const SpatialSet<TItem>& other) :
-        _boundsFunction(other._boundsFunction),
         _data(other._data) {
     }
 
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(SpatialSet<TItem>&& other) :
-        _boundsFunction(other._boundsFunction),
         _data(std::move(other._data)) {
     }
 
     template <class TItem>
     inline
-    SpatialSet<TItem>::SpatialSet(
-        const std::vector<TItem>& items,
-        BoundsFunction<TItem> boundsFunction
-    ) : _boundsFunction(boundsFunction),
+    SpatialSet<TItem>::SpatialSet(const std::vector<TItem>& items) :
         _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = items;
@@ -278,10 +274,7 @@ namespace opensolid
 
     template <class TItem>
     inline
-    SpatialSet<TItem>::SpatialSet(
-        std::vector<TItem>&& items,
-        BoundsFunction<TItem> boundsFunction
-    ) : _boundsFunction(boundsFunction),
+    SpatialSet<TItem>::SpatialSet(std::vector<TItem>&& items) :
         _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = std::move(items);
@@ -290,10 +283,7 @@ namespace opensolid
 
     template <class TItem> template <class TDerived>
     inline
-    SpatialSet<TItem>::SpatialSet(
-        const SpatialCollection<TDerived>& collection,
-        BoundsFunction<TItem> boundsFunction
-    ) : _boundsFunction(boundsFunction),
+    SpatialSet<TItem>::SpatialSet(const SpatialCollection<TDerived>& collection) :
         _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = std::vector<TItem>(collection.derived());
@@ -302,22 +292,11 @@ namespace opensolid
     
     template <class TItem> template <class TIterator>
     inline
-    SpatialSet<TItem>::SpatialSet(
-        TIterator begin,
-        TIterator end,
-        BoundsFunction<TItem> boundsFunction
-    ) : _boundsFunction(boundsFunction),
+    SpatialSet<TItem>::SpatialSet(TIterator begin, TIterator end) :
         _data(new detail::SpatialSetData<TItem>()) {
 
         _data->items = std::vector<TItem>(begin, end);
         init();
-    }
-
-    template <class TItem>
-    inline
-    BoundsFunction<TItem>
-    SpatialSet<TItem>::boundsFunction() const {
-        return _boundsFunction;
     }
 
     template <class TItem>
@@ -394,7 +373,6 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::swap(SpatialSet<TItem>& other) {
-        std::swap(_boundsFunction, other._boundsFunction);
         _data.swap(other._data);
     }
     
@@ -402,7 +380,6 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::operator=(const SpatialSet<TItem>& other) {
-        _boundsFunction = other._boundsFunction;
         _data = other._data;
     }
     
@@ -410,7 +387,6 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
-        _boundsFunction = other._boundsFunction;
         _data = std::move(other._data);
     }
 
@@ -464,7 +440,8 @@ namespace opensolid
         if (isEmpty()) {
             return end();
         } else {
-            detail::OverlapPredicate<TItem> overlapPredicate(_boundsFunction(item), precision);
+            BoundsFunction<TItem> boundsFunction;
+            detail::OverlapPredicate<TItem> overlapPredicate(boundsFunction(item), precision);
             detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> filteredIterator(
                 rootNode(),
                 &overlapPredicate
