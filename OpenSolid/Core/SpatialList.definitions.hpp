@@ -28,10 +28,12 @@
 
 #include <OpenSolid/Core/SpatialList.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialList/SpatialListData.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+
+#include <boost/intrusive_ptr.hpp>
 
 namespace opensolid
 {
@@ -40,25 +42,7 @@ namespace opensolid
         public SpatialCollection<SpatialList<TItem>>
     {
     private:
-        std::vector<TItem> _items;
-
-        template <class TDerived>
-        friend class SpatialCollection;
-
-        typename std::vector<TItem>::const_iterator
-        beginImpl() const;
-
-        typename std::vector<TItem>::const_iterator
-        endImpl() const;
-
-        bool
-        isEmptyImpl() const;
-        
-        std::int64_t
-        sizeImpl() const;
-
-        typename BoundsType<TItem>::Type
-        boundsImpl() const;
+        boost::intrusive_ptr<detail::SpatialListData<TItem>> _data;
     public:
         SpatialList();
 
@@ -75,6 +59,12 @@ namespace opensolid
 
         template <class TIterator>
         SpatialList(TIterator begin, TIterator end);
+        
+        void
+        operator=(const SpatialList<TItem>& other);
+        
+        void
+        operator=(SpatialList<TItem>&& other);
 
         typename std::vector<TItem>::const_iterator
         begin() const;
@@ -82,23 +72,20 @@ namespace opensolid
         typename std::vector<TItem>::const_iterator
         end() const;
 
-        const TItem&
-        first() const;
+        bool
+        isEmpty() const;
+        
+        std::int64_t
+        size() const;
 
-        const TItem&
-        last() const;
+        typename BoundsType<TItem>::Type
+        bounds() const;
 
         const TItem&
         operator[](std::int64_t index) const;
 
         void
-        swap(SpatialSet<TItem>& other);
-        
-        void
-        operator=(const SpatialSet<TItem>& other);
-        
-        void
-        operator=(SpatialSet<TItem>&& other);
+        swap(SpatialList<TItem>& other);
 
         void
         clear();
@@ -110,82 +97,73 @@ namespace opensolid
 namespace opensolid
 {
     template <class TItem>
-    struct ItemType<SpatialSet<TItem>>
+    struct ItemType<SpatialList<TItem>>
     {
         typedef TItem Type;
     };
 
     template <class TItem>
-    struct IteratorType<SpatialSet<TItem>>
+    struct IteratorType<SpatialList<TItem>>
     {
         typedef typename std::vector<TItem>::const_iterator Type;
     };
 
     template <class TItem>
-    struct NumDimensions<SpatialSet<TItem>>
+    struct NumDimensions<SpatialList<TItem>>
     {
         static const int Value = NumDimensions<TItem>::Value;
     };
 
     template <class TItem>
-    struct ScaledType<SpatialSet<TItem>>
+    struct ScaledType<SpatialList<TItem>> :
+        public ScaledType<SpatialCollection<SpatialList<TItem>>>
     {
-        typedef SpatialSet<typename ScaledType<TItem>::Type> Type;
     };
 
     template <class TItem>
-    struct TranslatedType<SpatialSet<TItem>>
+    struct TranslatedType<SpatialList<TItem>> :
+        public TranslatedType<SpatialCollection<SpatialList<TItem>>>
     {
-        typedef SpatialSet<typename TranslatedType<TItem>::Type> Type;
     };
 
     template <class TItem, int iNumResultDimensions>
-    struct TransformedType<SpatialSet<TItem>, iNumResultDimensions>
+    struct TransformedType<SpatialList<TItem>, iNumResultDimensions> :
+        public TransformedType<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
     {
-        typedef SpatialSet<typename TransformedType<TItem, iNumResultDimensions>::Type> Type;
     };
 
     template <class TItem, int iNumResultDimensions>
-    struct MorphedType<SpatialSet<TItem>, iNumResultDimensions>
+    struct MorphedType<SpatialList<TItem>, iNumResultDimensions> :
+        public MorphedType<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
     {
-        typedef SpatialSet<typename MorphedType<TItem, iNumResultDimensions>::Type> Type;
     };
 
     template <class TItem>
-    struct ScalingFunction<SpatialSet<TItem>>
+    struct ScalingFunction<SpatialList<TItem>> :
+        public ScalingFunction<SpatialCollection<SpatialList<TItem>>>
     {
-        SpatialSet<typename ScaledType<TItem>::Type>
-        operator()(const SpatialSet<TItem>& set, double scale) const;
     };
 
     template <class TItem>
-    struct TranslationFunction<SpatialSet<TItem>>
+    struct TranslationFunction<SpatialList<TItem>> :
+        public TranslationFunction<SpatialCollection<SpatialList<TItem>>>
     {
-        template <class TVector>
-        SpatialSet<typename TranslatedType<TItem>::Type>
-        operator()(const SpatialSet<TItem>& set, const EigenBase<TVector>& vector) const;
     };
 
     template <class TItem, int iNumResultDimensions>
-    struct TransformationFunction<SpatialSet<TItem>, iNumResultDimensions>
+    struct TransformationFunction<SpatialList<TItem>, iNumResultDimensions> :
+        public TransformationFunction<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
     {
-        template <class TMatrix>
-        SpatialSet<typename TransformedType<TItem, iNumResultDimensions>::Type>
-        operator()(const SpatialSet<TItem>& set, const EigenBase<TMatrix>& matrix) const;
     };
 
     template <class TItem, int iNumResultDimensions>
-    struct MorphingFunction<SpatialSet<TItem>, iNumResultDimensions>
+    struct MorphingFunction<SpatialList<TItem>, iNumResultDimensions> :
+        public MorphingFunction<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
     {
-        SpatialSet<typename MorphedType<TItem, iNumResultDimensions>::Type>
-        operator()(
-            const SpatialSet<TItem>& set,
-            const Function<iNumResultDimensions, NumDimensions<TItem>::Value>& function
-        ) const;
     };
 
     template <class TItem>
-    struct BoundsType<SpatialSet<TItem>>
+    struct BoundsType<SpatialList<TItem>>
     {
         typedef typename BoundsType<TItem>::Type Type;
     };
