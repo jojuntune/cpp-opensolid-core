@@ -66,37 +66,6 @@ Vector3I randomVector() {
     return Vector3I(randomInterval(), randomInterval(), randomInterval());
 }
 
-struct IntervalIndex
-{
-    std::size_t index;
-};
-
-namespace opensolid
-{
-    template <>
-    struct NumDimensions<IntervalIndex>
-    {
-        static const int Value = 1;
-    };
-
-    template <>
-    struct BoundsType<IntervalIndex>
-    {
-        typedef Interval Type;
-    };
-
-    template <>
-    struct BoundsFunction<IntervalIndex>
-    {
-        std::vector<Interval>* intervals;
-
-        Interval
-        operator()(IntervalIndex index) const {
-            return intervals->at(index.index);
-        }
-    };
-}
-
 class SetTests : public CxxTest::TestSuite
 {
 public:
@@ -183,21 +152,6 @@ public:
         TS_ASSERT_EQUALS(check.size(), 2u);
         TS_ASSERT_EQUALS(check[0], Vector2d(1, 3));
         TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
-    }
-
-    void testCustomBoundsFunction() {
-        std::vector<Interval> intervals(2);
-        intervals[0] = Interval(1, 2);
-        intervals[1] = Interval(3, 4);
-        std::vector<IntervalIndex> intervalIndices(2);
-        intervalIndices[0].index = 0;
-        intervalIndices[1].index = 1;
-        BoundsFunction<IntervalIndex> boundsFunction;
-        boundsFunction.intervals = &intervals;
-        SpatialSet<IntervalIndex> indexSet(intervalIndices, boundsFunction);
-        Interval bounds = indexSet.bounds();
-        TS_ASSERT_EQUALS(bounds.lowerBound(), 1.0);
-        TS_ASSERT_EQUALS(bounds.upperBound(), 4.0);
     }
 
     void testPoint3d() {

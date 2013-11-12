@@ -51,7 +51,6 @@ namespace opensolid
         public SpatialCollection<SpatialSet<TItem>>
     {
     private:
-        BoundsFunction<TItem> _boundsFunction;
         boost::intrusive_ptr<detail::SpatialSetData<TItem>> _data;
 
         struct BoundsData
@@ -80,33 +79,17 @@ namespace opensolid
         SpatialSet(SpatialSet<TItem>&& other);
 
         explicit
-        SpatialSet(
-            const std::vector<TItem>& items,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
+        SpatialSet(const std::vector<TItem>& items);
 
         explicit
-        SpatialSet(
-            std::vector<TItem>&& items,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
+        SpatialSet(std::vector<TItem>&& items);
 
         template <class TDerived>
         explicit
-        SpatialSet(
-            const SpatialCollection<TDerived>& collection,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
+        SpatialSet(const SpatialCollection<TDerived>& collection);
         
         template <class TIterator>
-        SpatialSet(
-            TIterator begin,
-            TIterator end,
-            BoundsFunction<TItem> boundsFunction = BoundsFunction<TItem>()
-        );
-
-        BoundsFunction<TItem>
-        boundsFunction() const;
+        SpatialSet(TIterator begin, TIterator end);
 
         const detail::SpatialSetNode<TItem>*
         rootNode() const;
