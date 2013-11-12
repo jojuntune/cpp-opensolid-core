@@ -37,7 +37,6 @@
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetData.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSubset.hpp>
 #include <OpenSolid/Core/TolerantComparator.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 

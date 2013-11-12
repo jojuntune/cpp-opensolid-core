@@ -37,7 +37,6 @@
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetData.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSubset.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>
