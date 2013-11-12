@@ -562,7 +562,7 @@ namespace opensolid
                 size(),
                 visitor
             );
-            return detail::SpatialSubset<TItem>(std::move(items));
+            return detail::SpatialSubset<TItem>(*this, std::move(items));
         }
     }
 
