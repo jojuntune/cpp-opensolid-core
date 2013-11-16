@@ -70,12 +70,14 @@ namespace opensolid
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
+        inline
         const TBaseCollection&
         MorphedCollection<TBaseCollection, iNumResultDimensions>::baseCollection() const {
             return _baseCollection;
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
+        inline
         const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
         MorphedCollection<TBaseCollection, iNumResultDimensions>::function() const {
             return _function;
