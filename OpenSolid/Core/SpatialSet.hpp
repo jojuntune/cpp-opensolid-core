@@ -286,7 +286,7 @@ namespace opensolid
     SpatialSet<TItem>::SpatialSet(const SpatialCollection<TDerived>& collection) :
         _data(new detail::SpatialSetData<TItem>()) {
 
-        _data->items = std::vector<TItem>(collection.derived());
+        _data->items = std::vector<TItem>(collection.begin(), collection.end());
         init();        
     }
     

@@ -73,7 +73,7 @@ namespace opensolid
     SpatialList<TItem>::SpatialList(const SpatialCollection<TDerived>& collection) :
         _data(new detail::SpatialListData<TItem>()) {
 
-        _data->items = std::vector<TItem>(collection.derived());
+        _data->items = std::vector<TItem>(collection.begin(), collection.end());
     }
 
     template <class TItem> template <class TIterator>
