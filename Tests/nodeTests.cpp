@@ -50,7 +50,8 @@ bool testEdgeActionFilter ( project* proj )
     graphEdge::sptr edge = node -> edgeAtIndex( 0 );
 
     // Do not allow find action to traverse edge.
-    if ( ! edge.isNull() ) edge -> setActionFilter( graphAction::typeBits( graphAction::FIND_GRAPH_ACTION ) );
+    if ( ! edge.isNull() )
+        edge -> setActionFilter( graphAction::typeBits( graphAction::FIND_GRAPH_ACTION ) );
 
     // tf2 should not be found.
     try
@@ -65,7 +66,8 @@ bool testEdgeActionFilter ( project* proj )
     }
 
     // Allow find action to traverse edge.
-    if ( ! edge.isNull() ) edge -> resetActionFilter( graphAction::typeBits( graphAction::FIND_GRAPH_ACTION ) );
+    if ( ! edge.isNull() )
+        edge -> resetActionFilter( graphAction::typeBits( graphAction::FIND_GRAPH_ACTION ) );
 
     // tf1 should be found.
     try

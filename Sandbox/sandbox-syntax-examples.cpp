@@ -10,7 +10,7 @@
 #include <OpenSolid/Core/Triangle.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
-#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
 
 #include <cassert>
 #include <vector>
@@ -204,27 +204,27 @@ void spatialSetExamples() {
     );
 }
 
-void functionExamples() {
-    Function<1, 1> t = Function<1, 1>::t();
+void parametricExpressionExamples() {
+    ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
 
-    Function<3, 1> lineFunction = Vector3d(1, 1, 1) + t * Vector3d(1, 1, 1);
-    Vector3d start = lineFunction(0.0);
-    Vector3d mid = lineFunction(0.5);
-    Vector3d end = lineFunction(1.0);
+    ParametricExpression<3, 1> lineExpression = Vector3d(1, 1, 1) + t * Vector3d(1, 1, 1);
+    Vector3d start = lineExpression.evaluate(0.0);
+    Vector3d mid = lineExpression.evaluate(0.5);
+    Vector3d end = lineExpression.evaluate(1.0);
 
     assert((start - Vector3d(1, 1, 1)).isZero());
     assert((mid - Vector3d(1.5, 1.5, 1.5)).isZero());
     assert((end - Vector3d(2, 2, 2)).isZero());
 
-    Function<1, 1> sineDerivative = sin(t).derivative();
-    Function<1, 1> cosineFunction = cos(t);
+    ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
+    ParametricExpression<1, 1> cosineExpression = cos(t);
     RowVectorXd parameterValues = RowVectorXd::LinSpaced(10, Interval(0, 2 * M_PI));
-    RowVectorXd sineDerivativeValues = sineDerivative(parameterValues);
-    RowVectorXd cosineValues = cosineFunction(parameterValues);
+    RowVectorXd sineDerivativeValues = sineDerivative.evaluate(parameterValues);
+    RowVectorXd cosineValues = cosineExpression.evaluate(parameterValues);
     assert((sineDerivativeValues - cosineValues).isZero());
 
-    Function<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
-    assert(shouldBeZero(parameterValues).isZero());
+    ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
+    assert(shouldBeZero.evaluate(parameterValues).isZero());
 }
 
 int main() {
@@ -240,6 +240,6 @@ int main() {
     triangleExamples();
     tetrahedronExamples();
     spatialSetExamples();
-    functionExamples();
+    parametricExpressionExamples();
     return 0;
 }

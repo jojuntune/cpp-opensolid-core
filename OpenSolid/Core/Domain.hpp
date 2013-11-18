@@ -29,8 +29,8 @@
 #include <OpenSolid/Core/Domain.definitions.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 namespace opensolid
@@ -102,8 +102,8 @@ namespace opensolid
     Domain<iNumDimensions>
     MorphingFunction<Domain<iNumDimensions>, iNumDimensions>::operator()(
         const Domain<iNumDimensions>& domain,
-        const Function<iNumDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return Domain<iNumDimensions>(domain.boundaries().morphed(function));
+        return Domain<iNumDimensions>(domain.boundaries().morphed(morphingExpression));
     }
 }

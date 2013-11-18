@@ -83,7 +83,8 @@ bool testParamScoping ( project* proj )
         point = point2.node();
         point -> x( "-param1" );
     } catch( ... ) {
-        cout << "An unexpected exception occured while creating param scope isolation graph structure.\n";
+        cout << "An unexpected exception occured ";
+        cout << "while creating param scope isolation graph structure.\n";
         return false;
     }
 
@@ -169,7 +170,7 @@ bool testParam ( project* proj ) {
         param3 = proj -> addNewParam( "param3", frag1.nodeId(), "param2 - 2" );
         (param3.node()) -> addEventListener( &events );
 
-        point2 = proj -> addNewPoint( "point2", frag1.nodeId(), "param1", "param2",                                      "param3", "1" );
+        point2 = proj -> addNewPoint( "point2", frag1.nodeId(), "param1", "param2", "param3", "1" );
         (point2.node()) -> addEventListener( &events );
 
         frag2 = proj -> addNewFragment( "frag2", NO_PARENT );
@@ -227,8 +228,10 @@ bool testPoint ( project* proj ) {
     opensolid::graphNode::nodeInfo pt3NodeInfo;
     
     try {
-        pt1NodeInfo = proj -> addNewPoint ( "testPoint1", NO_PARENT, "4", "5", "6", "1" );
-        pt2NodeInfo = proj -> addNewPoint ( "testPoint2", NO_PARENT, "2*3", "5+2", "48/6", "3^3/3" );
+        pt1NodeInfo =
+            proj -> addNewPoint ( "testPoint1", NO_PARENT, "4", "5", "6", "1" );
+        pt2NodeInfo =
+            proj -> addNewPoint ( "testPoint2", NO_PARENT, "2*3", "5+2", "48/6", "3^3/3" );
 
         proj -> evaluate();
     } catch( graphScript::Error ) {

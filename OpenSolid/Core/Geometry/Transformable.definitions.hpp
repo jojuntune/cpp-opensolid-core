@@ -26,9 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Geometry.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
@@ -86,7 +86,7 @@ namespace opensolid
         Geometry<iNumResultDimensions, iNumParameters>
         operator()(
             const Geometry<iNumDimensions, iNumParameters>& geometry,
-            const Function<iNumResultDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 }

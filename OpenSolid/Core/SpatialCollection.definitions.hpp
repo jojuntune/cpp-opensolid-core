@@ -168,7 +168,10 @@ namespace opensolid
         detail::MorphedCollection<TDerived, iNumResultDimensions>
         operator()(
             const SpatialCollection<TDerived>& collection,
-            const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TDerived>::Value
+            >& morphingExpression
         ) const;
     };
 

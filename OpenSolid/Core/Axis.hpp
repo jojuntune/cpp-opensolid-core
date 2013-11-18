@@ -119,11 +119,11 @@ namespace opensolid
     Axis<iNumResultDimensions>
     MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
-        const Function<iNumResultDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return Axis<iNumResultDimensions>(
-            axis.originPoint().morphed(function),
-            function.jacobian(axis.originPoint().vector()) * axis.directionVector()
+            axis.originPoint().morphed(morphingExpression),
+            morphingExpression.jacobian(axis.originPoint().vector()) * axis.directionVector()
         );
     }
 }

@@ -102,7 +102,6 @@ namespace opensolid
                 return false;
             }
 
-            //double radius = a * b * c / sqrt((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c));
             double a2 = a * a;
             double b2 = b * b;
             double c2 = c * c;
@@ -187,14 +186,16 @@ namespace opensolid
             WindingDirection direction,
             double numTurns
         ) {
-            Function<1, 1> theta = 2 * M_PI * numTurns * Function<1, 1>::t();
+            ParametricExpression<1, 1> theta =
+                2 * M_PI * numTurns * ParametricExpression<1, 1>::t();
             Vector3d sidewaysVector = yVector;
             if (direction == Clockwise) {
                 sidewaysVector = -sidewaysVector;
             }
-            Function<3, 1> curveFunction = centerPoint.vector() +
-                cos(theta) * xVector + sin(theta) * sidewaysVector + Function<1, 1>::t() * zVector;
-            return Curve3d(curveFunction, Interval::Unit());
+            ParametricExpression<3, 1> curveExpression = centerPoint.vector() +
+                cos(theta) * xVector + sin(theta) * sidewaysVector +
+                ParametricExpression<1, 1>::t() * zVector;
+            return Curve3d(curveExpression, Interval::Unit());
         }
     }
 
@@ -213,11 +214,13 @@ namespace opensolid
             assert(false);
             return Curve2d();
         }
-        Function<1, 1> angleFunction = startAngle + (endAngle - startAngle) * Function<1, 1>::t();
-        Function<1, 1> xFunction = centerPoint.x() + radius * cos(angleFunction);
-        Function<1, 1> yFunction = centerPoint.y() + radius * sin(angleFunction);
-        Function<2, 1> curveFunction = Function<2, 1>::FromComponents(xFunction, yFunction);
-        return Curve2d(curveFunction, Interval::Unit());
+        ParametricExpression<1, 1> angleExpression = startAngle +
+            (endAngle - startAngle) * ParametricExpression<1, 1>::t();
+        ParametricExpression<1, 1> xExpression = centerPoint.x() + radius * cos(angleExpression);
+        ParametricExpression<1, 1> yExpression = centerPoint.y() + radius * sin(angleExpression);
+        ParametricExpression<2, 1> curveExpression =
+            ParametricExpression<2, 1>::FromComponents(xExpression, yExpression);
+        return Curve2d(curveExpression, Interval::Unit());
     }
     
     Curve<2>

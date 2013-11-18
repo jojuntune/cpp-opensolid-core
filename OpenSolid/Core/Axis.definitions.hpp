@@ -160,7 +160,7 @@ namespace opensolid
         Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
-            const Function<iNumResultDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 

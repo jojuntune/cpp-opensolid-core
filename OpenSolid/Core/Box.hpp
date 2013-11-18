@@ -438,9 +438,9 @@ namespace opensolid
     Box<iNumResultDimensions>
     MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
         const Box<iNumDimensions>& box,
-        const Function<iNumResultDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return Box<iNumResultDimensions>(function(box.vector()));
+        return Box<iNumResultDimensions>(morphingExpression.evaluate(box.vector()));
     }
 
     template <int iNumDimensions>

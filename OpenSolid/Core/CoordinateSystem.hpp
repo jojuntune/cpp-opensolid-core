@@ -355,7 +355,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     inline
     Plane3d
-    CoordinateSystem<iNumDimensions, iNumAxes>::plane(int firstAxisIndex, int secondAxisIndex) const {
+    CoordinateSystem<iNumDimensions, iNumAxes>::plane(
+        int firstAxisIndex,
+        int secondAxisIndex
+    ) const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "Component plane requested for non-3D coordinate system"
@@ -440,7 +443,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     template <class TMatrix>
     CoordinateSystem<iNumResultDimensions, iNumAxes>
-    TransformationFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
+    TransformationFunction<
+        CoordinateSystem<iNumDimensions, iNumAxes>,
+        iNumResultDimensions
+    >::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
         const EigenBase<TMatrix>& matrix
     ) const {
@@ -455,11 +461,11 @@ namespace opensolid
     CoordinateSystem<iNumResultDimensions, iNumAxes>
     MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const Function<iNumResultDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            coordinateSystem.originPoint().morphed(function),
-            function.jacobian(coordinateSystem.originPoint().vector()) *
+            coordinateSystem.originPoint().morphed(morphingExpression),
+            morphingExpression.jacobian(coordinateSystem.originPoint().vector()) *
                 coordinateSystem.basisMatrix()
         );
     }

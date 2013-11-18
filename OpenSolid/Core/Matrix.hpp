@@ -137,17 +137,31 @@ namespace Eigen
     template <class TDerived>
     template <int iNumResultDimensions, int iNumAxes>
     inline
-    Matrix<typename internal::traits<TDerived>::Scalar, iNumResultDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    Matrix<
+        typename internal::traits<TDerived>::Scalar,
+        iNumResultDimensions,
+        internal::traits<TDerived>::ColsAtCompileTime
+    >
     MatrixBase<TDerived>::transplanted(
-        const opensolid::CoordinateSystem<NumDimensions, iNumAxes>& sourceCoordinateSystem,
-        const opensolid::CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
+        const opensolid::CoordinateSystem<
+            NumDimensions,
+            iNumAxes
+        >& sourceCoordinateSystem,
+        const opensolid::CoordinateSystem<
+            iNumResultDimensions,
+            iNumAxes
+        >& destinationCoordinateSystem
     ) const {
         return destinationCoordinateSystem * (derived() / sourceCoordinateSystem);
     }
 
     template <class TDerived> template <int iNumResultDimensions>
     inline
-    Matrix<typename internal::traits<TDerived>::Scalar, iNumResultDimensions, internal::traits<TDerived>::ColsAtCompileTime>
+    Matrix<
+        typename internal::traits<TDerived>::Scalar,
+        iNumResultDimensions,
+        internal::traits<TDerived>::ColsAtCompileTime
+    >
     MatrixBase<TDerived>::transplanted(
         const opensolid::Transplant<NumDimensions, iNumResultDimensions>& transplant
     ) const {
@@ -555,7 +569,10 @@ namespace Eigen
     inline
     Matrix<typename TDerived::Scalar, iNumDimensions, TDerived::ColsAtCompileTime>
     operator*(
-        const opensolid::CoordinateSystem<iNumDimensions, TDerived::RowsAtCompileTime>& coordinateSystem,
+        const opensolid::CoordinateSystem<
+            iNumDimensions,
+            TDerived::RowsAtCompileTime
+        >& coordinateSystem,
         const EigenBase<TDerived>& matrix
     ) {
         return coordinateSystem.basisMatrix() * matrix.derived();
@@ -609,11 +626,22 @@ namespace opensolid
         return argument;
     }
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
+    template <
+        class TScalar,
+        int iRows,
+        int iCols,
+        int iOptions,
+        int iMaxRows,
+        int iMaxCols,
+        int iNumResultDimensions
+    >
     template <class TMatrix>
     inline
     Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols>
-    TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>::operator()(
+    TransformationFunction<
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
+        iNumResultDimensions
+    >::operator()(
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
         const EigenBase<TMatrix>& matrix
     ) const {
@@ -631,9 +659,10 @@ namespace opensolid
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     inline
-    TolerantComparator<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::TolerantComparator(
-        double precision
-    ) : _precision(precision) {
+    TolerantComparator<
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+    >::TolerantComparator(double precision) :
+        _precision(precision) {
     }
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>

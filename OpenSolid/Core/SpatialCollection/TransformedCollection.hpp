@@ -156,13 +156,19 @@ namespace opensolid
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::TransformedCollectionIterator() :
+        TransformedCollectionIterator<
+            TBaseCollection,
+            iNumResultDimensions
+        >::TransformedCollectionIterator() :
             _transformationMatrix(nullptr) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::TransformedCollectionIterator(
+        TransformedCollectionIterator<
+            TBaseCollection,
+            iNumResultDimensions
+        >::TransformedCollectionIterator(
             typename IteratorType<TBaseCollection>::Type baseIterator,
             const Matrix<
                 double,

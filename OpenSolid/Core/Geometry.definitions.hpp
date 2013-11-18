@@ -31,11 +31,11 @@
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Domain.definitions.hpp>
-#include <OpenSolid/Core/Function.definitions.hpp>
-#include <OpenSolid/Core/Function/FunctionReturnValue.hpp>
 #include <OpenSolid/Core/Geometry/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Simplex.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.declarations.hpp>
@@ -51,21 +51,21 @@ namespace opensolid
         public Transformable<Geometry<iNumDimensions, iNumParameters>>
     {
     private:
-        Function<iNumDimensions, iNumParameters> _function;
+        ParametricExpression<iNumDimensions, iNumParameters> _expression;
         Domain<iNumParameters> _domain;
         Box<iNumDimensions> _bounds;
     public:
         Geometry();
         
         Geometry(
-            const Function<iNumDimensions, iNumParameters>& function,
+            const ParametricExpression<iNumDimensions, iNumParameters>& expression,
             const Domain<iNumParameters>& domain
         );
 
         Geometry(const Simplex<iNumDimensions, iNumParameters + 1>& simplex);
         
-        const Function<iNumDimensions, iNumParameters>&
-        function() const;
+        const ParametricExpression<iNumDimensions, iNumParameters>&
+        expression() const;
         
         const Domain<iNumParameters>&
         domain() const;
@@ -90,18 +90,21 @@ namespace opensolid
         public Transformable<Geometry<iNumDimensions, 1>>
     {
     private:
-        Function<iNumDimensions, 1> _function;
+        ParametricExpression<iNumDimensions, 1> _expression;
         Interval _domain;
         Box<iNumDimensions> _bounds;
     public:
         Geometry();
 
-        Geometry(const Function<iNumDimensions, 1>& function, Interval domain);
+        Geometry(
+            const ParametricExpression<iNumDimensions, 1>& expression,
+            Interval domain
+        );
 
         Geometry(const Simplex<iNumDimensions, 2>& simplex);
 
-        const Function<iNumDimensions, 1>&
-        function() const;
+        const ParametricExpression<iNumDimensions, 1>&
+        expression() const;
         
         Interval
         domain() const;

@@ -118,7 +118,9 @@ public:
 
             std::cout << coordinateSystem.basisMatrix() << std::endl;
             std::cout << std::endl;
-            std::cout << coordinateSystem.basisMatrix() * coordinateSystem.basisMatrix().transpose() << std::endl;
+            Matrix3d shouldBeIdentity =
+                coordinateSystem.basisMatrix() * coordinateSystem.basisMatrix().transpose();
+            std::cout << shouldBeIdentity << std::endl;
             std::cout << std::endl;
             std::cout << xDirection / coordinateSystem << std::endl;
             std::cout << yDirection / coordinateSystem << std::endl;

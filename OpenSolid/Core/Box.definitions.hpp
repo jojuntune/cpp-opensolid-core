@@ -270,7 +270,7 @@ namespace opensolid
         Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const Function<iNumResultDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 

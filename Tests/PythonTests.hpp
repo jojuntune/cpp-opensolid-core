@@ -229,7 +229,9 @@ public:
 
         environment.run("a = MatrixXd([[1, 0, 0], [1, 1, 0]])");
         environment.set("theta", M_PI / 4);
-        environment.run("m = Matrix3d([[cos(theta), sin(theta), 0], [-sin(theta), cos(theta), 0], [0, 0, 1]])");
+        environment.run(
+            "m = Matrix3d([[cos(theta), sin(theta), 0], [-sin(theta), cos(theta), 0], [0, 0, 1]])"
+        );
         environment.run("v = Vector3d(1, 2, 3)");
         MatrixXd transformed_matrix = environment.get<MatrixXd>("a.transformed(m, v)");
         Vector3d first_expected(1 + 1 / sqrt(2.0), 2 + 1 / sqrt(2.0), 3);
@@ -655,7 +657,9 @@ public:
     void testDatum() {
         PythonEnvironment environment;
         environment.run("import math");
-        environment.run("frame = Frame3d(Vector3d(1, 1, 1), Vector3d(1, 1, 0), Vector3d(-1, 1, 0))");
+        environment.run(
+            "frame = Frame3d(Vector3d(1, 1, 1), Vector3d(1, 1, 0), Vector3d(-1, 1, 0))"
+        );
         environment.run("product = Vector3d.Ones() * frame");
         TS_ASSERT(environment.get<bool>("(product - Vector3d(1, 1 + sqrt(2), 2)).isZero()"));
         environment.run("product = Vector3d.Ones() * frame.orientation()");
@@ -665,7 +669,9 @@ public:
             environment.get<bool>("(quotient - Vector3d(-1 / sqrt(2), -1 / sqrt(2), -1)).isZero()")
         );
         environment.run("linear_quotient = Vector3d.UnitX() / frame.orientation()");
-        std::string expression("(linear_quotient - Vector3d(1 / sqrt(2), -1 / sqrt(2), 0)).isZero()");
+        std::string expression(
+            "(linear_quotient - Vector3d(1 / sqrt(2), -1 / sqrt(2), 0)).isZero()"
+        );
         TS_ASSERT(environment.get<bool>(expression));
         environment.run("global_frame = Frame3d()");
         environment.run("frame = global_frame.translated(Vector3d.Ones())");

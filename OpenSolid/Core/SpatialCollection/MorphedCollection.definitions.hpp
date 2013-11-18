@@ -43,7 +43,11 @@ namespace opensolid
         {
         private:
             TBaseCollection _baseCollection;
-            Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value> _function;
+
+            ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TBaseCollection>::Value
+            > _morphingExpression;
         public:
             MorphedCollection(
                 const MorphedCollection<TBaseCollection, iNumResultDimensions>& other
@@ -55,25 +59,25 @@ namespace opensolid
 
             MorphedCollection(
                 const TBaseCollection& baseCollection,
-                const Function<
+                const ParametricExpression<
                     iNumResultDimensions,
                     NumDimensions<TBaseCollection>::Value
-                >& function
+                >& morphingExpression
             );
 
             MorphedCollection(
                 TBaseCollection&& baseCollection,
-                const Function<
+                const ParametricExpression<
                     iNumResultDimensions,
                     NumDimensions<TBaseCollection>::Value
-                >& function
+                >& morphingExpression
             );
 
             const TBaseCollection&
             baseCollection() const;
 
-            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
-            function() const;
+            const ParametricExpression<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
+            morphingExpression() const;
 
             MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>
             begin() const;
@@ -111,7 +115,11 @@ namespace opensolid
         {
         private:
             typename IteratorType<TBaseCollection>::Type _baseIterator;
-            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>* _function;
+
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TBaseCollection>::Value
+            >* _morphingExpression;
 
             friend class boost::iterator_core_access;
 
@@ -133,10 +141,10 @@ namespace opensolid
 
             MorphedCollectionIterator(
                 typename IteratorType<TBaseCollection>::Type baseIterator,
-                const Function<
+                const ParametricExpression<
                     iNumResultDimensions,
                     NumDimensions<TBaseCollection>::Value
-                >* function
+                >* morphingExpression
             );
         };
     }
@@ -187,7 +195,10 @@ namespace opensolid
                 TBaseCollection,
                 iNumInnerResultDimensions
             >& morphedCollection,
-            const Function<iNumOuterResultDimensions, iNumInnerResultDimensions>& function
+            const ParametricExpression<
+                iNumOuterResultDimensions,
+                iNumInnerResultDimensions
+            >& morphingExpression
         ) const;
     };
 }

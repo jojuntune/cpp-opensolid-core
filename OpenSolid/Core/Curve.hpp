@@ -28,9 +28,9 @@
 
 #include <OpenSolid/Core/Curve.definitions.hpp>
 
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Geometry.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 
@@ -47,8 +47,10 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    Curve<iNumDimensions>::Curve(const Function<iNumDimensions, 1>& function, Interval domain) :
-        Geometry<iNumDimensions, 1>(function, domain) {
+    Curve<iNumDimensions>::Curve(
+        const ParametricExpression<iNumDimensions, 1>& expression,
+        Interval domain
+    ) : Geometry<iNumDimensions, 1>(expression, domain) {
     }
 
     template <int iNumDimensions>
@@ -59,20 +61,24 @@ namespace opensolid
     template <int iNumDimensions>
     Curve<iNumDimensions>
     Curve<iNumDimensions>::reversed() const {
-        Function<1, 1> reversedParameter =
-            this->domain().upperBound() + this->domain().lowerBound() - Function<1, 1>::t();
-        return Curve<iNumDimensions>(this->function().composed(reversedParameter), this->domain());
+        ParametricExpression<1, 1> parameter = ParametricExpression<1, 1>::t();
+        ParametricExpression<1, 1> reversedParameter =
+            this->domain().upperBound() + this->domain().lowerBound() - parameter;
+        return Curve<iNumDimensions>(
+            this->expression().composed(reversedParameter),
+            this->domain()
+        );
     }
 
     template <int iNumDimensions>
     Point<iNumDimensions>
     Curve<iNumDimensions>::startPoint() const {
-        return Point<iNumDimensions>(this->function()(this->domain().lowerBound()));
+        return Point<iNumDimensions>(this->expression().evaluate(this->domain().lowerBound()));
     }
 
     template <int iNumDimensions>
     Point<iNumDimensions>
     Curve<iNumDimensions>::endPoint() const {
-        return Point<iNumDimensions>(this->function()(this->domain().upperBound()));
+        return Point<iNumDimensions>(this->expression().evaluate(this->domain().upperBound()));
     }
 }

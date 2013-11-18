@@ -32,8 +32,8 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/Function.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
@@ -45,32 +45,32 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     inline
     Geometry<iNumDimensions, iNumParameters>::Geometry() :
-        _function(),
+        _expression(),
         _domain(),
         _bounds() {
     }
 
     template <int iNumDimensions, int iNumParameters>
     Geometry<iNumDimensions, iNumParameters>::Geometry(
-        const Function<iNumDimensions, iNumParameters>& function, 
+        const ParametricExpression<iNumDimensions, iNumParameters>& expression, 
         const Domain<iNumParameters>& domain
-    ) : _function(function),
+    ) : _expression(expression),
         _domain(domain),
-        _bounds(function(domain.bounds())) {
+        _bounds(expression.evaluate(domain.bounds())) {
     }
 
     template <int iNumDimensions, int iNumParameters>
     Geometry<iNumDimensions, iNumParameters>::Geometry(
         const Simplex<iNumDimensions, iNumParameters + 1>& simplex
-    ) : _function(Function<iNumDimensions, iNumParameters>::Linear(simplex.datum())),
+    ) : _expression(ParametricExpression<iNumDimensions, iNumParameters>::Linear(simplex.datum())),
         _domain(Simplex<iNumParameters, iNumParameters + 1>::Unit()) {
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    const Function<iNumDimensions, iNumParameters>&
-    Geometry<iNumDimensions, iNumParameters>::function() const {
-        return _function;
+    const ParametricExpression<iNumDimensions, iNumParameters>&
+    Geometry<iNumDimensions, iNumParameters>::expression() const {
+        return _expression;
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -100,42 +100,42 @@ namespace opensolid
     Geometry<iNumDimensions, iNumParameters>::operator()(
         const EigenBase<TVector>& parameterValues
     ) const {
-        return Point<iNumDimensions>(function()(parameterValues));
+        return Point<iNumDimensions>(expression().evaluate(parameterValues));
     }
 
     template <int iNumDimensions, int iNumParameters>
     SpatialSet<Geometry<iNumDimensions, iNumParameters - 1>>
     Geometry<iNumDimensions, iNumParameters>::boundaries() const {
-        return domain().boundaries().morphed(function());
+        return domain().boundaries().morphed(expression());
     }
 
     template <int iNumDimensions>
     Geometry<iNumDimensions, 1>::Geometry() :
-        _function(),
+        _expression(),
         _domain(),
         _bounds() {
     }
 
     template <int iNumDimensions>
     Geometry<iNumDimensions, 1>::Geometry(
-        const Function<iNumDimensions, 1>& function,
+        const ParametricExpression<iNumDimensions, 1>& expression,
         Interval domain
-    ) : _function(function),
+    ) : _expression(expression),
         _domain(domain),
-        _bounds(function(domain)) {
+        _bounds(expression.evaluate(domain)) {
     }
 
     template <int iNumDimensions>
     Geometry<iNumDimensions, 1>::Geometry(const Simplex<iNumDimensions, 2>& simplex) :
-        _function(Function<iNumDimensions, 1>::Linear(simplex.coordinateSystem())),
+        _expression(ParametricExpression<iNumDimensions, 1>::Linear(simplex.coordinateSystem())),
         _domain(Interval::Unit()) {
     }
 
     template <int iNumDimensions>
     inline
-    const Function<iNumDimensions, 1>&
-    Geometry<iNumDimensions, 1>::function() const {
-        return _function;
+    const ParametricExpression<iNumDimensions, 1>&
+    Geometry<iNumDimensions, 1>::expression() const {
+        return _expression;
     }
     
     template <int iNumDimensions>
@@ -163,15 +163,15 @@ namespace opensolid
     inline
     Point<iNumDimensions>
     Geometry<iNumDimensions, 1>::operator()(double parameterValue) const {
-        return Point<iNumDimensions>(function()(parameterValue));
+        return Point<iNumDimensions>(expression().evaluate(parameterValue));
     }
 
     template <int iNumDimensions>
     SpatialSet<Point<iNumDimensions>>
     Geometry<iNumDimensions, 1>::boundaries() const {
         Point<iNumDimensions> results[2];
-        results[0] = Point<iNumDimensions>(function()(domain().lowerBound()));
-        results[1] = Point<iNumDimensions>(function()(domain().upperBound()));
+        results[0] = Point<iNumDimensions>(expression().evaluate(domain().lowerBound()));
+        results[1] = Point<iNumDimensions>(expression().evaluate(domain().upperBound()));
         return SpatialSet<Point<iNumDimensions>>(results, results + 2);
     }
 
@@ -182,7 +182,7 @@ namespace opensolid
         double scale
     ) const {
         return Geometry<iNumDimensions, iNumParameters>(
-            scale * geometry.function(),
+            scale * geometry.expression(),
             geometry.domain()
         );
     }
@@ -195,7 +195,7 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return Geometry<iNumDimensions, iNumParameters>(
-            geometry.function() + vector.derived(),
+            geometry.expression() + vector.derived(),
             geometry.domain()
         );
     }
@@ -203,12 +203,15 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
     template <class TMatrix>
     Geometry<iNumResultDimensions, iNumParameters>
-    TransformationFunction<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>::operator()(
+    TransformationFunction<
+        Geometry<iNumDimensions, iNumParameters>,
+        iNumResultDimensions
+    >::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
         const EigenBase<TMatrix>& matrix
     ) const {
         return Geometry<iNumResultDimensions, iNumParameters>(
-            matrix.derived() * geometry.function(),
+            matrix.derived() * geometry.expression(),
             geometry.domain()
         );
     }
@@ -217,10 +220,10 @@ namespace opensolid
     Geometry<iNumResultDimensions, iNumParameters>
     MorphingFunction<Geometry<iNumDimensions, iNumParameters>, iNumResultDimensions>::operator()(
         const Geometry<iNumDimensions, iNumParameters>& geometry,
-        const Function<iNumResultDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return Geometry<iNumResultDimensions, iNumParameters>(
-            function.composed(geometry.function()),
+            morphingExpression.composed(geometry.expression()),
             geometry.domain()
         );
     }

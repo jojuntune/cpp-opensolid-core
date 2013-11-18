@@ -168,9 +168,12 @@ namespace opensolid
     inline
     typename MorphedType<TDerived, iNumResultDimensions>::Type
     Transformable<TDerived>::morphed(
-        const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
+        const ParametricExpression<
+            iNumResultDimensions,
+            NumDimensions<TDerived>::Value
+        >& morphingExpression
     ) const {
-        return detail::morphed(derived(), function);
+        return detail::morphed(derived(), morphingExpression);
     }
 
     namespace detail
@@ -204,11 +207,14 @@ namespace opensolid
         typename MorphedType<TTransformable, iNumResultDimensions>::Type
         morphed(
             const TTransformable& transformable,
-            const Function<iNumResultDimensions, NumDimensions<TTransformable>::Value>& function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TTransformable>::Value
+            >& morphingExpression
         ) {
             return MorphingFunction<TTransformable, iNumResultDimensions>()(
                 transformable,
-                function
+                morphingExpression
             );
         }
     }

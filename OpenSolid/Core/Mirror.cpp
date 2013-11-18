@@ -31,7 +31,13 @@ namespace opensolid
         template <class TDerived>
         Matrix<double, TDerived::RowsAtCompileTime, TDerived::RowsAtCompileTime>
         mirrorTransformationMatrix(const EigenBase<TDerived>& normalVector) {
-            return Matrix<double, TDerived::RowsAtCompileTime, TDerived::RowsAtCompileTime>::Identity() -
+            typedef Matrix<
+                double,
+                TDerived::RowsAtCompileTime,
+                TDerived::RowsAtCompileTime
+            > MatrixType;
+            
+            return MatrixType::Identity() -
                 2 * normalVector.derived() * normalVector.derived().transpose();
         }
     }

@@ -40,7 +40,7 @@ namespace opensolid
         MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
             const MorphedCollection<TBaseCollection, iNumResultDimensions>& other
         ) : _baseCollection(other._baseCollection),
-            _function(std::move(other._function)) {
+            _morphingExpression(other._morphingExpression) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -48,25 +48,31 @@ namespace opensolid
         MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
             MorphedCollection<TBaseCollection, iNumResultDimensions>&& other
         ) : _baseCollection(std::move(other._baseCollection)),
-            _function(std::move(other._function)) {
+            _morphingExpression(std::move(other._morphingExpression)) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
         MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
             const TBaseCollection& baseCollection,
-            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>& function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TBaseCollection>::Value
+            >& morphingExpression
         ) : _baseCollection(baseCollection), 
-            _function(function) {
+            _morphingExpression(morphingExpression) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
         MorphedCollection<TBaseCollection, iNumResultDimensions>::MorphedCollection(
             TBaseCollection&& baseCollection,
-            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>& function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TBaseCollection>::Value
+            >& morphingExpression
         ) : _baseCollection(std::move(baseCollection)), 
-            _function(function) {
+            _morphingExpression(morphingExpression) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -78,9 +84,9 @@ namespace opensolid
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
-        MorphedCollection<TBaseCollection, iNumResultDimensions>::function() const {
-            return _function;
+        const ParametricExpression<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>&
+        MorphedCollection<TBaseCollection, iNumResultDimensions>::morphingExpression() const {
+            return _morphingExpression;
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -89,7 +95,7 @@ namespace opensolid
         MorphedCollection<TBaseCollection, iNumResultDimensions>::begin() const {
             return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
                 baseCollection().begin(),
-                &function()
+                &morphingExpression()
             );
         }
 
@@ -99,7 +105,7 @@ namespace opensolid
         MorphedCollection<TBaseCollection, iNumResultDimensions>::end() const {
             return MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>(
                 baseCollection().end(),
-                &function()
+                &morphingExpression()
             );
         }
 
@@ -121,7 +127,7 @@ namespace opensolid
         inline
         typename MorphedType<typename BoundsType<TBaseCollection>::Type, iNumResultDimensions>::Type
         MorphedCollection<TBaseCollection, iNumResultDimensions>::bounds() const {
-            return detail::morphed(baseCollection().bounds(), function());
+            return detail::morphed(baseCollection().bounds(), morphingExpression());
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -144,22 +150,28 @@ namespace opensolid
         inline
         typename MorphedType<typename ItemType<TBaseCollection>::Type, iNumResultDimensions>::Type
         MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::dereference() const {
-            return detail::morphed(*_baseIterator, *_function);
+            return detail::morphed(*_baseIterator, *_morphingExpression);
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
-        MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::MorphedCollectionIterator() :
-            _function(nullptr) {
+        MorphedCollectionIterator<
+            TBaseCollection,
+            iNumResultDimensions
+        >::MorphedCollectionIterator() :
+            _morphingExpression(nullptr) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
         inline
         MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::MorphedCollectionIterator(
             typename IteratorType<TBaseCollection>::Type baseIterator,
-            const Function<iNumResultDimensions, NumDimensions<TBaseCollection>::Value>* function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TBaseCollection>::Value
+            >* morphingExpression
         ) : _baseIterator(baseIterator),
-            _function(function) {
+            _morphingExpression(morphingExpression) {
         }
     }
 
@@ -174,11 +186,14 @@ namespace opensolid
             TBaseCollection,
             iNumInnerResultDimensions
         >& morphedCollection,
-        const Function<iNumOuterResultDimensions, iNumInnerResultDimensions>& function
+        const ParametricExpression<
+            iNumOuterResultDimensions,
+            iNumInnerResultDimensions
+        >& morphingExpression
     ) const {
         return detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>(
             morphedCollection.baseCollection(),
-            function.composed(morphedCollection.function())
+            morphingExpression.composed(morphedCollection.morphingExpression())
         );
     }
 }

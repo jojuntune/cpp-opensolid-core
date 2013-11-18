@@ -25,7 +25,7 @@
 #include <OpenSolid/Core/Plane.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Function.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
 
 namespace opensolid
@@ -174,11 +174,11 @@ namespace opensolid
     Plane3d
     MorphingFunction<Plane3d, 3>::operator()(
         const Plane3d& plane,
-        const Function<3, 3>& function
+        const ParametricExpression<3, 3>& morphingExpression
     ) const {
         return Plane3d(
-            plane.originPoint().morphed(function),
-            function.jacobian(plane.originPoint().vector()) * plane.normalVector()
+            plane.originPoint().morphed(morphingExpression),
+            morphingExpression.jacobian(plane.originPoint().vector()) * plane.normalVector()
         );
     }
 }

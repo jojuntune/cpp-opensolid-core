@@ -22,6 +22,11 @@ def checkLine(filePath, lineNumber, line):
     global errorFound
     global singleLineTerms
     if not line.lstrip().startswith('//'):
+        # Check for overly long lines
+        lineLength = len(line.rstrip())
+        if lineLength > 100 and 'friend' not in line:
+            print('ERROR: Line {0} of file {1} has length {2}'.format(lineNumber, filePath, lineLength))
+            errorFound = True
         # Strip out contents of string literals
         line = str.join('""', line.split('"')[::2])
         # Check for tab characters

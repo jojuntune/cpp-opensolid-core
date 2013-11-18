@@ -375,9 +375,11 @@ namespace opensolid
     Simplex<iNumResultDimensions, iNumVertices>
     MorphingFunction<Simplex<iNumDimensions, iNumVertices>, iNumResultDimensions>::operator()(
         const Simplex<iNumDimensions, iNumVertices>& simplex,
-        const Function<iNumResultDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-         return Simplex<iNumResultDimensions, iNumVertices>(function(simplex.vertices()));
+         return Simplex<iNumResultDimensions, iNumVertices>(
+            morphingExpression.evaluate(simplex.vertices())
+        );
     }
 
     template <int iNumDimensions, int iNumVertices>

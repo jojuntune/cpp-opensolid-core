@@ -179,7 +179,10 @@ namespace Eigen
     template <class TDerived, int iNumDimensions>
     Matrix<typename TDerived::Scalar, iNumDimensions, TDerived::ColsAtCompileTime>
     operator*(
-        const opensolid::CoordinateSystem<iNumDimensions, TDerived::RowsAtCompileTime>& coordinateSystem,
+        const opensolid::CoordinateSystem<
+            iNumDimensions,
+            TDerived::RowsAtCompileTime
+        >& coordinateSystem,
         const EigenBase<TDerived>& matrix
     );
 

@@ -188,7 +188,7 @@ namespace opensolid
         Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
-            const Function<iNumResultDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 

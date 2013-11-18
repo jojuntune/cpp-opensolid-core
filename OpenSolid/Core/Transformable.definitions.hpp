@@ -30,11 +30,11 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
 #include <OpenSolid/Core/LinearTransformation.declarations.hpp>
 #include <OpenSolid/Core/Localization.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 
@@ -89,8 +89,14 @@ namespace opensolid
         template <int iNumResultDimensions, int iNumAxes>
         typename TransplantedType<TDerived, iNumResultDimensions>::Type
         transplanted(
-            const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& sourceCoordinateSystem,
-            const CoordinateSystem<iNumResultDimensions, iNumAxes>& destinationCoordinateSystem
+            const CoordinateSystem<
+                NumDimensions<TDerived>::Value,
+                iNumAxes
+            >& sourceCoordinateSystem,
+            const CoordinateSystem<
+                iNumResultDimensions,
+                iNumAxes
+            >& destinationCoordinateSystem
         ) const;
 
         template <int iNumResultDimensions>
@@ -102,7 +108,10 @@ namespace opensolid
         template <int iNumResultDimensions>
         typename MorphedType<TDerived, iNumResultDimensions>::Type
         morphed(
-            const Function<iNumResultDimensions, NumDimensions<TDerived>::Value>& function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TDerived>::Value
+            >& morphingExpression
         ) const;
     };
 
@@ -124,7 +133,10 @@ namespace opensolid
         typename MorphedType<TTransformable, iNumResultDimensions>::Type
         morphed(
             const TTransformable& transformable,
-            const Function<iNumResultDimensions, NumDimensions<TTransformable>::Value>& function
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TTransformable>::Value
+            >& morphingExpression
         );
     }
 

@@ -56,40 +56,42 @@ public:
         TS_ASSERT((arc(1.0 / 3.0) - Point3d(1, 3, 1)).isZero());
         TS_ASSERT((arc(1.0) - Point3d(1, -1, 1)).isZero());
         
-        Function<3, 1> derivative = arc.function().derivative();
+        ParametricExpression<3, 1> derivative = arc.expression().derivative();
         double derivativeMagnitude = 3 * M_PI;
-        TS_ASSERT((derivative(0.0) -  Vector3d(0, derivativeMagnitude, 0)).isZero());
-        TS_ASSERT((derivative(1.0 / 3.0) - Vector3d(-derivativeMagnitude, 0, 0)).isZero());
-        TS_ASSERT((derivative(2.0 / 3.0) - Vector3d(0, -derivativeMagnitude, 0)).isZero());
-        TS_ASSERT((derivative(1.0) - Vector3d(derivativeMagnitude, 0, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(0.0) -  Vector3d(0, derivativeMagnitude, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(1.0 / 3.0) - Vector3d(-derivativeMagnitude, 0, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(2.0 / 3.0) - Vector3d(0, -derivativeMagnitude, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(1.0) - Vector3d(derivativeMagnitude, 0, 0)).isZero());
         
-        Function<3, 1> tangent = arc.function().tangentVector();
-        TS_ASSERT((tangent(0.0) - Vector3d(0, 1, 0)).isZero());
-        TS_ASSERT((tangent(1.0 / 3.0) - Vector3d(-1, 0, 0)).isZero());
-        TS_ASSERT((tangent(2.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
-        TS_ASSERT((tangent(1.0) - Vector3d(1, 0, 0)).isZero());
+        ParametricExpression<3, 1> tangent = arc.expression().tangentVector();
+        TS_ASSERT((tangent.evaluate(0.0) - Vector3d(0, 1, 0)).isZero());
+        TS_ASSERT((tangent.evaluate(1.0 / 3.0) - Vector3d(-1, 0, 0)).isZero());
+        TS_ASSERT((tangent.evaluate(2.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
+        TS_ASSERT((tangent.evaluate(1.0) - Vector3d(1, 0, 0)).isZero());
         
-        Function<3, 1> secondDerivative = arc.function().derivative().derivative();
+        ParametricExpression<3, 1> secondDerivative =
+            arc.expression().derivative().derivative();
         double secondDerivativeMagnitude = 4.5 * M_PI * M_PI;
         Vector3d expectedValue;
         
         expectedValue = Vector3d(-secondDerivativeMagnitude, 0, 0);
-        TS_ASSERT((secondDerivative(0.0) - expectedValue).isZero());
+        TS_ASSERT((secondDerivative.evaluate(0.0) - expectedValue).isZero());
         
         expectedValue = Vector3d(0, -secondDerivativeMagnitude, 0);
-        TS_ASSERT((secondDerivative(1.0 / 3.0) - expectedValue).isZero());
+        TS_ASSERT((secondDerivative.evaluate(1.0 / 3.0) - expectedValue).isZero());
         
         expectedValue = Vector3d(secondDerivativeMagnitude, 0, 0);
-        TS_ASSERT((secondDerivative(2.0 / 3.0) - expectedValue).isZero());
+        TS_ASSERT((secondDerivative.evaluate(2.0 / 3.0) - expectedValue).isZero());
         
         expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
-        TS_ASSERT((secondDerivative(1.0) - expectedValue).isZero());
+        TS_ASSERT((secondDerivative.evaluate(1.0) - expectedValue).isZero());
         
-        Function<3, 1> normal = arc.function().tangentVector().tangentVector();
-        TS_ASSERT((normal(0.0) - Vector3d(-1, 0, 0)).isZero());
-        TS_ASSERT((normal(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
-        TS_ASSERT((normal(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
-        TS_ASSERT((normal(1.0) - Vector3d(0, 1, 0)).isZero());
+        ParametricExpression<3, 1> normal =
+            arc.expression().tangentVector().tangentVector();
+        TS_ASSERT((normal.evaluate(0.0) - Vector3d(-1, 0, 0)).isZero());
+        TS_ASSERT((normal.evaluate(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
+        TS_ASSERT((normal.evaluate(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
+        TS_ASSERT((normal.evaluate(1.0) - Vector3d(0, 1, 0)).isZero());
     }
 
     void testFullArc() {
@@ -102,19 +104,23 @@ public:
     }
     
     void testCurveOperations() {
-        Function<1, 1> t = Function<1, 1>::t();
-        Curve3d parabola(
-            Function<3, 1>::FromComponents(t, t.squaredNorm(), Function<1, 1>::Constant(0.0)),
-            Interval(-2, 2)
-        );
+        ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
+        ParametricExpression<3, 1> expression =
+            ParametricExpression<3, 1>::FromComponents(t, t.squared(), 0.0);
+        Curve3d parabola(expression, Interval(-2, 2));
 
-        TS_ASSERT((parabola.function().tangentVector()(1) - Vector3d(1, 2, 0).normalized()).isZero());
-        TS_ASSERT(parabola.function().curvature()(1).value() - 2 / (5 * sqrt(5.0)) == Zero());
-        TS_ASSERT((parabola.function().normalVector()(1) - Vector3d(-2, 1, 0).normalized()).isZero());
-        TS_ASSERT((parabola.function().binormalVector()(1) - Vector3d::UnitZ()).isZero());
+        Vector3d tangentVector = expression.tangentVector().evaluate(1.0);
+        double curvature = expression.curvature().evaluate(1.0).value();
+        Vector3d normalVector = expression.normalVector().evaluate(1.0);
+        Vector3d binormalVector = expression.binormalVector().evaluate(1.0);
+
+        TS_ASSERT((tangentVector - Vector3d(1, 2, 0).normalized()).isZero());
+        TS_ASSERT(curvature - 2 / (5 * sqrt(5.0)) == Zero());
+        TS_ASSERT((normalVector - Vector3d(-2, 1, 0).normalized()).isZero());
+        TS_ASSERT((binormalVector - Vector3d::UnitZ()).isZero());
 
         Curve3d reversed = parabola.reversed();
-        TS_ASSERT((reversed(-1) - Point3d(1, 1, 0)).isZero());
-        TS_ASSERT((reversed(1) - Point3d(-1, 1, 0)).isZero());
+        TS_ASSERT((reversed(-1.0) - Point3d(1, 1, 0)).isZero());
+        TS_ASSERT((reversed(1.0) - Point3d(-1, 1, 0)).isZero());
     }
 };

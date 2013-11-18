@@ -174,7 +174,9 @@ namespace opensolid
     template <class TBaseCollection, int iNumResultDimensions> template <class TMatrix>
     inline
     detail::TransformedCollection<TBaseCollection, iNumResultDimensions>
-    TransformationFunction<detail::ScaledCollection<TBaseCollection>, iNumResultDimensions>::operator()(
+    TransformationFunction<
+        detail::ScaledCollection<TBaseCollection>, iNumResultDimensions
+    >::operator()(
         const detail::ScaledCollection<TBaseCollection>& scaledCollection,
         const EigenBase<TMatrix>& matrix
     ) const {

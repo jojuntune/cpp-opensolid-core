@@ -5,10 +5,10 @@
         CORE_SOURCES
         *.cpp
         Curve/*.cpp
-        Function/*.cpp
-        FunctionImplementation/*.cpp
+        ExpressionImplementation/*.cpp
         Geometry/*.cpp
         Matrix/*.cpp
+        ParametricExpression/*.cpp
         Set/*.cpp
     )
 
@@ -41,10 +41,10 @@
     add_to_global_source_list(
         *
         Curve/*
-        Function/*
-        FunctionImplementation/*
+        ExpressionImplementation/*
         Geometry/*
-        SpatialCollection/*
         Matrix/*
+        ParametricExpression/*
+        SpatialCollection/*
         SpatialSet/*
     )

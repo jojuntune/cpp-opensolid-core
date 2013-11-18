@@ -104,7 +104,7 @@ namespace opensolid
         Domain<iNumDimensions>
         operator()(
             const Domain<iNumDimensions>& domain,
-            const Function<iNumDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 

@@ -34,8 +34,8 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
-#include <OpenSolid/Core/Function.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/TolerantComparator.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
@@ -176,7 +176,7 @@ namespace opensolid
         Simplex<iNumResultDimensions, iNumVertices>
         operator()(
             const Simplex<iNumDimensions, iNumVertices>& simplex,
-            const Function<iNumResultDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 

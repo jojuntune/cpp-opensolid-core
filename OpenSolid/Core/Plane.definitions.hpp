@@ -158,6 +158,9 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(const Plane3d& plane, const Function<3, 3>& function) const;
+        operator()(
+            const Plane3d& plane,
+            const ParametricExpression<3, 3>& morphingExpression
+        ) const;
     };
 }

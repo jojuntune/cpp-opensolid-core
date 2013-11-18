@@ -437,16 +437,13 @@ namespace opensolid
         if (isEmpty()) {
             return end();
         } else {
+            typedef detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>>
+                FilteredIterator;
+            
             BoundsFunction<TItem> boundsFunction;
             detail::OverlapPredicate<TItem> overlapPredicate(boundsFunction(item), precision);
-            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> filteredIterator(
-                rootNode(),
-                &overlapPredicate
-            );
-            detail::FilteredSpatialSetIterator<TItem, detail::OverlapPredicate<TItem>> filteredEnd(
-                nullptr,
-                &overlapPredicate
-            );
+            FilteredIterator filteredIterator(rootNode(), &overlapPredicate);
+            FilteredIterator filteredEnd(nullptr, &overlapPredicate);
             TolerantComparator<TItem> itemComparator(precision);
             while (filteredIterator != filteredEnd) {
                 if (itemComparator(item, *filteredIterator)) {

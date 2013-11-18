@@ -222,7 +222,7 @@ namespace opensolid
         CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const Function<iNumResultDimensions, iNumDimensions>& function
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 }

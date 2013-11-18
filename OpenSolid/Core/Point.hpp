@@ -251,9 +251,9 @@ namespace opensolid
     Point<iNumResultDimensions>
     MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
-        const Function<iNumResultDimensions, iNumDimensions>& function
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return Point<iNumResultDimensions>(function(point.vector()));
+        return Point<iNumResultDimensions>(morphingExpression.evaluate(point.vector()));
     }
 
     template <int iNumDimensions>

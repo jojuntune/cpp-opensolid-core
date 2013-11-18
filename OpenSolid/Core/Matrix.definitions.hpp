@@ -42,16 +42,52 @@ namespace opensolid
         static const int Value = iRows;
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
-    struct TransformedType<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>
+    template <
+        class TScalar,
+        int iRows,
+        int iCols,
+        int iOptions,
+        int iMaxRows,
+        int iMaxCols,
+        int iNumResultDimensions
+    >
+    struct TransformedType<
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
+        iNumResultDimensions
+    >
     {
-        typedef Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols> Type;
+        typedef Matrix<
+            TScalar,
+            iNumResultDimensions,
+            iCols,
+            iOptions,
+            iNumResultDimensions,
+            iMaxCols
+        > Type;
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
-    struct MorphedType<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>
+    template <
+        class TScalar,
+        int iRows,
+        int iCols,
+        int iOptions,
+        int iMaxRows,
+        int iMaxCols,
+        int iNumResultDimensions
+    >
+    struct MorphedType<
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
+        iNumResultDimensions
+    >
     {
-        typedef Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols> Type;
+        typedef Matrix<
+            TScalar,
+            iNumResultDimensions,
+            iCols,
+            iOptions,
+            iNumResultDimensions,
+            iMaxCols
+        > Type;
     };
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -75,8 +111,19 @@ namespace opensolid
         ) const;
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols, int iNumResultDimensions>
-    struct TransformationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>, iNumResultDimensions>
+    template <
+        class TScalar,
+        int iRows,
+        int iCols,
+        int iOptions,
+        int iMaxRows,
+        int iMaxCols,
+        int iNumResultDimensions
+    >
+    struct TransformationFunction<
+        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
+        iNumResultDimensions
+    >
     {
         template <class TMatrix>
         Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols>
