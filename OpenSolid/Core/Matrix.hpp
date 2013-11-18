@@ -62,7 +62,7 @@ namespace Eigen
     template <class TDerived> template <class TVector>
     inline
     const TDerived&
-    MatrixBase<TDerived>::translated(const EigenBase<TVector>& vector) const {
+    MatrixBase<TDerived>::translatedBy(const EigenBase<TVector>& vector) const {
         return derived();
     }
 

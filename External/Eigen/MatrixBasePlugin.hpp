@@ -29,7 +29,7 @@ scaledAbout(const opensolid::Point<NumDimensions>& originPoint, double scale) co
 
 template <class TVector>
 const Derived&
-translated(const EigenBase<TVector>& vector) const;
+translatedBy(const EigenBase<TVector>& vector) const;
 
 const Derived&
 translatedAlong(const opensolid::Axis<NumDimensions>& axis, double distance) const;

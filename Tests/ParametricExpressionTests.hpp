@@ -262,7 +262,7 @@ public:
     
     void testTransformation() {
         CoordinateSystem3d coordinateSystem = CoordinateSystem3d::Global();
-        coordinateSystem = coordinateSystem.translated(Vector3d(1, 1, 1));
+        coordinateSystem = coordinateSystem.translatedBy(Vector3d(1, 1, 1));
         coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
         ParametricExpression<3, 1> linear = Vector3d::Ones() * t;
         ParametricExpression<3, 1> product = coordinateSystem.basisMatrix() * linear +

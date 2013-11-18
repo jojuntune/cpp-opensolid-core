@@ -61,7 +61,7 @@ void pointExamples() {
     Point3d scaled = p2.scaledAbout(p1, 2.0);
     assert((scaled - Point3d(3, 3, 3)).isZero());
 
-    Point3d translated = p1.translated(Vector3d::UnitY());
+    Point3d translated = p1.translatedBy(Vector3d::UnitY());
     assert((translated - Point3d(1, 2, 1)).isZero());
 }
 

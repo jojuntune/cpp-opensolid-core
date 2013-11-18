@@ -71,7 +71,7 @@ namespace opensolid
     template <class TDerived> template <class TVector>
     inline
     typename TranslatedType<TDerived>::Type
-    Transformable<TDerived>::translated(const EigenBase<TVector>& vector) const {
+    Transformable<TDerived>::translatedBy(const EigenBase<TVector>& vector) const {
         return detail::translated(derived(), vector.derived());
     }
     

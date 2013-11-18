@@ -67,7 +67,7 @@ public:
     void testCoordinateSystemTransformation() {
         CoordinateSystem3d global = CoordinateSystem3d::Global();
         CoordinateSystem3d coordinateSystem =
-            global.translated(Vector3d(1, 1, 1)).rotatedAbout(global.xAxis(), -M_PI / 2);
+            global.translatedBy(Vector3d(1, 1, 1)).rotatedAbout(global.xAxis(), -M_PI / 2);
         TS_ASSERT((coordinateSystem * Point3d(1, 2, 3) - Point3d(2, 4, -3)).isZero());
     }
     

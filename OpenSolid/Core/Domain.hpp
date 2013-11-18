@@ -84,7 +84,7 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const EigenBase<TVector>& vector
     ) const {
-        return Domain<iNumDimensions>(domain.boundaries().translated(vector.derived()));
+        return Domain<iNumDimensions>(domain.boundaries().translatedBy(vector.derived()));
     }
 
     template <int iNumDimensions> template <class TMatrix>

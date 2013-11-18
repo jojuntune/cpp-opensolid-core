@@ -52,7 +52,7 @@ namespace opensolid
 
         template <class TVector>
         typename TranslatedType<TDerived>::Type
-        translated(const EigenBase<TVector>& vector) const;
+        translatedBy(const EigenBase<TVector>& vector) const;
 
         typename TranslatedType<TDerived>::Type
         translatedAlong(
