@@ -123,9 +123,9 @@ public:
     }
 
     void testConstant() {
-        ParametricExpression<1, 1> f = ParametricExpression<1, 1>::Constant(3.0);
-        TS_ASSERT(f.implementation()->isConstantExpression());
-        TS_ASSERT(f.evaluate(0.0).value() - 3 == Zero());
+        ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::Constant(3.0);
+        TS_ASSERT(expression.implementation()->isConstantExpression());
+        TS_ASSERT(expression.evaluate(0.0).value() - 3 == Zero());
     }
     
     void testArithmetic() {
