@@ -464,7 +464,7 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            coordinateSystem.originPoint().morphed(morphingExpression),
+            coordinateSystem.originPoint().morphedBy(morphingExpression),
             morphingExpression.jacobian(coordinateSystem.originPoint().vector()) *
                 coordinateSystem.basisMatrix()
         );

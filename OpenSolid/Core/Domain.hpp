@@ -104,6 +104,6 @@ namespace opensolid
         const Domain<iNumDimensions>& domain,
         const ParametricExpression<iNumDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return Domain<iNumDimensions>(domain.boundaries().morphed(morphingExpression));
+        return Domain<iNumDimensions>(domain.boundaries().morphedBy(morphingExpression));
     }
 }

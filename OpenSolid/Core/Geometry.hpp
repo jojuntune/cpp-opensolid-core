@@ -106,7 +106,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     SpatialSet<Geometry<iNumDimensions, iNumParameters - 1>>
     Geometry<iNumDimensions, iNumParameters>::boundaries() const {
-        return domain().boundaries().morphed(expression());
+        return domain().boundaries().morphedBy(expression());
     }
 
     template <int iNumDimensions>

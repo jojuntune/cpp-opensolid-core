@@ -122,7 +122,7 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return Axis<iNumResultDimensions>(
-            axis.originPoint().morphed(morphingExpression),
+            axis.originPoint().morphedBy(morphingExpression),
             morphingExpression.jacobian(axis.originPoint().vector()) * axis.directionVector()
         );
     }

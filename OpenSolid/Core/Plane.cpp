@@ -177,7 +177,7 @@ namespace opensolid
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
         return Plane3d(
-            plane.originPoint().morphed(morphingExpression),
+            plane.originPoint().morphedBy(morphingExpression),
             morphingExpression.jacobian(plane.originPoint().vector()) * plane.normalVector()
         );
     }

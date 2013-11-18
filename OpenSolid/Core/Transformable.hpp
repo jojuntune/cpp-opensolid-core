@@ -167,7 +167,7 @@ namespace opensolid
     template <class TDerived> template <int iNumResultDimensions>
     inline
     typename MorphedType<TDerived, iNumResultDimensions>::Type
-    Transformable<TDerived>::morphed(
+    Transformable<TDerived>::morphedBy(
         const ParametricExpression<
             iNumResultDimensions,
             NumDimensions<TDerived>::Value
