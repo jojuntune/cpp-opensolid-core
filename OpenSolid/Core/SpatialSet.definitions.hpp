@@ -50,18 +50,18 @@ namespace opensolid
         public SpatialCollection<SpatialSet<TItem>>
     {
     private:
-        boost::intrusive_ptr<detail::SpatialSetData<TItem>> _data;
+        boost::intrusive_ptr<detail::SpatialSetData<TItem>> _dataPtr;
 
         struct BoundsData
         {
             typename BoundsType<TItem>::Type bounds;
-            const TItem* item;
+            const TItem* itemPtr;
         };
 
         void
         init(
-            detail::SpatialSetNode<TItem>* node,
-            detail::SpatialSetNode<TItem>* next,
+            detail::SpatialSetNode<TItem>* nodePtr,
+            detail::SpatialSetNode<TItem>* nextPtr,
             BoundsData** begin,
             BoundsData** end,
             typename BoundsType<TItem>::Type& overallBounds,

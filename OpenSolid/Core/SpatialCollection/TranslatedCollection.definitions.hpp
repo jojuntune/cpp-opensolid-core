@@ -94,7 +94,7 @@ namespace opensolid
         {
         private:
             typename IteratorType<TBaseCollection>::Type _baseIterator;
-            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* _vector;
+            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* _vectorPtr;
 
             friend class boost::iterator_core_access;
 
@@ -111,7 +111,7 @@ namespace opensolid
 
             TranslatedCollectionIterator(
                 typename IteratorType<TBaseCollection>::Type baseIterator,
-                const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* vector
+                const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* vectorPtr
             );
         };
     }

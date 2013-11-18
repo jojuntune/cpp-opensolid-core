@@ -42,7 +42,7 @@ namespace opensolid
         public SpatialCollection<SpatialList<TItem>>
     {
     private:
-        boost::intrusive_ptr<detail::SpatialListData<TItem>> _data;
+        boost::intrusive_ptr<detail::SpatialListData<TItem>> _dataPtr;
     public:
         SpatialList();
 

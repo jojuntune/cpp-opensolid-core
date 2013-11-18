@@ -86,13 +86,13 @@ namespace opensolid
             >
         {
         private:
-            const SpatialSetNode<TItem>* _currentNode;
-            const TBoundsPredicate* _boundsPredicate;
+            const SpatialSetNode<TItem>* _currentNodePtr;
+            const TBoundsPredicate* _boundsPredicatePtr;
 
             friend class boost::iterator_core_access;
 
             void
-            descendFrom(const SpatialSetNode<TItem>* candidateNode);
+            descendFrom(const SpatialSetNode<TItem>* candidateNodePtr);
 
             void
             increment();
@@ -106,8 +106,8 @@ namespace opensolid
             FilteredSpatialSetIterator();
 
             FilteredSpatialSetIterator(
-                const SpatialSetNode<TItem>* rootNode,
-                const TBoundsPredicate* boundsPredicate
+                const SpatialSetNode<TItem>* rootNodePtr,
+                const TBoundsPredicate* boundsPredicatePtr
             );
         };
     }

@@ -47,7 +47,7 @@ namespace opensolid
         public Convertible<ParametricExpression<iNumDimensions, iNumParameters>>
     {
     private:
-        ExpressionImplementationPtr _implementation;
+        ExpressionImplementationPtr _implementationPtr;
     public:
         static_assert(
             iNumDimensions > 0 && iNumDimensions != Dynamic,
@@ -61,9 +61,9 @@ namespace opensolid
 
         ParametricExpression();
 
-        ParametricExpression(const ExpressionImplementation* implementation);
+        ParametricExpression(const ExpressionImplementation* implementationPtr);
         
-        ParametricExpression(const ExpressionImplementationPtr& implementation);
+        ParametricExpression(const ExpressionImplementationPtr& implementationPtr);
         
         const ExpressionImplementationPtr&
         implementation() const;

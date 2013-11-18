@@ -43,35 +43,35 @@ namespace opensolid
 {
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression() :
-        _implementation(new ConstantExpression(VectorXd::Zero(iNumDimensions), iNumParameters)) {
+        _implementationPtr(new ConstantExpression(VectorXd::Zero(iNumDimensions), iNumParameters)) {
     }
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression(
-        const ExpressionImplementation* implementation
-    ) : _implementation(implementation) {
-        if (!implementation) {
+        const ExpressionImplementation* implementationPtr
+    ) : _implementationPtr(implementationPtr) {
+        if (!implementationPtr) {
             throw Error(new PlaceholderError());
         }
-        if (implementation->numDimensions() != iNumDimensions) {
+        if (implementationPtr->numDimensions() != iNumDimensions) {
             throw Error(new PlaceholderError());
         }
-        if (implementation->numParameters() != iNumParameters) {
+        if (implementationPtr->numParameters() != iNumParameters) {
             throw Error(new PlaceholderError());
         }
     }
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression(
-        const ExpressionImplementationPtr& implementation
-    ) : _implementation(implementation) {
-        if (!implementation) {
+        const ExpressionImplementationPtr& implementationPtr
+    ) : _implementationPtr(implementationPtr) {
+        if (!implementationPtr) {
             throw Error(new PlaceholderError());
         }
-        if (implementation->numDimensions() != iNumDimensions) {
+        if (implementationPtr->numDimensions() != iNumDimensions) {
             throw Error(new PlaceholderError());
         }
-        if (implementation->numParameters() != iNumParameters) {
+        if (implementationPtr->numParameters() != iNumParameters) {
             throw Error(new PlaceholderError());
         }
     }
@@ -80,7 +80,7 @@ namespace opensolid
     inline
     const ExpressionImplementationPtr&
     ParametricExpression<iNumDimensions, iNumParameters>::implementation() const {
-        return _implementation;
+        return _implementationPtr;
     }
 
     template <int iNumDimensions, int iNumParameters>

@@ -193,17 +193,17 @@ public:
     
     void testPointerAccess() {
         Matrix3d a = Matrix3d::Zero();
-        double* write;
-        write = &a.coeffRef(0, 0);
-        *write = 3;
-        write = &a.row(1).coeffRef(0, 0);
-        *(write + 1) = 4;
+        double* writePtr;
+        writePtr = &a.coeffRef(0, 0);
+        *writePtr = 3;
+        writePtr = &a.row(1).coeffRef(0, 0);
+        *(writePtr + 1) = 4;
         const Matrix3d b = a;
-        const double* read;
-        read = b.data();
-        TS_ASSERT_EQUALS(*read, 3);
-        read = b.row(1).data();
-        TS_ASSERT_EQUALS(*(read + 1), 4);
+        const double* readPtr;
+        readPtr = b.data();
+        TS_ASSERT_EQUALS(*readPtr, 3);
+        readPtr = b.row(1).data();
+        TS_ASSERT_EQUALS(*(readPtr + 1), 4);
     }
 
     void testBoostGeometryPoint() {

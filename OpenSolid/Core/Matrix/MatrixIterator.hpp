@@ -47,7 +47,7 @@ namespace Eigen
         friend class boost::iterator_core_access;
         friend class MatrixIterator<TMatrix>;
         
-        const TMatrix* _matrix;
+        const TMatrix* _matrixPtr;
         Index _index;
         
         typename TMatrix::Scalar
@@ -97,7 +97,7 @@ namespace Eigen
         friend class boost::iterator_core_access;
         friend class ConstMatrixIterator<TMatrix>;
         
-        TMatrix* _matrix;
+        TMatrix* _matrixPtr;
         Index _index;
         
         typename TMatrix::Scalar&
@@ -147,7 +147,7 @@ namespace Eigen
         
         friend class boost::iterator_core_access;
         
-        TMatrix* _matrix;
+        TMatrix* _matrixPtr;
         Index _index;
         
         TBlock
@@ -317,7 +317,7 @@ namespace Eigen
     inline
     typename TMatrix::Scalar
     ConstMatrixIterator<TMatrix>::dereference() const {
-        return (*_matrix)(_index);
+        return (*_matrixPtr)(_index);
     }
     
     template <class TMatrix>
@@ -374,21 +374,21 @@ namespace Eigen
     ConstMatrixIterator<TMatrix>::ConstMatrixIterator(
         const TMatrix& matrix,
         typename TMatrix::Index index
-    ) : _matrix(&matrix),
+    ) : _matrixPtr(&matrix),
         _index(index) {
     }
     
     template <class TMatrix>
     inline
     ConstMatrixIterator<TMatrix>::ConstMatrixIterator(const ConstMatrixIterator<TMatrix>& other) :
-        _matrix(other._matrix),
+        _matrixPtr(other._matrixPtr),
         _index(other._index) {
     }
     
     template <class TMatrix>
     inline
     ConstMatrixIterator<TMatrix>::ConstMatrixIterator(const MatrixIterator<TMatrix>& other) :
-        _matrix(other._matrix),
+        _matrixPtr(other._matrixPtr),
         _index(other._index) {
     }
     
@@ -396,7 +396,7 @@ namespace Eigen
     inline
     typename TMatrix::Scalar&
     MatrixIterator<TMatrix>::dereference() const {
-        return (*_matrix)(_index);
+        return (*_matrixPtr)(_index);
     }
     
     template <class TMatrix>
@@ -451,14 +451,14 @@ namespace Eigen
     template <class TMatrix>
     inline
     MatrixIterator<TMatrix>::MatrixIterator(TMatrix& matrix, typename TMatrix::Index index) :
-        _matrix(&matrix),
+        _matrixPtr(&matrix),
         _index(index) {
     }
     
     template <class TMatrix>
     inline
     MatrixIterator<TMatrix>::MatrixIterator(const MatrixIterator<TMatrix>& other) :
-        _matrix(other._matrix),
+        _matrixPtr(other._matrixPtr),
         _index(other._index) {
     }
     
@@ -466,7 +466,7 @@ namespace Eigen
     inline
     TBlock
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::dereference() const {
-        return TDerived::block(*_matrix, _index);
+        return TDerived::block(*_matrixPtr, _index);
     }
     
     template <class TDerived, class TMatrix, class TBlock>
@@ -515,7 +515,7 @@ namespace Eigen
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::MatrixBlockIterator(
         TMatrix& matrix,
         typename TMatrix::Index index
-    ) : _matrix(&matrix),
+    ) : _matrixPtr(&matrix),
         _index(index) {
     }
     
@@ -524,7 +524,7 @@ namespace Eigen
     inline
     MatrixBlockIterator<TDerived, TMatrix, TBlock>::MatrixBlockIterator(
         const MatrixBlockIterator<TOtherDerived, TOtherMatrix, TOtherBlock>& other
-    ) : _matrix(other._matrix),
+    ) : _matrixPtr(other._matrixPtr),
         _index(other._index) {
     }
     

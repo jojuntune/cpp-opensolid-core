@@ -42,18 +42,18 @@
 using namespace opensolid;
 
 template <class TItem>
-void testSet(const detail::SpatialSetNode<TItem>* node) {
-    if (!node) {
+void testSet(const detail::SpatialSetNode<TItem>* nodePtr) {
+    if (!nodePtr) {
         return;
-    } else if (node->leftChild) {
-        const detail::SpatialSetNode<TItem>* leftChild = node->leftChild;
-        const detail::SpatialSetNode<TItem>* rightChild = node->leftChild->next;
-        TS_ASSERT(leftChild != nullptr);
-        TS_ASSERT(rightChild != nullptr);
-        TS_ASSERT(node->bounds.contains(leftChild->bounds));
-        TS_ASSERT(node->bounds.contains(rightChild->bounds));
-        testSet(leftChild);
-        testSet(rightChild);
+    } else if (nodePtr->leftChildPtr) {
+        const detail::SpatialSetNode<TItem>* leftChildPtr = nodePtr->leftChildPtr;
+        const detail::SpatialSetNode<TItem>* rightChildPtr = nodePtr->leftChildPtr->nextPtr;
+        TS_ASSERT(leftChildPtr != nullptr);
+        TS_ASSERT(rightChildPtr != nullptr);
+        TS_ASSERT(nodePtr->bounds.contains(leftChildPtr->bounds));
+        TS_ASSERT(nodePtr->bounds.contains(rightChildPtr->bounds));
+        testSet(leftChildPtr);
+        testSet(rightChildPtr);
     }
 }
 
@@ -233,14 +233,14 @@ public:
         values[2] = 3;
 
         SpatialSet<double> set1(values);
-        const detail::SpatialSetNode<double>* root = set1.rootNode();
+        const detail::SpatialSetNode<double>* rootNodePtr = set1.rootNode();
 
         SpatialSet<double> set2(std::move(set1));
 
         TS_ASSERT_EQUALS(set1.size(), 0u);
         TS_ASSERT_EQUALS(set2.size(), 3u);
         TS_ASSERT_EQUALS(set1.rootNode(), nullptr);
-        TS_ASSERT_EQUALS(set2.rootNode(), root);
+        TS_ASSERT_EQUALS(set2.rootNode(), rootNodePtr);
 
         SpatialSet<double> set3;
         set3 = std::move(set2);
@@ -248,7 +248,7 @@ public:
         TS_ASSERT_EQUALS(set2.size(), 0u);
         TS_ASSERT_EQUALS(set3.size(), 3u);
         TS_ASSERT_EQUALS(set2.rootNode(), nullptr);
-        TS_ASSERT_EQUALS(set3.rootNode(), root);
+        TS_ASSERT_EQUALS(set3.rootNode(), rootNodePtr);
     }
 
     void testUnique() {

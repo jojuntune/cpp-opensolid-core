@@ -119,7 +119,7 @@ namespace opensolid
             const ParametricExpression<
                 iNumResultDimensions,
                 NumDimensions<TBaseCollection>::Value
-            >* _morphingExpression;
+            >* _morphingExpressionPtr;
 
             friend class boost::iterator_core_access;
 
@@ -144,7 +144,7 @@ namespace opensolid
                 const ParametricExpression<
                     iNumResultDimensions,
                     NumDimensions<TBaseCollection>::Value
-                >* morphingExpression
+                >* morphingExpressionPtr
             );
         };
     }

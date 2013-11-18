@@ -107,18 +107,18 @@ namespace opensolid
             int parameterIndex =
                 expressionImplementation->cast<ParameterExpression>()->parameterIndex();
             Stride<Dynamic, Dynamic> stride(parameterValues.outerStride(), 1);
-            const TScalar* data = &parameterValues.coeffRef(parameterIndex, 0);
-            return ConstMap(data, 1, parameterValues.cols(), stride);
+            const TScalar* dataPtr = &parameterValues.coeffRef(parameterIndex, 0);
+            return ConstMap(dataPtr, 1, parameterValues.cols(), stride);
         } else if (expressionImplementation->isConstantExpression()) {
             // Constant expression: build map pointing to constant data (using an outer stride of
             // zero allows the single column of data within the ConstantExpression to be used to
             // represent a matrix of arbitrary number of columns)
             Stride<Dynamic, Dynamic> stride(0, 1);
-            const TScalar* data = dataPointer<TScalar>(
+            const TScalar* dataPtr = dataPointer<TScalar>(
                 expressionImplementation->cast<ConstantExpression>()
             );
             return ConstMap(
-                data,
+                dataPtr,
                 expressionImplementation->numDimensions(),
                 parameterValues.cols(),
                 stride

@@ -82,10 +82,10 @@ namespace opensolid
     
     bool
     LinearExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        const LinearExpression* otherLinear = other->cast<LinearExpression>();
+        const LinearExpression* otherLinearPtr = other->cast<LinearExpression>();
 
-        return (this->originPoint() - otherLinear->originPoint()).isZero() &&
-            (this->basisMatrix() - otherLinear->basisMatrix()).isZero();
+        return (this->originPoint() - otherLinearPtr->originPoint()).isZero() &&
+            (this->basisMatrix() - otherLinearPtr->basisMatrix()).isZero();
     }
 
     ExpressionImplementationPtr

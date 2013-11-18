@@ -137,7 +137,7 @@ namespace opensolid
         TranslatedCollectionIterator<TBaseCollection>::equal(
             const TranslatedCollectionIterator<TBaseCollection>& other
         ) const {
-            assert(*_vector == *other._vector);
+            assert(*_vectorPtr == *other._vectorPtr);
             return _baseIterator == other._baseIterator;
         }
 
@@ -145,22 +145,22 @@ namespace opensolid
         inline
         typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type
         TranslatedCollectionIterator<TBaseCollection>::dereference() const {
-            return detail::translated(*_baseIterator, *_vector);
+            return detail::translated(*_baseIterator, *_vectorPtr);
         }
 
         template <class TBaseCollection>
         inline
         TranslatedCollectionIterator<TBaseCollection>::TranslatedCollectionIterator() :
-            _vector(nullptr) {
+            _vectorPtr(nullptr) {
         }
 
         template <class TBaseCollection>
         inline
         TranslatedCollectionIterator<TBaseCollection>::TranslatedCollectionIterator(
             typename IteratorType<TBaseCollection>::Type baseIterator,
-            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* vector
+            const Matrix<double, NumDimensions<TBaseCollection>::Value, 1>* vectorPtr
         ) : _baseIterator(baseIterator),
-            _vector(vector) {
+            _vectorPtr(vectorPtr) {
         }
     }
 

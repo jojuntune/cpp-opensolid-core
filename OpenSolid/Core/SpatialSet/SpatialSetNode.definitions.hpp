@@ -38,9 +38,9 @@ namespace opensolid
         struct SpatialSetNode
         {
             typename BoundsType<TItem>::Type bounds;
-            const SpatialSetNode<TItem>* leftChild;
-            const SpatialSetNode<TItem>* next;
-            const TItem* item;
+            const SpatialSetNode<TItem>* leftChildPtr;
+            const SpatialSetNode<TItem>* nextPtr;
+            const TItem* itemPtr;
         };
     }
 }

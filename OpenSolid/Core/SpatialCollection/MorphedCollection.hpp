@@ -150,7 +150,7 @@ namespace opensolid
         inline
         typename MorphedType<typename ItemType<TBaseCollection>::Type, iNumResultDimensions>::Type
         MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::dereference() const {
-            return detail::morphed(*_baseIterator, *_morphingExpression);
+            return detail::morphed(*_baseIterator, *_morphingExpressionPtr);
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -159,7 +159,7 @@ namespace opensolid
             TBaseCollection,
             iNumResultDimensions
         >::MorphedCollectionIterator() :
-            _morphingExpression(nullptr) {
+            _morphingExpressionPtr(nullptr) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -169,9 +169,9 @@ namespace opensolid
             const ParametricExpression<
                 iNumResultDimensions,
                 NumDimensions<TBaseCollection>::Value
-            >* morphingExpression
+            >* morphingExpressionPtr
         ) : _baseIterator(baseIterator),
-            _morphingExpression(morphingExpression) {
+            _morphingExpressionPtr(morphingExpressionPtr) {
         }
     }
 

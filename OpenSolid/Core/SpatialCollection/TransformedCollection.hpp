@@ -140,7 +140,7 @@ namespace opensolid
         TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::equal(
             const TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>& other
         ) const {
-            assert(*_transformationMatrix == *other._transformationMatrix);
+            assert(*_transformationMatrixPtr == *other._transformationMatrixPtr);
             return _baseIterator == other._baseIterator;
         }
 
@@ -151,7 +151,7 @@ namespace opensolid
             iNumResultDimensions
         >::Type
         TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::dereference() const {
-            return detail::transformed(*_baseIterator, *_transformationMatrix);
+            return detail::transformed(*_baseIterator, *_transformationMatrixPtr);
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -160,7 +160,7 @@ namespace opensolid
             TBaseCollection,
             iNumResultDimensions
         >::TransformedCollectionIterator() :
-            _transformationMatrix(nullptr) {
+            _transformationMatrixPtr(nullptr) {
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -174,9 +174,9 @@ namespace opensolid
                 double,
                 iNumResultDimensions,
                 NumDimensions<TBaseCollection>::Value
-            >* transformationMatrix
+            >* transformationMatrixPtr
         ) : _baseIterator(baseIterator),
-            _transformationMatrix(transformationMatrix) {
+            _transformationMatrixPtr(transformationMatrixPtr) {
         }
     }
 

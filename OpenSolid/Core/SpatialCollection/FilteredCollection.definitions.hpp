@@ -80,7 +80,7 @@ namespace opensolid
         private:
             typename IteratorType<TBaseCollection>::Type _baseIterator;
             typename IteratorType<TBaseCollection>::Type _baseEnd;
-            const TPredicate* _predicate;
+            const TPredicate* _predicatePtr;
 
             friend class boost::iterator_core_access;
 
@@ -98,7 +98,7 @@ namespace opensolid
             FilteredCollectionIterator(
                 typename IteratorType<TBaseCollection>::Type baseIterator,
                 typename IteratorType<TBaseCollection>::Type baseEnd,
-                const TPredicate* predicate
+                const TPredicate* predicatePtr
             );
         };
     }

@@ -90,52 +90,52 @@ namespace opensolid
     template <class TItem>
     void
     SpatialSet<TItem>::init(
-        detail::SpatialSetNode<TItem>* node,
-        detail::SpatialSetNode<TItem>* next,
+        detail::SpatialSetNode<TItem>* nodePtr,
+        detail::SpatialSetNode<TItem>* nextPtr,
         BoundsData** begin,
         BoundsData** end,
         typename BoundsType<TItem>::Type& overallBounds,
         std::int64_t sortIndex
     ) {
-        node->bounds = overallBounds;
-        node->next = next;
+        nodePtr->bounds = overallBounds;
+        nodePtr->nextPtr = nextPtr;
         std::int64_t size = end - begin;
         if (size == 1) {
             // Leaf node
-            node->leftChild = nullptr;
-            node->item = (*begin)->item;
+            nodePtr->leftChildPtr = nullptr;
+            nodePtr->itemPtr = (*begin)->itemPtr;
         } else if (size == 2) {
             // Node with two leaf children
-            detail::SpatialSetNode<TItem>* leftChild = node + 1;
-            detail::SpatialSetNode<TItem>* rightChild = node + 2;
+            detail::SpatialSetNode<TItem>* leftChildPtr = nodePtr + 1;
+            detail::SpatialSetNode<TItem>* rightChildPtr = nodePtr + 2;
 
-            node->leftChild = leftChild;
-            node->item = nullptr;
+            nodePtr->leftChildPtr = leftChildPtr;
+            nodePtr->itemPtr = nullptr;
 
-            leftChild->leftChild = nullptr;
-            rightChild->leftChild = nullptr;
-            BoundsData* firstBoundsData = *begin;
-            BoundsData* secondBoundsData = *(begin + 1);
+            leftChildPtr->leftChildPtr = nullptr;
+            rightChildPtr->leftChildPtr = nullptr;
+            BoundsData* firstBoundsDataPtr = *begin;
+            BoundsData* secondBoundsDataPtr = *(begin + 1);
             bool reversed = detail::hasLesserMedian(
-                secondBoundsData->bounds,
-                firstBoundsData->bounds,
+                secondBoundsDataPtr->bounds,
+                firstBoundsDataPtr->bounds,
                 sortIndex
             );
             if (reversed) {
-                leftChild->bounds = secondBoundsData->bounds;
-                rightChild->bounds = firstBoundsData->bounds;
+                leftChildPtr->bounds = secondBoundsDataPtr->bounds;
+                rightChildPtr->bounds = firstBoundsDataPtr->bounds;
 
-                leftChild->item = secondBoundsData->item;
-                rightChild->item = firstBoundsData->item;
+                leftChildPtr->itemPtr = secondBoundsDataPtr->itemPtr;
+                rightChildPtr->itemPtr = firstBoundsDataPtr->itemPtr;
             } else {
-                leftChild->bounds = firstBoundsData->bounds;
-                rightChild->bounds = secondBoundsData->bounds;
+                leftChildPtr->bounds = firstBoundsDataPtr->bounds;
+                rightChildPtr->bounds = secondBoundsDataPtr->bounds;
 
-                leftChild->item = firstBoundsData->item;
-                rightChild->item = secondBoundsData->item;
+                leftChildPtr->itemPtr = firstBoundsDataPtr->itemPtr;
+                rightChildPtr->itemPtr = secondBoundsDataPtr->itemPtr;
             }
-            leftChild->next = rightChild;
-            rightChild->next = next;
+            leftChildPtr->nextPtr = rightChildPtr;
+            rightChildPtr->nextPtr = nextPtr;
         } else {
             // Partition bounds data and find left/right bounds
             std::int64_t leftSize = 0;
@@ -195,38 +195,38 @@ namespace opensolid
             // Recurse into chid nodes
             std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TItem>::Value;
             
-            detail::SpatialSetNode<TItem>* leftChild = node + 1;
-            detail::SpatialSetNode<TItem>* rightChild = leftChild + (2 * leftSize - 1);
+            detail::SpatialSetNode<TItem>* leftChildPtr = nodePtr + 1;
+            detail::SpatialSetNode<TItem>* rightChildPtr = leftChildPtr + (2 * leftSize - 1);
             
-            node->leftChild = leftChild;
-            node->item = nullptr;
+            nodePtr->leftChildPtr = leftChildPtr;
+            nodePtr->itemPtr = nullptr;
             
-            init(leftChild, rightChild, begin, lower, leftBounds, nextSortIndex);
-            init(rightChild, next, lower, end, rightBounds, nextSortIndex);
+            init(leftChildPtr, rightChildPtr, begin, lower, leftBounds, nextSortIndex);
+            init(rightChildPtr, nextPtr, lower, end, rightBounds, nextSortIndex);
         }
     }
 
     template <class TItem>
     void
     SpatialSet<TItem>::init() {
-        std::int64_t numItems = _data->items.size();
+        std::int64_t numItems = _dataPtr->items.size();
 
         if (numItems == 0) {
-            _data->nodes.clear();
+            _dataPtr->nodes.clear();
             return;
         }
 
         // Initialize bounds data
         std::vector<BoundsData> boundsData(numItems);
-        std::vector<BoundsData*> boundsDataPointers(numItems);
+        std::vector<BoundsData*> boundsDataPtrs(numItems);
         BoundsFunction<TItem> boundsFunction;
         typename BoundsType<TItem>::Type overallBounds;
         for (std::int64_t i = 0; i < numItems; ++i) {
-            typename BoundsType<TItem>::Type bounds = boundsFunction(_data->items[i]);
+            typename BoundsType<TItem>::Type bounds = boundsFunction(_dataPtr->items[i]);
 
             boundsData[i].bounds = bounds;
-            boundsData[i].item = &(_data->items[i]);
-            boundsDataPointers[i] = &boundsData[i];
+            boundsData[i].itemPtr = &(_dataPtr->items[i]);
+            boundsDataPtrs[i] = &boundsData[i];
             if (i == 0) {
                 overallBounds = bounds;
             } else {
@@ -235,12 +235,12 @@ namespace opensolid
         }
 
         // Recursively construct tree
-        _data->nodes.resize(2 * numItems - 1);
+        _dataPtr->nodes.resize(2 * numItems - 1);
         init(
-            _data->nodes.data(),
+            _dataPtr->nodes.data(),
             nullptr,
-            &boundsDataPointers.front(),
-            &boundsDataPointers.back() + 1,
+            &boundsDataPtrs.front(),
+            &boundsDataPtrs.back() + 1,
             overallBounds,
             0
         );
@@ -254,48 +254,48 @@ namespace opensolid
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(const SpatialSet<TItem>& other) :
-        _data(other._data) {
+        _dataPtr(other._dataPtr) {
     }
 
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(SpatialSet<TItem>&& other) :
-        _data(std::move(other._data)) {
+        _dataPtr(std::move(other._dataPtr)) {
     }
 
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(const std::vector<TItem>& items) :
-        _data(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(new detail::SpatialSetData<TItem>()) {
 
-        _data->items = items;
+        _dataPtr->items = items;
         init();
     }
 
     template <class TItem>
     inline
     SpatialSet<TItem>::SpatialSet(std::vector<TItem>&& items) :
-        _data(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(new detail::SpatialSetData<TItem>()) {
 
-        _data->items = std::move(items);
+        _dataPtr->items = std::move(items);
         init();
     }
 
     template <class TItem> template <class TDerived>
     inline
     SpatialSet<TItem>::SpatialSet(const SpatialCollection<TDerived>& collection) :
-        _data(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(new detail::SpatialSetData<TItem>()) {
 
-        _data->items = std::vector<TItem>(collection.begin(), collection.end());
+        _dataPtr->items = std::vector<TItem>(collection.begin(), collection.end());
         init();        
     }
     
     template <class TItem> template <class TIterator>
     inline
     SpatialSet<TItem>::SpatialSet(TIterator begin, TIterator end) :
-        _data(new detail::SpatialSetData<TItem>()) {
+        _dataPtr(new detail::SpatialSetData<TItem>()) {
 
-        _data->items = std::vector<TItem>(begin, end);
+        _dataPtr->items = std::vector<TItem>(begin, end);
         init();
     }
     
@@ -303,21 +303,21 @@ namespace opensolid
     inline
     void
     SpatialSet<TItem>::operator=(const SpatialSet<TItem>& other) {
-        _data = other._data;
+        _dataPtr = other._dataPtr;
     }
     
     template <class TItem>
     inline
     void
     SpatialSet<TItem>::operator=(SpatialSet<TItem>&& other) {
-        _data = std::move(other._data);
+        _dataPtr = std::move(other._dataPtr);
     }
 
     template <class TItem>
     inline
     void
     SpatialSet<TItem>::swap(SpatialSet<TItem>& other) {
-        _data.swap(other._data);
+        _dataPtr.swap(other._dataPtr);
     }
 
     template <class TItem>
@@ -327,7 +327,7 @@ namespace opensolid
         if (isEmpty()) {
             return nullptr;
         } else {
-            return _data->nodes.data();
+            return _dataPtr->nodes.data();
         }
     }
 
@@ -338,7 +338,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename std::vector<TItem>::const_iterator();
         } else {
-            return _data->items.begin();
+            return _dataPtr->items.begin();
         }
     }
 
@@ -349,7 +349,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename std::vector<TItem>::const_iterator();
         } else {
-            return _data->items.end();
+            return _dataPtr->items.end();
         }
     }
 
@@ -357,7 +357,7 @@ namespace opensolid
     inline
     bool
     SpatialSet<TItem>::isEmpty() const {
-        return !_data || _data->items.empty();
+        return !_dataPtr || _dataPtr->items.empty();
     }
     
     template <class TItem>
@@ -367,7 +367,7 @@ namespace opensolid
         if (isEmpty()) {
             return 0;
         } else {
-            return _data->items.size();
+            return _dataPtr->items.size();
         }
     }
 
@@ -378,7 +378,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename BoundsType<TItem>::Type();
         } else {
-            return _data->nodes.front().bounds;
+            return _dataPtr->nodes.front().bounds;
         }
     }
 
@@ -387,14 +387,14 @@ namespace opensolid
     const TItem&
     SpatialSet<TItem>::operator[](std::int64_t index) const {
         assert(!isEmpty());
-        return _data->items[index];
+        return _dataPtr->items[index];
     }
 
     template <class TItem>
     inline
     void
     SpatialSet<TItem>::clear() {
-        _data.reset();
+        _dataPtr.reset();
     }
 
     template <class TItem>
@@ -447,7 +447,7 @@ namespace opensolid
             TolerantComparator<TItem> itemComparator(precision);
             while (filteredIterator != filteredEnd) {
                 if (itemComparator(item, *filteredIterator)) {
-                    return begin() + (&(*filteredIterator) - _data->items.data());
+                    return begin() + (&(*filteredIterator) - _dataPtr->items.data());
                 }
                 ++filteredIterator;
             }
@@ -459,43 +459,44 @@ namespace opensolid
     {
         template <class TItem>
         const SpatialSetNode<TItem>*
-        nextLeafNode(const SpatialSetNode<TItem>* leafNode) {
-            assert(leafNode);
-            assert(leafNode->item);
-            const SpatialSetNode<TItem>* node = leafNode->next;
-            if (!node) {
-                return node;
+        nextLeafNode(const SpatialSetNode<TItem>* leafNodePtr) {
+            assert(leafNodePtr);
+            assert(leafNodePtr->itemPtr);
+            const SpatialSetNode<TItem>* nodePtr = leafNodePtr->nextPtr;
+            if (!nodePtr) {
+                return nodePtr;
             }
-            while (node->leftChild) {
-                node = node->leftChild;
+            while (nodePtr->leftChildPtr) {
+                nodePtr = nodePtr->leftChildPtr;
             }
-            return node;
+            return nodePtr;
         }
 
         template <class TItem>
         void
         markDuplicateItems(
-            const SpatialSetNode<TItem>* anchorNode,
-            const TItem* anchorItem,
+            const SpatialSetNode<TItem>* anchorNodePtr,
+            const TItem* anchorItemPtr,
             std::int64_t uniqueIndex,
-            const TItem* firstItem,
+            const TItem* firstItemPtr,
             const TolerantComparator<TItem>& itemComparator,
             std::vector<std::int64_t>& mapping
         ) {
-            const SpatialSetNode<TItem>* candidateNode = anchorNode->next;
-            while (candidateNode && candidateNode->bounds.overlaps(anchorNode->bounds)) {
-                if (candidateNode->leftChild) {
+            const SpatialSetNode<TItem>* candidateNodePtr = anchorNodePtr->nextPtr;
+            while (candidateNodePtr && candidateNodePtr->bounds.overlaps(anchorNodePtr->bounds)) {
+                const SpatialSetNode<TItem>* leftChildPtr = candidateNodePtr->leftChildPtr;
+                if (leftChildPtr) {
                     // Internal node: descend into left child
-                    candidateNode = candidateNode->leftChild;
+                    candidateNodePtr = leftChildPtr;
                 } else {
                     // Leaf node: check for duplicate items, then move to next node
-                    const TItem* candidateItem = candidateNode->item;
-                    if (itemComparator(*anchorItem, *candidateItem)) {
-                        std::int64_t candidateItemIndex = candidateItem - firstItem;
+                    const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
+                    if (itemComparator(*anchorItemPtr, *candidateItemPtr)) {
+                        std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
                         assert(mapping[candidateItemIndex] == -1);
                         mapping[candidateItemIndex] = uniqueIndex;
                     }
-                    candidateNode = candidateNode->next;
+                    candidateNodePtr = candidateNodePtr->nextPtr;
                 }
             }
         }
@@ -523,34 +524,34 @@ namespace opensolid
             std::int64_t uniqueIndex = 0;
 
             // Get first item for calculating item indices
-            const TItem* firstItem = &_data->items.front();
+            const TItem* firstItemPtr = _dataPtr->items.data();
 
             // Descend to left-most node
-            const detail::SpatialSetNode<TItem>* node = rootNode();
-            while (node->leftChild) {
-                node = node->leftChild;
+            const detail::SpatialSetNode<TItem>* nodePtr = rootNode();
+            while (nodePtr->leftChildPtr) {
+                nodePtr = nodePtr->leftChildPtr;
             }
 
             std::vector<TItem> results;
             TolerantComparator<TItem> itemComparator(precision);
             do {
-                const TItem* item = node->item;
-                std::int64_t itemIndex = item - firstItem;
+                const TItem* itemPtr = nodePtr->itemPtr;
+                std::int64_t itemIndex = itemPtr - firstItemPtr;
                 if (mapping[itemIndex] == -1) {
-                    results.push_back(*item);
+                    results.push_back(*itemPtr);
                     mapping[itemIndex] = uniqueIndex;
                     detail::markDuplicateItems(
-                        node,
-                        item,
+                        nodePtr,
+                        itemPtr,
                         uniqueIndex,
-                        firstItem,
+                        firstItemPtr,
                         itemComparator,
                         mapping
                     );
                     ++uniqueIndex;
                 }
-                node = detail::nextLeafNode(node);
-            } while (node);
+                nodePtr = detail::nextLeafNode(nodePtr);
+            } while (nodePtr);
             return SpatialList<TItem>(std::move(results));
         }
     }

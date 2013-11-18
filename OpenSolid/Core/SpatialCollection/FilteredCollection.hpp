@@ -117,7 +117,7 @@ namespace opensolid
         FilteredCollectionIterator<TBaseCollection, TPredicate>::increment() {
             do {
                 ++_baseIterator;
-            } while (_baseIterator != _baseEnd && !(*_predicate)(*_baseIterator));
+            } while (_baseIterator != _baseEnd && !(*_predicatePtr)(*_baseIterator));
         }
 
         template <class TBaseCollection, class TPredicate>
@@ -140,7 +140,7 @@ namespace opensolid
         template <class TBaseCollection, class TPredicate>
         inline
         FilteredCollectionIterator<TBaseCollection, TPredicate>::FilteredCollectionIterator() :
-            _predicate(nullptr) {
+            _predicatePtr(nullptr) {
         }
 
         template <class TBaseCollection, class TPredicate>
@@ -148,12 +148,12 @@ namespace opensolid
         FilteredCollectionIterator<TBaseCollection, TPredicate>::FilteredCollectionIterator(
             typename IteratorType<TBaseCollection>::Type baseIterator,
             typename IteratorType<TBaseCollection>::Type baseEnd,
-            const TPredicate* predicate
+            const TPredicate* predicatePtr
         ) : _baseIterator(baseIterator),
             _baseEnd(baseEnd),
-            _predicate(predicate) {
+            _predicatePtr(predicatePtr) {
 
-            while (_baseIterator != _baseEnd && !(*_predicate)(*_baseIterator)) {
+            while (_baseIterator != _baseEnd && !(*_predicatePtr)(*_baseIterator)) {
                 ++_baseIterator;
             }
         }

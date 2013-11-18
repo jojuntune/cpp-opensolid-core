@@ -114,16 +114,16 @@ namespace opensolid
         inline
         void
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::descendFrom(
-            const SpatialSetNode<TItem>* candidateNode
+            const SpatialSetNode<TItem>* candidateNodePtr
         ) {
-            _currentNode = candidateNode;
-            while (candidateNode) {
-                if ((*_boundsPredicate)(candidateNode->bounds)) {
-                    _currentNode = candidateNode;
-                    candidateNode = candidateNode->leftChild;
+            _currentNodePtr = candidateNodePtr;
+            while (candidateNodePtr) {
+                if ((*_boundsPredicatePtr)(candidateNodePtr->bounds)) {
+                    _currentNodePtr = candidateNodePtr;
+                    candidateNodePtr = candidateNodePtr->leftChildPtr;
                 } else {
-                    candidateNode = candidateNode->next;
-                    _currentNode = candidateNode;
+                    candidateNodePtr = candidateNodePtr->nextPtr;
+                    _currentNodePtr = candidateNodePtr;
                 }
             }
         }
@@ -132,7 +132,7 @@ namespace opensolid
         inline
         void
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::increment() {
-            descendFrom(_currentNode->next);
+            descendFrom(_currentNodePtr->nextPtr);
         }
 
         template <class TItem, class TBoundsPredicate>
@@ -141,32 +141,33 @@ namespace opensolid
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::equal(
             const FilteredSpatialSetIterator<TItem, TBoundsPredicate>& other
         ) const {
-            return _currentNode == other._currentNode;
+            return _currentNodePtr == other._currentNodePtr;
         }
 
         template <class TItem, class TBoundsPredicate>
         inline
         const TItem&
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::dereference() const {
-            return *(_currentNode->item);
+            return *(_currentNodePtr->itemPtr);
         }
 
         template <class TItem, class TBoundsPredicate>
         inline
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::FilteredSpatialSetIterator() :
-            _currentNode(nullptr) {
+            _currentNodePtr(nullptr),
+            _boundsPredicatePtr(nullptr) {
         }
 
         template <class TItem, class TBoundsPredicate>
         inline
         FilteredSpatialSetIterator<TItem, TBoundsPredicate>::FilteredSpatialSetIterator(
-            const SpatialSetNode<TItem>* rootNode,
-            const TBoundsPredicate* boundsPredicate
-        ) : _currentNode(nullptr),
-            _boundsPredicate(boundsPredicate) {
+            const SpatialSetNode<TItem>* rootNodePtr,
+            const TBoundsPredicate* boundsPredicatePtr
+        ) : _currentNodePtr(nullptr),
+            _boundsPredicatePtr(boundsPredicatePtr) {
 
-            if (rootNode) {
-                descendFrom(rootNode);
+            if (rootNodePtr) {
+                descendFrom(rootNodePtr);
             }
         }
     }

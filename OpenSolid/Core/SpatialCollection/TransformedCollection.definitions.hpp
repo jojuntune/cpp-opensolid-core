@@ -117,7 +117,7 @@ namespace opensolid
                 double,
                 iNumResultDimensions,
                 NumDimensions<TBaseCollection>::Value
-            >* _transformationMatrix;
+            >* _transformationMatrixPtr;
 
             friend class boost::iterator_core_access;
 
@@ -143,7 +143,7 @@ namespace opensolid
                     double,
                     iNumResultDimensions,
                     NumDimensions<TBaseCollection>::Value
-                >* transformationMatrix
+                >* transformationMatrixPtr
             );
         };
     }

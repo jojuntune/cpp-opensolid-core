@@ -82,11 +82,11 @@ namespace opensolid
         public ReturnByValue<ExpressionEvaluation<iNumDimensions, iNumParameters, TArgument>>
     {
     private:
-        const ExpressionImplementation* _expressionImplementation;
+        const ExpressionImplementation* _expressionImplementationPtr;
         const TArgument& _argument;
     public:
         ExpressionEvaluation(
-            const ExpressionImplementation* expressionImplementation,
+            const ExpressionImplementation* expressionImplementationPtr,
             const TArgument& argument
         );
 
@@ -112,11 +112,11 @@ namespace opensolid
         public ReturnByValue<ExpressionEvaluation<iNumDimensions, 1, int>>
     {
     private:
-        const ExpressionImplementation* _expressionImplementation;
+        const ExpressionImplementation* _expressionImplementationPtr;
         double _argument;
     public:
         ExpressionEvaluation(
-            const ExpressionImplementation* expressionImplementation,
+            const ExpressionImplementation* expressionImplementationPtr,
             int argument
         );
 
@@ -142,11 +142,11 @@ namespace opensolid
         public ReturnByValue<ExpressionEvaluation<iNumDimensions, 1, double>>
     {
     private:
-        const ExpressionImplementation* _expressionImplementation;
+        const ExpressionImplementation* _expressionImplementationPtr;
         double _argument;
     public:
         ExpressionEvaluation(
-            const ExpressionImplementation* expressionImplementation,
+            const ExpressionImplementation* expressionImplementationPtr,
             double argument
         );
 
@@ -172,11 +172,11 @@ namespace opensolid
         public ReturnByValue<ExpressionEvaluation<iNumDimensions, 1, Interval>>
     {
     private:
-        const ExpressionImplementation* _expressionImplementation;
+        const ExpressionImplementation* _expressionImplementationPtr;
         Interval _argument;
     public:
         ExpressionEvaluation(
-            const ExpressionImplementation* expressionImplementation,
+            const ExpressionImplementation* expressionImplementationPtr,
             Interval argument
         );
 

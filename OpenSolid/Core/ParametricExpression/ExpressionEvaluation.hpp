@@ -39,9 +39,9 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters, class TArgument>
     inline
     ExpressionEvaluation<iNumDimensions, iNumParameters, TArgument>::ExpressionEvaluation(
-        const ExpressionImplementation* expressionImplementation,
+        const ExpressionImplementation* expressionImplementationPtr,
         const TArgument& argument
-    ) : _expressionImplementation(expressionImplementation),
+    ) : _expressionImplementationPtr(expressionImplementationPtr),
         _argument(argument) {
     }
     
@@ -91,7 +91,7 @@ namespace opensolid
         
         // Evaluate
         Evaluator evaluator;
-        _expressionImplementation->evaluate(argumentMap, resultMap, evaluator);
+        _expressionImplementationPtr->evaluate(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions, int iNumParameters, class TArgument>
@@ -115,9 +115,9 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     ExpressionEvaluation<iNumDimensions, 1, int>::ExpressionEvaluation(
-        const ExpressionImplementation* expressionImplementation,
+        const ExpressionImplementation* expressionImplementationPtr,
         int argument
-    ) : _expressionImplementation(expressionImplementation),
+    ) : _expressionImplementationPtr(expressionImplementationPtr),
         _argument(argument) {
     }
     
@@ -154,7 +154,7 @@ namespace opensolid
         
         // Evaluate
         Evaluator evaluator;
-        _expressionImplementation->evaluate(argumentMap, resultMap, evaluator);
+        _expressionImplementationPtr->evaluate(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions>
@@ -176,9 +176,9 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     ExpressionEvaluation<iNumDimensions, 1, double>::ExpressionEvaluation(
-        const ExpressionImplementation* expressionImplementation,
+        const ExpressionImplementation* expressionImplementationPtr,
         double argument
-    ) : _expressionImplementation(expressionImplementation),
+    ) : _expressionImplementationPtr(expressionImplementationPtr),
         _argument(argument) {
     }
     
@@ -215,7 +215,7 @@ namespace opensolid
         
         // Evaluate
         Evaluator evaluator;
-        _expressionImplementation->evaluate(argumentMap, resultMap, evaluator);
+        _expressionImplementationPtr->evaluate(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions>
@@ -237,9 +237,9 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     ExpressionEvaluation<iNumDimensions, 1, Interval>::ExpressionEvaluation(
-        const ExpressionImplementation* expressionImplementation,
+        const ExpressionImplementation* expressionImplementationPtr,
         Interval argument
-    ) : _expressionImplementation(expressionImplementation),
+    ) : _expressionImplementationPtr(expressionImplementationPtr),
         _argument(argument) {
     }
 
@@ -276,7 +276,7 @@ namespace opensolid
         
         // Evaluate
         Evaluator evaluator;
-        _expressionImplementation->evaluate(argumentMap, resultMap, evaluator);
+        _expressionImplementationPtr->evaluate(argumentMap, resultMap, evaluator);
     }
     
     template <int iNumDimensions>

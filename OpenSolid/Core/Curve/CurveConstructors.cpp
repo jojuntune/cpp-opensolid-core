@@ -42,11 +42,11 @@ namespace opensolid
             WindingDirection direction,
             const Point2d& startPoint,
             const Point2d& endPoint,
-            Point2d* result
+            Point2d& result
         ) {
             if (radius <= Zero()) {
                 assert(false);
-                *result = Point2d();
+                result = Point2d();
                 return false;
             }
 
@@ -56,14 +56,14 @@ namespace opensolid
             if (halfDistance == Zero()) {
                 // Points are coincident
                 assert(false);
-                *result = Point2d();
+                result = Point2d();
                 return false;
             }
 
             if (halfDistance - radius > Zero()) {
                 // Points are too far apart
                 assert(false);
-                *result = Point2d();
+                result = Point2d();
                 return false;
             }
 
@@ -79,7 +79,7 @@ namespace opensolid
                 sidewaysDistance = sqrt(halfDistance * halfDistance - radius * radius);
             }
 
-            *result = startPoint + displacementVector / 2 + sidewaysDistance * sidewaysDirection;
+            result = startPoint + displacementVector / 2 + sidewaysDistance * sidewaysDirection;
             return true;
         }
 
@@ -88,7 +88,7 @@ namespace opensolid
             const Point2d& firstPoint,
             const Point2d& secondPoint,
             const Point2d& thirdPoint,
-            Point2d* result
+            Point2d& result
         ) {
             double a = (secondPoint - firstPoint).norm();
             double b = (thirdPoint - secondPoint).norm();
@@ -98,7 +98,7 @@ namespace opensolid
             if(s - a <= Zero() || s - b <= Zero() || s - c <= Zero()) {
                 // Points are collinear
                 assert(false);
-                *result = Point2d();
+                result = Point2d();
                 return false;
             }
 
@@ -113,7 +113,7 @@ namespace opensolid
             t2 /= sum;
             t3 /= sum;
 
-            *result = Point2d(
+            result = Point2d(
                 t1 * thirdPoint.vector() + t2 * firstPoint.vector() + t3 * secondPoint.vector()
             );
             return true;
@@ -124,7 +124,7 @@ namespace opensolid
             const Point2d& firstPoint,
             const Point2d& secondPoint,
             const Point2d& thirdPoint,
-            WindingDirection* result
+            WindingDirection& result
         ) {
             Vector2d firstLeg = secondPoint - firstPoint;
             Vector2d secondLeg = thirdPoint - secondPoint;
@@ -133,46 +133,46 @@ namespace opensolid
             if (determinant == Zero()) {
                 // Points are collinear
                 assert(false);
-                *result = Counterclockwise;
+                result = Counterclockwise;
                 return false;
             }
 
-            *result = determinant > 0.0 ? Counterclockwise : Clockwise;
+            result = determinant > 0.0 ? Counterclockwise : Clockwise;
             return true;
         }
 
         bool
-        computeHelixParameters(double* pitch, double* numTurns, double* length) {
-            bool hasPitch = (*pitch > Zero());
-            bool hasNumTurns = (*numTurns > Zero());
-            bool hasLength = (*length > Zero());
+        computeHelixParameters(double& pitch, double& numTurns, double& length) {
+            bool hasPitch = (pitch > Zero());
+            bool hasNumTurns = (numTurns > Zero());
+            bool hasLength = (length > Zero());
 
             if (hasPitch && hasNumTurns && hasLength) {
-                if ((*pitch) * (*numTurns) - (*length) != Zero()) {
+                if (pitch * numTurns - length != Zero()) {
                     // Parameter values contradict each other
                     assert(false);
-                    *pitch = 0.0;
-                    *numTurns = 0.0;
-                    *length = 0.0;
+                    pitch = 0.0;
+                    numTurns = 0.0;
+                    length = 0.0;
                     return false;
                 } else {
                     return true;
                 }
             } else if (hasPitch && hasNumTurns) {
-                *length = (*pitch) * (*numTurns);
+                length = pitch * numTurns;
                 return true;
             } else if (hasPitch && hasLength) {
-                *numTurns = (*length) / (*pitch);
+                numTurns = length / pitch;
                 return true;
             } else if (hasNumTurns && hasLength) {
-                *pitch = (*length) / (*numTurns);
+                pitch = length / numTurns;
                 return true;
             } else {
                 // Not enough parameters supplied
                 assert(false);
-                *pitch = 0.0;
-                *numTurns = 0.0;
-                *length = 0.0;
+                pitch = 0.0;
+                numTurns = 0.0;
+                length = 0.0;
                 return false;
             }
         }
@@ -273,7 +273,7 @@ namespace opensolid
         const Point<2>& endPoint
     ) {
         Point2d centerPoint;
-        if (!detail::computeCenterPoint(radius, direction, startPoint, endPoint, &centerPoint)) {
+        if (!detail::computeCenterPoint(radius, direction, startPoint, endPoint, centerPoint)) {
             assert(false);
             return Curve2d();
         }
@@ -287,12 +287,12 @@ namespace opensolid
         const Point<2>& endPoint
     ) {
         Point2d centerPoint;
-        if (!detail::computeCenterPoint(startPoint, innerPoint, endPoint, &centerPoint)) {
+        if (!detail::computeCenterPoint(startPoint, innerPoint, endPoint, centerPoint)) {
             assert(false);
             return Curve2d();
         }
         WindingDirection direction = Counterclockwise;
-        if (!detail::computeWindingDirection(startPoint, innerPoint, endPoint, &direction)) {
+        if (!detail::computeWindingDirection(startPoint, innerPoint, endPoint, direction)) {
             assert(false);
             return Curve2d();
         }
@@ -335,7 +335,7 @@ namespace opensolid
         const Point<2>& secondPoint
     ) {
         Point2d centerPoint;
-        if (!detail::computeCenterPoint(radius, direction, startPoint, secondPoint, &centerPoint)) {
+        if (!detail::computeCenterPoint(radius, direction, startPoint, secondPoint, centerPoint)) {
             assert(false);
             return Curve2d();
         }
@@ -349,12 +349,12 @@ namespace opensolid
         const Point<2>& thirdPoint
     ) {
         Point2d centerPoint;
-        if (!detail::computeCenterPoint(startPoint, secondPoint, thirdPoint, &centerPoint)) {
+        if (!detail::computeCenterPoint(startPoint, secondPoint, thirdPoint, centerPoint)) {
             assert(false);
             return Curve2d();
         }
         WindingDirection direction = Counterclockwise;
-        if (!detail::computeWindingDirection(startPoint, secondPoint, thirdPoint, &direction)) {
+        if (!detail::computeWindingDirection(startPoint, secondPoint, thirdPoint, direction)) {
             assert(false);
             return Curve2d();
         }
@@ -630,7 +630,7 @@ namespace opensolid
             return Curve3d();
         }
 
-        if (!detail::computeHelixParameters(&pitch, &numTurns, &length)) {
+        if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
             return Curve3d();
         }
@@ -677,7 +677,7 @@ namespace opensolid
             return Curve3d();
         }
 
-        if (!detail::computeHelixParameters(&pitch, &numTurns, &length)) {
+        if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
             return Curve3d();
         }
@@ -707,7 +707,7 @@ namespace opensolid
             return Curve3d();
         }
 
-        if (!detail::computeHelixParameters(&pitch, &numTurns, &length)) {
+        if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
             return Curve3d();
         }
@@ -753,7 +753,7 @@ namespace opensolid
             return Curve3d();
         }
 
-        if (!detail::computeHelixParameters(&pitch, &numTurns, &length)) {
+        if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
             return Curve3d();
         }
@@ -786,7 +786,7 @@ namespace opensolid
             return Curve3d();
         }
 
-        if (!detail::computeHelixParameters(&pitch, &numTurns, &length)) {
+        if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
             return Curve3d();
         }

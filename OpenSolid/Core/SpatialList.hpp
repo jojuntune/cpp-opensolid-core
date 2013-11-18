@@ -43,59 +43,59 @@ namespace opensolid
     template <class TItem>
     inline
     SpatialList<TItem>::SpatialList(const SpatialList<TItem>& other) :
-        _data(other._data) {
+        _dataPtr(other._dataPtr) {
     }
 
     template <class TItem>
     inline
     SpatialList<TItem>::SpatialList(SpatialList<TItem>&& other) :
-        _data(std::move(other._data)) {
+        _dataPtr(std::move(other._dataPtr)) {
     }
 
     template <class TItem>
     inline
     SpatialList<TItem>::SpatialList(const std::vector<TItem>& items) :
-        _data(new detail::SpatialListData<TItem>()) {
+        _dataPtr(new detail::SpatialListData<TItem>()) {
 
-        _data->items = items;
+        _dataPtr->items = items;
     }
 
     template <class TItem>
     inline
     SpatialList<TItem>::SpatialList(std::vector<TItem>&& items) :
-        _data(new detail::SpatialListData<TItem>()) {
+        _dataPtr(new detail::SpatialListData<TItem>()) {
 
-        _data->items = std::move(items);
+        _dataPtr->items = std::move(items);
     }
 
     template <class TItem> template <class TDerived>
     inline
     SpatialList<TItem>::SpatialList(const SpatialCollection<TDerived>& collection) :
-        _data(new detail::SpatialListData<TItem>()) {
+        _dataPtr(new detail::SpatialListData<TItem>()) {
 
-        _data->items = std::vector<TItem>(collection.begin(), collection.end());
+        _dataPtr->items = std::vector<TItem>(collection.begin(), collection.end());
     }
 
     template <class TItem> template <class TIterator>
     inline
     SpatialList<TItem>::SpatialList(TIterator begin, TIterator end) :
-        _data(new detail::SpatialListData<TItem>()) {
+        _dataPtr(new detail::SpatialListData<TItem>()) {
 
-        _data->items = std::vector<TItem>(begin, end);
+        _dataPtr->items = std::vector<TItem>(begin, end);
     }
     
     template <class TItem>
     inline
     void
     SpatialList<TItem>::operator=(const SpatialList<TItem>& other) {
-        _data = other._data;
+        _dataPtr = other._dataPtr;
     }
     
     template <class TItem>
     inline
     void
     SpatialList<TItem>::operator=(SpatialList<TItem>&& other) {
-        _data = std::move(other._data);
+        _dataPtr = std::move(other._dataPtr);
     }
 
     template <class TItem>
@@ -105,7 +105,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename std::vector<TItem>::const_iterator();
         } else {
-            return _data->items.begin();
+            return _dataPtr->items.begin();
         }
     }
 
@@ -116,7 +116,7 @@ namespace opensolid
         if (isEmpty()) {
             return typename std::vector<TItem>::const_iterator();
         } else {
-            return _data->items.end();
+            return _dataPtr->items.end();
         }
     }
 
@@ -124,7 +124,7 @@ namespace opensolid
     inline
     bool
     SpatialList<TItem>::isEmpty() const {
-        return !_data || _data->items.empty();
+        return !_dataPtr || _dataPtr->items.empty();
     }
     
     template <class TItem>
@@ -134,7 +134,7 @@ namespace opensolid
         if (isEmpty()) {
             return 0;
         } else {
-            return _data->items.size();
+            return _dataPtr->items.size();
         }
     }
 
@@ -150,20 +150,20 @@ namespace opensolid
     const TItem&
     SpatialList<TItem>::operator[](std::int64_t index) const {
         assert(!isEmpty());
-        return _data->items[index];
+        return _dataPtr->items[index];
     }
 
     template <class TItem>
     inline
     void
     SpatialList<TItem>::swap(SpatialList<TItem>& other) {
-        _data.swap(other._data);
+        _dataPtr.swap(other._dataPtr);
     }
 
     template <class TItem>
     inline
     void
     SpatialList<TItem>::clear() {
-        _data.reset();
+        _dataPtr.reset();
     }
 }
