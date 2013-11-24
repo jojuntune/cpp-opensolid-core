@@ -26,59 +26,23 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Curve.definitions.hpp>
-
-#include <OpenSolid/Core/Geometry.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    Curve<iNumDimensions>::Curve() :
-        Geometry<iNumDimensions, 1>() {
-    }
+    class BoundedArea2d;
 
-    template <int iNumDimensions>
-    Curve<iNumDimensions>::Curve(const Geometry<iNumDimensions, 1>& other) :
-        Geometry<iNumDimensions, 1>(other) {
-    }
+    template <>
+    struct NumDimensions<BoundedArea2d>
+    {
+        static const int Value = 2;
+    };
 
-    template <int iNumDimensions>
-    Curve<iNumDimensions>::Curve(
-        const ParametricExpression<iNumDimensions, 1>& expression,
-        Interval domain
-    ) : Geometry<iNumDimensions, 1>(expression, domain) {
-    }
-
-    template <int iNumDimensions>
-    Curve<iNumDimensions>::Curve(const LineSegment<iNumDimensions>& lineSegment) :
-        Geometry<iNumDimensions, 1>(lineSegment) {
-    }
-
-    template <int iNumDimensions>
-    Curve<iNumDimensions>
-    Curve<iNumDimensions>::reversed() const {
-        ParametricExpression<1, 1> parameter = ParametricExpression<1, 1>::t();
-        ParametricExpression<1, 1> reversedParameter =
-            this->domain().upperBound() + this->domain().lowerBound() - parameter;
-        return Curve<iNumDimensions>(
-            this->expression().composed(reversedParameter),
-            this->domain()
-        );
-    }
-
-    template <int iNumDimensions>
-    Point<iNumDimensions>
-    Curve<iNumDimensions>::startPoint() const {
-        return Point<iNumDimensions>(this->expression().evaluate(this->domain().lowerBound()));
-    }
-
-    template <int iNumDimensions>
-    Point<iNumDimensions>
-    Curve<iNumDimensions>::endPoint() const {
-        return Point<iNumDimensions>(this->expression().evaluate(this->domain().upperBound()));
-    }
+    template <>
+    struct BoundsType<BoundedArea2d>
+    {
+        typedef Box<2> Type;
+    };
 }

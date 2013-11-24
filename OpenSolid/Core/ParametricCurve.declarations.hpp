@@ -26,7 +26,36 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+
 namespace opensolid
 {
-    class Region2d;
+    template <int iNumDimensions>
+    class ParametricCurve;
+
+    template <int iNumDimensions>
+    struct NumDimensions<ParametricCurve<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef ParametricCurve<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef ParametricCurve<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<ParametricCurve<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
 }

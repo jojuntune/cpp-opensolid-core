@@ -26,80 +26,30 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Region.declarations.hpp>
+#include <OpenSolid/Core/BoundedArea.definitions.hpp>
 
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Domain.definitions.hpp>
-#include <OpenSolid/Core/Geometry.declarations.hpp>
-#include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/LineSegment.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet.declarations.hpp>
-#include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/ParametricCurve.hpp>
+#include <OpenSolid/Core/SpatialSet.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
-    class Region2d :
-        public Domain<2>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Region2d();
+    inline
+    const SpatialSet<ParametricCurve<2>>&
+    BoundedArea2d::boundaries() const {
+        return _boundaries;
+    }
 
-        OPENSOLID_CORE_EXPORT
-        Region2d(const Domain<2>& domain);
+    inline
+    bool
+    BoundedArea2d::isEmpty() const {
+        return boundaries().isEmpty();
+    }
 
-        OPENSOLID_CORE_EXPORT
-        Region2d(const SpatialSet<Geometry<2, 1>>& boundaries);
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(const Box<2>& box);
-
-        OPENSOLID_CORE_EXPORT
-        Region2d(const Triangle<2>& triangle);
-
-        OPENSOLID_CORE_EXPORT
-        static Region2d
-        Disk(const Point<2>& centerPoint, double radius);
-    };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct NumDimensions<Region2d> :
-        public NumDimensions<Domain<2>>
-    {
-    };
-
-    template <>
-    struct ScalingFunction<Region2d> :
-        public ScalingFunction<Domain<2>>
-    {
-    };
-
-    template <>
-    struct TranslationFunction<Region2d> :
-        public TranslationFunction<Domain<2>>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<Region2d, iNumResultDimensions> :
-        public TransformationFunction<Domain<2>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct MorphingFunction<Region2d, 2> :
-        public MorphingFunction<Domain<2>, 2>
-    {
-    };
-
-    template <>
-    struct BoundsType<Region2d> :
-        public BoundsType<Domain<2>>
-    {
-    };
+    inline
+    const Box<2>&
+    BoundedArea2d::bounds() const {
+        return boundaries().bounds();
+    }
 }

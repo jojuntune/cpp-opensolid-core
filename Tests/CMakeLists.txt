@@ -56,7 +56,7 @@
     add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
     add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
-    add_cxxtest(GeometryTests GeometryTests.hpp OpenSolidCore)
+    add_cxxtest(CurveTests CurveTests.hpp OpenSolidCore)
     add_cxxtest(CollectionTests CollectionTests.hpp OpenSolidCore)
     add_cxxtest(ListTests ListTests.hpp OpenSolidCore)
     
@@ -67,7 +67,7 @@
         SimplexTests.hpp
         SetTests.hpp
         ParametricExpressionTests.hpp
-        GeometryTests.hpp
+        CurveTests.hpp
         CollectionTests.hpp
         ListTests.hpp
     )

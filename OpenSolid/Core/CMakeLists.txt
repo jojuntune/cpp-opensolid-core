@@ -4,12 +4,13 @@
         GLOB
         CORE_SOURCES
         *.cpp
-        Curve/*.cpp
         ExpressionImplementation/*.cpp
-        Geometry/*.cpp
         Matrix/*.cpp
+        ParametricCurve/*.cpp
         ParametricExpression/*.cpp
-        Set/*.cpp
+        SpatialCollection/*.cpp
+        SpatialList/*.cpp
+        SpatialSet/*.cpp
     )
 
     if(${BUILD_STATIC_CORE})
@@ -40,11 +41,11 @@
 
     add_to_global_source_list(
         *
-        Curve/*
         ExpressionImplementation/*
-        Geometry/*
         Matrix/*
+        ParametricCurve/*
         ParametricExpression/*
         SpatialCollection/*
+        SpatialList/*
         SpatialSet/*
     )

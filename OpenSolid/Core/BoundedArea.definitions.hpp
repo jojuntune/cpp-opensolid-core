@@ -21,46 +21,43 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   *
 *                                                                                   *
 *************************************************************************************/
- 
+
 #pragma once
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Domain.declarations.hpp>
+#include <OpenSolid/Core/BoundedArea.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Convertible.definitions.hpp>
-#include <OpenSolid/Core/Geometry.declarations.hpp>
-#include <OpenSolid/Core/Geometry/BoundsType.definitions.hpp>
-#include <OpenSolid/Core/Geometry/Transformable.definitions.hpp>
-#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Domain :
-        public Transformable<Domain<iNumDimensions>>,
-        public Convertible<Domain<iNumDimensions>>
+    class BoundedArea2d :
+        public Transformable<BoundedArea2d>
     {
     private:
-        SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>> _boundaries;
+        SpatialSet<ParametricCurve<2>> _boundaries;
     public:
-        Domain();
+        BoundedArea2d();
 
-        explicit
-        Domain(const SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>& boundaries);
-        
-        const SpatialSet<Geometry<iNumDimensions, iNumDimensions - 1>>&
+        BoundedArea2d(const BoundedArea2d& other);
+
+        BoundedArea2d(BoundedArea2d&& other);
+
+        BoundedArea2d(const SpatialSet<ParametricCurve<2>>& boundaries);
+
+        BoundedArea2d(SpatialSet<ParametricCurve<2>>&& boundaries);
+
+        const SpatialSet<ParametricCurve<2>>&
         boundaries() const;
 
         bool
         isEmpty() const;
 
-        Box<iNumDimensions>
+        const Box<2>&
         bounds() const;
     };
 }
@@ -69,48 +66,34 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct NumDimensions<Domain<iNumDimensions>>
+    template <>
+    struct ScalingFunction<BoundedArea2d>
     {
-        static const int Value = iNumDimensions;
+        BoundedArea2d
+        operator()(const BoundedArea2d& boundedArea, double scale) const;
     };
 
-    template <int iNumDimensions>
-    struct ScalingFunction<Domain<iNumDimensions>>
+    template <>
+    struct TranslationFunction<BoundedArea2d>
     {
-        Domain<iNumDimensions>
-        operator()(const Domain<iNumDimensions>& domain, double scale) const;
+        BoundedArea2d
+        operator()(const BoundedArea2d& boundedArea, const Vector2d& vector) const;
     };
 
-    template <int iNumDimensions>
-    struct TranslationFunction<Domain<iNumDimensions>>
+    template <>
+    struct TransformationFunction<BoundedArea2d, 2>
     {
-        template <class TVector>
-        Domain<iNumDimensions>
-        operator()(const Domain<iNumDimensions>& domain, const EigenBase<TVector>& vector) const;
+        BoundedArea2d
+        operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
     };
 
-    template <int iNumDimensions>
-    struct TransformationFunction<Domain<iNumDimensions>, iNumDimensions>
+    template <>
+    struct MorphingFunction<BoundedArea2d, 2>
     {
-        template <class TMatrix>
-        Domain<iNumDimensions>
-        operator()(const Domain<iNumDimensions>& domain, const EigenBase<TMatrix>& matrix) const;
-    };
-
-    template <int iNumDimensions>
-    struct MorphingFunction<Domain<iNumDimensions>, iNumDimensions>
-    {
-        Domain<iNumDimensions>
+        BoundedArea2d
         operator()(
-            const Domain<iNumDimensions>& domain,
-            const ParametricExpression<iNumDimensions, iNumDimensions>& morphingExpression
+            const BoundedArea2d& boundedArea,
+            const ParametricExpression<2, 2>& morphingExpression
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsType<Domain<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
     };
 }

@@ -22,12 +22,12 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <OpenSolid/Core/Curve/CurveConstructors.hpp>
+#include <OpenSolid/Core/ParametricCurve/CurveConstructors.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
-#include <OpenSolid/Core/Curve.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/ParametricCurve.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
@@ -177,7 +177,7 @@ namespace opensolid
             }
         }
 
-        Curve<3>
+        ParametricCurve3d
         helix(
             const Point3d& centerPoint,
             const Vector3d& xVector,
@@ -195,11 +195,11 @@ namespace opensolid
             ParametricExpression<3, 1> curveExpression = centerPoint.vector() +
                 cos(theta) * xVector + sin(theta) * sidewaysVector +
                 ParametricExpression<1, 1>::t() * zVector;
-            return Curve3d(curveExpression, Interval::Unit());
+            return ParametricCurve3d(curveExpression, Interval::Unit());
         }
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Arc(
         const Point<2>& centerPoint,
         double radius,
@@ -208,11 +208,11 @@ namespace opensolid
     ) {
         if (radius <= Zero()) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         if (endAngle - startAngle == Zero()) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         ParametricExpression<1, 1> angleExpression = startAngle +
             (endAngle - startAngle) * ParametricExpression<1, 1>::t();
@@ -220,10 +220,10 @@ namespace opensolid
         ParametricExpression<1, 1> yExpression = centerPoint.y() + radius * sin(angleExpression);
         ParametricExpression<2, 1> curveExpression =
             ParametricExpression<2, 1>::FromComponents(xExpression, yExpression);
-        return Curve2d(curveExpression, Interval::Unit());
+        return ParametricCurve2d(curveExpression, Interval::Unit());
     }
     
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Arc(
         const Point<2>& centerPoint,
         WindingDirection direction,
@@ -235,7 +235,7 @@ namespace opensolid
         if (startRadius == Zero()) {
             // Start point is coincident with center point
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
 
         // Find radius to end point
@@ -243,14 +243,14 @@ namespace opensolid
         if (endRadius == Zero()) {
             // End point is coincident with center point
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
 
         // Check that radii are equal within a tolerance and take their mean as
         // the actual radius (attempt to average out any rounding errors)
         if (startRadius - endRadius != Zero()) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         double radius = startRadius + (endRadius - startRadius) / 2;
 
@@ -265,7 +265,7 @@ namespace opensolid
         return Arc(centerPoint, radius, startAngle, endAngle);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Arc(
         double radius,
         WindingDirection direction, 
@@ -275,12 +275,12 @@ namespace opensolid
         Point2d centerPoint;
         if (!detail::computeCenterPoint(radius, direction, startPoint, endPoint, centerPoint)) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         return Arc(centerPoint, direction, startPoint, endPoint);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Arc(
         const Point<2>& startPoint,
         const Point<2>& innerPoint,
@@ -289,22 +289,22 @@ namespace opensolid
         Point2d centerPoint;
         if (!detail::computeCenterPoint(startPoint, innerPoint, endPoint, centerPoint)) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         WindingDirection direction = Counterclockwise;
         if (!detail::computeWindingDirection(startPoint, innerPoint, endPoint, direction)) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         return Arc(centerPoint, direction, startPoint, endPoint);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Circle(const Point<2>& centerPoint, double radius) {
-        return Curve2d::Arc(centerPoint, radius, 0, 2 * M_PI);
+        return ParametricCurve2d::Arc(centerPoint, radius, 0, 2 * M_PI);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Circle(
         const Point<2>& centerPoint,
         double radius,
@@ -312,13 +312,13 @@ namespace opensolid
         double startAngle
     ) {
         if (direction == Counterclockwise) {
-            return Curve2d::Arc(centerPoint, radius, startAngle, startAngle + 2 * M_PI);
+            return ParametricCurve2d::Arc(centerPoint, radius, startAngle, startAngle + 2 * M_PI);
         } else {
-            return Curve2d::Arc(centerPoint, radius, startAngle, startAngle - 2 * M_PI);
+            return ParametricCurve2d::Arc(centerPoint, radius, startAngle, startAngle - 2 * M_PI);
         }
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Circle(
         const Point<2>& centerPoint,
         WindingDirection direction,
@@ -327,7 +327,7 @@ namespace opensolid
         return Arc(centerPoint, direction, startPoint, startPoint);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Circle(
         double radius,
         WindingDirection direction,
@@ -337,12 +337,12 @@ namespace opensolid
         Point2d centerPoint;
         if (!detail::computeCenterPoint(radius, direction, startPoint, secondPoint, centerPoint)) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         return Circle(centerPoint, direction, startPoint);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Circle(
         const Point<2>& startPoint,
         const Point<2>& secondPoint,
@@ -351,22 +351,22 @@ namespace opensolid
         Point2d centerPoint;
         if (!detail::computeCenterPoint(startPoint, secondPoint, thirdPoint, centerPoint)) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         WindingDirection direction = Counterclockwise;
         if (!detail::computeWindingDirection(startPoint, secondPoint, thirdPoint, direction)) {
             assert(false);
-            return Curve2d();
+            return ParametricCurve2d();
         }
         return Circle(centerPoint, direction, startPoint);
     }
 
-    Curve<2>
+    ParametricCurve2d
     CurveConstructors<2>::Circumcircle(const Triangle<2>& triangle) {
         return Circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Arc(
         const Point<3>& centerPoint,
         const Vector3d& axisDirection,
@@ -376,24 +376,24 @@ namespace opensolid
         if (axisDirection.squaredNorm() - 1 != Zero()) {
             // Axis direction not a unit vector
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         Vector3d startRadialVector = startPoint - centerPoint;
         if (startRadialVector.dot(axisDirection) != Zero()) {
             // Start point not coplanar with center
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         Vector3d endRadialVector = endPoint - centerPoint;
         if (endRadialVector.dot(axisDirection) != Zero()) {
             // End point not coplanar with center
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         if (startRadialVector.squaredNorm() - endRadialVector.squaredNorm() != Zero()) {
             // Start and end points are different distances from the center
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         PlanarCoordinateSystem3d planarCoordinateSystem(
             centerPoint,
@@ -408,7 +408,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Arc(
         const Axis<3>& axis,
         const Point<3>& startPoint,
@@ -419,7 +419,7 @@ namespace opensolid
         if (startRadialVector.isZero()) {
             // Start point is on axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         Point3d projectedEndPoint = endPoint.projectedOnto(axis);
@@ -427,26 +427,26 @@ namespace opensolid
         if (endRadialVector.isZero()) {
             // End point is on axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (startRadialVector.squaredNorm() - endRadialVector.squaredNorm() != Zero()) {
             // Start and end points are different distances from the axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (!(projectedEndPoint - projectedStartPoint).isZero()) {
             // Start and end points are not coplanar with respect to the axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         Point3d centerPoint = projectedStartPoint + (projectedEndPoint - projectedStartPoint) / 2;
         return Arc(centerPoint, axis.directionVector(), startPoint, endPoint);
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Arc(
         const Vector3d& axisDirection,
         double radius,
@@ -456,18 +456,18 @@ namespace opensolid
         if (axisDirection.squaredNorm() - 1 != Zero()) {
             // Axis direction vector is not a unit vector
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         Vector3d displacementVector = endPoint - startPoint;
         if (displacementVector.dot(axisDirection) != Zero()) {
             // Start and end points are not coplanar with respect to the axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         if (displacementVector.squaredNorm() - 4 * radius * radius > Zero()) {
             // Start and end points are too far apart for the given radius
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         Point3d midpoint = startPoint + displacementVector / 2;
         PlanarCoordinateSystem3d planarCoordinateSystem(
@@ -483,7 +483,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Arc(
         const Point<3>& startPoint,
         const Point<3>& innerPoint,
@@ -492,7 +492,7 @@ namespace opensolid
         Vector3d normalVector = (innerPoint - startPoint).cross(endPoint - innerPoint);
         if (normalVector.isZero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         PlanarCoordinateSystem3d planarCoordinateSystem =
             Plane3d(innerPoint, normalVector.normalized()).coordinateSystem();
@@ -503,7 +503,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Circle(
         const Point<3>& centerPoint,
         const Vector3d& axisDirection,
@@ -511,7 +511,7 @@ namespace opensolid
     ) {
         if (radius <= Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         return Circle(
             centerPoint,
@@ -520,7 +520,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Circle(
         const Point<3>& centerPoint,
         const Vector3d& axisDirection,
@@ -530,28 +530,28 @@ namespace opensolid
         if (startRadialVector.isZero()) {
             // Start point is coincident with center
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         if (startRadialVector.dot(axisDirection) != Zero()) {
             // Start point is not coplanar with center point
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         return Arc(centerPoint, axisDirection, startPoint, startPoint);
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Circle(const Axis<3>& axis, const Point<3>& startPoint) {
         Point3d centerPoint = startPoint.projectedOnto(axis);
         if ((startPoint - centerPoint).isZero()) {
             // Start point is on axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         return Circle(centerPoint, axis.directionVector(), startPoint);
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Circle(
         const Vector3d& axisDirection,
         double radius,
@@ -561,18 +561,18 @@ namespace opensolid
         if (axisDirection.squaredNorm() - 1 != Zero()) {
             // Axis direction vector is not a unit vector
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         Vector3d displacementVector = secondPoint - startPoint;
         if (displacementVector.dot(axisDirection) != Zero()) {
             // Start and second points are not coplanar with respect to the axis
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         if (displacementVector.squaredNorm() - 4 * radius * radius > Zero()) {
             // Start and second points are too far apart for the given radius
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         Point3d midpoint = startPoint + displacementVector / 2;
         PlanarCoordinateSystem3d planarCoordinateSystem(
@@ -588,7 +588,7 @@ namespace opensolid
         );   
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Circle(
         const Point<3>& startPoint,
         const Point<3>& secondPoint,
@@ -597,7 +597,7 @@ namespace opensolid
         Vector3d normalVector = (secondPoint - startPoint).cross(thirdPoint - secondPoint);
         if (normalVector.isZero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         PlanarCoordinateSystem3d planarCoordinateSystem =
             Plane3d(secondPoint, normalVector).coordinateSystem();
@@ -608,12 +608,12 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Circumcircle(const Triangle3d& triangle) {
         return Circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Helix(
         const Point<3>& startCenterPoint,
         const Point<3>& endCenterPoint,
@@ -627,12 +627,12 @@ namespace opensolid
 
         if (length == Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         Vector3d xDirection = lengthVector.unitOrthogonal();
@@ -648,7 +648,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Helix(
         const Point<3>& startCenterPoint,
         const Point<3>& endCenterPoint,
@@ -661,7 +661,7 @@ namespace opensolid
         double length = lengthVector.norm();
         if (length == Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         Vector3d startRadialVector = startPoint - startCenterPoint;
@@ -669,17 +669,17 @@ namespace opensolid
         if (radius == Zero()) {
             // Start point is coincident with start center point
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
         if (startRadialVector.dot(lengthVector) != Zero()) {
             // Start point not coplanar with start center point
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         return detail::helix(
@@ -692,7 +692,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Helix(
         const Point<3>& startCenterPoint,
         const Vector3d& axisDirection,
@@ -704,12 +704,12 @@ namespace opensolid
     ) {
         if (axisDirection.squaredNorm() - 1 != Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         Vector3d xDirection = axisDirection.unitOrthogonal();
@@ -725,7 +725,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Helix(
         const Point<3>& startCenterPoint,
         const Vector3d& axisDirection,
@@ -737,25 +737,25 @@ namespace opensolid
     ) {
         if (axisDirection.squaredNorm() - 1 != Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         Vector3d startRadialVector = startPoint - startCenterPoint;
         if (startRadialVector.dot(axisDirection) != Zero()) {
             // Start point and start center point are not coplanar
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         double radius = startRadialVector.norm();
         if (radius == Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         return detail::helix(
@@ -768,7 +768,7 @@ namespace opensolid
         );
     }
 
-    Curve<3>
+    ParametricCurve3d
     CurveConstructors<3>::Helix(
         const Axis<3>& axis,
         WindingDirection direction,
@@ -783,12 +783,12 @@ namespace opensolid
         double radius = startRadialVector.norm();
         if (radius == Zero()) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
-            return Curve3d();
+            return ParametricCurve3d();
         }
 
         return detail::helix(

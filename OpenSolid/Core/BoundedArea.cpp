@@ -26,16 +26,79 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Region.definitions.hpp>
+#include <OpenSolid/Core/BoundedArea.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/Domain.hpp>
-#include <OpenSolid/Core/Geometry.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/ParametricCurve.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
-#include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
+    BoundedArea2d::BoundedArea2d() {
+    }
+
+    BoundedArea2d::BoundedArea2d(const BoundedArea2d& other) :
+        _boundaries(other.boundaries()) {
+    }
+
+    BoundedArea2d::BoundedArea2d(BoundedArea2d&& other) :
+        _boundaries(std::move(other.boundaries())) {
+    }
+
+    BoundedArea2d::BoundedArea2d(const SpatialSet<ParametricCurve<2>>& boundaries) :
+        _boundaries(boundaries) {
+    }
+
+    BoundedArea2d::BoundedArea2d(SpatialSet<ParametricCurve<2>>&& boundaries) :
+        _boundaries(std::move(boundaries)) {
+    }
+
+    BoundedArea2d
+    ScalingFunction<BoundedArea2d>::operator()(
+        const BoundedArea2d& boundedArea,
+        double scale
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve<2>>(
+                detail::scaled(boundedArea.boundaries(), scale)
+            )
+        );
+    }
+
+    BoundedArea2d
+    TranslationFunction<BoundedArea2d>::operator()(
+        const BoundedArea2d& boundedArea,
+        const Vector2d& vector
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve<2>>(
+                detail::translated(boundedArea.boundaries(), vector)
+            )
+        );
+    }
+
+    BoundedArea2d
+    TransformationFunction<BoundedArea2d, 2>::operator()(
+        const BoundedArea2d& boundedArea,
+        const Matrix2d& matrix
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve<2>>(
+                detail::transformed(boundedArea.boundaries(), matrix)
+            )
+        );
+    }
+
+    BoundedArea2d
+    MorphingFunction<BoundedArea2d, 2>::operator()(
+        const BoundedArea2d& boundedArea,
+        const ParametricExpression<2, 2>& morphingExpression
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve<2>>(
+                detail::morphed(boundedArea.boundaries(), morphingExpression)
+            )
+        );
+    }
 }

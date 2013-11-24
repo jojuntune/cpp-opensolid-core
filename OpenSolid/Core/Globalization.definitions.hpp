@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Geometry.declarations.hpp>
+#include <OpenSolid/Core/Globalization.declarations.hpp>
 
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>

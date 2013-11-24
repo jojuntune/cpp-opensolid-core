@@ -23,7 +23,6 @@
 *************************************************************************************/
 
 #include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/Domain.hpp>
 
 #include <cxxtest/TestSuite.h>
 
