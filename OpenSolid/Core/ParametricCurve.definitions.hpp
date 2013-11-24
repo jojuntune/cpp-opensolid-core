@@ -55,7 +55,7 @@ namespace opensolid
         ParametricCurve(ParametricCurve<iNumDimensions>&& other);
 
         ParametricCurve(
-            const ParametricExpression<iNumDimensions, 1>& expresssion,
+            const ParametricExpression<iNumDimensions, 1>& expression,
             Interval domain
         );
 
