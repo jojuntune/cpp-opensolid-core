@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 
+#include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve/CurveConstructors.hpp>
@@ -64,6 +65,9 @@ namespace opensolid
         Interval
         domain() const;
 
+        const Box<iNumDimensions>&
+        bounds() const;
+
         Point<iNumDimensions>
         evaluate(double parameterValue) const;
 
@@ -91,9 +95,6 @@ namespace opensolid
         Point<iNumDimensions>
         endPoint() const;
 
-        const Box<iNumDimensions>&
-        bounds() const;
-
 
     };
 
@@ -105,6 +106,18 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef ParametricCurve<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef ParametricCurve<iNumResultDimensions> Type;
+    };
+
     template <int iNumDimensions>
     struct ScalingFunction<ParametricCurve<iNumDimensions>>
     {

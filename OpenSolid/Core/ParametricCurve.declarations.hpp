@@ -41,18 +41,6 @@ namespace opensolid
         static const int Value = iNumDimensions;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef ParametricCurve<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef ParametricCurve<iNumResultDimensions> Type;
-    };
-
     template <int iNumDimensions>
     struct BoundsType<ParametricCurve<iNumDimensions>>
     {

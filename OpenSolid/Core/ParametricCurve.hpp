@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
