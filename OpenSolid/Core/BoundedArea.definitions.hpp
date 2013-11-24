@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/BoundedArea.declarations.hpp>
 
 #include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/ParametricCurve.declarations.hpp>
+#include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
@@ -39,7 +39,7 @@ namespace opensolid
         public Transformable<BoundedArea2d>
     {
     private:
-        SpatialSet<ParametricCurve<2>> _boundaries;
+        SpatialSet<ParametricCurve2d> _boundaries;
     public:
         BoundedArea2d();
 
@@ -47,11 +47,11 @@ namespace opensolid
 
         BoundedArea2d(BoundedArea2d&& other);
 
-        BoundedArea2d(const SpatialSet<ParametricCurve<2>>& boundaries);
+        BoundedArea2d(const SpatialSet<ParametricCurve2d>& boundaries);
 
-        BoundedArea2d(SpatialSet<ParametricCurve<2>>&& boundaries);
+        BoundedArea2d(SpatialSet<ParametricCurve2d>&& boundaries);
 
-        const SpatialSet<ParametricCurve<2>>&
+        const SpatialSet<ParametricCurve2d>&
         boundaries() const;
 
         bool

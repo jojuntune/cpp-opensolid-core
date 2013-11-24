@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/BoundedVolume.declarations.hpp>
 
 #include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/ParametricSurface.declarations.hpp>
+#include <OpenSolid/Core/ParametricSurface.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
