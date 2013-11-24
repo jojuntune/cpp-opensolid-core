@@ -36,7 +36,7 @@
 namespace opensolid
 {
     inline
-    const SpatialSet<ParametricCurve<2>>&
+    const SpatialSet<ParametricCurve2d>&
     BoundedArea2d::boundaries() const {
         return _boundaries;
     }
@@ -48,7 +48,7 @@ namespace opensolid
     }
 
     inline
-    Box<2>
+    Box2d
     BoundedArea2d::bounds() const {
         return boundaries().bounds();
     }

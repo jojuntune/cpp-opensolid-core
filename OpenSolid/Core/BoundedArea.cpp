@@ -44,11 +44,11 @@ namespace opensolid
         _boundaries(std::move(other.boundaries())) {
     }
 
-    BoundedArea2d::BoundedArea2d(const SpatialSet<ParametricCurve<2>>& boundaries) :
+    BoundedArea2d::BoundedArea2d(const SpatialSet<ParametricCurve2d>& boundaries) :
         _boundaries(boundaries) {
     }
 
-    BoundedArea2d::BoundedArea2d(SpatialSet<ParametricCurve<2>>&& boundaries) :
+    BoundedArea2d::BoundedArea2d(SpatialSet<ParametricCurve2d>&& boundaries) :
         _boundaries(std::move(boundaries)) {
     }
 
@@ -58,7 +58,7 @@ namespace opensolid
         double scale
     ) const {
         return BoundedArea2d(
-            SpatialSet<ParametricCurve<2>>(
+            SpatialSet<ParametricCurve2d>(
                 detail::scaled(boundedArea.boundaries(), scale)
             )
         );
@@ -70,7 +70,7 @@ namespace opensolid
         const Vector2d& vector
     ) const {
         return BoundedArea2d(
-            SpatialSet<ParametricCurve<2>>(
+            SpatialSet<ParametricCurve2d>(
                 detail::translated(boundedArea.boundaries(), vector)
             )
         );
@@ -82,7 +82,7 @@ namespace opensolid
         const Matrix2d& matrix
     ) const {
         return BoundedArea2d(
-            SpatialSet<ParametricCurve<2>>(
+            SpatialSet<ParametricCurve2d>(
                 detail::transformed(boundedArea.boundaries(), matrix)
             )
         );
@@ -94,7 +94,7 @@ namespace opensolid
         const ParametricExpression<2, 2>& morphingExpression
     ) const {
         return BoundedArea2d(
-            SpatialSet<ParametricCurve<2>>(
+            SpatialSet<ParametricCurve2d>(
                 detail::morphed(boundedArea.boundaries(), morphingExpression)
             )
         );
