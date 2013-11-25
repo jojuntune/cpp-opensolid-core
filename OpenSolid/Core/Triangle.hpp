@@ -61,6 +61,13 @@ namespace opensolid
     }
 
     inline
+    Point2d&
+    Triangle2d::vertex(int index) {
+        assert(index >= 0 && index < 3);
+        return _vertices[index];
+    }
+
+    inline
     LineSegment2d
     Triangle2d::edge(int oppositeIndex) const {
         assert(oppositeIndex >= 0 && oppositeIndex < 3);
@@ -102,6 +109,13 @@ namespace opensolid
     inline
     const Point3d&
     Triangle3d::vertex(int index) const {
+        assert(index >= 0 && index < 3);
+        return _vertices[index];
+    }
+
+    inline
+    Point3d&
+    Triangle3d::vertex(int index) {
         assert(index >= 0 && index < 3);
         return _vertices[index];
     }

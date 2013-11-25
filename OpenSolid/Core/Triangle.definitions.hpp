@@ -56,6 +56,9 @@ namespace opensolid
         const Point<2>&
         vertex(int index) const;
 
+        Point<2>&
+        vertex(int index);
+
         OPENSOLID_CORE_EXPORT
         double
         area() const;
@@ -101,6 +104,9 @@ namespace opensolid
 
         const Point<3>&
         vertex(int index) const;
+
+        Point<3>&
+        vertex(int index);
 
         OPENSOLID_CORE_EXPORT
         double
