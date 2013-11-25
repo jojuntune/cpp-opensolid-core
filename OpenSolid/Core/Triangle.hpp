@@ -63,6 +63,7 @@ namespace opensolid
     inline
     LineSegment2d
     Triangle2d::edge(int oppositeIndex) const {
+        assert(oppositeIndex >= 0 && oppositeIndex < 3);
         return LineSegment2d(
             vertex((oppositeIndex + 1) % 3),
             vertex((oppositeIndex + 2) % 3)
@@ -108,7 +109,7 @@ namespace opensolid
     inline
     LineSegment3d
     Triangle3d::edge(int oppositeIndex) const {
-        assert(index >= 0 && index < 3);
+        assert(oppositeIndex >= 0 && oppositeIndex < 3);
         return LineSegment3d(
             vertex((oppositeIndex + 1) % 3),
             vertex((oppositeIndex + 2) % 3)
