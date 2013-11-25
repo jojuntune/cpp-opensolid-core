@@ -336,7 +336,7 @@ namespace opensolid
     typename std::vector<TItem>::const_iterator
     SpatialSet<TItem>::begin() const {
         if (isEmpty()) {
-            return typename std::vector<TItem>::const_iterator();
+            return _emptyVector.begin();
         } else {
             return _dataPtr->items.begin();
         }
@@ -347,7 +347,7 @@ namespace opensolid
     typename std::vector<TItem>::const_iterator
     SpatialSet<TItem>::end() const {
         if (isEmpty()) {
-            return typename std::vector<TItem>::const_iterator();
+            return _emptyVector.end();
         } else {
             return _dataPtr->items.end();
         }

@@ -43,6 +43,7 @@ namespace opensolid
     {
     private:
         boost::intrusive_ptr<detail::SpatialListData<TItem>> _dataPtr;
+        std::vector<TItem> _emptyVector;
     public:
         SpatialList();
 

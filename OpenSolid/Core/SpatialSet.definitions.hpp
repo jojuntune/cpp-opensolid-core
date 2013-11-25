@@ -51,6 +51,7 @@ namespace opensolid
     {
     private:
         boost::intrusive_ptr<detail::SpatialSetData<TItem>> _dataPtr;
+        std::vector<TItem> _emptyVector;
 
         struct BoundsData
         {
