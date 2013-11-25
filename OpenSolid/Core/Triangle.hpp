@@ -24,61 +24,108 @@
 
 #pragma once
 
+#include <OpenSolid/config.hpp>
+
 #include <OpenSolid/Core/Triangle.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsFunction.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
     inline
-    Triangle<2>::Triangle() {
+    Triangle2d::Triangle() {
     }
 
     inline
-    Triangle<2>::Triangle(const Simplex<2, 3>& other) :
-        Simplex<2, 3>(other) {
-    }
-
-    inline
-    Triangle<2>::Triangle(
+    Triangle2d::Triangle(
         const Point2d& firstVertex,
         const Point2d& secondVertex,
         const Point2d& thirdVertex
     ) {
-        Matrix<double, 2, 3> vertices;
-        vertices.col(0) = firstVertex.vector();
-        vertices.col(1) = secondVertex.vector();
-        vertices.col(2) = thirdVertex.vector();
-        *this = Simplex<2, 3>(vertices);
+        _vertices[0] = firstVertex;
+        _vertices[1] = secondVertex;
+        _vertices[2] = thirdVertex;
     }
 
     inline
-    Triangle<3>::Triangle() {
+    const Point2d&
+    Triangle2d::vertex(int index) const {
+        assert(index >= 0 && index < 3);
+        return _vertices[index];
     }
 
     inline
-    Triangle<3>::Triangle(const Simplex<3, 3>& other) :
-        Simplex<3, 3>(other) {
+    LineSegment2d
+    Triangle2d::edge(int oppositeIndex) const {
+        return LineSegment2d(
+            vertex((oppositeIndex + 1) % 3),
+            vertex((oppositeIndex + 2) % 3)
+        );
     }
 
     inline
-    Triangle<3>::Triangle(
+    Box2d
+    Triangle2d::bounds() const {
+        return vertex(0).hull(vertex(1)).hull(vertex(2));
+    }
+
+    inline
+    bool
+    Triangle2d::operator==(const Triangle2d& other) const {
+        return vertex(0) == other.vertex(0) &&
+            vertex(1) == other.vertex(1) &&
+            vertex(2) == other.vertex(2);
+    }
+
+    inline
+    Triangle3d::Triangle() {
+    }
+
+    inline
+    Triangle3d::Triangle(
         const Point3d& firstVertex,
         const Point3d& secondVertex,
         const Point3d& thirdVertex
     ) {
-        Matrix3d vertices;
-        vertices.col(0) = firstVertex.vector();
-        vertices.col(1) = secondVertex.vector();
-        vertices.col(2) = thirdVertex.vector();
-        *this = Simplex<3, 3>(vertices);
+        _vertices[0] = firstVertex;
+        _vertices[1] = secondVertex;
+        _vertices[2] = thirdVertex;
     }
 
-    template <int iNumDimensions>
     inline
-    TolerantComparator<Triangle<iNumDimensions>>::TolerantComparator(double precision) :
-        TolerantComparator<Simplex<iNumDimensions, 3>>(precision) {
+    const Point3d&
+    Triangle3d::vertex(int index) const {
+        assert(index >= 0 && index < 3);
+        return _vertices[index];
+    }
+
+    inline
+    LineSegment3d
+    Triangle3d::edge(int oppositeIndex) const {
+        assert(index >= 0 && index < 3);
+        return LineSegment3d(
+            vertex((oppositeIndex + 1) % 3),
+            vertex((oppositeIndex + 2) % 3)
+        );
+    }
+
+    inline
+    Box3d
+    Triangle3d::bounds() const {
+        return vertex(0).hull(vertex(1)).hull(vertex(2));
+    }
+
+    inline
+    bool
+    Triangle3d::operator==(const Triangle3d& other) const {
+        return vertex(0) == other.vertex(0) &&
+            vertex(1) == other.vertex(1) &&
+            vertex(2) == other.vertex(2);
     }
 }

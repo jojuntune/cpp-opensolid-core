@@ -38,31 +38,6 @@ using namespace opensolid;
 class SimplexTests : public CxxTest::TestSuite
 {
 public:
-    void testEdges() {
-        Triangle3d triangle(Point3d::Origin(), Point3d(1, 0, 1), Point3d(0, 1, 1));
-
-        std::cout << "EDGES" << std::endl;
-        for (int i = 0; i < 3; ++i) {
-            std::cout << i << ":" << std::endl;
-            std::cout << triangle.edge(i, (i + 1) % 3).vertices() << std::endl;
-        }
-    }
-    
-    void testFaces() {
-        Tetrahedron3d tetrahedron(
-            Point3d::Origin(),
-            Point3d(2, 1, 0),
-            Point3d(1, 2, 0),
-            Point3d(1, 1, 2)
-        );
-
-        for (int i = 0; i < 4; ++i) {
-            Point3d vertex = tetrahedron.vertex(i);
-            Triangle3d face = tetrahedron.face(i);
-            TS_ASSERT((vertex - face.centroid()).dot(face.normalVector()) < Zero());
-        }
-    }
-    
     void testLocalization() {
         Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
         PlanarCoordinateSystem3d xyCoordinateSystem(
