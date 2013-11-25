@@ -483,19 +483,23 @@ namespace opensolid
             std::vector<std::int64_t>& mapping
         ) {
             const SpatialSetNode<TItem>* candidateNodePtr = anchorNodePtr->nextPtr;
-            while (candidateNodePtr && candidateNodePtr->bounds.overlaps(anchorNodePtr->bounds)) {
-                const SpatialSetNode<TItem>* leftChildPtr = candidateNodePtr->leftChildPtr;
-                if (leftChildPtr) {
-                    // Internal node: descend into left child
-                    candidateNodePtr = leftChildPtr;
-                } else {
-                    // Leaf node: check for duplicate items, then move to next node
-                    const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
-                    if (itemComparator(*anchorItemPtr, *candidateItemPtr)) {
-                        std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
-                        assert(mapping[candidateItemIndex] == -1);
-                        mapping[candidateItemIndex] = uniqueIndex;
+            while (candidateNodePtr) {
+                if (candidateNodePtr->bounds.overlaps(anchorNodePtr->bounds)) {
+                    const SpatialSetNode<TItem>* leftChildPtr = candidateNodePtr->leftChildPtr;
+                    if (leftChildPtr) {
+                        // Internal node: descend into left child
+                        candidateNodePtr = leftChildPtr;
+                    } else {
+                        // Leaf node: check for duplicate items, then move to next node
+                        const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
+                        if (itemComparator(*anchorItemPtr, *candidateItemPtr)) {
+                            std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
+                            assert(mapping[candidateItemIndex] == -1);
+                            mapping[candidateItemIndex] = uniqueIndex;
+                        }
+                        candidateNodePtr = candidateNodePtr->nextPtr;
                     }
+                } else {
                     candidateNodePtr = candidateNodePtr->nextPtr;
                 }
             }

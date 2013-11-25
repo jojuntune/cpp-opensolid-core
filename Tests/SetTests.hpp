@@ -327,6 +327,21 @@ public:
         TS_ASSERT_EQUALS(mapping[4], 2);
     }
 
+    void testUniquePoints() {
+        std::vector<Point3d> points(6);
+        points[0] = Point3d(6.6731209754944, 2, -17.180282592773);
+        points[1] = Point3d(6.6731209754944, 2, -9.1802825927734);
+        points[2] = Point3d(14.673119544983, 2, -9.1802825927734);
+        points[3] = Point3d(6.6731209754944, 2, -17.180282592773);
+        points[4] = Point3d(14.673119544983, 2, -9.1802825927734);
+        points[5] = Point3d(14.673119544983, 2, -17.180282592773);
+
+        SpatialSet<Point3d> pointSet(points);
+        std::vector<Point3d> uniquePoints = pointSet.uniqueItems();
+
+        TS_ASSERT_EQUALS(uniquePoints.size(), 4u);
+    }
+
     void testFind() {
         std::vector<LineSegment2d> lineSegments(5);
         lineSegments[0] = LineSegment2d(Point2d(1, 1), Point2d(3, 1));
