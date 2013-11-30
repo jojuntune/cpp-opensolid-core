@@ -35,7 +35,7 @@ namespace opensolid
         Matrix2d matrix;
         matrix.col(0) = vertex(1) - vertex(0);
         matrix.col(1) = vertex(2) - vertex(0);
-        return matrix.determinant() / 2;
+        return matrix.determinant() / 2.0;
     }
 
     Point2d
