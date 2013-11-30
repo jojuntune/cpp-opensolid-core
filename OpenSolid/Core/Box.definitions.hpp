@@ -54,6 +54,7 @@ namespace opensolid
         explicit
         Box(const EigenBase<TVector>& vector);
 
+        explicit
         Box(Interval x);
 
         Box(Interval x, Interval y);
