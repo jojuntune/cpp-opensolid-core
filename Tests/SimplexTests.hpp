@@ -137,12 +137,13 @@ public:
         AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), Vector3d::UnitY());
         
         LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
-        TS_ASSERT((localized.vertices() - LineSegment1d(2, 5).vertices()).isZero());
+        TS_ASSERT((localized.startPoint() - Point1d(2)).isZero());
+        TS_ASSERT((localized.endPoint() - Point1d(5)).isZero());
 
-        LineSegment3d globalized =
-            lineSegment3d.coordinateSystem() * LineSegment1d(1.0 / 3.0, 2.0 / 3.0);
-        TS_ASSERT((globalized.vertex(0) - Point3d(2, 3, 4)).isZero());
-        TS_ASSERT((globalized.vertex(1) - Point3d(3, 4, 5)).isZero());
+        LineSegment3d globalized = lineSegment3d.coordinateSystem() *
+            LineSegment1d(Point1d(1.0 / 3.0), Point1d(2.0 / 3.0));
+        TS_ASSERT((globalized.startPoint() - Point3d(2, 3, 4)).isZero());
+        TS_ASSERT((globalized.endPoint() - Point3d(3, 4, 5)).isZero());
     }
 
     void testSet() {

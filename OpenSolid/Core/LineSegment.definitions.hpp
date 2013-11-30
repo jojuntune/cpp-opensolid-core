@@ -30,104 +30,134 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/Simplex.definitions.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
     class LineSegment :
-        public Simplex<iNumDimensions, 2>
+        public Transformable<LineSegment<iNumDimensions>>
     {
+    private:
+        Point<iNumDimensions> _startPoint;
+        Point<iNumDimensions> _endPoint;
     public:
         LineSegment();
-
-        LineSegment(const Simplex<iNumDimensions, 2>& other);
 
         LineSegment(
-            const Point<iNumDimensions>& firstVertex,
-            const Point<iNumDimensions>& secondVertex
+            const Point<iNumDimensions>& startPoint,
+            const Point<iNumDimensions>& endPoint
         );
-    };
 
-    typedef LineSegment<2> LineSegment2d;
-    typedef LineSegment<3> LineSegment3d;
-
-    template <>
-    class LineSegment<1> :
-        public Simplex<1, 2>
-    {
-    public:
-        LineSegment();
-
-        LineSegment(const Simplex<1, 2>& other);
-
-        LineSegment(double startPoint, double endPoint);
-
-        double
+        const Point<iNumDimensions>&
         startPoint() const;
-        
-        double
+
+        Point<iNumDimensions>&
+        startPoint();
+
+        const Point<iNumDimensions>&
         endPoint() const;
 
-        static LineSegment<1>
-        Unit();
+        Point<iNumDimensions>&
+        endPoint();
+
+        double
+        length() const;
+
+        double
+        squaredLength() const;
+
+        Matrix<double, iNumDimensions, 1>
+        vector() const;
+
+        Matrix<double, iNumDimensions, 1>
+        normalVector() const;
+
+        CoordinateSystem<iNumDimensions, 1>
+        coordinateSystem() const;
+
+        Axis<iNumDimensions>
+        axis() const;
+
+        Box<iNumDimensions>
+        bounds() const;
+
+        bool
+        operator==(const LineSegment<iNumDimensions>& other) const;
     };
 
     typedef LineSegment<1> LineSegment1d;
+    typedef LineSegment<2> LineSegment2d;
+    typedef LineSegment<3> LineSegment3d;
 }
 
 ////////// Specializations //////////
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct NumDimensions<LineSegment<iNumDimensions>> :
-        public NumDimensions<Simplex<iNumDimensions, 2>>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
     {
+        typedef LineSegment<iNumResultDimensions> Type;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions> :
-        public TransformedType<Simplex<iNumDimensions, 2>, iNumResultDimensions>
+    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
     {
+        typedef LineSegment<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ScalingFunction<LineSegment<iNumDimensions>>
+    {
+        LineSegment<iNumDimensions>
+        operator()(const LineSegment<iNumDimensions>& lineSegment, double scale) const;
+    };
+
+    template <int iNumDimensions>
+    struct TranslationFunction<LineSegment<iNumDimensions>>
+    {
+        template <class TVector>
+        LineSegment<iNumDimensions>
+        operator()(
+            const LineSegment<iNumDimensions>& lineSegment,
+            const EigenBase<TVector>& vector
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions> :
-        public MorphedType<Simplex<iNumDimensions, 2>, iNumResultDimensions>
+    struct TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>
     {
-    };
-
-    template <int iNumDimensions>
-    struct ScalingFunction<LineSegment<iNumDimensions>> :
-        public ScalingFunction<Simplex<iNumDimensions, 2>>
-    {
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<LineSegment<iNumDimensions>> :
-        public TranslationFunction<Simplex<iNumDimensions, 2>>
-    {
+        template <class TMatrix>
+        LineSegment<iNumResultDimensions>
+        operator()(
+            const LineSegment<iNumDimensions>& lineSegment,
+            const EigenBase<TMatrix>& matrix
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions> :
-        public TransformationFunction<Simplex<iNumDimensions, 2>, iNumResultDimensions>
+    struct MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>
     {
+        LineSegment<iNumResultDimensions>
+        operator()(
+            const LineSegment<iNumDimensions>& lineSegment,
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        ) const;
     };
 
     template <int iNumDimensions>
-    struct BoundsType<LineSegment<iNumDimensions>> :
-        public BoundsType<Simplex<iNumDimensions, 2>>
+    class TolerantComparator<LineSegment<iNumDimensions>>
     {
-    };
-
-    template <int iNumDimensions>
-    class TolerantComparator<LineSegment<iNumDimensions>> :
-        public TolerantComparator<Simplex<iNumDimensions, 2>>
-    {
+    private:
+        double _precision;
     public:
         TolerantComparator(double precision);
+
+        bool
+        operator()(
+            const LineSegment<iNumDimensions>& firstLineSegment,
+            const LineSegment<iNumDimensions>& secondLineSegment
+        ) const;
     };
 }

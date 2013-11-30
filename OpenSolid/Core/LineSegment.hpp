@@ -28,71 +28,163 @@
 
 #include <OpenSolid/Core/LineSegment.definitions.hpp>
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/BoundsFunction.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
-    inline
     LineSegment<iNumDimensions>::LineSegment() {
     }
 
     template <int iNumDimensions>
-    inline
-    LineSegment<iNumDimensions>::LineSegment(const Simplex<iNumDimensions, 2>& other) :
-        Simplex<iNumDimensions, 2>(other) {
-    }
-
-    template <int iNumDimensions>
-    inline
     LineSegment<iNumDimensions>::LineSegment(
-        const Point<iNumDimensions>& firstVertex,
-        const Point<iNumDimensions>& secondVertex
-    ) {
-        Matrix<double, iNumDimensions, 2> vertices;
-        vertices.col(0) = firstVertex.vector();
-        vertices.col(1) = secondVertex.vector();
-        *this = Simplex<iNumDimensions, 2>(vertices);
-    }
-
-    inline
-    LineSegment<1>::LineSegment() {
-    }
-
-    inline
-    LineSegment<1>::LineSegment(const Simplex<1, 2>& other) :
-        Simplex<1, 2>(other) {
-    }
-
-    inline
-    LineSegment<1>::LineSegment(double startPoint, double endPoint) :
-        Simplex<1, 2>(RowVector2d(startPoint, endPoint)) {
-    }
-
-    inline
-    double
-    LineSegment<1>::startPoint() const {
-        return vertices()(0);
-    }
-
-    inline
-    double
-    LineSegment<1>::endPoint() const {
-        return vertices()(1);
-    }
-
-    inline
-    LineSegment<1>
-    LineSegment<1>::Unit() {
-        return LineSegment<1>(0.0, 1.0);
+        const Point<iNumDimensions>& startPoint,
+        const Point<iNumDimensions>& endPoint
+    ) : _startPoint(startPoint),
+        _endPoint(endPoint) {
     }
 
     template <int iNumDimensions>
-    inline
+    const Point<iNumDimensions>&
+    LineSegment<iNumDimensions>::startPoint() const {
+        return _startPoint;
+    }
+
+    template <int iNumDimensions>
+    Point<iNumDimensions>&
+    LineSegment<iNumDimensions>::startPoint() {
+        return _startPoint;
+    }
+
+    template <int iNumDimensions>
+    const Point<iNumDimensions>&
+    LineSegment<iNumDimensions>::endPoint() const {
+        return _endPoint;
+    }
+
+    template <int iNumDimensions>
+    Point<iNumDimensions>&
+    LineSegment<iNumDimensions>::endPoint() {
+        return _endPoint;
+    }
+
+    template <int iNumDimensions>
+    double
+    LineSegment<iNumDimensions>::length() const {
+        return (startPoint() - endPoint()).norm();
+    }
+
+    template <int iNumDimensions>
+    double
+    LineSegment<iNumDimensions>::squaredLength() const {
+        return (startPoint() - endPoint()).squaredNorm();
+    }
+
+    template<int iNumDimensions>
+    Matrix<double, iNumDimensions, 1>
+    LineSegment<iNumDimensions>::vector() const {
+        return endPoint() - startPoint();
+    }
+
+    template<int iNumDimensions>
+    Matrix<double, iNumDimensions, 1>
+    LineSegment<iNumDimensions>::normalVector() const {
+        return (endPoint() - startPoint()).unitOrthogonal();
+    }
+
+    template <int iNumDimensions>
+    CoordinateSystem<iNumDimensions, 1>
+    LineSegment<iNumDimensions>::coordinateSystem() const {
+        return CoordinateSystem<iNumDimensions, 1>(
+            startPoint(),
+            endPoint() - startPoint()
+        );
+    }
+
+    template <int iNumDimensions>
+    Axis<iNumDimensions>
+    LineSegment<iNumDimensions>::axis() const {
+        return Axis<iNumDimensions>(startPoint(), (endPoint() - startPoint()).normalized());
+    }
+
+    template <int iNumDimensions>
+    Box<iNumDimensions>
+    LineSegment<iNumDimensions>::bounds() const {
+        return startPoint().hull(endPoint());
+    }
+
+    template <int iNumDimensions>
+    bool
+    LineSegment<iNumDimensions>::operator==(const LineSegment<iNumDimensions>& other) const {
+        return startPoint() == other.startPoint() && endPoint() == other.endPoint();
+    }
+
+    template <int iNumDimensions>
+    LineSegment<iNumDimensions>
+    ScalingFunction<LineSegment<iNumDimensions>>::operator()(
+        const LineSegment<iNumDimensions>& lineSegment,
+        double scale
+    ) const {
+        return LineSegment<iNumDimensions>(
+            detail::scaled(lineSegment.startPoint(), scale),
+            detail::scaled(lineSegment.endPoint(), scale)
+        );
+    }
+
+    template <int iNumDimensions> template <class TVector>
+    LineSegment<iNumDimensions>
+    TranslationFunction<LineSegment<iNumDimensions>>::operator()(
+        const LineSegment<iNumDimensions>& lineSegment,
+        const EigenBase<TVector>& vector
+    ) const {
+        return LineSegment<iNumDimensions>(
+            detail::translated(lineSegment.startPoint(), vector.derived()),
+            detail::translated(lineSegment.endPoint(), vector.derived())
+        );
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    LineSegment<iNumResultDimensions>
+    TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
+        const LineSegment<iNumDimensions>& lineSegment,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return LineSegment<iNumResultDimensions>(
+            detail::transformed(lineSegment.startPoint(), matrix.derived()),
+            detail::transformed(lineSegment.endPoint(), matrix.derived())
+        );
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    LineSegment<iNumResultDimensions>
+    MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
+        const LineSegment<iNumDimensions>& lineSegment,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        return LineSegment<iNumResultDimensions>(
+            detail::morphed(lineSegment.startPoint(), morphingExpression),
+            detail::morphed(lineSegment.endPoint(), morphingExpression)
+        );
+    }
+
+    template <int iNumDimensions>
     TolerantComparator<LineSegment<iNumDimensions>>::TolerantComparator(double precision) :
-        TolerantComparator<Simplex<iNumDimensions, 2>>(precision) {
+        _precision(precision) {
+    }
+
+    template <int iNumDimensions>
+    bool
+    TolerantComparator<LineSegment<iNumDimensions>>::operator()(
+        const LineSegment<iNumDimensions>& firstLineSegment,
+        const LineSegment<iNumDimensions>& secondLineSegment
+    ) const {
+        return
+            (firstLineSegment.startPoint() - secondLineSegment.startPoint()).isZero(_precision) &&
+            (firstLineSegment.endPoint() - secondLineSegment.endPoint()).isZero(_precision);
     }
 }

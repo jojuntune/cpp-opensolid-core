@@ -26,8 +26,24 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+
 namespace opensolid
 {
     template <int iNumDimensions>
     class LineSegment;
+
+    template <int iNumDimensions>
+    struct NumDimensions<LineSegment<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<LineSegment<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
 }
