@@ -26,7 +26,6 @@
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 #include <OpenSolid/Core/Zero.hpp>
@@ -86,7 +85,6 @@ public:
 
         TS_ASSERT(tetrahedron.volume() - 1.0 / 6.0 == Zero());
         TS_ASSERT(tetrahedron.face(1).area() - 0.5 == Zero());
-        TS_ASSERT(tetrahedron.edge(1, 3).length() - sqrt(2.0) == Zero());
     }
     
     void testTetrahedronCentroid() {

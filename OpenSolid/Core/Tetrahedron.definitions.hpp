@@ -26,26 +26,62 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Simplex.definitions.hpp>
-#include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Tetrahedron.declarations.hpp>
+
+#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
     class Tetrahedron3d :
-        public Simplex<3, 4>
+        public Transformable<Tetrahedron3d>
     {
+    private:
+        Point<3> _vertices[4];
     public:
         Tetrahedron3d();
 
-        Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron);
-
         Tetrahedron3d(
-            const Point3d& firstVertex,
-            const Point3d& secondVertex,
-            const Point3d& thirdVertex,
-            const Point3d& fourthVertex
+            const Point<3>& firstVertex,
+            const Point<3>& secondVertex,
+            const Point<3>& thirdVertex,
+            const Point<3>& fourthVertex
         );
 
+        const Point<3>&
+        vertex(int index) const;
+
+        Point<3>&
+        vertex(int index);
+
+        OPENSOLID_CORE_EXPORT
+        double
+        volume() const;
+
+        OPENSOLID_CORE_EXPORT
+        Point<3>
+        centroid() const;
+
+        OPENSOLID_CORE_EXPORT
+        Triangle<3>
+        face(int oppositeIndex) const;
+
+        OPENSOLID_CORE_EXPORT
+        CoordinateSystem<3, 3>
+        coordinateSystem() const;
+
+        Box<3>
+        bounds() const;
+
+        bool
+        operator==(const Tetrahedron3d& other) const;
+
+        OPENSOLID_CORE_EXPORT
         static Tetrahedron3d
         Unit();
     };
@@ -56,52 +92,52 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct NumDimensions<Tetrahedron3d> :
-        public NumDimensions<Simplex<3, 4>>
+    struct ScalingFunction<Tetrahedron3d>
     {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformedType<Tetrahedron3d, iNumResultDimensions> :
-        public TransformedType<Simplex<3, 4>, iNumResultDimensions>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphedType<Tetrahedron3d, iNumResultDimensions> :
-        public MorphedType<Simplex<3, 4>, iNumResultDimensions>
-    {
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        operator()(const Tetrahedron3d& tetrahedron, double scale) const;
     };
 
     template <>
-    struct ScalingFunction<Tetrahedron3d> :
-        public ScalingFunction<Simplex<3, 4>>
+    struct TranslationFunction<Tetrahedron3d>
     {
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        operator()(const Tetrahedron3d& tetrahedron, const Vector3d& vector) const;
     };
 
     template <>
-    struct TranslationFunction<Tetrahedron3d> :
-        public TranslationFunction<Simplex<3, 4>>
+    struct TransformationFunction<Tetrahedron3d, 3>
     {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<Tetrahedron3d, iNumResultDimensions> :
-        public TransformationFunction<Simplex<3, 4>, iNumResultDimensions>
-    {
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        operator()(const Tetrahedron3d& tetrahedron, const Matrix3d& matrix) const;
     };
 
     template <>
-    struct BoundsType<Tetrahedron3d> :
-        public BoundsType<Simplex<3, 4>>
+    struct MorphingFunction<Tetrahedron3d, 3>
     {
+        OPENSOLID_CORE_EXPORT
+        Tetrahedron3d
+        operator()(
+            const Tetrahedron3d& tetrahedron,
+            const ParametricExpression<3, 3>& morphingExpression
+        ) const;
     };
 
     template <>
-    class TolerantComparator<Tetrahedron3d> :
-        public TolerantComparator<Simplex<3, 4>>
+    class TolerantComparator<Tetrahedron3d>
     {
+    private:
+        double _precision;
     public:
         TolerantComparator(double precision);
+
+        bool
+        operator()(
+            const Tetrahedron3d& firstTetrahedron,
+            const Tetrahedron3d& secondTetrahedron
+        ) const;
     };
 }

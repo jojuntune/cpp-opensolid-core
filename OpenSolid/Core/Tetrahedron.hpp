@@ -28,19 +28,16 @@
 
 #include <OpenSolid/Core/Tetrahedron.definitions.hpp>
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/BoundsFunction.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Simplex.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
     inline
     Tetrahedron3d::Tetrahedron3d() {
-    }
-
-    inline
-    Tetrahedron3d::Tetrahedron3d(const Simplex<3, 4>& otherTetrahedron) :
-        Simplex<3, 4>(otherTetrahedron) {
     }
 
     inline
@@ -50,27 +47,55 @@ namespace opensolid
         const Point3d& thirdVertex,
         const Point3d& fourthVertex
     ) {
-        Matrix<double, 3, 4> vertices;
-        vertices.col(0) = firstVertex.vector();
-        vertices.col(1) = secondVertex.vector();
-        vertices.col(2) = thirdVertex.vector();
-        vertices.col(3) = fourthVertex.vector();
-        *this = Simplex<3, 4>(vertices);
+        _vertices[0] = firstVertex;
+        _vertices[1] = secondVertex;
+        _vertices[2] = thirdVertex;
+        _vertices[3] = fourthVertex;
     }
 
     inline
-    Tetrahedron3d
-    Tetrahedron3d::Unit() {
-        return Tetrahedron3d(
-            Point3d::Origin(),
-            Point3d(1, 0, 0),
-            Point3d(0, 1, 0),
-            Point3d(0, 0, 1)
-        );
+    const Point<3>&
+    Tetrahedron3d::vertex(int index) const {
+        assert(index >= 0 && index < 4);
+        return _vertices[index];
+    }
+
+    inline
+    Point<3>&
+    Tetrahedron3d::vertex(int index) {
+        assert(index >= 0 && index < 4);
+        return _vertices[index];
+    }
+
+    inline
+    Box<3>
+    Tetrahedron3d::bounds() const {
+        return vertex(0).hull(vertex(1)).hull(vertex(2)).hull(vertex(3));
+    }
+
+    inline
+    bool
+    Tetrahedron3d::operator==(const Tetrahedron3d& other) const {
+        return vertex(0) == other.vertex(0) &&
+            vertex(1) == other.vertex(1) &&
+            vertex(2) == other.vertex(2) &&
+            vertex(3) == other.vertex(3);
     }
 
     inline
     TolerantComparator<Tetrahedron3d>::TolerantComparator(double precision) :
-        TolerantComparator<Simplex<3, 4>>(precision) {
+        _precision(precision) {
+    }
+
+    inline
+    bool
+    TolerantComparator<Tetrahedron3d>::operator()(
+        const Tetrahedron3d& firstTetrahedron,
+        const Tetrahedron3d& secondTetrahedron
+    ) const {
+        return (firstTetrahedron.vertex(0) - secondTetrahedron.vertex(0)).isZero(_precision) &&
+            (firstTetrahedron.vertex(1) - secondTetrahedron.vertex(1)).isZero(_precision) &&
+            (firstTetrahedron.vertex(2) - secondTetrahedron.vertex(2)).isZero(_precision) &&
+            (firstTetrahedron.vertex(3) - secondTetrahedron.vertex(3)).isZero(_precision);
     }
 }

@@ -26,7 +26,23 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+
 namespace opensolid
 {
     class Tetrahedron3d;
+
+    template <>
+    struct NumDimensions<Tetrahedron3d>
+    {
+        static const int Value = 3;
+    };
+
+    template <>
+    struct BoundsType<Tetrahedron3d>
+    {
+        typedef Box<3> Type;
+    };
 }
