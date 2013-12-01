@@ -160,16 +160,19 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    LineSegment<iNumResultDimensions>
-    MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
-        const LineSegment<iNumDimensions>& lineSegment,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return LineSegment<iNumResultDimensions>(
-            detail::morphed(lineSegment.startPoint(), morphingExpression),
-            detail::morphed(lineSegment.endPoint(), morphingExpression)
-        );
+    namespace detail
+    {
+        template <int iNumDimensions, int iNumResultDimensions>
+        LineSegment<iNumResultDimensions>
+        morphed(
+            const LineSegment<iNumDimensions>& lineSegment,
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        ) {
+            return LineSegment<iNumResultDimensions>(
+                morphed(lineSegment.startPoint(), morphingExpression),
+                morphed(lineSegment.endPoint(), morphingExpression)
+            );
+        }
     }
 
     template <int iNumDimensions>

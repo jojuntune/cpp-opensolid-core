@@ -128,16 +128,6 @@ namespace opensolid
         template <class TTransformable, class TMatrix>
         typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
         transformed(const TTransformable& transformable, const EigenBase<TMatrix>& matrix);
-
-        template <class TTransformable, int iNumResultDimensions>
-        typename MorphedType<TTransformable, iNumResultDimensions>::Type
-        morphed(
-            const TTransformable& transformable,
-            const ParametricExpression<
-                iNumResultDimensions,
-                NumDimensions<TTransformable>::Value
-            >& morphingExpression
-        );
     }
 
     template <class TDerived, int iNumAxes>

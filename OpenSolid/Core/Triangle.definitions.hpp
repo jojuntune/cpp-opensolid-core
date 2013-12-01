@@ -239,49 +239,36 @@ namespace opensolid
         ) const;
     };
 
-    template <>
-    struct MorphingFunction<Triangle2d, 2>
+    namespace detail
     {
         OPENSOLID_CORE_EXPORT
         Triangle2d
-        operator()(
+        morphed(
             const Triangle2d& triangle,
             const ParametricExpression<2, 2>& morphingExpression
-        ) const;
-    };
+        );
 
-    template <>
-    struct MorphingFunction<Triangle2d, 3>
-    {
         OPENSOLID_CORE_EXPORT
         Triangle3d
-        operator()(
+        morphed(
             const Triangle2d& triangle,
             const ParametricExpression<3, 2>& morphingExpression
-        ) const;
-    };
+        );
 
-    template <>
-    struct MorphingFunction<Triangle3d, 3>
-    {
         OPENSOLID_CORE_EXPORT
         Triangle3d
-        operator()(
+        morphed(
             const Triangle3d& triangle,
             const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
+        );
 
-    template <>
-    struct MorphingFunction<Triangle3d, 2>
-    {
         OPENSOLID_CORE_EXPORT
         Triangle2d
-        operator()(
+        morphed(
             const Triangle3d& triangle,
             const ParametricExpression<2, 3>& morphingExpression
-        ) const;
-    };
+        );
+    }
 
     template <>
     class TolerantComparator<Triangle2d>

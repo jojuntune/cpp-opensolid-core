@@ -433,14 +433,17 @@ namespace opensolid
         return result;
     }
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    Box<iNumResultDimensions>
-    MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Box<iNumDimensions>& box,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return Box<iNumResultDimensions>(morphingExpression.evaluate(box.vector()));
+    namespace detail
+    {
+        template <int iNumDimensions, int iNumResultDimensions>
+        inline
+        Box<iNumResultDimensions>
+        morphed(
+            const Box<iNumDimensions>& box,
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        ) {
+            return Box<iNumResultDimensions>(morphingExpression.evaluate(box.vector()));
+        }
     }
 
     template <int iNumDimensions>

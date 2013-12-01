@@ -207,19 +207,22 @@ namespace opensolid
         );
     }
 
-    template <class TDerived, int iNumResultDimensions>
-    inline
-    detail::MorphedCollection<TDerived, iNumResultDimensions>
-    MorphingFunction<SpatialCollection<TDerived>, iNumResultDimensions>::operator()(
-        const SpatialCollection<TDerived>& collection,
-        const ParametricExpression<
-            iNumResultDimensions,
-            NumDimensions<TDerived>::Value
-        >& morphingExpression
-    ) const {
-        return detail::MorphedCollection<TDerived, iNumResultDimensions>(
-            collection.derived(),
-            morphingExpression
-        );
+    namespace detail
+    {
+        template <class TDerived, int iNumResultDimensions>
+        inline
+        MorphedCollection<TDerived, iNumResultDimensions>
+        morphed(
+            const SpatialCollection<TDerived>& collection,
+            const ParametricExpression<
+                iNumResultDimensions,
+                NumDimensions<TDerived>::Value
+            >& morphingExpression
+        ) {
+            return MorphedCollection<TDerived, iNumResultDimensions>(
+                collection.derived(),
+                morphingExpression
+            );
+        }
     }
 }

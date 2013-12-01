@@ -162,17 +162,17 @@ namespace opensolid
         ) const;
     };
 
-    template <class TDerived, int iNumResultDimensions>
-    struct MorphingFunction<SpatialCollection<TDerived>, iNumResultDimensions>
+    namespace detail
     {
-        detail::MorphedCollection<TDerived, iNumResultDimensions>
-        operator()(
+        template <class TDerived, int iNumResultDimensions>
+        MorphedCollection<TDerived, iNumResultDimensions>
+        morphed(
             const SpatialCollection<TDerived>& collection,
             const ParametricExpression<
                 iNumResultDimensions,
                 NumDimensions<TDerived>::Value
             >& morphingExpression
-        ) const;
+        );
     };
 
     template <class TDerived>

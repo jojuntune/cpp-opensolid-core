@@ -180,52 +180,55 @@ namespace opensolid
         );
     }
 
-    Triangle2d
-    MorphingFunction<Triangle2d, 2>::operator()(
-        const Triangle2d& triangle,
-        const ParametricExpression<2, 2>& morphingExpression
-    ) const {
-        return Triangle2d(
-            detail::morphed(triangle.vertex(0), morphingExpression),
-            detail::morphed(triangle.vertex(1), morphingExpression),
-            detail::morphed(triangle.vertex(2), morphingExpression)
-        );
-    }
+    namespace detail
+    {
+        Triangle2d
+        morphed(
+            const Triangle2d& triangle,
+            const ParametricExpression<2, 2>& morphingExpression
+        ) {
+            return Triangle2d(
+                morphed(triangle.vertex(0), morphingExpression),
+                morphed(triangle.vertex(1), morphingExpression),
+                morphed(triangle.vertex(2), morphingExpression)
+            );
+        }
 
-    Triangle3d
-    MorphingFunction<Triangle2d, 3>::operator()(
-        const Triangle2d& triangle,
-        const ParametricExpression<3, 2>& morphingExpression
-    ) const {
-        return Triangle3d(
-            detail::morphed(triangle.vertex(0), morphingExpression),
-            detail::morphed(triangle.vertex(1), morphingExpression),
-            detail::morphed(triangle.vertex(2), morphingExpression)
-        );
-    }
+        Triangle3d
+        morphed(
+            const Triangle2d& triangle,
+            const ParametricExpression<3, 2>& morphingExpression
+        ) {
+            return Triangle3d(
+                morphed(triangle.vertex(0), morphingExpression),
+                morphed(triangle.vertex(1), morphingExpression),
+                morphed(triangle.vertex(2), morphingExpression)
+            );
+        }
 
-    Triangle3d
-    MorphingFunction<Triangle3d, 3>::operator()(
-        const Triangle3d& triangle,
-        const ParametricExpression<3, 3>& morphingExpression
-    ) const {
-        return Triangle3d(
-            detail::morphed(triangle.vertex(0), morphingExpression),
-            detail::morphed(triangle.vertex(1), morphingExpression),
-            detail::morphed(triangle.vertex(2), morphingExpression)
-        );
-    }
+        Triangle3d
+        morphed(
+            const Triangle3d& triangle,
+            const ParametricExpression<3, 3>& morphingExpression
+        ) {
+            return Triangle3d(
+                morphed(triangle.vertex(0), morphingExpression),
+                morphed(triangle.vertex(1), morphingExpression),
+                morphed(triangle.vertex(2), morphingExpression)
+            );
+        }
 
-    Triangle2d
-    MorphingFunction<Triangle3d, 2>::operator()(
-        const Triangle3d& triangle,
-        const ParametricExpression<2, 3>& morphingExpression
-    ) const {
-        return Triangle2d(
-            detail::morphed(triangle.vertex(0), morphingExpression),
-            detail::morphed(triangle.vertex(1), morphingExpression),
-            detail::morphed(triangle.vertex(2), morphingExpression)
-        );
+        Triangle2d
+        morphed(
+            const Triangle3d& triangle,
+            const ParametricExpression<2, 3>& morphingExpression
+        ) {
+            return Triangle2d(
+                morphed(triangle.vertex(0), morphingExpression),
+                morphed(triangle.vertex(1), morphingExpression),
+                morphed(triangle.vertex(2), morphingExpression)
+            );
+        }
     }
 
     TolerantComparator<Triangle2d>::TolerantComparator(double precision) :

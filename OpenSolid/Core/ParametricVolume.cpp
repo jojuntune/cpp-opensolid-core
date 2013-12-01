@@ -85,14 +85,17 @@ namespace opensolid
         return ParametricVolume3d(matrix * parametricArea.expression(), parametricArea.domain());
     }
 
-    ParametricVolume3d
-    MorphingFunction<ParametricVolume3d, 3>::operator()(
-        const ParametricVolume3d& parametricArea,
-        const ParametricExpression<3, 3>& morphingExpression
-    ) const {
-        return ParametricVolume3d(
-            morphingExpression.composed(parametricArea.expression()),
-            parametricArea.domain()
-        );
+    namespace detail
+    {
+        ParametricVolume3d
+        morphed(
+            const ParametricVolume3d& parametricArea,
+            const ParametricExpression<3, 3>& morphingExpression
+        ) {
+            return ParametricVolume3d(
+                morphingExpression.composed(parametricArea.expression()),
+                parametricArea.domain()
+            );
+        }
     }
 }

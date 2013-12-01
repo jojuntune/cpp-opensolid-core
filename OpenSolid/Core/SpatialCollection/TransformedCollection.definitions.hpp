@@ -193,17 +193,4 @@ namespace opensolid
             const EigenBase<TMatrix>& matrix
         ) const;
     };
-
-    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
-    struct MorphingFunction<
-        detail::TransformedCollection<TBaseCollection, iNumInnerResultDimensions>,
-        iNumOuterResultDimensions
-    > : public MorphingFunction<
-            SpatialCollection<
-                detail::TransformedCollection<TBaseCollection, iNumInnerResultDimensions>
-            >,
-            iNumOuterResultDimensions
-        >
-    {
-    };
 }

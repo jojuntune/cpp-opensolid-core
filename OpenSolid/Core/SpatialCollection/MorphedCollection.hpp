@@ -175,25 +175,26 @@ namespace opensolid
         }
     }
 
-    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
-    inline
-    detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>
-    MorphingFunction<
-        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
-        iNumOuterResultDimensions
-    >::operator()(
-        const detail::MorphedCollection<
-            TBaseCollection,
-            iNumInnerResultDimensions
-        >& morphedCollection,
-        const ParametricExpression<
-            iNumOuterResultDimensions,
-            iNumInnerResultDimensions
-        >& morphingExpression
-    ) const {
-        return detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>(
-            morphedCollection.baseCollection(),
-            morphingExpression.composed(morphedCollection.morphingExpression())
-        );
+    namespace detail
+    {    
+        template <
+            class TBaseCollection,
+            int iNumInnerResultDimensions,
+            int iNumOuterResultDimensions
+        >
+        inline
+        MorphedCollection<TBaseCollection, iNumOuterResultDimensions>
+        morphed(
+            const MorphedCollection<TBaseCollection, iNumInnerResultDimensions>& morphedCollection,
+            const ParametricExpression<
+                iNumOuterResultDimensions,
+                iNumInnerResultDimensions
+            >& morphingExpression
+        ) {
+            return MorphedCollection<TBaseCollection, iNumOuterResultDimensions>(
+                morphedCollection.baseCollection(),
+                morphingExpression.composed(morphedCollection.morphingExpression())
+            );
+        }
     }
 }

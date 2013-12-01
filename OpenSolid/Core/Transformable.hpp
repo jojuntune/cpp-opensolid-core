@@ -201,22 +201,6 @@ namespace opensolid
                 matrix.derived()
             );
         }
-
-        template <class TTransformable, int iNumResultDimensions>
-        inline
-        typename MorphedType<TTransformable, iNumResultDimensions>::Type
-        morphed(
-            const TTransformable& transformable,
-            const ParametricExpression<
-                iNumResultDimensions,
-                NumDimensions<TTransformable>::Value
-            >& morphingExpression
-        ) {
-            return MorphingFunction<TTransformable, iNumResultDimensions>()(
-                transformable,
-                morphingExpression
-            );
-        }
     }
 
     template <class TDerived, int iNumAxes>

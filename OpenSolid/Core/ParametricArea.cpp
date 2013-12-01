@@ -85,14 +85,17 @@ namespace opensolid
         return ParametricArea2d(matrix * parametricArea.expression(), parametricArea.domain());
     }
 
-    ParametricArea2d
-    MorphingFunction<ParametricArea2d, 2>::operator()(
-        const ParametricArea2d& parametricArea,
-        const ParametricExpression<2, 2>& morphingExpression
-    ) const {
-        return ParametricArea2d(
-            morphingExpression.composed(parametricArea.expression()),
-            parametricArea.domain()
-        );
+    namespace detail
+    {
+        ParametricArea2d
+        morphed(
+            const ParametricArea2d& parametricArea,
+            const ParametricExpression<2, 2>& morphingExpression
+        ) {
+            return ParametricArea2d(
+                morphingExpression.composed(parametricArea.expression()),
+                parametricArea.domain()
+            );
+        }
     }
 }

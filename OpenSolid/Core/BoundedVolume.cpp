@@ -88,15 +88,18 @@ namespace opensolid
         );
     }
 
-    BoundedVolume3d
-    MorphingFunction<BoundedVolume3d, 3>::operator()(
-        const BoundedVolume3d& boundedVolume,
-        const ParametricExpression<3, 3>& morphingExpression
-    ) const {
-        return BoundedVolume3d(
-            SpatialSet<ParametricSurface3d>(
-                detail::morphed(boundedVolume.boundaries(), morphingExpression)
-            )
-        );
+    namespace detail
+    {
+        BoundedVolume3d
+        morphed(
+            const BoundedVolume3d& boundedVolume,
+            const ParametricExpression<3, 3>& morphingExpression
+        ) {
+            return BoundedVolume3d(
+                SpatialSet<ParametricSurface3d>(
+                    morphed(boundedVolume.boundaries(), morphingExpression)
+                )
+            );
+        }
     }
 }

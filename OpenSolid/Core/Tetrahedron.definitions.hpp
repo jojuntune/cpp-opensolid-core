@@ -115,16 +115,15 @@ namespace opensolid
         operator()(const Tetrahedron3d& tetrahedron, const Matrix3d& matrix) const;
     };
 
-    template <>
-    struct MorphingFunction<Tetrahedron3d, 3>
+    namespace detail
     {
         OPENSOLID_CORE_EXPORT
         Tetrahedron3d
-        operator()(
+        morphed(
             const Tetrahedron3d& tetrahedron,
             const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
+        );
+    }
 
     template <>
     class TolerantComparator<Tetrahedron3d>

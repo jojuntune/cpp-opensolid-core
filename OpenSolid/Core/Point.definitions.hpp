@@ -182,15 +182,15 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>
+    namespace detail
     {
+        template <int iNumDimensions, int iNumResultDimensions>
         Point<iNumResultDimensions>
-        operator()(
+        morphed(
             const Point<iNumDimensions>& point,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
+        );
+    }
 
     template <int iNumDimensions>
     struct BoundsType<Point<iNumDimensions>>

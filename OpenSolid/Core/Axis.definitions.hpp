@@ -150,13 +150,13 @@ namespace opensolid
         operator()(const Axis<iNumDimensions>& axis, const EigenBase<TMatrix>& matrix) const;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>
+    namespace detail
     {
+        template <int iNumDimensions, int iNumResultDimensions>
         Axis<iNumResultDimensions>
-        operator()(
+        morphed(
             const Axis<iNumDimensions>& axis,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
+        );
+    }
 }

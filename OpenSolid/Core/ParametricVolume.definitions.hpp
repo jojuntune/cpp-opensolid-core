@@ -98,13 +98,12 @@ namespace opensolid
         operator()(const ParametricVolume3d& parametricVolume, const Matrix3d& matrix) const;
     };
 
-    template <>
-    struct MorphingFunction<ParametricVolume3d, 3>
+    namespace detail
     {
         ParametricVolume3d
-        operator()(
+        morphed(
             const ParametricVolume3d& parametricVolume,
             const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
+        );
+    }
 }

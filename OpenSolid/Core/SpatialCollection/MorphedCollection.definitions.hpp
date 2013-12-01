@@ -183,22 +183,20 @@ namespace opensolid
     {
     };
 
-    template <class TBaseCollection, int iNumInnerResultDimensions, int iNumOuterResultDimensions>
-    struct MorphingFunction<
-        detail::MorphedCollection<TBaseCollection, iNumInnerResultDimensions>,
-        iNumOuterResultDimensions
-    > 
+    namespace detail
     {
-        detail::MorphedCollection<TBaseCollection, iNumOuterResultDimensions>
-        operator()(
-            const detail::MorphedCollection<
-                TBaseCollection,
-                iNumInnerResultDimensions
-            >& morphedCollection,
+        template <
+            class TBaseCollection,
+            int iNumInnerResultDimensions,
+            int iNumOuterResultDimensions
+        >
+        MorphedCollection<TBaseCollection, iNumOuterResultDimensions>
+        morphed(
+            const MorphedCollection<TBaseCollection, iNumInnerResultDimensions>& morphedCollection,
             const ParametricExpression<
                 iNumOuterResultDimensions,
                 iNumInnerResultDimensions
             >& morphingExpression
-        ) const;
-    };
+        );
+    }
 }

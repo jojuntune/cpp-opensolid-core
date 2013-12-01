@@ -139,15 +139,15 @@ namespace opensolid
         ) const;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>
+    namespace detail
     {
+        template <int iNumDimensions, int iNumResultDimensions>
         LineSegment<iNumResultDimensions>
-        operator()(
+        morphed(
             const LineSegment<iNumDimensions>& lineSegment,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
+        );
+    }
 
     template <int iNumDimensions>
     class TolerantComparator<LineSegment<iNumDimensions>>

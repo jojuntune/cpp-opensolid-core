@@ -246,14 +246,17 @@ namespace opensolid
         return Point<iNumResultDimensions>(matrix.derived() * point.vector());
     }
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    Point<iNumResultDimensions>
-    MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
-        const Point<iNumDimensions>& point,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return Point<iNumResultDimensions>(morphingExpression.evaluate(point.vector()));
+    namespace detail
+    {
+        template <int iNumDimensions, int iNumResultDimensions>
+        inline
+        Point<iNumResultDimensions>
+        morphed(
+            const Point<iNumDimensions>& point,
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+        ) {
+            return Point<iNumResultDimensions>(morphingExpression.evaluate(point.vector()));
+        }
     }
 
     template <int iNumDimensions>
