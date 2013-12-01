@@ -35,90 +35,86 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Axis
+    template <>
+    class Axis<2> :
+        public Transformable<Axis<2>>
     {
     private:
-        Point<iNumDimensions> _originPoint;
-        Matrix<double, iNumDimensions, 1> _directionVector;
+        Point<2> _originPoint;
+        Vector2d _directionVector;
     public:
         Axis();
 
-        Axis(
-            const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumDimensions, 1>& directionVector
-        );
+        Axis(const Point<2>& originPoint, const Vector2d& directionVector);
 
-        const Point<iNumDimensions>&
+        const Point<2>&
         originPoint() const;
         
-        const Matrix<double, iNumDimensions, 1>&
+        const Vector2d&
         directionVector() const;
 
-        Axis<iNumDimensions>
+        Axis<2>
         flipped() const;
 
-        CoordinateSystem<iNumDimensions, 1>
+        Axis<2>
+        normalAxis() const;
+
+        CoordinateSystem<2, 1>
         coordinateSystem() const;
-    };
 
-    class Axis2d :
-        public Axis<2>
-    {
-    public:
-        OPENSOLID_CORE_EXPORT
-        Axis2d(const Point2d& originPoint, const Vector2d& directionVector);
-
-        OPENSOLID_CORE_EXPORT
-        Axis2d(const Axis<2>& other);
-
-        OPENSOLID_CORE_EXPORT
-        static Axis2d
+        static Axis<2>
         X();
 
-        OPENSOLID_CORE_EXPORT
-        static Axis2d
+        static Axis<2>
         Y();
     };
 
-    class Axis3d :
-        public Axis<3>
+    typedef Axis<2> Axis2d;
+
+    template <>
+    class Axis<3> :
+        public Transformable<Axis<3>>
     {
+    private:
+        Point<3> _originPoint;
+        Vector3d _directionVector;
     public:
-        OPENSOLID_CORE_EXPORT
-        Axis3d(const Point3d& originPoint, const Vector3d& directionVector);
+        Axis();
 
-        OPENSOLID_CORE_EXPORT
-        Axis3d(const Axis<3>& other);
+        Axis(const Point<3>& originPoint, const Vector3d& directionVector);
 
-        OPENSOLID_CORE_EXPORT
-        static Axis3d
-        X();
+        const Point<3>&
+        originPoint() const;
+        
+        const Vector3d&
+        directionVector() const;
 
-        OPENSOLID_CORE_EXPORT
-        static Axis3d
-        Y();
+        Axis<3>
+        flipped() const;
 
-        OPENSOLID_CORE_EXPORT
-        static Axis3d
-        Z();
-
-        OPENSOLID_CORE_EXPORT
         Plane3d
         normalPlane() const;
+
+        CoordinateSystem<3, 1>
+        coordinateSystem() const;
+
+        static Axis<3>
+        X();
+
+        static Axis<3>
+        Y();
+
+        static Axis<3>
+        Z();
     };
+
+    typedef Axis<3> Axis3d;
 }
 
 ////////// Specializations //////////
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct NumDimensions<Axis<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformedType<Axis<iNumDimensions>, iNumResultDimensions>
     {
@@ -162,89 +158,5 @@ namespace opensolid
             const Axis<iNumDimensions>& axis,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
-    };
-
-    template <>
-    struct NumDimensions<Axis2d> :
-        public NumDimensions<Axis<2>>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformedType<Axis2d, iNumResultDimensions> :
-        public TransformedType<Axis<2>, iNumResultDimensions>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphedType<Axis2d, iNumResultDimensions> :
-        public MorphedType<Axis<2>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct ScalingFunction<Axis2d> :
-        public ScalingFunction<Axis<2>>
-    {
-    };
-
-    template <>
-    struct TranslationFunction<Axis2d> :
-        public TranslationFunction<Axis<2>>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<Axis2d, iNumResultDimensions> :
-        public TransformationFunction<Axis<2>, iNumResultDimensions>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphingFunction<Axis2d, iNumResultDimensions> :
-        public MorphingFunction<Axis<2>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct NumDimensions<Axis3d> :
-        public NumDimensions<Axis<3>>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformedType<Axis3d, iNumResultDimensions> :
-        public TransformedType<Axis<3>, iNumResultDimensions>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphedType<Axis3d, iNumResultDimensions> :
-        public MorphedType<Axis<3>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct ScalingFunction<Axis3d> :
-        public ScalingFunction<Axis<3>>
-    {
-    };
-
-    template <>
-    struct TranslationFunction<Axis3d> :
-        public TranslationFunction<Axis<3>>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<Axis3d, iNumResultDimensions> :
-        public TransformationFunction<Axis<3>, iNumResultDimensions>
-    {
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphingFunction<Axis3d, iNumResultDimensions> :
-        public MorphingFunction<Axis<3>, iNumResultDimensions>
-    {
     };
 }

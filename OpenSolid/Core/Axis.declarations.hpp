@@ -26,11 +26,16 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+
 namespace opensolid
 {
     template <int iNumDimensions>
     class Axis;
 
-    class Axis2d;
-    class Axis3d;
+    template <int iNumDimensions>
+    struct NumDimensions<Axis<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
 }
