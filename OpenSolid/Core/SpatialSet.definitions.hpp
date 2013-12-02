@@ -219,6 +219,12 @@ namespace opensolid
     {
     };
 
+    template <class TItem, int iNumResultDimensions>
+    struct MorphingFunction<SpatialSet<TItem>, iNumResultDimensions> :
+        public MorphingFunction<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
+    {
+    };
+
     template <class TItem>
     struct BoundsType<SpatialSet<TItem>>
     {

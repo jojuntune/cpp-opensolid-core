@@ -190,4 +190,15 @@ namespace opensolid
         >
     {
     };
+
+    template <class TBaseCollection, class TPredicate, int iNumResultDimensions>
+    struct MorphingFunction<
+        detail::FilteredCollection<TBaseCollection, TPredicate>,
+        iNumResultDimensions
+    > : public MorphingFunction<
+            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>,
+            iNumResultDimensions
+        >
+    {
+    };
 }

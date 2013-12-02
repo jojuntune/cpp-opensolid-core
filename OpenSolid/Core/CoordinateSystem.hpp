@@ -456,20 +456,17 @@ namespace opensolid
         );
     }
 
-    namespace detail
-    {
-        template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-        inline
-        CoordinateSystem<iNumResultDimensions, iNumAxes>
-        morphed(
-            const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) {
-            return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-                coordinateSystem.originPoint().morphedBy(morphingExpression),
-                morphingExpression.jacobian(coordinateSystem.originPoint().vector()) *
-                    coordinateSystem.basisMatrix()
-            );
-        }
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
+    inline
+    CoordinateSystem<iNumResultDimensions, iNumAxes>
+    MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
+        const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        return CoordinateSystem<iNumResultDimensions, iNumAxes>(
+            coordinateSystem.originPoint().morphedBy(morphingExpression),
+            morphingExpression.jacobian(coordinateSystem.originPoint().vector()) *
+                coordinateSystem.basisMatrix()
+        );
     }
 }

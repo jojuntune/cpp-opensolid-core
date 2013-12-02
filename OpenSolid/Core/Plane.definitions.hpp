@@ -153,13 +153,14 @@ namespace opensolid
         operator()(const Plane3d& plane, const EigenBase<TMatrix>& matrix) const;
     };
 
-    namespace detail
+    template <>
+    struct MorphingFunction<Plane3d, 3>
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
-        morphed(
+        operator()(
             const Plane3d& plane,
             const ParametricExpression<3, 3>& morphingExpression
-        );
-    }
+        ) const;
+    };
 }

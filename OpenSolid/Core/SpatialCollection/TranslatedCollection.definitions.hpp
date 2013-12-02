@@ -148,4 +148,13 @@ namespace opensolid
         >
     {
     };
+
+    template <class TBaseCollection, int iNumResultDimensions>
+    struct MorphingFunction<detail::TranslatedCollection<TBaseCollection>, iNumResultDimensions> :
+        public MorphingFunction<
+            SpatialCollection<detail::TranslatedCollection<TBaseCollection>>,
+            iNumResultDimensions
+        >
+    {
+    };
 }

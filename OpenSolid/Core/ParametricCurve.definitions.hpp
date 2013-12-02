@@ -147,13 +147,13 @@ namespace opensolid
         ) const;
     };
 
-    namespace detail
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>
     {
-        template <int iNumDimensions, int iNumResultDimensions>
         ParametricCurve<iNumResultDimensions>
-        morphed(
+        operator()(
             const ParametricCurve<iNumDimensions>& curve,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        );
-    }
+        ) const;
+    };
 }

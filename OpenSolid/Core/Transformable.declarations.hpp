@@ -55,6 +55,9 @@ namespace opensolid
     template <class TTransformable, int iNumResultDimensions>
     struct TransformationFunction;
 
+    template <class TTransformable, int iNumResultDimensions>
+    struct MorphingFunction;
+
     template <class TTransformable>
     struct ScaledAboutPointType;
 

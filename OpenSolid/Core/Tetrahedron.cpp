@@ -121,19 +121,16 @@ namespace opensolid
         );
     }
 
-    namespace detail
-    {
-        Tetrahedron3d
-        morphed(
-            const Tetrahedron3d& tetrahedron,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) {
-            return Tetrahedron3d(
-                morphed(tetrahedron.vertex(0), morphingExpression),
-                morphed(tetrahedron.vertex(1), morphingExpression),
-                morphed(tetrahedron.vertex(2), morphingExpression),
-                morphed(tetrahedron.vertex(3), morphingExpression)
-            );
-        }
+    Tetrahedron3d
+    MorphingFunction<Tetrahedron3d, 3>::operator()(
+        const Tetrahedron3d& tetrahedron,
+        const ParametricExpression<3, 3>& morphingExpression
+    ) const {
+        return Tetrahedron3d(
+            detail::morphed(tetrahedron.vertex(0), morphingExpression),
+            detail::morphed(tetrahedron.vertex(1), morphingExpression),
+            detail::morphed(tetrahedron.vertex(2), morphingExpression),
+            detail::morphed(tetrahedron.vertex(3), morphingExpression)
+        );
     }
 }

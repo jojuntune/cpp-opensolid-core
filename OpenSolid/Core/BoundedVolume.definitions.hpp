@@ -87,12 +87,13 @@ namespace opensolid
         operator()(const BoundedVolume3d& boundedVolume, const Matrix3d& matrix) const;
     };
 
-    namespace detail
+    template <>
+    struct MorphingFunction<BoundedVolume3d, 3>
     {
         BoundedVolume3d
-        morphed(
+        operator()(
             const BoundedVolume3d& boundedVolume,
             const ParametricExpression<3, 3>& morphingExpression
-        );
-    }
+        ) const;
+    };
 }

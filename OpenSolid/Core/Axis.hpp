@@ -200,25 +200,22 @@ namespace opensolid
         );
     }
 
-    namespace detail
-    {
-        template <int iNumDimensions, int iNumResultDimensions>
-        Axis<iNumResultDimensions>
-        morphed(
-            const Axis<iNumDimensions>& axis,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) {
-            Matrix<double, iNumResultDimensions, 1> morphedDirection =
-                morphingExpression.jacobian(axis.originPoint().vector()) * axis.directionVector();
-            double squaredNorm = morphedDirection.squaredNorm();
-            if (squaredNorm == Zero()) {
-                throw PlaceholderError();
-            }
-            morphedDirection /= sqrt(squaredNorm);
-            return Axis<iNumResultDimensions>(
-                morphed(axis.originPoint(), morphingExpression),
-                morphedDirection
-            );
+    template <int iNumDimensions, int iNumResultDimensions>
+    Axis<iNumResultDimensions>
+    MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
+        const Axis<iNumDimensions>& axis,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        Matrix<double, iNumResultDimensions, 1> morphedDirection =
+            morphingExpression.jacobian(axis.originPoint().vector()) * axis.directionVector();
+        double squaredNorm = morphedDirection.squaredNorm();
+        if (squaredNorm == Zero()) {
+            throw PlaceholderError();
         }
+        morphedDirection /= sqrt(squaredNorm);
+        return Axis<iNumResultDimensions>(
+            detail::morphed(axis.originPoint(), morphingExpression),
+            morphedDirection
+        );
     }
 }

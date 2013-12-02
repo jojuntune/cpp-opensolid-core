@@ -265,15 +265,15 @@ namespace opensolid
         operator()(const Box3d& box, const EigenBase<TMatrix>& matrix) const;
     };
 
-    namespace detail
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<Box<iNumDimensions>, iNumResultDimensions>
     {
-        template <int iNumDimensions, int iNumResultDimensions>
         Box<iNumResultDimensions>
-        morphed(
+        operator()(
             const Box<iNumDimensions>& box,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        );
-    }
+        ) const;
+    };
 
     template <int iNumDimensions>
     struct BoundsType<Box<iNumDimensions>>

@@ -88,18 +88,15 @@ namespace opensolid
         );
     }
 
-    namespace detail
-    {
-        BoundedArea2d
-        morphed(
-            const BoundedArea2d& boundedArea,
-            const ParametricExpression<2, 2>& morphingExpression
-        ) {
-            return BoundedArea2d(
-                SpatialSet<ParametricCurve2d>(
-                    morphed(boundedArea.boundaries(), morphingExpression)
-                )
-            );
-        }
+    BoundedArea2d
+    MorphingFunction<BoundedArea2d, 2>::operator()(
+        const BoundedArea2d& boundedArea,
+        const ParametricExpression<2, 2>& morphingExpression
+    ) const {
+        return BoundedArea2d(
+            SpatialSet<ParametricCurve2d>(
+                detail::morphed(boundedArea.boundaries(), morphingExpression)
+            )
+        );
     }
 }

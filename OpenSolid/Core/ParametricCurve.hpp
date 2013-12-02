@@ -177,18 +177,15 @@ namespace opensolid
         );
     }
 
-    namespace detail
-    {
-        template <int iNumDimensions, int iNumResultDimensions>
-        ParametricCurve<iNumResultDimensions>
-        morphed(
-            const ParametricCurve<iNumDimensions>& curve,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) {
-            return ParametricCurve<iNumResultDimensions>(
-                morphingExpression.composed(curve.expression()),
-                curve.domain()
-            );
-        }
+    template <int iNumDimensions, int iNumResultDimensions>
+    ParametricCurve<iNumResultDimensions>
+    MorphingFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
+        const ParametricCurve<iNumDimensions>& curve,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        return ParametricCurve<iNumResultDimensions>(
+            morphingExpression.composed(curve.expression()),
+            curve.domain()
+        );
     }
 }

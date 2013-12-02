@@ -90,17 +90,14 @@ namespace opensolid
         return ParametricSurface3d(matrix * surface.expression(), surface.domain());
     }
 
-    namespace detail
-    {
-        ParametricSurface3d
-        morphed(
-            const ParametricSurface3d& surface,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) {
-            return ParametricSurface3d(
-                morphingExpression.composed(surface.expression()),
-                surface.domain()
-            );
-        }
+    ParametricSurface3d
+    MorphingFunction<ParametricSurface3d, 3>::operator()(
+        const ParametricSurface3d& surface,
+        const ParametricExpression<3, 3>& morphingExpression
+    ) const {
+        return ParametricSurface3d(
+            morphingExpression.composed(surface.expression()),
+            surface.domain()
+        );
     }
 }
