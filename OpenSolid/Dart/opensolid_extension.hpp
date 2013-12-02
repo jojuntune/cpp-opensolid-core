@@ -33,7 +33,8 @@
 
 namespace opensolid
 {
-    enum {
+    enum
+    {
         INVALID = 0,
         ZERO,
         INTERVAL
