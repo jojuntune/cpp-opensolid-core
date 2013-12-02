@@ -31,7 +31,7 @@
 // Create DLL import/export declaration macros for core module
 // (unless static core has been selected)
 #ifdef _WIN32
-    #ifdef OPENSOLID_STATIC_CORE
+    #ifdef OPENSOLID_STATIC_LIBS
         #define OPENSOLID_CORE_EXPORT
     #else
         #ifdef OpenSolidCore_EXPORTS
@@ -46,10 +46,14 @@
 
 // Create DLL import/export declaration macros for I/O module
 #ifdef _WIN32
-    #ifdef OpenSolidIO_EXPORTS
-        #define OPENSOLID_IO_EXPORT __declspec(dllexport)
+    #ifdef OPENSOLID_STATIC_LIBS
+        #define OPENSOLID_IO_EXPORT
     #else
-        #define OPENSOLID_IO_EXPORT __declspec(dllimport)
+        #ifdef OpenSolidIO_EXPORTS
+            #define OPENSOLID_IO_EXPORT __declspec(dllexport)
+        #else
+            #define OPENSOLID_IO_EXPORT __declspec(dllimport)
+        #endif
     #endif
 #else
     #define OPENSOLID_IO_EXPORT

@@ -11,9 +11,10 @@
         SpatialCollection/*.cpp
         SpatialList/*.cpp
         SpatialSet/*.cpp
+        Variant/*.cpp
     )
 
-    if(${BUILD_STATIC_CORE})
+    if(${BUILD_STATIC_LIBS})
         add_library(OpenSolidCore STATIC ${CORE_SOURCES})
         set_target_properties(OpenSolidCore PROPERTIES OUTPUT_NAME OpenSolidCoreStatic)
     else()
@@ -48,4 +49,5 @@
         SpatialCollection/*
         SpatialList/*
         SpatialSet/*
+        Variant/*
     )

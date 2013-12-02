@@ -29,7 +29,7 @@
     
 ########## Set up user configuration options ##########
 
-    set(BUILD_STATIC_CORE OFF CACHE BOOL "Build static core module")
+    set(BUILD_STATIC_LIBS OFF CACHE BOOL "Build static libraries")
     set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
     set(BUILD_DART_MODULE OFF CACHE BOOL "Build Dart module")
@@ -44,8 +44,8 @@
 
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds
-    if (${BUILD_STATIC_CORE})
-        add_definitions(-DOPENSOLID_STATIC_CORE)
+    if (${BUILD_STATIC_LIBS})
+        add_definitions(-DOPENSOLID_STATIC_LIBS)
     endif()
 
     # Set up compiler-specific flags
