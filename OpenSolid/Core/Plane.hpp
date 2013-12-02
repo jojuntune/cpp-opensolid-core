@@ -45,24 +45,23 @@ namespace opensolid
         return _normalVector;
     }
 
+    inline
+    Plane3d
+    ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
+        double normalScale = scale >= 0.0 ? 1.0 : -1.0;
+        return Plane3d(
+            detail::scaled(plane.originPoint(), scale),
+            normalScale * plane.normalVector()
+        );
+    }
+
     template <class TVector>
+    inline
     Plane3d
     TranslationFunction<Plane3d>::operator()(
         const Plane3d& plane,
         const EigenBase<TVector>& vector
     ) const {
         return Plane3d(plane.originPoint() + vector.derived(), plane.normalVector());
-    }
-
-    template <class TMatrix>
-    Plane3d
-    TransformationFunction<Plane3d, 3>::operator()(
-        const Plane3d& plane,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        return Plane3d(
-            detail::transformed(plane.originPoint(), matrix),
-            matrix.derived() * plane.normalVector()
-        );
     }
 }

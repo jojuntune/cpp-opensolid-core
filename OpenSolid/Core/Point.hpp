@@ -265,17 +265,12 @@ namespace opensolid
 
     template <int iNumDimensions>
     inline
-    TolerantComparator<Point<iNumDimensions>>::TolerantComparator(double precision) :
-        _precision(precision) {
-    }
-
-    template <int iNumDimensions>
-    inline
     bool
-    TolerantComparator<Point<iNumDimensions>>::operator()(
+    EqualityFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& firstPoint,
-        const Point<iNumDimensions>& secondPoint
+        const Point<iNumDimensions>& secondPoint,
+        double precision
     ) const {
-        return (firstPoint - secondPoint).isZero(_precision);
+        return (firstPoint - secondPoint).isZero(precision);
     }
 }

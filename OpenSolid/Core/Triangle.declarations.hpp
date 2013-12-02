@@ -41,6 +41,18 @@ namespace opensolid
         static const int Value = iNumDimensions;
     };
 
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Triangle<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Triangle<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Triangle<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Triangle<iNumResultDimensions> Type;
+    };
+
     template <int iNumDimensions>
     struct BoundsType<Triangle<iNumDimensions>>
     {

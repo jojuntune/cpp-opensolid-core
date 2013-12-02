@@ -41,14 +41,19 @@ namespace opensolid
     private:
         SpatialSet<ParametricCurve2d> _boundaries;
     public:
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d();
 
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d(const BoundedArea2d& other);
 
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d(BoundedArea2d&& other);
 
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d(const SpatialSet<ParametricCurve2d>& boundaries);
 
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d(SpatialSet<ParametricCurve2d>&& boundaries);
 
         const SpatialSet<ParametricCurve2d>&
@@ -69,6 +74,7 @@ namespace opensolid
     template <>
     struct ScalingFunction<BoundedArea2d>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d
         operator()(const BoundedArea2d& boundedArea, double scale) const;
     };
@@ -76,6 +82,7 @@ namespace opensolid
     template <>
     struct TranslationFunction<BoundedArea2d>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d
         operator()(const BoundedArea2d& boundedArea, const Vector2d& vector) const;
     };
@@ -83,6 +90,7 @@ namespace opensolid
     template <>
     struct TransformationFunction<BoundedArea2d, 2>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d
         operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
     };
@@ -90,6 +98,7 @@ namespace opensolid
     template <>
     struct MorphingFunction<BoundedArea2d, 2>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedArea2d
         operator()(
             const BoundedArea2d& boundedArea,

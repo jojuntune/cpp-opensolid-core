@@ -26,21 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/TolerantComparator.declarations.hpp>
-
-#include <OpenSolid/Core/Zero.definitions.hpp>
-
 namespace opensolid
 {
-    template <>
-    class TolerantComparator<double>
-    {
-    private:
-        Zero _zero;
-    public:
-        TolerantComparator(double precision);
-
-        bool
-        operator()(double firstValue, double secondValue) const;
-    };
+    template <class TEquatable>
+    struct EqualityFunction;
 }

@@ -34,8 +34,6 @@
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 
-#include <cmath>
-
 namespace opensolid
 {
     inline
@@ -166,9 +164,10 @@ namespace opensolid
         const Axis<iNumDimensions>& axis,
         double scale
     ) const {
+        double directionScale = scale >= 0.0 ? 1.0 : -1.0;
         return Axis<iNumDimensions>(
             detail::scaled(axis.originPoint(), scale),
-            std::copysign(1.0, scale) * axis.directionVector()
+            directionScale * axis.directionVector()
         );
     }
 
@@ -189,11 +188,11 @@ namespace opensolid
     ) const {
         Matrix<double, iNumResultDimensions, 1> transformedDirection =
             matrix.derived() * axis.directionVector();
-        double squaredNorm = transformedDirection.squaredNorm();
-        if (squaredNorm == Zero()) {
+        double transformedNorm = transformedDirection.norm();
+        if (transformedNorm == Zero()) {
             throw PlaceholderError();
         }
-        transformedDirection /= sqrt(squaredNorm);
+        transformedDirection *= (1.0 / transformedNorm);
         return Axis<iNumResultDimensions>(
             detail::transformed(axis.originPoint(), matrix.derived()),
             transformedDirection
@@ -208,11 +207,11 @@ namespace opensolid
     ) const {
         Matrix<double, iNumResultDimensions, 1> morphedDirection =
             morphingExpression.jacobian(axis.originPoint().vector()) * axis.directionVector();
-        double squaredNorm = morphedDirection.squaredNorm();
-        if (squaredNorm == Zero()) {
+        double morphedNorm = morphedDirection.norm();
+        if (morphedNorm == Zero()) {
             throw PlaceholderError();
         }
-        morphedDirection /= sqrt(squaredNorm);
+        morphedDirection *= (1.0 / morphedNorm);
         return Axis<iNumResultDimensions>(
             detail::morphed(axis.originPoint(), morphingExpression),
             morphedDirection

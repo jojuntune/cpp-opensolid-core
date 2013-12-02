@@ -35,6 +35,7 @@
 namespace opensolid
 {
     template <int iNumDimensions>
+    inline
     LinearTransformation<iNumDimensions>::LinearTransformation(
         const Point<iNumDimensions>& originPoint,
         const Matrix<double, iNumDimensions, iNumDimensions>& transformationMatrix

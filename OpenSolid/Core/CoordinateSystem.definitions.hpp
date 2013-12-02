@@ -167,24 +167,6 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
-    struct NumDimensions<CoordinateSystem<iNumDimensions, iNumAxes>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct TransformedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
-    {
-        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
-    };
-
-    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct MorphedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
-    {
-        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
-    };
-
-    template <int iNumDimensions, int iNumAxes>
     struct ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
         CoordinateSystem<iNumDimensions, iNumAxes>

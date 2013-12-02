@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
@@ -83,19 +84,15 @@ namespace opensolid
     }
 
     inline
-    TolerantComparator<Tetrahedron3d>::TolerantComparator(double precision) :
-        _precision(precision) {
-    }
-
-    inline
     bool
-    TolerantComparator<Tetrahedron3d>::operator()(
+    EqualityFunction<Tetrahedron3d>::operator()(
         const Tetrahedron3d& firstTetrahedron,
-        const Tetrahedron3d& secondTetrahedron
+        const Tetrahedron3d& secondTetrahedron,
+        double precision
     ) const {
-        return (firstTetrahedron.vertex(0) - secondTetrahedron.vertex(0)).isZero(_precision) &&
-            (firstTetrahedron.vertex(1) - secondTetrahedron.vertex(1)).isZero(_precision) &&
-            (firstTetrahedron.vertex(2) - secondTetrahedron.vertex(2)).isZero(_precision) &&
-            (firstTetrahedron.vertex(3) - secondTetrahedron.vertex(3)).isZero(_precision);
+        return detail::equals(firstTetrahedron.vertex(0), secondTetrahedron.vertex(0), precision) &&
+            detail::equals(firstTetrahedron.vertex(1), secondTetrahedron.vertex(1), precision) &&
+            detail::equals(firstTetrahedron.vertex(2), secondTetrahedron.vertex(2), precision) &&
+            detail::equals(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision);
     }
 }

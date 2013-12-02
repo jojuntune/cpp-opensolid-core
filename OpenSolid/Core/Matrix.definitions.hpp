@@ -30,8 +30,8 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
-#include <OpenSolid/Core/TolerantComparator.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
@@ -158,17 +158,13 @@ namespace opensolid
     };
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    class TolerantComparator<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    struct EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {
-    private:
-        double _precision;
-    public:
-        TolerantComparator(double precision);
-
         bool
         operator()(
             const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
+            double precision
         ) const;
     };
 }

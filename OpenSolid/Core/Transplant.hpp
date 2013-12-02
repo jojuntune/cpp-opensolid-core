@@ -47,18 +47,21 @@ namespace opensolid
     }
 
     template <int iNumSourceDimensions, int iNumResultDimensions>
+    inline
     const Point<iNumSourceDimensions>&
     Transplant<iNumSourceDimensions, iNumResultDimensions>::sourceOriginPoint() const {
         return _sourceOriginPoint;
     }
     
     template <int iNumSourceDimensions, int iNumResultDimensions>
+    inline
     const Matrix<double, iNumResultDimensions, iNumSourceDimensions>&
     Transplant<iNumSourceDimensions, iNumResultDimensions>::transformationMatrix() const {
         return _transformationMatrix;
     }
     
     template <int iNumSourceDimensions, int iNumResultDimensions>
+    inline
     const Point<iNumResultDimensions>&
     Transplant<iNumSourceDimensions, iNumResultDimensions>::destinationOriginPoint() const {
         return _destinationOriginPoint;

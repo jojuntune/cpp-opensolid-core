@@ -35,6 +35,7 @@
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
+    inline
     Globalization<iNumDimensions, iNumAxes>::Globalization(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem
     ) : _originPoint(coordinateSystem.originPoint()),
@@ -42,12 +43,14 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumAxes>
+    inline
     const Point<iNumDimensions>&
     Globalization<iNumDimensions, iNumAxes>::originPoint() const {
         return _originPoint;
     }
     
     template <int iNumDimensions, int iNumAxes>
+    inline
     const Matrix<double, iNumDimensions, iNumAxes>&
     Globalization<iNumDimensions, iNumAxes>::transformationMatrix() const {
         return _transformationMatrix;

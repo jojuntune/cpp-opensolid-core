@@ -346,12 +346,6 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct BoundsType<Interval>
-    {
-        typedef Interval Type;
-    };
-
-    template <>
     struct BoundsFunction<Interval>
     {
         Interval

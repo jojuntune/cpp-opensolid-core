@@ -145,169 +145,53 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <>
-    struct TransformedType<Triangle2d, 3>
+    template <int iNumDimensions>
+    struct ScalingFunction<Triangle<iNumDimensions>>
     {
-        typedef Triangle3d Type;
+        Triangle<iNumDimensions>
+        operator()(const Triangle<iNumDimensions>& triangle, double scale) const;
     };
 
-    template <>
-    struct TransformedType<Triangle3d, 2>
+    template <int iNumDimensions>
+    struct TranslationFunction<Triangle<iNumDimensions>>
     {
-        typedef Triangle2d Type;
-    };
-
-    template <>
-    struct MorphedType<Triangle2d, 3>
-    {
-        typedef Triangle3d Type;
-    };
-
-    template <>
-    struct MorphedType<Triangle3d, 2>
-    {
-        typedef Triangle2d Type;
-    };
-
-    template <>
-    struct ScalingFunction<Triangle2d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle2d
-        operator()(const Triangle2d& triangle, double scale) const;
-    };
-
-    template <>
-    struct ScalingFunction<Triangle3d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle3d
-        operator()(const Triangle3d& triangle, double scale) const;
-    };
-
-    template <>
-    struct TranslationFunction<Triangle2d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle2d
-        operator()(const Triangle2d& triangle, const Vector2d& vector) const;
-    };
-
-    template <>
-    struct TranslationFunction<Triangle3d>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle3d
-        operator()(const Triangle3d& triangle, const Vector3d& vector) const;
-    };
-
-    template <>
-    struct TransformationFunction<Triangle2d, 2>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle2d
-        operator()(const Triangle2d& triangle, const Matrix2d& matrix) const;
-    };
-
-    template <>
-    struct TransformationFunction<Triangle2d, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle3d
+        template <class TVector>
+        Triangle<iNumDimensions>
         operator()(
-            const Triangle2d& triangle,
-            const Matrix<double, 3, 2>& matrix
+            const Triangle<iNumDimensions>& triangle,
+            const EigenBase<TVector>& vector
         ) const;
     };
 
-    template <>
-    struct TransformationFunction<Triangle3d, 3>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>
     {
-        OPENSOLID_CORE_EXPORT
-        Triangle3d
-        operator()(const Triangle3d& triangle, const Matrix3d& matrix) const;
-    };
-
-    template <>
-    struct TransformationFunction<Triangle3d, 2>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle2d
+        template <class TMatrix>
+        Triangle<iNumResultDimensions>
         operator()(
-            const Triangle3d& triangle,
-            const Matrix<double, 2, 3>& matrix
+            const Triangle<iNumDimensions>& triangle,
+            const EigenBase<TMatrix>& matrix
         ) const;
     };
 
-    template <>
-    struct MorphingFunction<Triangle2d, 2>
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<Triangle<iNumDimensions>, iNumResultDimensions>
     {
-        OPENSOLID_CORE_EXPORT
-        Triangle2d
+        Triangle<iNumResultDimensions>
         operator()(
-            const Triangle2d& triangle,
-            const ParametricExpression<2, 2>& morphingExpression
+            const Triangle<iNumDimensions>& triangle,
+            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
     };
 
-    template <>
-    struct MorphingFunction<Triangle2d, 3>
+    template <int iNumDimensions>
+    struct EqualityFunction<Triangle<iNumDimensions>>
     {
-        OPENSOLID_CORE_EXPORT
-        Triangle3d
-        operator()(
-            const Triangle2d& triangle,
-            const ParametricExpression<3, 2>& morphingExpression
-        ) const;
-    };
-
-    template <>
-    struct MorphingFunction<Triangle3d, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle3d
-        operator()(
-            const Triangle3d& triangle,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
-
-    template <>
-    struct MorphingFunction<Triangle3d, 2>
-    {
-        OPENSOLID_CORE_EXPORT
-        Triangle2d
-        operator()(
-            const Triangle3d& triangle,
-            const ParametricExpression<2, 3>& morphingExpression
-        ) const;
-    };
-
-    template <>
-    class TolerantComparator<Triangle2d>
-    {
-    private:
-        double _precision;
-    public:
-        OPENSOLID_CORE_EXPORT
-        TolerantComparator(double precision);
-
-        OPENSOLID_CORE_EXPORT
         bool
-        operator()(const Triangle2d& firstTriangle, const Triangle2d& secondTriangle) const;
-    };
-
-    template <>
-    class TolerantComparator<Triangle3d>
-    {
-    private:
-        double _precision;
-    public:
-        OPENSOLID_CORE_EXPORT
-        TolerantComparator(double precision);
-
-        OPENSOLID_CORE_EXPORT
-        bool
-        operator()(const Triangle3d& firstTriangle, const Triangle3d& secondTriangle) const;
+        operator()(
+            const Triangle<iNumDimensions>& firstTriangle,
+            const Triangle<iNumDimensions>& secondTriangle,
+            double precision
+        ) const;
     };
 }

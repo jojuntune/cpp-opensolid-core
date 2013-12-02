@@ -167,8 +167,17 @@ namespace opensolid
     }
 
     Plane3d
-    ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
-        return Plane3d(detail::scaled(plane.originPoint(), scale), plane.normalVector());
+    TransformationFunction<Plane3d, 3>::operator()(
+        const Plane3d& plane,
+        const Matrix3d& matrix
+    ) const {
+        Vector3d transformedNormal = matrix.derived() * plane.normalVector();
+        double transformedNorm = transformedNormal.norm();
+        if (transformedNorm == Zero()) {
+            throw PlaceholderError();
+        }
+        transformedNormal *= (1.0 / transformedNorm);
+        return Plane3d(detail::transformed(plane.originPoint(), matrix), transformedNormal);
     }
 
     Plane3d
@@ -176,9 +185,13 @@ namespace opensolid
         const Plane3d& plane,
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
-        return Plane3d(
-            plane.originPoint().morphedBy(morphingExpression),
-            morphingExpression.jacobian(plane.originPoint().vector()) * plane.normalVector()
-        );
+        Vector3d morphedNormal =
+            morphingExpression.jacobian(plane.originPoint().vector()) * plane.normalVector();
+        double morphedNorm = morphedNormal.norm();
+        if (morphedNorm == Zero()) {
+            throw PlaceholderError();
+        }
+        morphedNormal *= (1.0 / morphedNorm);
+        return Plane3d(detail::morphed(plane.originPoint(), morphingExpression), morphedNormal);
     }
 }

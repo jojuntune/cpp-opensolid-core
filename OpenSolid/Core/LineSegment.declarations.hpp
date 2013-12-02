@@ -40,6 +40,18 @@ namespace opensolid
     {
         static const int Value = iNumDimensions;
     };
+    
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef LineSegment<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef LineSegment<iNumResultDimensions> Type;
+    };
 
     template <int iNumDimensions>
     struct BoundsType<LineSegment<iNumDimensions>>

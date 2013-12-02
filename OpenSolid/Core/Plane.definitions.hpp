@@ -124,15 +124,8 @@ namespace opensolid
 namespace opensolid
 {
     template <>
-    struct NumDimensions<Plane3d>
-    {
-        static const int Value = 3;
-    };
-
-    template <>
     struct ScalingFunction<Plane3d>
     {
-        OPENSOLID_CORE_EXPORT
         Plane3d
         operator()(const Plane3d& plane, double scale) const;
     };
@@ -148,9 +141,9 @@ namespace opensolid
     template <>
     struct TransformationFunction<Plane3d, 3>
     {
-        template <class TMatrix>
+        OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(const Plane3d& plane, const EigenBase<TMatrix>& matrix) const;
+        operator()(const Plane3d& plane, const Matrix3d& matrix) const;
     };
 
     template <>

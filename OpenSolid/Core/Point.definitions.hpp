@@ -30,11 +30,11 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
+#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
-#include <OpenSolid/Core/TolerantComparator.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <ostream>
@@ -139,24 +139,6 @@ namespace opensolid
 namespace opensolid
 {
     template <int iNumDimensions>
-    struct NumDimensions<Point<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Point<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Point<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Point<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Point<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions>
     struct ScalingFunction<Point<iNumDimensions>>
     {
         Point<iNumDimensions>
@@ -193,12 +175,6 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct BoundsType<Point<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
     struct BoundsFunction<Point<iNumDimensions>>
     {
         Box<iNumDimensions>
@@ -206,29 +182,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    class TolerantComparator<Point<iNumDimensions>>
+    struct EqualityFunction<Point<iNumDimensions>>
     {
-    private:
-        double _precision;
-    public:
-        TolerantComparator(double precision);
-
         bool
         operator()(
             const Point<iNumDimensions>& firstPoint,
-            const Point<iNumDimensions>& secondPoint
+            const Point<iNumDimensions>& secondPoint,
+            double precision
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct Position<double, iNumDimensions>
-    {
-        typedef Point<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct Position<Interval, iNumDimensions>
-    {
-        typedef Box<iNumDimensions> Type;
     };
 }

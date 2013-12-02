@@ -32,13 +32,13 @@ namespace opensolid
 {
     template <int iNumDimensions>
     class Axis;
-
+    
     template <int iNumDimensions>
     struct NumDimensions<Axis<iNumDimensions>>
     {
         static const int Value = iNumDimensions;
     };
-    
+
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformedType<Axis<iNumDimensions>, iNumResultDimensions>
     {

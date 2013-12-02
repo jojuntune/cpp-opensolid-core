@@ -194,24 +194,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct NumDimensions<Box<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Box<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Box<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Box<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Box<iNumResultDimensions> Type;
-    };
-
     template <>
     struct ScalingFunction<Box1d>
     {
@@ -273,12 +255,6 @@ namespace opensolid
             const Box<iNumDimensions>& box,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsType<Box<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
     };
 
     template <int iNumDimensions>

@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
+#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
@@ -98,18 +99,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef LineSegment<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef LineSegment<iNumResultDimensions> Type;
-    };
-
     template <int iNumDimensions>
     struct ScalingFunction<LineSegment<iNumDimensions>>
     {
@@ -150,17 +139,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    class TolerantComparator<LineSegment<iNumDimensions>>
+    struct EqualityFunction<LineSegment<iNumDimensions>>
     {
-    private:
-        double _precision;
-    public:
-        TolerantComparator(double precision);
-
         bool
         operator()(
             const LineSegment<iNumDimensions>& firstLineSegment,
-            const LineSegment<iNumDimensions>& secondLineSegment
+            const LineSegment<iNumDimensions>& secondLineSegment,
+            double precision
         ) const;
     };
 }

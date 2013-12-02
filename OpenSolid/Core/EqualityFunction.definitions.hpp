@@ -26,20 +26,21 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/TolerantComparator.definitions.hpp>
-
-#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 
 namespace opensolid
 {
-    inline
-    TolerantComparator<double>::TolerantComparator(double precision) :
-        _zero(precision) {
-    }
+    template <>
+    struct EqualityFunction<double>
+    {
+        bool
+        operator()(double firstValue, double secondValue, double precision) const;
+    };
 
-    inline
-    bool
-    TolerantComparator<double>::operator()(double firstValue, double secondValue) const {
-        return firstValue - secondValue == _zero;
+    namespace detail
+    {
+        template <class TEquatable>
+        bool
+        equals(const TEquatable& firstArgument, const TEquatable& secondArgument, double precision);
     }
 }

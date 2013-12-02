@@ -659,19 +659,12 @@ namespace opensolid
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     inline
-    TolerantComparator<
-        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-    >::TolerantComparator(double precision) :
-        _precision(precision) {
-    }
-
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    inline
     bool
-    TolerantComparator<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+    EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
-        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
+        double precision
     ) const {
-        return (firstMatrix - secondMatrix).isZero(_precision);
+        return (firstMatrix - secondMatrix).isZero(precision);
     }
 }

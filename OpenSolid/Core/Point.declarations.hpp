@@ -26,6 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+
 namespace opensolid
 {
     template <int iNumDimensions>
@@ -33,4 +38,40 @@ namespace opensolid
     
     template <class TScalar, int iNumDimensions>
     struct Position;
+
+    template <int iNumDimensions>
+    struct Position<double, iNumDimensions>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct Position<Interval, iNumDimensions>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<Point<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Point<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Point<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Point<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Point<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<Point<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
 }

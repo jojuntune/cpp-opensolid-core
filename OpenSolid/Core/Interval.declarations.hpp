@@ -26,7 +26,15 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+
 namespace opensolid
 {
     class Interval;
+
+    template <>
+    struct BoundsType<Interval>
+    {
+        typedef Interval Type;
+    };
 }

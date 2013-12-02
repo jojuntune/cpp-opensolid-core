@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -142,5 +143,69 @@ namespace opensolid
         return vertex(0) == other.vertex(0) &&
             vertex(1) == other.vertex(1) &&
             vertex(2) == other.vertex(2);
+    }
+
+    template <int iNumDimensions>
+    Triangle<iNumDimensions>
+    ScalingFunction<Triangle<iNumDimensions>>::operator()(
+        const Triangle<iNumDimensions>& triangle,
+        double scale
+    ) const {
+        return Triangle<iNumDimensions>(
+            detail::scaled(triangle.vertex(0), scale),
+            detail::scaled(triangle.vertex(1), scale),
+            detail::scaled(triangle.vertex(2), scale)
+        );
+    }
+
+    template <int iNumDimensions> template <class TVector>
+    Triangle<iNumDimensions>
+    TranslationFunction<Triangle<iNumDimensions>>::operator()(
+        const Triangle<iNumDimensions>& triangle,
+        const EigenBase<TVector>& vector
+    ) const {
+        return Triangle<iNumDimensions>(
+            detail::translated(triangle.vertex(0), vector.derived()),
+            detail::translated(triangle.vertex(1), vector.derived()),
+            detail::translated(triangle.vertex(2), vector.derived())
+        );
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    Triangle<iNumResultDimensions>
+    TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
+        const Triangle<iNumDimensions>& triangle,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return Triangle<iNumResultDimensions>(
+            detail::transformed(triangle.vertex(0), matrix.derived()),
+            detail::transformed(triangle.vertex(1), matrix.derived()),
+            detail::transformed(triangle.vertex(2), matrix.derived())
+        );
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    Triangle<iNumResultDimensions>
+    MorphingFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
+        const Triangle<iNumDimensions>& triangle,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        return Triangle<iNumResultDimensions>(
+            detail::morphed(triangle.vertex(0), morphingExpression),
+            detail::morphed(triangle.vertex(1), morphingExpression),
+            detail::morphed(triangle.vertex(2), morphingExpression)
+        );
+    }
+
+    template <int iNumDimensions>
+    bool
+    EqualityFunction<Triangle<iNumDimensions>>::operator()(
+        const Triangle<iNumDimensions>& firstTriangle,
+        const Triangle<iNumDimensions>& secondTriangle,
+        double precision
+    ) const {
+        return detail::equals(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
+            detail::equals(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
+            detail::equals(firstTriangle.vertex(2), secondTriangle.vertex(2), precision);
     }
 }

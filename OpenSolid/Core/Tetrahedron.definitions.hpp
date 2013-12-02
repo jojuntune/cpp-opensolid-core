@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
+#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
@@ -127,17 +128,13 @@ namespace opensolid
     };
 
     template <>
-    class TolerantComparator<Tetrahedron3d>
+    struct EqualityFunction<Tetrahedron3d>
     {
-    private:
-        double _precision;
-    public:
-        TolerantComparator(double precision);
-
         bool
         operator()(
             const Tetrahedron3d& firstTetrahedron,
-            const Tetrahedron3d& secondTetrahedron
+            const Tetrahedron3d& secondTetrahedron,
+            double precision
         ) const;
     };
 }

@@ -41,14 +41,19 @@ namespace opensolid
     private:
         SpatialSet<ParametricSurface3d> _boundaries;
     public:
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d();
 
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d(const BoundedVolume3d& other);
 
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d(BoundedVolume3d&& other);
 
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d(const SpatialSet<ParametricSurface3d>& boundaries);
 
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d(SpatialSet<ParametricSurface3d>&& boundaries);
 
         const SpatialSet<ParametricSurface3d>&
@@ -69,6 +74,7 @@ namespace opensolid
     template <>
     struct ScalingFunction<BoundedVolume3d>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d
         operator()(const BoundedVolume3d& boundedVolume, double scale) const;
     };
@@ -76,6 +82,7 @@ namespace opensolid
     template <>
     struct TranslationFunction<BoundedVolume3d>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d
         operator()(const BoundedVolume3d& boundedVolume, const Vector3d& vector) const;
     };
@@ -83,6 +90,7 @@ namespace opensolid
     template <>
     struct TransformationFunction<BoundedVolume3d, 3>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d
         operator()(const BoundedVolume3d& boundedVolume, const Matrix3d& matrix) const;
     };
@@ -90,6 +98,7 @@ namespace opensolid
     template <>
     struct MorphingFunction<BoundedVolume3d, 3>
     {
+        OPENSOLID_CORE_EXPORT
         BoundedVolume3d
         operator()(
             const BoundedVolume3d& boundedVolume,

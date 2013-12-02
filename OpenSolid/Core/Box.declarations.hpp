@@ -26,8 +26,35 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+
 namespace opensolid
 {
     template <int iNumDimensions>
     class Box;
+
+    template <int iNumDimensions>
+    struct NumDimensions<Box<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Box<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Box<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Box<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Box<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<Box<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
 }

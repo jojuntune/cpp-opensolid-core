@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
+#include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
@@ -173,18 +174,20 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
-    TolerantComparator<LineSegment<iNumDimensions>>::TolerantComparator(double precision) :
-        _precision(precision) {
-    }
-
-    template <int iNumDimensions>
     bool
-    TolerantComparator<LineSegment<iNumDimensions>>::operator()(
+    EqualityFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& firstLineSegment,
-        const LineSegment<iNumDimensions>& secondLineSegment
+        const LineSegment<iNumDimensions>& secondLineSegment,
+        double precision
     ) const {
-        return
-            (firstLineSegment.startPoint() - secondLineSegment.startPoint()).isZero(_precision) &&
-            (firstLineSegment.endPoint() - secondLineSegment.endPoint()).isZero(_precision);
+        return detail::equals(
+            firstLineSegment.startPoint(),
+            secondLineSegment.startPoint(),
+            precision
+        ) && detail::equals(
+            firstLineSegment.endPoint(),
+            secondLineSegment.endPoint(),
+            precision
+        );
     }
 }

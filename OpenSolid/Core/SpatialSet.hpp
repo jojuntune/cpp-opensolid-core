@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialList.hpp>
 #include <OpenSolid/Core/SpatialSet/ContainPredicate.hpp>
@@ -37,7 +38,6 @@
 #include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetData.hpp>
 #include <OpenSolid/Core/SpatialSet/SpatialSetNode.hpp>
-#include <OpenSolid/Core/TolerantComparator.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>
@@ -444,9 +444,8 @@ namespace opensolid
             detail::OverlapPredicate<TItem> overlapPredicate(boundsFunction(item), precision);
             FilteredIterator filteredIterator(rootNode(), &overlapPredicate);
             FilteredIterator filteredEnd(nullptr, &overlapPredicate);
-            TolerantComparator<TItem> itemComparator(precision);
             while (filteredIterator != filteredEnd) {
-                if (itemComparator(item, *filteredIterator)) {
+                if (detail::equals(item, *filteredIterator, precision)) {
                     return begin() + (&(*filteredIterator) - _dataPtr->items.data());
                 }
                 ++filteredIterator;
@@ -479,7 +478,7 @@ namespace opensolid
             const TItem* anchorItemPtr,
             std::int64_t uniqueIndex,
             const TItem* firstItemPtr,
-            const TolerantComparator<TItem>& itemComparator,
+            double precision,
             std::vector<std::int64_t>& mapping
         ) {
             const SpatialSetNode<TItem>* candidateNodePtr = anchorNodePtr->nextPtr;
@@ -492,7 +491,7 @@ namespace opensolid
                     } else {
                         // Leaf node: check for duplicate items, then move to next node
                         const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
-                        if (itemComparator(*anchorItemPtr, *candidateItemPtr)) {
+                        if (detail::equals(*anchorItemPtr, *candidateItemPtr, precision)) {
                             std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
                             assert(mapping[candidateItemIndex] == -1);
                             mapping[candidateItemIndex] = uniqueIndex;
@@ -537,7 +536,6 @@ namespace opensolid
             }
 
             std::vector<TItem> results;
-            TolerantComparator<TItem> itemComparator(precision);
             do {
                 const TItem* itemPtr = nodePtr->itemPtr;
                 std::int64_t itemIndex = itemPtr - firstItemPtr;
@@ -549,7 +547,7 @@ namespace opensolid
                         itemPtr,
                         uniqueIndex,
                         firstItemPtr,
-                        itemComparator,
+                        precision,
                         mapping
                     );
                     ++uniqueIndex;
