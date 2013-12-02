@@ -4,8 +4,8 @@
     externalproject_add(
         sqlite_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/sqlite-3.7.13.tar.gz
-        URL_MD5 3318320154a6e00cd50e7746e81f89df
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/sqlite-3.8.1.tar.gz
+        URL_MD5 e3ae0eeccb9953724b0bcf8a8964cbd4
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
