@@ -3,14 +3,15 @@
     externalproject_add(
         protobuf_sources
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/protobuf-2.4.1.tar.gz
-        URL_MD5 cddfadb4f8691a0a45e833e7ad0039ec
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/protobuf-2.5.0.tar.gz
+        URL_MD5 b751f772bdeb2812a2a8e7202bf1dae8
         PATCH_COMMAND
         ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/patch.cmake
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
     )
+
     set(PROTOBUF_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/protobuf_sources/src)
     
     # Set PROTOBUF_ROOT in external/ directory (will then be passed up to root)
@@ -21,6 +22,19 @@
 
 ########## Build protobuf library ##########
 
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        set(PROTOBUF_ATOMIC_OPS_SOURCE_FILE
+            "${PROTOBUF_ROOT}/google/protobuf/stubs/atomicops_internals_x86_msvc.cc"
+        )
+    elseif(APPLE)
+        set(PROTOBUF_ATOMIC_OPS_SOURCE_FILE
+            "${PROTOBUF_ROOT}/google/protobuf/stubs/atomicops_internals_macosx.cc"
+        )
+    else()
+        set(PROTOBUF_ATOMIC_OPS_SOURCE_FILE
+            "${PROTOBUF_ROOT}/google/protobuf/stubs/atomicops_internals_x86_gcc.cc"
+        )
+    endif()
     set(PROTOBUF_SOURCES
         "${PROTOBUF_ROOT}/google/protobuf/descriptor.cc"
         "${PROTOBUF_ROOT}/google/protobuf/descriptor.pb.cc"
@@ -48,12 +62,15 @@
         "${PROTOBUF_ROOT}/google/protobuf/io/zero_copy_stream_impl_lite.cc"
         "${PROTOBUF_ROOT}/google/protobuf/stubs/common.cc"
         "${PROTOBUF_ROOT}/google/protobuf/stubs/once.cc"
+        "${PROTOBUF_ROOT}/google/protobuf/stubs/stringprintf.cc"
         "${PROTOBUF_ROOT}/google/protobuf/stubs/structurally_valid.cc"
         "${PROTOBUF_ROOT}/google/protobuf/stubs/strutil.cc"
         "${PROTOBUF_ROOT}/google/protobuf/stubs/substitute.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/importer.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/parser.cc"
+        "${PROTOBUF_ATOMIC_OPS_SOURCE_FILE}"
     )
+
     set_source_files_properties(${PROTOBUF_SOURCES} PROPERTIES GENERATED TRUE)
     add_library(protobuf STATIC ${PROTOBUF_SOURCES})
     set_target_properties(protobuf PROPERTIES DEBUG_POSTFIX _debug)
@@ -82,6 +99,7 @@
         "${PROTOBUF_ROOT}/google/protobuf/compiler/cpp/cpp_primitive_field.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/cpp/cpp_service.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/cpp/cpp_string_field.cc"
+        "${PROTOBUF_ROOT}/google/protobuf/compiler/java/java_doc_comment.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/java/java_enum.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/java/java_enum_field.cc"
         "${PROTOBUF_ROOT}/google/protobuf/compiler/java/java_extension.cc"

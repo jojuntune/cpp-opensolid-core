@@ -74,6 +74,8 @@ template <typename Key, typename Data,
           typename EqualKey = std::equal_to<Key> >
 class hash_map : public std::unordered_map<
     Key, Data, HashFcn, EqualKey> {
+ public:
+  hash_map(int = 0) {}
 };
 
 template <typename Key,
@@ -81,6 +83,8 @@ template <typename Key,
           typename EqualKey = std::equal_to<Key> >
 class hash_set : public std::unordered_set<
     Key, HashFcn, EqualKey> {
+ public:
+  hash_set(int = 0) {}
 };
 
 template <>
