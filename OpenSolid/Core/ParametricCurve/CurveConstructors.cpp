@@ -68,7 +68,7 @@ namespace opensolid
             }
 
             Vector2d sidewaysDirection = displacementVector.unitOrthogonal();
-            if (direction == Counterclockwise) {
+            if (direction == COUNTERCLOCKWISE) {
                 sidewaysDirection = -sidewaysDirection;
             }
 
@@ -133,11 +133,11 @@ namespace opensolid
             if (determinant == Zero()) {
                 // Points are collinear
                 assert(false);
-                result = Counterclockwise;
+                result = COUNTERCLOCKWISE;
                 return false;
             }
 
-            result = determinant > 0.0 ? Counterclockwise : Clockwise;
+            result = determinant > 0.0 ? COUNTERCLOCKWISE : CLOCKWISE;
             return true;
         }
 
@@ -189,7 +189,7 @@ namespace opensolid
             ParametricExpression<1, 1> theta =
                 2 * M_PI * numTurns * ParametricExpression<1, 1>::t();
             Vector3d sidewaysVector = yVector;
-            if (direction == Clockwise) {
+            if (direction == CLOCKWISE) {
                 sidewaysVector = -sidewaysVector;
             }
             ParametricExpression<3, 1> curveExpression = centerPoint.vector() +
@@ -257,9 +257,9 @@ namespace opensolid
         // Determine start and end angles of arc, respecting the given direction
         double startAngle = std::atan2(startPoint.y(), startPoint.x());
         double endAngle = std::atan2(endPoint.y(), endPoint.x());
-        if (direction == Counterclockwise && endAngle - startAngle <= Zero()) {
+        if (direction == COUNTERCLOCKWISE && endAngle - startAngle <= Zero()) {
             endAngle += 2 * M_PI;
-        } else if (direction == Clockwise && endAngle - startAngle >= Zero()) {
+        } else if (direction == CLOCKWISE && endAngle - startAngle >= Zero()) {
             endAngle -= 2 * M_PI;
         }
         return Arc(centerPoint, radius, startAngle, endAngle);
@@ -291,7 +291,7 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        WindingDirection direction = Counterclockwise;
+        WindingDirection direction = COUNTERCLOCKWISE;
         if (!detail::computeWindingDirection(startPoint, innerPoint, endPoint, direction)) {
             assert(false);
             return ParametricCurve2d();
@@ -311,7 +311,7 @@ namespace opensolid
         WindingDirection direction,
         double startAngle
     ) {
-        if (direction == Counterclockwise) {
+        if (direction == COUNTERCLOCKWISE) {
             return ParametricCurve2d::Arc(centerPoint, radius, startAngle, startAngle + 2 * M_PI);
         } else {
             return ParametricCurve2d::Arc(centerPoint, radius, startAngle, startAngle - 2 * M_PI);
@@ -353,7 +353,7 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        WindingDirection direction = Counterclockwise;
+        WindingDirection direction = COUNTERCLOCKWISE;
         if (!detail::computeWindingDirection(startPoint, secondPoint, thirdPoint, direction)) {
             assert(false);
             return ParametricCurve2d();
@@ -402,7 +402,7 @@ namespace opensolid
         );
         return planarCoordinateSystem * CurveConstructors<2>::Arc(
             Point2d::Origin(),
-            Counterclockwise,
+            COUNTERCLOCKWISE,
             startPoint / planarCoordinateSystem,
             endPoint / planarCoordinateSystem
         );
@@ -477,7 +477,7 @@ namespace opensolid
         );
         return planarCoordinateSystem * CurveConstructors<2>::Arc(
             radius,
-            Counterclockwise,
+            COUNTERCLOCKWISE,
             startPoint / planarCoordinateSystem,
             endPoint / planarCoordinateSystem
         );
@@ -582,7 +582,7 @@ namespace opensolid
         );
         return planarCoordinateSystem * CurveConstructors<2>::Circle(
             radius,
-            Counterclockwise,
+            COUNTERCLOCKWISE,
             startPoint / planarCoordinateSystem,
             secondPoint / planarCoordinateSystem
         );   

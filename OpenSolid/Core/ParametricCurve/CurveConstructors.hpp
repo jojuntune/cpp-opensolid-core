@@ -39,7 +39,7 @@ namespace opensolid
     template <int iNumDimensions>
     class CurveConstructors;
 
-    enum WindingDirection {Counterclockwise, Clockwise};
+    enum WindingDirection {COUNTERCLOCKWISE, CLOCKWISE};
 
     template <>
     class CurveConstructors<2>
