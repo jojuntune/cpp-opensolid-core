@@ -131,7 +131,7 @@ void lineSegmentExamples() {
     Axis2d axis = segment.axis();
     Point2d axisOrigin = axis.originPoint();
     Vector2d axisDirection = axis.directionVector();
-    assert((axisOrigin - segment.vertex(0)).isZero());
+    assert((axisOrigin - segment.startPoint()).isZero());
     assert((axisDirection - segment.vector().normalized()).isZero());
 }
 
