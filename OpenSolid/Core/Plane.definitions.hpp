@@ -35,7 +35,8 @@
 
 namespace opensolid
 {
-    class Plane3d
+    class Plane3d :
+        public Transformable<Plane3d>
     {
     private:
         Point<3> _originPoint;
