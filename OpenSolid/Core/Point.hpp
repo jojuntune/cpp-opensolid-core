@@ -35,176 +35,290 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    inline
-    Point<iNumDimensions>::Point() :
-        _vector(Matrix<double, iNumDimensions, 1>::Zero()) {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        inline
+        PointBase<iNumDimensions>::PointBase() :
+            _vector(Matrix<double, iNumDimensions, 1>::Zero()) {
+        }
+
+        template <int iNumDimensions> template <class TVector>
+        inline
+        PointBase<iNumDimensions>::PointBase(const EigenBase<TVector>& vector) :
+            _vector(vector.derived()) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        PointBase<iNumDimensions>::PointBase(double value) :
+            _vector(Matrix<double, iNumDimensions, 1>::Constant(value)) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        PointBase<iNumDimensions>::PointBase(double x, double y) :
+            _vector(x, y) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        PointBase<iNumDimensions>::PointBase(double x, double y, double z) :
+            _vector(x, y, z) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Matrix<double, iNumDimensions, 1>&
+        PointBase<iNumDimensions>::vector() const {
+            return _vector;
+        }
+
+        template <int iNumDimensions>
+        inline
+        Matrix<double, iNumDimensions, 1>&
+        PointBase<iNumDimensions>::vector() {
+            return _vector;
+        }
+
+        template <int iNumDimensions>
+        inline
+        const double*
+        PointBase<iNumDimensions>::data() const {
+            return vector().data();
+        }
+
+        template <int iNumDimensions>
+        inline
+        double*
+        PointBase<iNumDimensions>::data() {
+            return vector().data();
+        }
+
+        template <int iNumDimensions>
+        inline
+        double&
+        PointBase<iNumDimensions>::operator()(int index) {
+            return vector()(index);
+        }
+        
+        template <int iNumDimensions>
+        inline
+        double
+        PointBase<iNumDimensions>::operator()(int index) const {
+            return vector()(index);
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        PointBase<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
+            return Box<iNumDimensions>(vector().hull(other.vector()));
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        PointBase<iNumDimensions>::isOrigin(double precision) const {
+            return vector().isZero(precision);
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        PointBase<iNumDimensions>::operator==(const Point<iNumDimensions>& other) const {
+            return vector() == other.vector();
+        }
+
+        template <int iNumDimensions>
+        inline
+        Matrix<double, iNumDimensions, 1>
+        PointBase<iNumDimensions>::operator-(const Point<iNumDimensions>& other) const {
+            return vector() - other.vector();
+        }
+
+        template <int iNumDimensions>
+        inline
+        Matrix<Interval, iNumDimensions, 1>
+        PointBase<iNumDimensions>::operator-(const Box<iNumDimensions>& box) const {
+            return vector().template cast<Interval>() - box.vector();
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>
+        PointBase<iNumDimensions>::Origin() {
+            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
+        }
     }
 
-    template <int iNumDimensions> template <class TVector>
     inline
-    Point<iNumDimensions>::Point(const EigenBase<TVector>& vector) :
-        _vector(vector) {
+    Point1d::Point() {
     }
 
-    template <int iNumDimensions>
     inline
-    Point<iNumDimensions>::Point(double x) :
-        _vector(Matrix1d::Constant(x)) {    
+    Point1d::Point(double value) :
+        detail::PointBase<1>(value) {
     }
 
-    template <int iNumDimensions>
+    template <class TVector>
     inline
-    Point<iNumDimensions>::Point(double x, double y) :
-        _vector(x, y) {        
+    Point1d::Point(const EigenBase<TVector>& vector) :
+        detail::PointBase<1>(vector.derived()) {
     }
 
-    template <int iNumDimensions>
     inline
-    Point<iNumDimensions>::Point(double x, double y, double z) :
-        _vector(x, y, z) {        
+    double
+    Point1d::value() const {
+        return vector()(0);
     }
 
-    template <int iNumDimensions>
-    inline
-    Matrix<double, iNumDimensions, 1>&
-    Point<iNumDimensions>::vector() {
-        return _vector;
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Matrix<double, iNumDimensions, 1>&
-    Point<iNumDimensions>::vector() const {
-        return _vector;
-    }
-
-    template <int iNumDimensions>
-    inline
-    const double*
-    Point<iNumDimensions>::data() const {
-        return vector().data();
-    }
-
-    template <int iNumDimensions>
-    inline
-    double*
-    Point<iNumDimensions>::data() {
-        return vector().data();
-    }
-
-    template <int iNumDimensions>
     inline
     double&
-    Point<iNumDimensions>::x() {
+    Point1d::value() {
+        return vector()(0);
+    }
+
+    inline
+    Point2d::Point() {
+    }
+
+    inline
+    Point2d::Point(double x, double y) :
+        detail::PointBase<2>(x, y) {
+    }
+
+    template <class TVector>
+    inline
+    Point2d::Point(const EigenBase<TVector>& vector) :
+        detail::PointBase<2>(vector.derived()) {
+    }
+
+    inline
+    double
+    Point2d::x() const {
         return vector().x();
     }
-    
-    template <int iNumDimensions>
+
     inline
-    double
-    Point<iNumDimensions>::x() const {
+    double&
+    Point2d::x() {
         return vector().x();
     }
 
-    template <int iNumDimensions>
-    inline
-    double&
-    Point<iNumDimensions>::y() {
-        return vector().y();
-    }
-    
-    template <int iNumDimensions>
     inline
     double
-    Point<iNumDimensions>::y() const {
+    Point2d::y() const {
         return vector().y();
     }
 
-    template <int iNumDimensions>
     inline
     double&
-    Point<iNumDimensions>::z() {
-        return vector().z();
-    }
-    
-    template <int iNumDimensions>
-    inline
-    double
-    Point<iNumDimensions>::z() const {
-        return vector().z();
+    Point2d::y() {
+        return vector().y();
     }
 
-    template <int iNumDimensions>
+    inline
+    double
+    Point2d::distanceTo(const Axis<2>& axis) {
+        Vector2d normalVector(-axis.directionVector().y(), axis.directionVector().x());
+        return (*this - axis.originPoint()).dot(normalVector);
+    }
+
+    inline
+    Point2d
+    Point2d::Polar(double radius, double angle) {
+        return Point2d(radius * cos(angle), radius * sin(angle));
+    }
+
+    inline
+    Point3d::Point() {
+    }
+
+    inline
+    Point3d::Point(double x, double y, double z) :
+        detail::PointBase<3>(x, y, z) {
+    }
+
+    template <class TVector>
+    inline
+    Point3d::Point(const EigenBase<TVector>& vector) :
+        detail::PointBase<3>(vector.derived()) {
+    }
+
+    inline
+    double
+    Point3d::x() const {
+        return vector().x();
+    }
+
     inline
     double&
-    Point<iNumDimensions>::operator()(int index) {
-        return vector()(index);
+    Point3d::x() {
+        return vector().x();
     }
-    
-    template <int iNumDimensions>
+
     inline
     double
-    Point<iNumDimensions>::operator()(int index) const {
-        return vector()(index);
+    Point3d::y() const {
+        return vector().y();
     }
 
-    template <int iNumDimensions>
     inline
-    Box<iNumDimensions>
-    Point<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
-        return Box<iNumDimensions>(vector().hull(other.vector()));
+    double&
+    Point3d::y() {
+        return vector().y();
     }
 
-    template <int iNumDimensions>
     inline
-    bool
-    Point<iNumDimensions>::isOrigin(double precision) const {
-        return vector().isZero(precision);
+    double
+    Point3d::z() const {
+        return vector().z();
     }
 
-    template <int iNumDimensions>
     inline
-    bool
-    Point<iNumDimensions>::operator==(const Point<iNumDimensions>& other) const {
-        return vector() == other.vector();
+    double&
+    Point3d::z() {
+        return vector().z();
     }
 
-    template <int iNumDimensions>
     inline
-    Matrix<double, iNumDimensions, 1>
-    Point<iNumDimensions>::operator-(const Point<iNumDimensions>& other) const {
-        return vector() - other.vector();
+    double
+    Point3d::distanceTo(const Plane3d& plane) {
+        return (*this - plane.originPoint()).dot(plane.normalVector());
     }
 
-    template <int iNumDimensions>
     inline
-    Matrix<Interval, iNumDimensions, 1>
-    Point<iNumDimensions>::operator-(const Box<iNumDimensions>& box) const {
-        return vector().template cast<Interval>() - box.vector();
+    Point3d
+    Point3d::Cylindrical(double radius, double angle, double height) {
+        return Point3d(radius * cos(angle), radius * sin(angle), height);
     }
 
-    template <int iNumDimensions>
     inline
-    Point<iNumDimensions>
-    Point<iNumDimensions>::Origin() {
-        return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
+    Point3d
+    Point3d::Spherical(double radius, double polarAngle, double elevationAngle) {
+        double cosElevation = cos(elevationAngle);
+        return Point3d(
+            radius * cosElevation * cos(polarAngle),
+            radius * cosElevation * sin(polarAngle),
+            radius * sin(elevationAngle)
+        );
     }
 
     template <int iNumDimensions, class TVector>
     inline
-    typename Position<typename TVector::Scalar, iNumDimensions>::Type
+    typename detail::Position<typename TVector::Scalar, iNumDimensions>::Type
     operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
-        return typename Position<typename TVector::Scalar, iNumDimensions>::Type(
+        return typename detail::Position<typename TVector::Scalar, iNumDimensions>::Type(
             point.vector().template cast<typename TVector::Scalar>() + vector.derived()
         );
     }
 
     template <int iNumDimensions, class TVector>
     inline
-    typename Position<typename TVector::Scalar, iNumDimensions>::Type
+    typename detail::Position<typename TVector::Scalar, iNumDimensions>::Type
     operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
-        return typename Position<typename TVector::Scalar, iNumDimensions>::Type(
+        return typename detail::Position<typename TVector::Scalar, iNumDimensions>::Type(
             point.vector().template cast<typename TVector::Scalar>() - vector.derived()
         );
     }

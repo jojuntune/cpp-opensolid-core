@@ -22,12 +22,8 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
 
 #include <cxxtest/TestSuite.h>
 
@@ -230,13 +226,6 @@ public:
         #endif
     }
 
-    void testTransformed() {
-        Point3d point(3, 2, 1);
-        TS_ASSERT((point.rotatedAbout(Axis3d::Z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
-        TS_ASSERT((point.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
-        TS_ASSERT((point.mirroredAbout(Plane3d::YZ()) - Point3d(-3, 2, 1)).isZero());
-    }
-
     void testRandom() {
         Vector3I bounds = Vector3I::Random();
         TS_ASSERT(bounds.cwiseWidth().minCoeff() > 0);
@@ -254,43 +243,5 @@ public:
         TS_ASSERT_EQUALS(to.x, 1.0);
         TS_ASSERT_EQUALS(to.y, 1.0);
         TS_ASSERT_EQUALS(to.z, 1.0);
-    }
-
-    void testPoint() {
-        Point3d point1(1, 2, 3);
-        Point3d point2(Vector3d(1, 2, 3));
-        Point3d point3(4, 5, 6);
-        Point3d origin = Point3d::Origin();
-        TS_ASSERT((point1 - point2).isZero());
-        TS_ASSERT(origin.vector().isZero());
-        TS_ASSERT(origin.isOrigin());
-        TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
-        TS_ASSERT((point1.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
-    }
-
-    void testBox() {
-        Box3d box1(Interval(1, 2), Interval(3, 4), Interval(5, 6));
-        Box3d projected = box1.projectedOnto(Plane3d::YZ());
-        TS_ASSERT(projected.x().lowerBound() == Zero());
-        TS_ASSERT(projected.x().upperBound() == Zero());
-        TS_ASSERT(projected.y().lowerBound() - box1.y().lowerBound() == Zero());
-        TS_ASSERT(projected.y().upperBound() - box1.y().upperBound() == Zero());
-        TS_ASSERT(projected.z().lowerBound() - box1.z().lowerBound() == Zero());
-        TS_ASSERT(projected.z().upperBound() - box1.z().upperBound() == Zero());
-    }
-
-    void testMixedOperations() {
-        Point3d point(1, 2, 3);
-        Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
-        Vector3I difference1 = point - box;
-        Vector3I difference2 = box - point;
-        Box3d reconstructed1 = point - difference1;
-        Box3d reconstructed2 = point + difference2;
-        for (int i = 0; i < 3; ++i) {
-            TS_ASSERT(reconstructed1(i).lowerBound() - box(i).lowerBound() == Zero());
-            TS_ASSERT(reconstructed1(i).upperBound() - box(i).upperBound() == Zero());
-            TS_ASSERT(reconstructed2(i).lowerBound() - box(i).lowerBound() == Zero());
-            TS_ASSERT(reconstructed2(i).upperBound() - box(i).upperBound() == Zero());
-        }
     }
 };

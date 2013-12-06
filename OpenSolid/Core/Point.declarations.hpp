@@ -35,21 +35,6 @@ namespace opensolid
 {
     template <int iNumDimensions>
     class Point;
-    
-    template <class TScalar, int iNumDimensions>
-    struct Position;
-
-    template <int iNumDimensions>
-    struct Position<double, iNumDimensions>
-    {
-        typedef Point<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct Position<Interval, iNumDimensions>
-    {
-        typedef Box<iNumDimensions> Type;
-    };
 
     template <int iNumDimensions>
     struct NumDimensions<Point<iNumDimensions>>
