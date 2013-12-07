@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialList/SpatialListData.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialListData.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid

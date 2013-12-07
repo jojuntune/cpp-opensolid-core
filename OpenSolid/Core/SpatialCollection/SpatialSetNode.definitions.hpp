@@ -26,27 +26,21 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.declarations.hpp>
+
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <class TItem>
-        class OverlapPredicate
+        struct SpatialSetNode
         {
-        private:
-            typename BoundsType<TItem>::Type _predicateBounds;
-            double _precision;
-        public:
-            OverlapPredicate(
-                const typename BoundsType<TItem>::Type& predicateBounds,
-                double precision
-            );
-
-            bool
-            operator()(const typename BoundsType<TItem>::Type& bounds) const;
+            typename BoundsType<TItem>::Type bounds;
+            const SpatialSetNode<TItem>* leftChildPtr;
+            const SpatialSetNode<TItem>* nextPtr;
+            const TItem* itemPtr;
         };
     }
 }

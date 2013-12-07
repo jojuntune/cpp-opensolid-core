@@ -32,12 +32,12 @@
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/ContainPredicate.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.hpp>
+#include <OpenSolid/Core/SpatialCollection/OverlapPredicate.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetData.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.hpp>
 #include <OpenSolid/Core/SpatialList.hpp>
-#include <OpenSolid/Core/SpatialSet/ContainPredicate.hpp>
-#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.hpp>
-#include <OpenSolid/Core/SpatialSet/OverlapPredicate.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetData.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>

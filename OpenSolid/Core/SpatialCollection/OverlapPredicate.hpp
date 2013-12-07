@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/ContainPredicate.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/OverlapPredicate.definitions.hpp>
 
 namespace opensolid
 {
@@ -34,7 +34,7 @@ namespace opensolid
     {
         template <class TItem>
         inline
-        ContainPredicate<TItem>::ContainPredicate(
+        OverlapPredicate<TItem>::OverlapPredicate(
             const typename BoundsType<TItem>::Type& predicateBounds,
             double precision
         ) : _predicateBounds(predicateBounds),
@@ -44,8 +44,8 @@ namespace opensolid
         template <class TItem>
         inline
         bool
-        ContainPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
-            return bounds.contains(_predicateBounds, _precision);
+        OverlapPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
+            return bounds.overlaps(_predicateBounds, _precision);
         }
     }
 }

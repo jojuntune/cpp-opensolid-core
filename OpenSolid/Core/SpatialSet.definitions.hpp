@@ -31,12 +31,12 @@
 #include <OpenSolid/Core/BoundsFunction.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/ContainPredicate.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/OverlapPredicate.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetData.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/SpatialList.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/OverlapPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetData.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>

@@ -27,7 +27,7 @@
 #include <OpenSolid/config.hpp>
 
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialSet/ContainPredicate.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/ContainPredicate.declarations.hpp>
 
 namespace opensolid
 {

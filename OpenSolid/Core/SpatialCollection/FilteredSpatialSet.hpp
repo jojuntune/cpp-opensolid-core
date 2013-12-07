@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.definitions.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>

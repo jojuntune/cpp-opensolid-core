@@ -26,21 +26,26 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/SpatialSetData.declarations.hpp>
-
-#include <OpenSolid/Core/ReferenceCounted.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/ContainPredicate.definitions.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <class TItem>
-        struct SpatialSetData :
-            public ReferenceCounted
-        {
-            std::vector<SpatialSetNode<TItem>> nodes;
-            std::vector<TItem> items;
-        };
+        inline
+        ContainPredicate<TItem>::ContainPredicate(
+            const typename BoundsType<TItem>::Type& predicateBounds,
+            double precision
+        ) : _predicateBounds(predicateBounds),
+            _precision(precision) {
+        }
+
+        template <class TItem>
+        inline
+        bool
+        ContainPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
+            return bounds.contains(_predicateBounds, _precision);
+        }
     }
 }

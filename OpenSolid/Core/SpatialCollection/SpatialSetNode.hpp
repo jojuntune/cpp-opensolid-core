@@ -26,4 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialList/SpatialListData.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.definitions.hpp>

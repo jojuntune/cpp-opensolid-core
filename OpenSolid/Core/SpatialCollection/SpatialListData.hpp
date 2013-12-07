@@ -26,19 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialList/SpatialListData.declarations.hpp>
-
-#include <OpenSolid/Core/ReferenceCounted.hpp>
-
-namespace opensolid
-{
-    namespace detail
-    {
-        template <class TItem>
-        struct SpatialListData :
-            public ReferenceCounted
-        {
-            std::vector<TItem> items;
-        };
-    }
-}
+#include <OpenSolid/Core/SpatialCollection/SpatialListData.definitions.hpp>

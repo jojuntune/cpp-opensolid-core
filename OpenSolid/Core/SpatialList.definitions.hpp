@@ -30,7 +30,7 @@
 
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialList/SpatialListData.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialListData.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <boost/intrusive_ptr.hpp>

@@ -26,11 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialSet/FilteredSpatialSet.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
-#include <OpenSolid/Core/SpatialSet/SpatialSetNode.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
