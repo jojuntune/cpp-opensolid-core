@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/SpatialCollection/TranslatedCollection.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
+#include <iterator>
 #include <vector>
 
 namespace opensolid
@@ -103,6 +104,22 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <class TCollection>
+    struct ItemType
+    {
+        typedef typename std::iterator_traits<
+            typename IteratorType<TCollection>::Type
+        >::value_type Type;
+    };
+
+    template <class TCollection>
+    struct ItemReferenceType
+    {
+        typedef typename std::iterator_traits<
+            typename IteratorType<TCollection>::Type
+        >::reference Type;
+    };
+
     template <class TDerived>
     struct NumDimensions<SpatialCollection<TDerived>>
     {

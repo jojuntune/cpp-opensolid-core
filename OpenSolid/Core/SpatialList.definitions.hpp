@@ -98,12 +98,6 @@ namespace opensolid
 namespace opensolid
 {
     template <class TItem>
-    struct ItemType<SpatialList<TItem>>
-    {
-        typedef TItem Type;
-    };
-
-    template <class TItem>
     struct IteratorType<SpatialList<TItem>>
     {
         typedef typename std::vector<TItem>::const_iterator Type;

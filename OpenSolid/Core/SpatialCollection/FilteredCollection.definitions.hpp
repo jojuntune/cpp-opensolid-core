@@ -74,7 +74,7 @@ namespace opensolid
                 FilteredCollectionIterator<TBaseCollection, TPredicate>,
                 typename ItemType<TBaseCollection>::Type,
                 boost::forward_traversal_tag,
-                typename ItemType<TBaseCollection>::Type
+                typename ItemReferenceType<TBaseCollection>::Type
             >
         {
         private:
@@ -90,7 +90,7 @@ namespace opensolid
             bool
             equal(const FilteredCollectionIterator<TBaseCollection, TPredicate>& other) const;
 
-            const typename ItemType<TBaseCollection>::Type&
+            typename ItemReferenceType<TBaseCollection>::Type
             dereference() const;
         public:
             FilteredCollectionIterator();
@@ -108,12 +108,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <class TBaseCollection, class TPredicate>
-    struct ItemType<detail::FilteredCollection<TBaseCollection, TPredicate>>
-    {
-        typedef typename ItemType<TBaseCollection>::Type Type;
-    };
-
     template <class TBaseCollection, class TPredicate>
     struct IteratorType<detail::FilteredCollection<TBaseCollection, TPredicate>>
     {

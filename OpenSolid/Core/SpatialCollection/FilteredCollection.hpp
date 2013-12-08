@@ -132,7 +132,7 @@ namespace opensolid
 
         template <class TBaseCollection, class TPredicate>
         inline
-        const typename ItemType<TBaseCollection>::Type&
+        typename ItemReferenceType<TBaseCollection>::Type
         FilteredCollectionIterator<TBaseCollection, TPredicate>::dereference() const {
             return *_baseIterator;
         }

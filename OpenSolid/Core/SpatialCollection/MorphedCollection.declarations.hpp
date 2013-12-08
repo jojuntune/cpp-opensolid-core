@@ -49,15 +49,6 @@ namespace opensolid
             iNumResultDimensions
         >::Type Type;
     };
-    
-    template <class TBaseCollection, int iNumResultDimensions>
-    struct ItemType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>
-    {
-        typedef typename MorphedType<
-            typename ItemType<TBaseCollection>::Type,
-            iNumResultDimensions
-        >::Type Type;
-    };
 
     template <class TBaseCollection, int iNumResultDimensions>
     struct IteratorType<detail::MorphedCollection<TBaseCollection, iNumResultDimensions>>

@@ -118,12 +118,6 @@ namespace opensolid
 namespace opensolid
 {
     template <class TItem, class TBoundsPredicate>
-    struct ItemType<detail::FilteredSpatialSet<TItem, TBoundsPredicate>>
-    {
-        typedef TItem Type;
-    };
-
-    template <class TItem, class TBoundsPredicate>
     struct IteratorType<detail::FilteredSpatialSet<TItem, TBoundsPredicate>>
     {
         typedef detail::FilteredSpatialSetIterator<TItem, TBoundsPredicate> Type;

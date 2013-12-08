@@ -46,12 +46,6 @@ namespace opensolid
     {
         typedef typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type Type;
     };
-    
-    template <class TBaseCollection>
-    struct ItemType<detail::TranslatedCollection<TBaseCollection>>
-    {
-        typedef typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type Type;
-    };
 
     template <class TBaseCollection>
     struct IteratorType<detail::TranslatedCollection<TBaseCollection>>

@@ -35,5 +35,8 @@ namespace opensolid
     struct ItemType;
 
     template <class TCollection>
+    struct ItemReferenceType;
+
+    template <class TCollection>
     struct IteratorType;
 }

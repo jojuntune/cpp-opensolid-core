@@ -49,12 +49,6 @@ namespace opensolid
     };
 
     template <class TBaseCollection>
-    struct ItemType<detail::ScaledCollection<TBaseCollection>>
-    {
-        typedef typename ScaledType<typename ItemType<TBaseCollection>::Type>::Type Type;
-    };
-
-    template <class TBaseCollection>
     struct IteratorType<detail::ScaledCollection<TBaseCollection>>
     {
         typedef detail::ScaledCollectionIterator<TBaseCollection> Type;
