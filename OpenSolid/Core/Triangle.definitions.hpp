@@ -36,43 +36,13 @@
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <int iNumDimensions>
-        class TriangleVertices :
-            public SpatialCollection<TriangleVertices<iNumDimensions>>
-        {
-        private:
-            Triangle<iNumDimensions> _triangle;
-        public:
-            TriangleVertices(const Triangle<iNumDimensions>& triangle);
-
-            const Triangle<iNumDimensions>&
-            triangle() const;
-
-            IndexIterator<TriangleVertices<iNumDimensions>>
-            begin() const;
-
-            IndexIterator<TriangleVertices<iNumDimensions>>
-            end() const;
-
-            bool
-            isEmpty() const;
-
-            std::int64_t
-            size() const;
-
-            Box<iNumDimensions>
-            bounds() const;
-
-            const Point<iNumDimensions>&
-            operator[](std::int64_t index) const;
-        };
-
         template <int iNumDimensions>
         class TriangleEdges :
             public SpatialCollection<TriangleEdges<iNumDimensions>>
@@ -127,7 +97,7 @@ namespace opensolid
             Point<iNumDimensions>&
             vertex(int index);
 
-            TriangleVertices<iNumDimensions>
+            SimplexVertices<Triangle<iNumDimensions>, 3>
             vertices() const;
 
             Point<iNumDimensions>
@@ -209,96 +179,6 @@ namespace opensolid
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct NumDimensions<detail::TriangleVertices<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions>
-    struct ItemType<detail::TriangleVertices<iNumDimensions>>
-    {
-        typedef Point<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ItemReferenceType<detail::TriangleVertices<iNumDimensions>>
-    {
-        typedef const Point<iNumDimensions>& Type;
-    };
-
-    template <int iNumDimensions>
-    struct ScaledType<detail::TriangleVertices<iNumDimensions>>
-    {
-        typedef detail::TriangleVertices<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct TranslatedType<detail::TriangleVertices<iNumDimensions>>
-    {
-        typedef detail::TriangleVertices<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<detail::TriangleVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef detail::TriangleVertices<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<detail::TriangleVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef detail::TriangleVertices<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ScalingFunction<detail::TriangleVertices<iNumDimensions>>
-    {
-        detail::TriangleVertices<iNumDimensions>
-        operator()(
-            const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<detail::TriangleVertices<iNumDimensions>>
-    {
-        template <class TVector>
-        detail::TriangleVertices<iNumDimensions>
-        operator()(
-            const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-            const EigenBase<TVector>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<detail::TriangleVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        template <class TMatrix>
-        detail::TriangleVertices<iNumResultDimensions>
-        operator()(
-            const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-            const EigenBase<TMatrix>& matrix
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<detail::TriangleVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        detail::TriangleVertices<iNumResultDimensions>
-        operator()(
-            const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsType<detail::TriangleVertices<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
-    };
-
     template <int iNumDimensions>
     struct NumDimensions<detail::TriangleEdges<iNumDimensions>>
     {

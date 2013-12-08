@@ -135,13 +135,13 @@ public:
         AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), Vector3d::UnitY());
         
         LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
-        TS_ASSERT((localized.startPoint() - Point1d(2)).isZero());
-        TS_ASSERT((localized.endPoint() - Point1d(5)).isZero());
+        TS_ASSERT((localized.startVertex() - Point1d(2)).isZero());
+        TS_ASSERT((localized.endVertex() - Point1d(5)).isZero());
 
         LineSegment3d globalized = lineSegment3d.coordinateSystem() *
             LineSegment1d(Point1d(1.0 / 3.0), Point1d(2.0 / 3.0));
-        TS_ASSERT((globalized.startPoint() - Point3d(2, 3, 4)).isZero());
-        TS_ASSERT((globalized.endPoint() - Point3d(3, 4, 5)).isZero());
+        TS_ASSERT((globalized.startVertex() - Point3d(2, 3, 4)).isZero());
+        TS_ASSERT((globalized.endVertex() - Point3d(3, 4, 5)).isZero());
     }
 
     void testSet() {
@@ -170,7 +170,17 @@ public:
         TS_ASSERT((scaled.vertex(2) - Point2d(5, 5)).isZero());
     }
 
-    void testVertices() {
+    void testLineSegmentVertices() {
+        LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(-4, -5, -6));
+        TS_ASSERT_EQUALS(lineSegment.vertices().size(), 2);
+
+        std::vector<Point3d> vertices = lineSegment.vertices();
+        TS_ASSERT_EQUALS(vertices.size(), 2u);
+        TS_ASSERT_EQUALS(vertices[0], Point3d(1, 2, 3));
+        TS_ASSERT_EQUALS(vertices[1], Point3d(-4, -5, -6));
+    }
+
+    void testTriangleVertices() {
         Triangle3d triangle(Point3d(1, 1, -1), Point3d(3, 0, 2), Point3d(1, 2, 1));
         auto hasPositiveZ = [] (const Point3d& point) {
             return point.z() > Zero();
@@ -180,7 +190,7 @@ public:
         TS_ASSERT_EQUALS(triangle.vertices().where(hasPositiveZ).size(), 2);
     }
 
-    void testEdges() {
+    void testTriangleEdges() {
         auto lengthAccumulator = [] (double lengthSoFar, const LineSegment2d& edge) {
             return lengthSoFar + edge.length();
         };

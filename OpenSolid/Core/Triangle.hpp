@@ -38,68 +38,13 @@
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
+#include <OpenSolid/Core/SpatialCollection/SimplexVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <int iNumDimensions>
-        inline
-        TriangleVertices<iNumDimensions>::TriangleVertices(
-            const Triangle<iNumDimensions>& triangle
-        ) : _triangle(triangle) {
-        }
-
-        template <int iNumDimensions>
-        inline
-        const Triangle<iNumDimensions>&
-        TriangleVertices<iNumDimensions>::triangle() const {
-            return _triangle;
-        }
-
-        template <int iNumDimensions>
-        inline
-        IndexIterator<TriangleVertices<iNumDimensions>>
-        TriangleVertices<iNumDimensions>::begin() const {
-            return IndexIterator<TriangleVertices<iNumDimensions>>::Begin(this);
-        }
-
-        template <int iNumDimensions>
-        inline
-        IndexIterator<TriangleVertices<iNumDimensions>>
-        TriangleVertices<iNumDimensions>::end() const {
-            return IndexIterator<TriangleVertices<iNumDimensions>>::End(this);
-        }
-
-        template <int iNumDimensions>
-        inline
-        bool
-        TriangleVertices<iNumDimensions>::isEmpty() const {
-            return false;
-        }
-
-        template <int iNumDimensions>
-        inline
-        std::int64_t
-        TriangleVertices<iNumDimensions>::size() const {
-            return 3;
-        }
-
-        template <int iNumDimensions>
-        inline
-        Box<iNumDimensions>
-        TriangleVertices<iNumDimensions>::bounds() const {
-            return triangle().bounds();
-        }
-
-        template <int iNumDimensions>
-        inline
-        const Point<iNumDimensions>&
-        TriangleVertices<iNumDimensions>::operator[](std::int64_t index) const {
-            return triangle().vertex(index);
-        }
-
         template <int iNumDimensions>
         inline
         TriangleEdges<iNumDimensions>::TriangleEdges(const Triangle<iNumDimensions>& triangle) :
@@ -195,9 +140,9 @@ namespace opensolid
         }
 
         template <int iNumDimensions>
-        TriangleVertices<iNumDimensions>
+        SimplexVertices<Triangle<iNumDimensions>, 3>
         TriangleBase<iNumDimensions>::vertices() const {
-            return TriangleVertices<iNumDimensions>(derived());
+            return SimplexVertices<Triangle<iNumDimensions>, 3>(derived());
         }
 
         template <int iNumDimensions>
@@ -274,49 +219,6 @@ namespace opensolid
         const Point3d& secondVertex,
         const Point3d& thirdVertex
     ) : detail::TriangleBase<3>(firstVertex, secondVertex, thirdVertex) {
-    }
-
-    template <int iNumDimensions>
-    inline
-    detail::TriangleVertices<iNumDimensions>
-    ScalingFunction<detail::TriangleVertices<iNumDimensions>>::operator()(
-        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-        double scale
-    ) const {
-        return detail::scaled(triangleVertices.triangle(), scale).vertices();
-    }
-
-    template <int iNumDimensions> template <class TVector>
-    inline
-    detail::TriangleVertices<iNumDimensions>
-    TranslationFunction<detail::TriangleVertices<iNumDimensions>>::operator()(
-        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-        const EigenBase<TVector>& vector
-    ) const {
-        return detail::translated(triangleVertices.triangle(), vector.derived()).vertices();
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
-    inline
-    detail::TriangleVertices<iNumResultDimensions>
-    TransformationFunction<
-        detail::TriangleVertices<iNumDimensions>,
-        iNumResultDimensions
-    >::operator()(
-        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        return detail::transformed(triangleVertices.triangle(), matrix.derived()).vertices();
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    detail::TriangleVertices<iNumResultDimensions>
-    MorphingFunction<detail::TriangleVertices<iNumDimensions>, iNumResultDimensions>::operator()(
-        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return detail::morphed(triangleVertices.triangle(), morphingExpression).vertices();
     }
 
     template <int iNumDimensions>

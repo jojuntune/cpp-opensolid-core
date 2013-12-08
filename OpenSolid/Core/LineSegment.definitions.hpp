@@ -34,6 +34,7 @@
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
@@ -43,27 +44,35 @@ namespace opensolid
         public Transformable<LineSegment<iNumDimensions>>
     {
     private:
-        Point<iNumDimensions> _startPoint;
-        Point<iNumDimensions> _endPoint;
+        Point<iNumDimensions> _vertices[2];
     public:
         LineSegment();
 
         LineSegment(
-            const Point<iNumDimensions>& startPoint,
-            const Point<iNumDimensions>& endPoint
+            const Point<iNumDimensions>& startVertex,
+            const Point<iNumDimensions>& endVertex
         );
 
         const Point<iNumDimensions>&
-        startPoint() const;
+        startVertex() const;
 
         Point<iNumDimensions>&
-        startPoint();
+        startVertex();
 
         const Point<iNumDimensions>&
-        endPoint() const;
+        endVertex() const;
 
         Point<iNumDimensions>&
-        endPoint();
+        endVertex();
+
+        const Point<iNumDimensions>&
+        vertex(std::int64_t index) const;
+
+        Point<iNumDimensions>&
+        vertex(std::int64_t index);
+
+        detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
+        vertices() const;
 
         double
         length() const;

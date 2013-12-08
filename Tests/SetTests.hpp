@@ -354,10 +354,10 @@ public:
         auto iterator = set.find(LineSegment2d(Point2d(3 + 1e-14, 3), Point2d(5, 3 - 1e-14)));
         TS_ASSERT_DIFFERS(iterator, set.end());
         LineSegment2d foundSegment = *iterator;
-        TS_ASSERT_EQUALS(foundSegment.startPoint().x(), 3.0);
-        TS_ASSERT_EQUALS(foundSegment.startPoint().y(), 3.0);
-        TS_ASSERT_EQUALS(foundSegment.endPoint().x(), 5.0);
-        TS_ASSERT_EQUALS(foundSegment.endPoint().y(), 3.0);
+        TS_ASSERT_EQUALS(foundSegment.startVertex().x(), 3.0);
+        TS_ASSERT_EQUALS(foundSegment.startVertex().y(), 3.0);
+        TS_ASSERT_EQUALS(foundSegment.endVertex().x(), 5.0);
+        TS_ASSERT_EQUALS(foundSegment.endVertex().y(), 3.0);
 
         TS_ASSERT_EQUALS(set.find(LineSegment2d(Point2d(1, 1), Point2d(7, 5))), set.end());
     }

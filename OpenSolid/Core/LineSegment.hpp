@@ -44,85 +44,106 @@ namespace opensolid
 
     template <int iNumDimensions>
     LineSegment<iNumDimensions>::LineSegment(
-        const Point<iNumDimensions>& startPoint,
-        const Point<iNumDimensions>& endPoint
-    ) : _startPoint(startPoint),
-        _endPoint(endPoint) {
+        const Point<iNumDimensions>& startVertex,
+        const Point<iNumDimensions>& endVertex
+    ) {
+        _vertices[0] = startVertex;
+        _vertices[1] = endVertex;
     }
 
     template <int iNumDimensions>
     const Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::startPoint() const {
-        return _startPoint;
+    LineSegment<iNumDimensions>::startVertex() const {
+        return _vertices[0];
     }
 
     template <int iNumDimensions>
     Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::startPoint() {
-        return _startPoint;
+    LineSegment<iNumDimensions>::startVertex() {
+        return _vertices[0];
     }
 
     template <int iNumDimensions>
     const Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::endPoint() const {
-        return _endPoint;
+    LineSegment<iNumDimensions>::endVertex() const {
+        return _vertices[1];
     }
 
     template <int iNumDimensions>
     Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::endPoint() {
-        return _endPoint;
+    LineSegment<iNumDimensions>::endVertex() {
+        return _vertices[1];
+    }
+
+    template <int iNumDimensions>
+    const Point<iNumDimensions>&
+    LineSegment<iNumDimensions>::vertex(std::int64_t index) const {
+        assert(index == 0 || index == 1);
+        return _vertices[index];
+    }
+
+    template <int iNumDimensions>
+    Point<iNumDimensions>&
+    LineSegment<iNumDimensions>::vertex(std::int64_t index) {
+        assert(index == 0 || index == 1);
+        return _vertices[index];
+    }
+
+    template <int iNumDimensions>
+    detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
+    LineSegment<iNumDimensions>::vertices() const {
+        return detail::SimplexVertices<LineSegment<iNumDimensions>, 2>(*this);
     }
 
     template <int iNumDimensions>
     double
     LineSegment<iNumDimensions>::length() const {
-        return (startPoint() - endPoint()).norm();
+        return (startVertex() - endVertex()).norm();
     }
 
     template <int iNumDimensions>
     double
     LineSegment<iNumDimensions>::squaredLength() const {
-        return (startPoint() - endPoint()).squaredNorm();
+        return (startVertex() - endVertex()).squaredNorm();
     }
 
     template<int iNumDimensions>
     Matrix<double, iNumDimensions, 1>
     LineSegment<iNumDimensions>::vector() const {
-        return endPoint() - startPoint();
+        return endVertex() - startVertex();
     }
 
     template<int iNumDimensions>
     Matrix<double, iNumDimensions, 1>
     LineSegment<iNumDimensions>::normalVector() const {
-        return (endPoint() - startPoint()).unitOrthogonal();
+        return (endVertex() - startVertex()).unitOrthogonal();
     }
 
     template <int iNumDimensions>
     CoordinateSystem<iNumDimensions, 1>
     LineSegment<iNumDimensions>::coordinateSystem() const {
         return CoordinateSystem<iNumDimensions, 1>(
-            startPoint(),
-            endPoint() - startPoint()
+            startVertex(),
+            endVertex() - startVertex()
         );
     }
 
     template <int iNumDimensions>
     Axis<iNumDimensions>
     LineSegment<iNumDimensions>::axis() const {
-        return Axis<iNumDimensions>(startPoint(), (endPoint() - startPoint()).normalized());
+        return Axis<iNumDimensions>(startVertex(), (endVertex() - startVertex()).normalized());
     }
 
     template <int iNumDimensions>
     Box<iNumDimensions>
     LineSegment<iNumDimensions>::bounds() const {
-        return startPoint().hull(endPoint());
+        return startVertex().hull(endVertex());
     }
 
     template <int iNumDimensions>
     bool
     LineSegment<iNumDimensions>::operator==(const LineSegment<iNumDimensions>& other) const {
-        return startPoint() == other.startPoint() && endPoint() == other.endPoint();
+        return startVertex() == other.startVertex() && endVertex() == other.endVertex();
     }
 
     template <int iNumDimensions>
@@ -132,8 +153,8 @@ namespace opensolid
         double scale
     ) const {
         return LineSegment<iNumDimensions>(
-            detail::scaled(lineSegment.startPoint(), scale),
-            detail::scaled(lineSegment.endPoint(), scale)
+            detail::scaled(lineSegment.startVertex(), scale),
+            detail::scaled(lineSegment.endVertex(), scale)
         );
     }
 
@@ -144,8 +165,8 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return LineSegment<iNumDimensions>(
-            detail::translated(lineSegment.startPoint(), vector.derived()),
-            detail::translated(lineSegment.endPoint(), vector.derived())
+            detail::translated(lineSegment.startVertex(), vector.derived()),
+            detail::translated(lineSegment.endVertex(), vector.derived())
         );
     }
 
@@ -156,8 +177,8 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return LineSegment<iNumResultDimensions>(
-            detail::transformed(lineSegment.startPoint(), matrix.derived()),
-            detail::transformed(lineSegment.endPoint(), matrix.derived())
+            detail::transformed(lineSegment.startVertex(), matrix.derived()),
+            detail::transformed(lineSegment.endVertex(), matrix.derived())
         );
     }
 
@@ -168,8 +189,8 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return LineSegment<iNumResultDimensions>(
-            detail::morphed(lineSegment.startPoint(), morphingExpression),
-            detail::morphed(lineSegment.endPoint(), morphingExpression)
+            detail::morphed(lineSegment.startVertex(), morphingExpression),
+            detail::morphed(lineSegment.endVertex(), morphingExpression)
         );
     }
 
@@ -181,12 +202,12 @@ namespace opensolid
         double precision
     ) const {
         return detail::equals(
-            firstLineSegment.startPoint(),
-            secondLineSegment.startPoint(),
+            firstLineSegment.startVertex(),
+            secondLineSegment.startVertex(),
             precision
         ) && detail::equals(
-            firstLineSegment.endPoint(),
-            secondLineSegment.endPoint(),
+            firstLineSegment.endVertex(),
+            secondLineSegment.endVertex(),
             precision
         );
     }
