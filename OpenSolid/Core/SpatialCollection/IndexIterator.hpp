@@ -26,48 +26,63 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
-
-#include <boost/iterator/iterator_facade.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.definitions.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <class TCollection>
-        class IndexIterator:
-            public boost::iterator_facade<
-                IndexIterator<TCollection>,
-                typename ItemType<TCollection>::Type,
-                boost::random_access_traversal_tag,
-                typename ItemReferenceType<TCollection>::Type
-            >
-        {
-        private:
-            const TCollection* _collection;
-            std::int64_t _index;
+        inline
+        void
+        IndexIterator<TCollection>::increment() {
+            ++_index;
+        }
 
-            friend class boost::iterator_core_access;
+        template <class TCollection>
+        inline
+        void
+        IndexIterator<TCollection>::decrement() {
+            --_index;
+        }
 
-            void
-            increment();
+        template <class TCollection>
+        inline
+        void
+        IndexIterator<TCollection>::advance(std::int64_t distance) {
+            _index += distance;
+        }
 
-            void
-            decrement();
+        template <class TCollection>
+        inline
+        std::int64_t
+        IndexIterator<TCollection>::distance_to(const IndexIterator<TCollection>& other) const {
+            assert(_collection == other._collection);
+            return other._index - _index;
+        }
 
-            void
-            advance(std::int64_t distance);
+        template <class TCollection>
+        inline
+        bool
+        IndexIterator<TCollection>::equal(const IndexIterator<TCollection>& other) const {
+            assert(_collection == other._collection);
+            return _index == other._index;
+        }
 
-            std::int64_t
-            distance_to(const IndexIterator<TCollection>& other) const;
+        template <class TCollection>
+        inline
+        typename ItemReferenceType<TCollection>::Type&
+        IndexIterator<TCollection>::dereference() const {
+            return (*_collection)[_index];
+        }
 
-            bool
-            equal(const IndexIterator<TCollection>& other) const;
-
-            typename ItemReferenceType<TCollection>::Type&
-            dereference() const;
-        public:
-            IndexIterator(const TCollection* collection, std::int64_t index);
-        };
+        template <class TCollection>
+        inline
+        IndexIterator<TCollection>::IndexIterator(
+            const TCollection* collection,
+            std::int64_t index
+        ) : _collection(collection),
+            _index(index) {
+        }
     }
 }
