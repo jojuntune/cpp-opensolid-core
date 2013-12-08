@@ -38,22 +38,6 @@ namespace opensolid
         return matrix.determinant() / 2.0;
     }
 
-    Point2d
-    Triangle2d::centroid() const {
-        return Point2d(
-            (vertex(0).vector() + vertex(1).vector() + vertex(2).vector()) / 3.0
-        );
-    }
-
-    CoordinateSystem2d
-    Triangle2d::coordinateSystem() const {
-        return CoordinateSystem2d(
-            vertex(0),
-            vertex(1) - vertex(0),
-            vertex(2) - vertex(0)
-        );
-    }
-
     Triangle2d
     Triangle2d::Unit() {
         return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
@@ -64,25 +48,9 @@ namespace opensolid
         return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
     }
 
-    Point3d
-    Triangle3d::centroid() const {
-        return Point3d(
-            (vertex(0).vector() + vertex(1).vector() + vertex(2).vector()) / 3.0
-        );
-    }
-
     Vector3d
     Triangle3d::normalVector() const {
         return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
-    }
-
-    PlanarCoordinateSystem3d
-    Triangle3d::coordinateSystem() const {
-        return PlanarCoordinateSystem3d(
-            vertex(0),
-            vertex(1) - vertex(0),
-            vertex(2) - vertex(0)
-        );
     }
 
     Plane3d

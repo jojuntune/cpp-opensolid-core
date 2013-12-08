@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/SpatialCollection.declarations.hpp>
 
 #include <OpenSolid/Core/SpatialCollection/FilteredCollection.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/MorphedCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/ScaledCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/TransformedCollection.declarations.hpp>
@@ -104,6 +105,12 @@ namespace opensolid
 
 namespace opensolid
 {
+    template <class TCollection>
+    struct IteratorType
+    {
+        typedef detail::IndexIterator<TCollection> Type;
+    };
+
     template <class TCollection>
     struct ItemType
     {

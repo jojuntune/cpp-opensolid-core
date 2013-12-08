@@ -169,4 +169,22 @@ public:
         TS_ASSERT((scaled.vertex(1) - Point2d(7, 3)).isZero());
         TS_ASSERT((scaled.vertex(2) - Point2d(5, 5)).isZero());
     }
+
+    void testVertices() {
+        Triangle3d triangle(Point3d(1, 1, -1), Point3d(3, 0, 2), Point3d(1, 2, 1));
+        auto hasPositiveZ = [] (const Point3d& point) {
+            return point.z() > Zero();
+        };
+        TS_ASSERT(triangle.vertices().any(hasPositiveZ));
+        TS_ASSERT(!triangle.vertices().all(hasPositiveZ));
+        TS_ASSERT_EQUALS(triangle.vertices().where(hasPositiveZ).size(), 2);
+    }
+
+    void testEdges() {
+        auto lengthAccumulator = [] (double lengthSoFar, const LineSegment2d& edge) {
+            return lengthSoFar + edge.length();
+        };
+        double circumference = Triangle2d::Unit().edges().fold(0.0, lengthAccumulator);
+        TS_ASSERT(circumference - (2.0 + sqrt(2.0)) == Zero());
+    }
 };

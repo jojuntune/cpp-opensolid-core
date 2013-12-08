@@ -71,7 +71,7 @@ namespace opensolid
 
         template <class TCollection>
         inline
-        typename ItemReferenceType<TCollection>::Type&
+        typename ItemReferenceType<TCollection>::Type
         IndexIterator<TCollection>::dereference() const {
             return (*_collection)[_index];
         }
@@ -83,6 +83,20 @@ namespace opensolid
             std::int64_t index
         ) : _collection(collection),
             _index(index) {
+        }
+
+        template <class TCollection>
+        inline
+        IndexIterator<TCollection>
+        IndexIterator<TCollection>::Begin(const TCollection* collection) {
+            return IndexIterator<TCollection>(collection, 0);
+        }
+
+        template <class TCollection>
+        inline
+        IndexIterator<TCollection>
+        IndexIterator<TCollection>::End(const TCollection* collection) {
+            return IndexIterator<TCollection>(collection, collection->size());
         }
     }
 }

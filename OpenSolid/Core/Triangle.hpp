@@ -29,16 +29,229 @@
 #include <OpenSolid/Core/Triangle.definitions.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
+
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions>
+        inline
+        TriangleVertices<iNumDimensions>::TriangleVertices(
+            const Triangle<iNumDimensions>& triangle
+        ) : _triangle(triangle) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Triangle<iNumDimensions>&
+        TriangleVertices<iNumDimensions>::triangle() const {
+            return _triangle;
+        }
+
+        template <int iNumDimensions>
+        inline
+        IndexIterator<TriangleVertices<iNumDimensions>>
+        TriangleVertices<iNumDimensions>::begin() const {
+            return IndexIterator<TriangleVertices<iNumDimensions>>::Begin(this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        IndexIterator<TriangleVertices<iNumDimensions>>
+        TriangleVertices<iNumDimensions>::end() const {
+            return IndexIterator<TriangleVertices<iNumDimensions>>::End(this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        TriangleVertices<iNumDimensions>::isEmpty() const {
+            return false;
+        }
+
+        template <int iNumDimensions>
+        inline
+        std::int64_t
+        TriangleVertices<iNumDimensions>::size() const {
+            return 3;
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        TriangleVertices<iNumDimensions>::bounds() const {
+            return triangle().bounds();
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>&
+        TriangleVertices<iNumDimensions>::operator[](std::int64_t index) const {
+            return triangle().vertex(index);
+        }
+
+        template <int iNumDimensions>
+        inline
+        TriangleEdges<iNumDimensions>::TriangleEdges(const Triangle<iNumDimensions>& triangle) :
+            _triangle(triangle) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Triangle<iNumDimensions>&
+        TriangleEdges<iNumDimensions>::triangle() const {
+            return _triangle;
+        }
+
+        template <int iNumDimensions>
+        inline
+        IndexIterator<TriangleEdges<iNumDimensions>>
+        TriangleEdges<iNumDimensions>::begin() const {
+            return IndexIterator<TriangleEdges<iNumDimensions>>::Begin(this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        IndexIterator<TriangleEdges<iNumDimensions>>
+        TriangleEdges<iNumDimensions>::end() const {
+            return IndexIterator<TriangleEdges<iNumDimensions>>::End(this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        TriangleEdges<iNumDimensions>::isEmpty() const {
+            return false;
+        }
+
+        template <int iNumDimensions>
+        inline
+        std::int64_t
+        TriangleEdges<iNumDimensions>::size() const {
+            return 3;
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        TriangleEdges<iNumDimensions>::bounds() const {
+            return triangle().bounds();
+        }
+
+        template <int iNumDimensions>
+        inline
+        LineSegment<iNumDimensions>
+        TriangleEdges<iNumDimensions>::operator[](std::int64_t index) const {
+            return triangle().edge(index);
+        }
+
+        template <int iNumDimensions>
+        const Triangle<iNumDimensions>&
+        TriangleBase<iNumDimensions>::derived() const {
+            return static_cast<const Triangle<iNumDimensions>&>(*this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        TriangleBase<iNumDimensions>::TriangleBase() {
+        }
+
+        template <int iNumDimensions>
+        inline
+        TriangleBase<iNumDimensions>::TriangleBase(
+            const Point<iNumDimensions>& firstVertex,
+            const Point<iNumDimensions>& secondVertex,
+            const Point<iNumDimensions>& thirdVertex
+        ) {
+            _vertices[0] = firstVertex;
+            _vertices[1] = secondVertex;
+            _vertices[2] = thirdVertex;
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>&
+        TriangleBase<iNumDimensions>::vertex(int index) const {
+            assert(index >= 0 && index < 3);
+            return _vertices[index];
+        }
+
+        template <int iNumDimensions>
+        inline
+        Point<iNumDimensions>&
+        TriangleBase<iNumDimensions>::vertex(int index) {
+            assert(index >= 0 && index < 3);
+            return _vertices[index];
+        }
+
+        template <int iNumDimensions>
+        TriangleVertices<iNumDimensions>
+        TriangleBase<iNumDimensions>::vertices() const {
+            return TriangleVertices<iNumDimensions>(derived());
+        }
+
+        template <int iNumDimensions>
+        Point<iNumDimensions>
+        TriangleBase<iNumDimensions>::centroid() const {
+            return Point<iNumDimensions>(
+                (vertex(0).vector() + vertex(1).vector() + vertex(2).vector()) / 3.0
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        LineSegment<iNumDimensions>
+        TriangleBase<iNumDimensions>::edge(int oppositeIndex) const {
+            assert(oppositeIndex >= 0 && oppositeIndex < 3);
+            return LineSegment<iNumDimensions>(
+                vertex((oppositeIndex + 1) % 3),
+                vertex((oppositeIndex + 2) % 3)
+            );
+        }
+
+        template <int iNumDimensions>
+        TriangleEdges<iNumDimensions>
+        TriangleBase<iNumDimensions>::edges() const {
+            return TriangleEdges<iNumDimensions>(derived());
+        }
+
+        template <int iNumDimensions>
+        CoordinateSystem<iNumDimensions, 2>
+        TriangleBase<iNumDimensions>::coordinateSystem() const {
+            return CoordinateSystem<iNumDimensions, 2>(
+                vertex(0),
+                vertex(1) - vertex(0),
+                vertex(2) - vertex(0)
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        TriangleBase<iNumDimensions>::bounds() const {
+            return vertex(0).hull(vertex(1)).hull(vertex(2));
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        TriangleBase<iNumDimensions>::operator==(const Triangle<iNumDimensions>& other) const {
+            return vertex(0) == other.vertex(0) &&
+                vertex(1) == other.vertex(1) &&
+                vertex(2) == other.vertex(2);
+        }
+    }
+
     inline
     Triangle2d::Triangle() {
     }
@@ -48,48 +261,7 @@ namespace opensolid
         const Point2d& firstVertex,
         const Point2d& secondVertex,
         const Point2d& thirdVertex
-    ) {
-        _vertices[0] = firstVertex;
-        _vertices[1] = secondVertex;
-        _vertices[2] = thirdVertex;
-    }
-
-    inline
-    const Point2d&
-    Triangle2d::vertex(int index) const {
-        assert(index >= 0 && index < 3);
-        return _vertices[index];
-    }
-
-    inline
-    Point2d&
-    Triangle2d::vertex(int index) {
-        assert(index >= 0 && index < 3);
-        return _vertices[index];
-    }
-
-    inline
-    LineSegment2d
-    Triangle2d::edge(int oppositeIndex) const {
-        assert(oppositeIndex >= 0 && oppositeIndex < 3);
-        return LineSegment2d(
-            vertex((oppositeIndex + 1) % 3),
-            vertex((oppositeIndex + 2) % 3)
-        );
-    }
-
-    inline
-    Box2d
-    Triangle2d::bounds() const {
-        return vertex(0).hull(vertex(1)).hull(vertex(2));
-    }
-
-    inline
-    bool
-    Triangle2d::operator==(const Triangle2d& other) const {
-        return vertex(0) == other.vertex(0) &&
-            vertex(1) == other.vertex(1) &&
-            vertex(2) == other.vertex(2);
+    ) : detail::TriangleBase<2>(firstVertex, secondVertex, thirdVertex) {
     }
 
     inline
@@ -101,48 +273,90 @@ namespace opensolid
         const Point3d& firstVertex,
         const Point3d& secondVertex,
         const Point3d& thirdVertex
-    ) {
-        _vertices[0] = firstVertex;
-        _vertices[1] = secondVertex;
-        _vertices[2] = thirdVertex;
+    ) : detail::TriangleBase<3>(firstVertex, secondVertex, thirdVertex) {
     }
 
+    template <int iNumDimensions>
     inline
-    const Point3d&
-    Triangle3d::vertex(int index) const {
-        assert(index >= 0 && index < 3);
-        return _vertices[index];
+    detail::TriangleVertices<iNumDimensions>
+    ScalingFunction<detail::TriangleVertices<iNumDimensions>>::operator()(
+        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
+        double scale
+    ) const {
+        return detail::scaled(triangleVertices.triangle(), scale).vertices();
     }
 
+    template <int iNumDimensions> template <class TVector>
     inline
-    Point3d&
-    Triangle3d::vertex(int index) {
-        assert(index >= 0 && index < 3);
-        return _vertices[index];
+    detail::TriangleVertices<iNumDimensions>
+    TranslationFunction<detail::TriangleVertices<iNumDimensions>>::operator()(
+        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
+        const EigenBase<TVector>& vector
+    ) const {
+        return detail::translated(triangleVertices.triangle(), vector.derived()).vertices();
     }
 
+    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
     inline
-    LineSegment3d
-    Triangle3d::edge(int oppositeIndex) const {
-        assert(oppositeIndex >= 0 && oppositeIndex < 3);
-        return LineSegment3d(
-            vertex((oppositeIndex + 1) % 3),
-            vertex((oppositeIndex + 2) % 3)
-        );
+    detail::TriangleVertices<iNumResultDimensions>
+    TransformationFunction<
+        detail::TriangleVertices<iNumDimensions>,
+        iNumResultDimensions
+    >::operator()(
+        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return detail::transformed(triangleVertices.triangle(), matrix.derived()).vertices();
     }
 
+    template <int iNumDimensions, int iNumResultDimensions>
     inline
-    Box3d
-    Triangle3d::bounds() const {
-        return vertex(0).hull(vertex(1)).hull(vertex(2));
+    detail::TriangleVertices<iNumResultDimensions>
+    MorphingFunction<detail::TriangleVertices<iNumDimensions>, iNumResultDimensions>::operator()(
+        const detail::TriangleVertices<iNumDimensions>& triangleVertices,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        return detail::morphed(triangleVertices.triangle(), morphingExpression).vertices();
     }
 
+    template <int iNumDimensions>
     inline
-    bool
-    Triangle3d::operator==(const Triangle3d& other) const {
-        return vertex(0) == other.vertex(0) &&
-            vertex(1) == other.vertex(1) &&
-            vertex(2) == other.vertex(2);
+    detail::TriangleEdges<iNumDimensions>
+    ScalingFunction<detail::TriangleEdges<iNumDimensions>>::operator()(
+        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
+        double scale
+    ) const {
+        return detail::scaled(triangleEdges.triangle(), scale).edges();
+    }
+
+    template <int iNumDimensions> template <class TVector>
+    inline
+    detail::TriangleEdges<iNumDimensions>
+    TranslationFunction<detail::TriangleEdges<iNumDimensions>>::operator()(
+        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
+        const EigenBase<TVector>& vector
+    ) const {
+        return detail::translated(triangleEdges.triangle(), vector.derived()).edges();
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    inline
+    detail::TriangleEdges<iNumResultDimensions>
+    TransformationFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>::operator()(
+        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        return detail::transformed(triangleEdges.triangle(), matrix.derived()).edges();
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    inline
+    detail::TriangleEdges<iNumResultDimensions>
+    MorphingFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>::operator()(
+        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
+        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
+    ) const {
+        return detail::morphed(triangleEdges.triangle(), morphingExpression).edges();
     }
 
     template <int iNumDimensions>

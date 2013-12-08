@@ -64,10 +64,18 @@ namespace opensolid
             bool
             equal(const IndexIterator<TCollection>& other) const;
 
-            typename ItemReferenceType<TCollection>::Type&
+            typename ItemReferenceType<TCollection>::Type
             dereference() const;
-        public:
+
             IndexIterator(const TCollection* collection, std::int64_t index);
+        public:
+            static
+            IndexIterator
+            Begin(const TCollection* collection);
+
+            static
+            IndexIterator
+            End(const TCollection* collection);
         };
     }
 }
