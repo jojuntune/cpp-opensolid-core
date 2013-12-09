@@ -34,6 +34,7 @@
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
@@ -59,6 +60,9 @@ namespace opensolid
 
         Point<3>&
         vertex(int index);
+
+        detail::SimplexVertices<Tetrahedron3d, 4>
+        vertices() const;
 
         OPENSOLID_CORE_EXPORT
         double

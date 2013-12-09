@@ -197,4 +197,11 @@ public:
         double circumference = Triangle2d::Unit().edges().fold(0.0, lengthAccumulator);
         TS_ASSERT(circumference - (2.0 + sqrt(2.0)) == Zero());
     }
+
+    void testTetrahedronVertices() {
+        auto pointIsOrigin = [] (const Point3d& point) {
+            return point.isOrigin();
+        };
+        TS_ASSERT_EQUALS(Tetrahedron3d::Unit().vertices().where(pointIsOrigin).size(), 1);
+    }
 };

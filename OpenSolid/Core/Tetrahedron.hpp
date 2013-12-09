@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/SpatialCollection/SimplexVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
@@ -66,6 +67,12 @@ namespace opensolid
     Tetrahedron3d::vertex(int index) {
         assert(index >= 0 && index < 4);
         return _vertices[index];
+    }
+
+    inline
+    detail::SimplexVertices<Tetrahedron3d, 4>
+    Tetrahedron3d::vertices() const {
+        return detail::SimplexVertices<Tetrahedron3d, 4>(*this);
     }
 
     inline
