@@ -34,6 +34,7 @@
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/BoxVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <ostream>
@@ -104,10 +105,16 @@ namespace opensolid
         isEmpty() const;
 
         Point<iNumDimensions>
-        minPoint() const;
+        minVertex() const;
         
         Point<iNumDimensions>
-        maxPoint() const;
+        maxVertex() const;
+
+        Point<iNumDimensions>
+        vertex(std::int64_t index) const;
+
+        detail::BoxVertices<iNumDimensions>
+        vertices() const;
         
         Point<iNumDimensions>
         midPoint() const;
