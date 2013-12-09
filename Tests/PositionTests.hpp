@@ -116,4 +116,13 @@ public:
         TS_ASSERT(box.vertex(0) == box.minVertex());
         TS_ASSERT(box.vertex(7) == box.maxVertex());
     }
+
+    void testBoxInterpolation() {
+        Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+        TS_ASSERT((box.interpolated(0.5, 0.5, 0.5) - Point3d(1.5, 3.5, 5.5)).isZero());
+        TS_ASSERT((box.interpolated(0.0, 0.0, 0.0) - Point3d(1, 3, 5)).isZero());
+        Box3d wholeBox = box.interpolated(Interval::Unit(), Interval::Unit(), Interval::Unit());
+        TS_ASSERT(wholeBox.contains(box));
+        TS_ASSERT(box.contains(wholeBox));
+    }
 };
