@@ -28,6 +28,9 @@
 
 #include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
 
+#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+
 namespace opensolid
 {
     namespace detail
