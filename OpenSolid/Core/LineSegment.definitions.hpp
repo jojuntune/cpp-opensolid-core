@@ -116,7 +116,8 @@ namespace opensolid
         double _precision;
         double _startHeight;
         double _endHeight;
-    public:
+        int _type;
+
         enum IntersectionType
         {
             NO_INTERSECTION = 1,
@@ -126,9 +127,11 @@ namespace opensolid
             COINCIDENT = 16,
             CROSSING = 32,
             CONTACT_START = 64,
-            CONTACT_END = 128
+            CONTACT_END = 128,
+            UPWARDS = 256,
+            DOWNWARDS = 512
         };
-
+    public:
         OPENSOLID_CORE_EXPORT
         LineSegmentPlaneIntersection3d(
             const LineSegment3d& lineSegment,
@@ -145,9 +148,14 @@ namespace opensolid
         double
         precision() const;
 
-        OPENSOLID_CORE_EXPORT
-        int
-        type() const;
+        bool
+        exists() const;
+
+        bool
+        isPoint() const;
+
+        bool
+        isCoincident() const;
 
         OPENSOLID_CORE_EXPORT
         Point<3>

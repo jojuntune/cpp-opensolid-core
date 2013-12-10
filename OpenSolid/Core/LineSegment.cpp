@@ -36,75 +36,51 @@ namespace opensolid
         _plane(plane),
         _precision(precision),
         _startHeight(lineSegment.startVertex().distanceTo(plane)),
-        _endHeight(lineSegment.endVertex().distanceTo(plane)) {
-    }
+        _endHeight(lineSegment.endVertex().distanceTo(plane)),
+        _type(0) {
 
-    int
-    LineSegmentPlaneIntersection3d::type() const {
         if (_startHeight < Zero(_precision)) {
             if (_endHeight < Zero(_precision)) {
-                return NO_INTERSECTION | BELOW;
+                _type = NO_INTERSECTION | BELOW;
             } else if (_endHeight > Zero(_precision)) {
-                return INTERSECTION | CROSSING;
+                _type = INTERSECTION | CROSSING | UPWARDS;
             } else {
-                return INTERSECTION | BELOW | CONTACT_END;
+                _type = INTERSECTION | BELOW | UPWARDS | CONTACT_END;
             }
         } else if (_startHeight > Zero(_precision)) {
             if (_endHeight < Zero(_precision)) {
-                return INTERSECTION | CROSSING;
+                _type = INTERSECTION | CROSSING | DOWNWARDS;
             } else if (_endHeight > Zero(_precision)) {
-                return NO_INTERSECTION | ABOVE;
+                _type = NO_INTERSECTION | ABOVE;
             } else {
-                return INTERSECTION | ABOVE | CONTACT_END;
+                _type = INTERSECTION | ABOVE | DOWNWARDS | CONTACT_END;
             }
         } else {
             if (_endHeight < Zero(_precision)) {
-                return INTERSECTION | BELOW | CONTACT_START;
+                _type = INTERSECTION | DOWNWARDS | BELOW | CONTACT_START;
             } else if (_endHeight > Zero(_precision)) {
-                return INTERSECTION | ABOVE | CONTACT_START;
+                _type = INTERSECTION | UPWARDS | ABOVE | CONTACT_START;
             } else {
-                return INTERSECTION | COINCIDENT;
+                _type = INTERSECTION | COINCIDENT;
             }
         }
     }
 
     Point3d
     LineSegmentPlaneIntersection3d::point() const {
-        if (_startHeight < Zero(_precision)) {
-            if (_endHeight < Zero(_precision)) {
-                assert(false);
-                return Point3d();
-            } else if (_endHeight > Zero(_precision)) {
-                return Point3d(
-                    (_startHeight * lineSegment().endVertex().vector() -
-                        _endHeight * lineSegment().startVertex().vector()) /
-                            (_startHeight - _endHeight)
-                );
-            } else {
-                return lineSegment().endVertex();
-            }
-        } else if (_startHeight > Zero(_precision)) {
-            if (_endHeight < Zero(_precision)) {
-                return Point3d(
-                    (_startHeight * lineSegment().endVertex().vector() -
-                        _endHeight * lineSegment().startVertex().vector()) /
-                            (_startHeight - _endHeight)
-                );
-            } else if (_endHeight > Zero(_precision)) {
-                assert(false);
-                return Point3d();
-            } else {
-                return lineSegment().endVertex();
-            }
+        if (_type & CROSSING) {
+            const Vector3d& startVector = lineSegment().startVertex().vector();
+            const Vector3d& endVector = lineSegment().endVertex().vector();
+            return Point3d(
+                (_startHeight * endVector - _endHeight * startVector) / (_startHeight - _endHeight)
+            );
+        } else if (_type & CONTACT_START) {
+            return lineSegment().startVertex();
+        } else if (_type & CONTACT_END) {
+            return lineSegment().endVertex();
         } else {
-            if (_endHeight < Zero(_precision)) {
-                return lineSegment().startVertex();
-            } else if (_endHeight > Zero(_precision)) {
-                return lineSegment().startVertex();
-            } else {
-                assert(false);
-                return Point3d();
-            }
+            assert(false);
+            return Point3d();
         }
     }
 }

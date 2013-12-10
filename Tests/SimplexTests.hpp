@@ -226,31 +226,20 @@ public:
     }
 
     void testLineSegmentPlaneIntersection() {
-        Plane3d horizontalPlane(Point3d(0, 0, 1), Vector3d::UnitZ());
+        Plane3d plane(Point3d(0, 0, 1), Vector3d::UnitZ());
 
-        LineSegment3d aboveSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
-        LineSegment3d coincidentSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));
-        LineSegment3d crossingSegment(Point3d::Origin(), Point3d(2, 2, 2));
+        LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
+        LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));
+        LineSegment3d thirdSegment(Point3d::Origin(), Point3d(2, 2, 2));
 
-        TS_ASSERT_EQUALS(
-            aboveSegment.intersection(horizontalPlane).type(),
-            LineSegmentPlaneIntersection3d::NO_INTERSECTION |
-                LineSegmentPlaneIntersection3d::ABOVE
-        );
+        auto firstIntersection = firstSegment.intersection(plane);
+        auto secondIntersection = secondSegment.intersection(plane);
+        auto thirdIntersection = thirdSegment.intersection(plane);
 
-        TS_ASSERT_EQUALS(
-            coincidentSegment.intersection(horizontalPlane).type(),
-            LineSegmentPlaneIntersection3d::INTERSECTION |
-                LineSegmentPlaneIntersection3d::COINCIDENT
-        );
-
-        auto crossingIntersection = crossingSegment.intersection(horizontalPlane);
-        TS_ASSERT_EQUALS(
-            crossingIntersection.type(),
-            LineSegmentPlaneIntersection3d::INTERSECTION |
-                LineSegmentPlaneIntersection3d::CROSSING
-        );
-        Point3d intersectionPoint = crossingIntersection.point();
-        TS_ASSERT((intersectionPoint - Point3d(1, 1, 1)).isZero());
+        TS_ASSERT(!firstIntersection.exists());
+        TS_ASSERT(secondIntersection.isCoincident());
+        
+        TS_ASSERT(thirdIntersection.isPoint());
+        TS_ASSERT((thirdIntersection.point() - Point3d(1, 1, 1)).isZero());
     }
 };

@@ -190,6 +190,24 @@ namespace opensolid
         return _precision;
     }
 
+    inline
+    bool
+    LineSegmentPlaneIntersection3d::exists() const {
+        return (_type & INTERSECTION) != 0;
+    }
+
+    inline
+    bool
+    LineSegmentPlaneIntersection3d::isPoint() const {
+        return (_type & (CROSSING | CONTACT_START | CONTACT_END)) != 0;
+    }
+
+    inline
+    bool
+    LineSegmentPlaneIntersection3d::isCoincident() const {
+        return (_type & COINCIDENT) != 0;
+    }
+
     template <int iNumDimensions>
     inline
     LineSegment<iNumDimensions>
