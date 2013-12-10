@@ -168,7 +168,7 @@ namespace opensolid
         y();
 
         double
-        distanceTo(const Axis<2>& axis);
+        distanceTo(const Axis<2>& axis) const;
 
         static Point
         Polar(double radius, double angle);
@@ -210,7 +210,7 @@ namespace opensolid
         z();
 
         double
-        distanceTo(const Plane3d& plane);
+        distanceTo(const Plane3d& plane) const;
 
         static Point
         Cylindrical(double radius, double angle, double height);
