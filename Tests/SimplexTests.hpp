@@ -204,4 +204,24 @@ public:
         };
         TS_ASSERT_EQUALS(Tetrahedron3d::Unit().vertices().where(pointIsOrigin).size(), 1);
     }
+
+    void testTetrahedronEdges() {
+        double totalLength = Tetrahedron3d::Unit().edges().fold(
+            0.0,
+            [] (double lengthSoFar, const LineSegment3d& edge) {
+                return lengthSoFar + edge.length();
+            }
+        );
+        TS_ASSERT(totalLength - (3 + 3 * sqrt(2.0)) == Zero());
+    }
+
+    void testTetrahedronFaces() {
+        double totalArea = Tetrahedron3d::Unit().faces().fold(
+            0.0,
+            [] (double areaSoFar, const Triangle3d& face) {
+                return areaSoFar + face.area();
+            }
+        );
+        TS_ASSERT(totalArea - (1.5 + 3 / (2 * sqrt(3.0))) == Zero());
+    }
 };

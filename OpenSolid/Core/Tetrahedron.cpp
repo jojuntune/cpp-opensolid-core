@@ -29,6 +29,44 @@
 
 namespace opensolid
 {
+    LineSegment3d
+    Tetrahedron3d::edge(int index) const {
+        switch (index) {
+            case 0:
+                return LineSegment3d(vertex(0), vertex(1));
+            case 1:
+                return LineSegment3d(vertex(1), vertex(2));
+            case 2:
+                return LineSegment3d(vertex(0), vertex(2));
+            case 3:
+                return LineSegment3d(vertex(2), vertex(3));
+            case 4:
+                return LineSegment3d(vertex(0), vertex(3));
+            case 5:
+                return LineSegment3d(vertex(3), vertex(1));
+            default:
+                assert(false);
+                return LineSegment3d();
+        }
+    }
+
+    Triangle3d
+    Tetrahedron3d::face(int oppositeIndex) const {
+        switch (oppositeIndex) {
+            case 0:
+                return Triangle3d(vertex(1), vertex(2), vertex(3));
+            case 1:
+                return Triangle3d(vertex(0), vertex(3), vertex(2));
+            case 2:
+                return Triangle3d(vertex(3), vertex(0), vertex(1));
+            case 3:
+                return Triangle3d(vertex(2), vertex(1), vertex(0));
+            default:
+                assert(false);
+                return Triangle3d();
+        }
+    }
+
     double
     Tetrahedron3d::volume() const {
         Matrix3d matrix;
@@ -44,22 +82,6 @@ namespace opensolid
             (vertex(0).vector() + vertex(1).vector() +
                 vertex(2).vector() + vertex(3).vector()) / 4.0
         );
-    }
-
-    Triangle3d
-    Tetrahedron3d::face(int oppositeIndex) const {
-        if (oppositeIndex == 0) {
-            return Triangle3d(vertex(1), vertex(2), vertex(3));
-        } else if (oppositeIndex == 1) {
-            return Triangle3d(vertex(0), vertex(3), vertex(2));
-        } else if (oppositeIndex == 2) {
-            return Triangle3d(vertex(3), vertex(0), vertex(1));
-        } else if (oppositeIndex == 3) {
-            return Triangle3d(vertex(2), vertex(1), vertex(0));
-        } else {
-            assert(false);
-            return Triangle3d();
-        }
     }
 
     CoordinateSystem3d
@@ -80,6 +102,70 @@ namespace opensolid
             Point3d(0, 1, 0),
             Point3d(0, 0, 1)
         );
+    }
+
+    detail::TetrahedronEdges
+    ScalingFunction<detail::TetrahedronEdges>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        double scale
+    ) const {
+        return detail::scaled(tetrahedronEdges.tetrahedron(), scale).edges();
+    }
+
+    detail::TetrahedronEdges
+    TranslationFunction<detail::TetrahedronEdges>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        const Vector3d& vector
+    ) const {
+        return detail::translated(tetrahedronEdges.tetrahedron(), vector).edges();
+    }
+
+    detail::TetrahedronEdges
+    TransformationFunction<detail::TetrahedronEdges, 3>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        const Matrix3d& matrix
+    ) const {
+        return detail::transformed(tetrahedronEdges.tetrahedron(), matrix).edges();
+    }
+
+    detail::TetrahedronEdges
+    MorphingFunction<detail::TetrahedronEdges, 3>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        const ParametricExpression<3, 3>& morphingExpression
+    ) const {
+        return detail::morphed(tetrahedronEdges.tetrahedron(), morphingExpression).edges();
+    }
+
+    detail::TetrahedronFaces
+    ScalingFunction<detail::TetrahedronFaces>::operator()(
+        const detail::TetrahedronFaces& tetrahedronFaces,
+        double scale
+    ) const {
+        return detail::scaled(tetrahedronFaces.tetrahedron(), scale).faces();
+    }
+
+    detail::TetrahedronFaces
+    TranslationFunction<detail::TetrahedronFaces>::operator()(
+        const detail::TetrahedronFaces& tetrahedronFaces,
+        const Vector3d& vector
+    ) const {
+        return detail::translated(tetrahedronFaces.tetrahedron(), vector).faces();
+    }
+
+    detail::TetrahedronFaces
+    TransformationFunction<detail::TetrahedronFaces, 3>::operator()(
+        const detail::TetrahedronFaces& tetrahedronFaces,
+        const Matrix3d& matrix
+    ) const {
+        return detail::transformed(tetrahedronFaces.tetrahedron(), matrix).faces();
+    }
+
+    detail::TetrahedronFaces
+    MorphingFunction<detail::TetrahedronFaces, 3>::operator()(
+        const detail::TetrahedronFaces& tetrahedronFaces,
+        const ParametricExpression<3, 3>& morphingExpression
+    ) const {
+        return detail::morphed(tetrahedronFaces.tetrahedron(), morphingExpression).faces();
     }
 
     Tetrahedron3d
