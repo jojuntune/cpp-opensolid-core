@@ -215,10 +215,28 @@ namespace opensolid
         typedef detail::TriangleEdges<iNumResultDimensions> Type;
     };
 
+    template <int iNumDimensions>
+    struct TransformedType<detail::TriangleEdges<iNumDimensions>, 1> :
+        public TransformedType<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
+    {
+    };
+
     template <int iNumDimensions, int iNumResultDimensions>
     struct MorphedType<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>
     {
         typedef detail::TriangleEdges<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct MorphedType<detail::TriangleEdges<iNumDimensions>, 1> :
+        public MorphedType<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<detail::TriangleEdges<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
     };
 
     template <int iNumDimensions>
@@ -253,6 +271,12 @@ namespace opensolid
         ) const;
     };
 
+    template <int iNumDimensions>
+    struct TransformationFunction<detail::TriangleEdges<iNumDimensions>, 1> :
+        public TransformationFunction<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
+    {
+    };
+
     template <int iNumDimensions, int iNumResultDimensions>
     struct MorphingFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>
     {
@@ -264,9 +288,9 @@ namespace opensolid
     };
 
     template <int iNumDimensions>
-    struct BoundsType<detail::TriangleEdges<iNumDimensions>>
+    struct MorphingFunction<detail::TriangleEdges<iNumDimensions>, 1> :
+        public MorphingFunction<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
     {
-        typedef Box<iNumDimensions> Type;
     };
 
     template <int iNumDimensions>
