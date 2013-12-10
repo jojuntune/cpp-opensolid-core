@@ -35,6 +35,8 @@ namespace opensolid
     template <int iNumDimensions>
     class LineSegment;
 
+    class LineSegmentPlaneIntersection3d;
+
     template <int iNumDimensions>
     struct NumDimensions<LineSegment<iNumDimensions>>
     {
