@@ -33,16 +33,20 @@
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
+    inline
     LineSegment<iNumDimensions>::LineSegment() {
     }
 
     template <int iNumDimensions>
+    inline
     LineSegment<iNumDimensions>::LineSegment(
         const Point<iNumDimensions>& startVertex,
         const Point<iNumDimensions>& endVertex
@@ -52,30 +56,35 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
     const Point<iNumDimensions>&
     LineSegment<iNumDimensions>::startVertex() const {
         return _vertices[0];
     }
 
     template <int iNumDimensions>
+    inline
     Point<iNumDimensions>&
     LineSegment<iNumDimensions>::startVertex() {
         return _vertices[0];
     }
 
     template <int iNumDimensions>
+    inline
     const Point<iNumDimensions>&
     LineSegment<iNumDimensions>::endVertex() const {
         return _vertices[1];
     }
 
     template <int iNumDimensions>
+    inline
     Point<iNumDimensions>&
     LineSegment<iNumDimensions>::endVertex() {
         return _vertices[1];
     }
 
     template <int iNumDimensions>
+    inline
     const Point<iNumDimensions>&
     LineSegment<iNumDimensions>::vertex(std::int64_t index) const {
         assert(index == 0 || index == 1);
@@ -83,6 +92,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
     Point<iNumDimensions>&
     LineSegment<iNumDimensions>::vertex(std::int64_t index) {
         assert(index == 0 || index == 1);
@@ -90,36 +100,42 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
     detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
     LineSegment<iNumDimensions>::vertices() const {
         return detail::SimplexVertices<LineSegment<iNumDimensions>, 2>(*this);
     }
 
     template <int iNumDimensions>
+    inline
     double
     LineSegment<iNumDimensions>::length() const {
         return (startVertex() - endVertex()).norm();
     }
 
     template <int iNumDimensions>
+    inline
     double
     LineSegment<iNumDimensions>::squaredLength() const {
         return (startVertex() - endVertex()).squaredNorm();
     }
 
     template<int iNumDimensions>
+    inline
     Matrix<double, iNumDimensions, 1>
     LineSegment<iNumDimensions>::vector() const {
         return endVertex() - startVertex();
     }
 
     template<int iNumDimensions>
+    inline
     Matrix<double, iNumDimensions, 1>
     LineSegment<iNumDimensions>::normalVector() const {
         return (endVertex() - startVertex()).unitOrthogonal();
     }
 
     template <int iNumDimensions>
+    inline
     CoordinateSystem<iNumDimensions, 1>
     LineSegment<iNumDimensions>::coordinateSystem() const {
         return CoordinateSystem<iNumDimensions, 1>(
@@ -129,24 +145,53 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
     Axis<iNumDimensions>
     LineSegment<iNumDimensions>::axis() const {
         return Axis<iNumDimensions>(startVertex(), (endVertex() - startVertex()).normalized());
     }
 
     template <int iNumDimensions>
+    inline
     Box<iNumDimensions>
     LineSegment<iNumDimensions>::bounds() const {
         return startVertex().hull(endVertex());
     }
 
     template <int iNumDimensions>
+    inline
     bool
     LineSegment<iNumDimensions>::operator==(const LineSegment<iNumDimensions>& other) const {
         return startVertex() == other.startVertex() && endVertex() == other.endVertex();
     }
 
     template <int iNumDimensions>
+    inline
+    LineSegmentPlaneIntersection3d
+    LineSegment<iNumDimensions>::intersection(const Plane3d& plane, double precision) const {
+        return LineSegmentPlaneIntersection3d(*this, plane, precision);
+    }
+
+    inline
+    const LineSegment3d&
+    LineSegmentPlaneIntersection3d::lineSegment() const {
+        return _lineSegment;
+    }
+
+    inline
+    const Plane3d&
+    LineSegmentPlaneIntersection3d::plane() const {
+        return _plane;
+    }
+
+    inline
+    double
+    LineSegmentPlaneIntersection3d::precision() const {
+        return _precision;
+    }
+
+    template <int iNumDimensions>
+    inline
     LineSegment<iNumDimensions>
     ScalingFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
@@ -159,6 +204,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions> template <class TVector>
+    inline
     LineSegment<iNumDimensions>
     TranslationFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
@@ -171,6 +217,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    inline
     LineSegment<iNumResultDimensions>
     TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
@@ -183,6 +230,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
+    inline
     LineSegment<iNumResultDimensions>
     MorphingFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
@@ -195,6 +243,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
     bool
     EqualityFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& firstLineSegment,

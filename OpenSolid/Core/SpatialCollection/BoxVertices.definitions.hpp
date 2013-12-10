@@ -26,38 +26,93 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/BoxVertices.declarations.hpp>
+
+#include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+
+namespace opensolid
+{
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class BoxVertices :
+            public SpatialCollection<BoxVertices<iNumDimensions>>
+        {
+        private:
+            Box<iNumDimensions> _box;
+        public:
+            BoxVertices(const Box<iNumDimensions>& box);
+
+            const Box<iNumDimensions>&
+            box() const;
+
+            IndexIterator<BoxVertices<iNumDimensions>>
+            begin() const;
+
+            IndexIterator<BoxVertices<iNumDimensions>>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            Point<iNumDimensions>
+            operator[](std::int64_t index) const;
+        };
+    }
+}
+
+////////// Specializations //////////
 
 namespace opensolid
 {
     template <int iNumDimensions>
-    class LineSegment;
-
-    class LineSegmentPlaneIntersection3d;
-
-    template <int iNumDimensions>
-    struct NumDimensions<LineSegment<iNumDimensions>>
+    struct ScalingFunction<detail::BoxVertices<iNumDimensions>>
     {
-        static const int Value = iNumDimensions;
-    };
-    
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef LineSegment<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef LineSegment<iNumResultDimensions> Type;
+        detail::BoxVertices<iNumDimensions>
+        operator()(
+            const detail::BoxVertices<iNumDimensions>& boxVertices,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
-    struct BoundsType<LineSegment<iNumDimensions>>
+    struct TranslationFunction<detail::BoxVertices<iNumDimensions>>
     {
-        typedef Box<iNumDimensions> Type;
+        template <class TVector>
+        detail::BoxVertices<iNumDimensions>
+        operator()(
+            const detail::BoxVertices<iNumDimensions>& boxVertices,
+            const EigenBase<TVector>& vector
+        ) const;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<detail::BoxVertices<iNumDimensions>, iNumResultDimensions> :
+        public TransformationFunction<
+            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphingFunction<detail::BoxVertices<iNumDimensions>, iNumResultDimensions> :
+        public MorphingFunction<
+            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
+            iNumResultDimensions
+        >
+    {
+    };
+
+    template <int iNumDimensions>
+    struct BoundsFunction<detail::BoxVertices<iNumDimensions>>
+    {
+        const Box<iNumDimensions>&
+        operator()(const detail::BoxVertices<iNumDimensions>& boxVertices) const;
     };
 }

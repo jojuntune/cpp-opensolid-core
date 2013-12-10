@@ -92,4 +92,37 @@ public:
         Plane3d plane3d(Point3d(0, 0, 1), Vector3d(-1, -1, 1).normalized());
         TS_ASSERT(point3d.distanceTo(plane3d) + 5.0 / sqrt(3.0) == Zero());
     }
+
+    void testboxVertices() {
+        Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+        auto pointIsContained = [&box] (const Point3d& point) {
+            return box.contains(point);
+        };
+        auto pointIsStrictlyContained = [&box] (const Point3d& point) {
+            return box.strictlyContains(point);
+        };
+        TS_ASSERT(box.vertices().all(pointIsContained));
+        TS_ASSERT(!box.vertices().any(pointIsStrictlyContained));
+
+        Box3d computedBox = box.vertices().fold(
+            Box3d(),
+            [] (const Box3d& boxSoFar, const Point3d& point) {
+                return boxSoFar.hull(point);
+            }
+        );
+        TS_ASSERT(computedBox.contains(box));
+        TS_ASSERT(box.contains(computedBox));
+
+        TS_ASSERT(box.vertex(0) == box.minVertex());
+        TS_ASSERT(box.vertex(7) == box.maxVertex());
+    }
+
+    void testBoxInterpolation() {
+        Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+        TS_ASSERT((box.interpolated(0.5, 0.5, 0.5) - Point3d(1.5, 3.5, 5.5)).isZero());
+        TS_ASSERT((box.interpolated(0.0, 0.0, 0.0) - Point3d(1, 3, 5)).isZero());
+        Box3d wholeBox = box.interpolated(Interval::Unit(), Interval::Unit(), Interval::Unit());
+        TS_ASSERT(wholeBox.contains(box));
+        TS_ASSERT(box.contains(wholeBox));
+    }
 };

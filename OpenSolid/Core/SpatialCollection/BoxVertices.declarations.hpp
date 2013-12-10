@@ -26,37 +26,67 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class LineSegment;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class BoxVertices;
+    }
 
-    class LineSegmentPlaneIntersection3d;
-
     template <int iNumDimensions>
-    struct NumDimensions<LineSegment<iNumDimensions>>
+    struct NumDimensions<detail::BoxVertices<iNumDimensions>>
     {
         static const int Value = iNumDimensions;
     };
-    
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef LineSegment<iNumResultDimensions> Type;
-    };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
+    template <int iNumDimensions>
+    struct ItemType<detail::BoxVertices<iNumDimensions>>
     {
-        typedef LineSegment<iNumResultDimensions> Type;
+        typedef Point<iNumDimensions> Type;
     };
 
     template <int iNumDimensions>
-    struct BoundsType<LineSegment<iNumDimensions>>
+    struct ItemReferenceType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ScaledType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef detail::BoxVertices<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct TranslatedType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef detail::BoxVertices<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef typename TransformedType<
+            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef typename MorphedType<
+            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<detail::BoxVertices<iNumDimensions>>
     {
         typedef Box<iNumDimensions> Type;
     };

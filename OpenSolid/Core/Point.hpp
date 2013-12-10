@@ -220,7 +220,7 @@ namespace opensolid
 
     inline
     double
-    Point2d::distanceTo(const Axis<2>& axis) {
+    Point2d::distanceTo(const Axis<2>& axis) const {
         Vector2d normalVector(-axis.directionVector().y(), axis.directionVector().x());
         return (*this - axis.originPoint()).dot(normalVector);
     }
@@ -284,7 +284,7 @@ namespace opensolid
 
     inline
     double
-    Point3d::distanceTo(const Plane3d& plane) {
+    Point3d::distanceTo(const Plane3d& plane) const {
         return (*this - plane.originPoint()).dot(plane.normalVector());
     }
 

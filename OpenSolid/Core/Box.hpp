@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/SpatialCollection/BoxVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
@@ -166,15 +167,34 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     Point<iNumDimensions>
-    Box<iNumDimensions>::minPoint() const {
+    Box<iNumDimensions>::minVertex() const {
         return Point<iNumDimensions>(vector().cwiseLower());
     }
     
     template <int iNumDimensions>
     inline
     Point<iNumDimensions>
-    Box<iNumDimensions>::maxPoint() const {
+    Box<iNumDimensions>::maxVertex() const {
         return Point<iNumDimensions>(vector().cwiseUpper());
+    }
+
+    template <int iNumDimensions>
+    inline
+    Point<iNumDimensions>
+    Box<iNumDimensions>::vertex(std::int64_t index) const {
+        assert(index >= 0 && index < 8);
+        return Point<iNumDimensions>(
+            index & 1 ? x().upperBound() : x().lowerBound(),
+            index & 2 ? y().upperBound() : y().lowerBound(),
+            index & 4 ? z().upperBound() : z().lowerBound()
+        );
+    }
+
+    template <int iNumDimensions>
+    inline
+    detail::BoxVertices<iNumDimensions>
+    Box<iNumDimensions>::vertices() const {
+        return detail::BoxVertices<iNumDimensions>(*this);
     }
     
     template <int iNumDimensions>
@@ -202,7 +222,7 @@ namespace opensolid
     inline
     Point<iNumDimensions>
     Box<iNumDimensions>::interpolated(double xValue, double yValue) const {
-        return minPoint() +
+        return minVertex() +
             Vector2d(xValue * x().width(), yValue * y().width());
     }
 
@@ -210,7 +230,7 @@ namespace opensolid
     inline
     Point<iNumDimensions>
     Box<iNumDimensions>::interpolated(double xValue, double yValue, double zValue) const {
-        return minPoint() +
+        return minVertex() +
             Vector3d(xValue * x().width(), yValue * y().width(), zValue * z().width());
     }
 
@@ -218,7 +238,7 @@ namespace opensolid
     inline
     Box<iNumDimensions>
     Box<iNumDimensions>::interpolated(Interval xInterval, Interval yInterval) const {
-        return minPoint() +
+        return minVertex() +
             Vector2I(xInterval * x().width(), yInterval * y().width());
     }
 
@@ -230,7 +250,7 @@ namespace opensolid
         Interval yInterval,
         Interval zInterval
     ) const {
-        return minPoint() +
+        return minVertex() +
             Vector3I(xInterval * x().width(), yInterval * y().width(), zInterval * z().width());
     }
 

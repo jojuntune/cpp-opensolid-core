@@ -68,11 +68,11 @@ void pointExamples() {
 void boxExamples() {
     Box2d box = Point2d(1, 0).hull(Point2d(2, 1)).hull(Point2d(1, 2));
 
-    Point2d minPoint = box.minPoint();
-    assert((minPoint - Point2d(1, 0)).isZero());
+    Point2d minVertex = box.minVertex();
+    assert((minVertex - Point2d(1, 0)).isZero());
 
-    Point2d maxPoint = box.maxPoint();
-    assert((maxPoint - Point2d(2, 2)).isZero());
+    Point2d maxVertex = box.maxVertex();
+    assert((maxVertex - Point2d(2, 2)).isZero());
 
     assert(box.contains(Point2d(2, 0)));
     assert(!box.contains(Point2d::Origin()));
@@ -131,7 +131,7 @@ void lineSegmentExamples() {
     Axis2d axis = segment.axis();
     Point2d axisOrigin = axis.originPoint();
     Vector2d axisDirection = axis.directionVector();
-    assert((axisOrigin - segment.startPoint()).isZero());
+    assert((axisOrigin - segment.startVertex()).isZero());
     assert((axisDirection - segment.vector().normalized()).isZero());
 }
 
