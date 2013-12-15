@@ -39,6 +39,8 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.hpp>
 #include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.hpp>
 
+#include <type_traits>
+
 namespace opensolid
 {
     template <int iNumDimensions, int iNumParameters>
@@ -108,7 +110,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     inline
     ExpressionEvaluation<iNumDimensions, 1, Interval>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval interval) const {
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluateBounds(Interval interval) const {
         static_assert(
             iNumParameters == 1,
             "Multiple parameters required"
@@ -122,6 +124,33 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const EigenBase<TMatrix>& matrix
     ) const {
+        static_assert(
+            std::is_same<typename TMatrix::Scalar, double>::value,
+            "evaluate() can only be called with a double-valued matrix (use evaluateBounds())"
+        );
+        static_assert(
+            TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
+            "Incorrect number of parameters supplied"
+        );
+        if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != iNumParameters) {
+            throw Error(new PlaceholderError());
+        }
+        return ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>(
+            implementation().get(),
+            matrix.derived()
+        );
+    }
+    
+    template <int iNumDimensions, int iNumParameters> template <class TMatrix>
+    inline
+    ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluateBounds(
+        const EigenBase<TMatrix>& matrix
+    ) const {
+        static_assert(
+            std::is_same<typename TMatrix::Scalar, Interval>::value,
+            "evaluateBounds() can only be called with an Interval-valued matrix (use evaluate())"
+        );
         static_assert(
             TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
             "Incorrect number of parameters supplied"
@@ -160,7 +189,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     inline
     JacobianEvaluation<iNumDimensions, 1, Interval>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval interval) const {
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobianBounds(Interval interval) const {
         static_assert(
             iNumParameters == 1,
             "Multiple parameters required"
@@ -174,6 +203,37 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
         const EigenBase<TVector>& vector
     ) const {
+        static_assert(
+            std::is_same<typename TVector::Scalar, double>::value,
+            "jacobian() can only be called with a double-valued vector (use jacobianBounds())"
+        );
+        static_assert(
+            TVector::ColsAtCompileTime == 1,
+            "Parameter vector for Jacobian matrix evaluation must have one column"
+        );
+        static_assert(
+            TVector::RowsAtCompileTime == iNumParameters || TVector::RowsAtCompileTime == Dynamic,
+            "Incorrect number of parameters supplied for Jacobian matrix evaluation"
+        );
+        if (TVector::RowsAtCompileTime == Dynamic && vector.size() != iNumParameters) {
+            throw Error(new PlaceholderError());
+        }
+        return JacobianEvaluation<iNumDimensions, iNumParameters, TVector>(
+            implementation().get(),
+            vector.derived()
+        );
+    }
+
+    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    inline
+    JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobianBounds(
+        const EigenBase<TVector>& vector
+    ) const {
+        static_assert(
+            std::is_same<typename TVector::Scalar, Interval>::value,
+            "jacobianBounds() can only be called with an Interval-valued vector (use jacobian())"
+        );
         static_assert(
             TVector::ColsAtCompileTime == 1,
             "Parameter vector for Jacobian matrix evaluation must have one column"

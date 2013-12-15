@@ -209,7 +209,7 @@ public:
         ParametricExpression<1, 1> expression = sin(t);
         RowVector4d result = expression.evaluate(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT((result - RowVector4d(0, 1, 0, -1)).isZero());
-        RowVector4I bounds = expression.evaluate(
+        RowVector4I bounds = expression.evaluateBounds(
             RowVector4I(
                 Interval(0, M_PI / 2),
                 Interval(M_PI / 2, M_PI),
@@ -232,7 +232,7 @@ public:
         ParametricExpression<1, 1> expression = cos(t);
         RowVector4d result = expression.evaluate(RowVector4d(0, M_PI / 2, M_PI, 3 * M_PI / 2));
         TS_ASSERT((result - RowVector4d(1, 0, -1, 0)).isZero());
-        RowVector4I bounds = expression.evaluate(
+        RowVector4I bounds = expression.evaluateBounds(
             RowVector4I(
                 Interval(0, M_PI / 2),
                 Interval(M_PI / 2, M_PI),
@@ -290,13 +290,13 @@ public:
     void testArccosine() {
         ParametricExpression<1, 1> expression = acos(t);
         Interval bounds;
-        bounds = expression.evaluate(Interval(-1, 0)).value();
+        bounds = expression.evaluateBounds(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lowerBound() - M_PI / 2 == Zero());
         TS_ASSERT(bounds.upperBound() - M_PI == Zero());
-        bounds = expression.evaluate(Interval(0.5, 1.5)).value();
+        bounds = expression.evaluateBounds(Interval(0.5, 1.5)).value();
         TS_ASSERT(bounds.lowerBound() == Zero());
         TS_ASSERT(bounds.upperBound() - M_PI / 3 == Zero());
-        bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10)).value();
+        bounds = expression.evaluateBounds(Interval(1 + 1e-14, 1 + 1e-10)).value();
         TS_ASSERT(bounds.lowerBound() == Zero());
         TS_ASSERT(bounds.upperBound() == Zero());
 
@@ -313,13 +313,13 @@ public:
     void testArcsine() {
         ParametricExpression<1,1 > expression = asin(t);
         Interval bounds;
-        bounds = expression.evaluate(Interval(-1, 0)).value();
+        bounds = expression.evaluateBounds(Interval(-1, 0)).value();
         TS_ASSERT(bounds.lowerBound() + M_PI / 2 == Zero());
         TS_ASSERT(bounds.upperBound() == Zero());
-        bounds = expression.evaluate(Interval(0.5, 1.5)).value();
+        bounds = expression.evaluateBounds(Interval(0.5, 1.5)).value();
         TS_ASSERT(bounds.lowerBound() - M_PI / 6 == Zero());
         TS_ASSERT(bounds.upperBound() - M_PI / 2 == Zero());
-        bounds = expression.evaluate(Interval(1 + 1e-14, 1 + 1e-10)).value();
+        bounds = expression.evaluateBounds(Interval(1 + 1e-14, 1 + 1e-10)).value();
         TS_ASSERT(bounds.lowerBound() - M_PI / 2 == Zero());
         TS_ASSERT(bounds.upperBound() - M_PI / 2 == Zero());
     }

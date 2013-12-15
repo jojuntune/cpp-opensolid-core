@@ -65,7 +65,7 @@ namespace opensolid
         Interval domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain)) {
+        _bounds(expression.evaluateBounds(domain)) {
     }
 
     template <int iNumDimensions>

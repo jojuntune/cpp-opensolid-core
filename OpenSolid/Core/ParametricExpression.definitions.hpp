@@ -75,11 +75,15 @@ namespace opensolid
         evaluate(double value) const;
         
         ExpressionEvaluation<iNumDimensions, 1, Interval>
-        evaluate(Interval interval) const;
+        evaluateBounds(Interval interval) const;
         
         template <class TMatrix>
         ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
         evaluate(const EigenBase<TMatrix>& matrix) const;
+        
+        template <class TMatrix>
+        ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
+        evaluateBounds(const EigenBase<TMatrix>& matrix) const;
 
         JacobianEvaluation<iNumDimensions, 1, int>
         jacobian(int value) const;
@@ -88,11 +92,15 @@ namespace opensolid
         jacobian(double value) const;
         
         JacobianEvaluation<iNumDimensions, 1, Interval>
-        jacobian(Interval interval) const;
+        jacobianBounds(Interval interval) const;
         
         template <class TVector>
         JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
         jacobian(const EigenBase<TVector>& vector) const;
+        
+        template <class TVector>
+        JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
+        jacobianBounds(const EigenBase<TVector>& vector) const;
         
         template <int iNumInnerParameters>
         ParametricExpression<iNumDimensions, iNumInnerParameters>

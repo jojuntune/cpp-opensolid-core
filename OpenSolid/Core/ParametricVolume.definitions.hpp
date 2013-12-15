@@ -82,7 +82,7 @@ namespace opensolid
         evaluate(double u, double v, double w) const;
 
         Box<3>
-        evaluate(Interval u, Interval v, Interval w) const;
+        evaluateBounds(Interval u, Interval v, Interval w) const;
     };
 
     template <>

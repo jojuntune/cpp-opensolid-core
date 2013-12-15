@@ -48,7 +48,7 @@ namespace opensolid
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluate(domain.bounds().vector())) {
+        _bounds(expression.evaluateBounds(domain.bounds().vector())) {
     }
 
     Point2d
@@ -57,8 +57,8 @@ namespace opensolid
     }
 
     Box2d
-    ParametricArea2d::evaluate(Interval u, Interval v) const {
-        return Box2d(expression().evaluate(Vector2I(u, v)));
+    ParametricArea2d::evaluateBounds(Interval u, Interval v) const {
+        return Box2d(expression().evaluateBounds(Vector2I(u, v)));
     }
 
     ParametricArea2d
