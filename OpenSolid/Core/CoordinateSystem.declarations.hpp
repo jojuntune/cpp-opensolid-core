@@ -26,28 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
     class CoordinateSystem;
-
-    template <int iNumDimensions, int iNumAxes>
-    struct NumDimensions<CoordinateSystem<iNumDimensions, iNumAxes>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct TransformedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
-    {
-        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
-    };
-
-    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    struct MorphedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
-    {
-        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
-    };
 }

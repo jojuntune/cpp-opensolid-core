@@ -26,23 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     class BoundedVolume3d;
-
-    template <>
-    struct NumDimensions<BoundedVolume3d>
-    {
-        static const int Value = 3;
-    };
-
-    template <>
-    struct BoundsType<BoundedVolume3d>
-    {
-        typedef Box<3> Type;
-    };
 }

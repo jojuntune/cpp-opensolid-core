@@ -32,22 +32,4 @@ namespace opensolid
 {
     template <int iNumDimensions>
     class Axis;
-    
-    template <int iNumDimensions>
-    struct NumDimensions<Axis<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Axis<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Axis<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Axis<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Axis<iNumResultDimensions> Type;
-    };
 }

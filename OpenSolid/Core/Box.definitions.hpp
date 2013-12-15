@@ -42,6 +42,30 @@
 namespace opensolid
 {
     template <int iNumDimensions>
+    struct BoundsType<Box<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<Box<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Box<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Box<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Box<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Box<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions>
     class Box :
         public Convertible<Box<iNumDimensions>>,
         public Transformable<Box<iNumDimensions>>
@@ -195,12 +219,14 @@ namespace opensolid
     template <int iNumDimensions>
     std::ostream&
     operator<<(std::ostream& stream, const Box<iNumDimensions>& box);
-}
 
-////////// Specializations //////////
+    template <int iNumDimensions>
+    struct BoundsFunction<Box<iNumDimensions>>
+    {
+        const Box<iNumDimensions>&
+        operator()(const Box<iNumDimensions>& point) const;
+    };
 
-namespace opensolid
-{
     template <>
     struct ScalingFunction<Box1d>
     {
@@ -262,12 +288,5 @@ namespace opensolid
             const Box<iNumDimensions>& box,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Box<iNumDimensions>>
-    {
-        const Box<iNumDimensions>&
-        operator()(const Box<iNumDimensions>& point) const;
     };
 }

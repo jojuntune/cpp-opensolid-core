@@ -38,6 +38,24 @@
 namespace opensolid
 {
     template <int iNumDimensions, int iNumAxes>
+    struct NumDimensions<CoordinateSystem<iNumDimensions, iNumAxes>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
+    struct TransformedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    {
+        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
+    };
+
+    template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
+    struct MorphedType<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
+    {
+        typedef CoordinateSystem<iNumResultDimensions, iNumAxes> Type;
+    };
+
+    template <int iNumDimensions, int iNumAxes>
     class CoordinateSystem :
         public Transformable<CoordinateSystem<iNumDimensions, iNumAxes>>,
         public Convertible<CoordinateSystem<iNumDimensions, iNumAxes>>
@@ -160,12 +178,7 @@ namespace opensolid
     typedef CoordinateSystem<3, 1> AxialCoordinateSystem3d;
     typedef CoordinateSystem<3, 2> PlanarCoordinateSystem3d;
     typedef CoordinateSystem<3, 3> CoordinateSystem3d;
-}
 
-////////// Specializations //////////
-
-namespace opensolid
-{
     template <int iNumDimensions, int iNumAxes>
     struct ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {

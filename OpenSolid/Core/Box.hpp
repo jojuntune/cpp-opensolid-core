@@ -385,6 +385,13 @@ namespace opensolid
         return stream;
     }
 
+    template <int iNumDimensions>
+    inline
+    const Box<iNumDimensions>&
+    BoundsFunction<Box<iNumDimensions>>::operator()(const Box<iNumDimensions>& box) const {
+        return box;
+    }
+
     inline
     Box1d
     ScalingFunction<Box1d>::operator()(const Box1d& box, double scale) const {
@@ -461,12 +468,5 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return Box<iNumResultDimensions>(morphingExpression.evaluate(box.vector()));
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Box<iNumDimensions>&
-    BoundsFunction<Box<iNumDimensions>>::operator()(const Box<iNumDimensions>& box) const {
-        return box;
     }
 }

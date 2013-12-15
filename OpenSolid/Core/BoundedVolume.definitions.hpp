@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/BoundedVolume.declarations.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/ParametricSurface.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
@@ -35,6 +36,18 @@
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<BoundedVolume3d>
+    {
+        typedef Box<3> Type;
+    };
+
+    template <>
+    struct NumDimensions<BoundedVolume3d>
+    {
+        static const int Value = 3;
+    };
+
     class BoundedVolume3d :
         public Transformable<BoundedVolume3d>
     {
@@ -65,12 +78,7 @@ namespace opensolid
         Box<3>
         bounds() const;
     };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
+    
     template <>
     struct ScalingFunction<BoundedVolume3d>
     {

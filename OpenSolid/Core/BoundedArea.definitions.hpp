@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/BoundedArea.declarations.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
@@ -35,6 +36,18 @@
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<BoundedArea2d>
+    {
+        typedef Box<2> Type;
+    };
+
+    template <>
+    struct NumDimensions<BoundedArea2d>
+    {
+        static const int Value = 2;
+    };
+
     class BoundedArea2d :
         public Transformable<BoundedArea2d>
     {
@@ -65,12 +78,7 @@ namespace opensolid
         Box<2>
         bounds() const;
     };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
+    
     template <>
     struct ScalingFunction<BoundedArea2d>
     {
