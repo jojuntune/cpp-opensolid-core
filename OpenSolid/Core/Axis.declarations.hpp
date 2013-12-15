@@ -26,8 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     template <int iNumDimensions>

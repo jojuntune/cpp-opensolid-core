@@ -26,9 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     namespace detail
@@ -36,58 +33,4 @@ namespace opensolid
         template <int iNumDimensions>
         class BoxVertices;
     }
-
-    template <int iNumDimensions>
-    struct NumDimensions<detail::BoxVertices<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions>
-    struct ItemType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef Point<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ItemReferenceType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef Point<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ScaledType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef detail::BoxVertices<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct TranslatedType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef detail::BoxVertices<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef typename TransformedType<
-            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
-            iNumResultDimensions
-        >::Type Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef typename MorphedType<
-            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
-            iNumResultDimensions
-        >::Type Type;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
-    };
 }

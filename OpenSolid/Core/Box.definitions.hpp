@@ -34,7 +34,7 @@
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/BoxVertices.declarations.hpp>
+#include <OpenSolid/Core/Position/BoxVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <ostream>

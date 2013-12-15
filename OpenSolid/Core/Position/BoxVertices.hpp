@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/BoxVertices.definitions.hpp>
+#include <OpenSolid/Core/Position/BoxVertices.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
@@ -84,12 +84,16 @@ namespace opensolid
             return box().vertex(index);
         }
     }
-}
 
-////////// Specializations //////////
-
-namespace opensolid
-{
+    template <int iNumDimensions>
+    inline
+    const Box<iNumDimensions>&
+    BoundsFunction<detail::BoxVertices<iNumDimensions>>::operator()(
+        const detail::BoxVertices<iNumDimensions>& boxVertices
+    ) const {
+        return boxVertices.box();
+    }
+    
     template <int iNumDimensions>
     inline
     detail::BoxVertices<iNumDimensions>
@@ -108,14 +112,5 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return detail::translated(boxVertices.box(), vector.derived()).vertices();
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Box<iNumDimensions>&
-    BoundsFunction<detail::BoxVertices<iNumDimensions>>::operator()(
-        const detail::BoxVertices<iNumDimensions>& boxVertices
-    ) const {
-        return boxVertices.box();
     }
 }

@@ -32,7 +32,7 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/SpatialCollection/BoxVertices.hpp>
+#include <OpenSolid/Core/Position/BoxVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid

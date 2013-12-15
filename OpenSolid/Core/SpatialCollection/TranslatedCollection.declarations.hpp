@@ -26,10 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     namespace detail
@@ -40,52 +36,4 @@ namespace opensolid
         template <class TBaseCollection>
         class TranslatedCollectionIterator;
     }
-
-    template <class TBaseCollection>
-    struct BoundsType<detail::TranslatedCollection<TBaseCollection>>
-    {
-        typedef typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type Type;
-    };
-
-    template <class TBaseCollection>
-    struct IteratorType<detail::TranslatedCollection<TBaseCollection>>
-    {
-        typedef detail::TranslatedCollectionIterator<TBaseCollection> Type;
-    };
-
-    template <class TBaseCollection>
-    struct NumDimensions<detail::TranslatedCollection<TBaseCollection>>
-    {
-        static const int Value = NumDimensions<TBaseCollection>::Value;
-    };
-
-    template <class TBaseCollection>
-    struct ScaledType<detail::TranslatedCollection<TBaseCollection>> :
-        public ScaledType<SpatialCollection<detail::TranslatedCollection<TBaseCollection>>>
-    {
-    };
-
-    template <class TBaseCollection>
-    struct TranslatedType<detail::TranslatedCollection<TBaseCollection>>
-    {
-        typedef detail::TranslatedCollection<TBaseCollection> Type;
-    };
-
-    template <class TBaseCollection, int iNumResultDimensions>
-    struct TransformedType<detail::TranslatedCollection<TBaseCollection>, iNumResultDimensions> :
-        public TransformedType<
-            SpatialCollection<detail::TranslatedCollection<TBaseCollection>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TBaseCollection, int iNumResultDimensions>
-    struct MorphedType<detail::TranslatedCollection<TBaseCollection>, iNumResultDimensions> :
-        public MorphedType<
-            SpatialCollection<detail::TranslatedCollection<TBaseCollection>>,
-            iNumResultDimensions
-        >
-    {
-    };
 }

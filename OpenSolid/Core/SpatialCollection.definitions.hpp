@@ -200,3 +200,8 @@ namespace opensolid
         ) const;
     };
 }
+
+#include <OpenSolid/Core/SpatialCollection/MorphedCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/ScaledCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/TransformedCollection.definitions.hpp>
+#include <OpenSolid/Core/SpatialCollection/TranslatedCollection.definitions.hpp>

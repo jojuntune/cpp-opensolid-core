@@ -26,14 +26,69 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/BoxVertices.declarations.hpp>
+#include <OpenSolid/Core/Position/BoxVertices.declarations.hpp>
 
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct BoundsType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<detail::BoxVertices<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions>
+    struct ScaledType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef detail::BoxVertices<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct TranslatedType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef detail::BoxVertices<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef typename TransformedType<
+            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef typename MorphedType<
+            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <int iNumDimensions>
+    struct ItemType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ItemReferenceType<detail::BoxVertices<iNumDimensions>>
+    {
+        typedef Point<iNumDimensions> Type;
+    };
+
     namespace detail
     {
         template <int iNumDimensions>
@@ -64,12 +119,14 @@ namespace opensolid
             operator[](std::int64_t index) const;
         };
     }
-}
 
-////////// Specializations //////////
+    template <int iNumDimensions>
+    struct BoundsFunction<detail::BoxVertices<iNumDimensions>>
+    {
+        const Box<iNumDimensions>&
+        operator()(const detail::BoxVertices<iNumDimensions>& boxVertices) const;
+    };
 
-namespace opensolid
-{
     template <int iNumDimensions>
     struct ScalingFunction<detail::BoxVertices<iNumDimensions>>
     {
@@ -107,12 +164,5 @@ namespace opensolid
             iNumResultDimensions
         >
     {
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<detail::BoxVertices<iNumDimensions>>
-    {
-        const Box<iNumDimensions>&
-        operator()(const detail::BoxVertices<iNumDimensions>& boxVertices) const;
     };
 }
