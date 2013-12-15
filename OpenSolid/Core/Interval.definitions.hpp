@@ -38,6 +38,12 @@
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<Interval>
+    {
+        typedef Interval Type;
+    };
+
     class Interval :
         public Convertible<Interval>
     {
@@ -339,12 +345,7 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     std::ostream&
     operator<<(std::ostream& stream, Interval interval);
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
+    
     template <>
     struct BoundsFunction<Interval>
     {
