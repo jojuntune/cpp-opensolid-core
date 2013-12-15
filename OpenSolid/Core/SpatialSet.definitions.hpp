@@ -160,9 +160,9 @@ namespace opensolid
 namespace opensolid
 {
     template <class TItem>
-    struct IteratorType<SpatialSet<TItem>>
+    struct BoundsType<SpatialSet<TItem>>
     {
-        typedef typename std::vector<TItem>::const_iterator Type;
+        typedef typename BoundsType<TItem>::Type Type;
     };
 
     template <class TItem>
@@ -196,6 +196,12 @@ namespace opensolid
     };
 
     template <class TItem>
+    struct IteratorType<SpatialSet<TItem>>
+    {
+        typedef typename std::vector<TItem>::const_iterator Type;
+    };
+
+    template <class TItem>
     struct ScalingFunction<SpatialSet<TItem>> :
         public ScalingFunction<SpatialCollection<SpatialSet<TItem>>>
     {
@@ -217,11 +223,5 @@ namespace opensolid
     struct MorphingFunction<SpatialSet<TItem>, iNumResultDimensions> :
         public MorphingFunction<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
     {
-    };
-
-    template <class TItem>
-    struct BoundsType<SpatialSet<TItem>>
-    {
-        typedef typename BoundsType<TItem>::Type Type;
     };
 }

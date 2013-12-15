@@ -36,7 +36,7 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid

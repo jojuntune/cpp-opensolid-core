@@ -29,96 +29,55 @@
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
-#include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
-#include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Simplex/TriangleBase.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
 {
-    namespace detail
+    template <int iNumDimensions>
+    struct BoundsType<Triangle<iNumDimensions>>
     {
-        template <int iNumDimensions>
-        class TriangleEdges :
-            public SpatialCollection<TriangleEdges<iNumDimensions>>
-        {
-        private:
-            Triangle<iNumDimensions> _triangle;
-        public:
-            TriangleEdges(const Triangle<iNumDimensions>& triangle);
+        typedef Box<iNumDimensions> Type;
+    };
+    
+    template <int iNumDimensions>
+    struct NumDimensions<Triangle<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
 
-            const Triangle<iNumDimensions>&
-            triangle() const;
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Triangle<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Triangle<iNumResultDimensions> Type;
+    };
 
-            IndexIterator<TriangleEdges<iNumDimensions>>
-            begin() const;
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Triangle<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Triangle<iNumResultDimensions> Type;
+    };
 
-            IndexIterator<TriangleEdges<iNumDimensions>>
-            end() const;
+    template <>
+    class Triangle<1> :
+        public detail::TriangleBase<1>,
+        public Transformable<Triangle<1>>
+    {
+    public:
+        Triangle();
 
-            bool
-            isEmpty() const;
+        Triangle(
+            const Point<1>& firstVertex,
+            const Point<1>& secondVertex,
+            const Point<1>& thirdVertex
+        );
+    };
 
-            std::int64_t
-            size() const;
-
-            Box<iNumDimensions>
-            bounds() const;
-
-            LineSegment<iNumDimensions>
-            operator[](std::int64_t index) const;
-        };
-
-        template <int iNumDimensions>
-        class TriangleBase
-        {
-        private:
-            Point<iNumDimensions> _vertices[3];
-
-            const Triangle<iNumDimensions>&
-            derived() const;
-        protected:
-            TriangleBase();
-
-            TriangleBase(
-                const Point<iNumDimensions>& firstVertex,
-                const Point<iNumDimensions>& secondVertex,
-                const Point<iNumDimensions>& thirdVertex
-            );
-        public:
-            const Point<iNumDimensions>&
-            vertex(int index) const;
-
-            Point<iNumDimensions>&
-            vertex(int index);
-
-            SimplexVertices<Triangle<iNumDimensions>, 3>
-            vertices() const;
-
-            Point<iNumDimensions>
-            centroid() const;
-
-            LineSegment<iNumDimensions>
-            edge(int oppositeIndex) const;
-
-            TriangleEdges<iNumDimensions>
-            edges() const;
-
-            CoordinateSystem<iNumDimensions, 2>
-            coordinateSystem() const;
-
-            Box<iNumDimensions>
-            bounds() const;
-
-            bool
-            operator==(const Triangle<iNumDimensions>& other) const;
-        };
-    }
+    typedef Triangle<1> Triangle1d;
 
     template <>
     class Triangle<2> :
@@ -173,124 +132,16 @@ namespace opensolid
     };
 
     typedef Triangle<3> Triangle3d;
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions>
-    struct NumDimensions<detail::TriangleEdges<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
 
     template <int iNumDimensions>
-    struct ItemType<detail::TriangleEdges<iNumDimensions>>
+    struct EqualityFunction<Triangle<iNumDimensions>>
     {
-        typedef LineSegment<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ItemReferenceType<detail::TriangleEdges<iNumDimensions>>
-    {
-        typedef LineSegment<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ScaledType<detail::TriangleEdges<iNumDimensions>>
-    {
-        typedef detail::TriangleEdges<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct TranslatedType<detail::TriangleEdges<iNumDimensions>>
-    {
-        typedef detail::TriangleEdges<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef detail::TriangleEdges<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct TransformedType<detail::TriangleEdges<iNumDimensions>, 1> :
-        public TransformedType<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
-    {
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef detail::TriangleEdges<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct MorphedType<detail::TriangleEdges<iNumDimensions>, 1> :
-        public MorphedType<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
-    {
-    };
-
-    template <int iNumDimensions>
-    struct BoundsType<detail::TriangleEdges<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct ScalingFunction<detail::TriangleEdges<iNumDimensions>>
-    {
-        detail::TriangleEdges<iNumDimensions>
+        bool
         operator()(
-            const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-            double scale
+            const Triangle<iNumDimensions>& firstTriangle,
+            const Triangle<iNumDimensions>& secondTriangle,
+            double precision
         ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<detail::TriangleEdges<iNumDimensions>>
-    {
-        template <class TVector>
-        detail::TriangleEdges<iNumDimensions>
-        operator()(
-            const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-            const EigenBase<TVector>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>
-    {
-        template <class TMatrix>
-        detail::TriangleEdges<iNumResultDimensions>
-        operator()(
-            const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-            const EigenBase<TMatrix>& matrix
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TransformationFunction<detail::TriangleEdges<iNumDimensions>, 1> :
-        public TransformationFunction<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
-    {
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>
-    {
-        detail::TriangleEdges<iNumResultDimensions>
-        operator()(
-            const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-            const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct MorphingFunction<detail::TriangleEdges<iNumDimensions>, 1> :
-        public MorphingFunction<SpatialCollection<detail::TriangleEdges<iNumDimensions>>, 1>
-    {
     };
 
     template <int iNumDimensions>
@@ -329,17 +180,6 @@ namespace opensolid
         operator()(
             const Triangle<iNumDimensions>& triangle,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct EqualityFunction<Triangle<iNumDimensions>>
-    {
-        bool
-        operator()(
-            const Triangle<iNumDimensions>& firstTriangle,
-            const Triangle<iNumDimensions>& secondTriangle,
-            double precision
         ) const;
     };
 }

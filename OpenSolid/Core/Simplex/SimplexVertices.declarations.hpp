@@ -28,6 +28,9 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
+    namespace detail
+    {
+        template <class TSimplex, int iNumVertices>
+        class SimplexVertices;
+    }
 }

@@ -26,68 +26,65 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/Simplex/TetrahedronEdges.definitions.hpp>
+
+#include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
+#include <OpenSolid/Core/Tetrahedron.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <class TSimplex, int iNumVertices>
-        class SimplexVertices;
+        inline
+        TetrahedronEdges::TetrahedronEdges(const Tetrahedron3d& tetrahedron) :
+            _tetrahedron(tetrahedron) {
+        }
+
+        inline
+        const Tetrahedron3d&
+        TetrahedronEdges::tetrahedron() const {
+            return _tetrahedron;
+        }
+
+        inline
+        IndexIterator<TetrahedronEdges>
+        TetrahedronEdges::begin() const {
+            return IndexIterator<TetrahedronEdges>::Begin(this);
+        }
+
+        inline
+        IndexIterator<TetrahedronEdges>
+        TetrahedronEdges::end() const {
+            return IndexIterator<TetrahedronEdges>::End(this);
+        }
+
+        inline
+        bool
+        TetrahedronEdges::isEmpty() const {
+            return false;
+        }
+
+        inline
+        std::int64_t
+        TetrahedronEdges::size() const {
+            return 6;
+        }
+
+        inline
+        Box3d
+        TetrahedronEdges::bounds() const {
+            return tetrahedron().bounds();
+        }
+
+        inline
+        LineSegment3d
+        TetrahedronEdges::operator[](std::int64_t index) const {
+            return tetrahedron().edge(index);
+        }
     }
-
-    template <class TSimplex, int iNumVertices>
-    struct NumDimensions<detail::SimplexVertices<TSimplex, iNumVertices>>
-    {
-        static const int Value = NumDimensions<TSimplex>::Value;
-    };
-
-    template <class TSimplex, int iNumVertices>
-    struct ItemType<detail::SimplexVertices<TSimplex, iNumVertices>>
-    {
-        typedef Point<NumDimensions<TSimplex>::Value> Type;
-    };
-
-    template <class TSimplex, int iNumVertices>
-    struct ItemReferenceType<detail::SimplexVertices<TSimplex, iNumVertices>>
-    {
-        typedef const Point<NumDimensions<TSimplex>::Value>& Type;
-    };
-
-    template <class TSimplex, int iNumVertices>
-    struct ScaledType<detail::SimplexVertices<TSimplex, iNumVertices>>
-    {
-        typedef detail::SimplexVertices<TSimplex, iNumVertices> Type;
-    };
-
-    template <class TSimplex, int iNumVertices>
-    struct TranslatedType<detail::SimplexVertices<TSimplex, iNumVertices>>
-    {
-        typedef detail::SimplexVertices<TSimplex, iNumVertices> Type;
-    };
-
-    template <class TSimplex, int iNumVertices, int iNumResultDimensions>
-    struct TransformedType<detail::SimplexVertices<TSimplex, iNumVertices>, iNumResultDimensions>
-    {
-        typedef detail::SimplexVertices<
-            typename TransformedType<TSimplex, iNumResultDimensions>::Type,
-            iNumVertices
-        > Type;
-    };
-
-    template <class TSimplex, int iNumVertices, int iNumResultDimensions>
-    struct MorphedType<detail::SimplexVertices<TSimplex, iNumVertices>, iNumResultDimensions>
-    {
-        typedef detail::SimplexVertices<
-            typename MorphedType<TSimplex, iNumResultDimensions>::Type,
-            iNumVertices
-        > Type;
-    };
-
-    template <class TSimplex, int iNumVertices>
-    struct BoundsType<detail::SimplexVertices<TSimplex, iNumVertices>>
-    {
-        typedef typename BoundsType<TSimplex>::Type Type;
-    };
 }

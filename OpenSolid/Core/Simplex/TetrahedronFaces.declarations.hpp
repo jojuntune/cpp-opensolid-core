@@ -28,6 +28,8 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
+    namespace detail
+    {
+        class TetrahedronFaces;
+    }
 }

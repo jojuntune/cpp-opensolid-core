@@ -26,8 +26,65 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Simplex/TetrahedronFaces.definitions.hpp>
+
+#include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
+#include <OpenSolid/Core/Tetrahedron.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
+    namespace detail
+    {
+        inline
+        TetrahedronFaces::TetrahedronFaces(const Tetrahedron3d& tetrahedron) :
+            _tetrahedron(tetrahedron) {
+        }
+
+        inline
+        const Tetrahedron3d&
+        TetrahedronFaces::tetrahedron() const {
+            return _tetrahedron;
+        }
+
+        inline
+        IndexIterator<TetrahedronFaces>
+        TetrahedronFaces::begin() const {
+            return IndexIterator<TetrahedronFaces>::Begin(this);
+        }
+
+        inline
+        IndexIterator<TetrahedronFaces>
+        TetrahedronFaces::end() const {
+            return IndexIterator<TetrahedronFaces>::End(this);
+        }
+
+        inline
+        bool
+        TetrahedronFaces::isEmpty() const {
+            return false;
+        }
+
+        inline
+        std::int64_t
+        TetrahedronFaces::size() const {
+            return 4;
+        }
+
+        inline
+        Box3d
+        TetrahedronFaces::bounds() const {
+            return tetrahedron().bounds();
+        }
+
+        inline
+        Triangle3d
+        TetrahedronFaces::operator[](std::int64_t index) const {
+            return tetrahedron().face(index);
+        }
+    }
 }

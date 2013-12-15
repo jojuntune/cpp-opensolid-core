@@ -26,10 +26,13 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/SimplexVertices.definitions.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.definitions.hpp>
 
+#include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
+#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {

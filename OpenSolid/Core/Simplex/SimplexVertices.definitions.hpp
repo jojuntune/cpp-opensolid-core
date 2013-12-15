@@ -26,13 +26,70 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
 
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
+    template <class TSimplex, int iNumVertices>
+    struct BoundsType<detail::SimplexVertices<TSimplex, iNumVertices>>
+    {
+        typedef typename BoundsType<TSimplex>::Type Type;
+    };
+
+    template <class TSimplex, int iNumVertices>
+    struct NumDimensions<detail::SimplexVertices<TSimplex, iNumVertices>>
+    {
+        static const int Value = NumDimensions<TSimplex>::Value;
+    };
+
+    template <class TSimplex, int iNumVertices>
+    struct ScaledType<detail::SimplexVertices<TSimplex, iNumVertices>>
+    {
+        typedef detail::SimplexVertices<TSimplex, iNumVertices> Type;
+    };
+
+    template <class TSimplex, int iNumVertices>
+    struct TranslatedType<detail::SimplexVertices<TSimplex, iNumVertices>>
+    {
+        typedef detail::SimplexVertices<TSimplex, iNumVertices> Type;
+    };
+
+    template <class TSimplex, int iNumVertices, int iNumResultDimensions>
+    struct TransformedType<detail::SimplexVertices<TSimplex, iNumVertices>, iNumResultDimensions>
+    {
+        typedef detail::SimplexVertices<
+            typename TransformedType<TSimplex, iNumResultDimensions>::Type,
+            iNumVertices
+        > Type;
+    };
+
+    template <class TSimplex, int iNumVertices, int iNumResultDimensions>
+    struct MorphedType<detail::SimplexVertices<TSimplex, iNumVertices>, iNumResultDimensions>
+    {
+        typedef detail::SimplexVertices<
+            typename MorphedType<TSimplex, iNumResultDimensions>::Type,
+            iNumVertices
+        > Type;
+    };
+
+    template <class TSimplex, int iNumVertices>
+    struct ItemType<detail::SimplexVertices<TSimplex, iNumVertices>>
+    {
+        typedef Point<NumDimensions<TSimplex>::Value> Type;
+    };
+
+    template <class TSimplex, int iNumVertices>
+    struct ItemReferenceType<detail::SimplexVertices<TSimplex, iNumVertices>>
+    {
+        typedef const Point<NumDimensions<TSimplex>::Value>& Type;
+    };
+
     namespace detail
     {
         template <class TSimplex, int iNumVertices>
@@ -66,12 +123,7 @@ namespace opensolid
             operator[](std::int64_t index) const;
         };
     }
-}
 
-////////// Specializations //////////
-
-namespace opensolid
-{
     template <class TSimplex, int iNumVertices>
     struct ScalingFunction<detail::SimplexVertices<TSimplex, iNumVertices>>
     {

@@ -24,10 +24,63 @@
 
 #pragma once
 
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/Simplex/TriangleBase.declarations.hpp>
+
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Simplex/TriangleEdges.declarations.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class TriangleBase
+        {
+        private:
+            Point<iNumDimensions> _vertices[3];
+
+            const Triangle<iNumDimensions>&
+            derived() const;
+        protected:
+            TriangleBase();
+
+            TriangleBase(
+                const Point<iNumDimensions>& firstVertex,
+                const Point<iNumDimensions>& secondVertex,
+                const Point<iNumDimensions>& thirdVertex
+            );
+        public:
+            const Point<iNumDimensions>&
+            vertex(int index) const;
+
+            Point<iNumDimensions>&
+            vertex(int index);
+
+            SimplexVertices<Triangle<iNumDimensions>, 3>
+            vertices() const;
+
+            Point<iNumDimensions>
+            centroid() const;
+
+            LineSegment<iNumDimensions>
+            edge(int oppositeIndex) const;
+
+            TriangleEdges<iNumDimensions>
+            edges() const;
+
+            CoordinateSystem<iNumDimensions, 2>
+            coordinateSystem() const;
+
+            Box<iNumDimensions>
+            bounds() const;
+
+            bool
+            operator==(const Triangle<iNumDimensions>& other) const;
+        };
+    }
 }

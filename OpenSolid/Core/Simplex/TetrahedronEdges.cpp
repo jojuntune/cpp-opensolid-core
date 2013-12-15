@@ -22,12 +22,39 @@
 *                                                                                   *
 ************************************************************************************/
 
-#pragma once
-
-#include <OpenSolid/config.hpp>
+#include <OpenSolid/Core/Simplex/TetrahedronEdges.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
+    detail::TetrahedronEdges
+    ScalingFunction<detail::TetrahedronEdges>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        double scale
+    ) const {
+        return detail::scaled(tetrahedronEdges.tetrahedron(), scale).edges();
+    }
+
+    detail::TetrahedronEdges
+    TranslationFunction<detail::TetrahedronEdges>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        const Vector3d& vector
+    ) const {
+        return detail::translated(tetrahedronEdges.tetrahedron(), vector).edges();
+    }
+
+    detail::TetrahedronEdges
+    TransformationFunction<detail::TetrahedronEdges, 3>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        const Matrix3d& matrix
+    ) const {
+        return detail::transformed(tetrahedronEdges.tetrahedron(), matrix).edges();
+    }
+
+    detail::TetrahedronEdges
+    MorphingFunction<detail::TetrahedronEdges, 3>::operator()(
+        const detail::TetrahedronEdges& tetrahedronEdges,
+        const ParametricExpression<3, 3>& morphingExpression
+    ) const {
+        return detail::morphed(tetrahedronEdges.tetrahedron(), morphingExpression).edges();
+    }
 }

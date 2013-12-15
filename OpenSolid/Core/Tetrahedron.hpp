@@ -32,10 +32,12 @@
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
-#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
+#include <OpenSolid/Core/Simplex/TetrahedronEdges.hpp>
+#include <OpenSolid/Core/Simplex/TetrahedronFaces.hpp>
 #include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialCollection/SimplexVertices.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
@@ -103,103 +105,6 @@ namespace opensolid
             vertex(1) == other.vertex(1) &&
             vertex(2) == other.vertex(2) &&
             vertex(3) == other.vertex(3);
-    }
-
-    namespace detail
-    {
-        inline
-        TetrahedronEdges::TetrahedronEdges(const Tetrahedron3d& tetrahedron) :
-            _tetrahedron(tetrahedron) {
-        }
-
-        inline
-        const Tetrahedron3d&
-        TetrahedronEdges::tetrahedron() const {
-            return _tetrahedron;
-        }
-
-        inline
-        IndexIterator<TetrahedronEdges>
-        TetrahedronEdges::begin() const {
-            return IndexIterator<TetrahedronEdges>::Begin(this);
-        }
-
-        inline
-        IndexIterator<TetrahedronEdges>
-        TetrahedronEdges::end() const {
-            return IndexIterator<TetrahedronEdges>::End(this);
-        }
-
-        inline
-        bool
-        TetrahedronEdges::isEmpty() const {
-            return false;
-        }
-
-        inline
-        std::int64_t
-        TetrahedronEdges::size() const {
-            return 6;
-        }
-
-        inline
-        Box3d
-        TetrahedronEdges::bounds() const {
-            return tetrahedron().bounds();
-        }
-
-        inline
-        LineSegment3d
-        TetrahedronEdges::operator[](std::int64_t index) const {
-            return tetrahedron().edge(index);
-        }
-
-        inline
-        TetrahedronFaces::TetrahedronFaces(const Tetrahedron3d& tetrahedron) :
-            _tetrahedron(tetrahedron) {
-        }
-
-        inline
-        const Tetrahedron3d&
-        TetrahedronFaces::tetrahedron() const {
-            return _tetrahedron;
-        }
-
-        inline
-        IndexIterator<TetrahedronFaces>
-        TetrahedronFaces::begin() const {
-            return IndexIterator<TetrahedronFaces>::Begin(this);
-        }
-
-        inline
-        IndexIterator<TetrahedronFaces>
-        TetrahedronFaces::end() const {
-            return IndexIterator<TetrahedronFaces>::End(this);
-        }
-
-        inline
-        bool
-        TetrahedronFaces::isEmpty() const {
-            return false;
-        }
-
-        inline
-        std::int64_t
-        TetrahedronFaces::size() const {
-            return 4;
-        }
-
-        inline
-        Box3d
-        TetrahedronFaces::bounds() const {
-            return tetrahedron().bounds();
-        }
-
-        inline
-        Triangle3d
-        TetrahedronFaces::operator[](std::int64_t index) const {
-            return tetrahedron().face(index);
-        }
     }
 
     inline

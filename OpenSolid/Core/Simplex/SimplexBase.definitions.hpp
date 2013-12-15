@@ -26,8 +26,13 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Simplex/SimplexBase.declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Triangle;
+    namespace detail
+    {
+        template <int iNumDimensions, int iNumVertices>
+        class SimplexBase;
+    }
 }

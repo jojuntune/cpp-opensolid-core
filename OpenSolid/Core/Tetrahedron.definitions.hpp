@@ -35,12 +35,26 @@
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
+#include <OpenSolid/Core/Simplex/TetrahedronEdges.declarations.hpp>
+#include <OpenSolid/Core/Simplex/TetrahedronFaces.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<Tetrahedron3d>
+    {
+        typedef Box<3> Type;
+    };
+
+    template <>
+    struct NumDimensions<Tetrahedron3d>
+    {
+        static const int Value = 3;
+    };
+
     class Tetrahedron3d :
         public Transformable<Tetrahedron3d>
     {
@@ -101,75 +115,18 @@ namespace opensolid
         static Tetrahedron3d
         Unit();
     };
-
-    namespace detail
+    
+    template <>
+    struct EqualityFunction<Tetrahedron3d>
     {
-        class TetrahedronEdges :
-            public SpatialCollection<TetrahedronEdges>
-        {
-        private:
-            Tetrahedron3d _tetrahedron;
-        public:
-            TetrahedronEdges(const Tetrahedron3d& tetrahedron);
+        bool
+        operator()(
+            const Tetrahedron3d& firstTetrahedron,
+            const Tetrahedron3d& secondTetrahedron,
+            double precision
+        ) const;
+    };
 
-            const Tetrahedron3d&
-            tetrahedron() const;
-
-            IndexIterator<TetrahedronEdges>
-            begin() const;
-
-            IndexIterator<TetrahedronEdges>
-            end() const;
-
-            bool
-            isEmpty() const;
-
-            std::int64_t
-            size() const;
-
-            Box<3>
-            bounds() const;
-
-            LineSegment<3>
-            operator[](std::int64_t index) const;
-        };
-
-        class TetrahedronFaces :
-            public SpatialCollection<TetrahedronFaces>
-        {
-        private:
-            Tetrahedron3d _tetrahedron;
-        public:
-            TetrahedronFaces(const Tetrahedron3d& tetrahedron);
-
-            const Tetrahedron3d&
-            tetrahedron() const;
-
-            IndexIterator<TetrahedronFaces>
-            begin() const;
-
-            IndexIterator<TetrahedronFaces>
-            end() const;
-
-            bool
-            isEmpty() const;
-
-            std::int64_t
-            size() const;
-
-            Box<3>
-            bounds() const;
-
-            Triangle<3>
-            operator[](std::int64_t index) const;
-        };
-    }
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
     template <>
     struct ScalingFunction<Tetrahedron3d>
     {
@@ -201,141 +158,6 @@ namespace opensolid
         Tetrahedron3d
         operator()(
             const Tetrahedron3d& tetrahedron,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
-
-    template <>
-    struct EqualityFunction<Tetrahedron3d>
-    {
-        bool
-        operator()(
-            const Tetrahedron3d& firstTetrahedron,
-            const Tetrahedron3d& secondTetrahedron,
-            double precision
-        ) const;
-    };
-
-    template <>
-    struct ScalingFunction<detail::TetrahedronEdges>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            double scale
-        ) const;
-    };
-
-    template <>
-    struct TranslationFunction<detail::TetrahedronEdges>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            const Vector3d& vector
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<detail::TetrahedronEdges, iNumResultDimensions> :
-        public TransformationFunction<
-            SpatialCollection<detail::TetrahedronEdges>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct TransformationFunction<detail::TetrahedronEdges, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            const Matrix3d& matrix
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphingFunction<detail::TetrahedronEdges, iNumResultDimensions> :
-        public MorphingFunction<
-            SpatialCollection<detail::TetrahedronEdges>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct MorphingFunction<detail::TetrahedronEdges, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
-
-    template <>
-    struct ScalingFunction<detail::TetrahedronFaces>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            double scale
-        ) const;
-    };
-
-    template <>
-    struct TranslationFunction<detail::TetrahedronFaces>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            const Vector3d& vector
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<detail::TetrahedronFaces, iNumResultDimensions> :
-        public TransformationFunction<
-            SpatialCollection<detail::TetrahedronFaces>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct TransformationFunction<detail::TetrahedronFaces, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            const Matrix3d& matrix
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphingFunction<detail::TetrahedronFaces, iNumResultDimensions> :
-        public MorphingFunction<
-            SpatialCollection<detail::TetrahedronFaces>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct MorphingFunction<detail::TetrahedronFaces, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
             const ParametricExpression<3, 3>& morphingExpression
         ) const;
     };
