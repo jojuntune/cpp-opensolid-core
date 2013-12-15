@@ -30,9 +30,11 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
+#include <OpenSolid/Core/Intersection.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
@@ -41,6 +43,30 @@
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct BoundsType<LineSegment<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<LineSegment<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+    
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<LineSegment<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef LineSegment<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<LineSegment<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef LineSegment<iNumResultDimensions> Type;
+    };
+
     template <int iNumDimensions>
     class LineSegment :
         public Transformable<LineSegment<iNumDimensions>>
@@ -100,7 +126,7 @@ namespace opensolid
         bool
         operator==(const LineSegment<iNumDimensions>& other) const;
 
-        LineSegmentPlaneIntersection3d
+        Intersection<LineSegment<3>, Plane3d>
         intersection(const Plane3d& plane, double precision = 1e-12) const;
     };
 
@@ -108,7 +134,8 @@ namespace opensolid
     typedef LineSegment<2> LineSegment2d;
     typedef LineSegment<3> LineSegment3d;
 
-    class LineSegmentPlaneIntersection3d
+    template <>
+    class Intersection<LineSegment<3>, Plane3d>
     {
     private:
         LineSegment3d _lineSegment;
@@ -133,7 +160,7 @@ namespace opensolid
         };
     public:
         OPENSOLID_CORE_EXPORT
-        LineSegmentPlaneIntersection3d(
+        Intersection(
             const LineSegment3d& lineSegment,
             const Plane3d& plane,
             double precision = 1e-12
@@ -161,12 +188,18 @@ namespace opensolid
         Point<3>
         point() const;
     };
-}
 
-////////// Specializations //////////
-
-namespace opensolid
-{
+    template <int iNumDimensions>
+    struct EqualityFunction<LineSegment<iNumDimensions>>
+    {
+        bool
+        operator()(
+            const LineSegment<iNumDimensions>& firstLineSegment,
+            const LineSegment<iNumDimensions>& secondLineSegment,
+            double precision
+        ) const;
+    };
+    
     template <int iNumDimensions>
     struct ScalingFunction<LineSegment<iNumDimensions>>
     {
@@ -203,17 +236,6 @@ namespace opensolid
         operator()(
             const LineSegment<iNumDimensions>& lineSegment,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct EqualityFunction<LineSegment<iNumDimensions>>
-    {
-        bool
-        operator()(
-            const LineSegment<iNumDimensions>& firstLineSegment,
-            const LineSegment<iNumDimensions>& secondLineSegment,
-            double precision
         ) const;
     };
 }

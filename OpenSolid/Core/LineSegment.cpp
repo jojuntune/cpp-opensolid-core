@@ -28,7 +28,7 @@
 
 namespace opensolid
 {
-    LineSegmentPlaneIntersection3d::LineSegmentPlaneIntersection3d(
+    Intersection<LineSegment3d, Plane3d>::Intersection(
         const LineSegment3d& lineSegment,
         const Plane3d& plane,
         double precision
@@ -67,7 +67,7 @@ namespace opensolid
     }
 
     Point3d
-    LineSegmentPlaneIntersection3d::point() const {
+    Intersection<LineSegment3d, Plane3d>::point() const {
         if (_type & CROSSING) {
             const Vector3d& startVector = lineSegment().startVertex().vector();
             const Vector3d& endVector = lineSegment().endVertex().vector();

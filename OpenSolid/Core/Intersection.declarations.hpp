@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class LineSegment;
+    template <class TFirst, class TSecond>
+    class Intersection;
 }

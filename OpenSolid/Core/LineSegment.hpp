@@ -167,45 +167,64 @@ namespace opensolid
 
     template <int iNumDimensions>
     inline
-    LineSegmentPlaneIntersection3d
+    Intersection<LineSegment3d, Plane3d>
     LineSegment<iNumDimensions>::intersection(const Plane3d& plane, double precision) const {
-        return LineSegmentPlaneIntersection3d(*this, plane, precision);
+        return Intersection<LineSegment3d, Plane3d>(*this, plane, precision);
     }
 
     inline
     const LineSegment3d&
-    LineSegmentPlaneIntersection3d::lineSegment() const {
+    Intersection<LineSegment3d, Plane3d>::lineSegment() const {
         return _lineSegment;
     }
 
     inline
     const Plane3d&
-    LineSegmentPlaneIntersection3d::plane() const {
+    Intersection<LineSegment3d, Plane3d>::plane() const {
         return _plane;
     }
 
     inline
     double
-    LineSegmentPlaneIntersection3d::precision() const {
+    Intersection<LineSegment3d, Plane3d>::precision() const {
         return _precision;
     }
 
     inline
     bool
-    LineSegmentPlaneIntersection3d::exists() const {
+    Intersection<LineSegment3d, Plane3d>::exists() const {
         return (_type & INTERSECTION) != 0;
     }
 
     inline
     bool
-    LineSegmentPlaneIntersection3d::isPoint() const {
+    Intersection<LineSegment3d, Plane3d>::isPoint() const {
         return (_type & (CROSSING | CONTACT_START | CONTACT_END)) != 0;
     }
 
     inline
     bool
-    LineSegmentPlaneIntersection3d::isCoincident() const {
+    Intersection<LineSegment3d, Plane3d>::isCoincident() const {
         return (_type & COINCIDENT) != 0;
+    }
+
+    template <int iNumDimensions>
+    inline
+    bool
+    EqualityFunction<LineSegment<iNumDimensions>>::operator()(
+        const LineSegment<iNumDimensions>& firstLineSegment,
+        const LineSegment<iNumDimensions>& secondLineSegment,
+        double precision
+    ) const {
+        return detail::equals(
+            firstLineSegment.startVertex(),
+            secondLineSegment.startVertex(),
+            precision
+        ) && detail::equals(
+            firstLineSegment.endVertex(),
+            secondLineSegment.endVertex(),
+            precision
+        );
     }
 
     template <int iNumDimensions>
@@ -257,25 +276,6 @@ namespace opensolid
         return LineSegment<iNumResultDimensions>(
             detail::morphed(lineSegment.startVertex(), morphingExpression),
             detail::morphed(lineSegment.endVertex(), morphingExpression)
-        );
-    }
-
-    template <int iNumDimensions>
-    inline
-    bool
-    EqualityFunction<LineSegment<iNumDimensions>>::operator()(
-        const LineSegment<iNumDimensions>& firstLineSegment,
-        const LineSegment<iNumDimensions>& secondLineSegment,
-        double precision
-    ) const {
-        return detail::equals(
-            firstLineSegment.startVertex(),
-            secondLineSegment.startVertex(),
-            precision
-        ) && detail::equals(
-            firstLineSegment.endVertex(),
-            secondLineSegment.endVertex(),
-            precision
         );
     }
 }
