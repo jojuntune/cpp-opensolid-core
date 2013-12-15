@@ -32,10 +32,10 @@
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.declarations.hpp>
-#include <OpenSolid/Core/ExpressionImplementation.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.declarations.hpp>
 
 #include <typeinfo>
 

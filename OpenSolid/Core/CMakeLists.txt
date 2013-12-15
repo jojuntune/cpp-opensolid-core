@@ -4,7 +4,6 @@
         GLOB
         CORE_SOURCES
         *.cpp
-        ExpressionImplementation/*.cpp
         Matrix/*.cpp
         ParametricCurve/*.cpp
         ParametricExpression/*.cpp
@@ -42,7 +41,6 @@
 
     add_to_global_source_list(
         *
-        ExpressionImplementation/*
         Matrix/*
         ParametricCurve/*
         ParametricExpression/*

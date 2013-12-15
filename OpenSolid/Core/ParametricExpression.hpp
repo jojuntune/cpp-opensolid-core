@@ -31,12 +31,12 @@
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Error.hpp>
-#include <OpenSolid/Core/ExpressionImplementation.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/DeduplicationCache.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/ParametricExpression/DeduplicationCache.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 #include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.hpp>
 
 #include <type_traits>

@@ -28,9 +28,9 @@
 
 #include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.declarations.hpp>
 
-#include <OpenSolid/Core/ExpressionImplementation.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 
 namespace Eigen
 {

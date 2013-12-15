@@ -28,10 +28,10 @@
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.definitions.hpp>
 
-#include <OpenSolid/Core/ExpressionImplementation.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 #include <OpenSolid/Core/ParametricExpression/MatrixArgument.hpp>
 
 namespace opensolid

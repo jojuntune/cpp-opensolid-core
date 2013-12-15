@@ -29,11 +29,11 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 
 #include <OpenSolid/Core/CoordinateSystem.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/ConstantExpression.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/IdentityExpression.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/LinearExpression.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/ParameterExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/LinearExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
 
 namespace opensolid
 {

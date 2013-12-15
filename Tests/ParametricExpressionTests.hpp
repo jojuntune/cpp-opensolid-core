@@ -22,9 +22,9 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/ExpressionImplementation/ConstantExpression.hpp>
-#include <OpenSolid/Core/ExpressionImplementation/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
