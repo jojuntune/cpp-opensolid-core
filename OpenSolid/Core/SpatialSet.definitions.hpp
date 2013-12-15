@@ -46,6 +46,48 @@
 namespace opensolid
 {
     template <class TItem>
+    struct BoundsType<SpatialSet<TItem>>
+    {
+        typedef typename BoundsType<TItem>::Type Type;
+    };
+
+    template <class TItem>
+    struct NumDimensions<SpatialSet<TItem>>
+    {
+        static const int Value = NumDimensions<TItem>::Value;
+    };
+
+    template <class TItem>
+    struct ScaledType<SpatialSet<TItem>> :
+        public ScaledType<SpatialCollection<SpatialSet<TItem>>>
+    {
+    };
+
+    template <class TItem>
+    struct TranslatedType<SpatialSet<TItem>> :
+        public TranslatedType<SpatialCollection<SpatialSet<TItem>>>
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct TransformedType<SpatialSet<TItem>, iNumResultDimensions> :
+        public TransformedType<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct MorphedType<SpatialSet<TItem>, iNumResultDimensions> :
+        public MorphedType<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
+    {
+    };
+
+    template <class TItem>
+    struct IteratorType<SpatialSet<TItem>>
+    {
+        typedef typename std::vector<TItem>::const_iterator Type;
+    };
+
+    template <class TItem>
     class SpatialSet :
         public SpatialCollection<SpatialSet<TItem>>
     {
@@ -153,53 +195,6 @@ namespace opensolid
     template <class TItem>
     std::ostream&
     operator<<(std::ostream& stream, const SpatialSet<TItem>& set);
-}
-    
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <class TItem>
-    struct BoundsType<SpatialSet<TItem>>
-    {
-        typedef typename BoundsType<TItem>::Type Type;
-    };
-
-    template <class TItem>
-    struct NumDimensions<SpatialSet<TItem>>
-    {
-        static const int Value = NumDimensions<TItem>::Value;
-    };
-
-    template <class TItem>
-    struct ScaledType<SpatialSet<TItem>> :
-        public ScaledType<SpatialCollection<SpatialSet<TItem>>>
-    {
-    };
-
-    template <class TItem>
-    struct TranslatedType<SpatialSet<TItem>> :
-        public TranslatedType<SpatialCollection<SpatialSet<TItem>>>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct TransformedType<SpatialSet<TItem>, iNumResultDimensions> :
-        public TransformedType<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct MorphedType<SpatialSet<TItem>, iNumResultDimensions> :
-        public MorphedType<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
-    {
-    };
-
-    template <class TItem>
-    struct IteratorType<SpatialSet<TItem>>
-    {
-        typedef typename std::vector<TItem>::const_iterator Type;
-    };
 
     template <class TItem>
     struct ScalingFunction<SpatialSet<TItem>> :

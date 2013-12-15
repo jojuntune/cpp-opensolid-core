@@ -40,6 +40,108 @@
 
 namespace opensolid
 {
+    template <>
+    struct NumDimensions<double>
+    {
+        static const int Value = 1;
+    };
+
+    template <>
+    struct NumDimensions<Interval>
+    {
+        static const int Value = 1;
+    };
+
+    template <class TTransformable>
+    struct ScaledType
+    {
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable>
+    struct TranslatedType
+    {
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct TransformedType
+    {
+        static_assert(
+            iNumResultDimensions == NumDimensions<TTransformable>::Value,
+            "Must specialize TransformedType<TTransformable, iNumResultDimensions> "
+            "when transforming into a different number of dimensions"
+        );
+
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct MorphedType
+    {
+        static_assert(
+            iNumResultDimensions == NumDimensions<TTransformable>::Value,
+            "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
+            "when morphing into a different number of dimensions"
+        );
+
+        typedef TTransformable Type;
+    };
+
+    template <class TTransformable>
+    struct ScaledAboutPointType
+    {
+        typedef typename TranslatedType<
+            typename ScaledType<
+                typename TranslatedType<
+                    TTransformable
+                >::Type
+            >::Type
+        >::Type Type;
+    };
+
+    template <class TTransformable>
+    struct TransformedAboutPointType
+    {
+        typedef typename TranslatedType<
+            typename TransformedType<
+                typename TranslatedType<TTransformable>::Type,
+                NumDimensions<TTransformable>::Value
+            >::Type
+        >::Type Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct LocalizedType
+    {
+        typedef typename TransformedType<
+            typename TranslatedType<TTransformable>::Type,
+            iNumResultDimensions
+        >::Type Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct GlobalizedType
+    {
+        typedef typename TranslatedType<
+            typename TransformedType<
+                TTransformable,
+                iNumResultDimensions
+            >::Type
+        >::Type Type;
+    };
+
+    template <class TTransformable, int iNumResultDimensions>
+    struct TransplantedType
+    {
+        typedef typename TranslatedType<
+            typename TransformedType<
+                typename TranslatedType<TTransformable>::Type,
+                iNumResultDimensions
+            >::Type
+        >::Type Type;
+    };
+
     template <class TDerived>
     class Transformable
     {
@@ -153,111 +255,4 @@ namespace opensolid
         const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
         const Transformable<TDerived>& transformable
     );
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <>
-    struct NumDimensions<double>
-    {
-        static const int Value = 1;
-    };
-
-    template <>
-    struct NumDimensions<Interval>
-    {
-        static const int Value = 1;
-    };
-
-    template <class TTransformable>
-    struct ScaledType
-    {
-        typedef TTransformable Type;
-    };
-
-    template <class TTransformable>
-    struct TranslatedType
-    {
-        typedef TTransformable Type;
-    };
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct TransformedType
-    {
-        static_assert(
-            iNumResultDimensions == NumDimensions<TTransformable>::Value,
-            "Must specialize TransformedType<TTransformable, iNumResultDimensions> "
-            "when transforming into a different number of dimensions"
-        );
-
-        typedef TTransformable Type;
-    };
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct MorphedType
-    {
-        static_assert(
-            iNumResultDimensions == NumDimensions<TTransformable>::Value,
-            "Must specialize MorphedType<TTransformable, iNumResultDimensions> "
-            "when morphing into a different number of dimensions"
-        );
-
-        typedef TTransformable Type;
-    };
-
-    template <class TTransformable>
-    struct ScaledAboutPointType
-    {
-        typedef typename TranslatedType<
-            typename ScaledType<
-                typename TranslatedType<
-                    TTransformable
-                >::Type
-            >::Type
-        >::Type Type;
-    };
-
-    template <class TTransformable>
-    struct TransformedAboutPointType
-    {
-        typedef typename TranslatedType<
-            typename TransformedType<
-                typename TranslatedType<TTransformable>::Type,
-                NumDimensions<TTransformable>::Value
-            >::Type
-        >::Type Type;
-    };
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct LocalizedType
-    {
-        typedef typename TransformedType<
-            typename TranslatedType<TTransformable>::Type,
-            iNumResultDimensions
-        >::Type Type;
-    };
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct GlobalizedType
-    {
-        typedef typename TranslatedType<
-            typename TransformedType<
-                TTransformable,
-                iNumResultDimensions
-            >::Type
-        >::Type Type;
-    };
-
-    template <class TTransformable, int iNumResultDimensions>
-    struct TransplantedType
-    {
-        typedef typename TranslatedType<
-            typename TransformedType<
-                typename TranslatedType<TTransformable>::Type,
-                iNumResultDimensions
-            >::Type
-        >::Type Type;
-    };
 }

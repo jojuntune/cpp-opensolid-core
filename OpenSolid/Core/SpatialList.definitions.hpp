@@ -38,6 +38,48 @@
 namespace opensolid
 {
     template <class TItem>
+    struct BoundsType<SpatialList<TItem>>
+    {
+        typedef typename BoundsType<TItem>::Type Type;
+    };
+
+    template <class TItem>
+    struct NumDimensions<SpatialList<TItem>>
+    {
+        static const int Value = NumDimensions<TItem>::Value;
+    };
+
+    template <class TItem>
+    struct ScaledType<SpatialList<TItem>> :
+        public ScaledType<SpatialCollection<SpatialList<TItem>>>
+    {
+    };
+
+    template <class TItem>
+    struct TranslatedType<SpatialList<TItem>> :
+        public TranslatedType<SpatialCollection<SpatialList<TItem>>>
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct TransformedType<SpatialList<TItem>, iNumResultDimensions> :
+        public TransformedType<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
+    {
+    };
+
+    template <class TItem, int iNumResultDimensions>
+    struct MorphedType<SpatialList<TItem>, iNumResultDimensions> :
+        public MorphedType<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
+    {
+    };
+
+    template <class TItem>
+    struct IteratorType<SpatialList<TItem>>
+    {
+        typedef typename std::vector<TItem>::const_iterator Type;
+    };
+
+    template <class TItem>
     class SpatialList :
         public SpatialCollection<SpatialList<TItem>>
     {
@@ -91,47 +133,6 @@ namespace opensolid
         void
         clear();
     };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <class TItem>
-    struct IteratorType<SpatialList<TItem>>
-    {
-        typedef typename std::vector<TItem>::const_iterator Type;
-    };
-
-    template <class TItem>
-    struct NumDimensions<SpatialList<TItem>>
-    {
-        static const int Value = NumDimensions<TItem>::Value;
-    };
-
-    template <class TItem>
-    struct ScaledType<SpatialList<TItem>> :
-        public ScaledType<SpatialCollection<SpatialList<TItem>>>
-    {
-    };
-
-    template <class TItem>
-    struct TranslatedType<SpatialList<TItem>> :
-        public TranslatedType<SpatialCollection<SpatialList<TItem>>>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct TransformedType<SpatialList<TItem>, iNumResultDimensions> :
-        public TransformedType<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct MorphedType<SpatialList<TItem>, iNumResultDimensions> :
-        public MorphedType<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
-    {
-    };
 
     template <class TItem>
     struct ScalingFunction<SpatialList<TItem>> :
@@ -155,11 +156,5 @@ namespace opensolid
     struct MorphingFunction<SpatialList<TItem>, iNumResultDimensions> :
         public MorphingFunction<SpatialCollection<SpatialList<TItem>>, iNumResultDimensions>
     {
-    };
-
-    template <class TItem>
-    struct BoundsType<SpatialList<TItem>>
-    {
-        typedef typename BoundsType<TItem>::Type Type;
     };
 }

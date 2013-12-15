@@ -8,6 +8,7 @@
         Matrix/*.cpp
         ParametricCurve/*.cpp
         ParametricExpression/*.cpp
+        Position/*.cpp
         Simplex/*.cpp
         SpatialCollection/*.cpp
         Variant/*.cpp
@@ -45,8 +46,8 @@
         Matrix/*
         ParametricCurve/*
         ParametricExpression/*
+        Position/*
+        Simplex/*
         SpatialCollection/*
-        SpatialList/*
-        SpatialSet/*
         Variant/*
     )

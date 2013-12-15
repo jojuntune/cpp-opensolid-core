@@ -26,8 +26,26 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Position/PositionType.declarations.hpp>
+
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Point;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        struct PositionType<double, iNumDimensions>
+        {
+            typedef Point<iNumDimensions> Type;
+        };
+
+        template <int iNumDimensions>
+        struct PositionType<Interval, iNumDimensions>
+        {
+            typedef Box<iNumDimensions> Type;
+        };
+    }
 }

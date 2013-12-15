@@ -28,6 +28,9 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Point;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class PointBase;
+    }
 }

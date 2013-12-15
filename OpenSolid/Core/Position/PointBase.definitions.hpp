@@ -26,8 +26,68 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Position/PointBase.declarations.hpp>
+
+#include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Point.declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class Point;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class PointBase
+        {
+        private:
+            Matrix<double, iNumDimensions, 1> _vector;
+        protected:
+            PointBase();
+
+            template <class TVector>
+            PointBase(const EigenBase<TVector>& vector);
+
+            PointBase(double value);
+
+            PointBase(double x, double y);
+
+            PointBase(double x, double y, double z);
+        public:
+            const Matrix<double, iNumDimensions, 1>&
+            vector() const;
+
+            Matrix<double, iNumDimensions, 1>&
+            vector();
+
+            const double*
+            data() const;
+            
+            double*
+            data();
+
+            double&
+            operator()(int index);
+            
+            double
+            operator()(int index) const;
+
+            Box<iNumDimensions>
+            hull(const Point<iNumDimensions>& other) const;
+
+            bool
+            isOrigin(double precision = 1e-12) const;
+
+            bool
+            operator==(const Point<iNumDimensions>& other) const;
+
+            Matrix<double, iNumDimensions, 1>
+            operator-(const Point<iNumDimensions>& other) const;
+
+            Matrix<Interval, iNumDimensions, 1>
+            operator-(const Box<iNumDimensions>& box) const;
+
+            static Point<iNumDimensions>
+            Origin();
+        };
+    }
 }

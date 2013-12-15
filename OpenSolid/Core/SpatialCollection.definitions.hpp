@@ -42,6 +42,64 @@
 namespace opensolid
 {
     template <class TDerived>
+    struct BoundsType<SpatialCollection<TDerived>>
+    {
+        typedef typename BoundsType<typename ItemType<TDerived>::Type>::Type Type;
+    };
+
+    template <class TDerived>
+    struct NumDimensions<SpatialCollection<TDerived>>
+    {
+        static const int Value = NumDimensions<typename ItemType<TDerived>::Type>::Value;
+    };
+
+    template <class TDerived>
+    struct ScaledType<SpatialCollection<TDerived>>
+    {
+        typedef detail::ScaledCollection<TDerived> Type;
+    };
+
+    template <class TDerived>
+    struct TranslatedType<SpatialCollection<TDerived>>
+    {
+        typedef detail::TranslatedCollection<TDerived> Type;
+    };
+
+    template <class TDerived, int iNumResultDimensions>
+    struct TransformedType<SpatialCollection<TDerived>, iNumResultDimensions>
+    {
+        typedef detail::TransformedCollection<TDerived, iNumResultDimensions> Type;
+    };
+
+    template <class TDerived, int iNumResultDimensions>
+    struct MorphedType<SpatialCollection<TDerived>, iNumResultDimensions>
+    {
+        typedef detail::MorphedCollection<TDerived, iNumResultDimensions> Type;
+    };
+    
+    template <class TCollection>
+    struct IteratorType
+    {
+        typedef detail::IndexIterator<TCollection> Type;
+    };
+
+    template <class TCollection>
+    struct ItemType
+    {
+        typedef typename std::iterator_traits<
+            typename IteratorType<TCollection>::Type
+        >::value_type Type;
+    };
+
+    template <class TCollection>
+    struct ItemReferenceType
+    {
+        typedef typename std::iterator_traits<
+            typename IteratorType<TCollection>::Type
+        >::reference Type;
+    };
+
+    template <class TDerived>
     class SpatialCollection :
         public Transformable<TDerived>
     {
@@ -99,63 +157,6 @@ namespace opensolid
 
         operator std::vector<typename ItemType<TDerived>::Type>() const;
     };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <class TCollection>
-    struct IteratorType
-    {
-        typedef detail::IndexIterator<TCollection> Type;
-    };
-
-    template <class TCollection>
-    struct ItemType
-    {
-        typedef typename std::iterator_traits<
-            typename IteratorType<TCollection>::Type
-        >::value_type Type;
-    };
-
-    template <class TCollection>
-    struct ItemReferenceType
-    {
-        typedef typename std::iterator_traits<
-            typename IteratorType<TCollection>::Type
-        >::reference Type;
-    };
-
-    template <class TDerived>
-    struct NumDimensions<SpatialCollection<TDerived>>
-    {
-        static const int Value = NumDimensions<typename ItemType<TDerived>::Type>::Value;
-    };
-
-    template <class TDerived>
-    struct ScaledType<SpatialCollection<TDerived>>
-    {
-        typedef detail::ScaledCollection<TDerived> Type;
-    };
-
-    template <class TDerived>
-    struct TranslatedType<SpatialCollection<TDerived>>
-    {
-        typedef detail::TranslatedCollection<TDerived> Type;
-    };
-
-    template <class TDerived, int iNumResultDimensions>
-    struct TransformedType<SpatialCollection<TDerived>, iNumResultDimensions>
-    {
-        typedef detail::TransformedCollection<TDerived, iNumResultDimensions> Type;
-    };
-
-    template <class TDerived, int iNumResultDimensions>
-    struct MorphedType<SpatialCollection<TDerived>, iNumResultDimensions>
-    {
-        typedef detail::MorphedCollection<TDerived, iNumResultDimensions> Type;
-    };
 
     template <class TDerived>
     struct ScalingFunction<SpatialCollection<TDerived>>
@@ -197,11 +198,5 @@ namespace opensolid
                 NumDimensions<TDerived>::Value
             >& morphingExpression
         ) const;
-    };
-
-    template <class TDerived>
-    struct BoundsType<SpatialCollection<TDerived>>
-    {
-        typedef typename BoundsType<typename ItemType<TDerived>::Type>::Type Type;
     };
 }

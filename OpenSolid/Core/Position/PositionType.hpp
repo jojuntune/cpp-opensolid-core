@@ -26,8 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace opensolid
-{
-    template <int iNumDimensions>
-    class Point;
-}
+#include <OpenSolid/Core/Position/PositionType.definitions.hpp>

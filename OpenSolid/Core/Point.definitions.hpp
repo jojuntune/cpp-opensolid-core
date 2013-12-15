@@ -37,83 +37,37 @@
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
+#include <OpenSolid/Core/Position/PositionType.declarations.hpp>
+#include <OpenSolid/Core/Position/PointBase.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 
 #include <ostream>
 
 namespace opensolid
 {
-    namespace detail
+    template <int iNumDimensions>
+    struct BoundsType<Point<iNumDimensions>>
     {
-        template <class TScalar, int iNumDimensions>
-        struct Position;
+        typedef Box<iNumDimensions> Type;
+    };
 
-        template <int iNumDimensions>
-        struct Position<double, iNumDimensions>
-        {
-            typedef Point<iNumDimensions> Type;
-        };
+    template <int iNumDimensions>
+    struct NumDimensions<Point<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
 
-        template <int iNumDimensions>
-        struct Position<Interval, iNumDimensions>
-        {
-            typedef Box<iNumDimensions> Type;
-        };
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Point<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Point<iNumResultDimensions> Type;
+    };
 
-        template <int iNumDimensions>
-        class PointBase
-        {
-        private:
-            Matrix<double, iNumDimensions, 1> _vector;
-        protected:
-            PointBase();
-
-            template <class TVector>
-            PointBase(const EigenBase<TVector>& vector);
-
-            PointBase(double value);
-
-            PointBase(double x, double y);
-
-            PointBase(double x, double y, double z);
-        public:
-            const Matrix<double, iNumDimensions, 1>&
-            vector() const;
-
-            Matrix<double, iNumDimensions, 1>&
-            vector();
-
-            const double*
-            data() const;
-            
-            double*
-            data();
-
-            double&
-            operator()(int index);
-            
-            double
-            operator()(int index) const;
-
-            Box<iNumDimensions>
-            hull(const Point<iNumDimensions>& other) const;
-
-            bool
-            isOrigin(double precision = 1e-12) const;
-
-            bool
-            operator==(const Point<iNumDimensions>& other) const;
-
-            Matrix<double, iNumDimensions, 1>
-            operator-(const Point<iNumDimensions>& other) const;
-
-            Matrix<Interval, iNumDimensions, 1>
-            operator-(const Box<iNumDimensions>& box) const;
-
-            static Point<iNumDimensions>
-            Origin();
-        };
-    }
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<Point<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Point<iNumResultDimensions> Type;
+    };
 
     template <>
     class Point<1> :
@@ -222,22 +176,35 @@ namespace opensolid
     typedef Point<3> Point3d;
 
     template <int iNumDimensions, class TVector>
-    typename detail::Position<typename TVector::Scalar, iNumDimensions>::Type
+    typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type
     operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
 
     template <int iNumDimensions, class TVector>
-    typename detail::Position<typename TVector::Scalar, iNumDimensions>::Type
+    typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type
     operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
 
     template <int iNumDimensions>
     std::ostream&
     operator<<(std::ostream& stream, const Point<iNumDimensions>& point);
-}
 
-////////// Specializations //////////
+    template <int iNumDimensions>
+    struct EqualityFunction<Point<iNumDimensions>>
+    {
+        bool
+        operator()(
+            const Point<iNumDimensions>& firstPoint,
+            const Point<iNumDimensions>& secondPoint,
+            double precision
+        ) const;
+    };
 
-namespace opensolid
-{
+    template <int iNumDimensions>
+    struct BoundsFunction<Point<iNumDimensions>>
+    {
+        Box<iNumDimensions>
+        operator()(const Point<iNumDimensions>& point) const;
+    };
+
     template <int iNumDimensions>
     struct ScalingFunction<Point<iNumDimensions>>
     {
@@ -271,24 +238,6 @@ namespace opensolid
         operator()(
             const Point<iNumDimensions>& point,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct BoundsFunction<Point<iNumDimensions>>
-    {
-        Box<iNumDimensions>
-        operator()(const Point<iNumDimensions>& point) const;
-    };
-
-    template <int iNumDimensions>
-    struct EqualityFunction<Point<iNumDimensions>>
-    {
-        bool
-        operator()(
-            const Point<iNumDimensions>& firstPoint,
-            const Point<iNumDimensions>& secondPoint,
-            double precision
         ) const;
     };
 }
