@@ -607,6 +607,26 @@ namespace opensolid
 {
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     inline
+    bool
+    EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
+        double precision
+    ) const {
+        return (firstMatrix - secondMatrix).isZero(precision);
+    }
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    inline
+    typename BoundsFunction< Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::CastType
+    BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
+        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& matrix
+    ) const {
+        return matrix.template cast<Interval>();
+    }
+    
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    inline
     Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
     ScalingFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
         const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
@@ -646,25 +666,5 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return matrix.derived().template cast<TScalar>() * argument;
-    }
-
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    inline
-    typename BoundsFunction< Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::CastType
-    BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
-        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& matrix
-    ) const {
-        return matrix.template cast<Interval>();
-    }
-
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    inline
-    bool
-    EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>::operator()(
-        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
-        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
-        double precision
-    ) const {
-        return (firstMatrix - secondMatrix).isZero(precision);
     }
 }

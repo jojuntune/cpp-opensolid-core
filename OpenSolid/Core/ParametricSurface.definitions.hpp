@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/ParametricSurface.declarations.hpp>
 
 #include <OpenSolid/Core/BoundedArea.definitions.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
@@ -37,6 +38,18 @@
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<ParametricSurface3d>
+    {
+        typedef Box<3> Type;
+    };
+
+    template <>
+    struct NumDimensions<ParametricSurface3d>
+    {
+        static const int Value = 3;
+    };
+
     class ParametricSurface3d :
         public Transformable<ParametricSurface3d>
     {
@@ -74,12 +87,7 @@ namespace opensolid
         ParametricExpression<3, 2>
         normalVector() const;
     };
-}
 
-////////// Specializations //////////
-
-namespace opensolid
-{
     template <>
     struct ScalingFunction<ParametricSurface3d>
     {

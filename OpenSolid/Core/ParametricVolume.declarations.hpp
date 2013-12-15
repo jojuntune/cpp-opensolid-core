@@ -26,23 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     class ParametricVolume3d;
-
-    template <>
-    struct NumDimensions<ParametricVolume3d>
-    {
-        static const int Value = 3;
-    };
-
-    template <>
-    struct BoundsType<ParametricVolume3d>
-    {
-        typedef Box<3> Type;
-    };
 }

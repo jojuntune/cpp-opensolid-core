@@ -26,23 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     class ParametricArea2d;
-
-    template <>
-    struct NumDimensions<ParametricArea2d>
-    {
-        static const int Value = 2;
-    };
-
-    template <>
-    struct BoundsType<ParametricArea2d>
-    {
-        typedef Box<2> Type;
-    };
 }

@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/ParametricArea.declarations.hpp>
 
 #include <OpenSolid/Core/BoundedArea.definitions.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
@@ -37,6 +38,18 @@
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<ParametricArea2d>
+    {
+        typedef Box<2> Type;
+    };
+
+    template <>
+    struct NumDimensions<ParametricArea2d>
+    {
+        static const int Value = 2;
+    };
+
     class ParametricArea2d :
         public Transformable<ParametricArea2d>
     {
@@ -71,12 +84,7 @@ namespace opensolid
         Box<2>
         evaluate(Interval u, Interval v) const;
     };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
+    
     template <>
     struct ScalingFunction<ParametricArea2d>
     {

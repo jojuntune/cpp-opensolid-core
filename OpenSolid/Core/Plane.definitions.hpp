@@ -32,9 +32,16 @@
 #include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
 
 namespace opensolid
 {
+    template <>
+    struct NumDimensions<Plane3d>
+    {
+        static const int Value = 3;
+    };
+
     class Plane3d :
         public Transformable<Plane3d>
     {
@@ -118,12 +125,7 @@ namespace opensolid
         PlanarCoordinateSystem3d
         coordinateSystem() const;
     };
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
+    
     template <>
     struct ScalingFunction<Plane3d>
     {

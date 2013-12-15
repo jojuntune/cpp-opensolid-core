@@ -26,15 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-
 namespace opensolid
 {
     class Plane3d;
-    
-    template <>
-    struct NumDimensions<Plane3d>
-    {
-        static const int Value = 3;
-    };
 }

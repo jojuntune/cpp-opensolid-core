@@ -37,6 +37,12 @@
 namespace opensolid
 {
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct BoundsType<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    {
+        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> Type;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
     struct NumDimensions<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {
         static const int Value = iRows;
@@ -66,28 +72,33 @@ namespace opensolid
         > Type;
     };
 
-    template <
-        class TScalar,
-        int iRows,
-        int iCols,
-        int iOptions,
-        int iMaxRows,
-        int iMaxCols,
-        int iNumResultDimensions
-    >
-    struct MorphedType<
-        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
-        iNumResultDimensions
-    >
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
     {
-        typedef Matrix<
-            TScalar,
-            iNumResultDimensions,
-            iCols,
-            iOptions,
-            iNumResultDimensions,
-            iMaxCols
-        > Type;
+        bool
+        operator()(
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
+            double precision
+        ) const;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
+    struct BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    {
+        typedef typename internal::conditional<
+            internal::is_same<TScalar, Interval>::value,
+            const Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols>&,
+            const CwiseUnaryOp<
+                internal::scalar_cast_op<TScalar, Interval>,
+                const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
+            >
+        >::type CastType;
+
+        CastType
+        operator()(
+            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument
+        ) const;
     };
 
     template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
@@ -130,41 +141,6 @@ namespace opensolid
         operator()(
             const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
             const EigenBase<TMatrix>& matrix
-        ) const;
-    };
-
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct BoundsType<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
-    {
-        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> Type;
-    };
-
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
-    {
-        typedef typename internal::conditional<
-            internal::is_same<TScalar, Interval>::value,
-            const Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols>&,
-            const CwiseUnaryOp<
-                internal::scalar_cast_op<TScalar, Interval>,
-                const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-            >
-        >::type CastType;
-
-        CastType
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument
-        ) const;
-    };
-
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
-    {
-        bool
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
-            double precision
         ) const;
     };
 }

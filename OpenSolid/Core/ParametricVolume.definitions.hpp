@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/ParametricVolume.declarations.hpp>
 
 #include <OpenSolid/Core/BoundedVolume.definitions.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
@@ -37,6 +38,18 @@
 
 namespace opensolid
 {
+    template <>
+    struct BoundsType<ParametricVolume3d>
+    {
+        typedef Box<3> Type;
+    };
+
+    template <>
+    struct NumDimensions<ParametricVolume3d>
+    {
+        static const int Value = 3;
+    };
+
     class ParametricVolume3d :
         public Transformable<ParametricVolume3d>
     {
@@ -71,12 +84,7 @@ namespace opensolid
         Box<3>
         evaluate(Interval u, Interval v, Interval w) const;
     };
-}
 
-////////// Specializations //////////
-
-namespace opensolid
-{
     template <>
     struct ScalingFunction<ParametricVolume3d>
     {

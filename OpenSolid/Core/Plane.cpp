@@ -24,9 +24,7 @@
 
 #include <OpenSolid/Core/Plane.hpp>
 
-#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/Point.hpp>
 
 namespace opensolid
 {

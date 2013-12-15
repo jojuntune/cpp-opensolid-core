@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 
 #include <OpenSolid/Core/Box.definitions.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve/CurveConstructors.hpp>
@@ -38,6 +39,30 @@
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct BoundsType<ParametricCurve<iNumDimensions>>
+    {
+        typedef Box<iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct NumDimensions<ParametricCurve<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef ParametricCurve<iNumResultDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct MorphedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef ParametricCurve<iNumResultDimensions> Type;
+    };
+
     template <int iNumDimensions>
     class ParametricCurve :
         public CurveConstructors<iNumDimensions>,
@@ -94,29 +119,10 @@ namespace opensolid
 
         Point<iNumDimensions>
         endPoint() const;
-
-
     };
 
     typedef ParametricCurve<2> ParametricCurve2d;
     typedef ParametricCurve<3> ParametricCurve3d;
-}
-
-////////// Specializations //////////
-
-namespace opensolid
-{
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef ParametricCurve<iNumResultDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<ParametricCurve<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef ParametricCurve<iNumResultDimensions> Type;
-    };
 
     template <int iNumDimensions>
     struct ScalingFunction<ParametricCurve<iNumDimensions>>
