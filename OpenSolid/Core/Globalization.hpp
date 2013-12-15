@@ -59,8 +59,8 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes> template <class TTransformable>
     typename GlobalizedType<TTransformable, iNumDimensions>::Type
     Globalization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
-        return detail::translated(
-            detail::transformed(transformable, transformationMatrix()),
+        return translationFunction(
+            transformationFunction(transformable, transformationMatrix()),
             originPoint().vector()
         );
     }

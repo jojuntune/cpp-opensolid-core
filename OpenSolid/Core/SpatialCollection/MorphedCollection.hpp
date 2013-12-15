@@ -127,7 +127,7 @@ namespace opensolid
         inline
         typename MorphedType<typename BoundsType<TBaseCollection>::Type, iNumResultDimensions>::Type
         MorphedCollection<TBaseCollection, iNumResultDimensions>::bounds() const {
-            return detail::morphed(baseCollection().bounds(), morphingExpression());
+            return morphingFunction(baseCollection().bounds(), morphingExpression());
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -150,7 +150,7 @@ namespace opensolid
         inline
         typename MorphedType<typename ItemType<TBaseCollection>::Type, iNumResultDimensions>::Type
         MorphedCollectionIterator<TBaseCollection, iNumResultDimensions>::dereference() const {
-            return detail::morphed(*_baseIterator, *_morphingExpressionPtr);
+            return morphingFunction(*_baseIterator, *_morphingExpressionPtr);
         }
 
         template <class TBaseCollection, int iNumResultDimensions>

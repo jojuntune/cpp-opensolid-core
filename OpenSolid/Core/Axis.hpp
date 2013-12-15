@@ -166,7 +166,7 @@ namespace opensolid
     ) const {
         double directionScale = scale >= 0.0 ? 1.0 : -1.0;
         return Axis<iNumDimensions>(
-            detail::scaled(axis.originPoint(), scale),
+            scalingFunction(axis.originPoint(), scale),
             directionScale * axis.directionVector()
         );
     }
@@ -194,7 +194,7 @@ namespace opensolid
         }
         transformedDirection *= (1.0 / transformedNorm);
         return Axis<iNumResultDimensions>(
-            detail::transformed(axis.originPoint(), matrix.derived()),
+            transformationFunction(axis.originPoint(), matrix.derived()),
             transformedDirection
         );
     }
@@ -213,7 +213,7 @@ namespace opensolid
         }
         morphedDirection *= (1.0 / morphedNorm);
         return Axis<iNumResultDimensions>(
-            detail::morphed(axis.originPoint(), morphingExpression),
+            morphingFunction(axis.originPoint(), morphingExpression),
             morphedDirection
         );
     }

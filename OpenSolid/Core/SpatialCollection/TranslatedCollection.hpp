@@ -121,7 +121,7 @@ namespace opensolid
         inline
         typename TranslatedType<typename BoundsType<TBaseCollection>::Type>::Type
         TranslatedCollection<TBaseCollection>::bounds() const {
-            return detail::translated(baseCollection().bounds(), vector());
+            return translationFunction(baseCollection().bounds(), vector());
         }
 
         template <class TBaseCollection>
@@ -145,7 +145,7 @@ namespace opensolid
         inline
         typename TranslatedType<typename ItemType<TBaseCollection>::Type>::Type
         TranslatedCollectionIterator<TBaseCollection>::dereference() const {
-            return detail::translated(*_baseIterator, *_vectorPtr);
+            return translationFunction(*_baseIterator, *_vectorPtr);
         }
 
         template <class TBaseCollection>

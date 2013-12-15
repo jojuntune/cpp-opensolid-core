@@ -114,9 +114,10 @@ namespace opensolid
         const Tetrahedron3d& secondTetrahedron,
         double precision
     ) const {
-        return detail::equals(firstTetrahedron.vertex(0), secondTetrahedron.vertex(0), precision) &&
-            detail::equals(firstTetrahedron.vertex(1), secondTetrahedron.vertex(1), precision) &&
-            detail::equals(firstTetrahedron.vertex(2), secondTetrahedron.vertex(2), precision) &&
-            detail::equals(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision);
+        return
+            equalityFunction(firstTetrahedron.vertex(0), secondTetrahedron.vertex(0), precision) &&
+            equalityFunction(firstTetrahedron.vertex(1), secondTetrahedron.vertex(1), precision) &&
+            equalityFunction(firstTetrahedron.vertex(2), secondTetrahedron.vertex(2), precision) &&
+            equalityFunction(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision);
     }
 }

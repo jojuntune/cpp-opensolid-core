@@ -124,7 +124,7 @@ namespace opensolid
             iNumResultDimensions
         >::Type
         TransformedCollection<TBaseCollection, iNumResultDimensions>::bounds() const {
-            return detail::transformed(baseCollection().bounds(), transformationMatrix());
+            return transformationFunction(baseCollection().bounds(), transformationMatrix());
         }
 
         template <class TBaseCollection, int iNumResultDimensions>
@@ -151,7 +151,7 @@ namespace opensolid
             iNumResultDimensions
         >::Type
         TransformedCollectionIterator<TBaseCollection, iNumResultDimensions>::dereference() const {
-            return detail::transformed(*_baseIterator, *_transformationMatrixPtr);
+            return transformationFunction(*_baseIterator, *_transformationMatrixPtr);
         }
 
         template <class TBaseCollection, int iNumResultDimensions>

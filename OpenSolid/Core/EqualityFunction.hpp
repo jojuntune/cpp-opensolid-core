@@ -42,16 +42,14 @@ namespace opensolid
         return firstValue - secondValue == Zero(precision);
     }
 
-    namespace detail
-    {
-        template <class TEquatable>
-        bool
-        equals(
-            const TEquatable& firstArgument,
-            const TEquatable& secondArgument,
-            double precision
-        ) {
-            return EqualityFunction<TEquatable>()(firstArgument, secondArgument, precision);
-        }
+    template <class TEquatable>
+    inline
+    bool
+    equalityFunction(
+        const TEquatable& firstArgument,
+        const TEquatable& secondArgument,
+        double precision
+    ) {
+        return EqualityFunction<TEquatable>()(firstArgument, secondArgument, precision);
     }
 }

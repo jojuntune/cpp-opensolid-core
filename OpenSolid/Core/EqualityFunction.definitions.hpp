@@ -37,10 +37,11 @@ namespace opensolid
         operator()(double firstValue, double secondValue, double precision) const;
     };
 
-    namespace detail
-    {
-        template <class TEquatable>
-        bool
-        equals(const TEquatable& firstArgument, const TEquatable& secondArgument, double precision);
-    }
+    template <class TEquatable>
+    bool
+    equalityFunction(
+        const TEquatable& firstArgument,
+        const TEquatable& secondArgument,
+        double precision
+    );
 }

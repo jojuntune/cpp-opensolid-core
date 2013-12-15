@@ -53,7 +53,7 @@ namespace opensolid
     ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
         double normalScale = scale >= 0.0 ? 1.0 : -1.0;
         return Plane3d(
-            detail::scaled(plane.originPoint(), scale),
+            scalingFunction(plane.originPoint(), scale),
             normalScale * plane.normalVector()
         );
     }

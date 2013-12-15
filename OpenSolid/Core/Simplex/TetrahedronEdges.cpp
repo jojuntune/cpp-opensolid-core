@@ -31,7 +31,7 @@ namespace opensolid
         const detail::TetrahedronEdges& tetrahedronEdges,
         double scale
     ) const {
-        return detail::scaled(tetrahedronEdges.tetrahedron(), scale).edges();
+        return scalingFunction(tetrahedronEdges.tetrahedron(), scale).edges();
     }
 
     detail::TetrahedronEdges
@@ -39,7 +39,7 @@ namespace opensolid
         const detail::TetrahedronEdges& tetrahedronEdges,
         const Vector3d& vector
     ) const {
-        return detail::translated(tetrahedronEdges.tetrahedron(), vector).edges();
+        return translationFunction(tetrahedronEdges.tetrahedron(), vector).edges();
     }
 
     detail::TetrahedronEdges
@@ -47,7 +47,7 @@ namespace opensolid
         const detail::TetrahedronEdges& tetrahedronEdges,
         const Matrix3d& matrix
     ) const {
-        return detail::transformed(tetrahedronEdges.tetrahedron(), matrix).edges();
+        return transformationFunction(tetrahedronEdges.tetrahedron(), matrix).edges();
     }
 
     detail::TetrahedronEdges
@@ -55,6 +55,6 @@ namespace opensolid
         const detail::TetrahedronEdges& tetrahedronEdges,
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
-        return detail::morphed(tetrahedronEdges.tetrahedron(), morphingExpression).edges();
+        return morphingFunction(tetrahedronEdges.tetrahedron(), morphingExpression).edges();
     }
 }

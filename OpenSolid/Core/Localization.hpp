@@ -60,8 +60,8 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes> template <class TTransformable>
     typename LocalizedType<TTransformable, iNumAxes>::Type
     Localization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
-        return detail::transformed(
-            detail::translated(transformable, -originPoint().vector()),
+        return transformationFunction(
+            translationFunction(transformable, -originPoint().vector()),
             transformationMatrix()
         );
     }

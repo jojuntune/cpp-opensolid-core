@@ -110,10 +110,10 @@ namespace opensolid
         double scale
     ) const {
         return Tetrahedron3d(
-            detail::scaled(tetrahedron.vertex(0), scale),
-            detail::scaled(tetrahedron.vertex(1), scale),
-            detail::scaled(tetrahedron.vertex(2), scale),
-            detail::scaled(tetrahedron.vertex(3), scale)
+            scalingFunction(tetrahedron.vertex(0), scale),
+            scalingFunction(tetrahedron.vertex(1), scale),
+            scalingFunction(tetrahedron.vertex(2), scale),
+            scalingFunction(tetrahedron.vertex(3), scale)
         );
     }
 
@@ -123,10 +123,10 @@ namespace opensolid
         const Vector3d& vector
     ) const {
         return Tetrahedron3d(
-            detail::translated(tetrahedron.vertex(0), vector),
-            detail::translated(tetrahedron.vertex(1), vector),
-            detail::translated(tetrahedron.vertex(2), vector),
-            detail::translated(tetrahedron.vertex(3), vector)
+            translationFunction(tetrahedron.vertex(0), vector),
+            translationFunction(tetrahedron.vertex(1), vector),
+            translationFunction(tetrahedron.vertex(2), vector),
+            translationFunction(tetrahedron.vertex(3), vector)
         );
     }
 
@@ -136,10 +136,10 @@ namespace opensolid
         const Matrix3d& matrix
     ) const {
         return Tetrahedron3d(
-            detail::transformed(tetrahedron.vertex(0), matrix),
-            detail::transformed(tetrahedron.vertex(1), matrix),
-            detail::transformed(tetrahedron.vertex(2), matrix),
-            detail::transformed(tetrahedron.vertex(3), matrix)
+            transformationFunction(tetrahedron.vertex(0), matrix),
+            transformationFunction(tetrahedron.vertex(1), matrix),
+            transformationFunction(tetrahedron.vertex(2), matrix),
+            transformationFunction(tetrahedron.vertex(3), matrix)
         );
     }
 
@@ -149,10 +149,10 @@ namespace opensolid
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
         return Tetrahedron3d(
-            detail::morphed(tetrahedron.vertex(0), morphingExpression),
-            detail::morphed(tetrahedron.vertex(1), morphingExpression),
-            detail::morphed(tetrahedron.vertex(2), morphingExpression),
-            detail::morphed(tetrahedron.vertex(3), morphingExpression)
+            morphingFunction(tetrahedron.vertex(0), morphingExpression),
+            morphingFunction(tetrahedron.vertex(1), morphingExpression),
+            morphingFunction(tetrahedron.vertex(2), morphingExpression),
+            morphingFunction(tetrahedron.vertex(3), morphingExpression)
         );
     }
 }

@@ -217,30 +217,27 @@ namespace opensolid
         ) const;
     };
 
-    namespace detail
-    {
-        template <class TTransformable>
-        typename ScaledType<TTransformable>::Type
-        scaled(const TTransformable& transformable, double scale);
+    template <class TTransformable>
+    typename ScaledType<TTransformable>::Type
+    scalingFunction(const TTransformable& transformable, double scale);
 
-        template <class TTransformable, class TVector>
-        typename TranslatedType<TTransformable>::Type
-        translated(const TTransformable& transformable, const EigenBase<TVector>& vector);
+    template <class TTransformable, class TVector>
+    typename TranslatedType<TTransformable>::Type
+    translationFunction(const TTransformable& transformable, const EigenBase<TVector>& vector);
 
-        template <class TTransformable, class TMatrix>
-        typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
-        transformed(const TTransformable& transformable, const EigenBase<TMatrix>& matrix);
+    template <class TTransformable, class TMatrix>
+    typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
+    transformationFunction(const TTransformable& transformable, const EigenBase<TMatrix>& matrix);
 
-        template <class TTransformable, int iNumResultDimensions>
-        typename MorphedType<TTransformable, iNumResultDimensions>::Type
-        morphed(
-            const TTransformable& transformable,
-            const ParametricExpression<
-                iNumResultDimensions,
-                NumDimensions<TTransformable>::Value
-            >& morphingExpression
-        );
-    }
+    template <class TTransformable, int iNumResultDimensions>
+    typename MorphedType<TTransformable, iNumResultDimensions>::Type
+    morphingFunction(
+        const TTransformable& transformable,
+        const ParametricExpression<
+            iNumResultDimensions,
+            NumDimensions<TTransformable>::Value
+        >& morphingExpression
+    );
 
     template <class TDerived, int iNumAxes>
     typename LocalizedType<TDerived, iNumAxes>::Type

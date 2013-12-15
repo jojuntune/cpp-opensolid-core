@@ -73,9 +73,9 @@ namespace opensolid
     Transplant<iNumSourceDimensions, iNumResultDimensions>::operator()(
         const TTransformable& transformable
     ) const {
-        return detail::translated(
-            detail::transformed(
-                detail::translated(transformable, -sourceOriginPoint().vector()),
+        return translationFunction(
+            transformationFunction(
+                translationFunction(transformable, -sourceOriginPoint().vector()),
                 transformationMatrix()
             ),
             destinationOriginPoint().vector()

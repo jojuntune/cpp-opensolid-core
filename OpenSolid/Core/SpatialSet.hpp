@@ -445,7 +445,7 @@ namespace opensolid
             FilteredIterator filteredIterator(rootNode(), &overlapPredicate);
             FilteredIterator filteredEnd(nullptr, &overlapPredicate);
             while (filteredIterator != filteredEnd) {
-                if (detail::equals(item, *filteredIterator, precision)) {
+                if (equalityFunction(item, *filteredIterator, precision)) {
                     return begin() + (&(*filteredIterator) - _dataPtr->items.data());
                 }
                 ++filteredIterator;
@@ -491,7 +491,7 @@ namespace opensolid
                     } else {
                         // Leaf node: check for duplicate items, then move to next node
                         const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
-                        if (detail::equals(*anchorItemPtr, *candidateItemPtr, precision)) {
+                        if (equalityFunction(*anchorItemPtr, *candidateItemPtr, precision)) {
                             std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
                             assert(mapping[candidateItemIndex] == -1);
                             mapping[candidateItemIndex] = uniqueIndex;

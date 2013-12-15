@@ -175,7 +175,7 @@ namespace opensolid
             throw PlaceholderError();
         }
         transformedNormal *= (1.0 / transformedNorm);
-        return Plane3d(detail::transformed(plane.originPoint(), matrix), transformedNormal);
+        return Plane3d(transformationFunction(plane.originPoint(), matrix), transformedNormal);
     }
 
     Plane3d
@@ -190,6 +190,6 @@ namespace opensolid
             throw PlaceholderError();
         }
         morphedNormal *= (1.0 / morphedNorm);
-        return Plane3d(detail::morphed(plane.originPoint(), morphingExpression), morphedNormal);
+        return Plane3d(morphingFunction(plane.originPoint(), morphingExpression), morphedNormal);
     }
 }

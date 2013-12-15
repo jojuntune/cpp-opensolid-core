@@ -81,9 +81,9 @@ namespace opensolid
         const Triangle<iNumDimensions>& secondTriangle,
         double precision
     ) const {
-        return detail::equals(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
-            detail::equals(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
-            detail::equals(firstTriangle.vertex(2), secondTriangle.vertex(2), precision);
+        return equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
+            equalityFunction(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
+            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision);
     }
 
     template <int iNumDimensions>
@@ -93,9 +93,9 @@ namespace opensolid
         double scale
     ) const {
         return Triangle<iNumDimensions>(
-            detail::scaled(triangle.vertex(0), scale),
-            detail::scaled(triangle.vertex(1), scale),
-            detail::scaled(triangle.vertex(2), scale)
+            scalingFunction(triangle.vertex(0), scale),
+            scalingFunction(triangle.vertex(1), scale),
+            scalingFunction(triangle.vertex(2), scale)
         );
     }
 
@@ -106,9 +106,9 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return Triangle<iNumDimensions>(
-            detail::translated(triangle.vertex(0), vector.derived()),
-            detail::translated(triangle.vertex(1), vector.derived()),
-            detail::translated(triangle.vertex(2), vector.derived())
+            translationFunction(triangle.vertex(0), vector.derived()),
+            translationFunction(triangle.vertex(1), vector.derived()),
+            translationFunction(triangle.vertex(2), vector.derived())
         );
     }
 
@@ -119,9 +119,9 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return Triangle<iNumResultDimensions>(
-            detail::transformed(triangle.vertex(0), matrix.derived()),
-            detail::transformed(triangle.vertex(1), matrix.derived()),
-            detail::transformed(triangle.vertex(2), matrix.derived())
+            transformationFunction(triangle.vertex(0), matrix.derived()),
+            transformationFunction(triangle.vertex(1), matrix.derived()),
+            transformationFunction(triangle.vertex(2), matrix.derived())
         );
     }
 
@@ -132,9 +132,9 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return Triangle<iNumResultDimensions>(
-            detail::morphed(triangle.vertex(0), morphingExpression),
-            detail::morphed(triangle.vertex(1), morphingExpression),
-            detail::morphed(triangle.vertex(2), morphingExpression)
+            morphingFunction(triangle.vertex(0), morphingExpression),
+            morphingFunction(triangle.vertex(1), morphingExpression),
+            morphingFunction(triangle.vertex(2), morphingExpression)
         );
     }
 }

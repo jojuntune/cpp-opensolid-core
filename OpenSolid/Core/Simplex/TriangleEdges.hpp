@@ -102,7 +102,7 @@ namespace opensolid
         const detail::TriangleEdges<iNumDimensions>& triangleEdges,
         double scale
     ) const {
-        return detail::scaled(triangleEdges.triangle(), scale).edges();
+        return scalingFunction(triangleEdges.triangle(), scale).edges();
     }
 
     template <int iNumDimensions> template <class TVector>
@@ -112,7 +112,7 @@ namespace opensolid
         const detail::TriangleEdges<iNumDimensions>& triangleEdges,
         const EigenBase<TVector>& vector
     ) const {
-        return detail::translated(triangleEdges.triangle(), vector.derived()).edges();
+        return translationFunction(triangleEdges.triangle(), vector.derived()).edges();
     }
 
     template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
@@ -122,7 +122,7 @@ namespace opensolid
         const detail::TriangleEdges<iNumDimensions>& triangleEdges,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return detail::transformed(triangleEdges.triangle(), matrix.derived()).edges();
+        return transformationFunction(triangleEdges.triangle(), matrix.derived()).edges();
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
@@ -132,6 +132,6 @@ namespace opensolid
         const detail::TriangleEdges<iNumDimensions>& triangleEdges,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return detail::morphed(triangleEdges.triangle(), morphingExpression).edges();
+        return morphingFunction(triangleEdges.triangle(), morphingExpression).edges();
     }
 }

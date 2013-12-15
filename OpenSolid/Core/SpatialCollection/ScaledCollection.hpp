@@ -115,7 +115,7 @@ namespace opensolid
         inline
         typename ScaledType<typename BoundsType<TBaseCollection>::Type>::Type
         ScaledCollection<TBaseCollection>::bounds() const {
-            return detail::scaled(baseCollection().bounds(), scale());
+            return scalingFunction(baseCollection().bounds(), scale());
         }
 
         template <class TBaseCollection>
@@ -139,7 +139,7 @@ namespace opensolid
         inline
         typename ScaledType<typename ItemType<TBaseCollection>::Type>::Type
         ScaledCollectionIterator<TBaseCollection>::dereference() const {
-            return detail::scaled(*_baseIterator, _scale);
+            return scalingFunction(*_baseIterator, _scale);
         }
 
         template <class TBaseCollection>

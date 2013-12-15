@@ -101,7 +101,7 @@ namespace opensolid
         const detail::BoxVertices<iNumDimensions>& boxVertices,
         double scale
     ) const {
-        return detail::scaled(boxVertices.box(), scale).vertices();
+        return scalingFunction(boxVertices.box(), scale).vertices();
     }
 
     template <int iNumDimensions> template <class TVector>
@@ -111,6 +111,6 @@ namespace opensolid
         const detail::BoxVertices<iNumDimensions>& boxVertices,
         const EigenBase<TVector>& vector
     ) const {
-        return detail::translated(boxVertices.box(), vector.derived()).vertices();
+        return translationFunction(boxVertices.box(), vector.derived()).vertices();
     }
 }

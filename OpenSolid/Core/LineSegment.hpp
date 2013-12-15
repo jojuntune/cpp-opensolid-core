@@ -216,11 +216,11 @@ namespace opensolid
         const LineSegment<iNumDimensions>& secondLineSegment,
         double precision
     ) const {
-        return detail::equals(
+        return equalityFunction(
             firstLineSegment.startVertex(),
             secondLineSegment.startVertex(),
             precision
-        ) && detail::equals(
+        ) && equalityFunction(
             firstLineSegment.endVertex(),
             secondLineSegment.endVertex(),
             precision
@@ -235,8 +235,8 @@ namespace opensolid
         double scale
     ) const {
         return LineSegment<iNumDimensions>(
-            detail::scaled(lineSegment.startVertex(), scale),
-            detail::scaled(lineSegment.endVertex(), scale)
+            scalingFunction(lineSegment.startVertex(), scale),
+            scalingFunction(lineSegment.endVertex(), scale)
         );
     }
 
@@ -248,8 +248,8 @@ namespace opensolid
         const EigenBase<TVector>& vector
     ) const {
         return LineSegment<iNumDimensions>(
-            detail::translated(lineSegment.startVertex(), vector.derived()),
-            detail::translated(lineSegment.endVertex(), vector.derived())
+            translationFunction(lineSegment.startVertex(), vector.derived()),
+            translationFunction(lineSegment.endVertex(), vector.derived())
         );
     }
 
@@ -261,8 +261,8 @@ namespace opensolid
         const EigenBase<TMatrix>& matrix
     ) const {
         return LineSegment<iNumResultDimensions>(
-            detail::transformed(lineSegment.startVertex(), matrix.derived()),
-            detail::transformed(lineSegment.endVertex(), matrix.derived())
+            transformationFunction(lineSegment.startVertex(), matrix.derived()),
+            transformationFunction(lineSegment.endVertex(), matrix.derived())
         );
     }
 
@@ -274,8 +274,8 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return LineSegment<iNumResultDimensions>(
-            detail::morphed(lineSegment.startVertex(), morphingExpression),
-            detail::morphed(lineSegment.endVertex(), morphingExpression)
+            morphingFunction(lineSegment.startVertex(), morphingExpression),
+            morphingFunction(lineSegment.endVertex(), morphingExpression)
         );
     }
 }

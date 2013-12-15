@@ -31,7 +31,7 @@ namespace opensolid
         const detail::TetrahedronFaces& tetrahedronFaces,
         double scale
     ) const {
-        return detail::scaled(tetrahedronFaces.tetrahedron(), scale).faces();
+        return scalingFunction(tetrahedronFaces.tetrahedron(), scale).faces();
     }
 
     detail::TetrahedronFaces
@@ -39,7 +39,7 @@ namespace opensolid
         const detail::TetrahedronFaces& tetrahedronFaces,
         const Vector3d& vector
     ) const {
-        return detail::translated(tetrahedronFaces.tetrahedron(), vector).faces();
+        return translationFunction(tetrahedronFaces.tetrahedron(), vector).faces();
     }
 
     detail::TetrahedronFaces
@@ -47,7 +47,7 @@ namespace opensolid
         const detail::TetrahedronFaces& tetrahedronFaces,
         const Matrix3d& matrix
     ) const {
-        return detail::transformed(tetrahedronFaces.tetrahedron(), matrix).faces();
+        return transformationFunction(tetrahedronFaces.tetrahedron(), matrix).faces();
     }
 
     detail::TetrahedronFaces
@@ -55,6 +55,6 @@ namespace opensolid
         const detail::TetrahedronFaces& tetrahedronFaces,
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
-        return detail::morphed(tetrahedronFaces.tetrahedron(), morphingExpression).faces();
+        return morphingFunction(tetrahedronFaces.tetrahedron(), morphingExpression).faces();
     }
 }

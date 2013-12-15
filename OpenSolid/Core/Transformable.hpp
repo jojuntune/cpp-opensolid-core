@@ -56,9 +56,9 @@ namespace opensolid
         const Point<NumDimensions<TDerived>::Value>& originPoint,
         double scale
     ) const {
-        return detail::translated(
-            detail::scaled(
-                detail::translated(
+        return translationFunction(
+            scalingFunction(
+                translationFunction(
                     derived(),
                     -originPoint.vector()
                 ),
@@ -72,7 +72,7 @@ namespace opensolid
     inline
     typename TranslatedType<TDerived>::Type
     Transformable<TDerived>::translatedBy(const EigenBase<TVector>& vector) const {
-        return detail::translated(derived(), vector.derived());
+        return translationFunction(derived(), vector.derived());
     }
     
     template <class TDerived>
@@ -82,7 +82,7 @@ namespace opensolid
         const Axis<NumDimensions<TDerived>::Value>& axis,
         double distance
     ) const {
-        return detail::translated(derived(), distance * axis.directionVector());
+        return translationFunction(derived(), distance * axis.directionVector());
     }
 
     template <class TDerived>
@@ -173,50 +173,47 @@ namespace opensolid
             NumDimensions<TDerived>::Value
         >& morphingExpression
     ) const {
-        return detail::morphed(derived(), morphingExpression);
+        return morphingFunction(derived(), morphingExpression);
     }
 
-    namespace detail
-    {
-        template <class TTransformable>
-        inline
-        typename ScaledType<TTransformable>::Type
-        scaled(const TTransformable& transformable, double scale) {
-            return ScalingFunction<TTransformable>()(transformable, scale);
-        }
+    template <class TTransformable>
+    inline
+    typename ScaledType<TTransformable>::Type
+    scalingFunction(const TTransformable& transformable, double scale) {
+        return ScalingFunction<TTransformable>()(transformable, scale);
+    }
 
-        template <class TTransformable, class TVector>
-        inline
-        typename TranslatedType<TTransformable>::Type
-        translated(const TTransformable& transformable, const EigenBase<TVector>& vector) {
-            return TranslationFunction<TTransformable>()(transformable, vector.derived());
-        }
+    template <class TTransformable, class TVector>
+    inline
+    typename TranslatedType<TTransformable>::Type
+    translationFunction(const TTransformable& transformable, const EigenBase<TVector>& vector) {
+        return TranslationFunction<TTransformable>()(transformable, vector.derived());
+    }
 
-        template <class TTransformable, class TMatrix>
-        inline
-        typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
-        transformed(const TTransformable& transformable, const EigenBase<TMatrix>& matrix) {
-            return TransformationFunction<TTransformable, TMatrix::RowsAtCompileTime>()(
-                transformable,
-                matrix.derived()
-            );
-        }
+    template <class TTransformable, class TMatrix>
+    inline
+    typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
+    transformationFunction(const TTransformable& transformable, const EigenBase<TMatrix>& matrix) {
+        return TransformationFunction<TTransformable, TMatrix::RowsAtCompileTime>()(
+            transformable,
+            matrix.derived()
+        );
+    }
 
-        template <class TTransformable, int iNumResultDimensions>
-        inline
-        typename MorphedType<TTransformable, iNumResultDimensions>::Type
-        morphed(
-            const TTransformable& transformable,
-            const ParametricExpression<
-                iNumResultDimensions,
-                NumDimensions<TTransformable>::Value
-            >& morphingExpression
-        ) {
-            return MorphingFunction<TTransformable, iNumResultDimensions>()(
-                transformable,
-                morphingExpression
-            );
-        }
+    template <class TTransformable, int iNumResultDimensions>
+    inline
+    typename MorphedType<TTransformable, iNumResultDimensions>::Type
+    morphingFunction(
+        const TTransformable& transformable,
+        const ParametricExpression<
+            iNumResultDimensions,
+            NumDimensions<TTransformable>::Value
+        >& morphingExpression
+    ) {
+        return MorphingFunction<TTransformable, iNumResultDimensions>()(
+            transformable,
+            morphingExpression
+        );
     }
 
     template <class TDerived, int iNumAxes>

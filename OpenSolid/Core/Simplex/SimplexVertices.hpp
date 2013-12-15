@@ -101,7 +101,7 @@ namespace opensolid
         const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
         double scale
     ) const {
-        return detail::scaled(simplexVertices.simplex(), scale).vertices();
+        return scalingFunction(simplexVertices.simplex(), scale).vertices();
     }
 
     template <class TSimplex, int iNumVertices> template <class TVector>
@@ -111,7 +111,7 @@ namespace opensolid
         const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
         const EigenBase<TVector>& vector
     ) const {
-        return detail::translated(simplexVertices.simplex(), vector.derived()).vertices();
+        return translationFunction(simplexVertices.simplex(), vector.derived()).vertices();
     }
 
     template <class TSimplex, int iNumVertices, int iNumResultDimensions> template <class TMatrix>
@@ -127,7 +127,7 @@ namespace opensolid
         const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
         const EigenBase<TMatrix>& matrix
     ) const {
-        return detail::transformed(simplexVertices.simplex(), matrix.derived()).vertices();
+        return transformationFunction(simplexVertices.simplex(), matrix.derived()).vertices();
     }
 
     template <class TSimplex, int iNumVertices, int iNumResultDimensions>
@@ -146,6 +146,6 @@ namespace opensolid
             NumDimensions<TSimplex>::Value
         >& morphingExpression
     ) const {
-        return detail::morphed(simplexVertices.simplex(), morphingExpression).vertices();
+        return morphingFunction(simplexVertices.simplex(), morphingExpression).vertices();
     }
 }
