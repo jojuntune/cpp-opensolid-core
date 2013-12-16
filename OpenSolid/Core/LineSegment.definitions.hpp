@@ -102,6 +102,9 @@ namespace opensolid
         detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
         vertices() const;
 
+        Point<iNumDimensions>
+        midpoint() const;
+
         double
         length() const;
 

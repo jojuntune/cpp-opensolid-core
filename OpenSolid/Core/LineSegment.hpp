@@ -108,6 +108,13 @@ namespace opensolid
 
     template <int iNumDimensions>
     inline
+    Point<iNumDimensions>
+    LineSegment<iNumDimensions>::midpoint() const {
+        return startVertex() + 0.5 * vector();
+    }
+
+    template <int iNumDimensions>
+    inline
     double
     LineSegment<iNumDimensions>::length() const {
         return (startVertex() - endVertex()).norm();
