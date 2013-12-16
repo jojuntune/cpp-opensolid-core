@@ -15,6 +15,8 @@
             "${CMAKE_CURRENT_BINARY_DIR}/${name}.cpp"
             DEPENDS
             "${FULL_PATH}"
+            IMPLICIT_DEPENDS
+            "${FULL_PATH}"
             COMMAND
             "${PYTHON_EXECUTABLE}"
             ARGS
