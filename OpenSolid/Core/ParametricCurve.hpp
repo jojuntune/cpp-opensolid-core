@@ -28,120 +28,59 @@
 
 #include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
     inline
-    ParametricCurve<iNumDimensions>::ParametricCurve() {
+    ParametricCurve<2>::ParametricCurve() {
     }
 
-    template <int iNumDimensions>
     inline
-    ParametricCurve<iNumDimensions>::ParametricCurve(const ParametricCurve<iNumDimensions>& other) :
-        _expression(other.expression()),
-        _domain(other.domain()),
-        _bounds(other.bounds()) {
+    ParametricCurve<2>::ParametricCurve(const ParametricCurve<2>& other) :
+        ParametricCurveBase<2>(other) {
     }
 
-    template <int iNumDimensions>
     inline
-    ParametricCurve<iNumDimensions>::ParametricCurve(ParametricCurve<iNumDimensions>&& other) :
-        _expression(std::move(other._expression)),
-        _domain(other.domain()),
-        _bounds(other.bounds()) {
+    ParametricCurve<2>::ParametricCurve(ParametricCurve<2>&& other) :
+        ParametricCurveBase<2>(std::move(other)) {
     }
 
-    template <int iNumDimensions>
     inline
-    ParametricCurve<iNumDimensions>::ParametricCurve(
-        const ParametricExpression<iNumDimensions, 1>& expression,
+    ParametricCurve<2>::ParametricCurve(
+        const ParametricExpression<2, 1>& expression,
         Interval domain
-    ) : _expression(expression),
-        _domain(domain),
-        _bounds(expression.evaluateBounds(domain)) {
+    ) : ParametricCurveBase<2>(expression, domain) {
     }
 
-    template <int iNumDimensions>
     inline
-    const ParametricExpression<iNumDimensions, 1>&
-    ParametricCurve<iNumDimensions>::expression() const {
-        return _expression;
+    ParametricCurve<3>::ParametricCurve() {
     }
 
-    template <int iNumDimensions>
     inline
-    Interval
-    ParametricCurve<iNumDimensions>::domain() const {
-        return _domain;
+    ParametricCurve<3>::ParametricCurve(const ParametricCurve<3>& other) :
+        ParametricCurveBase<3>(other) {
     }
 
-    template <int iNumDimensions>
-    const Box<iNumDimensions>&
-    ParametricCurve<iNumDimensions>::bounds() const {
-        return _bounds;
+    inline
+    ParametricCurve<3>::ParametricCurve(ParametricCurve<3>&& other) :
+        ParametricCurveBase<3>(std::move(other)) {
     }
 
-    template <int iNumDimensions>
-    Point<iNumDimensions>
-    ParametricCurve<iNumDimensions>::evaluate(double parameterValue) const {
-        return Point<iNumDimensions>(expression().evaluate(parameterValue));
-    }
-
-    template <int iNumDimensions>
-    Box<iNumDimensions>
-    ParametricCurve<iNumDimensions>::evaluate(Interval parameterBounds) const {
-        return Box<iNumDimensions>(expression().evaluate(parameterBounds));
-    }
-
-    template <int iNumDimensions>
-    ParametricExpression<iNumDimensions, 1>
-    ParametricCurve<iNumDimensions>::tangentVector() const {
-        return expression().tangentVector();
-    }
-
-    template <int iNumDimensions>
-    ParametricExpression<iNumDimensions, 1>
-    ParametricCurve<iNumDimensions>::normalVector() const {
-        return expression().normalVector();
-    }
-
-    template <int iNumDimensions>
-    ParametricExpression<iNumDimensions, 1>
-    ParametricCurve<iNumDimensions>::binormalVector() const {
-        return expression().binormalVector();
-    }
-
-    template <int iNumDimensions>
-    ParametricExpression<1, 1>
-    ParametricCurve<iNumDimensions>::curvature() const {
-        return expression().curvature();
-    }
-
-    template <int iNumDimensions>
-    ParametricCurve<iNumDimensions>
-    ParametricCurve<iNumDimensions>::reversed() const {
-        ParametricExpression<1, 1> reversedParameter =
-            domain().upperBound() + domain().lowerBound() - ParametricExpression<1, 1>::t();
-        return ParametricCurve<iNumDimensions>(expression().composed(reversedParameter), domain());
-    }
-
-    template <int iNumDimensions>
-    Point<iNumDimensions>
-    ParametricCurve<iNumDimensions>::startPoint() const {
-        return evaluate(domain().lowerBound());
-    }
-
-    template <int iNumDimensions>
-    Point<iNumDimensions>
-    ParametricCurve<iNumDimensions>::endPoint() const {
-        return evaluate(domain().upperBound());
+    inline
+    ParametricCurve<3>::ParametricCurve(
+        const ParametricExpression<3, 1>& expression,
+        Interval domain
+    ) : ParametricCurveBase<3>(expression, domain) {
     }
 
     template <int iNumDimensions>

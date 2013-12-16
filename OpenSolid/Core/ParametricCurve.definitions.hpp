@@ -28,14 +28,16 @@
 
 #include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 
+#include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/ParametricCurve/CurveConstructors.hpp>
+#include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
@@ -63,65 +65,342 @@ namespace opensolid
         typedef ParametricCurve<iNumResultDimensions> Type;
     };
 
-    template <int iNumDimensions>
-    class ParametricCurve :
-        public CurveConstructors<iNumDimensions>,
-        public Transformable<ParametricCurve<iNumDimensions>>
+    template <>
+    class ParametricCurve<2> :
+        public detail::ParametricCurveBase<2>,
+        public Transformable<ParametricCurve<2>>
     {
     private:
-        ParametricExpression<iNumDimensions, 1> _expression;
+        ParametricExpression<2, 1> _expression;
         Interval _domain;
-        Box<iNumDimensions> _bounds;
+        Box<2> _bounds;
     public:
+        enum WindingDirection
+        {
+            COUNTERCLOCKWISE,
+            CLOCKWISE
+        };
+
         ParametricCurve();
 
-        ParametricCurve(const ParametricCurve<iNumDimensions>& other);
+        ParametricCurve(const ParametricCurve<2>& other);
 
-        ParametricCurve(ParametricCurve<iNumDimensions>&& other);
+        ParametricCurve(ParametricCurve<2>&& other);
 
         ParametricCurve(
-            const ParametricExpression<iNumDimensions, 1>& expression,
+            const ParametricExpression<2, 1>& expression,
             Interval domain
         );
 
-        const ParametricExpression<iNumDimensions, 1>&
-        expression() const;
+        ///// Arcs /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   radius
+        //   direction
+        //   startPoint
+        //   startAngle
+        //   innerPoint
+        //   endAngle
+        //   endPoint
 
-        Interval
-        domain() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Arc(
+            const Point<2>& centerPoint,
+            double radius,
+            double startAngle,
+            double endAngle
+        );
+        
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Arc(
+            const Point<2>& centerPoint,
+            WindingDirection direction,
+            const Point<2>& startPoint,
+            const Point<2>& endPoint
+        );
 
-        const Box<iNumDimensions>&
-        bounds() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Arc(
+            double radius,
+            WindingDirection direction,
+            const Point<2>& startPoint,
+            const Point<2>& endPoint
+        );
 
-        Point<iNumDimensions>
-        evaluate(double parameterValue) const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Arc(
+            const Point<2>& startPoint,
+            const Point<2>& innerPoint,
+            const Point<2>& endPoint
+        );
 
-        Box<iNumDimensions>
-        evaluate(Interval parameterBounds) const;
+        ///// Circles /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   radius
+        //   direction
+        //   startAngle
+        //   startPoint
+        //   secondPoint
+        //   thirdPoint
 
-        ParametricExpression<iNumDimensions, 1>
-        tangentVector() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Circle(
+            const Point<2>& centerPoint,
+            double radius
+        );
 
-        ParametricExpression<iNumDimensions, 1>
-        normalVector() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Circle(
+            const Point<2>& centerPoint,
+            double radius,
+            WindingDirection direction,
+            double startAngle
+        );
 
-        ParametricExpression<iNumDimensions, 1>
-        binormalVector() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Circle(
+            const Point<2>& centerPoint,
+            WindingDirection direction,
+            const Point<2>& startPoint
+        );
 
-        ParametricExpression<1, 1>
-        curvature() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Circle(
+            double radius,
+            WindingDirection direction,
+            const Point<2>& startPoint,
+            const Point<2>& secondPoint
+        );
 
-        ParametricCurve<iNumDimensions>
-        reversed() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Circle(
+            const Point<2>& startPoint,
+            const Point<2>& secondPoint,
+            const Point<2>& thirdPoint
+        );
 
-        Point<iNumDimensions>
-        startPoint() const;
-
-        Point<iNumDimensions>
-        endPoint() const;
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<2>
+        Circumcircle(
+            const Triangle<2>& triangle
+        );
     };
 
     typedef ParametricCurve<2> ParametricCurve2d;
+
+    template <>
+    class ParametricCurve<3> :
+        public detail::ParametricCurveBase<3>,
+        public Transformable<ParametricCurve<3>>
+    {
+    private:
+        ParametricExpression<3, 1> _expression;
+        Interval _domain;
+        Box<3> _bounds;
+    public:
+        enum WindingDirection
+        {
+            COUNTERCLOCKWISE,
+            CLOCKWISE
+        };
+        
+        ParametricCurve();
+
+        ParametricCurve(const ParametricCurve<3>& other);
+
+        ParametricCurve(ParametricCurve<3>&& other);
+
+        ParametricCurve(
+            const ParametricExpression<3, 1>& expression,
+            Interval domain
+        );
+
+        ///// Arcs /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   axis
+        //   axisDirection
+        //   radius
+        //   startPoint
+        //   innerPoint
+        //   endPoint
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Arc(
+            const Point<3>& centerPoint,
+            const Vector3d& axisDirection,
+            const Point<3>& startPoint,
+            const Point<3>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Arc(
+            const Axis<3>& axis,
+            const Point<3>& startPoint,
+            const Point<3>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Arc(
+            const Vector3d& axisDirection,
+            double radius,
+            const Point<3>& startPoint,
+            const Point<3>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Arc(
+            const Point<3>& startPoint,
+            const Point<3>& innerPoint,
+            const Point<3>& endPoint
+        );
+
+        ///// Circles /////
+        //
+        // Argument order:
+        //   centerPoint
+        //   axis
+        //   axisDirection
+        //   radius
+        //   startPoint
+        //   innerPoint
+        //   endPoint
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Circle(
+            const Point<3>& centerPoint,
+            const Vector3d& axisDirection,
+            double radius
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Circle(
+            const Point<3>& centerPoint,
+            const Vector3d& axisDirection,
+            const Point<3>& startPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Circle(
+            const Axis<3>& axis,
+            const Point<3>& startPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Circle(
+            const Vector3d& axisDirection,
+            double radius,
+            const Point<3>& startPoint,
+            const Point<3>& secondPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Circle(
+            const Point<3>& startPoint,
+            const Point<3>& secondPoint,
+            const Point<3>& thirdPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Circumcircle(
+            const Triangle<3>& triangle
+        );
+
+        ///// Helices /////
+        //
+        // Argument order:
+        //   startCenterPoint
+        //   endCenterPoint
+        //   axis
+        //   axisDirection
+        //   radius
+        //   windingDirection
+        //   startPoint
+        //   endPoint
+        //   pitch (if <= 0: determine from numTurns/length)
+        //   numTurns (if <= 0: determine from pitch/length)
+        //   length (if <= 0: determine from pitch/numTurns)
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Point<3>& endCenterPoint,
+            double radius,
+            WindingDirection direction,
+            double pitch, // if <= 0: determine from numTurns
+            double numTurns // if <= 0: determine from pitch
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Point<3>& endCenterPoint,
+            WindingDirection direction,
+            const Point<3>& startPoint,
+            double pitch, // if <= 0: determine from numTurns
+            double numTurns // if <= 0: determine from pitch
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Vector3d& axisDirection,
+            double radius,
+            WindingDirection direction,
+            double pitch, // if <= 0: determine from numTurns/length
+            double numTurns, // if <= 0: determine from pitch/length
+            double length // if <= 0: determine from pitch/numTurns
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Helix(
+            const Point<3>& startCenterPoint,
+            const Vector3d& axisDirection,
+            WindingDirection direction,
+            const Point<3>& startPoint,
+            double pitch, // if <= 0: determine from numTurns/length
+            double numTurns, // if <= 0: determine from pitch/length
+            double length // if <= 0: determine from pitch/numTurns
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        Helix(
+            const Axis<3>& axis,
+            WindingDirection direction,
+            const Point<3>& startPoint,
+            double pitch, // if <= 0: determine from numTurns/length
+            double numTurns, // if <= 0: determine from pitch/length
+            double length // if <= 0: determine from pitch/numTurns
+        );
+    };
     typedef ParametricCurve<3> ParametricCurve3d;
 
     template <int iNumDimensions>
