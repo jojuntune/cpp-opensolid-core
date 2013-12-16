@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/SpatialCollection/FilteredCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/SpatialCollection/MappedCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/MorphedCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/ScaledCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/TransformedCollection.declarations.hpp>
@@ -155,6 +156,10 @@ namespace opensolid
         detail::FilteredCollection<TDerived, TPredicate>
         where(TPredicate predicate) const;
 
+        template <class TMappingFunction>
+        detail::MappedCollection<TDerived, TMappingFunction>
+        map(TMappingFunction mappingFunction) const;
+
         operator std::vector<typename ItemType<TDerived>::Type>() const;
     };
 
@@ -201,6 +206,7 @@ namespace opensolid
     };
 }
 
+#include <OpenSolid/Core/SpatialCollection/MappedCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/MorphedCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/ScaledCollection.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/TransformedCollection.definitions.hpp>

@@ -26,6 +26,7 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/SpatialList.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
 
 #include <cxxtest/TestSuite.h>
 
@@ -104,5 +105,57 @@ public:
 
         TS_ASSERT_EQUALS(list2.size(), 0);
         TS_ASSERT_EQUALS(list3.size(), 3);
+    }
+
+    void testSimpleMapping() {
+        std::vector<Vector2d> vectors(3);
+        vectors[0] = Vector2d(1, 2);
+        vectors[1] = Vector2d(3, 4);
+        vectors[2] = Vector2d(5, 6);
+
+        SpatialList<Vector2d> list(vectors);
+
+        SpatialList<double> squaredNorms = list.map(
+            [] (const Vector2d& vector) {
+                return vector.squaredNorm();
+            }
+        );
+
+        TS_ASSERT(squaredNorms[0] - 5.0 == Zero());
+        TS_ASSERT(squaredNorms[1] - 25.0 == Zero());
+        TS_ASSERT(squaredNorms[2] - 61.0 == Zero());
+    }
+
+    void testMappingBounds() {
+        Interval edgeLengthBounds = Triangle2d::Unit().edges().map(
+            [] (const LineSegment2d& edge) {
+                return edge.length();
+            }
+        ).bounds();
+
+        TS_ASSERT(edgeLengthBounds.lowerBound() - 1.0 == Zero());
+        TS_ASSERT(edgeLengthBounds.upperBound() - sqrt(2.0) == Zero());
+    }
+
+    void testMappingTransformation() {
+        SpatialList<Point2d> rotatedMidpoints = Triangle2d::Unit().edges().map(
+            [] (const LineSegment2d& edge) {
+                return edge.midpoint();
+            }
+        ).rotatedAbout(Point2d::Origin(), M_PI / 4);
+
+        TS_ASSERT_EQUALS(rotatedMidpoints.size(), 3);
+        std::cout << rotatedMidpoints[0] << std::endl;
+        std::cout << rotatedMidpoints[1] << std::endl;
+        std::cout << rotatedMidpoints[2] << std::endl;
+        TS_ASSERT(
+            (rotatedMidpoints[0] - Point2d(0, 1 / sqrt(2.0))).isZero()
+        );
+        TS_ASSERT(
+            (rotatedMidpoints[1] - Point2d(-1 / (2 * sqrt(2.0)), 1 / (2 * sqrt(2.)))).isZero()
+        );
+        TS_ASSERT(
+            (rotatedMidpoints[2] - Point2d(1 / (2 * sqrt(2.0)), 1 / (2 * sqrt(2.)))).isZero()
+        );
     }
 };

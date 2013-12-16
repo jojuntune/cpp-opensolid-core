@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/SpatialCollection/FilteredCollection.hpp>
+#include <OpenSolid/Core/SpatialCollection/MappedCollection.hpp>
 #include <OpenSolid/Core/SpatialCollection/MorphedCollection.hpp>
 #include <OpenSolid/Core/SpatialCollection/ScaledCollection.hpp>
 #include <OpenSolid/Core/SpatialCollection/TransformedCollection.hpp>
@@ -166,6 +167,12 @@ namespace opensolid
     detail::FilteredCollection<TDerived, TPredicate>
     SpatialCollection<TDerived>::where(TPredicate predicate) const {
         return detail::FilteredCollection<TDerived, TPredicate>(derived(), predicate);
+    }
+
+    template <class TDerived> template <class TMappingFunction>
+    detail::MappedCollection<TDerived, TMappingFunction>
+    SpatialCollection<TDerived>::map(TMappingFunction mappingFunction) const {
+        return detail::MappedCollection<TDerived, TMappingFunction>(derived(), mappingFunction);
     }
 
     template <class TDerived>
