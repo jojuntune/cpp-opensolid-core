@@ -42,42 +42,42 @@
 namespace opensolid
 {
     inline
-    ParametricCurve<2>::ParametricCurve() {
+    ParametricCurve2d::ParametricCurve() {
     }
 
     inline
-    ParametricCurve<2>::ParametricCurve(const ParametricCurve<2>& other) :
+    ParametricCurve2d::ParametricCurve(const ParametricCurve2d& other) :
         ParametricCurveBase<2>(other) {
     }
 
     inline
-    ParametricCurve<2>::ParametricCurve(ParametricCurve<2>&& other) :
+    ParametricCurve2d::ParametricCurve(ParametricCurve2d&& other) :
         ParametricCurveBase<2>(std::move(other)) {
     }
 
     inline
-    ParametricCurve<2>::ParametricCurve(
+    ParametricCurve2d::ParametricCurve(
         const ParametricExpression<2, 1>& expression,
         Interval domain
     ) : ParametricCurveBase<2>(expression, domain) {
     }
 
     inline
-    ParametricCurve<3>::ParametricCurve() {
+    ParametricCurve3d::ParametricCurve() {
     }
 
     inline
-    ParametricCurve<3>::ParametricCurve(const ParametricCurve<3>& other) :
+    ParametricCurve3d::ParametricCurve(const ParametricCurve3d& other) :
         ParametricCurveBase<3>(other) {
     }
 
     inline
-    ParametricCurve<3>::ParametricCurve(ParametricCurve<3>&& other) :
+    ParametricCurve3d::ParametricCurve(ParametricCurve3d&& other) :
         ParametricCurveBase<3>(std::move(other)) {
     }
 
     inline
-    ParametricCurve<3>::ParametricCurve(
+    ParametricCurve3d::ParametricCurve(
         const ParametricExpression<3, 1>& expression,
         Interval domain
     ) : ParametricCurveBase<3>(expression, domain) {
