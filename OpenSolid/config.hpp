@@ -99,3 +99,7 @@ namespace opensolid
     using std::log;
     using std::pow;
 }
+
+#ifndef INFINITY
+    #define INFINITY std::numeric_limits<double>::infinity()
+#endif

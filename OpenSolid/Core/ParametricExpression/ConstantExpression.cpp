@@ -139,7 +139,7 @@ namespace opensolid
 
     ExpressionImplementationPtr
     ConstantExpression::sqrtImpl() const {
-        Interval domain(0, infinity());
+        Interval domain(0, INFINITY);
         if (!domain.contains(value())) {
             throw Error(new PlaceholderError());
         }

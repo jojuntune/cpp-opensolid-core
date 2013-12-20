@@ -123,7 +123,7 @@ public:
 
     void testForEach() {
         double product = 1;
-        valueSet().overlapping(Interval(3, infinity())).forEach(
+        valueSet().overlapping(Interval(3, INFINITY)).forEach(
             [&product] (double value) {
                 product *= value;
             }

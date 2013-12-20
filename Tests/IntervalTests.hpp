@@ -119,4 +119,9 @@ public:
             TS_ASSERT_LESS_THAN_EQUALS(random, interval.upperBound());
         }
     }
+
+    void testInfinity() {
+        TS_ASSERT_EQUALS(std::numeric_limits<double>::infinity(), INFINITY);
+        TS_ASSERT_EQUALS(-std::numeric_limits<double>::infinity(), -INFINITY);
+    }
 };

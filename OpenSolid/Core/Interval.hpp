@@ -40,8 +40,8 @@ namespace opensolid
 {
     inline
     Interval::Interval() :
-        _lowerBound(infinity()),
-        _upperBound(-infinity()) {
+        _lowerBound(INFINITY),
+        _upperBound(-INFINITY) {
     }
     
     inline
@@ -283,19 +283,13 @@ namespace opensolid
     inline
     Interval
     Interval::Empty() {
-        return Interval(infinity(), -infinity());
+        return Interval(INFINITY, -INFINITY);
     }
     
     inline
     Interval
     Interval::Whole() {
-        return Interval(-infinity(), infinity());
-    }
-
-    inline
-    double
-    infinity() {
-        return std::numeric_limits<double>::infinity();
+        return Interval(-INFINITY, INFINITY);
     }
 
     inline

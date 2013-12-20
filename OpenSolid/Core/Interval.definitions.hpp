@@ -159,9 +159,6 @@ namespace opensolid
         Whole();
     };
 
-    double
-    infinity();
-
     bool
     operator==(double value, Interval interval);
     
