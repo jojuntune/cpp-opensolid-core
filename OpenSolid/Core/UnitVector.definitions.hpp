@@ -33,28 +33,77 @@
 namespace opensolid
 {
     template <>
+    class UnitVector<1> :
+        public Vector<1>
+    {
+    public:
+        UnitVector();
+
+        explicit
+        UnitVector(double x);
+
+        explicit
+        UnitVector(const Vector1d& vector);
+
+        const double
+        norm();
+
+        const double
+        squaredNorm() const;
+
+        const UnitVector<1>
+        normalized() const;
+
+        static const UnitVector<1>
+        X();
+    };
+
+    typedef UnitVector<1> UnitVector1d;
+ 
+    template <>
     class UnitVector<2> :
         public Vector<2>
     {
     public:
+        UnitVector();
+
         UnitVector(double x, double y);
 
-        double
+        explicit
+        UnitVector(const Vector2d& vector);
+
+        const double
         norm() const;
 
-        double
+        const double
         squaredNorm() const;
 
-        UnitVector<2>
+        const UnitVector<2>
         normalized() const;
+
+        const UnitVector<2>
+        unitOrthogonal() const;
+
+        static const UnitVector<2>
+        X();
+
+        static const UnitVector<2>
+        Y();
     };
+
+    typedef UnitVector<2> UnitVector2d;
 
     template <>
     class UnitVector<3> :
         public Vector<3>
     {
     public:
+        UnitVector();
+
         UnitVector(double x, double y, double z);
+
+        explicit
+        UnitVector(const Vector3d& vector);
 
         double
         norm() const;
@@ -64,5 +113,16 @@ namespace opensolid
 
         UnitVector<3>
         normalized() const;
+
+        static const UnitVector<3>
+        X();
+
+        static const UnitVector<3>
+        Y();
+
+        static const UnitVector<3>
+        Z();
     };
+
+    typedef UnitVector<3> UnitVector3d;
 }

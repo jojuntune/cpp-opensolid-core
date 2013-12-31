@@ -46,25 +46,13 @@ namespace opensolid
 
         VectorBase(double x, double y, double z);
     public:
+        const double*
+        data() const;
+
+        const double
+        component(std::int64_t index) const;
+
         const double
         operator()(std::int64_t index) const;
-
-        const double
-        squaredNorm() const;
-
-        const double
-        norm() const;
-
-        const UnitVector<iNumDimensions>
-        normalized() const;
-
-        const double
-        dot(const Vector<iNumDimensions>& other) const;
-
-        const Interval
-        dot(const IntervalVector<iNumDimensions>& intervalVector) const;
-
-        const bool
-        operator==(const Vector<iNumDimensions>& other) const;
     };
 }

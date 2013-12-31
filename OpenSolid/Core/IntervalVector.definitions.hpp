@@ -60,6 +60,31 @@ namespace opensolid
     };
 
     template <>
+    class IntervalVector<1> :
+        public IntervalVectorBase<1>,
+        public Transformable<IntervalVector<1>>,
+        public Convertible<IntervalVector<1>>
+    {
+    public:
+        IntervalVector(Interval x);
+
+        explicit
+        IntervalVector(const Vector<1>& vector);
+
+        const Interval
+        x() const;
+
+        static const IntervalVector<1>
+        Unit();
+
+        static const IntervalVector<1>
+        Empty();
+
+        static const IntervalVector<1>
+        Whole();
+    };
+
+    template <>
     class IntervalVector<2> :
         public IntervalVectorBase<2>,
         public Transformable<IntervalVector<2>>,
@@ -68,8 +93,23 @@ namespace opensolid
     public:
         IntervalVector(Interval x, Interval y);
 
-        const IntervalVector<2>
-        unitOrthogonal() const;
+        explicit
+        IntervalVector(const Vector<2>& vector);
+
+        const Interval
+        x() const;
+
+        const Interval
+        y() const;
+
+        static const IntervalVector<2>
+        Unit();
+
+        static const IntervalVector<2>
+        Empty();
+
+        static const IntervalVector<2>
+        Whole();
     };
 
     typedef IntervalVector<2> IntervalVector2d;
@@ -83,15 +123,193 @@ namespace opensolid
     public:
         IntervalVector(Interval x, Interval y, Interval z);
 
-        const IntervalVector<3>
-        unitOrthogonal() const;
+        explicit
+        IntervalVector(const Vector<3>& vector);
+
+        const Interval
+        x() const;
+
+        const Interval
+        y() const;
+
+        const Interval
+        z() const;
 
         const IntervalVector<3>
         cross(const Vector<3>& vector) const;
 
         const IntervalVector<3>
         cross(const IntervalVector<3>& other) const;
+
+        static const IntervalVector<3>
+        Unit();
+
+        static const IntervalVector<3>
+        Empty();
+
+        static const IntervalVector<3>
+        Whole();
     };
 
     typedef IntervalVector<3> IntervalVector3d;
+
+    const IntervalVector1d
+    operator*(Interval scale, const Vector1d& vector);
+
+    const IntervalVector2d
+    operator*(Interval scale, const Vector2d& vector);
+
+    const IntervalVector3d
+    operator*(Interval scale, const Vector3d& vector);
+
+    const IntervalVector1d
+    operator*(double scale, const IntervalVector1d& intervalVector);
+
+    const IntervalVector2d
+    operator*(double scale, const IntervalVector2d& intervalVector);
+
+    const IntervalVector3d
+    operator*(double scale, const IntervalVector3d& intervalVector);
+
+    const IntervalVector1d
+    operator*(Interval scale, const IntervalVector1d& intervalVector);
+
+    const IntervalVector2d
+    operator*(Interval scale, const IntervalVector2d& intervalVector);
+
+    const IntervalVector3d
+    operator*(Interval scale, const IntervalVector3d& intervalVector);
+
+    const IntervalVector1d
+    operator*(const Vector1d& vector, Interval scale);
+
+    const IntervalVector2d
+    operator*(const Vector2d& vector, Interval scale);
+
+    const IntervalVector3d
+    operator*(const Vector3d& vector, Interval scale);
+
+    const IntervalVector1d
+    operator*(const IntervalVector1d& intervalVector, double scale);
+
+    const IntervalVector2d
+    operator*(const IntervalVector2d& intervalVector, double scale);
+
+    const IntervalVector3d
+    operator*(const IntervalVector3d& intervalVector, double scale);
+
+    const IntervalVector1d
+    operator*(const IntervalVector1d& intervalVector, Interval scale);
+
+    const IntervalVector2d
+    operator*(const IntervalVector2d& intervalVector, Interval scale);
+
+    const IntervalVector3d
+    operator*(const IntervalVector3d& intervalVector, Interval scale);
+
+    const IntervalVector1d
+    operator/(const Vector1d& vector, Interval divisor);
+
+    const IntervalVector2d
+    operator/(const Vector2d& vector, Interval divisor);
+
+    const IntervalVector3d
+    operator/(const Vector3d& vector, Interval divisor);
+
+    const IntervalVector1d
+    operator/(const IntervalVector1d& vector, double divisor);
+
+    const IntervalVector2d
+    operator/(const IntervalVector2d& vector, double divisor);
+
+    const IntervalVector3d
+    operator/(const IntervalVector3d& vector, double divisor);
+
+    const IntervalVector1d
+    operator/(const IntervalVector1d& vector, Interval divisor);
+
+    const IntervalVector2d
+    operator/(const IntervalVector2d& vector, Interval divisor);
+
+    const IntervalVector3d
+    operator/(const IntervalVector3d& vector, Interval divisor);
+
+    const IntervalVector1d
+    operator+(const Vector1d& vector, const IntervalVector1d& intervalVector);
+
+    const IntervalVector1d
+    operator+(const IntervalVector1d& intervalVector, const Vector1d& vector);
+
+    const IntervalVector1d
+    operator+(
+        const IntervalVector1d& firstIntervalVector,
+        const IntervalVector1d& secondIntervalVector
+    );
+
+    const IntervalVector2d
+    operator+(const Vector2d& vector, const IntervalVector2d& intervalVector);
+
+    const IntervalVector2d
+    operator+(const IntervalVector2d& intervalVector, const Vector2d& vector);
+
+    const IntervalVector2d
+    operator+(
+        const IntervalVector2d& firstIntervalVector,
+        const IntervalVector2d& secondIntervalVector
+    );
+
+    const IntervalVector3d
+    operator+(const Vector3d& vector, const IntervalVector3d& intervalVector);
+
+    const IntervalVector3d
+    operator+(const IntervalVector3d& intervalVector, const Vector3d& vector);
+
+    const IntervalVector3d
+    operator+(
+        const IntervalVector3d& firstIntervalVector,
+        const IntervalVector3d& secondIntervalVector
+    );
+
+    const IntervalVector1d
+    operator-(const Vector1d& vector, const IntervalVector1d& intervalVector);
+
+    const IntervalVector1d
+    operator-(const IntervalVector1d& intervalVector, const Vector1d& vector);
+
+    const IntervalVector1d
+    operator-(
+        const IntervalVector1d& firstIntervalVector,
+        const IntervalVector1d& secondIntervalVector
+    );
+
+    const IntervalVector2d
+    operator-(const Vector2d& vector, const IntervalVector2d& intervalVector);
+
+    const IntervalVector2d
+    operator-(const IntervalVector2d& intervalVector, const Vector2d& vector);
+
+    const IntervalVector2d
+    operator-(
+        const IntervalVector2d& firstIntervalVector,
+        const IntervalVector2d& secondIntervalVector
+    );
+
+    const IntervalVector3d
+    operator-(const Vector3d& vector, const IntervalVector3d& intervalVector);
+
+    const IntervalVector3d
+    operator-(const IntervalVector3d& intervalVector, const Vector3d& vector);
+
+    const IntervalVector3d
+    operator-(
+        const IntervalVector3d& firstIntervalVector,
+        const IntervalVector3d& secondIntervalVector
+    );
+
+    template <int iNumDimensions>
+    struct BoundsFunction<IntervalVector<iNumDimensions>>
+    {
+        const IntervalVector<iNumDimensions>&
+        operator()(const IntervalVector<iNumDimensions>& intervalVector) const;
+    };
 }

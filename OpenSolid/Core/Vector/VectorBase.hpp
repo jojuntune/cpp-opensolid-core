@@ -26,54 +26,57 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Vector/IntervalVectorBase.declarations.hpp>
+#include <OpenSolid/Core/Vector/VectorBase.definitions.hpp>
 
-#include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/IntervalVector.declarations.hpp>
-#include <OpenSolid/Core/Vector.declarations.hpp>
+#include <OpenSolid/Core/IntervalVector.hpp>
+#include <OpenSolid/Core/Vector.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
     template <int iNumDimensions>
-    class IntervalVectorBase
-    {
-    private:
-        Interval _components[iNumDimensions];
-    protected:
-        IntervalVectorBase(Interval x);
+    inline
+    VectorBase<iNumDimensions>::VectorBase(double x) {
+        static_assert(iNumDimensions == 1, "One-argument constructor only for 1D vectors");
+        _components[0] = x;
+    }
 
-        IntervalVectorBase(Interval x, Interval y);
+    template <int iNumDimensions>
+    inline
+    VectorBase<iNumDimensions>::VectorBase(double x, double y) {
+        static_assert(iNumDimensions == 1, "Two-argument constructor only for 2D vectors");
+        _components[0] = x;
+        _components[1] = y;
+    }
 
-        IntervalVectorBase(Interval x, Interval y, Interval z);
-    public:
-        const Interval*
-        data() const;
+    template <int iNumDimensions>
+    inline
+    VectorBase<iNumDimensions>::VectorBase(double x, double y, double z) {
+        static_assert(iNumDimensions == 1, "Three-argument constructor only for 3D vectors");
+        _components[0] = x;
+        _components[1] = y;
+        _components[2] = z;
+    }
 
-        const Interval
-        component(std::int64_t index) const;
+    template <int iNumDimensions>
+    inline
+    const double*
+    VectorBase<iNumDimensions>::data() const {
+        return _components;
+    }
 
-        const Interval
-        operator()(std::int64_t index) const;
+    template <int iNumDimensions>
+    inline
+    const double
+    VectorBase<iNumDimensions>::component(std::int64_t index) const {
+        assert(index >= 0 && index < iNumDimensions);
+        return _components[index];
+    }
 
-        const Interval
-        squaredNorm() const;
-
-        const Interval
-        norm() const;
-
-        const IntervalVector<iNumDimensions>
-        normalized() const;
-
-        const Interval
-        dot(const Vector<iNumDimensions>& vector) const;
-
-        const Interval
-        dot(const IntervalVector<iNumDimensions>& other) const;
-
-        const IntervalVector<iNumDimensions>
-        hull(const IntervalVector<iNumDimensions>& other) const;
-
-        const IntervalVector<iNumDimensions>
-        hull(const Vector<iNumDimensions>& vector) const;
-    };
+    template <int iNumDimensions>
+    inline
+    const double
+    VectorBase<iNumDimensions>::operator()(std::int64_t index) const {
+        return component(index);
+    }
 }
