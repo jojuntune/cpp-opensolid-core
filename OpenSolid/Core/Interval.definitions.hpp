@@ -95,6 +95,9 @@ namespace opensolid
         
         std::pair<Interval, Interval>
         bisected() const;
+
+        Interval
+        hull(double value) const;
         
         Interval
         hull(Interval interval) const;

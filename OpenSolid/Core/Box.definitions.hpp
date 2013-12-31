@@ -195,13 +195,16 @@ namespace opensolid
         operator-(const Box<iNumDimensions>& other) const;
 
         static Box
-        Empty();
-
-        static Box
         Unit();
 
         static Box
         Hull(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint);
+
+        static Box
+        Empty();
+
+        static Box
+        Whole();
     };
 
     typedef Box<1> Box1d;

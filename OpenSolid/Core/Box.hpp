@@ -343,13 +343,6 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     Box<iNumDimensions>
-    Box<iNumDimensions>::Empty() {
-        return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Empty());
-    }
-
-    template <int iNumDimensions>
-    inline
-    Box<iNumDimensions>
     Box<iNumDimensions>::Unit() {
         return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit()));
     }
@@ -362,6 +355,20 @@ namespace opensolid
         const Point<iNumDimensions>& secondPoint
     ) {
         return firstPoint.hull(secondPoint);
+    }
+
+    template <int iNumDimensions>
+    inline
+    Box<iNumDimensions>
+    Box<iNumDimensions>::Empty() {
+        return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Empty());
+    }
+
+    template <int iNumDimensions>
+    inline
+    Box<iNumDimensions>
+    Box<iNumDimensions>::Whole() {
+        return Box<iNumDimensions>(Matrix<Interval, iNumDimensions, 1>::Whole());
     }
 
     template <int iNumDimensions, class TVector>

@@ -151,6 +151,15 @@ namespace opensolid
             Interval(mid, upperBound())
         );
     }
+
+    inline
+    Interval
+    Interval::hull(double value) const {
+        return Interval(
+            min(lowerBound(), value),
+            max(upperBound(), value)
+        );
+    }
     
     inline
     Interval
