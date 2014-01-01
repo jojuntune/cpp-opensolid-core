@@ -66,13 +66,39 @@ namespace opensolid
         public Convertible<IntervalVector<1>>
     {
     public:
+        IntervalVector();
+
         IntervalVector(Interval x);
 
         explicit
         IntervalVector(const Vector<1>& vector);
 
         const Interval
+        value() const;
+
+        const Interval
         x() const;
+
+        const Interval
+        squaredNorm() const;
+
+        const Interval
+        norm() const;
+
+        const IntervalVector<1>
+        normalized() const;
+
+        const Interval
+        dot(const Vector<1>& vector) const;
+
+        const Interval
+        dot(const IntervalVector<1>& other) const;
+
+        const IntervalVector<1>
+        hull(const IntervalVector<1>& other) const;
+
+        const IntervalVector<1>
+        hull(const Vector<1>& vector) const;
 
         static const IntervalVector<1>
         Unit();
@@ -91,6 +117,8 @@ namespace opensolid
         public Convertible<IntervalVector<2>>
     {
     public:
+        IntervalVector();
+
         IntervalVector(Interval x, Interval y);
 
         explicit
@@ -101,6 +129,27 @@ namespace opensolid
 
         const Interval
         y() const;
+
+        const Interval
+        squaredNorm() const;
+
+        const Interval
+        norm() const;
+
+        const IntervalVector<2>
+        normalized() const;
+
+        const Interval
+        dot(const Vector<2>& vector) const;
+
+        const Interval
+        dot(const IntervalVector<2>& other) const;
+
+        const IntervalVector<2>
+        hull(const IntervalVector<2>& other) const;
+
+        const IntervalVector<2>
+        hull(const Vector<2>& vector) const;
 
         static const IntervalVector<2>
         Unit();
@@ -121,6 +170,8 @@ namespace opensolid
         public Convertible<IntervalVector<3>>
     {
     public:
+        IntervalVector();
+
         IntervalVector(Interval x, Interval y, Interval z);
 
         explicit
@@ -134,6 +185,27 @@ namespace opensolid
 
         const Interval
         z() const;
+
+        const Interval
+        squaredNorm() const;
+
+        const Interval
+        norm() const;
+
+        const IntervalVector<3>
+        normalized() const;
+
+        const Interval
+        dot(const Vector<3>& vector) const;
+
+        const Interval
+        dot(const IntervalVector<3>& other) const;
+
+        const IntervalVector<3>
+        hull(const IntervalVector<3>& other) const;
+
+        const IntervalVector<3>
+        hull(const Vector<3>& vector) const;
 
         const IntervalVector<3>
         cross(const Vector<3>& vector) const;
@@ -217,22 +289,22 @@ namespace opensolid
     operator/(const Vector3d& vector, Interval divisor);
 
     const IntervalVector1d
-    operator/(const IntervalVector1d& vector, double divisor);
+    operator/(const IntervalVector1d& intervalVector, double divisor);
 
     const IntervalVector2d
-    operator/(const IntervalVector2d& vector, double divisor);
+    operator/(const IntervalVector2d& intervalVector, double divisor);
 
     const IntervalVector3d
-    operator/(const IntervalVector3d& vector, double divisor);
+    operator/(const IntervalVector3d& intervalVector, double divisor);
 
     const IntervalVector1d
-    operator/(const IntervalVector1d& vector, Interval divisor);
+    operator/(const IntervalVector1d& intervalVector, Interval divisor);
 
     const IntervalVector2d
-    operator/(const IntervalVector2d& vector, Interval divisor);
+    operator/(const IntervalVector2d& intervalVector, Interval divisor);
 
     const IntervalVector3d
-    operator/(const IntervalVector3d& vector, Interval divisor);
+    operator/(const IntervalVector3d& intervalVector, Interval divisor);
 
     const IntervalVector1d
     operator+(const Vector1d& vector, const IntervalVector1d& intervalVector);

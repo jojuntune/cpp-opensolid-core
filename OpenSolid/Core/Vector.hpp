@@ -58,19 +58,19 @@ namespace opensolid
     inline
     const double
     Vector1d::x() const {
-        return component(0);
+        return value();
     }
 
     inline
     const double
     Vector1d::squaredNorm() const {
-        return component(0) * component(0);
+        return value() * value();
     }
 
     inline
     const double
     Vector1d::norm() const {
-        return abs(component(0));
+        return abs(value());
     }
 
     inline
@@ -87,61 +87,57 @@ namespace opensolid
     inline
     const double
     Vector1d::dot(const Vector1d& other) const {
-        return component(0) * other.component(0);
+        return value() * other.value();
     }
 
     inline
     const Interval
     Vector1d::dot(const IntervalVector1d& intervalVector) const {
-        return component(0) * intervalVector.component(0);
+        return value() * intervalVector.value();
     }
 
     inline
     const double
     Vector1d::minComponent() const {
-        return component(0);
+        return value();
     }
 
     inline
     const double
     Vector1d::minComponent(std::int64_t& index) const {
         index = 0;
-        return component(0);
+        return value();
     }
 
     inline
     const double
     Vector1d::maxComponent() const {
-        return component(0);
+        return value();
     }
 
     inline
     const double
     Vector1d::maxComponent(std::int64_t& index) const {
         index = 0;
-        return component(0);
+        return value();
     }
 
     inline
     const IntervalVector1d
     Vector1d::hull(const Vector1d& other) const {
-        return IntervalVector1d(
-            Interval::Hull(component(0), other.component(0))
-        );
+        return IntervalVector1d(Interval::Hull(value(), other.value()));
     }
 
     inline
     const IntervalVector1d
     Vector1d::hull(const IntervalVector1d& intervalVector) const {
-        return IntervalVector1d(
-            intervalVector.component(0).hull(component(0))
-        );
+        return IntervalVector1d(intervalVector.value().hull(value()));
     }
 
     inline
     const bool
     Vector1d::operator==(const Vector1d& other) const {
-        return component(0) == other.component(0);
+        return value() == other.value();
     }
 
     inline
@@ -175,8 +171,7 @@ namespace opensolid
     inline
     const double
     Vector2d::squaredNorm() const {
-        return component(0) * component(0) +
-            component(1) * component(1);
+        return x() * x() + y() * y();
     }
 
     inline
@@ -199,58 +194,56 @@ namespace opensolid
     inline
     const double
     Vector2d::dot(const Vector2d& other) const {
-        return component(0) * other.component(0) +
-            component(1) * other.component(1);
+        return x() * other.x() + y() * other.y();
     }
 
     inline
     const Interval
     Vector2d::dot(const IntervalVector2d& intervalVector) const {
-        return component(0) * intervalVector.component(0) +
-            component(1) * intervalVector.component(1);
+        return x() * intervalVector.x() + y() * intervalVector.y();
     }
 
     inline
     const double
     Vector2d::minComponent() const {
-        if (component(0) <= component(1)) {
-            return component(0);
+        if (x() <= y()) {
+            return x();
         } else {
-            return component(1);
+            return y();
         }
     }
 
     inline
     const double
     Vector2d::minComponent(std::int64_t& index) const {
-        if (component(0) <= component(1)) {
+        if (x() <= y()) {
             index = 0;
-            return component(0);
+            return x();
         } else {
             index = 1;
-            return component(1);
+            return y();
         }
     }
 
     inline
     const double
     Vector2d::maxComponent() const {
-        if (component(0) >= component(1)) {
-            return component(0);
+        if (x() >= y()) {
+            return x();
         } else {
-            return component(1);
+            return y();
         }
     }
 
     inline
     const double
     Vector2d::maxComponent(std::int64_t& index) const {
-        if (component(0) >= component(1)) {
+        if (x() >= y()) {
             index = 0;
-            return component(0);
+            return x();
         } else {
             index = 1;
-            return component(1);
+            return y();
         }
     }
 
@@ -258,8 +251,8 @@ namespace opensolid
     const IntervalVector2d
     Vector2d::hull(const Vector2d& other) const {
         return IntervalVector2d(
-            Interval::Hull(component(0), other.component(0)),
-            Interval::Hull(component(1), other.component(1))
+            Interval::Hull(x(), other.x()),
+            Interval::Hull(y(), other.y())
         );
     }
 
@@ -267,16 +260,15 @@ namespace opensolid
     const IntervalVector2d
     Vector2d::hull(const IntervalVector2d& intervalVector) const {
         return IntervalVector2d(
-            intervalVector.component(0).hull(component(0)),
-            intervalVector.component(1).hull(component(1))
+            intervalVector.x().hull(x()),
+            intervalVector.y().hull(y())
         );
     }
 
     inline
     const bool
     Vector2d::operator==(const Vector2d& other) const {
-        return component(0) == other.component(0) &&
-            component(1) == other.component(1);
+        return x() == other.x() && y() == other.y();
     }
 
     inline
@@ -322,9 +314,7 @@ namespace opensolid
     inline
     const double
     Vector3d::squaredNorm() const {
-        return component(0) * component(0) +
-            component(1) * component(1) +
-            component(2) * component(2);
+        return x() * x() + y() * y() + z() * z();
     }
 
     inline
@@ -347,33 +337,29 @@ namespace opensolid
     inline
     const double
     Vector3d::dot(const Vector3d& other) const {
-        return component(0) * other.component(0) +
-            component(1) * other.component(1) +
-            component(2) * other.component(2);
+        return x() * other.x() + y() * other.y() + z() * other.z();
     }
 
     inline
     const Interval
     Vector3d::dot(const IntervalVector3d& intervalVector) const {
-        return component(0) * intervalVector.component(0) +
-            component(1) * intervalVector.component(1) +
-            component(2) * intervalVector.component(2);
+        return x() * intervalVector.x() + y() * intervalVector.y() + z() * intervalVector.z();
     }
 
     inline
     const double
     Vector3d::minComponent() const {
-        if (component(0) <= component(1)) {
-            if (component(0) <= component(2)) {
-                return component(0);
+        if (x() <= y()) {
+            if (x() <= z()) {
+                return x();
             } else {
-                return component(2);
+                return z();
             }
         } else {
-            if (component(1) <= component(2)) {
-                return component(1);
+            if (y() <= z()) {
+                return y();
             } else {
-                return component(2);
+                return z();
             }
         }
     }
@@ -381,21 +367,21 @@ namespace opensolid
     inline
     const double
     Vector3d::minComponent(std::int64_t& index) const {
-        if (component(0) <= component(1)) {
-            if (component(0) <= component(2)) {
+        if (x() <= y()) {
+            if (x() <= z()) {
                 index = 0;
-                return component(0);
+                return x();
             } else {
                 index = 2;
-                return component(2);
+                return z();
             }
         } else {
-            if (component(1) <= component(2)) {
+            if (y() <= z()) {
                 index = 1;
-                return component(1);
+                return y();
             } else {
                 index = 2;
-                return component(2);
+                return z();
             }
         }
     }
@@ -403,17 +389,17 @@ namespace opensolid
     inline
     const double
     Vector3d::maxComponent() const {
-        if (component(0) >= component(1)) {
-            if (component(0) >= component(2)) {
-                return component(0);
+        if (x() >= y()) {
+            if (x() >= z()) {
+                return x();
             } else {
-                return component(2);
+                return z();
             }
         } else {
-            if (component(1) >= component(2)) {
-                return component(1);
+            if (y() >= z()) {
+                return y();
             } else {
-                return component(2);
+                return z();
             }
         }
     }
@@ -421,21 +407,21 @@ namespace opensolid
     inline
     const double
     Vector3d::maxComponent(std::int64_t& index) const {
-        if (component(0) >= component(1)) {
-            if (component(0) >= component(2)) {
+        if (x() >= y()) {
+            if (x() >= z()) {
                 index = 0;
-                return component(0);
+                return x();
             } else {
                 index = 2;
-                return component(2);
+                return z();
             }
         } else {
-            if (component(1) >= component(2)) {
+            if (y() >= z()) {
                 index = 1;
-                return component(1);
+                return y();
             } else {
                 index = 2;
-                return component(2);
+                return z();
             }
         }
     }
@@ -444,9 +430,9 @@ namespace opensolid
     const IntervalVector3d
     Vector3d::hull(const Vector3d& other) const {
         return IntervalVector3d(
-            Interval::Hull(component(0), other.component(0)),
-            Interval::Hull(component(1), other.component(1)),
-            Interval::Hull(component(2), other.component(2))
+            Interval::Hull(x(), other.x()),
+            Interval::Hull(y(), other.y()),
+            Interval::Hull(z(), other.z())
         );
     }
 
@@ -454,18 +440,16 @@ namespace opensolid
     const IntervalVector3d
     Vector3d::hull(const IntervalVector3d& intervalVector) const {
         return IntervalVector3d(
-            intervalVector.component(0).hull(component(0)),
-            intervalVector.component(1).hull(component(1)),
-            intervalVector.component(2).hull(component(2))
+            intervalVector.x().hull(x()),
+            intervalVector.y().hull(y()),
+            intervalVector.z().hull(z())
         );
     }
 
     inline
     const bool
     Vector3d::operator==(const Vector3d& other) const {
-        return component(0) == other.component(0) &&
-            component(1) == other.component(1) &&
-            component(2) == other.component(2);
+        return x() == other.x() && y() == other.y() && z() == other.z();
     }
 
     inline
@@ -495,14 +479,14 @@ namespace opensolid
             assert(false);
             return UnitVector3d();
         } else {
-            if (component(0) <= component(1)) {
-                if (component(0) <= component(2)) {
+            if (x() <= y()) {
+                if (x() <= z()) {
                     return UnitVector3d::X().cross(*this).normalized();
                 } else {
                     return UnitVector3d::Z().cross(*this).normalized();
                 }
             } else {
-                if (component(1) <= component(2)) {
+                if (y() <= z()) {
                     return UnitVector3d::Y().cross(*this).normalized();
                 } else {
                     return UnitVector3d::Z().cross(*this).normalized();

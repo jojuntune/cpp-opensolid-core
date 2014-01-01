@@ -54,26 +54,5 @@ namespace opensolid
 
         const Interval
         operator()(std::int64_t index) const;
-
-        const Interval
-        squaredNorm() const;
-
-        const Interval
-        norm() const;
-
-        const IntervalVector<iNumDimensions>
-        normalized() const;
-
-        const Interval
-        dot(const Vector<iNumDimensions>& vector) const;
-
-        const Interval
-        dot(const IntervalVector<iNumDimensions>& other) const;
-
-        const IntervalVector<iNumDimensions>
-        hull(const IntervalVector<iNumDimensions>& other) const;
-
-        const IntervalVector<iNumDimensions>
-        hull(const Vector<iNumDimensions>& vector) const;
     };
 }
