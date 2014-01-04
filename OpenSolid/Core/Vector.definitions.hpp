@@ -119,6 +119,9 @@ namespace opensolid
 
         static const Vector<1>
         Zero();
+
+        static const Vector<1>
+        Random();
     };
 
     typedef Vector<1> Vector1d;
@@ -181,6 +184,9 @@ namespace opensolid
 
         static const Vector<2>
         Zero();
+
+        static const Vector<2>
+        Random();
     };
 
     typedef Vector<2> Vector2d;
@@ -252,6 +258,9 @@ namespace opensolid
 
         static const Vector<3>
         Zero();
+
+        static const Vector<3>
+        Random();
     };
 
     typedef Vector<3> Vector3d;

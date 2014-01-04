@@ -37,6 +37,8 @@
 #include <OpenSolid/Core/UnitVector.hpp>
 #include <OpenSolid/Core/Vector/VectorBase.hpp>
 
+#include <cstdlib>
+
 namespace opensolid
 {
     inline
@@ -144,6 +146,12 @@ namespace opensolid
     const Vector1d
     Vector1d::Zero() {
         return Vector1d(0.0);
+    }
+
+    inline
+    const Vector1d
+    Vector1d::Random() {
+        return Vector1d(-1.0 + 2.0 * double(rand()) / RAND_MAX);
     }
 
     inline
@@ -281,6 +289,15 @@ namespace opensolid
     const Vector2d
     Vector2d::Zero() {
         return Vector2d(0.0, 0.0);
+    }
+
+    inline
+    const Vector2d
+    Vector2d::Random() {
+        return Vector2d(
+            -1.0 + 2.0 * double(rand()) / RAND_MAX,
+            -1.0 + 2.0 * double(rand()) / RAND_MAX
+        );
     }
 
     inline
@@ -499,6 +516,16 @@ namespace opensolid
     const Vector3d
     Vector3d::Zero() {
         return Vector3d(0.0, 0.0, 0.0);
+    }
+
+    inline
+    const Vector3d
+    Vector3d::Random() {
+        return Vector3d(
+            -1.0 + 2.0 * double(rand()) / RAND_MAX,
+            -1.0 + 2.0 * double(rand()) / RAND_MAX,
+            -1.0 + 2.0 * double(rand()) / RAND_MAX
+        );
     }
 
     inline

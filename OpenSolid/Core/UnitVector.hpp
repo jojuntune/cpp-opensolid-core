@@ -30,6 +30,8 @@
 
 #include <OpenSolid/Core/Vector.hpp>
 
+#include <cstdlib>
+
 namespace opensolid
 {
     inline
@@ -73,6 +75,12 @@ namespace opensolid
     const UnitVector1d
     UnitVector1d::X() {
         return UnitVector1d(1.0);
+    }
+
+    inline
+    const UnitVector1d
+    UnitVector1d::Random() {
+        return UnitVector1d(rand() > RAND_MAX / 2 ? 1.0 : -1.0);
     }
 
     inline
@@ -137,6 +145,21 @@ namespace opensolid
     }
 
     inline
+    const UnitVector2d
+    UnitVector2d::Random() {
+        while (true) {
+            Vector2d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm - 1 <= Zero() && candidateSquaredNorm > Zero()) {
+                return candidate / sqrt(squaredNorm);
+            }
+        }
+    }
+
+    inline
     UnitVector3d::UnitVector() :
         Vector3d() {
     }
@@ -189,5 +212,21 @@ namespace opensolid
     const UnitVector3d
     UnitVector3d::Z() {
         return UnitVector3d(0.0, 0.0, 1.0);
+    }
+
+    inline
+    const UnitVector3d
+    UnitVector3d::Random() {
+        while (true) {
+            Vector3d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm - 1 <= Zero() && candidateSquaredNorm > Zero()) {
+                return candidate / sqrt(squaredNorm);
+            }
+        }
     }
 }
