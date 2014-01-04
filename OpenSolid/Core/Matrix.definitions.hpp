@@ -28,6 +28,153 @@
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
+#if 1
+
+#include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
+
+namespace opensolid
+{
+    template <int iNumRows, int iNumColumns>
+    class Matrix :
+        public MatrixBase<iNumRows, iNumColumns>
+    {
+    public:
+        Matrix();
+    };
+
+    template <>
+    class Matrix<1, 1> :
+        public MatrixBase<1, 1>
+    {
+    public:
+        Matrix();
+
+        explicit
+        Matrix(double value);
+
+        const double
+        value() const;
+
+        double&
+        value();
+
+        const double
+        determinant() const;
+
+        const Matrix<1, 1>
+        inverse() const;
+    };
+
+    typedef Matrix<1, 1> Matrix1d;
+
+    template <>
+    class Matrix<2, 2> :
+        public MatrixBase<2, 2>
+    {
+    public:
+        Matrix();
+
+        Matrix(double a, double b, double c, double d);
+
+        double
+        determinant() const;
+
+        const Matrix<2, 2>
+        inverse() const;
+    };
+
+    typedef Matrix<2, 2> Matrix2d;
+
+    template <>
+    class Matrix<3, 3> :
+        public MatrixBase<3, 3>
+    {
+    public:
+        Matrix();
+
+        Matrix(
+            double a11,
+            double a12,
+            double a13,
+            double a21,
+            double a22,
+            double a23,
+            double a31,
+            double a32,
+            double a33
+        );
+
+        OPENSOLID_CORE_EXPORT
+        const double
+        determinant() const;
+
+        OPENSOLID_CORE_EXPORT
+        const Matrix<3, 3>
+        inverse() const;
+    };
+
+    typedef Matrix<3, 3> Matrix3d;
+
+    template <>
+    class Matrix<2, 1> :
+        public MatrixBase<2, 1>
+    {
+    public:
+        Matrix();
+
+        Matrix(double x, double y);
+    };
+
+    typedef Matrix<2, 1> ColumnMatrix2d;
+
+    template <>
+    class Matrix<3, 1> :
+        public MatrixBase<3, 1>
+    {
+    public:
+        Matrix();
+
+        Matrix(double x, double y, double z);
+    };
+
+    typedef Matrix<3, 1> ColumnMatrix3d;
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator*(double scale, const Matrix<iNumRows, iNumColumns>& matrix);
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator*(const Matrix<iNumRows, iNumColumns>& matrix, double scale);
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator/(const Matrix<iNumRows, iNumColumns>& matrix, double divisor);
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, int iNumColumns>
+    operator+(
+        const Matrix<iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<iNumRows, iNumColumns>& secondMatrix
+    );
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, int iNumColumns>
+    operator-(
+        const Matrix<iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<iNumRows, iNumColumns>& secondMatrix
+    );
+
+    template <int iNumRows, int iNumColumns, int iInnerSize>
+    const Matrix<iNumRows, int iNumColumns>
+    operator*(
+        const Matrix<iNumRows, iInnerSize>& firstMatrix,
+        const Matrix<iInnerSize, iNumColumns>& secondMatrix
+    );
+}
+
+#else
+
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
@@ -144,3 +291,5 @@ namespace opensolid
         ) const;
     };
 }
+
+#endif

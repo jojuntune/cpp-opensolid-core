@@ -28,6 +28,328 @@
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
+#if 1
+
+#include <cstdlib>
+
+namespace opensolid
+{
+    template <int iNumRows, int iNumColumns>
+    inline
+    Matrix<iNumRows, iNumColumns>::Matrix() :
+        MatrixBase<iNumRows, iNumColumns>() {
+
+        setZero();
+    }
+
+    inline
+    Matrix1d::Matrix() :
+        MatrixBase<1, 1>() {
+
+        component(0) = 0.0;
+    }
+
+    inline
+    Matrix1d::Matrix(double value) :
+        MatrixBase<1, 1>() {
+
+        component(0) = value;
+    }
+
+    inline
+    const double
+    Matrix1d::value() const {
+        return component(0);
+    }
+
+    inline
+    double&
+    Matrix1d::value() {
+        return component(0);
+    }
+
+    inline
+    const double
+    Matrix1d::determinant() const {
+        return value();
+    }
+
+    inline
+    const Matrix1d
+    Matrix1d::inverse() const {
+        if (value() == Zero()) {
+            assert(false);
+            return Matrix1d(0.0);
+        }
+        return Matrix1d(1.0 / value());
+    }
+
+    inline
+    Matrix2d::Matrix() :
+        MatrixBase<2, 2>() {
+
+        setZero();
+    }
+
+    inline
+    Matrix2d::Matrix(double a, double b, double c, double d) :
+        MatrixBase<2, 2>() {
+
+        component(0) = a;
+        component(1) = c;
+        component(2) = b;
+        component(3) = d;
+    }
+
+    inline
+    double
+    Matrix2d::determinant() const {
+        return component(0) * component(3) - component(2) * component(1);
+    }
+
+    inline
+    const Matrix2d
+    Matrix2d::inverse() const {
+        double determinant = this->determinant();
+        if (determinant == Zero()) {
+            assert(false);
+            return Matrix2d();
+        }
+        double reciprocal = 1.0 / determinant;
+        return Matrix2d(
+            reciprocal * component(3),
+            -reciprocal * component(2),
+            -reciprocal * component(1),
+            reciprocal * component(0)
+        );
+    }
+
+    inline
+    Matrix3d::Matrix() :
+        MatrixBase<3, 3>() {
+
+        setZero();
+    }
+
+    inline
+    Matrix3d::Matrix(
+        double a11,
+        double a12,
+        double a13,
+        double a21,
+        double a22,
+        double a23,
+        double a31,
+        double a32,
+        double a33
+    ) : MatrixBase<3, 3>() {
+
+        component(0) = a11;
+        component(1) = a21;
+        component(2) = a31;
+        component(3) = a12;
+        component(4) = a22;
+        component(5) = a32;
+        component(6) = a13;
+        component(7) = a23;
+        component(8) = a33;
+    }
+
+    inline
+    ColumnMatrix2d::Matrix() :
+        MatrixBase<2, 1>() {
+
+        component(0) = 0.0;
+        component(1) = 0.0;
+    }
+
+    inline
+    ColumnMatrix2d::Matrix(double x, double y) :
+        MatrixBase<2, 1>() {
+
+        component(0) = x;
+        component(1) = y;
+    }
+
+    inline
+    ColumnMatrix3d::Matrix() :
+        MatrixBase<3, 1>() {
+
+        component(0) = 0.0;
+        component(1) = 0.0;
+        component(2) = 0.0;
+    }
+
+    inline
+    ColumnMatrix3d::Matrix(double x, double y, double z) :
+        MatrixBase<3, 1>() {
+
+        component(0) = x;
+        component(1) = y;
+        component(2) = z;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator*(double scale, const Matrix<iNumRows, iNumColumns>& matrix) {
+        Matrix<iNumRows, iNumColumns> result(matrix);
+        result *= scale;
+        return result;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator*(const Matrix<iNumRows, iNumColumns>& matrix, double scale) {
+        Matrix<iNumRows, iNumColumns> result(matrix);
+        result *= scale;
+        return result;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator/(const Matrix<iNumRows, iNumColumns>& matrix, double divisor) {
+        if (divisor == Zero()) {
+            assert(false);
+            return Matrix<iNumRows, iNumColumns>();
+        }
+        Matrix<iNumRows, iNumColumns> result(matrix);
+        result *= (1.0 / divisor);
+        return result;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, int iNumColumns>
+    operator+(
+        const Matrix<iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<iNumRows, iNumColumns>& secondMatrix
+    ) {
+        Matrix<iNumRows, int iNumColumns> result(firstMatrix);
+        result += secondMatrix;
+        return result;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, int iNumColumns>
+    operator-(
+        const Matrix<iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<iNumRows, iNumColumns>& secondMatrix
+    ) {
+        Matrix<iNumRows, int iNumColumns> result(firstMatrix);
+        result -= secondMatrix;
+        return result;
+    }
+
+    template <int iNumRows, int iNumColumns, int iInnerSize>
+    const Matrix<iNumRows, int iNumColumns>
+    operator*(
+        const Matrix<iNumRows, iInnerSize>& firstMatrix,
+        const Matrix<iInnerSize, iNumColumns>& secondMatrix
+    ) {
+        Matrix<iNumRows, iNumColumns> result;
+        for (int columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
+            for (int rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
+                double& component = result(rowIndex, columnIndex);
+                for (int innerIndex = 0; innerIndex < iInnerSize; ++innerIndex) {
+                    component += firstMatrix(rowIndex, innerIndex) *
+                        secondMatrix(innerIndex, columnIndex);
+                }
+            }
+        }
+        return result;
+    }
+
+    template <>
+    inline
+    const Matrix<1, 1>
+    operator*(const Matrix<1, 1>& matrix, const Matrix<1, 1>& columnMatrix) {
+        return Matrix1d(matrix.value() * columnMatrix.value());
+    }
+
+    template <>
+    inline
+    const Matrix<1, 1>
+    operator*(const Matrix<1, 2>& matrix, const Matrix<2, 1>& columnMatrix) {
+        return Matrix1d(matrix(0, 0) * columnMatrix(0) + matrix(0, 1) * columnMatrix(1));
+    }
+
+    template <>
+    inline
+    const Matrix<1, 1>
+    operator*(const Matrix<1, 3>& matrix, const Matrix<3, 1>& columnMatrix) {
+        return Matrix1d(
+            matrix(0, 0) * columnMatrix(0) + matrix(0, 1) * columnMatrix(1) +
+                matrix(0, 2) * columnMatrix(2)
+        );
+    }
+
+    template <>
+    inline
+    const Matrix<2, 1>
+    operator*(const Matrix<2, 1>& matrix, const Matrix<1, 1>& columnMatrix) {
+        return ColumnMatrix2d(matrix(0, 0) * columnMatrix(0), matrix(1, 0) * columnMatrix(0));
+    }
+
+    template <>
+    inline
+    const Matrix<2, 1>
+    operator*(const Matrix<2, 2>& matrix, const Matrix<2, 1>& columnMatrix) {
+        return ColumnMatrix2d(
+            matrix(0, 0) * columnMatrix(0) + matrix.component(0, 1) * columnMatrix(1),
+            matrix(1, 0) * columnMatrix(0) + matrix.component(1, 1) * columnMatrix(1)
+        );
+    }
+
+    template <>
+    inline
+    const Matrix<2, 1>
+    operator*(const Matrix<2, 3>& matrix, const Matrix<3, 1>& columnMatrix) {
+        return ColumnMatrix2d(
+            matrix(0, 0) * columnMatrix(0) + matrix(0, 1) * columnMatrix(1) +
+                matrix(0, 2) * columnMatrix(2),
+            matrix(1, 0) * columnMatrix(0) + matrix(1, 1) * columnMatrix(1) +
+                matrix(1, 2) * columnMatrix(2)
+        );
+    }
+
+    template <>
+    inline
+    const Matrix<3, 1>
+    operator*(const Matrix<3, 1>& matrix, const Matrix<1, 1>& columnMatrix) {
+        return ColumnMatrix3d(
+            matrix(0, 0) * columnMatrix(0),
+            matrix(1, 0) * columnMatrix(0),
+            matrix(2, 0) * columnMatrix(0)
+        );
+    }
+
+    template <>
+    inline
+    const Matrix<3, 1>
+    operator*(const Matrix<3, 2>& matrix, const Matrix<2, 1>& columnMatrix) {
+        return ColumnMatrix3d(
+            matrix(0, 0) * columnMatrix(0) + matrix.component(0, 1) * columnMatrix(1),
+            matrix(1, 0) * columnMatrix(0) + matrix.component(1, 1) * columnMatrix(1),
+            matrix(2, 0) * columnMatrix(0) + matrix.component(2, 1) * columnMatrix(1)
+        );
+    }
+
+    template <>
+    inline
+    const Matrix<3, 1>
+    operator*(const Matrix<3, 3>& matrix, const Matrix<3, 1>& columnMatrix) {
+        return ColumnMatrix3d(
+            matrix(0, 0) * columnMatrix(0) + matrix(0, 1) * columnMatrix(1) +
+                matrix(0, 2) * columnMatrix(2),
+            matrix(1, 0) * columnMatrix(0) + matrix(1, 1) * columnMatrix(1) +
+                matrix(1, 2) * columnMatrix(2, 0),
+            matrix(2, 0) * columnMatrix(0) + matrix(2, 1) * columnMatrix(1) +
+                matrix(2, 2) * columnMatrix(2)
+        );
+    }
+}
+
+#else
+
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix/ContainOperation.hpp>
@@ -668,3 +990,5 @@ namespace opensolid
         return matrix.derived().template cast<TScalar>() * argument;
     }
 }
+
+#endif

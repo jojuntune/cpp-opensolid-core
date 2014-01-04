@@ -26,6 +26,16 @@
 
 #include <OpenSolid/config.hpp>
 
+#if 1
+
+namespace opensolid
+{
+    template <int iNumRows, int iNumColumns>
+    class Matrix;
+}
+
+#else
+
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Convertible.declarations.hpp>
@@ -203,3 +213,5 @@ namespace opensolid
 {
     using namespace Eigen;
 }
+
+#endif
