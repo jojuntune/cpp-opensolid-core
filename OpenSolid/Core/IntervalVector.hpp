@@ -31,23 +31,23 @@
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Vector.hpp>
-#include <OpenSolid/Core/Vector/IntervalVectorBase.hpp>
+#include <OpenSolid/Core/Cartesian/Cartesianbase.hpp>
 
 namespace opensolid
 {
     inline
     IntervalVector1d::IntervalVector() :
-        IntervalVectorBase<1>(Interval::Empty()) {
+        detail::CartesianBase<Interval, 1>(IntervalMatrix1d(Interval::Empty())) {
     }
 
     inline
     IntervalVector1d::IntervalVector1d(Interval value) :
-        IntervalVectorBase<1>(value) {
+        detail::CartesianBase<Interval, 1>(IntervalMatrix1d(value)) {
     }
 
     inline
-    IntervalVector1d::IntervalVector1d(const Vector1d& vector) :
-        IntervalVectorBase<1>(vector.value()) {
+    IntervalVector1d::IntervalVector1d(const IntervalMatrix1d& components) :
+        detail::CartesianBase<Interval, 1>(components) {
     }
 
     inline
@@ -130,17 +130,21 @@ namespace opensolid
 
     inline
     IntervalVector2d::IntervalVector() :
-        IntervalVectorBase<2>(Interval::Empty(), Interval::Empty()) {
+        detail::CartesianBase<Interval, 2>(
+            IntervalColumnMatrix2d(Interval::Empty(), Interval::Empty())
+        ) {
     }
 
     inline
     IntervalVector2d::IntervalVector(Interval x, Interval y) :
-        IntervalVectorBase<2>(x, y) {
+        detail::CartesianBase<Interval, 2>(
+            IntervalColumnMatrix2d(x, y)
+        ) {
     }
 
     inline
-    IntervalVector2d::IntervalVector(const Vector2d& vector) :
-        IntervalVectorBase<2>(vector.component(0), vector.component(1)) {
+    IntervalVector2d::IntervalVector(const IntervalColumnMatrix2d& components) :
+        detail::CartesianBase<Interval, 2>(components) {
     }
 
     inline
@@ -225,18 +229,19 @@ namespace opensolid
 
     inline
     IntervalVector3d::IntervalVector() :
-        IntervalVectorBase(Interval::Empty(), Interval::Empty(), Interval::Empty()) {
+        detail::CartesianBase<Interval, 3>(
+            IntervalColumnMatrix3d(Interval::Empty(), Interval::Empty(), Interval::Empty())
+        ) {
     }
 
     inline
     IntervalVector3d::IntervalVector(Interval x, Interval y, Interval z) :
-        IntervalVectorBase<3>(x, y, z) {
-
+        detail::CartesianBase<Interval, 3>(IntervalColumnMatrix3d(x, y, z)) {
     }
 
     inline
-    IntervalVector3d::IntervalVector(const Vector3d& vector) :
-        IntervalVectorBase(vector.component(0), vector.component(1), vector.component(2)) {
+    IntervalVector3d::IntervalVector(const IntervalColumnMatrix3d& components) :
+        detail::CartesianBase<Interval, 3>(components) {
     }
 
     inline

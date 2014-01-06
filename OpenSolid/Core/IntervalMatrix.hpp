@@ -35,31 +35,19 @@ namespace opensolid
     template <int iNumRows, int iNumColumns>
     inline
     IntervalMatrix<iNumRows, iNumColumns>::IntervalMatrix() :
-        IntervalMatrixBase<iNumRows, iNumColumns>() {
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    IntervalMatrix<iNumRows, iNumColumns>::IntervalMatrix(
-        const Matrix<iNumRows, iNumColumns>& matrix
-    ) : IntervalMatrixBase<iNumRows, iNumColumns>(matrix) {
+        detail::MatrixBase<Interval, iNumRows, iNumColumns>() {
     }
 
     inline
     IntervalMatrix1d::IntervalMatrix() :
-        IntervalMatrixBase<1, 1>() {
+        detail::MatrixBase<Interval, 1, 1>() {
     }
 
     inline
     IntervalMatrix1d::Matrix(Interval value) :
-        IntervalMatrixBase<1, 1>() {
+        detail::MatrixBase<Interval, 1, 1>() {
 
         component(0) = value;
-    }
-
-    inline
-    IntervalMatrix1d::IntervalMatrix(const Matrix1d& matrix) :
-        IntervalMatrixBase<1, 1>(matrix) {
     }
 
     inline
@@ -88,22 +76,17 @@ namespace opensolid
 
     inline
     IntervalMatrix2d::IntervalMatrix() :
-        IntervalMatrixBase<2, 2>() {
+        detail::MatrixBase<Interval, 2, 2>() {
     }
 
     inline
     IntervalMatrix2d::IntervalMatrix(Interval a, Interval b, Interval c, Interval d) :
-        IntervalMatrixBase<2, 2>() {
+        detail::MatrixBase<Interval, 2, 2>() {
 
         component(0) = a;
         component(1) = c;
         component(2) = b;
         component(3) = d;
-    }
-
-    inline
-    IntervalMatrix2d::IntervalMatrix(const Matrix2d& matrix) :
-        IntervalMatrixBase<2, 2>(matrix) {
     }
 
     inline
@@ -127,7 +110,7 @@ namespace opensolid
 
     inline
     IntervalMatrix3d::IntervalMatrix() :
-        IntervalMatrixBase<3, 3>() {
+        detail::MatrixBase<Interval, 3, 3>() {
     }
 
     inline
@@ -141,7 +124,7 @@ namespace opensolid
         Interval a31,
         Interval a32,
         Interval a33
-    ) : IntervalMatrixBase<3, 3>() {
+    ) : detail::MatrixBase<Interval, 3, 3>() {
 
         component(0) = a11;
         component(1) = a21;
@@ -155,107 +138,96 @@ namespace opensolid
     }
 
     inline
-    IntervalMatrix3d::IntervalMatrix(const Matrix3d& matrix) :
-        IntervalMatrixBase<3, 3>(matrix) {
-    }
-
-    inline
     IntervalColumnMatrix2d::IntervalMatrix() :
-        IntervalMatrixBase<2, 1>() {
+        detail::MatrixBase<Interval, 2, 1>() {
     }
 
     inline
     IntervalColumnMatrix2d::IntervalMatrix(Interval x, Interval y) :
-        IntervalMatrixBase<2, 1>() {
+        detail::MatrixBase<Interval, 2, 1>() {
 
         component(0) = x;
         component(1) = y;
     }
 
     inline
-    IntervalColumnMatrix2d::IntervalMatrix(const ColumnMatrix2d& columnMatrix) :
-        IntervalMatrixBase<2, 1>(columnMatrix) {
-    }
-
-    inline
     IntervalColumnMatrix3d::Matrix() :
-        IntervalMatrixBase<3, 1>() {
+        detail::MatrixBase<Interval, 3, 1>() {
     }
 
     inline
     IntervalColumnMatrix3d::Matrix(Interval x, Interval y, Interval z) :
-        IntervalMatrixBase<3, 1>() {
+        detail::MatrixBase<Interval, 3, 1>() {
 
         component(0) = x;
         component(1) = y;
         component(2) = z;
     }
 
-    inline
-    IntervalColumnMatrix3d::IntervalMatrix(const ColumnMatrix2d& columnMatrix) :
-        IntervalMatrixBase<3, 1>(columnMatrix) {
-    }
-
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>
     operator*(Interval scale, const Matrix<iNumRows, iNumColumns>& matrix) {
-        IntervalMatrix<iNumRows, iNumColumns> result;
-        for (int index = 0; index < iNumRows * iNumColumns; ++index) {
-            result(index) = scale * matrix(index);
-        };
-        return result;
+        return matrix.map(
+            [scale] (double component) {
+                return scale * component;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>
     operator*(double scale, const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix) {
-        IntervalMatrix<iNumRows, iNumColumns> result(intervalMatrix);
-        result *= scale;
-        return result;
+        return intervalMatrix.map(
+            [scale] (Interval component) {
+                return scale * component;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
     const Matrix<iNumRows, iNumColumns>
     operator*(Interval scale, const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix) {
-        IntervalMatrix<iNumRows, iNumColumns> result(intervalMatrix);
-        result *= scale;
-        return result;
+        return intervalMatrix.map(
+            [scale] (Interval component) {
+                return scale * component;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>
     operator*(const Matrix<iNumRows, iNumColumns>& matrix, Interval scale) {
-        IntervalMatrix<iNumRows, iNumColumns> result;
-        for (int index = 0; index < iNumRows * iNumColumns; ++index) {
-            result(index) = scale * matrix(index);
-        };
-        return result;
+        return matrix.map(
+            [scale] (double component) {
+                return scale * component;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>
     operator*(const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix, double scale) {
-        IntervalMatrix<iNumRows, iNumColumns> result(intervalMatrix);
-        result *= scale;
-        return result;
+        return intervalMatrix.map(
+            [scale] (Interval component) {
+                return scale * component;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
     const Matrix<iNumRows, iNumColumns>
     operator*(const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix, Interval scale) {
-        IntervalMatrix<iNumRows, iNumColumns> result(intervalMatrix);
-        result *= scale;
-        return result;
+        return intervalMatrix.map(
+            [scale] (Interval component) {
+                return scale * component;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>
     operator/(const Matrix<iNumRows, iNumColumns>& matrix, Interval divisor) {
-        IntervalMatrix<iNumRows, iNumColumns> result;
-        for (int index = 0; index < iNumRows * iNumColumns; ++index) {
-            result(index) = matrix(index) / divisor;
-        }
-        return result;
+        return matrix * (1.0 / divisor);
     }
 
     template <int iNumRows, int iNumColumns>
@@ -263,26 +235,18 @@ namespace opensolid
     operator/(const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix, double divisor) {
         if (divisor == Zero()) {
             IntervalMatrix<iNumRows, iNumColumns> result;
-            for (int index = 0; index < iNumRows * iNumColumns; ++index) {
-                result(index) = Interval::Whole();
-            }
+            result.fill(Interval::Whole());
             return result;
         } else {
-            IntervalMatrix<iNumRows, iNumColumns> result(intervalMatrix);
-            result *= (1.0 / divisor);
-            return result;
+            return intervalMatrix * (1.0 / divisor);
         }
     }
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>
     operator/(const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix, Interval divisor) {
-        IntervalMatrix<iNumRows, iNumColumns> result(intervalMatrix);
-        result *= (1.0 / divisor);
-        return result;
+        return intervalMatrix * (1.0 / divisor);
     }
-
-
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, int iNumColumns>
@@ -290,9 +254,12 @@ namespace opensolid
         const Matrix<iNumRows, iNumColumns>& matrix,
         const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix
     ) {
-        IntervalMatrix<iNumRows, int iNumColumns> result(intervalMatrix);
-        result += matrix;
-        return result;
+        return matrix.binaryMap(
+            intervalMatrix,
+            [] (double firstValue, Interval secondValue) {
+                return firstValue + secondValue;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
@@ -301,9 +268,12 @@ namespace opensolid
         const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix,
         const Matrix<iNumRows, iNumColumns>& matrix
     ) {
-        IntervalMatrix<iNumRows, int iNumColumns> result(intervalMatrix);
-        result += matrix;
-        return result;
+        return intervalMatrix.binaryMap(
+            matrix,
+            [] (Interval firstValue, double secondValue) {
+                return firstValue + secondValue;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
@@ -312,9 +282,12 @@ namespace opensolid
         const IntervalMatrix<iNumRows, iNumColumns>& firstIntervalMatrix,
         const IntervalMatrix<iNumRows, iNumColumns>& secondIntervalMatrix
     ) {
-        Matrix<iNumRows, int iNumColumns> result(firstIntervalMatrix);
-        result += secondIntervalMatrix;
-        return result;
+        return firstIntervalMatrix.binaryMap(
+            secondIntervalMatrix,
+            [] (Interval firstValue, Interval secondValue) {
+                return firstValue + secondValue;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
@@ -323,11 +296,12 @@ namespace opensolid
         const Matrix<iNumRows, iNumColumns>& matrix,
         const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix
     ) {
-        IntervalMatrix<iNumRows, int iNumColumns> result;
-        for (int index = 0; index < iNumRows * iNumColumns; ++index) {
-            result(index) = matrix(index) - intervalMatrix(index);
-        }
-        return result;
+        return matrix.binaryMap(
+            intervalMatrix,
+            [] (double firstValue, Interval secondValue) {
+                return firstValue - secondValue;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
@@ -336,9 +310,12 @@ namespace opensolid
         const IntervalMatrix<iNumRows, iNumColumns>& intervalMatrix,
         const Matrix<iNumRows, iNumColumns>& matrix
     ) {
-        IntervalMatrix<iNumRows, int iNumColumns> result(intervalMatrix);
-        result -= matrix;
-        return result;
+        return intervalMatrix.binaryMap(
+            matrix,
+            [] (Interval firstValue, double secondValue) {
+                return firstValue - secondValue;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns>
@@ -347,9 +324,12 @@ namespace opensolid
         const Matrix<iNumRows, iNumColumns>& firstIntervalMatrix,
         const Matrix<iNumRows, iNumColumns>& secondIntervalMatrix
     ) {
-        IntervalMatrix<iNumRows, int iNumColumns> result(firstIntervalMatrix);
-        result -= secondIntervalMatrix;
-        return result;
+        return firstIntervalMatrix.binaryMap(
+            secondIntervalMatrix,
+            [] (Interval firstValue, Interval secondValue) {
+                return firstValue - secondValue;
+            }
+        );
     }
 
     template <int iNumRows, int iNumColumns, int iInnerSize>
@@ -395,8 +375,8 @@ namespace opensolid
     template <int iNumRows, int iNumColumns, int iInnerSize>
     const IntervalMatrix<iNumRows, int iNumColumns>
     operator*(
-        const Matrix<iNumRows, iInnerSize>& firstIntervalMatrix,
-        const Matrix<iInnerSize, iNumColumns>& secondIntervalMatrix
+        const IntervalMatrix<iNumRows, iInnerSize>& firstIntervalMatrix,
+        const IntervalMatrix<iInnerSize, iNumColumns>& secondIntervalMatrix
     ) {
         IntervalMatrix<iNumRows, iNumColumns> result;
         for (int columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
@@ -410,336 +390,5 @@ namespace opensolid
             }
         }
         return result;
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(const Matrix<1, 1>& matrix, const IntervalMatrix<1, 1>& intervalColumnMatrix) {
-        return IntervalMatrix1d(matrix.value() * intervalColumnMatrix.value());
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(const IntervalMatrix<1, 1>& intervalMatrix, const Matrix<1, 1>& columnMatrix) {
-        return IntervalMatrix1d(intervalMatrix.value() * columnMatrix.value());
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(
-        const IntervalMatrix<1, 1>& intervalMatrix,
-        const Matrix<1, 1>& intervalColumnMatrix
-    ) {
-        return IntervalMatrix1d(intervalMatrix.value() * intervalColumnMatrix.value());
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(const Matrix<1, 2>& matrix, const IntervalMatrix<2, 1>& intervalColumnMatrix) {
-        return IntervalMatrix1d(
-            matrix(0, 0) * intervalColumnMatrix(0) + matrix(0, 1) * IntervalolumnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(const IntervalMatrix<1, 2>& intervalMatrix, const Matrix<2, 1>& columnMatrix) {
-        return IntervalMatrix1d(
-            intervalMatrix(0, 0) * columnMatrix(0) + intervalMatrix(0, 1) * columnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(
-        const IntervalMatrix<1, 2>& intervalMatrix,
-        const IntervalMatrix<2, 1>& intervalColumnMatrix
-    ) {
-        return IntervalMatrix1d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(0, 1) * intervalColumnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(const Matrix<1, 3>& matrix, const IntervalMatrix<3, 1>& intervalColumnMatrix) {
-        return IntervalMatrix1d(
-            matrix(0, 0) * intervalColumnMatrix(0) + matrix(0, 1) * intervalColumnMatrix(1) +
-                matrix(0, 2) * intervalColumnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(const IntervalMatrix<1, 3>& intervalMatrix, const Matrix<3, 1>& columnMatrix) {
-        return IntervalMatrix1d(
-            intervalMatrix(0, 0) * columnMatrix(0) + intervalMatrix(0, 1) * columnMatrix(1) +
-                intervalMatrix(0, 2) * columnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<1, 1>
-    operator*(
-        const IntervalMatrix<1, 3>& intervalMatrix,
-        const IntervalMatrix<3, 1>& intervalColumnMatrix
-    ) {
-        return IntervalMatrix1d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(0, 1) * intervalColumnMatrix(1) +
-                intervalMatrix(0, 2) * intervalColumnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(const Matrix<2, 1>& matrix, const IntervalMatrix<1, 1>& intervalColumnMatrix) {
-        return IntervalColumnMatrix2d(
-            matrix(0, 0) * intervalColumnMatrix(0),
-            matrix(1, 0) * intervalColumnMatrix(0)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(const IntervalMatrix<2, 1>& intervalMatrix, const Matrix<1, 1>& columnMatrix) {
-        return IntervalColumnMatrix2d(
-            intervalMatrix(0, 0) * columnMatrix(0),
-            intervalMatrix(1, 0) * columnMatrix(0)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(
-        const IntervalMatrix<2, 1>& intervalMatrix,
-        const IntervalMatrix<1, 1>& intervalColumnMatrix
-    ) {
-        return IntervalColumnMatrix2d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0),
-            intervalMatrix(1, 0) * intervalColumnMatrix(0)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(const Matrix<2, 2>& matrix, const IntervalMatrix<2, 1>& intervalColumnMatrix) {
-        return IntervalColumnMatrix2d(
-            matrix(0, 0) * intervalColumnMatrix(0) +
-                matrix.component(0, 1) * intervalColumnMatrix(1),
-            matrix(1, 0) * intervalColumnMatrix(0) +
-                matrix.component(1, 1) * intervalColumnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(const IntervalMatrix<2, 2>& intervalMatrix, const Matrix<2, 1>& columnMatrix) {
-        return IntervalColumnMatrix2d(
-            intervalMatrix(0, 0) * columnMatrix(0) +
-                intervalMatrix.component(0, 1) * columnMatrix(1),
-            intervalMatrix(1, 0) * columnMatrix(0) +
-                intervalMatrix.component(1, 1) * columnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(
-        const IntervalMatrix<2, 2>& intervalMatrix,
-        const IntervalMatrix<2, 1>& intervalColumnMatrix
-    ) {
-        return IntervalColumnMatrix2d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0) +
-                intervalMatrix.component(0, 1) * intervalColumnMatrix(1),
-            intervalMatrix(1, 0) * intervalColumnMatrix(0) +
-                intervalMatrix.component(1, 1) * intervalColumnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(const Matrix<2, 3>& matrix, const IntervalMatrix<3, 1>& intervalColumnMatrix) {
-        return IntervalColumnMatrix2d(
-            matrix(0, 0) * intervalColumnMatrix(0) + matrix(0, 1) * intervalColumnMatrix(1) +
-                matrix(0, 2) * intervalColumnMatrix(2),
-            matrix(1, 0) * intervalColumnMatrix(0) + matrix(1, 1) * intervalColumnMatrix(1) +
-                matrix(1, 2) * intervalColumnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(const IntervalMatrix<2, 3>& intervalMatrix, const Matrix<3, 1>& columnMatrix) {
-        return IntervalColumnMatrix2d(
-            intervalMatrix(0, 0) * columnMatrix(0) + intervalMatrix(0, 1) * columnMatrix(1) +
-                intervalMatrix(0, 2) * columnMatrix(2),
-            intervalMatrix(1, 0) * columnMatrix(0) + intervalMatrix(1, 1) * columnMatrix(1) +
-                intervalMatrix(1, 2) * columnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<2, 1>
-    operator*(
-        const IntervalMatrix<2, 3>& intervalMatrix,
-        const IntervalMatrix<3, 1>& intervalColumnMatrix
-    ) {
-        return IntervalColumnMatrix2d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(0, 1) * intervalColumnMatrix(1) +
-                intervalMatrix(0, 2) * intervalColumnMatrix(2),
-            intervalMatrix(1, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(1, 1) * intervalColumnMatrix(1) +
-                intervalMatrix(1, 2) * intervalColumnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(const Matrix<3, 1>& matrix, const IntervalMatrix<1, 1>& intervalColumnMatrix) {
-        return IntervalColumnMatrix3d(
-            matrix(0, 0) * intervalColumnMatrix(0),
-            matrix(1, 0) * intervalColumnMatrix(0),
-            matrix(2, 0) * intervalColumnMatrix(0)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(const IntervalMatrix<3, 1>& intervalMatrix, const Matrix<1, 1>& columnMatrix) {
-        return IntervalColumnMatrix3d(
-            intervalMatrix(0, 0) * columnMatrix(0),
-            intervalMatrix(1, 0) * columnMatrix(0),
-            intervalMatrix(2, 0) * columnMatrix(0)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(
-        const IntervalMatrix<3, 1>& intervalMatrix,
-        const IntervalMatrix<1, 1>& intervalColumnMatrix
-    ) {
-        return IntervalColumnMatrix3d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0),
-            intervalMatrix(1, 0) * intervalColumnMatrix(0),
-            intervalMatrix(2, 0) * intervalColumnMatrix(0)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(const Matrix<3, 2>& matrix, const IntervalMatrix<2, 1>& intervalColumnMatrix) {
-        return IntervalColumnMatrix3d(
-            matrix(0, 0) * intervalColumnMatrix(0) +
-                matrix.component(0, 1) * intervalColumnMatrix(1),
-            matrix(1, 0) * intervalColumnMatrix(0) +
-                matrix.component(1, 1) * intervalColumnMatrix(1),
-            matrix(2, 0) * intervalColumnMatrix(0) +
-                matrix.component(2, 1) * intervalColumnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(const IntervalMatrix<3, 2>& intervalMatrix, const Matrix<2, 1>& columnMatrix) {
-        return IntervalColumnMatrix3d(
-            intervalMatrix(0, 0) * columnMatrix(0) +
-                intervalMatrix.component(0, 1) * columnMatrix(1),
-            intervalMatrix(1, 0) * columnMatrix(0) +
-                intervalMatrix.component(1, 1) * columnMatrix(1),
-            intervalMatrix(2, 0) * columnMatrix(0) +
-                intervalMatrix.component(2, 1) * columnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(
-        const IntervalMatrix<3, 2>& intervalMatrix,
-        const IntervalMatrix<2, 1>& intervalColumnMatrix
-    ) {
-        return IntervalColumnMatrix3d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0) +
-                intervalMatrix.component(0, 1) * intervalColumnMatrix(1),
-            intervalMatrix(1, 0) * intervalColumnMatrix(0) +
-                intervalMatrix.component(1, 1) * intervalColumnMatrix(1),
-            intervalMatrix(2, 0) * intervalColumnMatrix(0) +
-                intervalMatrix.component(2, 1) * intervalColumnMatrix(1)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(const Matrix<3, 3>& matrix, const IntervalMatrix<3, 1>& intervalColumnMatrix) {
-        return IntervalColumnMatrix3d(
-            matrix(0, 0) * intervalColumnMatrix(0) + matrix(0, 1) * intervalColumnMatrix(1) +
-                matrix(0, 2) * intervalColumnMatrix(2),
-            matrix(1, 0) * intervalColumnMatrix(0) + matrix(1, 1) * intervalColumnMatrix(1) +
-                matrix(1, 2) * intervalColumnMatrix(2, 0),
-            matrix(2, 0) * intervalColumnMatrix(0) + matrix(2, 1) * intervalColumnMatrix(1) +
-                matrix(2, 2) * intervalColumnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(const IntervalMatrix<3, 3>& intervalMatrix, const Matrix<3, 1>& columnMatrix) {
-        return IntervalColumnMatrix3d(
-            intervalMatrix(0, 0) * columnMatrix(0) + intervalMatrix(0, 1) * columnMatrix(1) +
-                intervalMatrix(0, 2) * columnMatrix(2),
-            intervalMatrix(1, 0) * columnMatrix(0) + intervalMatrix(1, 1) * columnMatrix(1) +
-                intervalMatrix(1, 2) * columnMatrix(2, 0),
-            intervalMatrix(2, 0) * columnMatrix(0) + intervalMatrix(2, 1) * columnMatrix(1) +
-                intervalMatrix(2, 2) * columnMatrix(2)
-        );
-    }
-
-    template <>
-    inline
-    const IntervalMatrix<3, 1>
-    operator*(
-        const IntervalMatrix<3, 3>& intervalMatrix,
-        const IntervalMatrix<3, 1>& intervalColumnMatrix
-    ) {
-        return IntervalColumnMatrix3d(
-            intervalMatrix(0, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(0, 1) * intervalColumnMatrix(1) +
-                intervalMatrix(0, 2) * intervalColumnMatrix(2),
-            intervalMatrix(1, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(1, 1) * intervalColumnMatrix(1) +
-                intervalMatrix(1, 2) * intervalColumnMatrix(2, 0),
-            intervalMatrix(2, 0) * intervalColumnMatrix(0) +
-                intervalMatrix(2, 1) * intervalColumnMatrix(1) +
-                matrix(2, 2) * intervalColumnMatrix(2)
-        );
     }
 }

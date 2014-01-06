@@ -30,12 +30,12 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/IntervalVector.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
-#include <OpenSolid/Core/Vector/VectorBase.definitions.hpp>
 
 namespace opensolid
 {
@@ -57,15 +57,9 @@ namespace opensolid
         typedef Vector<iNumResultDimensions> Type;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<Vector<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef Vector<iNumResultDimensions> Type;
-    };
-
     template <>
     class Vector<1> :
-        public VectorBase<1>,
+        public detail::CartesianBase<double, 1>,
         public Transformable<Vector<1>>,
         public Convertible<Vector<1>>
     {
@@ -75,11 +69,20 @@ namespace opensolid
         explicit
         Vector(double x);
 
+        explicit
+        Vector(const Matrix<1, 1>& components);
+
         const double
         value() const;
 
+        double&
+        value();
+
         const double
         x() const;
+
+        double&
+        x();
 
         const double
         squaredNorm() const;
@@ -128,7 +131,7 @@ namespace opensolid
 
     template <>
     class Vector<2> :
-        public VectorBase<2>,
+        public detail::CartesianBase<double, 2>,
         public Transformable<Vector<2>>,
         public Convertible<Vector<2>>
     {
@@ -137,11 +140,20 @@ namespace opensolid
 
         Vector(double x, double y);
 
+        explicit
+        Vector(const Matrix<2, 1>& components);
+
         const double
         x() const;
 
+        double&
+        x();
+
         const double
         y() const;
+
+        double&
+        y();
 
         const double
         squaredNorm() const;
@@ -193,7 +205,7 @@ namespace opensolid
 
     template <>
     class Vector<3> :
-        public VectorBase<3>,
+        public detail::CartesianBase<double, 3>,
         public Transformable<Vector<3>>,
         public Convertible<Vector<3>>
     {
@@ -202,14 +214,26 @@ namespace opensolid
 
         Vector(double x, double y, double z);
 
+        explicit
+        Vector(const Matrix<3, 1>& components);
+
         const double
         x() const;
+
+        double&
+        x();
 
         const double
         y() const;
 
+        double&
+        y();
+
         const double
         z() const;
+
+        double&
+        z();
 
         const double
         squaredNorm() const;
@@ -311,6 +335,15 @@ namespace opensolid
     operator/(const Vector3d& vector, double divisor);
 
     const Vector1d
+    operator-(const Vector1d& vector);
+
+    const Vector2d
+    operator-(const Vector2d& vector);
+
+    const Vector3d
+    operator-(const Vector3d& vector);
+
+    const Vector1d
     operator+(const Vector1d& firstVector, const Vector1d& secondVector);
 
     const Vector2d
@@ -344,5 +377,32 @@ namespace opensolid
     {
         const IntervalVector<iNumDimensions>
         operator()(const Vector<iNumDimensions>& vector) const;
+    };
+
+    template <int iNumDimensions>
+    struct ScalingFunction<Vector<iNumDimensions>>
+    {
+        const Vector<iNumDimensions>
+        operator()(const Vector<iNumDimensions>& vector, double scale) const;
+    };
+
+    template <int iNumDimensions>
+    struct TranslationFunction<Vector<iNumDimensions>>
+    {
+        const Vector<iNumDimensions>&
+        operator()(
+            const Vector<iNumDimensions>& vector,
+            const Vector<iNumDimensions>& translationVector
+        ) const;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<Vector<iNumDimensions>, iNumResultDimensions>
+    {
+        const Vector<iNumResultDimensions>
+        operator()(
+            const Vector<iNumDimensions>& vector,
+            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+        ) const;
     };
 }

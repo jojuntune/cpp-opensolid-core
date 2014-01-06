@@ -28,6 +28,9 @@
 
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
-    class MatrixBase;
+    namespace detail
+    {
+        template <class TScalar, int iNumRows, int iNumColumns>
+        class MatrixBase;
+    }
 }

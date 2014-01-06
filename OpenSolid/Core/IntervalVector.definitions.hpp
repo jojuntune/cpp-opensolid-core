@@ -28,10 +28,10 @@
 
 #include <OpenSolid/Core/IntervalVector.declarations.hpp>
 
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Vector.declarations.hpp>
-#include <OpenSolid/Core/Vector/IntervalVectorBase.definitions.hpp>
 
 namespace opensolid
 {
@@ -61,17 +61,18 @@ namespace opensolid
 
     template <>
     class IntervalVector<1> :
-        public IntervalVectorBase<1>,
+        public detail::CartesianBase<Interval, 1>,
         public Transformable<IntervalVector<1>>,
         public Convertible<IntervalVector<1>>
     {
     public:
         IntervalVector();
 
-        IntervalVector(Interval x);
+        explicit
+        IntervalVector(const IntervalMatrix<1, 1>& components);
 
         explicit
-        IntervalVector(const Vector<1>& vector);
+        IntervalVector(Interval x);
 
         const Interval
         value() const;
@@ -112,17 +113,19 @@ namespace opensolid
 
     template <>
     class IntervalVector<2> :
-        public IntervalVectorBase<2>,
+        public detail::CartesianBase<Interval, 2>,
         public Transformable<IntervalVector<2>>,
         public Convertible<IntervalVector<2>>
     {
     public:
         IntervalVector();
 
+        explicit
+        IntervalVector(const IntervalMatrix<2, 1>& components);
+
         IntervalVector(Interval x, Interval y);
 
-        explicit
-        IntervalVector(const Vector<2>& vector);
+        const IntervalMatrix<2, 1>& components
 
         const Interval
         x() const;
@@ -165,7 +168,7 @@ namespace opensolid
 
     template <>
     class IntervalVector<3> :
-        public IntervalVectorBase<3>,
+        public detail::CartesianBase<Interval, 3>,
         public Transformable<IntervalVector<3>>,
         public Convertible<IntervalVector<3>>
     {
@@ -175,7 +178,7 @@ namespace opensolid
         IntervalVector(Interval x, Interval y, Interval z);
 
         explicit
-        IntervalVector(const Vector<3>& vector);
+        IntervalVector(const IntervalMatrix<3, 1>& components);
 
         const Interval
         x() const;

@@ -30,197 +30,251 @@
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
+#include <algorithm>
+
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
-    inline
-    MatrixBase<iNumRows, iNumColumns>::MatrixBase() {
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    void
-    MatrixBase<iNumRows, iNumColumns>::setZero() {
-        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
-            component(index) = 0.0;
+    namespace detail
+    {
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        MatrixBase<TScalar, iNumRows, iNumColumns>::MatrixBase() {
         }
-    }
 
-    template <int iNumRows, int iNumColumns>
-    inline
-    const double
-    MatrixBase<iNumRows, iNumColumns>::component(std::int64_t index) const {
-        return _components[index];
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    double&
-    MatrixBase<iNumRows, iNumColumns>::component(std::int64_t index) {
-        return _components[index];
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const double
-    MatrixBase<iNumRows, iNumColumns>::component(
-        std::int64_t rowIndex,
-        std::int64_t columnIndex
-    ) const {
-        return component(columnIndex * iNumRows + rowIndex);
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    double&
-    MatrixBase<iNumRows, iNumColumns>::component(
-        std::int64_t rowIndex,
-        std::int64_t columnIndex
-    ) {
-        return component(columnIndex * iNumRows + rowIndex);
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const double
-    MatrixBase<iNumRows, iNumColumns>::operator()(std::int64_t index) const {
-        return component(index);
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    double&
-    MatrixBase<iNumRows, iNumColumns>::operator()(std::int64_t index) {
-        return component(index);
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const double
-    MatrixBase<iNumRows, iNumColumns>::operator()(
-        std::int64_t rowIndex,
-        std::int64_t columnIndex
-    ) const {
-        return component(rowIndex, columnIndex);
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    double&
-    MatrixBase<iNumRows, iNumColumns>::operator()(
-        std::int64_t rowIndex,
-        std::int64_t columnIndex
-    ) {
-        return component(rowIndex, columnIndex);
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const double*
-    MatrixBase<iNumRows, iNumColumns>::data() const {
-        return _components;
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    double*
-    MatrixBase<iNumRows, iNumColumns>::data() {
-        return _components;
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumColumns, iNumRows>
-    MatrixBase<iNumRows, iNumColumns>::transpose() const {
-        Matrix<iNumColumns, iNumRows> result;
-        for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
-            for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
-                result.component(columnIndex, rowIndex) = component(rowIndex, columnIndex);
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        MatrixBase<TScalar, iNumRows, iNumColumns>::MatrixBase(const TScalar* sourcePtr) {
+            TScalar* destinationPtr = _components;
+            for (std::int64_t index = 0; index < Size; ++index, ++sourcePtr, ++destinationPtr) {
+                *destinationPtr = *sourcePtr;
             }
         }
-        return result;
-    }
 
-    template <int iNumRows, int iNumColumns>
-    inline
-    void
-    MatrixBase<iNumRows, iNumColumns>::operator*=(double scale) {
-        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
-            component(index) *= scale;
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const TScalar
+        MatrixBase<TScalar, iNumRows, iNumColumns>::component(std::int64_t index) const {
+            return _components[index];
         }
-    }
 
-    template <int iNumRows, int iNumColumns>
-    inline
-    void
-    MatrixBase<iNumRows, iNumColumns>::operator+=(const Matrix<iNumRows, iNumColumns>& other) {
-        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
-            component(index) += other.component(index);
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        TScalar&
+        MatrixBase<TScalar, iNumRows, iNumColumns>::component(std::int64_t index) {
+            return _components[index];
         }
-    }
 
-    template <int iNumRows, int iNumColumns>
-    inline
-    void
-    MatrixBase<iNumRows, iNumColumns>::operator-=(const Matrix<iNumRows, iNumColumns>& other) {
-        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
-            component(index) -= other.component(index);
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const TScalar
+        MatrixBase<TScalar, iNumRows, iNumColumns>::component(
+            std::int64_t rowIndex,
+            std::int64_t columnIndex
+        ) const {
+            return component(columnIndex * iNumRows + rowIndex);
         }
-    }
 
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumRows, iNumColumns>
-    MatrixBase<iNumRows, iNumColumns>::Zero() {
-        return Matrix<iNumRows, iNumColumns>();
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumRows, iNumColumns>
-    MatrixBase<iNumRows, iNumColumns>::Ones() {
-        Matrix<iNumRows, iNumColumns> result;
-        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
-            result.component(index) = 1.0;
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        TScalar&
+        MatrixBase<TScalar, iNumRows, iNumColumns>::component(
+            std::int64_t rowIndex,
+            std::int64_t columnIndex
+        ) {
+            return component(columnIndex * iNumRows + rowIndex);
         }
-        return result;
-    }
 
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumRows, iNumColumns>
-    MatrixBase<iNumRows, iNumColumns>::Identity() {
-        Matrix<iNumRows, iNumColumns> result;
-        std::int64_t count = min(iNumRows, iNumColumns);
-        for (std::int64_t index = 0; index < count; ++index) {
-            result(index, index) = 1.0;
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const TScalar
+        MatrixBase<TScalar, iNumRows, iNumColumns>::operator()(std::int64_t index) const {
+            return component(index);
         }
-        return result;
-    }
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    MatrixBase<iNumRows, iNumColumns>::Random() {
-        Matrix<iNumRows, iNumColumns> result;
-        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
-            result.component(index) = double(rand()) / RAND_MAX;
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        TScalar&
+        MatrixBase<TScalar, iNumRows, iNumColumns>::operator()(std::int64_t index) {
+            return component(index);
         }
-        return result;
-    }
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    MatrixBase<iNumRows, iNumColumns>::OuterProduct(
-        const Matrix<iNumRows, 1>& columnMatrix,
-        const Matrix<1, iNumColumns>& rowMatrix
-    ) {
-        Matrix<iNumRows, iNumColumns> result;
-        for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
-            for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
-                result.component(rowIndex, columnIndex) =
-                    columnMatrix.component(rowIndex, 1) * rowMatrix.component(1, columnIndex);
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const TScalar
+        MatrixBase<TScalar, iNumRows, iNumColumns>::operator()(
+            std::int64_t rowIndex,
+            std::int64_t columnIndex
+        ) const {
+            return component(rowIndex, columnIndex);
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        TScalar&
+        MatrixBase<TScalar, iNumRows, iNumColumns>::operator()(
+            std::int64_t rowIndex,
+            std::int64_t columnIndex
+        ) {
+            return component(rowIndex, columnIndex);
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const TScalar*
+        MatrixBase<TScalar, iNumRows, iNumColumns>::data() const {
+            return _components;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        TScalar*
+        MatrixBase<TScalar, iNumRows, iNumColumns>::data() {
+            return _components;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        void
+        MatrixBase<TScalar, iNumRows, iNumColumns>::fill(TScalar value) {
+            std::fill_n(_components, Size, value);
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumColumns, iNumRows>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::transpose() const {
+            typename MatrixType<TScalar, iNumColumns, iNumRows>::Type result;
+            for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
+                for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
+                    result.component(columnIndex, rowIndex) = component(rowIndex, columnIndex);
+                }
             }
+            return result;
         }
-        return result;
+
+        template <class TScalar, int iNumRows, int iNumColumns> template <class TUnaryPredicate>
+        inline
+        const bool
+        MatrixBase<TScalar, iNumRows, iNumColumns>::any(TUnaryPredicate unaryPredicate) const {
+            const TScalar* scalarPtr = data();
+            for (std::int64_t index = 0; index < Size; ++index, ++scalarPtr) {
+                if (unaryPredicate(*scalarPtr)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns> template <class TUnaryPredicate>
+        inline
+        const bool
+        MatrixBase<TScalar, iNumRows, iNumColumns>::all(TUnaryPredicate unaryPredicate) const {
+            const TScalar* scalarPtr = data();
+            for (std::int64_t index = 0; index < Size; ++index, ++scalarPtr) {
+                if (!unaryPredicate(*scalarPtr)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TBinaryPredicate, class TOtherScalar>
+        inline
+        const bool
+        MatrixBase<TScalar, iNumRows, iNumColumns>::binaryAny(
+            const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+            TBinaryPredicate binaryPredicate
+        ) const {
+            const TScalar* scalarPtr = data();
+            const TOtherScalar* otherScalarPtr = other.data();
+            for (std::int64_t index = 0; index < Size; ++index, ++scalarPtr,++otherScalarPtr) {
+                if (binaryPredicate(*scalarPtr, *otherScalarPtr)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TBinaryPredicate, class TOtherScalar>
+        inline
+        const bool
+        MatrixBase<TScalar, iNumRows, iNumColumns>::binaryAll(
+            const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+            TBinaryPredicate binaryPredicate
+        ) const {
+            const TScalar* scalarPtr = data();
+            const TOtherScalar* otherScalarPtr = other.data();
+            for (std::int64_t index = 0; index < Size; ++index, ++scalarPtr, ++otherScalarPtr) {
+                if (!binaryPredicate(*scalarPtr, *otherScalarPtr)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns> template <class TUnaryFunction>
+        inline
+        const typename MappedMatrixType<
+            TUnaryFunction,
+            TScalar,
+            iNumRows,
+            iNumColumns
+        >::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::map(TUnaryFunction unaryFunction) const {
+            typename MappedMatrixType<
+                TUnaryFunction,
+                TScalar,
+                iNumRows,
+                iNumColumns
+            >::Type result;
+
+            const TScalar* sourcePtr = data();
+            typename MappedScalarType<TUnaryFunction, TScalar>::Type*
+                destinationPtr = result.data();
+            for (std::int64_t index = 0; index < Size; ++index, ++sourcePtr, ++destinationPtr) {
+                *destinationPtr = unaryFunction(*sourcePtr);
+            }
+
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TBinaryFunction, class TOtherScalar>
+        inline
+        const typename PairwiseMappedMatrixType<
+            TBinaryFunction,
+            TScalar,
+            TOtherScalar,
+            iNumRows,
+            iNumColumns
+        >::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::binaryMap(
+            const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+            TBinaryFunction binaryFunction
+        ) const {
+            typename PairwiseMappedMatrixType<
+                TBinaryFunction,
+                TScalar,
+                TOtherScalar,
+                iNumRows,
+                iNumColumns
+            >::Type result;
+
+            const TScalar* sourcePtr = data();
+            const TOtherScalar* otherSourcePtr = other.data();
+            typename PairwiseMappedScalarType<TBinaryFunction, TScalar, TOtherScalar>::Type*
+                destinationPtr = result.data();
+            for (
+                std::int64_t index = 0;
+                index < Size;
+                ++index, ++sourcePtr, ++otherSourcePtr, ++destinationPtr
+            ) {
+                *destinationPtr = binaryFunction(*sourcePtr, *otherSourcePtr);
+            }
+
+            return result;
+        }
     }
 }

@@ -28,13 +28,14 @@
 
 #include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
 
-#include <OpenSolid/Core/Matrix/IntervalMatrixBase.definitions.hpp>
+#include <OpenSolid/Core/Interval.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
 
 namespace opensolid
 {
     template <int iNumRows, int iNumColumns>
     class IntervalMatrix :
-        public IntervalMatrixBase<iNumRows, iNumColumns>
+        public detail::MatrixBase<Interval, iNumRows, iNumColumns>
     {
     public:
         IntervalMatrix();
@@ -45,7 +46,7 @@ namespace opensolid
 
     template <>
     class IntervalMatrix<1, 1> :
-        public IntervalMatrixBase<1, 1>
+        public detail::MatrixBase<Interval, 1, 1>
     {
     public:
         IntervalMatrix();
@@ -73,7 +74,7 @@ namespace opensolid
 
     template <>
     class IntervalMatrix<2, 2> :
-        public IntervalMatrixBase<2, 2>
+        public detail::MatrixBase<Interval, 2, 2>
     {
     public:
         IntervalMatrix();
@@ -94,7 +95,7 @@ namespace opensolid
 
     template <>
     class IntervalMatrix<3, 3> :
-        public IntervalMatrixBase<3, 3>
+        public detail::MatrixBase<Interval, 3, 3>
     {
     public:
         IntervalMatrix();
@@ -127,7 +128,7 @@ namespace opensolid
 
     template <>
     class IntervalMatrix<2, 1> :
-        public IntervalMatrixBase<2, 1>
+        public detail::MatrixBase<Interval, 2, 1>
     {
     public:
         IntervalMatrix();
@@ -142,7 +143,7 @@ namespace opensolid
 
     template <>
     class IntervalMatrix<3, 1> :
-        public IntervalMatrixBase<3, 1>
+        public detail::MatrixBase<Interval, 3, 1>
     {
     public:
         IntervalMatrix();
@@ -153,7 +154,35 @@ namespace opensolid
         IntervalMatrix(const Matrix<3, 1>& columnMatrix);
     };
 
-    typedef Matrix<3, 1> IntervalColumnMatrix3d;
+    template <>
+    class IntervalMatrix<1, 2> :
+        public detail::MatrixBase<Interval, 1, 2>
+    {
+    public:
+        IntervalMatrix();
+
+        IntervalMatrix(Interval x, Interval y);
+
+        explicit
+        IntervalMatrix(const Matrix<1, 2>& columnMatrix);
+    };
+
+    typedef IntervalMatrix<1, 2> IntervalRowMatrix2d;
+
+    template <>
+    class IntervalMatrix<1, 3> :
+        public detail::MatrixBase<Interval, 1, 3>
+    {
+    public:
+        IntervalMatrix();
+
+        IntervalMatrix(Interval x, Interval y, Interval z);
+
+        explicit
+        IntervalMatrix(const Matrix<1, 3>& columnMatrix);
+    };
+
+    typedef Matrix<1, 3> IntervalRowMatrix3d;
 
     template <int iNumRows, int iNumColumns>
     const IntervalMatrix<iNumRows, iNumColumns>

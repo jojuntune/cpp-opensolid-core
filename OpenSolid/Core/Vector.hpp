@@ -30,12 +30,12 @@
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/IntervalVector.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
-#include <OpenSolid/Core/Vector/VectorBase.hpp>
 
 #include <cstdlib>
 
@@ -43,12 +43,17 @@ namespace opensolid
 {
     inline
     Vector1d::Vector() :
-        VectorBase<1>(0.0) {
+        detail::CartesianBase<double, 1>(Matrix1d()) {
     }
 
     inline
     Vector1d::Vector(double x) :
-        VectorBase<1>(x) {
+        detail::CartesianBase<double, 1>(Matrix1d(x)) {
+    }
+
+    inline
+    Vector1d::Vector(const Matrix1d& components) :
+        detail::CartesianBase<double, 1>(components) {
     }
 
     inline
@@ -58,7 +63,19 @@ namespace opensolid
     }
 
     inline
+    double&
+    Vector1d::value() const {
+        return component(0);
+    }
+
+    inline
     const double
+    Vector1d::x() const {
+        return value();
+    }
+
+    inline
+    double&
     Vector1d::x() const {
         return value();
     }
@@ -156,12 +173,17 @@ namespace opensolid
 
     inline
     Vector2d::Vector() :
-        VectorBase<2>(0.0, 0.0) {
+        detail::CartesianBase<double, 2>(ColumnMatrix2d()) {
     }
 
     inline
     Vector2d::Vector(double x, double y) :
-        VectorBase<2>(x, y) {
+        detail::CartesianBase<double, 2>(ColumnMatrix2d(x, y)) {
+    }
+
+    inline
+    Vector2d::Vector(const ColumnMatrix2d& components) :
+        detail::CartesianBase<double, 2>(components) {
     }
 
     inline
@@ -171,7 +193,19 @@ namespace opensolid
     }
 
     inline
+    double&
+    Vector2d::x() const {
+        return component(0);
+    }
+
+    inline
     const double
+    Vector2d::y() const {
+        return component(1);
+    }
+
+    inline
+    double&
     Vector2d::y() const {
         return component(1);
     }
@@ -302,16 +336,27 @@ namespace opensolid
 
     inline
     Vector3d::Vector() :
-        VectorBase<3>(0.0, 0.0, 0.0) {
+        detail::CartesianBase<double, 3>(ColumnMatrix3d()) {
     }
 
     inline
     Vector3d::Vector(double x, double y, double z) :
-        VectorBase<3>(x, y, z) {
+        detail::CartesianBase<double, 3>(ColumnMatrix3d(x, y, z)) {
+    }
+
+    inline
+    Vector3d::Vector(const ColumnMatrix3d& components) :
+        detail::CartesianBase<double, 3>(components) {
     }
 
     inline
     const double
+    Vector3d::x() const {
+        return component(0);
+    }
+
+    inline
+    double&
     Vector3d::x() const {
         return component(0);
     }
@@ -323,7 +368,19 @@ namespace opensolid
     }
 
     inline
+    double&
+    Vector3d::y() const {
+        return component(1);
+    }
+
+    inline
     const double
+    Vector3d::z() const {
+        return component(2);
+    }
+
+    inline
+    double&
     Vector3d::z() const {
         return component(2);
     }
@@ -632,8 +689,26 @@ namespace opensolid
 
     inline
     const Vector1d
+    operator-(const Vector1d& vector) {
+        return Vector1d(vector.value());
+    }
+
+    inline
+    const Vector2d
+    operator-(const Vector2d& vector) {
+        return Vector2d(-vector.x(), -vector.y());
+    }
+
+    inline
+    const Vector3d
+    operator-(const Vector3d& vector) {
+        return Vector3d(-vector.x(), -vector.y(), -vector.z());
+    }
+
+    inline
+    const Vector1d
     operator+(const Vector1d& firstVector, const Vector1d& secondVector) {
-        return Vector1d(firstVector.x() + secondVector.x());
+        return Vector1d(firstVector.value() + secondVector.value());
     }
 
     inline
@@ -658,7 +733,7 @@ namespace opensolid
     inline
     const Vector1d
     operator-(const Vector1d& firstVector, const Vector1d& secondVector) {
-        return Vector1d(firstVector.x() - secondVector.x());
+        return Vector1d(firstVector.value() - secondVector.value());
     }
 
     inline
@@ -695,6 +770,40 @@ namespace opensolid
     inline
     const IntervalVector<iNumDimensions>
     BoundsFunction<Vector<iNumDimensions>>::operator()(const Vector<iNumDimensions>& vector) const {
-        return IntervalVector<iNumDimensions>(vector);
+        return vector.map(
+            [] (double component) {
+                return Interval(component);
+            }
+        );
+    }
+
+    template <int iNumDimensions>
+    inline
+    const Vector<iNumDimensions>
+    ScalingFunction<Vector<iNumDimensions>>::operator()(
+        const Vector<iNumDimensions>& vector,
+        double scale
+    ) const {
+        return scale * vector;
+    }
+
+    template <int iNumDimensions>
+    inline
+    const Vector<iNumDimensions>&
+    TranslationFunction<Vector<iNumDimensions>>::operator()(
+        const Vector<iNumDimensions>& vector,
+        const Vector<iNumDimensions>& translationVector
+    ) const {
+        return vector;
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    inline
+    const Vector<iNumResultDimensions>
+    TransformationFunction<Vector<iNumDimensions>, iNumResultDimensions>::operator()(
+        const Vector<iNumDimensions>& vector,
+        const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+    ) const {
+        return Vector<iNumResultDimensions>(matrix * vector.components());
     }
 }

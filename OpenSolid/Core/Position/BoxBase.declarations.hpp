@@ -26,33 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Vector/IntervalVectorBase.declarations.hpp>
-
-#include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/IntervalVector.declarations.hpp>
-#include <OpenSolid/Core/Vector.declarations.hpp>
-
 namespace opensolid
 {
-    template <int iNumDimensions>
-    class IntervalVectorBase
+    namespace detail
     {
-    private:
-        Interval _components[iNumDimensions];
-    protected:
-        IntervalVectorBase(Interval x);
-
-        IntervalVectorBase(Interval x, Interval y);
-
-        IntervalVectorBase(Interval x, Interval y, Interval z);
-    public:
-        const Interval*
-        data() const;
-
-        const Interval
-        component(std::int64_t index) const;
-
-        const Interval
-        operator()(std::int64_t index) const;
-    };
+        template <int iNumDimensions>
+        class BoxBase;
+    }
 }

@@ -60,16 +60,16 @@ namespace opensolid
     {
     private:
         Point<2> _originPoint;
-        Vector2d _directionVector;
+        UnitVector<2> _directionVector;
     public:
         Axis();
 
-        Axis(const Point<2>& originPoint, const Vector2d& directionVector);
+        Axis(const Point<2>& originPoint, const UnitVector<2>& directionVector);
 
         const Point<2>&
         originPoint() const;
         
-        const Vector2d&
+        const UnitVector<2>&
         directionVector() const;
 
         Axis<2>
@@ -96,16 +96,16 @@ namespace opensolid
     {
     private:
         Point<3> _originPoint;
-        Vector3d _directionVector;
+        UnitVector<3> _directionVector;
     public:
         Axis();
 
-        Axis(const Point<3>& originPoint, const Vector3d& directionVector);
+        Axis(const Point<3>& originPoint, const UnitVector<3>& directionVector);
 
         const Point<3>&
         originPoint() const;
         
-        const Vector3d&
+        const UnitVector<3>&
         directionVector() const;
 
         Axis<3>
@@ -141,15 +141,17 @@ namespace opensolid
     {
         template <class TVector>
         Axis<iNumDimensions>
-        operator()(const Axis<iNumDimensions>& axis, const EigenBase<TVector>& vector) const;
+        operator()(const Axis<iNumDimensions>& axis, const Vector<iNumDimensions>& vector) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
-        template <class TMatrix>
         Axis<iNumResultDimensions>
-        operator()(const Axis<iNumDimensions>& axis, const EigenBase<TMatrix>& matrix) const;
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>

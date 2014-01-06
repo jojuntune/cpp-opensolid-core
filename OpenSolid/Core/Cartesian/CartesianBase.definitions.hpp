@@ -26,27 +26,49 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Vector/CartesianBase.declarations.hpp>
 
-namespace Eigen
+#include <OpenSolid/Core/Matrix.definitions.hpp>
+
+namespace opensolid
 {
-    struct MedianOperation
+    namespace detail
     {
-        typedef double result_type;
-        
-        double
-        operator()(opensolid::Interval interval) const;
-    };
-}
+        template <class TScalar, int iNumDimensions>
+        class CartesianBase
+        {
+        private:
+            typename MatrixType<TScalar, iNumDimensions, 1>::Type _components;
+        protected:
+            CartesianBase();
 
-////////// Implementation //////////
+            CartesianBase(const typename MatrixType<TScalar, iNumDimensions, 1>::Type& components);
 
-namespace Eigen
-{
-    inline
-    double
-    MedianOperation::operator()(opensolid::Interval interval) const {
-        return interval.median();
+            CartesianBase(const TScalar* sourcePtr);
+        public:
+            const typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+            components() const;
+
+            typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+            components();
+
+            const TScalar*
+            data() const;
+
+            TScalar*
+            data();
+
+            const TScalar
+            component(std::int64_t index) const;
+
+            TScalar&
+            component(std::int64_t index) const;
+
+            const TScalar
+            operator()(std::int64_t index) const;
+
+            TScalar&
+            operator()(std::int64_t index) const;
+        };
     }
 }

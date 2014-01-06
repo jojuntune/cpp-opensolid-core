@@ -28,77 +28,169 @@
 
 #include <OpenSolid/Core/Matrix/MatrixBase.declarations.hpp>
 
+#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
-    class MatrixBase
+    namespace detail
     {
-    private:
-        double _components[iNumRows * iNumColumns];
-    protected:
-        MatrixBase();
+        template <class TScalar, int iNumRows, int iNumColumns>
+        struct MatrixType;
 
-        void
-        setZero();
-    public:
-        const double
-        component(std::int64_t index) const;
+        template <int iNumRows, int iNumColumns>
+        struct MatrixType<double, iNumRows, iNumColumns>
+        {
+            typedef Matrix<iNumRows, iNumColumns> Type;
+        };
 
-        double&
-        component(std::int64_t index);
+        template <int iNumRows, int iNumColumns>
+        struct MatrixType<Interval, iNumRows, iNumColumns>
+        {
+            typedef IntervalMatrix<iNumRows, iNumColumns> Type;
+        };
 
-        const double
-        component(std::int64_t rowIndex, std::int64_t columnIndex) const;
+        template <class TUnaryFunction, class TScalar>
+        struct MappedScalarType
+        {
+            typedef typename std::decay<
+                typename std::result_of<
+                    TUnaryFunction(TScalar)
+                >::type
+            >::type Type;
+        };
 
-        double&
-        component(std::int64_t rowIndex, std::int64_t columnIndex);
+        template <class TBinaryFunction, class TScalar, class TOtherScalar>
+        struct PairwiseMappedScalarType
+        {
+            typedef typename std::decay<
+                typename std::result_of<
+                    TBinaryFunction(TScalar, TOtherScalar)
+                >::type
+            >::type Type;
+        };
 
-        const double
-        operator()(std::int64_t index) const;
+        template <class TUnaryFunction, class TScalar, int iNumRows, int iNumColumns>
+        struct MappedMatrixType
+        {
+            typedef typename MatrixType<
+                typename MappedScalarType<TFunction, TScalar>::Type,
+                iNumRows,
+                iNumColumns
+            >::Type Type;
+        };
 
-        double&
-        operator()(std::int64_t index);
+        template <
+            class TBinaryFunction,
+            class TScalar,
+            class TOtherScalar,
+            int iNumRows,
+            int iNumColumns
+        >
+        struct PairwiseMappedMatrixType
+        {
+            typedef typename MatrixType<
+                typename PairwiseMappedScalarType<TBinaryFunction, TScalar, TOtherScalar>::Type,
+                iNumRows,
+                iNumColumns
+            >::Type Type;
+        };
 
-        const double
-        operator()(std::int64_t rowIndex, std::int64_t columnIndex) const;
+        template <class TScalar, int iNumRows, int iNumColumns>
+        class MatrixBase
+        {
+        private:
+            TScalar _components[iNumRows * iNumColumns];
 
-        double&
-        operator()(std::int64_t rowIndex, std::int64_t columnIndex);
+            template <class TScalar, int iNumRows, int iNumColumns> friend class MatrixBase;
+        protected:
+            static const int Size = iNumRows * iNumColumns;
 
-        const double*
-        data() const;
+            MatrixBase();
 
-        double*
-        data();
+            MatrixBase(const TScalar* sourcePtr);
+        public:
+            static_assert(iNumRows > 0 && iNumColumns > 0, "Zero-sized matrices not allowed");
 
-        const Matrix<iNumColumns, iNumRows>
-        transpose() const;
+            const TScalar
+            component(std::int64_t index) const;
 
-        void
-        operator*=(double scale);
+            TScalar&
+            component(std::int64_t index);
 
-        void
-        operator+=(const Matrix<iNumRows, iNumColumns>& other);
+            const TScalar
+            component(std::int64_t rowIndex, std::int64_t columnIndex) const;
 
-        void
-        operator-=(const Matrix<iNumRows, iNumColumns>& other);
+            TScalar&
+            component(std::int64_t rowIndex, std::int64_t columnIndex);
 
-        static const Matrix<iNumRows, iNumColumns>
-        Zero();
+            const TScalar
+            operator()(std::int64_t index) const;
 
-        static const Matrix<iNumRows, iNumColumns>
-        Ones();
+            TScalar&
+            operator()(std::int64_t index);
 
-        static const Matrix<iNumRows, iNumColumns>
-        Identity();
+            const TScalar
+            operator()(std::int64_t rowIndex, std::int64_t columnIndex) const;
 
-        static const Matrix<iNumRows, iNumColumns>
-        Random();
+            TScalar&
+            operator()(std::int64_t rowIndex, std::int64_t columnIndex);
 
-        static const Matrix<iNumRows, iNumColumns>
-        OuterProduct(
-            const Matrix<iNumRows, 1>& columnMatrix,
-            const Matrix<1, iNumColumns>& rowMatrix
-        );
-    };
+            const TScalar*
+            data() const;
+
+            TScalar*
+            data();
+
+            void
+            fill(TScalar value);
+
+            const typename detail::MatrixType<TScalar, iNumColumns, iNumRows>::Type
+            transpose() const;
+
+            template <class TUnaryPredicate>
+            const bool
+            any(TUnaryPredicate unaryPredicate) const;
+
+            template <class TUnaryPredicate>
+            const bool
+            all(TUnaryPredicate unaryPredicate) const;
+
+            template <class TBinaryPredicate, class TOtherScalar>
+            const bool
+            binaryAny(
+                const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+                TBinaryPredicate binaryPredicate
+            ) const;
+
+            template <class TBinaryPredicate, class TOtherScalar>
+            const bool
+            binaryAll(
+                const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+                TBinaryPredicate binaryPredicate
+            ) const;
+
+            template <class TUnaryFunction>
+            const typename detail::MappedMatrixType<
+                TUnaryFunction,
+                TScalar,
+                iNumRows,
+                iNumColumns
+            >::Type
+            map(TUnaryFunction unaryFunction) const;
+
+            template <class TBinaryFunction, class TOtherScalar>
+            const typename detail::PairwiseMappedMatrixType<
+                TBinaryFunction,
+                TScalar,
+                TOtherScalar,
+                iNumRows,
+                iNumColumns
+            >::Type
+            binaryMap(
+                const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+                TBinaryFunction binaryFunction
+            ) const;
+        };
+    }
 }

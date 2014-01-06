@@ -26,75 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix/IntervalMatrixBase.declarations.hpp>
-
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
-    class IntervalMatrixBase
+    namespace detail
     {
-    private:
-        Interval _components[iNumRows * iNumColumns];
-    protected:
-        IntervalMatrixBase();
-
-        IntervalMatrixBase(const Matrix<iNumRows, iNumColumns>& matrix);
-    public:
-        const Interval
-        component(std::int64_t index) const;
-
-        Interval&
-        component(std::int64_t index);
-
-        const Interval
-        component(std::int64_t row, std::int64_t column) const;
-
-        Interval&
-        component(std::int64_t row, std::int64_t column);
-
-        const Interval
-        operator()(std::int64_t index) const;
-
-        Interval&
-        operator()(std::int64_t index);
-
-        const Interval
-        operator()(std::int64_t row, std::int64_t column) const;
-
-        Interval&
-        operator()(std::int64_t row, std::int64_t column);
-
-        const Interval*
-        data() const;
-
-        Interval*
-        data();
-
-        const IntervalMatrix<iNumColumns, iNumRows>
-        transpose() const;
-
-        void
-        operator*=(double scale);
-
-        void
-        operator*=(Interval scale);
-
-        void
-        operator+=(const Matrix<iNumRows, iNumColumns>& matrix);
-
-        void
-        operator+=(const IntervalMatrix<iNumRows, iNumColumns>& other);
-
-        void
-        operator-=(const Matrix<iNumRows, iNumColumns>& other);
-
-        void
-        operator-=(const IntervalMatrix<iNumRows, iNumColumns>& other);
-
-        static const Matrix<iNumRows, iNumColumns>
-        OuterProduct(
-            const IntervalMatrix<iNumRows, 1>& columnMatrix,
-            const IntervalMatrix<1, iNumColumns>& rowMatrix
-        );
-    };
+        template <class TScalar, int iNumDimensions>
+        class CartesianBase;
+    }
 }
