@@ -229,4 +229,22 @@ namespace opensolid
             }
         }
     }
+
+    inline
+    const UnitVector1d
+    operator-(const UnitVector1d& unitVector) {
+        return UnitVector1d(unitVector.value());
+    }
+
+    inline
+    const UnitVector2d
+    operator-(const UnitVector2d& unitVector) {
+        return UnitVector2d(-unitVector.x(), -unitVector.y());
+    }
+
+    inline
+    const UnitVector3d
+    operator-(const UnitVector3d& unitVector) {
+        return UnitVector3d(-unitVector.x(), -unitVector.y(), -unitVector.z());
+    }
 }

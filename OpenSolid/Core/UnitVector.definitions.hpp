@@ -134,4 +134,13 @@ namespace opensolid
     };
 
     typedef UnitVector<3> UnitVector3d;
+
+    const UnitVector1d
+    operator-(const UnitVector1d& unitVector);
+
+    const UnitVector2d
+    operator-(const UnitVector2d& unitVector);
+
+    const UnitVector3d
+    operator-(const UnitVector3d& unitVector);
 }
