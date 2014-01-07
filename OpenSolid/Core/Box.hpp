@@ -295,15 +295,35 @@ namespace opensolid
     template <int iNumDimensions, class TVector>
     inline
     Box<iNumDimensions>
-    operator+(const Box<iNumDimensions>& box, const EigenBase<TVector>& vector) {
-        return Box<iNumDimensions>(box.vector() + vector.derived().template cast<Interval>());
+    operator+(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector) {
+        return Box<iNumDimensions>(box.components() + vector.components());
     }
 
     template <int iNumDimensions, class TVector>
     inline
     Box<iNumDimensions>
-    operator-(const Box<iNumDimensions>& box, const EigenBase<TVector>& vector) {
-        return Box<iNumDimensions>(box.vector() - vector.derived().template cast<Interval>());
+    operator+(
+        const Box<iNumDimensions>& box,
+        const IntervalVector<iNumDimensions>& intervalVector
+    ) {
+        return Box<iNumDimensions>(box.components() + intervalVector.components());
+    }
+
+    template <int iNumDimensions, class TVector>
+    inline
+    Box<iNumDimensions>
+    operator-(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector) {
+        return Box<iNumDimensions>(box.components() - vector.components());
+    }
+
+    template <int iNumDimensions, class TVector>
+    inline
+    Box<iNumDimensions>
+    operator-(
+        const Box<iNumDimensions>& box,
+        const IntervalVector<iNumDimensions>& intervalVector
+    ) {
+        return Box<iNumDimensions>(box.components() - intervalVector.components());
     }
 
     template <int iNumDimensions>
@@ -323,7 +343,15 @@ namespace opensolid
     template <int iNumDimensions>
     std::ostream&
     operator<<(std::ostream& stream, const Box<iNumDimensions>& box) {
-        stream << box.vector().transpose();
+        stream << "Box" << iNumDimensions << "d";
+        stream << "(";
+        for (std::int64_t index = 0; index < iNumDimensions; ++index) {
+            stream << box.component(index);
+            if (index < iNumDimensions - 1) {
+                stream << ",";
+            }
+        }
+        stream << ")";
         return stream;
     }
 
@@ -334,72 +362,33 @@ namespace opensolid
         return box;
     }
 
+    template <int iNumDimensions>
     inline
-    Box1d
-    ScalingFunction<Box1d>::operator()(const Box1d& box, double scale) const {
-        return Box1d(scale * box.x());
+    const Box<iNumDimensions>
+    ScalingFunction<Box<iNumDimensions>>::operator()(
+        const Box<iNumDimensions>& box,
+        double scale
+    ) const {
+        return Box<iNumDimensions>(box.components() * scale);
     }
 
+    template <int iNumDimensions>
     inline
-    Box2d
-    ScalingFunction<Box2d>::operator()(const Box2d& box, double scale) const {
-        return Box2d(scale * box.x(), scale * box.y());
-    }
-
-    inline
-    Box3d
-    ScalingFunction<Box3d>::operator()(const Box3d& box, double scale) const {
-        return Box3d(scale * box.x(), scale * box.y(), scale * box.z());
-    }
-
-    template <int iNumDimensions> template <class TVector>
-    inline
-    Box<iNumDimensions>
+    const Box<iNumDimensions>
     TranslationFunction<Box<iNumDimensions>>::operator()(
         const Box<iNumDimensions>& box,
-        const EigenBase<TVector>& vector
+        const Vector<iNumDimensions>& vector
     ) const {
-        return Box<iNumDimensions>(box.vector() + vector.derived().template cast<Interval>());
+        return Box<iNumDimensions>(box.components() + vector.components());
     }
 
-    template <int iNumResultDimensions> template <class TMatrix>
+    template <int iNumDimensions, int iNumResultDimensions>
     Box<iNumResultDimensions>
-    TransformationFunction<Box1d, iNumResultDimensions>::operator()(
-        const Box1d& box,
-        const EigenBase<TMatrix>& matrix
+    TransformationFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
+        const Box<iNumDimensions>& box,
+        const Matrix<iNumResultDimensions, iNumDimensions>& matrix
     ) const {
-        Box<iNumResultDimensions> result;
-        for (int i = 0; i < iNumResultDimensions; ++i) {
-            result(i) = matrix.derived()(i, 0) * box.x();
-        }
-        return result;
-    }
-
-    template <int iNumResultDimensions> template <class TMatrix>
-    Box<iNumResultDimensions>
-    TransformationFunction<Box2d, iNumResultDimensions>::operator()(
-        const Box2d& box,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        Box<iNumResultDimensions> result;
-        for (int i = 0; i < iNumResultDimensions; ++i) {
-            result(i) = matrix.derived()(i, 0) * box.x() + matrix.derived()(i, 1) * box.y();
-        }
-        return result;
-    }
-
-    template <int iNumResultDimensions> template <class TMatrix>
-    Box<iNumResultDimensions>
-    TransformationFunction<Box3d, iNumResultDimensions>::operator()(
-        const Box3d& box,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        Box<iNumResultDimensions> result;
-        for (int i = 0; i < iNumResultDimensions; ++i) {
-            result(i) = matrix.derived()(i, 0) * box.x() + matrix.derived()(i, 1) * box.y() +
-                matrix.derived()(i, 2) * box.z();
-        }
-        return result;
+        return Box<iNumResultDimensions>(matrix * box.components());
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
@@ -409,6 +398,6 @@ namespace opensolid
         const Box<iNumDimensions>& box,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return Box<iNumResultDimensions>(morphingExpression.evaluate(box.vector()));
+        return Box<iNumResultDimensions>(morphingExpression.evaluate(box.components()));
     }
 }
