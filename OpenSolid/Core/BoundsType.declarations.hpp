@@ -30,4 +30,7 @@ namespace opensolid
 {
     template <class TBounded>
     struct BoundsType;
+
+    template <class T>
+    struct IsBounded;
 }

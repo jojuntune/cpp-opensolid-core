@@ -41,6 +41,45 @@
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <class TDerived>
+        inline
+        const TDerived&
+        BoundedCollectionBase<TDerived, true>::derived() const {
+            return static_cast<const TDerived&>(*this);
+        }
+
+        template <class TDerived>
+        inline
+        typename BoundsType<typename ItemType<TDerived>::Type>::Type
+        BoundedCollectionBase<TDerived, true>::boundsDefaultImpl() const {
+            typedef typename ItemType<TDerived>::Type ItemType;
+            typedef typename BoundsType<ItemType>::Type BoundsType;
+
+            typename IteratorType<TDerived>::Type iterator = derived().begin();
+            typename IteratorType<TDerived>::Type end = derived().end();
+            
+            if (iterator == end) {
+                return BoundsType();
+            } else {
+                BoundsFunction<ItemType> boundsFunction;
+                BoundsType result = boundsFunction(*iterator);
+                while (++iterator != end) {
+                    result = result.hull(*iterator);
+                }
+                return result;
+            }
+        }
+
+        template <class TDerived>
+        inline
+        typename BoundsType<typename ItemType<TDerived>::Type>::Type
+        BoundedCollectionBase<TDerived, true>::bounds() const {
+            return derived().bounds();
+        }
+    }
+
     template <class TDerived>
     inline
     bool
@@ -53,28 +92,6 @@ namespace opensolid
     std::int64_t
     SpatialCollection<TDerived>::sizeDefaultImpl() const {
         return std::distance(begin(), end());
-    }
-
-    template <class TDerived>
-    inline
-    typename BoundsType<typename ItemType<TDerived>::Type>::Type
-    SpatialCollection<TDerived>::boundsDefaultImpl() const {
-        typedef typename ItemType<TDerived>::Type ItemType;
-        typedef typename BoundsType<ItemType>::Type BoundsType;
-
-        typename IteratorType<TDerived>::Type iterator = this->begin();
-        typename IteratorType<TDerived>::Type end = this->end();
-        
-        if (iterator == end) {
-            return BoundsType();
-        } else {
-            BoundsFunction<ItemType> boundsFunction;
-            BoundsType result = boundsFunction(*iterator);
-            while (++iterator != end) {
-                result = result.hull(*iterator);
-            }
-            return result;
-        }
     }
 
     template <class TDerived>
@@ -110,13 +127,6 @@ namespace opensolid
     std::int64_t
     SpatialCollection<TDerived>::size() const {
         return derived().size();
-    }
-
-    template <class TDerived>
-    inline
-    typename BoundsType<typename ItemType<TDerived>::Type>::Type
-    SpatialCollection<TDerived>::bounds() const {
-        return derived().bounds();
     }
 
     template <class TDerived> template <class TPredicate>

@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/SpatialCollection.declarations.hpp>
 
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
 #include <OpenSolid/Core/SpatialCollection/FilteredCollection.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
 #include <OpenSolid/Core/SpatialCollection/MappedCollection.declarations.hpp>
@@ -100,9 +101,55 @@ namespace opensolid
         >::reference Type;
     };
 
+    namespace detail
+    {
+        template <class TDerived, bool bItemIsTransformable>
+        class TransformableCollectionBase;
+
+        template <class TDerived>
+        class TransformableCollectionBase<TDerived, true> :
+            public Transformable<TDerived>
+        {
+        };
+
+        template <class TDerived>
+        class TransformableCollectionBase<TDerived, false>
+        {
+        };
+
+        template <class TDerived, bool bItemIsBounded>
+        class BoundedCollectionBase;
+
+        template <class TDerived>
+        class BoundedCollectionBase<TDerived, true>
+        {
+        private:
+            const TDerived&
+            derived() const;
+        protected:
+            typename BoundsType<typename ItemType<TDerived>::Type>::Type
+            boundsDefaultImpl() const;
+        public:
+            typename BoundsType<typename ItemType<TDerived>::Type>::Type
+            bounds() const;
+        };
+
+        template <class TDerived>
+        class BoundedCollectionBase<TDerived, false>
+        {
+        };
+    }
+
     template <class TDerived>
     class SpatialCollection :
-        public Transformable<TDerived>
+        public detail::TransformableCollectionBase<
+            TDerived,
+            IsTransformable<typename ItemType<TDerived>::Type>::Value
+        >,
+        public detail::BoundedCollectionBase<
+            TDerived,
+            IsBounded<typename ItemType<TDerived>::Type>::Value
+        >
     {
     protected:
         bool
@@ -110,9 +157,6 @@ namespace opensolid
 
         std::int64_t
         sizeDefaultImpl() const;
-
-        typename BoundsType<typename ItemType<TDerived>::Type>::Type
-        boundsDefaultImpl() const;
     public:
         const TDerived&
         derived() const;
@@ -128,9 +172,6 @@ namespace opensolid
 
         std::int64_t
         size() const;
-
-        typename BoundsType<typename ItemType<TDerived>::Type>::Type
-        bounds() const;
 
         template <class TPredicate>
         bool

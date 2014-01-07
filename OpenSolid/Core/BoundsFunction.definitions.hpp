@@ -41,9 +41,30 @@ namespace opensolid
     };
     
     template <>
+    struct BoundsFunction<int>
+    {
+        Interval
+        operator()(int value) const;
+    };
+    
+    template <>
+    struct BoundsFunction<unsigned>
+    {
+        Interval
+        operator()(unsigned value) const;
+    };
+    
+    template <>
+    struct BoundsFunction<std::int64_t>
+    {
+        Interval
+        operator()(std::int64_t value) const;
+    };
+    
+    template <>
     struct BoundsFunction<double>
     {
         Interval
-        operator()(double argument) const;
+        operator()(double value) const;
     };
 }
