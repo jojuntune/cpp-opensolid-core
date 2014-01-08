@@ -26,8 +26,4 @@
 
 #include <OpenSolid/config.hpp>
 
-namespace opensolid
-{
-    template <class TItem>
-    class SpatialList;
-}
+#include <OpenSolid/Core/LazyCollection/SpatialSetData.definitions.hpp>

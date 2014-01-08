@@ -34,7 +34,7 @@
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
 #include <OpenSolid/Core/Simplex/SimplexVertices.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronEdges.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronFaces.declarations.hpp>

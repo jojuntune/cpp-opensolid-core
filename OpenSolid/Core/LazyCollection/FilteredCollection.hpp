@@ -26,9 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/FilteredCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/FilteredCollection.definitions.hpp>
 
-#include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
 
 namespace opensolid
 {
@@ -102,13 +102,6 @@ namespace opensolid
         std::int64_t
         FilteredCollection<TBaseCollection, TPredicate>::size() const {
             return this->sizeDefaultImpl();
-        }
-
-        template <class TBaseCollection, class TPredicate>
-        inline
-        typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
-        FilteredCollection<TBaseCollection, TPredicate>::bounds() const {
-            return this->boundsDefaultImpl();
         }
 
         template <class TBaseCollection, class TPredicate>

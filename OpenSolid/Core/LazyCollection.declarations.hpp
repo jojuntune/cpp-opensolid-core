@@ -29,7 +29,7 @@
 namespace opensolid
 {
     template <class TDerived>
-    class SpatialCollection;
+    class LazyCollection;
 
     template <class TCollection>
     struct ItemType;

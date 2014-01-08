@@ -29,8 +29,8 @@
 #include <OpenSolid/Core/Position/BoxVertices.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.hpp>
 
 namespace opensolid
 {
@@ -83,34 +83,5 @@ namespace opensolid
         BoxVertices<iNumDimensions>::operator[](std::int64_t index) const {
             return box().vertex(index);
         }
-    }
-
-    template <int iNumDimensions>
-    inline
-    const Box<iNumDimensions>&
-    BoundsFunction<detail::BoxVertices<iNumDimensions>>::operator()(
-        const detail::BoxVertices<iNumDimensions>& boxVertices
-    ) const {
-        return boxVertices.box();
-    }
-    
-    template <int iNumDimensions>
-    inline
-    detail::BoxVertices<iNumDimensions>
-    ScalingFunction<detail::BoxVertices<iNumDimensions>>::operator()(
-        const detail::BoxVertices<iNumDimensions>& boxVertices,
-        double scale
-    ) const {
-        return scalingFunction(boxVertices.box(), scale).vertices();
-    }
-
-    template <int iNumDimensions> template <class TVector>
-    inline
-    detail::BoxVertices<iNumDimensions>
-    TranslationFunction<detail::BoxVertices<iNumDimensions>>::operator()(
-        const detail::BoxVertices<iNumDimensions>& boxVertices,
-        const EigenBase<TVector>& vector
-    ) const {
-        return translationFunction(boxVertices.box(), vector.derived()).vertices();
     }
 }

@@ -26,64 +26,16 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/SpatialSet.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace opensolid
 {
-    template <class TItem, class TPredicate>
-    struct BoundsType<detail::FilteredSpatialSet<TItem, TPredicate>>
-    {
-        typedef typename BoundsType<TItem>::Type Type;
-    };
-
-    template <class TItem, class TPredicate>
-    struct NumDimensions<detail::FilteredSpatialSet<TItem, TPredicate>>
-    {
-        static const int Value = NumDimensions<TItem>::Value;
-    };
-
-    template <class TItem, class TPredicate>
-    struct ScaledType<detail::FilteredSpatialSet<TItem, TPredicate>> :
-        public ScaledType<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
-    {
-    };
-
-    template <class TItem, class TPredicate>
-    struct TranslatedType<detail::FilteredSpatialSet<TItem, TPredicate>> :
-        public TranslatedType<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
-    {
-    };
-
-    template <class TItem, class TPredicate, int iNumResultDimensions>
-    struct TransformedType<
-        detail::FilteredSpatialSet<TItem, TPredicate>,
-        iNumResultDimensions
-    > : public TransformedType<
-            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TItem, class TPredicate, int iNumResultDimensions>
-    struct MorphedType<
-        detail::FilteredSpatialSet<TItem, TPredicate>,
-        iNumResultDimensions
-    > : public MorphedType<
-            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
     template <class TItem, class TBoundsPredicate>
     struct IteratorType<detail::FilteredSpatialSet<TItem, TBoundsPredicate>>
     {
@@ -94,7 +46,7 @@ namespace opensolid
     {
         template <class TItem, class TBoundsPredicate>
         class FilteredSpatialSet :
-            public SpatialCollection<FilteredSpatialSet<TItem, TBoundsPredicate>>
+            public LazyCollection<FilteredSpatialSet<TItem, TBoundsPredicate>>
         {
         private:
             SpatialSet<TItem> _set;
@@ -125,9 +77,6 @@ namespace opensolid
 
             std::int64_t
             size() const;
-
-            typename BoundsType<TItem>::Type
-            bounds() const;
         };
 
         template <class TItem, class TBoundsPredicate>
@@ -165,38 +114,4 @@ namespace opensolid
             );
         };
     }
-
-    template <class TItem, class TPredicate>
-    struct ScalingFunction<detail::FilteredSpatialSet<TItem, TPredicate>> :
-        public ScalingFunction<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
-    {
-    };
-
-    template <class TItem, class TPredicate>
-    struct TranslationFunction<detail::FilteredSpatialSet<TItem, TPredicate>> :
-        public TranslationFunction<SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>>
-    {
-    };
-
-    template <class TItem, class TPredicate, int iNumResultDimensions>
-    struct TransformationFunction<
-        detail::FilteredSpatialSet<TItem, TPredicate>,
-        iNumResultDimensions
-    > : public TransformationFunction<
-            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TItem, class TPredicate, int iNumResultDimensions>
-    struct MorphingFunction<
-        detail::FilteredSpatialSet<TItem, TPredicate>,
-        iNumResultDimensions
-    > : public MorphingFunction<
-            SpatialCollection<detail::FilteredSpatialSet<TItem, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
 }

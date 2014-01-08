@@ -31,13 +31,12 @@
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialCollection/ContainPredicate.hpp>
-#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.hpp>
-#include <OpenSolid/Core/SpatialCollection/OverlapPredicate.hpp>
-#include <OpenSolid/Core/SpatialCollection/SpatialSetData.hpp>
-#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.hpp>
-#include <OpenSolid/Core/SpatialList.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
+#include <OpenSolid/Core/LazyCollection/ContainPredicate.hpp>
+#include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.hpp>
+#include <OpenSolid/Core/LazyCollection/OverlapPredicate.hpp>
+#include <OpenSolid/Core/LazyCollection/SpatialSetData.hpp>
+#include <OpenSolid/Core/LazyCollection/SpatialSetNode.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 #include <algorithm>
@@ -283,7 +282,7 @@ namespace opensolid
 
     template <class TItem> template <class TDerived>
     inline
-    SpatialSet<TItem>::SpatialSet(const SpatialCollection<TDerived>& collection) :
+    SpatialSet<TItem>::SpatialSet(const LazyCollection<TDerived>& collection) :
         _dataPtr(new detail::SpatialSetData<TItem>()) {
 
         _dataPtr->items = std::vector<TItem>(collection.begin(), collection.end());
@@ -507,7 +506,7 @@ namespace opensolid
 
     template <class TItem>
     inline
-    SpatialList<TItem>
+    std::vector<TItem>
     SpatialSet<TItem>::uniqueItems(double precision) const {
         std::vector<std::int64_t> dummy;
         return uniqueItems(dummy, precision);
@@ -515,11 +514,11 @@ namespace opensolid
 
     template <class TItem>
     inline
-    SpatialList<TItem>
+    std::vector<TItem>
     SpatialSet<TItem>::uniqueItems(std::vector<std::int64_t>& mapping, double precision) const {
         if (isEmpty()) {
             mapping.clear();
-            return SpatialList<TItem>();
+            return std::vector<TItem>();
         } else {
             // Initialize unique item mapping
             mapping.resize(size());
@@ -554,7 +553,7 @@ namespace opensolid
                 }
                 nodePtr = detail::nextLeafNode(nodePtr);
             } while (nodePtr);
-            return SpatialList<TItem>(std::move(results));
+            return results;
         }
     }
     

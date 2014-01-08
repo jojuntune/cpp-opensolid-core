@@ -29,54 +29,12 @@
 #include <OpenSolid/Core/Position/BoxVertices.declarations.hpp>
 
 #include <OpenSolid/Core/Box.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct BoundsType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef Box<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct NumDimensions<detail::BoxVertices<iNumDimensions>>
-    {
-        static const int Value = iNumDimensions;
-    };
-
-    template <int iNumDimensions>
-    struct ScaledType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef detail::BoxVertices<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions>
-    struct TranslatedType<detail::BoxVertices<iNumDimensions>>
-    {
-        typedef detail::BoxVertices<iNumDimensions> Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef typename TransformedType<
-            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
-            iNumResultDimensions
-        >::Type Type;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphedType<detail::BoxVertices<iNumDimensions>, iNumResultDimensions>
-    {
-        typedef typename MorphedType<
-            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
-            iNumResultDimensions
-        >::Type Type;
-    };
-
     template <int iNumDimensions>
     struct ItemType<detail::BoxVertices<iNumDimensions>>
     {
@@ -93,7 +51,7 @@ namespace opensolid
     {
         template <int iNumDimensions>
         class BoxVertices :
-            public SpatialCollection<BoxVertices<iNumDimensions>>
+            public LazyCollection<BoxVertices<iNumDimensions>>
         {
         private:
             Box<iNumDimensions> _box;
@@ -119,50 +77,4 @@ namespace opensolid
             operator[](std::int64_t index) const;
         };
     }
-
-    template <int iNumDimensions>
-    struct BoundsFunction<detail::BoxVertices<iNumDimensions>>
-    {
-        const Box<iNumDimensions>&
-        operator()(const detail::BoxVertices<iNumDimensions>& boxVertices) const;
-    };
-
-    template <int iNumDimensions>
-    struct ScalingFunction<detail::BoxVertices<iNumDimensions>>
-    {
-        detail::BoxVertices<iNumDimensions>
-        operator()(
-            const detail::BoxVertices<iNumDimensions>& boxVertices,
-            double scale
-        ) const;
-    };
-
-    template <int iNumDimensions>
-    struct TranslationFunction<detail::BoxVertices<iNumDimensions>>
-    {
-        template <class TVector>
-        detail::BoxVertices<iNumDimensions>
-        operator()(
-            const detail::BoxVertices<iNumDimensions>& boxVertices,
-            const EigenBase<TVector>& vector
-        ) const;
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<detail::BoxVertices<iNumDimensions>, iNumResultDimensions> :
-        public TransformationFunction<
-            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct MorphingFunction<detail::BoxVertices<iNumDimensions>, iNumResultDimensions> :
-        public MorphingFunction<
-            SpatialCollection<detail::BoxVertices<iNumDimensions>>,
-            iNumResultDimensions
-        >
-    {
-    };
 }

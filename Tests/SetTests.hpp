@@ -27,7 +27,6 @@
 #include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/SpatialList.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 #include <boost/timer.hpp>
@@ -184,7 +183,7 @@ public:
 
         SpatialSet<Point3d> pointSet(pointList);
         Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
-        std::vector<Point3d> rotatedPoints = pointSet.rotatedAbout(rotationAxis, M_PI / 2);
+        std::vector<Point3d> rotatedPoints = pointSet.map(Rotation3d(rotationAxis, M_PI / 2));
 
         TS_ASSERT((rotatedPoints[0] - Point3d(2, 0, 1)).isZero());
         TS_ASSERT((rotatedPoints[1] - Point3d(1, 0, 1)).isZero());
@@ -199,7 +198,7 @@ public:
 
         SpatialSet<Vector3d> vectorSet(vectorList);
         Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
-        std::vector<Vector3d> rotatedVectors = vectorSet.rotatedAbout(rotationAxis, M_PI / 2);
+        std::vector<Vector3d> rotatedVectors = vectorSet.map(Rotation3d(rotationAxis, M_PI / 2));
 
         TS_ASSERT((rotatedVectors[0] - Vector3d(1, 1, 1)).isZero());
         TS_ASSERT((rotatedVectors[1] - Vector3d(0, 1, 1)).isZero());
@@ -287,8 +286,8 @@ public:
         testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);
         testPoints[7] = Point2d(0, 2);
 
-        SpatialList<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
-        SpatialList<Point2d> uniquePointsExact = SpatialSet<Point2d>(testPoints).uniqueItems(0.0);
+        std::vector<Point2d> uniquePointsTolerant = SpatialSet<Point2d>(testPoints).uniqueItems();
+        std::vector<Point2d> uniquePointsExact = SpatialSet<Point2d>(testPoints).uniqueItems(0.0);
 
         TS_ASSERT_EQUALS(uniquePointsTolerant.size(), 4);
         TS_ASSERT_LESS_THAN(uniquePointsTolerant.size(), uniquePointsExact.size());
@@ -317,7 +316,7 @@ public:
         values[4] = 3.0;
 
         std::vector<std::int64_t> mapping;
-        SpatialList<double> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
+        std::vector<double> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
 
         TS_ASSERT_EQUALS(mapping.size(), 5);
         TS_ASSERT_EQUALS(mapping[0], 0);

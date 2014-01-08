@@ -22,39 +22,25 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/Simplex/TetrahedronEdges.hpp>
+#pragma once
+
+#include <OpenSolid/config.hpp>
+
+#include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
+
+#include <OpenSolid/Core/BoundsType.definitions.hpp>
 
 namespace opensolid
 {
-    detail::TetrahedronEdges
-    ScalingFunction<detail::TetrahedronEdges>::operator()(
-        const detail::TetrahedronEdges& tetrahedronEdges,
-        double scale
-    ) const {
-        return scalingFunction(tetrahedronEdges.tetrahedron(), scale).edges();
-    }
-
-    detail::TetrahedronEdges
-    TranslationFunction<detail::TetrahedronEdges>::operator()(
-        const detail::TetrahedronEdges& tetrahedronEdges,
-        const Vector3d& vector
-    ) const {
-        return translationFunction(tetrahedronEdges.tetrahedron(), vector).edges();
-    }
-
-    detail::TetrahedronEdges
-    TransformationFunction<detail::TetrahedronEdges, 3>::operator()(
-        const detail::TetrahedronEdges& tetrahedronEdges,
-        const Matrix3d& matrix
-    ) const {
-        return transformationFunction(tetrahedronEdges.tetrahedron(), matrix).edges();
-    }
-
-    detail::TetrahedronEdges
-    MorphingFunction<detail::TetrahedronEdges, 3>::operator()(
-        const detail::TetrahedronEdges& tetrahedronEdges,
-        const ParametricExpression<3, 3>& morphingExpression
-    ) const {
-        return morphingFunction(tetrahedronEdges.tetrahedron(), morphingExpression).edges();
+    namespace detail
+    {
+        template <class TItem>
+        struct SpatialSetNode
+        {
+            typename BoundsType<TItem>::Type bounds;
+            const SpatialSetNode<TItem>* leftChildPtr;
+            const SpatialSetNode<TItem>* nextPtr;
+            const TItem* itemPtr;
+        };
     }
 }

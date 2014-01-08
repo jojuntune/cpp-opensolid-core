@@ -40,18 +40,6 @@
 
 namespace opensolid
 {
-    template <class T>
-    struct IsTransformable
-    {
-        static const bool Value = (NumDimensions<T>::Value != 0);
-    };
-
-    template <class T>
-    struct NumDimensions
-    {
-        static const int Value = 0;
-    };
-
     template <>
     struct NumDimensions<int>
     {

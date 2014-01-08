@@ -28,64 +28,13 @@
 
 #include <OpenSolid/Core/Simplex/TetrahedronFaces.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
 #include <OpenSolid/Core/Tetrahedron.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
-#include <OpenSolid/Core/Triangle.definitions.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
-    template <>
-    struct BoundsType<detail::TetrahedronFaces>
-    {
-        typedef Box<3> Type;
-    };
-
-    template <>
-    struct NumDimensions<detail::TetrahedronFaces>
-    {
-        static const int Value = 3;
-    };
-
-    template <>
-    struct ScaledType<detail::TetrahedronFaces>
-    {
-        typedef detail::TetrahedronFaces Type;
-    };
-
-    template <>
-    struct TranslatedType<detail::TetrahedronFaces>
-    {
-        typedef detail::TetrahedronFaces Type;
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformedType<detail::TetrahedronFaces, iNumResultDimensions> :
-        public TransformedType<SpatialCollection<detail::TetrahedronFaces>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct TransformedType<detail::TetrahedronFaces, 3>
-    {
-        typedef detail::TetrahedronFaces Type;
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphedType<detail::TetrahedronFaces, iNumResultDimensions> :
-        public MorphedType<SpatialCollection<detail::TetrahedronFaces>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct MorphedType<detail::TetrahedronFaces, 3>
-    {
-        typedef detail::TetrahedronFaces Type;
-    };
-
     template <>
     struct ItemType<detail::TetrahedronFaces>
     {
@@ -101,7 +50,7 @@ namespace opensolid
     namespace detail
     {
         class TetrahedronFaces :
-            public SpatialCollection<TetrahedronFaces>
+            public LazyCollection<TetrahedronFaces>
         {
         private:
             Tetrahedron3d _tetrahedron;
@@ -123,73 +72,8 @@ namespace opensolid
             std::int64_t
             size() const;
 
-            Box<3>
-            bounds() const;
-
             Triangle<3>
             operator[](std::int64_t index) const;
         };
     }
-
-    template <>
-    struct ScalingFunction<detail::TetrahedronFaces>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            double scale
-        ) const;
-    };
-
-    template <>
-    struct TranslationFunction<detail::TetrahedronFaces>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            const Vector3d& vector
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<detail::TetrahedronFaces, iNumResultDimensions> :
-        public TransformationFunction<
-            SpatialCollection<detail::TetrahedronFaces>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct TransformationFunction<detail::TetrahedronFaces, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            const Matrix3d& matrix
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphingFunction<detail::TetrahedronFaces, iNumResultDimensions> :
-        public MorphingFunction<
-            SpatialCollection<detail::TetrahedronFaces>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct MorphingFunction<detail::TetrahedronFaces, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronFaces
-        operator()(
-            const detail::TetrahedronFaces& tetrahedronFaces,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
 }

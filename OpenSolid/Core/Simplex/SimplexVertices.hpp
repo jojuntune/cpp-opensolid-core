@@ -28,11 +28,9 @@
 
 #include <OpenSolid/Core/Simplex/SimplexVertices.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.hpp>
 #include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
@@ -81,71 +79,9 @@ namespace opensolid
 
         template <class TSimplex, int iNumVertices>
         inline
-        typename BoundsType<TSimplex>::Type
-        SimplexVertices<TSimplex, iNumVertices>::bounds() const {
-            return simplex().bounds();
-        }
-
-        template <class TSimplex, int iNumVertices>
-        inline
         const Point<NumDimensions<TSimplex>::Value>&
         SimplexVertices<TSimplex, iNumVertices>::operator[](std::int64_t index) const {
             return simplex().vertex(index);
         }
-    }
-
-    template <class TSimplex, int iNumVertices>
-    inline
-    detail::SimplexVertices<TSimplex, iNumVertices>
-    ScalingFunction<detail::SimplexVertices<TSimplex, iNumVertices>>::operator()(
-        const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
-        double scale
-    ) const {
-        return scalingFunction(simplexVertices.simplex(), scale).vertices();
-    }
-
-    template <class TSimplex, int iNumVertices> template <class TVector>
-    inline
-    detail::SimplexVertices<TSimplex, iNumVertices>
-    TranslationFunction<detail::SimplexVertices<TSimplex, iNumVertices>>::operator()(
-        const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
-        const EigenBase<TVector>& vector
-    ) const {
-        return translationFunction(simplexVertices.simplex(), vector.derived()).vertices();
-    }
-
-    template <class TSimplex, int iNumVertices, int iNumResultDimensions> template <class TMatrix>
-    inline
-    detail::SimplexVertices<
-        typename TransformedType<TSimplex, iNumResultDimensions>::Type,
-        iNumVertices
-    >
-    TransformationFunction<
-        detail::SimplexVertices<TSimplex, iNumVertices>,
-        iNumResultDimensions
-    >::operator()(
-        const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        return transformationFunction(simplexVertices.simplex(), matrix.derived()).vertices();
-    }
-
-    template <class TSimplex, int iNumVertices, int iNumResultDimensions>
-    inline
-    detail::SimplexVertices<
-        typename MorphedType<TSimplex, iNumResultDimensions>::Type,
-        iNumVertices
-    >
-    MorphingFunction<
-        detail::SimplexVertices<TSimplex, iNumVertices>,
-        iNumResultDimensions
-    >::operator()(
-        const detail::SimplexVertices<TSimplex, iNumVertices>& simplexVertices,
-        const ParametricExpression<
-            iNumResultDimensions,
-            NumDimensions<TSimplex>::Value
-        >& morphingExpression
-    ) const {
-        return morphingFunction(simplexVertices.simplex(), morphingExpression).vertices();
     }
 }

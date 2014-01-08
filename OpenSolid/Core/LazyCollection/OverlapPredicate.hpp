@@ -26,4 +26,26 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/OverlapPredicate.definitions.hpp>
+
+namespace opensolid
+{
+    namespace detail
+    {
+        template <class TItem>
+        inline
+        OverlapPredicate<TItem>::OverlapPredicate(
+            const typename BoundsType<TItem>::Type& predicateBounds,
+            double precision
+        ) : _predicateBounds(predicateBounds),
+            _precision(precision) {
+        }
+
+        template <class TItem>
+        inline
+        bool
+        OverlapPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
+            return bounds.overlaps(_predicateBounds, _precision);
+        }
+    }
+}

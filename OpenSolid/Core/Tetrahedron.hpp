@@ -37,7 +37,7 @@
 #include <OpenSolid/Core/Simplex/SimplexVertices.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronEdges.hpp>
 #include <OpenSolid/Core/Simplex/TetrahedronFaces.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 

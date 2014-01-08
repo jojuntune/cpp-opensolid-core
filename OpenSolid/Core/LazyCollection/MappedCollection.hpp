@@ -26,10 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/MappedCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/MappedCollection.definitions.hpp>
 
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
 
 namespace opensolid
 {
@@ -101,13 +100,6 @@ namespace opensolid
         std::int64_t
         MappedCollection<TBaseCollection, TMappingFunction>::size() const {
             return _baseCollection.size();
-        }
-
-        template <class TBaseCollection, class TMappingFunction>
-        inline
-        typename BoundsType<MappedCollection<TBaseCollection, TMappingFunction>>::Type
-        MappedCollection<TBaseCollection, TMappingFunction>::bounds() const {
-            return this->boundsDefaultImpl();
         }
 
         template <class TBaseCollection, class TMappingFunction>

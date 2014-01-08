@@ -26,77 +26,27 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.definitions.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/ContainPredicate.declarations.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
-        template <class TCollection>
-        inline
-        void
-        IndexIterator<TCollection>::increment() {
-            ++_index;
-        }
+        template <class TItem>
+        class ContainPredicate
+        {
+        private:
+            typename BoundsType<TItem>::Type _predicateBounds;
+            double _precision;
+        public:
+            ContainPredicate(
+                const typename BoundsType<TItem>::Type& predicateBounds,
+                double precision
+            );
 
-        template <class TCollection>
-        inline
-        void
-        IndexIterator<TCollection>::decrement() {
-            --_index;
-        }
-
-        template <class TCollection>
-        inline
-        void
-        IndexIterator<TCollection>::advance(std::int64_t distance) {
-            _index += distance;
-        }
-
-        template <class TCollection>
-        inline
-        std::int64_t
-        IndexIterator<TCollection>::distance_to(const IndexIterator<TCollection>& other) const {
-            assert(_collection == other._collection);
-            return other._index - _index;
-        }
-
-        template <class TCollection>
-        inline
-        bool
-        IndexIterator<TCollection>::equal(const IndexIterator<TCollection>& other) const {
-            assert(_collection == other._collection);
-            return _index == other._index;
-        }
-
-        template <class TCollection>
-        inline
-        typename ItemReferenceType<TCollection>::Type
-        IndexIterator<TCollection>::dereference() const {
-            return (*_collection)[_index];
-        }
-
-        template <class TCollection>
-        inline
-        IndexIterator<TCollection>::IndexIterator(
-            const TCollection* collection,
-            std::int64_t index
-        ) : _collection(collection),
-            _index(index) {
-        }
-
-        template <class TCollection>
-        inline
-        IndexIterator<TCollection>
-        IndexIterator<TCollection>::Begin(const TCollection* collection) {
-            return IndexIterator<TCollection>(collection, 0);
-        }
-
-        template <class TCollection>
-        inline
-        IndexIterator<TCollection>
-        IndexIterator<TCollection>::End(const TCollection* collection) {
-            return IndexIterator<TCollection>(collection, collection->size());
-        }
+            bool
+            operator()(const typename BoundsType<TItem>::Type& bounds) const;
+        };
     }
 }

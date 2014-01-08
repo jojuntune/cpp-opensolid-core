@@ -26,67 +26,16 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/FilteredCollection.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/FilteredCollection.declarations.hpp>
 
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
 #include <OpenSolid/Core/Transformable.declarations.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace opensolid
 {
-    template <class TBaseCollection, class TPredicate>
-    struct BoundsType<detail::FilteredCollection<TBaseCollection, TPredicate>>
-    {
-        typedef typename BoundsType<TBaseCollection>::Type Type;
-    };
-
-    template <class TBaseCollection, class TPredicate>
-    struct NumDimensions<detail::FilteredCollection<TBaseCollection, TPredicate>>
-    {
-        static const int Value = NumDimensions<TBaseCollection>::Value;
-    };
-
-    template <class TBaseCollection, class TPredicate>
-    struct ScaledType<detail::FilteredCollection<TBaseCollection, TPredicate>> :
-        public ScaledType<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TPredicate>
-    struct TranslatedType<detail::FilteredCollection<TBaseCollection, TPredicate>> :
-        public TranslatedType<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TPredicate, int iNumResultDimensions>
-    struct TransformedType<
-        detail::FilteredCollection<TBaseCollection, TPredicate>,
-        iNumResultDimensions
-    > : public TransformedType<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-
-    template <class TBaseCollection, class TPredicate, int iNumResultDimensions>
-    struct MorphedType<
-        detail::FilteredCollection<TBaseCollection, TPredicate>,
-        iNumResultDimensions
-    > : public MorphedType<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
     template <class TBaseCollection, class TPredicate>
     struct IteratorType<detail::FilteredCollection<TBaseCollection, TPredicate>>
     {
@@ -97,7 +46,7 @@ namespace opensolid
     {
         template <class TBaseCollection, class TPredicate>
         class FilteredCollection :
-            public SpatialCollection<FilteredCollection<TBaseCollection, TPredicate>>
+            public LazyCollection<FilteredCollection<TBaseCollection, TPredicate>>
         {
         private:
             TBaseCollection _baseCollection;
@@ -122,9 +71,6 @@ namespace opensolid
 
             std::int64_t
             size() const;
-
-            typename BoundsType<typename ItemType<TBaseCollection>::Type>::Type
-            bounds() const;
         };
 
         template <class TBaseCollection, class TPredicate>
@@ -161,42 +107,4 @@ namespace opensolid
             );
         };
     }
-
-    template <class TBaseCollection, class TPredicate>
-    struct ScalingFunction<detail::FilteredCollection<TBaseCollection, TPredicate>> :
-        public ScalingFunction<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TPredicate>
-    struct TranslationFunction<detail::FilteredCollection<TBaseCollection, TPredicate>> :
-        public TranslationFunction<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TPredicate, int iNumResultDimensions>
-    struct TransformationFunction<
-        detail::FilteredCollection<TBaseCollection, TPredicate>,
-        iNumResultDimensions
-    > : public TransformationFunction<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TPredicate, int iNumResultDimensions>
-    struct MorphingFunction<
-        detail::FilteredCollection<TBaseCollection, TPredicate>,
-        iNumResultDimensions
-    > : public MorphingFunction<
-            SpatialCollection<detail::FilteredCollection<TBaseCollection, TPredicate>>,
-            iNumResultDimensions
-        >
-    {
-    };
 }

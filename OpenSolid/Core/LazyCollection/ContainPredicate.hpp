@@ -26,27 +26,26 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/OverlapPredicate.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/ContainPredicate.definitions.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <class TItem>
-        class OverlapPredicate
-        {
-        private:
-            typename BoundsType<TItem>::Type _predicateBounds;
-            double _precision;
-        public:
-            OverlapPredicate(
-                const typename BoundsType<TItem>::Type& predicateBounds,
-                double precision
-            );
+        inline
+        ContainPredicate<TItem>::ContainPredicate(
+            const typename BoundsType<TItem>::Type& predicateBounds,
+            double precision
+        ) : _predicateBounds(predicateBounds),
+            _precision(precision) {
+        }
 
-            bool
-            operator()(const typename BoundsType<TItem>::Type& bounds) const;
-        };
+        template <class TItem>
+        inline
+        bool
+        ContainPredicate<TItem>::operator()(const typename BoundsType<TItem>::Type& bounds) const {
+            return bounds.contains(_predicateBounds, _precision);
+        }
     }
 }

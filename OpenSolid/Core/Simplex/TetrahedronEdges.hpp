@@ -28,13 +28,10 @@
 
 #include <OpenSolid/Core/Simplex/TetrahedronEdges.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsType.hpp>
-#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
 {
@@ -73,12 +70,6 @@ namespace opensolid
         std::int64_t
         TetrahedronEdges::size() const {
             return 6;
-        }
-
-        inline
-        Box3d
-        TetrahedronEdges::bounds() const {
-            return tetrahedron().bounds();
         }
 
         inline

@@ -28,12 +28,9 @@
 
 #include <OpenSolid/Core/Simplex/TetrahedronFaces.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsType.hpp>
-#include <OpenSolid/Core/Box.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.hpp>
 #include <OpenSolid/Core/Tetrahedron.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
 namespace opensolid
@@ -73,12 +70,6 @@ namespace opensolid
         std::int64_t
         TetrahedronFaces::size() const {
             return 4;
-        }
-
-        inline
-        Box3d
-        TetrahedronFaces::bounds() const {
-            return tetrahedron().bounds();
         }
 
         inline

@@ -26,11 +26,56 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
+
+#include <boost/iterator/iterator_facade.hpp>
+
 namespace opensolid
 {
     namespace detail
     {
-        template <class TItem>
-        struct SpatialListData;
+        template <class TCollection>
+        class IndexIterator:
+            public boost::iterator_facade<
+                IndexIterator<TCollection>,
+                typename ItemType<TCollection>::Type,
+                boost::random_access_traversal_tag,
+                typename ItemReferenceType<TCollection>::Type
+            >
+        {
+        private:
+            const TCollection* _collection;
+            std::int64_t _index;
+
+            friend class boost::iterator_core_access;
+
+            void
+            increment();
+
+            void
+            decrement();
+
+            void
+            advance(std::int64_t distance);
+
+            std::int64_t
+            distance_to(const IndexIterator<TCollection>& other) const;
+
+            bool
+            equal(const IndexIterator<TCollection>& other) const;
+
+            typename ItemReferenceType<TCollection>::Type
+            dereference() const;
+
+            IndexIterator(const TCollection* collection, std::int64_t index);
+        public:
+            static
+            IndexIterator
+            Begin(const TCollection* collection);
+
+            static
+            IndexIterator
+            End(const TCollection* collection);
+        };
     }
 }

@@ -26,70 +26,14 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/MappedCollection.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/MappedCollection.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
 
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace opensolid
 {
-    template <class TBaseCollection, class TMappingFunction>
-    struct BoundsType<detail::MappedCollection<TBaseCollection, TMappingFunction>> :
-        public BoundsType<
-            typename ItemType<detail::MappedCollection<TBaseCollection, TMappingFunction>>::Type
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction>
-    struct NumDimensions<detail::MappedCollection<TBaseCollection, TMappingFunction>> :
-        public NumDimensions<
-            typename ItemType<detail::MappedCollection<TBaseCollection, TMappingFunction>>::Type
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction>
-    struct ScaledType<detail::MappedCollection<TBaseCollection, TMappingFunction>> :
-        public ScaledType<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction>
-    struct TranslatedType<detail::MappedCollection<TBaseCollection, TMappingFunction>> :
-        public TranslatedType<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction, int iNumResultDimensions>
-    struct TransformedType<
-        detail::MappedCollection<TBaseCollection, TMappingFunction>,
-        iNumResultDimensions
-    > : public TransformedType<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction, int iNumResultDimensions>
-    struct MorphedType<
-        detail::MappedCollection<TBaseCollection, TMappingFunction>,
-        iNumResultDimensions
-    > : public MorphedType<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
     template <class TBaseCollection, class TMappingFunction>
     struct IteratorType<detail::MappedCollection<TBaseCollection, TMappingFunction>>
     {
@@ -116,7 +60,7 @@ namespace opensolid
     {
         template <class TBaseCollection, class TMappingFunction>
         class MappedCollection :
-            public SpatialCollection<MappedCollection<TBaseCollection, TMappingFunction>>
+            public LazyCollection<MappedCollection<TBaseCollection, TMappingFunction>>
         {
         private:
             TBaseCollection _baseCollection;
@@ -147,9 +91,6 @@ namespace opensolid
 
             std::int64_t
             size() const;
-
-            typename BoundsType<MappedCollection<TBaseCollection, TMappingFunction>>::Type
-            bounds() const;
         };
 
         template <class TBaseCollection, class TMappingFunction>
@@ -184,42 +125,4 @@ namespace opensolid
             );
         };
     }
-    
-    template <class TBaseCollection, class TMappingFunction>
-    struct ScalingFunction<detail::MappedCollection<TBaseCollection, TMappingFunction>> :
-        public ScalingFunction<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction>
-    struct TranslationFunction<detail::MappedCollection<TBaseCollection, TMappingFunction>> :
-        public TranslationFunction<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction, int iNumResultDimensions>
-    struct TransformationFunction<
-        detail::MappedCollection<TBaseCollection, TMappingFunction>,
-        iNumResultDimensions
-    > : public TransformationFunction<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <class TBaseCollection, class TMappingFunction, int iNumResultDimensions>
-    struct MorphingFunction<
-        detail::MappedCollection<TBaseCollection, TMappingFunction>,
-        iNumResultDimensions
-    > : public MorphingFunction<
-            SpatialCollection<detail::MappedCollection<TBaseCollection, TMappingFunction>>,
-            iNumResultDimensions
-        >
-    {
-    };
 }

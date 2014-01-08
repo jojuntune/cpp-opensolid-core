@@ -28,11 +28,8 @@
 
 #include <OpenSolid/Core/Simplex/TriangleEdges.definitions.hpp>
 
-#include <OpenSolid/Core/BoundsType.hpp>
-#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
-#include <OpenSolid/Core/SpatialCollection.hpp>
-#include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 
 namespace opensolid
@@ -82,56 +79,9 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        Box<iNumDimensions>
-        TriangleEdges<iNumDimensions>::bounds() const {
-            return triangle().bounds();
-        }
-
-        template <int iNumDimensions>
-        inline
         LineSegment<iNumDimensions>
         TriangleEdges<iNumDimensions>::operator[](std::int64_t index) const {
             return triangle().edge(index);
         }
-    }
-
-    template <int iNumDimensions>
-    inline
-    detail::TriangleEdges<iNumDimensions>
-    ScalingFunction<detail::TriangleEdges<iNumDimensions>>::operator()(
-        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-        double scale
-    ) const {
-        return scalingFunction(triangleEdges.triangle(), scale).edges();
-    }
-
-    template <int iNumDimensions> template <class TVector>
-    inline
-    detail::TriangleEdges<iNumDimensions>
-    TranslationFunction<detail::TriangleEdges<iNumDimensions>>::operator()(
-        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-        const EigenBase<TVector>& vector
-    ) const {
-        return translationFunction(triangleEdges.triangle(), vector.derived()).edges();
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
-    inline
-    detail::TriangleEdges<iNumResultDimensions>
-    TransformationFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>::operator()(
-        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-        const EigenBase<TMatrix>& matrix
-    ) const {
-        return transformationFunction(triangleEdges.triangle(), matrix.derived()).edges();
-    }
-
-    template <int iNumDimensions, int iNumResultDimensions>
-    inline
-    detail::TriangleEdges<iNumResultDimensions>
-    MorphingFunction<detail::TriangleEdges<iNumDimensions>, iNumResultDimensions>::operator()(
-        const detail::TriangleEdges<iNumDimensions>& triangleEdges,
-        const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
-    ) const {
-        return morphingFunction(triangleEdges.triangle(), morphingExpression).edges();
     }
 }

@@ -4,12 +4,12 @@
         GLOB
         CORE_SOURCES
         *.cpp
+        LazyCollection/*.cpp
         Matrix/*.cpp
         ParametricCurve/*.cpp
         ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp
-        SpatialCollection/*.cpp
         Variant/*.cpp
     )
 
@@ -41,11 +41,11 @@
 
     add_to_global_source_list(
         *
+        LazyCollection/*
         Matrix/*
         ParametricCurve/*
         ParametricExpression/*
         Position/*
         Simplex/*
-        SpatialCollection/*
         Variant/*
     )

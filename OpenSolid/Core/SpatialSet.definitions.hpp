@@ -30,14 +30,12 @@
 
 #include <OpenSolid/Core/BoundsFunction.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/ContainPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/OverlapPredicate.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/SpatialSetData.declarations.hpp>
-#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.declarations.hpp>
-#include <OpenSolid/Core/SpatialList.declarations.hpp>
-#include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/ContainPredicate.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/OverlapPredicate.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/SpatialSetData.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
@@ -46,42 +44,6 @@
 namespace opensolid
 {
     template <class TItem>
-    struct BoundsType<SpatialSet<TItem>>
-    {
-        typedef typename BoundsType<TItem>::Type Type;
-    };
-
-    template <class TItem>
-    struct NumDimensions<SpatialSet<TItem>>
-    {
-        static const int Value = NumDimensions<TItem>::Value;
-    };
-
-    template <class TItem>
-    struct ScaledType<SpatialSet<TItem>> :
-        public ScaledType<SpatialCollection<SpatialSet<TItem>>>
-    {
-    };
-
-    template <class TItem>
-    struct TranslatedType<SpatialSet<TItem>> :
-        public TranslatedType<SpatialCollection<SpatialSet<TItem>>>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct TransformedType<SpatialSet<TItem>, iNumResultDimensions> :
-        public TransformedType<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct MorphedType<SpatialSet<TItem>, iNumResultDimensions> :
-        public MorphedType<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
-    {
-    };
-
-    template <class TItem>
     struct IteratorType<SpatialSet<TItem>>
     {
         typedef typename std::vector<TItem>::const_iterator Type;
@@ -89,7 +51,7 @@ namespace opensolid
 
     template <class TItem>
     class SpatialSet :
-        public SpatialCollection<SpatialSet<TItem>>
+        public LazyCollection<SpatialSet<TItem>>
     {
     private:
         boost::intrusive_ptr<detail::SpatialSetData<TItem>> _dataPtr;
@@ -128,7 +90,7 @@ namespace opensolid
 
         template <class TDerived>
         explicit
-        SpatialSet(const SpatialCollection<TDerived>& collection);
+        SpatialSet(const LazyCollection<TDerived>& collection);
         
         template <class TIterator>
         SpatialSet(TIterator begin, TIterator end);
@@ -185,38 +147,14 @@ namespace opensolid
         typename std::vector<TItem>::const_iterator
         find(const TItem& item, double precision = 1e-12) const;
 
-        SpatialList<TItem>
+        std::vector<TItem>
         uniqueItems(double precision = 1e-12) const;
 
-        SpatialList<TItem>
+        std::vector<TItem>
         uniqueItems(std::vector<std::int64_t>& mapping, double precision = 1e-12) const;
     };
     
     template <class TItem>
     std::ostream&
     operator<<(std::ostream& stream, const SpatialSet<TItem>& set);
-
-    template <class TItem>
-    struct ScalingFunction<SpatialSet<TItem>> :
-        public ScalingFunction<SpatialCollection<SpatialSet<TItem>>>
-    {
-    };
-
-    template <class TItem>
-    struct TranslationFunction<SpatialSet<TItem>> :
-        public TranslationFunction<SpatialCollection<SpatialSet<TItem>>>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct TransformationFunction<SpatialSet<TItem>, iNumResultDimensions> :
-        public TransformationFunction<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
-    {
-    };
-
-    template <class TItem, int iNumResultDimensions>
-    struct MorphingFunction<SpatialSet<TItem>, iNumResultDimensions> :
-        public MorphingFunction<SpatialCollection<SpatialSet<TItem>>, iNumResultDimensions>
-    {
-    };
 }

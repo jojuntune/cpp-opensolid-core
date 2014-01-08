@@ -28,64 +28,13 @@
 
 #include <OpenSolid/Core/Simplex/TetrahedronEdges.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/LineSegment.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection.definitions.hpp>
-#include <OpenSolid/Core/SpatialCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Tetrahedron.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
-    template <>
-    struct BoundsType<detail::TetrahedronEdges>
-    {
-        typedef Box<3> Type;
-    };
-
-    template <>
-    struct NumDimensions<detail::TetrahedronEdges>
-    {
-        static const int Value = 3;
-    };
-
-    template <>
-    struct ScaledType<detail::TetrahedronEdges>
-    {
-        typedef detail::TetrahedronEdges Type;
-    };
-
-    template <>
-    struct TranslatedType<detail::TetrahedronEdges>
-    {
-        typedef detail::TetrahedronEdges Type;
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformedType<detail::TetrahedronEdges, iNumResultDimensions> :
-        public TransformedType<SpatialCollection<detail::TetrahedronEdges>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct TransformedType<detail::TetrahedronEdges, 3>
-    {
-        typedef detail::TetrahedronEdges Type;
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphedType<detail::TetrahedronEdges, iNumResultDimensions> :
-        public MorphedType<SpatialCollection<detail::TetrahedronEdges>, iNumResultDimensions>
-    {
-    };
-
-    template <>
-    struct MorphedType<detail::TetrahedronEdges, 3>
-    {
-        typedef detail::TetrahedronEdges Type;
-    };
-
     template <>
     struct ItemType<detail::TetrahedronEdges>
     {
@@ -101,7 +50,7 @@ namespace opensolid
     namespace detail
     {
         class TetrahedronEdges :
-            public SpatialCollection<TetrahedronEdges>
+            public LazyCollection<TetrahedronEdges>
         {
         private:
             Tetrahedron3d _tetrahedron;
@@ -130,66 +79,4 @@ namespace opensolid
             operator[](std::int64_t index) const;
         };
     }
-
-    template <>
-    struct ScalingFunction<detail::TetrahedronEdges>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            double scale
-        ) const;
-    };
-
-    template <>
-    struct TranslationFunction<detail::TetrahedronEdges>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            const Vector3d& vector
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct TransformationFunction<detail::TetrahedronEdges, iNumResultDimensions> :
-        public TransformationFunction<
-            SpatialCollection<detail::TetrahedronEdges>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct TransformationFunction<detail::TetrahedronEdges, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            const Matrix3d& matrix
-        ) const;
-    };
-
-    template <int iNumResultDimensions>
-    struct MorphingFunction<detail::TetrahedronEdges, iNumResultDimensions> :
-        public MorphingFunction<
-            SpatialCollection<detail::TetrahedronEdges>,
-            iNumResultDimensions
-        >
-    {
-    };
-
-    template <>
-    struct MorphingFunction<detail::TetrahedronEdges, 3>
-    {
-        OPENSOLID_CORE_EXPORT
-        detail::TetrahedronEdges
-        operator()(
-            const detail::TetrahedronEdges& tetrahedronEdges,
-            const ParametricExpression<3, 3>& morphingExpression
-        ) const;
-    };
 }

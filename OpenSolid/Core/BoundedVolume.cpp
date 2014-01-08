@@ -59,7 +59,11 @@ namespace opensolid
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
-                scalingFunction(boundedVolume.boundaries(), scale)
+                boundedVolume.boundaries().map(
+                    [scale] (const ParametricSurface3d& surface) {
+                        return scalingFunction(surface, scale);
+                    }
+                )
             )
         );
     }
@@ -71,7 +75,11 @@ namespace opensolid
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
-                translationFunction(boundedVolume.boundaries(), vector)
+                boundedVolume.boundaries().map(
+                    [&vector] (const ParametricSurface3d& surface) {
+                        return translationFunction(surface, vector);
+                    }
+                )
             )
         );
     }
@@ -83,7 +91,11 @@ namespace opensolid
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
-                transformationFunction(boundedVolume.boundaries(), matrix)
+                boundedVolume.boundaries().map(
+                    [&matrix] (const ParametricSurface3d& surface) {
+                        return transformationFunction(surface, matrix);
+                    }
+                )
             )
         );
     }
@@ -95,7 +107,11 @@ namespace opensolid
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(
-                morphingFunction(boundedVolume.boundaries(), morphingExpression)
+                boundedVolume.boundaries().map(
+                    [&morphingExpression] (const ParametricSurface3d& surface) {
+                        return morphingFunction(surface, morphingExpression);
+                    }
+                )
             )
         );
     }

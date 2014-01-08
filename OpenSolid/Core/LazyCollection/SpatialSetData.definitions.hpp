@@ -26,8 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/SpatialListData.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/SpatialSetData.declarations.hpp>
 
+#include <OpenSolid/Core/LazyCollection/SpatialSetNode.declarations.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
 namespace opensolid
@@ -35,9 +36,10 @@ namespace opensolid
     namespace detail
     {
         template <class TItem>
-        struct SpatialListData :
+        struct SpatialSetData :
             public ReferenceCounted
         {
+            std::vector<SpatialSetNode<TItem>> nodes;
             std::vector<TItem> items;
         };
     }

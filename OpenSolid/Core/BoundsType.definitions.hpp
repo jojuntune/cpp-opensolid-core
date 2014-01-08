@@ -34,12 +34,6 @@
 
 namespace opensolid
 {
-    template <class T>
-    struct BoundsType
-    {
-        typedef void Type;
-    };
-
     template <>
     struct BoundsType<int>
     {
@@ -62,11 +56,5 @@ namespace opensolid
     struct BoundsType<double>
     {
         typedef Interval Type;
-    };
-
-    template <class T>
-    struct IsBounded
-    {
-        static const bool Value = !std::is_void<typename BoundsType<T>::Type>::value;
     };
 }

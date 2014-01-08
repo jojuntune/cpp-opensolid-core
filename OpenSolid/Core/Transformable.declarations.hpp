@@ -31,9 +31,6 @@ namespace opensolid
     template <class TDerived>
     class Transformable;
 
-    template <class T>
-    struct IsTransformable;
-
     template <class TTransformable>
     struct NumDimensions;
 

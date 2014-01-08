@@ -26,21 +26,27 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/SpatialSetData.declarations.hpp>
-
-#include <OpenSolid/Core/ReferenceCounted.hpp>
-#include <OpenSolid/Core/SpatialCollection/SpatialSetNode.declarations.hpp>
+#include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/LazyCollection/OverlapPredicate.declarations.hpp>
 
 namespace opensolid
 {
     namespace detail
     {
         template <class TItem>
-        struct SpatialSetData :
-            public ReferenceCounted
+        class OverlapPredicate
         {
-            std::vector<SpatialSetNode<TItem>> nodes;
-            std::vector<TItem> items;
+        private:
+            typename BoundsType<TItem>::Type _predicateBounds;
+            double _precision;
+        public:
+            OverlapPredicate(
+                const typename BoundsType<TItem>::Type& predicateBounds,
+                double precision
+            );
+
+            bool
+            operator()(const typename BoundsType<TItem>::Type& bounds) const;
         };
     }
 }

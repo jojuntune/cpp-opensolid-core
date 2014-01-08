@@ -26,9 +26,9 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/SpatialCollection/FilteredSpatialSet.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/FilteredSpatialSet.definitions.hpp>
 
-#include <OpenSolid/Core/SpatialCollection.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 namespace opensolid
@@ -101,13 +101,6 @@ namespace opensolid
         std::int64_t
         FilteredSpatialSet<TItem, TBoundsPredicate>::size() const {
             return this->sizeDefaultImpl();
-        }
-
-        template <class TItem, class TBoundsPredicate>
-        inline
-        typename BoundsType<TItem>::Type
-        FilteredSpatialSet<TItem, TBoundsPredicate>::bounds() const {
-            return this->boundsDefaultImpl();
         }
 
         template <class TItem, class TBoundsPredicate>
