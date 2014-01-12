@@ -26,27 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-namespace Eigen
+namespace opensolid
 {
-    struct MedianOperation
+    namespace detail
     {
-        typedef double result_type;
-        
-        double
-        operator()(opensolid::Interval interval) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace Eigen
-{
-    inline
-    double
-    MedianOperation::operator()(opensolid::Interval interval) const {
-        return interval.median();
+        template <class TScalar, int iNumDimensions>
+        class CartesianBase;
     }
 }

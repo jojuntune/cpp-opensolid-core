@@ -35,31 +35,32 @@ namespace opensolid
 {
     template <class TBounded>
     inline
-    typename BoundsType<TBounded>::Type
+    const typename BoundsType<TBounded>::Type
     BoundsFunction<TBounded>::operator()(const TBounded& argument) const {
         return argument.bounds();
     }
 
     inline
+    const Interval
     Interval
     BoundsFunction<int>::operator()(int value) const {
         return Interval(value);
     }
 
     inline
-    Interval
+    const Interval
     BoundsFunction<unsigned>::operator()(unsigned value) const {
         return Interval(value);
     }
 
     inline
-    Interval
+    const Interval
     BoundsFunction<std::int64_t>::operator()(std::int64_t value) const {
         return Interval(value);
     }
 
     inline
-    Interval
+    const Interval
     BoundsFunction<double>::operator()(double value) const {
         return Interval(value);
     }

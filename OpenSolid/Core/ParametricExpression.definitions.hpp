@@ -68,22 +68,30 @@ namespace opensolid
         const ExpressionImplementationPtr&
         implementation() const;
 
-        ExpressionEvaluation<iNumDimensions, 1, int>
+        Matrix<double, iNumDimensions, 1>
         evaluate(int value) const;
         
-        ExpressionEvaluation<iNumDimensions, 1, double>
+        Matrix<double, iNumDimensions, 1>
         evaluate(double value) const;
         
-        ExpressionEvaluation<iNumDimensions, 1, Interval>
+        Matrix<Interval, iNumDimensions, 1>
         evaluateBounds(Interval interval) const;
-        
-        template <class TMatrix>
-        ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
-        evaluate(const EigenBase<TMatrix>& matrix) const;
-        
-        template <class TMatrix>
-        ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
-        evaluateBounds(const EigenBase<TMatrix>& matrix) const;
+
+        Matrix<double, iNumDimensions, 1>
+        evaluate(const Matrix<double, iNumParameters, 1> parameterValues) const;
+
+        Matrix<Interval, iNumDimensions, 1>
+        evaluate(const Matrix<Interval, iNumParameters, 1> parameterValues) const;
+
+        SpatialList<Matrix<double, iNumDimensions, 1>>
+        evaluate(
+            const SpatialList<Matrix<double, iNumParameters, 1>>& parameterValues
+        ) const;
+
+        SpatialList<Matrix<double, iNumDimensions, 1>>
+        evaluateBounds(
+            const SpatialList<Matrix<Interval, iNumParameters, 1>>& parameterBounds
+        ) const;
 
         JacobianEvaluation<iNumDimensions, 1, int>
         jacobian(int value) const;

@@ -26,27 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-namespace Eigen
+namespace opensolid
 {
-    struct WidthOperation
+    namespace detail
     {
-        typedef double result_type;
-        
-        double
-        operator()(opensolid::Interval interval) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace Eigen
-{
-    inline
-    double
-    WidthOperation::operator()(opensolid::Interval interval) const {
-        return interval.width();
+        template <int iNumDimensions>
+        class BoxBase;
     }
 }

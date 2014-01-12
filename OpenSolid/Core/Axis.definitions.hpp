@@ -60,31 +60,31 @@ namespace opensolid
     {
     private:
         Point<2> _originPoint;
-        Vector2d _directionVector;
+        UnitVector<2> _directionVector;
     public:
         Axis();
 
-        Axis(const Point<2>& originPoint, const Vector2d& directionVector);
+        Axis(const Point<2>& originPoint, const UnitVector<2>& directionVector);
 
         const Point<2>&
         originPoint() const;
         
-        const Vector2d&
+        const UnitVector<2>&
         directionVector() const;
 
-        Axis<2>
+        const Axis<2>
         flipped() const;
 
-        Axis<2>
+        const Axis<2>
         normalAxis() const;
 
-        CoordinateSystem<2, 1>
+        const CoordinateSystem<2, 1>
         coordinateSystem() const;
 
-        static Axis<2>
+        static const Axis<2>
         X();
 
-        static Axis<2>
+        static const Axis<2>
         Y();
     };
 
@@ -96,34 +96,34 @@ namespace opensolid
     {
     private:
         Point<3> _originPoint;
-        Vector3d _directionVector;
+        UnitVector<3> _directionVector;
     public:
         Axis();
 
-        Axis(const Point<3>& originPoint, const Vector3d& directionVector);
+        Axis(const Point<3>& originPoint, const UnitVector<3>& directionVector);
 
         const Point<3>&
         originPoint() const;
         
-        const Vector3d&
+        const UnitVector<3>&
         directionVector() const;
 
-        Axis<3>
+        const Axis<3>
         flipped() const;
 
-        Plane3d
+        const Plane3d
         normalPlane() const;
 
-        CoordinateSystem<3, 1>
+        const CoordinateSystem<3, 1>
         coordinateSystem() const;
 
-        static Axis<3>
+        static const Axis<3>
         X();
 
-        static Axis<3>
+        static const Axis<3>
         Y();
 
-        static Axis<3>
+        static const Axis<3>
         Z();
     };
 
@@ -132,30 +132,31 @@ namespace opensolid
     template <int iNumDimensions>
     struct ScalingFunction<Axis<iNumDimensions>>
     {
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         operator()(const Axis<iNumDimensions>& axis, double scale) const;
     };
 
     template <int iNumDimensions>
     struct TranslationFunction<Axis<iNumDimensions>>
     {
-        template <class TVector>
-        Axis<iNumDimensions>
-        operator()(const Axis<iNumDimensions>& axis, const EigenBase<TVector>& vector) const;
+        const Axis<iNumDimensions>
+        operator()(const Axis<iNumDimensions>& axis, const Vector<iNumDimensions>& vector) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
-        template <class TMatrix>
-        Axis<iNumResultDimensions>
-        operator()(const Axis<iNumDimensions>& axis, const EigenBase<TMatrix>& matrix) const;
+        const Axis<iNumResultDimensions>
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
-        Axis<iNumResultDimensions>
+        const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression

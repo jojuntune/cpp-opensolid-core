@@ -29,8 +29,10 @@
 #include <OpenSolid/Core/Position/PointBase.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
@@ -38,88 +40,79 @@ namespace opensolid
     {
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase() :
-            _vector(Matrix<double, iNumDimensions, 1>::Zero()) {
-        }
-
-        template <int iNumDimensions> template <class TVector>
-        inline
-        PointBase<iNumDimensions>::PointBase(const EigenBase<TVector>& vector) :
-            _vector(vector.derived()) {
+        const Point<iNumDimensions>&
+        PointBase<iNumDimensions>::derived() const {
+            return static_cast<const Point<iNumDimensions>&>(*this);
         }
 
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase(double value) :
-            _vector(Matrix<double, iNumDimensions, 1>::Constant(value)) {
+        PointBase<iNumDimensions>::PointBase() {
         }
 
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase(double x, double y) :
-            _vector(x, y) {
+        PointBase<iNumDimensions>::PointBase(const Matrix<iNumDimensions, 1>& components) :
+            detail::CartesianBase<double, iNumDimensions>(components) {
         }
 
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase(double x, double y, double z) :
-            _vector(x, y, z) {
+        PointBase<iNumDimensions>::PointBase(const double* sourcePtr) :
+            detail::CartesianBase<double, iNumDimensions>(sourcePtr) {
         }
 
         template <int iNumDimensions>
         inline
-        const Matrix<double, iNumDimensions, 1>&
-        PointBase<iNumDimensions>::vector() const {
-            return _vector;
+        const double
+        PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
+           return (derived() - other).squaredNorm();
         }
 
         template <int iNumDimensions>
         inline
-        Matrix<double, iNumDimensions, 1>&
-        PointBase<iNumDimensions>::vector() {
-            return _vector;
-        }
-
-        template <int iNumDimensions>
-        inline
-        const double*
-        PointBase<iNumDimensions>::data() const {
-            return vector().data();
-        }
-
-        template <int iNumDimensions>
-        inline
-        double*
-        PointBase<iNumDimensions>::data() {
-            return vector().data();
-        }
-
-        template <int iNumDimensions>
-        inline
-        double&
-        PointBase<iNumDimensions>::operator()(int index) {
-            return vector()(index);
-        }
-        
-        template <int iNumDimensions>
-        inline
-        double
-        PointBase<iNumDimensions>::operator()(int index) const {
-            return vector()(index);
+        const double
+        PointBase<iNumDimensions>::distanceTo(const Point<iNumDimensions>& other) const {
+           return (derived() - other).norm();
         }
 
         template <int iNumDimensions>
         inline
         Box<iNumDimensions>
         PointBase<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
-            return Box<iNumDimensions>(vector().hull(other.vector()));
+            return Box<iNumDimensions>(
+                components.binaryMap(
+                    other.components(),
+                    [] (double component, double otherComponent) {
+                        return Interval::Hull(component, otherComponent);
+                    }
+                )
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        Box<iNumDimensions>
+        PointBase<iNumDimensions>::hull(const Box<iNumDimensions>& box) const {
+            return Box<iNumDimensions>(
+                components.binaryMap(
+                    box.components(),
+                    [] (double component, Interval boxComponent) {
+                        boxComponent.hull(component);
+                    }
+                )
+            );
         }
 
         template <int iNumDimensions>
         inline
         bool
         PointBase<iNumDimensions>::isOrigin(double precision) const {
-            return vector().isZero(precision);
+            return components().all(
+                [] (double component) {
+                    return component == Zero(precision);
+                }
+            );
         }
 
         template <int iNumDimensions>
@@ -127,27 +120,6 @@ namespace opensolid
         bool
         PointBase<iNumDimensions>::operator==(const Point<iNumDimensions>& other) const {
             return vector() == other.vector();
-        }
-
-        template <int iNumDimensions>
-        inline
-        Matrix<double, iNumDimensions, 1>
-        PointBase<iNumDimensions>::operator-(const Point<iNumDimensions>& other) const {
-            return vector() - other.vector();
-        }
-
-        template <int iNumDimensions>
-        inline
-        Matrix<Interval, iNumDimensions, 1>
-        PointBase<iNumDimensions>::operator-(const Box<iNumDimensions>& box) const {
-            return vector().template cast<Interval>() - box.vector();
-        }
-
-        template <int iNumDimensions>
-        inline
-        Point<iNumDimensions>
-        PointBase<iNumDimensions>::Origin() {
-            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
         }
     }
 }

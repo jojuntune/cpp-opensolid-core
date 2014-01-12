@@ -26,27 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-namespace Eigen
-{   
-    struct UpperOperation
-    {
-        typedef double result_type;
-        
-        double
-        operator()(opensolid::Interval interval) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace Eigen
+namespace opensolid
 {
-    inline
-    double
-    UpperOperation::operator()(opensolid::Interval interval) const {
-        return interval.upperBound();
+    namespace detail
+    {
+        template <class TScalar, int iNumRows, int iNumColumns>
+        class MatrixBase;
     }
 }

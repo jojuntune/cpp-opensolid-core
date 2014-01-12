@@ -26,40 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-namespace Eigen
+namespace opensolid
 {
-    class OverlapOperation
-    {
-    private:
-        double _precision;
-    public:
-        typedef bool result_type;
-
-        OverlapOperation(double precision);
-
-        bool
-        operator()(opensolid::Interval firstInterval, opensolid::Interval secondInterval) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace Eigen
-{
-    inline
-    OverlapOperation::OverlapOperation(double precision) :
-        _precision(precision) {
-    }
-    
-    inline
-    bool
-    OverlapOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.overlaps(secondInterval, _precision);
-    }
+    template <int iNumDimensions>
+    class IntervalVector;
 }

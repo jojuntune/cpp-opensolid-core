@@ -26,40 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-namespace Eigen
+namespace opensolid
 {
-    class ContainOperation
-    {
-    private:
-        double _precision;
-    public:
-        typedef bool result_type;
-
-        ContainOperation(double precision);
-        
-        bool
-        operator()(opensolid::Interval firstInterval, opensolid::Interval secondInterval) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace Eigen
-{
-    inline
-    ContainOperation::ContainOperation(double precision) :
-        _precision(precision) {
-    }
-    
-    inline
-    bool
-    ContainOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.contains(secondInterval, _precision);
-    }
+    template <int iNumDimensions>
+    class UnitVector;
 }

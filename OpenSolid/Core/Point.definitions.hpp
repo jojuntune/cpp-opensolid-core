@@ -34,12 +34,11 @@
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
-#include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
-#include <OpenSolid/Core/Position/PositionType.declarations.hpp>
 #include <OpenSolid/Core/Position/PointBase.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <ostream>
 
@@ -81,15 +80,29 @@ namespace opensolid
         explicit
         Point(double value);
 
-        template <class TVector>
         explicit
-        Point(const EigenBase<TVector>& vector);
+        Point(const Vector<1>& vector);
 
-        double
+        explicit
+        Point(const Matrix<1, 1>& components);
+
+        explicit
+        Point(const double* sourcePtr);
+
+        const double
         value() const;
 
         double&
         value();
+
+        const double
+        x() const;
+
+        double&
+        x();
+
+        static const Point<1>
+        Origin();
     };
 
     typedef Point<1> Point1d;
@@ -105,26 +118,34 @@ namespace opensolid
 
         Point(double x, double y);
 
-        template <class TVector>
         explicit
-        Point(const EigenBase<TVector>& vector);
+        Point(const Vector<2>& vector);
 
-        double
+        explicit
+        Point(const Matrix<2, 1>& components);
+
+        explicit
+        Point(const double* sourcePtr);
+
+        const double
         x() const;
 
         double&
         x();
 
-        double
+        const double
         y() const;
 
         double&
         y();
 
-        double
+        const double
         distanceTo(const Axis<2>& axis) const;
 
-        static Point
+        static const Point<2>
+        Origin();
+
+        static const Point<2>
         Polar(double radius, double angle);
     };
 
@@ -141,47 +162,59 @@ namespace opensolid
 
         Point(double x, double y, double z);
 
-        template <class TVector>
         explicit
-        Point(const EigenBase<TVector>& vector);
+        Point(const Vector<3>& vector);
 
-        double
+        explicit
+        Point(const Matrix<3, 1>& components);
+
+        explicit
+        Point(const double* sourcePtr);
+
+        const double
         x() const;
 
         double&
         x();
 
-        double
+        const double
         y() const;
 
         double&
         y();
 
-        double
+        const double
         z() const;
 
         double&
         z();
 
-        double
+        const double
         distanceTo(const Plane3d& plane) const;
 
-        static Point
+        static const Point<3>
+        Origin();
+
+        static const Point<3>
         Cylindrical(double radius, double angle, double height);
 
-        static Point
+        static const Point<3>
         Spherical(double radius, double polarAngle, double elevationAngle);
     };
 
     typedef Point<3> Point3d;
 
-    template <int iNumDimensions, class TVector>
-    typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type
-    operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
+    template <int iNumDimensions>
+    Point<iNumDimensions>
+    operator+(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector);
 
-    template <int iNumDimensions, class TVector>
-    typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type
-    operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector);
+    template <int iNumDimensions>
+    Point<iNumDimensions>
+    operator-(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector);
+
+    template <int iNumDimensions>
+    Vector<iNumDimensions>
+    operator-(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint);
 
     template <int iNumDimensions>
     std::ostream&
@@ -190,7 +223,7 @@ namespace opensolid
     template <int iNumDimensions>
     struct EqualityFunction<Point<iNumDimensions>>
     {
-        bool
+        const bool
         operator()(
             const Point<iNumDimensions>& firstPoint,
             const Point<iNumDimensions>& secondPoint,
@@ -201,33 +234,31 @@ namespace opensolid
     template <int iNumDimensions>
     struct BoundsFunction<Point<iNumDimensions>>
     {
-        Box<iNumDimensions>
+        const Box<iNumDimensions>
         operator()(const Point<iNumDimensions>& point) const;
     };
 
     template <int iNumDimensions>
     struct ScalingFunction<Point<iNumDimensions>>
     {
-        Point<iNumDimensions>
+        const Point<iNumDimensions>
         operator()(const Point<iNumDimensions>& point, double scale) const;
     };
 
     template <int iNumDimensions>
     struct TranslationFunction<Point<iNumDimensions>>
     {
-        template <class TVector>
-        Point<iNumDimensions>
-        operator()(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) const;
+        const Point<iNumDimensions>
+        operator()(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>
     {
-        template <class TMatrix>
-        Point<iNumResultDimensions>
+        const Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
-            const EigenBase<TMatrix>& matrix
+            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 

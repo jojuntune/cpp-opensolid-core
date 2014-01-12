@@ -239,13 +239,19 @@ namespace opensolid
     typename ScaledType<TTransformable>::Type
     scalingFunction(const TTransformable& transformable, double scale);
 
-    template <class TTransformable, class TVector>
+    template <class TTransformable>
     typename TranslatedType<TTransformable>::Type
-    translationFunction(const TTransformable& transformable, const EigenBase<TVector>& vector);
+    translationFunction(
+        const TTransformable& transformable,
+        const Vector<NumDimensions<TTransformable>::Value>& vector
+    );
 
-    template <class TTransformable, class TMatrix>
-    typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
-    transformationFunction(const TTransformable& transformable, const EigenBase<TMatrix>& matrix);
+    template <class TTransformable, int iNumResultDimensions>
+    typename TransformedType<TTransformable, iNumResultDimensions>::Type
+    transformationFunction(
+        const TTransformable& transformable,
+        const Matrix<iNumResultDimensions, NumDimensions<TTransformable>::Value>& matrix
+    );
 
     template <class TTransformable, int iNumResultDimensions>
     typename MorphedType<TTransformable, iNumResultDimensions>::Type

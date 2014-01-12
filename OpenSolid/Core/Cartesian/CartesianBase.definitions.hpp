@@ -26,11 +26,49 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Vector/CartesianBase.declarations.hpp>
+
+#include <OpenSolid/Core/Matrix.definitions.hpp>
+
 namespace opensolid
 {
     namespace detail
     {
         template <class TScalar, int iNumDimensions>
-        struct PositionType;
+        class CartesianBase
+        {
+        private:
+            typename MatrixType<TScalar, iNumDimensions, 1>::Type _components;
+        protected:
+            CartesianBase();
+
+            CartesianBase(const typename MatrixType<TScalar, iNumDimensions, 1>::Type& components);
+
+            CartesianBase(const TScalar* sourcePtr);
+        public:
+            const typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+            components() const;
+
+            typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+            components();
+
+            const TScalar*
+            data() const;
+
+            TScalar*
+            data();
+
+            const TScalar
+            component(std::int64_t index) const;
+
+            TScalar&
+            component(std::int64_t index) const;
+
+            const TScalar
+            operator()(std::int64_t index) const;
+
+            TScalar&
+            operator()(std::int64_t index) const;
+        };
     }
 }

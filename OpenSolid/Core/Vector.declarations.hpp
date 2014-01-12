@@ -26,39 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Interval.hpp>
-
-namespace Eigen
+namespace opensolid
 {
-    struct HullOperation
-    {
-        typedef opensolid::Interval result_type;
-
-        opensolid::Interval
-        operator()(double firstValue, double secondValue) const;
-        
-        opensolid::Interval
-        operator()(opensolid::Interval firstInterval, opensolid::Interval secondInterval) const;
-    };
-}
-
-////////// Implementation //////////
-
-namespace Eigen
-{
-    inline
-    opensolid::Interval
-    HullOperation::operator()(double firstValue, double secondValue) const {
-        return opensolid::Interval::Hull(firstValue, secondValue);
-    }
-    
-    inline
-    opensolid::Interval
-    HullOperation::operator()(
-        opensolid::Interval firstInterval,
-        opensolid::Interval secondInterval
-    ) const {
-        return firstInterval.hull(secondInterval);
-    }
+    template <int iNumDimensions>
+    class Vector;
 }

@@ -26,12 +26,12 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Position/PointBase.declarations.hpp>
+#include <OpenSolid/Core/Position/BoxBase.declarations.hpp>
 
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/Vector.declarations.hpp>
+#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
+#include <OpenSolid/Core/IntervalVector.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 
 namespace opensolid
@@ -39,36 +39,69 @@ namespace opensolid
     namespace detail
     {
         template <int iNumDimensions>
-        class PointBase :
-            public detail::CartesianBase<double, iNumDimensions>
+        class BoxBase :
+            public detail::CartesianBase<Interval, iNumDimensions>
         {
         private:
-            const Point<iNumDimensions>&
+            const Box<iNumDimensions>&
             derived() const;
         protected:
-            PointBase();
+            BoxBase();
 
-            PointBase(const Matrix<iNumDimensions, 1>& components);
+            BoxBase(const IntervalMatrix<iNumDimensions, 1>& components);
 
-            PointBase(const double* sourcePtr);
+            BoxBase(const Interval* sourcePtr);
         public:
-            const double
-            squaredDistanceTo(const Point<iNumDimensions>& other) const;
+            const bool
+            isEmpty() const;
 
-            const double
-            distanceTo(const Point<iNumDimensions>& other) const;
+            const Point<iNumDimensions>
+            minVertex() const;
+            
+            const Point<iNumDimensions>
+            maxVertex() const;
+
+            const Point<iNumDimensions>
+            vertex(std::int64_t index) const;
+
+            detail::BoxVertices<iNumDimensions>
+            vertices() const;
+            
+            const Point<iNumDimensions>
+            midPoint() const;
+            
+            const Point<iNumDimensions>
+            randomPoint() const;
+
+            const Vector<iNumDimensions>
+            diagonalVector() const;
+
+            const bool
+            overlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+
+            const bool
+            strictlyOverlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+            
+            const bool
+            contains(const Point<iNumDimensions>& point, double precision = 1e-12) const;
+            
+            const bool
+            strictlyContains(const Point<iNumDimensions>& point, double precision = 1e-12) const;
+            
+            const bool
+            contains(const Box<iNumDimensions>& other, double precision = 1e-12) const;
+            
+            const bool
+            strictlyContains(const Box<iNumDimensions>& other, double precision = 1e-12) const;
 
             const Box<iNumDimensions>
-            hull(const Point<iNumDimensions>& other) const;
+            hull(const Point<iNumDimensions>& point) const;
+            
+            const Box<iNumDimensions>
+            hull(const Box<iNumDimensions>& other) const;
 
             const Box<iNumDimensions>
-            hull(const Box<iNumDimensions>& box) const;
-
-            bool
-            isOrigin(double precision = 1e-12) const;
-
-            bool
-            operator==(const Point<iNumDimensions>& other) const;
+            intersection(const Box<iNumDimensions>& other) const;
         };
     }
 }

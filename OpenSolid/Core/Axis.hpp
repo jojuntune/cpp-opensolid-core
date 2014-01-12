@@ -39,17 +39,15 @@ namespace opensolid
     inline
     Axis2d::Axis() :
         _originPoint(Point2d::Origin()),
-        _directionVector(Vector2d::Zero()) {
+        _directionVector(UnitVector2d()) {
     }
 
     inline
     Axis2d::Axis(
         const Point2d& originPoint,
-        const Vector2d& directionVector
+        const UnitVector2d& directionVector
     ) : _originPoint(originPoint),
         _directionVector(directionVector) {
-
-        assert(directionVector.squaredNorm() - 1.0 == Zero());
     }
 
     inline
@@ -59,55 +57,53 @@ namespace opensolid
     }
     
     inline
-    const Vector2d&
+    const UnitVector2d&
     Axis2d::directionVector() const {
         return _directionVector;
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::flipped() const {
         return Axis2d(originPoint(), -directionVector());
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::normalAxis() const {
         return Axis2d(originPoint(), directionVector().unitOrthogonal());
     }
 
     inline
-    AxialCoordinateSystem2d
+    const AxialCoordinateSystem2d
     Axis2d::coordinateSystem() const {
         return AxialCoordinateSystem2d(originPoint(), directionVector());
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::X() {
-        return Axis2d(Point2d::Origin(), Vector2d::UnitX());
+        return Axis2d(Point2d::Origin(), UnitVector2d::X());
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::Y() {
-        return Axis2d(Point2d::Origin(), Vector2d::UnitY());
+        return Axis2d(Point2d::Origin(), UnitVector2d::Y());
     }
 
     inline
     Axis3d::Axis() :
         _originPoint(Point3d::Origin()),
-        _directionVector(Vector3d::Zero()) {
+        _directionVector(UnitVector3d()) {
     }
 
     inline
     Axis3d::Axis(
         const Point3d& originPoint,
-        const Vector3d& directionVector
+        const UnitVector3d& directionVector
     ) : _originPoint(originPoint),
         _directionVector(directionVector) {
-
-        assert(directionVector.squaredNorm() - 1.0 == Zero());
     }
 
     inline
@@ -117,96 +113,101 @@ namespace opensolid
     }
     
     inline
-    const Vector3d&
+    const UnitVector3d&
     Axis3d::directionVector() const {
         return _directionVector;
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::flipped() const {
         return Axis3d(originPoint(), -directionVector());
     }
 
     inline
-    Plane3d
+    const Plane3d
     Axis3d::normalPlane() const {
         return Plane3d(originPoint(), directionVector());
     }
 
     inline
-    AxialCoordinateSystem3d
+    const AxialCoordinateSystem3d
     Axis3d::coordinateSystem() const {
         return AxialCoordinateSystem3d(originPoint(), directionVector());
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::X() {
-        return Axis3d(Point3d::Origin(), Vector3d::UnitX());
+        return Axis3d(Point3d::Origin(), UnitVector3d::X());
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::Y() {
-        return Axis3d(Point3d::Origin(), Vector3d::UnitY());
+        return Axis3d(Point3d::Origin(), UnitVector3d::Y());
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::Z() {
-        return Axis3d(Point3d::Origin(), Vector3d::UnitZ());
+        return Axis3d(Point3d::Origin(), UnitVector3d::Z());
     }
 
     template <int iNumDimensions>
-    Axis<iNumDimensions>
+    inline
+    const Axis<iNumDimensions>
     ScalingFunction<Axis<iNumDimensions>>::operator()(
         const Axis<iNumDimensions>& axis,
         double scale
     ) const {
-        double directionScale = scale >= 0.0 ? 1.0 : -1.0;
         return Axis<iNumDimensions>(
             scalingFunction(axis.originPoint(), scale),
-            directionScale * axis.directionVector()
+            scale >= 0.0 ? axis.directionVector() : -axis.directionVector()
         );
     }
 
-    template <int iNumDimensions> template <class TVector>
-    Axis<iNumDimensions>
+    template <int iNumDimensions>
+    inline
+    const Axis<iNumDimensions>
     TranslationFunction<Axis<iNumDimensions>>::operator()(
         const Axis<iNumDimensions>& axis,
-        const EigenBase<TVector>& vector
+        const Vector<iNumDimensions>& vector
     ) const {
-        return Axis<iNumDimensions>(axis.originPoint() + vector.derived(), axis.directionVector());
+        return Axis<iNumDimensions>(axis.originPoint() + vector, axis.directionVector());
     }
 
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
-    Axis<iNumResultDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    const Axis<iNumResultDimensions>
     TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
-        const EigenBase<TMatrix>& matrix
+        const Matrix<iNumResultDimensions, iNumDimensions>& matrix
     ) const {
-        Matrix<double, iNumResultDimensions, 1> transformedDirection =
-            matrix.derived() * axis.directionVector();
+        Vector<iNumResultDimensions> transformedDirection = transformationFunction(
+            axis.directionVector(),
+            matrix
+        );
         double transformedNorm = transformedDirection.norm();
         if (transformedNorm == Zero()) {
             throw PlaceholderError();
         }
         transformedDirection *= (1.0 / transformedNorm);
         return Axis<iNumResultDimensions>(
-            transformationFunction(axis.originPoint(), matrix.derived()),
-            transformedDirection
+            transformationFunction(axis.originPoint(), matrix),
+            UnitVector<iNumResultDimensions>(transformedDirection)
         );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
-    Axis<iNumResultDimensions>
+    const Axis<iNumResultDimensions>
     MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        Matrix<double, iNumResultDimensions, 1> morphedDirection =
-            morphingExpression.jacobian(axis.originPoint().vector()) * axis.directionVector();
+        Vector<iNumResultDimensions> morphedDirection = transformationFunction(
+            axis.directionVector(),
+            morphingExpression.jacobian(axis.originPoint().components())
+        );
         double morphedNorm = morphedDirection.norm();
         if (morphedNorm == Zero()) {
             throw PlaceholderError();
@@ -214,7 +215,7 @@ namespace opensolid
         morphedDirection *= (1.0 / morphedNorm);
         return Axis<iNumResultDimensions>(
             morphingFunction(axis.originPoint(), morphingExpression),
-            morphedDirection
+            UnitVector<iNumResultDimensions>(morphedDirection)
         );
     }
 }

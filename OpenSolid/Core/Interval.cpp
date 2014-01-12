@@ -167,12 +167,13 @@ namespace opensolid
     
     std::ostream&
     operator<<(std::ostream& stream, Interval interval) {
+        stream << "Interval";
         if (interval.isEmpty()) {
-            stream << "[]";
+            stream << "()";
         } else if (interval.isSingleton()) {
-            stream << "[" << interval.lowerBound() << "]";
+            stream << "(" << interval.lowerBound() << ")";
         } else {
-            stream << "[" << interval.lowerBound() << "," << interval.upperBound() << "]";
+            stream << "(" << interval.lowerBound() << "," << interval.upperBound() << ")";
         }
         return stream;
     }

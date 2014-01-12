@@ -26,4 +26,8 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Position/PositionType.definitions.hpp>
+namespace opensolid
+{
+    template <int iNumRows, int iNumColumns>
+    class IntervalMatrix;
+}

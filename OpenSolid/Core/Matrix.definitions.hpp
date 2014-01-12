@@ -28,119 +28,246 @@
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
-#include <OpenSolid/Core/BoundsFunction.declarations.hpp>
-#include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/EqualityFunction.declarations.hpp>
-#include <OpenSolid/Core/Interval.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
 
 namespace opensolid
 {
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct BoundsType<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    template <int iNumRows, int iNumColumns>
+    class Matrix :
+        public detail::MatrixBase<double, iNumRows, iNumColumns>
     {
-        typedef Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols> Type;
+    public:
+        Matrix();
+
+        explicit
+        Matrix(const double* sourcePtr);
+
+        static const Matrix<iNumRows, iNumColumns>
+        Zero();
+
+        static const Matrix<iNumRows, iNumColumns>
+        Ones();
+
+        static const Matrix<iNumRows, iNumColumns>
+        Identity();
+
+        static const Matrix<iNumRows, iNumColumns>
+        Random();
+
+        static const Matrix<iNumRows, iNumColumns>
+        OuterProduct(
+            const Matrix<iNumRows, 1>& columnMatrix,
+            const Matrix<1, iNumColumns>& rowMatrix
+        );
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct NumDimensions<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    template <>
+    class Matrix<1, 1> :
+        public detail::MatrixBase<double, 1, 1>
     {
-        static const int Value = iRows;
+    public:
+        Matrix();
+
+        explicit
+        Matrix(const double* sourcePtr);
+
+        explicit
+        Matrix(double value);
+
+        const double
+        value() const;
+
+        double&
+        value();
+
+        const double
+        determinant() const;
+
+        const Matrix<1, 1>
+        inverse() const;
+
+        static const Matrix<1, 1>
+        Zero();
+
+        static const Matrix<1, 1>
+        Ones();
+
+        static const Matrix<1, 1>
+        Identity();
+
+        static const Matrix<1, 1>
+        Random();
+
+        static const Matrix<1, 1>
+        OuterProduct(const Matrix<1, 1>& columnMatrix, const Matrix<1, 1>& rowMatrix);
     };
 
-    template <
-        class TScalar,
-        int iRows,
-        int iCols,
-        int iOptions,
-        int iMaxRows,
-        int iMaxCols,
-        int iNumResultDimensions
-    >
-    struct TransformedType<
-        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
-        iNumResultDimensions
-    >
+    typedef Matrix<1, 1> Matrix1d;
+
+    template <>
+    class Matrix<2, 2> :
+        public detail::MatrixBase<double, 2, 2>
     {
-        typedef Matrix<
-            TScalar,
-            iNumResultDimensions,
-            iCols,
-            iOptions,
-            iNumResultDimensions,
-            iMaxCols
-        > Type;
+    public:
+        Matrix();
+
+        explicit
+        Matrix(const double* sourcePtr);
+
+        Matrix(double a, double b, double c, double d);
+
+        double
+        determinant() const;
+
+        const Matrix<2, 2>
+        inverse() const;
+
+        static const Matrix<2, 2>
+        Zero();
+
+        static const Matrix<2, 2>
+        Ones();
+
+        static const Matrix<2, 2>
+        Identity();
+
+        static const Matrix<2, 2>
+        Random();
+
+        static const Matrix<2, 2>
+        OuterProduct(const Matrix<2, 1>& columnMatrix, const Matrix<1, 2>& rowMatrix);
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct EqualityFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    typedef Matrix<2, 2> Matrix2d;
+
+    template <>
+    class Matrix<3, 3> :
+        public detail::MatrixBase<double, 3, 3>
     {
-        bool
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& firstMatrix,
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& secondMatrix,
-            double precision
-        ) const;
+    public:
+        Matrix();
+
+        explicit
+        Matrix(const double* sourcePtr);
+
+        Matrix(
+            double a11,
+            double a12,
+            double a13,
+            double a21,
+            double a22,
+            double a23,
+            double a31,
+            double a32,
+            double a33
+        );
+
+        OPENSOLID_CORE_EXPORT
+        const double
+        determinant() const;
+
+        OPENSOLID_CORE_EXPORT
+        const Matrix<3, 3>
+        inverse() const;
+
+        static const Matrix<3, 3>
+        Zero();
+
+        static const Matrix<3, 3>
+        Ones();
+
+        static const Matrix<3, 3>
+        Identity();
+
+        static const Matrix<3, 3>
+        Random();
+
+        static const Matrix<3, 3>
+        OuterProduct(const Matrix<3, 1>& columnMatrix, const Matrix<1, 3>& rowMatrix);
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct BoundsFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
-    {
-        typedef typename internal::conditional<
-            internal::is_same<TScalar, Interval>::value,
-            const Matrix<Interval, iRows, iCols, iOptions, iMaxRows, iMaxCols>&,
-            const CwiseUnaryOp<
-                internal::scalar_cast_op<TScalar, Interval>,
-                const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-            >
-        >::type CastType;
+    typedef Matrix<3, 3> Matrix3d;
 
-        CastType
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument
-        ) const;
+    template <>
+    class Matrix<2, 1> :
+        public detail::MatrixBase<double, 2, 1>
+    {
+    public:
+        Matrix();
+
+        explicit
+        Matrix(const double* sourcePtr);
+
+        Matrix(double x, double y);
+
+        static const Matrix<2, 1>
+        Zero();
+
+        static const Matrix<2, 1>
+        Ones();
+
+        static const Matrix<2, 1>
+        Random();
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct ScalingFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
+    typedef Matrix<2, 1> ColumnMatrix2d;
+
+    template <>
+    class Matrix<3, 1> :
+        public detail::MatrixBase<double, 3, 1>
     {
-        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
-            double scale
-        ) const;
+    public:
+        Matrix();
+
+        explicit
+        Matrix(const double* sourcePtr);
+
+        Matrix(double x, double y, double z);
+
+        static const Matrix<3, 1>
+        Zero();
+
+        static const Matrix<3, 1>
+        Ones();
+
+        static const Matrix<3, 1>
+        Random();
     };
 
-    template <class TScalar, int iRows, int iCols, int iOptions, int iMaxRows, int iMaxCols>
-    struct TranslationFunction<Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>>
-    {
-        template <class TVector>
-        const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>&
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
-            const EigenBase<TVector>& vector
-        ) const;
-    };
+    typedef Matrix<3, 1> ColumnMatrix3d;
 
-    template <
-        class TScalar,
-        int iRows,
-        int iCols,
-        int iOptions,
-        int iMaxRows,
-        int iMaxCols,
-        int iNumResultDimensions
-    >
-    struct TransformationFunction<
-        Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>,
-        iNumResultDimensions
-    >
-    {
-        template <class TMatrix>
-        Matrix<TScalar, iNumResultDimensions, iCols, iOptions, iNumResultDimensions, iMaxCols>
-        operator()(
-            const Matrix<TScalar, iRows, iCols, iOptions, iMaxRows, iMaxCols>& argument,
-            const EigenBase<TMatrix>& matrix
-        ) const;
-    };
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator*(double scale, const Matrix<iNumRows, iNumColumns>& matrix);
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator*(const Matrix<iNumRows, iNumColumns>& matrix, double scale);
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, iNumColumns>
+    operator/(const Matrix<iNumRows, iNumColumns>& matrix, double divisor);
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, int iNumColumns>
+    operator+(
+        const Matrix<iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<iNumRows, iNumColumns>& secondMatrix
+    );
+
+    template <int iNumRows, int iNumColumns>
+    const Matrix<iNumRows, int iNumColumns>
+    operator-(
+        const Matrix<iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<iNumRows, iNumColumns>& secondMatrix
+    );
+
+    template <int iNumRows, int iNumColumns, int iInnerSize>
+    const Matrix<iNumRows, int iNumColumns>
+    operator*(
+        const Matrix<iNumRows, iInnerSize>& firstMatrix,
+        const Matrix<iInnerSize, iNumColumns>& secondMatrix
+    );
 }
+
+#endif

@@ -151,6 +151,15 @@ namespace opensolid
             Interval(mid, upperBound())
         );
     }
+
+    inline
+    Interval
+    Interval::hull(double value) const {
+        return Interval(
+            min(lowerBound(), value),
+            max(upperBound(), value)
+        );
+    }
     
     inline
     Interval
@@ -245,25 +254,27 @@ namespace opensolid
     inline
     Interval&
     Interval::operator*=(double value) {
-        if (value >= 0.0) {
-            _lowerBound *= value;
-            _upperBound *= value;
-        } else {
-            _lowerBound = _upperBound * value;
-            _upperBound = _lowerBound * value;
+        if (value < 0.0) {
+            std::swap(_lowerBound, _upperBound);
         }
+        _lowerBound *= value;
+        _upperBound *= value;
         return *this;
     }
 
     inline
     Interval&
     Interval::operator/=(double value) {
-        if (value >= 0.0) {
+        if (value > Zero()) {
+            _lowerBound /= value;
+            _upperBound /= value;
+        } else if (value < Zero()) {
+            std::swap(_lowerBound, _upperBound);
             _lowerBound /= value;
             _upperBound /= value;
         } else {
-            _lowerBound = _upperBound / value;
-            _upperBound = _lowerBound / value;
+            _lowerBound = -INFINITY;
+            _upperBound = INFINITY;
         }
         return *this;
     }
@@ -449,22 +460,22 @@ namespace opensolid
     inline
     Interval
     operator+(double value, Interval interval) {
-        return Interval(value + interval.lowerBound(), value + interval.upperBound());
+        interval += value;
+        return interval;
     }
 
     inline
     Interval
     operator+(Interval interval, double value) {
-        return Interval(interval.lowerBound() + value, interval.upperBound() + value);
+        interval += value;
+        return interval;
     }
 
     inline
     Interval
     operator+(Interval firstInterval, Interval secondInterval) {
-        return Interval(
-            firstInterval.lowerBound() + secondInterval.lowerBound(),
-            firstInterval.upperBound() + secondInterval.upperBound()
-        );
+        firstInterval += secondInterval;
+        return firstInterval;
     }
 
     inline
@@ -476,40 +487,36 @@ namespace opensolid
     inline
     Interval
     operator-(Interval interval, double value) {
-        return Interval(interval.lowerBound() - value, interval.upperBound() - value);
+        interval -= value;
+        return interval;
     }
 
     inline
     Interval
     operator-(Interval firstInterval, Interval secondInterval) {
-        return Interval(
-            firstInterval.lowerBound() - secondInterval.upperBound(),
-            firstInterval.upperBound() - secondInterval.lowerBound()
-        );
+        firstInterval -= secondInterval;
+        return firstInterval;
     }
 
     inline
     Interval
     operator*(double value, Interval interval) {
-        return value >= 0.0 ?
-            Interval(value * interval.lowerBound(), value * interval.upperBound()) :
-            Interval(value * interval.upperBound(), value * interval.lowerBound());
+        interval *= value;
+        return interval;
     }
 
     inline
     Interval
     operator*(Interval interval, double value) {
-        return value >= 0.0 ?
-            Interval(interval.lowerBound() * value, interval.upperBound() * value) :
-            Interval(interval.upperBound() * value, interval.lowerBound() * value);
+        interval *= value;
+        return interval;
     }
 
     inline
     Interval
     operator/(Interval interval, double value) {
-        return value >= 0.0 ?
-            Interval(interval.lowerBound() / value, interval.upperBound() / value) :
-            Interval(interval.upperBound() / value, interval.lowerBound() / value);
+        interval /= value;
+        return interval;
     }
 
     inline

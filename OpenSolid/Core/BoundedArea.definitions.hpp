@@ -72,10 +72,10 @@ namespace opensolid
         const SpatialSet<ParametricCurve2d>&
         boundaries() const;
 
-        bool
+        const bool
         isEmpty() const;
 
-        Box<2>
+        const Box<2>
         bounds() const;
     };
     
@@ -83,7 +83,7 @@ namespace opensolid
     struct ScalingFunction<BoundedArea2d>
     {
         OPENSOLID_CORE_EXPORT
-        BoundedArea2d
+        const BoundedArea2d
         operator()(const BoundedArea2d& boundedArea, double scale) const;
     };
 
@@ -91,7 +91,7 @@ namespace opensolid
     struct TranslationFunction<BoundedArea2d>
     {
         OPENSOLID_CORE_EXPORT
-        BoundedArea2d
+        const BoundedArea2d
         operator()(const BoundedArea2d& boundedArea, const Vector2d& vector) const;
     };
 
@@ -99,7 +99,7 @@ namespace opensolid
     struct TransformationFunction<BoundedArea2d, 2>
     {
         OPENSOLID_CORE_EXPORT
-        BoundedArea2d
+        const BoundedArea2d
         operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
     };
 
@@ -107,7 +107,7 @@ namespace opensolid
     struct MorphingFunction<BoundedArea2d, 2>
     {
         OPENSOLID_CORE_EXPORT
-        BoundedArea2d
+        const BoundedArea2d
         operator()(
             const BoundedArea2d& boundedArea,
             const ParametricExpression<2, 2>& morphingExpression

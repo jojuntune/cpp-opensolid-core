@@ -52,7 +52,7 @@ namespace opensolid
         _boundaries(std::move(boundaries)) {
     }
 
-    BoundedArea2d
+    const BoundedArea2d
     ScalingFunction<BoundedArea2d>::operator()(
         const BoundedArea2d& boundedArea,
         double scale
@@ -68,7 +68,7 @@ namespace opensolid
         );
     }
 
-    BoundedArea2d
+    const BoundedArea2d
     TranslationFunction<BoundedArea2d>::operator()(
         const BoundedArea2d& boundedArea,
         const Vector2d& vector
@@ -84,7 +84,7 @@ namespace opensolid
         );
     }
 
-    BoundedArea2d
+    const BoundedArea2d
     TransformationFunction<BoundedArea2d, 2>::operator()(
         const BoundedArea2d& boundedArea,
         const Matrix2d& matrix
@@ -100,7 +100,7 @@ namespace opensolid
         );
     }
 
-    BoundedArea2d
+    const BoundedArea2d
     MorphingFunction<BoundedArea2d, 2>::operator()(
         const BoundedArea2d& boundedArea,
         const ParametricExpression<2, 2>& morphingExpression
