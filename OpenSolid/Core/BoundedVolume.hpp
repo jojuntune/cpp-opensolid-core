@@ -42,13 +42,13 @@ namespace opensolid
     }
 
     inline
-    bool
+    const bool
     BoundedVolume3d::isEmpty() const {
         return boundaries().isEmpty();
     }
 
     inline
-    Box3d
+    const Box3d
     BoundedVolume3d::bounds() const {
         return boundaries().bounds();
     }

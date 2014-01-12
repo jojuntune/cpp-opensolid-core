@@ -64,6 +64,20 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        const double
+        PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
+           return (derived() - other).squaredNorm();
+        }
+
+        template <int iNumDimensions>
+        inline
+        const double
+        PointBase<iNumDimensions>::distanceTo(const Point<iNumDimensions>& other) const {
+           return (derived() - other).norm();
+        }
+
+        template <int iNumDimensions>
+        inline
         Box<iNumDimensions>
         PointBase<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
             return Box<iNumDimensions>(

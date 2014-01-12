@@ -136,6 +136,12 @@ namespace opensolid
             TScalar&
             operator()(std::int64_t rowIndex, std::int64_t columnIndex);
 
+            const typename MatrixType<TScalar, 1, iNumColumns>::Type
+            row(std::int64_t rowIndex) const;
+
+            const typename MatrixType<TScalar, iNumRows, 1>::Type
+            column(std::int64_t columnIndex) const;
+
             const TScalar*
             data() const;
 
@@ -145,7 +151,7 @@ namespace opensolid
             void
             fill(TScalar value);
 
-            const typename detail::MatrixType<TScalar, iNumColumns, iNumRows>::Type
+            const typename MatrixType<TScalar, iNumColumns, iNumRows>::Type
             transpose() const;
 
             template <class TUnaryPredicate>
@@ -171,7 +177,7 @@ namespace opensolid
             ) const;
 
             template <class TUnaryFunction>
-            const typename detail::MappedMatrixType<
+            const typename MappedMatrixType<
                 TUnaryFunction,
                 TScalar,
                 iNumRows,
@@ -180,7 +186,7 @@ namespace opensolid
             map(TUnaryFunction unaryFunction) const;
 
             template <class TBinaryFunction, class TOtherScalar>
-            const typename detail::PairwiseMappedMatrixType<
+            const typename PairwiseMappedMatrixType<
                 TBinaryFunction,
                 TScalar,
                 TOtherScalar,

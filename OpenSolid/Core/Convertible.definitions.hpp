@@ -34,11 +34,11 @@ namespace opensolid
     struct Convertible
     {
         template <class TOther>
-        TOther
+        const TOther
         to() const;
 
         template <class TOther>
-        static TDerived
+        static const TDerived
         From(const TOther& argument);
     };
 }

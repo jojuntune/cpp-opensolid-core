@@ -63,31 +63,31 @@ namespace opensolid
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::flipped() const {
         return Axis2d(originPoint(), -directionVector());
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::normalAxis() const {
         return Axis2d(originPoint(), directionVector().unitOrthogonal());
     }
 
     inline
-    AxialCoordinateSystem2d
+    const AxialCoordinateSystem2d
     Axis2d::coordinateSystem() const {
         return AxialCoordinateSystem2d(originPoint(), directionVector());
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::X() {
         return Axis2d(Point2d::Origin(), UnitVector2d::X());
     }
 
     inline
-    Axis2d
+    const Axis2d
     Axis2d::Y() {
         return Axis2d(Point2d::Origin(), UnitVector2d::Y());
     }
@@ -119,43 +119,44 @@ namespace opensolid
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::flipped() const {
         return Axis3d(originPoint(), -directionVector());
     }
 
     inline
-    Plane3d
+    const Plane3d
     Axis3d::normalPlane() const {
         return Plane3d(originPoint(), directionVector());
     }
 
     inline
-    AxialCoordinateSystem3d
+    const AxialCoordinateSystem3d
     Axis3d::coordinateSystem() const {
         return AxialCoordinateSystem3d(originPoint(), directionVector());
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::X() {
         return Axis3d(Point3d::Origin(), UnitVector3d::X());
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::Y() {
         return Axis3d(Point3d::Origin(), UnitVector3d::Y());
     }
 
     inline
-    Axis3d
+    const Axis3d
     Axis3d::Z() {
         return Axis3d(Point3d::Origin(), UnitVector3d::Z());
     }
 
     template <int iNumDimensions>
-    Axis<iNumDimensions>
+    inline
+    const Axis<iNumDimensions>
     ScalingFunction<Axis<iNumDimensions>>::operator()(
         const Axis<iNumDimensions>& axis,
         double scale
@@ -166,8 +167,9 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions> template <class TVector>
-    Axis<iNumDimensions>
+    template <int iNumDimensions>
+    inline
+    const Axis<iNumDimensions>
     TranslationFunction<Axis<iNumDimensions>>::operator()(
         const Axis<iNumDimensions>& axis,
         const Vector<iNumDimensions>& vector
@@ -175,8 +177,8 @@ namespace opensolid
         return Axis<iNumDimensions>(axis.originPoint() + vector, axis.directionVector());
     }
 
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
-    Axis<iNumResultDimensions>
+    template <int iNumDimensions, int iNumResultDimensions>
+    const Axis<iNumResultDimensions>
     TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
         const Matrix<iNumResultDimensions, iNumDimensions>& matrix
@@ -197,7 +199,7 @@ namespace opensolid
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
-    Axis<iNumResultDimensions>
+    const Axis<iNumResultDimensions>
     MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression

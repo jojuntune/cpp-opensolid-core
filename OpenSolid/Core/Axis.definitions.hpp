@@ -72,19 +72,19 @@ namespace opensolid
         const UnitVector<2>&
         directionVector() const;
 
-        Axis<2>
+        const Axis<2>
         flipped() const;
 
-        Axis<2>
+        const Axis<2>
         normalAxis() const;
 
-        CoordinateSystem<2, 1>
+        const CoordinateSystem<2, 1>
         coordinateSystem() const;
 
-        static Axis<2>
+        static const Axis<2>
         X();
 
-        static Axis<2>
+        static const Axis<2>
         Y();
     };
 
@@ -108,22 +108,22 @@ namespace opensolid
         const UnitVector<3>&
         directionVector() const;
 
-        Axis<3>
+        const Axis<3>
         flipped() const;
 
-        Plane3d
+        const Plane3d
         normalPlane() const;
 
-        CoordinateSystem<3, 1>
+        const CoordinateSystem<3, 1>
         coordinateSystem() const;
 
-        static Axis<3>
+        static const Axis<3>
         X();
 
-        static Axis<3>
+        static const Axis<3>
         Y();
 
-        static Axis<3>
+        static const Axis<3>
         Z();
     };
 
@@ -132,22 +132,21 @@ namespace opensolid
     template <int iNumDimensions>
     struct ScalingFunction<Axis<iNumDimensions>>
     {
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         operator()(const Axis<iNumDimensions>& axis, double scale) const;
     };
 
     template <int iNumDimensions>
     struct TranslationFunction<Axis<iNumDimensions>>
     {
-        template <class TVector>
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         operator()(const Axis<iNumDimensions>& axis, const Vector<iNumDimensions>& vector) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
-        Axis<iNumResultDimensions>
+        const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
             const Matrix<iNumResultDimensions, iNumDimensions>& matrix
@@ -157,7 +156,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumResultDimensions>
     struct MorphingFunction<Axis<iNumDimensions>, iNumResultDimensions>
     {
-        Axis<iNumResultDimensions>
+        const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression

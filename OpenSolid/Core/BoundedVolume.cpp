@@ -52,7 +52,7 @@ namespace opensolid
         _boundaries(std::move(boundaries)) {
     }
 
-    BoundedVolume3d
+    const BoundedVolume3d
     ScalingFunction<BoundedVolume3d>::operator()(
         const BoundedVolume3d& boundedVolume,
         double scale
@@ -64,7 +64,7 @@ namespace opensolid
         );
     }
 
-    BoundedVolume3d
+    const BoundedVolume3d
     TranslationFunction<BoundedVolume3d>::operator()(
         const BoundedVolume3d& boundedVolume,
         const Vector3d& vector
@@ -76,7 +76,7 @@ namespace opensolid
         );
     }
 
-    BoundedVolume3d
+    const BoundedVolume3d
     TransformationFunction<BoundedVolume3d, 3>::operator()(
         const BoundedVolume3d& boundedVolume,
         const Matrix3d& matrix
@@ -88,7 +88,7 @@ namespace opensolid
         );
     }
 
-    BoundedVolume3d
+    const BoundedVolume3d
     MorphingFunction<BoundedVolume3d, 3>::operator()(
         const BoundedVolume3d& boundedVolume,
         const ParametricExpression<3, 3>& morphingExpression

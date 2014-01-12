@@ -78,13 +78,16 @@ namespace opensolid
         Point();
 
         explicit
+        Point(double value);
+
+        explicit
+        Point(const Vector<1>& vector);
+
+        explicit
         Point(const Matrix<1, 1>& components);
 
         explicit
         Point(const double* sourcePtr);
-
-        explicit
-        Point(double value);
 
         const double
         value() const;
@@ -113,33 +116,36 @@ namespace opensolid
     public:
         Point();
 
+        Point(double x, double y);
+
+        explicit
+        Point(const Vector<2>& vector);
+
         explicit
         Point(const Matrix<2, 1>& components);
 
         explicit
         Point(const double* sourcePtr);
 
-        Point(double x, double y);
-
-        double
+        const double
         x() const;
 
         double&
         x();
 
-        double
+        const double
         y() const;
 
         double&
         y();
 
-        double
+        const double
         distanceTo(const Axis<2>& axis) const;
 
         static const Point<2>
         Origin();
 
-        static Point
+        static const Point<2>
         Polar(double radius, double angle);
     };
 
@@ -156,29 +162,34 @@ namespace opensolid
 
         Point(double x, double y, double z);
 
-        template <class TVector>
         explicit
-        Point(const EigenBase<TVector>& vector);
+        Point(const Vector<3>& vector);
 
-        double
+        explicit
+        Point(const Matrix<3, 1>& components);
+
+        explicit
+        Point(const double* sourcePtr);
+
+        const double
         x() const;
 
         double&
         x();
 
-        double
+        const double
         y() const;
 
         double&
         y();
 
-        double
+        const double
         z() const;
 
         double&
         z();
 
-        double
+        const double
         distanceTo(const Plane3d& plane) const;
 
         static const Point<3>
@@ -200,6 +211,10 @@ namespace opensolid
     template <int iNumDimensions>
     Point<iNumDimensions>
     operator-(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector);
+
+    template <int iNumDimensions>
+    Vector<iNumDimensions>
+    operator-(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint);
 
     template <int iNumDimensions>
     std::ostream&

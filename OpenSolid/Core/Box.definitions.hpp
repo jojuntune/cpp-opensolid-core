@@ -78,13 +78,16 @@ namespace opensolid
         Box();
 
         explicit
+        Box(Interval value);
+
+        explicit
+        Box(const IntervalVector<1>& intervalVector);
+
+        explicit
         Box(const IntervalMatrix<1, 1>& components);
 
         explicit
         Box(const Interval* sourcePtr);
-
-        explicit
-        Box(Interval value);
 
         const Interval
         value() const;
@@ -128,13 +131,16 @@ namespace opensolid
     public:
         Box();
 
+        Box(Interval x, Interval y);
+
+        explicit
+        Box(const IntervalVector<2>& intervalVector);
+
         explicit
         Box(const IntervalMatrix<2, 1>& components);
 
         explicit
         Box(const Interval* sourcePtr);
-
-        Box(Interval x, Interval y);
 
         const Interval
         x() const;
@@ -178,13 +184,16 @@ namespace opensolid
     public:
         Box();
 
+        Box(Interval x, Interval y, Interval z);
+
+        explicit
+        Box(const IntervalVector<3>& intervalVector);
+
         explicit
         Box(const IntervalMatrix<3, 1>& components);
 
         explicit
         Box(const Interval* sourcePtr);
-
-        Box(Interval x, Interval y, Interval z);
 
         const Interval
         x() const;

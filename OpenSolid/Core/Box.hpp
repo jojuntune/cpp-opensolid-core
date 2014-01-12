@@ -42,6 +42,16 @@ namespace opensolid
     }
 
     inline
+    Box1d::Box(Interval value) :
+        detail::BoxBase<1>(IntervalMatrix1d(value)) {        
+    }
+
+    inline
+    Box1d::Box(const IntervalVector1d& intervalVector) :
+        detail::BoxBase<1>(intervalVector.components()) {
+    }
+
+    inline
     Box1d::Box(const IntervalMatrix1d& components) :
         detail::BoxBase<1>(components) {
     }
@@ -49,11 +59,6 @@ namespace opensolid
     inline
     Box1d::Box(const Interval* sourcePtr) :
         detail::BoxBase<1>(sourcePtr) {
-    }
-
-    inline
-    Box1d::Box(Interval x) :
-        detail::BoxBase<1>(IntervalMatrix1d(x)) {        
     }
     
     inline
@@ -121,6 +126,16 @@ namespace opensolid
     }
 
     inline
+    Box2d::Box(Interval x, Interval y) :
+        detail::BoxBase<2>(ColumnIntervalMatrix2d(x, y)) {        
+    }
+
+    inline
+    Box2d::Box(const IntervalVector2d& intervalVector) :
+        detail::BoxBase<2>(intervalVector.components()) {
+    }
+
+    inline
     Box2d::Box(const ColumnIntervalMatrix2d& components) :
         detail::BoxBase<2>(components) {
     }
@@ -128,11 +143,6 @@ namespace opensolid
     inline
     Box2d::Box(const Interval* sourcePtr) :
         detail::BoxBase<2>(sourcePtr) {
-    }
-
-    inline
-    Box2d::Box(Interval x, Interval y) :
-        detail::BoxBase<2>(ColumnIntervalMatrix2d(x, y)) {        
     }
     
     inline
@@ -200,6 +210,16 @@ namespace opensolid
     }
 
     inline
+    Box3d::Box(Interval x, Interval y, Interval z) :
+        detail::BoxBase<3>(ColumnIntervalMatrix3d(x, y, z)) {        
+    }
+
+    inline
+    Box3d::Box(const IntervalVector3d& intervalVector) :
+        detail::BoxBase<3>(intervalVector.components()) {
+    }
+
+    inline
     Box3d::Box(const ColumnIntervalMatrix3d& components) :
         detail::BoxBase<3>(components) {
     }
@@ -207,11 +227,6 @@ namespace opensolid
     inline
     Box3d::Box(const Interval* sourcePtr) :
         detail::BoxBase<3>(sourcePtr) {
-    }
-
-    inline
-    Box3d::Box(Interval x, Interval y, Interval z) :
-        detail::BoxBase<3>(ColumnIntervalMatrix3d(x, y, z)) {        
     }
     
     inline

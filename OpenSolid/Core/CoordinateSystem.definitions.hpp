@@ -62,8 +62,8 @@ namespace opensolid
     {
     private:
         Point<iNumDimensions> _originPoint;
-        Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
-        Matrix<double, iNumAxes, iNumDimensions> _inverseMatrix;
+        Matrix<iNumDimensions, iNumAxes> _basisMatrix;
+        Matrix<iNumAxes, iNumDimensions> _inverseMatrix;
     public:
         CoordinateSystem();
 
@@ -72,20 +72,25 @@ namespace opensolid
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
+            const Matrix<iNumDimensions, iNumAxes>& basisMatrix
         );
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumDimensions, 1>& xBasisVector,
-            const Matrix<double, iNumDimensions, 1>& yBasisVector
+            const Vector<iNumDimensions>& basisVector
         );
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Matrix<double, iNumDimensions, 1>& xBasisVector,
-            const Matrix<double, iNumDimensions, 1>& yBasisVector,
-            const Matrix<double, iNumDimensions, 1>& zBasisVector
+            const Vector<iNumDimensions>& xBasisVector,
+            const Vector<iNumDimensions>& yBasisVector
+        );
+
+        CoordinateSystem(
+            const Point<iNumDimensions>& originPoint,
+            const Vector<iNumDimensions>& xBasisVector,
+            const Vector<iNumDimensions>& yBasisVector,
+            const Vector<iNumDimensions>& zBasisVector
         );
         
         const Point<iNumDimensions>&

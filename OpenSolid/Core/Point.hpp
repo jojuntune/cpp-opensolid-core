@@ -42,25 +42,52 @@ namespace opensolid
 
     inline
     Point1d::Point(double value) :
-        detail::PointBase<1>(value) {
-    }
-
-    template <class TVector>
-    inline
-    Point1d::Point(const EigenBase<TVector>& vector) :
-        detail::PointBase<1>(vector.derived()) {
+        detail::PointBase<1>(Matrix1d(value)) {
     }
 
     inline
-    double
+    Point1d::Point(const Vector1d& vector) :
+        detail::PointBase<1>(vector.components()) {
+    }
+
+    inline
+    Point1d::Point(const Matrix1d& matrix) :
+        detail::PointBase<1>(matrix) {
+    }
+
+    inline
+    Point1d::Point(const double* sourcePtr) :
+        detail::PointBase<1>(sourcePtr) {
+    }
+
+    inline
+    const double
     Point1d::value() const {
-        return vector()(0);
+        return component(0);
     }
 
     inline
     double&
     Point1d::value() {
-        return vector()(0);
+        return component(0);
+    }
+
+    inline
+    const double
+    Point1d::x() const {
+        return value();
+    }
+
+    inline
+    double&
+    Point1d::x() {
+        return value();
+    }
+
+    inline
+    const Point1d
+    Point1d::Origin() {
+        return Point1d();
     }
 
     inline
@@ -69,48 +96,62 @@ namespace opensolid
 
     inline
     Point2d::Point(double x, double y) :
-        detail::PointBase<2>(x, y) {
-    }
-
-    template <class TVector>
-    inline
-    Point2d::Point(const EigenBase<TVector>& vector) :
-        detail::PointBase<2>(vector.derived()) {
+        detail::PointBase<2>(ColumnMatrix2d(x, y)) {
     }
 
     inline
-    double
+    Point2d::Point(const Vector2d& vector) :
+        detail::PointBase<2>(vector.components()) {
+    }
+
+    inline
+    Point2d::Point(const ColumnMatrix2d& components) :
+        detail::PointBase<2>(components) {
+    }
+
+    inline
+    Point2d::Point(const double* sourcePtr) :
+        detail::PointBase<2>(components) {
+    }
+
+    inline
+    const double
     Point2d::x() const {
-        return vector().x();
+        return component(0);
     }
 
     inline
     double&
     Point2d::x() {
-        return vector().x();
+        return component(0);
     }
 
     inline
-    double
+    const double
     Point2d::y() const {
-        return vector().y();
+        return component(1);
     }
 
     inline
     double&
     Point2d::y() {
-        return vector().y();
+        return component(1);
     }
 
     inline
-    double
+    const double
     Point2d::distanceTo(const Axis<2>& axis) const {
-        Vector2d normalVector(-axis.directionVector().y(), axis.directionVector().x());
-        return (*this - axis.originPoint()).dot(normalVector);
+        return (*this - axis.originPoint()).dot(axis.normalVector());
     }
 
     inline
-    Point2d
+    const Point2d
+    Point2d::Origin() {
+        return Point2d();
+    }
+
+    inline
+    const Point2d
     Point2d::Polar(double radius, double angle) {
         return Point2d(radius * cos(angle), radius * sin(angle));
     }
@@ -121,55 +162,70 @@ namespace opensolid
 
     inline
     Point3d::Point(double x, double y, double z) :
-        detail::PointBase<3>(x, y, z) {
-    }
-
-    template <class TVector>
-    inline
-    Point3d::Point(const EigenBase<TVector>& vector) :
-        detail::PointBase<3>(vector.derived()) {
+        detail::PointBase<3>(ColumnMatrix3d(x, y, z)) {
     }
 
     inline
-    double
+    Point3d::Point(const Vector3d& vector) :
+        detail::PointBase<3>(vector.components()) {
+    }
+
+    inline
+    Point3d::Point(const ColumnMatrix3d& components) :
+        detail::PointBase<3>(components) {
+    }
+
+    inline
+    Point3d::Point(const double* sourcePtr) :
+        detail::PointBase<3>(sourcePtr) {
+    }
+
+    inline
+    const double
     Point3d::x() const {
-        return vector().x();
+        return component(0);
     }
 
     inline
     double&
     Point3d::x() {
-        return vector().x();
+        return component(0);
     }
 
     inline
-    double
+    const double
     Point3d::y() const {
-        return vector().y();
+        return component(1);
     }
 
     inline
     double&
     Point3d::y() {
-        return vector().y();
+        return component(1);
     }
 
     inline
-    double
+    const double
     Point3d::z() const {
-        return vector().z();
+        return component(2);
     }
 
     inline
     double&
     Point3d::z() {
-        return vector().z();
+        return component(2);
     }
 
     inline
-    double
+    const double
     Point3d::distanceTo(const Plane3d& plane) const {
         return (*this - plane.originPoint()).dot(plane.normalVector());
+    }
+
+    inline
+    const Point3d
+    Point3d::Origin() {
+        return Point3d();
     }
 
     inline
@@ -181,11 +237,14 @@ namespace opensolid
     inline
     Point3d
     Point3d::Spherical(double radius, double polarAngle, double elevationAngle) {
+        double sinElevation = sin(elevationAngle);
         double cosElevation = cos(elevationAngle);
+        double sinPolar = sin(polarAngle);
+        double cosPolar = cos(polarAngle);
         return Point3d(
-            radius * cosElevation * cos(polarAngle),
-            radius * cosElevation * sin(polarAngle),
-            radius * sin(elevationAngle)
+            radius * cosElevation * cosPolar,
+            radius * cosElevation * sinPolar,
+            radius * sinElevation
         );
     }
 
@@ -204,9 +263,24 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    inline
+    const Vector<iNumDimensions>
+    operator-(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint) {
+        return Vector<iNumDimensions>(firstPoint.components() - secondPoint.components());
+    }
+
+    template <int iNumDimensions>
     std::ostream&
     operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
-        stream << point.vector().transpose();
+        stream << "Point" << iNumDimensions << "d";
+        stream << "(";
+        for (std::int64_t index = 0; index < iNumDimensions; ++index) {
+            stream << point.component(index);
+            if (index < iNumDimensions - 1) {
+                stream << ",";
+            }
+        }
+        stream << ")";
         return stream;
     }
 
@@ -218,7 +292,7 @@ namespace opensolid
         const Point<iNumDimensions>& secondPoint,
         double precision
     ) const {
-        return (firstPoint - secondPoint).isZero(precision);
+        return firstPoint - secondPoint == Zero(precision);
     }
 
     template <int iNumDimensions>
@@ -241,27 +315,27 @@ namespace opensolid
         const Point<iNumDimensions>& point,
         double scale
     ) const {
-        return Point<iNumDimensions>(scale * point.vector());
+        return Point<iNumDimensions>(scale * point.components());
     }
 
-    template <int iNumDimensions> template <class TVector>
+    template <int iNumDimensions>
     inline
     Point<iNumDimensions>
     TranslationFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& point,
-        const EigenBase<TVector>& vector
+        const Vector<iNumDimensions>& vector
     ) const {
-        return Point<iNumDimensions>(point.vector() + vector.derived());
+        return point + vector;
     }
 
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    template <int iNumDimensions, int iNumResultDimensions>
     inline
     Point<iNumResultDimensions>
     TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
-        const EigenBase<TMatrix>& matrix
+        const Matrix<iNumResultDimensions, iNumDimensions>& matrix
     ) const {
-        return Point<iNumResultDimensions>(matrix.derived() * point.vector());
+        return Point<iNumResultDimensions>(matrix * point.components());
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
@@ -271,6 +345,6 @@ namespace opensolid
         const Point<iNumDimensions>& point,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        return Point<iNumResultDimensions>(morphingExpression.evaluate(point.vector()));
+        return Point<iNumResultDimensions>(morphingExpression.evaluate(point.components()));
     }
 }

@@ -52,6 +52,12 @@ namespace opensolid
 
             PointBase(const double* sourcePtr);
         public:
+            const double
+            squaredDistanceTo(const Point<iNumDimensions>& other) const;
+
+            const double
+            distanceTo(const Point<iNumDimensions>& other) const;
+
             const Box<iNumDimensions>
             hull(const Point<iNumDimensions>& other) const;
 

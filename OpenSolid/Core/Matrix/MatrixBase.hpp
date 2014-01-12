@@ -120,6 +120,28 @@ namespace opensolid
 
         template <class TScalar, int iNumRows, int iNumColumns>
         inline
+        const typename MatrixType<TScalar, 1, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::row(std::int64_t rowIndex) const {
+            typename MatrixType<TScalar, 1, iNumColumns>::Type result;
+            for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
+                result.component(columnIndex) = component(rowIndex, columnIndex);
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, 1>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::column(std::int64_t columnIndex) const {
+            typename MatrixType<TScalar, iNumRows, 1>::Type result;
+            for (std::int64_t rowIndex = 0; rowIndex < iNumColumns; ++rowIndex) {
+                result.component(rowIndex) = component(rowIndex, columnIndex);
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
         const TScalar*
         MatrixBase<TScalar, iNumRows, iNumColumns>::data() const {
             return _components;
