@@ -29,7 +29,9 @@
 #include <OpenSolid/Core/Position/PointBase.declarations.hpp>
 
 #include <OpenSolid/Core/Box.declarations.hpp>
-#include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 
 namespace opensolid
@@ -37,57 +39,30 @@ namespace opensolid
     namespace detail
     {
         template <int iNumDimensions>
-        class PointBase
+        class PointBase :
+            public detail::CartesianBase<double, iNumDimensions>
         {
         private:
-            Matrix<double, iNumDimensions, 1> _vector;
+            const Point<iNumDimensions>&
+            derived() const;
         protected:
             PointBase();
 
-            template <class TVector>
-            PointBase(const EigenBase<TVector>& vector);
+            PointBase(const Matrix<iNumDimensions, 1>& components);
 
-            PointBase(double value);
-
-            PointBase(double x, double y);
-
-            PointBase(double x, double y, double z);
+            PointBase(const double* sourcePtr);
         public:
-            const Matrix<double, iNumDimensions, 1>&
-            vector() const;
-
-            Matrix<double, iNumDimensions, 1>&
-            vector();
-
-            const double*
-            data() const;
-            
-            double*
-            data();
-
-            double&
-            operator()(int index);
-            
-            double
-            operator()(int index) const;
-
-            Box<iNumDimensions>
+            const Box<iNumDimensions>
             hull(const Point<iNumDimensions>& other) const;
+
+            const Box<iNumDimensions>
+            hull(const Box<iNumDimensions>& box) const;
 
             bool
             isOrigin(double precision = 1e-12) const;
 
             bool
             operator==(const Point<iNumDimensions>& other) const;
-
-            Matrix<double, iNumDimensions, 1>
-            operator-(const Point<iNumDimensions>& other) const;
-
-            Matrix<Interval, iNumDimensions, 1>
-            operator-(const Box<iNumDimensions>& box) const;
-
-            static Point<iNumDimensions>
-            Origin();
         };
     }
 }

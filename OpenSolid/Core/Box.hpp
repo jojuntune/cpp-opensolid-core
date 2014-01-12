@@ -295,6 +295,16 @@ namespace opensolid
     template <int iNumDimensions, class TVector>
     inline
     Box<iNumDimensions>
+    operator+(
+        const Point<iNumDimensions>& point,
+        const IntervalVector<iNumDimensions>& intervalVector
+    ) {
+        return Box<iNumDimensions>(point.components() + intervalVector.components());
+    }
+
+    template <int iNumDimensions, class TVector>
+    inline
+    Box<iNumDimensions>
     operator+(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector) {
         return Box<iNumDimensions>(box.components() + vector.components());
     }
@@ -312,6 +322,16 @@ namespace opensolid
     template <int iNumDimensions, class TVector>
     inline
     Box<iNumDimensions>
+    operator-(
+        const Point<iNumDimensions>& point,
+        const IntervalVector<iNumDimensions>& intervalVector
+    ) {
+        return Box<iNumDimensions>(point.components() - intervalVector.components());
+    }
+
+    template <int iNumDimensions, class TVector>
+    inline
+    Box<iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector) {
         return Box<iNumDimensions>(box.components() - vector.components());
     }
@@ -324,6 +344,13 @@ namespace opensolid
         const IntervalVector<iNumDimensions>& intervalVector
     ) {
         return Box<iNumDimensions>(box.components() - intervalVector.components());
+    }
+
+    template <int iNumDimensions>
+    inline
+    const IntervalVector<iNumDimensions>
+    operator-(const Point<iNumDimensions>& point, const Box<iNumDimensions>& box) const {
+        return IntervalVector<iNumDimensions>(point.components() - box.components());
     }
 
     template <int iNumDimensions>

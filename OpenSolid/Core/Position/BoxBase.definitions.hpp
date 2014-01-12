@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Position/PointBase.declarations.hpp>
+#include <OpenSolid/Core/Position/BoxBase.declarations.hpp>
 
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>

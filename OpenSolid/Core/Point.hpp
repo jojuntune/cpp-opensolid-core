@@ -32,7 +32,6 @@
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Position/PointBase.hpp>
-#include <OpenSolid/Core/Position/PositionType.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
 namespace opensolid
@@ -190,22 +189,18 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, class TVector>
+    template <int iNumDimensions>
     inline
-    typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type
-    operator+(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
-        return typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type(
-            point.vector().template cast<typename TVector::Scalar>() + vector.derived()
-        );
+    const Point<iNumDimensions>
+    operator+(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector) {
+        return Point<iNumDimensions>(point.components() + vector.components());
     }
 
-    template <int iNumDimensions, class TVector>
+    template <int iNumDimensions>
     inline
-    typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type
-    operator-(const Point<iNumDimensions>& point, const EigenBase<TVector>& vector) {
-        return typename detail::PositionType<typename TVector::Scalar, iNumDimensions>::Type(
-            point.vector().template cast<typename TVector::Scalar>() - vector.derived()
-        );
+    const Point<iNumDimensions>
+    operator-(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector) {
+        return Point<iNumDimensions>(point.components() - vector.components());
     }
 
     template <int iNumDimensions>
@@ -230,7 +225,13 @@ namespace opensolid
     inline
     Box<iNumDimensions>
     BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
-        return Box<iNumDimensions>(point.vector().template cast<Interval>());
+        return Box<iNumDimensions>(
+            point.components().map(
+                [] (double component) {
+                    return Interval(component);
+                }
+            )
+        );
     }
 
     template <int iNumDimensions>

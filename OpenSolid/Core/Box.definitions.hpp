@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
 #include <OpenSolid/Core/IntervalVector.definitions.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Position/BoxBase.definitions.hpp>
@@ -83,7 +84,7 @@ namespace opensolid
         Box(const Interval* sourcePtr);
 
         explicit
-        Box(Interval x);
+        Box(Interval value);
 
         const Interval
         value() const;
@@ -225,6 +226,10 @@ namespace opensolid
     typedef Box<3> Box3d;
 
     template <int iNumDimensions>
+    Box<iNumDimensions>
+    operator+(const Point<iNumDimensions>& point, const IntervalVector<iNumDimensions>& vector);
+
+    template <int iNumDimensions>
     const Box<iNumDimensions>
     operator+(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector);
 
@@ -233,12 +238,20 @@ namespace opensolid
     operator+(const Box<iNumDimensions>& box, const IntervalVector<iNumDimensions>& intervalVector);
 
     template <int iNumDimensions>
+    Box<iNumDimensions>
+    operator-(const Point<iNumDimensions>& point, const IntervalVector<iNumDimensions>& vector);
+
+    template <int iNumDimensions>
     const Box<iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector);
 
     template <int iNumDimensions>
     const Box<iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const IntervalVector<iNumDimensions>& intervalVector);
+
+    template <int iNumDimensions>
+    const IntervalVector<iNumDimensions>
+    operator-(const Point<iNumDimensions>& point, const Box<iNumDimensions>& box);
 
     template <int iNumDimensions>
     const IntervalVector<iNumDimensions>
