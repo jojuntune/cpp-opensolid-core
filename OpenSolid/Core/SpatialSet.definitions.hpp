@@ -69,7 +69,6 @@ namespace opensolid
             detail::SpatialSetNode<TItem>* nextPtr,
             BoundsData** begin,
             BoundsData** end,
-            typename BoundsType<TItem>::Type& overallBounds,
             std::int64_t sortIndex
         );
 

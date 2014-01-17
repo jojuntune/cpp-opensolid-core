@@ -93,42 +93,40 @@ namespace opensolid
         detail::SpatialSetNode<TItem>* nextPtr,
         BoundsData** begin,
         BoundsData** end,
-        typename BoundsType<TItem>::Type& overallBounds,
         std::int64_t sortIndex
     ) {
-        nodePtr->bounds = overallBounds;
         nodePtr->nextPtr = nextPtr;
         std::int64_t size = end - begin;
         if (size == 1) {
             // Leaf node
+            nodePtr->bounds = (*begin)->bounds;
             nodePtr->leftChildPtr = nullptr;
             nodePtr->itemPtr = (*begin)->itemPtr;
         } else if (size == 2) {
             // Node with two leaf children
             detail::SpatialSetNode<TItem>* leftChildPtr = nodePtr + 1;
             detail::SpatialSetNode<TItem>* rightChildPtr = nodePtr + 2;
+            BoundsData* firstBoundsDataPtr = *begin;
+            BoundsData* secondBoundsDataPtr = *(begin + 1);
+            typename BoundsType<TItem>::Type firstBounds = firstBoundsDataPtr->bounds;
+            typename BoundsType<TItem>::Type secondBounds = secondBoundsDataPtr->bounds;
 
+            nodePtr->bounds = firstBounds.hull(secondBounds);
             nodePtr->leftChildPtr = leftChildPtr;
             nodePtr->itemPtr = nullptr;
 
             leftChildPtr->leftChildPtr = nullptr;
             rightChildPtr->leftChildPtr = nullptr;
-            BoundsData* firstBoundsDataPtr = *begin;
-            BoundsData* secondBoundsDataPtr = *(begin + 1);
-            bool reversed = detail::hasLesserMedian(
-                secondBoundsDataPtr->bounds,
-                firstBoundsDataPtr->bounds,
-                sortIndex
-            );
+            bool reversed = detail::hasLesserMedian(secondBounds, firstBounds, sortIndex);
             if (reversed) {
-                leftChildPtr->bounds = secondBoundsDataPtr->bounds;
-                rightChildPtr->bounds = firstBoundsDataPtr->bounds;
+                leftChildPtr->bounds = secondBounds;
+                rightChildPtr->bounds = firstBounds;
 
                 leftChildPtr->itemPtr = secondBoundsDataPtr->itemPtr;
                 rightChildPtr->itemPtr = firstBoundsDataPtr->itemPtr;
             } else {
-                leftChildPtr->bounds = firstBoundsDataPtr->bounds;
-                rightChildPtr->bounds = secondBoundsDataPtr->bounds;
+                leftChildPtr->bounds = firstBounds;
+                rightChildPtr->bounds = secondBounds;
 
                 leftChildPtr->itemPtr = firstBoundsDataPtr->itemPtr;
                 rightChildPtr->itemPtr = secondBoundsDataPtr->itemPtr;
@@ -136,60 +134,28 @@ namespace opensolid
             leftChildPtr->nextPtr = rightChildPtr;
             rightChildPtr->nextPtr = nextPtr;
         } else {
-            // Partition bounds data and find left/right bounds
-            std::int64_t leftSize = 0;
-            std::int64_t rightSize = 0;
-            typename BoundsType<TItem>::Type leftBounds;
-            typename BoundsType<TItem>::Type rightBounds;
-            BoundsData** lower = begin;
-            BoundsData** upper = end - 1;
-            for (BoundsData** i = lower; i <= upper; ++i) {
-                if (detail::hasLesserMedian((*i)->bounds, overallBounds, sortIndex)) {
-                    if (leftSize == 0) {
-                        leftBounds = (*i)->bounds;
-                    } else {
-                        leftBounds = leftBounds.hull((*i)->bounds);
-                    }
+            // Compute overall bounds
+            typename BoundsType<TItem>::Type overallBounds = (*begin)->bounds;
+            for (BoundsData** iterator = begin + 1; iterator != end; ++iterator) {
+                overallBounds = overallBounds.hull((*iterator)->bounds);
+            }
+            nodePtr->bounds = overallBounds;
 
-                    ++leftSize;
-                    if (i != lower) {
-                        std::swap(*i, *lower);
-                    }
-                    ++lower;
+            // Partition child nodes
+            std::int64_t leftSize = size / 2;
+            BoundsData** mid = begin + leftSize;
+            std::nth_element(
+                begin,
+                mid,
+                end,
+                [sortIndex] (BoundsData* firstBoundsDataPtr, BoundsData* secondBoundsDataPtr) {
+                    return detail::hasLesserMedian(
+                        firstBoundsDataPtr->bounds,
+                        secondBoundsDataPtr->bounds,
+                        sortIndex
+                    );
                 }
-            }
-            for (BoundsData** i = upper; i >= lower; --i) {
-                if (detail::hasGreaterMedian((*i)->bounds, overallBounds, sortIndex)) {
-                    if (rightSize == 0) {
-                        rightBounds = (*i)->bounds;
-                    } else {
-                        rightBounds = rightBounds.hull((*i)->bounds);
-                    }
-                    ++rightSize;
-                    if (i != upper) {
-                        std::swap(*i, *upper);
-                    }
-                    --upper;
-                }
-            }
-            while (leftSize < size / 2 && lower <= upper) {
-                if (leftSize == 0) {
-                    leftBounds = (*lower)->bounds;
-                } else {
-                    leftBounds = leftBounds.hull((*lower)->bounds);
-                }
-                ++leftSize;
-                ++lower;
-            }
-            while (rightSize < size - size / 2 && lower <= upper) {
-                if (rightSize == 0) {
-                    rightBounds = (*upper)->bounds;
-                } else {
-                    rightBounds = rightBounds.hull((*upper)->bounds);
-                }
-                ++rightSize;
-                --upper;
-            }
+            );
 
             // Recurse into chid nodes
             std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TItem>::Value;
@@ -200,8 +166,8 @@ namespace opensolid
             nodePtr->leftChildPtr = leftChildPtr;
             nodePtr->itemPtr = nullptr;
             
-            init(leftChildPtr, rightChildPtr, begin, lower, leftBounds, nextSortIndex);
-            init(rightChildPtr, nextPtr, lower, end, rightBounds, nextSortIndex);
+            init(leftChildPtr, rightChildPtr, begin, mid, nextSortIndex);
+            init(rightChildPtr, nextPtr, mid, end, nextSortIndex);
         }
     }
 
@@ -219,18 +185,12 @@ namespace opensolid
         std::vector<BoundsData> boundsData(numItems);
         std::vector<BoundsData*> boundsDataPtrs(numItems);
         BoundsFunction<TItem> boundsFunction;
-        typename BoundsType<TItem>::Type overallBounds;
         for (std::int64_t i = 0; i < numItems; ++i) {
             typename BoundsType<TItem>::Type bounds = boundsFunction(_dataPtr->items[i]);
 
             boundsData[i].bounds = bounds;
             boundsData[i].itemPtr = &(_dataPtr->items[i]);
             boundsDataPtrs[i] = &boundsData[i];
-            if (i == 0) {
-                overallBounds = bounds;
-            } else {
-                overallBounds = overallBounds.hull(bounds);
-            }
         }
 
         // Recursively construct tree
@@ -240,7 +200,6 @@ namespace opensolid
             nullptr,
             &boundsDataPtrs.front(),
             &boundsDataPtrs.back() + 1,
-            overallBounds,
             0
         );
     }
