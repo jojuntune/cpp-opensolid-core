@@ -35,21 +35,6 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar, int iNumRows, int iNumColumns>
-        struct MatrixType;
-
-        template <int iNumRows, int iNumColumns>
-        struct MatrixType<double, iNumRows, iNumColumns>
-        {
-            typedef Matrix<iNumRows, iNumColumns> Type;
-        };
-
-        template <int iNumRows, int iNumColumns>
-        struct MatrixType<Interval, iNumRows, iNumColumns>
-        {
-            typedef IntervalMatrix<iNumRows, iNumColumns> Type;
-        };
-
         template <class TUnaryFunction, class TScalar>
         struct MappedScalarType
         {
@@ -197,6 +182,24 @@ namespace opensolid
                 const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
                 TBinaryFunction binaryFunction
             ) const;
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            Constant(TScalar value);
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            Zero();
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            Ones();
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            Identity();
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            OuterProduct(
+                const typename MatrixType<TScalar, iNumRows, 1>& columnMatrix,
+                const typename MatrixType<TScalar, 1, iNumColumns>& rowMatrix
+            );
         };
     }
 }
