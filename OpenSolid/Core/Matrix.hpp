@@ -28,8 +28,6 @@
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
-#include <cstdlib>
-
 namespace opensolid
 {
     template <int iNumRows, int iNumColumns>
@@ -44,60 +42,6 @@ namespace opensolid
     inline
     Matrix<iNumRows, iNumColumns>::Matrix(const double* sourcePtr) :
         detail::MatrixBase<double, iNumRows, iNumColumns>(sourcePtr) {
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumRows, iNumColumns>
-    Matrix<iNumRows, iNumColumns>::Zero() {
-        return Matrix<iNumRows, iNumColumns>();
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumRows, iNumColumns>
-    Matrix<iNumRows, iNumColumns>::Ones() {
-        Matrix<iNumRows, iNumColumns> result;
-        result.fill(1.0);
-        return result;
-    }
-
-    template <int iNumRows, int iNumColumns>
-    inline
-    const Matrix<iNumRows, iNumColumns>
-    Matrix<iNumRows, iNumColumns>::Identity() {
-        Matrix<iNumRows, iNumColumns> result;
-        std::int64_t count = min(iNumRows, iNumColumns);
-        for (std::int64_t index = 0; index < count; ++index) {
-            result(index, index) = 1.0;
-        }
-        return result;
-    }
-
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    Matrix<iNumRows, iNumColumns>::Random() {
-        Matrix<iNumRows, iNumColumns> result;
-        for (std::int64_t index = 0; index < Size; ++index) {
-            result(index) = double(rand()) / RAND_MAX;
-        }
-        return result;
-    }
-
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    Matrix<iNumRows, iNumColumns>::OuterProduct(
-        const Matrix<iNumRows, 1>& columnMatrix,
-        const Matrix<1, iNumColumns>& rowMatrix
-    ) {
-        Matrix<iNumRows, iNumColumns> result;
-        for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
-            for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
-                result(rowIndex, columnIndex) = columnMatrix(rowIndex, 1) *
-                    rowMatrix(1, columnIndex);
-            }
-        }
-        return result;
     }
 
     inline
@@ -266,6 +210,28 @@ namespace opensolid
 
     inline
     const Matrix2d
+    Matrix2d::FromRows(const RowMatrix2d& firstRow, const RowMatrix2d& secondRow) {
+        Matrix2d result;
+        result(0, 0) = firstRow(0);
+        result(0, 1) = firstRow(1);
+        result(1, 0) = secondRow(0);
+        result(1, 1) = secondRow(1);
+        return result;
+    }
+
+    inline
+    const Matrix2d
+    Matrix2d::FromColumns(const ColumnMatrix2d& firstColumn, const ColumnMatrix2d& secondColumn) {
+        Matrix2d result;
+        result(0, 0) = firstColumn(0);
+        result(1, 0) = firstColumn(1);
+        result(0, 1) = secondColumn(0);
+        result(1, 1) = secondColumn(1);
+        return result;
+    }
+
+    inline
+    const Matrix2d
     Matrix2d::OuterProduct(const Matrix<2, 1>& columnMatrix, const Matrix<1, 2>& rowMatrix) {
         Matrix2d result;
         result(0, 0) = columnMatrix(0) * rowMatrix(0);
@@ -348,6 +314,40 @@ namespace opensolid
         result(6) = double(rand()) / RAND_MAX;
         result(7) = double(rand()) / RAND_MAX;
         result(8) = double(rand()) / RAND_MAX;
+        return result;
+    }
+
+    inline
+    const Matrix3d
+    Matrix3d::FromRows(
+        const RowMatrix3d& firstRow,
+        const RowMatrix3d& secondRow,
+        const RowMatrix3d& thirdRow
+    ) {
+        Matrix3d result;
+        result(0, 0) = firstRow(0);
+        result(0, 1) = firstRow(1);
+        result(0, 2) = firstRow(2);
+        result(1, 0) = secondRow(0);
+        result(1, 1) = secondRow(1);
+        result(1, 2) = secondRow(2);
+        result(2, 0) = thirdRow(0);
+        result(2, 1) = thirdRow(1);
+        result(2, 2) = thirdRow(2);
+        return result;
+    }
+
+    inline
+    const Matrix2d
+    Matrix2d::FromColumns(
+        const ColumnMatrix2d& firstColumn,
+        const ColumnMatrix2d& secondColumn
+    ) {
+        Matrix2d result;
+        result(0, 0) = firstColumn(0);
+        result(1, 0) = firstColumn(1);
+        result(0, 1) = secondColumn(0);
+        result(1, 1) = secondColumn(1);
         return result;
     }
 

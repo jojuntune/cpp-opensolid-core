@@ -29,36 +29,24 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixFromRowsFactory.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixFromColumnsFactory.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixRandomFactory.definitions.hpp>
 
 namespace opensolid
 {
     template <int iNumRows, int iNumColumns>
     class Matrix :
-        public detail::MatrixBase<double, iNumRows, iNumColumns>
+        public detail::MatrixBase<double, iNumRows, iNumColumns>,
+        public detail::MatrixFromRowsFactory<double, iNumRows, iNumColumns>,
+        public detail::MatrixFromColumnsFactory<double, iNumRows, iNumColumns>,
+        public detail::MatrixRandomFactory<double, iNumRows, iNumColumns>
     {
     public:
         Matrix();
 
         explicit
         Matrix(const double* sourcePtr);
-
-        static const Matrix<iNumRows, iNumColumns>
-        Zero();
-
-        static const Matrix<iNumRows, iNumColumns>
-        Ones();
-
-        static const Matrix<iNumRows, iNumColumns>
-        Identity();
-
-        static const Matrix<iNumRows, iNumColumns>
-        Random();
-
-        static const Matrix<iNumRows, iNumColumns>
-        OuterProduct(
-            const Matrix<iNumRows, 1>& columnMatrix,
-            const Matrix<1, iNumColumns>& rowMatrix
-        );
     };
 
     template <>
@@ -69,10 +57,10 @@ namespace opensolid
         Matrix();
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(double value);
 
         explicit
-        Matrix(double value);
+        Matrix(const double* sourcePtr);
 
         const double
         value() const;
@@ -85,21 +73,6 @@ namespace opensolid
 
         const Matrix<1, 1>
         inverse() const;
-
-        static const Matrix<1, 1>
-        Zero();
-
-        static const Matrix<1, 1>
-        Ones();
-
-        static const Matrix<1, 1>
-        Identity();
-
-        static const Matrix<1, 1>
-        Random();
-
-        static const Matrix<1, 1>
-        OuterProduct(const Matrix<1, 1>& columnMatrix, const Matrix<1, 1>& rowMatrix);
     };
 
     typedef Matrix<1, 1> Matrix1d;
@@ -111,31 +84,16 @@ namespace opensolid
     public:
         Matrix();
 
+        Matrix(double a, double b, double c, double d);
+
         explicit
         Matrix(const double* sourcePtr);
-
-        Matrix(double a, double b, double c, double d);
 
         double
         determinant() const;
 
         const Matrix<2, 2>
         inverse() const;
-
-        static const Matrix<2, 2>
-        Zero();
-
-        static const Matrix<2, 2>
-        Ones();
-
-        static const Matrix<2, 2>
-        Identity();
-
-        static const Matrix<2, 2>
-        Random();
-
-        static const Matrix<2, 2>
-        OuterProduct(const Matrix<2, 1>& columnMatrix, const Matrix<1, 2>& rowMatrix);
     };
 
     typedef Matrix<2, 2> Matrix2d;
@@ -146,9 +104,6 @@ namespace opensolid
     {
     public:
         Matrix();
-
-        explicit
-        Matrix(const double* sourcePtr);
 
         Matrix(
             double a11,
@@ -162,6 +117,9 @@ namespace opensolid
             double a33
         );
 
+        explicit
+        Matrix(const double* sourcePtr);
+
         OPENSOLID_CORE_EXPORT
         const double
         determinant() const;
@@ -169,24 +127,24 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         const Matrix<3, 3>
         inverse() const;
-
-        static const Matrix<3, 3>
-        Zero();
-
-        static const Matrix<3, 3>
-        Ones();
-
-        static const Matrix<3, 3>
-        Identity();
-
-        static const Matrix<3, 3>
-        Random();
-
-        static const Matrix<3, 3>
-        OuterProduct(const Matrix<3, 1>& columnMatrix, const Matrix<1, 3>& rowMatrix);
     };
 
     typedef Matrix<3, 3> Matrix3d;
+
+    template <>
+    class Matrix<1, 2> :
+        public detail::MatrixBase<double, 1, 2>
+    {
+    public:
+        Matrix();
+
+        Matrix(double x, double y);
+
+        explicit
+        Matrix(const double* sourcePtr);
+    };
+
+    typedef Matrix<1, 2> RowMatrix2d;
 
     template <>
     class Matrix<2, 1> :
@@ -195,22 +153,28 @@ namespace opensolid
     public:
         Matrix();
 
-        explicit
-        Matrix(const double* sourcePtr);
-
         Matrix(double x, double y);
 
-        static const Matrix<2, 1>
-        Zero();
-
-        static const Matrix<2, 1>
-        Ones();
-
-        static const Matrix<2, 1>
-        Random();
+        explicit
+        Matrix(const double* sourcePtr);
     };
 
     typedef Matrix<2, 1> ColumnMatrix2d;
+
+    template <>
+    class Matrix<1, 3> :
+        public detail::MatrixBase<double, 1, 3>
+    {
+    public:
+        Matrix();
+
+        Matrix(double x, double y);
+
+        explicit
+        Matrix(const double* sourcePtr);
+    };
+
+    typedef Matrix<1, 3> RowMatrix3d;
 
     template <>
     class Matrix<3, 1> :
@@ -219,19 +183,10 @@ namespace opensolid
     public:
         Matrix();
 
-        explicit
-        Matrix(const double* sourcePtr);
-
         Matrix(double x, double y, double z);
 
-        static const Matrix<3, 1>
-        Zero();
-
-        static const Matrix<3, 1>
-        Ones();
-
-        static const Matrix<3, 1>
-        Random();
+        explicit
+        Matrix(const double* sourcePtr);
     };
 
     typedef Matrix<3, 1> ColumnMatrix3d;

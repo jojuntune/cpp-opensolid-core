@@ -298,5 +298,58 @@ namespace opensolid
 
             return result;
         }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::Constant(TScalar value) {
+            typename MatrixType<TScalar, iNumRows, iNumColumns>::Type result;
+            result.fill(value);
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::Zero() {
+            return Constant(TScalar(0));
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::Zero() {
+            return Constant(TScalar(1));
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::Identity() {
+            typename MatrixType<TScalar, iNumRows, iNumColumns>::Type result;
+            result.fill(TScalar(0));
+            std::int64_t count = min(iNumRows, iNumColumns);
+            for (std::int64_t index = 0; index < count; ++index) {
+                result(index, index) = TScalar(1);
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::OuterProduct
+            const typename MatrixType<TScalar, iNumRows, 1>& columnMatrix,
+            const typename MatrixType<TScalar, 1, iNumColumns>& rowMatrix
+        ) {
+            typename MatrixType<TScalar, iNumRows, iNumColumns>::Type result;
+            for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
+                for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
+                    result(rowIndex, columnIndex) = columnMatrix(rowIndex, 1) *
+                        rowMatrix(1, columnIndex);
+                }
+            }
+            return result;
+        }
     }
 }
