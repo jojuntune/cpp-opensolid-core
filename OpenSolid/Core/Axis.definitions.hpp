@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
+#include <OpenSolid/Core/Intersection.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
@@ -116,6 +117,9 @@ namespace opensolid
 
         CoordinateSystem<3, 1>
         coordinateSystem() const;
+
+        Intersection<Axis<3>, Plane3d>
+        intersection(const Plane3d& plane, double precision = 1e-12) const;
 
         static Axis<3>
         X();

@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Axis.definitions.hpp>
 
+#include <OpenSolid/Core/AxisPlaneIntersection3d.hpp>
 #include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
@@ -138,6 +139,12 @@ namespace opensolid
     AxialCoordinateSystem3d
     Axis3d::coordinateSystem() const {
         return AxialCoordinateSystem3d(originPoint(), directionVector());
+    }
+
+    inline
+    Intersection<Axis3d, Plane3d>
+    Axis3d::intersection(const Plane3d& plane, double precision) const {
+        return Intersection<Axis3d, Plane3d>(*this, plane, precision);
     }
 
     inline

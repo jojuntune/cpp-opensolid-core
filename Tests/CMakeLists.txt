@@ -61,6 +61,7 @@
     add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
     add_cxxtest(CurveTests CurveTests.hpp OpenSolidCore)
     add_cxxtest(CollectionTests CollectionTests.hpp OpenSolidCore)
+    add_cxxtest(DatumTests DatumTests.hpp OpenSolidCore)
     
     add_to_global_source_list(
         IntervalTests.hpp
@@ -72,6 +73,7 @@
         ParametricExpressionTests.hpp
         CurveTests.hpp
         CollectionTests.hpp
+        DatumTests.hpp
     )
     
 ########## Graph library tests ##########
