@@ -22,65 +22,71 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/LineSegmentPlaneIntersection3d.hpp>
 
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
 {
+    namespace
+    {
+        inline
+        Point3d
+        intersectionPoint(
+            const Point3d& startPoint,
+            const Point3d& endPoint,
+            double startHeight,
+            double endHeight
+        ) {
+            return startPoint + (startHeight / (startHeight - endHeight)) * (endPoint - startPoint);
+        }
+    }
+
     Intersection<LineSegment3d, Plane3d>::Intersection(
         const LineSegment3d& lineSegment,
         const Plane3d& plane,
         double precision
-    ) : _lineSegment(lineSegment),
-        _plane(plane),
-        _precision(precision),
-        _startHeight(lineSegment.startVertex().distanceTo(plane)),
-        _endHeight(lineSegment.endVertex().distanceTo(plane)),
-        _type(0) {
+    ) : _type(NONE) {
 
-        if (_startHeight < Zero(_precision)) {
-            if (_endHeight < Zero(_precision)) {
-                _type = NO_INTERSECTION | BELOW;
-            } else if (_endHeight > Zero(_precision)) {
-                _type = INTERSECTION | CROSSING | UPWARDS;
-            } else {
-                _type = INTERSECTION | BELOW | UPWARDS | CONTACT_END;
+        Point3d startVertex = lineSegment.startVertex();
+        Point3d endVertex = lineSegment.endVertex();
+        double startHeight = startVertex.distanceTo(plane);
+        double endHeight = endVertex.distanceTo(plane);
+        Zero zero(precision);
+        
+        if (startHeight < zero) {
+            if (endHeight < zero) { // -, -
+                _type = NONE;
+            } else if (endHeight > zero) { // -, +
+                _type = POINT;
+                _point = intersectionPoint(startVertex, endVertex, startHeight, endHeight);
+            } else { // -, 0
+                _type = POINT;
+                _point = endVertex;
             }
-        } else if (_startHeight > Zero(_precision)) {
-            if (_endHeight < Zero(_precision)) {
-                _type = INTERSECTION | CROSSING | DOWNWARDS;
-            } else if (_endHeight > Zero(_precision)) {
-                _type = NO_INTERSECTION | ABOVE;
-            } else {
-                _type = INTERSECTION | ABOVE | DOWNWARDS | CONTACT_END;
+        } else if (startHeight > zero) {
+            if (endHeight < zero) { // +, -
+                _type = POINT;
+                _point = intersectionPoint(startVertex, endVertex, startHeight, endHeight);
+            } else if (endHeight > zero) { // +, +
+                _type = NONE;
+            } else { // +, 0
+                _type = POINT;
+                _point = endVertex;
             }
         } else {
-            if (_endHeight < Zero(_precision)) {
-                _type = INTERSECTION | DOWNWARDS | BELOW | CONTACT_START;
-            } else if (_endHeight > Zero(_precision)) {
-                _type = INTERSECTION | UPWARDS | ABOVE | CONTACT_START;
-            } else {
-                _type = INTERSECTION | COINCIDENT;
+            if (endHeight < zero) { // 0, -
+                _type = POINT;
+                _point = startVertex;
+            } else if (endHeight > zero) { // 0, +
+                _type = POINT;
+                _point = startVertex;
+            } else { // 0, 0
+                _type = COINCIDENT;
             }
-        }
-    }
-
-    Point3d
-    Intersection<LineSegment3d, Plane3d>::point() const {
-        if (_type & CROSSING) {
-            const Vector3d& startVector = lineSegment().startVertex().vector();
-            const Vector3d& endVector = lineSegment().endVertex().vector();
-            return Point3d(
-                (_startHeight * endVector - _endHeight * startVector) / (_startHeight - _endHeight)
-            );
-        } else if (_type & CONTACT_START) {
-            return lineSegment().startVertex();
-        } else if (_type & CONTACT_END) {
-            return lineSegment().endVertex();
-        } else {
-            assert(false);
-            return Point3d();
         }
     }
 }

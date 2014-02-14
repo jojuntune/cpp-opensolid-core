@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
+#include <OpenSolid/Core/LineSegmentPlaneIntersection3d.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -177,42 +178,6 @@ namespace opensolid
     Intersection<LineSegment3d, Plane3d>
     LineSegment<iNumDimensions>::intersection(const Plane3d& plane, double precision) const {
         return Intersection<LineSegment3d, Plane3d>(*this, plane, precision);
-    }
-
-    inline
-    const LineSegment3d&
-    Intersection<LineSegment3d, Plane3d>::lineSegment() const {
-        return _lineSegment;
-    }
-
-    inline
-    const Plane3d&
-    Intersection<LineSegment3d, Plane3d>::plane() const {
-        return _plane;
-    }
-
-    inline
-    double
-    Intersection<LineSegment3d, Plane3d>::precision() const {
-        return _precision;
-    }
-
-    inline
-    bool
-    Intersection<LineSegment3d, Plane3d>::exists() const {
-        return (_type & INTERSECTION) != 0;
-    }
-
-    inline
-    bool
-    Intersection<LineSegment3d, Plane3d>::isPoint() const {
-        return (_type & (CROSSING | CONTACT_START | CONTACT_END)) != 0;
-    }
-
-    inline
-    bool
-    Intersection<LineSegment3d, Plane3d>::isCoincident() const {
-        return (_type & COINCIDENT) != 0;
     }
 
     template <int iNumDimensions>

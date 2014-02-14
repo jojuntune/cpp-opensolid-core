@@ -137,61 +137,6 @@ namespace opensolid
     typedef LineSegment<2> LineSegment2d;
     typedef LineSegment<3> LineSegment3d;
 
-    template <>
-    class Intersection<LineSegment<3>, Plane3d>
-    {
-    private:
-        LineSegment3d _lineSegment;
-        Plane3d _plane;
-        double _precision;
-        double _startHeight;
-        double _endHeight;
-        int _type;
-
-        enum IntersectionType
-        {
-            NO_INTERSECTION = 1,
-            INTERSECTION = 2,
-            ABOVE = 4,
-            BELOW = 8,
-            COINCIDENT = 16,
-            CROSSING = 32,
-            CONTACT_START = 64,
-            CONTACT_END = 128,
-            UPWARDS = 256,
-            DOWNWARDS = 512
-        };
-    public:
-        OPENSOLID_CORE_EXPORT
-        Intersection(
-            const LineSegment3d& lineSegment,
-            const Plane3d& plane,
-            double precision = 1e-12
-        );
-
-        const LineSegment3d&
-        lineSegment() const;
-
-        const Plane3d&
-        plane() const;
-
-        double
-        precision() const;
-
-        bool
-        exists() const;
-
-        bool
-        isPoint() const;
-
-        bool
-        isCoincident() const;
-
-        OPENSOLID_CORE_EXPORT
-        Point<3>
-        point() const;
-    };
-
     template <int iNumDimensions>
     struct EqualityFunction<LineSegment<iNumDimensions>>
     {
