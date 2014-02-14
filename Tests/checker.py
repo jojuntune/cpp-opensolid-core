@@ -29,6 +29,8 @@ def checkLine(filePath, lineNumber, line):
             errorFound = True
         # Strip out contents of string literals
         line = str.join('""', line.split('"')[::2])
+        # Strip away comments
+        line = line.partition("//")[0];
         # Check for tab characters
         if '\t' in line:
             print('ERROR: Found tab character on line {0} of file {1}'.format(lineNumber, filePath))
