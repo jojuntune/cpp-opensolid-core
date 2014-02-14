@@ -33,7 +33,8 @@
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
+#include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
@@ -72,6 +73,9 @@ namespace opensolid
         
         const Vector2d&
         directionVector() const;
+
+        Vector2d
+        normalVector() const;
 
         Axis<2>
         flipped() const;
@@ -120,6 +124,9 @@ namespace opensolid
 
         Intersection<Axis<3>, Plane3d>
         intersection(const Plane3d& plane, double precision = 1e-12) const;
+
+        Intersection<Axis<3>, Triangle<3>>
+        intersection(const Triangle<3>& triangle, double precision = 1e-12) const;
 
         static Axis<3>
         X();

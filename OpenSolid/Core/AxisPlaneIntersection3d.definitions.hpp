@@ -26,10 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Axis.definitions.hpp>
 #include <OpenSolid/Core/Intersection.declarations.hpp>
-#include <OpenSolid/Core/Plane.definitions.hpp>
-#include <OpenSolid/Core/Point.declarations.hpp>
+
+#include <OpenSolid/Core/Axis.declarations.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
 
 namespace opensolid
 {
@@ -37,23 +38,18 @@ namespace opensolid
     class Intersection<Axis<3>, Plane3d>
     {
     private:
-        Axis<3> _axis;
-        Plane3d _plane;
-        double _precision;
-        double _dotProduct;
-        double _originDistance;
+        enum IntersectionType
+        {
+            NONE,
+            POINT,
+            COINCIDENT
+        };
+
+        IntersectionType _type;
+        Point<3> _point;
     public:
         OPENSOLID_CORE_EXPORT
         Intersection(const Axis<3>& axis, const Plane3d& plane, double precision = 1e-12);
-    
-        const Axis<3>&
-        axis() const;
-
-        const Plane3d&
-        plane() const;
-
-        double
-        precision() const;
 
         bool
         exists() const;
@@ -64,8 +60,7 @@ namespace opensolid
         bool
         isCoincident() const;
 
-        OPENSOLID_CORE_EXPORT
-        Point<3>
+        const Point<3>&
         point() const;
     };
 }

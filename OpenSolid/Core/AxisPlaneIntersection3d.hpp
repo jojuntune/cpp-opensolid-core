@@ -26,46 +26,29 @@
 
 #include <OpenSolid/Core/AxisPlaneIntersection3d.definitions.hpp>
 
-#include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Zero.hpp>
-
 namespace opensolid
 {
     inline
-    const Axis3d&
-    Intersection<Axis3d, Plane3d>::axis() const {
-        return _axis;
-    }
-
-    inline
-    const Plane3d&
-    Intersection<Axis3d, Plane3d>::plane() const {
-        return _plane;
-    }
-
-    inline
-    double
-    Intersection<Axis3d, Plane3d>::precision() const {
-        return _precision;
+    bool
+    Intersection<Axis<3>, Plane3d>::exists() const {
+        return _type != NONE;
     }
 
     inline
     bool
-    Intersection<Axis3d, Plane3d>::exists() const {
-        return _dotProduct != Zero(_precision) || _originDistance == Zero(_precision);
+    Intersection<Axis<3>, Plane3d>::isPoint() const {
+        return _type == POINT;
     }
 
     inline
     bool
-    Intersection<Axis3d, Plane3d>::isPoint() const {
-        return _dotProduct != Zero(_precision);
+    Intersection<Axis<3>, Plane3d>::isCoincident() const {
+        return _type == COINCIDENT;
     }
 
     inline
-    bool
-    Intersection<Axis3d, Plane3d>::isCoincident() const {
-        return _dotProduct == Zero(_precision) && _originDistance == Zero(_precision);
+    const Point<3>&
+    Intersection<Axis<3>, Plane3d>::point() const {
+        return _point;
     }
 }

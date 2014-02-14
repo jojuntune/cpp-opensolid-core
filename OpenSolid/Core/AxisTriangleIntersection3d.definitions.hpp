@@ -22,34 +22,50 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/AxisPlaneIntersection3d.definitions.hpp>
+#pragma once
 
-#include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/config.hpp>
+
+#include <OpenSolid/Core/Intersection.declarations.hpp>
+
+#include <OpenSolid/Core/Axis.definitions.hpp>
+#include <OpenSolid/Core/LineSegment.definitions.hpp>
+#include <OpenSolid/Core/Point.definitions.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 namespace opensolid
 {
-    Intersection<Axis3d, Plane3d>::Intersection(
-        const Axis<3>& axis,
-        const Plane3d& plane,
-        double precision
-    ) {
-        Point3d originPoint = axis.originPoint();
-        Vector3d directionVector = axis.directionVector();
-        double dotProduct = directionVector.dot(plane.normalVector());
-        double originDistance = originPoint.distanceTo(plane);
-        Zero zero(precision);
-        if (dotProduct == zero) {
-            if (originDistance == zero) {
-                _type = COINCIDENT;
-            } else {
-                _type = NONE;
-            }
-        } else {
-            _type = POINT;
-            _point = originPoint - (originDistance / dotProduct) * directionVector;
-        }
-    }
+    template <>
+    class Intersection<Axis<3>, Triangle<3>>
+    {
+    private:
+        enum IntersectionType
+        {
+            NONE,
+            POINT,
+            LINE_SEGMENT
+        };
+
+        IntersectionType _type;
+        Point3d _point;
+        LineSegment3d _lineSegment;
+    public:
+        OPENSOLID_CORE_EXPORT
+        Intersection(const Axis<3>& axis, const Triangle<3>& triangle, double precision = 1e-12);
+
+        bool
+        exists() const;
+
+        bool
+        isPoint() const;
+
+        bool
+        isLineSegment() const;
+
+        const Point3d&
+        point() const;
+
+        const LineSegment3d&
+        lineSegment() const;
+    };
 }

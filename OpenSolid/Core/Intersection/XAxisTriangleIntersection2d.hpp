@@ -22,34 +22,52 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/AxisPlaneIntersection3d.definitions.hpp>
+#pragma once
 
-#include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Plane.hpp>
-#include <OpenSolid/Core/Point.hpp>
-#include <OpenSolid/Core/Zero.hpp>
+#include <OpenSolid/config.hpp>
+
+#include <OpenSolid/Core/Intersection/XAxisTriangleIntersection2d.definitions.hpp>
 
 namespace opensolid
 {
-    Intersection<Axis3d, Plane3d>::Intersection(
-        const Axis<3>& axis,
-        const Plane3d& plane,
-        double precision
-    ) {
-        Point3d originPoint = axis.originPoint();
-        Vector3d directionVector = axis.directionVector();
-        double dotProduct = directionVector.dot(plane.normalVector());
-        double originDistance = originPoint.distanceTo(plane);
-        Zero zero(precision);
-        if (dotProduct == zero) {
-            if (originDistance == zero) {
-                _type = COINCIDENT;
-            } else {
-                _type = NONE;
-            }
-        } else {
-            _type = POINT;
-            _point = originPoint - (originDistance / dotProduct) * directionVector;
+    namespace detail
+    {
+        inline
+        bool
+        XAxisTriangleIntersection2d::exists() const {
+            return _type != NONE;
+        }
+
+        inline
+        bool
+        XAxisTriangleIntersection2d::isPoint() const {
+            return _type == POINT;
+        }
+
+        inline
+        bool
+        XAxisTriangleIntersection2d::isLineSegment() const {
+            return _type == LINE_SEGMENT;
+        }
+
+        inline
+        bool
+        XAxisTriangleIntersection2d::isCoincident() const {
+            return _type == COINCIDENT;
+        }
+
+        inline
+        const Point<2>&
+        XAxisTriangleIntersection2d::point() const {
+            assert(_type == POINT);
+            return _point;
+        }
+
+        inline
+        const LineSegment<2>&
+        XAxisTriangleIntersection2d::lineSegment() const {
+            assert(_type == LINE_SEGMENT);
+            return _lineSegment;
         }
     }
 }

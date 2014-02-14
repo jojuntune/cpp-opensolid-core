@@ -54,4 +54,25 @@ public:
         TS_ASSERT(!offsetIntersection.exists());
         TS_ASSERT(!offsetIntersection.isPoint());
     }
+
+    void testAxisTriangleIntersection3d() {
+        Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
+        Axis3d intersectionAxis(Point3d::Origin(), Vector3d(1, 1, 1).normalized());
+        Axis3d missingAxis(Point3d(0, -1, 0), Vector3d::UnitZ());
+        Axis3d offsetAxis(Point3d(1, 1, 1), Vector3d(1, -1, 0).normalized());
+        Axis3d overlappingAxis(Point3d(0.5, 0.5, 0), Vector3d(0, -1, 1).normalized());
+        Axis3d edgeCoincidentAxis(Point3d(0, 0, 1), Vector3d(1, 0, -1).normalized());
+        Axis3d edgeIntersectionAxis(Point3d::Origin(), Vector3d(1, 1, 0).normalized());
+        Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), Vector3d::UnitX());
+
+        auto intersection = intersectionAxis.intersection(triangle);
+        TS_ASSERT(intersection.exists());
+        TS_ASSERT(intersection.isPoint());
+        TS_ASSERT(intersection.point().distanceTo(triangle.plane()) == Zero());
+
+        auto missingIntersection = missingAxis.intersection(triangle);
+        TS_ASSERT(!missingIntersection.exists());
+
+        
+    }
 };

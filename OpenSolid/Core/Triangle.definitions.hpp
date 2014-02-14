@@ -97,6 +97,12 @@ namespace opensolid
         double
         area() const;
 
+        bool
+        contains(const Point<2>& point, double precision = 1e-12) const;
+
+        bool
+        strictlyContains(const Point<2>& point, double precision = 1e-12) const;
+
         OPENSOLID_CORE_EXPORT
         static Triangle<2>
         Unit();

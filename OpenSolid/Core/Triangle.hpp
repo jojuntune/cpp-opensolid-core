@@ -63,6 +63,26 @@ namespace opensolid
     }
 
     inline
+    bool
+    Triangle2d::contains(const Point2d& point, double precision) const {
+        Point2d localCoordinates = point / coordinateSystem();
+        double a = localCoordinates.x();
+        double b = localCoordinates.y();
+        Zero zero(precision);
+        return a >= zero && b >= zero && 1 - a - b >= zero;
+    }
+
+    inline
+    bool
+    Triangle2d::strictlyContains(const Point<2>& point, double precision) const {
+        Point2d localCoordinates = point / coordinateSystem();
+        double a = localCoordinates.x();
+        double b = localCoordinates.y();
+        Zero zero(precision);
+        return a > zero && b > zero && 1 - a - b > zero;
+    }
+
+    inline
     Triangle3d::Triangle() {
     }
 

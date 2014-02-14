@@ -35,11 +35,14 @@
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
+#include <OpenSolid/Core/LineSegment.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Position/PositionType.declarations.hpp>
 #include <OpenSolid/Core/Position/PointBase.definitions.hpp>
+#include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/Triangle.declarations.hpp>
 
 #include <ostream>
 
@@ -124,6 +127,12 @@ namespace opensolid
         double
         distanceTo(const Axis<2>& axis) const;
 
+        bool
+        isOn(const Axis<2>& axis, double precision = 1e-12) const;
+
+        bool
+        isOn(const LineSegment<2>& lineSegment, double precision = 1e-12) const;
+
         static Point
         Polar(double radius, double angle);
     };
@@ -164,8 +173,26 @@ namespace opensolid
         z();
 
         double
+        squaredDistanceTo(const Axis<3>& axis) const;
+
+        double
+        distanceTo(const Axis<3>& axis) const;
+
+        double
         distanceTo(const Plane3d& plane) const;
 
+        bool
+        isOn(const Axis<3>& axis, double precision = 1e-12) const;
+
+        bool
+        isOn(const Plane3d& plane, double precision = 1e-12) const;
+
+        bool
+        isOn(const LineSegment<3>& lineSegment, double precision = 1e-12) const;
+
+        bool
+        isOn(const Triangle<3>& triangle, double precision = 1e-12) const;
+        
         static Point
         Cylindrical(double radius, double angle, double height);
 
