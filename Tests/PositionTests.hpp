@@ -125,4 +125,43 @@ public:
         TS_ASSERT(wholeBox.contains(box));
         TS_ASSERT(box.contains(wholeBox));
     }
+
+    void testPointPredicates2d() {
+        Axis2d axis(Point2d(1, 1), Vector2d(2, 1).normalized());
+        LineSegment2d lineSegment(Point2d(0, 1), Point2d(1, 0));
+
+        TS_ASSERT(Point2d(3, 2).isOn(axis));
+        TS_ASSERT(!Point2d(3, 3).isOn(axis));
+
+        TS_ASSERT(Point2d(0.5, 0.5).isOn(lineSegment));
+        TS_ASSERT(Point2d(0, 1).isOn(lineSegment));
+        TS_ASSERT(!Point2d(-1, 2).isOn(lineSegment));
+        TS_ASSERT(!Point2d(1, 1).isOn(lineSegment));
+    }
+
+    void testPointPredicates3d() {
+        Axis3d axis(Point3d(1, 1, 1), Vector3d(1, 2, 3).normalized());
+        Plane3d plane(Point3d(0, 1, 1), Vector3d(0, 1, 1).normalized());
+        LineSegment3d lineSegment(Point3d(0, 0, 1), Point3d(1, 1, 0));
+        Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
+
+        TS_ASSERT(Point3d(2, 3, 4).isOn(axis));
+        TS_ASSERT(!Point3d(2, 3, 5).isOn(axis));
+
+        TS_ASSERT(Point3d(0, 0, 2).isOn(plane));
+        TS_ASSERT(!Point3d::Origin().isOn(plane));
+
+        TS_ASSERT(lineSegment.midpoint().isOn(lineSegment));
+        TS_ASSERT(lineSegment.endVertex().isOn(lineSegment));
+        Point3d extendedPoint(2, 2, -1);
+        TS_ASSERT(extendedPoint.isOn(lineSegment.axis()));
+        TS_ASSERT(!extendedPoint.isOn(lineSegment));
+
+        TS_ASSERT(triangle.centroid().isOn(triangle));
+        TS_ASSERT(triangle.vertex(1).isOn(triangle));
+        Point3d planarPoint(-1, 0, 2);
+        TS_ASSERT(planarPoint.isOn(triangle.plane()));
+        TS_ASSERT(!planarPoint.isOn(triangle));
+        TS_ASSERT(!Point3d(1, 1, 1).isOn(triangle));
+    }
 };

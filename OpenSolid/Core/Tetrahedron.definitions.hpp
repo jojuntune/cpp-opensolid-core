@@ -105,6 +105,14 @@ namespace opensolid
         CoordinateSystem<3, 3>
         coordinateSystem() const;
 
+        OPENSOLID_CORE_EXPORT
+        bool
+        contains(const Point<3>& point, double precision = 1e-12) const;
+
+        OPENSOLID_CORE_EXPORT
+        bool
+        strictlyContains(const Point<3>& point, double precision = 1e-12) const;
+
         Box<3>
         bounds() const;
 

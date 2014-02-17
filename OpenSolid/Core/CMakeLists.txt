@@ -4,6 +4,7 @@
         GLOB
         CORE_SOURCES
         *.cpp
+        Intersection/*.cpp
         LazyCollection/*.cpp
         Matrix/*.cpp
         ParametricCurve/*.cpp
@@ -41,6 +42,7 @@
 
     add_to_global_source_list(
         *
+        Intersection/*
         LazyCollection/*
         Matrix/*
         ParametricCurve/*

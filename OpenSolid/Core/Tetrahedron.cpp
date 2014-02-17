@@ -94,6 +94,26 @@ namespace opensolid
         );
     }
 
+    bool
+    Tetrahedron3d::contains(const Point3d& point, double precision) const {
+        Point3d localCoordinates = point / coordinateSystem();
+        double a = localCoordinates.x();
+        double b = localCoordinates.y();
+        double c = localCoordinates.z();
+        Zero zero(precision);
+        return a >= zero && b >= zero && c >= zero && 1 - a - b - c >= zero;
+    }
+
+    bool
+    Tetrahedron3d::strictlyContains(const Point3d& point, double precision) const {
+        Point3d localCoordinates = point / coordinateSystem();
+        double a = localCoordinates.x();
+        double b = localCoordinates.y();
+        double c = localCoordinates.z();
+        Zero zero(precision);
+        return a > zero && b > zero && c > zero && 1 - a - b - c > zero;
+    }
+
     Tetrahedron3d
     Tetrahedron3d::Unit() {
         return Tetrahedron3d(

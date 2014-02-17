@@ -242,4 +242,26 @@ public:
         TS_ASSERT(thirdIntersection.isPoint());
         TS_ASSERT((thirdIntersection.point() - Point3d(1, 1, 1)).isZero());
     }
+
+    void testTriangleContainment() {
+        Triangle2d triangle(Point2d(1, 1), Point2d(3, 1), Point2d(2, 2));
+
+        TS_ASSERT(triangle.contains(triangle.vertex(2)));
+        TS_ASSERT(triangle.contains(triangle.centroid()));
+        TS_ASSERT(triangle.strictlyContains(triangle.centroid()));
+        TS_ASSERT(!triangle.strictlyContains(triangle.vertex(2)));
+        TS_ASSERT(!triangle.contains(Point2d::Origin()));
+        TS_ASSERT(!triangle.strictlyContains(Point2d::Origin()));
+    }
+
+    void testTetrahedronContainment() {
+        Tetrahedron3d tetrahedron = Tetrahedron3d::Unit();
+
+        TS_ASSERT(tetrahedron.contains(tetrahedron.vertex(2)));
+        TS_ASSERT(tetrahedron.contains(tetrahedron.centroid()));
+        TS_ASSERT(tetrahedron.strictlyContains(tetrahedron.centroid()));
+        TS_ASSERT(!tetrahedron.strictlyContains(tetrahedron.vertex(2)));
+        TS_ASSERT(tetrahedron.contains(Point3d::Origin()));
+        TS_ASSERT(!tetrahedron.strictlyContains(Point3d::Origin()));
+    }
 };

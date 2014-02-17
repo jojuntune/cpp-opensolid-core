@@ -28,11 +28,14 @@
 
 #include <OpenSolid/Core/Axis.definitions.hpp>
 
+#include <OpenSolid/Core/AxisPlaneIntersection3d.hpp>
+#include <OpenSolid/Core/AxisTriangleIntersection3d.hpp>
 #include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
 {
@@ -63,6 +66,12 @@ namespace opensolid
     }
 
     inline
+    const Vector2d
+    Axis2d::normalVector() const {
+        return directionVector().unitOrthogonal();
+    }
+
+    inline
     const Axis2d
     Axis2d::flipped() const {
         return Axis2d(originPoint(), -directionVector());
@@ -71,7 +80,7 @@ namespace opensolid
     inline
     const Axis2d
     Axis2d::normalAxis() const {
-        return Axis2d(originPoint(), directionVector().unitOrthogonal());
+        return Axis2d(originPoint(), normalVector());
     }
 
     inline
@@ -134,6 +143,18 @@ namespace opensolid
     const AxialCoordinateSystem3d
     Axis3d::coordinateSystem() const {
         return AxialCoordinateSystem3d(originPoint(), directionVector());
+    }
+
+    inline
+    const Intersection<Axis3d, Plane3d>
+    Axis3d::intersection(const Plane3d& plane, double precision) const {
+        return Intersection<Axis3d, Plane3d>(*this, plane, precision);
+    }
+
+    inline
+    const Intersection<Axis3d, Triangle<3>>
+    Axis3d::intersection(const Triangle<3>& triangle, double precision) const {
+        return Intersection<Axis3d, Triangle<3>>(*this, triangle, precision);
     }
 
     inline

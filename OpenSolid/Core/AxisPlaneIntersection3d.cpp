@@ -22,65 +22,34 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/AxisPlaneIntersection3d.definitions.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
 {
-    Intersection<LineSegment3d, Plane3d>::Intersection(
-        const LineSegment3d& lineSegment,
+    Intersection<Axis3d, Plane3d>::Intersection(
+        const Axis<3>& axis,
         const Plane3d& plane,
         double precision
-    ) : _lineSegment(lineSegment),
-        _plane(plane),
-        _precision(precision),
-        _startHeight(lineSegment.startVertex().distanceTo(plane)),
-        _endHeight(lineSegment.endVertex().distanceTo(plane)),
-        _type(0) {
-
-        if (_startHeight < Zero(_precision)) {
-            if (_endHeight < Zero(_precision)) {
-                _type = NO_INTERSECTION | BELOW;
-            } else if (_endHeight > Zero(_precision)) {
-                _type = INTERSECTION | CROSSING | UPWARDS;
+    ) {
+        Point3d originPoint = axis.originPoint();
+        Vector3d directionVector = axis.directionVector();
+        double dotProduct = directionVector.dot(plane.normalVector());
+        double originDistance = originPoint.distanceTo(plane);
+        Zero zero(precision);
+        if (dotProduct == zero) {
+            if (originDistance == zero) {
+                _type = COINCIDENT;
             } else {
-                _type = INTERSECTION | BELOW | UPWARDS | CONTACT_END;
-            }
-        } else if (_startHeight > Zero(_precision)) {
-            if (_endHeight < Zero(_precision)) {
-                _type = INTERSECTION | CROSSING | DOWNWARDS;
-            } else if (_endHeight > Zero(_precision)) {
-                _type = NO_INTERSECTION | ABOVE;
-            } else {
-                _type = INTERSECTION | ABOVE | DOWNWARDS | CONTACT_END;
+                _type = NONE;
             }
         } else {
-            if (_endHeight < Zero(_precision)) {
-                _type = INTERSECTION | DOWNWARDS | BELOW | CONTACT_START;
-            } else if (_endHeight > Zero(_precision)) {
-                _type = INTERSECTION | UPWARDS | ABOVE | CONTACT_START;
-            } else {
-                _type = INTERSECTION | COINCIDENT;
-            }
-        }
-    }
-
-    Point3d
-    Intersection<LineSegment3d, Plane3d>::point() const {
-        if (_type & CROSSING) {
-            const Vector3d& startVector = lineSegment().startVertex().vector();
-            const Vector3d& endVector = lineSegment().endVertex().vector();
-            return Point3d(
-                (_startHeight * endVector - _endHeight * startVector) / (_startHeight - _endHeight)
-            );
-        } else if (_type & CONTACT_START) {
-            return lineSegment().startVertex();
-        } else if (_type & CONTACT_END) {
-            return lineSegment().endVertex();
-        } else {
-            assert(false);
-            return Point3d();
+            _type = POINT;
+            _point = originPoint - (originDistance / dotProduct) * directionVector;
         }
     }
 }
