@@ -160,6 +160,9 @@ namespace opensolid
         
         static Interval
         Whole();
+
+        static Interval
+        Random();
     };
 
     bool

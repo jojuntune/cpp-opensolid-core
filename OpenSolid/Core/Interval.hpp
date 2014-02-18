@@ -304,6 +304,12 @@ namespace opensolid
     }
 
     inline
+    Interval
+    Interval::Random() {
+        return Hull(double(std::rand()) / RAND_MAX, double(std::rand()) / RAND_MAX);
+    }
+
+    inline
     bool
     operator==(double value, Interval interval) {
         return value == interval.lowerBound() && value == interval.upperBound();
