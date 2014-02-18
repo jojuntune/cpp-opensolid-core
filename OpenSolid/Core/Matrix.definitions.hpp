@@ -29,18 +29,12 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixFromRowsFactory.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixFromColumnsFactory.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixRandomFactory.definitions.hpp>
 
 namespace opensolid
 {
     template <int iNumRows, int iNumColumns>
     class Matrix :
-        public detail::MatrixBase<double, iNumRows, iNumColumns>,
-        public detail::MatrixFromRowsFactory<double, iNumRows, iNumColumns>,
-        public detail::MatrixFromColumnsFactory<double, iNumRows, iNumColumns>,
-        public detail::MatrixRandomFactory<double, iNumRows, iNumColumns>
+        public detail::MatrixBase<double, iNumRows, iNumColumns>
     {
     public:
         Matrix();
@@ -84,7 +78,7 @@ namespace opensolid
     public:
         Matrix();
 
-        Matrix(double a, double b, double c, double d);
+        Matrix(double a00, double a10, double a01, double a11);
 
         explicit
         Matrix(const double* sourcePtr);
@@ -106,15 +100,15 @@ namespace opensolid
         Matrix();
 
         Matrix(
+            double a00,
+            double a10,
+            double a20,
+            double a01,
             double a11,
-            double a12,
-            double a13,
             double a21,
-            double a22,
-            double a23,
-            double a31,
-            double a32,
-            double a33
+            double a02,
+            double a12,
+            double a22
         );
 
         explicit

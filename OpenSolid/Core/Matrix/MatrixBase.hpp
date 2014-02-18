@@ -29,8 +29,10 @@
 #include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
+#include <OpenSolid/Core/Interval.hpp>
 
 #include <algorithm>
+#include <cstdlib>
 
 namespace opensolid
 {
@@ -318,7 +320,7 @@ namespace opensolid
         template <class TScalar, int iNumRows, int iNumColumns>
         inline
         const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
-        MatrixBase<TScalar, iNumRows, iNumColumns>::Zero() {
+        MatrixBase<TScalar, iNumRows, iNumColumns>::Ones() {
             return Constant(TScalar(1));
         }
 
@@ -335,19 +337,103 @@ namespace opensolid
             return result;
         }
 
+        template <class TScalar>
+        const TScalar
+        randomScalar();
+
+        template <>
+        inline
+        const double
+        randomScalar<double>() {
+            return double(std::rand()) / RAND_MAX;
+        }
+
+        template <>
+        inline
+        const Interval
+        randomScalar<Interval>() {
+            return Interval::Random();
+        }
+
         template <class TScalar, int iNumRows, int iNumColumns>
         inline
         const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
-        MatrixBase<TScalar, iNumRows, iNumColumns>::OuterProduct
-            const typename MatrixType<TScalar, iNumRows, 1>& columnMatrix,
-            const typename MatrixType<TScalar, 1, iNumColumns>& rowMatrix
-        ) {
+        MatrixBase<TScalar, iNumRows, iNumColumns>::Random() {
             typename MatrixType<TScalar, iNumRows, iNumColumns>::Type result;
+            for (std::int64_t index = 0; index < Size; ++index) {
+                result(index) = randomScalar<TScalar>();
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::FromColumns(
+            const typename MatrixType<TScalar, iNumRows, 1>& firstColumn,
+            const typename MatrixType<TScalar, iNumRows, 1>& secondColumn
+        ) {
+            static_assert(iNumColumns == 2, "Incorrect number of columns");
+
+            typename MatrixType<TScalar, iNumRows, 2>::Type result;
+            for (std::int64_t rowIndex = 0; rowIndex < iNumColumns; ++rowIndex) {
+                result(rowIndex, 0) = firstColumn(rowIndex);
+                result(rowIndex, 1) = secondColumn(rowIndex);
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::FromColumns(
+            const typename MatrixType<TScalar, iNumRows, 1>& firstColumn,
+            const typename MatrixType<TScalar, iNumRows, 1>& secondColumn,
+            const typename MatrixType<TScalar, iNumRows, 1>& thirdColumn
+        ) {
+            static_assert(iNumColumns == 3, "Incorrect number of columns");
+
+            typename MatrixType<TScalar, iNumRows, 3>::Type result;
+            for (std::int64_t rowIndex = 0; rowIndex < iNumColumns; ++rowIndex) {
+                result(rowIndex, 0) = firstColumn(rowIndex);
+                result(rowIndex, 1) = secondColumn(rowIndex);
+                result(rowIndex, 2) = thirdColumn(rowIndex);
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::FromRows(
+            const typename MatrixType<TScalar, 1, iNumColumns>& firstRow,
+            const typename MatrixType<TScalar, 1, iNumColumns>& secondRow
+        ) {
+            static_assert(iNumRows == 2, "Incorrect number of rows");
+
+            typename MatrixType<TScalar, 2, iNumColumns>::Type result;
             for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
-                for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
-                    result(rowIndex, columnIndex) = columnMatrix(rowIndex, 1) *
-                        rowMatrix(1, columnIndex);
-                }
+                result(0, columnIndex) = firstRow(columnIndex);
+                result(1, columnIndex) = secondRow(columnIndex);
+            }
+            return result;
+        }
+
+        template <class TScalar, int iNumRows, int iNumColumns>
+        inline
+        const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+        MatrixBase<TScalar, iNumRows, iNumColumns>::FromRows(
+            const typename MatrixType<TScalar, 1, iNumColumns>& firstRow,
+            const typename MatrixType<TScalar, 1, iNumColumns>& secondRow,
+            const typename MatrixType<TScalar, 1, iNumColumns>& thirdRow
+        ) {
+            static_assert(iNumRows == 3, "Incorrect number of rows");
+
+            typename MatrixType<TScalar, 3, iNumColumns>::Type result;
+            for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
+                result(0, columnIndex) = firstRow(columnIndex);
+                result(1, columnIndex) = secondRow(columnIndex);
+                result(2, columnIndex) = thirdRow(columnIndex);
             }
             return result;
         }

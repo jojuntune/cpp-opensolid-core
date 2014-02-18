@@ -196,9 +196,32 @@ namespace opensolid
             Identity();
 
             static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
-            OuterProduct(
-                const typename MatrixType<TScalar, iNumRows, 1>& columnMatrix,
-                const typename MatrixType<TScalar, 1, iNumColumns>& rowMatrix
+            Random();
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            FromColumns(
+                const typename MatrixType<TScalar, iNumRows, 1>& firstColumn,
+                const typename MatrixType<TScalar, iNumRows, 1>& secondColumn
+            );
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            FromColumns(
+                const typename MatrixType<TScalar, iNumRows, 1>& firstColumn,
+                const typename MatrixType<TScalar, iNumRows, 1>& secondColumn,
+                const typename MatrixType<TScalar, iNumRows, 1>& thirdColumn
+            );
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            FromRows(
+                const typename MatrixType<TScalar, 1, iNumColumns>& firstRow,
+                const typename MatrixType<TScalar, 1, iNumColumns>& secondRow
+            );
+
+            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            FromRows(
+                const typename MatrixType<TScalar, 1, iNumColumns>& firstRow,
+                const typename MatrixType<TScalar, 1, iNumColumns>& secondRow,
+                const typename MatrixType<TScalar, 1, iNumColumns>& thirdRow
             );
         };
     }

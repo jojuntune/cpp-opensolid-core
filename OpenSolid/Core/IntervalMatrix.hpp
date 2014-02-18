@@ -80,13 +80,13 @@ namespace opensolid
     }
 
     inline
-    IntervalMatrix2d::IntervalMatrix(Interval a, Interval b, Interval c, Interval d) :
+    IntervalMatrix2d::IntervalMatrix(Interval a00, Interval a10, Interval a01, Interval a11) :
         detail::MatrixBase<Interval, 2, 2>() {
 
-        component(0) = a;
-        component(1) = c;
-        component(2) = b;
-        component(3) = d;
+        component(0) = a00;
+        component(1) = a10;
+        component(2) = a01;
+        component(3) = a11;
     }
 
     inline
@@ -115,26 +115,26 @@ namespace opensolid
 
     inline
     IntervalMatrix3d::IntervalMatrix(
+        Interval a00,
+        Interval a10,
+        Interval a20,
+        Interval a01,
         Interval a11,
-        Interval a12,
-        Interval a13,
         Interval a21,
-        Interval a22,
-        Interval a23,
-        Interval a31,
-        Interval a32,
-        Interval a33
+        Interval a02,
+        Interval a12,
+        Interval a22
     ) : detail::MatrixBase<Interval, 3, 3>() {
 
-        component(0) = a11;
-        component(1) = a21;
-        component(2) = a31;
-        component(3) = a12;
-        component(4) = a22;
-        component(5) = a32;
-        component(6) = a13;
-        component(7) = a23;
-        component(8) = a33;
+        component(0) = a00;
+        component(1) = a10;
+        component(2) = a20;
+        component(3) = a01;
+        component(4) = a11;
+        component(5) = a21;
+        component(6) = a02;
+        component(7) = a12;
+        component(8) = a22;
     }
 
     inline

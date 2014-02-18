@@ -79,12 +79,12 @@ namespace opensolid
     public:
         IntervalMatrix();
 
-        IntervalMatrix(Interval a, Interval b, Interval c, Interval d);
+        IntervalMatrix(Interval a00, Interval a10, Interval a01, Interval a11);
 
         explicit
         IntervalMatrix(const Matrix<2, 2>& matrix);
 
-        Interval
+        const Interval
         determinant() const;
 
         const IntervalMatrix<2, 2>
@@ -101,15 +101,15 @@ namespace opensolid
         IntervalMatrix();
 
         IntervalMatrix(
+            Interval a00,
+            Interval a10,
+            Interval a20,
+            Interval a01,
             Interval a11,
-            Interval a12,
-            Interval a13,
             Interval a21,
-            Interval a22,
-            Interval a23,
-            Interval a31,
-            Interval a32,
-            Interval a33
+            Interval a02,
+            Interval a12,
+            Interval a22
         );
 
         explicit

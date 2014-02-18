@@ -153,8 +153,8 @@ namespace opensolid
                 -1.0 + 2.0 * double(rand()) / RAND_MAX
             );
             double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm - 1 <= Zero() && candidateSquaredNorm > Zero()) {
-                return candidate / sqrt(squaredNorm);
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return candidate / sqrt(candidateSquaredNorm);
             }
         }
     }
@@ -224,8 +224,8 @@ namespace opensolid
                 -1.0 + 2.0 * double(rand()) / RAND_MAX
             );
             double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm - 1 <= Zero() && candidateSquaredNorm > Zero()) {
-                return candidate / sqrt(squaredNorm);
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return candidate / sqrt(candidateSquaredNorm);
             }
         }
     }

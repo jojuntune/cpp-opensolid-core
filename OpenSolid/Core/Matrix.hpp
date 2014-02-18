@@ -92,44 +92,6 @@ namespace opensolid
     }
 
     inline
-    const Matrix1d
-    Matrix1d::Zero() {
-        return Matrix1d();
-    }
-
-    inline
-    const Matrix1d
-    Matrix1d::Ones() {
-        Matrix1d result;
-        result(0) = 1.0;
-        return result;
-    }
-
-    inline
-    const Matrix1d
-    Matrix1d::Identity() {
-        Matrix1d result;
-        result(0) = 1.0;
-        return result;
-    }
-
-    inline
-    const Matrix1d
-    Matrix1d::Random() {
-        Matrix1d result;
-        result(0) = double(rand()) / RAND_MAX;
-        return result;
-    }
-
-    inline
-    const Matrix1d
-    Matrix1d::OuterProduct(const Matrix<1, 1>& columnMatrix, const Matrix<1, 1>& rowMatrix) {
-        Matrix1d result;
-        result(0) = columnMatrix(0) * rowMatrix(0);
-        return result;
-    }
-
-    inline
     Matrix2d::Matrix() :
         detail::MatrixBase<double, 2, 2>() {
 
@@ -142,13 +104,13 @@ namespace opensolid
     }
 
     inline
-    Matrix2d::Matrix(double a, double b, double c, double d) :
+    Matrix2d::Matrix(double a00, double a10, double a01, double a11) :
         detail::MatrixBase<double, 2, 2>() {
 
-        component(0) = a;
-        component(1) = c;
-        component(2) = b;
-        component(3) = d;
+        component(0) = a00;
+        component(1) = a10;
+        component(2) = a01;
+        component(3) = a11;
     }
 
     inline
@@ -175,73 +137,6 @@ namespace opensolid
     }
 
     inline
-    const Matrix2d
-    Matrix2d::Zero() {
-        return Matrix2d();
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::Ones() {
-        Matrix2d result;
-        result.fill(1.0);
-        return result;
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::Identity() {
-        Matrix2d result;
-        result(0) = 1.0;
-        result(3) = 1.0;
-        return result;
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::Random() {
-        Matrix2d result;
-        result(0) = double(rand()) / RAND_MAX;
-        result(1) = double(rand()) / RAND_MAX;
-        result(2) = double(rand()) / RAND_MAX;
-        result(3) = double(rand()) / RAND_MAX;
-        return result;
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::FromRows(const RowMatrix2d& firstRow, const RowMatrix2d& secondRow) {
-        Matrix2d result;
-        result(0, 0) = firstRow(0);
-        result(0, 1) = firstRow(1);
-        result(1, 0) = secondRow(0);
-        result(1, 1) = secondRow(1);
-        return result;
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::FromColumns(const ColumnMatrix2d& firstColumn, const ColumnMatrix2d& secondColumn) {
-        Matrix2d result;
-        result(0, 0) = firstColumn(0);
-        result(1, 0) = firstColumn(1);
-        result(0, 1) = secondColumn(0);
-        result(1, 1) = secondColumn(1);
-        return result;
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::OuterProduct(const Matrix<2, 1>& columnMatrix, const Matrix<1, 2>& rowMatrix) {
-        Matrix2d result;
-        result(0, 0) = columnMatrix(0) * rowMatrix(0);
-        result(1, 0) = columnMatrix(1) * rowMatrix(0);
-        result(0, 1) = columnMatrix(0) * rowMatrix(1);
-        result(1, 1) = columnMatrix(1) * rowMatrix(1);
-        return result;
-    }
-
-    inline
     Matrix3d::Matrix() :
         detail::MatrixBase<double, 3, 3>() {
 
@@ -255,116 +150,26 @@ namespace opensolid
 
     inline
     Matrix3d::Matrix(
+        double a00,
+        double a10,
+        double a20,
+        double a01,
         double a11,
-        double a12,
-        double a13,
         double a21,
-        double a22,
-        double a23,
-        double a31,
-        double a32,
-        double a33
+        double a02,
+        double a12,
+        double a22
     ) : detail::MatrixBase<double, 3, 3>() {
 
-        component(0) = a11;
-        component(1) = a21;
-        component(2) = a31;
-        component(3) = a12;
-        component(4) = a22;
-        component(5) = a32;
-        component(6) = a13;
-        component(7) = a23;
-        component(8) = a33;
-    }
-
-    inline
-    const Matrix3d
-    Matrix3d::Zero() {
-        return Matrix3d();
-    }
-
-    inline
-    const Matrix3d
-    Matrix3d::Ones() {
-        Matrix3d result;
-        result.fill(1.0);
-        return result;
-    }
-
-    inline
-    const Matrix3d
-    Matrix3d::Identity() {
-        Matrix3d result;
-        result(0) = 1.0;
-        result(4) = 1.0;
-        result(8) = 1.0;
-        return result;
-    }
-
-    inline
-    const Matrix3d
-    Matrix3d::Random() {
-        Matrix3d result;
-        result(0) = double(rand()) / RAND_MAX;
-        result(1) = double(rand()) / RAND_MAX;
-        result(2) = double(rand()) / RAND_MAX;
-        result(3) = double(rand()) / RAND_MAX;
-        result(4) = double(rand()) / RAND_MAX;
-        result(5) = double(rand()) / RAND_MAX;
-        result(6) = double(rand()) / RAND_MAX;
-        result(7) = double(rand()) / RAND_MAX;
-        result(8) = double(rand()) / RAND_MAX;
-        return result;
-    }
-
-    inline
-    const Matrix3d
-    Matrix3d::FromRows(
-        const RowMatrix3d& firstRow,
-        const RowMatrix3d& secondRow,
-        const RowMatrix3d& thirdRow
-    ) {
-        Matrix3d result;
-        result(0, 0) = firstRow(0);
-        result(0, 1) = firstRow(1);
-        result(0, 2) = firstRow(2);
-        result(1, 0) = secondRow(0);
-        result(1, 1) = secondRow(1);
-        result(1, 2) = secondRow(2);
-        result(2, 0) = thirdRow(0);
-        result(2, 1) = thirdRow(1);
-        result(2, 2) = thirdRow(2);
-        return result;
-    }
-
-    inline
-    const Matrix2d
-    Matrix2d::FromColumns(
-        const ColumnMatrix2d& firstColumn,
-        const ColumnMatrix2d& secondColumn
-    ) {
-        Matrix2d result;
-        result(0, 0) = firstColumn(0);
-        result(1, 0) = firstColumn(1);
-        result(0, 1) = secondColumn(0);
-        result(1, 1) = secondColumn(1);
-        return result;
-    }
-
-    inline
-    const Matrix3d
-    Matrix3d::OuterProduct(const Matrix<3, 1>& columnMatrix, const Matrix<1, 3>& rowMatrix) {
-        Matrix3d result;
-        result(0, 0) = columnMatrix(0) * rowMatrix(0);
-        result(1, 0) = columnMatrix(1) * rowMatrix(0);
-        result(2, 0) = columnMatrix(2) * rowMatrix(0);
-        result(0, 1) = columnMatrix(0) * rowMatrix(1);
-        result(1, 1) = columnMatrix(1) * rowMatrix(1);
-        result(2, 1) = columnMatrix(2) * rowMatrix(1);
-        result(0, 2) = columnMatrix(0) * rowMatrix(2);
-        result(1, 2) = columnMatrix(1) * rowMatrix(2);
-        result(2, 2) = columnMatrix(2) * rowMatrix(2);
-        return result;
+        component(0) = a00;
+        component(1) = a10;
+        component(2) = a20;
+        component(3) = a01;
+        component(4) = a11;
+        component(5) = a21;
+        component(6) = a02;
+        component(7) = a12;
+        component(8) = a22;
     }
 
     inline
@@ -389,29 +194,6 @@ namespace opensolid
     }
 
     inline
-    const ColumnMatrix2d
-    ColumnMatrix2d::Zero() {
-        return ColumnMatrix2d();
-    }
-
-    inline
-    const ColumnMatrix2d
-    ColumnMatrix2d::Ones() {
-        ColumnMatrix2d result;
-        result.fill(1.0);
-        return result;
-    }
-
-    inline
-    const ColumnMatrix2d
-    ColumnMatrix2d::Random() {
-        ColumMatrix2d result;
-        result(0) = double(rand()) / RAND_MAX;
-        result(1) = double(rand()) / RAND_MAX;
-        return result;
-    }
-
-    inline
     ColumnMatrix3d::Matrix() :
         detail::MatrixBase<double, 3, 1>() {
 
@@ -432,30 +214,6 @@ namespace opensolid
         component(0) = x;
         component(1) = y;
         component(2) = z;
-    }
-
-    inline
-    const ColumnMatrix3d
-    ColumnMatrix3d::Zero() {
-        return ColumnMatrix3d();
-    }
-
-    inline
-    const ColumnMatrix3d
-    ColumnMatrix3d::Ones() {
-        ColumnMatrix3d result;
-        result.fill(1.0);
-        return result;
-    }
-
-    inline
-    const ColumnMatrix3d
-    ColumnMatrix3d::Random() {
-        ColumnMatrix3d result;
-        result(0) = double(rand()) / RAND_MAX;
-        result(1) = double(rand()) / RAND_MAX;
-        result(2) = double(rand()) / RAND_MAX;
-        return result;
     }
 
     template <int iNumRows, int iNumColumns>
