@@ -173,10 +173,9 @@ namespace opensolid
     inline
     Interval
     Interval::intersection(Interval interval) const {
-        return Interval(
-            max(lowerBound(), interval.lowerBound()),
-            min(upperBound(), interval.upperBound())
-        );
+        double lowerBound = max(this->lowerBound(), interval.lowerBound());
+        double upperBound = min(this->upperBound(), interval.upperBound());
+        return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::Empty();
     }
         
     inline
