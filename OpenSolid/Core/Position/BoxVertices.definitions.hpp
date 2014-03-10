@@ -31,7 +31,6 @@
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/LazyCollection.definitions.hpp>
 #include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
-#include <OpenSolid/Core/Transformable.declarations.hpp>
 
 namespace opensolid
 {
