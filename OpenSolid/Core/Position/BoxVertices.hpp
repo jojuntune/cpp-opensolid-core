@@ -74,7 +74,7 @@ namespace opensolid
         inline
         std::int64_t
         BoxVertices<iNumDimensions>::size() const {
-            return 8;
+            return 1 << iNumDimensions;
         }
 
         template <int iNumDimensions>
