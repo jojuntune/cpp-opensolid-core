@@ -80,9 +80,12 @@
         # Enable C++11 support
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-        # Set up warnings
+        # Enable lots of warnings
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+        # Disable warnings about unused parameters and variables
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-unused-variable")
+        # Disable warning about deprecated 'register' specifier (used by Eigen)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
 
         # Enable dynamic loading
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
