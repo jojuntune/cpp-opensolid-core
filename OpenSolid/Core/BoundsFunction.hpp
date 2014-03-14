@@ -43,19 +43,19 @@ namespace opensolid
     inline
     Interval
     BoundsFunction<int>::operator()(int value) const {
-        return Interval(value);
+        return Interval(double(value));
     }
 
     inline
     Interval
     BoundsFunction<unsigned>::operator()(unsigned value) const {
-        return Interval(value);
+        return Interval(double(value));
     }
 
     inline
     Interval
     BoundsFunction<std::int64_t>::operator()(std::int64_t value) const {
-        return Interval(value);
+        return Interval(double(value));
     }
 
     inline

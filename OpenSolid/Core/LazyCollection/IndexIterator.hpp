@@ -55,10 +55,10 @@ namespace opensolid
 
         template <class TCollection>
         inline
-        std::int64_t
+        std::ptrdiff_t
         IndexIterator<TCollection>::distance_to(const IndexIterator<TCollection>& other) const {
             assert(_collection == other._collection);
-            return other._index - _index;
+            return std::ptrdiff_t(other._index - _index);
         }
 
         template <class TCollection>

@@ -78,7 +78,7 @@ namespace opensolid
     {
     public:
         static ParametricExpression<1, iNumParameters>
-        Parameter(int parameterIndex);
+        Parameter(std::int64_t parameterIndex);
     };
 
     template <int iNumDimensions, int iNumParameters>

@@ -58,7 +58,7 @@ namespace opensolid
             void
             advance(std::int64_t distance);
 
-            std::int64_t
+            std::ptrdiff_t
             distance_to(const IndexIterator<TCollection>& other) const;
 
             bool

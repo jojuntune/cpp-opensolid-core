@@ -30,7 +30,7 @@ namespace opensolid
 {   
     int
     TranslationExpression::numDimensionsImpl() const {
-        return columnMatrixXd().rows();
+        return int(columnMatrixXd().rows());
     }
     
     void

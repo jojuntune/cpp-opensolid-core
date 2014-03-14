@@ -30,7 +30,7 @@ namespace opensolid
 {
     int
     TransformationExpression::numDimensionsImpl() const {
-        return matrixXd().rows();
+        return int(matrixXd().rows());
     }
     
     void

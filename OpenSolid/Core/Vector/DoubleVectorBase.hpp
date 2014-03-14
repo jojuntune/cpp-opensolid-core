@@ -68,7 +68,7 @@ namespace opensolid
         const UnitVector<iNumDimensions>
         DoubleVectorBase<iNumDimensions>::normalized() const {
             double norm = this->norm();
-            if (norm == Zero()) {
+            if (norm == opensolid::Zero()) {
                 assert(false);
                 return UnitVector<iNumDimensions>();
             }

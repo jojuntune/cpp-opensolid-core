@@ -56,10 +56,10 @@ namespace opensolid
             );
         public:
             const Point<iNumDimensions>&
-            vertex(int index) const;
+            vertex(std::int64_t index) const;
 
             Point<iNumDimensions>&
-            vertex(int index);
+            vertex(std::int64_t index);
 
             SimplexVertices<Triangle<iNumDimensions>, 3>
             vertices() const;
@@ -68,7 +68,7 @@ namespace opensolid
             centroid() const;
 
             LineSegment<iNumDimensions>
-            edge(int oppositeIndex) const;
+            edge(std::int64_t oppositeIndex) const;
 
             TriangleEdges<iNumDimensions>
             edges() const;

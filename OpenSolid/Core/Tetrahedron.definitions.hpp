@@ -72,24 +72,24 @@ namespace opensolid
         );
 
         const Point<3>&
-        vertex(int index) const;
+        vertex(std::int64_t index) const;
 
         Point<3>&
-        vertex(int index);
+        vertex(std::int64_t index);
 
         detail::SimplexVertices<Tetrahedron3d, 4>
         vertices() const;
 
         OPENSOLID_CORE_EXPORT
         LineSegment<3>
-        edge(int index) const;
+        edge(std::int64_t index) const;
 
         detail::TetrahedronEdges
         edges() const;
 
         OPENSOLID_CORE_EXPORT
         Triangle<3>
-        face(int oppositeIndex) const;
+        face(std::int64_t oppositeIndex) const;
 
         detail::TetrahedronFaces
         faces() const;

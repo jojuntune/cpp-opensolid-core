@@ -62,14 +62,14 @@ namespace opensolid
 
     inline
     const Point<3>&
-    Tetrahedron3d::vertex(int index) const {
+    Tetrahedron3d::vertex(std::int64_t index) const {
         assert(index >= 0 && index < 4);
         return _vertices[index];
     }
 
     inline
     Point<3>&
-    Tetrahedron3d::vertex(int index) {
+    Tetrahedron3d::vertex(std::int64_t index) {
         assert(index >= 0 && index < 4);
         return _vertices[index];
     }

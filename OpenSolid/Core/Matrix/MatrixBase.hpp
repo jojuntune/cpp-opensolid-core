@@ -34,6 +34,12 @@
 
 #include <cstdlib>
 
+// Disable warning C4351 (Visual Studio warning that _components array will in fact be
+// value-initialized as specified in the C++ standard; previous versions of Visual Studio did not
+// always value-initialize as required)
+#pragma warning(push)
+#pragma warning(disable: 4351)
+
 namespace opensolid
 {
     namespace detail
@@ -410,7 +416,7 @@ namespace opensolid
             const TScalar* dataPtr = data();
             for (std::int64_t columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
                 for (std::int64_t rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
-                    if (*dataPtr - int(rowIndex == columnIndex) != opensolid::Zero()) {
+                    if (*dataPtr - double(rowIndex == columnIndex) != opensolid::Zero()) {
                         return false;
                     }
                     ++dataPtr;
@@ -1028,3 +1034,5 @@ namespace opensolid
         }
     }
 }
+
+#pragma warning(pop)

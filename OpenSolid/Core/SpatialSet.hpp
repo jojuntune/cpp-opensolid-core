@@ -174,7 +174,7 @@ namespace opensolid
     template <class TItem>
     void
     SpatialSet<TItem>::init() {
-        std::int64_t numItems = _dataPtr->items.size();
+        std::size_t numItems = _dataPtr->items.size();
 
         if (numItems == 0) {
             _dataPtr->nodes.clear();
@@ -185,7 +185,7 @@ namespace opensolid
         std::vector<BoundsData> boundsData(numItems);
         std::vector<BoundsData*> boundsDataPtrs(numItems);
         BoundsFunction<TItem> boundsFunction;
-        for (std::int64_t i = 0; i < numItems; ++i) {
+        for (std::size_t i = 0; i < numItems; ++i) {
             typename BoundsType<TItem>::Type bounds = boundsFunction(_dataPtr->items[i]);
 
             boundsData[i].bounds = bounds;
@@ -345,7 +345,7 @@ namespace opensolid
     const TItem&
     SpatialSet<TItem>::operator[](std::int64_t index) const {
         assert(!isEmpty());
-        return _dataPtr->items[index];
+        return _dataPtr->items[std::size_t(index)];
     }
 
     template <class TItem>
@@ -451,8 +451,8 @@ namespace opensolid
                         const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
                         if (equalityFunction(*anchorItemPtr, *candidateItemPtr, precision)) {
                             std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
-                            assert(mapping[candidateItemIndex] == -1);
-                            mapping[candidateItemIndex] = uniqueIndex;
+                            assert(mapping[std::size_t(candidateItemIndex)] == -1);
+                            mapping[std::size_t(candidateItemIndex)] = uniqueIndex;
                         }
                         candidateNodePtr = candidateNodePtr->nextPtr;
                     }
@@ -480,7 +480,7 @@ namespace opensolid
             return std::vector<TItem>();
         } else {
             // Initialize unique item mapping
-            mapping.resize(size());
+            mapping.resize(std::size_t(size()));
             std::fill(mapping.begin(), mapping.end(), -1);
             std::int64_t uniqueIndex = 0;
 
@@ -497,9 +497,9 @@ namespace opensolid
             do {
                 const TItem* itemPtr = nodePtr->itemPtr;
                 std::int64_t itemIndex = itemPtr - firstItemPtr;
-                if (mapping[itemIndex] == -1) {
+                if (mapping[std::size_t(itemIndex)] == -1) {
                     results.push_back(*itemPtr);
-                    mapping[itemIndex] = uniqueIndex;
+                    mapping[std::size_t(itemIndex)] = uniqueIndex;
                     detail::markDuplicateItems(
                         nodePtr,
                         itemPtr,

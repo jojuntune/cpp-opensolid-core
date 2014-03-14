@@ -140,7 +140,7 @@ namespace opensolid
         ) const;
         
         ParametricExpression<iNumDimensions, iNumParameters>
-        derivative(int parameterIndex = 0) const;
+        derivative(std::int64_t parameterIndex = 0) const;
         
         ParametricExpression<1, iNumParameters>
         norm() const;
@@ -164,11 +164,11 @@ namespace opensolid
         z() const;
         
         ParametricExpression<1, iNumParameters>
-        component(int index) const;
+        component(std::int64_t index) const;
         
         template <int iNumComponents>
         ParametricExpression<iNumComponents, iNumParameters>
-        components(int startIndex) const;
+        components(std::int64_t startIndex) const;
         
         template <int iNumOtherDimensions>
         ParametricExpression<iNumDimensions + iNumOtherDimensions, iNumParameters>

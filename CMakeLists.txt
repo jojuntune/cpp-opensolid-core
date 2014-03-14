@@ -40,7 +40,11 @@
 ########## Set up common build settings ##########
 
     # Enable M_PI, M_PI_2, M_E, M_SQRT2 macros
-    add_definitions(-D_USE_MATH_DEFINES -DEIGEN_MPL2_ONLY)
+    add_definitions(-D_USE_MATH_DEFINES)
+
+    # Eigen configuration: ensure only MPL2-licensed portions are used, and disable all
+    # alignment/vectorization to avoid weird access violation errors on 32-bit Windows
+    add_definitions(-DEIGEN_MPL2_ONLY -DEIGEN_DONT_ALIGN)
 
     # Add preprocessor definition for dynamic libraries to enable propery setup
     # of dllimport/dllexport in MSVC builds

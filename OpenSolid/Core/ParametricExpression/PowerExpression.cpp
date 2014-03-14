@@ -209,7 +209,7 @@ namespace opensolid
         if (exponentExpression->isConstantExpression()) {
             _exponentIsConstant = true;
             _constantExponent = exponentExpression->cast<ConstantExpression>()->value();
-            _integerExponent = floor(_constantExponent + 0.5);
+            _integerExponent = int(floor(_constantExponent + 0.5));
             _exponentIsInteger = (_constantExponent - _integerExponent == Zero());
         } else {
             _exponentIsConstant = false;

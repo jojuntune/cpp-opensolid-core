@@ -31,7 +31,7 @@ namespace opensolid
 {
     int
     ConstantExpression::numDimensionsImpl() const {
-        return columnMatrixXd().size();
+        return int(columnMatrixXd().size());
     }
         
     int

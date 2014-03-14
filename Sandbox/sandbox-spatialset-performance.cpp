@@ -45,7 +45,7 @@ IntervalVector3d randomVector() {
 
 void
 testConstructionTime() {
-    typedef std::pair<std::int64_t, std::int64_t> TestCase;
+    typedef std::pair<std::size_t, std::size_t> TestCase;
 
     std::vector<TestCase> testCases;
     testCases.push_back(TestCase(10, 100000));
@@ -60,8 +60,8 @@ testConstructionTime() {
     std::cout << std::endl;
 
     for (std::size_t testIndex = 0; testIndex < testCases.size(); ++testIndex) {
-        std::int64_t numItems = testCases[testIndex].first;
-        std::int64_t numIterations = testCases[testIndex].second;
+        std::size_t numItems = testCases[testIndex].first;
+        std::size_t numIterations = testCases[testIndex].second;
 
         std::cout << "Items: " << numItems << ", Iterations: " << numIterations << std::endl;
 
@@ -71,7 +71,7 @@ testConstructionTime() {
         }
     
         boost::timer timer;
-        for (std::int64_t i = 0; i < numIterations; ++i) {
+        for (std::size_t i = 0; i < numIterations; ++i) {
             SpatialSet<IntervalVector3d> set(vectors.begin(), vectors.end());
         }
         double time = timer.elapsed();
@@ -84,7 +84,7 @@ testConstructionTime() {
 
 void
 testQueryTime() {
-    typedef std::pair<std::int64_t, std::int64_t> TestCase;
+    typedef std::pair<std::size_t, std::size_t> TestCase;
 
     std::vector<TestCase> testCases;
     testCases.push_back(TestCase(10, 10000000));
@@ -99,8 +99,8 @@ testQueryTime() {
     std::cout << std::endl;
 
     for (std::size_t testIndex = 0; testIndex < testCases.size(); ++testIndex) {
-        std::int64_t numItems = testCases[testIndex].first;
-        std::int64_t numQueries = testCases[testIndex].second;
+        std::size_t numItems = testCases[testIndex].first;
+        std::size_t numQueries = testCases[testIndex].second;
 
         std::cout << "Items: " << numItems << ", Queries: " << numQueries << std::endl;
 
@@ -123,10 +123,10 @@ testQueryTime() {
         );
 
         SpatialSet<IntervalVector3d> set(items.begin(), items.end());
-        std::int64_t checksum = 0;
+        std::size_t checksum = 0;
         boost::timer timer;
-        for (std::int64_t i = 0; i < numQueries; ++i) {
-            checksum += set.overlapping(queryBoxes[i]).size();
+        for (std::size_t i = 0; i < numQueries; ++i) {
+            checksum += std::size_t(set.overlapping(queryBoxes[i]).size());
         }
         double time = timer.elapsed();
         std::cout << "Time: " << time << "s, checksum: " << checksum << std::endl;

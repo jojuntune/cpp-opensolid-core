@@ -65,7 +65,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>&
-        TriangleBase<iNumDimensions>::vertex(int index) const {
+        TriangleBase<iNumDimensions>::vertex(std::int64_t index) const {
             assert(index >= 0 && index < 3);
             return _vertices[index];
         }
@@ -73,7 +73,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         Point<iNumDimensions>&
-        TriangleBase<iNumDimensions>::vertex(int index) {
+        TriangleBase<iNumDimensions>::vertex(std::int64_t index) {
             assert(index >= 0 && index < 3);
             return _vertices[index];
         }
@@ -97,7 +97,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         LineSegment<iNumDimensions>
-        TriangleBase<iNumDimensions>::edge(int oppositeIndex) const {
+        TriangleBase<iNumDimensions>::edge(std::int64_t oppositeIndex) const {
             assert(oppositeIndex >= 0 && oppositeIndex < 3);
             return LineSegment<iNumDimensions>(
                 vertex((oppositeIndex + 2) % 3),
