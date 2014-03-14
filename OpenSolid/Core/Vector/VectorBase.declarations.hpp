@@ -26,38 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/ParametricExpression/MatrixArgument.declarations.hpp>
-
-#include <boost/mpl/if.hpp>
-
 namespace opensolid
 {
-    template<class Type>
-    class MatrixArgument
+    namespace detail
     {
-    private:
-        typename boost::mpl::if_c<
-            Eigen::internal::has_direct_access<Type>::ret,
-            const Type&,
-            typename Type::PlainObject
-        >::type _argument;
-    public:
-        MatrixArgument(const Type& argument);
-    
-        const typename Type::Scalar*
-        data() const;
-        
-        int
-        rows() const;
-        
-        int
-        cols() const;
-        
-        int
-        outerStride() const;
-        
-        int
-        innerStride() const;
-    };
+        template <class TScalar, int iNumDimensions>
+        class VectorBase;
+    }
 }

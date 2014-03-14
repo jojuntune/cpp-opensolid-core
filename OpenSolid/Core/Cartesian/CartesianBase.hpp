@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Vector/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 
 #include <OpenSolid/Core/Matrix.hpp>
 
@@ -42,7 +42,7 @@ namespace opensolid
         template <class TScalar, int iNumDimensions>
         inline
         CartesianBase<TScalar, iNumDimensions>::CartesianBase(
-            const typename MatrixType<TScalar, iNumDimensions, 1>::Type& components
+            const Matrix<TScalar, iNumDimensions, 1>& components
         ) : _components(components) {
         }
 
@@ -54,14 +54,14 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        const typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+        const Matrix<TScalar, iNumDimensions, 1>&
         CartesianBase<TScalar, iNumDimensions>::components() const {
             return _components;
         }
 
         template <class TScalar, int iNumDimensions>
         inline
-        typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+        Matrix<TScalar, iNumDimensions, 1>&
         CartesianBase<TScalar, iNumDimensions>::components() {
             return _components;
         }
@@ -82,10 +82,10 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        const TScalar
+        TScalar
         CartesianBase<TScalar, iNumDimensions>::component(std::int64_t index) const {
             assert(index >= 0 && index < iNumDimensions);
-            return components().component(index)
+            return components().component(index);
         }
 
         template <class TScalar, int iNumDimensions>
@@ -93,12 +93,12 @@ namespace opensolid
         TScalar&
         CartesianBase<TScalar, iNumDimensions>::component(std::int64_t index) {
             assert(index >= 0 && index < iNumDimensions);
-            return components().component(index)
+            return components().component(index);
         }
 
         template <class TScalar, int iNumDimensions>
         inline
-        const TScalar
+        TScalar
         CartesianBase<TScalar, iNumDimensions>::operator()(std::int64_t index) const {
             return components()(index);
         }
@@ -108,6 +108,68 @@ namespace opensolid
         TScalar&
         CartesianBase<TScalar, iNumDimensions>::operator()(std::int64_t index) {
             return components()(index);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        CartesianBase<TScalar, iNumDimensions>::value() const {
+            static_assert(iNumDimensions == 1, "value() only defined for 1D objects");
+            return *data();
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar&
+        CartesianBase<TScalar, iNumDimensions>::value() {
+            static_assert(iNumDimensions == 1, "value() only defined for 1D objects");
+            return *data();
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        CartesianBase<TScalar, iNumDimensions>::x() const {
+            return component(0);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar&
+        CartesianBase<TScalar, iNumDimensions>::x() {
+            return component(0);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        CartesianBase<TScalar, iNumDimensions>::y() const {
+            static_assert(iNumDimensions >= 2, "y() only defined for 2D or 3D objects");
+            return component(1);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar&
+        CartesianBase<TScalar, iNumDimensions>::y() {
+            static_assert(iNumDimensions >= 2, "y() only defined for 2D or 3D objects");
+            return component(1);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar
+        CartesianBase<TScalar, iNumDimensions>::z() const {
+            static_assert(iNumDimensions == 3, "z() only defined for 3D objects");
+            return component(2);
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        TScalar&
+        CartesianBase<TScalar, iNumDimensions>::z() {
+            static_assert(iNumDimensions == 3, "z() only defined for 3D objects");
+            return component(2);
         }
     }
 }

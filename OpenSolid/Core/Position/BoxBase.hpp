@@ -30,10 +30,10 @@
 
 #include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.hpp>
-#include <OpenSolid/Core/IntervalMatrix.definitions.hpp>
-#include <OpenSolid/Core/IntervalVector.definitions.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Position/BoxVertices.hpp>
+#include <OpenSolid/Core/Vector.definitions.hpp>
 
 namespace opensolid
 {
@@ -53,7 +53,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        BoxBase<iNumDimensions>::BoxBase(const IntervalMatrix<iNumDimensions, 1>& components) :
+        BoxBase<iNumDimensions>::BoxBase(const Matrix<Interval, iNumDimensions, 1>& components) :
             CartesianBase<Interval, iNumDimensions>(components) {
         }
 
@@ -65,10 +65,10 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::isEmpty() const {
-            return components().any(
-                [] (Interval component) {
+            return this->components().any(
+                [] (Interval component) -> bool {
                     return component.isEmpty();
                 }
             );
@@ -77,27 +77,15 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>
-        Box<iNumDimensions>::minVertex() const {
-            return Point<iNumDimensions>(
-                components().map(
-                    [] (Interval component) {
-                        return component.lowerBound();
-                    }
-                )
-            );
+        BoxBase<iNumDimensions>::minVertex() const {
+            return Point<iNumDimensions>(this->components().cwiseLowerBound());
         }
         
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>
-        Box<iNumDimensions>::maxVertex() const {
-            return Point<iNumDimensions>(
-                components().map(
-                    [] (Interval component) {
-                        return component.upperBound();
-                    }
-                )
-            );
+        BoxBase<iNumDimensions>::maxVertex() const {
+            return Point<iNumDimensions>(this->components().cwiseUpperBound());
         }
 
         template <>
@@ -105,35 +93,37 @@ namespace opensolid
         const Point<1>
         BoxBase<1>::vertex(std::int64_t index) const {
             assert(index >= 0 && index < 2);
-            return Point<1>(index == 0 ? component(0).lowerBound() : component(0).upperBound());
+            return Point<1>(
+                index == 0 ? this->component(0).lowerBound() : this->component(0).upperBound()
+            );
         }
 
-        template <int iNumDimensions>
+        template <>
         inline
         const Point<2>
         BoxBase<2>::vertex(std::int64_t index) const {
             assert(index >= 0 && index < 4);
             return Point<2>(
-                index & 1 ? component(0).upperBound() : component(0).lowerBound(),
-                index & 2 ? component(1).upperBound() : component(1).lowerBound()
+                index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),
+                index & 2 ? this->component(1).upperBound() : this->component(1).lowerBound()
             );
         }
 
-        template <int iNumDimensions>
+        template <>
         inline
         const Point<3>
         BoxBase<3>::vertex(std::int64_t index) const {
             assert(index >= 0 && index < 8);
             return Point<3>(
-                index & 1 ? component(0).upperBound() : component(0).lowerBound(),
-                index & 2 ? component(1).upperBound() : component(1).lowerBound(),
-                index & 4 ? component(2).upperBound() : component(2).lowerBound()
+                index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),
+                index & 2 ? this->component(1).upperBound() : this->component(1).lowerBound(),
+                index & 4 ? this->component(2).upperBound() : this->component(2).lowerBound()
             );
         }
 
         template <int iNumDimensions>
         inline
-        BoxVertices<iNumDimensions>
+        const BoxVertices<iNumDimensions>
         BoxBase<iNumDimensions>::vertices() const {
             return BoxVertices<iNumDimensions>(derived());
         }
@@ -141,14 +131,8 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>
-        BoxBase<iNumDimensions>::midPoint() const {
-            return Point<iNumDimensions>(
-                components().map(
-                    [] (Interval component) {
-                        return component.median();
-                    }
-                )
-            );
+        BoxBase<iNumDimensions>::centroid() const {
+            return Point<iNumDimensions>(this->components().cwiseMedian());
         }
         
         template <int iNumDimensions>
@@ -156,8 +140,8 @@ namespace opensolid
         const Point<iNumDimensions>
         BoxBase<iNumDimensions>::randomPoint() const {
             return Point<iNumDimensions>(
-                components().map(
-                    [] (Interval component) {
+                this->components().map(
+                    [] (Interval component) -> double {
                         return component.randomValue();
                     }
                 )
@@ -166,27 +150,21 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const Vector<iNumDimensions>
+        const Vector<double, iNumDimensions>
         BoxBase<iNumDimensions>::diagonalVector() const {
-            return Point<iNumDimensions>(
-                components().map(
-                    [] (Interval component) {
-                        return component.width();
-                    }
-                )
-            );
+            return Vector<double, iNumDimensions>(this->components().cwiseWidth());
         }
 
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::overlaps(
             const Box<iNumDimensions>& other,
             double precision
         ) const {
-            return components().binaryAll(
+            return this->components().binaryAll(
                 other.components(),
-                [] (Interval component, Interval otherComponent) {
+                [precision] (Interval component, Interval otherComponent) -> bool {
                     return component.overlaps(otherComponent, precision);
                 }
             );
@@ -194,14 +172,14 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::strictlyOverlaps(
             const Box<iNumDimensions>& other,
             double precision
         ) const {
-            return components().binaryAll(
+            return this->components().binaryAll(
                 other.components(),
-                [] (Interval component, Interval otherComponent) {
+                [precision] (Interval component, Interval otherComponent) -> bool {
                     return component.strictlyOverlaps(otherComponent, precision);
                 }
             );
@@ -209,14 +187,14 @@ namespace opensolid
         
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::contains(
             const Point<iNumDimensions>& point,
             double precision
         ) const {
-            return components().binaryAll(
+            return this->components().binaryAll(
                 point.components(),
-                [] (Interval component, double pointComponent) {
+                [precision] (Interval component, double pointComponent) -> bool {
                     return component.contains(pointComponent, precision);
                 }
             );
@@ -224,14 +202,14 @@ namespace opensolid
         
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::strictlyContains(
             const Point<iNumDimensions>& point,
             double precision
         ) const {
-            return components().binaryAll(
+            return this->components().binaryAll(
                 point.components(),
-                [] (Interval component, double pointComponent) {
+                [precision] (Interval component, double pointComponent) -> bool {
                     return component.strictlyContains(pointComponent, precision);
                 }
             );
@@ -239,14 +217,14 @@ namespace opensolid
         
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::contains(
             const Box<iNumDimensions>& other,
             double precision
         ) const {
-            return components().binaryAll(
+            return this->components().binaryAll(
                 other.components(),
-                [] (Interval component, Interval otherComponent) {
+                [precision] (Interval component, Interval otherComponent) -> bool {
                     return component.contains(otherComponent, precision);
                 }
             );
@@ -254,14 +232,14 @@ namespace opensolid
         
         template <int iNumDimensions>
         inline
-        const bool
+        bool
         BoxBase<iNumDimensions>::strictlyContains(
             const Box<iNumDimensions>& other,
             double precision
         ) const {
-            return components().binaryAll(
+            return this->components().binaryAll(
                 other.components(),
-                [] (Interval component, Interval otherComponent) {
+                [precision] (Interval component, Interval otherComponent) -> bool {
                     return component.strictlyContains(otherComponent, precision);
                 }
             );
@@ -272,9 +250,9 @@ namespace opensolid
         const Box<iNumDimensions>
         BoxBase<iNumDimensions>::hull(const Point<iNumDimensions>& point) const {
             return Box<iNumDimensions>(
-                components.binaryMap(
+                this->components().binaryMap(
                     point.components(),
-                    [] (Interval component, double pointComponent) {
+                    [] (Interval component, double pointComponent) -> Interval {
                         return component.hull(pointComponent);
                     }
                 )
@@ -286,9 +264,9 @@ namespace opensolid
         const Box<iNumDimensions>
         BoxBase<iNumDimensions>::hull(const Box<iNumDimensions>& other) const {
             return Box<iNumDimensions>(
-                components.binaryMap(
+                this->components().binaryMap(
                     other.components(),
-                    [] (Interval component, Interval otherComponent) {
+                    [] (Interval component, Interval otherComponent) -> Interval {
                         return component.hull(otherComponent);
                     }
                 )
@@ -300,12 +278,39 @@ namespace opensolid
         const Box<iNumDimensions>
         BoxBase<iNumDimensions>::intersection(const Box<iNumDimensions>& other) const {
             return Box<iNumDimensions>(
-                components.binaryMap(
+                this->components().binaryMap(
                     other.components(),
-                    [] (Interval component, Interval otherComponent) {
+                    [] (Interval component, Interval otherComponent) -> Interval {
                         return component.intersection(otherComponent);
                     }
                 )
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Box<iNumDimensions>
+        BoxBase<iNumDimensions>::Unit() {
+            return Box<iNumDimensions>(
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit())
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Box<iNumDimensions>
+        BoxBase<iNumDimensions>::Empty() {
+            return Box<iNumDimensions>(
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+            );
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Box<iNumDimensions>
+        BoxBase<iNumDimensions>::Whole() {
+            return Box<iNumDimensions>(
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Whole())
             );
         }
     }

@@ -41,18 +41,18 @@ public:
         Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
         PlanarCoordinateSystem3d xyCoordinateSystem(
             Point3d::Origin(),
-            Vector3d::UnitX(),
-            Vector3d::UnitY()
+            UnitVector3d::X(),
+            UnitVector3d::Y()
         );
         PlanarCoordinateSystem3d yzCoordinateSystem(
             Point3d::Origin(),
-            Vector3d::UnitY(),
-            Vector3d::UnitZ()
+            UnitVector3d::Y(),
+            UnitVector3d::Z()
         );
         PlanarCoordinateSystem3d xzCoordinateSystem(
             Point3d::Origin(),
-            Vector3d::UnitX(),
-            Vector3d::UnitZ()
+            UnitVector3d::X(),
+            UnitVector3d::Z()
         );
 
         Triangle2d xyComponents = triangle3d / xyCoordinateSystem;
@@ -109,7 +109,7 @@ public:
 
     void testTriangleNormal() {
         Triangle3d triangle(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
-        Vector3d expectedNormal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
+        UnitVector3d expectedNormal = Vector3d(2, 0, 1).cross(Vector3d(1, 1, 3)).normalized();
         TS_ASSERT((triangle.normalVector() - expectedNormal).isZero());
     }
     
@@ -132,7 +132,7 @@ public:
     
     void testLineSegment1d() {
         LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
-        AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), Vector3d::UnitY());
+        AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), UnitVector3d::Y());
         
         LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
         TS_ASSERT((localized.startVertex() - Point1d(2)).isZero());
@@ -159,7 +159,7 @@ public:
 
     void testVector() {
         LineSegment3d lineSegment(Point3d(1, 2, 3), Point3d(4, 5, 6));
-        TS_ASSERT((lineSegment.vector() - Vector3d::Constant(3)).isZero());
+        TS_ASSERT((lineSegment.vector() - Vector3d(3, 3, 3)).isZero());
     }
 
     void testScaling() {
@@ -226,7 +226,7 @@ public:
     }
 
     void testLineSegmentPlaneIntersection() {
-        Plane3d plane(Point3d(0, 0, 1), Vector3d::UnitZ());
+        Plane3d plane(Point3d(0, 0, 1), UnitVector3d::Z());
 
         LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
         LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));

@@ -29,7 +29,7 @@
 #include <OpenSolid/Core/ParametricExpression/Evaluator.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.definitions.hpp>
 
 #include <unordered_map>
 
@@ -96,14 +96,14 @@ namespace opensolid
         MapXcI
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const MapXcI& parameterBounds
+            const MapXcI& parameterValues
         );
         
         OPENSOLID_CORE_EXPORT
         MapXcI
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const MapXcI& parameterBounds
+            const MapXcI& parameterValues
         );
     };
 }

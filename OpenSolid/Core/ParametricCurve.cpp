@@ -106,7 +106,8 @@ namespace opensolid
             t3 /= sum;
 
             result = Point2d(
-                t1 * thirdPoint.vector() + t2 * firstPoint.vector() + t3 * secondPoint.vector()
+                t1 * thirdPoint.components() + t2 * firstPoint.components() +
+                    t3 * secondPoint.components()
             );
             return true;
         }
@@ -186,9 +187,9 @@ namespace opensolid
             if (direction == ParametricCurve3d::CLOCKWISE) {
                 sidewaysVector = -sidewaysVector;
             }
-            ParametricExpression<3, 1> curveExpression = centerPoint.vector() +
-                cos(theta) * xVector + sin(theta) * sidewaysVector +
-                ParametricExpression<1, 1>::t() * zVector;
+            ParametricExpression<3, 1> curveExpression = centerPoint.components() +
+                cos(theta) * xVector.components() + sin(theta) * sidewaysVector.components() +
+                ParametricExpression<1, 1>::t() * zVector.components();
             return ParametricCurve3d(curveExpression, Interval::Unit());
         }
     }
@@ -363,15 +364,10 @@ namespace opensolid
     ParametricCurve3d
     ParametricCurve3d::Arc(
         const Point3d& centerPoint,
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         const Point3d& startPoint,
         const Point3d& endPoint
     ) {
-        if (axisDirection.squaredNorm() - 1 != Zero()) {
-            // Axis direction not a unit vector
-            assert(false);
-            return ParametricCurve3d();
-        }
         Vector3d startRadialVector = startPoint - centerPoint;
         if (startRadialVector.dot(axisDirection) != Zero()) {
             // Start point not coplanar with center
@@ -442,16 +438,11 @@ namespace opensolid
 
     ParametricCurve3d
     ParametricCurve3d::Arc(
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         double radius,
         const Point3d& startPoint,
         const Point3d& endPoint
     ) {
-        if (axisDirection.squaredNorm() - 1 != Zero()) {
-            // Axis direction vector is not a unit vector
-            assert(false);
-            return ParametricCurve3d();
-        }
         Vector3d displacementVector = endPoint - startPoint;
         if (displacementVector.dot(axisDirection) != Zero()) {
             // Start and end points are not coplanar with respect to the axis
@@ -500,7 +491,7 @@ namespace opensolid
     ParametricCurve3d
     ParametricCurve3d::Circle(
         const Point3d& centerPoint,
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         double radius
     ) {
         if (radius <= Zero()) {
@@ -517,7 +508,7 @@ namespace opensolid
     ParametricCurve3d
     ParametricCurve3d::Circle(
         const Point3d& centerPoint,
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         const Point3d& startPoint
     ) {
         Vector3d startRadialVector = startPoint - centerPoint;
@@ -547,16 +538,11 @@ namespace opensolid
 
     ParametricCurve3d
     ParametricCurve3d::Circle(
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         double radius,
         const Point3d& startPoint,
         const Point3d& secondPoint
     ) {
-        if (axisDirection.squaredNorm() - 1 != Zero()) {
-            // Axis direction vector is not a unit vector
-            assert(false);
-            return ParametricCurve3d();
-        }
         Vector3d displacementVector = secondPoint - startPoint;
         if (displacementVector.dot(axisDirection) != Zero()) {
             // Start and second points are not coplanar with respect to the axis
@@ -588,7 +574,8 @@ namespace opensolid
         const Point3d& secondPoint,
         const Point3d& thirdPoint
     ) {
-        Vector3d normalVector = (secondPoint - startPoint).cross(thirdPoint - secondPoint);
+        UnitVector3d normalVector =
+            (secondPoint - startPoint).cross(thirdPoint - secondPoint).normalized();
         if (normalVector.isZero()) {
             assert(false);
             return ParametricCurve3d();
@@ -689,18 +676,13 @@ namespace opensolid
     ParametricCurve3d
     ParametricCurve3d::Helix(
         const Point3d& startCenterPoint,
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         double radius,
         WindingDirection direction,
         double pitch,
         double numTurns,
         double length
     ) {
-        if (axisDirection.squaredNorm() - 1 != Zero()) {
-            assert(false);
-            return ParametricCurve3d();
-        }
-
         if (!detail::computeHelixParameters(pitch, numTurns, length)) {
             assert(false);
             return ParametricCurve3d();
@@ -722,18 +704,13 @@ namespace opensolid
     ParametricCurve3d
     ParametricCurve3d::Helix(
         const Point3d& startCenterPoint,
-        const Vector3d& axisDirection,
+        const UnitVector3d& axisDirection,
         WindingDirection direction,
         const Point3d& startPoint,
         double pitch,
         double numTurns,
         double length
     ) {
-        if (axisDirection.squaredNorm() - 1 != Zero()) {
-            assert(false);
-            return ParametricCurve3d();
-        }
-
         Vector3d startRadialVector = startPoint - startCenterPoint;
         if (startRadialVector.dot(axisDirection) != Zero()) {
             // Start point and start center point are not coplanar

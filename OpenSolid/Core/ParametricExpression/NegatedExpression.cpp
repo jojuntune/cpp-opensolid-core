@@ -44,11 +44,11 @@ namespace opensolid
 
     void
     NegatedExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = -evaluator.evaluate(operand(), parameterBounds);
+        results = -evaluator.evaluate(operand(), parameterValues);
     }
 
     void
@@ -62,11 +62,11 @@ namespace opensolid
     
     void
     NegatedExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = -evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = -evaluator.evaluateJacobian(operand(), parameterValues);
     }
 
     ExpressionImplementationPtr
@@ -85,12 +85,12 @@ namespace opensolid
     }
 
     ExpressionImplementationPtr
-    NegatedExpression::scalarMultiplicationImpl(double scale) const {
+    NegatedExpression::scalingImpl(double scale) const {
         return (-scale) * operand();
     }
 
     ExpressionImplementationPtr
-    NegatedExpression::matrixMultiplicationImpl(const MatrixXd& matrix) const {
+    NegatedExpression::transformationImpl(const MatrixXd& matrix) const {
         return (-matrix) * operand();
     }
 

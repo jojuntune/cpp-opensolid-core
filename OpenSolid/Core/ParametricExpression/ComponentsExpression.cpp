@@ -45,11 +45,11 @@ namespace opensolid
     
     void
     ComponentsExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
         results = operandBounds.middleRows(startIndex(), numComponents());
     }
 
@@ -65,11 +65,11 @@ namespace opensolid
     
     void
     ComponentsExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = operandJacobian.middleRows(startIndex(), numComponents());
     }
 

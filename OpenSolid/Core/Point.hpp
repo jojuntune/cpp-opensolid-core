@@ -47,7 +47,7 @@ namespace opensolid
 
     inline
     Point1d::Point(double value) :
-        detail::PointBase<1>(Matrix1d(value)) {
+        detail::PointBase<1>(Matrix1x1(value)) {
     }
 
     inline
@@ -56,7 +56,7 @@ namespace opensolid
     }
 
     inline
-    Point1d::Point(const Matrix1d& matrix) :
+    Point1d::Point(const Matrix1x1& matrix) :
         detail::PointBase<1>(matrix) {
     }
 
@@ -66,42 +66,12 @@ namespace opensolid
     }
 
     inline
-    const double
-    Point1d::value() const {
-        return component(0);
-    }
-
-    inline
-    double&
-    Point1d::value() {
-        return component(0);
-    }
-
-    inline
-    const double
-    Point1d::x() const {
-        return value();
-    }
-
-    inline
-    double&
-    Point1d::x() {
-        return value();
-    }
-
-    inline
-    const Point1d
-    Point1d::Origin() {
-        return Point1d();
-    }
-
-    inline
     Point2d::Point() {
     }
 
     inline
     Point2d::Point(double x, double y) :
-        detail::PointBase<2>(ColumnMatrix2d(x, y)) {
+        detail::PointBase<2>(Matrix2x1(x, y)) {
     }
 
     inline
@@ -110,41 +80,17 @@ namespace opensolid
     }
 
     inline
-    Point2d::Point(const ColumnMatrix2d& components) :
+    Point2d::Point(const Matrix2x1& components) :
         detail::PointBase<2>(components) {
     }
 
     inline
     Point2d::Point(const double* sourcePtr) :
-        detail::PointBase<2>(components) {
+        detail::PointBase<2>(sourcePtr) {
     }
 
     inline
-    const double
-    Point2d::x() const {
-        return component(0);
-    }
-
-    inline
-    double&
-    Point2d::x() {
-        return component(0);
-    }
-
-    inline
-    const double
-    Point2d::y() const {
-        return component(1);
-    }
-
-    inline
-    double&
-    Point2d::y() {
-        return component(1);
-    }
-
-    inline
-    const double
+    double
     Point2d::distanceTo(const Axis2d& axis) const {
         return (*this - axis.originPoint()).dot(axis.normalVector());
     }
@@ -182,12 +128,6 @@ namespace opensolid
 
     inline
     const Point2d
-    Point2d::Origin() {
-        return Point2d();
-    }
-
-    inline
-    const Point2d
     Point2d::Polar(double radius, double angle) {
         return Point2d(radius * cos(angle), radius * sin(angle));
     }
@@ -198,7 +138,7 @@ namespace opensolid
 
     inline
     Point3d::Point(double x, double y, double z) :
-        detail::PointBase<3>(ColumnMatrix3d(x, y, z)) {
+        detail::PointBase<3>(Matrix3x1(x, y, z)) {
     }
 
     inline
@@ -207,7 +147,7 @@ namespace opensolid
     }
 
     inline
-    Point3d::Point(const ColumnMatrix3d& components) :
+    Point3d::Point(const Matrix3x1& components) :
         detail::PointBase<3>(components) {
     }
 
@@ -217,67 +157,31 @@ namespace opensolid
     }
 
     inline
-    const double
-    Point3d::x() const {
-        return component(0);
-    }
-
-    inline
-    double&
-    Point3d::x() {
-        return component(0);
-    }
-
-    inline
-    const double
-    Point3d::y() const {
-        return component(1);
-    }
-
-    inline
-    double&
-    Point3d::y() {
-        return component(1);
-    }
-
-    inline
-    const double
-    Point3d::z() const {
-        return component(2);
-    }
-
-    inline
-    double&
-    Point3d::z() {
-        return component(2);
-    }
-
-    inline
-    const double
+    double
     Point3d::squaredDistanceTo(const Axis3d& axis) const {
         return (*this - this->projectedOnto(axis)).squaredNorm();
     }
 
     inline
-    const double
+    double
     Point3d::distanceTo(const Axis3d& axis) const {
         return sqrt(squaredDistanceTo(axis));
     }
 
     inline
-    const double
+    double
     Point3d::distanceTo(const Plane3d& plane) const {
         return (*this - plane.originPoint()).dot(plane.normalVector());
     }
 
     inline
-    const bool
+    bool
     Point3d::isOn(const Axis3d& axis, double precision) const {
         return squaredDistanceTo(axis) == Zero(precision * precision);
     }
 
     inline
-    const bool
+    bool
     Point3d::isOn(const Plane3d& plane, double precision) const {
         return distanceTo(plane) == Zero(precision);
     }
@@ -344,12 +248,6 @@ namespace opensolid
 
     inline
     const Point3d
-    Point3d::Origin() {
-        return Point3d();
-    }
-
-    inline
-    const Point3d
     Point3d::Cylindrical(double radius, double angle, double height) {
         return Point3d(radius * cos(angle), radius * sin(angle), height);
     }
@@ -371,22 +269,22 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     const Point<iNumDimensions>
-    operator+(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector) {
+    operator+(const Point<iNumDimensions>& point, const Vector<double, iNumDimensions>& vector) {
         return Point<iNumDimensions>(point.components() + vector.components());
     }
 
     template <int iNumDimensions>
     inline
     const Point<iNumDimensions>
-    operator-(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector) {
+    operator-(const Point<iNumDimensions>& point, const Vector<double, iNumDimensions>& vector) {
         return Point<iNumDimensions>(point.components() - vector.components());
     }
 
     template <int iNumDimensions>
     inline
-    const Vector<iNumDimensions>
+    const Vector<double, iNumDimensions>
     operator-(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint) {
-        return Vector<iNumDimensions>(firstPoint.components() - secondPoint.components());
+        return Vector<double, iNumDimensions>(firstPoint.components() - secondPoint.components());
     }
 
     template <int iNumDimensions>
@@ -412,16 +310,16 @@ namespace opensolid
         const Point<iNumDimensions>& secondPoint,
         double precision
     ) const {
-        return firstPoint - secondPoint == Zero(precision);
+        return (firstPoint - secondPoint).isZero(precision);
     }
 
     template <int iNumDimensions>
     inline
-    Box<iNumDimensions>
+    const Box<iNumDimensions>
     BoundsFunction<Point<iNumDimensions>>::operator()(const Point<iNumDimensions>& point) const {
         return Box<iNumDimensions>(
             point.components().map(
-                [] (double component) {
+                [] (double component) -> Interval {
                     return Interval(component);
                 }
             )
@@ -430,7 +328,7 @@ namespace opensolid
 
     template <int iNumDimensions>
     inline
-    Point<iNumDimensions>
+    const Point<iNumDimensions>
     ScalingFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& point,
         double scale
@@ -440,27 +338,27 @@ namespace opensolid
 
     template <int iNumDimensions>
     inline
-    Point<iNumDimensions>
+    const Point<iNumDimensions>
     TranslationFunction<Point<iNumDimensions>>::operator()(
         const Point<iNumDimensions>& point,
-        const Vector<iNumDimensions>& vector
+        const Vector<double, iNumDimensions>& vector
     ) const {
-        return point + vector;
+        return Point<iNumDimensions>(point.components() + vector.components());
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     inline
-    Point<iNumResultDimensions>
+    const Point<iNumResultDimensions>
     TransformationFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
-        const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
     ) const {
         return Point<iNumResultDimensions>(matrix * point.components());
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     inline
-    Point<iNumResultDimensions>
+    const Point<iNumResultDimensions>
     MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>::operator()(
         const Point<iNumDimensions>& point,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression

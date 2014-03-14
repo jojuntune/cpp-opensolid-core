@@ -30,11 +30,11 @@
 
 namespace opensolid
 {
-    class VectorAdditionExpression :
+    class ScalingExpression :
         public UnaryOperation
     {
     private:
-        VectorXd _vector;
+        double _scale;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -51,7 +51,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -67,7 +67,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -82,7 +82,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        vectorAdditionImpl(const VectorXd& vector) const override;
+        scalingImpl(double scale) const override;
+
+        OPENSOLID_CORE_EXPORT
+        ExpressionImplementationPtr
+        transformationImpl(const MatrixXd& matrix) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -93,13 +97,10 @@ namespace opensolid
         withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        VectorAdditionExpression(
-            const ExpressionImplementationPtr& operand,
-            const VectorXd& vector
-        );
+        ScalingExpression(double scale, const ExpressionImplementationPtr& operand);
 
-        const VectorXd&
-        vector() const;
+        double
+        scale() const;
     };
 }
 
@@ -108,8 +109,8 @@ namespace opensolid
 namespace opensolid
 {
     inline
-    const VectorXd&
-    VectorAdditionExpression::vector() const {
-        return _vector;
+    double
+    ScalingExpression::scale() const {
+        return _scale;
     }
 }

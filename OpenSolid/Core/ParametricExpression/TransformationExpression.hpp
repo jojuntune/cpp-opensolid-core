@@ -30,11 +30,11 @@
 
 namespace opensolid
 {
-    class MatrixMultiplicationExpression :
+    class TransformationExpression :
         public UnaryOperation
     {
     private:
-        MatrixXd _matrix;
+        MatrixXd _matrixXd;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -51,7 +51,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -67,7 +67,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -82,11 +82,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        scalarMultiplicationImpl(double scale) const override;
+        scalingImpl(double scale) const override;
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        matrixMultiplicationImpl(const MatrixXd& matrix) const override;
+        transformationImpl(const MatrixXd& matrix) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -97,13 +97,13 @@ namespace opensolid
         withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        MatrixMultiplicationExpression(
-            const MatrixXd& matrix,
+        TransformationExpression(
+            const MatrixXd& matrixXd,
             const ExpressionImplementationPtr& operand
         );
 
         const MatrixXd&
-        matrix() const;
+        matrixXd() const;
     };
 }
 
@@ -113,7 +113,7 @@ namespace opensolid
 {
     inline
     const MatrixXd&
-    MatrixMultiplicationExpression::matrix() const {
-        return _matrix;
+    TransformationExpression::matrixXd() const {
+        return _matrixXd;
     }
 }

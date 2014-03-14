@@ -29,7 +29,6 @@
 #include <OpenSolid/Core/Matrix/MatrixBase.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
-#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
 
 namespace opensolid
 {
@@ -39,9 +38,7 @@ namespace opensolid
         struct MappedScalarType
         {
             typedef typename std::decay<
-                typename std::result_of<
-                    TUnaryFunction(TScalar)
-                >::type
+                typename std::result_of<TUnaryFunction(TScalar)>::type
             >::type Type;
         };
 
@@ -49,20 +46,18 @@ namespace opensolid
         struct PairwiseMappedScalarType
         {
             typedef typename std::decay<
-                typename std::result_of<
-                    TBinaryFunction(TScalar, TOtherScalar)
-                >::type
+                typename std::result_of<TBinaryFunction(TScalar, TOtherScalar)>::type
             >::type Type;
         };
 
         template <class TUnaryFunction, class TScalar, int iNumRows, int iNumColumns>
         struct MappedMatrixType
         {
-            typedef typename MatrixType<
-                typename MappedScalarType<TFunction, TScalar>::Type,
+            typedef Matrix<
+                typename MappedScalarType<TUnaryFunction, TScalar>::Type,
                 iNumRows,
                 iNumColumns
-            >::Type Type;
+            > Type;
         };
 
         template <
@@ -74,11 +69,11 @@ namespace opensolid
         >
         struct PairwiseMappedMatrixType
         {
-            typedef typename MatrixType<
+            typedef Matrix<
                 typename PairwiseMappedScalarType<TBinaryFunction, TScalar, TOtherScalar>::Type,
                 iNumRows,
                 iNumColumns
-            >::Type Type;
+            > Type;
         };
 
         template <class TScalar, int iNumRows, int iNumColumns>
@@ -86,8 +81,6 @@ namespace opensolid
         {
         private:
             TScalar _components[iNumRows * iNumColumns];
-
-            template <class TScalar, int iNumRows, int iNumColumns> friend class MatrixBase;
         protected:
             static const int Size = iNumRows * iNumColumns;
 
@@ -121,10 +114,10 @@ namespace opensolid
             TScalar&
             operator()(std::int64_t rowIndex, std::int64_t columnIndex);
 
-            const typename MatrixType<TScalar, 1, iNumColumns>::Type
+            const Matrix<TScalar, 1, iNumColumns>
             row(std::int64_t rowIndex) const;
 
-            const typename MatrixType<TScalar, iNumRows, 1>::Type
+            const Matrix<TScalar, iNumRows, 1>
             column(std::int64_t columnIndex) const;
 
             const TScalar*
@@ -133,33 +126,8 @@ namespace opensolid
             TScalar*
             data();
 
-            void
-            fill(TScalar value);
-
-            const typename MatrixType<TScalar, iNumColumns, iNumRows>::Type
+            const Matrix<TScalar, iNumColumns, iNumRows>
             transpose() const;
-
-            template <class TUnaryPredicate>
-            const bool
-            any(TUnaryPredicate unaryPredicate) const;
-
-            template <class TUnaryPredicate>
-            const bool
-            all(TUnaryPredicate unaryPredicate) const;
-
-            template <class TBinaryPredicate, class TOtherScalar>
-            const bool
-            binaryAny(
-                const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
-                TBinaryPredicate binaryPredicate
-            ) const;
-
-            template <class TBinaryPredicate, class TOtherScalar>
-            const bool
-            binaryAll(
-                const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
-                TBinaryPredicate binaryPredicate
-            ) const;
 
             template <class TUnaryFunction>
             const typename MappedMatrixType<
@@ -179,49 +147,196 @@ namespace opensolid
                 iNumColumns
             >::Type
             binaryMap(
-                const MatrixBase<TOtherScalar, iNumRows, iNumColumns>& other,
+                const Matrix<TOtherScalar, iNumRows, iNumColumns>& other,
                 TBinaryFunction binaryFunction
             ) const;
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            template <class TValue, class TFunction>
+            const TValue
+            fold(TValue initialValue, TFunction function) const;
+
+            template <class TValue, class TOtherScalar, class TFunction>
+            const TValue
+            binaryFold(
+                const Matrix<TOtherScalar, iNumRows, iNumColumns>& other,
+                TValue initialValue,
+                TFunction function
+            ) const;
+
+            template <class TFunction>
+            TScalar
+            reduce(TFunction function) const;
+
+            template <class TUnaryPredicate>
+            bool
+            any(TUnaryPredicate unaryPredicate) const;
+
+            template <class TBinaryPredicate, class TOtherScalar>
+            bool
+            binaryAny(
+                const Matrix<TOtherScalar, iNumRows, iNumColumns>& other,
+                TBinaryPredicate binaryPredicate
+            ) const;
+
+            template <class TUnaryPredicate>
+            bool
+            all(TUnaryPredicate unaryPredicate) const;
+
+            template <class TBinaryPredicate, class TOtherScalar>
+            bool
+            binaryAll(
+                const Matrix<TOtherScalar, iNumRows, iNumColumns>& other,
+                TBinaryPredicate binaryPredicate
+            ) const;
+
+            bool
+            isZero(double precision = 1e-12) const;
+
+            bool
+            isIdentity(double precision = 1e-12) const;
+
+            const Matrix<double, iNumRows, iNumColumns>
+            cwiseLowerBound() const;
+
+            const Matrix<double, iNumRows, iNumColumns>
+            cwiseUpperBound() const;
+
+            const Matrix<double, iNumRows, iNumColumns>
+            cwiseWidth() const;
+
+            const Matrix<double, iNumRows, iNumColumns>
+            cwiseMedian() const;
+
+            const Matrix<TScalar, iNumRows, iNumColumns>
+            cwiseSquared() const;
+
+            template <class TOtherScalar>
+            const Matrix<decltype(TScalar() * TOtherScalar()), iNumRows, iNumColumns>
+            cwiseProduct(const Matrix<TOtherScalar, iNumRows, iNumColumns>& other) const;
+
+            template <class TOtherScalar>
+            const Matrix<decltype(TScalar() / TOtherScalar()), iNumRows, iNumColumns>
+            cwiseQuotient(const Matrix<TOtherScalar, iNumRows, iNumColumns>& other) const;
+
+            template <class TOtherScalar>
+            const Matrix<Interval, iNumRows, iNumColumns>
+            cwiseHull(const Matrix<TOtherScalar, iNumRows, iNumColumns>& other) const;
+
+            template <class TOtherScalar>
+            const Matrix<Interval, iNumRows, iNumColumns>
+            cwiseIntersection(const Matrix<TOtherScalar, iNumRows, iNumColumns>& other) const;
+
+            TScalar
+            sum() const;
+
+            TScalar
+            product() const;
+
+            bool
+            operator==(const Matrix<TScalar, iNumRows, iNumColumns>& other) const;
+
+            bool
+            operator!=(const Matrix<TScalar, iNumRows, iNumColumns>& other) const;
+
+            template <class TOtherScalar>
+            void
+            operator*=(TOtherScalar scale);
+
+            template <class TOtherScalar>
+            void
+            operator/=(TOtherScalar divisor);
+
+            template <class TOtherScalar>
+            void
+            operator+=(const Matrix<TOtherScalar, iNumRows, iNumColumns>& other) const;
+
+            template <class TOtherScalar>
+            void
+            operator-=(const Matrix<TOtherScalar, iNumRows, iNumColumns>& other) const;
+
+            void
+            setConstant(TScalar value);
+
+            void
+            setDefault();
+
+            void
+            setZero();
+
+            void
+            setOnes();
+
+            void
+            setIdentity();
+
+            void
+            setRandom();
+
+            void
+            setColumns(
+                const Matrix<TScalar, iNumRows, 1>& firstColumn,
+                const Matrix<TScalar, iNumRows, 1>& secondColumn
+            );
+
+            void
+            setColumns(
+                const Matrix<TScalar, iNumRows, 1>& firstColumn,
+                const Matrix<TScalar, iNumRows, 1>& secondColumn,
+                const Matrix<TScalar, iNumRows, 1>& thirdColumn
+            );
+
+            void
+            setRows(
+                const Matrix<TScalar, 1, iNumColumns>& firstRow,
+                const Matrix<TScalar, 1, iNumColumns>& secondRow
+            );
+
+            void
+            setRows(
+                const Matrix<TScalar, 1, iNumColumns>& firstRow,
+                const Matrix<TScalar, 1, iNumColumns>& secondRow,
+                const Matrix<TScalar, 1, iNumColumns>& thirdRow
+            );
+
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             Constant(TScalar value);
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             Zero();
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             Ones();
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             Identity();
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             Random();
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             FromColumns(
-                const typename MatrixType<TScalar, iNumRows, 1>& firstColumn,
-                const typename MatrixType<TScalar, iNumRows, 1>& secondColumn
+                const Matrix<TScalar, iNumRows, 1>& firstColumn,
+                const Matrix<TScalar, iNumRows, 1>& secondColumn
             );
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             FromColumns(
-                const typename MatrixType<TScalar, iNumRows, 1>& firstColumn,
-                const typename MatrixType<TScalar, iNumRows, 1>& secondColumn,
-                const typename MatrixType<TScalar, iNumRows, 1>& thirdColumn
+                const Matrix<TScalar, iNumRows, 1>& firstColumn,
+                const Matrix<TScalar, iNumRows, 1>& secondColumn,
+                const Matrix<TScalar, iNumRows, 1>& thirdColumn
             );
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             FromRows(
-                const typename MatrixType<TScalar, 1, iNumColumns>& firstRow,
-                const typename MatrixType<TScalar, 1, iNumColumns>& secondRow
+                const Matrix<TScalar, 1, iNumColumns>& firstRow,
+                const Matrix<TScalar, 1, iNumColumns>& secondRow
             );
 
-            static const typename MatrixType<TScalar, iNumRows, iNumColumns>::Type
+            static const Matrix<TScalar, iNumRows, iNumColumns>
             FromRows(
-                const typename MatrixType<TScalar, 1, iNumColumns>& firstRow,
-                const typename MatrixType<TScalar, 1, iNumColumns>& secondRow,
-                const typename MatrixType<TScalar, 1, iNumColumns>& thirdRow
+                const Matrix<TScalar, 1, iNumColumns>& firstRow,
+                const Matrix<TScalar, 1, iNumColumns>& secondRow,
+                const Matrix<TScalar, 1, iNumColumns>& thirdRow
             );
         };
     }

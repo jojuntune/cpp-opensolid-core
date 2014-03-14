@@ -36,22 +36,24 @@
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 
+#include <iostream>
+
 namespace opensolid
 {
     namespace detail
     {
-        template <class TDerived>
-        Matrix<double, TDerived::ColsAtCompileTime, TDerived::RowsAtCompileTime>
-        computeInverseMatrix(const EigenBase<TDerived>& basisMatrix) {
-            return (basisMatrix.derived().transpose() * basisMatrix.derived()).inverse() *
-                basisMatrix.derived().transpose();
+        template <int iNumAxes, int iNumDimensions>
+        Matrix<double, iNumAxes, iNumDimensions>
+        computeInverseMatrix(const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix) {
+            Matrix<double, iNumAxes, iNumDimensions> transpose = basisMatrix.transpose();
+            return (transpose * basisMatrix).inverse() * transpose;
         }
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem() :
-        _originPoint( Point<iNumDimensions>::Origin() ) {
+        _originPoint(Point<iNumDimensions>::Origin()) {
 
         _basisMatrix.setIdentity();
         _inverseMatrix.setIdentity();
@@ -76,20 +78,31 @@ namespace opensolid
         _basisMatrix(basisMatrix),
         _inverseMatrix(detail::computeInverseMatrix(basisMatrix)) {
     }
+    
+    template <int iNumDimensions, int iNumAxes>
+    inline
+    CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
+        const Point<iNumDimensions>& originPoint,
+        const Vector<double, iNumDimensions>& basisVector
+    ) : _originPoint(originPoint),
+        _basisMatrix(basisVector.components()),
+        _inverseMatrix(detail::computeInverseMatrix(basisVector.components())) {
+    }
 
     template <int iNumDimensions, int iNumAxes>
     inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
         const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumDimensions, 1>& xBasisVector,
-        const Matrix<double, iNumDimensions, 1>& yBasisVector
+        const Vector<double, iNumDimensions>& xBasisVector,
+        const Vector<double, iNumDimensions>& yBasisVector
     ) : _originPoint(originPoint) {
 
         static_assert(
             iNumAxes == 2,
             "2 basis vectors supplied but number of axes does not equal 2"
         );
-        _basisMatrix << xBasisVector, yBasisVector;
+
+        _basisMatrix.setColumns(xBasisVector.components(), yBasisVector.components());
         _inverseMatrix = detail::computeInverseMatrix(_basisMatrix);
     }
 
@@ -97,16 +110,21 @@ namespace opensolid
     inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem(
         const Point<iNumDimensions>& originPoint,
-        const Matrix<double, iNumDimensions, 1>& xBasisVector,
-        const Matrix<double, iNumDimensions, 1>& yBasisVector,
-        const Matrix<double, iNumDimensions, 1>& zBasisVector
+        const Vector<double, iNumDimensions>& xBasisVector,
+        const Vector<double, iNumDimensions>& yBasisVector,
+        const Vector<double, iNumDimensions>& zBasisVector
     ) : _originPoint(originPoint) {
 
         static_assert(
             iNumAxes == 3,
             "3 basis vectors supplied but number of axes does not equal 3"
         );
-        _basisMatrix << xBasisVector, yBasisVector, zBasisVector;
+
+        _basisMatrix.setColumns(
+            xBasisVector.components(),
+            yBasisVector.components(),
+            zBasisVector.components()
+        );
         _inverseMatrix = detail::computeInverseMatrix(_basisMatrix);
     }
         
@@ -126,13 +144,14 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    const Matrix<double, iNumDimensions, iNumAxes>&
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::basisVector() const {
         static_assert(
             iNumAxes == 1,
             "Only axial coordinate systems have a single basis vector"
         );
-        return basisMatrix();
+
+        return Vector<double, iNumDimensions>(basisMatrix());
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -144,217 +163,235 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Point<iNumDimensions>
+    const Point<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::point(double x) const {
         static_assert(
             iNumAxes == 1,
             "1 point coordinate supplied but number of axes does not equal 1"
         );
-        return originPoint() + basisVector() * x;
+
+        return originPoint() + vector(x);
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Point<iNumDimensions>
+    const Point<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::point(double x, double y) const {
         static_assert(
             iNumAxes == 2,
             "2 point coordinates supplied but number of axes does not equal 2"
         );
-        return originPoint() + basisMatrix() * Vector2d(x, y);
+
+        return originPoint() + vector(x, y);
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    Point<iNumDimensions>
+    const Point<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::point(double x, double y, double z) const {
         static_assert(
             iNumAxes == 3,
             "3 point coordinates supplied but number of axes does not equal 3"
         );
-        return originPoint() + basisMatrix() * Vector3d(x, y, z);
+
+        return originPoint() + vector(x, y, z);
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Matrix<double, iNumDimensions, 1>
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::vector(double x) const {
         static_assert(
             iNumAxes == 1,
             "1 vector coordinate supplied but number of axes does not equal 1"
         );
-        return basisVector() * x;
+
+        return Vector<double, iNumDimensions>(basisMatrix() * x);
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Matrix<double, iNumDimensions, 1>
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::vector(double x, double y) const {
         static_assert(
             iNumAxes == 2,
             "2 vector coordinates supplied but number of axes does not equal 2"
         );
-        return basisMatrix() * Vector2d(x, y);
+
+        return Vector<double, iNumDimensions>(basisMatrix() * Matrix2x1(x, y));
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    Matrix<double, iNumDimensions, 1>
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::vector(double x, double y, double z) const {
         static_assert(
             iNumAxes == 3,
             "3 vector coordinates supplied but number of axes does not equal 3"
         );
-        return basisMatrix() * Vector3d(x, y, z);
+
+        return Vector<double, iNumDimensions>(basisMatrix() * Matrix3x1(x, y, z));
     }
 
     template<int iNumDimensions, int iNumAxes>
     inline
-    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::xBasisVector() const {
-        return basisMatrix().col(0);
+        return Vector<double, iNumDimensions>(basisMatrix().column(0));
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::yBasisVector() const {
         static_assert(
             iNumAxes >= 2,
             "Coordinate system must have at least two axes to have a Y basis vector"
         );
-        return basisMatrix().col(1);
+
+        return Vector<double, iNumDimensions>(basisMatrix().column(1));
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::zBasisVector() const {
         static_assert(
             iNumAxes >= 3,
             "Coordinate system must have at least three axes to have a Z basis vector"
         );
-        return basisMatrix().col(2);
+
+        return Vector<double, iNumDimensions>(basisMatrix().column(2));
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+    const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::basisVector(int axisIndex ) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
             throw Error(new PlaceholderError());
         }
-        return basisMatrix().col(axisIndex);
+
+        return Vector<double, iNumDimensions>(basisMatrix().column(axisIndex));
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    Axis<iNumDimensions>
+    const Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::xAxis() const {
-        return Axis<iNumDimensions>(originPoint(), xBasisVector());
+        return Axis<iNumDimensions>(originPoint(), xBasisVector().normalized());
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    Axis<iNumDimensions>
+    const Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::yAxis() const {
         static_assert(
             iNumAxes >= 2,
             "Coordinate system must have at least two axes to have a Y axis"
         );
-        return Axis<iNumDimensions>(originPoint(), yBasisVector());
+
+        return Axis<iNumDimensions>(originPoint(), yBasisVector().normalized());
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    Axis<iNumDimensions>
+    const Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::zAxis() const {
         static_assert(
             iNumAxes >= 3,
             "Coordinate system must have at least three axes to have a Z axis"
         );
-        return Axis<iNumDimensions>(originPoint(), zBasisVector());
+
+        return Axis<iNumDimensions>(originPoint(), zBasisVector().normalized());
     }
     
     template <int iNumDimensions, int iNumAxes>
     inline
-    Axis<iNumDimensions>
+    const Axis<iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::axis(int axisIndex) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
             throw Error(new PlaceholderError());
         }
-        return Axis<iNumDimensions>(originPoint(), basisVector(axisIndex));
+
+        return Axis<iNumDimensions>(originPoint(), basisVector(axisIndex).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::xyPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "XY plane requested for non-3D coordinate system"
         );
-        return Plane3d(originPoint(), xBasisVector().cross(yBasisVector()));
+
+        return Plane3d(originPoint(), xBasisVector().cross(yBasisVector()).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::xzPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "XZ plane requested for non-3D coordinate system"
         );
-        return Plane3d(originPoint(), xBasisVector().cross(zBasisVector()));
+
+        return Plane3d(originPoint(), xBasisVector().cross(zBasisVector()).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::yxPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "YX plane requested for non-3D coordinate system"
         );
-        return Plane3d(originPoint(), yBasisVector().cross(xBasisVector()));
+
+        return Plane3d(originPoint(), yBasisVector().cross(xBasisVector()).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::yzPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "YZ plane requested for non-3D coordinate system"
         );
-        return Plane3d(originPoint(), yBasisVector().cross(zBasisVector()));
+
+        return Plane3d(originPoint(), yBasisVector().cross(zBasisVector()).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::zxPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "ZX plane requested for non-3D coordinate system"
         );
-        return Plane3d(originPoint(), zBasisVector().cross(xBasisVector()));
+
+        return Plane3d(originPoint(), zBasisVector().cross(xBasisVector()).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::zyPlane() const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
             "ZY plane requested for non-3D coordinate system"
         );
-        return Plane3d(originPoint(), zBasisVector().cross(yBasisVector()));
+
+        return Plane3d(originPoint(), zBasisVector().cross(yBasisVector()).normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    Plane3d
+    const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::plane(
         int firstAxisIndex,
         int secondAxisIndex
@@ -375,17 +412,23 @@ namespace opensolid
         }
 
         Vector3d normalVector = basisVector(firstAxisIndex).cross(basisVector(secondAxisIndex));
-        return Plane3d(originPoint(), normalVector);
+        return Plane3d(originPoint(), normalVector.normalized());
     }
 
     template <int iNumDimensions, int iNumAxes>
-    CoordinateSystem<iNumDimensions, iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
     CoordinateSystem<iNumDimensions, iNumAxes>::normalized() const {
         Matrix<double, iNumDimensions, iNumAxes> resultBasisMatrix = basisMatrix();
-        for (int i = 0; i < iNumAxes; ++i) {
-            Matrix<double, iNumDimensions, 1> resultBasisVector = resultBasisMatrix.col(i);
-            for (int j = 0; j < i; ++j) {
-                Matrix<double, iNumDimensions, 1> normalizedBasisVector = resultBasisMatrix.col(j);
+        for (std::int64_t columnIndex = 0; columnIndex < iNumAxes; ++columnIndex) {
+            Vector<double, iNumDimensions> resultBasisVector(basisMatrix().column(columnIndex));
+            for (
+                int normalizedColumnIndex = 0;
+                normalizedColumnIndex < columnIndex;
+                ++normalizedColumnIndex
+            ) {
+                Vector<double, iNumDimensions> normalizedBasisVector(
+                    resultBasisMatrix.column(normalizedColumnIndex)
+                );
                 resultBasisVector = resultBasisVector -
                     resultBasisVector.dot(normalizedBasisVector) * normalizedBasisVector;
             }
@@ -395,19 +438,23 @@ namespace opensolid
             } else {
                 resultBasisVector = resultBasisVector.normalized();
             }
-            resultBasisMatrix.col(i) = resultBasisVector;
+            for (std::int64_t rowIndex = 0; rowIndex < iNumDimensions; ++rowIndex) {
+                resultBasisMatrix.component(rowIndex, columnIndex) =
+                    resultBasisVector.component(rowIndex);
+            }
         }
         return CoordinateSystem<iNumDimensions, iNumAxes>(originPoint(), resultBasisMatrix);
     }
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    CoordinateSystem<iNumDimensions, iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
     CoordinateSystem<iNumDimensions, iNumAxes>::Global() {
         static_assert(
             iNumDimensions == iNumAxes,
             "Global coordinate system always has equal number of dimensions and axes"
         );
+        
         return CoordinateSystem(
             Point<iNumDimensions>::Origin(),
             Matrix<double, iNumDimensions, iNumAxes>::Identity()
@@ -416,7 +463,7 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumAxes>
     inline
-    CoordinateSystem<iNumDimensions, iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
     ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
         double scale
@@ -427,45 +474,44 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions, int iNumAxes> template <class TVector>
+    template <int iNumDimensions, int iNumAxes>
     inline
-    CoordinateSystem<iNumDimensions, iNumAxes>
+    const CoordinateSystem<iNumDimensions, iNumAxes>
     TranslationFunction<CoordinateSystem<iNumDimensions, iNumAxes>>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const EigenBase<TVector>& vector
+        const Vector<double, iNumDimensions>& vector
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            coordinateSystem.originPoint().translatedBy(vector.derived()),
+            translationFunction(coordinateSystem.originPoint(), vector),
             coordinateSystem.basisMatrix()
         );
     }
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
-    template <class TMatrix>
-    CoordinateSystem<iNumResultDimensions, iNumAxes>
+    const CoordinateSystem<iNumResultDimensions, iNumAxes>
     TransformationFunction<
         CoordinateSystem<iNumDimensions, iNumAxes>,
         iNumResultDimensions
     >::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const EigenBase<TMatrix>& matrix
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            transformationFunction(coordinateSystem.originPoint(), matrix.derived()),
-            matrix.derived() * coordinateSystem.basisMatrix()
+            transformationFunction(coordinateSystem.originPoint(), matrix),
+            matrix * coordinateSystem.basisMatrix()
         );
     }
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     inline
-    CoordinateSystem<iNumResultDimensions, iNumAxes>
+    const CoordinateSystem<iNumResultDimensions, iNumAxes>
     MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            coordinateSystem.originPoint().morphedBy(morphingExpression),
-            morphingExpression.jacobian(coordinateSystem.originPoint().vector()) *
+            morphingFunction(coordinateSystem.originPoint(), morphingExpression),
+            morphingExpression.jacobian(coordinateSystem.originPoint().components()) *
                 coordinateSystem.basisMatrix()
         );
     }

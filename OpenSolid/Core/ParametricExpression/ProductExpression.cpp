@@ -46,12 +46,12 @@ namespace opensolid
     
     void
     ProductExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
         results = secondBounds * firstBounds.topRows<1>().asDiagonal();
     }
 
@@ -70,14 +70,14 @@ namespace opensolid
     
     void
     ProductExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Interval multiplierBounds = evaluator.evaluate(firstOperand(), parameterBounds).value();
-        MapXcI multiplicandValue = evaluator.evaluate(secondOperand(), parameterBounds);
-        MapXcI multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
-        MapXcI multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        Interval multiplierBounds = evaluator.evaluate(firstOperand(), parameterValues).value();
+        MapXcI multiplicandValue = evaluator.evaluate(secondOperand(), parameterValues);
+        MapXcI multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcI multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
         results = multiplierBounds * multiplicandJacobian + multiplicandValue * multiplierJacobian;
     }
 

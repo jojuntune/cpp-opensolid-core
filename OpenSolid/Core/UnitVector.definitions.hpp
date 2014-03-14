@@ -32,9 +32,33 @@
 
 namespace opensolid
 {
+    template <int iNumDimensions>
+    struct NumDimensions<UnitVector<iNumDimensions>>
+    {
+        static const int Value = iNumDimensions;
+    };
+
+    template <int iNumDimensions>
+    struct BoundsType<UnitVector<iNumDimensions>>
+    {
+        typedef Vector<Interval, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ScaledType<UnitVector<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<UnitVector<iNumDimensions>, iNumResultDimensions>
+    {
+        typedef Vector<double, iNumResultDimensions> Type;
+    };
+
     template <>
     class UnitVector<1> :
-        public Vector<1>
+        public Vector<double, 1>
     {
     public:
         UnitVector();
@@ -43,12 +67,15 @@ namespace opensolid
         UnitVector(double x);
 
         explicit
-        UnitVector(const Vector1d& vector);
+        UnitVector(const Matrix<double, 1, 1>& components);
 
-        const double
+        explicit
+        UnitVector(const Vector<double, 1>& vector);
+
+        double
         norm();
 
-        const double
+        double
         squaredNorm() const;
 
         const UnitVector<1>
@@ -65,7 +92,7 @@ namespace opensolid
  
     template <>
     class UnitVector<2> :
-        public Vector<2>
+        public Vector<double, 2>
     {
     public:
         UnitVector();
@@ -73,12 +100,15 @@ namespace opensolid
         UnitVector(double x, double y);
 
         explicit
-        UnitVector(const Vector2d& vector);
+        UnitVector(const Matrix<double, 2, 1>& components);
 
-        const double
+        explicit
+        UnitVector(const Vector<double, 2>& vector);
+
+        double
         norm() const;
 
-        const double
+        double
         squaredNorm() const;
 
         const UnitVector<2>
@@ -101,7 +131,7 @@ namespace opensolid
 
     template <>
     class UnitVector<3> :
-        public Vector<3>
+        public Vector<double, 3>
     {
     public:
         UnitVector();
@@ -109,7 +139,10 @@ namespace opensolid
         UnitVector(double x, double y, double z);
 
         explicit
-        UnitVector(const Vector3d& vector);
+        UnitVector(const Matrix<double, 3, 1>& components);
+
+        explicit
+        UnitVector(const Vector<double, 3>& vector);
 
         double
         norm() const;
@@ -143,4 +176,32 @@ namespace opensolid
 
     const UnitVector3d
     operator-(const UnitVector3d& unitVector);
+
+    template <int iNumDimensions>
+    struct BoundsFunction<UnitVector<iNumDimensions>> :
+        public BoundsFunction<Vector<double, iNumDimensions>>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct ScalingFunction<UnitVector<iNumDimensions>> :
+        public ScalingFunction<Vector<double, iNumDimensions>>
+    {
+    };
+
+    template <int iNumDimensions>
+    struct TranslationFunction<UnitVector<iNumDimensions>>
+    {
+        const UnitVector<iNumDimensions>&
+        operator()(
+            const UnitVector<iNumDimensions>& unitVector,
+            const Vector<double, iNumDimensions>& vector
+        ) const;
+    };
+
+    template <int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<UnitVector<iNumDimensions>, iNumResultDimensions> :
+        public TransformationFunction<Vector<double, iNumDimensions>, iNumResultDimensions>
+    {
+    };
 }

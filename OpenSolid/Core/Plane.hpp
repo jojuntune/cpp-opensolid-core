@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
@@ -43,7 +44,7 @@ namespace opensolid
     }
 
     inline
-    const Vector3d&
+    const UnitVector3d&
     Plane3d::normalVector() const {
         return _normalVector;
     }
@@ -51,20 +52,21 @@ namespace opensolid
     inline
     Plane3d
     ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
-        double normalScale = scale >= 0.0 ? 1.0 : -1.0;
         return Plane3d(
             scalingFunction(plane.originPoint(), scale),
-            normalScale * plane.normalVector()
+            scale >= 0.0 ? plane.normalVector() : -plane.normalVector()
         );
     }
 
-    template <class TVector>
     inline
     Plane3d
     TranslationFunction<Plane3d>::operator()(
         const Plane3d& plane,
-        const EigenBase<TVector>& vector
+        const Vector<double, 3>& vector
     ) const {
-        return Plane3d(plane.originPoint() + vector.derived(), plane.normalVector());
+        return Plane3d(
+            translationFunction(plane.originPoint(), vector),
+            plane.normalVector()
+        );
     }
 }

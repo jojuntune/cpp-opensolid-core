@@ -72,7 +72,7 @@ namespace opensolid
         const SpatialSet<ParametricCurve2d>&
         boundaries() const;
 
-        const bool
+        bool
         isEmpty() const;
 
         const Box<2>
@@ -100,7 +100,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
+        operator()(const BoundedArea2d& boundedArea, const Matrix2x2& matrix) const;
     };
 
     template <>

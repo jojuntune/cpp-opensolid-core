@@ -48,17 +48,17 @@ namespace opensolid
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluateBounds(domain.bounds().vector())) {
+        _bounds(expression.evaluate(domain.bounds().components())) {
     }
 
     Point2d
     ParametricArea2d::evaluate(double u, double v) const {
-        return Point2d(expression().evaluate(Vector2d(u, v)));
+        return Point2d(expression().evaluate(u, v));
     }
 
     Box2d
-    ParametricArea2d::evaluateBounds(Interval u, Interval v) const {
-        return Box2d(expression().evaluateBounds(Vector2I(u, v)));
+    ParametricArea2d::evaluate(Interval u, Interval v) const {
+        return Box2d(expression().evaluate(u, v));
     }
 
     ParametricArea2d
@@ -66,7 +66,10 @@ namespace opensolid
         const ParametricArea2d& parametricArea,
         double scale
     ) const {
-        return ParametricArea2d(scale * parametricArea.expression(), parametricArea.domain());
+        return ParametricArea2d(
+            scale * parametricArea.expression(),
+            parametricArea.domain()
+        );
     }
 
     ParametricArea2d
@@ -74,15 +77,21 @@ namespace opensolid
         const ParametricArea2d& parametricArea,
         const Vector2d& vector
     ) const {
-        return ParametricArea2d(parametricArea.expression() + vector, parametricArea.domain());
+        return ParametricArea2d(
+            parametricArea.expression() + vector.components(),
+            parametricArea.domain()
+        );
     }
 
     ParametricArea2d
     TransformationFunction<ParametricArea2d, 2>::operator()(
         const ParametricArea2d& parametricArea,
-        const Matrix2d& matrix
+        const Matrix2x2& matrix
     ) const {
-        return ParametricArea2d(matrix * parametricArea.expression(), parametricArea.domain());
+        return ParametricArea2d(
+            matrix * parametricArea.expression(),
+            parametricArea.domain()
+        );
     }
 
     ParametricArea2d

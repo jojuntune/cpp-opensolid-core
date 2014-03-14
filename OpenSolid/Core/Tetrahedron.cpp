@@ -69,18 +69,19 @@ namespace opensolid
 
     double
     Tetrahedron3d::volume() const {
-        Matrix3d matrix;
-        matrix.col(0) = vertex(1) - vertex(0);
-        matrix.col(1) = vertex(2) - vertex(0);
-        matrix.col(2) = vertex(3) - vertex(0);
+        Matrix3x3 matrix = Matrix3x3::FromColumns(
+            vertex(1).components() - vertex(0).components(),
+            vertex(2).components() - vertex(0).components(),
+            vertex(3).components() - vertex(0).components()
+        );
         return matrix.determinant() / 6.0;
     }
 
     Point3d
     Tetrahedron3d::centroid() const {
         return Point3d(
-            (vertex(0).vector() + vertex(1).vector() +
-                vertex(2).vector() + vertex(3).vector()) / 4.0
+            (vertex(0).components() + vertex(1).components() +
+                vertex(2).components() + vertex(3).components()) / 4.0
         );
     }
 
@@ -153,7 +154,7 @@ namespace opensolid
     Tetrahedron3d
     TransformationFunction<Tetrahedron3d, 3>::operator()(
         const Tetrahedron3d& tetrahedron,
-        const Matrix3d& matrix
+        const Matrix3x3& matrix
     ) const {
         return Tetrahedron3d(
             transformationFunction(tetrahedron.vertex(0), matrix),

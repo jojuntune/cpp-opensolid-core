@@ -47,14 +47,14 @@ namespace opensolid
     
     void
     ConcatenationExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
         results.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluate(firstOperand(), parameterBounds);
+            evaluator.evaluate(firstOperand(), parameterValues);
         results.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluate(secondOperand(), parameterBounds);
+            evaluator.evaluate(secondOperand(), parameterValues);
     }
 
     void
@@ -71,14 +71,14 @@ namespace opensolid
     
     void
     ConcatenationExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
         results.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+            evaluator.evaluateJacobian(firstOperand(), parameterValues);
         results.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+            evaluator.evaluateJacobian(secondOperand(), parameterValues);
     }
     
     ExpressionImplementationPtr

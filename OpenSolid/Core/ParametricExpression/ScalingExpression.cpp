@@ -22,90 +22,89 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/ParametricExpression/VectorAdditionExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/ScalingExpression.hpp>
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{   
+{
     int
-    VectorAdditionExpression::numDimensionsImpl() const {
+    ScalingExpression::numDimensionsImpl() const {
         return operand()->numDimensions();
     }
     
     void
-    VectorAdditionExpression::evaluateImpl(
+    ScalingExpression::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
-        results = operandValues.colwise() + vector();
+        results = scale() * evaluator.evaluate(operand(), parameterValues);
     }
     
     void
-    VectorAdditionExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+    ScalingExpression::evaluateImpl(
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
-        results = operandBounds.colwise() + vector().cast<Interval>();
+        results = Interval(scale()) * evaluator.evaluate(operand(), parameterValues);
     }
 
     void
-    VectorAdditionExpression::evaluateJacobianImpl(
+    ScalingExpression::evaluateJacobianImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluateJacobian(operand(), parameterValues);
+        results = scale() * evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     void
-    VectorAdditionExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+    ScalingExpression::evaluateJacobianImpl(
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = Interval(scale()) * evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     ExpressionImplementationPtr
-    VectorAdditionExpression::derivativeImpl(int parameterIndex) const {
-        return operand()->derivative(parameterIndex);
+    ScalingExpression::derivativeImpl(int parameterIndex) const {
+        return scale() * operand()->derivative(parameterIndex);
     }
 
     bool
-    VectorAdditionExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+    ScalingExpression::isDuplicateOfImpl(
+        const ExpressionImplementationPtr& other
+    ) const {
         return duplicateOperands(other) &&
-            (vector() - other->cast<VectorAdditionExpression>()->vector()).isZero();
+            this->scale() == other->cast<ScalingExpression>()->scale();
     }
 
     ExpressionImplementationPtr
-    VectorAdditionExpression::vectorAdditionImpl(const VectorXd& vector) const {
-        return operand() + (this->vector() + vector);
+    ScalingExpression::scalingImpl(double scale) const {
+        return (scale * this->scale()) * operand();
+    }
+
+    ExpressionImplementationPtr
+    ScalingExpression::transformationImpl(const MatrixXd& matrix) const {
+        return (scale() * matrix) * operand();
     }
     
     void
-    VectorAdditionExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "VectorAdditionExpression" << std::endl;
+    ScalingExpression::debugImpl(std::ostream& stream, int indent) const {
+        stream << "ScalingExpression" << std::endl;
         operand()->debug(stream, indent + 1);
     }
 
     ExpressionImplementationPtr
-    VectorAdditionExpression::withNewOperandImpl(
-        const ExpressionImplementationPtr& newOperand
-    ) const {
-        return newOperand + vector();
+    ScalingExpression::withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const {
+        return scale() * newOperand;
     }
 
-    VectorAdditionExpression::VectorAdditionExpression(
-        const ExpressionImplementationPtr& operand,
-        const VectorXd& vector
-    ) : UnaryOperation(operand),
-        _vector(vector) {
-
-        assert(vector.size() == operand->numDimensions());
+    ScalingExpression::ScalingExpression(double scale, const ExpressionImplementationPtr& operand) :
+        UnaryOperation(operand),
+        _scale(scale) {
     }
 }

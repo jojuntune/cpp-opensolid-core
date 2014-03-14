@@ -30,9 +30,10 @@
 
 #include <OpenSolid/Core/Box.declarations.hpp>
 #include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
-#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
-#include <OpenSolid/Core/IntervalVector.declarations.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Position/BoxVertices.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
 {
@@ -48,11 +49,11 @@ namespace opensolid
         protected:
             BoxBase();
 
-            BoxBase(const IntervalMatrix<iNumDimensions, 1>& components);
+            BoxBase(const Matrix<Interval, iNumDimensions, 1>& components);
 
             BoxBase(const Interval* sourcePtr);
         public:
-            const bool
+            bool
             isEmpty() const;
 
             const Point<iNumDimensions>
@@ -64,34 +65,34 @@ namespace opensolid
             const Point<iNumDimensions>
             vertex(std::int64_t index) const;
 
-            detail::BoxVertices<iNumDimensions>
+            const BoxVertices<iNumDimensions>
             vertices() const;
             
             const Point<iNumDimensions>
-            midPoint() const;
+            centroid() const;
             
             const Point<iNumDimensions>
             randomPoint() const;
 
-            const Vector<iNumDimensions>
+            const Vector<double, iNumDimensions>
             diagonalVector() const;
 
-            const bool
+            bool
             overlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
 
-            const bool
+            bool
             strictlyOverlaps(const Box<iNumDimensions>& other, double precision = 1e-12) const;
             
-            const bool
+            bool
             contains(const Point<iNumDimensions>& point, double precision = 1e-12) const;
             
-            const bool
+            bool
             strictlyContains(const Point<iNumDimensions>& point, double precision = 1e-12) const;
             
-            const bool
+            bool
             contains(const Box<iNumDimensions>& other, double precision = 1e-12) const;
             
-            const bool
+            bool
             strictlyContains(const Box<iNumDimensions>& other, double precision = 1e-12) const;
 
             const Box<iNumDimensions>
@@ -102,6 +103,15 @@ namespace opensolid
 
             const Box<iNumDimensions>
             intersection(const Box<iNumDimensions>& other) const;
+
+            static const Box<iNumDimensions>
+            Unit();
+
+            static const Box<iNumDimensions>
+            Empty();
+
+            static const Box<iNumDimensions>
+            Whole();
         };
     }
 }

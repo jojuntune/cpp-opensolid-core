@@ -48,17 +48,17 @@ namespace opensolid
         const BoundedVolume3d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluateBounds(domain.bounds().vector())) {
+        _bounds(expression.evaluate(domain.bounds().components())) {
     }
 
     Point3d
     ParametricVolume3d::evaluate(double u, double v, double w) const {
-        return Point3d(expression().evaluate(Vector3d(u, v, w)));
+        return Point3d(expression().evaluate(u, v, w));
     }
 
     Box3d
-    ParametricVolume3d::evaluateBounds(Interval u, Interval v, Interval w) const {
-        return Box3d(expression().evaluateBounds(Vector3I(u, v, w)));
+    ParametricVolume3d::evaluate(Interval u, Interval v, Interval w) const {
+        return Box3d(expression().evaluate(u, v, w));
     }
 
     ParametricVolume3d
@@ -66,7 +66,10 @@ namespace opensolid
         const ParametricVolume3d& parametricArea,
         double scale
     ) const {
-        return ParametricVolume3d(scale * parametricArea.expression(), parametricArea.domain());
+        return ParametricVolume3d(
+            scale * parametricArea.expression(),
+            parametricArea.domain()
+        );
     }
 
     ParametricVolume3d
@@ -74,15 +77,21 @@ namespace opensolid
         const ParametricVolume3d& parametricArea,
         const Vector3d& vector
     ) const {
-        return ParametricVolume3d(parametricArea.expression() + vector, parametricArea.domain());
+        return ParametricVolume3d(
+            parametricArea.expression() + vector.components(),
+            parametricArea.domain()
+        );
     }
 
     ParametricVolume3d
     TransformationFunction<ParametricVolume3d, 3>::operator()(
         const ParametricVolume3d& parametricArea,
-        const Matrix3d& matrix
+        const Matrix3x3& matrix
     ) const {
-        return ParametricVolume3d(matrix * parametricArea.expression(), parametricArea.domain());
+        return ParametricVolume3d(
+            matrix * parametricArea.expression(),
+            parametricArea.domain()
+        );
     }
 
     ParametricVolume3d

@@ -28,45 +28,36 @@
 
 namespace opensolid
 {
-    Plane3d::Plane3d() :
-        _originPoint(Point3d::Origin()),
-        _normalVector(Vector3d::Zero()) {
+    Plane3d::Plane3d() {
     }
 
-    Plane3d::Plane3d(const Point<3>& originPoint, const Vector3d& normalVector) :
-        _originPoint(originPoint) {
-    
-        if (normalVector.isZero()) {
-            throw Error(new PlaceholderError());
-        }
-        double squaredNorm = normalVector.squaredNorm();
-        if (squaredNorm - 1 == Zero()) {
-            _normalVector = normalVector;
-        } else {
-            _normalVector = normalVector / sqrt(squaredNorm);
-        }
+    Plane3d::Plane3d(const Point3d& originPoint, const UnitVector3d& normalVector) :
+        _originPoint(originPoint),
+        _normalVector(normalVector) {
     }
 
     Plane3d
     Plane3d::ThroughPoints(
-        const Point<3>& firstPoint,
-        const Point<3>& secondPoint,
-        const Point<3>& thirdPoint
+        const Point3d& firstPoint,
+        const Point3d& secondPoint,
+        const Point3d& thirdPoint
     ) {
-        Vector3d normalVector = (secondPoint - firstPoint).cross(thirdPoint - firstPoint);
-        return Plane3d(firstPoint, normalVector);
+        return Plane3d(
+            firstPoint,
+            (secondPoint - firstPoint).cross(thirdPoint - firstPoint).normalized()
+        );
     }
 
     Plane3d
-    Plane3d::Midplane(const Point<3>& pointBelow, const Point<3>& pointAbove) {
+    Plane3d::Midplane(const Point3d& pointBelow, const Point3d& pointAbove) {
         Vector3d displacementVector = pointAbove - pointBelow;
-        return Plane3d(pointBelow + 0.5 * displacementVector, displacementVector);
+        return Plane3d(pointBelow + 0.5 * displacementVector, displacementVector.normalized());
     }
 
     Plane3d
-    Plane3d::Midplane(const Plane3d planeBelow, const Plane3d planeAbove) {
-        Vector3d belowNormalVector = planeBelow.normalVector();
-        Vector3d aboveNormalVector = planeAbove.normalVector();
+    Plane3d::Midplane(const Plane3d& planeBelow, const Plane3d& planeAbove) {
+        UnitVector3d belowNormalVector = planeBelow.normalVector();
+        UnitVector3d aboveNormalVector = planeAbove.normalVector();
 
         if (!belowNormalVector.cross(aboveNormalVector).isZero()) {
             // Planes are not parallel
@@ -93,53 +84,55 @@ namespace opensolid
         }
 
         Point3d originPoint = planeBelow.originPoint() + 0.5 * displacementVector;
-        Vector3d normalVector = belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector);
+        UnitVector3d normalVector = UnitVector3d(
+            belowNormalVector + 0.5 * (aboveNormalVector - belowNormalVector)
+        );
         return Plane3d(originPoint, normalVector);
     }
 
     Plane3d
-    Plane3d::ThroughAxisAndPoint(const Axis<3>& axis, const Point<3>& point) {
+    Plane3d::ThroughAxisAndPoint(const Axis3d& axis, const Point3d& point) {
         Vector3d normalVector = (point - axis.originPoint()).cross(axis.directionVector());
         if (normalVector.isZero()) {
             // Point is on axis
             throw Error(new PlaceholderError());
         }
-        return Plane3d(axis.originPoint(), normalVector);
+        return Plane3d(axis.originPoint(), normalVector.normalized());
     }
 
     Plane3d
-    Plane3d::ThroughAxis(const Axis<3>& axis) {
+    Plane3d::ThroughAxis(const Axis3d& axis) {
         return Plane3d(axis.originPoint(), axis.directionVector().unitOrthogonal());
     }
 
     Plane3d
     Plane3d::XY() {
-        return Plane3d(Point3d::Origin(), Vector3d::UnitZ());
+        return Plane3d(Point3d::Origin(), UnitVector3d::Z());
     }
 
     Plane3d
     Plane3d::XZ() {
-        return Plane3d(Point3d::Origin(), -Vector3d::UnitY());
+        return Plane3d(Point3d::Origin(), -UnitVector3d::Y());
     }
     
     Plane3d
     Plane3d::YX() {
-        return Plane3d(Point3d::Origin(), -Vector3d::UnitZ());
+        return Plane3d(Point3d::Origin(), -UnitVector3d::Z());
     }
 
     Plane3d
     Plane3d::YZ() {
-        return Plane3d(Point3d::Origin(), Vector3d::UnitX());
+        return Plane3d(Point3d::Origin(), UnitVector3d::X());
     }
 
     Plane3d
     Plane3d::ZX() {
-        return Plane3d(Point3d::Origin(), Vector3d::UnitY());
+        return Plane3d(Point3d::Origin(), UnitVector3d::Y());
     }
     
     Plane3d
     Plane3d::ZY() {
-        return Plane3d(Point3d::Origin(), -Vector3d::UnitX());
+        return Plane3d(Point3d::Origin(), -UnitVector3d::X());
     }
     
     Plane3d
@@ -167,15 +160,18 @@ namespace opensolid
     Plane3d
     TransformationFunction<Plane3d, 3>::operator()(
         const Plane3d& plane,
-        const Matrix3d& matrix
+        const Matrix3x3& matrix
     ) const {
-        Vector3d transformedNormal = matrix.derived() * plane.normalVector();
+        Vector3d transformedNormal = transformationFunction(plane.normalVector(), matrix);
         double transformedNorm = transformedNormal.norm();
         if (transformedNorm == Zero()) {
             throw PlaceholderError();
         }
         transformedNormal *= (1.0 / transformedNorm);
-        return Plane3d(transformationFunction(plane.originPoint(), matrix), transformedNormal);
+        return Plane3d(
+            transformationFunction(plane.originPoint(), matrix),
+            UnitVector3d(transformedNormal)
+        );
     }
 
     Plane3d
@@ -183,13 +179,18 @@ namespace opensolid
         const Plane3d& plane,
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
-        Vector3d morphedNormal =
-            morphingExpression.jacobian(plane.originPoint().vector()) * plane.normalVector();
+        Vector3d morphedNormal = transformationFunction(
+            plane.normalVector(),
+            morphingExpression.jacobian(plane.originPoint().components())
+        );
         double morphedNorm = morphedNormal.norm();
         if (morphedNorm == Zero()) {
             throw PlaceholderError();
         }
         morphedNormal *= (1.0 / morphedNorm);
-        return Plane3d(morphingFunction(plane.originPoint(), morphingExpression), morphedNormal);
+        return Plane3d(
+            morphingFunction(plane.originPoint(), morphingExpression),
+            UnitVector3d(morphedNormal)
+        );
     }
 }

@@ -50,11 +50,11 @@ namespace opensolid
 
     void
     CompositionExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterBounds);
+        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterValues);
         results = evaluator.evaluate(outerExpression(), innerBounds);
     }
 
@@ -72,12 +72,12 @@ namespace opensolid
     
     void
     CompositionExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI innerJacobian = evaluator.evaluateJacobian(innerExpression(), parameterBounds);
-        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterBounds);
+        MapXcI innerJacobian = evaluator.evaluateJacobian(innerExpression(), parameterValues);
+        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterValues);
         MapXcI outerJacobian = evaluator.evaluateJacobian(outerExpression(), innerBounds);
         results = outerJacobian * innerJacobian;
     }

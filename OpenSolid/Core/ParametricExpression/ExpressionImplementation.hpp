@@ -28,11 +28,10 @@
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.definitions.hpp>
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
-#include <OpenSolid/Core/ParametricExpression/LinearExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
 
 namespace opensolid
@@ -59,12 +58,6 @@ namespace opensolid
     bool
     ExpressionImplementation::isParameterExpression() const {
         return typeid(*this) == typeid(ParameterExpression);
-    }
-    
-    inline
-    bool
-    ExpressionImplementation::isLinearExpression() const {
-        return typeid(*this) == typeid(LinearExpression);
     }
     
     template <class TExpressionImplementation>
@@ -99,11 +92,11 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluate(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        evaluateImpl(parameterBounds, results, evaluator);
+        evaluateImpl(parameterValues, results, evaluator);
     }
     
     inline
@@ -119,10 +112,10 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluateJacobian(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        evaluateJacobianImpl(parameterBounds, results, evaluator);
+        evaluateJacobianImpl(parameterValues, results, evaluator);
     }
 }

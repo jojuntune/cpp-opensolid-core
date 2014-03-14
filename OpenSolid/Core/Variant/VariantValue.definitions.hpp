@@ -41,6 +41,7 @@
 #include <OpenSolid/Core/Tetrahedron.declarations.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 #include <OpenSolid/Core/Variant.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <string>
 
@@ -75,92 +76,68 @@ namespace opensolid
         toInterval() const;
 
         OPENSOLID_CORE_EXPORT
-        virtual const Vector2d&
+        virtual const Matrix<double, 2, 2>&
+        toMatrix2x2() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<Interval, 2, 2>&
+        toIntervalMatrix2x2() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<double, 3, 3>&
+        toMatrix3x3() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<Interval, 3, 3>&
+        toIntervalMatrix3x3() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<double, 1, 2>&
+        toMatrix1x2() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<Interval, 1, 2>&
+        toIntervalMatrix1x2() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<double, 2, 1>&
+        toMatrix2x1() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<Interval, 2, 1>&
+        toIntervalMatrix2x1() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<double, 1, 3>&
+        toMatrix1x3() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<Interval, 1, 3>&
+        toIntervalMatrix1x3() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<double, 3, 1>&
+        toMatrix3x1() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Matrix<Interval, 3, 1>&
+        toIntervalMatrix3x1() const;
+
+        OPENSOLID_CORE_EXPORT
+        virtual const Vector<double, 2>&
         toVector2d() const;
 
         OPENSOLID_CORE_EXPORT
-        virtual const Vector3d&
+        virtual const Vector<double, 3>&
         toVector3d() const;
 
         OPENSOLID_CORE_EXPORT
-        virtual const VectorXd&
-        toVectorXd() const;
+        virtual const Vector<Interval, 2>&
+        toIntervalVector2d() const;
 
         OPENSOLID_CORE_EXPORT
-        virtual const Vector2I&
-        toVector2I() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Vector3I&
-        toVector3I() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const VectorXI&
-        toVectorXI() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const RowVector2d&
-        toRowVector2d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const RowVector3d&
-        toRowVector3d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const RowVectorXd&
-        toRowVectorXd() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const RowVector2I&
-        toRowVector2I() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const RowVector3I&
-        toRowVector3I() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const RowVectorXI&
-        toRowVectorXI() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix2d&
-        toMatrix2d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix3d&
-        toMatrix3d() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix2Xd&
-        toMatrix2Xd() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix3Xd&
-        toMatrix3Xd() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const MatrixXd&
-        toMatrixXd() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix2I&
-        toMatrix2I() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix3I&
-        toMatrix3I() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix2XI&
-        toMatrix2XI() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const Matrix3XI&
-        toMatrix3XI() const;
-
-        OPENSOLID_CORE_EXPORT
-        virtual const MatrixXI&
-        toMatrixXI() const;
+        virtual const Vector<Interval, 3>&
+        toIntervalVector3d() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Point<2>&

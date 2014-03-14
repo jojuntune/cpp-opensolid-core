@@ -49,11 +49,11 @@ namespace opensolid
     
     void
     ParameterExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator&
     ) const {
-        results = parameterBounds.row(parameterIndex());
+        results = parameterValues.row(parameterIndex());
     }
 
     void
@@ -68,7 +68,7 @@ namespace opensolid
     
     void
     ParameterExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {

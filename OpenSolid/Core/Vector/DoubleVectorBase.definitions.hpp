@@ -26,8 +26,63 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Vector/DoubleVectorBase.declarations.hpp>
+
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
+#include <OpenSolid/Core/Vector/VectorBase.definitions.hpp>
+#include <OpenSolid/Core/Zero.declarations.hpp>
+
 namespace opensolid
 {
-    template<class Type>
-    class MatrixArgument;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class DoubleVectorBase :
+            public VectorBase<double, iNumDimensions>
+        {
+        private:
+            const Vector<double, iNumDimensions>&
+            derived() const;
+        protected:
+            DoubleVectorBase();
+
+            DoubleVectorBase(const Matrix<double, iNumDimensions, 1>& components);
+
+            DoubleVectorBase(const double* sourcePtr);
+        public:
+            const UnitVector<iNumDimensions>
+            normalized() const;
+
+            double
+            minComponent() const;
+
+            double
+            minComponent(std::int64_t& index) const;
+
+            double
+            maxComponent() const;
+
+            double
+            maxComponent(std::int64_t& index) const;
+
+            bool
+            operator==(const Vector<double, iNumDimensions>& other) const;
+
+            bool
+            operator!=(const Vector<double, iNumDimensions>& other) const;
+
+            void
+            operator*=(double scale);
+
+            void
+            operator/=(double divisor);
+
+            void
+            operator+=(const Vector<double, iNumDimensions>& other);
+
+            void
+            operator-=(const Vector<double, iNumDimensions>& other);
+        };
+    }
 }

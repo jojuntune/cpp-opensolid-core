@@ -60,15 +60,16 @@ namespace opensolid
     template <int iNumDimensions> template <class TTransformable>
     typename TransformedAboutPointType<TTransformable>::Type
     LinearTransformation<iNumDimensions>::operator()(const TTransformable& transformable) const {
+        Vector<double, iNumDimensions> originVector(originPoint().components());
         return translationFunction(
             transformationFunction(
                 translationFunction(
                     transformable,
-                    -originPoint().vector()
+                    -originVector
                 ),
                 transformationMatrix()
             ),
-            originPoint().vector()
+            originVector
         );
     }
 }

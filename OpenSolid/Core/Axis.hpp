@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.definitions.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 #include <OpenSolid/Core/Zero.hpp>
 
 namespace opensolid
@@ -66,7 +67,7 @@ namespace opensolid
     }
 
     inline
-    const Vector2d
+    const UnitVector2d
     Axis2d::normalVector() const {
         return directionVector().unitOrthogonal();
     }
@@ -193,18 +194,21 @@ namespace opensolid
     const Axis<iNumDimensions>
     TranslationFunction<Axis<iNumDimensions>>::operator()(
         const Axis<iNumDimensions>& axis,
-        const Vector<iNumDimensions>& vector
+        const Vector<double, iNumDimensions>& vector
     ) const {
-        return Axis<iNumDimensions>(axis.originPoint() + vector, axis.directionVector());
+        return Axis<iNumDimensions>(
+            translationFunction(axis.originPoint(), vector),
+            axis.directionVector()
+        );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>
     const Axis<iNumResultDimensions>
     TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
-        const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
     ) const {
-        Vector<iNumResultDimensions> transformedDirection = transformationFunction(
+        Vector<double, iNumResultDimensions> transformedDirection = transformationFunction(
             axis.directionVector(),
             matrix
         );
@@ -225,7 +229,7 @@ namespace opensolid
         const Axis<iNumDimensions>& axis,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        Vector<iNumResultDimensions> morphedDirection = transformationFunction(
+        Vector<double, iNumResultDimensions> morphedDirection = transformationFunction(
             axis.directionVector(),
             morphingExpression.jacobian(axis.originPoint().components())
         );

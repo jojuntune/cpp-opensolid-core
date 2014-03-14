@@ -34,18 +34,29 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.hpp>
+#include <OpenSolid/Core/ParametricExpression/Eigen.hpp>
+#include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
-#include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
-#include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.hpp>
 
 #include <type_traits>
 
 namespace opensolid
 {
+    namespace detail
+    {
+        template <int iNumDimensions, int iNumParameters>
+        ExpressionImplementationPtr
+        zeroExpression() {
+            return ExpressionImplementationPtr(
+                new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters)
+            );
+        }
+    }
+
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::ParametricExpression() :
-        _implementationPtr(new ConstantExpression(VectorXd::Zero(iNumDimensions), iNumParameters)) {
+        _implementationPtr(detail::zeroExpression<iNumDimensions, iNumParameters>()) {
     }
     
     template <int iNumDimensions, int iNumParameters>
@@ -54,12 +65,15 @@ namespace opensolid
     ) : _implementationPtr(implementationPtr) {
         if (!implementationPtr) {
             throw Error(new PlaceholderError());
+            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
         }
         if (implementationPtr->numDimensions() != iNumDimensions) {
             throw Error(new PlaceholderError());
+            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
         }
         if (implementationPtr->numParameters() != iNumParameters) {
             throw Error(new PlaceholderError());
+            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
         }
     }
     
@@ -69,12 +83,15 @@ namespace opensolid
     ) : _implementationPtr(implementationPtr) {
         if (!implementationPtr) {
             throw Error(new PlaceholderError());
+            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
         }
         if (implementationPtr->numDimensions() != iNumDimensions) {
             throw Error(new PlaceholderError());
+            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
         }
         if (implementationPtr->numParameters() != iNumParameters) {
             throw Error(new PlaceholderError());
+            _implementationPtr = detail::zeroExpression<iNumDimensions, iNumParameters>();
         }
     }
 
@@ -87,168 +104,262 @@ namespace opensolid
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    ExpressionEvaluation<iNumDimensions, 1, int>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(int value) const {
-        static_assert(
-            iNumParameters == 1,
-            "Multiple parameters required"
-        );
-        return ExpressionEvaluation<iNumDimensions, 1, int>(implementation().get(), value);
+    const Matrix<double, iNumDimensions, 1>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u) const {
+        static_assert(iNumParameters == 1, "Incorrect number of parameters");
+
+        return evaluate(Matrix1x1(u));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    ExpressionEvaluation<iNumDimensions, 1, double>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double value) const {
-        static_assert(
-            iNumParameters == 1,
-            "Multiple parameters required"
-        );
-        return ExpressionEvaluation<iNumDimensions, 1, double>(implementation().get(), value);
+    const Matrix<double, iNumDimensions, 1>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u, double v) const {
+        static_assert(iNumParameters == 2, "Incorrect number of parameters");
+
+        return evaluate(Matrix2x1(u, v));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    ExpressionEvaluation<iNumDimensions, 1, Interval>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluateBounds(Interval interval) const {
-        static_assert(
-            iNumParameters == 1,
-            "Multiple parameters required"
-        );
-        return ExpressionEvaluation<iNumDimensions, 1, Interval>(implementation().get(), interval);
-    }
-    
-    template <int iNumDimensions, int iNumParameters> template <class TMatrix>
-    inline
-    ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
+    const Matrix<double, iNumDimensions, 1>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const EigenBase<TMatrix>& matrix
+        double u,
+        double v,
+        double w
     ) const {
-        static_assert(
-            std::is_same<typename TMatrix::Scalar, double>::value,
-            "evaluate() can only be called with a double-valued matrix (use evaluateBounds())"
-        );
-        static_assert(
-            TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
-            "Incorrect number of parameters supplied"
-        );
-        if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != iNumParameters) {
-            throw Error(new PlaceholderError());
-        }
-        return ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>(
-            implementation().get(),
-            matrix.derived()
-        );
+        static_assert(iNumParameters == 3, "Incorrect number of parameters");
+
+        return evaluate(Matrix3x1(u, v, w));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<Interval, iNumDimensions, 1>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u) const {
+        static_assert(iNumParameters == 1, "Incorrect number of parameters");
+
+        return evaluate(IntervalMatrix1x1(u));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<Interval, iNumDimensions, 1>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u, Interval v) const {
+        static_assert(iNumParameters == 2, "Incorrect number of parameters");
+
+        return evaluate(IntervalMatrix2x1(u, v));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<Interval, iNumDimensions, 1>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        Interval u,
+        Interval v,
+        Interval w
+    ) const {
+        static_assert(iNumParameters == 3, "Incorrect number of parameters");
+
+        return evaluate(IntervalMatrix3x1(u, v, w));
     }
     
-    template <int iNumDimensions, int iNumParameters> template <class TMatrix>
+    template <int iNumDimensions, int iNumParameters> template <int iNumColumns>
     inline
-    ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>
-    ParametricExpression<iNumDimensions, iNumParameters>::evaluateBounds(
-        const EigenBase<TMatrix>& matrix
+    const Matrix<double, iNumDimensions, iNumColumns>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        const Matrix<double, iNumParameters, iNumColumns>& columnMatrix
     ) const {
-        static_assert(
-            std::is_same<typename TMatrix::Scalar, Interval>::value,
-            "evaluateBounds() can only be called with an Interval-valued matrix (use evaluate())"
-        );
-        static_assert(
-            TMatrix::RowsAtCompileTime == iNumParameters || TMatrix::RowsAtCompileTime == Dynamic,
-            "Incorrect number of parameters supplied"
-        );
-        if (TMatrix::RowsAtCompileTime == Dynamic && matrix.rows() != iNumParameters) {
-            throw Error(new PlaceholderError());
-        }
-        return ExpressionEvaluation<iNumDimensions, iNumParameters, TMatrix>(
-            implementation().get(),
-            matrix.derived()
-        );
+        MapXcd argumentMap = detail::constMap(columnMatrix);
+
+        Matrix<double, iNumDimensions, iNumColumns> results;
+        MapXd resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluate(argumentMap, resultMap, evaluator);
+
+        return results;
+    }
+    
+    template <int iNumDimensions, int iNumParameters> template <int iNumColumns>
+    inline
+    const Matrix<Interval, iNumDimensions, iNumColumns>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        const Matrix<Interval, iNumParameters, iNumColumns>& columnMatrix
+    ) const {
+        MapXcI argumentMap = detail::constMap(columnMatrix);
+
+        Matrix<Interval, iNumDimensions, iNumColumns> results;
+        MapXI resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluate(argumentMap, resultMap, evaluator);
+
+        return results;
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    std::vector<Matrix<double, iNumDimensions, 1>>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        const std::vector<double>& parameterValues
+    ) const {
+        static_assert(iNumParameters == 1, "Multiple parameters required");
+
+        MapXcd argumentMap = detail::constMap(parameterValues);
+
+        std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
+        MapXd resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluate(argumentMap, resultMap, evaluator);
+
+        return results;
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    std::vector<Matrix<Interval, iNumDimensions, 1>>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        const std::vector<Interval>& parameterValues
+    ) const {
+        static_assert(iNumParameters == 1, "Multiple parameters required");
+
+        MapXcI argumentMap = detail::constMap(parameterValues);
+
+        std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
+        MapXI resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluate(argumentMap, resultMap, evaluator);
+
+        return results;
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    std::vector<Matrix<double, iNumDimensions, 1>>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        const std::vector<Matrix<double, iNumParameters, 1>>& parameterValues
+    ) const {
+        MapXcd argumentMap = detail::constMap(parameterValues);
+
+        std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
+        MapXd resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluate(argumentMap, resultMap, evaluator);
+
+        return results;
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    std::vector<Matrix<Interval, iNumDimensions, 1>>
+    ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
+        const std::vector<Matrix<Interval, iNumParameters, 1>>& parameterValues
+    ) const {
+        MapXcI argumentMap = detail::constMap(parameterValues);
+
+        std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
+        MapXI resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluate(argumentMap, resultMap, evaluator);
+
+        return results;
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    JacobianEvaluation<iNumDimensions, 1, int>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(int value) const {
-        static_assert(
-            iNumParameters == 1,
-            "Multiple parameters required"
-        );
-        return JacobianEvaluation<iNumDimensions, 1, int>(implementation().get(), value);
+    const Matrix<double, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u) const {
+        static_assert(iNumParameters == 1, "Wrong number of parameters");
+
+        return jacobian(Matrix1x1(u));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    JacobianEvaluation<iNumDimensions, 1, double>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double value) const {
-        static_assert(
-            iNumParameters == 1,
-            "Multiple parameters required"
-        );
-        return JacobianEvaluation<iNumDimensions, 1, double>(implementation().get(), value);
+    const Matrix<double, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u, double v) const {
+        static_assert(iNumParameters == 2, "Wrong number of parameters");
+
+        return jacobian(Matrix2x1(u, v));
     }
 
     template <int iNumDimensions, int iNumParameters>
     inline
-    JacobianEvaluation<iNumDimensions, 1, Interval>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobianBounds(Interval interval) const {
-        static_assert(
-            iNumParameters == 1,
-            "Multiple parameters required"
-        );
-        return JacobianEvaluation<iNumDimensions, 1, Interval>(implementation().get(), interval);
-    }
-
-    template <int iNumDimensions, int iNumParameters> template <class TVector>
-    inline
-    JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
+    const Matrix<double, iNumDimensions, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        const EigenBase<TVector>& vector
+        double u,
+        double v,
+        double w
     ) const {
-        static_assert(
-            std::is_same<typename TVector::Scalar, double>::value,
-            "jacobian() can only be called with a double-valued vector (use jacobianBounds())"
-        );
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Parameter vector for Jacobian matrix evaluation must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumParameters || TVector::RowsAtCompileTime == Dynamic,
-            "Incorrect number of parameters supplied for Jacobian matrix evaluation"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.size() != iNumParameters) {
-            throw Error(new PlaceholderError());
-        }
-        return JacobianEvaluation<iNumDimensions, iNumParameters, TVector>(
-            implementation().get(),
-            vector.derived()
-        );
+        static_assert(iNumParameters == 3, "Wrong number of parameters");
+
+        return jacobian(Matrix3x1(u, v, w));
     }
 
-    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    template <int iNumDimensions, int iNumParameters>
     inline
-    JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
-    ParametricExpression<iNumDimensions, iNumParameters>::jacobianBounds(
-        const EigenBase<TVector>& vector
+    const Matrix<Interval, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u) const {
+        static_assert(iNumParameters == 1, "Wrong number of parameters");
+
+        return jacobian(IntervalMatrix1x1(u));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<Interval, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u, Interval v) const {
+        static_assert(iNumParameters == 2, "Wrong number of parameters");
+
+        return jacobian(IntervalMatrix2x1(u, v));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<Interval, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
+        Interval u,
+        Interval v,
+        Interval w
     ) const {
-        static_assert(
-            std::is_same<typename TVector::Scalar, Interval>::value,
-            "jacobianBounds() can only be called with an Interval-valued vector (use jacobian())"
-        );
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Parameter vector for Jacobian matrix evaluation must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumParameters || TVector::RowsAtCompileTime == Dynamic,
-            "Incorrect number of parameters supplied for Jacobian matrix evaluation"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.size() != iNumParameters) {
-            throw Error(new PlaceholderError());
-        }
-        return JacobianEvaluation<iNumDimensions, iNumParameters, TVector>(
-            implementation().get(),
-            vector.derived()
-        );
+        static_assert(iNumParameters == 3, "Wrong number of parameters");
+
+        return jacobian(IntervalMatrix3x1(u, v, w));
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<double, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
+        const Matrix<double, iNumParameters, 1>& columnMatrix
+    ) const {
+        MapXcd argumentMap = detail::constMap(columnMatrix);
+
+        Matrix<double, iNumDimensions, iNumParameters> results;
+        MapXd resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluateJacobian(argumentMap, resultMap, evaluator);
+
+        return results;
+    }
+
+    template <int iNumDimensions, int iNumParameters>
+    inline
+    const Matrix<Interval, iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
+        const Matrix<Interval, iNumParameters, 1>& columnMatrix
+    ) const {
+        MapXcI argumentMap = detail::constMap(columnMatrix);
+
+        Matrix<Interval, iNumDimensions, iNumParameters> results;
+        MapXI resultMap = detail::mutableMap(results);
+
+        Evaluator evaluator;
+        implementation()->evaluateJacobian(argumentMap, resultMap, evaluator);
+
+        return results;
     }
 
     template <int iNumDimensions, int iNumParameters> template <int iNumInnerParameters>
@@ -298,6 +409,7 @@ namespace opensolid
             iNumDimensions == 1,
             "Use squaredNorm() for vectors (squared() is only for scalars)"
         );
+
         return squaredNorm();
     }
 
@@ -315,6 +427,7 @@ namespace opensolid
             iNumDimensions >= 2,
             "No Y component exists"
         );
+
         DeduplicationCache deduplicationCache;
         return implementation()->y()->deduplicated(deduplicationCache);
     }
@@ -326,6 +439,7 @@ namespace opensolid
             iNumDimensions >= 3,
             "No Z component exists"
         );
+
         DeduplicationCache deduplicationCache;
         return implementation()->z()->deduplicated(deduplicationCache);
     }
@@ -351,6 +465,7 @@ namespace opensolid
             iNumComponents > 0,
             "Zero or negative number of components requested"
         );
+
         if (startIndex < 0 || startIndex + iNumComponents > iNumDimensions) {
             throw Error(new PlaceholderError());
         }
@@ -369,24 +484,14 @@ namespace opensolid
             deduplicated(deduplicationCache);
     }
 
-    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<1, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::dot(
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumDimensions, 1>& columnMatrix
     ) const {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
-            "Vector argument must have same number of dimensions as ParametricExpression object"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
         DeduplicationCache deduplicationCache;
-        return implementation()->dot(new ConstantExpression(vector, iNumParameters))->
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
+        return implementation()->dot(new ConstantExpression(columnMatrixXd, iNumParameters))->
             deduplicated(deduplicationCache);
     }
     
@@ -399,28 +504,16 @@ namespace opensolid
         return implementation()->dot(other.implementation())->deduplicated(deduplicationCache);
     }
         
-    template <int iNumDimensions, int iNumParameters> template <class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<3, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::cross(
-        const EigenBase<TVector>& vector
+        const Matrix<double, 3, 1>& columnMatrix
     ) const {
-        static_assert(
-            iNumDimensions == 3,
-            "Cross product only defined in 3D"
-        );
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == 3 || TVector::RowsAtCompileTime == Dynamic,
-            "Vector argument must be 3D"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != 3) {
-            throw Error(new PlaceholderError());
-        }
+        static_assert(iNumDimensions == 3, "Cross product only defined in 3D");
+
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return implementation()->cross(new ConstantExpression(vector, iNumParameters))->
+        return implementation()->cross(new ConstantExpression(columnMatrixXd, iNumParameters))->
             deduplicated(deduplicationCache);
     }
     
@@ -429,56 +522,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::cross(
         const ParametricExpression<3, iNumParameters>& other
     ) const {
-        static_assert(
-            iNumDimensions == 3,
-            "Cross product only defined in 3D"
-        );
+        static_assert(iNumDimensions == 3, "Cross product only defined in 3D");
+
         DeduplicationCache deduplicationCache;
         return implementation()->cross(other.implementation())->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::tangentVector() const {
-        static_assert(
-            iNumParameters == 1,
-            "Tangent vector only defined for curves"
-        );
-        DeduplicationCache deduplicationCache;
-        return implementation()->tangentVector()->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<1, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::curvature() const {
-        static_assert(
-            iNumParameters == 1,
-            "Curvature only defined for curves"
-        );
-        DeduplicationCache deduplicationCache;
-        return implementation()->curvature()->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::normalVector() const {
-        static_assert(
-            (iNumParameters == 1) || (iNumDimensions == 3 && iNumParameters == 2),
-            "Invalid numbers of dimensions/parameters for definition of normal vector"
-        );
-        DeduplicationCache deduplicationCache;
-        return implementation()->normalVector()->deduplicated(deduplicationCache);
-    }
-    
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<3, 1>
-    ParametricExpression<iNumDimensions, iNumParameters>::binormalVector() const {
-        static_assert(
-            iNumDimensions == 3 && iNumParameters == 1,
-            "Binormal only defined for 3D curves"
-        );
-        DeduplicationCache deduplicationCache;
-        return implementation()->binormalVector()->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -502,48 +549,26 @@ namespace opensolid
         return (value + expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumDimensions, 1>& columnMatrix
     ) {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
-            "Vector argument must have same number of dimensions as ParametricExpression object"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (expression.implementation() + VectorXd(vector.derived()))->
-            deduplicated(deduplicationCache);
+        return (expression.implementation() + columnMatrixXd)->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
-        const EigenBase<TVector>& vector,
+        const Matrix<double, iNumDimensions, 1>& columnMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     ) {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
-            "Vector argument must have same number of dimensions as ParametricExpression object"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (VectorXd(vector.derived()) + expression.implementation())->
-            deduplicated(deduplicationCache);
+        return (columnMatrixXd + expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -571,48 +596,26 @@ namespace opensolid
         return (value - expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumDimensions, 1>& columnMatrix
     ) {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
-            "Vector argument must have same number of dimensions as ParametricExpression object"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (expression.implementation() - VectorXd(vector.derived()))->
-            deduplicated(deduplicationCache);
+        return (expression.implementation() - columnMatrixXd)->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
-        const EigenBase<TVector>& vector,
+        const Matrix<double, iNumDimensions, 1>& columnMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     ) {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime == iNumDimensions || TVector::RowsAtCompileTime == Dynamic,
-            "Vector argument must have same number of dimensions as ParametricExpression object"
-        );
-        if (TVector::RowsAtCompileTime == Dynamic && vector.rows() != iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (VectorXd(vector.derived()) - expression.implementation())->
-            deduplicated(deduplicationCache);
+        return (columnMatrixXd - expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -646,48 +649,26 @@ namespace opensolid
         return (expression.implementation() * value)->deduplicated(deduplicationCache);
     }
     
-    template <int iNumDimensions, int iNumParameters, class TMatrix>
-    ParametricExpression<TMatrix::RowsAtCompileTime, iNumParameters>
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    ParametricExpression<iNumResultDimensions, iNumParameters>
     operator*(
-        const EigenBase<TMatrix>& matrix,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     ) {
-        static_assert(
-            TMatrix::RowsAtCompileTime != Dynamic,
-            "Transformation matrix must have static number of rows to determine number of "
-            "dimensions in result parametric expression"
-        );
-        static_assert(
-            TMatrix::ColsAtCompileTime == iNumDimensions || TMatrix::ColsAtCompileTime == Dynamic,
-            "Parametric expression transformation matrix must have number of columns equal to "
-            "parametric expression dimension"
-        );
-        if (TMatrix::ColsAtCompileTime == Dynamic && matrix.cols() != iNumDimensions) {
-            throw Error(new PlaceholderError());
-        }
+        MatrixXd matrixXd = detail::constMap(matrix);
         DeduplicationCache deduplicationCache;
-        return (MatrixXd(matrix.derived()) * expression.implementation())->
-            deduplicated(deduplicationCache);
+        return (matrixXd * expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <class TVector, int iNumParameters>
-    ParametricExpression<TVector::RowsAtCompileTime, iNumParameters>
+    template <int iNumParameters, int iNumResultDimensions>
+    ParametricExpression<iNumResultDimensions, iNumParameters>
     operator*(
         const ParametricExpression<1, iNumParameters>& expression,
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumResultDimensions, 1>& columnMatrix
     ) {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime != Dynamic,
-            "Vector argument must have static number of rows to determine number of dimensions in "
-            "result ParametricExpression object"
-        );
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (expression.implementation() * VectorXd(vector.derived()))->
-            deduplicated(deduplicationCache);
+        return (expression.implementation() * columnMatrixXd)->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -743,24 +724,15 @@ namespace opensolid
         return (value / expression.implementation())->deduplicated(deduplicationCache);
     }
     
-    template <class TVector, int iNumParameters>
-    ParametricExpression<TVector::RowsAtCompileTime, iNumParameters>
+    template <int iNumResultDimensions, int iNumParameters>
+    ParametricExpression<iNumResultDimensions, iNumParameters>
     operator/(
-        const EigenBase<TVector>& vector,
+        const Matrix<double, iNumResultDimensions, 1>& columnMatrix,
         const ParametricExpression<1, iNumParameters>& expression
     ) {
-        static_assert(
-            TVector::ColsAtCompileTime == 1,
-            "Vector argument must have one column"
-        );
-        static_assert(
-            TVector::RowsAtCompileTime != Dynamic,
-            "Vector argument must have static number of rows to determine number of dimensions in "
-            "result ParametricExpression object"
-        );
+        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (VectorXd(vector.derived()) / expression.implementation())->
-            deduplicated(deduplicationCache);
+        return (columnMatrixXd / expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>

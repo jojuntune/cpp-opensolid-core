@@ -28,6 +28,8 @@
 
 #include <OpenSolid/Core/AxisTriangleIntersection3d.definitions.hpp>
 
+#include <cassert>
+
 namespace opensolid
 {
     inline

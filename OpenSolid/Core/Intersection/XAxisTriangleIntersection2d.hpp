@@ -28,6 +28,8 @@
 
 #include <OpenSolid/Core/Intersection/XAxisTriangleIntersection2d.definitions.hpp>
 
+#include <cassert>
+
 namespace opensolid
 {
     namespace detail

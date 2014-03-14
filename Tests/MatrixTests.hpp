@@ -32,216 +32,128 @@
 
 using namespace opensolid;
 
-template <class Type>
-void printDirectAccess(const Type& argument) {
-    std::cout << typeid(Type).name();
-    if (internal::has_direct_access<Type>::ret) {
-        std::cout << " has direct access" << std::endl;
-    } else {
-        std::cout << " does not have direct access" << std::endl;
-    }
-}
-
-struct MyVector
-{
-    MyVector(double x_, double y_, double z_) : x(x_), y(y_), z(z_) {
-    }
-
-    double x;
-    double y;
-    double z;
-};
-
-namespace opensolid
-{
-    template <>
-    struct ConversionFunction<MyVector, Vector3d>
-    {
-        Vector3d operator()(const MyVector& argument) const {
-            return Vector3d(argument.x, argument.y, argument.z);
-        }
-    };
-
-    template <>
-    struct ConversionFunction<Vector3d, MyVector>
-    {
-        MyVector operator()(const Vector3d& argument) const {
-            return MyVector(argument.x(), argument.y(), argument.z());
-        }
-    };
-}
-
 class MatrixTests : public CxxTest::TestSuite
 {
-private:
-    double a;
-    Interval b;
-    Vector3d u;
-    Vector3I v;
 public:
-    void setUp() {
-        a = 2;
-        b = Interval(2, 3);
-        u = Vector3d(1, 2, 3);
-        v = Vector3I(Interval(1, 2), Interval(2, 3), Interval(3, 4));
-    }
-
-    void testOverlap() {
-        TS_ASSERT(u.cast<Interval>().overlaps(v));
-        TS_ASSERT(v.overlaps(u.cast<Interval>()));
-        TS_ASSERT(!v.overlaps((3 * u).cast<Interval>()));
-    }
-    
-    void testHull() {
-        Vector3I result = (3 * u).cast<Interval>().hull(v);
-        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
-        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(3, 6, 9));
-        result = v.hull((3 * u).cast<Interval>());
-        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
-        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(3, 6, 9));
-        result = Vector3I::Hull(Vector3d(4, 2, 6), Vector3d(1, 5, 3));
-        TS_ASSERT_EQUALS(result.cwiseLower(), Vector3d(1, 2, 3));
-        TS_ASSERT_EQUALS(result.cwiseUpper(), Vector3d(4, 5, 6));
-    }
-    
-    void testIntersection() {
-        Vector3I x = (u.array() + 0.5).matrix().cast<Interval>().intersection(v);
-        Vector3I y = (u.array() + 0.5).matrix().cast<Interval>();
-        TS_ASSERT_EQUALS(x.cwiseLower(), y.cwiseLower());
-        TS_ASSERT_EQUALS(x.cwiseUpper(), y.cwiseUpper());
-        x = (v.array() + Interval(0.5)).matrix().intersection(v);
-        y = Vector3I(Interval(1.5, 2), Interval(2.5, 3), Interval(3.5, 4));
-        TS_ASSERT_EQUALS(x.cwiseLower(), y.cwiseLower());
-        TS_ASSERT_EQUALS(x.cwiseUpper(), y.cwiseUpper());
-    }
-    
-    void testIsZero() {
-        Vector3d zero(0, 0, 0);
-        TS_ASSERT(zero.isZero());
-        TS_ASSERT(!u.isZero());
-    }
-    
-    void testLinSpaced() {
-        VectorXd x = VectorXd::LinSpaced(3, 1, 2);
-        VectorXd y = VectorXd::LinSpaced(3, Interval(1, 2));
-        TS_ASSERT_EQUALS(x, Vector3d(1, 1.5, 2));
-        TS_ASSERT_EQUALS(y, Vector3d(1, 1.5, 2));
-        
-        RowVectorXd a = RowVectorXd::LinSpaced(3, 1, 2);
-        RowVectorXd b = RowVectorXd::LinSpaced(3, Interval(1, 2));
-        TS_ASSERT_EQUALS(a, RowVector3d(1, 1.5, 2));
-        TS_ASSERT_EQUALS(b, RowVector3d(1, 1.5, 2));
-        
-        Vector4d c = Vector4d::LinSpaced(Interval(1, 4));
-        TS_ASSERT_EQUALS(c, Vector4d(1, 2, 3, 4));
-    }
-    
-    void testDirectAccess() {
-        Matrix3d matrix = Matrix3d::Random();
-        printDirectAccess(matrix);
-        printDirectAccess(3 * matrix);
-        printDirectAccess(matrix.replicate(2, 2));
-        printDirectAccess(matrix.row(0));
-        printDirectAccess(matrix.block(1, 1, 2, 2));
-    }
-    
-    void testIteration() {
-        RowVectorXd vector;
-        std::vector<double> list;
-        list.push_back(1);
-        list.push_back(2);
-        vector.resize(list.size());
-        std::copy(list.begin(), list.end(), begin(vector));
-        TS_ASSERT_EQUALS(vector, RowVector2d(1, 2));
-        TS_ASSERT_EQUALS(*begin(vector), 1);
-        TS_ASSERT_EQUALS(*(end(vector) - 1), 2);
-    }
-    
-    void testBlockIteration() {
-        Matrix3d a = Matrix3d::Random();
-        int j = 0;
-        for (auto i = begin(a.rowwise()); i != end(a.rowwise()); ++i) {
-            TS_ASSERT_EQUALS(*i, a.row(j++));
-        }
-        j = 0;
-        for (auto i = begin(a.colwise()); i != end(a.colwise()); ++i) {
-            TS_ASSERT_EQUALS(*i, a.col(j++));
-        }
-        Matrix3d b;
-        std::copy(begin(a.colwise()), end(a.colwise()), begin(b.colwise()));
-        TS_ASSERT_EQUALS(a, b);
-        Matrix3d c;
-        std::copy(begin(a.rowwise()), end(a.rowwise()), begin(c.rowwise()));
-        TS_ASSERT_EQUALS(a, c);
-        std::vector<Vector3d> input(3);
-        input[0] = Vector3d::UnitX();
-        input[1] = Vector3d::UnitY();
-        input[2] = Vector3d::UnitZ();
-        Matrix3d d;
-        std::copy(input.begin(), input.end(), begin(d.colwise()));
-        TS_ASSERT(d.isIdentity());
-        std::vector<RowVector3d> output(3);
-        std::copy(begin(a.rowwise()), end(a.rowwise()), output.begin());
-        for (std::size_t i = 0; i < output.size(); ++i) {
-            TS_ASSERT_EQUALS(output[i], a.row(i));
-        }
-    }
-    
-    void testPointerAccess() {
-        Matrix3d a = Matrix3d::Zero();
-        double* writePtr;
-        writePtr = &a.coeffRef(0, 0);
-        *writePtr = 3;
-        writePtr = &a.row(1).coeffRef(0, 0);
-        *(writePtr + 1) = 4;
-        const Matrix3d b = a;
-        const double* readPtr;
-        readPtr = b.data();
-        TS_ASSERT_EQUALS(*readPtr, 3);
-        readPtr = b.row(1).data();
-        TS_ASSERT_EQUALS(*(readPtr + 1), 4);
-    }
-
-    void testBoostGeometryPoint() {
-        #if BOOST_VERSION >= 104700
-        Point2d point(3, 4);
-        TS_ASSERT_EQUALS(boost::geometry::get<0>(point), 3);
-        TS_ASSERT_EQUALS(boost::geometry::get<1>(point), 4);
-        Point2d origin = Point2d::Origin();
-        TS_ASSERT(boost::geometry::distance(origin, point) - 5 == Zero());
-        #endif
-    }
-
-    void testBoostGeometryBox() {
-        #if BOOST_VERSION >= 104700
-        Box2d first_box(Interval(1, 3), Interval(1, 3));
-        TS_ASSERT(boost::geometry::area(first_box) - 4 == Zero());
-        Box2d second_box(Interval(2, 4), Interval(2, 4));
-        TS_ASSERT(boost::geometry::intersects(first_box, second_box));
-        Box2d intersection;
-        boost::geometry::intersection(first_box, second_box, intersection);
-        TS_ASSERT(boost::geometry::area(intersection) - 1 == Zero());
-        TS_ASSERT(intersection.cwiseLower().isApprox(Vector2d::Constant(2)));
-        TS_ASSERT(intersection.cwiseUpper().isApprox(Vector2d::Constant(3)));
-        #endif
-    }
-
-    void testRandom() {
-        Vector3I bounds = Vector3I::Random();
-        TS_ASSERT(bounds.cwiseWidth().minCoeff() > 0);
-        for (int i = 0; i < 10; ++i) {
-            Vector3d random = bounds.cwiseRandom();
-            TS_ASSERT(bounds.contains(random.cast<Interval>()));
+    void testInversion2d() {
+        for (int i = 0; i < 1000; ++i) {
+            Matrix2x2 matrix = Matrix2x2::Random();
+            if (matrix.determinant() != Zero(1e-3)) {
+                Matrix2x2 inverse = matrix.inverse();
+                TS_ASSERT((matrix * inverse).isIdentity());
+                TS_ASSERT((inverse * matrix).isIdentity());
+            }
         }
     }
 
-    void testConversion() {
-        MyVector my_vector = MyVector(1, 2, 3);
-        Vector3d from = Vector3d::From(my_vector);
-        TS_ASSERT_EQUALS(from, Vector3d(1, 2, 3));
-        MyVector to = Vector3d::Ones().to<MyVector>();
-        TS_ASSERT_EQUALS(to.x, 1.0);
-        TS_ASSERT_EQUALS(to.y, 1.0);
-        TS_ASSERT_EQUALS(to.z, 1.0);
+    void testInversion3d() {
+        for (int i = 0; i < 1000; ++i) {
+            Matrix3x3 matrix = Matrix3x3::Random();
+            if (matrix.determinant() != Zero(1e-3)) {
+                Matrix3x3 inverse = matrix.inverse();
+                TS_ASSERT((matrix * inverse).isIdentity());
+                TS_ASSERT((inverse * matrix).isIdentity());
+            }
+        }
+    }
+
+    void testIntervalInversion2d() {
+        for (int i = 0; i < 1000; ++i) {
+            IntervalMatrix2x2 matrix = IntervalMatrix2x2::Random();
+            IntervalMatrix2x2 inverse = matrix.inverse();
+            auto containsFunction = [] (Interval testComponent, double identityComponent) -> bool {
+                return testComponent.contains(identityComponent);
+            };
+            TS_ASSERT((matrix * inverse).binaryAll(Matrix2x2::Identity(), containsFunction));
+            TS_ASSERT((inverse * matrix).binaryAll(Matrix2x2::Identity(), containsFunction));
+        }
+    }
+
+    void testIntervalInversion3d() {
+        for (int i = 0; i < 1000; ++i) {
+            IntervalMatrix3x3 matrix = IntervalMatrix3x3::Random();
+            IntervalMatrix3x3 inverse = matrix.inverse();
+            auto containsFunction = [] (Interval testComponent, double identityComponent) -> bool {
+                return testComponent.contains(identityComponent);
+            };
+            TS_ASSERT((matrix * inverse).binaryAll(Matrix3x3::Identity(), containsFunction));
+            TS_ASSERT((inverse * matrix).binaryAll(Matrix3x3::Identity(), containsFunction));
+        }
+    }
+
+    void testFold() {
+        Matrix3x1 values(3, 4, 5);
+        double product = values.fold(
+            1.0,
+            [] (double result, double value) -> double {
+                return result * value;
+            }
+        );
+        TS_ASSERT_EQUALS(product, 60);
+        TS_ASSERT_EQUALS(product, values.product());
+    }
+
+    void testBinaryFold() {
+        Matrix3x1 values(10, 20, 30);
+        IntervalMatrix3x1 intervals(Interval(9, 11), Interval(18, 19), Interval(29, 31));
+        int containmentCount = intervals.binaryFold(
+            values,
+            0,
+            [] (int result, Interval interval, double value) -> int {
+                return result + (interval.contains(value) ? 1 : 0);
+            }
+        );
+        TS_ASSERT_EQUALS(containmentCount, 2);
+    }
+
+    void testCwiseSquared() {
+        Matrix2x1 doubleMatrix(-1, 3);
+        Matrix2x1 squaredDoubles = doubleMatrix.cwiseSquared();
+        TS_ASSERT_EQUALS(squaredDoubles(0), 1);
+        TS_ASSERT_EQUALS(squaredDoubles(1), 9);
+
+        IntervalMatrix2x1 intervalMatrix(Interval(2, 3), Interval(-1, 1));
+        IntervalMatrix2x1 squaredIntervals = intervalMatrix.cwiseSquared();
+        TS_ASSERT_EQUALS(squaredIntervals(0).lowerBound(), 4);
+        TS_ASSERT_EQUALS(squaredIntervals(0).upperBound(), 9);
+        TS_ASSERT_EQUALS(squaredIntervals(1).lowerBound(), 0);
+        TS_ASSERT_EQUALS(squaredIntervals(1).upperBound(), 1);
+    }
+
+    void testCwiseQuotient() {
+        Matrix1x2 doubleMatrix(1, 2);
+        IntervalMatrix1x2 intervalMatrix(Interval(2, 3), Interval(4, 5));
+        IntervalMatrix1x2 quotients = doubleMatrix.cwiseQuotient(intervalMatrix);
+        TS_ASSERT(quotients(0).lowerBound() - 1.0 / 3.0 == Zero());
+        TS_ASSERT(quotients(0).upperBound() - 1.0 / 2.0 == Zero());
+        TS_ASSERT(quotients(1).lowerBound() - 2.0 / 5.0 == Zero());
+        TS_ASSERT(quotients(1).upperBound() - 1.0 / 2.0 == Zero());
+    }
+
+    void testMatrixProduct() {
+        // 1 3 5
+        // 2 4 6
+        Matrix2x3 a = Matrix2x3::FromColumns(
+            Matrix2x1(1, 2),
+            Matrix2x1(3, 4),
+            Matrix2x1(5, 6)
+        );
+
+        // 1 4
+        // 2 5
+        // 3 6
+        Matrix3x2 b = Matrix3x2::FromColumns(
+            Matrix3x1(1, 2, 3),
+            Matrix3x1(4, 5, 6)
+        );
+
+        // 22 49
+        // 28 64
+        Matrix2x2 c = a * b;
+
+        TS_ASSERT(c(0, 0) - 22 == Zero());
+        TS_ASSERT(c(1, 0) - 28 == Zero());
+        TS_ASSERT(c(0, 1) - 49 == Zero());
+        TS_ASSERT(c(1, 1) - 64 == Zero());
     }
 };

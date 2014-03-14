@@ -28,8 +28,9 @@
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.declarations.hpp>
+#include <OpenSolid/Core/ParametricExpression/Eigen.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.declarations.hpp>
 #include <OpenSolid/Core/ReferenceCounted.hpp>
 
@@ -60,7 +61,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const = 0;
@@ -76,7 +77,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateJacobianImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const = 0;
@@ -103,15 +104,15 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
-        scalarMultiplicationImpl(double scale) const;
+        scalingImpl(double scale) const;
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
-        vectorAdditionImpl(const VectorXd& vector) const;
+        translationImpl(const ColumnMatrixXd& columnMatrixXd) const;
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
-        matrixMultiplicationImpl(const MatrixXd& matrix) const;
+        transformationImpl(const MatrixXd& matrixXd) const;
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
@@ -124,22 +125,6 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
         squaredNormImpl() const;
-        
-        OPENSOLID_CORE_EXPORT
-        virtual ExpressionImplementationPtr
-        tangentVectorImpl() const;
-        
-        OPENSOLID_CORE_EXPORT
-        virtual ExpressionImplementationPtr
-        curvatureImpl() const;
-        
-        OPENSOLID_CORE_EXPORT
-        virtual ExpressionImplementationPtr
-        normalVectorImpl() const;
-        
-        OPENSOLID_CORE_EXPORT
-        virtual ExpressionImplementationPtr
-        binormalVectorImpl() const;
 
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
@@ -182,7 +167,7 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const = 0;
 
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator-(const ExpressionImplementationPtr&);
-        friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator+(const ExpressionImplementationPtr&, const VectorXd&);
+        friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator+(const ExpressionImplementationPtr&, const ColumnMatrixXd&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator*(double, const ExpressionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator*(const MatrixXd&, const ExpressionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr sqrt(const ExpressionImplementationPtr&);
@@ -209,9 +194,6 @@ namespace opensolid
         
         bool
         isParameterExpression() const;
-        
-        bool
-        isLinearExpression() const;
 
         template <class TExpressionImplementation>
         const TExpressionImplementation*
@@ -232,7 +214,7 @@ namespace opensolid
         
         void
         evaluate(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const;
@@ -246,7 +228,7 @@ namespace opensolid
 
         void
         evaluateJacobian(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const;
@@ -302,22 +284,6 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
         squaredNorm() const;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        tangentVector() const;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        curvature() const;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        normalVector() const;
-        
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        binormalVector() const;
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
@@ -347,13 +313,13 @@ namespace opensolid
     ExpressionImplementationPtr
     operator+(
         const ExpressionImplementationPtr& argument,
-        const VectorXd& vector
+        const ColumnMatrixXd& columnMatrixXd
     );
 
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator+(
-        const VectorXd& firstArgument,
+        const ColumnMatrixXd& firstArgument,
         const ExpressionImplementationPtr& secondArgument
     );
 
@@ -382,13 +348,13 @@ namespace opensolid
     ExpressionImplementationPtr
     operator-(
         const ExpressionImplementationPtr& firstArgument,
-        const VectorXd& secondArgument
+        const ColumnMatrixXd& secondArgument
     );
 
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator-(
-        const VectorXd& firstArgument,
+        const ColumnMatrixXd& firstArgument,
         const ExpressionImplementationPtr& secondArgument
     );
 
@@ -417,13 +383,13 @@ namespace opensolid
     ExpressionImplementationPtr
     operator*(
         const ExpressionImplementationPtr& firstArgument,
-        const VectorXd& secondArgument
+        const ColumnMatrixXd& secondArgument
     );
 
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator*(
-        const MatrixXd& matrix,
+        const MatrixXd& matrixXd,
         const ExpressionImplementationPtr& argument
     );
 
@@ -451,7 +417,7 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator/(
-        const VectorXd& firstArgument,
+        const ColumnMatrixXd& firstArgument,
         const ExpressionImplementationPtr& secondArgument
     );
 

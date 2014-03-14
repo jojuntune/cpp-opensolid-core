@@ -84,28 +84,13 @@ namespace opensolid
         Point(double value);
 
         explicit
-        Point(const Vector<1>& vector);
+        Point(const Vector<double, 1>& vector);
 
         explicit
-        Point(const Matrix<1, 1>& components);
+        Point(const Matrix<double, 1, 1>& components);
 
         explicit
         Point(const double* sourcePtr);
-
-        const double
-        value() const;
-
-        double&
-        value();
-
-        const double
-        x() const;
-
-        double&
-        x();
-
-        static const Point<1>
-        Origin();
     };
 
     typedef Point<1> Point1d;
@@ -122,37 +107,22 @@ namespace opensolid
         Point(double x, double y);
 
         explicit
-        Point(const Vector<2>& vector);
+        Point(const Vector<double, 2>& vector);
 
         explicit
-        Point(const Matrix<2, 1>& components);
+        Point(const Matrix<double, 2, 1>& components);
 
         explicit
         Point(const double* sourcePtr);
 
-        const double
-        x() const;
-
-        double&
-        x();
-
-        const double
-        y() const;
-
-        double&
-        y();
-
-        const double
+        double
         distanceTo(const Axis<2>& axis) const;
 
-        const bool
+        bool
         isOn(const Axis<2>& axis, double precision = 1e-12) const;
 
-        const bool
+        bool
         isOn(const LineSegment<2>& lineSegment, double precision = 1e-12) const;
-
-        static const Point<2>
-        Origin();
 
         static const Point<2>
         Polar(double radius, double angle);
@@ -172,55 +142,34 @@ namespace opensolid
         Point(double x, double y, double z);
 
         explicit
-        Point(const Vector<3>& vector);
+        Point(const Vector<double, 3>& vector);
 
         explicit
-        Point(const Matrix<3, 1>& components);
+        Point(const Matrix<double, 3, 1>& components);
 
         explicit
         Point(const double* sourcePtr);
 
-        const double
-        x() const;
-
-        double&
-        x();
-
-        const double
-        y() const;
-
-        double&
-        y();
-
-        const double
-        z() const;
-
-        double&
-        z();
-
-        const double
+        double
         squaredDistanceTo(const Axis<3>& axis) const;
 
-        const double
+        double
         distanceTo(const Axis<3>& axis) const;
 
-        const double
+        double
         distanceTo(const Plane3d& plane) const;
 
-        const bool
+        bool
         isOn(const Axis<3>& axis, double precision = 1e-12) const;
 
-        const bool
+        bool
         isOn(const Plane3d& plane, double precision = 1e-12) const;
 
-        const bool
+        bool
         isOn(const LineSegment<3>& lineSegment, double precision = 1e-12) const;
 
-        const bool
+        bool
         isOn(const Triangle<3>& triangle, double precision = 1e-12) const;
-
-        static const Point<3>
-        Origin();
         
         static const Point<3>
         Cylindrical(double radius, double angle, double height);
@@ -232,15 +181,15 @@ namespace opensolid
     typedef Point<3> Point3d;
 
     template <int iNumDimensions>
-    Point<iNumDimensions>
-    operator+(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector);
+    const Point<iNumDimensions>
+    operator+(const Point<iNumDimensions>& point, const Vector<double, iNumDimensions>& vector);
 
     template <int iNumDimensions>
-    Point<iNumDimensions>
-    operator-(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector);
+    const Point<iNumDimensions>
+    operator-(const Point<iNumDimensions>& point, const Vector<double, iNumDimensions>& vector);
 
     template <int iNumDimensions>
-    Vector<iNumDimensions>
+    const Vector<double, iNumDimensions>
     operator-(const Point<iNumDimensions>& firstPoint, const Point<iNumDimensions>& secondPoint);
 
     template <int iNumDimensions>
@@ -250,7 +199,7 @@ namespace opensolid
     template <int iNumDimensions>
     struct EqualityFunction<Point<iNumDimensions>>
     {
-        const bool
+        bool
         operator()(
             const Point<iNumDimensions>& firstPoint,
             const Point<iNumDimensions>& secondPoint,
@@ -276,7 +225,10 @@ namespace opensolid
     struct TranslationFunction<Point<iNumDimensions>>
     {
         const Point<iNumDimensions>
-        operator()(const Point<iNumDimensions>& point, const Vector<iNumDimensions>& vector) const;
+        operator()(
+            const Point<iNumDimensions>& point,
+            const Vector<double, iNumDimensions>& vector
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
@@ -285,14 +237,14 @@ namespace opensolid
         const Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
-            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct MorphingFunction<Point<iNumDimensions>, iNumResultDimensions>
     {
-        Point<iNumResultDimensions>
+        const Point<iNumResultDimensions>
         operator()(
             const Point<iNumDimensions>& point,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression

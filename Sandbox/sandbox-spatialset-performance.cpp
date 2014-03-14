@@ -22,7 +22,7 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 #include <OpenSolid/Core/SpatialSet.hpp>
 
 #include <boost/timer.hpp>
@@ -39,8 +39,8 @@ randomInterval() {
     return Interval(mid - width / 2, mid + width / 2);
 }
 
-Vector3I randomVector() {
-    return Vector3I(randomInterval(), randomInterval(), randomInterval());
+IntervalVector3d randomVector() {
+    return IntervalVector3d(randomInterval(), randomInterval(), randomInterval());
 }
 
 void
@@ -65,14 +65,14 @@ testConstructionTime() {
 
         std::cout << "Items: " << numItems << ", Iterations: " << numIterations << std::endl;
 
-        std::vector<Vector3I> vectors(numItems);
+        std::vector<IntervalVector3d> vectors(numItems);
         for (auto i = vectors.begin(); i != vectors.end(); ++i) {
             *i = randomVector();
         }
     
         boost::timer timer;
         for (std::int64_t i = 0; i < numIterations; ++i) {
-            SpatialSet<Vector3I> set(vectors.begin(), vectors.end());
+            SpatialSet<IntervalVector3d> set(vectors.begin(), vectors.end());
         }
         double time = timer.elapsed();
         std::cout << "Time: " << time << " s" << std::endl;
@@ -104,25 +104,25 @@ testQueryTime() {
 
         std::cout << "Items: " << numItems << ", Queries: " << numQueries << std::endl;
 
-        std::vector<Vector3I> items(numItems);
+        std::vector<IntervalVector3d> items(numItems);
         std::for_each(
             items.begin(),
             items.end(),
-            [] (Vector3I& item) {
+            [] (IntervalVector3d& item) {
                 item = randomVector();
             }
         );
     
-        std::vector<Vector3I> queryBoxes(numQueries);
+        std::vector<IntervalVector3d> queryBoxes(numQueries);
         std::for_each(
             queryBoxes.begin(),
             queryBoxes.end(),
-            [] (Vector3I& queryBox) {
+            [] (IntervalVector3d& queryBox) {
                 queryBox = randomVector();
             }
         );
 
-        SpatialSet<Vector3I> set(items.begin(), items.end());
+        SpatialSet<IntervalVector3d> set(items.begin(), items.end());
         std::int64_t checksum = 0;
         boost::timer timer;
         for (std::int64_t i = 0; i < numQueries; ++i) {

@@ -72,7 +72,7 @@ namespace opensolid
             std::int64_t
             size() const;
 
-            Point<iNumDimensions>
+            const Point<iNumDimensions>
             operator[](std::int64_t index) const;
         };
     }

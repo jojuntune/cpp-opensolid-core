@@ -49,11 +49,11 @@ namespace opensolid
     
     void
     IdentityExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator&
     ) const {
-        results = parameterBounds;
+        results = parameterValues;
     }
 
     void
@@ -67,7 +67,7 @@ namespace opensolid
     
     void
     IdentityExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
@@ -77,7 +77,7 @@ namespace opensolid
     ExpressionImplementationPtr
     IdentityExpression::derivativeImpl(int parameterIndex) const {
         return new ConstantExpression(
-            VectorXd::Unit(numDimensions(), parameterIndex),
+            ColumnMatrixXd::Unit(numDimensions(), parameterIndex),
             numDimensions()
         );
     }

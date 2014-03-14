@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.definitions.hpp>
 
 namespace opensolid
 {
@@ -47,13 +48,13 @@ namespace opensolid
     {
     private:
         Point<3> _originPoint;
-        Vector3d _normalVector;
+        UnitVector<3> _normalVector;
     public:
         OPENSOLID_CORE_EXPORT
         Plane3d();
 
         OPENSOLID_CORE_EXPORT
-        Plane3d(const Point<3>& originPoint, const Vector3d& normalVector);
+        Plane3d(const Point<3>& originPoint, const UnitVector<3>& normalVector);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
@@ -69,7 +70,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        Midplane(const Plane3d planeBelow, const Plane3d planeAbove);
+        Midplane(const Plane3d& planeBelow, const Plane3d& planeAbove);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
@@ -106,7 +107,7 @@ namespace opensolid
         const Point<3>&
         originPoint() const;
 
-        const Vector3d&
+        const UnitVector<3>&
         normalVector() const;
 
         OPENSOLID_CORE_EXPORT
@@ -136,9 +137,8 @@ namespace opensolid
     template <>
     struct TranslationFunction<Plane3d>
     {
-        template <class TVector>
         Plane3d
-        operator()(const Plane3d& plane, const EigenBase<TVector>& vector) const;
+        operator()(const Plane3d& plane, const Vector<double, 3>& vector) const;
     };
 
     template <>
@@ -146,7 +146,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(const Plane3d& plane, const Matrix3d& matrix) const;
+        operator()(const Plane3d& plane, const Matrix<double, 3, 3>& matrix) const;
     };
 
     template <>

@@ -75,10 +75,13 @@ namespace opensolid
     ) const {
         return translationFunction(
             transformationFunction(
-                translationFunction(transformable, -sourceOriginPoint().vector()),
+                translationFunction(
+                    transformable,
+                    Vector<double, iNumSourceDimensions>(-sourceOriginPoint().components())
+                ),
                 transformationMatrix()
             ),
-            destinationOriginPoint().vector()
+            Vector<double, iNumResultDimensions>(destinationOriginPoint().components())
         );
     }
 }

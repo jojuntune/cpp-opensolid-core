@@ -62,8 +62,8 @@ Interval randomInterval() {
     return Interval(mid - width / 2, mid + width / 2);
 }
 
-Vector3I randomVector() {
-    return Vector3I(randomInterval(), randomInterval(), randomInterval());
+IntervalVector3d randomVector() {
+    return IntervalVector3d(randomInterval(), randomInterval(), randomInterval());
 }
 
 class SetTests : public CxxTest::TestSuite
@@ -116,14 +116,14 @@ public:
         testSet(set.rootNode());
     }
     
-    void testVector2I() {
-        std::vector<Vector2I> list(5);
-        list[0] = Vector2I(Interval(1, 6), Interval(4, 5));
-        list[1] = Vector2I(Interval(2, 5), Interval(5, 7));
-        list[2] = Vector2I(Interval(4, 7), Interval(3, 6));
-        list[3] = Vector2I(Interval(6, 9), Interval(5, 8));
-        list[4] = Vector2I(Interval(8, 10), Interval(2, 6));
-        SpatialSet<Vector2I> set(list.begin(), list.end());
+    void testIntervalVector2d() {
+        std::vector<IntervalVector2d> list(5);
+        list[0] = IntervalVector2d(Interval(1, 6), Interval(4, 5));
+        list[1] = IntervalVector2d(Interval(2, 5), Interval(5, 7));
+        list[2] = IntervalVector2d(Interval(4, 7), Interval(3, 6));
+        list[3] = IntervalVector2d(Interval(6, 9), Interval(5, 8));
+        list[4] = IntervalVector2d(Interval(8, 10), Interval(2, 6));
+        SpatialSet<IntervalVector2d> set(list.begin(), list.end());
         testSet(set.rootNode());
     }
     
@@ -148,7 +148,9 @@ public:
         list[2] = Vector2d(1, 3);
         list[3] = Vector2d(5, 3);
         SpatialSet<Vector2d> set(list.begin(), list.end());
-        std::vector<Vector2d> check = set.overlapping(Vector2I(Interval(1, 5), Interval(2, 4)));
+        std::vector<Vector2d> check = set.overlapping(
+            IntervalVector2d(Interval(1, 5), Interval(2, 4))
+        );
         TS_ASSERT_EQUALS(check.size(), 2u);
         TS_ASSERT_EQUALS(check[0], Vector2d(1, 3));
         TS_ASSERT_EQUALS(check[1], Vector2d(5, 3));
@@ -182,7 +184,7 @@ public:
         pointList[2] = Point3d(1, 1, 1);
 
         SpatialSet<Point3d> pointSet(pointList);
-        Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
+        Axis3d rotationAxis(Point3d(1, 0, 0), UnitVector3d::Z());
         std::vector<Point3d> rotatedPoints = pointSet.map(Rotation3d(rotationAxis, M_PI / 2));
 
         TS_ASSERT((rotatedPoints[0] - Point3d(2, 0, 1)).isZero());
@@ -197,7 +199,7 @@ public:
         vectorList[2] = Vector3d(1, 1, 1);
 
         SpatialSet<Vector3d> vectorSet(vectorList);
-        Axis3d rotationAxis(Point3d(1, 0, 0), Vector3d::UnitZ());
+        Axis3d rotationAxis(Point3d(1, 0, 0), UnitVector3d::Z());
         std::vector<Vector3d> rotatedVectors = vectorSet.map(Rotation3d(rotationAxis, M_PI / 2));
 
         TS_ASSERT((rotatedVectors[0] - Vector3d(1, 1, 1)).isZero());

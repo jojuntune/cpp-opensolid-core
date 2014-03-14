@@ -48,22 +48,22 @@ namespace opensolid
         const BoundedArea2d& domain
     ) : _expression(expression),
         _domain(domain),
-        _bounds(expression.evaluateBounds(domain.bounds().vector())) {
+        _bounds(expression.evaluate(domain.bounds().components())) {
     }
 
     Point3d
     ParametricSurface3d::evaluate(double u, double v) const {
-        return Point3d(expression().evaluate(Vector2d(u, v)));
+        return Point3d(expression().evaluate(u, v));
     }
 
     Box3d
     ParametricSurface3d::evaluate(Interval u, Interval v) const {
-        return Box3d(expression().evaluateBounds(Vector2I(u, v)));
+        return Box3d(expression().evaluate(u, v));
     }
 
     ParametricExpression<3, 2>
     ParametricSurface3d::normalVector() const {
-        return expression().normalVector();
+        return expression().derivative(0).cross(expression().derivative(1)).normalized();
     }
 
     ParametricSurface3d
@@ -71,7 +71,10 @@ namespace opensolid
         const ParametricSurface3d& surface,
         double scale
     ) const {
-        return ParametricSurface3d(scale * surface.expression(), surface.domain());
+        return ParametricSurface3d(
+            scale * surface.expression(),
+            surface.domain()
+        );
     }
 
     ParametricSurface3d
@@ -79,15 +82,21 @@ namespace opensolid
         const ParametricSurface3d& surface,
         const Vector3d& vector
     ) const {
-        return ParametricSurface3d(surface.expression() + vector, surface.domain());
+        return ParametricSurface3d(
+            surface.expression() + vector.components(),
+            surface.domain()
+        );
     }
 
     ParametricSurface3d
     TransformationFunction<ParametricSurface3d, 3>::operator()(
         const ParametricSurface3d& surface,
-        const Matrix3d& matrix
+        const Matrix3x3& matrix
     ) const {
-        return ParametricSurface3d(matrix * surface.expression(), surface.domain());
+        return ParametricSurface3d(
+            matrix * surface.expression(),
+            surface.domain()
+        );
     }
 
     ParametricSurface3d

@@ -60,8 +60,11 @@ namespace opensolid
     typename GlobalizedType<TTransformable, iNumDimensions>::Type
     Globalization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
         return translationFunction(
-            transformationFunction(transformable, transformationMatrix()),
-            originPoint().vector()
+            transformationFunction(
+                transformable,
+                transformationMatrix()
+            ),
+            Vector<double, iNumDimensions>(originPoint().components())
         );
     }
 }

@@ -97,7 +97,7 @@ public:
                 }
             )
         );
-        Vector2I testBounds(Interval(1), Interval::Whole());
+        IntervalVector2d testBounds(Interval(1), Interval::Whole());
         TS_ASSERT_EQUALS(vectorSet().overlapping(testBounds).size(), 2u);
         TS_ASSERT(
             vectorSet().overlapping(testBounds).all(
@@ -142,7 +142,7 @@ public:
 
     void testWhere() {
         auto predicate = [] (const Box2d& box) -> bool {
-            return box.diagonalVector().minCoeff() - 2.0 >= Zero();
+            return box.diagonalVector().minComponent() - 2.0 >= Zero();
         };
         std::int64_t testSize = boxSet().containing(Box2d(0, 0)).where(predicate).size();
         TS_ASSERT_EQUALS(testSize, 1);

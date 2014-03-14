@@ -46,22 +46,16 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
-        if (operandValues.minCoeff() <= Zero()) {
-            throw Error(new PlaceholderError());
-        }
         results = operandValues.array().log();
     }
 
     void
     LogarithmExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
-        if (operandBounds.cwiseUpper().minCoeff() <= Zero()) {
-            throw Error(new PlaceholderError());
-        }
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
         results = operandBounds.array().log();
     }
 
@@ -80,15 +74,15 @@ namespace opensolid
     
     void
     LogarithmExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
         if (operandBounds.upperBound() <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        results = evaluator.evaluateJacobian(operand(), parameterBounds) / operandBounds;
+        results = evaluator.evaluateJacobian(operand(), parameterValues) / operandBounds;
     }
 
     ExpressionImplementationPtr

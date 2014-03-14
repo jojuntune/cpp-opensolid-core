@@ -24,8 +24,20 @@
 
 #include <OpenSolid/Core/Variant/VariantValue.hpp>
 
+#include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Component.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Plane.hpp>
+#include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/Tetrahedron.hpp>
+#include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/Variant.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
@@ -52,6 +64,66 @@ namespace opensolid
         throw PlaceholderError();
     }
 
+    const Matrix2x2&
+    VariantValue::toMatrix2x2() const {
+        throw PlaceholderError();
+    }
+
+    const IntervalMatrix2x2&
+    VariantValue::toIntervalMatrix2x2() const {
+        throw PlaceholderError();
+    }
+
+    const Matrix3x3&
+    VariantValue::toMatrix3x3() const {
+        throw PlaceholderError();
+    }
+
+    const IntervalMatrix3x3&
+    VariantValue::toIntervalMatrix3x3() const {
+        throw PlaceholderError();
+    }
+
+    const Matrix1x2&
+    VariantValue::toMatrix1x2() const {
+        throw PlaceholderError();
+    }
+
+    const IntervalMatrix1x2&
+    VariantValue::toIntervalMatrix1x2() const {
+        throw PlaceholderError();
+    }
+
+    const Matrix2x1&
+    VariantValue::toMatrix2x1() const {
+        throw PlaceholderError();
+    }
+
+    const IntervalMatrix2x1&
+    VariantValue::toIntervalMatrix2x1() const {
+        throw PlaceholderError();
+    }
+
+    const Matrix1x3&
+    VariantValue::toMatrix1x3() const {
+        throw PlaceholderError();
+    }
+
+    const IntervalMatrix1x3&
+    VariantValue::toIntervalMatrix1x3() const {
+        throw PlaceholderError();
+    }
+
+    const Matrix3x1&
+    VariantValue::toMatrix3x1() const {
+        throw PlaceholderError();
+    }
+
+    const IntervalMatrix3x1&
+    VariantValue::toIntervalMatrix3x1() const {
+        throw PlaceholderError();
+    }
+
     const Vector2d&
     VariantValue::toVector2d() const {
         throw PlaceholderError();
@@ -62,132 +134,42 @@ namespace opensolid
         throw PlaceholderError();
     }
 
-    const VectorXd&
-    VariantValue::toVectorXd() const {
+    const IntervalVector2d&
+    VariantValue::toIntervalVector2d() const {
         throw PlaceholderError();
     }
 
-    const Vector2I&
-    VariantValue::toVector2I() const {
+    const IntervalVector3d&
+    VariantValue::toIntervalVector3d() const {
         throw PlaceholderError();
     }
 
-    const Vector3I&
-    VariantValue::toVector3I() const {
-        throw PlaceholderError();
-    }
-
-    const VectorXI&
-    VariantValue::toVectorXI() const {
-        throw PlaceholderError();
-    }
-
-    const RowVector2d&
-    VariantValue::toRowVector2d() const {
-        throw PlaceholderError();
-    }
-
-    const RowVector3d&
-    VariantValue::toRowVector3d() const {
-        throw PlaceholderError();
-    }
-
-    const RowVectorXd&
-    VariantValue::toRowVectorXd() const {
-        throw PlaceholderError();
-    }
-
-    const RowVector2I&
-    VariantValue::toRowVector2I() const {
-        throw PlaceholderError();
-    }
-
-    const RowVector3I&
-    VariantValue::toRowVector3I() const {
-        throw PlaceholderError();
-    }
-
-    const RowVectorXI&
-    VariantValue::toRowVectorXI() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix2d&
-    VariantValue::toMatrix2d() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix3d&
-    VariantValue::toMatrix3d() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix2Xd&
-    VariantValue::toMatrix2Xd() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix3Xd&
-    VariantValue::toMatrix3Xd() const {
-        throw PlaceholderError();
-    }
-
-    const MatrixXd&
-    VariantValue::toMatrixXd() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix2I&
-    VariantValue::toMatrix2I() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix3I&
-    VariantValue::toMatrix3I() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix2XI&
-    VariantValue::toMatrix2XI() const {
-        throw PlaceholderError();
-    }
-
-    const Matrix3XI&
-    VariantValue::toMatrix3XI() const {
-        throw PlaceholderError();
-    }
-
-    const MatrixXI&
-    VariantValue::toMatrixXI() const {
-        throw PlaceholderError();
-    }
-
-    const Point<2>&
+    const Point2d&
     VariantValue::toPoint2d() const {
         throw PlaceholderError();
     }
 
-    const Point<3>&
+    const Point3d&
     VariantValue::toPoint3d() const {
         throw PlaceholderError();
     }
 
-    const Box<2>&
+    const Box2d&
     VariantValue::toBox2d() const {
         throw PlaceholderError();
     }
 
-    const Box<3>&
+    const Box3d&
     VariantValue::toBox3d() const {
         throw PlaceholderError();
     }
 
-    const Axis<2>&
+    const Axis2d&
     VariantValue::toAxis2d() const {
         throw PlaceholderError();
     }
 
-    const Axis<3>&
+    const Axis3d&
     VariantValue::toAxis3d() const {
         throw PlaceholderError();
     }
@@ -197,47 +179,47 @@ namespace opensolid
         throw PlaceholderError();
     }
 
-    const CoordinateSystem<2, 1>&
+    const AxialCoordinateSystem2d&
     VariantValue::toAxialCoordinateSystem2d() const {
         throw PlaceholderError();
     }
 
-    const CoordinateSystem<3, 1>&
+    const AxialCoordinateSystem3d&
     VariantValue::toAxialCoordinateSystem3d() const {
         throw PlaceholderError();
     }
 
-    const CoordinateSystem<3, 2>&
+    const PlanarCoordinateSystem3d&
     VariantValue::toPlanarCoordinateSystem3d() const {
         throw PlaceholderError();
     }
 
-    const CoordinateSystem<2, 2>&
+    const CoordinateSystem2d&
     VariantValue::toCoordinateSystem2d() const {
         throw PlaceholderError();
     }
 
-    const CoordinateSystem<3, 3>&
+    const CoordinateSystem3d&
     VariantValue::toCoordinateSystem3d() const {
         throw PlaceholderError();
     }
 
-    const LineSegment<2>&
+    const LineSegment2d&
     VariantValue::toLineSegment2d() const {
         throw PlaceholderError();
     }
 
-    const LineSegment<3>&
+    const LineSegment3d&
     VariantValue::toLineSegment3d() const {
         throw PlaceholderError();
     }
 
-    const Triangle<2>&
+    const Triangle2d&
     VariantValue::toTriangle2d() const {
         throw PlaceholderError();
     }
 
-    const Triangle<3>&
+    const Triangle3d&
     VariantValue::toTriangle3d() const {
         throw PlaceholderError();
     }

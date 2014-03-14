@@ -30,38 +30,40 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
-#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
-#include <OpenSolid/Core/IntervalVector.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
+#include <OpenSolid/Core/Vector/DoubleVectorBase.definitions.hpp>
+#include <OpenSolid/Core/Vector/IntervalVectorBase.definitions.hpp>
+
+#include <ostream>
 
 namespace opensolid
 {
-    template <int iNumDimensions>
-    struct BoundsType<Vector<iNumDimensions>>
+    template <class TScalar, int iNumDimensions>
+    struct BoundsType<Vector<TScalar, iNumDimensions>>
     {
-        typedef IntervalVector<iNumDimensions> Type;
+        typedef Vector<Interval, iNumDimensions> Type;
     };
 
-    template <int iNumDimensions>
-    struct NumDimensions<Vector<iNumDimensions>>
+    template <class TScalar, int iNumDimensions>
+    struct NumDimensions<Vector<TScalar, iNumDimensions>>
     {
         static const int Value = iNumDimensions;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformedType<Vector<iNumDimensions>, iNumResultDimensions>
+    template <class TScalar, int iNumDimensions, int iNumResultDimensions>
+    struct TransformedType<Vector<TScalar, iNumDimensions>, iNumResultDimensions>
     {
-        typedef Vector<iNumResultDimensions> Type;
+        typedef Vector<TScalar, iNumResultDimensions> Type;
     };
 
     template <>
-    class Vector<1> :
-        public detail::CartesianBase<double, 1>,
-        public Transformable<Vector<1>>,
-        public Convertible<Vector<1>>
+    class Vector<double, 1> :
+        public detail::DoubleVectorBase<1>,
+        public Transformable<Vector<double, 1>>,
+        public Convertible<Vector<double, 1>>
     {
     public:
         Vector();
@@ -70,70 +72,16 @@ namespace opensolid
         Vector(double x);
 
         explicit
-        Vector(const Matrix<1, 1>& components);
-
-        const double
-        value() const;
-
-        double&
-        value();
-
-        const double
-        x() const;
-
-        double&
-        x();
-
-        const double
-        squaredNorm() const;
-
-        const double
-        norm() const;
-
-        const UnitVector<1>
-        normalized() const;
-
-        const double
-        dot(const Vector<1>& other) const;
-
-        const Interval
-        dot(const IntervalVector<1>& intervalVector) const;
-
-        const double
-        minComponent() const;
-
-        const double
-        minComponent(std::int64_t& index) const;
-
-        const double
-        maxComponent() const;
-
-        const double
-        maxComponent(std::int64_t& index) const;
-
-        const IntervalVector<1>
-        hull(const Vector<1>& other) const;
-
-        const IntervalVector<1>
-        hull(const IntervalVector<1>& intervalVector) const;
-
-        const bool
-        operator==(const Vector<1>& other) const;
-
-        static const Vector<1>
-        Zero();
-
-        static const Vector<1>
-        Random();
+        Vector(const Matrix<double, 1, 1>& components);
     };
 
-    typedef Vector<1> Vector1d;
+    typedef Vector<double, 1> Vector1d;
 
     template <>
-    class Vector<2> :
-        public detail::CartesianBase<double, 2>,
-        public Transformable<Vector<2>>,
-        public Convertible<Vector<2>>
+    class Vector<double, 2> :
+        public detail::DoubleVectorBase<2>,
+        public Transformable<Vector<double, 2>>,
+        public Convertible<Vector<double, 2>>
     {
     public:
         Vector();
@@ -141,73 +89,19 @@ namespace opensolid
         Vector(double x, double y);
 
         explicit
-        Vector(const Matrix<2, 1>& components);
-
-        const double
-        x() const;
-
-        double&
-        x();
-
-        const double
-        y() const;
-
-        double&
-        y();
-
-        const double
-        squaredNorm() const;
-
-        const double
-        norm() const;
-
-        const UnitVector<2>
-        normalized() const;
-
-        const double
-        dot(const Vector<2>& other) const;
-
-        const Interval
-        dot(const IntervalVector<2>& intervalVector) const;
-
-        const double
-        minComponent() const;
-
-        const double
-        minComponent(std::int64_t& index) const;
-
-        const double
-        maxComponent() const;
-
-        const double
-        maxComponent(std::int64_t& index) const;
-
-        const IntervalVector<2>
-        hull(const Vector<2>& other) const;
-
-        const IntervalVector<2>
-        hull(const IntervalVector<2>& intervalVector) const;
-
-        const bool
-        operator==(const Vector<2>& other) const;
+        Vector(const Matrix<double, 2, 1>& components);
 
         const UnitVector<2>
         unitOrthogonal() const;
-
-        static const Vector<2>
-        Zero();
-
-        static const Vector<2>
-        Random();
     };
 
-    typedef Vector<2> Vector2d;
+    typedef Vector<double, 2> Vector2d;
 
     template <>
-    class Vector<3> :
-        public detail::CartesianBase<double, 3>,
-        public Transformable<Vector<3>>,
-        public Convertible<Vector<3>>
+    class Vector<double, 3> :
+        public detail::DoubleVectorBase<3>,
+        public Transformable<Vector<double, 3>>,
+        public Convertible<Vector<double, 3>>
     {
     public:
         Vector();
@@ -215,194 +109,165 @@ namespace opensolid
         Vector(double x, double y, double z);
 
         explicit
-        Vector(const Matrix<3, 1>& components);
+        Vector(const Matrix<double, 3, 1>& components);
 
-        const double
-        x() const;
+        const Vector<double, 3>
+        cross(const Vector<double, 3>& other) const;
 
-        double&
-        x();
-
-        const double
-        y() const;
-
-        double&
-        y();
-
-        const double
-        z() const;
-
-        double&
-        z();
-
-        const double
-        squaredNorm() const;
-
-        const double
-        norm() const;
-
-        const UnitVector<3>
-        normalized() const;
-
-        const double
-        dot(const Vector<3>& other) const;
-
-        const Interval
-        dot(const IntervalVector<3>& intervalVector) const;
-
-        const double
-        minComponent() const;
-
-        const double
-        minComponent(std::int64_t& index) const;
-
-        const double
-        maxComponent() const;
-
-        const double
-        maxComponent(std::int64_t& index) const;
-
-        const IntervalVector<3>
-        hull(const Vector<3>& other) const;
-
-        const IntervalVector<3>
-        hull(const IntervalVector<3>& intervalVector) const;
-
-        const bool
-        operator==(const Vector<3>& other) const;
-
-        const Vector<3>
-        cross(const Vector<3>& other) const;
-
-        const IntervalVector<3>
-        cross(const IntervalVector<3>& intervalVector) const;
+        const Vector<Interval, 3>
+        cross(const Vector<Interval, 3>& intervalVector) const;
 
         const UnitVector<3>
         unitOrthogonal() const;
-
-        static const Vector<3>
-        Zero();
-
-        static const Vector<3>
-        Random();
     };
 
-    typedef Vector<3> Vector3d;
+    typedef Vector<double, 3> Vector3d;
 
-    const bool
-    operator==(const Vector1d& vector, Zero zero);
+    template <>
+    class Vector<Interval, 1> :
+        public detail::IntervalVectorBase<1>,
+        public Transformable<Vector<Interval, 1>>,
+        public Convertible<Vector<Interval, 1>>
+    {
+    public:
+        Vector();
 
-    const bool
-    operator==(const Vector2d& vector, Zero zero);
+        explicit
+        Vector(const Matrix<Interval, 1, 1>& components);
 
-    const bool
-    operator==(const Vector3d& vector, Zero zero);
+        explicit
+        Vector(Interval x);
+    };
 
-    const bool
-    operator!=(const Vector1d& vector, Zero zero);
+    typedef Vector<Interval, 1> IntervalVector1d;
 
-    const bool
-    operator!=(const Vector2d& vector, Zero zero);
+    template <>
+    class Vector<Interval, 2> :
+        public detail::IntervalVectorBase<2>,
+        public Transformable<Vector<Interval, 2>>,
+        public Convertible<Vector<Interval, 2>>
+    {
+    public:
+        Vector();
 
-    const bool
-    operator!=(const Vector3d& vector, Zero zero);
+        explicit
+        Vector(const Matrix<Interval, 2, 1>& components);
 
-    const Vector1d
-    operator*(double scale, const Vector1d& vector);
+        Vector(Interval x, Interval y);
+    };
 
-    const Vector2d
-    operator*(double scale, const Vector2d& vector);
+    typedef Vector<Interval, 2> IntervalVector2d;
 
-    const Vector3d
-    operator*(double scale, const Vector3d& vector);
+    template <>
+    class Vector<Interval, 3> :
+        public detail::IntervalVectorBase<3>,
+        public Transformable<Vector<Interval, 3>>,
+        public Convertible<Vector<Interval, 3>>
+    {
+    public:
+        Vector();
 
-    const Vector1d
-    operator*(const Vector1d& vector, double scale);
+        Vector(Interval x, Interval y, Interval z);
 
-    const Vector2d
-    operator*(const Vector2d& vector, double scale);
+        explicit
+        Vector(const Matrix<Interval, 3, 1>& components);
 
-    const Vector3d
-    operator*(const Vector3d& vector, double scale);
+        const Vector<Interval, 3>
+        cross(const Vector<double, 3>& other) const;
 
-    const Vector1d
-    operator/(const Vector1d& vector, double divisor);
+        const Vector<Interval, 3>
+        cross(const Vector<Interval, 3>& other) const;
+    };
 
-    const Vector2d
-    operator/(const Vector2d& vector, double divisor);
+    typedef Vector<Interval, 3> IntervalVector3d;
 
-    const Vector3d
-    operator/(const Vector3d& vector, double divisor);
+    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
+    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
+    operator*(TFirstScalar scale, const Vector<TSecondScalar, iNumDimensions>& vector);
 
-    const Vector1d
-    operator-(const Vector1d& vector);
+    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
+    const Vector<decltype(TFirstScalar() * TSecondScalar()), iNumDimensions>
+    operator*(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar scale);
 
-    const Vector2d
-    operator-(const Vector2d& vector);
+    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
+    const Vector<decltype(TFirstScalar() / TSecondScalar()), iNumDimensions>
+    operator/(const Vector<TFirstScalar, iNumDimensions>& vector, TSecondScalar divisor);
 
-    const Vector3d
-    operator-(const Vector3d& vector);
+    template <class TScalar, int iNumDimensions>
+    const Vector<TScalar, iNumDimensions>
+    operator-(const Vector<TScalar, iNumDimensions>& vector);
 
-    const Vector1d
-    operator+(const Vector1d& firstVector, const Vector1d& secondVector);
+    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
+    const Vector<decltype(TFirstScalar() + TSecondScalar()), iNumDimensions>
+    operator+(
+        const Vector<TFirstScalar, iNumDimensions>& firstVector,
+        const Vector<TSecondScalar, iNumDimensions>& secondVector
+    );
 
-    const Vector2d
-    operator+(const Vector2d& firstVector, const Vector2d& secondVector);
-
-    const Vector3d
-    operator+(const Vector3d& firstVector, const Vector3d& secondVector);
-
-    const Vector1d
-    operator-(const Vector1d& firstVector, const Vector1d& secondVector);
-
-    const Vector2d
-    operator-(const Vector2d& firstVector, const Vector2d& secondVector);
-
-    const Vector3d
-    operator-(const Vector3d& firstVector, const Vector3d& secondVector);
+    template <class TFirstScalar, class TSecondScalar, int iNumDimensions>
+    const Vector<decltype(TFirstScalar() - TSecondScalar()), iNumDimensions>
+    operator-(
+        const Vector<TFirstScalar, iNumDimensions>& firstVector,
+        const Vector<TSecondScalar, iNumDimensions>& secondVector
+    );
 
     template <int iNumDimensions>
-    struct EqualityFunction<Vector<iNumDimensions>>
+    std::ostream&
+    operator<<(std::ostream& stream, const Vector<double, iNumDimensions>& vector);
+
+    template <int iNumDimensions>
+    std::ostream&
+    operator<<(std::ostream& stream, const Vector<Interval, iNumDimensions>& vector);
+
+    template <int iNumDimensions>
+    struct EqualityFunction<Vector<double, iNumDimensions>>
     {
-        const bool
+        bool
         operator()(
-            const Vector<iNumDimensions>& firstVector,
-            const Vector<iNumDimensions>& secondVector,
+            const Vector<double, iNumDimensions>& firstVector,
+            const Vector<double, iNumDimensions>& secondVector,
             double precision
         ) const;
     };
 
     template <int iNumDimensions>
-    struct BoundsFunction<Vector<iNumDimensions>>
+    struct BoundsFunction<Vector<double, iNumDimensions>>
     {
-        const IntervalVector<iNumDimensions>
-        operator()(const Vector<iNumDimensions>& vector) const;
+        const Vector<Interval, iNumDimensions>
+        operator()(const Vector<double, iNumDimensions>& vector) const;
     };
 
     template <int iNumDimensions>
-    struct ScalingFunction<Vector<iNumDimensions>>
+    struct BoundsFunction<Vector<Interval, iNumDimensions>>
     {
-        const Vector<iNumDimensions>
-        operator()(const Vector<iNumDimensions>& vector, double scale) const;
+        const Vector<Interval, iNumDimensions>&
+        operator()(const Vector<Interval, iNumDimensions>& vector) const;
     };
 
-    template <int iNumDimensions>
-    struct TranslationFunction<Vector<iNumDimensions>>
+    template <class TScalar, int iNumDimensions>
+    struct ScalingFunction<Vector<TScalar, iNumDimensions>>
     {
-        const Vector<iNumDimensions>&
+        const Vector<TScalar, iNumDimensions>
+        operator()(const Vector<TScalar, iNumDimensions>& vector, double scale) const;
+    };
+
+    template <class TScalar, int iNumDimensions>
+    struct TranslationFunction<Vector<TScalar, iNumDimensions>>
+    {
+        const Vector<TScalar, iNumDimensions>&
         operator()(
-            const Vector<iNumDimensions>& vector,
-            const Vector<iNumDimensions>& translationVector
+            const Vector<TScalar, iNumDimensions>& vector,
+            const Vector<double, iNumDimensions>& translationVector
         ) const;
     };
 
-    template <int iNumDimensions, int iNumResultDimensions>
-    struct TransformationFunction<Vector<iNumDimensions>, iNumResultDimensions>
+    template <class TScalar, int iNumDimensions, int iNumResultDimensions>
+    struct TransformationFunction<Vector<TScalar, iNumDimensions>, iNumResultDimensions>
     {
-        const Vector<iNumResultDimensions>
+        const Vector<TScalar, iNumResultDimensions>
         operator()(
-            const Vector<iNumDimensions>& vector,
-            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+            const Vector<TScalar, iNumDimensions>& vector,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 }

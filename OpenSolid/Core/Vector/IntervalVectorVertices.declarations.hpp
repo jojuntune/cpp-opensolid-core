@@ -26,26 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Matrix/MatrixType.declarations.hpp>
-
-#include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
-#include <OpenSolid/Core/Matrix.declarations.hpp>
-
 namespace opensolid
 {
     namespace detail
     {
-        template <int iNumRows, int iNumColumns>
-        struct MatrixType<double, iNumRows, iNumColumns>
-        {
-            typedef Matrix<iNumRows, iNumColumns> Type;
-        };
-
-        template <int iNumRows, int iNumColumns>
-        struct MatrixType<Interval, iNumRows, iNumColumns>
-        {
-            typedef IntervalMatrix<iNumRows, iNumColumns> Type;
-        };
+        template <int iNumDimensions>
+        class IntervalVectorVertices;
     }
 }

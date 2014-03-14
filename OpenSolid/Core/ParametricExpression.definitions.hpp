@@ -33,11 +33,10 @@
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
-#include <OpenSolid/Core/ParametricExpression/ExpressionEvaluation.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
-#include <OpenSolid/Core/ParametricExpression/JacobianEvaluation.declarations.hpp>
 
 #include <typeinfo>
+#include <vector>
 
 namespace opensolid
 {
@@ -50,13 +49,13 @@ namespace opensolid
         ExpressionImplementationPtr _implementationPtr;
     public:
         static_assert(
-            iNumDimensions > 0 && iNumDimensions != Dynamic,
-            "Invalid number of dimensions for ParametricExpression object"
+            iNumDimensions > 0,
+            "ParametricExpression must have positive number of dimensions"
         );
 
         static_assert(
-            iNumParameters > 0 && iNumDimensions != Dynamic,
-            "Invalid number of parameters for ParametricExpression object"
+            iNumParameters > 0,
+            "ParametricExpression must have positive number of parameters"
         );
 
         ParametricExpression();
@@ -67,48 +66,72 @@ namespace opensolid
         
         const ExpressionImplementationPtr&
         implementation() const;
-
-        Matrix<double, iNumDimensions, 1>
-        evaluate(int value) const;
         
-        Matrix<double, iNumDimensions, 1>
-        evaluate(double value) const;
+        const Matrix<double, iNumDimensions, 1>
+        evaluate(double u) const;
+
+        const Matrix<double, iNumDimensions, 1>
+        evaluate(double u, double v) const;
+
+        const Matrix<double, iNumDimensions, 1>
+        evaluate(double u, double v, double w) const;
         
-        Matrix<Interval, iNumDimensions, 1>
-        evaluateBounds(Interval interval) const;
+        const Matrix<Interval, iNumDimensions, 1>
+        evaluate(Interval u) const;
+        
+        const Matrix<Interval, iNumDimensions, 1>
+        evaluate(Interval u, Interval v) const;
+        
+        const Matrix<Interval, iNumDimensions, 1>
+        evaluate(Interval u, Interval v, Interval w) const;
 
-        Matrix<double, iNumDimensions, 1>
-        evaluate(const Matrix<double, iNumParameters, 1> parameterValues) const;
+        template <int iNumColumns>
+        const Matrix<double, iNumDimensions, iNumColumns>
+        evaluate(const Matrix<double, iNumParameters, iNumColumns>& parameterValues) const;
 
-        Matrix<Interval, iNumDimensions, 1>
-        evaluate(const Matrix<Interval, iNumParameters, 1> parameterValues) const;
+        template <int iNumColumns>
+        const Matrix<Interval, iNumDimensions, iNumColumns>
+        evaluate(const Matrix<Interval, iNumParameters, iNumColumns>& parameterValues) const;
 
-        SpatialList<Matrix<double, iNumDimensions, 1>>
+        std::vector<Matrix<double, iNumDimensions, 1>>
+        evaluate(const std::vector<double>& parameterValues) const;
+
+        std::vector<Matrix<Interval, iNumDimensions, 1>>
+        evaluate(const std::vector<Interval>& parameterValues) const;
+
+        std::vector<Matrix<double, iNumDimensions, 1>>
         evaluate(
-            const SpatialList<Matrix<double, iNumParameters, 1>>& parameterValues
+            const std::vector<Matrix<double, iNumParameters, 1>>& parameterValues
         ) const;
 
-        SpatialList<Matrix<double, iNumDimensions, 1>>
-        evaluateBounds(
-            const SpatialList<Matrix<Interval, iNumParameters, 1>>& parameterBounds
+        std::vector<Matrix<Interval, iNumDimensions, 1>>
+        evaluate(
+            const std::vector<Matrix<Interval, iNumParameters, 1>>& parameterValues
         ) const;
-
-        JacobianEvaluation<iNumDimensions, 1, int>
-        jacobian(int value) const;
         
-        JacobianEvaluation<iNumDimensions, 1, double>
-        jacobian(double value) const;
+        const Matrix<double, iNumDimensions, iNumParameters>
+        jacobian(double u) const;
         
-        JacobianEvaluation<iNumDimensions, 1, Interval>
-        jacobianBounds(Interval interval) const;
+        const Matrix<double, iNumDimensions, iNumParameters>
+        jacobian(double u, double v) const;
         
-        template <class TVector>
-        JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
-        jacobian(const EigenBase<TVector>& vector) const;
+        const Matrix<double, iNumDimensions, iNumParameters>
+        jacobian(double u, double v, double w) const;
         
-        template <class TVector>
-        JacobianEvaluation<iNumDimensions, iNumParameters, TVector>
-        jacobianBounds(const EigenBase<TVector>& vector) const;
+        const Matrix<Interval, iNumDimensions, iNumParameters>
+        jacobian(Interval u) const;
+        
+        const Matrix<Interval, iNumDimensions, iNumParameters>
+        jacobian(Interval u, Interval v) const;
+        
+        const Matrix<Interval, iNumDimensions, iNumParameters>
+        jacobian(Interval u, Interval v, Interval w) const;
+        
+        const Matrix<double, iNumDimensions, iNumParameters>
+        jacobian(const Matrix<double, iNumParameters, 1>& parameterValues) const;
+        
+        const Matrix<Interval, iNumDimensions, iNumParameters>
+        jacobian(const Matrix<Interval, iNumParameters, 1>& parameterValues) const;
         
         template <int iNumInnerParameters>
         ParametricExpression<iNumDimensions, iNumInnerParameters>
@@ -151,31 +174,17 @@ namespace opensolid
         ParametricExpression<iNumDimensions + iNumOtherDimensions, iNumParameters>
         concatenated(const ParametricExpression<iNumOtherDimensions, iNumParameters>& other) const;
 
-        template <class TVector>
         ParametricExpression<1, iNumParameters>
-        dot(const EigenBase<TVector>& vector) const;
-        
+        dot(const Matrix<double, iNumDimensions, 1>& columnMatrix) const;
+
         ParametricExpression<1, iNumParameters>
         dot(const ParametricExpression<iNumDimensions, iNumParameters>& other) const;
-        
-        template <class TVector>
+
         ParametricExpression<3, iNumParameters>
-        cross(const EigenBase<TVector>& vector) const;
-        
+        cross(const Matrix<double, 3, 1>& columnMatrix) const;
+
         ParametricExpression<3, iNumParameters>
         cross(const ParametricExpression<3, iNumParameters>& other) const;
-        
-        ParametricExpression<iNumDimensions, 1>
-        tangentVector() const;
-        
-        ParametricExpression<1, 1>
-        curvature() const;
-        
-        ParametricExpression<iNumDimensions, iNumParameters>
-        normalVector() const;
-        
-        ParametricExpression<3, 1>
-        binormalVector() const;
     };
 
     template <int iNumParameters, int iNumDimensions>
@@ -190,17 +199,17 @@ namespace opensolid
     ParametricExpression<1, iNumParameters>
     operator+(double value, const ParametricExpression<1, iNumParameters>& expression);
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumDimensions, 1>& columnMatrix
     );
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
-        const EigenBase<TVector>& vector,
+        const Matrix<double, iNumDimensions, 1>& columnMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     );
 
@@ -219,17 +228,17 @@ namespace opensolid
     ParametricExpression<1, iNumParameters>
     operator-(double value, const ParametricExpression<1, iNumParameters>& expression);
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumDimensions, 1>& columnMatrix
     );
     
-    template <int iNumDimensions, int iNumParameters, class TVector>
+    template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
-        const EigenBase<TVector>& vector,
+        const Matrix<double, iNumDimensions, 1>& columnMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     );
 
@@ -254,18 +263,18 @@ namespace opensolid
         double value
     );
     
-    template <int iNumDimensions, int iNumParameters, class TMatrix>
-    ParametricExpression<TMatrix::RowsAtCompileTime, iNumParameters>
+    template <int iNumDimensions, int iNumParameters, int iNumResultDimensions>
+    ParametricExpression<iNumResultDimensions, iNumParameters>
     operator*(
-        const EigenBase<TMatrix>& matrix,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     );
     
-    template <class TVector, int iNumParameters>
-    ParametricExpression<TVector::RowsAtCompileTime, iNumParameters>
+    template <int iNumParameters, int iNumResultDimensions>
+    ParametricExpression<iNumResultDimensions, iNumParameters>
     operator*(
         const ParametricExpression<1, iNumParameters>& expression,
-        const EigenBase<TVector>& vector
+        const Matrix<double, iNumResultDimensions, 1>& columnMatrix
     );
 
     template <int iNumParameters, int iNumDimensions>
@@ -300,10 +309,10 @@ namespace opensolid
     ParametricExpression<1, iNumParameters>
     operator/(double value, const ParametricExpression<1, iNumParameters>& expression);
     
-    template <class TVector, int iNumParameters>
-    ParametricExpression<TVector::RowsAtCompileTime, iNumParameters>
+    template <int iNumResultDimensions, int iNumParameters>
+    ParametricExpression<iNumResultDimensions, iNumParameters>
     operator/(
-        const EigenBase<TVector>& vector,
+        const Matrix<double, iNumResultDimensions, 1>& columnMatrix,
         const ParametricExpression<1, iNumParameters>& expression
     );
 

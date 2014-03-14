@@ -52,7 +52,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase(const Matrix<iNumDimensions, 1>& components) :
+        PointBase<iNumDimensions>::PointBase(const Matrix<double, iNumDimensions, 1>& components) :
             detail::CartesianBase<double, iNumDimensions>(components) {
         }
 
@@ -64,24 +64,24 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        const double
+        double
         PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
            return (derived() - other).squaredNorm();
         }
 
         template <int iNumDimensions>
         inline
-        const double
+        double
         PointBase<iNumDimensions>::distanceTo(const Point<iNumDimensions>& other) const {
            return (derived() - other).norm();
         }
 
         template <int iNumDimensions>
         inline
-        Box<iNumDimensions>
+        const Box<iNumDimensions>
         PointBase<iNumDimensions>::hull(const Point<iNumDimensions>& other) const {
             return Box<iNumDimensions>(
-                components.binaryMap(
+                this->components().binaryMap(
                     other.components(),
                     [] (double component, double otherComponent) {
                         return Interval::Hull(component, otherComponent);
@@ -92,10 +92,10 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        Box<iNumDimensions>
+        const Box<iNumDimensions>
         PointBase<iNumDimensions>::hull(const Box<iNumDimensions>& box) const {
             return Box<iNumDimensions>(
-                components.binaryMap(
+                this->components().binaryMap(
                     box.components(),
                     [] (double component, Interval boxComponent) {
                         boxComponent.hull(component);
@@ -108,18 +108,28 @@ namespace opensolid
         inline
         bool
         PointBase<iNumDimensions>::isOrigin(double precision) const {
-            return components().all(
-                [] (double component) {
-                    return component == Zero(precision);
-                }
-            );
+            return this->components().cwiseSquared().sum() == Zero(precision * precision);
         }
 
         template <int iNumDimensions>
         inline
         bool
         PointBase<iNumDimensions>::operator==(const Point<iNumDimensions>& other) const {
-            return vector() == other.vector();
+            return this->components() == other.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        PointBase<iNumDimensions>::operator!=(const Point<iNumDimensions>& other) const {
+            return this->components() != other.components();
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Point<iNumDimensions>
+        PointBase<iNumDimensions>::Origin() {
+            return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::Zero());
         }
     }
 }

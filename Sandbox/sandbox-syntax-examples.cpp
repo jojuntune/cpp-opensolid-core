@@ -37,7 +37,7 @@ void intervalExamples() {
     assert(c.upperBound() - 20 == Zero());
 }
 
-void matrixExamples() {
+void vectorExamples() {
     Vector3d v1(1, 2, 3);
     Vector3d v2(4, 5, 6);
 
@@ -46,8 +46,8 @@ void matrixExamples() {
     Vector3d v3 = v1.cross(v2);
     assert((v3 - Vector3d(-3, 6, -3)).isZero());
 
-    Matrix3d m = Matrix3d::Identity();
-    assert((m * v1 - v1).isZero());
+    Matrix3x3 m = Matrix3x3::Identity();
+    assert((m * v1.components() - v1.components()).isZero());
     assert((m.inverse() - m).isZero());
 }
 
@@ -61,7 +61,7 @@ void pointExamples() {
     Point3d scaled = p2.scaledAbout(p1, 2.0);
     assert((scaled - Point3d(3, 3, 3)).isZero());
 
-    Point3d translated = p1.translatedBy(Vector3d::UnitY());
+    Point3d translated = p1.translatedBy(UnitVector3d::Y());
     assert((translated - Point3d(1, 2, 1)).isZero());
 }
 
@@ -94,7 +94,7 @@ void axisExamples() {
 }
 
 void planeExamples() {
-    Plane3d plane(Point3d(1, 1, 1), Vector3d::UnitX());
+    Plane3d plane(Point3d(1, 1, 1), UnitVector3d::X());
 
     Point3d mirrored = Point3d(2, 3, 4).mirroredAbout(plane);
     assert((mirrored - Point3d(0, 3, 4)).isZero());
@@ -125,12 +125,12 @@ void lineSegmentExamples() {
     double length = segment.length();
     assert(length - sqrt(13.0) == Zero());
     
-    Vector2d normalVector = segment.normalVector();
+    UnitVector2d normalVector = segment.normalVector();
     assert((normalVector - Vector2d(-3, 2).normalized()).isZero());
     
     Axis2d axis = segment.axis();
     Point2d axisOrigin = axis.originPoint();
-    Vector2d axisDirection = axis.directionVector();
+    UnitVector2d axisDirection = axis.directionVector();
     assert((axisOrigin - segment.startVertex()).isZero());
     assert((axisDirection - segment.vector().normalized()).isZero());
 }
@@ -144,8 +144,8 @@ void triangleExamples() {
     Point3d centroid = triangle.centroid();
     assert((centroid - Point3d(5.0 / 3.0, 5.0 / 3.0, 1)).isZero());
 
-    Vector3d normalVector = triangle.normalVector();
-    assert((normalVector - Vector3d::UnitZ()).isZero());
+    UnitVector3d normalVector = triangle.normalVector();
+    assert((normalVector - UnitVector3d::Z()).isZero());
 
     double area = triangle.area();
     assert(area - 2.0 == Zero());
@@ -207,30 +207,38 @@ void spatialSetExamples() {
 void parametricExpressionExamples() {
     ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
 
-    ParametricExpression<3, 1> lineExpression = Vector3d(1, 1, 1) + t * Vector3d(1, 1, 1);
-    Vector3d start = lineExpression.evaluate(0.0);
-    Vector3d mid = lineExpression.evaluate(0.5);
-    Vector3d end = lineExpression.evaluate(1.0);
+    ParametricExpression<3, 1> lineExpression = Matrix3x1(1, 1, 1) + t * Matrix3x1(1, 1, 1);
+    Matrix3x1 start = lineExpression.evaluate(0.0);
+    Matrix3x1 mid = lineExpression.evaluate(0.5);
+    Matrix3x1 end = lineExpression.evaluate(1.0);
 
-    assert((start - Vector3d(1, 1, 1)).isZero());
-    assert((mid - Vector3d(1.5, 1.5, 1.5)).isZero());
-    assert((end - Vector3d(2, 2, 2)).isZero());
+    assert((start - Matrix3x1(1, 1, 1)).isZero());
+    assert((mid - Matrix3x1(1.5, 1.5, 1.5)).isZero());
+    assert((end - Matrix3x1(2, 2, 2)).isZero());
 
     ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
     ParametricExpression<1, 1> cosineExpression = cos(t);
-    RowVectorXd parameterValues = RowVectorXd::LinSpaced(10, Interval(0, 2 * M_PI));
-    RowVectorXd sineDerivativeValues = sineDerivative.evaluate(parameterValues);
-    RowVectorXd cosineValues = cosineExpression.evaluate(parameterValues);
-    assert((sineDerivativeValues - cosineValues).isZero());
+    std::vector<double> parameterValues(10);
+    for (unsigned i = 0; i < parameterValues.size(); ++i) {
+        parameterValues[i] = i * 2 * M_PI / (parameterValues.size() - 1);
+    }
+    std::vector<Matrix1x1> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
+    std::vector<Matrix1x1> cosineValues = cosineExpression.evaluate(parameterValues);
+    for (unsigned i = 0; i < parameterValues.size(); ++i) {
+        assert(sineDerivativeValues[i].value() - cosineValues[i].value() == Zero());
+    }
 
     ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
-    assert(shouldBeZero.evaluate(parameterValues).isZero());
+    std::vector<Matrix1x1> zeroValues = shouldBeZero.evaluate(parameterValues);
+    for (unsigned i = 0; i < parameterValues.size(); ++i) {
+        assert(zeroValues[i].value() == Zero());
+    }
 }
 
 int main() {
     zeroExamples();
     intervalExamples();
-    matrixExamples();
+    vectorExamples();
     pointExamples();
     boxExamples();
     axisExamples();

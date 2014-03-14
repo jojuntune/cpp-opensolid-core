@@ -31,12 +31,15 @@
 #include <OpenSolid/Core/Axis.declarations.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Globalization.declarations.hpp>
+#include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/LinearTransformation.declarations.hpp>
 #include <OpenSolid/Core/Localization.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
+#include <OpenSolid/Core/Transplant.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
 {
@@ -170,9 +173,8 @@ namespace opensolid
         typename ScaledAboutPointType<TDerived>::Type
         scaledAbout(const Point<NumDimensions<TDerived>::Value>& originPoint, double scale) const;
 
-        template <class TVector>
         typename TranslatedType<TDerived>::Type
-        translatedBy(const EigenBase<TVector>& vector) const;
+        translatedBy(const Vector<double, NumDimensions<TDerived>::Value>& vector) const;
 
         typename TranslatedType<TDerived>::Type
         translatedAlong(
@@ -243,14 +245,14 @@ namespace opensolid
     typename TranslatedType<TTransformable>::Type
     translationFunction(
         const TTransformable& transformable,
-        const Vector<NumDimensions<TTransformable>::Value>& vector
+        const Vector<double, NumDimensions<TTransformable>::Value>& vector
     );
 
     template <class TTransformable, int iNumResultDimensions>
     typename TransformedType<TTransformable, iNumResultDimensions>::Type
     transformationFunction(
         const TTransformable& transformable,
-        const Matrix<iNumResultDimensions, NumDimensions<TTransformable>::Value>& matrix
+        const Matrix<double, iNumResultDimensions, NumDimensions<TTransformable>::Value>& matrix
     );
 
     template <class TTransformable, int iNumResultDimensions>

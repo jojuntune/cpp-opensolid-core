@@ -46,12 +46,12 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstBounds.cwiseProduct(secondBounds).colwise().sum();
     }
 
@@ -71,14 +71,14 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
         results = firstBounds.transpose() * secondJacobian +
             secondBounds.transpose() * firstJacobian;
     }

@@ -29,8 +29,8 @@
 #include <OpenSolid/Core/ParametricCurve.definitions.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
-#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.hpp>
@@ -38,6 +38,7 @@
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
@@ -89,29 +90,32 @@ namespace opensolid
         const ParametricCurve<iNumDimensions>& curve,
         double scale
     ) const {
-        return ParametricCurve<iNumDimensions>(scale * curve.expression(), curve.domain());
-    }
-
-    template <int iNumDimensions> template <class TVector>
-    ParametricCurve<iNumDimensions>
-    TranslationFunction<ParametricCurve<iNumDimensions>>::operator()(
-        const ParametricCurve<iNumDimensions>& curve,
-        const EigenBase<TVector>& vector
-    ) const {
         return ParametricCurve<iNumDimensions>(
-            curve.expression() + vector.derived(),
+            scale * curve.expression(),
             curve.domain()
         );
     }
 
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    template <int iNumDimensions>
+    ParametricCurve<iNumDimensions>
+    TranslationFunction<ParametricCurve<iNumDimensions>>::operator()(
+        const ParametricCurve<iNumDimensions>& curve,
+        const Vector<double, iNumDimensions>& vector
+    ) const {
+        return ParametricCurve<iNumDimensions>(
+            curve.expression() + vector.components(),
+            curve.domain()
+        );
+    }
+
+    template <int iNumDimensions, int iNumResultDimensions>
     ParametricCurve<iNumResultDimensions>
     TransformationFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
         const ParametricCurve<iNumDimensions>& curve,
-        const EigenBase<TMatrix>& matrix
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
     ) const {
         return ParametricCurve<iNumResultDimensions>(
-            matrix.derived() * curve.expression(),
+            matrix * curve.expression(),
             curve.domain()
         );
     }

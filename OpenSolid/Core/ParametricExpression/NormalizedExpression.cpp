@@ -46,18 +46,18 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
-        VectorXd squaredNorms = operandValues.colwise().squaredNorm();
+        RowMatrixXd squaredNorms = operandValues.colwise().squaredNorm();
         results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
     void
     NormalizedExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
-        VectorXI squaredNorms = operandBounds.colwise().squaredNorm();
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
+        RowMatrixXI squaredNorms = operandBounds.colwise().squaredNorm();
         results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
@@ -72,7 +72,7 @@ namespace opensolid
         if (operandNorm == Zero()) {
             throw Error(new PlaceholderError());
         }
-        VectorXd operandNormalized = operandValue / operandNorm;
+        ColumnMatrixXd operandNormalized = operandValue / operandNorm;
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
 
         results = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
@@ -81,17 +81,17 @@ namespace opensolid
     
     void
     NormalizedExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
         Interval operandNorm = operandBounds.norm();
         if (operandNorm == Zero()) {
             throw Error(new PlaceholderError());
         }
-        VectorXI operandNormalized = operandBounds / operandNorm;
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        ColumnMatrixXI operandNormalized = operandBounds / operandNorm;
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
 
         results = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
             operandJacobian)) / operandNorm;

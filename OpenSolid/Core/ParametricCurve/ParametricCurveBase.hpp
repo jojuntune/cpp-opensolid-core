@@ -67,7 +67,7 @@ namespace opensolid
             Interval domain
         ) : _expression(expression),
             _domain(domain),
-            _bounds(expression.evaluateBounds(domain)) {
+            _bounds(expression.evaluate(domain)) {
         }
 
         template <int iNumDimensions>
@@ -92,14 +92,52 @@ namespace opensolid
 
         template <int iNumDimensions>
         Point<iNumDimensions>
-        ParametricCurveBase<iNumDimensions>::evaluate(double parameterValue) const {
-            return Point<iNumDimensions>(expression().evaluate(parameterValue));
+        ParametricCurveBase<iNumDimensions>::evaluate(double u) const {
+            return Point<iNumDimensions>(expression().evaluate(u));
         }
 
         template <int iNumDimensions>
         Box<iNumDimensions>
-        ParametricCurveBase<iNumDimensions>::evaluateBounds(Interval parameterBounds) const {
-            return Box<iNumDimensions>(expression().evaluateBounds(parameterBounds));
+        ParametricCurveBase<iNumDimensions>::evaluate(Interval u) const {
+            return Box<iNumDimensions>(expression().evaluate(u));
+        }
+
+        template <int iNumDimensions>
+        std::vector<Point<iNumDimensions>>
+        ParametricCurveBase<iNumDimensions>::evaluate(
+            const std::vector<double>& parameterValues
+        ) const {
+            std::vector<Matrix<double, iNumDimensions, 1>> temp =
+                expression().evaluate(parameterValues);
+            std::vector<Point<iNumDimensions>> results(parameterValues.size());
+            std::transform(
+                temp.begin(),
+                temp.end(),
+                results.begin(),
+                [] (const Matrix<double, iNumDimensions, 1>& components) -> Point<iNumDimensions> {
+                    return Point<iNumDimensions>(components);
+                }
+            );
+            return results;
+        }
+
+        template <int iNumDimensions>
+        std::vector<Box<iNumDimensions>>
+        ParametricCurveBase<iNumDimensions>::evaluate(
+            const std::vector<Interval>& parameterValues
+        ) const {
+            std::vector<Matrix<Interval, iNumDimensions, 1>> temp =
+                expression().evaluate(parameterValues);
+            std::vector<Box<iNumDimensions>> results(parameterValues.size());
+            std::transform(
+                temp.begin(),
+                temp.end(),
+                results.begin(),
+                [] (const Matrix<Interval, iNumDimensions, 1>& components) -> Box<iNumDimensions> {
+                    return Box<iNumDimensions>(components);
+                }
+            );
+            return results;
         }
 
         template <int iNumDimensions>
@@ -128,25 +166,25 @@ namespace opensolid
         template <int iNumDimensions>
         ParametricExpression<iNumDimensions, 1>
         ParametricCurveBase<iNumDimensions>::tangentVector() const {
-            return expression().tangentVector();
+            return expression().derivative().normalized();
         }
 
         template <int iNumDimensions>
         ParametricExpression<iNumDimensions, 1>
         ParametricCurveBase<iNumDimensions>::normalVector() const {
-            return expression().normalVector();
+            return tangentVector().derivative().normalized();
         }
 
         template <int iNumDimensions>
         ParametricExpression<iNumDimensions, 1>
         ParametricCurveBase<iNumDimensions>::binormalVector() const {
-            return expression().binormalVector();
+            return tangentVector().cross(normalVector());
         }
 
         template <int iNumDimensions>
         ParametricExpression<1, 1>
         ParametricCurveBase<iNumDimensions>::curvature() const {
-            return expression().curvature();
+            return tangentVector().derivative().norm() / expression().derivative().norm();
         }
     }
 }

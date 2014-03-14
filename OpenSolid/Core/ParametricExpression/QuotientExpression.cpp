@@ -46,12 +46,12 @@ namespace opensolid
     
     void
     QuotientExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
     }
 
@@ -71,14 +71,14 @@ namespace opensolid
     
     void
     QuotientExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI dividendBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        Interval divisorBounds = evaluator.evaluate(secondOperand(), parameterBounds).value();
-        MapXcI dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
-        MapXcI divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        MapXcI dividendBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        Interval divisorBounds = evaluator.evaluate(secondOperand(), parameterValues).value();
+        MapXcI dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcI divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
         results = (dividendJacobian * divisorBounds - dividendBounds * divisorJacobian) / 
             divisorBounds.squared();
     }

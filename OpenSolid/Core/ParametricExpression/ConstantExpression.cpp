@@ -31,7 +31,7 @@ namespace opensolid
 {
     int
     ConstantExpression::numDimensionsImpl() const {
-        return vector().size();
+        return columnMatrixXd().size();
     }
         
     int
@@ -45,16 +45,16 @@ namespace opensolid
         MapXd& results,
         Evaluator&
     ) const {
-        results.colwise() = vector();
+        results.colwise() = columnMatrixXd();
     }
     
     void
     ConstantExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator&
     ) const {
-        results.colwise() = bounds();
+        results.colwise() = columnMatrixXI();
     }
 
     void
@@ -68,7 +68,7 @@ namespace opensolid
     
     void
     ConstantExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
@@ -77,12 +77,12 @@ namespace opensolid
     
     ExpressionImplementationPtr
     ConstantExpression::derivativeImpl(int) const {
-        return new ConstantExpression(VectorXd::Zero(numDimensions()), numParameters());
+        return new ConstantExpression(ColumnMatrixXd::Zero(numDimensions()), numParameters());
     }
     
     bool
     ConstantExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return (this->vector() - other->cast<ConstantExpression>()->vector()).isZero();
+        return (columnMatrixXd() - other->cast<ConstantExpression>()->columnMatrixXd()).isZero();
     }
 
     ExpressionImplementationPtr
@@ -98,43 +98,43 @@ namespace opensolid
     ExpressionImplementationPtr
     ConstantExpression::componentsImpl(int startIndex, int numComponents) const {
         return new ConstantExpression(
-            vector().middleRows(startIndex, numComponents),
+            columnMatrixXd().middleRows(startIndex, numComponents),
             numParameters()
         );
     }
     
     ExpressionImplementationPtr
-    ConstantExpression::scalarMultiplicationImpl(double scale) const {
-        return new ConstantExpression(scale * vector(), numParameters());
+    ConstantExpression::scalingImpl(double scale) const {
+        return new ConstantExpression(scale * columnMatrixXd(), numParameters());
     }
     
     ExpressionImplementationPtr
-    ConstantExpression::vectorAdditionImpl(const VectorXd& vector) const {
-        return new ConstantExpression(this->vector() + vector, numParameters());
+    ConstantExpression::translationImpl(const ColumnMatrixXd& columnMatrixXd) const {
+        return new ConstantExpression(this->columnMatrixXd() + columnMatrixXd, numParameters());
     }
     
     ExpressionImplementationPtr
-    ConstantExpression::matrixMultiplicationImpl(const MatrixXd& matrix) const {
-        return new ConstantExpression(matrix * vector(), numParameters());
+    ConstantExpression::transformationImpl(const MatrixXd& matrixXd) const {
+        return new ConstantExpression(matrixXd * columnMatrixXd(), numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::normImpl() const {
-        return new ConstantExpression(vector().norm(), numParameters());
+        return new ConstantExpression(columnMatrixXd().norm(), numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::normalizedImpl() const {
-        double norm = vector().norm();
+        double norm = columnMatrixXd().norm();
         if (norm == Zero()) {
             throw Error(new PlaceholderError());
         }
-        return new ConstantExpression(vector() / norm, numParameters());
+        return new ConstantExpression(columnMatrixXd() / norm, numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::squaredNormImpl() const {
-        return new ConstantExpression(vector().squaredNorm(), numParameters());
+        return new ConstantExpression(columnMatrixXd().squaredNorm(), numParameters());
     }
 
     ExpressionImplementationPtr
@@ -197,18 +197,20 @@ namespace opensolid
 
     void
     ConstantExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ConstantExpression: " << vector().transpose() << std::endl;
+        stream << "ConstantExpression: " << columnMatrixXd().transpose() << std::endl;
     }
 
-    ConstantExpression::ConstantExpression(const VectorXd& vector, int numParameters) :
-        _vector(vector),
-        _bounds(vector.cast<Interval>()),
+    ConstantExpression::ConstantExpression(
+        const ColumnMatrixXd& columnMatrixXd,
+        int numParameters
+    ) : _columnMatrixXd(columnMatrixXd),
+        _columnMatrixXI(columnMatrixXd.cast<Interval>()),
         _numParameters(numParameters) {
     }
 
     ConstantExpression::ConstantExpression(double value, int numParameters) :
-        _vector(VectorXd::Constant(1, value)),
-        _bounds(VectorXI::Constant(1, Interval(value))),
+        _columnMatrixXd(ColumnMatrixXd::Constant(1, value)),
+        _columnMatrixXI(ColumnMatrixXI::Constant(1, Interval(value))),
         _numParameters(numParameters) {
     }
 }

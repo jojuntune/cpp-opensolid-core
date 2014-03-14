@@ -118,45 +118,42 @@ namespace opensolid
     inline
     double
     LineSegment<iNumDimensions>::length() const {
-        return (startVertex() - endVertex()).norm();
+        return vector().norm();
     }
 
     template <int iNumDimensions>
     inline
     double
     LineSegment<iNumDimensions>::squaredLength() const {
-        return (startVertex() - endVertex()).squaredNorm();
+        return vector().squaredNorm();
     }
 
     template<int iNumDimensions>
     inline
-    Matrix<double, iNumDimensions, 1>
+    Vector<double, iNumDimensions>
     LineSegment<iNumDimensions>::vector() const {
         return endVertex() - startVertex();
     }
 
     template<int iNumDimensions>
     inline
-    Matrix<double, iNumDimensions, 1>
+    UnitVector<iNumDimensions>
     LineSegment<iNumDimensions>::normalVector() const {
-        return (endVertex() - startVertex()).unitOrthogonal();
+        return vector().unitOrthogonal();
     }
 
     template <int iNumDimensions>
     inline
     CoordinateSystem<iNumDimensions, 1>
     LineSegment<iNumDimensions>::coordinateSystem() const {
-        return CoordinateSystem<iNumDimensions, 1>(
-            startVertex(),
-            endVertex() - startVertex()
-        );
+        return CoordinateSystem<iNumDimensions, 1>(startVertex(), vector());
     }
 
     template <int iNumDimensions>
     inline
     Axis<iNumDimensions>
     LineSegment<iNumDimensions>::axis() const {
-        return Axis<iNumDimensions>(startVertex(), (endVertex() - startVertex()).normalized());
+        return Axis<iNumDimensions>(startVertex(), vector().normalized());
     }
 
     template <int iNumDimensions>
@@ -212,29 +209,29 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions> template <class TVector>
+    template <int iNumDimensions>
     inline
     LineSegment<iNumDimensions>
     TranslationFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
-        const EigenBase<TVector>& vector
+        const Vector<double, iNumDimensions>& vector
     ) const {
         return LineSegment<iNumDimensions>(
-            translationFunction(lineSegment.startVertex(), vector.derived()),
-            translationFunction(lineSegment.endVertex(), vector.derived())
+            translationFunction(lineSegment.startVertex(), vector),
+            translationFunction(lineSegment.endVertex(), vector)
         );
     }
 
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    template <int iNumDimensions, int iNumResultDimensions>
     inline
     LineSegment<iNumResultDimensions>
     TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
-        const EigenBase<TMatrix>& matrix
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
     ) const {
         return LineSegment<iNumResultDimensions>(
-            transformationFunction(lineSegment.startVertex(), matrix.derived()),
-            transformationFunction(lineSegment.endVertex(), matrix.derived())
+            transformationFunction(lineSegment.startVertex(), matrix),
+            transformationFunction(lineSegment.endVertex(), matrix)
         );
     }
 

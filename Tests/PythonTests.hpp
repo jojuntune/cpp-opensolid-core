@@ -230,7 +230,7 @@ public:
         environment.run("a = MatrixXd([[1, 0, 0], [1, 1, 0]])");
         environment.set("theta", M_PI / 4);
         environment.run(
-            "m = Matrix3d([[cos(theta), sin(theta), 0], [-sin(theta), cos(theta), 0], [0, 0, 1]])"
+            "m = Matrix3x3([[cos(theta), sin(theta), 0], [-sin(theta), cos(theta), 0], [0, 0, 1]])"
         );
         environment.run("v = Vector3d(1, 2, 3)");
         MatrixXd transformed_matrix = environment.get<MatrixXd>("a.transformed(m, v)");
@@ -482,7 +482,7 @@ public:
     
     void testMatrixIndexing() {
         PythonEnvironment environment;
-        environment.run("a = Matrix3d([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).transpose()");
+        environment.run("a = Matrix3x3([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).transpose()");
         environment.run("b = Vector3d(10, 11, 12)");
         TS_ASSERT_EQUALS(environment.get<double>("b[-1]"), 12.0);
         TS_ASSERT_EQUALS(environment.get<Vector3d>("b[:]"), Vector3d(10, 11, 12));
@@ -497,7 +497,7 @@ public:
         environment.run("a[1,1:] = b[1:].transpose()");
         test.resize(3, 3);
         test << RowVector3d(1, 2, 3), RowVector3d(4, 11, 12), RowVector3d(7, 8, 9);
-        TS_ASSERT_EQUALS(environment.get<Matrix3d>("a"), test);
+        TS_ASSERT_EQUALS(environment.get<Matrix3x3>("a"), test);
     }
     
     void testMatrixEquality() {
@@ -587,7 +587,7 @@ public:
         PythonEnvironment environment;
         double a = 3;
         Interval b(4, 5);
-        Matrix2d c;
+        Matrix2x2 c;
         c(0, 0) = 6;
         c(0, 1) = 7;
         c(1, 0) = 8;
@@ -616,7 +616,7 @@ public:
         environment.run("f_unpickled = pickle.loads(f_pickled)");
         double a_extracted = environment.get<double>("a_unpickled");
         Interval b_extracted = environment.get<Interval>("b_unpickled");
-        Matrix2d c_extracted = environment.get<Matrix2d>("c_unpickled");
+        Matrix2x2 c_extracted = environment.get<Matrix2x2>("c_unpickled");
         Vector2I d_extracted = environment.get<Vector2I>("d_unpickled");
         Frame3d e_extracted = environment.get<DatumXd>("e_unpickled");
         Triangle3d f_extracted = environment.get<SimplexXd>("f_unpickled");
@@ -702,15 +702,15 @@ public:
 
     void testMatrixCopying() {
         PythonEnvironment environment;
-        environment.run("a1 = Matrix2d([[1, 2], [3, 4]])");
+        environment.run("a1 = Matrix2x2([[1, 2], [3, 4]])");
         environment.run("a2 = MatrixXd([[1, 2], [3, 4]])");
-        environment.run("b1 = Matrix2d(a2)");
+        environment.run("b1 = Matrix2x2(a2)");
         environment.run("b2 = MatrixXd(a1)");
         environment.run("b1[1, 1] = 5");
         environment.run("b2[1, 1] = 5");
         TS_ASSERT_EQUALS(environment.get<MatrixXd>("a1")(1, 1), 4.0);
-        TS_ASSERT_EQUALS(environment.get<Matrix2d>("a2")(1, 1), 4.0);
+        TS_ASSERT_EQUALS(environment.get<Matrix2x2>("a2")(1, 1), 4.0);
         TS_ASSERT_EQUALS(environment.get<MatrixXd>("b1")(1, 1), 5.0);
-        TS_ASSERT_EQUALS(environment.get<Matrix2d>("b2")(1, 1), 5.0);
+        TS_ASSERT_EQUALS(environment.get<Matrix2x2>("b2")(1, 1), 5.0);
     }
 };

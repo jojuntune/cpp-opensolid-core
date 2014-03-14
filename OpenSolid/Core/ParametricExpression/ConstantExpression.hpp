@@ -34,8 +34,8 @@ namespace opensolid
         public ExpressionImplementation
     {
     private:
-        VectorXd _vector;
-        VectorXI _bounds;
+        ColumnMatrixXd _columnMatrixXd;
+        ColumnMatrixXI _columnMatrixXI;
         int _numParameters;
 
         OPENSOLID_CORE_EXPORT
@@ -57,7 +57,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -73,7 +73,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -100,15 +100,15 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        scalarMultiplicationImpl(double scale) const override;
+        scalingImpl(double scale) const override;
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        vectorAdditionImpl(const VectorXd& vector) const override;
+        translationImpl(const ColumnMatrixXd& columnMatrixXd) const override;
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        matrixMultiplicationImpl(const MatrixXd& matrix) const override;
+        transformationImpl(const MatrixXd& matrixXd) const override;
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
@@ -159,19 +159,19 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        ConstantExpression(const VectorXd& vector, int numParameters);
+        ConstantExpression(const ColumnMatrixXd& columnMatrixXd, int numParameters);
 
         OPENSOLID_CORE_EXPORT
         ConstantExpression(double value, int numParameters);
         
-        const VectorXd&
-        vector() const;
+        const ColumnMatrixXd&
+        columnMatrixXd() const;
 
         double
         value() const;
         
-        const VectorXI&
-        bounds() const;
+        const ColumnMatrixXI&
+        columnMatrixXI() const;
 
         bool
         isZero(double tolerance = 1e-12) const;
@@ -181,26 +181,26 @@ namespace opensolid
 namespace opensolid
 {
     inline
-    const VectorXd&
-    ConstantExpression::vector() const {
-        return _vector;
+    const ColumnMatrixXd&
+    ConstantExpression::columnMatrixXd() const {
+        return _columnMatrixXd;
     }
 
     inline
     double
     ConstantExpression::value() const {
-        return vector().value();
+        return columnMatrixXd().value();
     }
 
     inline
-    const VectorXI&
-    ConstantExpression::bounds() const {
-        return _bounds;
+    const ColumnMatrixXI&
+    ConstantExpression::columnMatrixXI() const {
+        return _columnMatrixXI;
     }
 
     inline
     bool
     ConstantExpression::isZero(double tolerance) const {
-        return vector().isZero(tolerance);
+        return columnMatrixXd().isZero(tolerance);
     }
 }

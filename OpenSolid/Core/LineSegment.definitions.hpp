@@ -111,10 +111,10 @@ namespace opensolid
         double
         squaredLength() const;
 
-        Matrix<double, iNumDimensions, 1>
+        Vector<double, iNumDimensions>
         vector() const;
 
-        Matrix<double, iNumDimensions, 1>
+        UnitVector<iNumDimensions>
         normalVector() const;
 
         CoordinateSystem<iNumDimensions, 1>
@@ -158,22 +158,20 @@ namespace opensolid
     template <int iNumDimensions>
     struct TranslationFunction<LineSegment<iNumDimensions>>
     {
-        template <class TVector>
         LineSegment<iNumDimensions>
         operator()(
             const LineSegment<iNumDimensions>& lineSegment,
-            const EigenBase<TVector>& vector
+            const Vector<double, iNumDimensions>& vector
         ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>
     {
-        template <class TMatrix>
         LineSegment<iNumResultDimensions>
         operator()(
             const LineSegment<iNumDimensions>& lineSegment,
-            const EigenBase<TMatrix>& matrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 

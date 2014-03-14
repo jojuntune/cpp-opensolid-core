@@ -26,7 +26,6 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression.declarations.hpp>
 
@@ -189,22 +188,13 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumParameters>
-    class LinearExpressionConstructors
-    {
-    public:
-        static ParametricExpression<iNumDimensions, iNumParameters>
-        Linear(const CoordinateSystem<iNumDimensions, iNumParameters>& coordinateSystem);
-    };
-
-    template <int iNumDimensions, int iNumParameters>
     class ExpressionConstructors :
         public ZeroExpressionConstructor<iNumDimensions, iNumParameters>,
         public ConstantExpressionConstructor<iNumDimensions, iNumParameters>,
         public IdentityExpressionConstructor<iNumDimensions, iNumParameters>,
         public ParameterExpressionConstructor<iNumDimensions, iNumParameters>,
         public NamedParameterExpressionConstructors<iNumDimensions, iNumParameters>,
-        public FromComponentsExpressionConstructors<iNumDimensions, iNumParameters>,
-        public LinearExpressionConstructors<iNumDimensions, iNumParameters>
+        public FromComponentsExpressionConstructors<iNumDimensions, iNumParameters>
     {
     };
 }

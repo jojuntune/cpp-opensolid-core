@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <int iNumDimensions>
+    template <class TScalar, int iNumDimensions>
     class Vector;
 }

@@ -27,14 +27,16 @@
 #include <OpenSolid/Core/Triangle.hpp>
 
 #include <OpenSolid/Core/ParametricExpression.hpp>
+#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
     double
     Triangle2d::area() const {
-        Matrix2d matrix;
-        matrix.col(0) = vertex(1) - vertex(0);
-        matrix.col(1) = vertex(2) - vertex(0);
+        Matrix2x2 matrix = Matrix2x2::FromColumns(
+            vertex(1).components() - vertex(0).components(),
+            vertex(2).components() - vertex(0).components()
+        );
         return matrix.determinant() / 2.0;
     }
 
@@ -48,7 +50,7 @@ namespace opensolid
         return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
     }
 
-    Vector3d
+    UnitVector3d
     Triangle3d::normalVector() const {
         return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
     }

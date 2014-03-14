@@ -32,13 +32,12 @@
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
-#include <OpenSolid/Core/IntervalMatrix.declarations.hpp>
-#include <OpenSolid/Core/IntervalVector.definitions.hpp>
+#include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Position/BoxBase.definitions.hpp>
 #include <OpenSolid/Core/Position/BoxVertices.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
-#include <OpenSolid/Core/Vector.declarations.hpp>
+#include <OpenSolid/Core/Vector.definitions.hpp>
 
 #include <ostream>
 
@@ -81,49 +80,25 @@ namespace opensolid
         Box(Interval value);
 
         explicit
-        Box(const IntervalVector<1>& intervalVector);
+        Box(const Vector<Interval, 1>& intervalVector);
 
         explicit
-        Box(const IntervalMatrix<1, 1>& components);
+        Box(const Matrix<Interval, 1, 1>& components);
 
         explicit
         Box(const Interval* sourcePtr);
-
-        const Interval
-        value() const;
-
-        Interval&
-        value();
-
-        const Interval
-        x() const;
-
-        Interval&
-        x();
 
         const Point<1>
         interpolated(double xValue) const;
 
         const Box<1>
         interpolated(Interval xInterval) const;
-
-        static const Box<1>
-        Unit();
-
-        static const Box<1>
-        Hull(const Point<1>& firstPoint, const Point<1>& secondPoint);
-
-        static const Box<1>
-        Empty();
-
-        static const Box<1>
-        Whole();
     };
 
     typedef Box<1> Box1d;
 
     template <>
-    class Box :
+    class Box<2> :
         public detail::BoxBase<2>,
         public Convertible<Box<2>>,
         public Transformable<Box<2>>
@@ -134,49 +109,25 @@ namespace opensolid
         Box(Interval x, Interval y);
 
         explicit
-        Box(const IntervalVector<2>& intervalVector);
+        Box(const Vector<Interval, 2>& intervalVector);
 
         explicit
-        Box(const IntervalMatrix<2, 1>& components);
+        Box(const Matrix<Interval, 2, 1>& components);
 
         explicit
         Box(const Interval* sourcePtr);
-
-        const Interval
-        x() const;
-
-        Interval&
-        x();
-
-        const Interval
-        y() const;
-        
-        Interval&
-        y();
 
         const Point<2>
         interpolated(double xValue, double yValue) const;
 
         const Box<2>
         interpolated(Interval xInterval, Interval yInterval) const;
-
-        static const Box<2>
-        Unit();
-
-        static const Box<2>
-        Hull(const Point<2>& firstPoint, const Point<2>& secondPoint);
-
-        static const Box<2>
-        Empty();
-
-        static const Box<2>
-        Whole();
     };
 
     typedef Box<2> Box2d;
 
     template <>
-    class Box :
+    class Box<3> :
         public detail::BoxBase<3>,
         public Convertible<Box<3>>,
         public Transformable<Box<3>>
@@ -187,87 +138,57 @@ namespace opensolid
         Box(Interval x, Interval y, Interval z);
 
         explicit
-        Box(const IntervalVector<3>& intervalVector);
+        Box(const Vector<Interval, 3>& intervalVector);
 
         explicit
-        Box(const IntervalMatrix<3, 1>& components);
+        Box(const Matrix<Interval, 3, 1>& components);
 
         explicit
         Box(const Interval* sourcePtr);
-
-        const Interval
-        x() const;
-
-        Interval&
-        x();
-
-        const Interval
-        y() const;
-        
-        Interval&
-        y();
-
-        const Interval
-        z() const;
-        
-        Interval&
-        z();
 
         const Point<3>
         interpolated(double xValue, double yValue, double zValue) const;
 
         const Box<3>
         interpolated(Interval xInterval, Interval yInterval, Interval zInterval) const;
-
-        static const Box<3>
-        Unit();
-
-        static const Box<3>
-        Hull(const Point<3>& firstPoint, const Point<3>& secondPoint);
-
-        static const Box<3>
-        Empty();
-
-        static const Box<3>
-        Whole();
     };
 
     typedef Box<3> Box3d;
 
     template <int iNumDimensions>
-    Box<iNumDimensions>
-    operator+(const Point<iNumDimensions>& point, const IntervalVector<iNumDimensions>& vector);
+    const Box<iNumDimensions>
+    operator+(const Point<iNumDimensions>& point, const Vector<Interval, iNumDimensions>& vector);
 
     template <int iNumDimensions>
     const Box<iNumDimensions>
-    operator+(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector);
+    operator+(const Box<iNumDimensions>& box, const Vector<double, iNumDimensions>& vector);
 
     template <int iNumDimensions>
     const Box<iNumDimensions>
-    operator+(const Box<iNumDimensions>& box, const IntervalVector<iNumDimensions>& intervalVector);
-
-    template <int iNumDimensions>
-    Box<iNumDimensions>
-    operator-(const Point<iNumDimensions>& point, const IntervalVector<iNumDimensions>& vector);
+    operator+(const Box<iNumDimensions>& box, const Vector<Interval, iNumDimensions>& vector);
 
     template <int iNumDimensions>
     const Box<iNumDimensions>
-    operator-(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector);
+    operator-(const Point<iNumDimensions>& point, const Vector<Interval, iNumDimensions>& vector);
 
     template <int iNumDimensions>
     const Box<iNumDimensions>
-    operator-(const Box<iNumDimensions>& box, const IntervalVector<iNumDimensions>& intervalVector);
+    operator-(const Box<iNumDimensions>& box, const Vector<double, iNumDimensions>& vector);
 
     template <int iNumDimensions>
-    const IntervalVector<iNumDimensions>
+    const Box<iNumDimensions>
+    operator-(const Box<iNumDimensions>& box, const Vector<Interval, iNumDimensions>& vector);
+
+    template <int iNumDimensions>
+    const Vector<Interval, iNumDimensions>
     operator-(const Point<iNumDimensions>& point, const Box<iNumDimensions>& box);
 
     template <int iNumDimensions>
-    const IntervalVector<iNumDimensions>
+    const Vector<Interval, iNumDimensions>
     operator-(const Box<iNumDimensions>& box, const Point<iNumDimensions>& point);
 
     template <int iNumDimensions>
-    const IntervalVector<iNumDimensions>
+    const Vector<Interval, iNumDimensions>
     operator-(const Box<iNumDimensions>& firstBox, const Box<iNumDimensions>& secondBox);
 
     template <int iNumDimensions>
@@ -292,7 +213,10 @@ namespace opensolid
     struct TranslationFunction<Box<iNumDimensions>>
     {
         const Box<iNumDimensions>
-        operator()(const Box<iNumDimensions>& box, const Vector<iNumDimensions>& vector) const;
+        operator()(
+            const Box<iNumDimensions>& box,
+            const Vector<double, iNumDimensions>& vector
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
@@ -301,7 +225,7 @@ namespace opensolid
         const Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 

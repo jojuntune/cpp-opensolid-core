@@ -29,8 +29,8 @@
 #include <OpenSolid/Core/ParametricCurve.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
-#include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Box.definitions.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.definitions.hpp>
@@ -38,6 +38,7 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -242,7 +243,7 @@ namespace opensolid
         static ParametricCurve<3>
         Arc(
             const Point<3>& centerPoint,
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             const Point<3>& startPoint,
             const Point<3>& endPoint
         );
@@ -258,7 +259,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
         Arc(
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             double radius,
             const Point<3>& startPoint,
             const Point<3>& endPoint
@@ -287,7 +288,7 @@ namespace opensolid
         static ParametricCurve<3>
         Circle(
             const Point<3>& centerPoint,
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             double radius
         );
 
@@ -295,7 +296,7 @@ namespace opensolid
         static ParametricCurve<3>
         Circle(
             const Point<3>& centerPoint,
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             const Point<3>& startPoint
         );
 
@@ -309,7 +310,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
         Circle(
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             double radius,
             const Point<3>& startPoint,
             const Point<3>& secondPoint
@@ -370,7 +371,7 @@ namespace opensolid
         static ParametricCurve<3>
         Helix(
             const Point<3>& startCenterPoint,
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             double radius,
             WindingDirection direction,
             double pitch, // if <= 0: determine from numTurns/length
@@ -382,7 +383,7 @@ namespace opensolid
         static ParametricCurve<3>
         Helix(
             const Point<3>& startCenterPoint,
-            const Vector3d& axisDirection,
+            const UnitVector<3>& axisDirection,
             WindingDirection direction,
             const Point<3>& startPoint,
             double pitch, // if <= 0: determine from numTurns/length
@@ -413,22 +414,20 @@ namespace opensolid
     template <int iNumDimensions>
     struct TranslationFunction<ParametricCurve<iNumDimensions>>
     {
-        template <class TVector>
         ParametricCurve<iNumDimensions>
         operator()(
             const ParametricCurve<iNumDimensions>& curve,
-            const EigenBase<TVector>& vector
+            const Vector<double, iNumDimensions>& vector
         ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>
     {
-        template <class TMatrix>
         ParametricCurve<iNumResultDimensions>
         operator()(
             const ParametricCurve<iNumDimensions>& curve,
-            const EigenBase<TMatrix>& matrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 

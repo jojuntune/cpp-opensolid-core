@@ -28,6 +28,6 @@
 
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
-    class IntervalMatrix;
+    template <int iNumDimensions>
+    class IntervalVectorBase;
 }

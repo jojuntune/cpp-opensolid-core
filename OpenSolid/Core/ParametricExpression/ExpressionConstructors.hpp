@@ -28,11 +28,10 @@
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 
-#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/Eigen.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
-#include <OpenSolid/Core/ParametricExpression/LinearExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
 
 namespace opensolid
@@ -40,7 +39,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     ZeroExpressionConstructor<iNumDimensions, iNumParameters>::Zero() {
-        return new ConstantExpression(VectorXd::Zero(iNumDimensions), iNumParameters);
+        return new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters);
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -48,7 +47,8 @@ namespace opensolid
     ConstantExpressionConstructor<iNumDimensions, iNumParameters>::Constant(
         const Matrix<double, iNumDimensions, 1>& value
     ) {
-        return new ConstantExpression(value, iNumParameters);
+        ColumnMatrixXd columnMatrixXd = detail::constMap(value);
+        return new ConstantExpression(columnMatrixXd, iNumParameters);
     }
 
     template <int iNumParameters>
@@ -219,18 +219,5 @@ namespace opensolid
             new ConstantExpression(y, iNumParameters)
         );
         return xExpression.concatenated(yExpression).concatenated(z);
-    }
-
-    template <int iNumDimensions, int iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>
-    LinearExpressionConstructors<iNumDimensions, iNumParameters>::Linear(
-        const CoordinateSystem<iNumDimensions, iNumParameters>& coordinateSystem
-    ) {
-        return ParametricExpression<iNumDimensions, iNumParameters>(
-            new LinearExpression(
-                coordinateSystem.originPoint().vector(),
-                coordinateSystem.basisMatrix()
-            )
-        );
     }
 }

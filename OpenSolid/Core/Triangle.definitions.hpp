@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Simplex/TriangleBase.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
+#include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
@@ -129,7 +130,7 @@ namespace opensolid
         area() const;
 
         OPENSOLID_CORE_EXPORT
-        Vector3d
+        UnitVector<3>
         normalVector() const;
 
         OPENSOLID_CORE_EXPORT
@@ -160,22 +161,20 @@ namespace opensolid
     template <int iNumDimensions>
     struct TranslationFunction<Triangle<iNumDimensions>>
     {
-        template <class TVector>
         Triangle<iNumDimensions>
         operator()(
             const Triangle<iNumDimensions>& triangle,
-            const EigenBase<TVector>& vector
+            const Vector<double, iNumDimensions>& vector
         ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
     struct TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>
     {
-        template <class TMatrix>
         Triangle<iNumResultDimensions>
         operator()(
             const Triangle<iNumDimensions>& triangle,
-            const EigenBase<TMatrix>& matrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 

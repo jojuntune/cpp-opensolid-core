@@ -66,10 +66,16 @@ namespace opensolid
             bounds() const;
 
             Point<iNumDimensions>
-            evaluate(double parameterValue) const;
+            evaluate(double u) const;
 
             Box<iNumDimensions>
-            evaluateBounds(Interval parameterBounds) const;
+            evaluate(Interval u) const;
+
+            std::vector<Point<iNumDimensions>>
+            evaluate(const std::vector<double>& parameterValues) const;
+
+            std::vector<Box<iNumDimensions>>
+            evaluate(const std::vector<Interval>& parameterValues) const;
 
             Point<iNumDimensions>
             startPoint() const;

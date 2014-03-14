@@ -48,12 +48,12 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
             results.col(i) = firstBounds.col(i).head<3>().cross(secondBounds.col(i).head<3>());
         }
@@ -65,8 +65,10 @@ namespace opensolid
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        Vector3d firstValue = evaluator.evaluate(firstOperand(), parameterValues);
-        Vector3d secondValue = evaluator.evaluate(secondOperand(), parameterValues);
+        Eigen::Matrix<double, 3, 1> firstValue =
+            evaluator.evaluate(firstOperand(), parameterValues);
+        Eigen::Matrix<double, 3, 1> secondValue =
+            evaluator.evaluate(secondOperand(), parameterValues);
         MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
         MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
@@ -77,14 +79,16 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Vector3I firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        Vector3I secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        Eigen::Matrix<Interval, 3, 1> firstBounds =
+            evaluator.evaluate(firstOperand(), parameterValues);
+        Eigen::Matrix<Interval, 3, 1> secondBounds =
+            evaluator.evaluate(secondOperand(), parameterValues);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
         for (int i = 0; i < results.cols(); ++i) {
             results.col(i) = firstJacobian.col(i).head<3>().cross(secondBounds) +
                 firstBounds.cross(secondJacobian.col(i).head<3>());

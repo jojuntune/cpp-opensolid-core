@@ -22,72 +22,61 @@
 *                                                                                   *
 ************************************************************************************/
 
-bool
-isEmpty() const;
+#pragma once
 
-CwiseUnaryOp<LowerOperation, const Derived>
-cwiseLower() const;
+#include <OpenSolid/config.hpp>
 
-CwiseUnaryOp<UpperOperation, const Derived>
-cwiseUpper() const;
+#include <OpenSolid/Core/Vector/VectorBase.declarations.hpp>
 
-CwiseUnaryOp<MedianOperation, const Derived>
-cwiseMedian() const;
+#include <OpenSolid/Core/Cartesian/CartesianBase.definitions.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
-CwiseUnaryOp<RandomOperation, const Derived>
-cwiseRandom() const;
+namespace opensolid
+{
+    namespace detail
+    {
+        template <class TScalar, int iNumDimensions>
+        class VectorBase :
+            public CartesianBase<TScalar, iNumDimensions>
+        {
+        private:
+            const Vector<TScalar, iNumDimensions>&
+            derived() const;
+        protected:
+            VectorBase();
 
-CwiseUnaryOp<WidthOperation, const Derived>
-cwiseWidth() const;
+            VectorBase(const Matrix<TScalar, iNumDimensions, 1>& components);
 
-template <class TOther>
-bool
-overlaps(const DenseBase<TOther>& other, double precision = 1e-12) const;
+            VectorBase(const TScalar* sourcePtr);
+        public:
+            TScalar
+            squaredNorm() const;
 
-template <class TOther>
-bool
-strictlyOverlaps(const DenseBase<TOther>& other, double precision = 1e-12) const;
+            TScalar
+            norm() const;
 
-template <class TOther>
-bool
-contains(const DenseBase<TOther>& other, double precision = 1e-12) const;
+            bool
+            isZero(double precision = 1e-12) const;
 
-template <class TOther>
-bool
-strictlyContains(const DenseBase<TOther>& other, double precision = 1e-12) const;
+            TScalar
+            dot(const Vector<double, iNumDimensions>& other) const;
 
-template <class TOther>
-CwiseBinaryOp<HullOperation, const Derived, const TOther> 
-hull(const DenseBase<TOther>& other) const;
+            Interval
+            dot(const Vector<Interval, iNumDimensions>& other) const;
 
-template <class TOther>
-CwiseBinaryOp<IntersectionOperation, const Derived, const TOther>
-intersection(const DenseBase<TOther>& other) const;
+            template <class TOtherScalar>
+            const Vector<Interval, iNumDimensions>
+            hull(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
-static const RandomAccessLinSpacedReturnType
-LinSpaced(Index size, opensolid::Interval interval);
+            template <class TOtherScalar>
+            const Vector<Interval, iNumDimensions>
+            intersection(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
-static const RandomAccessLinSpacedReturnType
-LinSpaced(opensolid::Interval interval);
+            static const Vector<TScalar, iNumDimensions>
+            Zero();
 
-template <class TFirst, class TSecond>
-static CwiseBinaryOp<HullOperation, const TFirst, const TSecond>
-Hull(const DenseBase<TFirst>& first, const DenseBase<TSecond>& second);
-
-static const ConstantReturnType
-Empty();
-
-static const ConstantReturnType
-Empty(Index size);
-
-static const ConstantReturnType
-Empty(Index rows, Index cols);
-
-static const ConstantReturnType
-Whole();
-
-static const ConstantReturnType
-Whole(Index size);
-
-static const ConstantReturnType
-Whole(Index rows, Index cols);
+            static const Vector<TScalar, iNumDimensions>
+            Random();
+        };
+    }
+}

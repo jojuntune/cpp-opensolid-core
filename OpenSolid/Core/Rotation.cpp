@@ -27,14 +27,39 @@
 
 namespace opensolid
 {
+    namespace
+    {
+        inline
+        Matrix2x2
+        rotationMatrix2d(double angle) {
+            double sinAngle = sin(angle);
+            double cosAngle = cos(angle);
+            return Matrix2x2(cosAngle, sinAngle, -sinAngle, cosAngle);
+        }
+
+        inline
+        Matrix3x3
+        rotationMatrix3d(const UnitVector3d& axisVector, double angle) {
+            Matrix3x1 axisComponents = axisVector.components();
+            double x = axisComponents(0);
+            double y = axisComponents(1);
+            double z = axisComponents(2);
+            double sinAngle = sin(angle);
+            double cosAngle = cos(angle);
+            return (1 - cosAngle) * axisComponents * axisComponents.transpose() +
+                cosAngle * Matrix3x3::Identity() +
+                sinAngle * Matrix3x3(0.0, z, -y, -z, 0.0, x, y, -x, 0.0);
+        }
+    }
+
     Rotation2d::Rotation2d(const Point2d& originPoint, double angle) :
-        LinearTransformation<2>(originPoint, Matrix2d(Rotation2Dd(angle))) {
+        LinearTransformation<2>(originPoint, rotationMatrix2d(angle)) {
     }
 
     Rotation3d::Rotation3d(const Axis<3>& axis, double angle) :
         LinearTransformation<3>(
             axis.originPoint(),
-            Matrix3d(AngleAxisd(angle, axis.directionVector()))
+            rotationMatrix3d(axis.directionVector(), angle)
         ) {
     }
 }

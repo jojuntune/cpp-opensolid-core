@@ -97,7 +97,7 @@ public:
         object.set("vector", Vector3d(1, 2, 3));
         Object component;
         component.set("axis", Axis3d(Vector3d::Zero(), Vector3d(4, 5, 6)));
-        component.set("facet", Triangle3d(Matrix3d::Ones()));
+        component.set("facet", Triangle3d(Matrix3x3::Ones()));
         object.set("component", component);
         Serialization<Object> serialization;
         std::string serialized = serialization(object);
@@ -109,7 +109,7 @@ public:
         TS_ASSERT_EQUALS(axis.origin(), Vector3d::Zero());
         TS_ASSERT((axis.direction() - Vector3d(4, 5, 6).normalized()).isZero());
         Triangle3d facet = deserialized.get<Object>("component").get<Triangle3d>("facet");
-        TS_ASSERT_EQUALS(facet.vertices(), Matrix3d::Ones());
+        TS_ASSERT_EQUALS(facet.vertices(), Matrix3x3::Ones());
     }
 
     void testCustomConversion() {

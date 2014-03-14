@@ -74,13 +74,13 @@ namespace opensolid
         template <>
         const double*
         dataPointer<double>(const ConstantExpression* constantExpression) {
-            return &constantExpression->vector().coeffRef(0);
+            return &constantExpression->columnMatrixXd().coeffRef(0);
         }
 
         template <>
         const Interval*
         dataPointer<Interval>(const ConstantExpression* constantExpression) {
-            return &constantExpression->bounds().coeffRef(0);
+            return &constantExpression->columnMatrixXI().coeffRef(0);
         }
     }
 
@@ -106,14 +106,14 @@ namespace opensolid
             // parameter values
             int parameterIndex =
                 expressionImplementation->cast<ParameterExpression>()->parameterIndex();
-            Stride<Dynamic, Dynamic> stride(parameterValues.outerStride(), 1);
+            Eigen::Stride<Eigen::Dynamic, 1> stride(parameterValues.outerStride(), 1);
             const TScalar* dataPtr = &parameterValues.coeffRef(parameterIndex, 0);
             return ConstMap(dataPtr, 1, parameterValues.cols(), stride);
         } else if (expressionImplementation->isConstantExpression()) {
             // Constant expression: build map pointing to constant data (using an outer stride of
             // zero allows the single column of data within the ConstantExpression to be used to
             // represent a matrix of arbitrary number of columns)
-            Stride<Dynamic, Dynamic> stride(0, 1);
+            Eigen::Stride<Eigen::Dynamic, 1> stride(0, 1);
             const TScalar* dataPtr = dataPointer<TScalar>(
                 expressionImplementation->cast<ConstantExpression>()
             );
@@ -143,7 +143,7 @@ namespace opensolid
                     resultMatrix.data(),
                     resultMatrix.rows(),
                     resultMatrix.cols(),
-                    Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+                    Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
                 );
 
                 // Evaluate expression into results matrix using map
@@ -158,7 +158,7 @@ namespace opensolid
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
-                Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+                Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
             );
         }
     }
@@ -198,7 +198,7 @@ namespace opensolid
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
-                Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+                Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
             );
 
             // Evaluate expression into results matrix using map
@@ -213,7 +213,7 @@ namespace opensolid
             resultMatrix.data(),
             resultMatrix.rows(),
             resultMatrix.cols(),
-            Stride<Dynamic, Dynamic>(resultMatrix.rows(), 1)
+            Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
         );
     }
 
@@ -240,19 +240,19 @@ namespace opensolid
     MapXcI
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const MapXcI& parameterBounds
+        const MapXcI& parameterValues
     ) {
-        return evaluate<Interval>(expressionImplementation, parameterBounds, _boundsCache);
+        return evaluate<Interval>(expressionImplementation, parameterValues, _boundsCache);
     }
 
     MapXcI
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const MapXcI& parameterBounds
+        const MapXcI& parameterValues
     ) {
         return evaluateJacobian<Interval>(
             expressionImplementation,
-            parameterBounds,
+            parameterValues,
             _jacobianBoundsCache
         );
     }

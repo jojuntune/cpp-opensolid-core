@@ -28,195 +28,256 @@
 
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
+#include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
+
+#include <ostream>
 
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
-    class Matrix :
-        public detail::MatrixBase<double, iNumRows, iNumColumns>
+    template <class TScalar>
+    class Matrix<TScalar, 1, 1> :
+        public detail::MatrixBase<TScalar, 1, 1>
     {
     public:
         Matrix();
 
         explicit
-        Matrix(const double* sourcePtr);
-    };
-
-    template <>
-    class Matrix<1, 1> :
-        public detail::MatrixBase<double, 1, 1>
-    {
-    public:
-        Matrix();
+        Matrix(TScalar value);
 
         explicit
-        Matrix(double value);
+        Matrix(const TScalar* sourcePtr);
 
-        explicit
-        Matrix(const double* sourcePtr);
-
-        const double
+        const TScalar
         value() const;
 
-        double&
+        TScalar&
         value();
 
-        const double
+        const TScalar
         determinant() const;
 
-        const Matrix<1, 1>
+        const Matrix<TScalar, 1, 1>
         inverse() const;
     };
 
-    typedef Matrix<1, 1> Matrix1d;
+    typedef Matrix<double, 1, 1> Matrix1x1;
+    typedef Matrix<Interval, 1, 1> IntervalMatrix1x1;
 
-    template <>
-    class Matrix<2, 2> :
-        public detail::MatrixBase<double, 2, 2>
+    template <class TScalar>
+    class Matrix<TScalar, 2, 2> :
+        public detail::MatrixBase<TScalar, 2, 2>
     {
     public:
         Matrix();
 
-        Matrix(double a00, double a10, double a01, double a11);
+        Matrix(TScalar a00, TScalar a10, TScalar a01, TScalar a11);
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(const TScalar* sourcePtr);
 
-        double
+        TScalar
         determinant() const;
 
-        const Matrix<2, 2>
+        const Matrix<TScalar, 2, 2>
         inverse() const;
     };
 
-    typedef Matrix<2, 2> Matrix2d;
+    typedef Matrix<double, 2, 2> Matrix2x2;
+    typedef Matrix<Interval, 2, 2> IntervalMatrix2x2;
 
-    template <>
-    class Matrix<3, 3> :
-        public detail::MatrixBase<double, 3, 3>
+    template <class TScalar>
+    class Matrix<TScalar, 3, 3> :
+        public detail::MatrixBase<TScalar, 3, 3>
     {
     public:
         Matrix();
 
         Matrix(
-            double a00,
-            double a10,
-            double a20,
-            double a01,
-            double a11,
-            double a21,
-            double a02,
-            double a12,
-            double a22
+            TScalar a00,
+            TScalar a10,
+            TScalar a20,
+            TScalar a01,
+            TScalar a11,
+            TScalar a21,
+            TScalar a02,
+            TScalar a12,
+            TScalar a22
         );
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(const TScalar* sourcePtr);
 
         OPENSOLID_CORE_EXPORT
-        const double
+        TScalar
         determinant() const;
 
         OPENSOLID_CORE_EXPORT
-        const Matrix<3, 3>
+        const Matrix<TScalar, 3, 3>
         inverse() const;
     };
 
-    typedef Matrix<3, 3> Matrix3d;
+    typedef Matrix<double, 3, 3> Matrix3x3;
+    typedef Matrix<Interval, 3, 3> IntervalMatrix3x3;
 
-    template <>
-    class Matrix<1, 2> :
-        public detail::MatrixBase<double, 1, 2>
+    template <class TScalar>
+    class Matrix<TScalar, 1, 2> :
+        public detail::MatrixBase<TScalar, 1, 2>
     {
     public:
         Matrix();
 
-        Matrix(double x, double y);
+        Matrix(TScalar x, TScalar y);
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(const TScalar* sourcePtr);
     };
 
-    typedef Matrix<1, 2> RowMatrix2d;
+    typedef Matrix<double, 1, 2> Matrix1x2;
+    typedef Matrix<Interval, 1, 2> IntervalMatrix1x2;
 
-    template <>
-    class Matrix<2, 1> :
-        public detail::MatrixBase<double, 2, 1>
+    template <class TScalar>
+    class Matrix<TScalar, 2, 1> :
+        public detail::MatrixBase<TScalar, 2, 1>
     {
     public:
         Matrix();
 
-        Matrix(double x, double y);
+        Matrix(TScalar x, TScalar y);
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(const TScalar* sourcePtr);
     };
 
-    typedef Matrix<2, 1> ColumnMatrix2d;
+    typedef Matrix<double, 2, 1> Matrix2x1;
+    typedef Matrix<Interval, 2, 1> IntervalMatrix2x1;
 
-    template <>
-    class Matrix<1, 3> :
-        public detail::MatrixBase<double, 1, 3>
+    template <class TScalar>
+    class Matrix<TScalar, 1, 3> :
+        public detail::MatrixBase<TScalar, 1, 3>
     {
     public:
         Matrix();
 
-        Matrix(double x, double y);
+        Matrix(TScalar x, TScalar y, TScalar z);
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(const TScalar* sourcePtr);
     };
 
-    typedef Matrix<1, 3> RowMatrix3d;
+    typedef Matrix<double, 1, 3> Matrix1x3;
+    typedef Matrix<Interval, 1, 3> IntervalMatrix1x3;
 
-    template <>
-    class Matrix<3, 1> :
-        public detail::MatrixBase<double, 3, 1>
+    template <class TScalar>
+    class Matrix<TScalar, 3, 1> :
+        public detail::MatrixBase<TScalar, 3, 1>
     {
     public:
         Matrix();
 
-        Matrix(double x, double y, double z);
+        Matrix(TScalar x, TScalar y, TScalar z);
 
         explicit
-        Matrix(const double* sourcePtr);
+        Matrix(const TScalar* sourcePtr);
     };
 
-    typedef Matrix<3, 1> ColumnMatrix3d;
+    typedef Matrix<double, 3, 1> Matrix3x1;
+    typedef Matrix<Interval, 3, 1> IntervalMatrix3x1;
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    operator*(double scale, const Matrix<iNumRows, iNumColumns>& matrix);
+    template <class TScalar>
+    class Matrix<TScalar, 2, 3> :
+        public detail::MatrixBase<TScalar, 2, 3>
+    {
+    public:
+        Matrix();
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    operator*(const Matrix<iNumRows, iNumColumns>& matrix, double scale);
+        Matrix(
+            TScalar a00,
+            TScalar a10,
+            TScalar a01,
+            TScalar a11,
+            TScalar a02,
+            TScalar a12
+        );
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    operator/(const Matrix<iNumRows, iNumColumns>& matrix, double divisor);
+        explicit
+        Matrix(const TScalar* sourcePtr);
+    };
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, int iNumColumns>
+    typedef Matrix<double, 2, 3> Matrix2x3;
+    typedef Matrix<Interval, 2, 3> IntervalMatrix2x3;
+
+    template <class TScalar>
+    class Matrix<TScalar, 3, 2> :
+        public detail::MatrixBase<TScalar, 3, 2>
+    {
+    public:
+        Matrix();
+
+        Matrix(
+            TScalar a00,
+            TScalar a10,
+            TScalar a20,
+            TScalar a01,
+            TScalar a11,
+            TScalar a21
+        );
+
+        explicit
+        Matrix(const TScalar* sourcePtr);
+    };
+
+    typedef Matrix<double, 3, 2> Matrix3x2;
+    typedef Matrix<Interval, 3, 2> IntervalMatrix3x2;
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    operator-(const Matrix<TScalar, iNumRows, iNumColumns>& matrix);
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    const Matrix<decltype(TFirstScalar() * TSecondScalar()), iNumRows, iNumColumns>
+    operator*(TFirstScalar scale, const Matrix<TSecondScalar, iNumRows, iNumColumns>& matrix);
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    const Matrix<decltype(TFirstScalar() * TSecondScalar()), iNumRows, iNumColumns>
+    operator*(const Matrix<TFirstScalar, iNumRows, iNumColumns>& matrix, TSecondScalar scale);
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    const Matrix<decltype(TFirstScalar() / TSecondScalar()), iNumRows, iNumColumns>
+    operator/(const Matrix<TFirstScalar, iNumRows, iNumColumns>& matrix, TSecondScalar divisor);
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    const Matrix<decltype(TFirstScalar() + TSecondScalar()), iNumRows, iNumColumns>
     operator+(
-        const Matrix<iNumRows, iNumColumns>& firstMatrix,
-        const Matrix<iNumRows, iNumColumns>& secondMatrix
+        const Matrix<TFirstScalar, iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<TSecondScalar, iNumRows, iNumColumns>& secondMatrix
+    );
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    const Matrix<decltype(TFirstScalar() - TSecondScalar()), iNumRows, iNumColumns>
+    operator-(
+        const Matrix<TFirstScalar, iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<TSecondScalar, iNumRows, iNumColumns>& secondMatrix
+    );
+
+    template <
+        class TFirstScalar,
+        class TSecondScalar,
+        int iNumRows,
+        int iNumColumns,
+        int iInnerSize
+    >
+    const Matrix<decltype(TFirstScalar() * TSecondScalar()), iNumRows, iNumColumns>
+    operator*(
+        const Matrix<TFirstScalar, iNumRows, iInnerSize>& firstMatrix,
+        const Matrix<TSecondScalar, iInnerSize, iNumColumns>& secondMatrix
     );
 
     template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, int iNumColumns>
-    operator-(
-        const Matrix<iNumRows, iNumColumns>& firstMatrix,
-        const Matrix<iNumRows, iNumColumns>& secondMatrix
-    );
+    std::ostream&
+    operator<<(std::ostream& stream, const Matrix<double, iNumRows, iNumColumns>& matrix);
 
-    template <int iNumRows, int iNumColumns, int iInnerSize>
-    const Matrix<iNumRows, int iNumColumns>
-    operator*(
-        const Matrix<iNumRows, iInnerSize>& firstMatrix,
-        const Matrix<iInnerSize, iNumColumns>& secondMatrix
-    );
+    template <int iNumRows, int iNumColumns>
+    std::ostream&
+    operator<<(std::ostream& stream, const Matrix<Interval, iNumRows, iNumColumns>& matrix);
 }
-
-#endif

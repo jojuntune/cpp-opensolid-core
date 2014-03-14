@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     inline
-    const bool
+    bool
     BoundedArea2d::isEmpty() const {
         return boundaries().isEmpty();
     }

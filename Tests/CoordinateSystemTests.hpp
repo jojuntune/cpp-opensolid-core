@@ -39,12 +39,12 @@ public:
             Point3d(1, 1, 1),
             Vector3d(1, 1, 0),
             Vector3d(-1, 1, 0),
-            Vector3d::UnitZ()
+            UnitVector3d::Z()
         ).normalized();
 
         Point3d globalizedPoint = coordinateSystem * Point3d(1, 1, 1);
         TS_ASSERT((globalizedPoint - Point3d(1, 1 + sqrt(2.0), 2)).isZero());
-        
+
         Vector3d globalizedVector = coordinateSystem * Vector3d(1, 1, 1);
         TS_ASSERT((globalizedVector - Vector3d(0, sqrt(2.0), 1)).isZero());
     }
@@ -54,7 +54,7 @@ public:
             Point3d(1, 1, 1),
             Vector3d(1, 1, 0),
             Vector3d(-1, 1, 0),
-            Vector3d::UnitZ()
+            UnitVector3d::Z()
         ).normalized();
 
         Point3d localizedPoint = Point3d(1, 0, 0) / coordinateSystem;
@@ -77,6 +77,7 @@ public:
 
         CoordinateSystem3d globalized = coordinateSystem * coordinateSystem;
         Point3d expectedProductOrigin(1 + 1 / sqrt(2.0), 0, 1 / sqrt(2.0));
+
         TS_ASSERT((globalized.originPoint() - expectedProductOrigin).isZero());
         TS_ASSERT((globalized.xAxis().directionVector() - Vector3d(0, 0, 1)).isZero());
         TS_ASSERT((globalized.yAxis().directionVector() - Vector3d(0, 1, 0)).isZero());
@@ -118,7 +119,7 @@ public:
 
             std::cout << coordinateSystem.basisMatrix() << std::endl;
             std::cout << std::endl;
-            Matrix3d shouldBeIdentity =
+            Matrix3x3 shouldBeIdentity =
                 coordinateSystem.basisMatrix() * coordinateSystem.basisMatrix().transpose();
             std::cout << shouldBeIdentity << std::endl;
             std::cout << std::endl;
@@ -132,7 +133,7 @@ public:
     void testNonOrthogonal() {
         CoordinateSystem3d coordinateSystem(
             Point3d(1, 2, 3),
-            Matrix3d::Ones().triangularView<Upper>()
+            Matrix3x3(1, 0, 0, 1, 1, 0, 1, 1, 1)
         );
         TS_ASSERT((coordinateSystem * Point3d(1, 1, 1) - Point3d(4, 4, 4)).isZero());
         TS_ASSERT((Point3d(4, 4, 4) / coordinateSystem - Point3d(1, 1, 1)).isZero());

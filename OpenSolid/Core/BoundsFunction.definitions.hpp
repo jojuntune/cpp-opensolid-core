@@ -64,7 +64,7 @@ namespace opensolid
     template <>
     struct BoundsFunction<double>
     {
-        const Interval
+        Interval
         operator()(double argument) const;
     };
 }

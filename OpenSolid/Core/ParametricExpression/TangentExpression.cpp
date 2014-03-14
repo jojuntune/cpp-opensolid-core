@@ -46,11 +46,11 @@ namespace opensolid
     
     void
     TangentExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
         results = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
@@ -71,12 +71,12 @@ namespace opensolid
     
     void
     TangentExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         Interval cosine = cos(operandBounds);
         if (cosine == Zero()) {
             throw Error(new PlaceholderError());

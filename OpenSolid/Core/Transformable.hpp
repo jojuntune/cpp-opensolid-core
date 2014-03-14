@@ -39,6 +39,7 @@
 #include <OpenSolid/Core/Projection.hpp>
 #include <OpenSolid/Core/Rotation.hpp>
 #include <OpenSolid/Core/Transplant.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
@@ -56,23 +57,26 @@ namespace opensolid
         const Point<NumDimensions<TDerived>::Value>& originPoint,
         double scale
     ) const {
+        Vector<double, NumDimensions<TDerived>::Value> originVector(originPoint.components());
         return translationFunction(
             scalingFunction(
                 translationFunction(
                     derived(),
-                    -originPoint.vector()
+                    -originVector
                 ),
                 scale
             ),
-            originPoint.vector()
+            originVector
         );
     }
 
-    template <class TDerived> template <class TVector>
+    template <class TDerived>
     inline
     typename TranslatedType<TDerived>::Type
-    Transformable<TDerived>::translatedBy(const EigenBase<TVector>& vector) const {
-        return translationFunction(derived(), vector.derived());
+    Transformable<TDerived>::translatedBy(
+        const Vector<double, NumDimensions<TDerived>::Value>& vector
+    ) const {
+        return translationFunction(derived(), vector);
     }
     
     template <class TDerived>
@@ -183,20 +187,26 @@ namespace opensolid
         return ScalingFunction<TTransformable>()(transformable, scale);
     }
 
-    template <class TTransformable, class TVector>
+    template <class TTransformable>
     inline
     typename TranslatedType<TTransformable>::Type
-    translationFunction(const TTransformable& transformable, const EigenBase<TVector>& vector) {
-        return TranslationFunction<TTransformable>()(transformable, vector.derived());
+    translationFunction(
+        const TTransformable& transformable,
+        const Vector<double, NumDimensions<TTransformable>::Value>& vector
+    ) {
+        return TranslationFunction<TTransformable>()(transformable, vector);
     }
 
-    template <class TTransformable, class TMatrix>
+    template <class TTransformable, int iNumResultDimensions>
     inline
-    typename TransformedType<TTransformable, TMatrix::RowsAtCompileTime>::Type
-    transformationFunction(const TTransformable& transformable, const EigenBase<TMatrix>& matrix) {
-        return TransformationFunction<TTransformable, TMatrix::RowsAtCompileTime>()(
+    typename TransformedType<TTransformable, iNumResultDimensions>::Type
+    transformationFunction(
+        const TTransformable& transformable,
+        const Matrix<double, iNumResultDimensions, NumDimensions<TTransformable>::Value>& matrix
+    ) {
+        return TransformationFunction<TTransformable, iNumResultDimensions>()(
             transformable,
-            matrix.derived()
+            matrix
         );
     }
 

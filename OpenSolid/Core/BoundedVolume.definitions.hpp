@@ -72,7 +72,7 @@ namespace opensolid
         const SpatialSet<ParametricSurface3d>&
         boundaries() const;
 
-        const bool
+        bool
         isEmpty() const;
 
         const Box<3>
@@ -100,7 +100,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, const Matrix3d& matrix) const;
+        operator()(const BoundedVolume3d& boundedVolume, const Matrix3x3& matrix) const;
     };
 
     template <>

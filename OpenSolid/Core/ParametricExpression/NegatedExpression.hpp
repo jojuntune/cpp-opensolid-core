@@ -49,7 +49,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -65,7 +65,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -84,11 +84,11 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        scalarMultiplicationImpl(double scale) const override;
+        scalingImpl(double scale) const override;
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        matrixMultiplicationImpl(const MatrixXd& matrix) const override;
+        transformationImpl(const MatrixXd& matrix) const override;
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr

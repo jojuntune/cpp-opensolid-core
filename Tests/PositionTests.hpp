@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
@@ -51,9 +52,9 @@ public:
         Point3d point3(4, 5, 6);
         Point3d origin = Point3d::Origin();
         TS_ASSERT((point1 - point2).isZero());
-        TS_ASSERT(origin.vector().isZero());
+        TS_ASSERT(origin.components().isZero());
         TS_ASSERT(origin.isOrigin());
-        TS_ASSERT((point1 + Vector3d::Constant(3) - point3).isZero());
+        TS_ASSERT((point1 + Vector3d(3, 3, 3) - point3).isZero());
         TS_ASSERT((point1.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
     }
 
@@ -71,8 +72,8 @@ public:
     void testMixedOperations() {
         Point3d point(1, 2, 3);
         Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
-        Vector3I difference1 = point - box;
-        Vector3I difference2 = box - point;
+        IntervalVector3d difference1 = point - box;
+        IntervalVector3d difference2 = box - point;
         Box3d reconstructed1 = point - difference1;
         Box3d reconstructed2 = point + difference2;
         for (int i = 0; i < 3; ++i) {
@@ -106,8 +107,8 @@ public:
 
         Box3d computedBox = box.vertices().fold(
             Box3d(),
-            [] (const Box3d& boxSoFar, const Point3d& point) {
-                return boxSoFar.hull(point);
+            [] (const Box3d& result, const Point3d& point) {
+                return result.hull(point);
             }
         );
         TS_ASSERT(computedBox.contains(box));

@@ -50,11 +50,11 @@ namespace opensolid
     
     void 
     NormExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterBounds).colwise().norm();
+        results = evaluator.evaluate(operand(), parameterValues).colwise().norm();
     }
 
     void
@@ -67,23 +67,23 @@ namespace opensolid
         if (operandValue.isZero()) {
             throw Error(new PlaceholderError());
         }
-        VectorXd operandNormalized = operandValue.normalized();
+        ColumnMatrixXd operandNormalized = operandValue.normalized();
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = operandNormalized.transpose() * operandJacobian;
     }
     
     void
     NormExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
         if (operandBounds.isZero()) {
             throw Error(new PlaceholderError());
         }
-        VectorXI operandNormalized = operandBounds.normalized();
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        ColumnMatrixXI operandNormalized = operandBounds.normalized();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = operandNormalized.transpose() * operandJacobian;
     }
 

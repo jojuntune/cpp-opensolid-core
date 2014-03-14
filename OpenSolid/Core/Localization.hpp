@@ -61,7 +61,10 @@ namespace opensolid
     typename LocalizedType<TTransformable, iNumAxes>::Type
     Localization<iNumDimensions, iNumAxes>::operator()(const TTransformable& transformable) const {
         return transformationFunction(
-            translationFunction(transformable, -originPoint().vector()),
+            translationFunction(
+                transformable,
+                Vector<double, iNumDimensions>(-originPoint().components())
+            ),
             transformationMatrix()
         );
     }

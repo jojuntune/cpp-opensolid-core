@@ -26,8 +26,9 @@
 
 namespace opensolid
 {
-    const double
-    Matrix3d::determinant() const {
+    template <>
+    double
+    Matrix3x3::determinant() const {
         double a00 = component(0);
         double a10 = component(1);
         double a20 = component(2);
@@ -43,8 +44,9 @@ namespace opensolid
             a02 * (a10 * a21 - a11 * a20);
     }
 
-    const Matrix3d
-    Matrix3d::inverse() const {
+    template <>
+    const Matrix3x3
+    Matrix3x3::inverse() const {
         double a00 = component(0);
         double a10 = component(1);
         double a20 = component(2);
@@ -58,21 +60,70 @@ namespace opensolid
         double determinant = a00 * (a11 * a22 - a12 * a21) -
             a01 * (a10 * a22 - a12 * a20) +
             a02 * (a10 * a21 - a11 * a20);
-        if (determinant == Zero()) {
+        if (determinant == opensolid::Zero()) {
             assert(false);
-            return Matrix3d();
+            return Matrix3x3();
         }
         double reciprocal = 1.0 / determinant;
 
-        return Matrix3d(
+        return Matrix3x3(
             reciprocal * (a11 * a22 - a12 * a21),
-            reciprocal * (a02 * a21 - a01 * a22),
-            reciprocal * (a01 * a12 - a02 * a11),
             reciprocal * (a12 * a20 - a10 * a22),
-            reciprocal * (a00 * a22 - a02 * a20),
-            reciprocal * (a02 * a10 - a00 * a12),
             reciprocal * (a10 * a21 - a11 * a20),
+            reciprocal * (a02 * a21 - a01 * a22),
+            reciprocal * (a00 * a22 - a02 * a20),
             reciprocal * (a01 * a20 - a00 * a21),
+            reciprocal * (a01 * a12 - a02 * a11),
+            reciprocal * (a02 * a10 - a00 * a12),
+            reciprocal * (a00 * a11 - a01 * a10)
+        );
+    }
+    template <>
+    Interval
+    IntervalMatrix3x3::determinant() const {
+        Interval a00 = component(0);
+        Interval a10 = component(1);
+        Interval a20 = component(2);
+        Interval a01 = component(3);
+        Interval a11 = component(4);
+        Interval a21 = component(5);
+        Interval a02 = component(6);
+        Interval a12 = component(7);
+        Interval a22 = component(8);
+
+        return a00 * (a11 * a22 - a12 * a21) -
+            a01 * (a10 * a22 - a12 * a20) +
+            a02 * (a10 * a21 - a11 * a20);
+    }
+
+    template <>
+    const IntervalMatrix3x3
+    IntervalMatrix3x3::inverse() const {
+        Interval a00 = component(0);
+        Interval a10 = component(1);
+        Interval a20 = component(2);
+        Interval a01 = component(3);
+        Interval a11 = component(4);
+        Interval a21 = component(5);
+        Interval a02 = component(6);
+        Interval a12 = component(7);
+        Interval a22 = component(8);
+
+        Interval determinant = a00 * (a11 * a22 - a12 * a21) -
+            a01 * (a10 * a22 - a12 * a20) +
+            a02 * (a10 * a21 - a11 * a20);
+        
+        Interval reciprocal = 1.0 / determinant;
+
+        return IntervalMatrix3x3(
+            reciprocal * (a11 * a22 - a12 * a21),
+            reciprocal * (a12 * a20 - a10 * a22),
+            reciprocal * (a10 * a21 - a11 * a20),
+            reciprocal * (a02 * a21 - a01 * a22),
+            reciprocal * (a00 * a22 - a02 * a20),
+            reciprocal * (a01 * a20 - a00 * a21),
+            reciprocal * (a01 * a12 - a02 * a11),
+            reciprocal * (a02 * a10 - a00 * a12),
             reciprocal * (a00 * a11 - a01 * a10)
         );
     }

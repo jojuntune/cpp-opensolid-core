@@ -28,269 +28,451 @@
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
+#include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Matrix/MatrixBase.hpp>
+#include <OpenSolid/Core/Matrix/Unroll.hpp>
+#include <OpenSolid/Core/Zero.hpp>
+
 namespace opensolid
 {
-    template <int iNumRows, int iNumColumns>
+    template <class TScalar>
     inline
-    Matrix<iNumRows, iNumColumns>::Matrix() :
-        detail::MatrixBase<double, iNumRows, iNumColumns>() {
-
-        fill(0.0);
+    Matrix<TScalar, 1, 1>::Matrix() {
     }
 
-    template <int iNumRows, int iNumColumns>
+    template <class TScalar>
     inline
-    Matrix<iNumRows, iNumColumns>::Matrix(const double* sourcePtr) :
-        detail::MatrixBase<double, iNumRows, iNumColumns>(sourcePtr) {
+    Matrix<TScalar, 1, 1>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 1, 1>(sourcePtr) {
     }
 
+    template <class TScalar>
     inline
-    Matrix1d::Matrix() :
-        detail::MatrixBase<double, 1, 1>() {
+    Matrix<TScalar, 1, 1>::Matrix(TScalar value) :
+        detail::MatrixBase<TScalar, 1, 1>() {
 
-        component(0) = 0.0;
+        this->component(0) = value;
     }
 
+    template <class TScalar>
     inline
-    Matrix1d::Matrix(const double* sourcePtr) :
-        detail::MatrixBase<double, 1, 1>(sourcePtr) {
+    const TScalar
+    Matrix<TScalar, 1, 1>::value() const {
+        return this->component(0);
     }
 
+    template <class TScalar>
     inline
-    Matrix1d::Matrix(double value) :
-        detail::MatrixBase<double, 1, 1>() {
-
-        component(0) = value;
+    TScalar&
+    Matrix<TScalar, 1, 1>::value() {
+        return this->component(0);
     }
 
+    template <class TScalar>
     inline
-    const double
-    Matrix1d::value() const {
-        return component(0);
-    }
-
-    inline
-    double&
-    Matrix1d::value() {
-        return component(0);
-    }
-
-    inline
-    const double
-    Matrix1d::determinant() const {
+    const TScalar
+    Matrix<TScalar, 1, 1>::determinant() const {
         return value();
     }
 
+    template <>
     inline
-    const Matrix1d
-    Matrix1d::inverse() const {
-        if (value() == Zero()) {
+    const Matrix1x1
+    Matrix1x1::inverse() const {
+        if (value() == opensolid::Zero()) {
             assert(false);
-            return Matrix1d(0.0);
+            return Matrix1x1();
         }
-        return Matrix1d(1.0 / value());
+        return Matrix1x1(1.0 / value());
     }
 
+    template <>
     inline
-    Matrix2d::Matrix() :
-        detail::MatrixBase<double, 2, 2>() {
-
-        fill(0.0);
+    const IntervalMatrix1x1
+    IntervalMatrix1x1::inverse() const {
+        return IntervalMatrix1x1(1.0 / value());
     }
 
+    template <class TScalar>
     inline
-    Matrix2d::Matrix(const double* sourcePtr) :
-        detail::MatrixBase<double, 2, 2>(sourcePtr) {
+    Matrix<TScalar, 2, 2>::Matrix() {
     }
 
+    template <class TScalar>
     inline
-    Matrix2d::Matrix(double a00, double a10, double a01, double a11) :
-        detail::MatrixBase<double, 2, 2>() {
-
-        component(0) = a00;
-        component(1) = a10;
-        component(2) = a01;
-        component(3) = a11;
+    Matrix<TScalar, 2, 2>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 2, 2>(sourcePtr) {
     }
 
+    template <class TScalar>
     inline
-    double
-    Matrix2d::determinant() const {
-        return component(0) * component(3) - component(2) * component(1);
+    Matrix<TScalar, 2, 2>::Matrix(TScalar a00, TScalar a10, TScalar a01, TScalar a11) :
+        detail::MatrixBase<TScalar, 2, 2>() {
+
+        this->component(0) = a00;
+        this->component(1) = a10;
+        this->component(2) = a01;
+        this->component(3) = a11;
     }
 
+    template <class TScalar>
     inline
-    const Matrix2d
-    Matrix2d::inverse() const {
+    TScalar
+    Matrix<TScalar, 2, 2>::determinant() const {
+        return this->component(0) * this->component(3) - this->component(2) * this->component(1);
+    }
+
+    template <>
+    inline
+    const Matrix2x2
+    Matrix2x2::inverse() const {
         double determinant = this->determinant();
-        if (determinant == Zero()) {
+        if (determinant == opensolid::Zero()) {
             assert(false);
-            return Matrix2d();
+            return Matrix2x2();
         }
         double reciprocal = 1.0 / determinant;
-        return Matrix2d(
-            reciprocal * component(3),
-            -reciprocal * component(2),
-            -reciprocal * component(1),
-            reciprocal * component(0)
+        return Matrix2x2(
+            reciprocal * this->component(3),
+            -reciprocal * this->component(1),
+            -reciprocal * this->component(2),
+            reciprocal * this->component(0)
         );
     }
 
+    template <>
     inline
-    Matrix3d::Matrix() :
-        detail::MatrixBase<double, 3, 3>() {
-
-        fill(0.0);
+    const IntervalMatrix2x2
+    IntervalMatrix2x2::inverse() const {
+        Interval determinant = this->determinant();
+        Interval reciprocal = 1.0 / determinant;
+        return IntervalMatrix2x2(
+            reciprocal * this->component(3),
+            -reciprocal * this->component(1),
+            -reciprocal * this->component(2),
+            reciprocal * this->component(0)
+        );
     }
 
+    template <class TScalar>
     inline
-    Matrix3d::Matrix(const double* sourcePtr) :
-        detail::MatrixBase<double, 3, 3>(sourcePtr) {
+    Matrix<TScalar, 3, 3>::Matrix() {
     }
 
+    template <class TScalar>
     inline
-    Matrix3d::Matrix(
-        double a00,
-        double a10,
-        double a20,
-        double a01,
-        double a11,
-        double a21,
-        double a02,
-        double a12,
-        double a22
-    ) : detail::MatrixBase<double, 3, 3>() {
-
-        component(0) = a00;
-        component(1) = a10;
-        component(2) = a20;
-        component(3) = a01;
-        component(4) = a11;
-        component(5) = a21;
-        component(6) = a02;
-        component(7) = a12;
-        component(8) = a22;
+    Matrix<TScalar, 3, 3>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 3, 3>(sourcePtr) {
     }
 
+    template <class TScalar>
     inline
-    ColumnMatrix2d::Matrix() :
-        detail::MatrixBase<double, 2, 1>() {
+    Matrix<TScalar, 3, 3>::Matrix(
+        TScalar a00,
+        TScalar a10,
+        TScalar a20,
+        TScalar a01,
+        TScalar a11,
+        TScalar a21,
+        TScalar a02,
+        TScalar a12,
+        TScalar a22
+    ) : detail::MatrixBase<TScalar, 3, 3>() {
 
-        component(0) = 0.0;
-        component(1) = 0.0;
+        this->component(0) = a00;
+        this->component(1) = a10;
+        this->component(2) = a20;
+        this->component(3) = a01;
+        this->component(4) = a11;
+        this->component(5) = a21;
+        this->component(6) = a02;
+        this->component(7) = a12;
+        this->component(8) = a22;
     }
 
+
+
+    template <class TScalar>
     inline
-    ColumnMatrix2d::Matrix(const double* sourcePtr) :
-        detail::MatrixBase<double, 2, 1>(sourcePtr) {
+    Matrix<TScalar, 1, 2>::Matrix() {
     }
 
+    template <class TScalar>
     inline
-    ColumnMatrix2d::Matrix(double x, double y) :
-        detail::MatrixBase<double, 2, 1>() {
-
-        component(0) = x;
-        component(1) = y;
+    Matrix<TScalar, 1, 2>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 1, 2>(sourcePtr) {
     }
 
+    template <class TScalar>
     inline
-    ColumnMatrix3d::Matrix() :
-        detail::MatrixBase<double, 3, 1>() {
+    Matrix<TScalar, 1, 2>::Matrix(TScalar x, TScalar y) :
+        detail::MatrixBase<TScalar, 1, 2>() {
 
-        component(0) = 0.0;
-        component(1) = 0.0;
-        component(2) = 0.0;
+        this->component(0) = x;
+        this->component(1) = y;
     }
 
+    template <class TScalar>
     inline
-    ColumnMatrix3d::Matrix(const double* sourcePtr) :
-        detail::MatrixBase<double, 3, 1>(sourcePtr) {
+    Matrix<TScalar, 2, 1>::Matrix() {
     }
 
+    template <class TScalar>
     inline
-    ColumnMatrix3d::Matrix(double x, double y, double z) :
-        detail::MatrixBase<double, 3, 1>() {
-
-        component(0) = x;
-        component(1) = y;
-        component(2) = z;
+    Matrix<TScalar, 2, 1>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 2, 1>(sourcePtr) {
     }
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    operator*(double scale, const Matrix<iNumRows, iNumColumns>& matrix) {
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 2, 1>::Matrix(TScalar x, TScalar y) :
+        detail::MatrixBase<TScalar, 2, 1>() {
+
+        this->component(0) = x;
+        this->component(1) = y;
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 3>::Matrix() {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 3>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 1, 3>(sourcePtr) {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 1, 3>::Matrix(TScalar x, TScalar y, TScalar z) :
+        detail::MatrixBase<TScalar, 1, 3>() {
+
+        this->component(0) = x;
+        this->component(1) = y;
+        this->component(2) = z;
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 3, 1>::Matrix() {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 3, 1>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 3, 1>(sourcePtr) {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 3, 1>::Matrix(TScalar x, TScalar y, TScalar z) :
+        detail::MatrixBase<TScalar, 3, 1>() {
+
+        this->component(0) = x;
+        this->component(1) = y;
+        this->component(2) = z;
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 2, 3>::Matrix() {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 2, 3>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 2, 3>(sourcePtr) {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 2, 3>::Matrix(
+        TScalar a00,
+        TScalar a10,
+        TScalar a01,
+        TScalar a11,
+        TScalar a02,
+        TScalar a12
+    ) : detail::MatrixBase<TScalar, 2, 3>() {
+
+        this->component(0) = a00;
+        this->component(1) = a10;
+        this->component(2) = a01;
+        this->component(3) = a11;
+        this->component(4) = a02;
+        this->component(5) = a12;
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 3, 2>::Matrix() {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 3, 2>::Matrix(const TScalar* sourcePtr) :
+        detail::MatrixBase<TScalar, 3, 2>(sourcePtr) {
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, 3, 2>::Matrix(
+        TScalar a00,
+        TScalar a10,
+        TScalar a20,
+        TScalar a01,
+        TScalar a11,
+        TScalar a21
+    ) : detail::MatrixBase<TScalar, 3, 2>() {
+
+        this->component(0) = a00;
+        this->component(1) = a10;
+        this->component(2) = a20;
+        this->component(3) = a01;
+        this->component(4) = a11;
+        this->component(5) = a21;
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    operator-(const Matrix<TScalar, iNumRows, iNumColumns>& matrix) {
         return matrix.map(
-            [scale] (double component) {
+            [] (TScalar component) {
+                return -component;
+            }
+        );
+    }
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    inline
+    const Matrix<decltype(TFirstScalar() * TSecondScalar()), iNumRows, iNumColumns>
+    operator*(TFirstScalar scale, const Matrix<TSecondScalar, iNumRows, iNumColumns>& matrix) {
+        return matrix.map(
+            [scale] (TSecondScalar component) {
+                return scale * component;
+            }
+        );
+    }
+
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    inline
+    const Matrix<decltype(TFirstScalar() * TSecondScalar()), iNumRows, iNumColumns>
+    operator*(const Matrix<TFirstScalar, iNumRows, iNumColumns>& matrix, TSecondScalar scale) {
+        return matrix.map(
+            [scale] (TFirstScalar component) {
                 return component * scale;
             }
         );
     }
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    operator*(const Matrix<iNumRows, iNumColumns>& matrix, double scale) {
-        return matrix.map(
-            [scale] (double component) {
-                return component * scale;
-            }
-        );
-    }
-
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, iNumColumns>
-    operator/(const Matrix<iNumRows, iNumColumns>& matrix, double divisor) {
-        if (divisor == Zero()) {
-            assert(false);
-            return Matrix<iNumRows, iNumColumns>();
-        }
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    inline
+    const Matrix<decltype(TFirstScalar() / TSecondScalar()), iNumRows, iNumColumns>
+    operator/(const Matrix<TFirstScalar, iNumRows, iNumColumns>& matrix, TSecondScalar divisor) {
         return (1.0 / divisor) * matrix;
     }
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, int iNumColumns>
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    inline
+    const Matrix<decltype(TFirstScalar() + TSecondScalar()), iNumRows, iNumColumns>
     operator+(
-        const Matrix<iNumRows, iNumColumns>& firstMatrix,
-        const Matrix<iNumRows, iNumColumns>& secondMatrix
+        const Matrix<TFirstScalar, iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<TSecondScalar, iNumRows, iNumColumns>& secondMatrix
     ) {
         return firstMatrix.binaryMap(
             secondMatrix,
-            [] (double firstComponent, double secondComponent) {
+            [] (TFirstScalar firstComponent, TSecondScalar secondComponent) {
                 return firstComponent + secondComponent;
             }
         );
     }
 
-    template <int iNumRows, int iNumColumns>
-    const Matrix<iNumRows, int iNumColumns>
+    template <class TFirstScalar, class TSecondScalar, int iNumRows, int iNumColumns>
+    inline
+    const Matrix<decltype(TFirstScalar() - TSecondScalar()), iNumRows, iNumColumns>
     operator-(
-        const Matrix<iNumRows, iNumColumns>& firstMatrix,
-        const Matrix<iNumRows, iNumColumns>& secondMatrix
+        const Matrix<TFirstScalar, iNumRows, iNumColumns>& firstMatrix,
+        const Matrix<TSecondScalar, iNumRows, iNumColumns>& secondMatrix
     ) {
         return firstMatrix.binaryMap(
             secondMatrix,
-            [] (double firstComponent, double secondComponent) {
+            [] (TFirstScalar firstComponent, TSecondScalar secondComponent) {
                 return firstComponent - secondComponent;
             }
         );
     }
 
-    template <int iNumRows, int iNumColumns, int iInnerSize>
-    const Matrix<iNumRows, int iNumColumns>
+    template <
+        class TFirstScalar,
+        class TSecondScalar,
+        int iNumRows,
+        int iNumColumns,
+        int iInnerSize
+    >
+    const Matrix<decltype(TFirstScalar() * TSecondScalar()), iNumRows, iNumColumns>
     operator*(
-        const Matrix<iNumRows, iInnerSize>& firstMatrix,
-        const Matrix<iInnerSize, iNumColumns>& secondMatrix
+        const Matrix<TFirstScalar, iNumRows, iInnerSize>& firstMatrix,
+        const Matrix<TSecondScalar, iInnerSize, iNumColumns>& secondMatrix
     ) {
-        Matrix<iNumRows, iNumColumns> result;
-        for (int columnIndex = 0; columnIndex < iNumColumns; ++columnIndex) {
-            for (int rowIndex = 0; rowIndex < iNumRows; ++rowIndex) {
-                double& component = result(rowIndex, columnIndex);
-                component = firstMatrix(rowIndex, 0) * secondMatrix(0, columnIndex);
-                for (int innerIndex = 1; innerIndex < iInnerSize; ++innerIndex) {
-                    component += firstMatrix(rowIndex, innerIndex) *
-                        secondMatrix(innerIndex, columnIndex);
-                }
+        typedef decltype(TFirstScalar() * TSecondScalar()) ResultScalarType;
+        Matrix<ResultScalarType, iNumRows, iNumColumns> result;
+        ResultScalarType* resultDataPtr = result.data();
+        const TFirstScalar* rowStart = firstMatrix.data();
+        const TSecondScalar* columnStart = secondMatrix.data();
+        detail::Unroll<iNumColumns>(
+            [&] (std::int64_t columnIndex) {
+                detail::Unroll<iNumRows>(
+                    [&] (std::int64_t rowIndex) {
+                        const TFirstScalar* rowPtr = rowStart;
+                        const TSecondScalar* columnPtr = columnStart;
+                        *resultDataPtr = (*rowPtr) * (*columnPtr);
+                        detail::Unroll<iInnerSize - 1>(
+                            [&] (std::int64_t innerIndex) {
+                                rowPtr += iNumRows;
+                                ++columnPtr;
+                                *resultDataPtr += (*rowPtr) * (*columnPtr);
+                            }
+                        );
+                        ++resultDataPtr;
+                        ++rowStart;
+                    }
+                );
+                columnStart += iInnerSize;
+                rowStart = firstMatrix.data();
+            }
+        );
+        return result;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    std::ostream&
+    operator<<(std::ostream& stream, const Matrix<double, iNumRows, iNumColumns>& matrix) {
+        stream << "Matrix" << iNumRows << "x" << iNumColumns;
+        stream << "(";
+        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
+            stream << matrix.component(index);
+            if (index < iNumRows * iNumColumns - 1) {
+                stream << ",";
             }
         }
-        return result;
+        stream << ")";
+        return stream;
+    }
+
+    template <int iNumRows, int iNumColumns>
+    std::ostream&
+    operator<<(std::ostream& stream, const Matrix<Interval, iNumRows, iNumColumns>& matrix) {
+        stream << "IntervalMatrix" << iNumRows << "x" << iNumColumns;
+        stream << "(";
+        for (std::int64_t index = 0; index < iNumRows * iNumColumns; ++index) {
+            stream << matrix.component(index);
+            if (index < iNumRows * iNumColumns - 1) {
+                stream << ",";
+            }
+        }
+        stream << ")";
+        return stream;
     }
 }

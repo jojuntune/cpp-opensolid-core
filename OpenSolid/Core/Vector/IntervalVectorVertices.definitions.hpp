@@ -26,8 +26,54 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Vector/IntervalVectorVertices.declarations.hpp>
+
+#include <OpenSolid/Core/Vector.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection.definitions.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.declarations.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters, class TArgument>
-    class ExpressionEvaluation;
+    template <int iNumDimensions>
+    struct ItemType<detail::IntervalVectorVertices<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    template <int iNumDimensions>
+    struct ItemReferenceType<detail::IntervalVectorVertices<iNumDimensions>>
+    {
+        typedef Vector<double, iNumDimensions> Type;
+    };
+
+    namespace detail
+    {
+        template <int iNumDimensions>
+        class IntervalVectorVertices :
+            public LazyCollection<IntervalVectorVertices<iNumDimensions>>
+        {
+        private:
+            Vector<Interval, iNumDimensions> _vector;
+        public:
+            IntervalVectorVertices(const Vector<Interval, iNumDimensions>& vector);
+
+            const Vector<Interval, iNumDimensions>&
+            vector() const;
+
+            IndexIterator<IntervalVectorVertices<iNumDimensions>>
+            begin() const;
+
+            IndexIterator<IntervalVectorVertices<iNumDimensions>>
+            end() const;
+
+            bool
+            isEmpty() const;
+
+            std::int64_t
+            size() const;
+
+            const Vector<double, iNumDimensions>
+            operator[](std::int64_t index) const;
+        };
+    }
 }

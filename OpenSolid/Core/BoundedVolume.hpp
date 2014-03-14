@@ -42,7 +42,7 @@ namespace opensolid
     }
 
     inline
-    const bool
+    bool
     BoundedVolume3d::isEmpty() const {
         return boundaries().isEmpty();
     }

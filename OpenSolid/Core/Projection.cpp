@@ -32,21 +32,22 @@ namespace opensolid
     Projection2d::Projection2d(const Axis<2>& axis) :
         LinearTransformation<2>(
             axis.originPoint(),
-            axis.directionVector() * axis.directionVector().transpose()
+            axis.directionVector().components() * axis.directionVector().components().transpose()
         ) {
     }
 
     Projection3d::Projection3d(const Axis<3>& axis) :
         LinearTransformation<3>(
             axis.originPoint(),
-            axis.directionVector() * axis.directionVector().transpose()
+            axis.directionVector().components() * axis.directionVector().components().transpose()
         ) {
     }
 
     Projection3d::Projection3d(const Plane3d& plane) :
         LinearTransformation<3>(
             plane.originPoint(),
-            Matrix3d::Identity() - plane.normalVector() * plane.normalVector().transpose()
+            Matrix3x3::Identity() -
+                plane.normalVector().components() * plane.normalVector().components().transpose()
         ) {
     }
 }

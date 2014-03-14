@@ -46,12 +46,12 @@ namespace opensolid
     
     void
     DifferenceExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterBounds);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
         results = firstBounds - secondBounds;
     }
 
@@ -68,12 +68,12 @@ namespace opensolid
     
     void
     DifferenceExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
         results = firstJacobian - secondJacobian;
     }
 

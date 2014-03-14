@@ -112,17 +112,17 @@ namespace opensolid
 
     void
     PowerExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI baseBounds = evaluator.evaluate(firstOperand(), parameterBounds);
+        MapXcI baseBounds = evaluator.evaluate(firstOperand(), parameterValues);
         if (_exponentIsInteger) {
             results = baseBounds.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
             results = baseBounds.array().unaryExpr(ConstantPower(_constantExponent));
         } else {
-            MapXcI exponentBounds = evaluator.evaluate(secondOperand(), parameterBounds);
+            MapXcI exponentBounds = evaluator.evaluate(secondOperand(), parameterValues);
             results = baseBounds.binaryExpr(exponentBounds, Power());
         }
     }
@@ -150,21 +150,21 @@ namespace opensolid
     
     void
     PowerExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Interval baseBounds = evaluator.evaluate(firstOperand(), parameterBounds).value();
+        Interval baseBounds = evaluator.evaluate(firstOperand(), parameterValues).value();
         if (baseBounds.upperBound() <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcI baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterBounds);
+        MapXcI baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
         if (_exponentIsConstant) {
             results = _constantExponent * pow(baseBounds, Interval(_constantExponent - 1)) *
                 baseJacobian;
         } else {
-            Interval exponentBounds = evaluator.evaluate(secondOperand(), parameterBounds).value();
-            MapXcI exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterBounds);
+            Interval exponentBounds = evaluator.evaluate(secondOperand(), parameterValues).value();
+            MapXcI exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
             results = pow(baseBounds, exponentBounds) *
                 (log(baseBounds) * exponentJacobian + exponentBounds * baseJacobian / baseBounds);
         }

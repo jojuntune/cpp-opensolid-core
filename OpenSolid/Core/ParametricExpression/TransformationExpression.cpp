@@ -22,93 +22,96 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/ParametricExpression/ScalarMultiplicationExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/TransformationExpression.hpp>
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
 {
     int
-    ScalarMultiplicationExpression::numDimensionsImpl() const {
-        return operand()->numDimensions();
+    TransformationExpression::numDimensionsImpl() const {
+        return matrixXd().rows();
     }
     
     void
-    ScalarMultiplicationExpression::evaluateImpl(
+    TransformationExpression::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = scale() * evaluator.evaluate(operand(), parameterValues);
+        results = matrixXd() * evaluator.evaluate(operand(), parameterValues);
     }
     
     void
-    ScalarMultiplicationExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+    TransformationExpression::evaluateImpl(
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = Interval(scale()) * evaluator.evaluate(operand(), parameterBounds);
+        results = matrixXd().cast<Interval>() * evaluator.evaluate(operand(), parameterValues);
     }
 
     void
-    ScalarMultiplicationExpression::evaluateJacobianImpl(
+    TransformationExpression::evaluateJacobianImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = scale() * evaluator.evaluateJacobian(operand(), parameterValues);
+        results = matrixXd() * evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     void
-    ScalarMultiplicationExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+    TransformationExpression::evaluateJacobianImpl(
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = Interval(scale()) * evaluator.evaluateJacobian(operand(), parameterBounds);
+        results = matrixXd().cast<Interval>() *
+            evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     ExpressionImplementationPtr
-    ScalarMultiplicationExpression::derivativeImpl(int parameterIndex) const {
-        return scale() * operand()->derivative(parameterIndex);
+    TransformationExpression::derivativeImpl(int parameterIndex) const {
+        return matrixXd() * operand()->derivative(parameterIndex);
     }
 
     bool
-    ScalarMultiplicationExpression::isDuplicateOfImpl(
+    TransformationExpression::isDuplicateOfImpl(
         const ExpressionImplementationPtr& other
     ) const {
-        return duplicateOperands(other) &&
-            this->scale() == other->cast<ScalarMultiplicationExpression>()->scale();
+        MatrixXd otherMatrixXd = other->cast<TransformationExpression>()->matrixXd();
+        return duplicateOperands(other) && (matrixXd() - otherMatrixXd).isZero();
     }
 
     ExpressionImplementationPtr
-    ScalarMultiplicationExpression::scalarMultiplicationImpl(double scale) const {
-        return (scale * this->scale()) * operand();
+    TransformationExpression::scalingImpl(double scale) const {
+        return (scale * matrixXd()) * operand();
     }
 
     ExpressionImplementationPtr
-    ScalarMultiplicationExpression::matrixMultiplicationImpl(const MatrixXd& matrix) const {
-        return (scale() * matrix) * operand();
+    TransformationExpression::transformationImpl(const MatrixXd& matrixXd) const {
+        return (matrixXd * this->matrixXd()) * operand();
     }
     
     void
-    ScalarMultiplicationExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ScalarMultiplicationExpression" << std::endl;
+    TransformationExpression::debugImpl(std::ostream& stream, int indent) const {
+        stream << "TransformationExpression" << std::endl;
         operand()->debug(stream, indent + 1);
     }
 
     ExpressionImplementationPtr
-    ScalarMultiplicationExpression::withNewOperandImpl(
+    TransformationExpression::withNewOperandImpl(
         const ExpressionImplementationPtr& newOperand
     ) const {
-        return scale() * newOperand;
+        return matrixXd() * newOperand;
     }
 
-    ScalarMultiplicationExpression::ScalarMultiplicationExpression(
-        double scale,
+    TransformationExpression::TransformationExpression(
+        const MatrixXd& matrixXd,
         const ExpressionImplementationPtr& operand
     ) : UnaryOperation(operand),
-        _scale(scale) {
+        _matrixXd(matrixXd) {
+
+        assert(matrixXd.cols() == operand->numDimensions());
     }
 }

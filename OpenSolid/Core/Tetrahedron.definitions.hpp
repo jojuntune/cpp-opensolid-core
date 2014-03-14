@@ -40,6 +40,7 @@
 #include <OpenSolid/Core/Simplex/TetrahedronFaces.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/Vector.declarations.hpp>
 
 namespace opensolid
 {
@@ -148,7 +149,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Tetrahedron3d
-        operator()(const Tetrahedron3d& tetrahedron, const Vector3d& vector) const;
+        operator()(const Tetrahedron3d& tetrahedron, const Vector<double, 3>& vector) const;
     };
 
     template <>
@@ -156,7 +157,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Tetrahedron3d
-        operator()(const Tetrahedron3d& tetrahedron, const Matrix3d& matrix) const;
+        operator()(const Tetrahedron3d& tetrahedron, const Matrix<double, 3, 3>& matrix) const;
     };
 
     template <>

@@ -26,6 +26,7 @@
 
 #include <OpenSolid/Core/Component.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 #include <OpenSolid/Core/Variant/ComponentValue.hpp>
 #include <OpenSolid/Core/Variant/DoubleValue.hpp>
 #include <OpenSolid/Core/Variant/IntValue.hpp>
@@ -91,6 +92,66 @@ namespace opensolid
         return _valuePtr->toInterval();
     }
 
+    const Matrix2x2&
+    Variant::toMatrix2x2() const {
+        return _valuePtr->toMatrix2x2();
+    }
+
+    const IntervalMatrix2x2&
+    Variant::toIntervalMatrix2x2() const {
+        return _valuePtr->toIntervalMatrix2x2();
+    }
+
+    const Matrix3x3&
+    Variant::toMatrix3x3() const {
+        return _valuePtr->toMatrix3x3();
+    }
+
+    const IntervalMatrix3x3&
+    Variant::toIntervalMatrix3x3() const {
+        return _valuePtr->toIntervalMatrix3x3();
+    }
+
+    const Matrix1x2&
+    Variant::toMatrix1x2() const {
+        return _valuePtr->toMatrix1x2();
+    }
+
+    const IntervalMatrix1x2&
+    Variant::toIntervalMatrix1x2() const {
+        return _valuePtr->toIntervalMatrix1x2();
+    }
+
+    const Matrix2x1&
+    Variant::toMatrix2x1() const {
+        return _valuePtr->toMatrix2x1();
+    }
+
+    const IntervalMatrix2x1&
+    Variant::toIntervalMatrix2x1() const {
+        return _valuePtr->toIntervalMatrix2x1();
+    }
+
+    const Matrix1x3&
+    Variant::toMatrix1x3() const {
+        return _valuePtr->toMatrix1x3();
+    }
+
+    const IntervalMatrix1x3&
+    Variant::toIntervalMatrix1x3() const {
+        return _valuePtr->toIntervalMatrix1x3();
+    }
+
+    const Matrix3x1&
+    Variant::toMatrix3x1() const {
+        return _valuePtr->toMatrix3x1();
+    }
+
+    const IntervalMatrix3x1&
+    Variant::toIntervalMatrix3x1() const {
+        return _valuePtr->toIntervalMatrix3x1();
+    }
+
     const Vector2d&
     Variant::toVector2d() const {
         return _valuePtr->toVector2d();
@@ -101,132 +162,42 @@ namespace opensolid
         return _valuePtr->toVector3d();
     }
 
-    const VectorXd&
-    Variant::toVectorXd() const {
-        return _valuePtr->toVectorXd();
+    const IntervalVector2d&
+    Variant::toIntervalVector2d() const {
+        return _valuePtr->toIntervalVector2d();
     }
 
-    const Vector2I&
-    Variant::toVector2I() const {
-        return _valuePtr->toVector2I();
+    const IntervalVector3d&
+    Variant::toIntervalVector3d() const {
+        return _valuePtr->toIntervalVector3d();
     }
 
-    const Vector3I&
-    Variant::toVector3I() const {
-        return _valuePtr->toVector3I();
-    }
-
-    const VectorXI&
-    Variant::toVectorXI() const {
-        return _valuePtr->toVectorXI();
-    }
-
-    const RowVector2d&
-    Variant::toRowVector2d() const {
-        return _valuePtr->toRowVector2d();
-    }
-
-    const RowVector3d&
-    Variant::toRowVector3d() const {
-        return _valuePtr->toRowVector3d();
-    }
-
-    const RowVectorXd&
-    Variant::toRowVectorXd() const {
-        return _valuePtr->toRowVectorXd();
-    }
-
-    const RowVector2I&
-    Variant::toRowVector2I() const {
-        return _valuePtr->toRowVector2I();
-    }
-
-    const RowVector3I&
-    Variant::toRowVector3I() const {
-        return _valuePtr->toRowVector3I();
-    }
-
-    const RowVectorXI&
-    Variant::toRowVectorXI() const {
-        return _valuePtr->toRowVectorXI();
-    }
-
-    const Matrix2d&
-    Variant::toMatrix2d() const {
-        return _valuePtr->toMatrix2d();
-    }
-
-    const Matrix3d&
-    Variant::toMatrix3d() const {
-        return _valuePtr->toMatrix3d();
-    }
-
-    const Matrix2Xd&
-    Variant::toMatrix2Xd() const {
-        return _valuePtr->toMatrix2Xd();
-    }
-
-    const Matrix3Xd&
-    Variant::toMatrix3Xd() const {
-        return _valuePtr->toMatrix3Xd();
-    }
-
-    const MatrixXd&
-    Variant::toMatrixXd() const {
-        return _valuePtr->toMatrixXd();
-    }
-
-    const Matrix2I&
-    Variant::toMatrix2I() const {
-        return _valuePtr->toMatrix2I();
-    }
-
-    const Matrix3I&
-    Variant::toMatrix3I() const {
-        return _valuePtr->toMatrix3I();
-    }
-
-    const Matrix2XI&
-    Variant::toMatrix2XI() const {
-        return _valuePtr->toMatrix2XI();
-    }
-
-    const Matrix3XI&
-    Variant::toMatrix3XI() const {
-        return _valuePtr->toMatrix3XI();
-    }
-
-    const MatrixXI&
-    Variant::toMatrixXI() const {
-        return _valuePtr->toMatrixXI();
-    }
-
-    const Point<2>&
+    const Point2d&
     Variant::toPoint2d() const {
         return _valuePtr->toPoint2d();
     }
 
-    const Point<3>&
+    const Point3d&
     Variant::toPoint3d() const {
         return _valuePtr->toPoint3d();
     }
 
-    const Box<2>&
+    const Box2d&
     Variant::toBox2d() const {
         return _valuePtr->toBox2d();
     }
 
-    const Box<3>&
+    const Box3d&
     Variant::toBox3d() const {
         return _valuePtr->toBox3d();
     }
 
-    const Axis<2>&
+    const Axis2d&
     Variant::toAxis2d() const {
         return _valuePtr->toAxis2d();
     }
 
-    const Axis<3>&
+    const Axis3d&
     Variant::toAxis3d() const {
         return _valuePtr->toAxis3d();
     }
@@ -236,47 +207,47 @@ namespace opensolid
         return _valuePtr->toPlane3d();
     }
 
-    const CoordinateSystem<2, 1>&
+    const AxialCoordinateSystem2d&
     Variant::toAxialCoordinateSystem2d() const {
         return _valuePtr->toAxialCoordinateSystem2d();
     }
 
-    const CoordinateSystem<3, 1>&
+    const AxialCoordinateSystem3d&
     Variant::toAxialCoordinateSystem3d() const {
         return _valuePtr->toAxialCoordinateSystem3d();
     }
 
-    const CoordinateSystem<3, 2>&
+    const PlanarCoordinateSystem3d&
     Variant::toPlanarCoordinateSystem3d() const {
         return _valuePtr->toPlanarCoordinateSystem3d();
     }
 
-    const CoordinateSystem<2, 2>&
+    const CoordinateSystem2d&
     Variant::toCoordinateSystem2d() const {
         return _valuePtr->toCoordinateSystem2d();
     }
 
-    const CoordinateSystem<3, 3>&
+    const CoordinateSystem3d&
     Variant::toCoordinateSystem3d() const {
         return _valuePtr->toCoordinateSystem3d();
     }
 
-    const LineSegment<2>&
+    const LineSegment2d&
     Variant::toLineSegment2d() const {
         return _valuePtr->toLineSegment2d();
     }
 
-    const LineSegment<3>&
+    const LineSegment3d&
     Variant::toLineSegment3d() const {
         return _valuePtr->toLineSegment3d();
     }
 
-    const Triangle<2>&
+    const Triangle2d&
     Variant::toTriangle2d() const {
         return _valuePtr->toTriangle2d();
     }
 
-    const Triangle<3>&
+    const Triangle3d&
     Variant::toTriangle3d() const {
         return _valuePtr->toTriangle3d();
     }

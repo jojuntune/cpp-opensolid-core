@@ -10,22 +10,6 @@
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
     )
-
-    # Add custom eigen_patch step to copy updated plugin headers into the Eigen
-    # extraction directory if the plugin headers change. This will also trigger
-    # a recompile of all targets that depend on Eigen (i.e., everything)
-    externalproject_add_step(
-        eigen_sources
-        eigen_patch
-        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/patch.cmake
-        DEPENDEES download
-        DEPENDS
-        ${CMAKE_CURRENT_SOURCE_DIR}/DenseBasePlugin.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/MatrixBasePlugin.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/MatrixPlugin.hpp
-        WORKING_DIRECTORY
-        ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources
-    )
     
     # Store location of Eigen root include directory
     set(EIGEN_ROOT ${CMAKE_CURRENT_BINARY_DIR}/src/eigen_sources)

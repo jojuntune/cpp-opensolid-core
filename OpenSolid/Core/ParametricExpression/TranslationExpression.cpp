@@ -22,99 +22,90 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include <OpenSolid/Core/ParametricExpression/LinearExpression.hpp>
+#include <OpenSolid/Core/ParametricExpression/TranslationExpression.hpp>
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
 
 namespace opensolid
-{
+{   
     int
-    LinearExpression::numDimensionsImpl() const {
-        return basisMatrix().rows();
-    }
-
-    int
-    LinearExpression::numParametersImpl() const {
-        return basisMatrix().cols();
+    TranslationExpression::numDimensionsImpl() const {
+        return columnMatrixXd().rows();
     }
     
     void
-    LinearExpression::evaluateImpl(
+    TranslationExpression::evaluateImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = (basisMatrix() * parameterValues).colwise() + originPoint();
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
+        results = operandValues.colwise() + columnMatrixXd();
     }
     
     void
-    LinearExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+    TranslationExpression::evaluateImpl(
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = (basisMatrix().cast<Interval>() * parameterBounds).colwise() +
-            originPoint().cast<Interval>();
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
+        results = operandBounds.colwise() + columnMatrixXd().cast<Interval>();
     }
 
     void
-    LinearExpression::evaluateJacobianImpl(
+    TranslationExpression::evaluateJacobianImpl(
         const MapXcd& parameterValues,
         MapXd& results,
         Evaluator& evaluator
     ) const {
-        results = basisMatrix();
+        results = evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     void
-    LinearExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+    TranslationExpression::evaluateJacobianImpl(
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = basisMatrix().cast<Interval>();
+        results = evaluator.evaluateJacobian(operand(), parameterValues);
     }
-
+    
     ExpressionImplementationPtr
-    LinearExpression::derivativeImpl(int parameterIndex) const {
-        return new ConstantExpression(basisMatrix().col(parameterIndex), numParameters());
+    TranslationExpression::derivativeImpl(int parameterIndex) const {
+        return operand()->derivative(parameterIndex);
     }
-    
+
     bool
-    LinearExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        const LinearExpression* otherLinearPtr = other->cast<LinearExpression>();
-
-        return (this->originPoint() - otherLinearPtr->originPoint()).isZero() &&
-            (this->basisMatrix() - otherLinearPtr->basisMatrix()).isZero();
+    TranslationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
+        return duplicateOperands(other) &&
+            (columnMatrixXd() - other->cast<TranslationExpression>()->columnMatrixXd()).isZero();
     }
 
     ExpressionImplementationPtr
-    LinearExpression::deduplicatedImpl(DeduplicationCache& deduplicationCache) const {
-        return this;
-    }
-
-    ExpressionImplementationPtr
-    LinearExpression::scalarMultiplicationImpl(double scale) const {
-        return new LinearExpression(scale * originPoint(), scale * basisMatrix());
-    }
-    
-    ExpressionImplementationPtr
-    LinearExpression::matrixMultiplicationImpl(const MatrixXd& matrix) const {
-        return new LinearExpression(matrix * originPoint(), matrix * basisMatrix());
-    }
-
-    ExpressionImplementationPtr
-    LinearExpression::vectorAdditionImpl(const VectorXd& vector) const {
-        return new LinearExpression(originPoint() + vector, basisMatrix());
+    TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrixXd) const {
+        return operand() + (this->columnMatrixXd() + columnMatrixXd);
     }
     
     void
-    LinearExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "LinearExpression" << std::endl;
+    TranslationExpression::debugImpl(std::ostream& stream, int indent) const {
+        stream << "TranslationExpression" << std::endl;
+        operand()->debug(stream, indent + 1);
     }
-    
-    LinearExpression::LinearExpression(const VectorXd& originPoint, const MatrixXd& basisMatrix) :
-        _originPoint(originPoint),
-        _basisMatrix(basisMatrix) {
+
+    ExpressionImplementationPtr
+    TranslationExpression::withNewOperandImpl(
+        const ExpressionImplementationPtr& newOperand
+    ) const {
+        return newOperand + columnMatrixXd();
+    }
+
+    TranslationExpression::TranslationExpression(
+        const ExpressionImplementationPtr& operand,
+        const ColumnMatrixXd& columnMatrixXd
+    ) : UnaryOperation(operand),
+        _columnMatrixXd(columnMatrixXd) {
+
+        assert(columnMatrixXd.size() == operand->numDimensions());
     }
 }

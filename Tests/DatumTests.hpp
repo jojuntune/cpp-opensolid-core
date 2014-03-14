@@ -58,12 +58,12 @@ public:
     void testAxisTriangleIntersection3d() {
         Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
         Axis3d intersectionAxis(Point3d::Origin(), Vector3d(1, 1, 1).normalized());
-        Axis3d missingAxis(Point3d(0, -1, 0), Vector3d::UnitZ());
+        Axis3d missingAxis(Point3d(0, -1, 0), UnitVector3d::Z());
         Axis3d offsetAxis(Point3d(1, 1, 1), Vector3d(1, -1, 0).normalized());
         Axis3d overlappingAxis(Point3d(0.5, 0.5, 0), Vector3d(0, -1, 1).normalized());
         Axis3d edgeCoincidentAxis(Point3d(0, 0, 1), Vector3d(1, 0, -1).normalized());
         Axis3d edgeIntersectionAxis(Point3d::Origin(), Vector3d(1, 1, 0).normalized());
-        Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), Vector3d::UnitX());
+        Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), UnitVector3d::X());
 
         auto intersection = intersectionAxis.intersection(triangle);
         TS_ASSERT(intersection.exists());

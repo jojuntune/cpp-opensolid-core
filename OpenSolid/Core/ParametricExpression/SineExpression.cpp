@@ -49,11 +49,11 @@ namespace opensolid
     
     void
     SineExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterBounds).array().sin();
+        results = evaluator.evaluate(operand(), parameterValues).array().sin();
     }
 
     void
@@ -69,12 +69,12 @@ namespace opensolid
     
     void
     SineExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = cos(operandBounds) * operandJacobian;
     }
 

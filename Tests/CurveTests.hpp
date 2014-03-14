@@ -50,12 +50,15 @@ public:
         Point3d endPoint(1, -1, 1);
         ParametricCurve3d arc = ParametricCurve3d::Arc(
             centerPoint,
-            Vector3d::UnitZ(),
+            UnitVector3d::Z(),
             startPoint,
             endPoint
         );
 
-        RowVectorXd parameterValues = RowVectorXd::LinSpaced(13, Interval::Unit());
+        std::vector<double> parameterValues(13);
+        for (int i = 0; i < 13; ++i) {
+            parameterValues[i] = i / 12.0;
+        }
 
         TS_ASSERT((arc.evaluate(0.0) - Point3d(3, 1, 1)).isZero());
         TS_ASSERT((arc.evaluate(1.0 / 3.0) - Point3d(1, 3, 1)).isZero());
@@ -63,44 +66,43 @@ public:
         
         ParametricExpression<3, 1> derivative = arc.expression().derivative();
         double derivativeMagnitude = 3 * M_PI;
-        TS_ASSERT((derivative.evaluate(0.0) -  Vector3d(0, derivativeMagnitude, 0)).isZero());
-        TS_ASSERT((derivative.evaluate(1.0 / 3.0) - Vector3d(-derivativeMagnitude, 0, 0)).isZero());
-        TS_ASSERT((derivative.evaluate(2.0 / 3.0) - Vector3d(0, -derivativeMagnitude, 0)).isZero());
-        TS_ASSERT((derivative.evaluate(1.0) - Vector3d(derivativeMagnitude, 0, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(0) -  Matrix3x1(0, derivativeMagnitude, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(1 / 3.0) - Matrix3x1(-derivativeMagnitude, 0, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(2 / 3.0) - Matrix3x1(0, -derivativeMagnitude, 0)).isZero());
+        TS_ASSERT((derivative.evaluate(1) - Matrix3x1(derivativeMagnitude, 0, 0)).isZero());
         
-        ParametricExpression<3, 1> tangent = arc.expression().tangentVector();
-        TS_ASSERT((tangent.evaluate(0.0) - Vector3d(0, 1, 0)).isZero());
-        TS_ASSERT((tangent.evaluate(1.0 / 3.0) - Vector3d(-1, 0, 0)).isZero());
-        TS_ASSERT((tangent.evaluate(2.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
-        TS_ASSERT((tangent.evaluate(1.0) - Vector3d(1, 0, 0)).isZero());
+        ParametricExpression<3, 1> tangent = arc.tangentVector();
+        TS_ASSERT((tangent.evaluate(0) - Matrix3x1(0, 1, 0)).isZero());
+        TS_ASSERT((tangent.evaluate(1 / 3.0) - Matrix3x1(-1, 0, 0)).isZero());
+        TS_ASSERT((tangent.evaluate(2 / 3.0) - Matrix3x1(0, -1, 0)).isZero());
+        TS_ASSERT((tangent.evaluate(1) - Matrix3x1(1, 0, 0)).isZero());
         
         ParametricExpression<3, 1> secondDerivative =
             arc.expression().derivative().derivative();
         double secondDerivativeMagnitude = 4.5 * M_PI * M_PI;
-        Vector3d expectedValue;
+        Matrix3x1 expectedValue;
         
-        expectedValue = Vector3d(-secondDerivativeMagnitude, 0, 0);
+        expectedValue = Matrix3x1(-secondDerivativeMagnitude, 0, 0);
         TS_ASSERT((secondDerivative.evaluate(0.0) - expectedValue).isZero());
         
-        expectedValue = Vector3d(0, -secondDerivativeMagnitude, 0);
+        expectedValue = Matrix3x1(0, -secondDerivativeMagnitude, 0);
         TS_ASSERT((secondDerivative.evaluate(1.0 / 3.0) - expectedValue).isZero());
         
-        expectedValue = Vector3d(secondDerivativeMagnitude, 0, 0);
+        expectedValue = Matrix3x1(secondDerivativeMagnitude, 0, 0);
         TS_ASSERT((secondDerivative.evaluate(2.0 / 3.0) - expectedValue).isZero());
         
-        expectedValue = Vector3d(0, secondDerivativeMagnitude, 0);
+        expectedValue = Matrix3x1(0, secondDerivativeMagnitude, 0);
         TS_ASSERT((secondDerivative.evaluate(1.0) - expectedValue).isZero());
         
-        ParametricExpression<3, 1> normal =
-            arc.expression().tangentVector().tangentVector();
-        TS_ASSERT((normal.evaluate(0.0) - Vector3d(-1, 0, 0)).isZero());
-        TS_ASSERT((normal.evaluate(1.0 / 3.0) - Vector3d(0, -1, 0)).isZero());
-        TS_ASSERT((normal.evaluate(2.0 / 3.0) - Vector3d(1, 0, 0)).isZero());
-        TS_ASSERT((normal.evaluate(1.0) - Vector3d(0, 1, 0)).isZero());
+        ParametricExpression<3, 1> normal = arc.normalVector();
+        TS_ASSERT((normal.evaluate(0.0) - Matrix3x1(-1, 0, 0)).isZero());
+        TS_ASSERT((normal.evaluate(1.0 / 3.0) - Matrix3x1(0, -1, 0)).isZero());
+        TS_ASSERT((normal.evaluate(2.0 / 3.0) - Matrix3x1(1, 0, 0)).isZero());
+        TS_ASSERT((normal.evaluate(1.0) - Matrix3x1(0, 1, 0)).isZero());
     }
 
     void testFullArc() {
-        Axis3d axis(Point3d(0, 3, 3), Vector3d::UnitX());
+        Axis3d axis(Point3d(0, 3, 3), UnitVector3d::X());
         Point3d point(1, 3, 1);
         ParametricCurve3d arc = ParametricCurve3d::Arc(axis, point, point);
 
@@ -114,18 +116,36 @@ public:
             ParametricExpression<3, 1>::FromComponents(t, t.squared(), 0.0);
         ParametricCurve3d parabola(expression, Interval(-2, 2));
 
-        Vector3d tangentVector = expression.tangentVector().evaluate(1.0);
-        double curvature = expression.curvature().evaluate(1.0).value();
-        Vector3d normalVector = expression.normalVector().evaluate(1.0);
-        Vector3d binormalVector = expression.binormalVector().evaluate(1.0);
+        Matrix3x1 tangentVector = parabola.tangentVector().evaluate(1.0);
+        double curvature = parabola.curvature().evaluate(1.0).value();
+        Matrix3x1 normalVector = parabola.normalVector().evaluate(1.0);
+        Matrix3x1 binormalVector = parabola.binormalVector().evaluate(1.0);
 
-        TS_ASSERT((tangentVector - Vector3d(1, 2, 0).normalized()).isZero());
+        TS_ASSERT((tangentVector - Vector3d(1, 2, 0).normalized().components()).isZero());
         TS_ASSERT(curvature - 2 / (5 * sqrt(5.0)) == Zero());
-        TS_ASSERT((normalVector - Vector3d(-2, 1, 0).normalized()).isZero());
-        TS_ASSERT((binormalVector - Vector3d::UnitZ()).isZero());
+        TS_ASSERT((normalVector - Vector3d(-2, 1, 0).normalized().components()).isZero());
+        TS_ASSERT((binormalVector - Matrix3x1(0, 0, 1)).isZero());
 
         ParametricCurve3d reversed = parabola.reversed();
         TS_ASSERT((reversed.evaluate(-1.0) - Point3d(1, 1, 0)).isZero());
         TS_ASSERT((reversed.evaluate(1.0) - Point3d(-1, 1, 0)).isZero());
+    }
+
+    void testMultiEvaluation() {
+        ParametricCurve2d arc = ParametricCurve2d::Arc(
+            Point2d::Origin(),
+            ParametricCurve2d::COUNTERCLOCKWISE,
+            Point2d(1, 0),
+            Point2d(0, 1)
+        );
+        std::vector<double> parameterValues(3);
+        parameterValues[0] = 0.0;
+        parameterValues[1] = 0.5;
+        parameterValues[2] = 1.0;
+        std::vector<Point2d> points = arc.evaluate(parameterValues);
+
+        TS_ASSERT((points[0] - Point2d(1, 0)).isZero());
+        TS_ASSERT((points[1] - Point2d(1 / sqrt(2.0), 1 / sqrt(2.0))).isZero());
+        TS_ASSERT((points[2] - Point2d(0, 1)).isZero());
     }
 };

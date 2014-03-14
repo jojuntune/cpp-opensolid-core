@@ -30,11 +30,11 @@
 
 namespace opensolid
 {
-    class ScalarMultiplicationExpression :
+    class TranslationExpression :
         public UnaryOperation
     {
     private:
-        double _scale;
+        ColumnMatrixXd _columnMatrixXd;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -51,7 +51,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -67,7 +67,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const MapXcI& parameterBounds,
+            const MapXcI& parameterValues,
             MapXI& results,
             Evaluator& evaluator
         ) const override;
@@ -82,11 +82,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        scalarMultiplicationImpl(double scale) const override;
-
-        OPENSOLID_CORE_EXPORT
-        ExpressionImplementationPtr
-        matrixMultiplicationImpl(const MatrixXd& matrix) const override;
+        translationImpl(const ColumnMatrixXd& columnMatrixXd) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -97,10 +93,13 @@ namespace opensolid
         withNewOperandImpl(const ExpressionImplementationPtr& newOperand) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        ScalarMultiplicationExpression(double scale, const ExpressionImplementationPtr& operand);
+        TranslationExpression(
+            const ExpressionImplementationPtr& operand,
+            const ColumnMatrixXd& columnMatrixXd
+        );
 
-        double
-        scale() const;
+        const ColumnMatrixXd&
+        columnMatrixXd() const;
     };
 }
 
@@ -109,8 +108,8 @@ namespace opensolid
 namespace opensolid
 {
     inline
-    double
-    ScalarMultiplicationExpression::scale() const {
-        return _scale;
+    const ColumnMatrixXd&
+    TranslationExpression::columnMatrixXd() const {
+        return _columnMatrixXd;
     }
 }

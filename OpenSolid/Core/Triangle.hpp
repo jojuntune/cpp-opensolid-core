@@ -119,29 +119,29 @@ namespace opensolid
         );
     }
 
-    template <int iNumDimensions> template <class TVector>
+    template <int iNumDimensions>
     Triangle<iNumDimensions>
     TranslationFunction<Triangle<iNumDimensions>>::operator()(
         const Triangle<iNumDimensions>& triangle,
-        const EigenBase<TVector>& vector
+        const Vector<double, iNumDimensions>& vector
     ) const {
         return Triangle<iNumDimensions>(
-            translationFunction(triangle.vertex(0), vector.derived()),
-            translationFunction(triangle.vertex(1), vector.derived()),
-            translationFunction(triangle.vertex(2), vector.derived())
+            translationFunction(triangle.vertex(0), vector),
+            translationFunction(triangle.vertex(1), vector),
+            translationFunction(triangle.vertex(2), vector)
         );
     }
 
-    template <int iNumDimensions, int iNumResultDimensions> template <class TMatrix>
+    template <int iNumDimensions, int iNumResultDimensions>
     Triangle<iNumResultDimensions>
     TransformationFunction<Triangle<iNumDimensions>, iNumResultDimensions>::operator()(
         const Triangle<iNumDimensions>& triangle,
-        const EigenBase<TMatrix>& matrix
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
     ) const {
         return Triangle<iNumResultDimensions>(
-            transformationFunction(triangle.vertex(0), matrix.derived()),
-            transformationFunction(triangle.vertex(1), matrix.derived()),
-            transformationFunction(triangle.vertex(2), matrix.derived())
+            transformationFunction(triangle.vertex(0), matrix),
+            transformationFunction(triangle.vertex(1), matrix),
+            transformationFunction(triangle.vertex(2), matrix)
         );
     }
 

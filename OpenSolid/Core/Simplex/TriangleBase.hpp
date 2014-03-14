@@ -90,7 +90,7 @@ namespace opensolid
         Point<iNumDimensions>
         TriangleBase<iNumDimensions>::centroid() const {
             return Point<iNumDimensions>(
-                (vertex(0).vector() + vertex(1).vector() + vertex(2).vector()) / 3.0
+                (vertex(0).components() + vertex(1).components() + vertex(2).components()) / 3.0
             );
         }
 

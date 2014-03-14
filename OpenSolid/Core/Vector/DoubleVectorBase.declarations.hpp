@@ -29,5 +29,5 @@
 namespace opensolid
 {
     template <int iNumDimensions>
-    class IntervalVector;
+    class DoubleVectorBase;
 }

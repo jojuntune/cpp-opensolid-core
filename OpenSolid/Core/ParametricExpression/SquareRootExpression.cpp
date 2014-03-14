@@ -62,11 +62,11 @@ namespace opensolid
     
     void
     SquareRootExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(SquareRoot());
+        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(SquareRoot());
     }
 
     void
@@ -85,15 +85,15 @@ namespace opensolid
     
     void
     SquareRootExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
         if (operandBounds <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = Interval(0.5) * operandJacobian / sqrt(operandBounds);
     }
 

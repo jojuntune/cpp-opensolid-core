@@ -24,21 +24,17 @@
 
 #include <OpenSolid/Core/Mirror.hpp>
 
+#include <OpenSolid/Core/UnitVector.hpp>
+
 namespace opensolid
 {
     namespace
     {
-        template <class TDerived>
-        Matrix<double, TDerived::RowsAtCompileTime, TDerived::RowsAtCompileTime>
-        mirrorTransformationMatrix(const EigenBase<TDerived>& normalVector) {
-            typedef Matrix<
-                double,
-                TDerived::RowsAtCompileTime,
-                TDerived::RowsAtCompileTime
-            > MatrixType;
-            
-            return MatrixType::Identity() -
-                2 * normalVector.derived() * normalVector.derived().transpose();
+        template <int iNumDimensions>
+        Matrix<double, iNumDimensions, iNumDimensions>
+        mirrorTransformationMatrix(const UnitVector<iNumDimensions>& normalVector) {
+            return Matrix<double, iNumDimensions, iNumDimensions>::Identity() -
+                2 * normalVector.components() * normalVector.components().transpose();
         }
     }
 

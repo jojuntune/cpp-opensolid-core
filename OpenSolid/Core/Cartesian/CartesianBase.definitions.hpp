@@ -26,7 +26,7 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Vector/CartesianBase.declarations.hpp>
+#include <OpenSolid/Core/Cartesian/CartesianBase.declarations.hpp>
 
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
@@ -38,18 +38,18 @@ namespace opensolid
         class CartesianBase
         {
         private:
-            typename MatrixType<TScalar, iNumDimensions, 1>::Type _components;
+            Matrix<TScalar, iNumDimensions, 1> _components;
         protected:
             CartesianBase();
 
-            CartesianBase(const typename MatrixType<TScalar, iNumDimensions, 1>::Type& components);
+            CartesianBase(const Matrix<TScalar, iNumDimensions, 1>& components);
 
             CartesianBase(const TScalar* sourcePtr);
         public:
-            const typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+            const Matrix<TScalar, iNumDimensions, 1>&
             components() const;
 
-            typename MatrixType<TScalar, iNumDimensions, 1>::Type&
+            Matrix<TScalar, iNumDimensions, 1>&
             components();
 
             const TScalar*
@@ -58,17 +58,41 @@ namespace opensolid
             TScalar*
             data();
 
-            const TScalar
+            TScalar
             component(std::int64_t index) const;
 
             TScalar&
-            component(std::int64_t index) const;
+            component(std::int64_t index);
 
-            const TScalar
+            TScalar
             operator()(std::int64_t index) const;
 
             TScalar&
-            operator()(std::int64_t index) const;
+            operator()(std::int64_t index);
+            
+            TScalar
+            value() const;
+
+            TScalar&
+            value();
+
+            TScalar
+            x() const;
+
+            TScalar&
+            x();
+
+            TScalar
+            y() const;
+
+            TScalar&
+            y();
+
+            TScalar
+            z() const;
+
+            TScalar&
+            z();
         };
     }
 }

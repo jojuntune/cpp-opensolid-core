@@ -62,8 +62,8 @@ namespace opensolid
     {
     private:
         Point<iNumDimensions> _originPoint;
-        Matrix<iNumDimensions, iNumAxes> _basisMatrix;
-        Matrix<iNumAxes, iNumDimensions> _inverseMatrix;
+        Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
+        Matrix<double, iNumAxes, iNumDimensions> _inverseMatrix;
     public:
         CoordinateSystem();
 
@@ -72,25 +72,25 @@ namespace opensolid
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Matrix<iNumDimensions, iNumAxes>& basisMatrix
+            const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix
         );
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Vector<iNumDimensions>& basisVector
+            const Vector<double, iNumDimensions>& basisVector
         );
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Vector<iNumDimensions>& xBasisVector,
-            const Vector<iNumDimensions>& yBasisVector
+            const Vector<double, iNumDimensions>& xBasisVector,
+            const Vector<double, iNumDimensions>& yBasisVector
         );
 
         CoordinateSystem(
             const Point<iNumDimensions>& originPoint,
-            const Vector<iNumDimensions>& xBasisVector,
-            const Vector<iNumDimensions>& yBasisVector,
-            const Vector<iNumDimensions>& zBasisVector
+            const Vector<double, iNumDimensions>& xBasisVector,
+            const Vector<double, iNumDimensions>& yBasisVector,
+            const Vector<double, iNumDimensions>& zBasisVector
         );
         
         const Point<iNumDimensions>&
@@ -99,79 +99,79 @@ namespace opensolid
         const Matrix<double, iNumDimensions, iNumAxes>&
         basisMatrix() const;
         
-        const Matrix<double, iNumDimensions, iNumAxes>&
+        const Vector<double, iNumDimensions>
         basisVector() const;
         
         const Matrix<double, iNumAxes, iNumDimensions>&
         inverseMatrix() const;
         
-        Point<iNumDimensions>
+        const Point<iNumDimensions>
         point(double x) const;
         
-        Point<iNumDimensions>
+        const Point<iNumDimensions>
         point(double x, double y) const;
 
-        Point<iNumDimensions>
+        const Point<iNumDimensions>
         point(double x, double y, double z) const;
 
-        Matrix<double, iNumDimensions, 1>
+        const Vector<double, iNumDimensions>
         vector(double x) const;
         
-        Matrix<double, iNumDimensions, 1>
+        const Vector<double, iNumDimensions>
         vector(double x, double y) const;
         
-        Matrix<double, iNumDimensions, 1>
+        const Vector<double, iNumDimensions>
         vector(double x, double y, double z) const;
 
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+        const Vector<double, iNumDimensions>
         xBasisVector() const;
         
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+        const Vector<double, iNumDimensions>
         yBasisVector() const;
         
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+        const Vector<double, iNumDimensions>
         zBasisVector() const;
         
-        typename Matrix<double, iNumDimensions, iNumAxes>::ConstColXpr
+        const Vector<double, iNumDimensions>
         basisVector(int axisIndex) const;
         
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         xAxis() const;
         
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         yAxis() const;
         
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         zAxis() const;
         
-        Axis<iNumDimensions>
+        const Axis<iNumDimensions>
         axis(int axisIndex) const;
 
-        Plane3d
+        const Plane3d
         xyPlane() const;
         
-        Plane3d
+        const Plane3d
         xzPlane() const;
         
-        Plane3d
+        const Plane3d
         yxPlane() const;
         
-        Plane3d
+        const Plane3d
         yzPlane() const;
         
-        Plane3d
+        const Plane3d
         zxPlane() const;
         
-        Plane3d
+        const Plane3d
         zyPlane() const;
         
-        Plane3d
+        const Plane3d
         plane(int firstAxisIndex, int secondAxisIndex) const;
         
-        CoordinateSystem<iNumDimensions, iNumAxes>
+        const CoordinateSystem<iNumDimensions, iNumAxes>
         normalized() const;
 
-        static CoordinateSystem<iNumDimensions, iNumAxes>
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
         Global();
     };
 
@@ -187,7 +187,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     struct ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
-        CoordinateSystem<iNumDimensions, iNumAxes>
+        const CoordinateSystem<iNumDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
             double scale
@@ -197,29 +197,27 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     struct TranslationFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
-        template <class TVector>
-        CoordinateSystem<iNumDimensions, iNumAxes>
+        const CoordinateSystem<iNumDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const EigenBase<TVector>& vector
+            const Vector<double, iNumDimensions>& vector
         ) const;
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     struct TransformationFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
     {
-        template <class TMatrix>
-        CoordinateSystem<iNumResultDimensions, iNumAxes>
+        const CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const EigenBase<TMatrix>& transformationMatrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 
     template <int iNumDimensions, int iNumAxes, int iNumResultDimensions>
     struct MorphingFunction<CoordinateSystem<iNumDimensions, iNumAxes>, iNumResultDimensions>
     {
-        CoordinateSystem<iNumResultDimensions, iNumAxes>
+        const CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
             const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression

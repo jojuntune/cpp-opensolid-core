@@ -26,8 +26,63 @@
 
 #include <OpenSolid/config.hpp>
 
+#include <OpenSolid/Core/Vector/IntervalVectorVertices.definitions.hpp>
+
+#include <OpenSolid/Core/Vector.hpp>
+#include <OpenSolid/Core/LazyCollection.hpp>
+#include <OpenSolid/Core/LazyCollection/IndexIterator.hpp>
+
 namespace opensolid
 {
-    template <int iNumDimensions, int iNumParameters, class TArgument>
-    class JacobianEvaluation;
+    namespace detail
+    {
+        template <int iNumDimensions>
+        inline
+        IntervalVectorVertices<iNumDimensions>::IntervalVectorVertices(
+            const Vector<Interval, iNumDimensions>& vector
+        ) : _vector(vector) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Vector<Interval, iNumDimensions>&
+        IntervalVectorVertices<iNumDimensions>::vector() const {
+            return _vector;
+        }
+
+        template <int iNumDimensions>
+        inline
+        IndexIterator<IntervalVectorVertices<iNumDimensions>>
+        IntervalVectorVertices<iNumDimensions>::begin() const {
+            return IndexIterator<IntervalVectorVertices<iNumDimensions>>::Begin(this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        IndexIterator<IntervalVectorVertices<iNumDimensions>>
+        IntervalVectorVertices<iNumDimensions>::end() const {
+            return IndexIterator<IntervalVectorVertices<iNumDimensions>>::End(this);
+        }
+
+        template <int iNumDimensions>
+        inline
+        bool
+        IntervalVectorVertices<iNumDimensions>::isEmpty() const {
+            return false;
+        }
+
+        template <int iNumDimensions>
+        inline
+        std::int64_t
+        IntervalVectorVertices<iNumDimensions>::size() const {
+            return 1 << iNumDimensions;
+        }
+
+        template <int iNumDimensions>
+        inline
+        const Vector<double, iNumDimensions>
+        IntervalVectorVertices<iNumDimensions>::operator[](std::int64_t index) const {
+            return vector().vertex(index);
+        }
+    }
 }

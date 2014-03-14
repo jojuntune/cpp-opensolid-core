@@ -48,14 +48,14 @@ namespace opensolid
         protected:
             PointBase();
 
-            PointBase(const Matrix<iNumDimensions, 1>& components);
+            PointBase(const Matrix<double, iNumDimensions, 1>& components);
 
             PointBase(const double* sourcePtr);
         public:
-            const double
+            double
             squaredDistanceTo(const Point<iNumDimensions>& other) const;
 
-            const double
+            double
             distanceTo(const Point<iNumDimensions>& other) const;
 
             const Box<iNumDimensions>
@@ -69,6 +69,12 @@ namespace opensolid
 
             bool
             operator==(const Point<iNumDimensions>& other) const;
+
+            bool
+            operator!=(const Point<iNumDimensions>& other) const;
+
+            static const Point<iNumDimensions>
+            Origin();
         };
     }
 }

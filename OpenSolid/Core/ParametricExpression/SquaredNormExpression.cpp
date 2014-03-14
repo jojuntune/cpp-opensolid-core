@@ -44,11 +44,11 @@ namespace opensolid
     
     void
     SquaredNormExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterBounds).colwise().squaredNorm();
+        results = evaluator.evaluate(operand(), parameterValues).colwise().squaredNorm();
     }
 
     void
@@ -64,12 +64,12 @@ namespace opensolid
     
     void
     SquaredNormExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterBounds);
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterBounds);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
         results = Interval(2.0) * operandBounds.transpose() * operandJacobian;
     }
 

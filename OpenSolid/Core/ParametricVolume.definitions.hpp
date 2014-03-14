@@ -82,7 +82,7 @@ namespace opensolid
         evaluate(double u, double v, double w) const;
 
         Box<3>
-        evaluateBounds(Interval u, Interval v, Interval w) const;
+        evaluate(Interval u, Interval v, Interval w) const;
     };
 
     template <>
@@ -103,7 +103,7 @@ namespace opensolid
     struct TransformationFunction<ParametricVolume3d, 3>
     {
         ParametricVolume3d
-        operator()(const ParametricVolume3d& parametricVolume, const Matrix3d& matrix) const;
+        operator()(const ParametricVolume3d& parametricVolume, const Matrix3x3& matrix) const;
     };
 
     template <>

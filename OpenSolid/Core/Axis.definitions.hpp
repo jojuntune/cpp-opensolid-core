@@ -35,6 +35,7 @@
 #include <OpenSolid/Core/Point.definitions.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
+#include <OpenSolid/Core/UnitVector.definitions.hpp>
 
 namespace opensolid
 {
@@ -74,7 +75,7 @@ namespace opensolid
         const UnitVector<2>&
         directionVector() const;
 
-        const Vector2d
+        const UnitVector<2>
         normalVector() const;
 
         const Axis<2>
@@ -151,7 +152,10 @@ namespace opensolid
     struct TranslationFunction<Axis<iNumDimensions>>
     {
         const Axis<iNumDimensions>
-        operator()(const Axis<iNumDimensions>& axis, const Vector<iNumDimensions>& vector) const;
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Vector<double, iNumDimensions>& vector
+        ) const;
     };
 
     template <int iNumDimensions, int iNumResultDimensions>
@@ -160,7 +164,7 @@ namespace opensolid
         const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
-            const Matrix<iNumResultDimensions, iNumDimensions>& matrix
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
         ) const;
     };
 

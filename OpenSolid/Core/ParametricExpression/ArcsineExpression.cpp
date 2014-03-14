@@ -64,11 +64,11 @@ namespace opensolid
     
     void
     ArcsineExpression::evaluateImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterBounds).unaryExpr(Arcsine());
+        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arcsine());
     }
 
     void
@@ -87,12 +87,12 @@ namespace opensolid
     
     void
     ArcsineExpression::evaluateJacobianImpl(
-        const MapXcI& parameterBounds,
+        const MapXcI& parameterValues,
         MapXI& results,
         Evaluator& evaluator
     ) const {
-        MapXcI operandJacobianBounds = evaluator.evaluateJacobian(operand(), parameterBounds);
-        Interval operandBounds = evaluator.evaluate(operand(), parameterBounds).value();
+        MapXcI operandJacobianBounds = evaluator.evaluateJacobian(operand(), parameterValues);
+        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
         if (abs(operandBounds).lowerBound() - 1 >= Zero()) {
             throw Error(new PlaceholderError());
         }

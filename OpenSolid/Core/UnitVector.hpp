@@ -41,26 +41,33 @@ namespace opensolid
 
     inline
     UnitVector1d::UnitVector(double x) :
-        Vector(x) {
+        Vector1d(x) {
 
-        assert(x - 1.0 == Zero() || x + 1.0 == Zero());
+        assert(abs(x) - 1.0 == opensolid::Zero());
+    }
+
+    inline
+    UnitVector1d::UnitVector(const Matrix1x1& components) :
+        Vector1d(components) {
+
+        assert(abs(components.value()) - 1.0 == opensolid::Zero());
     }
 
     inline
     UnitVector1d::UnitVector(const Vector1d& vector) :
         Vector1d(vector) {
 
-        assert(vector.squaredNorm() - 1.0 == Zero());
+        assert(abs(vector.value()) - 1.0 == opensolid::Zero());
     }
 
     inline
-    const double
+    double
     UnitVector1d::norm() {
         return 1.0;
     }
 
     inline
-    const double
+    double
     UnitVector1d::squaredNorm() const {
         return 1.0;
     }
@@ -92,30 +99,31 @@ namespace opensolid
     UnitVector2d::UnitVector(double x, double y) :
         Vector2d(x, y) {
 
-        assert(x * x + y * y - 1.0 == Zero());
+        assert(sqrt(x * x + y * y) - 1.0 == opensolid::Zero());
     }
 
     inline
-    UnitVector2d::UnitVector() :
-        Vector2d() {
+    UnitVector2d::UnitVector(const Matrix2x1& components) :
+        Vector2d(components) {
+
+        assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
     }
 
     inline
-    explicit
     UnitVector2d::UnitVector(const Vector2d& vector) :
         Vector2d(vector) {
 
-        assert(vector.squaredNorm() - 1.0 == Zero());
+        assert(vector.norm() - 1.0 == opensolid::Zero());
     }
 
     inline
-    const double
+    double
     UnitVector2d::norm() const {
         return 1.0;
     }
 
     inline
-    const double
+    double
     UnitVector2d::squaredNorm() const {
         return 1.0;
     }
@@ -154,7 +162,7 @@ namespace opensolid
             );
             double candidateSquaredNorm = candidate.squaredNorm();
             if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return candidate / sqrt(candidateSquaredNorm);
+                return UnitVector2d(candidate / sqrt(candidateSquaredNorm));
             }
         }
     }
@@ -168,14 +176,21 @@ namespace opensolid
     UnitVector3d::UnitVector(double x, double y, double z) :
         Vector3d(x, y, z) {
 
-        assert(x * x + y * y + z * z - 1.0 == Zero());
+        assert(sqrt(x * x + y * y + z * z) - 1.0 == opensolid::Zero());
+    }
+
+    inline
+    UnitVector3d::UnitVector(const Matrix3x1& components) :
+        Vector3d(components) {
+
+        assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
     }
 
     inline
     UnitVector3d::UnitVector(const Vector3d& vector) :
         Vector3d(vector) {
 
-        assert(vector.squaredNorm() - 1.0 == Zero());
+        assert(vector.norm() - 1.0 == opensolid::Zero());
     }
 
     inline
@@ -225,7 +240,7 @@ namespace opensolid
             );
             double candidateSquaredNorm = candidate.squaredNorm();
             if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return candidate / sqrt(candidateSquaredNorm);
+                return UnitVector3d(candidate / sqrt(candidateSquaredNorm));
             }
         }
     }
@@ -246,5 +261,15 @@ namespace opensolid
     const UnitVector3d
     operator-(const UnitVector3d& unitVector) {
         return UnitVector3d(-unitVector.x(), -unitVector.y(), -unitVector.z());
+    }
+
+    template <int iNumDimensions>
+    inline
+    const UnitVector<iNumDimensions>&
+    TranslationFunction<UnitVector<iNumDimensions>>::operator()(
+        const UnitVector<iNumDimensions>& unitVector,
+        const Vector<double, iNumDimensions>& vector
+    ) const {
+        return unitVector;
     }
 }
