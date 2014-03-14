@@ -37,8 +37,10 @@
 // Disable warning C4351 (Visual Studio warning that _components array will in fact be
 // value-initialized as specified in the C++ standard; previous versions of Visual Studio did not
 // always value-initialize as required)
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4351)
+#endif
 
 namespace opensolid
 {
@@ -1035,4 +1037,6 @@ namespace opensolid
     }
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
