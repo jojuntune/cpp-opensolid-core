@@ -150,7 +150,7 @@ void triangleExamples() {
     double area = triangle.area();
     assert(area - 2.0 == Zero());
 
-    double hypotenuseLength = triangle.edge(1).length();
+    double hypotenuseLength = triangle.edge(0).length();
     assert(hypotenuseLength - 2 * sqrt(2.0) == Zero());
 
     Point3d projectedOrigin = Point3d::Origin().projectedOnto(triangle.plane());
