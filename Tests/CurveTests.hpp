@@ -109,6 +109,19 @@ public:
         TS_ASSERT((arc.evaluate(0.25) - Point3d(1, 5, 3)).isZero());
         TS_ASSERT((arc.evaluate(0.75) - Point3d(1, 1, 3)).isZero());
     }
+
+    void testArc2d() {
+        ParametricCurve2d arc2d = ParametricCurve2d::Arc(
+            Point2d(2, 1),
+            ParametricCurve2d::COUNTERCLOCKWISE,
+            Point2d(3, 1),
+            Point2d(2, 2)
+        );
+
+        TS_ASSERT((arc2d.evaluate(0.0) - Point2d(3, 1)).isZero());
+        TS_ASSERT((arc2d.evaluate(0.5) - Point2d(2 + 1 / sqrt(2.0), 1 + 1 / sqrt(2.0))).isZero());
+        TS_ASSERT((arc2d.evaluate(1.0) - Point2d(2, 2)).isZero());
+    }
     
     void testCurveOperations() {
         ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();

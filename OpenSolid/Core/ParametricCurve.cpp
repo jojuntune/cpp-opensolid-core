@@ -225,8 +225,11 @@ namespace opensolid
         const Point2d& startPoint,
         const Point2d& endPoint
     ) {
+        Vector2d startRadialVector = startPoint - centerPoint;
+        Vector2d endRadialVector = endPoint - centerPoint;
+
         // Find radius to start point
-        double startRadius = (startPoint - centerPoint).norm();
+        double startRadius = startRadialVector.norm();
         if (startRadius == Zero()) {
             // Start point is coincident with center point
             assert(false);
@@ -234,7 +237,7 @@ namespace opensolid
         }
 
         // Find radius to end point
-        double endRadius = (endPoint - centerPoint).norm();
+        double endRadius = endRadialVector.norm();
         if (endRadius == Zero()) {
             // End point is coincident with center point
             assert(false);
@@ -250,8 +253,8 @@ namespace opensolid
         double radius = startRadius + (endRadius - startRadius) / 2;
 
         // Determine start and end angles of arc, respecting the given direction
-        double startAngle = std::atan2(startPoint.y(), startPoint.x());
-        double endAngle = std::atan2(endPoint.y(), endPoint.x());
+        double startAngle = std::atan2(startRadialVector.y(), startRadialVector.x());
+        double endAngle = std::atan2(endRadialVector.y(), endRadialVector.x());
         if (direction == COUNTERCLOCKWISE && endAngle - startAngle <= Zero()) {
             endAngle += 2 * M_PI;
         } else if (direction == CLOCKWISE && endAngle - startAngle >= Zero()) {
