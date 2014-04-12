@@ -94,7 +94,7 @@ namespace opensolid
     
     void
     ScalingExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ScalingExpression" << std::endl;
+        stream << "ScalingExpression: scale = " << scale() << std::endl;
         operand()->debug(stream, indent + 1);
     }
 
