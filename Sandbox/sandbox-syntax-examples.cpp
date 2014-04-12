@@ -207,14 +207,14 @@ void spatialSetExamples() {
 void parametricExpressionExamples() {
     ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
 
-    ParametricExpression<3, 1> lineExpression = Matrix3x1(1, 1, 1) + t * Matrix3x1(1, 1, 1);
-    Matrix3x1 start = lineExpression.evaluate(0.0);
-    Matrix3x1 mid = lineExpression.evaluate(0.5);
-    Matrix3x1 end = lineExpression.evaluate(1.0);
+    ParametricExpression<3, 1> lineExpression = ColMatrix3x1::Ones() + t * ColMatrix3x1::Ones();
+    ColMatrix3x1 start = lineExpression.evaluate(0.0);
+    ColMatrix3x1 mid = lineExpression.evaluate(0.5);
+    ColMatrix3x1 end = lineExpression.evaluate(1.0);
 
-    assert((start - Matrix3x1(1, 1, 1)).isZero());
-    assert((mid - Matrix3x1(1.5, 1.5, 1.5)).isZero());
-    assert((end - Matrix3x1(2, 2, 2)).isZero());
+    assert((start - ColMatrix3x1::Ones()).isZero());
+    assert((mid - ColMatrix3x1::Constant(1.5)).isZero());
+    assert((end - ColMatrix3x1::Constant(2)).isZero());
 
     ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
     ParametricExpression<1, 1> cosineExpression = cos(t);

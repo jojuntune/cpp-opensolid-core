@@ -52,6 +52,24 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        DoubleVectorBase<iNumDimensions>::DoubleVectorBase(double value) :
+            VectorBase<double, iNumDimensions>(value) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        DoubleVectorBase<iNumDimensions>::DoubleVectorBase(double x, double y) :
+            VectorBase<double, iNumDimensions>(x, y) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        DoubleVectorBase<iNumDimensions>::DoubleVectorBase(double x, double y, double z) :
+            VectorBase<double, iNumDimensions>(x, y, z) {
+        }
+
+        template <int iNumDimensions>
+        inline
         DoubleVectorBase<iNumDimensions>::DoubleVectorBase(
             const Matrix<double, iNumDimensions, 1>& components
         ) : VectorBase<double, iNumDimensions>(components) {

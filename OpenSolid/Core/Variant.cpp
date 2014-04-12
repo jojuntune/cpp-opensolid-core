@@ -112,44 +112,44 @@ namespace opensolid
         return _valuePtr->toIntervalMatrix3x3();
     }
 
-    const Matrix1x2&
-    Variant::toMatrix1x2() const {
-        return _valuePtr->toMatrix1x2();
+    const RowMatrix1x2&
+    Variant::toRowMatrix1x2() const {
+        return _valuePtr->toRowMatrix1x2();
     }
 
-    const IntervalMatrix1x2&
-    Variant::toIntervalMatrix1x2() const {
-        return _valuePtr->toIntervalMatrix1x2();
+    const IntervalRowMatrix1x2&
+    Variant::toIntervalRowMatrix1x2() const {
+        return _valuePtr->toIntervalRowMatrix1x2();
     }
 
-    const Matrix2x1&
-    Variant::toMatrix2x1() const {
-        return _valuePtr->toMatrix2x1();
+    const ColMatrix2x1&
+    Variant::toColMatrix2x1() const {
+        return _valuePtr->toColMatrix2x1();
     }
 
-    const IntervalMatrix2x1&
-    Variant::toIntervalMatrix2x1() const {
-        return _valuePtr->toIntervalMatrix2x1();
+    const IntervalColMatrix2x1&
+    Variant::toIntervalColMatrix2x1() const {
+        return _valuePtr->toIntervalColMatrix2x1();
     }
 
-    const Matrix1x3&
-    Variant::toMatrix1x3() const {
-        return _valuePtr->toMatrix1x3();
+    const RowMatrix1x3&
+    Variant::toRowMatrix1x3() const {
+        return _valuePtr->toRowMatrix1x3();
     }
 
-    const IntervalMatrix1x3&
-    Variant::toIntervalMatrix1x3() const {
-        return _valuePtr->toIntervalMatrix1x3();
+    const IntervalRowMatrix1x3&
+    Variant::toIntervalRowMatrix1x3() const {
+        return _valuePtr->toIntervalRowMatrix1x3();
     }
 
-    const Matrix3x1&
-    Variant::toMatrix3x1() const {
-        return _valuePtr->toMatrix3x1();
+    const ColMatrix3x1&
+    Variant::toColMatrix3x1() const {
+        return _valuePtr->toColMatrix3x1();
     }
 
-    const IntervalMatrix3x1&
-    Variant::toIntervalMatrix3x1() const {
-        return _valuePtr->toIntervalMatrix3x1();
+    const IntervalColMatrix3x1&
+    Variant::toIntervalColMatrix3x1() const {
+        return _valuePtr->toIntervalColMatrix3x1();
     }
 
     const Vector2d&

@@ -47,6 +47,12 @@ namespace opensolid
         protected:
             DoubleVectorBase();
 
+            DoubleVectorBase(double value);
+
+            DoubleVectorBase(double x, double y);
+
+            DoubleVectorBase(double x, double y, double z);
+
             DoubleVectorBase(const Matrix<double, iNumDimensions, 1>& components);
 
             DoubleVectorBase(const double* sourcePtr);

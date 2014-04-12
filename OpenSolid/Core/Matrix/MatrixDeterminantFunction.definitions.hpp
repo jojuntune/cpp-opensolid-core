@@ -22,40 +22,60 @@
 *                                                                                   *
 ************************************************************************************/
 
+#pragma once
+
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/Matrix/MatrixDeterminantFunction.declarations.hpp>
 
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Matrix/MatrixInterface.declarations.hpp>
 
 namespace opensolid
 {
-    double
-    Triangle2d::area() const {
-        Matrix2x2 matrix;
-        matrix.col(0) = vertex(1).components() - vertex(0).components();
-        matrix.col(1) = vertex(2).components() - vertex(0).components();
-        return matrix.determinant() / 2.0;
-    }
+    namespace detail
+    {
+        template <>
+        struct MatrixDeterminantFunction<1, 1>
+        {
+            template <class TDerived>
+            typename MatrixTraits<TDerived>::ScalarType
+            operator()(const MatrixInterface<TDerived>& matrix) const;
+        };
 
-    Triangle2d
-    Triangle2d::Unit() {
-        return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
-    }
+        template <>
+        struct MatrixDeterminantFunction<2, 2>
+        {
+            template <class TDerived>
+            typename MatrixTraits<TDerived>::ScalarType
+            operator()(const MatrixInterface<TDerived>& matrix) const;
+        };
 
-    double
-    Triangle3d::area() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
-    }
+        template <>
+        struct MatrixDeterminantFunction<3, 3>
+        {
+            template <class TDerived>
+            typename MatrixTraits<TDerived>::ScalarType
+            operator()(const MatrixInterface<TDerived>& matrix) const;
+        };
 
-    UnitVector3d
-    Triangle3d::normalVector() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
-    }
+        template <int iRows>
+        struct MatrixDeterminantFunction<iRows, -1> :
+            public MatrixDeterminantFunction<iRows, iRows>
+        {
+        };
 
-    Plane3d
-    Triangle3d::plane() const {
-        return Plane3d(vertex(0), normalVector());
+        template <int iCols>
+        struct MatrixDeterminantFunction<-1, iCols> :
+            public MatrixDeterminantFunction<iCols, iCols>
+        {
+        };
+
+        template <>
+        struct MatrixDeterminantFunction<-1, -1>
+        {
+            template <class TDerived>
+            typename MatrixTraits<TDerived>::ScalarType
+            operator()(const MatrixInterface<TDerived>& matrix) const;
+        };
     }
 }

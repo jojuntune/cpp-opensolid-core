@@ -28,6 +28,8 @@
 
 #include <OpenSolid/Core/Matrix/MatrixStorage.definitions.hpp>
 
+#include <cassert>
+
 // Disable warning C4351 (Visual Studio warning that _data array will in fact be value-initialized
 // as specified in the C++ standard; previous versions of Visual Studio did not always
 // value-initialize as required)
@@ -40,32 +42,40 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TScalar, int iRows, int iCols>
         inline
-        MatrixStorage<TScalar, iNumRows, iNumColumns>::MatrixStorage(std::size_t size) :
+        MatrixStorage<TScalar, iRows, iCols>::MatrixStorage() :
             _data() {
-
-            assert(size == iNumRows * iNumColumns);
         }
 
-        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TScalar, int iRows, int iCols>
+        inline
+        MatrixStorage<TScalar, iRows, iCols>::MatrixStorage(int size) :
+            _data() {
+
+            assert(size == iRows * iCols);
+        }
+
+        template <class TScalar, int iRows, int iCols>
         inline
         TScalar*
-        MatrixStorage<TScalar, iNumRows, iNumColumns>::data() {
+        MatrixStorage<TScalar, iRows, iCols>::data() {
             return _data;
         }
 
-        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TScalar, int iRows, int iCols>
         inline
         const TScalar*
-        MatrixStorage<TScalar, iNumRows, iNumColumns>::data() {
+        MatrixStorage<TScalar, iRows, iCols>::data() const {
             return _data;
         }
 
         template <class TScalar>
         inline
-        DynamicMatrixStorage<TScalar>::DynamicMatrixStorage(std::size_t size) :
-            _data(size) {
+        DynamicMatrixStorage<TScalar>::DynamicMatrixStorage(int size) :
+            _data(std::size_t(size)) {
+
+            assert(size > 0);
         }
 
         template <class TScalar>
@@ -82,26 +92,33 @@ namespace opensolid
             return _data.data();
         }
 
-        template <class TScalar, int iNumRows>
+        template <class TScalar, int iRows>
         inline
-        MatrixStorage<TScalar, iNumRows, -1>::MatrixStorage(std::size_t size) :
+        MatrixStorage<TScalar, iRows, -1>::MatrixStorage(int size) :
             DynamicMatrixStorage<TScalar>(size) {
+
+            assert(size > 0);
         }
 
-        template <class TScalar, int iNumColumns>
+        template <class TScalar, int iCols>
         inline
-        MatrixStorage<TScalar, -1, iNumColumns>::MatrixStorage(std::size_t size) :
+        MatrixStorage<TScalar, -1, iCols>::MatrixStorage(int size) :
             DynamicMatrixStorage<TScalar>(size) {
+
+            assert(size > 0);
         }
 
         template <class TScalar>
         inline
-        MatrixStorage<TScalar, -1, -1>::MatrixStorage(std::size_t size) :
+        MatrixStorage<TScalar, -1, -1>::MatrixStorage(int size) :
             DynamicMatrixStorage<TScalar>(size) {
+
+            assert(size > 0);
         }
     }
 }
 
+// Restore Visual Studio warning state
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif

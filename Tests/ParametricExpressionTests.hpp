@@ -35,6 +35,60 @@
 
 using namespace opensolid;
 
+inline
+Matrix1x1
+scalarMatrix(double value) {
+    Matrix1x1 result;
+    result.value() = value;
+    return result;
+}
+
+inline
+ColMatrix2x1
+colMatrix(double x, double y) {
+    ColMatrix2x1 result;
+    result(0) = x;
+    result(1) = y;
+    return result;
+}
+
+inline
+ColMatrix3x1
+colMatrix(double x, double y, double z) {
+    ColMatrix3x1 result;
+    result(0) = x;
+    result(1) = y;
+    result(2) = z;
+    return result;
+}
+
+inline
+IntervalMatrix1x1
+scalarMatrix(Interval value) {
+    IntervalMatrix1x1 result;
+    result.value() = value;
+    return result;
+}
+
+inline
+IntervalColMatrix2x1
+colMatrix(Interval x, Interval y) {
+    IntervalColMatrix2x1 result;
+    result(0) = x;
+    result(1) = y;
+    return result;
+}
+
+inline
+IntervalColMatrix3x1
+colMatrix(Interval x, Interval y, Interval z) {
+    IntervalColMatrix3x1 result;
+    result(0) = x;
+    result(1) = y;
+    result(2) = z;
+    return result;
+}
+
 ParametricExpression<1, 2>
 scalarSquiggle() {
     ParametricExpression<1, 2> u = ParametricExpression<1, 2>::u();
@@ -49,12 +103,12 @@ vectorSquiggle() {
     return ParametricExpression<3, 2>::FromComponents(u, v, scalarSquiggle());
 }
 
-std::vector<Matrix2x1>
+std::vector<ColMatrix2x1>
 squiggleParameterValues() {
-    std::vector<Matrix2x1> results(25);
+    std::vector<ColMatrix2x1> results(25);
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
-            results[i * 5 + j] = Matrix2x1(i / 5.0 + 0.1, j / 5.0 + 0.1);
+            results[i * 5 + j] = colMatrix(i / 5.0 + 0.1, j / 5.0 + 0.1);
         }
     }
     return results;
@@ -88,22 +142,23 @@ void testJacobian(
         std::cout << jacobian - expectedJacobian << std::endl;
     }
     for (int j = 0; j < iNumParameters; ++j) {
-        Matrix<double, iNumParameters, 2> shiftedParameterValues =
-            Matrix<double, iNumParameters, 2>::FromColumns(parameterValues, parameterValues);
+        Matrix<double, iNumParameters, 2> shiftedParameterValues;
+        shiftedParameterValues.col(0) = parameterValues;
+        shiftedParameterValues.col(1) = parameterValues;
         shiftedParameterValues(j, 0) -= 1e-6 / 2;
         shiftedParameterValues(j, 1) += 1e-6 / 2;
         Matrix<double, iNumDimensions, 2> shiftedValues =
             expression.evaluate(shiftedParameterValues);
-        Matrix<double, iNumDimensions, 1> numericalDerivative = shiftedValues.column(1);
-        numericalDerivative = (shiftedValues.column(1) - shiftedValues.column(0)) / 1e-6;
-        TS_ASSERT((numericalDerivative - jacobian.column(j)).isZero(1e-3));
-        if (!(numericalDerivative - jacobian.column(j)).isZero(1e-3)) {
+        Matrix<double, iNumDimensions, 1> numericalDerivative = shiftedValues.col(1);
+        numericalDerivative = (shiftedValues.col(1) - shiftedValues.col(0)) / 1e-6;
+        TS_ASSERT((numericalDerivative - jacobian.col(j)).isZero(1e-3));
+        if (!(numericalDerivative - jacobian.col(j)).isZero(1e-3)) {
             std::cout << "ParametricExpression:" << std::endl;
             std::cout << expression << std::endl;
             std::cout << "Numerical derivative " << j << ": " << std::endl;
             std::cout << numericalDerivative.transpose() << std::endl;
             std::cout << "Jacobian derivative: " << std::endl;
-            std::cout << jacobian.column(j).transpose() << std::endl;
+            std::cout << jacobian.col(j).transpose() << std::endl;
         }
     }
 }
@@ -180,9 +235,9 @@ public:
     }
 
     void testNorm() {
-        ParametricExpression<2, 1> arc = 3 * (cos(t) * Matrix2x1(1, 0) + Matrix2x1(0, 1) * sin(t));
-        Matrix2x1 evaluated = arc.normalized().evaluate(M_PI / 4);
-        Matrix2x1 expected(1 / sqrt(2.0), 1 / sqrt(2.0));
+        ParametricExpression<2, 1> arc = 3 * (cos(t) * colMatrix(1, 0) + colMatrix(0, 1) * sin(t));
+        ColMatrix2x1 evaluated = arc.normalized().evaluate(M_PI / 4);
+        ColMatrix2x1 expected = colMatrix(1 / sqrt(2.0), 1 / sqrt(2.0));
         TS_ASSERT((evaluated - expected).isZero());
     }
     
@@ -193,7 +248,13 @@ public:
         }
         {
             ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::Constant(2.0);
-            TS_ASSERT(expression.evaluate(Matrix1x3(1, 2, 3)) == Matrix1x3::Constant(2.0));
+
+            RowMatrix1x3 parameterValues;
+            parameterValues(0) = 1;
+            parameterValues(1) = 2;
+            parameterValues(2) = 3;
+
+            TS_ASSERT(expression.evaluate(parameterValues) == RowMatrix1x3::Constant(2.0));
         }
     }
     
@@ -258,11 +319,26 @@ public:
     }
     
     void testComponent() {
-        ParametricExpression<3, 1> expression = Matrix3x1(1, 2, 3) + t * Matrix3x1(1, 2, 3);
-        Matrix1x3 result = expression.component(1).evaluate(Matrix1x3(0, 0.5, 1));
-        TS_ASSERT((result - Matrix1x3(2, 3, 4)).isZero());
-        result = expression.evaluate(Matrix1x3(0, 0.5, 1)).row(1);
-        TS_ASSERT((result - Matrix1x3(2, 3, 4)).isZero());
+        ParametricExpression<3, 1> expression = colMatrix(1, 2, 3) + t * colMatrix(1, 2, 3);
+        
+        RowMatrix1x3 parameterValues;
+        parameterValues(0) = 0.0;
+        parameterValues(1) = 0.5;
+        parameterValues(2) = 1.0;
+
+        RowMatrix1x3 results = expression.component(1).evaluate(parameterValues);
+        std::cout << std::endl << "First: " << results << std::endl;
+        TS_ASSERT(results(0) - 2.0 == Zero());
+        TS_ASSERT(results(1) - 3.0 == Zero());
+        TS_ASSERT(results(2) - 4.0 == Zero());
+
+        results = expression.evaluate(parameterValues).row(1);
+        std::cout << "Temp:" << std::endl << expression.evaluate(parameterValues) << std::endl;
+        std::cout << "Second: " << results << std::endl;
+        TS_ASSERT(results(0) - 2.0 == Zero());
+        TS_ASSERT(results(1) - 3.0 == Zero());
+        TS_ASSERT(results(2) - 4.0 == Zero());
+
         double value = expression.z().evaluate(0.5).value();
         TS_ASSERT(value - 4.5 == Zero());
     }
@@ -271,24 +347,24 @@ public:
         CoordinateSystem3d coordinateSystem = CoordinateSystem3d::Global();
         coordinateSystem = coordinateSystem.translatedBy(Vector3d(1, 1, 1));
         coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
-        ParametricExpression<3, 1> linear = Matrix3x1::Ones() * t;
+        ParametricExpression<3, 1> linear = ColMatrix3x1::Ones() * t;
         ParametricExpression<3, 1> product = coordinateSystem.basisMatrix() * linear +
             coordinateSystem.originPoint().components();
         ParametricExpression<3, 1> quotient = coordinateSystem.inverseMatrix() *
             (linear - coordinateSystem.originPoint().components());
 
         std::vector<double> parameterValues(5);
-        std::vector<Matrix3x1> expectedProductValues(5);
-        std::vector<Matrix3x1> expectedQuotientValues(5);
+        std::vector<ColMatrix3x1> expectedProductValues(5);
+        std::vector<ColMatrix3x1> expectedQuotientValues(5);
         for (int i = 0; i < 5; ++i) {
             parameterValues[i] = i / 4.0;
-            expectedProductValues[i] = parameterValues[i] * Matrix3x1(0, sqrt(2.0), 1) +
-                Matrix3x1(1, 1, 1);
-            expectedQuotientValues[i] = parameterValues[i] * Matrix3x1(sqrt(2.0), 0, 1) +
-                Matrix3x1(-sqrt(2.0), 0, -1);
+            expectedProductValues[i] = parameterValues[i] * colMatrix(0, sqrt(2.0), 1) +
+                colMatrix(1, 1, 1);
+            expectedQuotientValues[i] = parameterValues[i] * colMatrix(sqrt(2.0), 0, 1) +
+                colMatrix(-sqrt(2.0), 0, -1);
         }
-        std::vector<Matrix3x1> productValues = product.evaluate(parameterValues);
-        std::vector<Matrix3x1> quotientValues = quotient.evaluate(parameterValues);
+        std::vector<ColMatrix3x1> productValues = product.evaluate(parameterValues);
+        std::vector<ColMatrix3x1> quotientValues = quotient.evaluate(parameterValues);
         for (int i = 0; i < 5; ++i) {
             TS_ASSERT((productValues[i] - expectedProductValues[i]).isZero());
             TS_ASSERT((quotientValues[i] - expectedQuotientValues[i]).isZero());
@@ -301,7 +377,7 @@ public:
         ParametricExpression<1, 1> z = t.squared();
         ParametricExpression<3, 1> concatenated =
             ParametricExpression<3, 1>::FromComponents(x, y, z);
-        TS_ASSERT((concatenated.evaluate(2.0) - Matrix3x1(2.0, 3.0, 4.0)).isZero());
+        TS_ASSERT((concatenated.evaluate(2.0) - colMatrix(2.0, 3.0, 4.0)).isZero());
     }
 
     void testArccosine() {
@@ -317,16 +393,16 @@ public:
         TS_ASSERT(bounds.lowerBound() == Zero());
         TS_ASSERT(bounds.upperBound() == Zero());
 
-        testJacobian(expression, Matrix1x1(-0.5));
-        testJacobian(expression, Matrix1x1(0.0));
-        testJacobian(expression, Matrix1x1(0.5));
+        testJacobian(expression, scalarMatrix(-0.5));
+        testJacobian(expression, scalarMatrix(0.0));
+        testJacobian(expression, scalarMatrix(0.5));
 
         ParametricExpression<1, 2> expression2 = acos(u - v);
-        testJacobian(expression2, Matrix2x1(0.5, 0));
-        testJacobian(expression2, Matrix2x1(0, 0.25));
-        testJacobian(expression2, Matrix2x1(-0.5, 0));
-        testJacobian(expression2, Matrix2x1(0, -0.25));
-        testJacobian(expression2, Matrix2x1(0, 0));
+        testJacobian(expression2, colMatrix(0.5, 0));
+        testJacobian(expression2, colMatrix(0, 0.25));
+        testJacobian(expression2, colMatrix(-0.5, 0));
+        testJacobian(expression2, colMatrix(0, -0.25));
+        testJacobian(expression2, colMatrix(0, 0));
     }
 
     void testArcsine() {
@@ -345,10 +421,10 @@ public:
 
     void testNormalVector() {
         ParametricExpression<2, 1> expression =
-            Matrix2x1(1, 1) + 2 * ParametricExpression<2, 1>::FromComponents(cos(t), sin(t));
-        TS_ASSERT((expression.evaluate(-M_PI / 2) - Matrix2x1(1, -1)).isZero());
-        TS_ASSERT((expression.evaluate(0) - Matrix2x1(3, 1)).isZero());
-        TS_ASSERT((expression.evaluate(M_PI / 2) - Matrix2x1(1, 3)).isZero());
+            colMatrix(1, 1) + 2 * ParametricExpression<2, 1>::FromComponents(cos(t), sin(t));
+        TS_ASSERT((expression.evaluate(-M_PI / 2) - colMatrix(1, -1)).isZero());
+        TS_ASSERT((expression.evaluate(0) - colMatrix(3, 1)).isZero());
+        TS_ASSERT((expression.evaluate(M_PI / 2) - colMatrix(1, 3)).isZero());
 
         ParametricExpression<2, 1> normalVector =
             expression.derivative().normalized().derivative().normalized();
@@ -359,23 +435,23 @@ public:
         parameterValues[3] = M_PI / 4;
         parameterValues[4] = M_PI / 2;
 
-        std::vector<Matrix2x1> expressionValues = expression.evaluate(parameterValues);
-        std::vector<Matrix2x1> normalValues = normalVector.evaluate(parameterValues);
+        std::vector<ColMatrix2x1> expressionValues = expression.evaluate(parameterValues);
+        std::vector<ColMatrix2x1> normalValues = normalVector.evaluate(parameterValues);
         for (unsigned i = 0; i < expressionValues.size(); ++i) {
-            TS_ASSERT((expressionValues[i] + 2 * normalValues[i] - Matrix2x1(1, 1)).isZero());
+            TS_ASSERT((expressionValues[i] + 2 * normalValues[i] - colMatrix(1, 1)).isZero());
         }
     }
 
     void testDeduplication() {
         {
             ParametricExpression<3, 1> constant1 =
-                ParametricExpression<3, 1>::Constant(Matrix3x1(1, 2, 3));
+                ParametricExpression<3, 1>::Constant(colMatrix(1, 2, 3));
             ParametricExpression<3, 1> constant2 =
-                ParametricExpression<3, 1>::Constant(Matrix3x1(1, 2, 3));
+                ParametricExpression<3, 1>::Constant(colMatrix(1, 2, 3));
             ParametricExpression<3, 1> constant3 =
-                ParametricExpression<3, 1>::Constant(Matrix3x1(1, 2, 4));
+                ParametricExpression<3, 1>::Constant(colMatrix(1, 2, 4));
             ParametricExpression<3, 2> constant4 =
-                ParametricExpression<3, 2>::Constant(Matrix3x1(1, 2, 3));
+                ParametricExpression<3, 2>::Constant(colMatrix(1, 2, 3));
 
             TS_ASSERT(constant1.implementation()->isDuplicateOf(constant2.implementation()));
             TS_ASSERT(!constant1.implementation()->isDuplicateOf(constant3.implementation()));
@@ -427,7 +503,12 @@ public:
     void testEvaluatorDouble() {
         ParametricExpression<1, 1> expression = t.squared();
         Evaluator evaluator;
-        Matrix1x3 parameterValues(1, 2, 3);
+
+        RowMatrix1x3 parameterValues;
+        parameterValues(0) = 1.0;
+        parameterValues(1) = 2.0;
+        parameterValues(2) = 3.0;
+
         MapXcd parameterMap(parameterValues.data(), 1, 3, Eigen::Stride<Eigen::Dynamic, 1>(1, 1));
         MapXcd results1 = evaluator.evaluate(expression.implementation(), parameterMap);
         MapXcd results2 = evaluator.evaluate(expression.implementation(), parameterMap);
@@ -439,7 +520,12 @@ public:
     void testEvaluatorInterval() {
         ParametricExpression<1, 1> expression = t.squared();
         Evaluator evaluator;
-        IntervalMatrix1x3 parameterValues(Interval(1, 2), Interval(3, 4), Interval(5, 6));
+
+        IntervalRowMatrix1x3 parameterValues;
+        parameterValues(0) = Interval(1, 2);
+        parameterValues(1) = Interval(3, 4);
+        parameterValues(2) = Interval(5, 6);
+
         MapXcI parameterMap(parameterValues.data(), 1, 3, Eigen::Stride<Eigen::Dynamic, 1>(1, 1));
         MapXcI results1 = evaluator.evaluate(expression.implementation(), parameterMap);
         MapXcI results2 = evaluator.evaluate(expression.implementation(), parameterMap);
@@ -450,28 +536,28 @@ public:
 
     void testEllipseJacobian() {
         ParametricExpression<2, 1> ellipseExpression =
-            Matrix2x1(3, 1) * cos(t) + Matrix2x1(1, 3) * sin(t);
-        testJacobian(ellipseExpression, Matrix1x1(0.0));
-        testJacobian(ellipseExpression, Matrix1x1(M_PI / 4));
-        testJacobian(ellipseExpression, Matrix1x1(M_PI / 2));
-        testJacobian(ellipseExpression, Matrix1x1(3 * M_PI / 4));
+            colMatrix(3, 1) * cos(t) + colMatrix(1, 3) * sin(t);
+        testJacobian(ellipseExpression, scalarMatrix(0.0));
+        testJacobian(ellipseExpression, scalarMatrix(M_PI / 4));
+        testJacobian(ellipseExpression, scalarMatrix(M_PI / 2));
+        testJacobian(ellipseExpression, scalarMatrix(3 * M_PI / 4));
     }
 
     void testEllipsoidJacobian() {
-        ParametricExpression<3, 2> ellipsoidExpression = sin(v) * Matrix3x1(1, 1, 3) +
-            cos(v) * (sin(u) * Matrix3x1(1, 3, 1) + cos(u) * Matrix3x1(3, 1, 1));
-        testJacobian(ellipsoidExpression, Matrix2x1(0, 0));
-        testJacobian(ellipsoidExpression, Matrix2x1(M_PI / 4, 0));
-        testJacobian(ellipsoidExpression, Matrix2x1(0, M_PI / 4));
-        testJacobian(ellipsoidExpression, Matrix2x1(M_PI / 4, M_PI / 4));
-        testJacobian(ellipsoidExpression, Matrix2x1(M_PI / 2, 0));
-        testJacobian(ellipsoidExpression, Matrix2x1(0, 3 * M_PI / 4));
+        ParametricExpression<3, 2> ellipsoidExpression = sin(v) * colMatrix(1, 1, 3) +
+            cos(v) * (sin(u) * colMatrix(1, 3, 1) + cos(u) * colMatrix(3, 1, 1));
+        testJacobian(ellipsoidExpression, colMatrix(0, 0));
+        testJacobian(ellipsoidExpression, colMatrix(M_PI / 4, 0));
+        testJacobian(ellipsoidExpression, colMatrix(0, M_PI / 4));
+        testJacobian(ellipsoidExpression, colMatrix(M_PI / 4, M_PI / 4));
+        testJacobian(ellipsoidExpression, colMatrix(M_PI / 2, 0));
+        testJacobian(ellipsoidExpression, colMatrix(0, 3 * M_PI / 4));
     }
 
     void testSquiggleJacobians() {
         ParametricExpression<1, 2> scalar = scalarSquiggle();
         ParametricExpression<3, 2> vector = vectorSquiggle();
-        std::vector<Matrix2x1> parameterValues = squiggleParameterValues();
+        std::vector<ColMatrix2x1> parameterValues = squiggleParameterValues();
         Matrix3x3 transformationMatrix = Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix();
 
         for (unsigned i = 0; i < parameterValues.size(); ++i) {
@@ -482,9 +568,9 @@ public:
             testJacobian(asin(scalar / 2), parameterValues[i]);
             testJacobian(vector.components<2>(1), parameterValues[i]);
             testJacobian(cos(scalar), parameterValues[i]);
-            testJacobian(vector.cross(vector + Matrix3x1(0, 0, 1)), parameterValues[i]);
-            testJacobian(vector - u * Matrix3x1(0, 0, 1), parameterValues[i]);
-            testJacobian(vector.dot(vector + Matrix3x1(0, 0, 1)), parameterValues[i]);
+            testJacobian(vector.cross(vector + colMatrix(0, 0, 1)), parameterValues[i]);
+            testJacobian(vector - u * colMatrix(0, 0, 1), parameterValues[i]);
+            testJacobian(vector.dot(vector + colMatrix(0, 0, 1)), parameterValues[i]);
             testJacobian(exp(scalar), parameterValues[i]);
             testJacobian(log(scalar + 2), parameterValues[i]);
             testJacobian(transformationMatrix * vector, parameterValues[i]);
@@ -500,9 +586,9 @@ public:
             testJacobian(sin(scalar), parameterValues[i]);
             testJacobian(vector.squaredNorm(), parameterValues[i]);
             testJacobian(sqrt(scalar + 2), parameterValues[i]);
-            testJacobian(vector + u * Matrix3x1(0, 0, 1), parameterValues[i]);
+            testJacobian(vector + u * colMatrix(0, 0, 1), parameterValues[i]);
             testJacobian(tan(scalar), parameterValues[i]);
-            testJacobian(vector + Matrix3x1(1, 2, 3), parameterValues[i]);
+            testJacobian(vector + colMatrix(1, 2, 3), parameterValues[i]);
 
             // Composition?
             // Concatenation?
@@ -510,17 +596,17 @@ public:
     }
 
     void testDotProductWithConstant() {
-        ParametricExpression<3, 1> line = Matrix3x1::Ones() + Matrix3x1::Ones() * t;
-        ParametricExpression<1, 1> dotProduct = line.dot(Matrix3x1(0, 1, 0));
+        ParametricExpression<3, 1> line = ColMatrix3x1::Ones() + ColMatrix3x1::Ones() * t;
+        ParametricExpression<1, 1> dotProduct = line.dot(colMatrix(0, 1, 0));
         TS_ASSERT(dotProduct.evaluate(0.0).value() - 1.0 == Zero());
         TS_ASSERT(dotProduct.evaluate(1.0).value() - 2.0 == Zero());
     }
 
     void testCrossProductWithConstant() {
-        ParametricExpression<3, 1> line = Matrix3x1::Ones() + Matrix3x1::Ones() * t;
-        ParametricExpression<3, 1> crossProduct = line.cross(Matrix3x1(0, 1, 0));
-        TS_ASSERT((crossProduct.evaluate(0.0) - Matrix3x1(-1, 0, 1)).isZero());
-        TS_ASSERT((crossProduct.evaluate(1.0) - Matrix3x1(-2, 0, 2)).isZero());
+        ParametricExpression<3, 1> line = ColMatrix3x1::Ones() + ColMatrix3x1::Ones() * t;
+        ParametricExpression<3, 1> crossProduct = line.cross(colMatrix(0, 1, 0));
+        TS_ASSERT((crossProduct.evaluate(0.0) - colMatrix(-1, 0, 1)).isZero());
+        TS_ASSERT((crossProduct.evaluate(1.0) - colMatrix(-2, 0, 2)).isZero());
     }
     
     //void xtestRoots() {

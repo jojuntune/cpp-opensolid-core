@@ -50,6 +50,24 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        IntervalVectorBase<iNumDimensions>::IntervalVectorBase(Interval value) :
+            VectorBase<Interval, iNumDimensions>(value) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorBase<iNumDimensions>::IntervalVectorBase(Interval x, Interval y) :
+            VectorBase<Interval, iNumDimensions>(x, y) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        IntervalVectorBase<iNumDimensions>::IntervalVectorBase(Interval x, Interval y, Interval z) :
+            VectorBase<Interval, iNumDimensions>(x, y, z) {
+        }
+
+        template <int iNumDimensions>
+        inline
         IntervalVectorBase<iNumDimensions>::IntervalVectorBase(
             const Matrix<Interval, iNumDimensions, 1>& components
         ) : VectorBase<Interval, iNumDimensions>(components) {

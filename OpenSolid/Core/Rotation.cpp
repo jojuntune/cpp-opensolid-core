@@ -34,21 +34,39 @@ namespace opensolid
         rotationMatrix2d(double angle) {
             double sinAngle = sin(angle);
             double cosAngle = cos(angle);
-            return Matrix2x2(cosAngle, sinAngle, -sinAngle, cosAngle);
+
+            Matrix2x2 result;
+            result(0) = cosAngle;
+            result(1) = sinAngle;
+            result(2) = -sinAngle;
+            result(3) = cosAngle;
+            return result;
         }
 
         inline
         Matrix3x3
         rotationMatrix3d(const UnitVector3d& axisVector, double angle) {
-            Matrix3x1 axisComponents = axisVector.components();
+            ColMatrix3x1 axisComponents = axisVector.components();
             double x = axisComponents(0);
             double y = axisComponents(1);
             double z = axisComponents(2);
             double sinAngle = sin(angle);
             double cosAngle = cos(angle);
+
+            Matrix3x3 crossMatrix;
+            crossMatrix(0) = 0.0;
+            crossMatrix(1) = z;
+            crossMatrix(2) = -y;
+            crossMatrix(3) = -z;
+            crossMatrix(4) = 0.0;
+            crossMatrix(5) = x;
+            crossMatrix(6) = y;
+            crossMatrix(7) = -x;
+            crossMatrix(8) = 0.0;
+
             return (1 - cosAngle) * axisComponents * axisComponents.transpose() +
                 cosAngle * Matrix3x3::Identity() +
-                sinAngle * Matrix3x3(0.0, z, -y, -z, 0.0, x, y, -x, 0.0);
+                sinAngle * crossMatrix;
         }
     }
 

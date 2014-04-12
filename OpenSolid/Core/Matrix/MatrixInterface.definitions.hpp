@@ -42,9 +42,9 @@ namespace opensolid
         class MatrixInterface
         {
         private:
-            typedef typename MatrixTraits<TDerived>::Scalar Scalar;
-            static const int NumRows = MatrixTraits<TDerived>::NumRows;
-            static const int NumCols = MatrixTraits<TDerived>::NumCols;
+            typedef typename MatrixTraits<TDerived>::ScalarType ScalarType;
+            static const int Rows = MatrixTraits<TDerived>::Rows;
+            static const int Cols = MatrixTraits<TDerived>::Cols;
             static const int ColStride = MatrixTraits<TDerived>::ColStride;
 
             TDerived&
@@ -52,69 +52,109 @@ namespace opensolid
 
             const TDerived&
             derived() const;
+
+            template <class TOtherDerived> friend class MatrixInterface;
         public:
-            const typename MatrixTraits<TDerived>::Scalar
+            const typename MatrixTraits<TDerived>::ScalarType*
+            data() const;
+
+            typename MatrixTraits<TDerived>::ScalarType*
+            data();
+
+            int
+            rows() const;
+
+            int
+            cols() const;
+
+            int
+            size() const;
+
+            int
+            colStride() const;
+
+            typename MatrixTraits<TDerived>::ScalarType
             coeff(int index) const;
 
-            typename MatrixTraits<TDerived>::Scalar&
-            coeffRef(int index);
+            typename MatrixTraits<TDerived>::ScalarType&
+            coeff(int index);
 
-            const typename MatrixTraits<TDerived>::Scalar
+            typename MatrixTraits<TDerived>::ScalarType
             coeff(int rowIndex, int colIndex) const;
 
-            typename MatrixTraits<TDerived>::Scalar&
-            coeffRef(int rowIndex, int colIndex);
+            typename MatrixTraits<TDerived>::ScalarType&
+            coeff(int rowIndex, int colIndex);
 
-            typename MatrixTraits<TDerived>::Scalar
+            typename MatrixTraits<TDerived>::ScalarType
             operator()(int index) const;
 
-            typename MatrixTraits<TDerived>::Scalar&
+            typename MatrixTraits<TDerived>::ScalarType&
             operator()(int index);
 
-            const typename MatrixTraits<TDerived>::Scalar
+            typename MatrixTraits<TDerived>::ScalarType
             operator()(int rowIndex, int colIndex) const;
 
-            typename MatrixTraits<TDerived>::Scalar&
+            typename MatrixTraits<TDerived>::ScalarType&
             operator()(int rowIndex, int colIndex);
 
+            typename MatrixTraits<TDerived>::ScalarType
+            value() const;
+
+            typename MatrixTraits<TDerived>::ScalarType&
+            value();
+
+            template <class TOtherDerived>
+            void
+            operator=(const MatrixInterface<TOtherDerived>& other);
+
             const MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
+                const typename MatrixTraits<TDerived>::ScalarType,
                 1,
-                MatrixTraits<TDerived>::NumCols,
+                MatrixTraits<TDerived>::Cols,
                 MatrixTraits<TDerived>::ColStride
             >
             row(int rowIndex) const;
 
             MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
+                typename MatrixTraits<TDerived>::ScalarType,
                 1,
-                MatrixTraits<TDerived>::NumCols,
+                MatrixTraits<TDerived>::Cols,
                 MatrixTraits<TDerived>::ColStride
             >
             row(int rowIndex);
 
             const MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
-                MatrixTraits<TDerived>::NumRows,
+                const typename MatrixTraits<TDerived>::ScalarType,
+                MatrixTraits<TDerived>::Rows,
                 1,
                 MatrixTraits<TDerived>::ColStride
             >
             col(int colIndex) const;
 
             MatrixView<
-                typename MatrixTraits<TDerived>::Scalar,
-                MatrixTraits<TDerived>::NumRows,
+                typename MatrixTraits<TDerived>::ScalarType,
+                MatrixTraits<TDerived>::Rows,
                 1,
                 MatrixTraits<TDerived>::ColStride
             >
             col(int colIndex);
 
             const Matrix<
-                typename MatrixTraits<TDerived>::Scalar,
-                MatrixTraits<TDerived>::NumCols,
-                MatrixTraits<TDerived>::NumRows
+                typename MatrixTraits<TDerived>::ScalarType,
+                MatrixTraits<TDerived>::Cols,
+                MatrixTraits<TDerived>::Rows
             >
             transpose() const;
+
+            typename MatrixTraits<TDerived>::ScalarType
+            determinant() const;
+
+            const Matrix<
+                typename MatrixTraits<TDerived>::ScalarType,
+                MatrixTraits<TDerived>::Cols,
+                MatrixTraits<TDerived>::Rows
+            >
+            inverse() const;
 
             template <class TUnaryFunction>
             const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
@@ -140,8 +180,8 @@ namespace opensolid
             ) const;
 
             template <class TFunction>
-            TScalar
-            redux(TFunction function) const;
+            typename MatrixTraits<TDerived>::ScalarType
+            reduce(TFunction function) const;
 
             template <class TUnaryPredicate>
             bool
@@ -177,44 +217,28 @@ namespace opensolid
             bool
             isIdentity(double precision = 1e-12) const;
 
-            const Matrix<
-                double,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumCols
-            >
+            const Matrix<double, MatrixTraits<TDerived>::Rows, MatrixTraits<TDerived>::Cols>
             cwiseLowerBound() const;
 
-            const Matrix<
-                double,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumCols
-            >
+            const Matrix<double, MatrixTraits<TDerived>::Rows, MatrixTraits<TDerived>::Cols>
             cwiseUpperBound() const;
 
-            const Matrix<
-                double,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumCols
-            >
+            const Matrix<double, MatrixTraits<TDerived>::Rows, MatrixTraits<TDerived>::Cols>
             cwiseWidth() const;
 
-            const Matrix<
-                double,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumCols
-            >
+            const Matrix<double, MatrixTraits<TDerived>::Rows, MatrixTraits<TDerived>::Cols>
             cwiseMedian() const;
 
             const Matrix<
-                TScalar,
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumCols
+                typename MatrixTraits<TDerived>::ScalarType,
+                MatrixTraits<TDerived>::Rows,
+                MatrixTraits<TDerived>::Cols
             >
             cwiseSquared() const;
 
             template <class TOtherDerived>
             const Matrix<
-                decltype(MatrixTraits<TDerived>::Scalar() * MatrixTraits<TOtherDerived>::Scalar()),
+                typename CommonScalar<TDerived, TOtherDerived>::Type,
                 CommonRows<TDerived, TOtherDerived>::Value,
                 CommonCols<TDerived, TOtherDerived>::Value
             >
@@ -222,7 +246,7 @@ namespace opensolid
 
             template <class TOtherDerived>
             const Matrix<
-                decltype(MatrixTraits<TDerived>::Scalar() / MatrixTraits<TOtherDerived>::Scalar()),
+                typename CommonScalar<TDerived, TOtherDerived>::Type,
                 CommonRows<TDerived, TOtherDerived>::Value,
                 CommonCols<TDerived, TOtherDerived>::Value
             >
@@ -244,10 +268,10 @@ namespace opensolid
             >
             cwiseIntersection(const MatrixInterface<TOtherDerived>& other) const;
 
-            typename MatrixTraits<TDerived>::Scalar
+            typename MatrixTraits<TDerived>::ScalarType
             sum() const;
 
-            typename MatrixTraits<TDerived>::Scalar
+            typename MatrixTraits<TDerived>::ScalarType
             prod() const;
 
             template <class TOtherDerived>
@@ -275,7 +299,7 @@ namespace opensolid
             operator-=(const MatrixInterface<TOtherDerived>& other) const;
 
             void
-            setConstant(typename MatrixTraits<TDerived>::Scalar value);
+            setConstant(typename MatrixTraits<TDerived>::ScalarType value);
 
             void
             setZero();
@@ -312,10 +336,10 @@ namespace opensolid
             typedef Matrix<
                 typename MappedScalarType<
                     TUnaryFunction,
-                    typename MatrixTraits<TMatrix>::Scalar
+                    typename MatrixTraits<TMatrix>::ScalarType
                 >::Type,
-                MatrixTraits<TMatrix>::NumRows,
-                MatrixTraits<TMatrix>::NumCols
+                MatrixTraits<TMatrix>::Rows,
+                MatrixTraits<TMatrix>::Cols
             > Type;
         };
 
@@ -325,8 +349,8 @@ namespace opensolid
             typedef Matrix<
                 typename PairwiseMappedScalarType<
                     TBinaryFunction,
-                    typename MatrixTraits<TFirstMatrix>::Scalar,
-                    typename MatrixTraits<TSecondMatrix>::Scalar
+                    typename MatrixTraits<TFirstMatrix>::ScalarType,
+                    typename MatrixTraits<TSecondMatrix>::ScalarType
                 >::Type,
                 CommonRows<TFirstMatrix, TSecondMatrix>::Value,
                 CommonCols<TFirstMatrix, TSecondMatrix>::Value
@@ -341,22 +365,62 @@ namespace opensolid
                 iFirstSize == iSecondSize || iFirstSize == -1 || iSecondSize == -1,
                 "Incompatible static matrix sizes"
             );
+
+            CheckCompatibleSizes();
+
+            CheckCompatibleSizes(int firstSize, int secondSize);
+        };
+
+        template <int iFirstRows, int iSecondRows>
+        struct CheckCompatibleRows :
+            public CheckCompatibleSizes<iFirstRows, iSecondRows>
+        {
+            CheckCompatibleRows();
+
+            CheckCompatibleRows(int firstRows, int secondRows);
+        };
+
+        template <int iFirstCols, int iSecondCols>
+        struct CheckCompatibleCols :
+            public CheckCompatibleSizes<iFirstCols, iSecondCols>
+        {
+            CheckCompatibleCols();
+
+            CheckCompatibleCols(int firstCols, int secondCols);
+        };
+
+        template <class TFirstMatrix, class TSecondMatrix>
+        struct CheckCompatibleMatrices :
+            public CheckCompatibleRows<
+                MatrixTraits<TFirstMatrix>::Rows,
+                MatrixTraits<TSecondMatrix>::Rows
+            >,
+            public CheckCompatibleCols<
+                MatrixTraits<TFirstMatrix>::Cols,
+                MatrixTraits<TSecondMatrix>::Cols
+            >
+        {
+            CheckCompatibleMatrices();
+
+            CheckCompatibleMatrices(
+                const TFirstMatrix& firstMatrix,
+                const TSecondMatrix& secondMatrix
+            );
         };
 
         template <int iFirstSize, int iSecondSize>
-        struct CommonSize<iFirstSize, iSecondSize>
+        struct CommonSize :
+            public CheckCompatibleSizes<iFirstSize, iSecondSize>
         {
-            CheckCompatibleSizes<iFirstSize, iSecondSize> sizeCheck;
-
-            static const int Value = (iFirstSize == -1) ? iSecondSize : iFirstSize;
+            static const int Value = (iFirstSize != -1) ? iFirstSize : iSecondSize;
         };
 
         template <class TFirstMatrix, class TSecondMatrix>
         struct CommonRows
         {
             static const int Value = CommonSize<
-                MatrixTraits<TFirstMatrix>::NumRows,
-                MatrixTraits<TSecondMatrix>::NumRows
+                MatrixTraits<TFirstMatrix>::Rows,
+                MatrixTraits<TSecondMatrix>::Rows
             >::Value;
         };
 
@@ -364,9 +428,155 @@ namespace opensolid
         struct CommonCols
         {
             static const int Value = CommonSize<
-                MatrixTraits<TFirstMatrix>::NumCols,
-                MatrixTraits<TSecondMatrix>::NumCols
+                MatrixTraits<TFirstMatrix>::Cols,
+                MatrixTraits<TSecondMatrix>::Cols
             >::Value;
         };
+
+        template <>
+        struct CommonScalar<double, double>
+        {
+            typedef double Type;
+        };
+
+        template <>
+        struct CommonScalar<double, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<Interval, double>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<Interval, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <class TSecondMatrix>
+        struct CommonScalar<double, TSecondMatrix>
+        {
+            typedef typename MatrixTraits<TSecondMatrix>::ScalarType Type;
+        };
+
+        template <class TFirstMatrix>
+        struct CommonScalar<TFirstMatrix, double>
+        {
+            typedef typename MatrixTraits<TFirstMatrix>::ScalarType Type;
+        };
+
+        template <class TSecondMatrix>
+        struct CommonScalar<Interval, TSecondMatrix>
+        {
+            typedef Interval Type;
+        };
+
+        template <class TFirstMatrix>
+        struct CommonScalar<TFirstMatrix, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <class TFirstMatrix, class TSecondMatrix>
+        struct CommonScalar
+        {
+            typedef typename CommonScalar<
+                typename MatrixTraits<TFirstMatrix>::ScalarType,
+                typename MatrixTraits<TSecondMatrix>::ScalarType
+            >::Type Type;
+        };
+
+        template <class TDerived>
+        const Matrix<
+            typename MatrixTraits<TDerived>::ScalarType,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator-(const MatrixInterface<TDerived>& matrix);
+
+        template <class TDerived>
+        const Matrix<
+            typename MatrixTraits<TDerived>::ScalarType,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator*(double scale, const MatrixInterface<TDerived>& matrix);
+
+        template <class TDerived>
+        const Matrix<
+            Interval,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator*(Interval scale, const MatrixInterface<TDerived>& matrix);
+
+        template <class TDerived>
+        const Matrix<
+            typename MatrixTraits<TDerived>::ScalarType,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator*(const MatrixInterface<TDerived>& matrix, double scale);
+
+        template <class TDerived>
+        const Matrix<
+            Interval,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator*(const MatrixInterface<TDerived>& matrix, Interval scale);
+
+        template <class TDerived>
+        const Matrix<
+            typename MatrixTraits<TDerived>::ScalarType,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator/(const MatrixInterface<TDerived>& matrix, double divisor);
+
+        template <class TDerived>
+        const Matrix<
+            Interval,
+            MatrixTraits<TDerived>::Rows,
+            MatrixTraits<TDerived>::Cols
+        >
+        operator/(const MatrixInterface<TDerived>& matrix, Interval divisor);
+
+        template <class TFirstDerived, class TSecondDerived>
+        const Matrix<
+            typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
+            CommonRows<TFirstDerived, TSecondDerived>::Value,
+            CommonCols<TFirstDerived, TSecondDerived>::Value
+        >
+        operator+(
+            const MatrixInterface<TFirstDerived>& firstMatrix,
+            const MatrixInterface<TSecondDerived>& secondMatrix
+        );
+
+        template <class TFirstDerived, class TSecondDerived>
+        const Matrix<
+            typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
+            CommonRows<TFirstDerived, TSecondDerived>::Value,
+            CommonCols<TFirstDerived, TSecondDerived>::Value
+        >
+        operator-(
+            const MatrixInterface<TFirstDerived>& firstMatrix,
+            const MatrixInterface<TSecondDerived>& secondMatrix
+        );
+
+        template <class TFirstDerived, class TSecondDerived>
+        const Matrix<
+            typename CommonScalar<TFirstDerived, TSecondDerived>::Type,
+            MatrixTraits<TFirstDerived>::Rows,
+            MatrixTraits<TSecondDerived>::Cols
+        >
+        operator*(
+            const MatrixInterface<TFirstDerived>& firstMatrix,
+            const MatrixInterface<TSecondDerived>& secondMatrix
+        );
     }
 }

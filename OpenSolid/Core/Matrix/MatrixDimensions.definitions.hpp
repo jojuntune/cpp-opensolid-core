@@ -22,40 +22,103 @@
 *                                                                                   *
 ************************************************************************************/
 
+#pragma once
+
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Triangle.hpp>
-
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Matrix/MatrixDimensions.declarations.hpp>
 
 namespace opensolid
 {
-    double
-    Triangle2d::area() const {
-        Matrix2x2 matrix;
-        matrix.col(0) = vertex(1).components() - vertex(0).components();
-        matrix.col(1) = vertex(2).components() - vertex(0).components();
-        return matrix.determinant() / 2.0;
-    }
+    namespace detail
+    {
+        template <int iRows, int iCols>
+        class MatrixDimensions
+        {
+        public:
+            static_assert(iRows > 0, "Matrices must have at least one row");
+            static_assert(iCols > 0, "Matrices must have at least one column");
 
-    Triangle2d
-    Triangle2d::Unit() {
-        return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
-    }
+            MatrixDimensions();
 
-    double
-    Triangle3d::area() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
-    }
+            MatrixDimensions(int size);
 
-    UnitVector3d
-    Triangle3d::normalVector() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
-    }
+            MatrixDimensions(int rows, int cols);
 
-    Plane3d
-    Triangle3d::plane() const {
-        return Plane3d(vertex(0), normalVector());
+            int
+            rows() const;
+
+            int
+            cols() const;
+
+            int
+            size() const;
+        };
+
+        template <int iRows>
+        class MatrixDimensions<iRows, -1>
+        {
+        private:
+            int _cols;
+            int _size;
+        public:
+            static_assert(iRows > 0, "Matrices must have at least one row");
+
+            MatrixDimensions(int cols);
+
+            MatrixDimensions(int rows, int cols);
+
+            int
+            rows() const;
+
+            int
+            cols() const;
+
+            int
+            size() const;
+        };
+
+        template <int iCols>
+        class MatrixDimensions<-1, iCols>
+        {
+        private:
+            int _rows;
+            int _size;
+        public:
+            static_assert(iCols > 0, "Matrices must have at least one column");
+
+            MatrixDimensions(int rows);
+
+            MatrixDimensions(int rows, int cols);
+
+            int
+            rows() const;
+
+            int
+            cols() const;
+
+            int
+            size() const;
+        };
+
+        template <>
+        class MatrixDimensions<-1, -1>
+        {
+        private:
+            int _rows;
+            int _cols;
+            int _size;
+        public:
+            MatrixDimensions(int rows, int cols);
+
+            int
+            rows() const;
+
+            int
+            cols() const;
+
+            int
+            size() const;
+        };
     }
 }

@@ -41,15 +41,51 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        CartesianBase<TScalar, iNumDimensions>::CartesianBase(
-            const Matrix<TScalar, iNumDimensions, 1>& components
-        ) : _components(components) {
+        CartesianBase<TScalar, iNumDimensions>::CartesianBase(const TScalar* sourcePtr) :
+            _components(sourcePtr) {
         }
 
         template <class TScalar, int iNumDimensions>
         inline
-        CartesianBase<TScalar, iNumDimensions>::CartesianBase(const TScalar* sourcePtr) :
-            _components(sourcePtr) {
+        CartesianBase<TScalar, iNumDimensions>::CartesianBase(TScalar value) {
+            static_assert(
+                iNumDimensions == 1,
+                "Non-1D Cartesian object cannot be initialized with a single component"
+            );
+
+            _components.value() = value;
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        CartesianBase<TScalar, iNumDimensions>::CartesianBase(TScalar x, TScalar y) {
+            static_assert(
+                iNumDimensions == 2,
+                "Non-2D Cartesian objects cannot be initialized with two components"
+            );
+
+            _components(0) = x;
+            _components(1) = y;
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        CartesianBase<TScalar, iNumDimensions>::CartesianBase(TScalar x, TScalar y, TScalar z) {
+            static_assert(
+                iNumDimensions == 3,
+                "Non-3D Cartesian objects cannot be initialized with three components"
+            );
+
+            _components(0) = x;
+            _components(1) = y;
+            _components(2) = z;
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        CartesianBase<TScalar, iNumDimensions>::CartesianBase(
+            const Matrix<TScalar, iNumDimensions, 1>& components
+        ) : _components(components) {
         }
 
         template <class TScalar, int iNumDimensions>
@@ -83,30 +119,30 @@ namespace opensolid
         template <class TScalar, int iNumDimensions>
         inline
         TScalar
-        CartesianBase<TScalar, iNumDimensions>::component(std::int64_t index) const {
+        CartesianBase<TScalar, iNumDimensions>::component(int index) const {
             assert(index >= 0 && index < iNumDimensions);
-            return components().component(index);
+            return components().coeff(index);
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         TScalar&
-        CartesianBase<TScalar, iNumDimensions>::component(std::int64_t index) {
+        CartesianBase<TScalar, iNumDimensions>::component(int index) {
             assert(index >= 0 && index < iNumDimensions);
-            return components().component(index);
+            return components().coeff(index);
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         TScalar
-        CartesianBase<TScalar, iNumDimensions>::operator()(std::int64_t index) const {
+        CartesianBase<TScalar, iNumDimensions>::operator()(int index) const {
             return components()(index);
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         TScalar&
-        CartesianBase<TScalar, iNumDimensions>::operator()(std::int64_t index) {
+        CartesianBase<TScalar, iNumDimensions>::operator()(int index) {
             return components()(index);
         }
 

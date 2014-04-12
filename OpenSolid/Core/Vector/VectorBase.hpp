@@ -49,6 +49,24 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
+        VectorBase<TScalar, iNumDimensions>::VectorBase(TScalar value) :
+            CartesianBase<TScalar, iNumDimensions>(value) {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        VectorBase<TScalar, iNumDimensions>::VectorBase(TScalar x, TScalar y) :
+            CartesianBase<TScalar, iNumDimensions>(x, y) {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
+        VectorBase<TScalar, iNumDimensions>::VectorBase(TScalar x, TScalar y, TScalar z) :
+            CartesianBase<TScalar, iNumDimensions>(x, y, z) {
+        }
+
+        template <class TScalar, int iNumDimensions>
+        inline
         VectorBase<TScalar, iNumDimensions>::VectorBase(
             const Matrix<TScalar, iNumDimensions, 1>& components
         ) : CartesianBase<TScalar, iNumDimensions>(components) {

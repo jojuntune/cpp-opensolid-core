@@ -69,7 +69,7 @@ namespace opensolid
         Vector();
 
         explicit
-        Vector(double x);
+        Vector(double value);
 
         explicit
         Vector(const Matrix<double, 1, 1>& components);

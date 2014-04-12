@@ -42,9 +42,15 @@ namespace opensolid
         protected:
             CartesianBase();
 
-            CartesianBase(const Matrix<TScalar, iNumDimensions, 1>& components);
-
             CartesianBase(const TScalar* sourcePtr);
+
+            CartesianBase(TScalar value);
+
+            CartesianBase(TScalar x, TScalar y);
+
+            CartesianBase(TScalar x, TScalar y, TScalar z);
+
+            CartesianBase(const Matrix<TScalar, iNumDimensions, 1>& components);
         public:
             const Matrix<TScalar, iNumDimensions, 1>&
             components() const;
@@ -59,16 +65,16 @@ namespace opensolid
             data();
 
             TScalar
-            component(std::int64_t index) const;
+            component(int index) const;
 
             TScalar&
-            component(std::int64_t index);
+            component(int index);
 
             TScalar
-            operator()(std::int64_t index) const;
+            operator()(int index) const;
 
             TScalar&
-            operator()(std::int64_t index);
+            operator()(int index);
             
             TScalar
             value() const;

@@ -84,43 +84,43 @@ namespace opensolid
         throw PlaceholderError();
     }
 
-    const Matrix1x2&
-    VariantValue::toMatrix1x2() const {
+    const RowMatrix1x2&
+    VariantValue::toRowMatrix1x2() const {
         throw PlaceholderError();
     }
 
-    const IntervalMatrix1x2&
-    VariantValue::toIntervalMatrix1x2() const {
+    const IntervalRowMatrix1x2&
+    VariantValue::toIntervalRowMatrix1x2() const {
         throw PlaceholderError();
     }
 
-    const Matrix2x1&
-    VariantValue::toMatrix2x1() const {
+    const ColMatrix2x1&
+    VariantValue::toColMatrix2x1() const {
         throw PlaceholderError();
     }
 
-    const IntervalMatrix2x1&
-    VariantValue::toIntervalMatrix2x1() const {
+    const IntervalColMatrix2x1&
+    VariantValue::toIntervalColMatrix2x1() const {
         throw PlaceholderError();
     }
 
-    const Matrix1x3&
-    VariantValue::toMatrix1x3() const {
+    const RowMatrix1x3&
+    VariantValue::toRowMatrix1x3() const {
         throw PlaceholderError();
     }
 
-    const IntervalMatrix1x3&
-    VariantValue::toIntervalMatrix1x3() const {
+    const IntervalRowMatrix1x3&
+    VariantValue::toIntervalRowMatrix1x3() const {
         throw PlaceholderError();
     }
 
-    const Matrix3x1&
-    VariantValue::toMatrix3x1() const {
+    const ColMatrix3x1&
+    VariantValue::toColMatrix3x1() const {
         throw PlaceholderError();
     }
 
-    const IntervalMatrix3x1&
-    VariantValue::toIntervalMatrix3x1() const {
+    const IntervalColMatrix3x1&
+    VariantValue::toIntervalColMatrix3x1() const {
         throw PlaceholderError();
     }
 

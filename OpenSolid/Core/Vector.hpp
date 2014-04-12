@@ -44,12 +44,12 @@ namespace opensolid
 {
     inline
     Vector1d::Vector() :
-        detail::DoubleVectorBase<1>(Matrix1x1()) {
+        detail::DoubleVectorBase<1>() {
     }
 
     inline
-    Vector1d::Vector(double x) :
-        detail::DoubleVectorBase<1>(Matrix1x1(x)) {
+    Vector1d::Vector(double value) :
+        detail::DoubleVectorBase<1>(value) {
     }
 
     inline
@@ -59,16 +59,16 @@ namespace opensolid
 
     inline
     Vector2d::Vector() :
-        detail::DoubleVectorBase<2>(Matrix2x1()) {
+        detail::DoubleVectorBase<2>() {
     }
 
     inline
     Vector2d::Vector(double x, double y) :
-        detail::DoubleVectorBase<2>(Matrix2x1(x, y)) {
+        detail::DoubleVectorBase<2>(x, y) {
     }
 
     inline
-    Vector2d::Vector(const Matrix2x1& components) :
+    Vector2d::Vector(const ColMatrix2x1& components) :
         detail::DoubleVectorBase<2>(components) {
     }
 
@@ -85,16 +85,16 @@ namespace opensolid
 
     inline
     Vector3d::Vector() :
-        detail::DoubleVectorBase<3>(Matrix3x1()) {
+        detail::DoubleVectorBase<3>() {
     }
 
     inline
     Vector3d::Vector(double x, double y, double z) :
-        detail::DoubleVectorBase<3>(Matrix3x1(x, y, z)) {
+        detail::DoubleVectorBase<3>(x, y, z) {
     }
 
     inline
-    Vector3d::Vector(const Matrix3x1& components) :
+    Vector3d::Vector(const ColMatrix3x1& components) :
         detail::DoubleVectorBase<3>(components) {
     }
 
@@ -143,12 +143,12 @@ namespace opensolid
 
     inline
     IntervalVector1d::Vector() :
-        detail::IntervalVectorBase<1>(IntervalMatrix1x1(Interval::Empty())) {
+        detail::IntervalVectorBase<1>() {
     }
 
     inline
     IntervalVector1d::Vector(Interval value) :
-        detail::IntervalVectorBase<1>(IntervalMatrix1x1(value)) {
+        detail::IntervalVectorBase<1>(value) {
     }
 
     inline
@@ -158,35 +158,31 @@ namespace opensolid
 
     inline
     IntervalVector2d::Vector() :
-        detail::IntervalVectorBase<2>(
-            IntervalMatrix2x1(Interval::Empty(), Interval::Empty())
-        ) {
+        detail::IntervalVectorBase<2>() {
     }
 
     inline
     IntervalVector2d::Vector(Interval x, Interval y) :
-        detail::IntervalVectorBase<2>(IntervalMatrix2x1(x, y)) {
+        detail::IntervalVectorBase<2>(x, y) {
     }
 
     inline
-    IntervalVector2d::Vector(const IntervalMatrix2x1& components) :
+    IntervalVector2d::Vector(const IntervalColMatrix2x1& components) :
         detail::IntervalVectorBase<2>(components) {
     }
 
     inline
     IntervalVector3d::Vector() :
-        detail::IntervalVectorBase<3>(
-            IntervalMatrix3x1(Interval::Empty(), Interval::Empty(), Interval::Empty())
-        ) {
+        detail::IntervalVectorBase<3>() {
     }
 
     inline
     IntervalVector3d::Vector(Interval x, Interval y, Interval z) :
-        detail::IntervalVectorBase<3>(IntervalMatrix3x1(x, y, z)) {
+        detail::IntervalVectorBase<3>(x, y, z) {
     }
 
     inline
-    IntervalVector3d::Vector(const IntervalMatrix3x1& components) :
+    IntervalVector3d::Vector(const IntervalColMatrix3x1& components) :
         detail::IntervalVectorBase<3>(components) {
     }
 

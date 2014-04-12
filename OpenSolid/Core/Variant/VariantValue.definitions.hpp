@@ -93,35 +93,35 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<double, 1, 2>&
-        toMatrix1x2() const;
+        toRowMatrix1x2() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<Interval, 1, 2>&
-        toIntervalMatrix1x2() const;
+        toIntervalRowMatrix1x2() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<double, 2, 1>&
-        toMatrix2x1() const;
+        toColMatrix2x1() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<Interval, 2, 1>&
-        toIntervalMatrix2x1() const;
+        toIntervalColMatrix2x1() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<double, 1, 3>&
-        toMatrix1x3() const;
+        toRowMatrix1x3() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<Interval, 1, 3>&
-        toIntervalMatrix1x3() const;
+        toIntervalRowMatrix1x3() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<double, 3, 1>&
-        toMatrix3x1() const;
+        toColMatrix3x1() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Matrix<Interval, 3, 1>&
-        toIntervalMatrix3x1() const;
+        toIntervalColMatrix3x1() const;
 
         OPENSOLID_CORE_EXPORT
         virtual const Vector<double, 2>&

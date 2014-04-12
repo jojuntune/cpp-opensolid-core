@@ -34,13 +34,15 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar, int iNumRows, int iNumColumns>
+        template <class TScalar, int iRows, int iCols>
         class MatrixStorage
         {
         private:
-            TScalar _data[iNumRows * iNumColumns];
+            TScalar _data[iRows * iCols];
         public:
-            MatrixStorage(std::size_t size = iNumRows * iNumColumns);
+            MatrixStorage();
+
+            MatrixStorage(int size);
 
             TScalar*
             data();
@@ -55,7 +57,7 @@ namespace opensolid
         private:
             std::vector<TScalar> _data;
         public:
-            DynamicMatrixStorage(std::size_t size);
+            DynamicMatrixStorage(int size);
 
             TScalar*
             data();
@@ -64,20 +66,20 @@ namespace opensolid
             data() const;
         };
 
-        template <class TScalar, int iNumRows>
-        class MatrixStorage<TScalar, iNumRows, -1> :
+        template <class TScalar, int iRows>
+        class MatrixStorage<TScalar, iRows, -1> :
             public DynamicMatrixStorage<TScalar>
         {
         public:
-            MatrixStorage(std::size_t size);
+            MatrixStorage(int size);
         };
 
-        template <class TScalar, int iNumColumns>
-        class MatrixStorage<TScalar, -1, iNumColumns> :
+        template <class TScalar, int iCols>
+        class MatrixStorage<TScalar, -1, iCols> :
             public DynamicMatrixStorage<TScalar>
         {
         public:
-            MatrixStorage(std::size_t size);
+            MatrixStorage(int size);
         };
 
         template <class TScalar>
@@ -85,7 +87,7 @@ namespace opensolid
             public DynamicMatrixStorage<TScalar>
         {
         public:
-            MatrixStorage(std::size_t size);
+            MatrixStorage(int size);
         };
     }
 }

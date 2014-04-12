@@ -22,40 +22,64 @@
 *                                                                                   *
 ************************************************************************************/
 
+#pragma once
+
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Triangle.hpp>
+#include <OpenSolid/Core/MatrixView.declarations.hpp>
 
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Matrix/ColStride.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixDimensions.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
 namespace opensolid
 {
-    double
-    Triangle2d::area() const {
-        Matrix2x2 matrix;
-        matrix.col(0) = vertex(1).components() - vertex(0).components();
-        matrix.col(1) = vertex(2).components() - vertex(0).components();
-        return matrix.determinant() / 2.0;
-    }
+    template <class TScalar, int iRows, int iCols, int iColStride>
+    class MatrixView :
+        public detail::MatrixInterface<MatrixView<TScalar, iRows, iCols, iColStride>>,
+        private detail::MatrixDimensions<iRows, iCols>,
+        private detail::ColStride<iColStride>
+    {
+    private:
+        TScalar* _data;
+    public:
+        MatrixView(TScalar* sourcePtr);
 
-    Triangle2d
-    Triangle2d::Unit() {
-        return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
-    }
+        MatrixView(TScalar* sourcePtr, int size);
 
-    double
-    Triangle3d::area() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
-    }
+        MatrixView(TScalar* sourcePtr, int rows, int cols);
 
-    UnitVector3d
-    Triangle3d::normalVector() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
-    }
+        MatrixView(TScalar* sourcePtr, int rows, int cols, int colStride);
 
-    Plane3d
-    Triangle3d::plane() const {
-        return Plane3d(vertex(0), normalVector());
-    }
+        template <class TOtherDerived>
+        void
+        operator=(const detail::MatrixInterface<TOtherDerived>& other);
+
+        const TScalar*
+        data() const;
+
+        TScalar*
+        data();
+
+        int
+        rows() const;
+
+        int
+        cols() const;
+
+        int
+        size() const;
+
+        int
+        colStride() const;
+    };
+
+    template <class TScalar, int iRows, int iCols, int iColStride>
+    struct MatrixTraits<MatrixView<TScalar, iRows, iCols, iColStride>>
+    {
+        typedef TScalar ScalarType;
+        static const int Rows = iRows;
+        static const int Cols = iCols;
+        static const int ColStride = iColStride;
+    };
 }

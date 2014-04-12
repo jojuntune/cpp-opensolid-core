@@ -22,40 +22,45 @@
 *                                                                                   *
 ************************************************************************************/
 
+#pragma once
+
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/Triangle.hpp>
-
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/UnitVector.hpp>
+#include <OpenSolid/Core/Matrix/ColStride.definitions.hpp>
 
 namespace opensolid
 {
-    double
-    Triangle2d::area() const {
-        Matrix2x2 matrix;
-        matrix.col(0) = vertex(1).components() - vertex(0).components();
-        matrix.col(1) = vertex(2).components() - vertex(0).components();
-        return matrix.determinant() / 2.0;
-    }
+    namespace detail
+    {
+        template <int iColStride>
+        inline
+        ColStride<iColStride>::ColStride() {
+        }
 
-    Triangle2d
-    Triangle2d::Unit() {
-        return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
-    }
+        template <int iColStride>
+        inline
+        ColStride<iColStride>::ColStride(int colStride) {
+            assert(colStride == iColStride);
+        }
 
-    double
-    Triangle3d::area() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
-    }
+        template <int iColStride>
+        inline
+        int
+        ColStride<iColStride>::colStride() const {
+            return iColStride;
+        }
 
-    UnitVector3d
-    Triangle3d::normalVector() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
-    }
+        inline
+        ColStride<-1>::ColStride(int colStride) :
+            _colStride(colStride) {
 
-    Plane3d
-    Triangle3d::plane() const {
-        return Plane3d(vertex(0), normalVector());
+            assert(colStride > 0);
+        }
+
+        inline
+        int
+        ColStride<-1>::colStride() const {
+            return _colStride;
+        }
     }
 }

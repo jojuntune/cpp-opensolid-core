@@ -106,7 +106,7 @@ namespace opensolid
         inverseMatrix() const;
         
         const Point<iNumDimensions>
-        point(double x) const;
+        point(double value) const;
         
         const Point<iNumDimensions>
         point(double x, double y) const;
@@ -115,7 +115,7 @@ namespace opensolid
         point(double x, double y, double z) const;
 
         const Vector<double, iNumDimensions>
-        vector(double x) const;
+        vector(double value) const;
         
         const Vector<double, iNumDimensions>
         vector(double x, double y) const;

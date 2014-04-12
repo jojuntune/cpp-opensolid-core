@@ -52,6 +52,24 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        PointBase<iNumDimensions>::PointBase(double value) :
+            CartesianBase<double, iNumDimensions>(value) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        PointBase<iNumDimensions>::PointBase(double x, double y) :
+            CartesianBase<double, iNumDimensions>(x, y) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        PointBase<iNumDimensions>::PointBase(double x, double y, double z) :
+            CartesianBase<double, iNumDimensions>(x, y, z) {
+        }
+
+        template <int iNumDimensions>
+        inline
         PointBase<iNumDimensions>::PointBase(const Matrix<double, iNumDimensions, 1>& components) :
             detail::CartesianBase<double, iNumDimensions>(components) {
         }

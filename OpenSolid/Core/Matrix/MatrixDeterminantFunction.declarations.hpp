@@ -22,40 +22,15 @@
 *                                                                                   *
 ************************************************************************************/
 
+#pragma once
+
 #include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/Triangle.hpp>
-
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/UnitVector.hpp>
 
 namespace opensolid
 {
-    double
-    Triangle2d::area() const {
-        Matrix2x2 matrix;
-        matrix.col(0) = vertex(1).components() - vertex(0).components();
-        matrix.col(1) = vertex(2).components() - vertex(0).components();
-        return matrix.determinant() / 2.0;
-    }
-
-    Triangle2d
-    Triangle2d::Unit() {
-        return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
-    }
-
-    double
-    Triangle3d::area() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).norm() / 2.0;
-    }
-
-    UnitVector3d
-    Triangle3d::normalVector() const {
-        return (vertex(1) - vertex(0)).cross(vertex(2) - vertex(0)).normalized();
-    }
-
-    Plane3d
-    Triangle3d::plane() const {
-        return Plane3d(vertex(0), normalVector());
+    namespace detail
+    {
+        template <int iRows, int iCols>
+        struct MatrixDeterminantFunction;
     }
 }

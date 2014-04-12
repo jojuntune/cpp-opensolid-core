@@ -69,11 +69,10 @@ namespace opensolid
 
     double
     Tetrahedron3d::volume() const {
-        Matrix3x3 matrix = Matrix3x3::FromColumns(
-            vertex(1).components() - vertex(0).components(),
-            vertex(2).components() - vertex(0).components(),
-            vertex(3).components() - vertex(0).components()
-        );
+        Matrix3x3 matrix;
+        matrix.col(0) = vertex(1).components() - vertex(0).components();
+        matrix.col(1) = vertex(2).components() - vertex(0).components();
+        matrix.col(2) = vertex(3).components() - vertex(0).components();
         return matrix.determinant() / 6.0;
     }
 

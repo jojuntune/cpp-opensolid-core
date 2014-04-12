@@ -82,7 +82,11 @@ public:
     }
 
     void testFold() {
-        Matrix3x1 values(3, 4, 5);
+        ColMatrix3x1 values;
+        values(0) = 3;
+        values(1) = 4;
+        values(2) = 5;
+
         double product = values.fold(
             1.0,
             [] (double result, double value) -> double {
@@ -90,12 +94,20 @@ public:
             }
         );
         TS_ASSERT_EQUALS(product, 60);
-        TS_ASSERT_EQUALS(product, values.product());
+        TS_ASSERT_EQUALS(product, values.prod());
     }
 
     void testBinaryFold() {
-        Matrix3x1 values(10, 20, 30);
-        IntervalMatrix3x1 intervals(Interval(9, 11), Interval(18, 19), Interval(29, 31));
+        ColMatrix3x1 values;
+        values(0) = 10;
+        values(1) = 20;
+        values(2) = 30;
+
+        IntervalColMatrix3x1 intervals;
+        intervals(0) = Interval(9, 11);
+        intervals(1) = Interval(18, 19);
+        intervals(2) = Interval(29, 31);
+        
         int containmentCount = intervals.binaryFold(
             values,
             0,
@@ -107,13 +119,19 @@ public:
     }
 
     void testCwiseSquared() {
-        Matrix2x1 doubleMatrix(-1, 3);
-        Matrix2x1 squaredDoubles = doubleMatrix.cwiseSquared();
+        ColMatrix2x1 doubleMatrix;
+        doubleMatrix(0) = -1;
+        doubleMatrix(1) = 3;
+
+        ColMatrix2x1 squaredDoubles = doubleMatrix.cwiseSquared();
         TS_ASSERT_EQUALS(squaredDoubles(0), 1);
         TS_ASSERT_EQUALS(squaredDoubles(1), 9);
 
-        IntervalMatrix2x1 intervalMatrix(Interval(2, 3), Interval(-1, 1));
-        IntervalMatrix2x1 squaredIntervals = intervalMatrix.cwiseSquared();
+        IntervalColMatrix2x1 intervalMatrix;
+        intervalMatrix(0) = Interval(2, 3);
+        intervalMatrix(1) = Interval(-1, 1);
+
+        IntervalColMatrix2x1 squaredIntervals = intervalMatrix.cwiseSquared();
         TS_ASSERT_EQUALS(squaredIntervals(0).lowerBound(), 4);
         TS_ASSERT_EQUALS(squaredIntervals(0).upperBound(), 9);
         TS_ASSERT_EQUALS(squaredIntervals(1).lowerBound(), 0);
@@ -121,9 +139,15 @@ public:
     }
 
     void testCwiseQuotient() {
-        Matrix1x2 doubleMatrix(1, 2);
-        IntervalMatrix1x2 intervalMatrix(Interval(2, 3), Interval(4, 5));
-        IntervalMatrix1x2 quotients = doubleMatrix.cwiseQuotient(intervalMatrix);
+        RowMatrix1x2 doubleMatrix;
+        doubleMatrix(0) = 1;
+        doubleMatrix(1) = 2;
+
+        IntervalRowMatrix1x2 intervalMatrix;
+        intervalMatrix(0) = Interval(2, 3);
+        intervalMatrix(1) = Interval(4, 5);
+        
+        IntervalRowMatrix1x2 quotients = doubleMatrix.cwiseQuotient(intervalMatrix);
         TS_ASSERT(quotients(0).lowerBound() - 1.0 / 3.0 == Zero());
         TS_ASSERT(quotients(0).upperBound() - 1.0 / 2.0 == Zero());
         TS_ASSERT(quotients(1).lowerBound() - 2.0 / 5.0 == Zero());
@@ -133,19 +157,24 @@ public:
     void testMatrixProduct() {
         // 1 3 5
         // 2 4 6
-        Matrix2x3 a = Matrix2x3::FromColumns(
-            Matrix2x1(1, 2),
-            Matrix2x1(3, 4),
-            Matrix2x1(5, 6)
-        );
+        Matrix2x3 a;
+        a(0, 0) = 1;
+        a(1, 0) = 2;
+        a(0, 1) = 3;
+        a(1, 1) = 4;
+        a(0, 2) = 5;
+        a(1, 2) = 6;
 
         // 1 4
         // 2 5
         // 3 6
-        Matrix3x2 b = Matrix3x2::FromColumns(
-            Matrix3x1(1, 2, 3),
-            Matrix3x1(4, 5, 6)
-        );
+        Matrix3x2 b;
+        b(0, 0) = 1;
+        b(1, 0) = 2;
+        b(2, 0) = 3;
+        b(0, 1) = 4;
+        b(1, 1) = 5;
+        b(2, 1) = 6;
 
         // 22 49
         // 28 64

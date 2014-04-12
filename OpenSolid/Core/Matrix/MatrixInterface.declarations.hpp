@@ -28,13 +28,13 @@
 
 namespace opensolid
 {
+    template <class TMatrix>
+    struct MatrixTraits;
+
     namespace detail
     {
         template <class TDerived>
         class MatrixInterface;
-
-        template <class TMatrix>
-        struct MatrixTraits;
 
         template <class TUnaryFunction, class TScalar>
         struct MappedScalarType;
@@ -51,6 +51,15 @@ namespace opensolid
         template <int iFirstSize, int iSecondSize>
         struct CheckCompatibleSizes;
 
+        template <int iFirstRows, int iSecondRows>
+        struct CheckCompatibleRows;
+
+        template <int iFirstCols, int iSecondCols>
+        struct CheckCompatibleCols;
+
+        template <class TFirstMatrix, class TSecondMatrix>
+        struct CheckCompatibleMatrices;
+
         template <int iFirstSize, int iSecondSize>
         struct CommonSize;
 
@@ -59,5 +68,8 @@ namespace opensolid
 
         template <class TFirstMatrix, class TSecondMatrix>
         struct CommonCols;
+
+        template <class TFirst, class TSecond>
+        struct CommonScalar;
     }
 }

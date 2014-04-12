@@ -46,6 +46,12 @@ namespace opensolid
         protected:
             IntervalVectorBase();
 
+            IntervalVectorBase(Interval value);
+
+            IntervalVectorBase(Interval x, Interval y);
+
+            IntervalVectorBase(Interval x, Interval y, Interval z);
+
             IntervalVectorBase(const Matrix<Interval, iNumDimensions, 1>& components);
 
             IntervalVectorBase(const Interval* sourcePtr);

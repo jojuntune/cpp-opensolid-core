@@ -48,6 +48,12 @@ namespace opensolid
         protected:
             PointBase();
 
+            PointBase(double value);
+
+            PointBase(double x, double y);
+
+            PointBase(double x, double y, double z);
+
             PointBase(const Matrix<double, iNumDimensions, 1>& components);
 
             PointBase(const double* sourcePtr);

@@ -45,6 +45,12 @@ namespace opensolid
         protected:
             VectorBase();
 
+            VectorBase(TScalar value);
+
+            VectorBase(TScalar x, TScalar y);
+
+            VectorBase(TScalar x, TScalar y, TScalar z);
+
             VectorBase(const Matrix<TScalar, iNumDimensions, 1>& components);
 
             VectorBase(const TScalar* sourcePtr);

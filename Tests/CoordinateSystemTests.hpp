@@ -131,10 +131,16 @@ public:
     }
     
     void testNonOrthogonal() {
-        CoordinateSystem3d coordinateSystem(
-            Point3d(1, 2, 3),
-            Matrix3x3(1, 0, 0, 1, 1, 0, 1, 1, 1)
-        );
+        Matrix3x3 upperTriangularMatrix;
+        upperTriangularMatrix(0, 0) = 1;
+        upperTriangularMatrix(0, 1) = 1;
+        upperTriangularMatrix(1, 1) = 1;
+        upperTriangularMatrix(0, 2) = 1;
+        upperTriangularMatrix(1, 2) = 1;
+        upperTriangularMatrix(2, 2) = 1;
+
+        CoordinateSystem3d coordinateSystem(Point3d(1, 2, 3), upperTriangularMatrix);
+        
         TS_ASSERT((coordinateSystem * Point3d(1, 1, 1) - Point3d(4, 4, 4)).isZero());
         TS_ASSERT((Point3d(4, 4, 4) / coordinateSystem - Point3d(1, 1, 1)).isZero());
     }

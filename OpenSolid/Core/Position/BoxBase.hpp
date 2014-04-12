@@ -53,6 +53,24 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        BoxBase<iNumDimensions>::BoxBase(Interval value) :
+            CartesianBase<Interval, iNumDimensions>(value) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        BoxBase<iNumDimensions>::BoxBase(Interval x, Interval y) :
+            CartesianBase<Interval, iNumDimensions>(x, y) {
+        }
+
+        template <int iNumDimensions>
+        inline
+        BoxBase<iNumDimensions>::BoxBase(Interval x, Interval y, Interval z) :
+            CartesianBase<Interval, iNumDimensions>(x, y, z) {
+        }
+
+        template <int iNumDimensions>
+        inline
         BoxBase<iNumDimensions>::BoxBase(const Matrix<Interval, iNumDimensions, 1>& components) :
             CartesianBase<Interval, iNumDimensions>(components) {
         }

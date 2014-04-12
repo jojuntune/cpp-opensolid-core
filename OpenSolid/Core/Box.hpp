@@ -44,7 +44,7 @@ namespace opensolid
 
     inline
     Box1d::Box(Interval value) :
-        detail::BoxBase<1>(IntervalMatrix1x1(value)) {        
+        detail::BoxBase<1>(value) {        
     }
 
     inline
@@ -80,7 +80,7 @@ namespace opensolid
 
     inline
     Box2d::Box(Interval x, Interval y) :
-        detail::BoxBase<2>(IntervalMatrix2x1(x, y)) {        
+        detail::BoxBase<2>(x, y) {        
     }
 
     inline
@@ -89,7 +89,7 @@ namespace opensolid
     }
 
     inline
-    Box2d::Box(const IntervalMatrix2x1& components) :
+    Box2d::Box(const IntervalColMatrix2x1& components) :
         detail::BoxBase<2>(components) {
     }
 
@@ -116,7 +116,7 @@ namespace opensolid
 
     inline
     Box3d::Box(Interval x, Interval y, Interval z) :
-        detail::BoxBase<3>(IntervalMatrix3x1(x, y, z)) {        
+        detail::BoxBase<3>(x, y, z) {        
     }
 
     inline
@@ -125,7 +125,7 @@ namespace opensolid
     }
 
     inline
-    Box3d::Box(const IntervalMatrix3x1& components) :
+    Box3d::Box(const IntervalColMatrix3x1& components) :
         detail::BoxBase<3>(components) {
     }
 
