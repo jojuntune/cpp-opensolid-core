@@ -252,4 +252,68 @@ public:
         TS_ASSERT_EQUALS(identity.cols(), 3);
         TS_ASSERT(identity.isIdentity());
     }
+
+    void testDynamicMap() {
+        MatrixXxX matrix(3, 3);
+        for (int index = 0; index < 9; ++index) {
+            matrix(index) = index;
+        }
+        RowMatrix1x3 mappedRow = matrix.row(1).map(
+            [] (double coeff) {
+                return 2 * coeff;
+            }
+        );
+        TS_ASSERT(mappedRow(0) - 2 == Zero());
+        TS_ASSERT(mappedRow(1) - 8 == Zero());
+        TS_ASSERT(mappedRow(2) - 14 == Zero());
+    }
+
+    void testDynamicBinaryMap() {
+        MatrixXxX firstMatrix(2, 3);
+        for (int index = 0; index < 6; ++index) {
+            firstMatrix(index) = index;
+        }
+        
+        MatrixXxX secondMatrix(2, 3);
+        for (int index = 0; index < 6; ++index) {
+            secondMatrix(index) = 2 * index;
+        }
+
+        Matrix2x3 meanMatrix = firstMatrix.binaryMap(
+            secondMatrix,
+            [] (double firstCoeff, double secondCoeff) {
+                return firstCoeff + (secondCoeff - firstCoeff) / 2;
+            }
+        );
+        for (int index = 0; index < 6; ++index) {
+            TS_ASSERT(meanMatrix(index) - 1.5 * index == Zero());
+        }
+    }
+
+    void testDynamicProduct() {
+        // 1 3 5
+        // 2 4 6
+        MatrixXxX firstMatrix(2, 3);
+        for (int index = 0; index < 6; ++index) {
+            firstMatrix(index) = index + 1;
+        }
+
+        // 1 4
+        // 2 5
+        // 3 6
+        Matrix3x2 secondMatrix;
+        for (int index = 0; index < 6; ++index) {
+            secondMatrix(index) = index + 1;
+        }
+
+        // 22 49
+        // 28 64
+        MatrixXxX result = firstMatrix * secondMatrix;
+        TS_ASSERT_EQUALS(result.rows(), 2);
+        TS_ASSERT_EQUALS(result.cols(), 2);
+        TS_ASSERT(result(0, 0) - 22 == Zero());
+        TS_ASSERT(result(1, 0) - 28 == Zero());
+        TS_ASSERT(result(0, 1) - 49 == Zero());
+        TS_ASSERT(result(1, 1) - 64 == Zero());
+    }
 };
