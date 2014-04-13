@@ -219,4 +219,37 @@ public:
         TS_ASSERT_EQUALS(b(0, 1), 3);
         TS_ASSERT_EQUALS(b(1, 1), 4);
     }
+
+    void testDynamicMatrixRow() {
+        MatrixXxX matrix(3, 11);
+        for (int i = 0; i <= 10; ++i) {
+            matrix(0, i) = 1 + i / 10.0;
+            matrix(1, i) = 2 + i / 10.0;
+            matrix(2, i) = 3 + i / 10.0;
+        }
+
+        RowMatrix1xX row = matrix.row(1);
+        for (int i = 0; i <= 10; ++i) {
+            TS_ASSERT(row(i) - (2 + i / 10.0) == Zero());
+        }
+    }
+
+    void testDynamicMatrixInversion() {
+        MatrixXxX matrix(3, 3);
+        matrix(0, 0) = 1;
+        matrix(0, 1) = 1;
+        matrix(1, 1) = 1;
+        matrix(0, 2) = 1;
+        matrix(1, 2) = 1;
+        matrix(2, 2) = 1;
+
+        MatrixXxX inverse = matrix.inverse();
+        TS_ASSERT_EQUALS(inverse.rows(), 3);
+        TS_ASSERT_EQUALS(inverse.cols(), 3);
+
+        MatrixXxX identity = inverse * matrix;
+        TS_ASSERT_EQUALS(identity.rows(), 3);
+        TS_ASSERT_EQUALS(identity.cols(), 3);
+        TS_ASSERT(identity.isIdentity());
+    }
 };
