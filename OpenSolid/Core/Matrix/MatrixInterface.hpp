@@ -960,7 +960,7 @@ namespace opensolid
         CheckCompatibleRows<iFirstRows, iSecondRows>::CheckCompatibleRows(
             int firstRows,
             int secondRows
-        ) : CheckCompatibleSizes<iFirstRows, iSecondRows>(iFirstRows, iSecondRows) {
+        ) : CheckCompatibleSizes<iFirstRows, iSecondRows>(firstRows, secondRows) {
         }
 
         template <int iFirstCols, int iSecondCols>
@@ -973,7 +973,7 @@ namespace opensolid
         CheckCompatibleCols<iFirstCols, iSecondCols>::CheckCompatibleCols(
             int firstCols,
             int secondCols
-        ) : CheckCompatibleSizes<iFirstCols, iSecondCols>(iFirstCols, iSecondCols) {
+        ) : CheckCompatibleSizes<iFirstCols, iSecondCols>(firstCols, secondCols) {
         }
 
         template <class TFirstMatrix, class TSecondMatrix>
