@@ -185,4 +185,38 @@ public:
         TS_ASSERT(c(0, 1) - 49 == Zero());
         TS_ASSERT(c(1, 1) - 64 == Zero());
     }
+
+    void testDynamicMatrixConversion1() {
+        Matrix2x3 a;
+        a(0, 0) = 1;
+        a(1, 0) = 2;
+        a(0, 1) = 3;
+        a(1, 1) = 4;
+        a(0, 2) = 5;
+        a(1, 2) = 6;
+
+        MatrixXxX b = a;
+        TS_ASSERT_EQUALS(b.rows(), 2);
+        TS_ASSERT_EQUALS(b.cols(), 3);
+        TS_ASSERT_EQUALS(b(0, 0), 1);
+        TS_ASSERT_EQUALS(b(1, 0), 2);
+        TS_ASSERT_EQUALS(b(0, 1), 3);
+        TS_ASSERT_EQUALS(b(1, 1), 4);
+        TS_ASSERT_EQUALS(b(0, 2), 5);
+        TS_ASSERT_EQUALS(b(1, 2), 6);
+    }
+
+    void testDynamicMatrixConversion2() {
+        MatrixXxX a(2, 2);
+        a(0, 0) = 1;
+        a(1, 0) = 2;
+        a(0, 1) = 3;
+        a(1, 1) = 4;
+
+        Matrix2x2 b = a;
+        TS_ASSERT_EQUALS(b(0, 0), 1);
+        TS_ASSERT_EQUALS(b(1, 0), 2);
+        TS_ASSERT_EQUALS(b(0, 1), 3);
+        TS_ASSERT_EQUALS(b(1, 1), 4);
+    }
 };
