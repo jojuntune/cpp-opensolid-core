@@ -89,11 +89,11 @@ namespace opensolid
             const MatrixInterface<TDerived>& matrix
         ) const {
             if (matrix.rows() == 1 && matrix.cols() == 1) {
-                return MatrixDeterminantFunction<1, 1>(matrix);
+                return MatrixDeterminantFunction<1, 1>()(matrix);
             } else if (matrix.rows() == 2 && matrix.cols() == 2) {
-                return MatrixDeterminantFunction<2, 2>(matrix);
+                return MatrixDeterminantFunction<2, 2>()(matrix);
             } else if (matrix.rows() == 3 && matrix.cols() == 3) {
-                return MatrixDeterminantFunction<3, 3>(matrix);
+                return MatrixDeterminantFunction<3, 3>()(matrix);
             } else {
                 assert(false);
                 return typename MatrixTraits<TDerived>::ScalarType();

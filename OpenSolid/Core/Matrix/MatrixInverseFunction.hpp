@@ -135,11 +135,11 @@ namespace opensolid
         Matrix<typename MatrixTraits<TDerived>::ScalarType, -1, -1>
         MatrixInverseFunction<-1, -1>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.rows() == 1 && matrix.cols() == 1) {
-                return MatrixInverseFunction<1, 1>(matrix);
+                return MatrixInverseFunction<1, 1>()(matrix);
             } else if (matrix.rows() == 2 && matrix.cols() == 2) {
-                return MatrixInverseFunction<2, 2>(matrix);
+                return MatrixInverseFunction<2, 2>()(matrix);
             } else if (matrix.rows() == 3 && matrix.cols() == 3) {
-                return MatrixInverseFunction<3, 3>(matrix);
+                return MatrixInverseFunction<3, 3>()(matrix);
             } else {
                 assert(false);
                 return Matrix<typename MatrixTraits<TDerived>::ScalarType, -1, -1>(
