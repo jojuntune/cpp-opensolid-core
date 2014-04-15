@@ -451,7 +451,7 @@ namespace opensolid
                         const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
                         if (equalityFunction(*anchorItemPtr, *candidateItemPtr, precision)) {
                             std::size_t candidateItemIndex = candidateItemPtr - firstItemPtr;
-                            assert(mapping[candidateItemIndex] == -1);
+                            assert(mapping[candidateItemIndex] == std::size_t(-1));
                             mapping[candidateItemIndex] = uniqueIndex;
                         }
                         candidateNodePtr = candidateNodePtr->nextPtr;
@@ -481,7 +481,7 @@ namespace opensolid
         } else {
             // Initialize unique item mapping
             mapping.resize(size());
-            std::fill(mapping.begin(), mapping.end(), -1);
+            std::fill(mapping.begin(), mapping.end(), std::size_t(-1));
             std::size_t uniqueIndex = 0;
 
             // Get first item for calculating item indices
@@ -497,7 +497,7 @@ namespace opensolid
             do {
                 const TItem* itemPtr = nodePtr->itemPtr;
                 std::size_t itemIndex = itemPtr - firstItemPtr;
-                if (mapping[itemIndex] == -1) {
+                if (mapping[itemIndex] == std::size_t(-1)) {
                     results.push_back(*itemPtr);
                     mapping[itemIndex] = uniqueIndex;
                     detail::markDuplicateItems(
