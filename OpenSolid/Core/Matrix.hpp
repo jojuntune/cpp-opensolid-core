@@ -54,8 +54,8 @@ namespace opensolid
     template <class TScalar, int iRows, int iCols>
     inline
     Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr) {
-        for (int index = 0; index < size(); ++index) {
-            data()[index] = sourcePtr[index];
+        for (int index = 0; index < this->size(); ++index) {
+            this->data()[index] = sourcePtr[index];
         }
     }
 
@@ -64,8 +64,8 @@ namespace opensolid
     Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr, int size) :
         detail::MatrixBase<TScalar, iRows, iCols>(size) {
 
-        for (int index = 0; index < size; ++index) {
-            data()[index] = sourcePtr[index];
+        for (int index = 0; index < this->size(); ++index) {
+            this->data()[index] = sourcePtr[index];
         }
     }
 
@@ -74,8 +74,8 @@ namespace opensolid
     Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr, int rows, int cols) :
         detail::MatrixBase<TScalar, iRows, iCols>(rows, cols) {
 
-        for (int index = 0; index < size(); ++index) {
-            data()[index] = sourcePtr[index];
+        for (int index = 0; index < this->size(); ++index) {
+            this->data()[index] = sourcePtr[index];
         }
     }
 
