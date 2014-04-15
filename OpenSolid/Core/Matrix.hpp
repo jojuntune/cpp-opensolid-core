@@ -29,9 +29,7 @@
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 
 #include <OpenSolid/Core/Interval.hpp>
-#include <OpenSolid/Core/Matrix/MatrixDimensions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixInterface.hpp>
-#include <OpenSolid/Core/Matrix/MatrixStorage.hpp>
+#include <OpenSolid/Core/Matrix/MatrixBase.hpp>
 #include <OpenSolid/Core/MatrixView.hpp>
 
 namespace opensolid
@@ -44,15 +42,13 @@ namespace opensolid
     template <class TScalar, int iRows, int iCols>
     inline
     Matrix<TScalar, iRows, iCols>::Matrix(int size) :
-        detail::MatrixDimensions<iRows, iCols>(size),
-        detail::MatrixStorage<TScalar, iRows, iCols>(size) {
+        detail::MatrixBase<TScalar, iRows, iCols>(size) {
     }
 
     template <class TScalar, int iRows, int iCols>
     inline
     Matrix<TScalar, iRows, iCols>::Matrix(int rows, int cols) :
-        detail::MatrixDimensions<iRows, iCols>(rows, cols),
-        detail::MatrixStorage<TScalar, iRows, iCols>(rows * cols) {
+        detail::MatrixBase<TScalar, iRows, iCols>(rows, cols) {
     }
 
     template <class TScalar, int iRows, int iCols>
@@ -66,8 +62,7 @@ namespace opensolid
     template <class TScalar, int iRows, int iCols>
     inline
     Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr, int size) :
-        detail::MatrixDimensions<iRows, iCols>(size),
-        detail::MatrixStorage<TScalar, iRows, iCols>(size) {
+        detail::MatrixBase<TScalar, iRows, iCols>(size) {
 
         for (int index = 0; index < size; ++index) {
             data()[index] = sourcePtr[index];
@@ -76,12 +71,8 @@ namespace opensolid
 
     template <class TScalar, int iRows, int iCols>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix(
-        const TScalar* sourcePtr,
-        int rows,
-        int cols
-    ) : detail::MatrixDimensions<iRows, iCols>(rows, cols),
-        detail::MatrixStorage<TScalar, iRows, iCols>(rows * cols) {
+    Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr, int rows, int cols) :
+        detail::MatrixBase<TScalar, iRows, iCols>(rows, cols) {
 
         for (int index = 0; index < size(); ++index) {
             data()[index] = sourcePtr[index];
@@ -91,8 +82,7 @@ namespace opensolid
     template <class TScalar, int iRows, int iCols> template <class TOtherDerived>
     inline
     Matrix<TScalar, iRows, iCols>::Matrix(const detail::MatrixInterface<TOtherDerived>& other) :
-        detail::MatrixDimensions<iRows, iCols>(other.rows(), other.cols()),
-        detail::MatrixStorage<TScalar, iRows, iCols>(other.size()) {
+        detail::MatrixBase<TScalar, iRows, iCols>(other.rows(), other.cols()) {
 
         detail::MatrixInterface<Matrix<TScalar, iRows, iCols>>::operator=(other);
     }
@@ -102,48 +92,6 @@ namespace opensolid
     void
     Matrix<TScalar, iRows, iCols>::operator=(const detail::MatrixInterface<TOtherDerived>& other) {
         detail::MatrixInterface<Matrix<TScalar, iRows, iCols>>::operator=(other);
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    const TScalar*
-    Matrix<TScalar, iRows, iCols>::data() const {
-        return detail::MatrixStorage<TScalar, iRows, iCols>::data();
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    TScalar*
-    Matrix<TScalar, iRows, iCols>::data() {
-        return detail::MatrixStorage<TScalar, iRows, iCols>::data();
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    int
-    Matrix<TScalar, iRows, iCols>::rows() const {
-        return detail::MatrixDimensions<iRows, iCols>::rows();
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    int
-    Matrix<TScalar, iRows, iCols>::cols() const {
-        return detail::MatrixDimensions<iRows, iCols>::cols();
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    int
-    Matrix<TScalar, iRows, iCols>::size() const {
-        return detail::MatrixDimensions<iRows, iCols>::size();
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    int
-    Matrix<TScalar, iRows, iCols>::colStride() const {
-        return rows();
     }
 
     template <class TScalar, int iRows, int iCols>

@@ -29,8 +29,6 @@
 #include <OpenSolid/Core/MatrixView.definitions.hpp>
 
 #include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/Matrix/ColStride.hpp>
-#include <OpenSolid/Core/Matrix/MatrixDimensions.hpp>
 #include <OpenSolid/Core/Matrix/MatrixInterface.hpp>
 
 namespace opensolid
@@ -38,14 +36,38 @@ namespace opensolid
     template <class TScalar, int iRows, int iCols, int iColStride>
     inline
     MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(TScalar* sourcePtr) :
-        _data(sourcePtr) {
+        _data(sourcePtr),
+        _rows(iRows),
+        _cols(iCols),
+        _size(iRows * iCols),
+        _colStride(iColStride) {
+
+        static_assert(iRows > 0, "Number of rows must be provided");
+        static_assert(iCols > 0, "Number of columns must be provided");
+        static_assert(iColStride > 0, "Column stride must be provided");
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
     inline
     MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(TScalar* sourcePtr, int size) :
-        detail::MatrixDimensions<iRows, iCols>(size),
-        _data(sourcePtr) {
+        _data(sourcePtr),
+        _rows(iRows == 1 ? 1 : size),
+        _cols(iCols == 1 ? 1 : size),
+        _size(size),
+        _colStride(iColStride) {
+
+        static_assert(
+            iRows == 1 || iCols == 1,
+            "Only row or column matrix views can be initialized with a single size"
+        );
+        static_assert(iColStride > 0, "Column stride must be provided");
+
+        assert(
+            (iRows == 1 && (size == iCols || iCols == -1)) ||
+            (iCols == 1 && (size == iRows || iRows == -1))
+        );
+
+        assert(size > 0);
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
@@ -54,8 +76,19 @@ namespace opensolid
         TScalar* sourcePtr,
         int rows,
         int cols
-    ) : detail::MatrixDimensions<iRows, iCols>(rows, cols),
-        _data(sourcePtr) {
+    ) : _data(sourcePtr),
+        _rows(rows),
+        _cols(cols),
+        _size(rows * cols),
+        _colStride(iColStride) {
+
+        static_assert(iColStride > 0, "Column stride must be provided");
+
+        assert(rows == iRows || iRows == -1);
+        assert(cols == iCols || iCols == -1);
+
+        assert(rows > 0);
+        assert(cols > 0);
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
@@ -65,9 +98,19 @@ namespace opensolid
         int rows,
         int cols,
         int colStride
-    ) : detail::MatrixDimensions<iRows, iCols>(rows, cols),
-        detail::ColStride<iColStride>(colStride),
-        _data(sourcePtr) {
+    ) : _data(sourcePtr),
+        _rows(rows),
+        _cols(cols),
+        _size(rows * cols),
+        _colStride(colStride) {
+
+        assert(rows == iRows || iRows == -1);
+        assert(cols == iCols || iCols == -1);
+        assert(colStride == iColStride || iColStride == -1);
+
+        assert(rows > 0);
+        assert(cols > 0);
+        assert(colStride > 0);
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride> template <class TOtherDerived>
@@ -97,27 +140,27 @@ namespace opensolid
     inline
     int
     MatrixView<TScalar, iRows, iCols, iColStride>::rows() const {
-        return detail::MatrixDimensions<iRows, iCols>::rows();
+        return _rows;
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
     inline
     int
     MatrixView<TScalar, iRows, iCols, iColStride>::cols() const {
-        return detail::MatrixDimensions<iRows, iCols>::cols();
+        return _cols;
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
     inline
     int
     MatrixView<TScalar, iRows, iCols, iColStride>::size() const {
-        return detail::MatrixDimensions<iRows, iCols>::size();
+        return _size;
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
     inline
     int
     MatrixView<TScalar, iRows, iCols, iColStride>::colStride() const {
-        return detail::ColStride<iColStride>::colStride();
+        return _colStride;
     }
 }

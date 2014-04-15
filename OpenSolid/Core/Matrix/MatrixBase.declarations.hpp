@@ -26,60 +26,11 @@
 
 #include <OpenSolid/config.hpp>
 
-#include <OpenSolid/Core/MatrixView.declarations.hpp>
-
-#include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
-
 namespace opensolid
 {
-    template <class TScalar, int iRows, int iCols, int iColStride>
-    class MatrixView :
-        public detail::MatrixInterface<MatrixView<TScalar, iRows, iCols, iColStride>>
+    namespace detail
     {
-    private:
-        TScalar* _data;
-        int _rows;
-        int _cols;
-        int _size;
-        int _colStride;
-    public:
-        MatrixView(TScalar* sourcePtr);
-
-        MatrixView(TScalar* sourcePtr, int size);
-
-        MatrixView(TScalar* sourcePtr, int rows, int cols);
-
-        MatrixView(TScalar* sourcePtr, int rows, int cols, int colStride);
-
-        template <class TOtherDerived>
-        void
-        operator=(const detail::MatrixInterface<TOtherDerived>& other);
-
-        const TScalar*
-        data() const;
-
-        TScalar*
-        data();
-
-        int
-        rows() const;
-
-        int
-        cols() const;
-
-        int
-        size() const;
-
-        int
-        colStride() const;
-    };
-
-    template <class TScalar, int iRows, int iCols, int iColStride>
-    struct MatrixTraits<MatrixView<TScalar, iRows, iCols, iColStride>>
-    {
-        typedef TScalar ScalarType;
-        static const int Rows = iRows;
-        static const int Cols = iCols;
-        static const int ColStride = iColStride;
-    };
+        template <class TScalar, int iRows, int iCols>
+        class MatrixBase;
+    }
 }
