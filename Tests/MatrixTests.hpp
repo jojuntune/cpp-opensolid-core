@@ -35,6 +35,30 @@ using namespace opensolid;
 class MatrixTests : public CxxTest::TestSuite
 {
 public:
+    void testLayout() {
+        static_assert(sizeof(Matrix1x1) == sizeof(double), "Matrix1x1 is not compact");
+        static_assert(sizeof(RowMatrix1x3) == 3 * sizeof(double), "RowMatrix1x3 is not compact");
+        static_assert(sizeof(ColMatrix3x1) == 3 * sizeof(double), "ColMatrix3x1 is not compact");
+        static_assert(sizeof(Matrix3x3) == 9 * sizeof(double), "Matrix3x3 is not compact");
+
+        static_assert(
+            sizeof(IntervalMatrix1x1) == sizeof(Interval),
+            "IntervalMatrix1x1 is not compact"
+        );
+        static_assert(
+            sizeof(IntervalRowMatrix1x3) == 3 * sizeof(Interval),
+            "IntervalRowMatrix1x3 is not compact"
+        );
+        static_assert(
+            sizeof(IntervalColMatrix3x1) == 3 * sizeof(Interval),
+            "IntervalColMatrix3x1 is not compact"
+        );
+        static_assert(
+            sizeof(IntervalMatrix3x3) == 9 * sizeof(Interval),
+            "IntervalMatrix3x3 is not compact"
+        );
+    }
+
     void testInversion2d() {
         for (int i = 0; i < 1000; ++i) {
             Matrix2x2 matrix = Matrix2x2::Random();
