@@ -45,7 +45,7 @@ namespace opensolid
         {
         private:
             const TCollection* _collection;
-            std::int64_t _index;
+            std::size_t _index;
 
             friend class boost::iterator_core_access;
 
@@ -56,7 +56,7 @@ namespace opensolid
             decrement();
 
             void
-            advance(std::int64_t distance);
+            advance(std::ptrdiff_t distance);
 
             std::ptrdiff_t
             distance_to(const IndexIterator<TCollection>& other) const;
@@ -67,7 +67,7 @@ namespace opensolid
             typename ItemReferenceType<TCollection>::Type
             dereference() const;
 
-            IndexIterator(const TCollection* collection, std::int64_t index);
+            IndexIterator(const TCollection* collection, std::size_t index);
         public:
             static
             IndexIterator

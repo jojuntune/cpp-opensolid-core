@@ -99,7 +99,7 @@ namespace opensolid
 
         template <class TBaseCollection, class TPredicate>
         inline
-        std::int64_t
+        std::size_t
         FilteredCollection<TBaseCollection, TPredicate>::size() const {
             return this->sizeDefaultImpl();
         }

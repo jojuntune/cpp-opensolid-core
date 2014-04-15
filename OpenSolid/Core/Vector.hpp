@@ -302,7 +302,7 @@ namespace opensolid
     operator<<(std::ostream& stream, const Vector<double, iNumDimensions>& vector) {
         stream << "Vector" << iNumDimensions << "d";
         stream << "(";
-        for (std::int64_t index = 0; index < iNumDimensions; ++index) {
+        for (int index = 0; index < iNumDimensions; ++index) {
             stream << vector.component(index);
             if (index < iNumDimensions - 1) {
                 stream << ",";
@@ -317,7 +317,7 @@ namespace opensolid
     operator<<(std::ostream& stream, const Vector<Interval, iNumDimensions>& vector) {
         stream << "IntervalVector" << iNumDimensions << "d";
         stream << "(";
-        for (std::int64_t index = 0; index < iNumDimensions; ++index) {
+        for (int index = 0; index < iNumDimensions; ++index) {
             stream << vector.component(index);
             if (index < iNumDimensions - 1) {
                 stream << ",";

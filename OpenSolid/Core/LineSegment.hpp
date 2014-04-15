@@ -87,7 +87,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     const Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::vertex(std::int64_t index) const {
+    LineSegment<iNumDimensions>::vertex(int index) const {
         assert(index == 0 || index == 1);
         return _vertices[index];
     }
@@ -95,7 +95,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     Point<iNumDimensions>&
-    LineSegment<iNumDimensions>::vertex(std::int64_t index) {
+    LineSegment<iNumDimensions>::vertex(int index) {
         assert(index == 0 || index == 1);
         return _vertices[index];
     }

@@ -54,12 +54,6 @@ namespace opensolid
 
     inline
     Interval
-    BoundsFunction<std::int64_t>::operator()(std::int64_t value) const {
-        return Interval(double(value));
-    }
-
-    inline
-    Interval
     BoundsFunction<double>::operator()(double value) const {
         return Interval(value);
     }

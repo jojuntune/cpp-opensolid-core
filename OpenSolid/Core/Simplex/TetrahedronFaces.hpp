@@ -67,15 +67,15 @@ namespace opensolid
         }
 
         inline
-        std::int64_t
+        std::size_t
         TetrahedronFaces::size() const {
             return 4;
         }
 
         inline
         Triangle3d
-        TetrahedronFaces::operator[](std::int64_t index) const {
-            return tetrahedron().face(index);
+        TetrahedronFaces::operator[](std::size_t index) const {
+            return tetrahedron().face(int(index));
         }
     }
 }

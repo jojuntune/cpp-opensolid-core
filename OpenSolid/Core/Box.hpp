@@ -220,7 +220,7 @@ namespace opensolid
     operator<<(std::ostream& stream, const Box<iNumDimensions>& box) {
         stream << "Box" << iNumDimensions << "d";
         stream << "(";
-        for (std::int64_t index = 0; index < iNumDimensions; ++index) {
+        for (int index = 0; index < iNumDimensions; ++index) {
             stream << box.component(index);
             if (index < iNumDimensions - 1) {
                 stream << ",";

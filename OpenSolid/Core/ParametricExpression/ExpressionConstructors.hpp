@@ -65,7 +65,7 @@ namespace opensolid
 
     template <int iNumParameters>
     ParametricExpression<1, iNumParameters>
-    ParameterExpressionConstructor<1, iNumParameters>::Parameter(std::int64_t parameterIndex) {
+    ParameterExpressionConstructor<1, iNumParameters>::Parameter(int parameterIndex) {
         if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
             assert(false);
             return ParametricExpression<1, iNumParameters>();

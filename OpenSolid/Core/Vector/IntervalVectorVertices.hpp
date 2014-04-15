@@ -73,7 +73,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        std::int64_t
+        std::size_t
         IntervalVectorVertices<iNumDimensions>::size() const {
             return 1 << iNumDimensions;
         }
@@ -81,8 +81,8 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Vector<double, iNumDimensions>
-        IntervalVectorVertices<iNumDimensions>::operator[](std::int64_t index) const {
-            return vector().vertex(index);
+        IntervalVectorVertices<iNumDimensions>::operator[](std::size_t index) const {
+            return vector().vertex(int(index));
         }
     }
 }

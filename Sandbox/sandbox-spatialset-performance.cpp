@@ -126,7 +126,7 @@ testQueryTime() {
         std::size_t checksum = 0;
         boost::timer timer;
         for (std::size_t i = 0; i < numQueries; ++i) {
-            checksum += std::size_t(set.overlapping(queryBoxes[i]).size());
+            checksum += set.overlapping(queryBoxes[i]).size();
         }
         double time = timer.elapsed();
         std::cout << "Time: " << time << "s, checksum: " << checksum << std::endl;

@@ -72,7 +72,7 @@ namespace opensolid
 
         template <class TSimplex, int iNumVertices>
         inline
-        std::int64_t
+        std::size_t
         SimplexVertices<TSimplex, iNumVertices>::size() const {
             return iNumVertices;
         }
@@ -80,8 +80,8 @@ namespace opensolid
         template <class TSimplex, int iNumVertices>
         inline
         const Point<NumDimensions<TSimplex>::Value>&
-        SimplexVertices<TSimplex, iNumVertices>::operator[](std::int64_t index) const {
-            return simplex().vertex(index);
+        SimplexVertices<TSimplex, iNumVertices>::operator[](std::size_t index) const {
+            return simplex().vertex(int(index));
         }
     }
 }

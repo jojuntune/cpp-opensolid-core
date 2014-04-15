@@ -67,15 +67,15 @@ namespace opensolid
         }
 
         inline
-        std::int64_t
+        std::size_t
         TetrahedronEdges::size() const {
             return 6;
         }
 
         inline
         LineSegment3d
-        TetrahedronEdges::operator[](std::int64_t index) const {
-            return tetrahedron().edge(index);
+        TetrahedronEdges::operator[](std::size_t index) const {
+            return tetrahedron().edge(int(index));
         }
     }
 }

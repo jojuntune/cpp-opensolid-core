@@ -51,7 +51,7 @@ namespace opensolid
         hasLesserMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
-            std::int64_t index
+            int index
         ) {
             Interval difference = firstBounds(index) - secondBounds(index);
             return difference.upperBound() < -difference.lowerBound();
@@ -59,7 +59,7 @@ namespace opensolid
 
         inline
         bool
-        hasLesserMedian(Interval firstInterval, Interval secondInterval, std::int64_t index) {
+        hasLesserMedian(Interval firstInterval, Interval secondInterval, int index) {
             assert(index == 0);
             Interval difference = firstInterval - secondInterval;
             return difference.upperBound() < -difference.lowerBound();
@@ -71,7 +71,7 @@ namespace opensolid
         hasGreaterMedian(
             const TBounds& firstBounds,
             const TBounds& secondBounds,
-            std::int64_t index
+            int index
         ) {
             Interval difference = firstBounds(index) - secondBounds(index);
             return difference.upperBound() > -difference.lowerBound();
@@ -79,7 +79,7 @@ namespace opensolid
 
         inline
         bool
-        hasGreaterMedian(Interval firstInterval, Interval secondInterval, std::int64_t index) {
+        hasGreaterMedian(Interval firstInterval, Interval secondInterval, int index) {
             assert(index == 0);
             Interval difference = firstInterval - secondInterval;
             return difference.upperBound() > -difference.lowerBound();
@@ -93,10 +93,10 @@ namespace opensolid
         detail::SpatialSetNode<TItem>* nextPtr,
         BoundsData** begin,
         BoundsData** end,
-        std::int64_t sortIndex
+        int sortIndex
     ) {
         nodePtr->nextPtr = nextPtr;
-        std::int64_t size = end - begin;
+        std::size_t size = end - begin;
         if (size == 1) {
             // Leaf node
             nodePtr->bounds = (*begin)->bounds;
@@ -142,7 +142,7 @@ namespace opensolid
             nodePtr->bounds = overallBounds;
 
             // Partition child nodes
-            std::int64_t leftSize = size / 2;
+            std::size_t leftSize = size / 2;
             BoundsData** mid = begin + leftSize;
             std::nth_element(
                 begin,
@@ -158,7 +158,7 @@ namespace opensolid
             );
 
             // Recurse into chid nodes
-            std::int64_t nextSortIndex = (sortIndex + 1) % NumDimensions<TItem>::Value;
+            int nextSortIndex = (sortIndex + 1) % NumDimensions<TItem>::Value;
             
             detail::SpatialSetNode<TItem>* leftChildPtr = nodePtr + 1;
             detail::SpatialSetNode<TItem>* rightChildPtr = leftChildPtr + (2 * leftSize - 1);
@@ -320,7 +320,7 @@ namespace opensolid
     
     template <class TItem>
     inline
-    std::int64_t
+    std::size_t
     SpatialSet<TItem>::size() const {
         if (isEmpty()) {
             return 0;
@@ -343,9 +343,9 @@ namespace opensolid
     template <class TItem>
     inline
     const TItem&
-    SpatialSet<TItem>::operator[](std::int64_t index) const {
+    SpatialSet<TItem>::operator[](std::size_t index) const {
         assert(!isEmpty());
-        return _dataPtr->items[std::size_t(index)];
+        return _dataPtr->items[index];
     }
 
     template <class TItem>
@@ -434,10 +434,10 @@ namespace opensolid
         markDuplicateItems(
             const SpatialSetNode<TItem>* anchorNodePtr,
             const TItem* anchorItemPtr,
-            std::int64_t uniqueIndex,
+            std::size_t uniqueIndex,
             const TItem* firstItemPtr,
             double precision,
-            std::vector<std::int64_t>& mapping
+            std::vector<std::size_t>& mapping
         ) {
             const SpatialSetNode<TItem>* candidateNodePtr = anchorNodePtr->nextPtr;
             while (candidateNodePtr) {
@@ -450,9 +450,9 @@ namespace opensolid
                         // Leaf node: check for duplicate items, then move to next node
                         const TItem* candidateItemPtr = candidateNodePtr->itemPtr;
                         if (equalityFunction(*anchorItemPtr, *candidateItemPtr, precision)) {
-                            std::int64_t candidateItemIndex = candidateItemPtr - firstItemPtr;
-                            assert(mapping[std::size_t(candidateItemIndex)] == -1);
-                            mapping[std::size_t(candidateItemIndex)] = uniqueIndex;
+                            std::size_t candidateItemIndex = candidateItemPtr - firstItemPtr;
+                            assert(mapping[candidateItemIndex] == -1);
+                            mapping[candidateItemIndex] = uniqueIndex;
                         }
                         candidateNodePtr = candidateNodePtr->nextPtr;
                     }
@@ -467,22 +467,22 @@ namespace opensolid
     inline
     std::vector<TItem>
     SpatialSet<TItem>::uniqueItems(double precision) const {
-        std::vector<std::int64_t> dummy;
+        std::vector<std::size_t> dummy;
         return uniqueItems(dummy, precision);
     }
 
     template <class TItem>
     inline
     std::vector<TItem>
-    SpatialSet<TItem>::uniqueItems(std::vector<std::int64_t>& mapping, double precision) const {
+    SpatialSet<TItem>::uniqueItems(std::vector<std::size_t>& mapping, double precision) const {
         if (isEmpty()) {
             mapping.clear();
             return std::vector<TItem>();
         } else {
             // Initialize unique item mapping
-            mapping.resize(std::size_t(size()));
+            mapping.resize(size());
             std::fill(mapping.begin(), mapping.end(), -1);
-            std::int64_t uniqueIndex = 0;
+            std::size_t uniqueIndex = 0;
 
             // Get first item for calculating item indices
             const TItem* firstItemPtr = _dataPtr->items.data();
@@ -496,10 +496,10 @@ namespace opensolid
             std::vector<TItem> results;
             do {
                 const TItem* itemPtr = nodePtr->itemPtr;
-                std::int64_t itemIndex = itemPtr - firstItemPtr;
-                if (mapping[std::size_t(itemIndex)] == -1) {
+                std::size_t itemIndex = itemPtr - firstItemPtr;
+                if (mapping[itemIndex] == -1) {
                     results.push_back(*itemPtr);
-                    mapping[std::size_t(itemIndex)] = uniqueIndex;
+                    mapping[itemIndex] = uniqueIndex;
                     detail::markDuplicateItems(
                         nodePtr,
                         itemPtr,

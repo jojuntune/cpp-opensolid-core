@@ -317,7 +317,7 @@ public:
         values[3] = 3.0;
         values[4] = 3.0;
 
-        std::vector<std::int64_t> mapping;
+        std::vector<std::size_t> mapping;
         std::vector<double> uniqueItems = SpatialSet<double>(values).uniqueItems(mapping);
 
         TS_ASSERT_EQUALS(mapping.size(), 5);

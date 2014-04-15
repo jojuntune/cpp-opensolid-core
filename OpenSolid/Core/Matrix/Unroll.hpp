@@ -36,7 +36,7 @@ namespace opensolid
             template <class TFunction>
             inline
             Unroll(TFunction function) {
-                for (std::int64_t index = 0; index < iCount; ++index) {
+                for (int index = 0; index < iCount; ++index) {
                     function(index);
                 }
             }

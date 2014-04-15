@@ -72,7 +72,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        std::int64_t
+        std::size_t
         BoxVertices<iNumDimensions>::size() const {
             return 1 << iNumDimensions;
         }
@@ -80,8 +80,8 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>
-        BoxVertices<iNumDimensions>::operator[](std::int64_t index) const {
-            return box().vertex(index);
+        BoxVertices<iNumDimensions>::operator[](std::size_t index) const {
+            return box().vertex(int(index));
         }
     }
 }

@@ -66,7 +66,7 @@ namespace opensolid
         bool
         isEmptyDefaultImpl() const;
 
-        std::int64_t
+        std::size_t
         sizeDefaultImpl() const;
     public:
         const TDerived&
@@ -81,7 +81,7 @@ namespace opensolid
         bool
         isEmpty() const;
 
-        std::int64_t
+        std::size_t
         size() const;
 
         template <class TPredicate>

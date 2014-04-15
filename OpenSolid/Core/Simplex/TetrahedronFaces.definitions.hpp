@@ -69,11 +69,11 @@ namespace opensolid
             bool
             isEmpty() const;
 
-            std::int64_t
+            std::size_t
             size() const;
 
             Triangle<3>
-            operator[](std::int64_t index) const;
+            operator[](std::size_t index) const;
         };
     }
 }

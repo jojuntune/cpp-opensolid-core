@@ -292,7 +292,7 @@ namespace opensolid
     operator<<(std::ostream& stream, const Point<iNumDimensions>& point) {
         stream << "Point" << iNumDimensions << "d";
         stream << "(";
-        for (std::int64_t index = 0; index < iNumDimensions; ++index) {
+        for (int index = 0; index < iNumDimensions; ++index) {
             stream << point.component(index);
             if (index < iNumDimensions - 1) {
                 stream << ",";

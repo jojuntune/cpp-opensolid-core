@@ -64,13 +64,13 @@ namespace opensolid
             minComponent() const;
 
             double
-            minComponent(std::int64_t& index) const;
+            minComponent(int& index) const;
 
             double
             maxComponent() const;
 
             double
-            maxComponent(std::int64_t& index) const;
+            maxComponent(int& index) const;
 
             bool
             operator==(const Vector<double, iNumDimensions>& other) const;

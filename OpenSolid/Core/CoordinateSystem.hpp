@@ -266,7 +266,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     inline
     const Vector<double, iNumDimensions>
-    CoordinateSystem<iNumDimensions, iNumAxes>::basisVector(std::int64_t axisIndex ) const {
+    CoordinateSystem<iNumDimensions, iNumAxes>::basisVector(int axisIndex ) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
             throw Error(new PlaceholderError());
         }
@@ -308,7 +308,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     inline
     const Axis<iNumDimensions>
-    CoordinateSystem<iNumDimensions, iNumAxes>::axis(std::int64_t axisIndex) const {
+    CoordinateSystem<iNumDimensions, iNumAxes>::axis(int axisIndex) const {
         if (axisIndex < 0 || axisIndex >= iNumAxes) {
             throw Error(new PlaceholderError());
         }
@@ -392,8 +392,8 @@ namespace opensolid
     inline
     const Plane3d
     CoordinateSystem<iNumDimensions, iNumAxes>::plane(
-        std::int64_t firstAxisIndex,
-        std::int64_t secondAxisIndex
+        int firstAxisIndex,
+        int secondAxisIndex
     ) const {
         static_assert(
             iNumDimensions == 3 && iNumAxes == 3,
@@ -418,10 +418,10 @@ namespace opensolid
     const CoordinateSystem<iNumDimensions, iNumAxes>
     CoordinateSystem<iNumDimensions, iNumAxes>::normalized() const {
         Matrix<double, iNumDimensions, iNumAxes> resultBasisMatrix = basisMatrix();
-        for (std::int64_t columnIndex = 0; columnIndex < iNumAxes; ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < iNumAxes; ++columnIndex) {
             Vector<double, iNumDimensions> resultBasisVector(basisMatrix().col(columnIndex));
             for (
-                std::int64_t normalizedColumnIndex = 0;
+                int normalizedColumnIndex = 0;
                 normalizedColumnIndex < columnIndex;
                 ++normalizedColumnIndex
             ) {

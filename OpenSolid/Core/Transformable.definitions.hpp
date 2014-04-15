@@ -56,12 +56,6 @@ namespace opensolid
     };
 
     template <>
-    struct NumDimensions<std::int64_t>
-    {
-        static const int Value = 1;
-    };
-
-    template <>
     struct NumDimensions<double>
     {
         static const int Value = 1;
