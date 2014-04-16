@@ -74,6 +74,11 @@ namespace opensolid
         colStride() const;
     };
 
+    typedef MatrixView<double, -1, -1, -1> MatrixViewXxX;
+    typedef MatrixView<const double, -1, -1, -1> ConstMatrixViewXxX;
+    typedef MatrixView<Interval, -1, -1, -1> IntervalMatrixViewXxX;
+    typedef MatrixView<const Interval, -1, -1, -1> ConstIntervalMatrixViewXxX;
+
     template <class TScalar, int iRows, int iCols, int iColStride>
     struct MatrixTraits<MatrixView<TScalar, iRows, iCols, iColStride>>
     {
