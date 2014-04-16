@@ -204,36 +204,36 @@ void spatialSetExamples() {
     );
 }
 
-void parametricExpressionExamples() {
-    ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
-
-    ParametricExpression<3, 1> lineExpression = ColMatrix3x1::Ones() + t * ColMatrix3x1::Ones();
-    ColMatrix3x1 start = lineExpression.evaluate(0.0);
-    ColMatrix3x1 mid = lineExpression.evaluate(0.5);
-    ColMatrix3x1 end = lineExpression.evaluate(1.0);
-
-    assert((start - ColMatrix3x1::Ones()).isZero());
-    assert((mid - ColMatrix3x1::Constant(1.5)).isZero());
-    assert((end - ColMatrix3x1::Constant(2)).isZero());
-
-    ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
-    ParametricExpression<1, 1> cosineExpression = cos(t);
-    std::vector<double> parameterValues(10);
-    for (unsigned i = 0; i < parameterValues.size(); ++i) {
-        parameterValues[i] = i * 2 * M_PI / (parameterValues.size() - 1);
-    }
-    std::vector<Matrix1x1> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
-    std::vector<Matrix1x1> cosineValues = cosineExpression.evaluate(parameterValues);
-    for (unsigned i = 0; i < parameterValues.size(); ++i) {
-        assert(sineDerivativeValues[i].value() - cosineValues[i].value() == Zero());
-    }
-
-    ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
-    std::vector<Matrix1x1> zeroValues = shouldBeZero.evaluate(parameterValues);
-    for (unsigned i = 0; i < parameterValues.size(); ++i) {
-        assert(zeroValues[i].value() == Zero());
-    }
-}
+// void parametricExpressionExamples() {
+//     ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
+//
+//     ParametricExpression<3, 1> lineExpression = ColMatrix3x1::Ones() + t * ColMatrix3x1::Ones();
+//     ColMatrix3x1 start = lineExpression.evaluate(0.0);
+//     ColMatrix3x1 mid = lineExpression.evaluate(0.5);
+//     ColMatrix3x1 end = lineExpression.evaluate(1.0);
+//
+//     assert((start - ColMatrix3x1::Ones()).isZero());
+//     assert((mid - ColMatrix3x1::Constant(1.5)).isZero());
+//     assert((end - ColMatrix3x1::Constant(2)).isZero());
+//
+//     ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
+//     ParametricExpression<1, 1> cosineExpression = cos(t);
+//     std::vector<double> parameterValues(10);
+//     for (unsigned i = 0; i < parameterValues.size(); ++i) {
+//         parameterValues[i] = i * 2 * M_PI / (parameterValues.size() - 1);
+//     }
+//     std::vector<Matrix1x1> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
+//     std::vector<Matrix1x1> cosineValues = cosineExpression.evaluate(parameterValues);
+//     for (unsigned i = 0; i < parameterValues.size(); ++i) {
+//         assert(sineDerivativeValues[i].value() - cosineValues[i].value() == Zero());
+//     }
+//
+//     ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
+//     std::vector<Matrix1x1> zeroValues = shouldBeZero.evaluate(parameterValues);
+//     for (unsigned i = 0; i < parameterValues.size(); ++i) {
+//         assert(zeroValues[i].value() == Zero());
+//     }
+// }
 
 int main() {
     zeroExamples();
@@ -248,6 +248,6 @@ int main() {
     triangleExamples();
     tetrahedronExamples();
     spatialSetExamples();
-    parametricExpressionExamples();
+    // parametricExpressionExamples();
     return 0;
 }
