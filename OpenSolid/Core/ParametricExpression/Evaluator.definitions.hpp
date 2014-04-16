@@ -28,7 +28,7 @@
 
 #include <OpenSolid/Core/ParametricExpression/Evaluator.declarations.hpp>
 
-#include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.definitions.hpp>
 
 #include <unordered_map>
@@ -38,8 +38,8 @@ namespace opensolid
     class Evaluator
     {
     private:
-        typedef std::pair<const ExpressionImplementation*, const double*> KeyXd;
-        typedef std::pair<const ExpressionImplementation*, const Interval*> KeyXI;
+        typedef std::pair<const ExpressionImplementation*, const double*> Key;
+        typedef std::pair<const ExpressionImplementation*, const Interval*> IntervalKey;
         
         struct KeyHash
         {
@@ -48,13 +48,18 @@ namespace opensolid
             operator()(const std::pair<const ExpressionImplementation*, const TScalar*>& key) const;
         };
 
-        typedef std::unordered_map<KeyXd, MatrixXd, Evaluator::KeyHash> CacheXd;
-        typedef std::unordered_map<KeyXI, MatrixXI, Evaluator::KeyHash> CacheXI;
+        typedef std::unordered_map<Key, MatrixXxX, Evaluator::KeyHash> Cache;
 
-        CacheXd _valuesCache;
-        CacheXd _jacobianValuesCache;
-        CacheXI _boundsCache;
-        CacheXI _jacobianBoundsCache;
+        typedef std::unordered_map<
+            IntervalKey,
+            IntervalMatrixXxX,
+            Evaluator::KeyHash
+        > IntervalCache;
+
+        Cache _valuesCache;
+        Cache _jacobianValuesCache;
+        IntervalCache _boundsCache;
+        IntervalCache _jacobianBoundsCache;
 
         template <class TScalar>
         struct Types;
@@ -63,47 +68,47 @@ namespace opensolid
         friend struct Types;
 
         template <class TScalar>
-        typename Types<TScalar>::ConstMap
+        typename Types<TScalar>::ConstViewType
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const typename Types<TScalar>::ConstMap& parameterMap,
-            typename Types<TScalar>::Cache& cache
+            const typename Types<TScalar>::ConstViewType& parameterView,
+            typename Types<TScalar>::CacheType& cache
         );
 
         template <class TScalar>
-        typename Types<TScalar>::ConstMap
+        typename Types<TScalar>::ConstViewType
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const typename Types<TScalar>::ConstMap& parameterMap,
-            typename Types<TScalar>::Cache& cache
+            const typename Types<TScalar>::ConstViewType& parameterView,
+            typename Types<TScalar>::CacheType& cache
         );
     public:
         OPENSOLID_CORE_EXPORT
-        MapXcd
+        ConstMatrixViewXxX
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const MapXcd& parameterValues
+            const ConstMatrixViewXxX& parameterView
         );
         
         OPENSOLID_CORE_EXPORT
-        MapXcd
+        ConstMatrixViewXxX
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const MapXcd& parameterValues
+            const ConstMatrixViewXxX& parameterView
         );
 
         OPENSOLID_CORE_EXPORT
-        MapXcI
+        ConstIntervalMatrixViewXxX
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const MapXcI& parameterValues
+            const ConstIntervalMatrixViewXxX& parameterView
         );
         
         OPENSOLID_CORE_EXPORT
-        MapXcI
+        ConstIntervalMatrixViewXxX
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const MapXcI& parameterValues
+            const ConstIntervalMatrixViewXxX& parameterView
         );
     };
 }

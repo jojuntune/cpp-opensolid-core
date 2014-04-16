@@ -8,7 +8,7 @@
         LazyCollection/*.cpp
         Matrix/*.cpp
         ParametricCurve/*.cpp
-        ParametricExpression/*.cpp
+        #ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp
         Variant/*.cpp

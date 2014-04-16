@@ -34,7 +34,6 @@
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.hpp>
-#include <OpenSolid/Core/ParametricExpression/Eigen.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
@@ -49,7 +48,109 @@ namespace opensolid
         ExpressionImplementationPtr
         zeroExpression() {
             return ExpressionImplementationPtr(
-                new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters)
+                new ConstantExpression(ColMatrixXx1::Zero(iNumDimensions), iNumParameters)
+            );
+        }
+
+        inline
+        ConstMatrixViewXxX
+        constView(const double& value) {
+            return ConstMatrixViewXxX(&value, 1, 1, 1);
+        }
+
+        inline
+        ConstIntervalMatrixViewXxX
+        constView(const Interval& value) {
+            return ConstIntervalMatrixViewXxX(&value, 1, 1, 1);
+        }
+
+        template <int iNumRows, int iNumColumns>
+        inline
+        ConstMatrixViewXxX
+        constView(const Matrix<double, iNumRows, iNumColumns>& matrix) {
+            return ConstMatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+        }
+
+        template <int iNumRows, int iNumColumns>
+        inline
+        ConstIntervalMatrixViewXxX
+        constView(const Matrix<Interval, iNumRows, iNumColumns>& matrix) {
+            return ConstIntervalMatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+        }
+
+        inline
+        ConstMatrixViewXxX
+        constView(const std::vector<double>& values) {
+            return ConstMatrixViewXxX(&values.front(), 1, values.size(), 1);
+        }
+
+        inline
+        ConstIntervalMatrixViewXxX
+        constView(const std::vector<Interval>& values) {
+            return ConstIntervalMatrixViewXxX(&values.front(), 1, values.size(), 1);
+        }
+
+        template <int iNumRows>
+        inline
+        ConstMatrixViewXxX
+        constView(const std::vector<Matrix<double, iNumRows, 1>>& matrices) {
+            return ConstMatrixViewXxX(matrices.front().data(), iNumRows, matrices.size(), iNumRows);
+        }
+
+        template <int iNumRows>
+        inline
+        ConstIntervalMatrixViewXxX
+        constView(const std::vector<Matrix<Interval, iNumRows, 1>>& matrices) {
+            return ConstIntervalMatrixViewXxX(
+                matrices.front().data(),
+                iNumRows,
+                matrices.size(),
+                iNumRows
+            );
+        }
+
+        template <int iNumRows, int iNumColumns>
+        inline
+        MatrixViewXxX
+        mutableView(Matrix<double, iNumRows, iNumColumns>& matrix) {
+            return MatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+        }
+
+        template <int iNumRows, int iNumColumns>
+        inline
+        IntervalMatrixViewXxX
+        mutableView(Matrix<Interval, iNumRows, iNumColumns>& matrix) {
+            return IntervalMatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+        }
+
+        inline
+        MatrixViewXxX
+        mutableView(std::vector<double>& values) {
+            return MatrixViewXxX(&values.front(), 1, values.size(), 1);
+        }
+
+        inline
+        IntervalMatrixViewXxX
+        mutableView(std::vector<Interval>& values) {
+            return IntervalMatrixViewXxX(&values.front(), 1, values.size(), 1);
+        }
+
+        template <int iNumRows>
+        inline
+        MatrixViewXxX
+        mutableView(std::vector<Matrix<double, iNumRows, 1>>& matrices) {
+            return MatrixViewXxX(matrices.front().data(), iNumRows, matrices.size(), iNumRows);
+        }
+
+        template <int iNumRows>
+        inline
+        IntervalMatrixViewXxX
+        mutableView(std::vector<Matrix<Interval, iNumRows, 1>>& matrices) {
+            return IntervalMatrixViewXxX(
+                matrices.front().data(),
+                iNumRows,
+                matrices.size(),
+                iNumRows
             );
         }
     }
@@ -192,15 +293,15 @@ namespace opensolid
     inline
     const Matrix<double, iNumDimensions, iNumColumns>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const Matrix<double, iNumParameters, iNumColumns>& columnMatrix
+        const Matrix<double, iNumParameters, iNumColumns>& colMatrix
     ) const {
-        MapXcd argumentMap = detail::constMap(columnMatrix);
+        ConstMatrixViewXxX argumentView = detail::constView(colMatrix);
 
         Matrix<double, iNumDimensions, iNumColumns> results;
-        MapXd resultMap = detail::mutableMap(results);
+        MatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluate(argumentMap, resultMap, evaluator);
+        implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -209,15 +310,15 @@ namespace opensolid
     inline
     const Matrix<Interval, iNumDimensions, iNumColumns>
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
-        const Matrix<Interval, iNumParameters, iNumColumns>& columnMatrix
+        const Matrix<Interval, iNumParameters, iNumColumns>& colMatrix
     ) const {
-        MapXcI argumentMap = detail::constMap(columnMatrix);
+        ConstIntervalMatrixViewXxX argumentView = detail::constView(colMatrix);
 
         Matrix<Interval, iNumDimensions, iNumColumns> results;
-        MapXI resultMap = detail::mutableMap(results);
+        IntervalMatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluate(argumentMap, resultMap, evaluator);
+        implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -229,13 +330,13 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 1, "Multiple parameters required");
 
-        MapXcd argumentMap = detail::constMap(parameterValues);
+        ConstMatrixViewXxX argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
-        MapXd resultMap = detail::mutableMap(results);
+        MatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluate(argumentMap, resultMap, evaluator);
+        implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -247,13 +348,13 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 1, "Multiple parameters required");
 
-        MapXcI argumentMap = detail::constMap(parameterValues);
+        ConstIntervalMatrixViewXxX argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
-        MapXI resultMap = detail::mutableMap(results);
+        IntervalMatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluate(argumentMap, resultMap, evaluator);
+        implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -263,13 +364,13 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const std::vector<Matrix<double, iNumParameters, 1>>& parameterValues
     ) const {
-        MapXcd argumentMap = detail::constMap(parameterValues);
+        ConstMatrixViewXxX argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
-        MapXd resultMap = detail::mutableMap(results);
+        MatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluate(argumentMap, resultMap, evaluator);
+        implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -279,13 +380,13 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const std::vector<Matrix<Interval, iNumParameters, 1>>& parameterValues
     ) const {
-        MapXcI argumentMap = detail::constMap(parameterValues);
+        ConstIntervalMatrixViewXxX argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
-        MapXI resultMap = detail::mutableMap(results);
+        IntervalMatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluate(argumentMap, resultMap, evaluator);
+        implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -380,15 +481,15 @@ namespace opensolid
     inline
     const Matrix<double, iNumDimensions, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        const Matrix<double, iNumParameters, 1>& columnMatrix
+        const Matrix<double, iNumParameters, 1>& colMatrix
     ) const {
-        MapXcd argumentMap = detail::constMap(columnMatrix);
+        ConstMatrixViewXxX argumentView = detail::constView(colMatrix);
 
         Matrix<double, iNumDimensions, iNumParameters> results;
-        MapXd resultMap = detail::mutableMap(results);
+        MatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluateJacobian(argumentMap, resultMap, evaluator);
+        implementation()->evaluateJacobian(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -397,15 +498,15 @@ namespace opensolid
     inline
     const Matrix<Interval, iNumDimensions, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
-        const Matrix<Interval, iNumParameters, 1>& columnMatrix
+        const Matrix<Interval, iNumParameters, 1>& colMatrix
     ) const {
-        MapXcI argumentMap = detail::constMap(columnMatrix);
+        ConstIntervalMatrixViewXxX argumentView = detail::constView(colMatrix);
 
         Matrix<Interval, iNumDimensions, iNumParameters> results;
-        MapXI resultMap = detail::mutableMap(results);
+        IntervalMatrixViewXxX resultView = detail::mutableView(results);
 
         Evaluator evaluator;
-        implementation()->evaluateJacobian(argumentMap, resultMap, evaluator);
+        implementation()->evaluateJacobian(argumentView, resultView, evaluator);
 
         return results;
     }
@@ -539,11 +640,10 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<1, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::dot(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const Matrix<double, iNumDimensions, 1>& colMatrix
     ) const {
         DeduplicationCache deduplicationCache;
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
-        return implementation()->dot(new ConstantExpression(columnMatrixXd, iNumParameters))->
+        return implementation()->dot(new ConstantExpression(colMatrix, iNumParameters))->
             deduplicated(deduplicationCache);
     }
     
@@ -559,13 +659,12 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<3, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::cross(
-        const Matrix<double, 3, 1>& columnMatrix
+        const Matrix<double, 3, 1>& colMatrix
     ) const {
         static_assert(iNumDimensions == 3, "Cross product only defined in 3D");
 
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return implementation()->cross(new ConstantExpression(columnMatrixXd, iNumParameters))->
+        return implementation()->cross(new ConstantExpression(colMatrix, iNumParameters))->
             deduplicated(deduplicationCache);
     }
     
@@ -605,22 +704,20 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const Matrix<double, iNumDimensions, 1>& colMatrix
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (expression.implementation() + columnMatrixXd)->deduplicated(deduplicationCache);
+        return (expression.implementation() + colMatrix)->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
+        const Matrix<double, iNumDimensions, 1>& colMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (columnMatrixXd + expression.implementation())->deduplicated(deduplicationCache);
+        return (colMatrix + expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -652,22 +749,20 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const Matrix<double, iNumDimensions, 1>& colMatrix
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (expression.implementation() - columnMatrixXd)->deduplicated(deduplicationCache);
+        return (expression.implementation() - colMatrix)->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
+        const Matrix<double, iNumDimensions, 1>& colMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (columnMatrixXd - expression.implementation())->deduplicated(deduplicationCache);
+        return (colMatrix - expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -707,20 +802,18 @@ namespace opensolid
         const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     ) {
-        MatrixXd matrixXd = detail::constMap(matrix);
         DeduplicationCache deduplicationCache;
-        return (matrixXd * expression.implementation())->deduplicated(deduplicationCache);
+        return (matrix * expression.implementation())->deduplicated(deduplicationCache);
     }
     
     template <int iNumParameters, int iNumResultDimensions>
     ParametricExpression<iNumResultDimensions, iNumParameters>
     operator*(
         const ParametricExpression<1, iNumParameters>& expression,
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix
+        const Matrix<double, iNumResultDimensions, 1>& colMatrix
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (expression.implementation() * columnMatrixXd)->deduplicated(deduplicationCache);
+        return (expression.implementation() * colMatrix)->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -779,12 +872,11 @@ namespace opensolid
     template <int iNumResultDimensions, int iNumParameters>
     ParametricExpression<iNumResultDimensions, iNumParameters>
     operator/(
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix,
+        const Matrix<double, iNumResultDimensions, 1>& colMatrix,
         const ParametricExpression<1, iNumParameters>& expression
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(columnMatrix);
         DeduplicationCache deduplicationCache;
-        return (columnMatrixXd / expression.implementation())->deduplicated(deduplicationCache);
+        return (colMatrix / expression.implementation())->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>

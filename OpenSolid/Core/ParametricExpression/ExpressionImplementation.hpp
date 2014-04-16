@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.definitions.hpp>
 
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/MatrixView.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
@@ -82,8 +83,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluate(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterValues,
+        MatrixViewXxX& results,
         Evaluator& evaluator
     ) const {
         evaluateImpl(parameterValues, results, evaluator);
@@ -92,8 +93,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluate(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterValues,
+        IntervalMatrixViewXxX& results,
         Evaluator& evaluator
     ) const {
         evaluateImpl(parameterValues, results, evaluator);
@@ -102,8 +103,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluateJacobian(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterValues,
+        MatrixViewXxX& results,
         Evaluator& evaluator
     ) const {
         evaluateJacobianImpl(parameterValues, results, evaluator);
@@ -112,8 +113,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluateJacobian(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterValues,
+        IntervalMatrixViewXxX& results,
         Evaluator& evaluator
     ) const {
         evaluateJacobianImpl(parameterValues, results, evaluator);
