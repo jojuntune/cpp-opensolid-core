@@ -28,9 +28,9 @@
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 
+#include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ConstantExpression.hpp>
-#include <OpenSolid/Core/ParametricExpression/Eigen.hpp>
 #include <OpenSolid/Core/ParametricExpression/IdentityExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/ParameterExpression.hpp>
 
@@ -39,16 +39,15 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     ZeroExpressionConstructor<iNumDimensions, iNumParameters>::Zero() {
-        return new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters);
+        return new ConstantExpression(ColMatrixXx1::Zero(iNumDimensions), iNumParameters);
     }
 
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     ConstantExpressionConstructor<iNumDimensions, iNumParameters>::Constant(
-        const Matrix<double, iNumDimensions, 1>& value
+        const Matrix<double, iNumDimensions, 1>& colMatrix
     ) {
-        ColumnMatrixXd columnMatrixXd = detail::constMap(value);
-        return new ConstantExpression(columnMatrixXd, iNumParameters);
+        return new ConstantExpression(colMatrix, iNumParameters);
     }
 
     template <int iNumParameters>

@@ -175,13 +175,13 @@ namespace opensolid
         concatenated(const ParametricExpression<iNumOtherDimensions, iNumParameters>& other) const;
 
         ParametricExpression<1, iNumParameters>
-        dot(const Matrix<double, iNumDimensions, 1>& columnMatrix) const;
+        dot(const Matrix<double, iNumDimensions, 1>& colMatrix) const;
 
         ParametricExpression<1, iNumParameters>
         dot(const ParametricExpression<iNumDimensions, iNumParameters>& other) const;
 
         ParametricExpression<3, iNumParameters>
-        cross(const Matrix<double, 3, 1>& columnMatrix) const;
+        cross(const Matrix<double, 3, 1>& colMatrix) const;
 
         ParametricExpression<3, iNumParameters>
         cross(const ParametricExpression<3, iNumParameters>& other) const;
@@ -203,13 +203,13 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const Matrix<double, iNumDimensions, 1>& colMatrix
     );
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator+(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
+        const Matrix<double, iNumDimensions, 1>& colMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     );
 
@@ -232,13 +232,13 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
         const ParametricExpression<iNumDimensions, iNumParameters>& expression,
-        const Matrix<double, iNumDimensions, 1>& columnMatrix
+        const Matrix<double, iNumDimensions, 1>& colMatrix
     );
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     operator-(
-        const Matrix<double, iNumDimensions, 1>& columnMatrix,
+        const Matrix<double, iNumDimensions, 1>& colMatrix,
         const ParametricExpression<iNumDimensions, iNumParameters>& expression
     );
 
@@ -274,7 +274,7 @@ namespace opensolid
     ParametricExpression<iNumResultDimensions, iNumParameters>
     operator*(
         const ParametricExpression<1, iNumParameters>& expression,
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix
+        const Matrix<double, iNumResultDimensions, 1>& colMatrix
     );
 
     template <int iNumParameters, int iNumDimensions>
@@ -312,7 +312,7 @@ namespace opensolid
     template <int iNumResultDimensions, int iNumParameters>
     ParametricExpression<iNumResultDimensions, iNumParameters>
     operator/(
-        const Matrix<double, iNumResultDimensions, 1>& columnMatrix,
+        const Matrix<double, iNumResultDimensions, 1>& colMatrix,
         const ParametricExpression<1, iNumParameters>& expression
     );
 

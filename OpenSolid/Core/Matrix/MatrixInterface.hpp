@@ -267,6 +267,101 @@ namespace opensolid
             );
         }
 
+        template <class TDerived> template <int iBlockRows, int iBlockCols>
+        const MatrixView<
+            const typename MatrixTraits<TDerived>::ScalarType,
+            iBlockRows,
+            iBlockCols,
+            MatrixTraits<TDerived>::ColStride
+        >
+        MatrixInterface<TDerived>::block(int startRow, int startCol) const {
+            return MatrixView<
+                const typename MatrixTraits<TDerived>::ScalarType,
+                iBlockRows,
+                iBlockCols,
+                MatrixTraits<TDerived>::ColStride
+            >(
+                data() + startCol * colStride() + startRow,
+                iBlockRows,
+                iBlockCols,
+                colStride()
+            );
+        }
+
+        template <class TDerived> template <int iBlockRows, int iBlockCols>
+        MatrixView<
+            typename MatrixTraits<TDerived>::ScalarType,
+            iBlockRows,
+            iBlockCols,
+            MatrixTraits<TDerived>::ColStride
+        >
+        MatrixInterface<TDerived>::block(int startRow, int startCol) {
+            return MatrixView<
+                typename MatrixTraits<TDerived>::ScalarType,
+                iBlockRows,
+                iBlockCols,
+                MatrixTraits<TDerived>::ColStride
+            >(
+                data() + startCol * colStride() + startRow,
+                iBlockRows,
+                iBlockCols,
+                colStride()
+            );
+
+        }
+
+        template <class TDerived>
+        const MatrixView<
+            const typename MatrixTraits<TDerived>::ScalarType,
+            -1,
+            -1,
+            MatrixTraits<TDerived>::ColStride
+        >
+        MatrixInterface<TDerived>::block(
+            int startRow,
+            int startCol,
+            int blockRows,
+            int blockCols
+        ) const {
+            return MatrixView<
+                const typename MatrixTraits<TDerived>::ScalarType,
+                -1,
+                -1,
+                MatrixTraits<TDerived>::ColStride
+            >(
+                data() + startCol * colStride() + startRow,
+                blockRows,
+                blockCols,
+                colStride()
+            );
+        }
+
+        template <class TDerived>
+        MatrixView<
+            typename MatrixTraits<TDerived>::ScalarType,
+            -1,
+            -1,
+            MatrixTraits<TDerived>::ColStride
+        >
+        MatrixInterface<TDerived>::block(
+            int startRow,
+            int startCol,
+            int blockRows,
+            int blockCols
+        ) {
+            return MatrixView<
+                typename MatrixTraits<TDerived>::ScalarType,
+                -1,
+                -1,
+                MatrixTraits<TDerived>::ColStride
+            >(
+                data() + startCol * colStride() + startRow,
+                blockRows,
+                blockCols,
+                colStride()
+            );
+        }
+
         template <class TDerived>
         inline
         const Matrix<

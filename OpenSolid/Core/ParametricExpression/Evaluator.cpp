@@ -48,21 +48,21 @@ namespace opensolid
     template <>
     struct Evaluator::Types<double>
     {
-        typedef MapXd Map;
-        typedef MapXcd ConstMap;
-        typedef MatrixXd Matrix;
-        typedef Evaluator::KeyXd Key;
-        typedef Evaluator::CacheXd Cache;
+        typedef MatrixViewXxX ViewType;
+        typedef ConstMatrixViewXxX ConstViewType;
+        typedef MatrixXxX MatrixType;
+        typedef Evaluator::Key KeyType;
+        typedef Evaluator::Cache CacheType;
     };
 
     template <>
     struct Evaluator::Types<Interval>
     {
-        typedef MapXI Map;
-        typedef MapXcI ConstMap;
-        typedef MatrixXI Matrix;
-        typedef Evaluator::KeyXI Key;
-        typedef Evaluator::CacheXI Cache;
+        typedef IntervalMatrixViewXxX ViewType;
+        typedef ConstIntervalMatrixViewXxX ConstViewType;
+        typedef IntervalMatrixXxX MatrixType;
+        typedef Evaluator::IntervalKey KeyType;
+        typedef Evaluator::IntervalCache CacheType;
     };
     
     namespace
@@ -74,87 +74,79 @@ namespace opensolid
         template <>
         const double*
         dataPointer<double>(const ConstantExpression* constantExpression) {
-            return &constantExpression->columnMatrixXd().coeffRef(0);
+            return constantExpression->colMatrix().data();
         }
 
         template <>
         const Interval*
         dataPointer<Interval>(const ConstantExpression* constantExpression) {
-            return &constantExpression->columnMatrixXI().coeffRef(0);
+            return constantExpression->intervalColMatrix().data();
         }
     }
 
     template <class TScalar>
     inline
-    typename Evaluator::Types<TScalar>::ConstMap
+    typename Evaluator::Types<TScalar>::ConstViewType
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const typename Types<TScalar>::ConstMap& parameterValues,
-        typename Types<TScalar>::Cache& cache
+        const typename Types<TScalar>::ConstViewType& parameterView,
+        typename Types<TScalar>::CacheType& cache
     ) {
-        typedef typename Types<TScalar>::Map Map;
-        typedef typename Types<TScalar>::ConstMap ConstMap;
-        typedef typename Types<TScalar>::Matrix Matrix;
-        typedef typename Types<TScalar>::Key Key;
-        typedef typename Types<TScalar>::Cache Cache;
+        typedef typename Types<TScalar>::ViewType ViewType;
+        typedef typename Types<TScalar>::ConstViewType ConstViewType;
+        typedef typename Types<TScalar>::MatrixType MatrixType;
+        typedef typename Types<TScalar>::KeyType KeyType;
+        typedef typename Types<TScalar>::CacheType CacheType;
 
         if (expressionImplementation->isIdentityExpression()) {
             // Identity expression: simply return parameter values map as-is
-            return parameterValues;
+            return parameterView;
         } else if (expressionImplementation->isParameterExpression()) {
-            // Parameter expression: build map pointing to a single row of data within the given
+            // Parameter expression: return view pointing to a single row of data within the given
             // parameter values
-            int parameterIndex =
-                expressionImplementation->cast<ParameterExpression>()->parameterIndex();
-            Eigen::Stride<Eigen::Dynamic, 1> stride(parameterValues.outerStride(), 1);
-            const TScalar* dataPtr = &parameterValues.coeffRef(parameterIndex, 0);
-            return ConstMap(dataPtr, 1, parameterValues.cols(), stride);
+            return parameterView.row(parameterIndex);
         } else if (expressionImplementation->isConstantExpression()) {
-            // Constant expression: build map pointing to constant data (using an outer stride of
-            // zero allows the single column of data within the ConstantExpression to be used to
+            // Constant expression: build map pointing to constant data (using a stride of  zero
+            // allows the single column of data within the ConstantExpression to be used to
             // represent a matrix of arbitrary number of columns)
-            Eigen::Stride<Eigen::Dynamic, 1> stride(0, 1);
-            const TScalar* dataPtr = dataPointer<TScalar>(
-                expressionImplementation->cast<ConstantExpression>()
-            );
-            return ConstMap(
-                dataPtr,
+            return ConstViewType(
+                dataPointer<TScalar>(expressionImplementation->cast<ConstantExpression>()),
                 expressionImplementation->numDimensions(),
-                parameterValues.cols(),
-                stride
+                parameterView.cols(),
+                0
             );
         } else {
             // Generic expression: return map to cached data, generating data if necessary
-            Key key(expressionImplementation.get(), parameterValues.data());
+            KeyType key(expressionImplementation.get(), parameterView.data());
             auto iterator = cache.find(key);
             if (iterator == cache.end()) {
                 // Cached results not found - insert new empty entry into cache
-                iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
-                Matrix& resultMatrix = iterator->second;
-
-                // Resize inserted matrix to the correct size
-                resultMatrix.resize(
+                MatrixType newMatrix(
                     expressionImplementation->numDimensions(),
-                    parameterValues.cols()
+                    parameterView.cols()
                 );
+                iterator = cache.insert(
+                    std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
+                ).first;
+                MatrixType& resultMatrix = iterator->second;
 
                 // Construct map pointing to newly allocated results matrix
-                Map resultMap(
+                ViewType resultView(
                     resultMatrix.data(),
                     resultMatrix.rows(),
                     resultMatrix.cols(),
-                    Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
+                    resultMatrix.colStride()
                 );
 
                 // Evaluate expression into results matrix using map
-                expressionImplementation->evaluate(parameterValues, resultMap, *this);
+                expressionImplementation->evaluate(parameterView, resultView, *this);
             }
 
             // Get reference to cached matrix
             const Matrix& resultMatrix = iterator->second;
 
             // Return map pointing to cached matrix
-            return ConstMap(
+            return ConstViewType(
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
@@ -165,94 +157,94 @@ namespace opensolid
 
     template <class TScalar>
     inline
-    typename Evaluator::Types<TScalar>::ConstMap
+    typename Evaluator::Types<TScalar>::ConstViewType
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const typename Types<TScalar>::ConstMap& parameterValues,
-        typename Types<TScalar>::Cache& cache
+        const typename Types<TScalar>::ConstViewType& parameterView,
+        typename Types<TScalar>::CacheType& cache
     ) {
-        typedef typename Types<TScalar>::Map Map;
-        typedef typename Types<TScalar>::ConstMap ConstMap;
-        typedef typename Types<TScalar>::Matrix Matrix;
-        typedef typename Types<TScalar>::Key Key;
-        typedef typename Types<TScalar>::Cache Cache;
+        typedef typename Types<TScalar>::ViewType ViewType;
+        typedef typename Types<TScalar>::ConstViewType ConstViewType;
+        typedef typename Types<TScalar>::MatrixType MatrixType;
+        typedef typename Types<TScalar>::KeyType KeyType;
+        typedef typename Types<TScalar>::CacheType CacheType;
 
         // Attempt to find cached results for the given expression/parameter pair
-        Key key(expressionImplementation.get(), parameterValues.data());
+        KeyType key(expressionImplementation.get(), parameterView.data());
         auto iterator = cache.find(key);
 
         if (iterator == cache.end()) {
             // Cached results not found - insert new empty entry into cache and update iterator
             // to point to the new entry
-            iterator = cache.insert(std::pair<const Key, Matrix>(key, Matrix())).first;
-
-            // Resize inserted matrix to the correct size
-            Matrix& resultMatrix = iterator->second;
-            resultMatrix.resize(
+            MatrixType newMatrix(
                 expressionImplementation->numDimensions(),
                 expressionImplementation->numParameters()
             );
+            iterator = cache.insert(
+                std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
+            ).first;
+            Matrix& resultMatrix = iterator->second;
 
             // Construct map pointing to newly allocated results matrix
-            Map resultMap(
+            ViewType resultView(
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
-                Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
+                resultMatrix.colStride()
             );
 
             // Evaluate expression into results matrix using map
-            expressionImplementation->evaluateJacobian(parameterValues, resultMap, *this);
+            expressionImplementation->evaluateJacobian(parameterView, resultView, *this);
         }
 
         // Get reference to cached matrix
-        const Matrix& resultMatrix = iterator->second;
+        const MatrixType& resultMatrix = iterator->second;
 
         // Return map pointing to cached matrix
-        return ConstMap(
+        return ConstViewType(
             resultMatrix.data(),
             resultMatrix.rows(),
             resultMatrix.cols(),
-            Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
+            resultMatrix.colStride()
         );
     }
 
-    MapXcd
+    ConstMatrixViewXxX
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const MapXcd& parameterValues
+        const ConstMatrixViewXxX& parameterView
     ) {
-        return evaluate<double>(expressionImplementation, parameterValues, _valuesCache);
+        return evaluate<double>(expressionImplementation, parameterView, _valuesCache);
     }
 
-    MapXcd
+    ConstMatrixViewXxX
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const MapXcd& parameterValues
+        const ConstMatrixViewXxX& parameterView
     ) {
         return evaluateJacobian<double>(
             expressionImplementation,
-            parameterValues,
+            parameterView,
             _jacobianValuesCache
         );
     }
 
-    MapXcI
+    ConstIntervalMatrixViewXxX
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const MapXcI& parameterValues
+        const ConstIntervalMatrixViewXxX& parameterView
     ) {
-        return evaluate<Interval>(expressionImplementation, parameterValues, _boundsCache);
+        return evaluate<Interval>(expressionImplementation, parameterView, _boundsCache);
     }
 
-    MapXcI
+    ConstIntervalMatrixViewXxX
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const MapXcI& parameterValues
+        const ConstIntervalMatrixViewXxX& parameterView
     ) {
         return evaluateJacobian<Interval>(
             expressionImplementation,
-            parameterValues,
+            parameterView,
             _jacobianBoundsCache
         );
     }
