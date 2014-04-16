@@ -5,6 +5,7 @@
     find_package(PythonInterp REQUIRED)
     
     include_directories(${CXXTEST_ROOT})
+    include_directories(${CATCH_ROOT})
         
     # Create macro for adding a CxxTest/CTest-based test
     macro(add_cxxtest name source)
@@ -36,6 +37,15 @@
         # Register executable as a test
         add_test(${name} "${EXECUTABLE_OUTPUT_PATH}/${name}")
     endmacro(add_cxxtest)
+
+    macro(add_simple_test test_name test_source)
+        add_executable(${test_name} ${test_source})
+        target_link_libraries(${test_name} ${ARGN})
+        add_test(NAME ${test_name} COMMAND ${test_name})
+    endmacro(add_simple_test)
+
+    # Configure all Catch test source files to define a main() function
+    add_definitions(-DCATCH_CONFIG_MAIN)
     
     add_to_global_source_list(CMakeLists.txt Template.hpp)
 
@@ -52,7 +62,8 @@
     
 ########## Core module tests ##########
 
-    add_cxxtest(IntervalTests IntervalTests.hpp OpenSolidCore)
+    add_simple_test(IntervalTests IntervalTests.cpp OpenSolidCore)
+
     add_cxxtest(MatrixTests MatrixTests.hpp OpenSolidCore)
     add_cxxtest(VectorTests VectorTests.hpp OpenSolidCore)
     add_cxxtest(PositionTests PositionTests.hpp OpenSolidCore)
@@ -65,7 +76,7 @@
     add_cxxtest(DatumTests DatumTests.hpp OpenSolidCore)
     
     add_to_global_source_list(
-        IntervalTests.hpp
+        IntervalTests.cpp
         MatrixTests.hpp
         VectorTests.hpp
         PositionTests.hpp

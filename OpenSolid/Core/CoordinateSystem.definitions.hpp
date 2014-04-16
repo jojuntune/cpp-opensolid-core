@@ -133,7 +133,7 @@ namespace opensolid
         zBasisVector() const;
         
         const Vector<double, iNumDimensions>
-        basisVector(std::int64_t axisIndex) const;
+        basisVector(int axisIndex) const;
         
         const Axis<iNumDimensions>
         xAxis() const;
@@ -145,7 +145,7 @@ namespace opensolid
         zAxis() const;
         
         const Axis<iNumDimensions>
-        axis(std::int64_t axisIndex) const;
+        axis(int axisIndex) const;
 
         const Plane3d
         xyPlane() const;
@@ -166,7 +166,7 @@ namespace opensolid
         zyPlane() const;
         
         const Plane3d
-        plane(std::int64_t firstAxisIndex, std::int64_t secondAxisIndex) const;
+        plane(int firstAxisIndex, int secondAxisIndex) const;
         
         const CoordinateSystem<iNumDimensions, iNumAxes>
         normalized() const;

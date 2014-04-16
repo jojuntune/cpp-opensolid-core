@@ -98,7 +98,7 @@ namespace opensolid
 
         template <class TItem, class TBoundsPredicate>
         inline
-        std::int64_t
+        std::size_t
         FilteredSpatialSet<TItem, TBoundsPredicate>::size() const {
             return this->sizeDefaultImpl();
         }

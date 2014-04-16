@@ -69,7 +69,7 @@ namespace opensolid
             detail::SpatialSetNode<TItem>* nextPtr,
             BoundsData** begin,
             BoundsData** end,
-            std::int64_t sortIndex
+            int sortIndex
         );
 
         void
@@ -115,14 +115,14 @@ namespace opensolid
         bool
         isEmpty() const;
         
-        std::int64_t
+        std::size_t
         size() const;
 
         typename BoundsType<TItem>::Type
         bounds() const;
 
         const TItem&
-        operator[](std::int64_t index) const;
+        operator[](std::size_t index) const;
 
         void
         clear();
@@ -150,7 +150,7 @@ namespace opensolid
         uniqueItems(double precision = 1e-12) const;
 
         std::vector<TItem>
-        uniqueItems(std::vector<std::int64_t>& mapping, double precision = 1e-12) const;
+        uniqueItems(std::vector<std::size_t>& mapping, double precision = 1e-12) const;
     };
     
     template <class TItem>

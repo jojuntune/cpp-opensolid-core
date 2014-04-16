@@ -75,7 +75,7 @@ namespace opensolid
             bool
             isEmpty() const;
 
-            std::int64_t
+            std::size_t
             size() const;
         };
 

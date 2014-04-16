@@ -107,7 +107,7 @@ namespace opensolid
         template <>
         inline
         const Vector<double, 1>
-        IntervalVectorBase<1>::vertex(std::int64_t index) const {
+        IntervalVectorBase<1>::vertex(int index) const {
             assert(index >= 0 && index < 2);
             return Vector<double, 1>(
                 index == 0 ? this->value().lowerBound() : this->value().upperBound()
@@ -117,7 +117,7 @@ namespace opensolid
         template <>
         inline
         const Vector<double, 2>
-        IntervalVectorBase<2>::vertex(std::int64_t index) const {
+        IntervalVectorBase<2>::vertex(int index) const {
             assert(index >= 0 && index < 4);
             return Vector<double, 2>(
                 index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),
@@ -128,7 +128,7 @@ namespace opensolid
         template <>
         inline
         const Vector<double, 3>
-        IntervalVectorBase<3>::vertex(std::int64_t index) const {
+        IntervalVectorBase<3>::vertex(int index) const {
             assert(index >= 0 && index < 8);
             return Vector<double, 3>(
                 index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),

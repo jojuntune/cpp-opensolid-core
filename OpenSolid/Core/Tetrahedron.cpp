@@ -30,7 +30,7 @@
 namespace opensolid
 {
     LineSegment3d
-    Tetrahedron3d::edge(std::int64_t index) const {
+    Tetrahedron3d::edge(int index) const {
         switch (index) {
             case 0:
                 return LineSegment3d(vertex(0), vertex(1));
@@ -51,7 +51,7 @@ namespace opensolid
     }
 
     Triangle3d
-    Tetrahedron3d::face(std::int64_t oppositeIndex) const {
+    Tetrahedron3d::face(int oppositeIndex) const {
         switch (oppositeIndex) {
             case 0:
                 return Triangle3d(vertex(1), vertex(2), vertex(3));

@@ -522,14 +522,12 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::derivative(
-        std::int64_t parameterIndex
-    ) const {
+    ParametricExpression<iNumDimensions, iNumParameters>::derivative(int parameterIndex) const {
         if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
             throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
-        return implementation()->derivative(int(parameterIndex))->deduplicated(deduplicationCache);
+        return implementation()->derivative(parameterIndex)->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>
@@ -597,19 +595,17 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<1, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::component(std::int64_t index) const {
+    ParametricExpression<iNumDimensions, iNumParameters>::component(int index) const {
         if (index < 0 || index >= iNumDimensions) {
             throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
-        return implementation()->component(int(index))->deduplicated(deduplicationCache);
+        return implementation()->component(index)->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters> template <int iNumComponents>
     ParametricExpression<iNumComponents, iNumParameters>
-    ParametricExpression<iNumDimensions, iNumParameters>::components(
-        std::int64_t startIndex
-    ) const {
+    ParametricExpression<iNumDimensions, iNumParameters>::components(int startIndex) const {
         static_assert(
             iNumComponents <= iNumDimensions,
             "Too many components requested"
@@ -623,7 +619,7 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
-        return implementation()->components(int(startIndex), iNumComponents)->
+        return implementation()->components(startIndex, iNumComponents)->
             deduplicated(deduplicationCache);
     }
     

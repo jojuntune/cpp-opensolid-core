@@ -107,10 +107,10 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         double
-        DoubleVectorBase<iNumDimensions>::minComponent(std::int64_t& index) const {
+        DoubleVectorBase<iNumDimensions>::minComponent(int& index) const {
             double result = this->component(0);
             index = 0;
-            for (std::int64_t i = 1; i < iNumDimensions; ++i) {
+            for (int i = 1; i < iNumDimensions; ++i) {
                 double component = this->component(i);
                 if (component < result) {
                     result = component;
@@ -134,10 +134,10 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         double
-        DoubleVectorBase<iNumDimensions>::maxComponent(std::int64_t& index) const {
+        DoubleVectorBase<iNumDimensions>::maxComponent(int& index) const {
             double result = this->component(0);
             index = 0;
-            for (std::int64_t i = 1; i < iNumDimensions; ++i) {
+            for (int i = 1; i < iNumDimensions; ++i) {
                 double component = this->component(i);
                 if (component > result) {
                     result = component;

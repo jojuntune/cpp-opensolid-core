@@ -72,7 +72,7 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        std::int64_t
+        std::size_t
         TriangleEdges<iNumDimensions>::size() const {
             return 3;
         }
@@ -80,8 +80,8 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         LineSegment<iNumDimensions>
-        TriangleEdges<iNumDimensions>::operator[](std::int64_t index) const {
-            return triangle().edge(index);
+        TriangleEdges<iNumDimensions>::operator[](std::size_t index) const {
+            return triangle().edge(int(index));
         }
     }
 }

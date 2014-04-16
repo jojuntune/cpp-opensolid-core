@@ -47,12 +47,6 @@ namespace opensolid
     };
     
     template <>
-    struct BoundsType<std::int64_t>
-    {
-        typedef Interval Type;
-    };
-    
-    template <>
     struct BoundsType<double>
     {
         typedef Interval Type;

@@ -46,7 +46,7 @@ namespace opensolid
 
     template <class TDerived>
     inline
-    std::int64_t
+    std::size_t
     LazyCollection<TDerived>::sizeDefaultImpl() const {
         return std::distance(begin(), end());
     }
@@ -81,7 +81,7 @@ namespace opensolid
 
     template <class TDerived>
     inline
-    std::int64_t
+    std::size_t
     LazyCollection<TDerived>::size() const {
         return derived().size();
     }

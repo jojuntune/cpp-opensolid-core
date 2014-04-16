@@ -29,9 +29,7 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 
 #include <OpenSolid/Core/Interval.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixDimensions.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixStorage.definitions.hpp>
+#include <OpenSolid/Core/Matrix/MatrixBase.definitions.hpp>
 
 #include <ostream>
 
@@ -39,9 +37,7 @@ namespace opensolid
 {
     template <class TScalar, int iRows, int iCols>
     class Matrix :
-        public detail::MatrixInterface<Matrix<TScalar, iRows, iCols>>,
-        private detail::MatrixDimensions<iRows, iCols>,
-        private detail::MatrixStorage<TScalar, iRows, iCols>
+        public detail::MatrixBase<TScalar, iRows, iCols>
     {
     public:
         Matrix();
@@ -62,24 +58,6 @@ namespace opensolid
         template <class TOtherDerived>
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
-
-        const TScalar*
-        data() const;
-
-        TScalar*
-        data();
-
-        int
-        rows() const;
-
-        int
-        cols() const;
-
-        int
-        size() const;
-
-        int
-        colStride() const;
 
         static const Matrix<TScalar, iRows, iCols>
         Constant(TScalar value);

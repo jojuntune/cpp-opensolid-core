@@ -69,7 +69,7 @@ namespace opensolid
             maxVertex() const;
 
             const Point<iNumDimensions>
-            vertex(std::int64_t index) const;
+            vertex(int index) const;
 
             const BoxVertices<iNumDimensions>
             vertices() const;

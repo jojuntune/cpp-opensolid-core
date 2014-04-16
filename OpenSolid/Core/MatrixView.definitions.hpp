@@ -28,20 +28,20 @@
 
 #include <OpenSolid/Core/MatrixView.declarations.hpp>
 
-#include <OpenSolid/Core/Matrix/ColStride.definitions.hpp>
-#include <OpenSolid/Core/Matrix/MatrixDimensions.definitions.hpp>
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
 namespace opensolid
 {
     template <class TScalar, int iRows, int iCols, int iColStride>
     class MatrixView :
-        public detail::MatrixInterface<MatrixView<TScalar, iRows, iCols, iColStride>>,
-        private detail::MatrixDimensions<iRows, iCols>,
-        private detail::ColStride<iColStride>
+        public detail::MatrixInterface<MatrixView<TScalar, iRows, iCols, iColStride>>
     {
     private:
         TScalar* _data;
+        int _rows;
+        int _cols;
+        int _size;
+        int _colStride;
     public:
         MatrixView(TScalar* sourcePtr);
 

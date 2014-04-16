@@ -97,7 +97,7 @@ namespace opensolid
 
         template <class TBaseCollection, class TMappingFunction>
         inline
-        std::int64_t
+        std::size_t
         MappedCollection<TBaseCollection, TMappingFunction>::size() const {
             return _baseCollection.size();
         }

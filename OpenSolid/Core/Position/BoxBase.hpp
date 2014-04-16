@@ -109,7 +109,7 @@ namespace opensolid
         template <>
         inline
         const Point<1>
-        BoxBase<1>::vertex(std::int64_t index) const {
+        BoxBase<1>::vertex(int index) const {
             assert(index >= 0 && index < 2);
             return Point<1>(
                 index == 0 ? this->component(0).lowerBound() : this->component(0).upperBound()
@@ -119,7 +119,7 @@ namespace opensolid
         template <>
         inline
         const Point<2>
-        BoxBase<2>::vertex(std::int64_t index) const {
+        BoxBase<2>::vertex(int index) const {
             assert(index >= 0 && index < 4);
             return Point<2>(
                 index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),
@@ -130,7 +130,7 @@ namespace opensolid
         template <>
         inline
         const Point<3>
-        BoxBase<3>::vertex(std::int64_t index) const {
+        BoxBase<3>::vertex(int index) const {
             assert(index >= 0 && index < 8);
             return Point<3>(
                 index & 1 ? this->component(0).upperBound() : this->component(0).lowerBound(),

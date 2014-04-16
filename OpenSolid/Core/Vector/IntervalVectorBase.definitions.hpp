@@ -66,7 +66,7 @@ namespace opensolid
             maxVertex() const;
 
             const Vector<double, iNumDimensions>
-            vertex(std::int64_t index) const;
+            vertex(int index) const;
 
             const IntervalVectorVertices<iNumDimensions>
             vertices() const;

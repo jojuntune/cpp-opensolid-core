@@ -69,14 +69,14 @@ namespace opensolid
             bool
             isEmpty() const;
 
-            std::int64_t
+            std::size_t
             size() const;
 
             Box<3>
             bounds() const;
 
             LineSegment<3>
-            operator[](std::int64_t index) const;
+            operator[](std::size_t index) const;
         };
     }
 }

@@ -49,7 +49,7 @@ namespace opensolid
         template <class TCollection>
         inline
         void
-        IndexIterator<TCollection>::advance(std::int64_t distance) {
+        IndexIterator<TCollection>::advance(std::ptrdiff_t distance) {
             _index += distance;
         }
 
@@ -80,7 +80,7 @@ namespace opensolid
         inline
         IndexIterator<TCollection>::IndexIterator(
             const TCollection* collection,
-            std::int64_t index
+            std::size_t index
         ) : _collection(collection),
             _index(index) {
         }

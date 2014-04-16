@@ -94,10 +94,10 @@ namespace opensolid
         endVertex();
 
         const Point<iNumDimensions>&
-        vertex(std::int64_t index) const;
+        vertex(int index) const;
 
         Point<iNumDimensions>&
-        vertex(std::int64_t index);
+        vertex(int index);
 
         detail::SimplexVertices<LineSegment<iNumDimensions>, 2>
         vertices() const;
