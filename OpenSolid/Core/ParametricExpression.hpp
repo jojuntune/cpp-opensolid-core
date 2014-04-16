@@ -81,20 +81,25 @@ namespace opensolid
         inline
         ConstMatrixViewXxX
         constView(const std::vector<double>& values) {
-            return ConstMatrixViewXxX(&values.front(), 1, values.size(), 1);
+            return ConstMatrixViewXxX(&values.front(), 1, int(values.size()), 1);
         }
 
         inline
         ConstIntervalMatrixViewXxX
         constView(const std::vector<Interval>& values) {
-            return ConstIntervalMatrixViewXxX(&values.front(), 1, values.size(), 1);
+            return ConstIntervalMatrixViewXxX(&values.front(), 1, int(values.size()), 1);
         }
 
         template <int iNumRows>
         inline
         ConstMatrixViewXxX
         constView(const std::vector<Matrix<double, iNumRows, 1>>& matrices) {
-            return ConstMatrixViewXxX(matrices.front().data(), iNumRows, matrices.size(), iNumRows);
+            return ConstMatrixViewXxX(
+                matrices.front().data(),
+                iNumRows,
+                int(matrices.size()),
+                iNumRows
+            );
         }
 
         template <int iNumRows>
@@ -104,7 +109,7 @@ namespace opensolid
             return ConstIntervalMatrixViewXxX(
                 matrices.front().data(),
                 iNumRows,
-                matrices.size(),
+                int(matrices.size()),
                 iNumRows
             );
         }
@@ -126,20 +131,20 @@ namespace opensolid
         inline
         MatrixViewXxX
         mutableView(std::vector<double>& values) {
-            return MatrixViewXxX(&values.front(), 1, values.size(), 1);
+            return MatrixViewXxX(&values.front(), 1, int(values.size()), 1);
         }
 
         inline
         IntervalMatrixViewXxX
         mutableView(std::vector<Interval>& values) {
-            return IntervalMatrixViewXxX(&values.front(), 1, values.size(), 1);
+            return IntervalMatrixViewXxX(&values.front(), 1, int(values.size()), 1);
         }
 
         template <int iNumRows>
         inline
         MatrixViewXxX
         mutableView(std::vector<Matrix<double, iNumRows, 1>>& matrices) {
-            return MatrixViewXxX(matrices.front().data(), iNumRows, matrices.size(), iNumRows);
+            return MatrixViewXxX(matrices.front().data(), iNumRows, int(matrices.size()), iNumRows);
         }
 
         template <int iNumRows>
@@ -149,7 +154,7 @@ namespace opensolid
             return IntervalMatrixViewXxX(
                 matrices.front().data(),
                 iNumRows,
-                matrices.size(),
+                int(matrices.size()),
                 iNumRows
             );
         }
