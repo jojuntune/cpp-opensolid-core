@@ -38,6 +38,7 @@ TEST_CASE("Basic functionality") {
 
 TEST_CASE("Negation") {
     Interval two_three(2.0, 3.0);
+    
     Interval negated = -two_three;
     REQUIRE(negated.lowerBound() == -3.0);
     REQUIRE(negated.upperBound() == -2.0);
@@ -83,29 +84,46 @@ TEST_CASE("Bisection") {
 
 TEST_CASE("Interpolation") {
     Interval x(6, 10);
-    REQUIRE((x.interpolated(0.5) - 8) == Zero());
-    Interval interpolated = x.interpolated(Interval(0.25, 0.75));
-    REQUIRE((interpolated.lowerBound() - 7) == Zero());
-    REQUIRE((interpolated.upperBound() - 9) == Zero());
+
+    SECTION("Value") {
+        REQUIRE((x.interpolated(0.5) - 8) == Zero());
+    }
+
+    SECTION("Interval") {
+        Interval interpolated = x.interpolated(Interval(0.25, 0.75));
+        REQUIRE((interpolated.lowerBound() - 7) == Zero());
+        REQUIRE((interpolated.upperBound() - 9) == Zero());
+    }
 }
 
 TEST_CASE("Clamping") {
     Interval interval(2, 4);
-    REQUIRE(interval.clamp(1) == 2);
-    REQUIRE(interval.clamp(2) == 2);
-    REQUIRE(interval.clamp(3) == 3);
-    REQUIRE(interval.clamp(4) == 4);
-    REQUIRE(interval.clamp(5) == 4);
-    Interval clamped;
-    clamped = interval.clamp(Interval(0, 1));
-    REQUIRE(clamped.lowerBound() == 2);
-    REQUIRE(clamped.upperBound() == 2);
-    clamped = interval.clamp(Interval(1, 3));
-    REQUIRE(clamped.lowerBound() == 2);
-    REQUIRE(clamped.upperBound() == 3);
-    clamped = interval.clamp(Interval(2.5, 3.5));
-    REQUIRE(clamped.lowerBound() == 2.5);
-    REQUIRE(clamped.upperBound() == 3.5);
+
+    SECTION("Values") {
+        REQUIRE(interval.clamp(1) == 2);
+        REQUIRE(interval.clamp(2) == 2);
+        REQUIRE(interval.clamp(3) == 3);
+        REQUIRE(interval.clamp(4) == 4);
+        REQUIRE(interval.clamp(5) == 4);
+    }
+
+    SECTION("No overlap") {
+        Interval clamped = interval.clamp(Interval(0, 1));
+        REQUIRE(clamped.lowerBound() == 2);
+        REQUIRE(clamped.upperBound() == 2);
+    }
+
+    SECTION("Partial overlap") {
+        Interval clamped = interval.clamp(Interval(1, 3));
+        REQUIRE(clamped.lowerBound() == 2);
+        REQUIRE(clamped.upperBound() == 3);
+    }
+    
+    SECTION("Fully contained") {
+        Interval clamped = interval.clamp(Interval(2.5, 3.5));
+        REQUIRE(clamped.lowerBound() == 2.5);
+        REQUIRE(clamped.upperBound() == 3.5);
+    }
 }
 
 TEST_CASE("Random generation") {
