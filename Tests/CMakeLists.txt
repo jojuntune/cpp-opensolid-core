@@ -63,9 +63,9 @@
 ########## Core module tests ##########
 
     add_simple_test(IntervalTests IntervalTests.cpp OpenSolidCore)
+    add_simple_test(MatrixTests MatrixTests.cpp OpenSolidCore)
+    add_simple_test(VectorTests VectorTests.cpp OpenSolidCore)
 
-    add_cxxtest(MatrixTests MatrixTests.hpp OpenSolidCore)
-    add_cxxtest(VectorTests VectorTests.hpp OpenSolidCore)
     add_cxxtest(PositionTests PositionTests.hpp OpenSolidCore)
     add_cxxtest(CoordinateSystemTests CoordinateSystemTests.hpp OpenSolidCore)
     add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
@@ -77,8 +77,8 @@
     
     add_to_global_source_list(
         IntervalTests.cpp
-        MatrixTests.hpp
-        VectorTests.hpp
+        MatrixTests.cpp
+        VectorTests.cpp
         PositionTests.hpp
         CoordinateSystemTests.hpp
         SimplexTests.hpp
