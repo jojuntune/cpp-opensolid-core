@@ -113,6 +113,22 @@ namespace opensolid
         assert(colStride > 0);
     }
 
+    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <int iOtherRows, int iOtherCols, int iOtherColStride>
+    inline
+    MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(
+        const MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other
+    ) : _data(other.data()),
+        _rows(other.rows()),
+        _cols(other.cols()),
+        _size(other.size()),
+        _colStride(other.colStride()) {
+
+        detail::CheckCompatibleSizes<iRows, iOtherRows> staticRowCheck;
+        detail::CheckCompatibleSizes<iCols, iOtherCols> staticColCheck;
+        detail::CheckCompatibleSizes<iColStride, iOtherColStride> staticColStrideCheck;
+    }
+
     template <class TScalar, int iRows, int iCols, int iColStride> template <class TOtherDerived>
     inline
     void
