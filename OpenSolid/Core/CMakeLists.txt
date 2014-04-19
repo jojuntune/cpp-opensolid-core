@@ -11,6 +11,7 @@
         ParametricExpression/Evaluator.cpp
         ParametricExpression/ExpressionImplementation.cpp
         ParametricExpression/ArccosineExpression.cpp
+        ParametricExpression/ArcsineExpression.cpp
         #ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp
