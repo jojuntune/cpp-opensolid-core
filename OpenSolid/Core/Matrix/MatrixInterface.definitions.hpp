@@ -194,11 +194,23 @@ namespace opensolid
             const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
             map(TUnaryFunction unaryFunction) const;
 
+            template <class TUnaryFunction, class TResultDerived>
+            void
+            map(TUnaryFunction unaryFunction, MatrixInterface<TResultDerived>& result) const;
+
             template <class TBinaryFunction, class TOtherDerived>
             const typename PairwiseMappedMatrixType<TBinaryFunction, TDerived, TOtherDerived>::Type
             binaryMap(
                 const MatrixInterface<TOtherDerived>& other,
                 TBinaryFunction binaryFunction
+            ) const;
+
+            template <class TBinaryFunction, class TOtherDerived, class TResultDerived>
+            void
+            binaryMap(
+                const MatrixInterface<TOtherDerived>& other,
+                TBinaryFunction binaryFunction,
+                MatrixInterface<TResultDerived>& result
             ) const;
 
             template <class TValue, class TFunction>

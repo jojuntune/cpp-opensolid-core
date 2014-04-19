@@ -406,6 +406,19 @@ namespace opensolid
         const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
         MatrixInterface<TDerived>::map(TUnaryFunction unaryFunction) const {
             typename MappedMatrixType<TUnaryFunction, TDerived>::Type result(rows(), cols());
+            map(unaryFunction, result);
+            return result;
+        }
+
+        template <class TDerived> template <class TUnaryFunction, class TResultDerived>
+        inline
+        void
+        MatrixInterface<TDerived>::map(
+            TUnaryFunction unaryFunction,
+            MatrixInterface<TResultDerived>& result
+        ) const {
+            CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
+
             for (int colIndex = 0; colIndex < cols(); ++colIndex) {
                 for (int rowIndex = 0; rowIndex < rows(); ++rowIndex) {
                     result.coeff(rowIndex, colIndex) = unaryFunction(
@@ -413,7 +426,6 @@ namespace opensolid
                     );
                 }
             }
-            return result;
         }
 
         template <class TDerived> template <class TBinaryFunction, class TOtherDerived>
@@ -430,6 +442,20 @@ namespace opensolid
                 TDerived,
                 TOtherDerived
             >::Type result(rows(), cols());
+            binaryMap(other, binaryFunction, result);
+            return result;
+        }
+
+        template <class TDerived>
+        template <class TBinaryFunction, class TOtherDerived, class TResultDerived>
+        inline
+        void
+        MatrixInterface<TDerived>::binaryMap(
+            const MatrixInterface<TOtherDerived>& other,
+            TBinaryFunction binaryFunction,
+            MatrixInterface<TResultDerived>& result
+        ) const {
+            CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
 
             for (int colIndex = 0; colIndex < cols(); ++colIndex) {
                 for (int rowIndex = 0; rowIndex < rows(); ++rowIndex) {
@@ -439,7 +465,6 @@ namespace opensolid
                     );
                 }
             }
-            return result;
         }
 
         template <class TDerived> template <class TValue, class TFunction>
