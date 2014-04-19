@@ -39,9 +39,12 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        resultView.topRows(firstOperand()->numDimensions()) =
+        int firstDimensions = firstOperand()->numDimensions();
+        int secondDimensions = secondOperand()->numDimensions();
+
+        resultView.block(0, 0, firstDimensions, resultView.cols()) =
             evaluator.evaluate(firstOperand(), parameterView);
-        resultView.bottomRows(secondOperand()->numDimensions()) =
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
             evaluator.evaluate(secondOperand(), parameterView);
     }
     
@@ -51,9 +54,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        resultView.topRows(firstOperand()->numDimensions()) =
+        int firstDimensions = firstOperand()->numDimensions();
+        int secondDimensions = secondOperand()->numDimensions();
+        
+        resultView.block(0, 0, firstDimensions, resultView.cols()) =
             evaluator.evaluate(firstOperand(), parameterView);
-        resultView.bottomRows(secondOperand()->numDimensions()) =
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
             evaluator.evaluate(secondOperand(), parameterView);
     }
 
@@ -63,10 +69,13 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        resultView.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
+        int firstDimensions = firstOperand()->numDimensions();
+        int secondDimensions = secondOperand()->numDimensions();
+        
+        resultView.block(0, 0, firstDimensions, resultView.cols()) =
+            evaluator.evaluate(firstOperand(), parameterView);
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
+            evaluator.evaluate(secondOperand(), parameterView);
     }
     
     void
@@ -75,10 +84,13 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        resultView.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterView);
+        int firstDimensions = firstOperand()->numDimensions();
+        int secondDimensions = secondOperand()->numDimensions();
+        
+        resultView.block(0, 0, firstDimensions, resultView.cols()) =
+            evaluator.evaluate(firstOperand(), parameterView);
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
+            evaluator.evaluate(secondOperand(), parameterView);
     }
     
     ExpressionImplementationPtr

@@ -12,6 +12,10 @@
         ParametricExpression/ExpressionImplementation.cpp
         ParametricExpression/ArccosineExpression.cpp
         ParametricExpression/ArcsineExpression.cpp
+        ParametricExpression/BinaryOperation.cpp
+        ParametricExpression/ComponentsExpression.cpp
+        ParametricExpression/CompositionExpression.cpp
+        ParametricExpression/ConcatenationExpression.cpp
         #ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp

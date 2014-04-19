@@ -39,8 +39,12 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterView);
-        resultView = operandValues.middleRows(startIndex(), numComponents());
+        resultView = evaluator.evaluate(operand(), parameterView).block(
+            startIndex(),
+            0,
+            numComponents(),
+            parameterView.cols()
+        );
     }
     
     void
@@ -49,8 +53,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
-        resultView = operandBounds.middleRows(startIndex(), numComponents());
+        resultView = evaluator.evaluate(operand(), parameterView).block(
+            startIndex(),
+            0,
+            numComponents(),
+            parameterView.cols()
+        );
     }
 
     void
@@ -59,8 +67,12 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView = operandJacobian.middleRows(startIndex(), numComponents());
+        resultView = evaluator.evaluateJacobian(operand(), parameterView).block(
+            startIndex(),
+            0,
+            numComponents(),
+            numParameters()
+        );
     }
     
     void
@@ -69,8 +81,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView = operandJacobian.middleRows(startIndex(), numComponents());
+        resultView = evaluator.evaluateJacobian(operand(), parameterView).block(
+            startIndex(),
+            0,
+            numComponents(),
+            numParameters()
+        );
     }
 
     ExpressionImplementationPtr
