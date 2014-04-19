@@ -40,8 +40,8 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
-        results = operandValues.array().sin() / operandValues.array().cos();
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterView);
+        resultView = operandValues.array().sin() / operandValues.array().cos();
     }
     
     void
@@ -50,8 +50,8 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
-        results = operandBounds.array().sin() / operandBounds.array().cos();
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
+        resultView = operandBounds.array().sin() / operandBounds.array().cos();
     }
 
     void
@@ -60,13 +60,13 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        double operandValue = evaluator.evaluate(operand(), parameterView).value();
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
         double cosine = cos(operandValue);
         if (cosine == Zero()) {
             throw Error(new PlaceholderError());
         }
-        results = operandJacobian / (cosine * cosine);
+        resultView = operandJacobian / (cosine * cosine);
     }
     
     void
@@ -75,13 +75,13 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
         Interval cosine = cos(operandBounds);
         if (cosine == Zero()) {
             throw Error(new PlaceholderError());
         }
-        results = operandJacobian / cosine.squared();
+        resultView = operandJacobian / cosine.squared();
     }
 
     ExpressionImplementationPtr

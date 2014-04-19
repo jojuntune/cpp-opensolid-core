@@ -39,9 +39,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
-        results = firstValues.array() / secondValues.replicate(numDimensions(), 1).array();
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = firstValues.array() / secondValues.replicate(numDimensions(), 1).array();
     }
     
     void
@@ -50,9 +50,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
-        results = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = firstBounds.array() / secondBounds.replicate(numDimensions(), 1).array();
     }
 
     void
@@ -61,11 +61,11 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd dividendValues = evaluator.evaluate(firstOperand(), parameterValues);
-        double divisorValue = evaluator.evaluate(secondOperand(), parameterValues).value();
-        MapXcd dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcd divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
+        MapXcd dividendValues = evaluator.evaluate(firstOperand(), parameterView);
+        double divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
+        MapXcd dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcd divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
             (divisorValue * divisorValue);
     }
     
@@ -75,11 +75,11 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI dividendBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        Interval divisorBounds = evaluator.evaluate(secondOperand(), parameterValues).value();
-        MapXcI dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcI divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = (dividendJacobian * divisorBounds - dividendBounds * divisorJacobian) / 
+        MapXcI dividendBounds = evaluator.evaluate(firstOperand(), parameterView);
+        Interval divisorBounds = evaluator.evaluate(secondOperand(), parameterView).value();
+        MapXcI dividendJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcI divisorJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = (dividendJacobian * divisorBounds - dividendBounds * divisorJacobian) / 
             divisorBounds.squared();
     }
 

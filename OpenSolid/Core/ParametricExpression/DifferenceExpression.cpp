@@ -39,9 +39,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
-        results = firstValues - secondValues;
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = firstValues - secondValues;
     }
     
     void
@@ -50,9 +50,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
-        results = firstBounds - secondBounds;
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = firstBounds - secondBounds;
     }
 
     void
@@ -61,9 +61,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = firstJacobian - secondJacobian;
+        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = firstJacobian - secondJacobian;
     }
     
     void
@@ -72,9 +72,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = firstJacobian - secondJacobian;
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = firstJacobian - secondJacobian;
     }
 
     ExpressionImplementationPtr

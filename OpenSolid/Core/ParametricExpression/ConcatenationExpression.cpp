@@ -39,10 +39,10 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluate(firstOperand(), parameterValues);
-        results.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluate(secondOperand(), parameterValues);
+        resultView.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluate(firstOperand(), parameterView);
+        resultView.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluate(secondOperand(), parameterView);
     }
     
     void
@@ -51,10 +51,10 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluate(firstOperand(), parameterValues);
-        results.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluate(secondOperand(), parameterValues);
+        resultView.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluate(firstOperand(), parameterView);
+        resultView.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluate(secondOperand(), parameterView);
     }
 
     void
@@ -63,10 +63,10 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        results.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        resultView.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
+        resultView.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
     }
     
     void
@@ -75,10 +75,10 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.topRows(firstOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        results.bottomRows(secondOperand()->numDimensions()) =
-            evaluator.evaluateJacobian(secondOperand(), parameterValues);
+        resultView.topRows(firstOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
+        resultView.bottomRows(secondOperand()->numDimensions()) =
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
     }
     
     ExpressionImplementationPtr

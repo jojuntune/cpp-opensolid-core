@@ -44,7 +44,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).array().sin();
+        resultView = evaluator.evaluate(operand(), parameterView).array().sin();
     }
     
     void
@@ -53,7 +53,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).array().sin();
+        resultView = evaluator.evaluate(operand(), parameterView).array().sin();
     }
 
     void
@@ -62,9 +62,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        results = cos(operandValue) * operandJacobian;
+        double operandValue = evaluator.evaluate(operand(), parameterView).value();
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView = cos(operandValue) * operandJacobian;
     }
     
     void
@@ -73,9 +73,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        results = cos(operandBounds) * operandJacobian;
+        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView = cos(operandBounds) * operandJacobian;
     }
 
     ExpressionImplementationPtr

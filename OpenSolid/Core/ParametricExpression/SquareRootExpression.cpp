@@ -57,7 +57,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(SquareRoot());
+        resultView = evaluator.evaluate(operand(), parameterView).unaryExpr(SquareRoot());
     }
     
     void
@@ -66,7 +66,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(SquareRoot());
+        resultView = evaluator.evaluate(operand(), parameterView).unaryExpr(SquareRoot());
     }
 
     void
@@ -75,12 +75,12 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        double operandValue = evaluator.evaluate(operand(), parameterView).value();
         if (operandValue <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        results = 0.5 * operandJacobian / sqrt(operandValue);
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView = 0.5 * operandJacobian / sqrt(operandValue);
     }
     
     void
@@ -89,12 +89,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
+        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
         if (operandBounds <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        results = Interval(0.5) * operandJacobian / sqrt(operandBounds);
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView = Interval(0.5) * operandJacobian / sqrt(operandBounds);
     }
 
     ExpressionImplementationPtr

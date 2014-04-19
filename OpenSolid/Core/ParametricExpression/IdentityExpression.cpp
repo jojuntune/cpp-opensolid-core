@@ -44,7 +44,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator&
     ) const {
-        results = parameterValues;
+        resultView = parameterView;
     }
     
     void
@@ -53,7 +53,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator&
     ) const {
-        results = parameterValues;
+        resultView = parameterView;
     }
 
     void
@@ -62,7 +62,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.setIdentity();
+        resultView.setIdentity();
     }
     
     void
@@ -71,7 +71,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.setIdentity();
+        resultView.setIdentity();
     }
 
     ExpressionImplementationPtr

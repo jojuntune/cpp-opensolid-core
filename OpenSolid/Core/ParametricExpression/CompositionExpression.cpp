@@ -44,8 +44,8 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd innerValues = evaluator.evaluate(innerExpression(), parameterValues);
-        results = evaluator.evaluate(outerExpression(), innerValues);
+        MapXcd innerValues = evaluator.evaluate(innerExpression(), parameterView);
+        resultView = evaluator.evaluate(outerExpression(), innerValues);
     }
 
     void
@@ -54,8 +54,8 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterValues);
-        results = evaluator.evaluate(outerExpression(), innerBounds);
+        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterView);
+        resultView = evaluator.evaluate(outerExpression(), innerBounds);
     }
 
     void
@@ -64,10 +64,10 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd innerJacobian = evaluator.evaluateJacobian(innerExpression(), parameterValues);
-        MapXcd innerValues = evaluator.evaluate(innerExpression(), parameterValues);
+        MapXcd innerJacobian = evaluator.evaluateJacobian(innerExpression(), parameterView);
+        MapXcd innerValues = evaluator.evaluate(innerExpression(), parameterView);
         MapXcd outerJacobian = evaluator.evaluateJacobian(outerExpression(), innerValues);
-        results = outerJacobian * innerJacobian;
+        resultView = outerJacobian * innerJacobian;
     }
     
     void
@@ -76,10 +76,10 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI innerJacobian = evaluator.evaluateJacobian(innerExpression(), parameterValues);
-        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterValues);
+        MapXcI innerJacobian = evaluator.evaluateJacobian(innerExpression(), parameterView);
+        MapXcI innerBounds = evaluator.evaluate(innerExpression(), parameterView);
         MapXcI outerJacobian = evaluator.evaluateJacobian(outerExpression(), innerBounds);
-        results = outerJacobian * innerJacobian;
+        resultView = outerJacobian * innerJacobian;
     }
 
     ExpressionImplementationPtr

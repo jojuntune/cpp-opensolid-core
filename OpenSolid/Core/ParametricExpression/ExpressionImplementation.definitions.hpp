@@ -54,32 +54,32 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateImpl(
-            const ConstMatrixViewXxX& parameterValues,
-            MatrixViewXxX& results,
+            const ConstMatrixViewXxX& parameterView,
+            MatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const = 0;
         
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateImpl(
-            const ConstIntervalMatrixViewXxX& parameterValues,
-            IntervalMatrixViewXxX& results,
+            const ConstIntervalMatrixViewXxX& parameterView,
+            IntervalMatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const = 0;
 
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateJacobianImpl(
-            const ConstMatrixViewXxX& parameterValues,
-            MatrixViewXxX& results,
+            const ConstMatrixViewXxX& parameterView,
+            MatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const = 0;
         
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXxX& parameterValues,
-            IntervalMatrixViewXxX& results,
+            const ConstIntervalMatrixViewXxX& parameterView,
+            IntervalMatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const = 0;
 
@@ -208,29 +208,29 @@ namespace opensolid
         
         void
         evaluate(
-            const ConstMatrixViewXxX& parameterValues,
-            MatrixViewXxX& results,
+            const ConstMatrixViewXxX& parameterView,
+            MatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const;
         
         void
         evaluate(
-            const ConstIntervalMatrixViewXxX& parameterValues,
-            IntervalMatrixViewXxX& results,
+            const ConstIntervalMatrixViewXxX& parameterView,
+            IntervalMatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const;
         
         void
         evaluateJacobian(
-            const ConstMatrixViewXxX& parameterValues,
-            MatrixViewXxX& results,
+            const ConstMatrixViewXxX& parameterView,
+            MatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const;
 
         void
         evaluateJacobian(
-            const ConstIntervalMatrixViewXxX& parameterValues,
-            IntervalMatrixViewXxX& results,
+            const ConstIntervalMatrixViewXxX& parameterView,
+            IntervalMatrixViewXxX& resultView,
             Evaluator& evaluator
         ) const;
         

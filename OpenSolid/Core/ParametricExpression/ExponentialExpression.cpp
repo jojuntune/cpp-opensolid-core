@@ -44,7 +44,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).array().exp();
+        resultView = evaluator.evaluate(operand(), parameterView).array().exp();
     }
 
     void
@@ -53,7 +53,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).array().exp();
+        resultView = evaluator.evaluate(operand(), parameterView).array().exp();
     }
 
     void
@@ -62,8 +62,8 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double value = exp(evaluator.evaluate(operand(), parameterValues).value());
-        results = value * evaluator.evaluateJacobian(operand(), parameterValues);
+        double value = exp(evaluator.evaluate(operand(), parameterView).value());
+        resultView = value * evaluator.evaluateJacobian(operand(), parameterView);
     }
     
     void
@@ -72,8 +72,8 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval bounds = exp(evaluator.evaluate(operand(), parameterValues).value());
-        results = bounds * evaluator.evaluateJacobian(operand(), parameterValues);
+        Interval bounds = exp(evaluator.evaluate(operand(), parameterView).value());
+        resultView = bounds * evaluator.evaluateJacobian(operand(), parameterView);
     }
 
     ExpressionImplementationPtr

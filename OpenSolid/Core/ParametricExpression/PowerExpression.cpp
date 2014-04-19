@@ -99,14 +99,14 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd baseValues = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcd baseValues = evaluator.evaluate(firstOperand(), parameterView);
         if (_exponentIsInteger) {
-            results = baseValues.unaryExpr(IntegerPower(_integerExponent));
+            resultView = baseValues.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
-            results = baseValues.array().pow(_constantExponent);
+            resultView = baseValues.array().pow(_constantExponent);
         } else {
-            MapXcd exponentValues = evaluator.evaluate(secondOperand(), parameterValues);
-            results = baseValues.binaryExpr(exponentValues, Power());
+            MapXcd exponentValues = evaluator.evaluate(secondOperand(), parameterView);
+            resultView = baseValues.binaryExpr(exponentValues, Power());
         }
     }
 
@@ -116,14 +116,14 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI baseBounds = evaluator.evaluate(firstOperand(), parameterValues);
+        MapXcI baseBounds = evaluator.evaluate(firstOperand(), parameterView);
         if (_exponentIsInteger) {
-            results = baseBounds.unaryExpr(IntegerPower(_integerExponent));
+            resultView = baseBounds.unaryExpr(IntegerPower(_integerExponent));
         } else if (_exponentIsConstant) {
-            results = baseBounds.array().unaryExpr(ConstantPower(_constantExponent));
+            resultView = baseBounds.array().unaryExpr(ConstantPower(_constantExponent));
         } else {
-            MapXcI exponentBounds = evaluator.evaluate(secondOperand(), parameterValues);
-            results = baseBounds.binaryExpr(exponentBounds, Power());
+            MapXcI exponentBounds = evaluator.evaluate(secondOperand(), parameterView);
+            resultView = baseBounds.binaryExpr(exponentBounds, Power());
         }
     }
 
@@ -133,17 +133,17 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double baseValue = evaluator.evaluate(firstOperand(), parameterValues).value();
+        double baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
         if (baseValue <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcd baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcd baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
         if (_exponentIsConstant) {
-            results = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
+            resultView = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
         } else {
-            double exponentValue = evaluator.evaluate(secondOperand(), parameterValues).value();
-            MapXcd exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-            results = pow(baseValue, exponentValue) *
+            double exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
+            MapXcd exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+            resultView = pow(baseValue, exponentValue) *
                 (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);
         }
     }
@@ -154,18 +154,18 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval baseBounds = evaluator.evaluate(firstOperand(), parameterValues).value();
+        Interval baseBounds = evaluator.evaluate(firstOperand(), parameterView).value();
         if (baseBounds.upperBound() <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcI baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
+        MapXcI baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
         if (_exponentIsConstant) {
-            results = _constantExponent * pow(baseBounds, Interval(_constantExponent - 1)) *
+            resultView = _constantExponent * pow(baseBounds, Interval(_constantExponent - 1)) *
                 baseJacobian;
         } else {
-            Interval exponentBounds = evaluator.evaluate(secondOperand(), parameterValues).value();
-            MapXcI exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-            results = pow(baseBounds, exponentBounds) *
+            Interval exponentBounds = evaluator.evaluate(secondOperand(), parameterView).value();
+            MapXcI exponentJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+            resultView = pow(baseBounds, exponentBounds) *
                 (log(baseBounds) * exponentJacobian + exponentBounds * baseJacobian / baseBounds);
         }
     }

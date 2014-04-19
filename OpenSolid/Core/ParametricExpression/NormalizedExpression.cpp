@@ -45,9 +45,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
+        MapXcd operandValues = evaluator.evaluate(operand(), parameterView);
         RowMatrixXd squaredNorms = operandValues.colwise().squaredNorm();
-        results = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
+        resultView = operandValues * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
     void
@@ -56,9 +56,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
         RowMatrixXI squaredNorms = operandBounds.colwise().squaredNorm();
-        results = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
+        resultView = operandBounds * squaredNorms.cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
     void
@@ -67,15 +67,15 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
+        MapXcd operandValue = evaluator.evaluate(operand(), parameterView);
         double operandNorm = operandValue.norm();
         if (operandNorm == Zero()) {
             throw Error(new PlaceholderError());
         }
         ColumnMatrixXd operandNormalized = operandValue / operandNorm;
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
 
-        results = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
+        resultView = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
             operandJacobian)) / operandNorm;
     }
     
@@ -85,15 +85,15 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
         Interval operandNorm = operandBounds.norm();
         if (operandNorm == Zero()) {
             throw Error(new PlaceholderError());
         }
         ColumnMatrixXI operandNormalized = operandBounds / operandNorm;
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
 
-        results = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
+        resultView = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
             operandJacobian)) / operandNorm;
     }
 

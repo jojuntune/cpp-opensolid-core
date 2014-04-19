@@ -45,7 +45,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator&
     ) const {
-        results.colwise() = columnMatrix();
+        resultView.colwise() = columnMatrix();
     }
     
     void
@@ -54,7 +54,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator&
     ) const {
-        results.colwise() = columnMatrixXI();
+        resultView.colwise() = columnMatrixXI();
     }
 
     void
@@ -63,7 +63,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.setZero();
+        resultView.setZero();
     }
     
     void
@@ -72,7 +72,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results.setZero();
+        resultView.setZero();
     }
     
     ExpressionImplementationPtr

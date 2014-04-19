@@ -45,7 +45,7 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).colwise().norm();
+        resultView = evaluator.evaluate(operand(), parameterView).colwise().norm();
     }
     
     void 
@@ -54,7 +54,7 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).colwise().norm();
+        resultView = evaluator.evaluate(operand(), parameterView).colwise().norm();
     }
 
     void
@@ -63,13 +63,13 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
+        MapXcd operandValue = evaluator.evaluate(operand(), parameterView);
         if (operandValue.isZero()) {
             throw Error(new PlaceholderError());
         }
         ColumnMatrixXd operandNormalized = operandValue.normalized();
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        results = operandNormalized.transpose() * operandJacobian;
+        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView = operandNormalized.transpose() * operandJacobian;
     }
     
     void
@@ -78,13 +78,13 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
+        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
         if (operandBounds.isZero()) {
             throw Error(new PlaceholderError());
         }
         ColumnMatrixXI operandNormalized = operandBounds.normalized();
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        results = operandNormalized.transpose() * operandJacobian;
+        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView = operandNormalized.transpose() * operandJacobian;
     }
 
     ExpressionImplementationPtr

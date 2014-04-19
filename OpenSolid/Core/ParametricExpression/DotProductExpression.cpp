@@ -39,9 +39,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
-        results = firstValues.cwiseProduct(secondValues).colwise().sum();
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = firstValues.cwiseProduct(secondValues).colwise().sum();
     }
     
     void
@@ -50,9 +50,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
-        results = firstBounds.cwiseProduct(secondBounds).colwise().sum();
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = firstBounds.cwiseProduct(secondBounds).colwise().sum();
     }
 
     void
@@ -61,11 +61,11 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValue = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcd secondValue = evaluator.evaluate(secondOperand(), parameterValues);
-        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = firstValue.transpose() * secondJacobian +
+        MapXcd firstValue = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcd secondValue = evaluator.evaluate(secondOperand(), parameterView);
+        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = firstValue.transpose() * secondJacobian +
             secondValue.transpose() * firstJacobian;
     }
     
@@ -75,11 +75,11 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = firstBounds.transpose() * secondJacobian +
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = firstBounds.transpose() * secondJacobian +
             secondBounds.transpose() * firstJacobian;
     }
 

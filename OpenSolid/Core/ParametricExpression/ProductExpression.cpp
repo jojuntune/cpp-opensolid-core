@@ -39,9 +39,9 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
-        results = secondValues * firstValues.topRows<1>().asDiagonal();
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = secondValues * firstValues.topRows<1>().asDiagonal();
     }
     
     void
@@ -50,9 +50,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
-        results = secondBounds * firstBounds.topRows<1>().asDiagonal();
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = secondBounds * firstBounds.topRows<1>().asDiagonal();
     }
 
     void
@@ -61,11 +61,11 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double multiplierValue = evaluator.evaluate(firstOperand(), parameterValues).value();
-        MapXcd multiplicandValue = evaluator.evaluate(secondOperand(), parameterValues);
-        MapXcd multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcd multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;
+        double multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
+        MapXcd multiplicandValue = evaluator.evaluate(secondOperand(), parameterView);
+        MapXcd multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcd multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;
     }
     
     void
@@ -74,11 +74,11 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval multiplierBounds = evaluator.evaluate(firstOperand(), parameterValues).value();
-        MapXcI multiplicandValue = evaluator.evaluate(secondOperand(), parameterValues);
-        MapXcI multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcI multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        results = multiplierBounds * multiplicandJacobian + multiplicandValue * multiplierJacobian;
+        Interval multiplierBounds = evaluator.evaluate(firstOperand(), parameterView).value();
+        MapXcI multiplicandValue = evaluator.evaluate(secondOperand(), parameterView);
+        MapXcI multiplierJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcI multiplicandJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        resultView = multiplierBounds * multiplicandJacobian + multiplicandValue * multiplierJacobian;
     }
 
     ExpressionImplementationPtr

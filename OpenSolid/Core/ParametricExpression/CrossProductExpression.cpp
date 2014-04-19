@@ -39,10 +39,10 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterValues);
-        for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = firstValues.col(i).head<3>().cross(secondValues.col(i).head<3>());
+        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        for (int i = 0; i < resultView.cols(); ++i) {
+            resultView.col(i) = firstValues.col(i).head<3>().cross(secondValues.col(i).head<3>());
         }
     }
     
@@ -52,10 +52,10 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterValues);
-        for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = firstBounds.col(i).head<3>().cross(secondBounds.col(i).head<3>());
+        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
+        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        for (int i = 0; i < resultView.cols(); ++i) {
+            resultView.col(i) = firstBounds.col(i).head<3>().cross(secondBounds.col(i).head<3>());
         }
     }
 
@@ -66,13 +66,13 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         Eigen::Matrix<double, 3, 1> firstValue =
-            evaluator.evaluate(firstOperand(), parameterValues);
+            evaluator.evaluate(firstOperand(), parameterView);
         Eigen::Matrix<double, 3, 1> secondValue =
-            evaluator.evaluate(secondOperand(), parameterValues);
-        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = firstJacobian.col(i).head<3>().cross(secondValue) +
+            evaluator.evaluate(secondOperand(), parameterView);
+        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        for (int i = 0; i < resultView.cols(); ++i) {
+            resultView.col(i) = firstJacobian.col(i).head<3>().cross(secondValue) +
                 firstValue.cross(secondJacobian.col(i).head<3>());
         }
     }
@@ -84,13 +84,13 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         Eigen::Matrix<Interval, 3, 1> firstBounds =
-            evaluator.evaluate(firstOperand(), parameterValues);
+            evaluator.evaluate(firstOperand(), parameterView);
         Eigen::Matrix<Interval, 3, 1> secondBounds =
-            evaluator.evaluate(secondOperand(), parameterValues);
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterValues);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterValues);
-        for (int i = 0; i < results.cols(); ++i) {
-            results.col(i) = firstJacobian.col(i).head<3>().cross(secondBounds) +
+            evaluator.evaluate(secondOperand(), parameterView);
+        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        for (int i = 0; i < resultView.cols(); ++i) {
+            resultView.col(i) = firstJacobian.col(i).head<3>().cross(secondBounds) +
                 firstBounds.cross(secondJacobian.col(i).head<3>());
         }
     }
