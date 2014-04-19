@@ -486,7 +486,43 @@ namespace opensolid
         };
 
         template <>
+        struct CommonScalar<const double, double>
+        {
+            typedef double Type;
+        };
+
+        template <>
+        struct CommonScalar<double, const double>
+        {
+            typedef double Type;
+        };
+
+        template <>
+        struct CommonScalar<const double, const double>
+        {
+            typedef double Type;
+        };
+
+        template <>
         struct CommonScalar<double, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<const double, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<double, const Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<const double, const Interval>
         {
             typedef Interval Type;
         };
@@ -498,7 +534,43 @@ namespace opensolid
         };
 
         template <>
+        struct CommonScalar<const Interval, double>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<Interval, const double>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<const Interval, const double>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
         struct CommonScalar<Interval, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<const Interval, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<Interval, const Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <>
+        struct CommonScalar<const Interval, const Interval>
         {
             typedef Interval Type;
         };
@@ -509,8 +581,20 @@ namespace opensolid
             typedef typename MatrixTraits<TSecondMatrix>::ScalarType Type;
         };
 
+        template <class TSecondMatrix>
+        struct CommonScalar<const double, TSecondMatrix>
+        {
+            typedef typename MatrixTraits<TSecondMatrix>::ScalarType Type;
+        };
+
         template <class TFirstMatrix>
         struct CommonScalar<TFirstMatrix, double>
+        {
+            typedef typename MatrixTraits<TFirstMatrix>::ScalarType Type;
+        };
+
+        template <class TFirstMatrix>
+        struct CommonScalar<TFirstMatrix, const double>
         {
             typedef typename MatrixTraits<TFirstMatrix>::ScalarType Type;
         };
@@ -521,8 +605,20 @@ namespace opensolid
             typedef Interval Type;
         };
 
+        template <class TSecondMatrix>
+        struct CommonScalar<const Interval, TSecondMatrix>
+        {
+            typedef Interval Type;
+        };
+
         template <class TFirstMatrix>
         struct CommonScalar<TFirstMatrix, Interval>
+        {
+            typedef Interval Type;
+        };
+
+        template <class TFirstMatrix>
+        struct CommonScalar<TFirstMatrix, const Interval>
         {
             typedef Interval Type;
         };
