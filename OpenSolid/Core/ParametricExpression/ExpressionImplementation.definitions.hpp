@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 
 #include <OpenSolid/Core/Interval.definitions.hpp>
+#include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/MatrixView.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.declarations.hpp>

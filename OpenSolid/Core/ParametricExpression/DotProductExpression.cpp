@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
@@ -46,8 +46,8 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
@@ -57,8 +57,8 @@ namespace opensolid
 
     void
     DotProductExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd firstValue = evaluator.evaluate(firstOperand(), parameterValues);
@@ -71,8 +71,8 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);

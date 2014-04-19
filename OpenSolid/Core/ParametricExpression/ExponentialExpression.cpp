@@ -40,8 +40,8 @@ namespace opensolid
         
     void
     ExponentialExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).array().exp();
@@ -49,8 +49,8 @@ namespace opensolid
 
     void
     ExponentialExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).array().exp();
@@ -58,8 +58,8 @@ namespace opensolid
 
     void
     ExponentialExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         double value = exp(evaluator.evaluate(operand(), parameterValues).value());
@@ -68,8 +68,8 @@ namespace opensolid
     
     void
     ExponentialExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Interval bounds = exp(evaluator.evaluate(operand(), parameterValues).value());

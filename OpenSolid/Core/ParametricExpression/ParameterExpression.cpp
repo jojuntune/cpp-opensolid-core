@@ -40,8 +40,8 @@ namespace opensolid
     
     void
     ParameterExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator&
     ) const {
         results = parameterValues.row(parameterIndex());
@@ -49,8 +49,8 @@ namespace opensolid
     
     void
     ParameterExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator&
     ) const {
         results = parameterValues.row(parameterIndex());
@@ -58,8 +58,8 @@ namespace opensolid
 
     void
     ParameterExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results.setZero();
@@ -68,8 +68,8 @@ namespace opensolid
     
     void
     ParameterExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results.setZero();

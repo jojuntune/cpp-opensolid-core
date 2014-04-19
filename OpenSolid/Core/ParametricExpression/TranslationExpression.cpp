@@ -30,33 +30,33 @@ namespace opensolid
 {   
     int
     TranslationExpression::numDimensionsImpl() const {
-        return int(columnMatrixXd().rows());
+        return int(columnMatrix().rows());
     }
     
     void
     TranslationExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
-        results = operandValues.colwise() + columnMatrixXd();
+        results = operandValues.colwise() + columnMatrix();
     }
     
     void
     TranslationExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
-        results = operandBounds.colwise() + columnMatrixXd().cast<Interval>();
+        results = operandBounds.colwise() + columnMatrix().cast<Interval>();
     }
 
     void
     TranslationExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluateJacobian(operand(), parameterValues);
@@ -64,8 +64,8 @@ namespace opensolid
     
     void
     TranslationExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluateJacobian(operand(), parameterValues);
@@ -79,12 +79,12 @@ namespace opensolid
     bool
     TranslationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
         return duplicateOperands(other) &&
-            (columnMatrixXd() - other->cast<TranslationExpression>()->columnMatrixXd()).isZero();
+            (columnMatrix() - other->cast<TranslationExpression>()->columnMatrix()).isZero();
     }
 
     ExpressionImplementationPtr
-    TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrixXd) const {
-        return operand() + (this->columnMatrixXd() + columnMatrixXd);
+    TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
+        return operand() + (this->columnMatrix() + columnMatrix);
     }
     
     void
@@ -97,15 +97,15 @@ namespace opensolid
     TranslationExpression::withNewOperandImpl(
         const ExpressionImplementationPtr& newOperand
     ) const {
-        return newOperand + columnMatrixXd();
+        return newOperand + columnMatrix();
     }
 
     TranslationExpression::TranslationExpression(
         const ExpressionImplementationPtr& operand,
-        const ColumnMatrixXd& columnMatrixXd
+        const ColMatrixXx1& columnMatrix
     ) : UnaryOperation(operand),
-        _columnMatrixXd(columnMatrixXd) {
+        _columnMatrix(columnMatrix) {
 
-        assert(columnMatrixXd.size() == operand->numDimensions());
+        assert(columnMatrix.size() == operand->numDimensions());
     }
 }

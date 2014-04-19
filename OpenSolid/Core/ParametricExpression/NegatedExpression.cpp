@@ -35,8 +35,8 @@ namespace opensolid
 
     void
     NegatedExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = -evaluator.evaluate(operand(), parameterValues);
@@ -44,8 +44,8 @@ namespace opensolid
 
     void
     NegatedExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = -evaluator.evaluate(operand(), parameterValues);
@@ -53,8 +53,8 @@ namespace opensolid
 
     void
     NegatedExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = -evaluator.evaluateJacobian(operand(), parameterValues);
@@ -62,8 +62,8 @@ namespace opensolid
     
     void
     NegatedExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = -evaluator.evaluateJacobian(operand(), parameterValues);
@@ -90,7 +90,7 @@ namespace opensolid
     }
 
     ExpressionImplementationPtr
-    NegatedExpression::transformationImpl(const MatrixXd& matrix) const {
+    NegatedExpression::transformationImpl(const MatrixXxX& matrix) const {
         return (-matrix) * operand();
     }
 

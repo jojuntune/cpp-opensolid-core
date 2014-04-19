@@ -41,8 +41,8 @@ namespace opensolid
 
     void
     NormalizedExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
@@ -52,8 +52,8 @@ namespace opensolid
 
     void
     NormalizedExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
@@ -63,8 +63,8 @@ namespace opensolid
 
     void
     NormalizedExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
@@ -81,8 +81,8 @@ namespace opensolid
     
     void
     NormalizedExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);

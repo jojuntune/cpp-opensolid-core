@@ -41,8 +41,8 @@ namespace opensolid
         
     void
     LogarithmExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
@@ -51,8 +51,8 @@ namespace opensolid
 
     void
     LogarithmExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
@@ -61,8 +61,8 @@ namespace opensolid
 
     void
     LogarithmExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterValues).value();
@@ -74,8 +74,8 @@ namespace opensolid
     
     void
     LogarithmExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();

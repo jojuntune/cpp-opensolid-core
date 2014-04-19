@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
@@ -48,8 +48,8 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
@@ -61,8 +61,8 @@ namespace opensolid
 
     void
     CrossProductExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Eigen::Matrix<double, 3, 1> firstValue =
@@ -79,8 +79,8 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Eigen::Matrix<Interval, 3, 1> firstBounds =

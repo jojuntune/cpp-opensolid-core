@@ -55,8 +55,8 @@ namespace opensolid
     
     void
     ArcsineExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arcsine());
@@ -64,8 +64,8 @@ namespace opensolid
     
     void
     ArcsineExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arcsine());
@@ -73,8 +73,8 @@ namespace opensolid
 
     void
     ArcsineExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
@@ -87,8 +87,8 @@ namespace opensolid
     
     void
     ArcsineExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandJacobianBounds = evaluator.evaluateJacobian(operand(), parameterValues);

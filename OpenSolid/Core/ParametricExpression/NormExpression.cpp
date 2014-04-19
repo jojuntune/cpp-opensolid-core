@@ -41,8 +41,8 @@ namespace opensolid
     
     void
     NormExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).colwise().norm();
@@ -50,8 +50,8 @@ namespace opensolid
     
     void 
     NormExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).colwise().norm();
@@ -59,8 +59,8 @@ namespace opensolid
 
     void
     NormExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandValue = evaluator.evaluate(operand(), parameterValues);
@@ -74,8 +74,8 @@ namespace opensolid
     
     void
     NormExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);

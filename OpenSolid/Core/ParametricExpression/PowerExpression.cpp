@@ -95,8 +95,8 @@ namespace opensolid
         
     void
     PowerExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd baseValues = evaluator.evaluate(firstOperand(), parameterValues);
@@ -112,8 +112,8 @@ namespace opensolid
 
     void
     PowerExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI baseBounds = evaluator.evaluate(firstOperand(), parameterValues);
@@ -129,8 +129,8 @@ namespace opensolid
 
     void
     PowerExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         double baseValue = evaluator.evaluate(firstOperand(), parameterValues).value();
@@ -150,8 +150,8 @@ namespace opensolid
     
     void
     PowerExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Interval baseBounds = evaluator.evaluate(firstOperand(), parameterValues).value();

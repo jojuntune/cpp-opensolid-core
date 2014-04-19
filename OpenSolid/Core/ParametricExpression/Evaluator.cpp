@@ -104,6 +104,8 @@ namespace opensolid
         } else if (expressionImplementation->isParameterExpression()) {
             // Parameter expression: return view pointing to a single row of data within the given
             // parameter values
+            int parameterIndex =
+                expressionImplementation->cast<ParameterExpression>()->parameterIndex();
             return parameterView.row(parameterIndex);
         } else if (expressionImplementation->isConstantExpression()) {
             // Constant expression: build map pointing to constant data (using a stride of  zero
@@ -143,14 +145,14 @@ namespace opensolid
             }
 
             // Get reference to cached matrix
-            const Matrix& resultMatrix = iterator->second;
+            const MatrixType& resultMatrix = iterator->second;
 
             // Return map pointing to cached matrix
             return ConstViewType(
                 resultMatrix.data(),
                 resultMatrix.rows(),
                 resultMatrix.cols(),
-                Eigen::Stride<Eigen::Dynamic, 1>(resultMatrix.rows(), 1)
+                resultMatrix.colStride()
             );
         }
     }
@@ -183,7 +185,7 @@ namespace opensolid
             iterator = cache.insert(
                 std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
             ).first;
-            Matrix& resultMatrix = iterator->second;
+            MatrixType& resultMatrix = iterator->second;
 
             // Construct map pointing to newly allocated results matrix
             ViewType resultView(

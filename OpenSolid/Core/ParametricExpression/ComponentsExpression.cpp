@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     ComponentsExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandValues = evaluator.evaluate(operand(), parameterValues);
@@ -45,8 +45,8 @@ namespace opensolid
     
     void
     ComponentsExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandBounds = evaluator.evaluate(operand(), parameterValues);
@@ -55,8 +55,8 @@ namespace opensolid
 
     void
     ComponentsExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
@@ -65,8 +65,8 @@ namespace opensolid
     
     void
     ComponentsExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);

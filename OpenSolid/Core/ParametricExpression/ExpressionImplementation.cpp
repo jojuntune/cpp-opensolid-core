@@ -52,6 +52,7 @@
 #include <OpenSolid/Core/ParametricExpression/TangentExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/TransformationExpression.hpp>
 #include <OpenSolid/Core/ParametricExpression/TranslationExpression.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {
@@ -78,7 +79,7 @@ namespace opensolid
     }
         
     ExpressionImplementationPtr
-    ExpressionImplementation::transformationImpl(const MatrixXx1& matrix) const {
+    ExpressionImplementation::transformationImpl(const MatrixXxX& matrix) const {
         return new TransformationExpression(matrix, this);
     }
     
@@ -292,7 +293,10 @@ namespace opensolid
         if (this->isConstantExpression() && other->isConstantExpression()) {
             ColMatrixXx1 thisColMatrix = this->cast<ConstantExpression>()->colMatrix();
             ColMatrixXx1 otherColMatrix = other->cast<ConstantExpression>()->colMatrix();
-            return new ConstantExpression(thisColMatrix.dot(otherColMatrix), numParameters());
+            return new ConstantExpression(
+                thisColMatrix.cwiseProduct(otherColMatrix).sum(),
+                numParameters()
+            );
         }
         if (numDimensions() == 1) {
             return self() * other;
@@ -380,6 +384,7 @@ namespace opensolid
     ExpressionImplementationPtr
     operator+(const ColMatrixXx1& firstOperand, const ExpressionImplementationPtr& secondOperand ) {
         return secondOperand + firstOperand;
+        
     }
 
     ExpressionImplementationPtr

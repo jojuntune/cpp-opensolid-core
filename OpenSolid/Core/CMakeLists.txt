@@ -8,6 +8,9 @@
         LazyCollection/*.cpp
         Matrix/*.cpp
         ParametricCurve/*.cpp
+        ParametricExpression/Evaluator.cpp
+        ParametricExpression/ExpressionImplementation.cpp
+        ParametricExpression/ArccosineExpression.cpp
         #ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp

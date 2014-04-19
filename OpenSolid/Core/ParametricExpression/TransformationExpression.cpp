@@ -30,67 +30,67 @@ namespace opensolid
 {
     int
     TransformationExpression::numDimensionsImpl() const {
-        return int(matrixXd().rows());
+        return int(matrix().rows());
     }
     
     void
     TransformationExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = matrixXd() * evaluator.evaluate(operand(), parameterValues);
+        results = matrix() * evaluator.evaluate(operand(), parameterValues);
     }
     
     void
     TransformationExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = matrixXd().cast<Interval>() * evaluator.evaluate(operand(), parameterValues);
+        results = matrix().cast<Interval>() * evaluator.evaluate(operand(), parameterValues);
     }
 
     void
     TransformationExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = matrixXd() * evaluator.evaluateJacobian(operand(), parameterValues);
+        results = matrix() * evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     void
     TransformationExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = matrixXd().cast<Interval>() *
+        results = matrix().cast<Interval>() *
             evaluator.evaluateJacobian(operand(), parameterValues);
     }
     
     ExpressionImplementationPtr
     TransformationExpression::derivativeImpl(int parameterIndex) const {
-        return matrixXd() * operand()->derivative(parameterIndex);
+        return matrix() * operand()->derivative(parameterIndex);
     }
 
     bool
     TransformationExpression::isDuplicateOfImpl(
         const ExpressionImplementationPtr& other
     ) const {
-        MatrixXd otherMatrixXd = other->cast<TransformationExpression>()->matrixXd();
-        return duplicateOperands(other) && (matrixXd() - otherMatrixXd).isZero();
+        MatrixXxX otherMatrix = other->cast<TransformationExpression>()->matrix();
+        return duplicateOperands(other) && (matrix() - otherMatrix).isZero();
     }
 
     ExpressionImplementationPtr
     TransformationExpression::scalingImpl(double scale) const {
-        return (scale * matrixXd()) * operand();
+        return (scale * matrix()) * operand();
     }
 
     ExpressionImplementationPtr
-    TransformationExpression::transformationImpl(const MatrixXd& matrixXd) const {
-        return (matrixXd * this->matrixXd()) * operand();
+    TransformationExpression::transformationImpl(const MatrixXxX& matrix) const {
+        return (matrix * this->matrix()) * operand();
     }
     
     void
@@ -103,15 +103,15 @@ namespace opensolid
     TransformationExpression::withNewOperandImpl(
         const ExpressionImplementationPtr& newOperand
     ) const {
-        return matrixXd() * newOperand;
+        return matrix() * newOperand;
     }
 
     TransformationExpression::TransformationExpression(
-        const MatrixXd& matrixXd,
+        const MatrixXxX& matrix,
         const ExpressionImplementationPtr& operand
     ) : UnaryOperation(operand),
-        _matrixXd(matrixXd) {
+        _matrix(matrix) {
 
-        assert(matrixXd.cols() == operand->numDimensions());
+        assert(matrix.cols() == operand->numDimensions());
     }
 }

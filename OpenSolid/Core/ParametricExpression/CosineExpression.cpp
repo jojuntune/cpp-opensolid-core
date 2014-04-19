@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     CosineExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).array().cos();
@@ -44,8 +44,8 @@ namespace opensolid
     
     void
     CosineExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         results = evaluator.evaluate(operand(), parameterValues).array().cos();
@@ -53,8 +53,8 @@ namespace opensolid
 
     void
     CosineExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterValues).value();
@@ -64,8 +64,8 @@ namespace opensolid
     
     void
     CosineExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();

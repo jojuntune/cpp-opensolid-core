@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     ProductExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterValues);
@@ -46,8 +46,8 @@ namespace opensolid
     
     void
     ProductExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterValues);
@@ -57,8 +57,8 @@ namespace opensolid
 
     void
     ProductExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         double multiplierValue = evaluator.evaluate(firstOperand(), parameterValues).value();
@@ -70,8 +70,8 @@ namespace opensolid
     
     void
     ProductExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
         Interval multiplierBounds = evaluator.evaluate(firstOperand(), parameterValues).value();

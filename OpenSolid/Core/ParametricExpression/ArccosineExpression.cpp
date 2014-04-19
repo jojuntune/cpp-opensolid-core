@@ -59,48 +59,48 @@ namespace opensolid
     
     void
     ArccosineExpression::evaluateImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arccosine());
+        evaluator.evaluate(operand(), parameterView).map(Arccosine(), resultView);
     }
     
     void
     ArccosineExpression::evaluateImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        results = evaluator.evaluate(operand(), parameterValues).unaryExpr(Arccosine());
+        evaluator.evaluate(operand(), parameterView).map(Arccosine(), resultView);
     }
 
     void
     ArccosineExpression::evaluateJacobianImpl(
-        const MapXcd& parameterValues,
-        MapXd& results,
+        const ConstMatrixViewXxX& parameterView,
+        MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterValues);
-        double operandValue = evaluator.evaluate(operand(), parameterValues).value();
+        double operandValue = evaluator.evaluate(operand(), parameterView).value();
         if (abs(operandValue) - 1 >= Zero()) {
             throw Error(new PlaceholderError());
         }
-        results = -operandJacobian / sqrt(1 - operandValue * operandValue);
+        resultView = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView *= -1.0 / sqrt(1 - operandValue * operandValue);
     }
     
     void
     ArccosineExpression::evaluateJacobianImpl(
-        const MapXcI& parameterValues,
-        MapXI& results,
+        const ConstIntervalMatrixViewXxX& parameterView,
+        IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandJacobianBounds = evaluator.evaluateJacobian(operand(), parameterValues);
-        Interval operandBounds = evaluator.evaluate(operand(), parameterValues).value();
+        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
         if (abs(operandBounds).lowerBound() - 1 >= Zero()) {
             throw Error(new PlaceholderError());
         }
-        results = -operandJacobianBounds / sqrt(1 - operandBounds.squared());
+        resultView = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView *= -1.0 / sqrt(1 - operandBounds.squared());
     }
     
     ExpressionImplementationPtr
