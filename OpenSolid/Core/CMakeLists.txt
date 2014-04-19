@@ -16,6 +16,7 @@
         ParametricExpression/ComponentsExpression.cpp
         ParametricExpression/CompositionExpression.cpp
         ParametricExpression/ConcatenationExpression.cpp
+        ParametricExpression/ConstantExpression.cpp
         #ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp
