@@ -33,29 +33,6 @@ namespace opensolid
     ArccosineExpression::numDimensionsImpl() const {
         return 1;
     }
-
-    struct Arccosine
-    {
-        inline
-        double
-        operator()(double value) const {
-            Interval domain(-1, 1);
-            if (!domain.contains(value)) {
-                throw Error(new PlaceholderError());
-            }
-            return acos(domain.clamp(value));
-        }
-        
-        inline
-        Interval
-        operator()(const Interval& bounds) const {
-            Interval domain(-1, 1);
-            if (!domain.overlaps(bounds)) {
-                throw Error(new PlaceholderError());
-            }
-            return acos(domain.clamp(bounds));
-        }
-    };
     
     void
     ArccosineExpression::evaluateImpl(
@@ -63,7 +40,16 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        evaluator.evaluate(operand(), parameterView).map(Arccosine(), resultView);
+        evaluator.evaluate(operand(), parameterView).map(
+            [] (double value) {
+                Interval domain(-1, 1);
+                if (!domain.contains(value)) {
+                    throw Error(new PlaceholderError());
+                }
+                return acos(domain.clamp(value));
+            },
+            resultView
+        );
     }
     
     void
@@ -72,7 +58,16 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        evaluator.evaluate(operand(), parameterView).map(Arccosine(), resultView);
+        evaluator.evaluate(operand(), parameterView).map(
+            [] (Interval value) {
+                Interval domain(-1, 1);
+                if (!domain.overlaps(value)) {
+                    throw Error(new PlaceholderError());
+                }
+                return acos(domain.clamp(value));
+            },
+            resultView
+        );
     }
 
     void

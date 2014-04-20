@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/ParametricExpression/CrossProductExpression.hpp>
 
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.hpp>
+#include <OpenSolid/Core/Vector.hpp>
 
 namespace opensolid
 {   
@@ -39,10 +40,12 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
         for (int i = 0; i < resultView.cols(); ++i) {
-            resultView.col(i) = firstValues.col(i).head<3>().cross(secondValues.col(i).head<3>());
+            Vector3d firstVector(firstValues.col(i));
+            Vector3d secondVector(secondValues.col(i));
+            resultView.col(i) = firstVector.cross(secondVector).components();
         }
     }
     
@@ -52,10 +55,14 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
+        ConstIntervalMatrixViewXxX firstValues =
+            evaluator.evaluate(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXxX secondValues =
+            evaluator.evaluate(secondOperand(), parameterView);
         for (int i = 0; i < resultView.cols(); ++i) {
-            resultView.col(i) = firstBounds.col(i).head<3>().cross(secondBounds.col(i).head<3>());
+            IntervalVector3d firstVector(firstValues.col(i));
+            IntervalVector3d secondVector(secondValues.col(i));
+            resultView.col(i) = firstVector.cross(secondVector).components();
         }
     }
 
@@ -65,15 +72,19 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Eigen::Matrix<double, 3, 1> firstValue =
-            evaluator.evaluate(firstOperand(), parameterView);
-        Eigen::Matrix<double, 3, 1> secondValue =
-            evaluator.evaluate(secondOperand(), parameterView);
-        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        Vector3d firstVector(evaluator.evaluate(firstOperand(), parameterView));
+        Vector3d secondVector(evaluator.evaluate(secondOperand(), parameterView));
+
+        ConstMatrixViewXxX firstJacobian =
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
+        ConstMatrixViewXxX secondJacobian =
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
+
         for (int i = 0; i < resultView.cols(); ++i) {
-            resultView.col(i) = firstJacobian.col(i).head<3>().cross(secondValue) +
-                firstValue.cross(secondJacobian.col(i).head<3>());
+            Vector3d firstPartial(firstJacobian.col(i));
+            Vector3d secondPartial(secondJacobian.col(i));
+            resultView.col(i) =
+                (firstPartial.cross(secondVector) + firstVector.cross(secondPartial)).components();
         }
     }
     
@@ -83,15 +94,20 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Eigen::Matrix<Interval, 3, 1> firstBounds =
-            evaluator.evaluate(firstOperand(), parameterView);
-        Eigen::Matrix<Interval, 3, 1> secondBounds =
-            evaluator.evaluate(secondOperand(), parameterView);
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+
+        IntervalVector3d firstVector(evaluator.evaluate(firstOperand(), parameterView));
+        IntervalVector3d secondVector(evaluator.evaluate(secondOperand(), parameterView));
+
+        ConstIntervalMatrixViewXxX firstJacobian =
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXxX secondJacobian =
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
+
         for (int i = 0; i < resultView.cols(); ++i) {
-            resultView.col(i) = firstJacobian.col(i).head<3>().cross(secondBounds) +
-                firstBounds.cross(secondJacobian.col(i).head<3>());
+            IntervalVector3d firstPartial(firstJacobian.col(i));
+            IntervalVector3d secondPartial(secondJacobian.col(i));
+            resultView.col(i) =
+                (firstPartial.cross(secondVector) + firstVector.cross(secondPartial)).components();
         }
     }
 

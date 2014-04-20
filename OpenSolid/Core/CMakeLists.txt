@@ -17,6 +17,10 @@
         ParametricExpression/CompositionExpression.cpp
         ParametricExpression/ConcatenationExpression.cpp
         ParametricExpression/ConstantExpression.cpp
+        ParametricExpression/CosineExpression.cpp
+        ParametricExpression/CrossProductExpression.cpp
+        ParametricExpression/DifferenceExpression.cpp
+        ParametricExpression/DotProductExpression.cpp
         #ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp

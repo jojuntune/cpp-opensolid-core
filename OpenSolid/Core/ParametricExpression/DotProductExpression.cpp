@@ -39,9 +39,17 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValues = evaluator.evaluate(firstOperand(), parameterView);
-        MapXcd secondValues = evaluator.evaluate(secondOperand(), parameterView);
-        resultView = firstValues.cwiseProduct(secondValues).colwise().sum();
+        ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        for (int i = 0; i < resultView.cols(); ++i) {
+            resultView(0, i) = firstValues.col(i).binaryFold(
+                secondValues.col(i),
+                0.0,
+                [] (double result, double firstValue, double secondValue) {
+                    return result + firstValue * secondValue;
+                }
+            );
+        }
     }
     
     void
@@ -50,9 +58,19 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
-        resultView = firstBounds.cwiseProduct(secondBounds).colwise().sum();
+        ConstIntervalMatrixViewXxX firstValues =
+            evaluator.evaluate(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXxX secondValues =
+            evaluator.evaluate(secondOperand(), parameterView);
+        for (int i = 0; i < resultView.cols(); ++i) {
+            resultView(0, i) = firstValues.col(i).binaryFold(
+                secondValues.col(i),
+                Interval(0.0),
+                [] (Interval result, Interval firstValue, Interval secondValue) {
+                    return result + firstValue * secondValue;
+                }
+            );
+        }
     }
 
     void
@@ -61,10 +79,14 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd firstValue = evaluator.evaluate(firstOperand(), parameterView);
-        MapXcd secondValue = evaluator.evaluate(secondOperand(), parameterView);
-        MapXcd firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        MapXcd secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
+        ConstMatrixViewXxX firstValue = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXxX secondValue = evaluator.evaluate(secondOperand(), parameterView);
+
+        ConstMatrixViewXxX firstJacobian =
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
+        ConstMatrixViewXxX secondJacobian =
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
+        
         resultView = firstValue.transpose() * secondJacobian +
             secondValue.transpose() * firstJacobian;
     }
@@ -75,12 +97,16 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI firstBounds = evaluator.evaluate(firstOperand(), parameterView);
-        MapXcI secondBounds = evaluator.evaluate(secondOperand(), parameterView);
-        MapXcI firstJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
-        MapXcI secondJacobian = evaluator.evaluateJacobian(secondOperand(), parameterView);
-        resultView = firstBounds.transpose() * secondJacobian +
-            secondBounds.transpose() * firstJacobian;
+        ConstIntervalMatrixViewXxX firstValue = evaluator.evaluate(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXxX secondValue = evaluator.evaluate(secondOperand(), parameterView);
+
+        ConstIntervalMatrixViewXxX firstJacobian =
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXxX secondJacobian =
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
+        
+        resultView = firstValue.transpose() * secondJacobian +
+            secondValue.transpose() * firstJacobian;
     }
 
     ExpressionImplementationPtr
