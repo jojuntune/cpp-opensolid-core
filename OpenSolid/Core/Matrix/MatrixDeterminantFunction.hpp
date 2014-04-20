@@ -36,7 +36,7 @@ namespace opensolid
     {
         template <class TDerived>
         inline
-        typename MatrixTraits<TDerived>::ScalarType
+        typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<1, 1>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.rows() != 1 || matrix.cols() != 1) {
                 assert(false);
@@ -48,7 +48,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        typename MatrixTraits<TDerived>::ScalarType
+        typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<2, 2>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.rows() != 2 || matrix.cols() != 2) {
                 assert(false);
@@ -61,7 +61,7 @@ namespace opensolid
 
         template <class TDerived>
         inline
-        typename MatrixTraits<TDerived>::ScalarType
+        typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<3, 3>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.rows() != 3 || matrix.cols() != 3) {
                 assert(false);
@@ -84,7 +84,7 @@ namespace opensolid
         }
 
         template <class TDerived>
-        typename MatrixTraits<TDerived>::ScalarType
+        typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<-1, -1>::operator()(
             const MatrixInterface<TDerived>& matrix
         ) const {
@@ -96,7 +96,7 @@ namespace opensolid
                 return MatrixDeterminantFunction<3, 3>()(matrix);
             } else {
                 assert(false);
-                return typename MatrixTraits<TDerived>::ScalarType();
+                return typename MatrixTraits<TDerived>::PlainScalarType();
             }
         }
     }

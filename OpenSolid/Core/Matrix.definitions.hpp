@@ -149,6 +149,7 @@ namespace opensolid
     struct MatrixTraits<Matrix<TScalar, iRows, iCols>>
     {
         typedef TScalar ScalarType;
+        typedef TScalar PlainScalarType;
         static const int Rows = iRows;
         static const int Cols = iCols;
         static const int ColStride = iRows;

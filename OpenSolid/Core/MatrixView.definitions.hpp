@@ -30,6 +30,8 @@
 
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
+#include <type_traits>
+
 namespace opensolid
 {
     template <class TScalar, int iRows, int iCols, int iColStride>
@@ -86,6 +88,7 @@ namespace opensolid
     struct MatrixTraits<MatrixView<TScalar, iRows, iCols, iColStride>>
     {
         typedef TScalar ScalarType;
+        typedef typename std::remove_cv<TScalar>::type PlainScalarType;
         static const int Rows = iRows;
         static const int Cols = iCols;
         static const int ColStride = iColStride;
