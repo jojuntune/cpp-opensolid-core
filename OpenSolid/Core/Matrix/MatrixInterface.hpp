@@ -966,7 +966,7 @@ namespace opensolid
         template <class TDerived> template <class TOtherDerived>
         inline
         void
-        MatrixInterface<TDerived>::operator+=(const MatrixInterface<TOtherDerived>& other) const {
+        MatrixInterface<TDerived>::operator+=(const MatrixInterface<TOtherDerived>& other) {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
             
             for (int colIndex = 0; colIndex < cols(); ++colIndex) {
@@ -979,7 +979,7 @@ namespace opensolid
         template <class TDerived> template <class TOtherDerived>
         inline
         void
-        MatrixInterface<TDerived>::operator-=(const MatrixInterface<TOtherDerived>& other) const {
+        MatrixInterface<TDerived>::operator-=(const MatrixInterface<TOtherDerived>& other) {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
             
             for (int colIndex = 0; colIndex < cols(); ++colIndex) {

@@ -338,11 +338,11 @@ namespace opensolid
 
             template <class TOtherDerived>
             void
-            operator+=(const MatrixInterface<TOtherDerived>& other) const;
+            operator+=(const MatrixInterface<TOtherDerived>& other);
 
             template <class TOtherDerived>
             void
-            operator-=(const MatrixInterface<TOtherDerived>& other) const;
+            operator-=(const MatrixInterface<TOtherDerived>& other);
 
             void
             setConstant(typename MatrixTraits<TDerived>::ScalarType value);
