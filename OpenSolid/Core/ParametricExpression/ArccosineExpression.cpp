@@ -90,12 +90,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
-        if (abs(operandBounds).lowerBound() - 1 >= Zero()) {
+        Interval operandValue = evaluator.evaluate(operand(), parameterView).value();
+        if (abs(operandValue).lowerBound() - 1 >= Zero()) {
             throw Error(new PlaceholderError());
         }
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -1.0 / sqrt(1 - operandBounds.squared());
+        resultView *= -1.0 / sqrt(1 - operandValue.squared());
     }
     
     ExpressionImplementationPtr
