@@ -73,9 +73,9 @@ namespace opensolid
         int secondDimensions = secondOperand()->numDimensions();
         
         resultView.block(0, 0, firstDimensions, resultView.cols()) =
-            evaluator.evaluate(firstOperand(), parameterView);
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
         resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
-            evaluator.evaluate(secondOperand(), parameterView);
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
     }
     
     void
@@ -88,9 +88,9 @@ namespace opensolid
         int secondDimensions = secondOperand()->numDimensions();
         
         resultView.block(0, 0, firstDimensions, resultView.cols()) =
-            evaluator.evaluate(firstOperand(), parameterView);
+            evaluator.evaluateJacobian(firstOperand(), parameterView);
         resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
-            evaluator.evaluate(secondOperand(), parameterView);
+            evaluator.evaluateJacobian(secondOperand(), parameterView);
     }
     
     ExpressionImplementationPtr
