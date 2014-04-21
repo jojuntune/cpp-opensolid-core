@@ -34,30 +34,21 @@ namespace opensolid
         return 1;
     }
     
-    struct SquareRoot
-    {
-        inline
-        double
-        operator()(double value) const {
-            assert(value >= Zero());
-            return value > 0.0 ? sqrt(value) : 0.0;
-        }
-        
-        inline
-        Interval
-        operator()(Interval bounds) const {
-            assert(bounds.upperBound() >= Zero());
-            return sqrt(bounds);
-        }
-    };
-    
     void
     SquareRootExpression::evaluateImpl(
         const ConstMatrixViewXxX& parameterView,
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        resultView = evaluator.evaluate(operand(), parameterView).unaryExpr(SquareRoot());
+        evaluator.evaluate(operand(), parameterView).map(
+            [] (double value) {
+                if (value < Zero()) {
+                    throw Error(new PlaceholderError());
+                }
+                return value > 0.0 ? sqrt(value) : 0.0;
+            },
+            resultView
+        );
     }
     
     void
@@ -66,7 +57,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        resultView = evaluator.evaluate(operand(), parameterView).unaryExpr(SquareRoot());
+        evaluator.evaluate(operand(), parameterView).map(
+            [] (Interval value) {
+                return sqrt(value);
+            },
+            resultView
+        );
     }
 
     void
@@ -79,8 +75,8 @@ namespace opensolid
         if (operandValue <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView = 0.5 * operandJacobian / sqrt(operandValue);
+        resultView = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView *= 0.5 / sqrt(operandValue);
     }
     
     void
@@ -89,12 +85,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
-        if (operandBounds <= Zero()) {
+        Interval operandValue = evaluator.evaluate(operand(), parameterView).value();
+        if (operandValue <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        MapXcI operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView = Interval(0.5) * operandJacobian / sqrt(operandBounds);
+        resultView = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView *= 0.5 / sqrt(operandValue);
     }
 
     ExpressionImplementationPtr

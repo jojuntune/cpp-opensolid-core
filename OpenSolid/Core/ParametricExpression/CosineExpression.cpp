@@ -67,9 +67,8 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        double operandValue = evaluator.evaluate(operand(), parameterView).value();
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -sin(operandValue);
+        resultView *= -sin(evaluator.evaluate(operand(), parameterView).value());
     }
     
     void
@@ -78,9 +77,8 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        Interval operandBounds = evaluator.evaluate(operand(), parameterView).value();
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
-        resultView *= -sin(operandBounds);
+        resultView *= -sin(evaluator.evaluate(operand(), parameterView).value());
     }
 
     ExpressionImplementationPtr

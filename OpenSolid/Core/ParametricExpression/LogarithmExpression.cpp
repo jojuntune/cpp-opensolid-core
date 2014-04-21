@@ -45,8 +45,12 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterView);
-        resultView = operandValues.array().log();
+        evaluator.evaluate(operand(), parameterView).map(
+            [] (double value) {
+                return log(value);
+            },
+            resultView
+        );
     }
 
     void
@@ -55,8 +59,12 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
-        resultView = operandBounds.array().log();
+        evaluator.evaluate(operand(), parameterView).map(
+            [] (Interval value) {
+                return log(value);
+            },
+            resultView
+        );
     }
 
     void
@@ -69,7 +77,8 @@ namespace opensolid
         if (operandValue <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView) / operandValue;
+        resultView = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView /= operandValue;
     }
     
     void
@@ -82,7 +91,8 @@ namespace opensolid
         if (operandBounds.upperBound() <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        resultView = evaluator.evaluateJacobian(operand(), parameterView) / operandBounds;
+        resultView = evaluator.evaluateJacobian(operand(), parameterView);
+        resultView /= operandBounds;
     }
 
     ExpressionImplementationPtr

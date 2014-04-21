@@ -39,8 +39,10 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcd operandValues = evaluator.evaluate(operand(), parameterView);
-        resultView = operandValues.colwise() + columnMatrix();
+        resultView = evaluator.evaluate(operand(), parameterView);
+        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+            resultView.col(colIndex) += columnMatrix();
+        }
     }
     
     void
@@ -49,8 +51,10 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        MapXcI operandBounds = evaluator.evaluate(operand(), parameterView);
-        resultView = operandBounds.colwise() + columnMatrix().cast<Interval>();
+        resultView = evaluator.evaluate(operand(), parameterView);
+        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+            resultView.col(colIndex) += columnMatrix();
+        }
     }
 
     void
@@ -83,7 +87,7 @@ namespace opensolid
     }
 
     ExpressionImplementationPtr
-    TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
+    TranslationExpression::translationImpl(const ColMatrixXx1& columnMatrix) const {
         return operand() + (this->columnMatrix() + columnMatrix);
     }
     

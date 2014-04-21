@@ -8,20 +8,7 @@
         LazyCollection/*.cpp
         Matrix/*.cpp
         ParametricCurve/*.cpp
-        ParametricExpression/Evaluator.cpp
-        ParametricExpression/ExpressionImplementation.cpp
-        ParametricExpression/ArccosineExpression.cpp
-        ParametricExpression/ArcsineExpression.cpp
-        ParametricExpression/BinaryOperation.cpp
-        ParametricExpression/ComponentsExpression.cpp
-        ParametricExpression/CompositionExpression.cpp
-        ParametricExpression/ConcatenationExpression.cpp
-        ParametricExpression/ConstantExpression.cpp
-        ParametricExpression/CosineExpression.cpp
-        ParametricExpression/CrossProductExpression.cpp
-        ParametricExpression/DifferenceExpression.cpp
-        ParametricExpression/DotProductExpression.cpp
-        #ParametricExpression/*.cpp
+        ParametricExpression/*.cpp
         Position/*.cpp
         Simplex/*.cpp
         Variant/*.cpp
