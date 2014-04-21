@@ -40,8 +40,8 @@ namespace opensolid
         MatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX divisorValues = evaluator.evaluate(firstOperand(), parameterView);
-        resultView = evaluator.evaluate(secondOperand(), parameterView);
+        resultView = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXxX divisorValues = evaluator.evaluate(secondOperand(), parameterView);
         for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
             double divisorValue = divisorValues(0, colIndex);
             if (divisorValue == Zero()) {
@@ -57,9 +57,9 @@ namespace opensolid
         IntervalMatrixViewXxX& resultView,
         Evaluator& evaluator
     ) const {
+        resultView = evaluator.evaluate(firstOperand(), parameterView);
         ConstIntervalMatrixViewXxX divisorValues =
-            evaluator.evaluate(firstOperand(), parameterView);
-        resultView = evaluator.evaluate(secondOperand(), parameterView);
+            evaluator.evaluate(secondOperand(), parameterView);
         for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
             Interval divisorValue = divisorValues(0, colIndex);
             if (divisorValue == Zero()) {
