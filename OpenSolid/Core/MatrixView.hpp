@@ -44,7 +44,7 @@ namespace opensolid
 
         static_assert(iRows > 0, "Number of rows must be provided");
         static_assert(iCols > 0, "Number of columns must be provided");
-        static_assert(iColStride > 0, "Column stride must be provided");
+        static_assert(iColStride >= 0, "Column stride must be provided");
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
@@ -60,7 +60,7 @@ namespace opensolid
             iRows == 1 || iCols == 1,
             "Only row or column matrix views can be initialized with a single size"
         );
-        static_assert(iColStride > 0, "Column stride must be provided");
+        static_assert(iColStride >= 0, "Column stride must be provided");
 
         assert(
             (iRows == 1 && (size == iCols || iCols == -1)) ||
@@ -82,7 +82,7 @@ namespace opensolid
         _size(rows * cols),
         _colStride(iColStride) {
 
-        static_assert(iColStride > 0, "Column stride must be provided");
+        static_assert(iColStride >= 0, "Column stride must be provided");
 
         assert(rows == iRows || iRows == -1);
         assert(cols == iCols || iCols == -1);
@@ -110,7 +110,7 @@ namespace opensolid
 
         assert(rows > 0);
         assert(cols > 0);
-        assert(colStride > 0);
+        assert(colStride >= 0);
     }
 
     template <class TScalar, int iRows, int iCols, int iColStride>
