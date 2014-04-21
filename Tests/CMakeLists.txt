@@ -70,8 +70,8 @@
     add_cxxtest(CoordinateSystemTests CoordinateSystemTests.hpp OpenSolidCore)
     add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
-    #add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
-    #add_cxxtest(CurveTests CurveTests.hpp OpenSolidCore)
+    add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
+    add_cxxtest(CurveTests CurveTests.hpp OpenSolidCore)
     add_cxxtest(CollectionTests CollectionTests.hpp OpenSolidCore)
     add_cxxtest(DatumTests DatumTests.hpp OpenSolidCore)
     
