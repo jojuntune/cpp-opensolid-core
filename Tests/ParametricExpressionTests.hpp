@@ -509,11 +509,11 @@ public:
         parameterValues(1) = 2.0;
         parameterValues(2) = 3.0;
 
-        MapXcd parameterMap(parameterValues.data(), 1, 3, Eigen::Stride<Eigen::Dynamic, 1>(1, 1));
-        MapXcd results1 = evaluator.evaluate(expression.implementation(), parameterMap);
-        MapXcd results2 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstMatrixViewXxX parameterMap(parameterValues.data(), 1, 3, 1);
+        ConstMatrixViewXxX results1 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstMatrixViewXxX results2 = evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results2.data());
-        MapXcd results3 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstMatrixViewXxX results3 = evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
 
@@ -526,11 +526,14 @@ public:
         parameterValues(1) = Interval(3, 4);
         parameterValues(2) = Interval(5, 6);
 
-        MapXcI parameterMap(parameterValues.data(), 1, 3, Eigen::Stride<Eigen::Dynamic, 1>(1, 1));
-        MapXcI results1 = evaluator.evaluate(expression.implementation(), parameterMap);
-        MapXcI results2 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstIntervalMatrixViewXxX parameterMap(parameterValues.data(), 1, 3, 1);
+        ConstIntervalMatrixViewXxX results1 =
+            evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstIntervalMatrixViewXxX results2 =
+            evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results2.data());
-        MapXcI results3 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstIntervalMatrixViewXxX results3 =
+            evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
 
