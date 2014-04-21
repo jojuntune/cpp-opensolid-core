@@ -3,9 +3,6 @@
     include(ExternalProject)
 
 ########## Build external projects where required by OpenSolid modules ##########
-
-    add_subdirectory(Eigen)
-    set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
     
     if(${BUILD_IO_MODULE})
         add_subdirectory(SQLite)

@@ -156,9 +156,6 @@
 
     # Set up external dependencies
     add_subdirectory(External)
-
-    # Include Eigen root directory to allow inclusion of Eigen headers
-    include_directories(${EIGEN_ROOT})
     
     # Add root directory to include path to allow for #include <OpenSolid/...>
     include_directories(.)
