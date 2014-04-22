@@ -102,8 +102,8 @@ namespace opensolid
             "2 basis vectors supplied but number of axes does not equal 2"
         );
 
-        _basisMatrix.col(0) = xBasisVector.components();
-        _basisMatrix.col(1) = yBasisVector.components();
+        _basisMatrix.column(0) = xBasisVector.components();
+        _basisMatrix.column(1) = yBasisVector.components();
         _inverseMatrix = detail::computeInverseMatrix(_basisMatrix);
     }
 
@@ -121,9 +121,9 @@ namespace opensolid
             "3 basis vectors supplied but number of axes does not equal 3"
         );
 
-        _basisMatrix.col(0) = xBasisVector.components();
-        _basisMatrix.col(1) = yBasisVector.components();
-        _basisMatrix.col(2) = zBasisVector.components();
+        _basisMatrix.column(0) = xBasisVector.components();
+        _basisMatrix.column(1) = yBasisVector.components();
+        _basisMatrix.column(2) = zBasisVector.components();
         _inverseMatrix = detail::computeInverseMatrix(_basisMatrix);
     }
         
@@ -236,7 +236,7 @@ namespace opensolid
     inline
     const Vector<double, iNumDimensions>
     CoordinateSystem<iNumDimensions, iNumAxes>::xBasisVector() const {
-        return Vector<double, iNumDimensions>(basisMatrix().col(0));
+        return Vector<double, iNumDimensions>(basisMatrix().column(0));
     }
 
     template <int iNumDimensions, int iNumAxes>
@@ -248,7 +248,7 @@ namespace opensolid
             "Coordinate system must have at least two axes to have a Y basis vector"
         );
 
-        return Vector<double, iNumDimensions>(basisMatrix().col(1));
+        return Vector<double, iNumDimensions>(basisMatrix().column(1));
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -260,7 +260,7 @@ namespace opensolid
             "Coordinate system must have at least three axes to have a Z basis vector"
         );
 
-        return Vector<double, iNumDimensions>(basisMatrix().col(2));
+        return Vector<double, iNumDimensions>(basisMatrix().column(2));
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -271,7 +271,7 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
 
-        return Vector<double, iNumDimensions>(basisMatrix().col(axisIndex));
+        return Vector<double, iNumDimensions>(basisMatrix().column(axisIndex));
     }
     
     template <int iNumDimensions, int iNumAxes>
@@ -419,14 +419,14 @@ namespace opensolid
     CoordinateSystem<iNumDimensions, iNumAxes>::normalized() const {
         Matrix<double, iNumDimensions, iNumAxes> resultBasisMatrix = basisMatrix();
         for (int columnIndex = 0; columnIndex < iNumAxes; ++columnIndex) {
-            Vector<double, iNumDimensions> resultBasisVector(basisMatrix().col(columnIndex));
+            Vector<double, iNumDimensions> resultBasisVector(basisMatrix().column(columnIndex));
             for (
                 int normalizedColumnIndex = 0;
                 normalizedColumnIndex < columnIndex;
                 ++normalizedColumnIndex
             ) {
                 Vector<double, iNumDimensions> normalizedBasisVector(
-                    resultBasisMatrix.col(normalizedColumnIndex)
+                    resultBasisMatrix.column(normalizedColumnIndex)
                 );
                 resultBasisVector = resultBasisVector -
                     resultBasisVector.dot(normalizedBasisVector) * normalizedBasisVector;
@@ -437,7 +437,7 @@ namespace opensolid
             } else {
                 resultBasisVector = resultBasisVector.normalized();
             }
-            resultBasisMatrix.col(columnIndex) = resultBasisVector.components();
+            resultBasisMatrix.column(columnIndex) = resultBasisVector.components();
         }
         return CoordinateSystem<iNumDimensions, iNumAxes>(originPoint(), resultBasisMatrix);
     }

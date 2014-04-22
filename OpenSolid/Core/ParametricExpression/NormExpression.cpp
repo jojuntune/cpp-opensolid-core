@@ -46,9 +46,9 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         ConstMatrixViewXxX operandValues = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            resultView(0, colIndex) = sqrt(
-                operandValues.col(colIndex).fold(
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            resultView(0, columnIndex) = sqrt(
+                operandValues.column(columnIndex).fold(
                     0.0,
                     [] (double result, double value) {
                         return result + value * value;
@@ -65,9 +65,9 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         ConstIntervalMatrixViewXxX operandValues = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            resultView(0, colIndex) = sqrt(
-                operandValues.col(colIndex).fold(
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            resultView(0, columnIndex) = sqrt(
+                operandValues.column(columnIndex).fold(
                     Interval(0.0),
                     [] (Interval result, Interval value) {
                         return result + value.squared();

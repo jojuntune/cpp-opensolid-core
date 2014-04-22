@@ -40,8 +40,8 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            resultView.col(colIndex) += columnMatrix();
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            resultView.column(columnIndex) += columnMatrix();
         }
     }
     
@@ -52,8 +52,8 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            resultView.col(colIndex) += columnMatrix();
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            resultView.column(columnIndex) += columnMatrix();
         }
     }
 

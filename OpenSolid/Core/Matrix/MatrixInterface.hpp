@@ -115,19 +115,19 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixInterface<TDerived>::coeff(int rowIndex, int colIndex) const {
+        MatrixInterface<TDerived>::coeff(int rowIndex, int columnIndex) const {
             assert(rowIndex >= 0 && rowIndex < numRows());
-            assert(colIndex >= 0 && colIndex < numColumns());
-            return *(data() + rowIndex + colIndex * columnStride());
+            assert(columnIndex >= 0 && columnIndex < numColumns());
+            return *(data() + rowIndex + columnIndex * columnStride());
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::ScalarType&
-        MatrixInterface<TDerived>::coeff(int rowIndex, int colIndex) {
+        MatrixInterface<TDerived>::coeff(int rowIndex, int columnIndex) {
             assert(rowIndex >= 0 && rowIndex < numRows());
-            assert(colIndex >= 0 && colIndex < numColumns());
-            return *(data() + rowIndex + colIndex * columnStride());
+            assert(columnIndex >= 0 && columnIndex < numColumns());
+            return *(data() + rowIndex + columnIndex * columnStride());
         }
 
         template <class TDerived>
@@ -147,15 +147,15 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixInterface<TDerived>::operator()(int rowIndex, int colIndex) const {
-            return coeff(rowIndex, colIndex);
+        MatrixInterface<TDerived>::operator()(int rowIndex, int columnIndex) const {
+            return coeff(rowIndex, columnIndex);
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::ScalarType&
-        MatrixInterface<TDerived>::operator()(int rowIndex, int colIndex) {
-            return coeff(rowIndex, colIndex);
+        MatrixInterface<TDerived>::operator()(int rowIndex, int columnIndex) {
+            return coeff(rowIndex, columnIndex);
         }
 
         template <class TDerived>
@@ -180,9 +180,9 @@ namespace opensolid
         MatrixInterface<TDerived>::operator=(const MatrixInterface<TOtherDerived>& other) {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
 
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->coeff(rowIndex, colIndex) = other.coeff(rowIndex, colIndex);
+                    this->coeff(rowIndex, columnIndex) = other.coeff(rowIndex, columnIndex);
                 }
             }
         }
@@ -240,13 +240,13 @@ namespace opensolid
             1,
             MatrixTraits<TDerived>::ColumnStride
         >
-        MatrixInterface<TDerived>::col(int colIndex) const {
+        MatrixInterface<TDerived>::column(int columnIndex) const {
             typedef const typename MatrixTraits<TDerived>::PlainScalarType ConstScalarType;
 
-            assert(colIndex >= 0 && colIndex < numColumns());
+            assert(columnIndex >= 0 && columnIndex < numColumns());
             
             return MatrixView<ConstScalarType, NumRows, 1, ColumnStride>(
-                data() + colIndex * columnStride(),
+                data() + columnIndex * columnStride(),
                 numRows(),
                 1,
                 columnStride()
@@ -261,8 +261,8 @@ namespace opensolid
             1,
             MatrixTraits<TDerived>::ColumnStride
         >
-        MatrixInterface<TDerived>::col(int colIndex) {
-            assert(colIndex >= 0 && colIndex < numColumns());
+        MatrixInterface<TDerived>::column(int columnIndex) {
+            assert(columnIndex >= 0 && columnIndex < numColumns());
 
             return MatrixView<
                 typename MatrixTraits<TDerived>::ScalarType,
@@ -270,7 +270,7 @@ namespace opensolid
                 1,
                 ColumnStride
             >(
-                data() + colIndex * columnStride(),
+                data() + columnIndex * columnStride(),
                 numRows(),
                 1,
                 columnStride()
@@ -381,9 +381,9 @@ namespace opensolid
         >
         MatrixInterface<TDerived>::transpose() const {
             Matrix<PlainScalarType, NumColumns, NumRows> result(numColumns(), numRows());
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.coeff(colIndex, rowIndex) = this->coeff(rowIndex, colIndex);
+                    result.coeff(columnIndex, rowIndex) = this->coeff(rowIndex, columnIndex);
                 }
             }
             return result;
@@ -432,10 +432,10 @@ namespace opensolid
         ) const {
             CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
 
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.coeff(rowIndex, colIndex) = unaryFunction(
-                        this->coeff(rowIndex, colIndex)
+                    result.coeff(rowIndex, columnIndex) = unaryFunction(
+                        this->coeff(rowIndex, columnIndex)
                     );
                 }
             }
@@ -470,11 +470,11 @@ namespace opensolid
         ) const {
             CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
 
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.coeff(rowIndex, colIndex) = binaryFunction(
-                        this->coeff(rowIndex, colIndex),
-                        other.coeff(rowIndex, colIndex)
+                    result.coeff(rowIndex, columnIndex) = binaryFunction(
+                        this->coeff(rowIndex, columnIndex),
+                        other.coeff(rowIndex, columnIndex)
                     );
                 }
             }
@@ -484,9 +484,9 @@ namespace opensolid
         inline
         const TValue
         MatrixInterface<TDerived>::fold(TValue initialValue, TFunction function) const {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    initialValue = function(initialValue, coeff(rowIndex, colIndex));
+                    initialValue = function(initialValue, coeff(rowIndex, columnIndex));
                 }
             }
             return initialValue;
@@ -502,12 +502,12 @@ namespace opensolid
         ) const {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
             
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     initialValue = function(
                         initialValue,
-                        this->coeff(rowIndex, colIndex),
-                        other.coeff(rowIndex, colIndex)
+                        this->coeff(rowIndex, columnIndex),
+                        other.coeff(rowIndex, columnIndex)
                     );
                 }
             }
@@ -520,9 +520,9 @@ namespace opensolid
         MatrixInterface<TDerived>::reduce(TFunction function) const {
             ScalarType result = coeff(0, 0);
             int rowIndex = 1;
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (; rowIndex < numRows(); ++rowIndex) {
-                    result = function(result, coeff(rowIndex, colIndex));
+                    result = function(result, coeff(rowIndex, columnIndex));
                 }
                 rowIndex = 0;
             }
@@ -533,9 +533,9 @@ namespace opensolid
         inline
         bool
         MatrixInterface<TDerived>::any(TUnaryPredicate unaryPredicate) const {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    if (unaryPredicate(coeff(rowIndex, colIndex))) {
+                    if (unaryPredicate(coeff(rowIndex, columnIndex))) {
                         return true;
                     }
                 }
@@ -552,12 +552,12 @@ namespace opensolid
         ) const {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
 
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     if (
                         binaryPredicate(
-                            this->coeff(rowIndex, colIndex),
-                            other.coeff(rowIndex, colIndex)
+                            this->coeff(rowIndex, columnIndex),
+                            other.coeff(rowIndex, columnIndex)
                         )
                     ) {
                         return true;
@@ -571,9 +571,9 @@ namespace opensolid
         inline
         bool
         MatrixInterface<TDerived>::all(TUnaryPredicate unaryPredicate) const {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    if (!unaryPredicate(coeff(rowIndex, colIndex))) {
+                    if (!unaryPredicate(coeff(rowIndex, columnIndex))) {
                         return false;
                     }
                 }
@@ -590,12 +590,12 @@ namespace opensolid
         ) const {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
 
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     if (
                         !binaryPredicate(
-                            this->coeff(rowIndex, colIndex),
-                            other.coeff(rowIndex, colIndex)
+                            this->coeff(rowIndex, columnIndex),
+                            other.coeff(rowIndex, columnIndex)
                         )
                     ) {
                         return false;
@@ -638,10 +638,10 @@ namespace opensolid
         inline
         bool
         MatrixInterface<TDerived>::isIdentity(double precision) const {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    double expected = double(rowIndex == colIndex);
-                    if (coeff(rowIndex, colIndex) - expected != opensolid::Zero(precision)) {
+                    double expected = double(rowIndex == columnIndex);
+                    if (coeff(rowIndex, columnIndex) - expected != opensolid::Zero(precision)) {
                         return false;
                     }
                 }
@@ -958,9 +958,9 @@ namespace opensolid
         inline
         void
         MatrixInterface<TDerived>::operator*=(TOtherScalar scale) {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, colIndex) *= scale;
+                    coeff(rowIndex, columnIndex) *= scale;
                 }
             }
         }
@@ -969,9 +969,9 @@ namespace opensolid
         inline
         void
         MatrixInterface<TDerived>::operator/=(TOtherScalar divisor) {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, colIndex) /= divisor;
+                    coeff(rowIndex, columnIndex) /= divisor;
                 }
             }
         }
@@ -982,9 +982,9 @@ namespace opensolid
         MatrixInterface<TDerived>::operator+=(const MatrixInterface<TOtherDerived>& other) {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
             
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->coeff(rowIndex, colIndex) += other.coeff(rowIndex, colIndex);
+                    this->coeff(rowIndex, columnIndex) += other.coeff(rowIndex, columnIndex);
                 }
             }
         }
@@ -995,9 +995,9 @@ namespace opensolid
         MatrixInterface<TDerived>::operator-=(const MatrixInterface<TOtherDerived>& other) {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
             
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->coeff(rowIndex, colIndex) -= other.coeff(rowIndex, colIndex);
+                    this->coeff(rowIndex, columnIndex) -= other.coeff(rowIndex, columnIndex);
                 }
             }
         }
@@ -1006,9 +1006,9 @@ namespace opensolid
         inline
         void
         MatrixInterface<TDerived>::setConstant(typename MatrixTraits<TDerived>::ScalarType value) {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, colIndex) = value;
+                    coeff(rowIndex, columnIndex) = value;
                 }
             }
         }
@@ -1031,9 +1031,9 @@ namespace opensolid
         inline
         void
         MatrixInterface<TDerived>::setIdentity() {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, colIndex) = double(rowIndex == colIndex);
+                    coeff(rowIndex, columnIndex) = double(rowIndex == columnIndex);
                 }
             }
         }
@@ -1060,9 +1060,9 @@ namespace opensolid
         inline
         void
         MatrixInterface<TDerived>::setRandom() {
-            for (int colIndex = 0; colIndex < numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, colIndex) = randomCoeff<ScalarType>();
+                    coeff(rowIndex, columnIndex) = randomCoeff<ScalarType>();
                 }
             }
         }
@@ -1306,7 +1306,7 @@ namespace opensolid
             ResultScalarType* resultPtr = result.data();
             const FirstScalarType* rowStart = firstMatrix.data();
             const SecondScalarType* colStart = secondMatrix.data();
-            for (int colIndex = 0; colIndex < result.numColumns(); ++colIndex) {
+            for (int columnIndex = 0; columnIndex < result.numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < result.numRows(); ++rowIndex) {
                     const FirstScalarType* rowPtr = rowStart;
                     const SecondScalarType* colPtr = colStart;

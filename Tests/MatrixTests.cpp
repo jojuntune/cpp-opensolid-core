@@ -361,12 +361,12 @@ TEST_CASE("Block assignment") {
 TEST_CASE("Dynamic matrix block assignment") {
     MatrixXxX matrix(10, 10);
     matrix.block(2, 3, 4, 5).setOnes();
-    for (int colIndex = 0; colIndex < 10; ++colIndex) {
+    for (int columnIndex = 0; columnIndex < 10; ++columnIndex) {
         for (int rowIndex = 0; rowIndex < 10; ++rowIndex) {
-            if (rowIndex >= 2 && rowIndex < 6 && colIndex >= 3 && colIndex < 8) {
-                REQUIRE(matrix(rowIndex, colIndex) == 1);
+            if (rowIndex >= 2 && rowIndex < 6 && columnIndex >= 3 && columnIndex < 8) {
+                REQUIRE(matrix(rowIndex, columnIndex) == 1);
             } else {
-                REQUIRE(matrix(rowIndex, colIndex) == 0);
+                REQUIRE(matrix(rowIndex, columnIndex) == 0);
             }
         }
     }
@@ -375,12 +375,12 @@ TEST_CASE("Dynamic matrix block assignment") {
 TEST_CASE("Block-to-block assignment") {
     Matrix3x3 matrix;
     matrix.block<2, 2>(0, 1) = Matrix3x3::Identity().block(1, 0, 2, 2);
-    for (int colIndex = 0; colIndex < 3; ++colIndex) {
+    for (int columnIndex = 0; columnIndex < 3; ++columnIndex) {
         for (int rowIndex = 0; rowIndex < 3; ++rowIndex) {
-            if (rowIndex == 0 && colIndex == 2) {
-                REQUIRE(matrix(rowIndex, colIndex) == 1);
+            if (rowIndex == 0 && columnIndex == 2) {
+                REQUIRE(matrix(rowIndex, columnIndex) == 1);
             } else {
-                REQUIRE(matrix(rowIndex, colIndex) == 0);
+                REQUIRE(matrix(rowIndex, columnIndex) == 0);
             }
         }
     }

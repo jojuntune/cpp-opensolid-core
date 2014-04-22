@@ -81,10 +81,10 @@ namespace opensolid
             coeff(int index);
 
             typename MatrixTraits<TDerived>::PlainScalarType
-            coeff(int rowIndex, int colIndex) const;
+            coeff(int rowIndex, int columnIndex) const;
 
             typename MatrixTraits<TDerived>::ScalarType&
-            coeff(int rowIndex, int colIndex);
+            coeff(int rowIndex, int columnIndex);
 
             typename MatrixTraits<TDerived>::PlainScalarType
             operator()(int index) const;
@@ -93,10 +93,10 @@ namespace opensolid
             operator()(int index);
 
             typename MatrixTraits<TDerived>::PlainScalarType
-            operator()(int rowIndex, int colIndex) const;
+            operator()(int rowIndex, int columnIndex) const;
 
             typename MatrixTraits<TDerived>::ScalarType&
-            operator()(int rowIndex, int colIndex);
+            operator()(int rowIndex, int columnIndex);
 
             typename MatrixTraits<TDerived>::PlainScalarType
             value() const;
@@ -130,7 +130,7 @@ namespace opensolid
                 1,
                 MatrixTraits<TDerived>::ColumnStride
             >
-            col(int colIndex) const;
+            column(int columnIndex) const;
 
             MatrixView<
                 typename MatrixTraits<TDerived>::ScalarType,
@@ -138,7 +138,7 @@ namespace opensolid
                 1,
                 MatrixTraits<TDerived>::ColumnStride
             >
-            col(int colIndex);
+            column(int columnIndex);
 
             template <int iBlockRows, int iBlockCols>
             const MatrixView<

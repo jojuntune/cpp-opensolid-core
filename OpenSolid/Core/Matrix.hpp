@@ -293,16 +293,16 @@ namespace opensolid
                 }
             }
         } else {
-            for (int colIndex = 0; colIndex < numColumns; ++colIndex) {
+            for (int columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
                 stream << "[";
                 for (int rowIndex = 0; rowIndex < numRows; ++rowIndex) {
-                    stream << matrix(rowIndex, colIndex);
+                    stream << matrix(rowIndex, columnIndex);
                     if (rowIndex < numRows - 1) {
                         stream << ", ";
                     }
                 }
                 stream << "]";
-                if (colIndex < numColumns - 1) {
+                if (columnIndex < numColumns - 1) {
                     stream << ", ";
                 }
             }

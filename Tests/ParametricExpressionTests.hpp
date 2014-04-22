@@ -143,22 +143,22 @@ void testJacobian(
     }
     for (int j = 0; j < iNumParameters; ++j) {
         Matrix<double, iNumParameters, 2> shiftedParameterValues;
-        shiftedParameterValues.col(0) = parameterValues;
-        shiftedParameterValues.col(1) = parameterValues;
+        shiftedParameterValues.column(0) = parameterValues;
+        shiftedParameterValues.column(1) = parameterValues;
         shiftedParameterValues(j, 0) -= 1e-6 / 2;
         shiftedParameterValues(j, 1) += 1e-6 / 2;
         Matrix<double, iNumDimensions, 2> shiftedValues =
             expression.evaluate(shiftedParameterValues);
-        Matrix<double, iNumDimensions, 1> numericalDerivative = shiftedValues.col(1);
-        numericalDerivative = (shiftedValues.col(1) - shiftedValues.col(0)) / 1e-6;
-        TS_ASSERT((numericalDerivative - jacobian.col(j)).isZero(1e-3));
-        if (!(numericalDerivative - jacobian.col(j)).isZero(1e-3)) {
+        Matrix<double, iNumDimensions, 1> numericalDerivative = shiftedValues.column(1);
+        numericalDerivative = (shiftedValues.column(1) - shiftedValues.column(0)) / 1e-6;
+        TS_ASSERT((numericalDerivative - jacobian.column(j)).isZero(1e-3));
+        if (!(numericalDerivative - jacobian.column(j)).isZero(1e-3)) {
             std::cout << "ParametricExpression:" << std::endl;
             std::cout << expression << std::endl;
             std::cout << "Numerical derivative " << j << ": " << std::endl;
             std::cout << numericalDerivative.transpose() << std::endl;
             std::cout << "Jacobian derivative: " << std::endl;
-            std::cout << jacobian.col(j).transpose() << std::endl;
+            std::cout << jacobian.column(j).transpose() << std::endl;
         }
     }
 }

@@ -42,12 +42,12 @@ namespace opensolid
     ) const {
         resultView = evaluator.evaluate(firstOperand(), parameterView);
         ConstMatrixViewXxX divisorValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            double divisorValue = divisorValues(0, colIndex);
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            double divisorValue = divisorValues(0, columnIndex);
             if (divisorValue == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            resultView.col(colIndex) /= divisorValue;
+            resultView.column(columnIndex) /= divisorValue;
         }
     }
     
@@ -60,12 +60,12 @@ namespace opensolid
         resultView = evaluator.evaluate(firstOperand(), parameterView);
         ConstIntervalMatrixViewXxX divisorValues =
             evaluator.evaluate(secondOperand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            Interval divisorValue = divisorValues(0, colIndex);
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            Interval divisorValue = divisorValues(0, columnIndex);
             if (divisorValue == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            resultView.col(colIndex) /= divisorValue;
+            resultView.column(columnIndex) /= divisorValue;
         }
     }
 

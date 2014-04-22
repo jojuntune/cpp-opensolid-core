@@ -46,10 +46,10 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            auto col = resultView.col(colIndex);
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            auto column = resultView.column(columnIndex);
             double norm = sqrt(
-                col.fold(
+                column.fold(
                     0.0,
                     [] (double result, double value) {
                         return result + value * value;
@@ -59,7 +59,7 @@ namespace opensolid
             if (norm == Zero()) {
                 throw PlaceholderError();
             }
-            col /= norm;
+            column /= norm;
         }
     }
 
@@ -70,10 +70,10 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            auto col = resultView.col(colIndex);
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            auto column = resultView.column(columnIndex);
             Interval norm = sqrt(
-                col.fold(
+                column.fold(
                     Interval(0.0),
                     [] (Interval result, Interval value) {
                         return result + value.squared();
@@ -83,7 +83,7 @@ namespace opensolid
             if (norm == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            col /= norm;
+            column /= norm;
         }
     }
 

@@ -43,9 +43,9 @@ namespace opensolid
         ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
         ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            Vector3d firstVector(firstValues.col(columnIndex));
-            Vector3d secondVector(secondValues.col(columnIndex));
-            resultView.col(columnIndex) = firstVector.cross(secondVector).components();
+            Vector3d firstVector(firstValues.column(columnIndex));
+            Vector3d secondVector(secondValues.column(columnIndex));
+            resultView.column(columnIndex) = firstVector.cross(secondVector).components();
         }
     }
     
@@ -60,9 +60,9 @@ namespace opensolid
         ConstIntervalMatrixViewXxX secondValues =
             evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            IntervalVector3d firstVector(firstValues.col(columnIndex));
-            IntervalVector3d secondVector(secondValues.col(columnIndex));
-            resultView.col(columnIndex) = firstVector.cross(secondVector).components();
+            IntervalVector3d firstVector(firstValues.column(columnIndex));
+            IntervalVector3d secondVector(secondValues.column(columnIndex));
+            resultView.column(columnIndex) = firstVector.cross(secondVector).components();
         }
     }
 
@@ -81,9 +81,9 @@ namespace opensolid
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            Vector3d firstPartial(firstJacobian.col(columnIndex));
-            Vector3d secondPartial(secondJacobian.col(columnIndex));
-            resultView.col(columnIndex) =
+            Vector3d firstPartial(firstJacobian.column(columnIndex));
+            Vector3d secondPartial(secondJacobian.column(columnIndex));
+            resultView.column(columnIndex) =
                 (firstPartial.cross(secondVector) + firstVector.cross(secondPartial)).components();
         }
     }
@@ -104,9 +104,9 @@ namespace opensolid
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
-            IntervalVector3d firstPartial(firstJacobian.col(columnIndex));
-            IntervalVector3d secondPartial(secondJacobian.col(columnIndex));
-            resultView.col(columnIndex) =
+            IntervalVector3d firstPartial(firstJacobian.column(columnIndex));
+            IntervalVector3d secondPartial(secondJacobian.column(columnIndex));
+            resultView.column(columnIndex) =
                 (firstPartial.cross(secondVector) + firstVector.cross(secondPartial)).components();
         }
     }

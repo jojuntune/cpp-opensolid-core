@@ -41,8 +41,8 @@ namespace opensolid
     ) const {
         ConstMatrixViewXxX multiplierValues = evaluator.evaluate(firstOperand(), parameterView);
         resultView = evaluator.evaluate(secondOperand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            resultView.col(colIndex) *= multiplierValues(0, colIndex);
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
         }
     }
     
@@ -55,8 +55,8 @@ namespace opensolid
         ConstIntervalMatrixViewXxX multiplierValues =
             evaluator.evaluate(firstOperand(), parameterView);
         resultView = evaluator.evaluate(secondOperand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
-            resultView.col(colIndex) *= multiplierValues(0, colIndex);
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
+            resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
         }
     }
 
