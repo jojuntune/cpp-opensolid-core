@@ -916,7 +916,7 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixInterface<TDerived>::prod() const {
+        MatrixInterface<TDerived>::product() const {
             return reduce(
                 [] (ScalarType result, ScalarType coeff) {
                     return result * coeff;

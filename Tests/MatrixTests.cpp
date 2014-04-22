@@ -115,7 +115,7 @@ TEST_CASE("Matrix folding") {
         }
     );
     REQUIRE(product == 60);
-    REQUIRE(product == values.prod());
+    REQUIRE(product == values.product());
 }
 
 TEST_CASE("Binary matrix folding") {

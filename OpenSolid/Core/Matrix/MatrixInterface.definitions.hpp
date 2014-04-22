@@ -335,7 +335,7 @@ namespace opensolid
             sum() const;
 
             typename MatrixTraits<TDerived>::PlainScalarType
-            prod() const;
+            product() const;
 
             template <class TOtherDerived>
             bool
