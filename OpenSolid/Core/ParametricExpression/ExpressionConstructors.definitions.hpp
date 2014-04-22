@@ -44,7 +44,7 @@ namespace opensolid
     {
     public:
         static ParametricExpression<iNumDimensions, iNumParameters>
-        Constant(const Matrix<double, iNumDimensions, 1>& colMatrix);
+        Constant(const Matrix<double, iNumDimensions, 1>& columnMatrix);
     };
 
     template <int iNumParameters>

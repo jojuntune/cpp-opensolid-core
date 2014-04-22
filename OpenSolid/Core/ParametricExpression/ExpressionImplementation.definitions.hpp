@@ -109,7 +109,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
-        translationImpl(const ColumnMatrixXd& colMatrix) const;
+        translationImpl(const ColumnMatrixXd& columnMatrix) const;
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
@@ -314,7 +314,7 @@ namespace opensolid
     ExpressionImplementationPtr
     operator+(
         const ExpressionImplementationPtr& argument,
-        const ColumnMatrixXd& colMatrix
+        const ColumnMatrixXd& columnMatrix
     );
 
     OPENSOLID_CORE_EXPORT

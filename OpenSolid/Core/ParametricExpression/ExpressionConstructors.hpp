@@ -45,9 +45,9 @@ namespace opensolid
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
     ConstantExpressionConstructor<iNumDimensions, iNumParameters>::Constant(
-        const Matrix<double, iNumDimensions, 1>& colMatrix
+        const Matrix<double, iNumDimensions, 1>& columnMatrix
     ) {
-        return new ConstantExpression(colMatrix, iNumParameters);
+        return new ConstantExpression(columnMatrix, iNumParameters);
     }
 
     template <int iNumParameters>

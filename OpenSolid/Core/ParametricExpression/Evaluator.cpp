@@ -74,13 +74,13 @@ namespace opensolid
         template <>
         const double*
         dataPointer<double>(const ConstantExpression* constantExpression) {
-            return constantExpression->colMatrix().data();
+            return constantExpression->columnMatrix().data();
         }
 
         template <>
         const Interval*
         dataPointer<Interval>(const ConstantExpression* constantExpression) {
-            return constantExpression->intervalColMatrix().data();
+            return constantExpression->intervalColumnMatrix().data();
         }
     }
 

@@ -34,8 +34,8 @@ namespace opensolid
         public ExpressionImplementation
     {
     private:
-        ColumnMatrixXd _colMatrix;
-        IntervalColumnMatrixXd _intervalColMatrix;
+        ColumnMatrixXd _columnMatrix;
+        IntervalColumnMatrixXd _intervalColumnMatrix;
         int _numParameters;
 
         OPENSOLID_CORE_EXPORT
@@ -104,7 +104,7 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        translationImpl(const ColumnMatrixXd& colMatrix) const override;
+        translationImpl(const ColumnMatrixXd& columnMatrix) const override;
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
@@ -159,19 +159,19 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        ConstantExpression(const ColumnMatrixXd& colMatrix, int numParameters);
+        ConstantExpression(const ColumnMatrixXd& columnMatrix, int numParameters);
 
         OPENSOLID_CORE_EXPORT
         ConstantExpression(double value, int numParameters);
         
         const ColumnMatrixXd&
-        colMatrix() const;
+        columnMatrix() const;
 
         double
         value() const;
         
         const IntervalColumnMatrixXd&
-        intervalColMatrix() const;
+        intervalColumnMatrix() const;
 
         bool
         isZero(double tolerance = 1e-12) const;
@@ -182,25 +182,25 @@ namespace opensolid
 {
     inline
     const ColumnMatrixXd&
-    ConstantExpression::colMatrix() const {
-        return _colMatrix;
+    ConstantExpression::columnMatrix() const {
+        return _columnMatrix;
     }
 
     inline
     double
     ConstantExpression::value() const {
-        return colMatrix().value();
+        return columnMatrix().value();
     }
 
     inline
     const IntervalColumnMatrixXd&
-    ConstantExpression::intervalColMatrix() const {
-        return _intervalColMatrix;
+    ConstantExpression::intervalColumnMatrix() const {
+        return _intervalColumnMatrix;
     }
 
     inline
     bool
     ConstantExpression::isZero(double tolerance) const {
-        return colMatrix().isZero(tolerance);
+        return columnMatrix().isZero(tolerance);
     }
 }

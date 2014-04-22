@@ -31,7 +31,7 @@ namespace opensolid
 {
     int
     ConstantExpression::numDimensionsImpl() const {
-        return int(colMatrix().size());
+        return int(columnMatrix().size());
     }
         
     int
@@ -46,7 +46,7 @@ namespace opensolid
         Evaluator&
     ) const {
         resultView = ConstMatrixViewXd(
-            colMatrix().data(),
+            columnMatrix().data(),
             numDimensions(),
             resultView.numColumns(),
             0
@@ -60,7 +60,7 @@ namespace opensolid
         Evaluator&
     ) const {
         resultView = ConstIntervalMatrixViewXd(
-            intervalColMatrix().data(),
+            intervalColumnMatrix().data(),
             numDimensions(),
             resultView.numColumns(),
             0
@@ -92,7 +92,7 @@ namespace opensolid
     
     bool
     ConstantExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-        return (colMatrix() - other->cast<ConstantExpression>()->colMatrix()).isZero();
+        return (columnMatrix() - other->cast<ConstantExpression>()->columnMatrix()).isZero();
     }
 
     ExpressionImplementationPtr
@@ -108,43 +108,43 @@ namespace opensolid
     ExpressionImplementationPtr
     ConstantExpression::componentsImpl(int startIndex, int numComponents) const {
         return new ConstantExpression(
-            colMatrix().block(startIndex, 0, numComponents, 1),
+            columnMatrix().block(startIndex, 0, numComponents, 1),
             numParameters()
         );
     }
     
     ExpressionImplementationPtr
     ConstantExpression::scalingImpl(double scale) const {
-        return new ConstantExpression(scale * colMatrix(), numParameters());
+        return new ConstantExpression(scale * columnMatrix(), numParameters());
     }
     
     ExpressionImplementationPtr
-    ConstantExpression::translationImpl(const ColumnMatrixXd& colMatrix) const {
-        return new ConstantExpression(this->colMatrix() + colMatrix, numParameters());
+    ConstantExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
+        return new ConstantExpression(this->columnMatrix() + columnMatrix, numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::transformationImpl(const MatrixXd& matrix) const {
-        return new ConstantExpression(matrix * colMatrix(), numParameters());
+        return new ConstantExpression(matrix * columnMatrix(), numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::normImpl() const {
-        return new ConstantExpression(sqrt(colMatrix().cwiseSquared().sum()), numParameters());
+        return new ConstantExpression(sqrt(columnMatrix().cwiseSquared().sum()), numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::normalizedImpl() const {
-        double norm = sqrt(colMatrix().cwiseSquared().sum());
+        double norm = sqrt(columnMatrix().cwiseSquared().sum());
         if (norm == Zero()) {
             throw Error(new PlaceholderError());
         }
-        return new ConstantExpression(colMatrix() / norm, numParameters());
+        return new ConstantExpression(columnMatrix() / norm, numParameters());
     }
     
     ExpressionImplementationPtr
     ConstantExpression::squaredNormImpl() const {
-        return new ConstantExpression(colMatrix().cwiseSquared().sum(), numParameters());
+        return new ConstantExpression(columnMatrix().cwiseSquared().sum(), numParameters());
     }
 
     ExpressionImplementationPtr
@@ -207,13 +207,13 @@ namespace opensolid
 
     void
     ConstantExpression::debugImpl(std::ostream& stream, int indent) const {
-        stream << "ConstantExpression: " << colMatrix() << std::endl;
+        stream << "ConstantExpression: " << columnMatrix() << std::endl;
     }
 
-    ConstantExpression::ConstantExpression(const ColumnMatrixXd& colMatrix, int numParameters) :
-        _colMatrix(colMatrix),
-        _intervalColMatrix(
-            colMatrix.map(
+    ConstantExpression::ConstantExpression(const ColumnMatrixXd& columnMatrix, int numParameters) :
+        _columnMatrix(columnMatrix),
+        _intervalColumnMatrix(
+            columnMatrix.map(
                 [] (double coeff) {
                     return Interval(coeff);
                 }
@@ -223,8 +223,8 @@ namespace opensolid
     }
 
     ConstantExpression::ConstantExpression(double value, int numParameters) :
-        _colMatrix(ColumnMatrixXd::Constant(1, value)),
-        _intervalColMatrix(IntervalColumnMatrixXd::Constant(1, Interval(value))),
+        _columnMatrix(ColumnMatrixXd::Constant(1, value)),
+        _intervalColumnMatrix(IntervalColumnMatrixXd::Constant(1, Interval(value))),
         _numParameters(numParameters) {
     }
 }
