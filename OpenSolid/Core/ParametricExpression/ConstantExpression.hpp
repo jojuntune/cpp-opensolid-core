@@ -34,8 +34,8 @@ namespace opensolid
         public ExpressionImplementation
     {
     private:
-        ColMatrixXx1 _colMatrix;
-        IntervalColMatrixXx1 _intervalColMatrix;
+        ColumnMatrixXd _colMatrix;
+        IntervalColumnMatrixXd _intervalColMatrix;
         int _numParameters;
 
         OPENSOLID_CORE_EXPORT
@@ -49,32 +49,32 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
 
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
@@ -104,11 +104,11 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        translationImpl(const ColMatrixXx1& colMatrix) const override;
+        translationImpl(const ColumnMatrixXd& colMatrix) const override;
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        transformationImpl(const MatrixXxX& matrix) const override;
+        transformationImpl(const MatrixXd& matrix) const override;
         
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
@@ -159,18 +159,18 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        ConstantExpression(const ColMatrixXx1& colMatrix, int numParameters);
+        ConstantExpression(const ColumnMatrixXd& colMatrix, int numParameters);
 
         OPENSOLID_CORE_EXPORT
         ConstantExpression(double value, int numParameters);
         
-        const ColMatrixXx1&
+        const ColumnMatrixXd&
         colMatrix() const;
 
         double
         value() const;
         
-        const IntervalColMatrixXx1&
+        const IntervalColumnMatrixXd&
         intervalColMatrix() const;
 
         bool
@@ -181,7 +181,7 @@ namespace opensolid
 namespace opensolid
 {
     inline
-    const ColMatrixXx1&
+    const ColumnMatrixXd&
     ConstantExpression::colMatrix() const {
         return _colMatrix;
     }
@@ -193,7 +193,7 @@ namespace opensolid
     }
 
     inline
-    const IntervalColMatrixXx1&
+    const IntervalColumnMatrixXd&
     ConstantExpression::intervalColMatrix() const {
         return _intervalColMatrix;
     }

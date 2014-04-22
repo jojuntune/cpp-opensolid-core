@@ -48,9 +48,9 @@ namespace opensolid
     template <>
     struct Evaluator::Types<double>
     {
-        typedef MatrixViewXxX ViewType;
-        typedef ConstMatrixViewXxX ConstViewType;
-        typedef MatrixXxX MatrixType;
+        typedef MatrixViewXd ViewType;
+        typedef ConstMatrixViewXd ConstViewType;
+        typedef MatrixXd MatrixType;
         typedef Evaluator::Key KeyType;
         typedef Evaluator::Cache CacheType;
     };
@@ -58,9 +58,9 @@ namespace opensolid
     template <>
     struct Evaluator::Types<Interval>
     {
-        typedef IntervalMatrixViewXxX ViewType;
-        typedef ConstIntervalMatrixViewXxX ConstViewType;
-        typedef IntervalMatrixXxX MatrixType;
+        typedef IntervalMatrixViewXd ViewType;
+        typedef ConstIntervalMatrixViewXd ConstViewType;
+        typedef IntervalMatrixXd MatrixType;
         typedef Evaluator::IntervalKey KeyType;
         typedef Evaluator::IntervalCache CacheType;
     };
@@ -211,18 +211,18 @@ namespace opensolid
         );
     }
 
-    ConstMatrixViewXxX
+    ConstMatrixViewXd
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const ConstMatrixViewXxX& parameterView
+        const ConstMatrixViewXd& parameterView
     ) {
         return evaluate<double>(expressionImplementation, parameterView, _valuesCache);
     }
 
-    ConstMatrixViewXxX
+    ConstMatrixViewXd
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const ConstMatrixViewXxX& parameterView
+        const ConstMatrixViewXd& parameterView
     ) {
         return evaluateJacobian<double>(
             expressionImplementation,
@@ -231,18 +231,18 @@ namespace opensolid
         );
     }
 
-    ConstIntervalMatrixViewXxX
+    ConstIntervalMatrixViewXd
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const ConstIntervalMatrixViewXxX& parameterView
+        const ConstIntervalMatrixViewXd& parameterView
     ) {
         return evaluate<Interval>(expressionImplementation, parameterView, _boundsCache);
     }
 
-    ConstIntervalMatrixViewXxX
+    ConstIntervalMatrixViewXd
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const ConstIntervalMatrixViewXxX& parameterView
+        const ConstIntervalMatrixViewXd& parameterView
     ) {
         return evaluateJacobian<Interval>(
             expressionImplementation,

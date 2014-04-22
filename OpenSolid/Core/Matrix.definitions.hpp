@@ -105,45 +105,45 @@ namespace opensolid
         Random(int numRows, int numColumns);
     };
 
-    typedef Matrix<double, 1, 1> Matrix1x1;
-    typedef Matrix<double, 2, 1> ColMatrix2x1;
-    typedef Matrix<double, 3, 1> ColMatrix3x1;
-    typedef Matrix<double, -1, 1> ColMatrixXx1;
+    typedef Matrix<double, 1, 1> Matrix1d;
+    typedef Matrix<double, 2, 1> ColumnMatrix2d;
+    typedef Matrix<double, 3, 1> ColumnMatrix3d;
+    typedef Matrix<double, -1, 1> ColumnMatrixXd;
 
-    typedef Matrix<double, 1, 2> RowMatrix1x2;
-    typedef Matrix<double, 2, 2> Matrix2x2;
+    typedef Matrix<double, 1, 2> RowMatrix2d;
+    typedef Matrix<double, 2, 2> Matrix2d;
     typedef Matrix<double, 3, 2> Matrix3x2;
     typedef Matrix<double, -1, 2> MatrixXx2;
 
-    typedef Matrix<double, 1, 3> RowMatrix1x3;
+    typedef Matrix<double, 1, 3> RowMatrix3d;
     typedef Matrix<double, 2, 3> Matrix2x3;
-    typedef Matrix<double, 3, 3> Matrix3x3;
+    typedef Matrix<double, 3, 3> Matrix3d;
     typedef Matrix<double, -1, 3> MatrixXx3;
 
-    typedef Matrix<double, 1, -1> RowMatrix1xX;
+    typedef Matrix<double, 1, -1> RowMatrixXd;
     typedef Matrix<double, 2, -1> Matrix2xX;
     typedef Matrix<double, 3, -1> Matrix3xX;
-    typedef Matrix<double, -1, -1> MatrixXxX;
+    typedef Matrix<double, -1, -1> MatrixXd;
 
-    typedef Matrix<Interval, 1, 1> IntervalMatrix1x1;
-    typedef Matrix<Interval, 2, 1> IntervalColMatrix2x1;
-    typedef Matrix<Interval, 3, 1> IntervalColMatrix3x1;
-    typedef Matrix<Interval, -1, 1> IntervalColMatrixXx1;
+    typedef Matrix<Interval, 1, 1> IntervalMatrix1d;
+    typedef Matrix<Interval, 2, 1> IntervalColumnMatrix2d;
+    typedef Matrix<Interval, 3, 1> IntervalColumnMatrix3d;
+    typedef Matrix<Interval, -1, 1> IntervalColumnMatrixXd;
 
-    typedef Matrix<Interval, 1, 2> IntervalRowMatrix1x2;
-    typedef Matrix<Interval, 2, 2> IntervalMatrix2x2;
+    typedef Matrix<Interval, 1, 2> IntervalRowMatrix2d;
+    typedef Matrix<Interval, 2, 2> IntervalMatrix2d;
     typedef Matrix<Interval, 3, 2> IntervalMatrix3x2;
     typedef Matrix<Interval, -1, 2> IntervalMatrixXx2;
 
-    typedef Matrix<Interval, 1, 3> IntervalRowMatrix1x3;
+    typedef Matrix<Interval, 1, 3> IntervalRowMatrix3d;
     typedef Matrix<Interval, 2, 3> IntervalMatrix2x3;
-    typedef Matrix<Interval, 3, 3> IntervalMatrix3x3;
+    typedef Matrix<Interval, 3, 3> IntervalMatrix3d;
     typedef Matrix<Interval, -1, 3> IntervalMatrixXx3;
 
-    typedef Matrix<Interval, 1, -1> IntervalRowMatrix1xX;
+    typedef Matrix<Interval, 1, -1> IntervalRowMatrixXd;
     typedef Matrix<Interval, 2, -1> IntervalMatrix2xX;
     typedef Matrix<Interval, 3, -1> IntervalMatrix3xX;
-    typedef Matrix<Interval, -1, -1> IntervalMatrixXxX;
+    typedef Matrix<Interval, -1, -1> IntervalMatrixXd;
 
     template <class TScalar, int iNumRows, int iNumColumns>
     struct MatrixTraits<Matrix<TScalar, iNumRows, iNumColumns>>

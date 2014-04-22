@@ -100,7 +100,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Matrix2x2& matrix) const;
+        operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
     };
 
     template <>

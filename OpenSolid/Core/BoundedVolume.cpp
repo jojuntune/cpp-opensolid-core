@@ -87,7 +87,7 @@ namespace opensolid
     const BoundedVolume3d
     TransformationFunction<BoundedVolume3d, 3>::operator()(
         const BoundedVolume3d& boundedVolume,
-        const Matrix3x3& matrix
+        const Matrix3d& matrix
     ) const {
         return BoundedVolume3d(
             SpatialSet<ParametricSurface3d>(

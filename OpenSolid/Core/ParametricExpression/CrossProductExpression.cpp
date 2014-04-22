@@ -36,12 +36,12 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        ConstMatrixViewXd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXd secondValues = evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             Vector3d firstVector(firstValues.column(columnIndex));
             Vector3d secondVector(secondValues.column(columnIndex));
@@ -51,13 +51,13 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX firstValues =
+        ConstIntervalMatrixViewXd firstValues =
             evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX secondValues =
+        ConstIntervalMatrixViewXd secondValues =
             evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             IntervalVector3d firstVector(firstValues.column(columnIndex));
@@ -68,16 +68,16 @@ namespace opensolid
 
     void
     CrossProductExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         Vector3d firstVector(evaluator.evaluate(firstOperand(), parameterView));
         Vector3d secondVector(evaluator.evaluate(secondOperand(), parameterView));
 
-        ConstMatrixViewXxX firstJacobian =
+        ConstMatrixViewXd firstJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXxX secondJacobian =
+        ConstMatrixViewXd secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
@@ -90,17 +90,17 @@ namespace opensolid
     
     void
     CrossProductExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
 
         IntervalVector3d firstVector(evaluator.evaluate(firstOperand(), parameterView));
         IntervalVector3d secondVector(evaluator.evaluate(secondOperand(), parameterView));
 
-        ConstIntervalMatrixViewXxX firstJacobian =
+        ConstIntervalMatrixViewXd firstJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX secondJacobian =
+        ConstIntervalMatrixViewXd secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {

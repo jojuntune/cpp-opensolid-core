@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     DifferenceExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(firstOperand(), parameterView);
@@ -45,8 +45,8 @@ namespace opensolid
     
     void
     DifferenceExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(firstOperand(), parameterView);
@@ -55,8 +55,8 @@ namespace opensolid
 
     void
     DifferenceExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);
@@ -65,8 +65,8 @@ namespace opensolid
     
     void
     DifferenceExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(firstOperand(), parameterView);

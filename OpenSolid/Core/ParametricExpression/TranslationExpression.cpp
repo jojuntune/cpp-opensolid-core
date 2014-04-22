@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     TranslationExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
@@ -47,8 +47,8 @@ namespace opensolid
     
     void
     TranslationExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
@@ -59,8 +59,8 @@ namespace opensolid
 
     void
     TranslationExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
@@ -68,8 +68,8 @@ namespace opensolid
     
     void
     TranslationExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
@@ -87,7 +87,7 @@ namespace opensolid
     }
 
     ExpressionImplementationPtr
-    TranslationExpression::translationImpl(const ColMatrixXx1& columnMatrix) const {
+    TranslationExpression::translationImpl(const ColumnMatrixXd& columnMatrix) const {
         return operand() + (this->columnMatrix() + columnMatrix);
     }
     
@@ -106,7 +106,7 @@ namespace opensolid
 
     TranslationExpression::TranslationExpression(
         const ExpressionImplementationPtr& operand,
-        const ColMatrixXx1& columnMatrix
+        const ColumnMatrixXd& columnMatrix
     ) : UnaryOperation(operand),
         _columnMatrix(columnMatrix) {
 

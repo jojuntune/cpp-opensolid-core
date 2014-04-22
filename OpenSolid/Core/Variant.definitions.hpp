@@ -143,51 +143,51 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         const Matrix<double, 2, 2>&
-        toMatrix2x2() const;
+        toMatrix2d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<Interval, 2, 2>&
-        toIntervalMatrix2x2() const;
+        toIntervalMatrix2d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<double, 3, 3>&
-        toMatrix3x3() const;
+        toMatrix3d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<Interval, 3, 3>&
-        toIntervalMatrix3x3() const;
+        toIntervalMatrix3d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<double, 1, 2>&
-        toRowMatrix1x2() const;
+        toRowMatrix2d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<Interval, 1, 2>&
-        toIntervalRowMatrix1x2() const;
+        toIntervalRowMatrix2d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<double, 2, 1>&
-        toColMatrix2x1() const;
+        toColumnMatrix2d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<Interval, 2, 1>&
-        toIntervalColMatrix2x1() const;
+        toIntervalColumnMatrix2d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<double, 1, 3>&
-        toRowMatrix1x3() const;
+        toRowMatrix3d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<Interval, 1, 3>&
-        toIntervalRowMatrix1x3() const;
+        toIntervalRowMatrix3d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<double, 3, 1>&
-        toColMatrix3x1() const;
+        toColumnMatrix3d() const;
 
         OPENSOLID_CORE_EXPORT
         const Matrix<Interval, 3, 1>&
-        toIntervalColMatrix3x1() const;
+        toIntervalColumnMatrix3d() const;
 
         OPENSOLID_CORE_EXPORT
         const Vector<double, 2>&

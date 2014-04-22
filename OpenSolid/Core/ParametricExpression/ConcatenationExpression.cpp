@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     ConcatenationExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         int firstDimensions = firstOperand()->numDimensions();
@@ -50,8 +50,8 @@ namespace opensolid
     
     void
     ConcatenationExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         int firstDimensions = firstOperand()->numDimensions();
@@ -65,8 +65,8 @@ namespace opensolid
 
     void
     ConcatenationExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         int firstDimensions = firstOperand()->numDimensions();
@@ -80,8 +80,8 @@ namespace opensolid
     
     void
     ConcatenationExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         int firstDimensions = firstOperand()->numDimensions();

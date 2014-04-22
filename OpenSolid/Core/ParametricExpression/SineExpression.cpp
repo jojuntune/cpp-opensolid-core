@@ -40,8 +40,8 @@ namespace opensolid
     
     void
     SineExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluator.evaluate(operand(), parameterView).map(
@@ -54,8 +54,8 @@ namespace opensolid
     
     void
     SineExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluator.evaluate(operand(), parameterView).map(
@@ -68,8 +68,8 @@ namespace opensolid
 
     void
     SineExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
@@ -78,8 +78,8 @@ namespace opensolid
     
     void
     SineExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(operand(), parameterView);

@@ -34,7 +34,7 @@ namespace opensolid
         public UnaryOperation
     {
     private:
-        MatrixXxX _matrix;
+        MatrixXd _matrix;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -43,32 +43,32 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
 
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
@@ -86,7 +86,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        transformationImpl(const MatrixXxX& matrix) const override;
+        transformationImpl(const MatrixXd& matrix) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -98,11 +98,11 @@ namespace opensolid
     public:
         OPENSOLID_CORE_EXPORT
         TransformationExpression(
-            const MatrixXxX& matrix,
+            const MatrixXd& matrix,
             const ExpressionImplementationPtr& operand
         );
 
-        const MatrixXxX&
+        const MatrixXd&
         matrix() const;
     };
 }
@@ -112,7 +112,7 @@ namespace opensolid
 namespace opensolid
 {
     inline
-    const MatrixXxX&
+    const MatrixXd&
     TransformationExpression::matrix() const {
         return _matrix;
     }

@@ -48,53 +48,53 @@ namespace opensolid
         ExpressionImplementationPtr
         zeroExpression() {
             return ExpressionImplementationPtr(
-                new ConstantExpression(ColMatrixXx1::Zero(iNumDimensions), iNumParameters)
+                new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters)
             );
         }
 
         inline
-        ConstMatrixViewXxX
+        ConstMatrixViewXd
         constView(const double& value) {
-            return ConstMatrixViewXxX(&value, 1, 1, 1);
+            return ConstMatrixViewXd(&value, 1, 1, 1);
         }
 
         inline
-        ConstIntervalMatrixViewXxX
+        ConstIntervalMatrixViewXd
         constView(const Interval& value) {
-            return ConstIntervalMatrixViewXxX(&value, 1, 1, 1);
+            return ConstIntervalMatrixViewXd(&value, 1, 1, 1);
         }
 
         template <int iNumRows, int iNumColumns>
         inline
-        ConstMatrixViewXxX
+        ConstMatrixViewXd
         constView(const Matrix<double, iNumRows, iNumColumns>& matrix) {
-            return ConstMatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return ConstMatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
         }
 
         template <int iNumRows, int iNumColumns>
         inline
-        ConstIntervalMatrixViewXxX
+        ConstIntervalMatrixViewXd
         constView(const Matrix<Interval, iNumRows, iNumColumns>& matrix) {
-            return ConstIntervalMatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return ConstIntervalMatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
         }
 
         inline
-        ConstMatrixViewXxX
+        ConstMatrixViewXd
         constView(const std::vector<double>& values) {
-            return ConstMatrixViewXxX(&values.front(), 1, int(values.size()), 1);
+            return ConstMatrixViewXd(&values.front(), 1, int(values.size()), 1);
         }
 
         inline
-        ConstIntervalMatrixViewXxX
+        ConstIntervalMatrixViewXd
         constView(const std::vector<Interval>& values) {
-            return ConstIntervalMatrixViewXxX(&values.front(), 1, int(values.size()), 1);
+            return ConstIntervalMatrixViewXd(&values.front(), 1, int(values.size()), 1);
         }
 
         template <int iNumRows>
         inline
-        ConstMatrixViewXxX
+        ConstMatrixViewXd
         constView(const std::vector<Matrix<double, iNumRows, 1>>& matrices) {
-            return ConstMatrixViewXxX(
+            return ConstMatrixViewXd(
                 matrices.front().data(),
                 iNumRows,
                 int(matrices.size()),
@@ -104,9 +104,9 @@ namespace opensolid
 
         template <int iNumRows>
         inline
-        ConstIntervalMatrixViewXxX
+        ConstIntervalMatrixViewXd
         constView(const std::vector<Matrix<Interval, iNumRows, 1>>& matrices) {
-            return ConstIntervalMatrixViewXxX(
+            return ConstIntervalMatrixViewXd(
                 matrices.front().data(),
                 iNumRows,
                 int(matrices.size()),
@@ -116,42 +116,42 @@ namespace opensolid
 
         template <int iNumRows, int iNumColumns>
         inline
-        MatrixViewXxX
+        MatrixViewXd
         mutableView(Matrix<double, iNumRows, iNumColumns>& matrix) {
-            return MatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return MatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
         }
 
         template <int iNumRows, int iNumColumns>
         inline
-        IntervalMatrixViewXxX
+        IntervalMatrixViewXd
         mutableView(Matrix<Interval, iNumRows, iNumColumns>& matrix) {
-            return IntervalMatrixViewXxX(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return IntervalMatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
         }
 
         inline
-        MatrixViewXxX
+        MatrixViewXd
         mutableView(std::vector<double>& values) {
-            return MatrixViewXxX(&values.front(), 1, int(values.size()), 1);
+            return MatrixViewXd(&values.front(), 1, int(values.size()), 1);
         }
 
         inline
-        IntervalMatrixViewXxX
+        IntervalMatrixViewXd
         mutableView(std::vector<Interval>& values) {
-            return IntervalMatrixViewXxX(&values.front(), 1, int(values.size()), 1);
+            return IntervalMatrixViewXd(&values.front(), 1, int(values.size()), 1);
         }
 
         template <int iNumRows>
         inline
-        MatrixViewXxX
+        MatrixViewXd
         mutableView(std::vector<Matrix<double, iNumRows, 1>>& matrices) {
-            return MatrixViewXxX(matrices.front().data(), iNumRows, int(matrices.size()), iNumRows);
+            return MatrixViewXd(matrices.front().data(), iNumRows, int(matrices.size()), iNumRows);
         }
 
         template <int iNumRows>
         inline
-        IntervalMatrixViewXxX
+        IntervalMatrixViewXd
         mutableView(std::vector<Matrix<Interval, iNumRows, 1>>& matrices) {
-            return IntervalMatrixViewXxX(
+            return IntervalMatrixViewXd(
                 matrices.front().data(),
                 iNumRows,
                 int(matrices.size()),
@@ -214,7 +214,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u) const {
         static_assert(iNumParameters == 1, "Incorrect number of parameters");
 
-        Matrix1x1 parameterValue;
+        Matrix1d parameterValue;
         parameterValue.value() = u;
 
         return evaluate(parameterValue);
@@ -226,7 +226,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(double u, double v) const {
         static_assert(iNumParameters == 2, "Incorrect number of parameters");
 
-        ColMatrix2x1 parameterValues;
+        ColumnMatrix2d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
 
@@ -243,7 +243,7 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 3, "Incorrect number of parameters");
 
-        ColMatrix3x1 parameterValues;
+        ColumnMatrix3d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
         parameterValues(2) = w;
@@ -257,7 +257,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u) const {
         static_assert(iNumParameters == 1, "Incorrect number of parameters");
 
-        IntervalMatrix1x1 parameterValue;
+        IntervalMatrix1d parameterValue;
         parameterValue.value() = u;
 
         return evaluate(parameterValue);
@@ -269,7 +269,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(Interval u, Interval v) const {
         static_assert(iNumParameters == 2, "Incorrect number of parameters");
 
-        IntervalColMatrix2x1 parameterValues;
+        IntervalColumnMatrix2d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
 
@@ -286,7 +286,7 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 3, "Incorrect number of parameters");
 
-        IntervalColMatrix3x1 parameterValues;
+        IntervalColumnMatrix3d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
         parameterValues(2) = w;
@@ -300,10 +300,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const Matrix<double, iNumParameters, iNumColumns>& colMatrix
     ) const {
-        ConstMatrixViewXxX argumentView = detail::constView(colMatrix);
+        ConstMatrixViewXd argumentView = detail::constView(colMatrix);
 
         Matrix<double, iNumDimensions, iNumColumns> results;
-        MatrixViewXxX resultView = detail::mutableView(results);
+        MatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
@@ -317,10 +317,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const Matrix<Interval, iNumParameters, iNumColumns>& colMatrix
     ) const {
-        ConstIntervalMatrixViewXxX argumentView = detail::constView(colMatrix);
+        ConstIntervalMatrixViewXd argumentView = detail::constView(colMatrix);
 
         Matrix<Interval, iNumDimensions, iNumColumns> results;
-        IntervalMatrixViewXxX resultView = detail::mutableView(results);
+        IntervalMatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
@@ -335,10 +335,10 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 1, "Multiple parameters required");
 
-        ConstMatrixViewXxX argumentView = detail::constView(parameterValues);
+        ConstMatrixViewXd argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
-        MatrixViewXxX resultView = detail::mutableView(results);
+        MatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
@@ -353,10 +353,10 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 1, "Multiple parameters required");
 
-        ConstIntervalMatrixViewXxX argumentView = detail::constView(parameterValues);
+        ConstIntervalMatrixViewXd argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
-        IntervalMatrixViewXxX resultView = detail::mutableView(results);
+        IntervalMatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
@@ -369,10 +369,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const std::vector<Matrix<double, iNumParameters, 1>>& parameterValues
     ) const {
-        ConstMatrixViewXxX argumentView = detail::constView(parameterValues);
+        ConstMatrixViewXd argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
-        MatrixViewXxX resultView = detail::mutableView(results);
+        MatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
@@ -385,10 +385,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::evaluate(
         const std::vector<Matrix<Interval, iNumParameters, 1>>& parameterValues
     ) const {
-        ConstIntervalMatrixViewXxX argumentView = detail::constView(parameterValues);
+        ConstIntervalMatrixViewXd argumentView = detail::constView(parameterValues);
 
         std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
-        IntervalMatrixViewXxX resultView = detail::mutableView(results);
+        IntervalMatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
@@ -402,7 +402,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u) const {
         static_assert(iNumParameters == 1, "Wrong number of parameters");
 
-        Matrix1x1 parameterValue;
+        Matrix1d parameterValue;
         parameterValue.value() = u;
 
         return jacobian(parameterValue);
@@ -414,7 +414,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(double u, double v) const {
         static_assert(iNumParameters == 2, "Wrong number of parameters");
 
-        ColMatrix2x1 parameterValues;
+        ColumnMatrix2d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
 
@@ -431,7 +431,7 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 3, "Wrong number of parameters");
 
-        ColMatrix3x1 parameterValues;
+        ColumnMatrix3d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
         parameterValues(2) = w;
@@ -445,7 +445,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u) const {
         static_assert(iNumParameters == 1, "Wrong number of parameters");
 
-        IntervalMatrix1x1 parameterValue;
+        IntervalMatrix1d parameterValue;
         parameterValue.value() = u;
 
         return jacobian(parameterValue);
@@ -457,7 +457,7 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(Interval u, Interval v) const {
         static_assert(iNumParameters == 2, "Wrong number of parameters");
 
-        IntervalColMatrix2x1 parameterValues;
+        IntervalColumnMatrix2d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
 
@@ -474,7 +474,7 @@ namespace opensolid
     ) const {
         static_assert(iNumParameters == 3, "Wrong number of parameters");
 
-        IntervalColMatrix3x1 parameterValues;
+        IntervalColumnMatrix3d parameterValues;
         parameterValues(0) = u;
         parameterValues(1) = v;
         parameterValues(2) = w;
@@ -488,10 +488,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
         const Matrix<double, iNumParameters, 1>& colMatrix
     ) const {
-        ConstMatrixViewXxX argumentView = detail::constView(colMatrix);
+        ConstMatrixViewXd argumentView = detail::constView(colMatrix);
 
         Matrix<double, iNumDimensions, iNumParameters> results;
-        MatrixViewXxX resultView = detail::mutableView(results);
+        MatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluateJacobian(argumentView, resultView, evaluator);
@@ -505,10 +505,10 @@ namespace opensolid
     ParametricExpression<iNumDimensions, iNumParameters>::jacobian(
         const Matrix<Interval, iNumParameters, 1>& colMatrix
     ) const {
-        ConstIntervalMatrixViewXxX argumentView = detail::constView(colMatrix);
+        ConstIntervalMatrixViewXd argumentView = detail::constView(colMatrix);
 
         Matrix<Interval, iNumDimensions, iNumParameters> results;
-        IntervalMatrixViewXxX resultView = detail::mutableView(results);
+        IntervalMatrixViewXd resultView = detail::mutableView(results);
 
         Evaluator evaluator;
         implementation()->evaluateJacobian(argumentView, resultView, evaluator);

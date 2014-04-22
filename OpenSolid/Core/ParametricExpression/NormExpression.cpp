@@ -41,11 +41,11 @@ namespace opensolid
     
     void
     NormExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX operandValues = evaluator.evaluate(operand(), parameterView);
+        ConstMatrixViewXd operandValues = evaluator.evaluate(operand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView(0, columnIndex) = sqrt(
                 operandValues.column(columnIndex).fold(
@@ -60,11 +60,11 @@ namespace opensolid
     
     void 
     NormExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX operandValues = evaluator.evaluate(operand(), parameterView);
+        ConstIntervalMatrixViewXd operandValues = evaluator.evaluate(operand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView(0, columnIndex) = sqrt(
                 operandValues.column(columnIndex).fold(
@@ -79,38 +79,38 @@ namespace opensolid
 
     void
     NormExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX operandValue = evaluator.evaluate(operand(), parameterView);
+        ConstMatrixViewXd operandValue = evaluator.evaluate(operand(), parameterView);
         double operandNorm = sqrt(operandValue.cwiseSquared().sum());
         if (operandNorm == Zero()) {
             throw Error(new PlaceholderError());
         }
-        ColMatrixXx1 operandNormalized = operandValue;
+        ColumnMatrixXd operandNormalized = operandValue;
         operandNormalized /= operandNorm;
 
-        ConstMatrixViewXxX operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
+        ConstMatrixViewXd operandJacobian = evaluator.evaluateJacobian(operand(), parameterView);
         
         resultView = operandNormalized.transpose() * operandJacobian;
     }
     
     void
     NormExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX operandValue = evaluator.evaluate(operand(), parameterView);
+        ConstIntervalMatrixViewXd operandValue = evaluator.evaluate(operand(), parameterView);
         Interval operandNorm = sqrt(operandValue.cwiseSquared().sum());
         if (operandNorm == Zero()) {
             throw Error(new PlaceholderError());
         }
-        IntervalColMatrixXx1 operandNormalized = operandValue;
+        IntervalColumnMatrixXd operandNormalized = operandValue;
         operandNormalized /= operandNorm;
 
-        ConstIntervalMatrixViewXxX operandJacobian =
+        ConstIntervalMatrixViewXd operandJacobian =
             evaluator.evaluateJacobian(operand(), parameterView);
 
         resultView = operandNormalized.transpose() * operandJacobian;

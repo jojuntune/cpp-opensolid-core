@@ -56,7 +56,7 @@ namespace opensolid
     }
 
     inline
-    Point1d::Point(const Matrix1x1& matrix) :
+    Point1d::Point(const Matrix1d& matrix) :
         detail::PointBase<1>(matrix) {
     }
 
@@ -80,7 +80,7 @@ namespace opensolid
     }
 
     inline
-    Point2d::Point(const ColMatrix2x1& components) :
+    Point2d::Point(const ColumnMatrix2d& components) :
         detail::PointBase<2>(components) {
     }
 
@@ -147,7 +147,7 @@ namespace opensolid
     }
 
     inline
-    Point3d::Point(const ColMatrix3x1& components) :
+    Point3d::Point(const ColumnMatrix3d& components) :
         detail::PointBase<3>(components) {
     }
 

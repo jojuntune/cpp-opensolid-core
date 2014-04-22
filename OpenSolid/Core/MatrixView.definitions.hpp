@@ -79,10 +79,10 @@ namespace opensolid
         columnStride() const;
     };
 
-    typedef MatrixView<double, -1, -1, -1> MatrixViewXxX;
-    typedef MatrixView<const double, -1, -1, -1> ConstMatrixViewXxX;
-    typedef MatrixView<Interval, -1, -1, -1> IntervalMatrixViewXxX;
-    typedef MatrixView<const Interval, -1, -1, -1> ConstIntervalMatrixViewXxX;
+    typedef MatrixView<double, -1, -1, -1> MatrixViewXd;
+    typedef MatrixView<const double, -1, -1, -1> ConstMatrixViewXd;
+    typedef MatrixView<Interval, -1, -1, -1> IntervalMatrixViewXd;
+    typedef MatrixView<const Interval, -1, -1, -1> ConstIntervalMatrixViewXd;
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     struct MatrixTraits<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>>

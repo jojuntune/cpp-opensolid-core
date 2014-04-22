@@ -54,32 +54,32 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const = 0;
         
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const = 0;
 
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateJacobianImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const = 0;
         
         OPENSOLID_CORE_EXPORT
         virtual void
         evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const = 0;
 
@@ -109,11 +109,11 @@ namespace opensolid
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
-        translationImpl(const ColMatrixXx1& colMatrix) const;
+        translationImpl(const ColumnMatrixXd& colMatrix) const;
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
-        transformationImpl(const MatrixXxX& matrix) const;
+        transformationImpl(const MatrixXd& matrix) const;
         
         OPENSOLID_CORE_EXPORT
         virtual ExpressionImplementationPtr
@@ -168,9 +168,9 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const = 0;
 
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator-(const ExpressionImplementationPtr&);
-        friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator+(const ExpressionImplementationPtr&, const ColMatrixXx1&);
+        friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator+(const ExpressionImplementationPtr&, const ColumnMatrixXd&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator*(double, const ExpressionImplementationPtr&);
-        friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator*(const MatrixXxX&, const ExpressionImplementationPtr&);
+        friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr operator*(const MatrixXd&, const ExpressionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr sqrt(const ExpressionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr sin(const ExpressionImplementationPtr&);
         friend OPENSOLID_CORE_EXPORT ExpressionImplementationPtr cos(const ExpressionImplementationPtr&);
@@ -208,29 +208,29 @@ namespace opensolid
         
         void
         evaluate(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const;
         
         void
         evaluate(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const;
         
         void
         evaluateJacobian(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const;
 
         void
         evaluateJacobian(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const;
         
@@ -314,13 +314,13 @@ namespace opensolid
     ExpressionImplementationPtr
     operator+(
         const ExpressionImplementationPtr& argument,
-        const ColMatrixXx1& colMatrix
+        const ColumnMatrixXd& colMatrix
     );
 
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator+(
-        const ColMatrixXx1& firstArgument,
+        const ColumnMatrixXd& firstArgument,
         const ExpressionImplementationPtr& secondArgument
     );
 
@@ -349,13 +349,13 @@ namespace opensolid
     ExpressionImplementationPtr
     operator-(
         const ExpressionImplementationPtr& firstArgument,
-        const ColMatrixXx1& secondArgument
+        const ColumnMatrixXd& secondArgument
     );
 
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator-(
-        const ColMatrixXx1& firstArgument,
+        const ColumnMatrixXd& firstArgument,
         const ExpressionImplementationPtr& secondArgument
     );
 
@@ -384,13 +384,13 @@ namespace opensolid
     ExpressionImplementationPtr
     operator*(
         const ExpressionImplementationPtr& firstArgument,
-        const ColMatrixXx1& secondArgument
+        const ColumnMatrixXd& secondArgument
     );
 
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator*(
-        const MatrixXxX& matrix,
+        const MatrixXd& matrix,
         const ExpressionImplementationPtr& argument
     );
 
@@ -418,7 +418,7 @@ namespace opensolid
     OPENSOLID_CORE_EXPORT
     ExpressionImplementationPtr
     operator/(
-        const ColMatrixXx1& firstArgument,
+        const ColumnMatrixXd& firstArgument,
         const ExpressionImplementationPtr& secondArgument
     );
 

@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     ScalingExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
@@ -45,8 +45,8 @@ namespace opensolid
     
     void
     ScalingExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
@@ -55,8 +55,8 @@ namespace opensolid
 
     void
     ScalingExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
@@ -65,8 +65,8 @@ namespace opensolid
     
     void
     ScalingExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluateJacobian(operand(), parameterView);
@@ -92,7 +92,7 @@ namespace opensolid
     }
 
     ExpressionImplementationPtr
-    ScalingExpression::transformationImpl(const MatrixXxX& matrix) const {
+    ScalingExpression::transformationImpl(const MatrixXd& matrix) const {
         return (scale() * matrix) * operand();
     }
     

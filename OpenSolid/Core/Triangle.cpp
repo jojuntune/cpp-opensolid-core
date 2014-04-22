@@ -33,7 +33,7 @@ namespace opensolid
 {
     double
     Triangle2d::area() const {
-        Matrix2x2 matrix;
+        Matrix2d matrix;
         matrix.column(0) = vertex(1).components() - vertex(0).components();
         matrix.column(1) = vertex(2).components() - vertex(0).components();
         return matrix.determinant() / 2.0;

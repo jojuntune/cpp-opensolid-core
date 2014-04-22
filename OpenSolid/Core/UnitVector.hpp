@@ -47,7 +47,7 @@ namespace opensolid
     }
 
     inline
-    UnitVector1d::UnitVector(const Matrix1x1& components) :
+    UnitVector1d::UnitVector(const Matrix1d& components) :
         Vector1d(components) {
 
         assert(abs(components.value()) - 1.0 == opensolid::Zero());
@@ -103,7 +103,7 @@ namespace opensolid
     }
 
     inline
-    UnitVector2d::UnitVector(const ColMatrix2x1& components) :
+    UnitVector2d::UnitVector(const ColumnMatrix2d& components) :
         Vector2d(components) {
 
         assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());
@@ -180,7 +180,7 @@ namespace opensolid
     }
 
     inline
-    UnitVector3d::UnitVector(const ColMatrix3x1& components) :
+    UnitVector3d::UnitVector(const ColumnMatrix3d& components) :
         Vector3d(components) {
 
         assert(sqrt(components.cwiseSquared().sum()) - 1.0 == opensolid::Zero());

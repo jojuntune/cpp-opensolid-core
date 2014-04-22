@@ -36,26 +36,26 @@
 using namespace opensolid;
 
 inline
-Matrix1x1
+Matrix1d
 scalarMatrix(double value) {
-    Matrix1x1 result;
+    Matrix1d result;
     result.value() = value;
     return result;
 }
 
 inline
-ColMatrix2x1
+ColumnMatrix2d
 colMatrix(double x, double y) {
-    ColMatrix2x1 result;
+    ColumnMatrix2d result;
     result(0) = x;
     result(1) = y;
     return result;
 }
 
 inline
-ColMatrix3x1
+ColumnMatrix3d
 colMatrix(double x, double y, double z) {
-    ColMatrix3x1 result;
+    ColumnMatrix3d result;
     result(0) = x;
     result(1) = y;
     result(2) = z;
@@ -63,26 +63,26 @@ colMatrix(double x, double y, double z) {
 }
 
 inline
-IntervalMatrix1x1
+IntervalMatrix1d
 scalarMatrix(Interval value) {
-    IntervalMatrix1x1 result;
+    IntervalMatrix1d result;
     result.value() = value;
     return result;
 }
 
 inline
-IntervalColMatrix2x1
+IntervalColumnMatrix2d
 colMatrix(Interval x, Interval y) {
-    IntervalColMatrix2x1 result;
+    IntervalColumnMatrix2d result;
     result(0) = x;
     result(1) = y;
     return result;
 }
 
 inline
-IntervalColMatrix3x1
+IntervalColumnMatrix3d
 colMatrix(Interval x, Interval y, Interval z) {
-    IntervalColMatrix3x1 result;
+    IntervalColumnMatrix3d result;
     result(0) = x;
     result(1) = y;
     result(2) = z;
@@ -103,9 +103,9 @@ vectorSquiggle() {
     return ParametricExpression<3, 2>::FromComponents(u, v, scalarSquiggle());
 }
 
-std::vector<ColMatrix2x1>
+std::vector<ColumnMatrix2d>
 squiggleParameterValues() {
-    std::vector<ColMatrix2x1> results(25);
+    std::vector<ColumnMatrix2d> results(25);
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
             results[i * 5 + j] = colMatrix(i / 5.0 + 0.1, j / 5.0 + 0.1);
@@ -236,8 +236,8 @@ public:
 
     void testNorm() {
         ParametricExpression<2, 1> arc = 3 * (cos(t) * colMatrix(1, 0) + colMatrix(0, 1) * sin(t));
-        ColMatrix2x1 evaluated = arc.normalized().evaluate(M_PI / 4);
-        ColMatrix2x1 expected = colMatrix(1 / sqrt(2.0), 1 / sqrt(2.0));
+        ColumnMatrix2d evaluated = arc.normalized().evaluate(M_PI / 4);
+        ColumnMatrix2d expected = colMatrix(1 / sqrt(2.0), 1 / sqrt(2.0));
         TS_ASSERT((evaluated - expected).isZero());
     }
     
@@ -249,12 +249,12 @@ public:
         {
             ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::Constant(2.0);
 
-            RowMatrix1x3 parameterValues;
+            RowMatrix3d parameterValues;
             parameterValues(0) = 1;
             parameterValues(1) = 2;
             parameterValues(2) = 3;
 
-            TS_ASSERT(expression.evaluate(parameterValues) == RowMatrix1x3::Constant(2.0));
+            TS_ASSERT(expression.evaluate(parameterValues) == RowMatrix3d::Constant(2.0));
         }
     }
     
@@ -266,7 +266,7 @@ public:
         parameterValues[1] = M_PI / 2;
         parameterValues[2] = M_PI;
         parameterValues[3] = 3 * M_PI / 2;
-        std::vector<Matrix1x1> resultValues = expression.evaluate(parameterValues);
+        std::vector<Matrix1d> resultValues = expression.evaluate(parameterValues);
         TS_ASSERT(resultValues[0].value() == Zero());
         TS_ASSERT(resultValues[1].value() - 1 == Zero());
         TS_ASSERT(resultValues[2].value() == Zero());
@@ -277,7 +277,7 @@ public:
         parameterBounds[1] = Interval(M_PI / 2, M_PI);
         parameterBounds[2] = Interval(M_PI, 3 * M_PI / 2);
         parameterBounds[3] = Interval(0, 2 * M_PI);
-        std::vector<IntervalMatrix1x1> resultBounds = expression.evaluate(parameterBounds);
+        std::vector<IntervalMatrix1d> resultBounds = expression.evaluate(parameterBounds);
         TS_ASSERT(resultBounds[0].value().lowerBound() == Zero());
         TS_ASSERT(resultBounds[0].value().upperBound() - 1 == Zero());
         TS_ASSERT(resultBounds[1].value().lowerBound() == Zero());
@@ -296,7 +296,7 @@ public:
         parameterValues[1] = M_PI / 2;
         parameterValues[2] = M_PI;
         parameterValues[3] = 3 * M_PI / 2;
-        std::vector<Matrix1x1> resultValues = expression.evaluate(parameterValues);
+        std::vector<Matrix1d> resultValues = expression.evaluate(parameterValues);
         TS_ASSERT(resultValues[0].value() - 1 == Zero());
         TS_ASSERT(resultValues[1].value() == Zero());
         TS_ASSERT(resultValues[2].value() + 1 == Zero());
@@ -307,7 +307,7 @@ public:
         parameterBounds[1] = Interval(M_PI / 2, M_PI);
         parameterBounds[2] = Interval(M_PI, 3 * M_PI / 2);
         parameterBounds[3] = Interval(0, 2 * M_PI);
-        std::vector<IntervalMatrix1x1> resultBounds = expression.evaluate(parameterBounds);
+        std::vector<IntervalMatrix1d> resultBounds = expression.evaluate(parameterBounds);
         TS_ASSERT(resultBounds[0].value().lowerBound() == Zero());
         TS_ASSERT(resultBounds[0].value().upperBound() - 1 == Zero());
         TS_ASSERT(resultBounds[1].value().lowerBound() + 1 == Zero());
@@ -321,12 +321,12 @@ public:
     void testComponent() {
         ParametricExpression<3, 1> expression = colMatrix(1, 2, 3) + t * colMatrix(1, 2, 3);
         
-        RowMatrix1x3 parameterValues;
+        RowMatrix3d parameterValues;
         parameterValues(0) = 0.0;
         parameterValues(1) = 0.5;
         parameterValues(2) = 1.0;
 
-        RowMatrix1x3 results = expression.component(1).evaluate(parameterValues);
+        RowMatrix3d results = expression.component(1).evaluate(parameterValues);
         std::cout << std::endl << "First: " << results << std::endl;
         TS_ASSERT(results(0) - 2.0 == Zero());
         TS_ASSERT(results(1) - 3.0 == Zero());
@@ -347,15 +347,15 @@ public:
         CoordinateSystem3d coordinateSystem = CoordinateSystem3d::Global();
         coordinateSystem = coordinateSystem.translatedBy(Vector3d(1, 1, 1));
         coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
-        ParametricExpression<3, 1> linear = ColMatrix3x1::Ones() * t;
+        ParametricExpression<3, 1> linear = ColumnMatrix3d::Ones() * t;
         ParametricExpression<3, 1> product = coordinateSystem.basisMatrix() * linear +
             coordinateSystem.originPoint().components();
         ParametricExpression<3, 1> quotient = coordinateSystem.inverseMatrix() *
             (linear - coordinateSystem.originPoint().components());
 
         std::vector<double> parameterValues(5);
-        std::vector<ColMatrix3x1> expectedProductValues(5);
-        std::vector<ColMatrix3x1> expectedQuotientValues(5);
+        std::vector<ColumnMatrix3d> expectedProductValues(5);
+        std::vector<ColumnMatrix3d> expectedQuotientValues(5);
         for (int i = 0; i < 5; ++i) {
             parameterValues[i] = i / 4.0;
             expectedProductValues[i] = parameterValues[i] * colMatrix(0, sqrt(2.0), 1) +
@@ -363,8 +363,8 @@ public:
             expectedQuotientValues[i] = parameterValues[i] * colMatrix(sqrt(2.0), 0, 1) +
                 colMatrix(-sqrt(2.0), 0, -1);
         }
-        std::vector<ColMatrix3x1> productValues = product.evaluate(parameterValues);
-        std::vector<ColMatrix3x1> quotientValues = quotient.evaluate(parameterValues);
+        std::vector<ColumnMatrix3d> productValues = product.evaluate(parameterValues);
+        std::vector<ColumnMatrix3d> quotientValues = quotient.evaluate(parameterValues);
         for (int i = 0; i < 5; ++i) {
             TS_ASSERT((productValues[i] - expectedProductValues[i]).isZero());
             TS_ASSERT((quotientValues[i] - expectedQuotientValues[i]).isZero());
@@ -435,8 +435,8 @@ public:
         parameterValues[3] = M_PI / 4;
         parameterValues[4] = M_PI / 2;
 
-        std::vector<ColMatrix2x1> expressionValues = expression.evaluate(parameterValues);
-        std::vector<ColMatrix2x1> normalValues = normalVector.evaluate(parameterValues);
+        std::vector<ColumnMatrix2d> expressionValues = expression.evaluate(parameterValues);
+        std::vector<ColumnMatrix2d> normalValues = normalVector.evaluate(parameterValues);
         for (unsigned i = 0; i < expressionValues.size(); ++i) {
             TS_ASSERT((expressionValues[i] + 2 * normalValues[i] - colMatrix(1, 1)).isZero());
         }
@@ -504,16 +504,16 @@ public:
         ParametricExpression<1, 1> expression = t.squared();
         Evaluator evaluator;
 
-        RowMatrix1x3 parameterValues;
+        RowMatrix3d parameterValues;
         parameterValues(0) = 1.0;
         parameterValues(1) = 2.0;
         parameterValues(2) = 3.0;
 
-        ConstMatrixViewXxX parameterMap(parameterValues.data(), 1, 3, 1);
-        ConstMatrixViewXxX results1 = evaluator.evaluate(expression.implementation(), parameterMap);
-        ConstMatrixViewXxX results2 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstMatrixViewXd parameterMap(parameterValues.data(), 1, 3, 1);
+        ConstMatrixViewXd results1 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstMatrixViewXd results2 = evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results2.data());
-        ConstMatrixViewXxX results3 = evaluator.evaluate(expression.implementation(), parameterMap);
+        ConstMatrixViewXd results3 = evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
 
@@ -521,18 +521,18 @@ public:
         ParametricExpression<1, 1> expression = t.squared();
         Evaluator evaluator;
 
-        IntervalRowMatrix1x3 parameterValues;
+        IntervalRowMatrix3d parameterValues;
         parameterValues(0) = Interval(1, 2);
         parameterValues(1) = Interval(3, 4);
         parameterValues(2) = Interval(5, 6);
 
-        ConstIntervalMatrixViewXxX parameterMap(parameterValues.data(), 1, 3, 1);
-        ConstIntervalMatrixViewXxX results1 =
+        ConstIntervalMatrixViewXd parameterMap(parameterValues.data(), 1, 3, 1);
+        ConstIntervalMatrixViewXd results1 =
             evaluator.evaluate(expression.implementation(), parameterMap);
-        ConstIntervalMatrixViewXxX results2 =
+        ConstIntervalMatrixViewXd results2 =
             evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results2.data());
-        ConstIntervalMatrixViewXxX results3 =
+        ConstIntervalMatrixViewXd results3 =
             evaluator.evaluate(expression.implementation(), parameterMap);
         TS_ASSERT_EQUALS(results1.data(), results3.data());
     }
@@ -560,8 +560,8 @@ public:
     void testSquiggleJacobians() {
         ParametricExpression<1, 2> scalar = scalarSquiggle();
         ParametricExpression<3, 2> vector = vectorSquiggle();
-        std::vector<ColMatrix2x1> parameterValues = squiggleParameterValues();
-        Matrix3x3 transformationMatrix = Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix();
+        std::vector<ColumnMatrix2d> parameterValues = squiggleParameterValues();
+        Matrix3d transformationMatrix = Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix();
 
         for (unsigned i = 0; i < parameterValues.size(); ++i) {
             testJacobian(scalar, parameterValues[i]);
@@ -599,14 +599,14 @@ public:
     }
 
     void testDotProductWithConstant() {
-        ParametricExpression<3, 1> line = ColMatrix3x1::Ones() + ColMatrix3x1::Ones() * t;
+        ParametricExpression<3, 1> line = ColumnMatrix3d::Ones() + ColumnMatrix3d::Ones() * t;
         ParametricExpression<1, 1> dotProduct = line.dot(colMatrix(0, 1, 0));
         TS_ASSERT(dotProduct.evaluate(0.0).value() - 1.0 == Zero());
         TS_ASSERT(dotProduct.evaluate(1.0).value() - 2.0 == Zero());
     }
 
     void testCrossProductWithConstant() {
-        ParametricExpression<3, 1> line = ColMatrix3x1::Ones() + ColMatrix3x1::Ones() * t;
+        ParametricExpression<3, 1> line = ColumnMatrix3d::Ones() + ColumnMatrix3d::Ones() * t;
         ParametricExpression<3, 1> crossProduct = line.cross(colMatrix(0, 1, 0));
         TS_ASSERT((crossProduct.evaluate(0.0) - colMatrix(-1, 0, 1)).isZero());
         TS_ASSERT((crossProduct.evaluate(1.0) - colMatrix(-2, 0, 2)).isZero());

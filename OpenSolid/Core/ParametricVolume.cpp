@@ -86,7 +86,7 @@ namespace opensolid
     ParametricVolume3d
     TransformationFunction<ParametricVolume3d, 3>::operator()(
         const ParametricVolume3d& parametricArea,
-        const Matrix3x3& matrix
+        const Matrix3d& matrix
     ) const {
         return ParametricVolume3d(
             matrix * parametricArea.expression(),

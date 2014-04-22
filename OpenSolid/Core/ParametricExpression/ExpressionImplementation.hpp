@@ -83,8 +83,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluate(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluateImpl(parameterView, resultView, evaluator);
@@ -93,8 +93,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluate(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluateImpl(parameterView, resultView, evaluator);
@@ -103,8 +103,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluateJacobian(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluateJacobianImpl(parameterView, resultView, evaluator);
@@ -113,8 +113,8 @@ namespace opensolid
     inline
     void
     ExpressionImplementation::evaluateJacobian(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluateJacobianImpl(parameterView, resultView, evaluator);

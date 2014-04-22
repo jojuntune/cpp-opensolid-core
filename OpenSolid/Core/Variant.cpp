@@ -92,64 +92,64 @@ namespace opensolid
         return _valuePtr->toInterval();
     }
 
-    const Matrix2x2&
-    Variant::toMatrix2x2() const {
-        return _valuePtr->toMatrix2x2();
+    const Matrix2d&
+    Variant::toMatrix2d() const {
+        return _valuePtr->toMatrix2d();
     }
 
-    const IntervalMatrix2x2&
-    Variant::toIntervalMatrix2x2() const {
-        return _valuePtr->toIntervalMatrix2x2();
+    const IntervalMatrix2d&
+    Variant::toIntervalMatrix2d() const {
+        return _valuePtr->toIntervalMatrix2d();
     }
 
-    const Matrix3x3&
-    Variant::toMatrix3x3() const {
-        return _valuePtr->toMatrix3x3();
+    const Matrix3d&
+    Variant::toMatrix3d() const {
+        return _valuePtr->toMatrix3d();
     }
 
-    const IntervalMatrix3x3&
-    Variant::toIntervalMatrix3x3() const {
-        return _valuePtr->toIntervalMatrix3x3();
+    const IntervalMatrix3d&
+    Variant::toIntervalMatrix3d() const {
+        return _valuePtr->toIntervalMatrix3d();
     }
 
-    const RowMatrix1x2&
-    Variant::toRowMatrix1x2() const {
-        return _valuePtr->toRowMatrix1x2();
+    const RowMatrix2d&
+    Variant::toRowMatrix2d() const {
+        return _valuePtr->toRowMatrix2d();
     }
 
-    const IntervalRowMatrix1x2&
-    Variant::toIntervalRowMatrix1x2() const {
-        return _valuePtr->toIntervalRowMatrix1x2();
+    const IntervalRowMatrix2d&
+    Variant::toIntervalRowMatrix2d() const {
+        return _valuePtr->toIntervalRowMatrix2d();
     }
 
-    const ColMatrix2x1&
-    Variant::toColMatrix2x1() const {
-        return _valuePtr->toColMatrix2x1();
+    const ColumnMatrix2d&
+    Variant::toColumnMatrix2d() const {
+        return _valuePtr->toColumnMatrix2d();
     }
 
-    const IntervalColMatrix2x1&
-    Variant::toIntervalColMatrix2x1() const {
-        return _valuePtr->toIntervalColMatrix2x1();
+    const IntervalColumnMatrix2d&
+    Variant::toIntervalColumnMatrix2d() const {
+        return _valuePtr->toIntervalColumnMatrix2d();
     }
 
-    const RowMatrix1x3&
-    Variant::toRowMatrix1x3() const {
-        return _valuePtr->toRowMatrix1x3();
+    const RowMatrix3d&
+    Variant::toRowMatrix3d() const {
+        return _valuePtr->toRowMatrix3d();
     }
 
-    const IntervalRowMatrix1x3&
-    Variant::toIntervalRowMatrix1x3() const {
-        return _valuePtr->toIntervalRowMatrix1x3();
+    const IntervalRowMatrix3d&
+    Variant::toIntervalRowMatrix3d() const {
+        return _valuePtr->toIntervalRowMatrix3d();
     }
 
-    const ColMatrix3x1&
-    Variant::toColMatrix3x1() const {
-        return _valuePtr->toColMatrix3x1();
+    const ColumnMatrix3d&
+    Variant::toColumnMatrix3d() const {
+        return _valuePtr->toColumnMatrix3d();
     }
 
-    const IntervalColMatrix3x1&
-    Variant::toIntervalColMatrix3x1() const {
-        return _valuePtr->toIntervalColMatrix3x1();
+    const IntervalColumnMatrix3d&
+    Variant::toIntervalColumnMatrix3d() const {
+        return _valuePtr->toIntervalColumnMatrix3d();
     }
 
     const Vector2d&

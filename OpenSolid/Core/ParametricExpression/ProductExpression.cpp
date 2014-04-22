@@ -35,11 +35,11 @@ namespace opensolid
     
     void
     ProductExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX multiplierValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXd multiplierValues = evaluator.evaluate(firstOperand(), parameterView);
         resultView = evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView.column(columnIndex) *= multiplierValues(0, columnIndex);
@@ -48,11 +48,11 @@ namespace opensolid
     
     void
     ProductExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX multiplierValues =
+        ConstIntervalMatrixViewXd multiplierValues =
             evaluator.evaluate(firstOperand(), parameterView);
         resultView = evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
@@ -62,16 +62,16 @@ namespace opensolid
 
     void
     ProductExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         double multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
-        ConstMatrixViewXxX multiplicandValue =
+        ConstMatrixViewXd multiplicandValue =
             evaluator.evaluate(secondOperand(), parameterView);
-        ConstMatrixViewXxX multiplierJacobian =
+        ConstMatrixViewXd multiplierJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXxX multiplicandJacobian =
+        ConstMatrixViewXd multiplicandJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
         resultView =
             multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;
@@ -79,16 +79,16 @@ namespace opensolid
     
     void
     ProductExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         Interval multiplierValue = evaluator.evaluate(firstOperand(), parameterView).value();
-        ConstIntervalMatrixViewXxX multiplicandValue =
+        ConstIntervalMatrixViewXd multiplicandValue =
             evaluator.evaluate(secondOperand(), parameterView);
-        ConstIntervalMatrixViewXxX multiplierJacobian =
+        ConstIntervalMatrixViewXd multiplierJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX multiplicandJacobian =
+        ConstIntervalMatrixViewXd multiplicandJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
         resultView =
             multiplierValue * multiplicandJacobian + multiplicandValue * multiplierJacobian;

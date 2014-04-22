@@ -119,7 +119,7 @@ public:
 
             std::cout << coordinateSystem.basisMatrix() << std::endl;
             std::cout << std::endl;
-            Matrix3x3 shouldBeIdentity =
+            Matrix3d shouldBeIdentity =
                 coordinateSystem.basisMatrix() * coordinateSystem.basisMatrix().transpose();
             std::cout << shouldBeIdentity << std::endl;
             std::cout << std::endl;
@@ -131,7 +131,7 @@ public:
     }
     
     void testNonOrthogonal() {
-        Matrix3x3 upperTriangularMatrix;
+        Matrix3d upperTriangularMatrix;
         upperTriangularMatrix(0, 0) = 1;
         upperTriangularMatrix(0, 1) = 1;
         upperTriangularMatrix(1, 1) = 1;

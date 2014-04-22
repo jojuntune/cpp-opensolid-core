@@ -36,8 +36,8 @@ namespace opensolid
     
     void
     ArccosineExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluator.evaluate(operand(), parameterView).map(
@@ -54,8 +54,8 @@ namespace opensolid
     
     void
     ArccosineExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluator.evaluate(operand(), parameterView).map(
@@ -72,8 +72,8 @@ namespace opensolid
 
     void
     ArccosineExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterView).value();
@@ -86,8 +86,8 @@ namespace opensolid
     
     void
     ArccosineExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         Interval operandValue = evaluator.evaluate(operand(), parameterView).value();

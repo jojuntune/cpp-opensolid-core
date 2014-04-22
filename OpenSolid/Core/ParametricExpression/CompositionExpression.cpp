@@ -40,8 +40,8 @@ namespace opensolid
 
     void
     CompositionExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(
@@ -52,8 +52,8 @@ namespace opensolid
 
     void
     CompositionExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(
@@ -64,30 +64,30 @@ namespace opensolid
 
     void
     CompositionExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX innerJacobian =
+        ConstMatrixViewXd innerJacobian =
             evaluator.evaluateJacobian(innerExpression(), parameterView);
-        ConstMatrixViewXxX innerValues =
+        ConstMatrixViewXd innerValues =
             evaluator.evaluate(innerExpression(), parameterView);
-        ConstMatrixViewXxX outerJacobian =
+        ConstMatrixViewXd outerJacobian =
             evaluator.evaluateJacobian(outerExpression(), innerValues);
         resultView = outerJacobian * innerJacobian;
     }
     
     void
     CompositionExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX innerJacobian =
+        ConstIntervalMatrixViewXd innerJacobian =
             evaluator.evaluateJacobian(innerExpression(), parameterView);
-        ConstIntervalMatrixViewXxX innerBounds =
+        ConstIntervalMatrixViewXd innerBounds =
             evaluator.evaluate(innerExpression(), parameterView);
-        ConstIntervalMatrixViewXxX outerJacobian =
+        ConstIntervalMatrixViewXd outerJacobian =
             evaluator.evaluateJacobian(outerExpression(), innerBounds);
         resultView = outerJacobian * innerJacobian;
     }

@@ -69,7 +69,7 @@ namespace opensolid
 
     double
     Tetrahedron3d::volume() const {
-        Matrix3x3 matrix;
+        Matrix3d matrix;
         matrix.column(0) = vertex(1).components() - vertex(0).components();
         matrix.column(1) = vertex(2).components() - vertex(0).components();
         matrix.column(2) = vertex(3).components() - vertex(0).components();
@@ -153,7 +153,7 @@ namespace opensolid
     Tetrahedron3d
     TransformationFunction<Tetrahedron3d, 3>::operator()(
         const Tetrahedron3d& tetrahedron,
-        const Matrix3x3& matrix
+        const Matrix3d& matrix
     ) const {
         return Tetrahedron3d(
             transformationFunction(tetrahedron.vertex(0), matrix),

@@ -48,11 +48,11 @@ namespace opensolid
             operator()(const std::pair<const ExpressionImplementation*, const TScalar*>& key) const;
         };
 
-        typedef std::unordered_map<Key, MatrixXxX, Evaluator::KeyHash> Cache;
+        typedef std::unordered_map<Key, MatrixXd, Evaluator::KeyHash> Cache;
 
         typedef std::unordered_map<
             IntervalKey,
-            IntervalMatrixXxX,
+            IntervalMatrixXd,
             Evaluator::KeyHash
         > IntervalCache;
 
@@ -84,31 +84,31 @@ namespace opensolid
         );
     public:
         OPENSOLID_CORE_EXPORT
-        ConstMatrixViewXxX
+        ConstMatrixViewXd
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const ConstMatrixViewXxX& parameterView
+            const ConstMatrixViewXd& parameterView
         );
         
         OPENSOLID_CORE_EXPORT
-        ConstMatrixViewXxX
+        ConstMatrixViewXd
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const ConstMatrixViewXxX& parameterView
+            const ConstMatrixViewXd& parameterView
         );
 
         OPENSOLID_CORE_EXPORT
-        ConstIntervalMatrixViewXxX
+        ConstIntervalMatrixViewXd
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const ConstIntervalMatrixViewXxX& parameterView
+            const ConstIntervalMatrixViewXd& parameterView
         );
         
         OPENSOLID_CORE_EXPORT
-        ConstIntervalMatrixViewXxX
+        ConstIntervalMatrixViewXd
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const ConstIntervalMatrixViewXxX& parameterView
+            const ConstIntervalMatrixViewXd& parameterView
         );
     };
 }

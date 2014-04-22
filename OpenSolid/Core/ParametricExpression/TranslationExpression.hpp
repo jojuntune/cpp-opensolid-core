@@ -34,7 +34,7 @@ namespace opensolid
         public UnaryOperation
     {
     private:
-        ColMatrixXx1 _columnMatrix;
+        ColumnMatrixXd _columnMatrix;
         
         OPENSOLID_CORE_EXPORT
         int
@@ -43,32 +43,32 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
         evaluateImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
 
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const ConstMatrixViewXxX& parameterView,
-            MatrixViewXxX& resultView,
+            const ConstMatrixViewXd& parameterView,
+            MatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
         OPENSOLID_CORE_EXPORT
         void
         evaluateJacobianImpl(
-            const ConstIntervalMatrixViewXxX& parameterView,
-            IntervalMatrixViewXxX& resultView,
+            const ConstIntervalMatrixViewXd& parameterView,
+            IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const override;
         
@@ -82,7 +82,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         ExpressionImplementationPtr
-        translationImpl(const ColMatrixXx1& columnMatrix) const override;
+        translationImpl(const ColumnMatrixXd& columnMatrix) const override;
         
         OPENSOLID_CORE_EXPORT
         void
@@ -95,10 +95,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         TranslationExpression(
             const ExpressionImplementationPtr& operand,
-            const ColMatrixXx1& columnMatrix
+            const ColumnMatrixXd& columnMatrix
         );
 
-        const ColMatrixXx1&
+        const ColumnMatrixXd&
         columnMatrix() const;
     };
 }
@@ -108,7 +108,7 @@ namespace opensolid
 namespace opensolid
 {
     inline
-    const ColMatrixXx1&
+    const ColumnMatrixXd&
     TranslationExpression::columnMatrix() const {
         return _columnMatrix;
     }

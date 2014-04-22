@@ -36,8 +36,8 @@ namespace opensolid
     
     void
     SquareRootExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluator.evaluate(operand(), parameterView).map(
@@ -53,8 +53,8 @@ namespace opensolid
     
     void
     SquareRootExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         evaluator.evaluate(operand(), parameterView).map(
@@ -67,8 +67,8 @@ namespace opensolid
 
     void
     SquareRootExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         double operandValue = evaluator.evaluate(operand(), parameterView).value();
@@ -81,8 +81,8 @@ namespace opensolid
     
     void
     SquareRootExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         Interval operandValue = evaluator.evaluate(operand(), parameterView).value();

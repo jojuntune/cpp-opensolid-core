@@ -36,12 +36,12 @@ namespace opensolid
     
     void
     QuotientExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXxX divisorValues = evaluator.evaluate(secondOperand(), parameterView);
+        ConstMatrixViewXd divisorValues = evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             double divisorValue = divisorValues(0, columnIndex);
             if (divisorValue == Zero()) {
@@ -53,12 +53,12 @@ namespace opensolid
     
     void
     QuotientExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX divisorValues =
+        ConstIntervalMatrixViewXd divisorValues =
             evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             Interval divisorValue = divisorValues(0, columnIndex);
@@ -71,19 +71,19 @@ namespace opensolid
 
     void
     QuotientExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         double divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
         if (divisorValue == Zero()) {
             throw Error(new PlaceholderError());
         }
-        ConstMatrixViewXxX dividendValues =
+        ConstMatrixViewXd dividendValues =
             evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXxX dividendJacobian =
+        ConstMatrixViewXd dividendJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXxX divisorJacobian =
+        ConstMatrixViewXd divisorJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
         resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
             (divisorValue * divisorValue);
@@ -91,19 +91,19 @@ namespace opensolid
     
     void
     QuotientExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         Interval divisorValue = evaluator.evaluate(secondOperand(), parameterView).value();
         if (divisorValue == Zero()) {
             throw Error(new PlaceholderError());
         }
-        ConstIntervalMatrixViewXxX dividendValues =
+        ConstIntervalMatrixViewXd dividendValues =
             evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX dividendJacobian =
+        ConstIntervalMatrixViewXd dividendJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX divisorJacobian =
+        ConstIntervalMatrixViewXd divisorJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
         resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
             (divisorValue * divisorValue);

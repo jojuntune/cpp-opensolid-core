@@ -35,12 +35,12 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
+        ConstMatrixViewXd firstValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXd secondValues = evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
                 secondValues.column(columnIndex),
@@ -54,13 +54,13 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX firstValues =
+        ConstIntervalMatrixViewXd firstValues =
             evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX secondValues =
+        ConstIntervalMatrixViewXd secondValues =
             evaluator.evaluate(secondOperand(), parameterView);
         for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView(0, columnIndex) = firstValues.column(columnIndex).binaryFold(
@@ -75,16 +75,16 @@ namespace opensolid
 
     void
     DotProductExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX firstValue = evaluator.evaluate(firstOperand(), parameterView);
-        ConstMatrixViewXxX secondValue = evaluator.evaluate(secondOperand(), parameterView);
+        ConstMatrixViewXd firstValue = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXd secondValue = evaluator.evaluate(secondOperand(), parameterView);
 
-        ConstMatrixViewXxX firstJacobian =
+        ConstMatrixViewXd firstJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstMatrixViewXxX secondJacobian =
+        ConstMatrixViewXd secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
         
         resultView = firstValue.transpose() * secondJacobian +
@@ -93,16 +93,16 @@ namespace opensolid
     
     void
     DotProductExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX firstValue = evaluator.evaluate(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX secondValue = evaluator.evaluate(secondOperand(), parameterView);
+        ConstIntervalMatrixViewXd firstValue = evaluator.evaluate(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXd secondValue = evaluator.evaluate(secondOperand(), parameterView);
 
-        ConstIntervalMatrixViewXxX firstJacobian =
+        ConstIntervalMatrixViewXd firstJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        ConstIntervalMatrixViewXxX secondJacobian =
+        ConstIntervalMatrixViewXd secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
         
         resultView = firstValue.transpose() * secondJacobian +

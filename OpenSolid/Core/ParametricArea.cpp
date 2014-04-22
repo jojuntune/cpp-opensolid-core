@@ -86,7 +86,7 @@ namespace opensolid
     ParametricArea2d
     TransformationFunction<ParametricArea2d, 2>::operator()(
         const ParametricArea2d& parametricArea,
-        const Matrix2x2& matrix
+        const Matrix2d& matrix
     ) const {
         return ParametricArea2d(
             matrix * parametricArea.expression(),

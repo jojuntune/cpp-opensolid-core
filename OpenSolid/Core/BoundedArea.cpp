@@ -87,7 +87,7 @@ namespace opensolid
     const BoundedArea2d
     TransformationFunction<BoundedArea2d, 2>::operator()(
         const BoundedArea2d& boundedArea,
-        const Matrix2x2& matrix
+        const Matrix2d& matrix
     ) const {
         return BoundedArea2d(
             SpatialSet<ParametricCurve2d>(

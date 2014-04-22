@@ -40,8 +40,8 @@ namespace opensolid
     
     void
     IdentityExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator&
     ) const {
         resultView = parameterView;
@@ -49,8 +49,8 @@ namespace opensolid
     
     void
     IdentityExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator&
     ) const {
         resultView = parameterView;
@@ -58,8 +58,8 @@ namespace opensolid
 
     void
     IdentityExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView.setIdentity();
@@ -67,8 +67,8 @@ namespace opensolid
     
     void
     IdentityExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView.setIdentity();
@@ -76,7 +76,7 @@ namespace opensolid
 
     ExpressionImplementationPtr
     IdentityExpression::derivativeImpl(int parameterIndex) const {
-        ColMatrixXx1 result(numDimensions());
+        ColumnMatrixXd result(numDimensions());
         result(parameterIndex) = 1.0;
         return new ConstantExpression(result, numDimensions());
     }

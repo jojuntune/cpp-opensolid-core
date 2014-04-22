@@ -64,63 +64,63 @@ namespace opensolid
         throw PlaceholderError();
     }
 
-    const Matrix2x2&
-    VariantValue::toMatrix2x2() const {
+    const Matrix2d&
+    VariantValue::toMatrix2d() const {
         throw PlaceholderError();
     }
 
-    const IntervalMatrix2x2&
-    VariantValue::toIntervalMatrix2x2() const {
+    const IntervalMatrix2d&
+    VariantValue::toIntervalMatrix2d() const {
         throw PlaceholderError();
     }
 
-    const Matrix3x3&
-    VariantValue::toMatrix3x3() const {
+    const Matrix3d&
+    VariantValue::toMatrix3d() const {
         throw PlaceholderError();
     }
 
-    const IntervalMatrix3x3&
-    VariantValue::toIntervalMatrix3x3() const {
+    const IntervalMatrix3d&
+    VariantValue::toIntervalMatrix3d() const {
         throw PlaceholderError();
     }
 
-    const RowMatrix1x2&
-    VariantValue::toRowMatrix1x2() const {
+    const RowMatrix2d&
+    VariantValue::toRowMatrix2d() const {
         throw PlaceholderError();
     }
 
-    const IntervalRowMatrix1x2&
-    VariantValue::toIntervalRowMatrix1x2() const {
+    const IntervalRowMatrix2d&
+    VariantValue::toIntervalRowMatrix2d() const {
         throw PlaceholderError();
     }
 
-    const ColMatrix2x1&
-    VariantValue::toColMatrix2x1() const {
+    const ColumnMatrix2d&
+    VariantValue::toColumnMatrix2d() const {
         throw PlaceholderError();
     }
 
-    const IntervalColMatrix2x1&
-    VariantValue::toIntervalColMatrix2x1() const {
+    const IntervalColumnMatrix2d&
+    VariantValue::toIntervalColumnMatrix2d() const {
         throw PlaceholderError();
     }
 
-    const RowMatrix1x3&
-    VariantValue::toRowMatrix1x3() const {
+    const RowMatrix3d&
+    VariantValue::toRowMatrix3d() const {
         throw PlaceholderError();
     }
 
-    const IntervalRowMatrix1x3&
-    VariantValue::toIntervalRowMatrix1x3() const {
+    const IntervalRowMatrix3d&
+    VariantValue::toIntervalRowMatrix3d() const {
         throw PlaceholderError();
     }
 
-    const ColMatrix3x1&
-    VariantValue::toColMatrix3x1() const {
+    const ColumnMatrix3d&
+    VariantValue::toColumnMatrix3d() const {
         throw PlaceholderError();
     }
 
-    const IntervalColMatrix3x1&
-    VariantValue::toIntervalColMatrix3x1() const {
+    const IntervalColumnMatrix3d&
+    VariantValue::toIntervalColumnMatrix3d() const {
         throw PlaceholderError();
     }
 

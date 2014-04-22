@@ -95,11 +95,11 @@ namespace opensolid
         
     void
     PowerExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstMatrixViewXxX baseValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstMatrixViewXd baseValues = evaluator.evaluate(firstOperand(), parameterView);
         if (_exponentIsInteger) {
             baseValues.map(
                 [this] (double baseValue) {
@@ -115,7 +115,7 @@ namespace opensolid
                 resultView
             );
         } else {
-            ConstMatrixViewXxX exponentValues = evaluator.evaluate(secondOperand(), parameterView);
+            ConstMatrixViewXd exponentValues = evaluator.evaluate(secondOperand(), parameterView);
             baseValues.binaryMap(
                 exponentValues,
                 [] (double baseValue, double exponentValue) {
@@ -128,11 +128,11 @@ namespace opensolid
 
     void
     PowerExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
-        ConstIntervalMatrixViewXxX baseValues = evaluator.evaluate(firstOperand(), parameterView);
+        ConstIntervalMatrixViewXd baseValues = evaluator.evaluate(firstOperand(), parameterView);
         if (_exponentIsInteger) {
             baseValues.map(
                 [this] (Interval baseValue) {
@@ -148,7 +148,7 @@ namespace opensolid
                 resultView
             );
         } else {
-            ConstIntervalMatrixViewXxX exponentValues =
+            ConstIntervalMatrixViewXd exponentValues =
                 evaluator.evaluate(secondOperand(), parameterView);
             baseValues.binaryMap(
                 exponentValues,
@@ -162,20 +162,20 @@ namespace opensolid
 
     void
     PowerExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         double baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
         if (baseValue <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        ConstMatrixViewXxX baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
+        ConstMatrixViewXd baseJacobian = evaluator.evaluateJacobian(firstOperand(), parameterView);
         if (_exponentIsConstant) {
             resultView = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
         } else {
             double exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
-            ConstMatrixViewXxX exponentJacobian =
+            ConstMatrixViewXd exponentJacobian =
                 evaluator.evaluateJacobian(secondOperand(), parameterView);
             resultView = pow(baseValue, exponentValue) *
                 (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);
@@ -184,21 +184,21 @@ namespace opensolid
     
     void
     PowerExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         Interval baseValue = evaluator.evaluate(firstOperand(), parameterView).value();
         if (baseValue.upperBound() <= Zero()) {
             throw Error(new PlaceholderError());
         }
-        ConstIntervalMatrixViewXxX baseJacobian =
+        ConstIntervalMatrixViewXd baseJacobian =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
         if (_exponentIsConstant) {
             resultView = _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
         } else {
             Interval exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
-            ConstIntervalMatrixViewXxX exponentJacobian =
+            ConstIntervalMatrixViewXd exponentJacobian =
                 evaluator.evaluateJacobian(secondOperand(), parameterView);
             resultView = pow(baseValue, exponentValue) *
                 (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);

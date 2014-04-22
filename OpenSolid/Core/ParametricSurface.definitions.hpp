@@ -106,7 +106,7 @@ namespace opensolid
     struct TransformationFunction<ParametricSurface3d, 3>
     {
         ParametricSurface3d
-        operator()(const ParametricSurface3d& surface, const Matrix3x3& matrix) const;
+        operator()(const ParametricSurface3d& surface, const Matrix3d& matrix) const;
     };
 
     template <>

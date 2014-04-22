@@ -160,7 +160,7 @@ namespace opensolid
     Plane3d
     TransformationFunction<Plane3d, 3>::operator()(
         const Plane3d& plane,
-        const Matrix3x3& matrix
+        const Matrix3d& matrix
     ) const {
         Vector3d transformedNormal = transformationFunction(plane.normalVector(), matrix);
         double transformedNorm = transformedNormal.norm();

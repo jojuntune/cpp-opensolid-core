@@ -35,8 +35,8 @@ namespace opensolid
     
     void
     TransformationExpression::evaluateImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = matrix() * evaluator.evaluate(operand(), parameterView);
@@ -44,8 +44,8 @@ namespace opensolid
     
     void
     TransformationExpression::evaluateImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = matrix() * evaluator.evaluate(operand(), parameterView);
@@ -53,8 +53,8 @@ namespace opensolid
 
     void
     TransformationExpression::evaluateJacobianImpl(
-        const ConstMatrixViewXxX& parameterView,
-        MatrixViewXxX& resultView,
+        const ConstMatrixViewXd& parameterView,
+        MatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = matrix() * evaluator.evaluateJacobian(operand(), parameterView);
@@ -62,8 +62,8 @@ namespace opensolid
     
     void
     TransformationExpression::evaluateJacobianImpl(
-        const ConstIntervalMatrixViewXxX& parameterView,
-        IntervalMatrixViewXxX& resultView,
+        const ConstIntervalMatrixViewXd& parameterView,
+        IntervalMatrixViewXd& resultView,
         Evaluator& evaluator
     ) const {
         resultView = matrix() * evaluator.evaluateJacobian(operand(), parameterView);
@@ -78,7 +78,7 @@ namespace opensolid
     TransformationExpression::isDuplicateOfImpl(
         const ExpressionImplementationPtr& other
     ) const {
-        MatrixXxX otherMatrix = other->cast<TransformationExpression>()->matrix();
+        MatrixXd otherMatrix = other->cast<TransformationExpression>()->matrix();
         return duplicateOperands(other) && (matrix() - otherMatrix).isZero();
     }
 
@@ -88,7 +88,7 @@ namespace opensolid
     }
 
     ExpressionImplementationPtr
-    TransformationExpression::transformationImpl(const MatrixXxX& matrix) const {
+    TransformationExpression::transformationImpl(const MatrixXd& matrix) const {
         return (matrix * this->matrix()) * operand();
     }
     
@@ -106,7 +106,7 @@ namespace opensolid
     }
 
     TransformationExpression::TransformationExpression(
-        const MatrixXxX& matrix,
+        const MatrixXd& matrix,
         const ExpressionImplementationPtr& operand
     ) : UnaryOperation(operand),
         _matrix(matrix) {

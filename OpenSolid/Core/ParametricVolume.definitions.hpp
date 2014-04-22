@@ -103,7 +103,7 @@ namespace opensolid
     struct TransformationFunction<ParametricVolume3d, 3>
     {
         ParametricVolume3d
-        operator()(const ParametricVolume3d& parametricVolume, const Matrix3x3& matrix) const;
+        operator()(const ParametricVolume3d& parametricVolume, const Matrix3d& matrix) const;
     };
 
     template <>

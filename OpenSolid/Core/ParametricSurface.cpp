@@ -91,7 +91,7 @@ namespace opensolid
     ParametricSurface3d
     TransformationFunction<ParametricSurface3d, 3>::operator()(
         const ParametricSurface3d& surface,
-        const Matrix3x3& matrix
+        const Matrix3d& matrix
     ) const {
         return ParametricSurface3d(
             matrix * surface.expression(),

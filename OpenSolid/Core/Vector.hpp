@@ -53,7 +53,7 @@ namespace opensolid
     }
 
     inline
-    Vector1d::Vector(const Matrix1x1& components) :
+    Vector1d::Vector(const Matrix1d& components) :
         detail::DoubleVectorBase<1>(components) {
     }
 
@@ -68,7 +68,7 @@ namespace opensolid
     }
 
     inline
-    Vector2d::Vector(const ColMatrix2x1& components) :
+    Vector2d::Vector(const ColumnMatrix2d& components) :
         detail::DoubleVectorBase<2>(components) {
     }
 
@@ -94,7 +94,7 @@ namespace opensolid
     }
 
     inline
-    Vector3d::Vector(const ColMatrix3x1& components) :
+    Vector3d::Vector(const ColumnMatrix3d& components) :
         detail::DoubleVectorBase<3>(components) {
     }
 
@@ -152,7 +152,7 @@ namespace opensolid
     }
 
     inline
-    IntervalVector1d::Vector(const IntervalMatrix1x1& components) :
+    IntervalVector1d::Vector(const IntervalMatrix1d& components) :
         detail::IntervalVectorBase<1>(components) {
     }
 
@@ -167,7 +167,7 @@ namespace opensolid
     }
 
     inline
-    IntervalVector2d::Vector(const IntervalColMatrix2x1& components) :
+    IntervalVector2d::Vector(const IntervalColumnMatrix2d& components) :
         detail::IntervalVectorBase<2>(components) {
     }
 
@@ -182,7 +182,7 @@ namespace opensolid
     }
 
     inline
-    IntervalVector3d::Vector(const IntervalColMatrix3x1& components) :
+    IntervalVector3d::Vector(const IntervalColumnMatrix3d& components) :
         detail::IntervalVectorBase<3>(components) {
     }
 
