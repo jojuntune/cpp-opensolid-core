@@ -42,9 +42,9 @@ namespace opensolid
         int firstDimensions = firstOperand()->numDimensions();
         int secondDimensions = secondOperand()->numDimensions();
 
-        resultView.block(0, 0, firstDimensions, resultView.cols()) =
+        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
             evaluator.evaluate(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
             evaluator.evaluate(secondOperand(), parameterView);
     }
     
@@ -57,9 +57,9 @@ namespace opensolid
         int firstDimensions = firstOperand()->numDimensions();
         int secondDimensions = secondOperand()->numDimensions();
         
-        resultView.block(0, 0, firstDimensions, resultView.cols()) =
+        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
             evaluator.evaluate(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
             evaluator.evaluate(secondOperand(), parameterView);
     }
 
@@ -72,9 +72,9 @@ namespace opensolid
         int firstDimensions = firstOperand()->numDimensions();
         int secondDimensions = secondOperand()->numDimensions();
         
-        resultView.block(0, 0, firstDimensions, resultView.cols()) =
+        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
     }
     
@@ -87,9 +87,9 @@ namespace opensolid
         int firstDimensions = firstOperand()->numDimensions();
         int secondDimensions = secondOperand()->numDimensions();
         
-        resultView.block(0, 0, firstDimensions, resultView.cols()) =
+        resultView.block(0, 0, firstDimensions, resultView.numColumns()) =
             evaluator.evaluateJacobian(firstOperand(), parameterView);
-        resultView.block(firstDimensions, 0, secondDimensions, resultView.cols()) =
+        resultView.block(firstDimensions, 0, secondDimensions, resultView.numColumns()) =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
     }
     

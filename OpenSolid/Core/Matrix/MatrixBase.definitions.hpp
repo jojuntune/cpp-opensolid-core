@@ -36,21 +36,21 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         class MatrixBase :
-            public MatrixInterface<Matrix<TScalar, iRows, iCols>>
+            public MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>
         {
         private:
-            TScalar _data[iRows * iCols];
+            TScalar _data[iNumRows * iNumColumns];
         public:
-            static_assert(iRows > 0, "Matrices must have at least one row");
-            static_assert(iCols > 0, "Matrices must have at least one column");
+            static_assert(iNumRows > 0, "Matrices must have at least one row");
+            static_assert(iNumColumns > 0, "Matrices must have at least one column");
 
             MatrixBase();
 
             MatrixBase(int size);
 
-            MatrixBase(int rows, int cols);
+            MatrixBase(int numRows, int numColumns);
 
             const TScalar*
             data() const;
@@ -59,31 +59,31 @@ namespace opensolid
             data();
 
             int
-            rows() const;
+            numRows() const;
 
             int
-            cols() const;
+            numColumns() const;
 
             int
             size() const;
 
             int
-            colStride() const;
+            columnStride() const;
         };
 
-        template <class TScalar, int iRows>
-        class MatrixBase<TScalar, iRows, -1> :
-            public MatrixInterface<Matrix<TScalar, iRows, -1>>
+        template <class TScalar, int iNumRows>
+        class MatrixBase<TScalar, iNumRows, -1> :
+            public MatrixInterface<Matrix<TScalar, iNumRows, -1>>
         {
         private:
             std::vector<TScalar> _data;
-            int _cols;
+            int _numColumns;
         public:
-            static_assert(iRows > 0, "Matrices must have at least one row");
+            static_assert(iNumRows > 0, "Matrices must have at least one row");
 
-            MatrixBase(int cols);
+            MatrixBase(int numColumns);
 
-            MatrixBase(int rows, int cols);
+            MatrixBase(int numRows, int numColumns);
 
             const TScalar*
             data() const;
@@ -92,31 +92,31 @@ namespace opensolid
             data();
 
             int
-            rows() const;
+            numRows() const;
 
             int
-            cols() const;
+            numColumns() const;
 
             int
             size() const;
 
             int
-            colStride() const;
+            columnStride() const;
         };
 
-        template <class TScalar, int iCols>
-        class MatrixBase<TScalar, -1, iCols> :
-            public MatrixInterface<Matrix<TScalar, -1, iCols>>
+        template <class TScalar, int iNumColumns>
+        class MatrixBase<TScalar, -1, iNumColumns> :
+            public MatrixInterface<Matrix<TScalar, -1, iNumColumns>>
         {
         private:
             std::vector<TScalar> _data;
-            int _rows;
+            int _numRows;
         public:
-            static_assert(iCols > 0, "Matrices must have at least one column");
+            static_assert(iNumColumns > 0, "Matrices must have at least one column");
 
-            MatrixBase(int rows);
+            MatrixBase(int numRows);
 
-            MatrixBase(int rows, int cols);
+            MatrixBase(int numRows, int numColumns);
 
             const TScalar*
             data() const;
@@ -125,16 +125,16 @@ namespace opensolid
             data();
 
             int
-            rows() const;
+            numRows() const;
 
             int
-            cols() const;
+            numColumns() const;
 
             int
             size() const;
 
             int
-            colStride() const;
+            columnStride() const;
         };
 
         template <class TScalar>
@@ -143,10 +143,10 @@ namespace opensolid
         {
         private:
             std::vector<TScalar> _data;
-            int _rows;
-            int _cols;
+            int _numRows;
+            int _numColumns;
         public:
-            MatrixBase(int rows, int cols);
+            MatrixBase(int numRows, int numColumns);
 
             const TScalar*
             data() const;
@@ -155,16 +155,16 @@ namespace opensolid
             data();
 
             int
-            rows() const;
+            numRows() const;
 
             int
-            cols() const;
+            numColumns() const;
 
             int
             size() const;
 
             int
-            colStride() const;
+            columnStride() const;
         };
     }
 }

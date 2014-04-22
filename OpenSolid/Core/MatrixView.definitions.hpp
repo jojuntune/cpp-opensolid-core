@@ -34,24 +34,24 @@
 
 namespace opensolid
 {
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     class MatrixView :
-        public detail::MatrixInterface<MatrixView<TScalar, iRows, iCols, iColStride>>
+        public detail::MatrixInterface<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>>
     {
     private:
         TScalar* _data;
-        int _rows;
-        int _cols;
+        int _numRows;
+        int _numColumns;
         int _size;
-        int _colStride;
+        int _columnStride;
     public:
         MatrixView(TScalar* sourcePtr);
 
         MatrixView(TScalar* sourcePtr, int size);
 
-        MatrixView(TScalar* sourcePtr, int rows, int cols);
+        MatrixView(TScalar* sourcePtr, int numRows, int numColumns);
 
-        MatrixView(TScalar* sourcePtr, int rows, int cols, int colStride);
+        MatrixView(TScalar* sourcePtr, int numRows, int numColumns, int columnStride);
 
         template <int iOtherRows, int iOtherCols, int iOtherColStride>
         MatrixView(const MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other);
@@ -67,16 +67,16 @@ namespace opensolid
         data();
 
         int
-        rows() const;
+        numRows() const;
 
         int
-        cols() const;
+        numColumns() const;
 
         int
         size() const;
 
         int
-        colStride() const;
+        columnStride() const;
     };
 
     typedef MatrixView<double, -1, -1, -1> MatrixViewXxX;
@@ -84,13 +84,13 @@ namespace opensolid
     typedef MatrixView<Interval, -1, -1, -1> IntervalMatrixViewXxX;
     typedef MatrixView<const Interval, -1, -1, -1> ConstIntervalMatrixViewXxX;
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
-    struct MatrixTraits<MatrixView<TScalar, iRows, iCols, iColStride>>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    struct MatrixTraits<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>>
     {
         typedef TScalar ScalarType;
         typedef typename std::remove_cv<TScalar>::type PlainScalarType;
-        static const int Rows = iRows;
-        static const int Cols = iCols;
-        static const int ColStride = iColStride;
+        static const int NumRows = iNumRows;
+        static const int NumColumns = iNumColumns;
+        static const int ColumnStride = iColumnStride;
     };
 }

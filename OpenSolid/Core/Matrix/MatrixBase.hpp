@@ -44,217 +44,219 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
-        MatrixBase<TScalar, iRows, iCols>::MatrixBase() :
+        MatrixBase<TScalar, iNumRows, iNumColumns>::MatrixBase() :
             _data() {
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
-        MatrixBase<TScalar, iRows, iCols>::MatrixBase(int size) :
+        MatrixBase<TScalar, iNumRows, iNumColumns>::MatrixBase(int size) :
             _data() {
 
             static_assert(
-                iRows == 1 || iCols == 1,
+                iNumRows == 1 || iNumColumns == 1,
                 "Only row or column matrices can be initialized with a single size"
             );
 
-            assert((iRows == 1 && size == iCols) || (iCols == 1 && size == iRows));
+            assert(
+                (iNumRows == 1 && size == iNumColumns) || (iNumColumns == 1 && size == iNumRows)
+            );
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
-        MatrixBase<TScalar, iRows, iCols>::MatrixBase(int rows, int cols) :
+        MatrixBase<TScalar, iNumRows, iNumColumns>::MatrixBase(int numRows, int numColumns) :
             _data() {
 
-            assert(rows == iRows);
-            assert(cols == iCols);
+            assert(numRows == iNumRows);
+            assert(numColumns == iNumColumns);
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
         const TScalar*
-        MatrixBase<TScalar, iRows, iCols>::data() const {
+        MatrixBase<TScalar, iNumRows, iNumColumns>::data() const {
             return _data;
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
         TScalar*
-        MatrixBase<TScalar, iRows, iCols>::data() {
+        MatrixBase<TScalar, iNumRows, iNumColumns>::data() {
             return _data;
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, iRows, iCols>::rows() const {
-            return iRows;
+        MatrixBase<TScalar, iNumRows, iNumColumns>::numRows() const {
+            return iNumRows;
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, iRows, iCols>::cols() const {
-            return iCols;
+        MatrixBase<TScalar, iNumRows, iNumColumns>::numColumns() const {
+            return iNumColumns;
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, iRows, iCols>::size() const {
-            return iRows * iCols;
+        MatrixBase<TScalar, iNumRows, iNumColumns>::size() const {
+            return iNumRows * iNumColumns;
         }
 
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, iRows, iCols>::colStride() const {
-            return iRows;
+        MatrixBase<TScalar, iNumRows, iNumColumns>::columnStride() const {
+            return iNumRows;
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
-        MatrixBase<TScalar, iRows, -1>::MatrixBase(int cols) :
-            _data(std::size_t(iRows * cols)),
-            _cols(cols) {
+        MatrixBase<TScalar, iNumRows, -1>::MatrixBase(int numColumns) :
+            _data(std::size_t(iNumRows * numColumns)),
+            _numColumns(numColumns) {
 
             static_assert(
-                iRows == 1,
+                iNumRows == 1,
                 "Only row or column matrices can be initialized with a single size"
             );
 
-            assert(cols > 0);
+            assert(numColumns > 0);
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
-        MatrixBase<TScalar, iRows, -1>::MatrixBase(int rows, int cols) :
-            _data(std::size_t(iRows * cols)),
-            _cols(cols) {
+        MatrixBase<TScalar, iNumRows, -1>::MatrixBase(int numRows, int numColumns) :
+            _data(std::size_t(iNumRows * numColumns)),
+            _numColumns(numColumns) {
 
-            assert(rows == iRows);
-            assert(cols > 0);
+            assert(numRows == iNumRows);
+            assert(numColumns > 0);
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
         const TScalar*
-        MatrixBase<TScalar, iRows, -1>::data() const {
+        MatrixBase<TScalar, iNumRows, -1>::data() const {
             return _data.data();
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
         TScalar*
-        MatrixBase<TScalar, iRows, -1>::data() {
+        MatrixBase<TScalar, iNumRows, -1>::data() {
             return _data.data();
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
         int
-        MatrixBase<TScalar, iRows, -1>::rows() const {
-            return iRows;
+        MatrixBase<TScalar, iNumRows, -1>::numRows() const {
+            return iNumRows;
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
         int
-        MatrixBase<TScalar, iRows, -1>::cols() const {
-            return _cols;
+        MatrixBase<TScalar, iNumRows, -1>::numColumns() const {
+            return _numColumns;
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
         int
-        MatrixBase<TScalar, iRows, -1>::size() const {
+        MatrixBase<TScalar, iNumRows, -1>::size() const {
             return int(_data.size());
         }
 
-        template <class TScalar, int iRows>
+        template <class TScalar, int iNumRows>
         inline
         int
-        MatrixBase<TScalar, iRows, -1>::colStride() const {
-            return iRows;
+        MatrixBase<TScalar, iNumRows, -1>::columnStride() const {
+            return iNumRows;
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
-        MatrixBase<TScalar, -1, iCols>::MatrixBase(int rows) :
-            _data(std::size_t(rows * iCols)),
-            _rows(rows) {
+        MatrixBase<TScalar, -1, iNumColumns>::MatrixBase(int numRows) :
+            _data(std::size_t(numRows * iNumColumns)),
+            _numRows(numRows) {
 
             static_assert(
-                iCols == 1,
+                iNumColumns == 1,
                 "Only row or column matrices can be initialized with a single size"
             );
 
-            assert(rows > 0);
+            assert(numRows > 0);
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
-        MatrixBase<TScalar, -1, iCols>::MatrixBase(int rows, int cols) :
-            _data(std::size_t(rows * iCols)),
-            _rows(rows) {
+        MatrixBase<TScalar, -1, iNumColumns>::MatrixBase(int numRows, int numColumns) :
+            _data(std::size_t(numRows * iNumColumns)),
+            _numRows(numRows) {
 
-            assert(rows > 0);
-            assert(cols == iCols);
+            assert(numRows > 0);
+            assert(numColumns == iNumColumns);
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
         const TScalar*
-        MatrixBase<TScalar, -1, iCols>::data() const {
+        MatrixBase<TScalar, -1, iNumColumns>::data() const {
             return _data.data();
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
         TScalar*
-        MatrixBase<TScalar, -1, iCols>::data() {
+        MatrixBase<TScalar, -1, iNumColumns>::data() {
             return _data.data();
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, -1, iCols>::rows() const {
-            return _rows;
+        MatrixBase<TScalar, -1, iNumColumns>::numRows() const {
+            return _numRows;
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, -1, iCols>::cols() const {
-            return iCols;
+        MatrixBase<TScalar, -1, iNumColumns>::numColumns() const {
+            return iNumColumns;
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, -1, iCols>::size() const {
+        MatrixBase<TScalar, -1, iNumColumns>::size() const {
             return int(_data.size());
         }
 
-        template <class TScalar, int iCols>
+        template <class TScalar, int iNumColumns>
         inline
         int
-        MatrixBase<TScalar, -1, iCols>::colStride() const {
-            return _rows;
+        MatrixBase<TScalar, -1, iNumColumns>::columnStride() const {
+            return _numRows;
         }
 
         template <class TScalar>
         inline
-        MatrixBase<TScalar, -1, -1>::MatrixBase(int rows, int cols) :
-            _data(std::size_t(rows * cols)),
-            _rows(rows),
-            _cols(cols) {
+        MatrixBase<TScalar, -1, -1>::MatrixBase(int numRows, int numColumns) :
+            _data(std::size_t(numRows * numColumns)),
+            _numRows(numRows),
+            _numColumns(numColumns) {
 
-            assert(rows > 0);
-            assert(cols > 0);
+            assert(numRows > 0);
+            assert(numColumns > 0);
         }
 
         template <class TScalar>
@@ -274,15 +276,15 @@ namespace opensolid
         template <class TScalar>
         inline
         int
-        MatrixBase<TScalar, -1, -1>::rows() const {
-            return _rows;
+        MatrixBase<TScalar, -1, -1>::numRows() const {
+            return _numRows;
         }
 
         template <class TScalar>
         inline
         int
-        MatrixBase<TScalar, -1, -1>::cols() const {
-            return _cols;
+        MatrixBase<TScalar, -1, -1>::numColumns() const {
+            return _numColumns;
         }
 
         template <class TScalar>
@@ -295,8 +297,8 @@ namespace opensolid
         template <class TScalar>
         inline
         int
-        MatrixBase<TScalar, -1, -1>::colStride() const {
-            return _rows;
+        MatrixBase<TScalar, -1, -1>::columnStride() const {
+            return _numRows;
         }
     }
 }

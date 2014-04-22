@@ -58,15 +58,15 @@ namespace opensolid
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
 
-        template <int iRows>
-        struct MatrixDeterminantFunction<iRows, -1> :
-            public MatrixDeterminantFunction<iRows, iRows>
+        template <int iNumRows>
+        struct MatrixDeterminantFunction<iNumRows, -1> :
+            public MatrixDeterminantFunction<iNumRows, iNumRows>
         {
         };
 
-        template <int iCols>
-        struct MatrixDeterminantFunction<-1, iCols> :
-            public MatrixDeterminantFunction<iCols, iCols>
+        template <int iNumColumns>
+        struct MatrixDeterminantFunction<-1, iNumColumns> :
+            public MatrixDeterminantFunction<iNumColumns, iNumColumns>
         {
         };
 

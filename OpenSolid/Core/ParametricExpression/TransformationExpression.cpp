@@ -30,7 +30,7 @@ namespace opensolid
 {
     int
     TransformationExpression::numDimensionsImpl() const {
-        return int(matrix().rows());
+        return int(matrix().numRows());
     }
     
     void
@@ -111,6 +111,6 @@ namespace opensolid
     ) : UnaryOperation(operand),
         _matrix(matrix) {
 
-        assert(matrix.cols() == operand->numDimensions());
+        assert(matrix.numColumns() == operand->numDimensions());
     }
 }

@@ -512,19 +512,19 @@ namespace opensolid
         if (matrix.size() == 1) {
             return matrix.value() * argument;
         }
-        if (matrix.cols() != argument->numDimensions()) {
+        if (matrix.numColumns() != argument->numDimensions()) {
             throw Error(new PlaceholderError());
         }
         if (matrix.isZero()) {
             return new ConstantExpression(
-                ColMatrixXx1::Zero(matrix.rows()),
+                ColMatrixXx1::Zero(matrix.numRows()),
                 argument->numParameters()
             );
         }
-        if (matrix.rows() == matrix.cols() && matrix.isIdentity()) {
+        if (matrix.numRows() == matrix.numColumns() && matrix.isIdentity()) {
             return argument;
         }
-        if (matrix.rows() == matrix.cols() && (-matrix).isIdentity()) {
+        if (matrix.numRows() == matrix.numColumns() && (-matrix).isIdentity()) {
             return -argument;
         }
         return argument->transformationImpl(matrix);

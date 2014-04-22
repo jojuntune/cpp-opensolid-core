@@ -41,7 +41,7 @@ namespace opensolid
     ) const {
         ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
         ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView(0, columnIndex) = firstValues.col(columnIndex).binaryFold(
                 secondValues.col(columnIndex),
                 0.0,
@@ -62,7 +62,7 @@ namespace opensolid
             evaluator.evaluate(firstOperand(), parameterView);
         ConstIntervalMatrixViewXxX secondValues =
             evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             resultView(0, columnIndex) = firstValues.col(columnIndex).binaryFold(
                 secondValues.col(columnIndex),
                 Interval(0.0),

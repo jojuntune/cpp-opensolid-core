@@ -222,8 +222,8 @@ TEST_CASE("Static/dynamic matrix conversion") {
         a(1, 2) = 6;
 
         MatrixXxX b = a;
-        REQUIRE(b.rows() == 2);
-        REQUIRE(b.cols() == 3);
+        REQUIRE(b.numRows() == 2);
+        REQUIRE(b.numColumns() == 3);
         REQUIRE(b(0, 0) == 1);
         REQUIRE(b(1, 0) == 2);
         REQUIRE(b(0, 1) == 3);
@@ -271,12 +271,12 @@ TEST_CASE("Dynamic matrix inversion") {
     matrix(2, 2) = 1;
 
     MatrixXxX inverse = matrix.inverse();
-    REQUIRE(inverse.rows() == 3);
-    REQUIRE(inverse.cols() == 3);
+    REQUIRE(inverse.numRows() == 3);
+    REQUIRE(inverse.numColumns() == 3);
 
     MatrixXxX identity = inverse * matrix;
-    REQUIRE(identity.rows() == 3);
-    REQUIRE(identity.cols() == 3);
+    REQUIRE(identity.numRows() == 3);
+    REQUIRE(identity.numColumns() == 3);
     REQUIRE(identity.isIdentity());
 }
 
@@ -336,8 +336,8 @@ TEST_CASE("Dynamic matrix product") {
     // 22 49
     // 28 64
     MatrixXxX result = firstMatrix * secondMatrix;
-    REQUIRE(result.rows() == 2);
-    REQUIRE(result.cols() == 2);
+    REQUIRE(result.numRows() == 2);
+    REQUIRE(result.numColumns() == 2);
     REQUIRE((result(0, 0) - 22) == Zero());
     REQUIRE((result(1, 0) - 28) == Zero());
     REQUIRE((result(0, 1) - 49) == Zero());

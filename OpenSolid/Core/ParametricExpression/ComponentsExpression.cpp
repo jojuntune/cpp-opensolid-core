@@ -43,7 +43,7 @@ namespace opensolid
             startIndex(),
             0,
             numComponents(),
-            parameterView.cols()
+            parameterView.numColumns()
         );
     }
     
@@ -57,7 +57,7 @@ namespace opensolid
             startIndex(),
             0,
             numComponents(),
-            parameterView.cols()
+            parameterView.numColumns()
         );
     }
 

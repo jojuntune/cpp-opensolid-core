@@ -30,7 +30,7 @@ namespace opensolid
 {   
     int
     TranslationExpression::numDimensionsImpl() const {
-        return int(columnMatrix().rows());
+        return int(columnMatrix().numRows());
     }
     
     void
@@ -40,7 +40,7 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
             resultView.col(colIndex) += columnMatrix();
         }
     }
@@ -52,7 +52,7 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
             resultView.col(colIndex) += columnMatrix();
         }
     }

@@ -42,7 +42,7 @@ namespace opensolid
     ) const {
         ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
         ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             Vector3d firstVector(firstValues.col(columnIndex));
             Vector3d secondVector(secondValues.col(columnIndex));
             resultView.col(columnIndex) = firstVector.cross(secondVector).components();
@@ -59,7 +59,7 @@ namespace opensolid
             evaluator.evaluate(firstOperand(), parameterView);
         ConstIntervalMatrixViewXxX secondValues =
             evaluator.evaluate(secondOperand(), parameterView);
-        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             IntervalVector3d firstVector(firstValues.col(columnIndex));
             IntervalVector3d secondVector(secondValues.col(columnIndex));
             resultView.col(columnIndex) = firstVector.cross(secondVector).components();
@@ -80,7 +80,7 @@ namespace opensolid
         ConstMatrixViewXxX secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
-        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             Vector3d firstPartial(firstJacobian.col(columnIndex));
             Vector3d secondPartial(secondJacobian.col(columnIndex));
             resultView.col(columnIndex) =
@@ -103,7 +103,7 @@ namespace opensolid
         ConstIntervalMatrixViewXxX secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
-        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+        for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
             IntervalVector3d firstPartial(firstJacobian.col(columnIndex));
             IntervalVector3d secondPartial(secondJacobian.col(columnIndex));
             resultView.col(columnIndex) =

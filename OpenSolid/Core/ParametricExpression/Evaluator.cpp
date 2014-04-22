@@ -114,7 +114,7 @@ namespace opensolid
             return ConstViewType(
                 dataPointer<TScalar>(expressionImplementation->cast<ConstantExpression>()),
                 expressionImplementation->numDimensions(),
-                parameterView.cols(),
+                parameterView.numColumns(),
                 0
             );
         } else {
@@ -125,7 +125,7 @@ namespace opensolid
                 // Cached results not found - insert new empty entry into cache
                 MatrixType newMatrix(
                     expressionImplementation->numDimensions(),
-                    parameterView.cols()
+                    parameterView.numColumns()
                 );
                 iterator = cache.insert(
                     std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
@@ -135,9 +135,9 @@ namespace opensolid
                 // Construct map pointing to newly allocated results matrix
                 ViewType resultView(
                     resultMatrix.data(),
-                    resultMatrix.rows(),
-                    resultMatrix.cols(),
-                    resultMatrix.colStride()
+                    resultMatrix.numRows(),
+                    resultMatrix.numColumns(),
+                    resultMatrix.columnStride()
                 );
 
                 // Evaluate expression into results matrix using map
@@ -150,9 +150,9 @@ namespace opensolid
             // Return map pointing to cached matrix
             return ConstViewType(
                 resultMatrix.data(),
-                resultMatrix.rows(),
-                resultMatrix.cols(),
-                resultMatrix.colStride()
+                resultMatrix.numRows(),
+                resultMatrix.numColumns(),
+                resultMatrix.columnStride()
             );
         }
     }
@@ -190,9 +190,9 @@ namespace opensolid
             // Construct map pointing to newly allocated results matrix
             ViewType resultView(
                 resultMatrix.data(),
-                resultMatrix.rows(),
-                resultMatrix.cols(),
-                resultMatrix.colStride()
+                resultMatrix.numRows(),
+                resultMatrix.numColumns(),
+                resultMatrix.columnStride()
             );
 
             // Evaluate expression into results matrix using map
@@ -205,9 +205,9 @@ namespace opensolid
         // Return map pointing to cached matrix
         return ConstViewType(
             resultMatrix.data(),
-            resultMatrix.rows(),
-            resultMatrix.cols(),
-            resultMatrix.colStride()
+            resultMatrix.numRows(),
+            resultMatrix.numColumns(),
+            resultMatrix.columnStride()
         );
     }
 

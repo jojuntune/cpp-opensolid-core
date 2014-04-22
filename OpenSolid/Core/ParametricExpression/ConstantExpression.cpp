@@ -48,7 +48,7 @@ namespace opensolid
         resultView = ConstMatrixViewXxX(
             colMatrix().data(),
             numDimensions(),
-            resultView.cols(),
+            resultView.numColumns(),
             0
         );
     }
@@ -62,7 +62,7 @@ namespace opensolid
         resultView = ConstIntervalMatrixViewXxX(
             intervalColMatrix().data(),
             numDimensions(),
-            resultView.cols(),
+            resultView.numColumns(),
             0
         );
     }

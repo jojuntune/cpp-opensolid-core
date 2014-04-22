@@ -33,150 +33,155 @@
 
 namespace opensolid
 {
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
-    MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(TScalar* sourcePtr) :
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(TScalar* sourcePtr) :
         _data(sourcePtr),
-        _rows(iRows),
-        _cols(iCols),
-        _size(iRows * iCols),
-        _colStride(iColStride) {
+        _numRows(iNumRows),
+        _numColumns(iNumColumns),
+        _size(iNumRows * iNumColumns),
+        _columnStride(iColumnStride) {
 
-        static_assert(iRows > 0, "Number of rows must be provided");
-        static_assert(iCols > 0, "Number of columns must be provided");
-        static_assert(iColStride >= 0, "Column stride must be provided");
+        static_assert(iNumRows > 0, "Number of rows must be provided");
+        static_assert(iNumColumns > 0, "Number of columns must be provided");
+        static_assert(iColumnStride >= 0, "Column stride must be provided");
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
-    MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(TScalar* sourcePtr, int size) :
-        _data(sourcePtr),
-        _rows(iRows == 1 ? 1 : size),
-        _cols(iCols == 1 ? 1 : size),
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
+        TScalar* sourcePtr,
+        int size
+    ) : _data(sourcePtr),
+        _numRows(iNumRows == 1 ? 1 : size),
+        _numColumns(iNumColumns == 1 ? 1 : size),
         _size(size),
-        _colStride(iColStride) {
+        _columnStride(iColumnStride) {
 
         static_assert(
-            iRows == 1 || iCols == 1,
+            iNumRows == 1 || iNumColumns == 1,
             "Only row or column matrix views can be initialized with a single size"
         );
-        static_assert(iColStride >= 0, "Column stride must be provided");
+        static_assert(iColumnStride >= 0, "Column stride must be provided");
 
         assert(
-            (iRows == 1 && (size == iCols || iCols == -1)) ||
-            (iCols == 1 && (size == iRows || iRows == -1))
+            (iNumRows == 1 && (size == iNumColumns || iNumColumns == -1)) ||
+            (iNumColumns == 1 && (size == iNumRows || iNumRows == -1))
         );
 
         assert(size > 0);
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
-    MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
         TScalar* sourcePtr,
-        int rows,
-        int cols
+        int numRows,
+        int numColumns
     ) : _data(sourcePtr),
-        _rows(rows),
-        _cols(cols),
-        _size(rows * cols),
-        _colStride(iColStride) {
+        _numRows(numRows),
+        _numColumns(numColumns),
+        _size(numRows * numColumns),
+        _columnStride(iColumnStride) {
 
-        static_assert(iColStride >= 0, "Column stride must be provided");
+        static_assert(iColumnStride >= 0, "Column stride must be provided");
 
-        assert(rows == iRows || iRows == -1);
-        assert(cols == iCols || iCols == -1);
+        assert(numRows == iNumRows || iNumRows == -1);
+        assert(numColumns == iNumColumns || iNumColumns == -1);
 
-        assert(rows > 0);
-        assert(cols > 0);
+        assert(numRows > 0);
+        assert(numColumns > 0);
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
-    MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
         TScalar* sourcePtr,
-        int rows,
-        int cols,
-        int colStride
+        int numRows,
+        int numColumns,
+        int columnStride
     ) : _data(sourcePtr),
-        _rows(rows),
-        _cols(cols),
-        _size(rows * cols),
-        _colStride(colStride) {
+        _numRows(numRows),
+        _numColumns(numColumns),
+        _size(numRows * numColumns),
+        _columnStride(columnStride) {
 
-        assert(rows == iRows || iRows == -1);
-        assert(cols == iCols || iCols == -1);
-        assert(colStride == iColStride || iColStride == -1);
+        assert(numRows == iNumRows || iNumRows == -1);
+        assert(numColumns == iNumColumns || iNumColumns == -1);
+        assert(columnStride == iColumnStride || iColumnStride == -1);
 
-        assert(rows > 0);
-        assert(cols > 0);
-        assert(colStride >= 0);
+        assert(numRows > 0);
+        assert(numColumns > 0);
+        assert(columnStride >= 0);
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     template <int iOtherRows, int iOtherCols, int iOtherColStride>
     inline
-    MatrixView<TScalar, iRows, iCols, iColStride>::MatrixView(
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
         const MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other
     ) : _data(other.data()),
-        _rows(other.rows()),
-        _cols(other.cols()),
+        _numRows(other.numRows()),
+        _numColumns(other.numColumns()),
         _size(other.size()),
-        _colStride(other.colStride()) {
+        _columnStride(other.columnStride()) {
 
-        detail::CheckCompatibleSizes<iRows, iOtherRows> staticRowCheck;
-        detail::CheckCompatibleSizes<iCols, iOtherCols> staticColCheck;
-        detail::CheckCompatibleSizes<iColStride, iOtherColStride> staticColStrideCheck;
+        detail::CheckCompatibleSizes<iNumRows, iOtherRows> staticRowCheck;
+        detail::CheckCompatibleSizes<iNumColumns, iOtherCols> staticColCheck;
+        detail::CheckCompatibleSizes<iColumnStride, iOtherColStride> staticColStrideCheck;
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride> template <class TOtherDerived>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    template <class TOtherDerived>
     inline
     void
-    MatrixView<TScalar, iRows, iCols, iColStride>::operator=(
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::operator=(
         const detail::MatrixInterface<TOtherDerived>& other
     ) {
-        detail::MatrixInterface<MatrixView<TScalar, iRows, iCols, iColStride>>::operator=(other);
+        detail::MatrixInterface<
+            MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>
+        >::operator=(other);
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     const TScalar*
-    MatrixView<TScalar, iRows, iCols, iColStride>::data() const {
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::data() const {
         return _data;
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     TScalar*
-    MatrixView<TScalar, iRows, iCols, iColStride>::data() {
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::data() {
         return _data;
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     int
-    MatrixView<TScalar, iRows, iCols, iColStride>::rows() const {
-        return _rows;
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::numRows() const {
+        return _numRows;
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     int
-    MatrixView<TScalar, iRows, iCols, iColStride>::cols() const {
-        return _cols;
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::numColumns() const {
+        return _numColumns;
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     int
-    MatrixView<TScalar, iRows, iCols, iColStride>::size() const {
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::size() const {
         return _size;
     }
 
-    template <class TScalar, int iRows, int iCols, int iColStride>
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     int
-    MatrixView<TScalar, iRows, iCols, iColStride>::colStride() const {
-        return _colStride;
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::columnStride() const {
+        return _columnStride;
     }
 }

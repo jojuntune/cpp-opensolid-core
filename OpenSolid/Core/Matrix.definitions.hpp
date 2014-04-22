@@ -35,22 +35,22 @@
 
 namespace opensolid
 {
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     class Matrix :
-        public detail::MatrixBase<TScalar, iRows, iCols>
+        public detail::MatrixBase<TScalar, iNumRows, iNumColumns>
     {
     public:
         Matrix();
 
         Matrix(int size);
 
-        Matrix(int rows, int cols);
+        Matrix(int numRows, int numColumns);
 
         Matrix(const TScalar* sourcePtr);
 
         Matrix(const TScalar* sourcePtr, int size);
 
-        Matrix(const TScalar* sourcePtr, int rows, int cols);
+        Matrix(const TScalar* sourcePtr, int numRows, int numColumns);
 
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
@@ -59,50 +59,50 @@ namespace opensolid
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Constant(TScalar value);
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Constant(int size, TScalar value);
 
-        static const Matrix<TScalar, iRows, iCols>
-        Constant(int rows, int cols, TScalar value);
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        Constant(int numRows, int numColumns, TScalar value);
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Zero();
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Zero(int size);
 
-        static const Matrix<TScalar, iRows, iCols>
-        Zero(int rows, int cols);
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        Zero(int numRows, int numColumns);
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Ones();
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Ones(int size);
 
-        static const Matrix<TScalar, iRows, iCols>
-        Ones(int rows, int cols);
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        Ones(int numRows, int numColumns);
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Identity();
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Identity(int size);
 
-        static const Matrix<TScalar, iRows, iCols>
-        Identity(int rows, int cols);
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        Identity(int numRows, int numColumns);
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Random();
 
-        static const Matrix<TScalar, iRows, iCols>
+        static const Matrix<TScalar, iNumRows, iNumColumns>
         Random(int size);
 
-        static const Matrix<TScalar, iRows, iCols>
-        Random(int rows, int cols);
+        static const Matrix<TScalar, iNumRows, iNumColumns>
+        Random(int numRows, int numColumns);
     };
 
     typedef Matrix<double, 1, 1> Matrix1x1;
@@ -145,17 +145,17 @@ namespace opensolid
     typedef Matrix<Interval, 3, -1> IntervalMatrix3xX;
     typedef Matrix<Interval, -1, -1> IntervalMatrixXxX;
 
-    template <class TScalar, int iRows, int iCols>
-    struct MatrixTraits<Matrix<TScalar, iRows, iCols>>
+    template <class TScalar, int iNumRows, int iNumColumns>
+    struct MatrixTraits<Matrix<TScalar, iNumRows, iNumColumns>>
     {
         typedef TScalar ScalarType;
         typedef TScalar PlainScalarType;
-        static const int Rows = iRows;
-        static const int Cols = iCols;
-        static const int ColStride = iRows;
+        static const int NumRows = iNumRows;
+        static const int NumColumns = iNumColumns;
+        static const int ColumnStride = iNumRows;
     };
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     std::ostream&
-    operator<<(std::ostream& stream, const Matrix<TScalar, iRows, iCols>& matrix);
+    operator<<(std::ostream& stream, const Matrix<TScalar, iNumRows, iNumColumns>& matrix);
 }

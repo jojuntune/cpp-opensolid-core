@@ -30,7 +30,7 @@ namespace opensolid
 {
     namespace detail
     {
-        template <class TScalar, int iRows, int iCols>
+        template <class TScalar, int iNumRows, int iNumColumns>
         class MatrixBase;
     }
 }

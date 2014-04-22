@@ -38,7 +38,7 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<1, 1>::operator()(const MatrixInterface<TDerived>& matrix) const {
-            if (matrix.rows() != 1 || matrix.cols() != 1) {
+            if (matrix.numRows() != 1 || matrix.numColumns() != 1) {
                 assert(false);
                 return 0.0;
             }
@@ -50,7 +50,7 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<2, 2>::operator()(const MatrixInterface<TDerived>& matrix) const {
-            if (matrix.rows() != 2 || matrix.cols() != 2) {
+            if (matrix.numRows() != 2 || matrix.numColumns() != 2) {
                 assert(false);
                 return 0.0;
             }
@@ -63,7 +63,7 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixDeterminantFunction<3, 3>::operator()(const MatrixInterface<TDerived>& matrix) const {
-            if (matrix.rows() != 3 || matrix.cols() != 3) {
+            if (matrix.numRows() != 3 || matrix.numColumns() != 3) {
                 assert(false);
                 return 0.0;
             }
@@ -88,11 +88,11 @@ namespace opensolid
         MatrixDeterminantFunction<-1, -1>::operator()(
             const MatrixInterface<TDerived>& matrix
         ) const {
-            if (matrix.rows() == 1 && matrix.cols() == 1) {
+            if (matrix.numRows() == 1 && matrix.numColumns() == 1) {
                 return MatrixDeterminantFunction<1, 1>()(matrix);
-            } else if (matrix.rows() == 2 && matrix.cols() == 2) {
+            } else if (matrix.numRows() == 2 && matrix.numColumns() == 2) {
                 return MatrixDeterminantFunction<2, 2>()(matrix);
-            } else if (matrix.rows() == 3 && matrix.cols() == 3) {
+            } else if (matrix.numRows() == 3 && matrix.numColumns() == 3) {
                 return MatrixDeterminantFunction<3, 3>()(matrix);
             } else {
                 assert(false);

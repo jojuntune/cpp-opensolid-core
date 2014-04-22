@@ -42,7 +42,7 @@ namespace opensolid
     ) const {
         resultView = evaluator.evaluate(firstOperand(), parameterView);
         ConstMatrixViewXxX divisorValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
             double divisorValue = divisorValues(0, colIndex);
             if (divisorValue == Zero()) {
                 throw Error(new PlaceholderError());
@@ -60,7 +60,7 @@ namespace opensolid
         resultView = evaluator.evaluate(firstOperand(), parameterView);
         ConstIntervalMatrixViewXxX divisorValues =
             evaluator.evaluate(secondOperand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
             Interval divisorValue = divisorValues(0, colIndex);
             if (divisorValue == Zero()) {
                 throw Error(new PlaceholderError());

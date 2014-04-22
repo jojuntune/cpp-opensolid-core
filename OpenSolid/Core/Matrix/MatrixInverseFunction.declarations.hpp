@@ -30,7 +30,7 @@ namespace opensolid
 {
     namespace detail
     {
-        template <int iRows, int iCols>
+        template <int iNumRows, int iNumColumns>
         struct MatrixInverseFunction;
     }
 }

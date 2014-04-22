@@ -34,197 +34,203 @@
 
 namespace opensolid
 {
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix() {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix() {
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix(int size) :
-        detail::MatrixBase<TScalar, iRows, iCols>(size) {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(int size) :
+        detail::MatrixBase<TScalar, iNumRows, iNumColumns>(size) {
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix(int rows, int cols) :
-        detail::MatrixBase<TScalar, iRows, iCols>(rows, cols) {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(int numRows, int numColumns) :
+        detail::MatrixBase<TScalar, iNumRows, iNumColumns>(numRows, numColumns) {
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr) {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const TScalar* sourcePtr) {
         for (int index = 0; index < this->size(); ++index) {
             this->data()[index] = sourcePtr[index];
         }
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr, int size) :
-        detail::MatrixBase<TScalar, iRows, iCols>(size) {
-
-        for (int index = 0; index < this->size(); ++index) {
-            this->data()[index] = sourcePtr[index];
-        }
-    }
-
-    template <class TScalar, int iRows, int iCols>
-    inline
-    Matrix<TScalar, iRows, iCols>::Matrix(const TScalar* sourcePtr, int rows, int cols) :
-        detail::MatrixBase<TScalar, iRows, iCols>(rows, cols) {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const TScalar* sourcePtr, int size) :
+        detail::MatrixBase<TScalar, iNumRows, iNumColumns>(size) {
 
         for (int index = 0; index < this->size(); ++index) {
             this->data()[index] = sourcePtr[index];
         }
     }
 
-    template <class TScalar, int iRows, int iCols> template <class TOtherDerived>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iRows, iCols>::Matrix(const detail::MatrixInterface<TOtherDerived>& other) :
-        detail::MatrixBase<TScalar, iRows, iCols>(other.rows(), other.cols()) {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
+        const TScalar* sourcePtr,
+        int numRows, int
+        numColumns
+    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(numRows, numColumns) {
 
-        detail::MatrixInterface<Matrix<TScalar, iRows, iCols>>::operator=(other);
+        for (int index = 0; index < this->size(); ++index) {
+            this->data()[index] = sourcePtr[index];
+        }
     }
 
-    template <class TScalar, int iRows, int iCols> template <class TOtherDerived>
+    template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
+        const detail::MatrixInterface<TOtherDerived>& other
+    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(other.numRows(), other.numColumns()) {
+
+        detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
     inline
     void
-    Matrix<TScalar, iRows, iCols>::operator=(const detail::MatrixInterface<TOtherDerived>& other) {
-        detail::MatrixInterface<Matrix<TScalar, iRows, iCols>>::operator=(other);
+    Matrix<TScalar, iNumRows, iNumColumns>::operator=(
+        const detail::MatrixInterface<TOtherDerived>& other
+    ) {
+        detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Constant(TScalar value) {
-        Matrix<TScalar, iRows, iCols> result;
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Constant(TScalar value) {
+        Matrix<TScalar, iNumRows, iNumColumns> result;
         result.setConstant(value);
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Constant(int size, TScalar value) {
-        Matrix<TScalar, iRows, iCols> result(size);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Constant(int size, TScalar value) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(size);
         result.setConstant(value);
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Constant(int rows, int cols, TScalar value) {
-        Matrix<TScalar, iRows, iCols> result(rows, cols);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Constant(int numRows, int numColumns, TScalar value) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
         result.setConstant(value);
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Zero() {
-        Matrix<TScalar, iRows, iCols> result;
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Zero() {
+        Matrix<TScalar, iNumRows, iNumColumns> result;
         result.setZero();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Zero(int size) {
-        Matrix<TScalar, iRows, iCols> result(size);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Zero(int size) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(size);
         result.setZero();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Zero(int rows, int cols) {
-        Matrix<TScalar, iRows, iCols> result(rows, cols);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Zero(int numRows, int numColumns) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
         result.setZero();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Ones() {
-        Matrix<TScalar, iRows, iCols> result;
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Ones() {
+        Matrix<TScalar, iNumRows, iNumColumns> result;
         result.setOnes();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Ones(int size) {
-        Matrix<TScalar, iRows, iCols> result(size);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Ones(int size) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(size);
         result.setOnes();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Ones(int rows, int cols) {
-        Matrix<TScalar, iRows, iCols> result(rows, cols);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Ones(int numRows, int numColumns) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
         result.setOnes();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Identity() {
-        Matrix<TScalar, iRows, iCols> result;
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Identity() {
+        Matrix<TScalar, iNumRows, iNumColumns> result;
         result.setIdentity();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Identity(int size) {
-        Matrix<TScalar, iRows, iCols> result(size);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Identity(int size) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(size);
         result.setIdentity();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Identity(int rows, int cols) {
-        Matrix<TScalar, iRows, iCols> result(rows, cols);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Identity(int numRows, int numColumns) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
         result.setIdentity();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Random() {
-        Matrix<TScalar, iRows, iCols> result;
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Random() {
+        Matrix<TScalar, iNumRows, iNumColumns> result;
         result.setRandom();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Random(int size) {
-        Matrix<TScalar, iRows, iCols> result(size);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Random(int size) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(size);
         result.setRandom();
         return result;
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    const Matrix<TScalar, iRows, iCols>
-    Matrix<TScalar, iRows, iCols>::Random(int rows, int cols) {
-        Matrix<TScalar, iRows, iCols> result(rows, cols);
+    const Matrix<TScalar, iNumRows, iNumColumns>
+    Matrix<TScalar, iNumRows, iNumColumns>::Random(int numRows, int numColumns) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
         result.setRandom();
         return result;
     }
@@ -246,10 +252,10 @@ namespace opensolid
 
         inline
         void
-        printMatrixRowColPrefix(int rows, int cols, std::ostream& stream) {
-            if (rows == 1 && cols != 1) {
+        printMatrixRowColPrefix(int numRows, int numColumns, std::ostream& stream) {
+            if (numRows == 1 && numColumns != 1) {
                 stream << "Row";
-            } else if (cols == 1 && rows != 1) {
+            } else if (numColumns == 1 && numRows != 1) {
                 stream << "Col";
             }
         }
@@ -265,21 +271,21 @@ namespace opensolid
         }
     }
 
-    template <class TScalar, int iRows, int iCols>
+    template <class TScalar, int iNumRows, int iNumColumns>
     std::ostream&
-    operator<<(std::ostream& stream, const Matrix<TScalar, iRows, iCols>& matrix) {
-        int rows = matrix.rows();
-        int cols = matrix.cols();
+    operator<<(std::ostream& stream, const Matrix<TScalar, iNumRows, iNumColumns>& matrix) {
+        int numRows = matrix.numRows();
+        int numColumns = matrix.numColumns();
         int size = matrix.size();
         
         detail::printMatrixTypePrefix<TScalar>(stream);
-        detail::printMatrixRowColPrefix(rows, cols, stream);
+        detail::printMatrixRowColPrefix(numRows, numColumns, stream);
         stream << "Matrix";
-        detail::printMatrixSize(rows, stream);
+        detail::printMatrixSize(numRows, stream);
         stream << "x";
-        detail::printMatrixSize(cols, stream);
+        detail::printMatrixSize(numColumns, stream);
         stream << "([";
-        if (rows == 1 || cols == 1) {
+        if (numRows == 1 || numColumns == 1) {
             for (int index = 0; index < size; ++index) {
                 stream << matrix(index);
                 if (index < size - 1) {
@@ -287,16 +293,16 @@ namespace opensolid
                 }
             }
         } else {
-            for (int colIndex = 0; colIndex < cols; ++colIndex) {
+            for (int colIndex = 0; colIndex < numColumns; ++colIndex) {
                 stream << "[";
-                for (int rowIndex = 0; rowIndex < rows; ++rowIndex) {
+                for (int rowIndex = 0; rowIndex < numRows; ++rowIndex) {
                     stream << matrix(rowIndex, colIndex);
-                    if (rowIndex < rows - 1) {
+                    if (rowIndex < numRows - 1) {
                         stream << ", ";
                     }
                 }
                 stream << "]";
-                if (colIndex < cols - 1) {
+                if (colIndex < numColumns - 1) {
                     stream << ", ";
                 }
             }

@@ -46,7 +46,7 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
             auto col = resultView.col(colIndex);
             double norm = sqrt(
                 col.fold(
@@ -70,7 +70,7 @@ namespace opensolid
         Evaluator& evaluator
     ) const {
         resultView = evaluator.evaluate(operand(), parameterView);
-        for (int colIndex = 0; colIndex < resultView.cols(); ++colIndex) {
+        for (int colIndex = 0; colIndex < resultView.numColumns(); ++colIndex) {
             auto col = resultView.col(colIndex);
             Interval norm = sqrt(
                 col.fold(
