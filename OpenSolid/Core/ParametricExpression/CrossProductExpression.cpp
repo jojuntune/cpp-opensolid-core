@@ -42,10 +42,10 @@ namespace opensolid
     ) const {
         ConstMatrixViewXxX firstValues = evaluator.evaluate(firstOperand(), parameterView);
         ConstMatrixViewXxX secondValues = evaluator.evaluate(secondOperand(), parameterView);
-        for (int i = 0; i < resultView.cols(); ++i) {
-            Vector3d firstVector(firstValues.col(i));
-            Vector3d secondVector(secondValues.col(i));
-            resultView.col(i) = firstVector.cross(secondVector).components();
+        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+            Vector3d firstVector(firstValues.col(columnIndex));
+            Vector3d secondVector(secondValues.col(columnIndex));
+            resultView.col(columnIndex) = firstVector.cross(secondVector).components();
         }
     }
     
@@ -59,10 +59,10 @@ namespace opensolid
             evaluator.evaluate(firstOperand(), parameterView);
         ConstIntervalMatrixViewXxX secondValues =
             evaluator.evaluate(secondOperand(), parameterView);
-        for (int i = 0; i < resultView.cols(); ++i) {
-            IntervalVector3d firstVector(firstValues.col(i));
-            IntervalVector3d secondVector(secondValues.col(i));
-            resultView.col(i) = firstVector.cross(secondVector).components();
+        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+            IntervalVector3d firstVector(firstValues.col(columnIndex));
+            IntervalVector3d secondVector(secondValues.col(columnIndex));
+            resultView.col(columnIndex) = firstVector.cross(secondVector).components();
         }
     }
 
@@ -80,10 +80,10 @@ namespace opensolid
         ConstMatrixViewXxX secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
-        for (int i = 0; i < resultView.cols(); ++i) {
-            Vector3d firstPartial(firstJacobian.col(i));
-            Vector3d secondPartial(secondJacobian.col(i));
-            resultView.col(i) =
+        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+            Vector3d firstPartial(firstJacobian.col(columnIndex));
+            Vector3d secondPartial(secondJacobian.col(columnIndex));
+            resultView.col(columnIndex) =
                 (firstPartial.cross(secondVector) + firstVector.cross(secondPartial)).components();
         }
     }
@@ -103,10 +103,10 @@ namespace opensolid
         ConstIntervalMatrixViewXxX secondJacobian =
             evaluator.evaluateJacobian(secondOperand(), parameterView);
 
-        for (int i = 0; i < resultView.cols(); ++i) {
-            IntervalVector3d firstPartial(firstJacobian.col(i));
-            IntervalVector3d secondPartial(secondJacobian.col(i));
-            resultView.col(i) =
+        for (int columnIndex = 0; columnIndex < resultView.cols(); ++columnIndex) {
+            IntervalVector3d firstPartial(firstJacobian.col(columnIndex));
+            IntervalVector3d secondPartial(secondJacobian.col(columnIndex));
+            resultView.col(columnIndex) =
                 (firstPartial.cross(secondVector) + firstVector.cross(secondPartial)).components();
         }
     }

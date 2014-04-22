@@ -101,9 +101,10 @@ namespace opensolid
             outerExpression()->derivative(0)->composed(innerExpression()) *
             innerDerivative->component(0);
 
-        for (int i = 1; i < outerExpression()->numParameters(); ++i) {
-            result = result + outerExpression()->derivative(i)->composed(innerExpression()) *
-                innerDerivative->component(i);
+        for (int innerIndex = 1; innerIndex < outerExpression()->numParameters(); ++innerIndex) {
+            result = result +
+                outerExpression()->derivative(innerIndex)->composed(innerExpression()) *
+                innerDerivative->component(innerIndex);
         }
 
         return result;
