@@ -385,3 +385,35 @@ TEST_CASE("Block-to-block assignment") {
         }
     }
 }
+
+TEST_CASE("Stream output") {
+    auto checkTypeName = [] (const std::string& string, const std::string& typeName) {
+        REQUIRE(string.substr(0, typeName.size()) == typeName);
+    };
+    std::stringstream stream;
+    SECTION("Matrix1d") {
+        Matrix1d matrix;
+        stream << matrix;
+        checkTypeName(stream.str(), "Matrix1d");
+    }
+    SECTION("ColumnMatrix3d") {
+        ColumnMatrix3d matrix;
+        stream << matrix;
+        checkTypeName(stream.str(), "ColumnMatrix3d");
+    }
+    SECTION("RowMatrixXd") {
+        RowMatrixXd matrix(3);
+        stream << matrix;
+        checkTypeName(stream.str(), "RowMatrixXd");
+    }
+    SECTION("IntervalMatrix3d") {
+        IntervalMatrix3d matrix;
+        stream << matrix;
+        checkTypeName(stream.str(), "IntervalMatrix3d");
+    }
+    SECTION("MatrixXd") {
+        MatrixXd matrix(3,3);
+        stream << matrix;
+        checkTypeName(stream.str(), "MatrixXd");
+    }
+}

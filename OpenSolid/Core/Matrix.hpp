@@ -249,42 +249,31 @@ namespace opensolid
         printMatrixTypePrefix<Interval>(std::ostream& stream) {
             stream << "Interval";
         }
-
-        inline
-        void
-        printMatrixRowColPrefix(int numRows, int numColumns, std::ostream& stream) {
-            if (numRows == 1 && numColumns != 1) {
-                stream << "Row";
-            } else if (numColumns == 1 && numRows != 1) {
-                stream << "Col";
-            }
-        }
-
-        inline
-        void
-        printMatrixSize(int size, std::ostream& stream) {
-            if (size == -1) {
-                stream << "X";
-            } else {
-                stream << size;
-            }
-        }
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
     std::ostream&
     operator<<(std::ostream& stream, const Matrix<TScalar, iNumRows, iNumColumns>& matrix) {
+        char numRowsCharacter = iNumRows == -1 ? 'X' : '0' + iNumRows;
+        char numColumnsCharacter = iNumColumns == -1 ? 'X' : '0' + iNumColumns;
+
+        // Print type name
+        detail::printMatrixTypePrefix<TScalar>(stream);
+        if (iNumRows == iNumColumns) {
+            stream << "Matrix" << numRowsCharacter << "d";
+        } else if (iNumRows == 1) {
+            stream << "RowMatrix" << numColumnsCharacter << "d";
+        } else if (iNumColumns == 1) {
+            stream << "ColumnMatrix" << numRowsCharacter << "d";
+        } else {
+            stream << "Matrix" << numRowsCharacter << "x" << numColumnsCharacter;
+        }
+
+        // Print component arguments
+        stream << "([";
         int numRows = matrix.numRows();
         int numColumns = matrix.numColumns();
         int size = matrix.size();
-        
-        detail::printMatrixTypePrefix<TScalar>(stream);
-        detail::printMatrixRowColPrefix(numRows, numColumns, stream);
-        stream << "Matrix";
-        detail::printMatrixSize(numRows, stream);
-        stream << "x";
-        detail::printMatrixSize(numColumns, stream);
-        stream << "([";
         if (numRows == 1 || numColumns == 1) {
             for (int index = 0; index < size; ++index) {
                 stream << matrix(index);
