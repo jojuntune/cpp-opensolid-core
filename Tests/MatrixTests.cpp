@@ -286,8 +286,8 @@ TEST_CASE("Dynamic matrix map") {
         matrix(index) = index;
     }
     RowMatrix3d mappedRow = matrix.row(1).map(
-        [] (double coeff) {
-            return 2 * coeff;
+        [] (double component) {
+            return 2 * component;
         }
     );
     REQUIRE((mappedRow(0) - 2) == Zero());

@@ -99,23 +99,23 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixInterface<TDerived>::coeff(int index) const {
+        MatrixInterface<TDerived>::component(int index) const {
             assert(index >= 0 && index < size());
-            return coeff(index % numRows(), index / numRows());
+            return component(index % numRows(), index / numRows());
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::ScalarType&
-        MatrixInterface<TDerived>::coeff(int index) {
+        MatrixInterface<TDerived>::component(int index) {
             assert(index >= 0 && index < size());
-            return coeff(index % numRows(), index / numRows());
+            return component(index % numRows(), index / numRows());
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixInterface<TDerived>::coeff(int rowIndex, int columnIndex) const {
+        MatrixInterface<TDerived>::component(int rowIndex, int columnIndex) const {
             assert(rowIndex >= 0 && rowIndex < numRows());
             assert(columnIndex >= 0 && columnIndex < numColumns());
             return *(data() + rowIndex + columnIndex * columnStride());
@@ -124,7 +124,7 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::ScalarType&
-        MatrixInterface<TDerived>::coeff(int rowIndex, int columnIndex) {
+        MatrixInterface<TDerived>::component(int rowIndex, int columnIndex) {
             assert(rowIndex >= 0 && rowIndex < numRows());
             assert(columnIndex >= 0 && columnIndex < numColumns());
             return *(data() + rowIndex + columnIndex * columnStride());
@@ -134,28 +134,28 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::operator()(int index) const {
-            return coeff(index);
+            return component(index);
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::ScalarType&
         MatrixInterface<TDerived>::operator()(int index) {
-            return coeff(index);
+            return component(index);
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::operator()(int rowIndex, int columnIndex) const {
-            return coeff(rowIndex, columnIndex);
+            return component(rowIndex, columnIndex);
         }
 
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::ScalarType&
         MatrixInterface<TDerived>::operator()(int rowIndex, int columnIndex) {
-            return coeff(rowIndex, columnIndex);
+            return component(rowIndex, columnIndex);
         }
 
         template <class TDerived>
@@ -163,7 +163,7 @@ namespace opensolid
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::value() const {
             assert(numRows() == 1 && numColumns() == 1);
-            return coeff(0);
+            return component(0);
         }
 
         template <class TDerived>
@@ -171,7 +171,7 @@ namespace opensolid
         typename MatrixTraits<TDerived>::ScalarType&
         MatrixInterface<TDerived>::value() {
             assert(numRows() == 1 && numColumns() == 1);
-            return coeff(0);
+            return component(0);
         }
 
         template <class TDerived> template <class TOtherDerived>
@@ -182,7 +182,7 @@ namespace opensolid
 
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->coeff(rowIndex, columnIndex) = other.coeff(rowIndex, columnIndex);
+                    this->component(rowIndex, columnIndex) = other.component(rowIndex, columnIndex);
                 }
             }
         }
@@ -383,7 +383,8 @@ namespace opensolid
             Matrix<PlainScalarType, NumColumns, NumRows> result(numColumns(), numRows());
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.coeff(columnIndex, rowIndex) = this->coeff(rowIndex, columnIndex);
+                    result.component(columnIndex, rowIndex) =
+                        this->component(rowIndex, columnIndex);
                 }
             }
             return result;
@@ -434,8 +435,8 @@ namespace opensolid
 
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.coeff(rowIndex, columnIndex) = unaryFunction(
-                        this->coeff(rowIndex, columnIndex)
+                    result.component(rowIndex, columnIndex) = unaryFunction(
+                        this->component(rowIndex, columnIndex)
                     );
                 }
             }
@@ -472,9 +473,9 @@ namespace opensolid
 
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.coeff(rowIndex, columnIndex) = binaryFunction(
-                        this->coeff(rowIndex, columnIndex),
-                        other.coeff(rowIndex, columnIndex)
+                    result.component(rowIndex, columnIndex) = binaryFunction(
+                        this->component(rowIndex, columnIndex),
+                        other.component(rowIndex, columnIndex)
                     );
                 }
             }
@@ -486,7 +487,7 @@ namespace opensolid
         MatrixInterface<TDerived>::fold(TValue initialValue, TFunction function) const {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    initialValue = function(initialValue, coeff(rowIndex, columnIndex));
+                    initialValue = function(initialValue, component(rowIndex, columnIndex));
                 }
             }
             return initialValue;
@@ -506,8 +507,8 @@ namespace opensolid
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     initialValue = function(
                         initialValue,
-                        this->coeff(rowIndex, columnIndex),
-                        other.coeff(rowIndex, columnIndex)
+                        this->component(rowIndex, columnIndex),
+                        other.component(rowIndex, columnIndex)
                     );
                 }
             }
@@ -518,11 +519,11 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::reduce(TFunction function) const {
-            ScalarType result = coeff(0, 0);
+            ScalarType result = component(0, 0);
             int rowIndex = 1;
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (; rowIndex < numRows(); ++rowIndex) {
-                    result = function(result, coeff(rowIndex, columnIndex));
+                    result = function(result, component(rowIndex, columnIndex));
                 }
                 rowIndex = 0;
             }
@@ -535,7 +536,7 @@ namespace opensolid
         MatrixInterface<TDerived>::any(TUnaryPredicate unaryPredicate) const {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    if (unaryPredicate(coeff(rowIndex, columnIndex))) {
+                    if (unaryPredicate(component(rowIndex, columnIndex))) {
                         return true;
                     }
                 }
@@ -556,8 +557,8 @@ namespace opensolid
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     if (
                         binaryPredicate(
-                            this->coeff(rowIndex, columnIndex),
-                            other.coeff(rowIndex, columnIndex)
+                            this->component(rowIndex, columnIndex),
+                            other.component(rowIndex, columnIndex)
                         )
                     ) {
                         return true;
@@ -573,7 +574,7 @@ namespace opensolid
         MatrixInterface<TDerived>::all(TUnaryPredicate unaryPredicate) const {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    if (!unaryPredicate(coeff(rowIndex, columnIndex))) {
+                    if (!unaryPredicate(component(rowIndex, columnIndex))) {
                         return false;
                     }
                 }
@@ -594,8 +595,8 @@ namespace opensolid
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     if (
                         !binaryPredicate(
-                            this->coeff(rowIndex, columnIndex),
-                            other.coeff(rowIndex, columnIndex)
+                            this->component(rowIndex, columnIndex),
+                            other.component(rowIndex, columnIndex)
                         )
                     ) {
                         return false;
@@ -610,8 +611,8 @@ namespace opensolid
         bool
         MatrixInterface<TDerived>::isConstant(double value, double precision) const {
             return all(
-                [value, precision] (ScalarType coeff) -> bool {
-                    return coeff - value == opensolid::Zero(precision);
+                [value, precision] (ScalarType component) -> bool {
+                    return component - value == opensolid::Zero(precision);
                 }
             );
         }
@@ -621,8 +622,8 @@ namespace opensolid
         bool
         MatrixInterface<TDerived>::isZero(double precision) const {
             return all(
-                [precision] (ScalarType coeff) -> bool {
-                    return coeff == opensolid::Zero(precision);
+                [precision] (ScalarType component) -> bool {
+                    return component == opensolid::Zero(precision);
                 }
             );
         }
@@ -641,7 +642,7 @@ namespace opensolid
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     double expected = double(rowIndex == columnIndex);
-                    if (coeff(rowIndex, columnIndex) - expected != opensolid::Zero(precision)) {
+                    if (component(rowIndex, columnIndex) - expected != opensolid::Zero(precision)) {
                         return false;
                     }
                 }
@@ -651,14 +652,14 @@ namespace opensolid
 
         inline
         double
-        coeffLowerBound(double coeff) {
-            return coeff;
+        componentLowerBound(double component) {
+            return component;
         }
 
         inline
         double
-        coeffLowerBound(Interval coeff) {
-            return coeff.lowerBound();
+        componentLowerBound(Interval component) {
+            return component.lowerBound();
         }
 
         template <class TDerived>
@@ -666,22 +667,22 @@ namespace opensolid
         const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseLowerBound() const {
             return map(
-                [] (ScalarType coeff) -> double {
-                    return coeffLowerBound(coeff);
+                [] (ScalarType component) -> double {
+                    return componentLowerBound(component);
                 }
             );
         }
 
         inline
         double
-        coeffUpperBound(double coeff) {
-            return coeff;
+        componentUpperBound(double component) {
+            return component;
         }
 
         inline
         double
-        coeffUpperBound(Interval coeff) {
-            return coeff.upperBound();
+        componentUpperBound(Interval component) {
+            return component.upperBound();
         }
 
         template <class TDerived>
@@ -689,22 +690,22 @@ namespace opensolid
         const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseUpperBound() const {
             return map(
-                [] (ScalarType coeff) -> double {
-                    return coeffUpperBound(coeff);
+                [] (ScalarType component) -> double {
+                    return componentUpperBound(component);
                 }
             );
         }
 
         inline
         double
-        coeffWidth(double coeff) {
+        componentWidth(double component) {
             return 0.0;
         }
 
         inline
         double
-        coeffWidth(Interval coeff) {
-            return coeff.width();
+        componentWidth(Interval component) {
+            return component.width();
         }
 
         template <class TDerived>
@@ -712,22 +713,22 @@ namespace opensolid
         const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseWidth() const {
             return map(
-                [] (ScalarType coeff) -> double {
-                    return coeffWidth(coeff);
+                [] (ScalarType component) -> double {
+                    return componentWidth(component);
                 }
             );
         }
 
         inline
         double
-        coeffMedian(double coeff) {
-            return coeff;
+        componentMedian(double component) {
+            return component;
         }
 
         inline
         double
-        coeffMedian(Interval coeff) {
-            return coeff.median();
+        componentMedian(Interval component) {
+            return component.median();
         }
 
         template <class TDerived>
@@ -735,22 +736,22 @@ namespace opensolid
         const Matrix<double, MatrixTraits<TDerived>::NumRows, MatrixTraits<TDerived>::NumColumns>
         MatrixInterface<TDerived>::cwiseMedian() const {
             return map(
-                [] (ScalarType coeff) -> double {
-                    return coeffMedian(coeff);
+                [] (ScalarType component) -> double {
+                    return componentMedian(component);
                 }
             );
         }
 
         inline
         double
-        coeffSquared(double coeff) {
-            return coeff * coeff;
+        componentSquared(double component) {
+            return component * component;
         }
 
         inline
         Interval
-        coeffSquared(Interval coeff) {
-            return coeff.squared();
+        componentSquared(Interval component) {
+            return component.squared();
         }
 
         template <class TDerived>
@@ -762,8 +763,8 @@ namespace opensolid
         >
         MatrixInterface<TDerived>::cwiseSquared() const {
             return map(
-                [] (ScalarType coeff) -> ScalarType {
-                    return coeffSquared(coeff);
+                [] (ScalarType component) -> ScalarType {
+                    return componentSquared(component);
                 }
             );
         }
@@ -810,25 +811,25 @@ namespace opensolid
 
         inline
         Interval
-        coeffHull(double firstCoeff, double secondCoeff) {
+        componentHull(double firstCoeff, double secondCoeff) {
             return Interval::Hull(firstCoeff, secondCoeff);
         }
 
         inline
         Interval
-        coeffHull(double firstCoeff, Interval secondCoeff) {
+        componentHull(double firstCoeff, Interval secondCoeff) {
             return secondCoeff.hull(firstCoeff);
         }
 
         inline
         Interval
-        coeffHull(Interval firstCoeff, double secondCoeff) {
+        componentHull(Interval firstCoeff, double secondCoeff) {
             return firstCoeff.hull(secondCoeff);
         }
 
         inline
         Interval
-        coeffHull(Interval firstCoeff, Interval secondCoeff) {
+        componentHull(Interval firstCoeff, Interval secondCoeff) {
             return firstCoeff.hull(secondCoeff);
         }
 
@@ -846,14 +847,14 @@ namespace opensolid
                     typename MatrixTraits<TDerived>::ScalarType thisCoeff,
                     typename MatrixTraits<TOtherDerived>::ScalarType otherCoeff
                 ) -> Interval {
-                    return coeffHull(thisCoeff, otherCoeff);
+                    return componentHull(thisCoeff, otherCoeff);
                 }
             );
         }
 
         inline
         Interval
-        coeffIntersection(double firstCoeff, double secondCoeff) {
+        componentIntersection(double firstCoeff, double secondCoeff) {
             return firstCoeff - secondCoeff == Zero() ?
                 Interval(firstCoeff + 0.5 * (secondCoeff - firstCoeff)) :
                 Interval::Empty();
@@ -861,7 +862,7 @@ namespace opensolid
 
         inline
         Interval
-        coeffIntersection(double firstCoeff, Interval secondCoeff) {
+        componentIntersection(double firstCoeff, Interval secondCoeff) {
             return secondCoeff.contains(firstCoeff) ?
                 Interval(firstCoeff) :
                 Interval::Empty();
@@ -869,7 +870,7 @@ namespace opensolid
 
         inline
         Interval
-        coeffIntersection(Interval firstCoeff, double secondCoeff) {
+        componentIntersection(Interval firstCoeff, double secondCoeff) {
             return firstCoeff.contains(secondCoeff) ?
                 Interval(secondCoeff) :
                 Interval::Empty();
@@ -877,7 +878,7 @@ namespace opensolid
 
         inline
         Interval
-        coeffIntersection(Interval firstCoeff, Interval secondCoeff) {
+        componentIntersection(Interval firstCoeff, Interval secondCoeff) {
             return firstCoeff.intersection(secondCoeff);
         }
 
@@ -897,7 +898,7 @@ namespace opensolid
                     typename MatrixTraits<TDerived>::ScalarType thisCoeff,
                     typename MatrixTraits<TOtherDerived>::ScalarType otherCoeff
                 ) -> Interval {
-                    return coeffIntersection(thisCoeff, otherCoeff);
+                    return componentIntersection(thisCoeff, otherCoeff);
                 }
             );
         }
@@ -907,8 +908,8 @@ namespace opensolid
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::sum() const {
             return reduce(
-                [] (ScalarType result, ScalarType coeff) {
-                    return result + coeff;
+                [] (ScalarType result, ScalarType component) {
+                    return result + component;
                 }
             );
         }
@@ -918,8 +919,8 @@ namespace opensolid
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::product() const {
             return reduce(
-                [] (ScalarType result, ScalarType coeff) {
-                    return result * coeff;
+                [] (ScalarType result, ScalarType component) {
+                    return result * component;
                 }
             );
         }
@@ -960,7 +961,7 @@ namespace opensolid
         MatrixInterface<TDerived>::operator*=(TOtherScalar scale) {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, columnIndex) *= scale;
+                    component(rowIndex, columnIndex) *= scale;
                 }
             }
         }
@@ -971,7 +972,7 @@ namespace opensolid
         MatrixInterface<TDerived>::operator/=(TOtherScalar divisor) {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, columnIndex) /= divisor;
+                    component(rowIndex, columnIndex) /= divisor;
                 }
             }
         }
@@ -984,7 +985,8 @@ namespace opensolid
             
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->coeff(rowIndex, columnIndex) += other.coeff(rowIndex, columnIndex);
+                    this->component(rowIndex, columnIndex) +=
+                        other.component(rowIndex, columnIndex);
                 }
             }
         }
@@ -997,7 +999,8 @@ namespace opensolid
             
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->coeff(rowIndex, columnIndex) -= other.coeff(rowIndex, columnIndex);
+                    this->component(rowIndex, columnIndex) -=
+                        other.component(rowIndex, columnIndex);
                 }
             }
         }
@@ -1008,7 +1011,7 @@ namespace opensolid
         MatrixInterface<TDerived>::setConstant(typename MatrixTraits<TDerived>::ScalarType value) {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, columnIndex) = value;
+                    component(rowIndex, columnIndex) = value;
                 }
             }
         }
@@ -1033,7 +1036,7 @@ namespace opensolid
         MatrixInterface<TDerived>::setIdentity() {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, columnIndex) = double(rowIndex == columnIndex);
+                    component(rowIndex, columnIndex) = double(rowIndex == columnIndex);
                 }
             }
         }
@@ -1062,7 +1065,7 @@ namespace opensolid
         MatrixInterface<TDerived>::setRandom() {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    coeff(rowIndex, columnIndex) = randomCoeff<ScalarType>();
+                    component(rowIndex, columnIndex) = randomCoeff<ScalarType>();
                 }
             }
         }
@@ -1138,8 +1141,8 @@ namespace opensolid
         >
         operator-(const MatrixInterface<TDerived>& matrix) {
             return matrix.map(
-                [] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return -coeff;
+                [] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return -component;
                 }
             );
         }
@@ -1153,8 +1156,8 @@ namespace opensolid
         >
         operator*(double scale, const MatrixInterface<TDerived>& matrix) {
             return matrix.map(
-                [scale] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return scale * coeff;
+                [scale] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return scale * component;
                 }
             );
         }
@@ -1168,8 +1171,8 @@ namespace opensolid
         >
         operator*(Interval scale, const MatrixInterface<TDerived>& matrix) {
             return matrix.map(
-                [scale] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return scale * coeff;
+                [scale] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return scale * component;
                 }
             );
         }
@@ -1183,8 +1186,8 @@ namespace opensolid
         >
         operator*(const MatrixInterface<TDerived>& matrix, double scale) {
             return matrix.map(
-                [scale] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return coeff * scale;
+                [scale] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return component * scale;
                 }
             );
         }
@@ -1198,8 +1201,8 @@ namespace opensolid
         >
         operator*(const MatrixInterface<TDerived>& matrix, Interval scale) {
             return matrix.map(
-                [scale] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return coeff * scale;
+                [scale] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return component * scale;
                 }
             );
         }
@@ -1213,8 +1216,8 @@ namespace opensolid
         >
         operator/(const MatrixInterface<TDerived>& matrix, double divisor) {
             return matrix.map(
-                [divisor] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return coeff / divisor;
+                [divisor] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return component / divisor;
                 }
             );
         }
@@ -1228,8 +1231,8 @@ namespace opensolid
         >
         operator/(const MatrixInterface<TDerived>& matrix, Interval divisor) {
             return matrix.map(
-                [divisor] (typename MatrixTraits<TDerived>::ScalarType coeff) {
-                    return coeff / divisor;
+                [divisor] (typename MatrixTraits<TDerived>::ScalarType component) {
+                    return component / divisor;
                 }
             );
         }

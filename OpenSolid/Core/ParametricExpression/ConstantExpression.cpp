@@ -214,8 +214,8 @@ namespace opensolid
         _columnMatrix(columnMatrix),
         _intervalColumnMatrix(
             columnMatrix.map(
-                [] (double coeff) {
-                    return Interval(coeff);
+                [] (double component) {
+                    return Interval(component);
                 }
             )
         ),

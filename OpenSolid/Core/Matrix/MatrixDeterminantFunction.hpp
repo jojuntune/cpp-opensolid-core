@@ -55,8 +55,8 @@ namespace opensolid
                 return 0.0;
             }
             
-            return matrix.coeff(0, 0) * matrix.coeff(1, 1) -
-                matrix.coeff(1, 0) * matrix.coeff(0, 1);
+            return matrix.component(0, 0) * matrix.component(1, 1) -
+                matrix.component(1, 0) * matrix.component(0, 1);
         }
 
         template <class TDerived>
@@ -68,19 +68,19 @@ namespace opensolid
                 return 0.0;
             }
 
-            double coeff00 = matrix.coeff(0, 0);
-            double coeff10 = matrix.coeff(1, 0);
-            double coeff20 = matrix.coeff(2, 0);
-            double coeff01 = matrix.coeff(0, 1);
-            double coeff11 = matrix.coeff(1, 1);
-            double coeff21 = matrix.coeff(2, 1);
-            double coeff02 = matrix.coeff(0, 2);
-            double coeff12 = matrix.coeff(1, 2);
-            double coeff22 = matrix.coeff(2, 2);
+            double component00 = matrix.component(0, 0);
+            double component10 = matrix.component(1, 0);
+            double component20 = matrix.component(2, 0);
+            double component01 = matrix.component(0, 1);
+            double component11 = matrix.component(1, 1);
+            double component21 = matrix.component(2, 1);
+            double component02 = matrix.component(0, 2);
+            double component12 = matrix.component(1, 2);
+            double component22 = matrix.component(2, 2);
 
-            return coeff00 * (coeff11 * coeff22 - coeff12 * coeff21) +
-                coeff01 * (coeff12 * coeff20 - coeff10 * coeff22 ) +
-                coeff02 * (coeff10 * coeff21 - coeff11 * coeff20);
+            return component00 * (component11 * component22 - component12 * component21) +
+                component01 * (component12 * component20 - component10 * component22 ) +
+                component02 * (component10 * component21 - component11 * component20);
         }
 
         template <class TDerived>

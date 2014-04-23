@@ -75,16 +75,16 @@ namespace opensolid
             columnStride() const;
 
             typename MatrixTraits<TDerived>::PlainScalarType
-            coeff(int index) const;
+            component(int index) const;
 
             typename MatrixTraits<TDerived>::ScalarType&
-            coeff(int index);
+            component(int index);
 
             typename MatrixTraits<TDerived>::PlainScalarType
-            coeff(int rowIndex, int columnIndex) const;
+            component(int rowIndex, int columnIndex) const;
 
             typename MatrixTraits<TDerived>::ScalarType&
-            coeff(int rowIndex, int columnIndex);
+            component(int rowIndex, int columnIndex);
 
             typename MatrixTraits<TDerived>::PlainScalarType
             operator()(int index) const;

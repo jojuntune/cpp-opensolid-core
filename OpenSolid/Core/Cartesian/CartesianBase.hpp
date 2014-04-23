@@ -121,7 +121,7 @@ namespace opensolid
         TScalar
         CartesianBase<TScalar, iNumDimensions>::component(int index) const {
             assert(index >= 0 && index < iNumDimensions);
-            return components().coeff(index);
+            return components().component(index);
         }
 
         template <class TScalar, int iNumDimensions>
@@ -129,7 +129,7 @@ namespace opensolid
         TScalar&
         CartesianBase<TScalar, iNumDimensions>::component(int index) {
             assert(index >= 0 && index < iNumDimensions);
-            return components().coeff(index);
+            return components().component(index);
         }
 
         template <class TScalar, int iNumDimensions>

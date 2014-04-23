@@ -66,12 +66,12 @@ namespace opensolid
                 return Matrix<ScalarType, 2, 2>::Zero();
             }
 
-            ScalarType coeff00 = matrix.coeff(0, 0);
-            ScalarType coeff10 = matrix.coeff(1, 0);
-            ScalarType coeff01 = matrix.coeff(0, 1);
-            ScalarType coeff11 = matrix.coeff(1, 1);
+            ScalarType component00 = matrix.component(0, 0);
+            ScalarType component10 = matrix.component(1, 0);
+            ScalarType component01 = matrix.component(0, 1);
+            ScalarType component11 = matrix.component(1, 1);
 
-            ScalarType determinant = coeff00 * coeff11 - coeff01 * coeff10;
+            ScalarType determinant = component00 * component11 - component01 * component10;
             if (determinant == Zero()) {
                 assert(false);
                 return Matrix<ScalarType, 2, 2>::Zero();
@@ -79,10 +79,10 @@ namespace opensolid
             ScalarType inverseDeterminant = 1.0 / determinant;
 
             Matrix<ScalarType, 2, 2> result;
-            result.coeff(0, 0) = inverseDeterminant * coeff11;
-            result.coeff(1, 0) = -inverseDeterminant * coeff10;
-            result.coeff(0, 1) = -inverseDeterminant * coeff01;
-            result.coeff(1, 1) = inverseDeterminant * coeff00;
+            result.component(0, 0) = inverseDeterminant * component11;
+            result.component(1, 0) = -inverseDeterminant * component10;
+            result.component(0, 1) = -inverseDeterminant * component01;
+            result.component(1, 1) = inverseDeterminant * component00;
             return result;
         }
 
@@ -96,22 +96,22 @@ namespace opensolid
                 return Matrix<ScalarType, 3, 3>::Zero();
             }
 
-            ScalarType coeff00 = matrix.coeff(0, 0);
-            ScalarType coeff10 = matrix.coeff(1, 0);
-            ScalarType coeff20 = matrix.coeff(2, 0);
-            ScalarType coeff01 = matrix.coeff(0, 1);
-            ScalarType coeff11 = matrix.coeff(1, 1);
-            ScalarType coeff21 = matrix.coeff(2, 1);
-            ScalarType coeff02 = matrix.coeff(0, 2);
-            ScalarType coeff12 = matrix.coeff(1, 2);
-            ScalarType coeff22 = matrix.coeff(2, 2);
+            ScalarType component00 = matrix.component(0, 0);
+            ScalarType component10 = matrix.component(1, 0);
+            ScalarType component20 = matrix.component(2, 0);
+            ScalarType component01 = matrix.component(0, 1);
+            ScalarType component11 = matrix.component(1, 1);
+            ScalarType component21 = matrix.component(2, 1);
+            ScalarType component02 = matrix.component(0, 2);
+            ScalarType component12 = matrix.component(1, 2);
+            ScalarType component22 = matrix.component(2, 2);
 
-            ScalarType cofactor00 = coeff11 * coeff22 - coeff12 * coeff21;
-            ScalarType cofactor01 = coeff12 * coeff20 - coeff10 * coeff22;
-            ScalarType cofactor02 = coeff10 * coeff21 - coeff11 * coeff20;
+            ScalarType cofactor00 = component11 * component22 - component12 * component21;
+            ScalarType cofactor01 = component12 * component20 - component10 * component22;
+            ScalarType cofactor02 = component10 * component21 - component11 * component20;
 
-            ScalarType determinant = coeff00 * cofactor00 + coeff01 * cofactor01 +
-                coeff02 * cofactor02;
+            ScalarType determinant = component00 * cofactor00 + component01 * cofactor01 +
+                component02 * cofactor02;
             if (determinant == Zero()) {
                 assert(false);
                 return Matrix<ScalarType, 3, 3>::Zero();
@@ -119,15 +119,21 @@ namespace opensolid
             ScalarType inverseDeterminant = 1.0 / determinant;
 
             Matrix<ScalarType, 3, 3> result;
-            result.coeff(0, 0) = inverseDeterminant * cofactor00;
-            result.coeff(1, 0) = inverseDeterminant * cofactor01;
-            result.coeff(2, 0) = inverseDeterminant * cofactor02;
-            result.coeff(0, 1) = inverseDeterminant * (coeff02 * coeff21 - coeff01 * coeff22);
-            result.coeff(1, 1) = inverseDeterminant * (coeff00 * coeff22 - coeff02 * coeff20);
-            result.coeff(2, 1) = inverseDeterminant * (coeff01 * coeff20 - coeff00 * coeff21);
-            result.coeff(0, 2) = inverseDeterminant * (coeff01 * coeff12 - coeff02 * coeff11);
-            result.coeff(1, 2) = inverseDeterminant * (coeff02 * coeff10 - coeff00 * coeff12);
-            result.coeff(2, 2) = inverseDeterminant * (coeff00 * coeff11 - coeff01 * coeff10);
+            result.component(0, 0) = inverseDeterminant * cofactor00;
+            result.component(1, 0) = inverseDeterminant * cofactor01;
+            result.component(2, 0) = inverseDeterminant * cofactor02;
+            result.component(0, 1) = inverseDeterminant *
+                (component02 * component21 - component01 * component22);
+            result.component(1, 1) = inverseDeterminant *
+                (component00 * component22 - component02 * component20);
+            result.component(2, 1) = inverseDeterminant *
+                (component01 * component20 - component00 * component21);
+            result.component(0, 2) = inverseDeterminant *
+                (component01 * component12 - component02 * component11);
+            result.component(1, 2) = inverseDeterminant *
+                (component02 * component10 - component00 * component12);
+            result.component(2, 2) = inverseDeterminant *
+                (component00 * component11 - component01 * component10);
             return result;
         }
 
