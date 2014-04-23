@@ -152,7 +152,7 @@ public:
         TS_ASSERT(Point3d(0, 0, 2).isOn(plane));
         TS_ASSERT(!Point3d::Origin().isOn(plane));
 
-        TS_ASSERT(lineSegment.midpoint().isOn(lineSegment));
+        TS_ASSERT(lineSegment.centroid().isOn(lineSegment));
         TS_ASSERT(lineSegment.endVertex().isOn(lineSegment));
         Point3d extendedPoint(2, 2, -1);
         TS_ASSERT(extendedPoint.isOn(lineSegment.axis()));

@@ -103,7 +103,7 @@ namespace opensolid
         vertices() const;
 
         Point<iNumDimensions>
-        midpoint() const;
+        centroid() const;
 
         double
         length() const;

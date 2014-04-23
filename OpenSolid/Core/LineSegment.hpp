@@ -110,7 +110,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     Point<iNumDimensions>
-    LineSegment<iNumDimensions>::midpoint() const {
+    LineSegment<iNumDimensions>::centroid() const {
         return startVertex() + 0.5 * vector();
     }
 
