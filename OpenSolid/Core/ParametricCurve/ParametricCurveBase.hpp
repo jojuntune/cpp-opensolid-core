@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/Box.hpp>
 #include <OpenSolid/Core/Interval.hpp>
+#include <OpenSolid/Core/Parameter.hpp>
 #include <OpenSolid/Core/ParametricCurve.hpp>
 #include <OpenSolid/Core/ParametricExpression.hpp>
 
@@ -156,7 +157,7 @@ namespace opensolid
         ParametricCurve<iNumDimensions>
         ParametricCurveBase<iNumDimensions>::reversed() const {
             ParametricExpression<1, 1> reversedParameter =
-                domain().upperBound() + domain().lowerBound() - ParametricExpression<1, 1>::t();
+                domain().upperBound() + domain().lowerBound() - Parameter1d();
             return ParametricCurve<iNumDimensions>(
                 expression().composed(reversedParameter),
                 domain()

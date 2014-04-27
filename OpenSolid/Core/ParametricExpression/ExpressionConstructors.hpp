@@ -63,34 +63,6 @@ namespace opensolid
     }
 
     template <int iNumParameters>
-    ParametricExpression<1, iNumParameters>
-    ParameterExpressionConstructor<1, iNumParameters>::Parameter(int parameterIndex) {
-        if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
-            assert(false);
-            return ParametricExpression<1, iNumParameters>();
-        }
-        return new ParameterExpression(iNumParameters, parameterIndex);
-    }
-
-    inline
-    ParametricExpression<1, 1>
-    NamedParameterExpressionConstructors<1, 1>::t() {
-        return new ParameterExpression(1, 0);
-    }
-
-    inline
-    ParametricExpression<1, 2>
-    NamedParameterExpressionConstructors<1, 2>::u() {
-        return new ParameterExpression(2, 0);
-    }
-
-    inline
-    ParametricExpression<1, 2>
-    NamedParameterExpressionConstructors<1, 2>::v() {
-        return new ParameterExpression(2, 1);
-    }
-
-    template <int iNumParameters>
     ParametricExpression<2, iNumParameters>
     FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
         const ParametricExpression<1, iNumParameters>& x,

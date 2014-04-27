@@ -69,43 +69,6 @@ namespace opensolid
     };
 
     template <int iNumDimensions, int iNumParameters>
-    class ParameterExpressionConstructor
-    {
-    };
-
-    template <int iNumParameters>
-    class ParameterExpressionConstructor<1, iNumParameters>
-    {
-    public:
-        static ParametricExpression<1, iNumParameters>
-        Parameter(int parameterIndex);
-    };
-
-    template <int iNumDimensions, int iNumParameters>
-    class NamedParameterExpressionConstructors
-    {
-    };
-
-    template <>
-    class NamedParameterExpressionConstructors<1, 1>
-    {
-    public:
-        static ParametricExpression<1, 1>
-        t();
-    };
-
-    template <>
-    class NamedParameterExpressionConstructors<1, 2>
-    {
-    public:
-        static ParametricExpression<1, 2>
-        u();
-
-        static ParametricExpression<1, 2>
-        v();
-    };
-
-    template <int iNumDimensions, int iNumParameters>
     class FromComponentsExpressionConstructors
     {
     };
@@ -192,8 +155,6 @@ namespace opensolid
         public ZeroExpressionConstructor<iNumDimensions, iNumParameters>,
         public ConstantExpressionConstructor<iNumDimensions, iNumParameters>,
         public IdentityExpressionConstructor<iNumDimensions, iNumParameters>,
-        public ParameterExpressionConstructor<iNumDimensions, iNumParameters>,
-        public NamedParameterExpressionConstructors<iNumDimensions, iNumParameters>,
         public FromComponentsExpressionConstructors<iNumDimensions, iNumParameters>
     {
     };

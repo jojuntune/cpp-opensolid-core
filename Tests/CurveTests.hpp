@@ -24,6 +24,7 @@
 
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>
+#include <OpenSolid/Core/Parameter.hpp>
 #include <OpenSolid/Core/ParametricCurve.hpp>
 #include <OpenSolid/Core/Triangle.hpp>
 #include <OpenSolid/Core/Zero.hpp>
@@ -123,7 +124,7 @@ public:
     }
     
     void testCurveOperations() {
-        ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
+        Parameter1d t;
         ParametricExpression<3, 1> expression =
             ParametricExpression<3, 1>::FromComponents(t, t.squared(), 0.0);
         ParametricCurve3d parabola(expression, Interval(-2, 2));

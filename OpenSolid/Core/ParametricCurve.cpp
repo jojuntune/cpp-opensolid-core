@@ -24,6 +24,8 @@
 
 #include <OpenSolid/Core/ParametricCurve.hpp>
 
+#include <OpenSolid/Core/Parameter.hpp>
+
 namespace opensolid
 {
     namespace detail
@@ -181,15 +183,15 @@ namespace opensolid
             ParametricCurve3d::WindingDirection direction,
             double numTurns
         ) {
-            ParametricExpression<1, 1> theta =
-                2 * M_PI * numTurns * ParametricExpression<1, 1>::t();
+            Parameter1d t;
+            ParametricExpression<1, 1> theta = 2 * M_PI * numTurns * t;
             Vector3d sidewaysVector = yVector;
             if (direction == ParametricCurve3d::CLOCKWISE) {
                 sidewaysVector = -sidewaysVector;
             }
             ParametricExpression<3, 1> curveExpression = centerPoint.components() +
                 cos(theta) * xVector.components() + sin(theta) * sidewaysVector.components() +
-                ParametricExpression<1, 1>::t() * zVector.components();
+                t * zVector.components();
             return ParametricCurve3d(curveExpression, Interval::Unit());
         }
     }
@@ -209,8 +211,8 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        ParametricExpression<1, 1> angleExpression = startAngle +
-            (endAngle - startAngle) * ParametricExpression<1, 1>::t();
+        Parameter1d t;
+        ParametricExpression<1, 1> angleExpression = startAngle + (endAngle - startAngle) * t;
         ParametricExpression<1, 1> xExpression = centerPoint.x() + radius * cos(angleExpression);
         ParametricExpression<1, 1> yExpression = centerPoint.y() + radius * sin(angleExpression);
         ParametricExpression<2, 1> curveExpression =

@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Interval.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
+#include <OpenSolid/Core/Parameter.hpp>
 #include <OpenSolid/Core/ParametricExpression/DeduplicationCache.hpp>
 #include <OpenSolid/Core/ParametricExpression/Evaluator.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.hpp>
@@ -527,12 +528,32 @@ namespace opensolid
     
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::derivative() const {
+        static_assert(
+            iNumParameters == 1,
+            "Must supply Parameter object or parameter index to derivative() if parametric "
+            "expression has multiple parameters"
+        );
+        DeduplicationCache deduplicationCache;
+        return implementation()->derivative(0)->deduplicated(deduplicationCache);
+    }
+    
+    template <int iNumDimensions, int iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>::derivative(int parameterIndex) const {
         if (parameterIndex < 0 || parameterIndex >= iNumParameters) {
             throw Error(new PlaceholderError());
         }
         DeduplicationCache deduplicationCache;
         return implementation()->derivative(parameterIndex)->deduplicated(deduplicationCache);
+    }
+    
+    template <int iNumDimensions, int iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>
+    ParametricExpression<iNumDimensions, iNumParameters>::derivative(
+        const Parameter<iNumParameters>& parameter
+    ) const {
+        return derivative(parameter.parameterIndex());
     }
     
     template <int iNumDimensions, int iNumParameters>

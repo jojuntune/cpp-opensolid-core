@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
+#include <OpenSolid/Core/Parameter.declarations.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionConstructors.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression/ExpressionImplementation.declarations.hpp>
 
@@ -140,7 +141,13 @@ namespace opensolid
         ) const;
         
         ParametricExpression<iNumDimensions, iNumParameters>
-        derivative(int parameterIndex = 0) const;
+        derivative() const;
+
+        ParametricExpression<iNumDimensions, iNumParameters>
+        derivative(int parameterIndex) const;
+
+        ParametricExpression<iNumDimensions, iNumParameters>
+        derivative(const Parameter<iNumParameters>& parameter) const;
         
         ParametricExpression<1, iNumParameters>
         norm() const;
