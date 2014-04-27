@@ -198,7 +198,7 @@ namespace opensolid
         projectedOnto(const Plane3d& plane) const;
 
         typename TransformedAboutPointType<TDerived>::Type
-        transformed(
+        transformedBy(
             const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
         ) const;
 

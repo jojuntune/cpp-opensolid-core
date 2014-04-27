@@ -141,7 +141,7 @@ namespace opensolid
     template <class TDerived>
     inline
     typename TransformedAboutPointType<TDerived>::Type
-    Transformable<TDerived>::transformed(
+    Transformable<TDerived>::transformedBy(
         const LinearTransformation<NumDimensions<TDerived>::Value>& transformation
     ) const {
         return transformation(derived());
