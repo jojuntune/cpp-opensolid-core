@@ -98,7 +98,7 @@ namespace opensolid
         debugImpl(std::ostream& stream, int indent) const override;
     public:
         OPENSOLID_CORE_EXPORT
-        ParameterExpression(int parameterIndex, int numParameters);
+        ParameterExpression(int numParameters, int parameterIndex);
         
         int parameterIndex() const;
     };
