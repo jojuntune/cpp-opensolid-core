@@ -204,36 +204,36 @@ void spatialSetExamples() {
     );
 }
 
-// void parametricExpressionExamples() {
-//     ParametricExpression<1, 1> t = ParametricExpression<1, 1>::t();
-//
-//     ParametricExpression<3, 1> lineExpression = ColumnMatrix3d::Ones() + t * ColumnMatrix3d::Ones();
-//     ColumnMatrix3d start = lineExpression.evaluate(0.0);
-//     ColumnMatrix3d mid = lineExpression.evaluate(0.5);
-//     ColumnMatrix3d end = lineExpression.evaluate(1.0);
-//
-//     assert((start - ColumnMatrix3d::Ones()).isZero());
-//     assert((mid - ColumnMatrix3d::Constant(1.5)).isZero());
-//     assert((end - ColumnMatrix3d::Constant(2)).isZero());
-//
-//     ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
-//     ParametricExpression<1, 1> cosineExpression = cos(t);
-//     std::vector<double> parameterValues(10);
-//     for (unsigned i = 0; i < parameterValues.size(); ++i) {
-//         parameterValues[i] = i * 2 * M_PI / (parameterValues.size() - 1);
-//     }
-//     std::vector<Matrix1d> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
-//     std::vector<Matrix1d> cosineValues = cosineExpression.evaluate(parameterValues);
-//     for (unsigned i = 0; i < parameterValues.size(); ++i) {
-//         assert(sineDerivativeValues[i].value() - cosineValues[i].value() == Zero());
-//     }
-//
-//     ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
-//     std::vector<Matrix1d> zeroValues = shouldBeZero.evaluate(parameterValues);
-//     for (unsigned i = 0; i < parameterValues.size(); ++i) {
-//         assert(zeroValues[i].value() == Zero());
-//     }
-// }
+void parametricExpressionExamples() {
+    Parameter1d t;
+
+    ParametricExpression<3, 1> lineExpression = ColumnMatrix3d::Ones() + t * ColumnMatrix3d::Ones();
+    ColumnMatrix3d start = lineExpression.evaluate(0.0);
+    ColumnMatrix3d mid = lineExpression.evaluate(0.5);
+    ColumnMatrix3d end = lineExpression.evaluate(1.0);
+
+    assert((start - ColumnMatrix3d::Ones()).isZero());
+    assert((mid - ColumnMatrix3d::Constant(1.5)).isZero());
+    assert((end - ColumnMatrix3d::Constant(2)).isZero());
+
+    ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
+    ParametricExpression<1, 1> cosineExpression = cos(t);
+    std::vector<double> parameterValues(10);
+    for (unsigned i = 0; i < parameterValues.size(); ++i) {
+        parameterValues[i] = i * 2 * M_PI / (parameterValues.size() - 1);
+    }
+    std::vector<Matrix1d> sineDerivativeValues = sineDerivative.evaluate(parameterValues);
+    std::vector<Matrix1d> cosineValues = cosineExpression.evaluate(parameterValues);
+    for (unsigned i = 0; i < parameterValues.size(); ++i) {
+        assert(sineDerivativeValues[i].value() - cosineValues[i].value() == Zero());
+    }
+
+    ParametricExpression<1, 1> shouldBeZero = sin(2 * t) - 2 * sin(t) * cos(t);
+    std::vector<Matrix1d> zeroValues = shouldBeZero.evaluate(parameterValues);
+    for (unsigned i = 0; i < parameterValues.size(); ++i) {
+        assert(zeroValues[i].value() == Zero());
+    }
+}
 
 int main() {
     zeroExamples();
@@ -248,6 +248,6 @@ int main() {
     triangleExamples();
     tetrahedronExamples();
     spatialSetExamples();
-    // parametricExpressionExamples();
+    parametricExpressionExamples();
     return 0;
 }
