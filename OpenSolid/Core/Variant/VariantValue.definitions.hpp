@@ -44,6 +44,7 @@
 #include <OpenSolid/Core/Vector.declarations.hpp>
 
 #include <string>
+#include <cstdint>
 
 namespace opensolid
 {
