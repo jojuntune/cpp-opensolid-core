@@ -3,7 +3,7 @@
 *  OpenSolid is a generic library for the representation and manipulation of        *
 *  geometric objects such as points, curves, surfaces, and volumes.                 *
 *                                                                                   *
-*  Copyright (C) 2007-2013 by Ian Mackenzie                                         *
+*  Copyright (C) 2007-2014 by Ian Mackenzie                                         *
 *  ian.e.mackenzie@gmail.com                                                        *
 *                                                                                   *
 *  This library is free software; you can redistribute it and/or                    *
@@ -23,8 +23,6 @@
 ************************************************************************************/
 
 #pragma once
-
-#include <OpenSolid/config.hpp>
 
 #include <boost/intrusive_ptr.hpp>
 
