@@ -28,7 +28,7 @@ namespace opensolid
 {
     namespace detail
     {
-        template <int iNumRows, int iNumColumns>
+        template <int iSize>
         struct MatrixInverseFunction;
     }
 }

@@ -37,7 +37,7 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixDeterminantFunction<1, 1>::operator()(const MatrixInterface<TDerived>& matrix) const {
+        MatrixDeterminantFunction<1>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.numRows() != 1 || matrix.numColumns() != 1) {
                 assert(false);
                 return 0.0;
@@ -49,7 +49,7 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixDeterminantFunction<2, 2>::operator()(const MatrixInterface<TDerived>& matrix) const {
+        MatrixDeterminantFunction<2>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.numRows() != 2 || matrix.numColumns() != 2) {
                 assert(false);
                 return 0.0;
@@ -62,7 +62,7 @@ namespace opensolid
         template <class TDerived>
         inline
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixDeterminantFunction<3, 3>::operator()(const MatrixInterface<TDerived>& matrix) const {
+        MatrixDeterminantFunction<3>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.numRows() != 3 || matrix.numColumns() != 3) {
                 assert(false);
                 return 0.0;
@@ -85,15 +85,15 @@ namespace opensolid
 
         template <class TDerived>
         typename MatrixTraits<TDerived>::PlainScalarType
-        MatrixDeterminantFunction<-1, -1>::operator()(
+        MatrixDeterminantFunction<-1>::operator()(
             const MatrixInterface<TDerived>& matrix
         ) const {
             if (matrix.numRows() == 1 && matrix.numColumns() == 1) {
-                return MatrixDeterminantFunction<1, 1>()(matrix);
+                return MatrixDeterminantFunction<1>()(matrix);
             } else if (matrix.numRows() == 2 && matrix.numColumns() == 2) {
-                return MatrixDeterminantFunction<2, 2>()(matrix);
+                return MatrixDeterminantFunction<2>()(matrix);
             } else if (matrix.numRows() == 3 && matrix.numColumns() == 3) {
-                return MatrixDeterminantFunction<3, 3>()(matrix);
+                return MatrixDeterminantFunction<3>()(matrix);
             } else {
                 assert(false);
                 return typename MatrixTraits<TDerived>::PlainScalarType();

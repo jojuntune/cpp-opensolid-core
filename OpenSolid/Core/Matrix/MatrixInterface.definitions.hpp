@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Matrix/MatrixInterface.declarations.hpp>
 
+#include <OpenSolid/Core/EigenDecomposition.declarations.hpp>
 #include <OpenSolid/Core/Interval.declarations.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/MatrixView.declarations.hpp>
@@ -186,10 +187,13 @@ namespace opensolid
 
             const Matrix<
                 typename MatrixTraits<TDerived>::PlainScalarType,
-                MatrixTraits<TDerived>::NumColumns,
-                MatrixTraits<TDerived>::NumRows
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TDerived>::NumColumns
             >
             inverse() const;
+
+            const EigenDecomposition<MatrixTraits<TDerived>::NumRows>
+            eigenDecomposition() const;
 
             template <class TUnaryFunction>
             const typename MappedMatrixType<TUnaryFunction, TDerived>::Type

@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
+#include <OpenSolid/Core/EigenDecomposition.hpp>
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/Matrix/MatrixDeterminantFunction.hpp>
@@ -394,22 +395,39 @@ namespace opensolid
         typename MatrixTraits<TDerived>::PlainScalarType
         MatrixInterface<TDerived>::determinant() const {
             return MatrixDeterminantFunction<
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumColumns
+                CommonSize<
+                    MatrixTraits<TDerived>::NumRows,
+                    MatrixTraits<TDerived>::NumColumns
+                >::Value
             >()(derived());
         }
 
         template <class TDerived>
         const Matrix<
             typename MatrixTraits<TDerived>::PlainScalarType,
-            MatrixTraits<TDerived>::NumColumns,
-            MatrixTraits<TDerived>::NumRows
+            MatrixTraits<TDerived>::NumRows,
+            MatrixTraits<TDerived>::NumColumns
         >
         MatrixInterface<TDerived>::inverse() const {
             return MatrixInverseFunction<
-                MatrixTraits<TDerived>::NumRows,
-                MatrixTraits<TDerived>::NumColumns
+                CommonSize<
+                    MatrixTraits<TDerived>::NumRows,
+                    MatrixTraits<TDerived>::NumColumns
+                >::Value
             >()(derived());
+        }
+
+        template <class TDerived>
+        inline
+        const EigenDecomposition<MatrixTraits<TDerived>::NumRows>
+        MatrixInterface<TDerived>::eigenDecomposition() const {
+            assert(numRows() == numColumns());
+            return EigenDecomposition<
+                CommonSize<
+                    MatrixTraits<TDerived>::NumRows,
+                    MatrixTraits<TDerived>::NumColumns
+                >::Value
+            >(derived());
         }
 
         template <class TDerived> template <class TUnaryFunction>

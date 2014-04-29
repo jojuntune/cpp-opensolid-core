@@ -35,7 +35,7 @@ namespace opensolid
     namespace detail
     {
         template <>
-        struct MatrixDeterminantFunction<1, 1>
+        struct MatrixDeterminantFunction<1>
         {
             template <class TDerived>
             typename MatrixTraits<TDerived>::PlainScalarType
@@ -43,7 +43,7 @@ namespace opensolid
         };
 
         template <>
-        struct MatrixDeterminantFunction<2, 2>
+        struct MatrixDeterminantFunction<2>
         {
             template <class TDerived>
             typename MatrixTraits<TDerived>::PlainScalarType
@@ -51,27 +51,15 @@ namespace opensolid
         };
 
         template <>
-        struct MatrixDeterminantFunction<3, 3>
+        struct MatrixDeterminantFunction<3>
         {
             template <class TDerived>
             typename MatrixTraits<TDerived>::PlainScalarType
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
 
-        template <int iNumRows>
-        struct MatrixDeterminantFunction<iNumRows, -1> :
-            public MatrixDeterminantFunction<iNumRows, iNumRows>
-        {
-        };
-
-        template <int iNumColumns>
-        struct MatrixDeterminantFunction<-1, iNumColumns> :
-            public MatrixDeterminantFunction<iNumColumns, iNumColumns>
-        {
-        };
-
         template <>
-        struct MatrixDeterminantFunction<-1, -1>
+        struct MatrixDeterminantFunction<-1>
         {
             template <class TDerived>
             typename MatrixTraits<TDerived>::PlainScalarType

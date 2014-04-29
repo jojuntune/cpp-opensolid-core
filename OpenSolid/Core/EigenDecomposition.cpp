@@ -22,48 +22,46 @@
 *                                                                                   *
 ************************************************************************************/
 
-#pragma once
-
-#include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/Matrix/MatrixInverseFunction.declarations.hpp>
-
-#include <OpenSolid/Core/Matrix/MatrixInterface.declarations.hpp>
+#include <OpenSolid/Core/EigenDecomposition.hpp>
 
 namespace opensolid
 {
-    namespace detail
-    {
-        template <>
-        struct MatrixInverseFunction<1>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 1, 1>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-
-        template <>
-        struct MatrixInverseFunction<2>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 2, 2>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-
-        template <>
-        struct MatrixInverseFunction<3>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 3, 3>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-
-        template <>
-        struct MatrixInverseFunction<-1>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, -1, -1>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
+    void
+    EigenDecomposition2d::compute(const Matrix2d& matrix) {
+        assert((matrix - matrix.transpose()).isZero());
+        // TODO
     }
+
+    void
+    EigenDecomposition3d::compute(const Matrix3d& matrix) {
+        assert((matrix - matrix.transpose()).isZero());
+        // TODO
+    }
+
+    void
+    EigenDecompositionXd::compute(const MatrixXd& matrix) {
+        if (matrix.numRows() == 1 && matrix.numColumns() == 1) {
+            EigenDecomposition1d decomposition(matrix);
+            if (decomposition.succeeded()) {
+                _succeeded = true;
+                _eigenValues = decomposition.eigenValues();
+                _eigenVectors = decomposition.eigenVectors();
+            }
+        } else if (matrix.numRows() == 2 && matrix.numColumns() == 2) {
+            EigenDecomposition2d decomposition(matrix);
+            if (decomposition.succeeded()) {
+                _succeeded = true;
+                _eigenValues = decomposition.eigenValues();
+                _eigenVectors = decomposition.eigenVectors();
+            }
+        } else if (matrix.numRows() == 3 && matrix.numColumns() == 3) {
+            EigenDecomposition3d decomposition(matrix);
+            if (decomposition.succeeded()) {
+                _succeeded = true;
+                _eigenValues = decomposition.eigenValues();
+                _eigenVectors = decomposition.eigenVectors();
+            }
+        }
+    }
+
 }

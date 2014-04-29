@@ -24,46 +24,8 @@
 
 #pragma once
 
-#include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/Matrix/MatrixInverseFunction.declarations.hpp>
-
-#include <OpenSolid/Core/Matrix/MatrixInterface.declarations.hpp>
-
 namespace opensolid
 {
-    namespace detail
-    {
-        template <>
-        struct MatrixInverseFunction<1>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 1, 1>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-
-        template <>
-        struct MatrixInverseFunction<2>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 2, 2>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-
-        template <>
-        struct MatrixInverseFunction<3>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 3, 3>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-
-        template <>
-        struct MatrixInverseFunction<-1>
-        {
-            template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, -1, -1>
-            operator()(const MatrixInterface<TDerived>& matrix) const;
-        };
-    }
+    template <int iSize>
+    class EigenDecomposition;
 }
