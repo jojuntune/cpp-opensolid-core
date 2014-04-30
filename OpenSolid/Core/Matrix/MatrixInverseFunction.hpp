@@ -36,9 +36,9 @@ namespace opensolid
     {
         template <class TDerived>
         inline
-        Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 1, 1>
+        Matrix<typename MatrixTraits<TDerived>::PlainScalar, 1, 1>
         MatrixInverseFunction<1>::operator()(const MatrixInterface<TDerived>& matrix) const {
-            typedef typename MatrixTraits<TDerived>::PlainScalarType ScalarType;
+            typedef typename MatrixTraits<TDerived>::PlainScalar ScalarType;
 
             if (matrix.numRows() != 1 || matrix.numColumns() != 1) {
                 assert(false);
@@ -57,9 +57,9 @@ namespace opensolid
         }
 
         template <class TDerived>
-        Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 2, 2>
+        Matrix<typename MatrixTraits<TDerived>::PlainScalar, 2, 2>
         MatrixInverseFunction<2>::operator()(const MatrixInterface<TDerived>& matrix) const {
-            typedef typename MatrixTraits<TDerived>::PlainScalarType ScalarType;
+            typedef typename MatrixTraits<TDerived>::PlainScalar ScalarType;
 
             if (matrix.numRows() != 2 || matrix.numColumns() != 2) {
                 assert(false);
@@ -87,9 +87,9 @@ namespace opensolid
         }
 
         template <class TDerived>
-        Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 3, 3>
+        Matrix<typename MatrixTraits<TDerived>::PlainScalar, 3, 3>
         MatrixInverseFunction<3>::operator()(const MatrixInterface<TDerived>& matrix) const {
-            typedef typename MatrixTraits<TDerived>::PlainScalarType ScalarType;
+            typedef typename MatrixTraits<TDerived>::PlainScalar ScalarType;
 
             if (matrix.numRows() != 3 || matrix.numColumns() != 3) {
                 assert(false);
@@ -138,7 +138,7 @@ namespace opensolid
         }
 
         template <class TDerived>
-        Matrix<typename MatrixTraits<TDerived>::PlainScalarType, -1, -1>
+        Matrix<typename MatrixTraits<TDerived>::PlainScalar, -1, -1>
         MatrixInverseFunction<-1>::operator()(const MatrixInterface<TDerived>& matrix) const {
             if (matrix.numRows() == 1 && matrix.numColumns() == 1) {
                 return MatrixInverseFunction<1>()(matrix);
@@ -148,7 +148,7 @@ namespace opensolid
                 return MatrixInverseFunction<3>()(matrix);
             } else {
                 assert(false);
-                return Matrix<typename MatrixTraits<TDerived>::PlainScalarType, -1, -1>(
+                return Matrix<typename MatrixTraits<TDerived>::PlainScalar, -1, -1>(
                     matrix.numRows(),
                     matrix.numColumns()
                 );

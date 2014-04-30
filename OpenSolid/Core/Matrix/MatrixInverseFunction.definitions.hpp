@@ -38,7 +38,7 @@ namespace opensolid
         struct MatrixInverseFunction<1>
         {
             template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 1, 1>
+            Matrix<typename MatrixTraits<TDerived>::PlainScalar, 1, 1>
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
 
@@ -46,7 +46,7 @@ namespace opensolid
         struct MatrixInverseFunction<2>
         {
             template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 2, 2>
+            Matrix<typename MatrixTraits<TDerived>::PlainScalar, 2, 2>
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
 
@@ -54,7 +54,7 @@ namespace opensolid
         struct MatrixInverseFunction<3>
         {
             template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, 3, 3>
+            Matrix<typename MatrixTraits<TDerived>::PlainScalar, 3, 3>
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
 
@@ -62,7 +62,7 @@ namespace opensolid
         struct MatrixInverseFunction<-1>
         {
             template <class TDerived>
-            Matrix<typename MatrixTraits<TDerived>::PlainScalarType, -1, -1>
+            Matrix<typename MatrixTraits<TDerived>::PlainScalar, -1, -1>
             operator()(const MatrixInterface<TDerived>& matrix) const;
         };
     }

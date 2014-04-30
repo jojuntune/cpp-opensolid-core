@@ -68,19 +68,19 @@ namespace opensolid
         friend struct Types;
 
         template <class TScalar>
-        typename Types<TScalar>::ConstViewType
+        typename Types<TScalar>::ConstView
         evaluate(
             const ExpressionImplementationPtr& functionImplementation,
-            const typename Types<TScalar>::ConstViewType& parameterView,
-            typename Types<TScalar>::CacheType& cache
+            const typename Types<TScalar>::ConstView& parameterView,
+            typename Types<TScalar>::Cache& cache
         );
 
         template <class TScalar>
-        typename Types<TScalar>::ConstViewType
+        typename Types<TScalar>::ConstView
         evaluateJacobian(
             const ExpressionImplementationPtr& functionImplementation,
-            const typename Types<TScalar>::ConstViewType& parameterView,
-            typename Types<TScalar>::CacheType& cache
+            const typename Types<TScalar>::ConstView& parameterView,
+            typename Types<TScalar>::Cache& cache
         );
     public:
         OPENSOLID_CORE_EXPORT

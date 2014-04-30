@@ -151,8 +151,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     struct MatrixTraits<Matrix<TScalar, iNumRows, iNumColumns>>
     {
-        typedef TScalar ScalarType;
-        typedef TScalar PlainScalarType;
+        typedef TScalar Scalar;
+        typedef TScalar PlainScalar;
         static const int NumRows = iNumRows;
         static const int NumColumns = iNumColumns;
         static const int ColumnStride = iNumRows;

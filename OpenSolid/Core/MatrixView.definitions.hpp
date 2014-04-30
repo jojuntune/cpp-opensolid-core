@@ -90,8 +90,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     struct MatrixTraits<MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>>
     {
-        typedef TScalar ScalarType;
-        typedef typename std::remove_cv<TScalar>::type PlainScalarType;
+        typedef TScalar Scalar;
+        typedef typename std::remove_cv<TScalar>::type PlainScalar;
         static const int NumRows = iNumRows;
         static const int NumColumns = iNumColumns;
         static const int ColumnStride = iColumnStride;

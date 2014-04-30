@@ -48,21 +48,21 @@ namespace opensolid
     template <>
     struct Evaluator::Types<double>
     {
-        typedef MatrixViewXd ViewType;
-        typedef ConstMatrixViewXd ConstViewType;
-        typedef MatrixXd MatrixType;
-        typedef Evaluator::Key KeyType;
-        typedef Evaluator::Cache CacheType;
+        typedef MatrixViewXd View;
+        typedef ConstMatrixViewXd ConstView;
+        typedef MatrixXd Matrix;
+        typedef Evaluator::Key Key;
+        typedef Evaluator::Cache Cache;
     };
 
     template <>
     struct Evaluator::Types<Interval>
     {
-        typedef IntervalMatrixViewXd ViewType;
-        typedef ConstIntervalMatrixViewXd ConstViewType;
-        typedef IntervalMatrixXd MatrixType;
-        typedef Evaluator::IntervalKey KeyType;
-        typedef Evaluator::IntervalCache CacheType;
+        typedef IntervalMatrixViewXd View;
+        typedef ConstIntervalMatrixViewXd ConstView;
+        typedef IntervalMatrixXd Matrix;
+        typedef Evaluator::IntervalKey Key;
+        typedef Evaluator::IntervalCache Cache;
     };
     
     namespace
@@ -86,17 +86,17 @@ namespace opensolid
 
     template <class TScalar>
     inline
-    typename Evaluator::Types<TScalar>::ConstViewType
+    typename Evaluator::Types<TScalar>::ConstView
     Evaluator::evaluate(
         const ExpressionImplementationPtr& expressionImplementation,
-        const typename Types<TScalar>::ConstViewType& parameterView,
-        typename Types<TScalar>::CacheType& cache
+        const typename Types<TScalar>::ConstView& parameterView,
+        typename Types<TScalar>::Cache& cache
     ) {
-        typedef typename Types<TScalar>::ViewType ViewType;
-        typedef typename Types<TScalar>::ConstViewType ConstViewType;
-        typedef typename Types<TScalar>::MatrixType MatrixType;
-        typedef typename Types<TScalar>::KeyType KeyType;
-        typedef typename Types<TScalar>::CacheType CacheType;
+        typedef typename Types<TScalar>::View ViewType;
+        typedef typename Types<TScalar>::ConstView ConstViewType;
+        typedef typename Types<TScalar>::Matrix MatrixType;
+        typedef typename Types<TScalar>::Key KeyType;
+        typedef typename Types<TScalar>::Cache CacheType;
 
         if (expressionImplementation->isIdentityExpression()) {
             // Identity expression: simply return parameter values map as-is
@@ -159,17 +159,17 @@ namespace opensolid
 
     template <class TScalar>
     inline
-    typename Evaluator::Types<TScalar>::ConstViewType
+    typename Evaluator::Types<TScalar>::ConstView
     Evaluator::evaluateJacobian(
         const ExpressionImplementationPtr& expressionImplementation,
-        const typename Types<TScalar>::ConstViewType& parameterView,
-        typename Types<TScalar>::CacheType& cache
+        const typename Types<TScalar>::ConstView& parameterView,
+        typename Types<TScalar>::Cache& cache
     ) {
-        typedef typename Types<TScalar>::ViewType ViewType;
-        typedef typename Types<TScalar>::ConstViewType ConstViewType;
-        typedef typename Types<TScalar>::MatrixType MatrixType;
-        typedef typename Types<TScalar>::KeyType KeyType;
-        typedef typename Types<TScalar>::CacheType CacheType;
+        typedef typename Types<TScalar>::View ViewType;
+        typedef typename Types<TScalar>::ConstView ConstViewType;
+        typedef typename Types<TScalar>::Matrix MatrixType;
+        typedef typename Types<TScalar>::Key KeyType;
+        typedef typename Types<TScalar>::Cache CacheType;
 
         // Attempt to find cached results for the given expression/parameter pair
         KeyType key(expressionImplementation.get(), parameterView.data());

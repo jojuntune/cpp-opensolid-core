@@ -43,8 +43,8 @@ namespace opensolid
         class MatrixInterface
         {
         private:
-            typedef typename MatrixTraits<TDerived>::ScalarType ScalarType;
-            typedef typename MatrixTraits<TDerived>::PlainScalarType PlainScalarType;
+            typedef typename MatrixTraits<TDerived>::Scalar Scalar;
+            typedef typename MatrixTraits<TDerived>::PlainScalar PlainScalar;
             static const int NumRows = MatrixTraits<TDerived>::NumRows;
             static const int NumColumns = MatrixTraits<TDerived>::NumColumns;
             static const int ColumnStride = MatrixTraits<TDerived>::ColumnStride;
@@ -57,10 +57,10 @@ namespace opensolid
 
             template <class TOtherDerived> friend class MatrixInterface;
         public:
-            const typename MatrixTraits<TDerived>::ScalarType*
+            const typename MatrixTraits<TDerived>::Scalar*
             data() const;
 
-            typename MatrixTraits<TDerived>::ScalarType*
+            typename MatrixTraits<TDerived>::Scalar*
             data();
 
             int
@@ -75,34 +75,34 @@ namespace opensolid
             int
             columnStride() const;
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             component(int index) const;
 
-            typename MatrixTraits<TDerived>::ScalarType&
+            typename MatrixTraits<TDerived>::Scalar&
             component(int index);
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             component(int rowIndex, int columnIndex) const;
 
-            typename MatrixTraits<TDerived>::ScalarType&
+            typename MatrixTraits<TDerived>::Scalar&
             component(int rowIndex, int columnIndex);
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             operator()(int index) const;
 
-            typename MatrixTraits<TDerived>::ScalarType&
+            typename MatrixTraits<TDerived>::Scalar&
             operator()(int index);
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             operator()(int rowIndex, int columnIndex) const;
 
-            typename MatrixTraits<TDerived>::ScalarType&
+            typename MatrixTraits<TDerived>::Scalar&
             operator()(int rowIndex, int columnIndex);
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             value() const;
 
-            typename MatrixTraits<TDerived>::ScalarType&
+            typename MatrixTraits<TDerived>::Scalar&
             value();
 
             void
@@ -113,7 +113,7 @@ namespace opensolid
             operator=(const MatrixInterface<TOtherDerived>& other);
 
             const MatrixView<
-                const typename MatrixTraits<TDerived>::PlainScalarType,
+                const typename MatrixTraits<TDerived>::PlainScalar,
                 1,
                 MatrixTraits<TDerived>::NumColumns,
                 MatrixTraits<TDerived>::ColumnStride
@@ -121,7 +121,7 @@ namespace opensolid
             row(int rowIndex) const;
 
             MatrixView<
-                typename MatrixTraits<TDerived>::ScalarType,
+                typename MatrixTraits<TDerived>::Scalar,
                 1,
                 MatrixTraits<TDerived>::NumColumns,
                 MatrixTraits<TDerived>::ColumnStride
@@ -129,7 +129,7 @@ namespace opensolid
             row(int rowIndex);
 
             const MatrixView<
-                const typename MatrixTraits<TDerived>::PlainScalarType,
+                const typename MatrixTraits<TDerived>::PlainScalar,
                 MatrixTraits<TDerived>::NumRows,
                 1,
                 MatrixTraits<TDerived>::ColumnStride
@@ -137,7 +137,7 @@ namespace opensolid
             column(int columnIndex) const;
 
             MatrixView<
-                typename MatrixTraits<TDerived>::ScalarType,
+                typename MatrixTraits<TDerived>::Scalar,
                 MatrixTraits<TDerived>::NumRows,
                 1,
                 MatrixTraits<TDerived>::ColumnStride
@@ -146,7 +146,7 @@ namespace opensolid
 
             template <int iBlockRows, int iBlockCols>
             const MatrixView<
-                const typename MatrixTraits<TDerived>::PlainScalarType,
+                const typename MatrixTraits<TDerived>::PlainScalar,
                 iBlockRows,
                 iBlockCols,
                 MatrixTraits<TDerived>::ColumnStride
@@ -155,7 +155,7 @@ namespace opensolid
 
             template <int iBlockRows, int iBlockCols>
             MatrixView<
-                typename MatrixTraits<TDerived>::ScalarType,
+                typename MatrixTraits<TDerived>::Scalar,
                 iBlockRows,
                 iBlockCols,
                 MatrixTraits<TDerived>::ColumnStride
@@ -163,7 +163,7 @@ namespace opensolid
             block(int startRow, int startCol);
 
             const MatrixView<
-                const typename MatrixTraits<TDerived>::PlainScalarType,
+                const typename MatrixTraits<TDerived>::PlainScalar,
                 -1,
                 -1,
                 MatrixTraits<TDerived>::ColumnStride
@@ -171,7 +171,7 @@ namespace opensolid
             block(int startRow, int startCol, int blockRows, int blockCols) const;
 
             MatrixView<
-                typename MatrixTraits<TDerived>::ScalarType,
+                typename MatrixTraits<TDerived>::Scalar,
                 -1,
                 -1,
                 MatrixTraits<TDerived>::ColumnStride
@@ -179,17 +179,17 @@ namespace opensolid
             block(int startRow, int startCol, int blockRows, int blockCols);
 
             const Matrix<
-                typename MatrixTraits<TDerived>::PlainScalarType,
+                typename MatrixTraits<TDerived>::PlainScalar,
                 MatrixTraits<TDerived>::NumColumns,
                 MatrixTraits<TDerived>::NumRows
             >
             transpose() const;
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             determinant() const;
 
             const Matrix<
-                typename MatrixTraits<TDerived>::PlainScalarType,
+                typename MatrixTraits<TDerived>::PlainScalar,
                 MatrixTraits<TDerived>::NumRows,
                 MatrixTraits<TDerived>::NumColumns
             >
@@ -234,7 +234,7 @@ namespace opensolid
             ) const;
 
             template <class TFunction>
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             reduce(TFunction function) const;
 
             template <class TUnaryPredicate>
@@ -300,7 +300,7 @@ namespace opensolid
             cwiseMedian() const;
 
             const Matrix<
-                typename MatrixTraits<TDerived>::PlainScalarType,
+                typename MatrixTraits<TDerived>::PlainScalar,
                 MatrixTraits<TDerived>::NumRows,
                 MatrixTraits<TDerived>::NumColumns
             >
@@ -338,10 +338,10 @@ namespace opensolid
             >
             cwiseIntersection(const MatrixInterface<TOtherDerived>& other) const;
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             sum() const;
 
-            typename MatrixTraits<TDerived>::PlainScalarType
+            typename MatrixTraits<TDerived>::PlainScalar
             product() const;
 
             template <class TOtherDerived>
@@ -369,7 +369,7 @@ namespace opensolid
             operator-=(const MatrixInterface<TOtherDerived>& other);
 
             void
-            setConstant(typename MatrixTraits<TDerived>::ScalarType value);
+            setConstant(typename MatrixTraits<TDerived>::Scalar value);
 
             void
             setZero();
@@ -406,7 +406,7 @@ namespace opensolid
             typedef Matrix<
                 typename MappedScalarType<
                     TUnaryFunction,
-                    typename MatrixTraits<TMatrix>::ScalarType
+                    typename MatrixTraits<TMatrix>::Scalar
                 >::Type,
                 MatrixTraits<TMatrix>::NumRows,
                 MatrixTraits<TMatrix>::NumColumns
@@ -419,8 +419,8 @@ namespace opensolid
             typedef Matrix<
                 typename PairwiseMappedScalarType<
                     TBinaryFunction,
-                    typename MatrixTraits<TFirstMatrix>::ScalarType,
-                    typename MatrixTraits<TSecondMatrix>::ScalarType
+                    typename MatrixTraits<TFirstMatrix>::Scalar,
+                    typename MatrixTraits<TSecondMatrix>::Scalar
                 >::Type,
                 CommonRows<TFirstMatrix, TSecondMatrix>::Value,
                 CommonCols<TFirstMatrix, TSecondMatrix>::Value
@@ -602,25 +602,25 @@ namespace opensolid
         template <class TSecondMatrix>
         struct CommonScalar<double, TSecondMatrix>
         {
-            typedef typename MatrixTraits<TSecondMatrix>::ScalarType Type;
+            typedef typename MatrixTraits<TSecondMatrix>::Scalar Type;
         };
 
         template <class TSecondMatrix>
         struct CommonScalar<const double, TSecondMatrix>
         {
-            typedef typename MatrixTraits<TSecondMatrix>::ScalarType Type;
+            typedef typename MatrixTraits<TSecondMatrix>::Scalar Type;
         };
 
         template <class TFirstMatrix>
         struct CommonScalar<TFirstMatrix, double>
         {
-            typedef typename MatrixTraits<TFirstMatrix>::ScalarType Type;
+            typedef typename MatrixTraits<TFirstMatrix>::Scalar Type;
         };
 
         template <class TFirstMatrix>
         struct CommonScalar<TFirstMatrix, const double>
         {
-            typedef typename MatrixTraits<TFirstMatrix>::ScalarType Type;
+            typedef typename MatrixTraits<TFirstMatrix>::Scalar Type;
         };
 
         template <class TSecondMatrix>
@@ -651,14 +651,14 @@ namespace opensolid
         struct CommonScalar
         {
             typedef typename CommonScalar<
-                typename MatrixTraits<TFirstMatrix>::ScalarType,
-                typename MatrixTraits<TSecondMatrix>::ScalarType
+                typename MatrixTraits<TFirstMatrix>::Scalar,
+                typename MatrixTraits<TSecondMatrix>::Scalar
             >::Type Type;
         };
 
         template <class TDerived>
         const Matrix<
-            typename MatrixTraits<TDerived>::PlainScalarType,
+            typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
         >
@@ -666,7 +666,7 @@ namespace opensolid
 
         template <class TDerived>
         const Matrix<
-            typename MatrixTraits<TDerived>::PlainScalarType,
+            typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
         >
@@ -682,7 +682,7 @@ namespace opensolid
 
         template <class TDerived>
         const Matrix<
-            typename MatrixTraits<TDerived>::PlainScalarType,
+            typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
         >
@@ -698,7 +698,7 @@ namespace opensolid
 
         template <class TDerived>
         const Matrix<
-            typename MatrixTraits<TDerived>::PlainScalarType,
+            typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
             MatrixTraits<TDerived>::NumColumns
         >
