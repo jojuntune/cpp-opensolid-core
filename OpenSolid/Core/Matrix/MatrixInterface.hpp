@@ -811,10 +811,10 @@ namespace opensolid
             return binaryMap(
                 other,
                 [] (
-                    typename MatrixTraits<TDerived>::Scalar thisCoeff,
-                    typename MatrixTraits<TOtherDerived>::Scalar otherCoeff
+                    typename MatrixTraits<TDerived>::Scalar thisComponent,
+                    typename MatrixTraits<TOtherDerived>::Scalar otherComponent
                 ) {
-                    return thisCoeff * otherCoeff;
+                    return thisComponent * otherComponent;
                 }
             );
         }
@@ -832,36 +832,36 @@ namespace opensolid
             return binaryMap(
                 other,
                 [] (
-                    typename MatrixTraits<TDerived>::Scalar thisCoeff,
-                    typename MatrixTraits<TOtherDerived>::Scalar otherCoeff
+                    typename MatrixTraits<TDerived>::Scalar thisComponent,
+                    typename MatrixTraits<TOtherDerived>::Scalar otherComponent
                 ) {
-                    return thisCoeff / otherCoeff;
+                    return thisComponent / otherComponent;
                 }
             );
         }
 
         inline
         Interval
-        componentHull(double firstCoeff, double secondCoeff) {
-            return Interval::Hull(firstCoeff, secondCoeff);
+        componentHull(double firstComponent, double secondComponent) {
+            return Interval::Hull(firstComponent, secondComponent);
         }
 
         inline
         Interval
-        componentHull(double firstCoeff, Interval secondCoeff) {
-            return secondCoeff.hull(firstCoeff);
+        componentHull(double firstComponent, Interval secondComponent) {
+            return secondComponent.hull(firstComponent);
         }
 
         inline
         Interval
-        componentHull(Interval firstCoeff, double secondCoeff) {
-            return firstCoeff.hull(secondCoeff);
+        componentHull(Interval firstComponent, double secondComponent) {
+            return firstComponent.hull(secondComponent);
         }
 
         inline
         Interval
-        componentHull(Interval firstCoeff, Interval secondCoeff) {
-            return firstCoeff.hull(secondCoeff);
+        componentHull(Interval firstComponent, Interval secondComponent) {
+            return firstComponent.hull(secondComponent);
         }
 
         template <class TDerived> template <class TOtherDerived>
@@ -875,42 +875,42 @@ namespace opensolid
             return binaryMap(
                 other,
                 [] (
-                    typename MatrixTraits<TDerived>::Scalar thisCoeff,
-                    typename MatrixTraits<TOtherDerived>::Scalar otherCoeff
+                    typename MatrixTraits<TDerived>::Scalar thisComponent,
+                    typename MatrixTraits<TOtherDerived>::Scalar otherComponent
                 ) -> Interval {
-                    return componentHull(thisCoeff, otherCoeff);
+                    return componentHull(thisComponent, otherComponent);
                 }
             );
         }
 
         inline
         Interval
-        componentIntersection(double firstCoeff, double secondCoeff) {
-            return firstCoeff - secondCoeff == Zero() ?
-                Interval(firstCoeff + 0.5 * (secondCoeff - firstCoeff)) :
+        componentIntersection(double firstComponent, double secondComponent) {
+            return firstComponent - secondComponent == Zero() ?
+                Interval(firstComponent + 0.5 * (secondComponent - firstComponent)) :
                 Interval::Empty();
         }
 
         inline
         Interval
-        componentIntersection(double firstCoeff, Interval secondCoeff) {
-            return secondCoeff.contains(firstCoeff) ?
-                Interval(firstCoeff) :
+        componentIntersection(double firstComponent, Interval secondComponent) {
+            return secondComponent.contains(firstComponent) ?
+                Interval(firstComponent) :
                 Interval::Empty();
         }
 
         inline
         Interval
-        componentIntersection(Interval firstCoeff, double secondCoeff) {
-            return firstCoeff.contains(secondCoeff) ?
-                Interval(secondCoeff) :
+        componentIntersection(Interval firstComponent, double secondComponent) {
+            return firstComponent.contains(secondComponent) ?
+                Interval(secondComponent) :
                 Interval::Empty();
         }
 
         inline
         Interval
-        componentIntersection(Interval firstCoeff, Interval secondCoeff) {
-            return firstCoeff.intersection(secondCoeff);
+        componentIntersection(Interval firstComponent, Interval secondComponent) {
+            return firstComponent.intersection(secondComponent);
         }
 
         template <class TDerived> template <class TOtherDerived>
@@ -926,10 +926,10 @@ namespace opensolid
             return binaryMap(
                 other,
                 [] (
-                    typename MatrixTraits<TDerived>::Scalar thisCoeff,
-                    typename MatrixTraits<TOtherDerived>::Scalar otherCoeff
+                    typename MatrixTraits<TDerived>::Scalar thisComponent,
+                    typename MatrixTraits<TOtherDerived>::Scalar otherComponent
                 ) -> Interval {
-                    return componentIntersection(thisCoeff, otherCoeff);
+                    return componentIntersection(thisComponent, otherComponent);
                 }
             );
         }
@@ -963,10 +963,10 @@ namespace opensolid
             return binaryAll(
                 other,
                 [] (
-                    typename MatrixTraits<TDerived>::Scalar thisCoeff,
-                    typename MatrixTraits<TOtherDerived>::Scalar otherCoeff
+                    typename MatrixTraits<TDerived>::Scalar thisComponent,
+                    typename MatrixTraits<TOtherDerived>::Scalar otherComponent
                 ) -> bool {
-                    return thisCoeff == otherCoeff;
+                    return thisComponent == otherComponent;
                 }
             );
         }
@@ -978,10 +978,10 @@ namespace opensolid
             return binaryAny(
                 other,
                 [] (
-                    typename MatrixTraits<TDerived>::Scalar thisCoeff,
-                    typename MatrixTraits<TOtherDerived>::Scalar otherCoeff
+                    typename MatrixTraits<TDerived>::Scalar thisComponent,
+                    typename MatrixTraits<TOtherDerived>::Scalar otherComponent
                 ) -> bool {
-                    return thisCoeff != otherCoeff;
+                    return thisComponent != otherComponent;
                 }
             );
         }
@@ -1074,19 +1074,19 @@ namespace opensolid
 
         template <class TScalar>
         TScalar
-        randomCoeff();
+        randomComponent();
 
         template <>
         inline
         double
-        randomCoeff<double>() {
+        randomComponent<double>() {
             return double(std::rand()) / RAND_MAX;
         }
 
         template <>
         inline
         Interval
-        randomCoeff<Interval>() {
+        randomComponent<Interval>() {
             return Interval::Random();
         }
 
@@ -1096,7 +1096,7 @@ namespace opensolid
         MatrixInterface<TDerived>::setRandom() {
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    component(rowIndex, columnIndex) = randomCoeff<Scalar>();
+                    component(rowIndex, columnIndex) = randomComponent<Scalar>();
                 }
             }
         }
@@ -1282,10 +1282,10 @@ namespace opensolid
             return firstMatrix.binaryMap(
                 secondMatrix,
                 [] (
-                    typename MatrixTraits<TFirstDerived>::Scalar firstCoeff,
-                    typename MatrixTraits<TSecondDerived>::Scalar secondCoeff
+                    typename MatrixTraits<TFirstDerived>::Scalar firstComponent,
+                    typename MatrixTraits<TSecondDerived>::Scalar secondComponent
                 ) {
-                    return firstCoeff + secondCoeff;
+                    return firstComponent + secondComponent;
                 }
             );
         }
@@ -1304,10 +1304,10 @@ namespace opensolid
             return firstMatrix.binaryMap(
                 secondMatrix,
                 [] (
-                    typename MatrixTraits<TFirstDerived>::Scalar firstCoeff,
-                    typename MatrixTraits<TSecondDerived>::Scalar secondCoeff
+                    typename MatrixTraits<TFirstDerived>::Scalar firstComponent,
+                    typename MatrixTraits<TSecondDerived>::Scalar secondComponent
                 ) {
-                    return firstCoeff - secondCoeff;
+                    return firstComponent - secondComponent;
                 }
             );
         }
