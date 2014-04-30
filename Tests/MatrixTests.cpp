@@ -428,3 +428,24 @@ TEST_CASE("Stream output") {
         checkTypeName(stream.str(), "MatrixXd");
     }
 }
+
+TEST_CASE("2D Eigen decomposition") {
+    Matrix2d matrix;
+    matrix(0, 0) = 2;
+    matrix(1, 0) = 1;
+    matrix(0, 1) = 1;
+    matrix(1, 1) = 3;
+
+    INFO("Matrix:\n" << matrix);
+
+    auto decomposition = matrix.eigenDecomposition();
+    REQUIRE(decomposition.exists());
+    
+    ColumnMatrix2d eigenvalues = decomposition.eigenvalues();
+    Matrix2d eigenvectors = decomposition.eigenvectors();
+    INFO("Eigenvalues:\n" << eigenvalues);
+    INFO("Eigenvectors:\n" << eigenvectors);
+
+    REQUIRE((matrix * eigenvectors.column(0) - eigenvalues(0) * eigenvectors.column(0)).isZero());
+    REQUIRE((matrix * eigenvectors.column(1) - eigenvalues(1) * eigenvectors.column(1)).isZero());
+}

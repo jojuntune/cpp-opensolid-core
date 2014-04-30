@@ -37,20 +37,20 @@ namespace opensolid
     class EigenDecomposition<1>
     {
     private:
-        Matrix<double, 1, 1> _eigenValues;
-        Matrix<double, 1, 1> _eigenVectors;
+        Matrix<double, 1, 1> _eigenvalues;
+        Matrix<double, 1, 1> _eigenvectors;
     public:
         template <class TDerived>
         EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix);
 
         bool
-        succeeded() const;
+        exists() const;
 
         const Matrix<double, 1, 1>&
-        eigenValues() const;
+        eigenvalues() const;
 
         const Matrix<double, 1, 1>&
-        eigenVectors() const;
+        eigenvectors() const;
     };
 
     typedef EigenDecomposition<1> EigenDecomposition1d;
@@ -59,9 +59,9 @@ namespace opensolid
     class EigenDecomposition<2>
     {
     private:
-        bool _succeeded;
-        Matrix<double, 2, 1> _eigenValues;
-        Matrix<double, 2, 2> _eigenVectors;
+        bool _exists;
+        Matrix<double, 2, 1> _eigenvalues;
+        Matrix<double, 2, 2> _eigenvectors;
 
         OPENSOLID_CORE_EXPORT
         void
@@ -71,13 +71,13 @@ namespace opensolid
         EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix);
 
         bool
-        succeeded() const;
+        exists() const;
 
         const Matrix<double, 2, 1>&
-        eigenValues() const;
+        eigenvalues() const;
 
         const Matrix<double, 2, 2>&
-        eigenVectors() const;
+        eigenvectors() const;
     };
 
     typedef EigenDecomposition<2> EigenDecomposition2d;
@@ -86,9 +86,9 @@ namespace opensolid
     class EigenDecomposition<3>
     {
     private:
-        bool _succeeded;
-        Matrix<double, 3, 1> _eigenValues;
-        Matrix<double, 3, 3> _eigenVectors;
+        bool _exists;
+        Matrix<double, 3, 1> _eigenvalues;
+        Matrix<double, 3, 3> _eigenvectors;
 
         OPENSOLID_CORE_EXPORT
         void
@@ -98,13 +98,13 @@ namespace opensolid
         EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix);
 
         bool
-        succeeded() const;
+        exists() const;
 
         const Matrix<double, 3, 1>&
-        eigenValues() const;
+        eigenvalues() const;
 
         const Matrix<double, 3, 3>&
-        eigenVectors() const;
+        eigenvectors() const;
     };
 
     typedef EigenDecomposition<3> EigenDecomposition3d;
@@ -113,9 +113,9 @@ namespace opensolid
     class EigenDecomposition<-1>
     {
     private:
-        bool _succeeded;
-        Matrix<double, -1, 1> _eigenValues;
-        Matrix<double, -1, -1> _eigenVectors;
+        bool _exists;
+        Matrix<double, -1, 1> _eigenvalues;
+        Matrix<double, -1, -1> _eigenvectors;
 
         OPENSOLID_CORE_EXPORT
         void
@@ -125,13 +125,13 @@ namespace opensolid
         EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix);
 
         bool
-        succeeded() const;
+        exists() const;
 
         const Matrix<double, -1, 1>&
-        eigenValues() const;
+        eigenvalues() const;
 
         const Matrix<double, -1, -1>&
-        eigenVectors() const;
+        eigenvectors() const;
     };
 
     typedef EigenDecomposition<-1> EigenDecompositionXd;

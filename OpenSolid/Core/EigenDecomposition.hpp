@@ -35,104 +35,104 @@ namespace opensolid
     template <class TDerived>
     inline
     EigenDecomposition1d::EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix) :
-        _eigenValues(matrix),
-        _eigenVectors(Matrix1d::Ones()) {
+        _eigenvalues(matrix),
+        _eigenvectors(Matrix1d::Ones()) {
     }
 
     inline
     bool
-    EigenDecomposition1d::succeeded() const {
+    EigenDecomposition1d::exists() const {
         return true;
     }
 
     inline
     const Matrix<double, 1, 1>&
-    EigenDecomposition1d::eigenValues() const {
-        return _eigenValues;
+    EigenDecomposition1d::eigenvalues() const {
+        return _eigenvalues;
     }
 
     inline
     const Matrix<double, 1, 1>&
-    EigenDecomposition1d::eigenVectors() const {
-        return _eigenVectors;
+    EigenDecomposition1d::eigenvectors() const {
+        return _eigenvectors;
     }
 
     template <class TDerived>
     inline
     EigenDecomposition2d::EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix) :
-        _succeeded(false) {
+        _exists(false) {
 
         this->compute(matrix);
     }
 
     inline
     bool
-    EigenDecomposition2d::succeeded() const {
-        return _succeeded;
+    EigenDecomposition2d::exists() const {
+        return _exists;
     }
 
     inline
     const ColumnMatrix2d&
-    EigenDecomposition2d::eigenValues() const {
-        return _eigenValues;
+    EigenDecomposition2d::eigenvalues() const {
+        return _eigenvalues;
     }
 
     inline
     const Matrix2d&
-    EigenDecomposition2d::eigenVectors() const {
-        return _eigenVectors;
+    EigenDecomposition2d::eigenvectors() const {
+        return _eigenvectors;
     }
 
     template <class TDerived>
     inline
     EigenDecomposition3d::EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix) :
-        _succeeded(false) {
+        _exists(false) {
 
         this->compute(matrix);
     }
 
     inline
     bool
-    EigenDecomposition3d::succeeded() const {
-        return _succeeded;
+    EigenDecomposition3d::exists() const {
+        return _exists;
     }
 
     inline
     const ColumnMatrix3d&
-    EigenDecomposition3d::eigenValues() const {
-        return _eigenValues;
+    EigenDecomposition3d::eigenvalues() const {
+        return _eigenvalues;
     }
 
     inline
     const Matrix3d&
-    EigenDecomposition3d::eigenVectors() const {
-        return _eigenVectors;
+    EigenDecomposition3d::eigenvectors() const {
+        return _eigenvectors;
     }
 
 
     template <class TDerived>
     inline
     EigenDecompositionXd::EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix) :
-        _succeeded(false) {
+        _exists(false) {
 
         this->compute(matrix);
     }
 
     inline
     bool
-    EigenDecompositionXd::succeeded() const {
-        return _succeeded;
+    EigenDecompositionXd::exists() const {
+        return _exists;
     }
 
     inline
     const Matrix<double, -1, 1>&
-    EigenDecompositionXd::eigenValues() const {
-        return _eigenValues;
+    EigenDecompositionXd::eigenvalues() const {
+        return _eigenvalues;
     }
 
     inline
     const Matrix<double, -1, -1>&
-    EigenDecompositionXd::eigenVectors() const {
-        return _eigenVectors;
+    EigenDecompositionXd::eigenvectors() const {
+        return _eigenvectors;
     }
 }
