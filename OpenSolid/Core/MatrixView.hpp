@@ -132,6 +132,17 @@ namespace opensolid
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    inline
+    void
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::operator=(
+        const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other
+    ) {
+        detail::MatrixInterface<
+            MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>
+        >::operator=(other);
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     template <class TOtherDerived>
     inline
     void

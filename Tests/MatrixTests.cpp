@@ -386,6 +386,17 @@ TEST_CASE("Block-to-block assignment") {
     }
 }
 
+TEST_CASE("Same-type view assignment") {
+    Matrix3d matrix = Matrix3d::Identity();
+    auto column0 = matrix.column(0);
+    auto column1 = matrix.column(1);
+    auto column2 = matrix.column(2);
+    column2 = column0;
+    column2 = column1;
+    CHECK(matrix.column(2) == matrix.column(1));
+    CHECK_FALSE(matrix.column(0) == matrix.column(1));
+}
+
 TEST_CASE("Stream output") {
     auto checkTypeName = [] (const std::string& string, const std::string& typeName) {
         REQUIRE(string.substr(0, typeName.size()) == typeName);

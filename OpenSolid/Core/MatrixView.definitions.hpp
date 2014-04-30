@@ -56,6 +56,9 @@ namespace opensolid
         template <int iOtherRows, int iOtherCols, int iOtherColStride>
         MatrixView(const MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other);
 
+        void
+        operator=(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other);
+
         template <class TOtherDerived>
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
