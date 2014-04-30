@@ -91,6 +91,15 @@ namespace opensolid
         detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
     }
 
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    void
+    Matrix<TScalar, iNumRows, iNumColumns>::operator=(
+        const Matrix<TScalar, iNumRows, iNumColumns>& other
+    ) {
+        detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
+    }
+
     template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
     inline
     void

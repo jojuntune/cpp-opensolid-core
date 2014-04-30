@@ -55,6 +55,9 @@ namespace opensolid
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
 
+        void
+        operator=(const Matrix<TScalar, iNumRows, iNumColumns>& other);
+
         template <class TOtherDerived>
         void
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
