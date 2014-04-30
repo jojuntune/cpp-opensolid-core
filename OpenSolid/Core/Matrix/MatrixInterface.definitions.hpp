@@ -105,6 +105,9 @@ namespace opensolid
             typename MatrixTraits<TDerived>::ScalarType&
             value();
 
+            void
+            operator=(const MatrixInterface<TDerived>& other);
+
             template <class TOtherDerived>
             void
             operator=(const MatrixInterface<TOtherDerived>& other);
