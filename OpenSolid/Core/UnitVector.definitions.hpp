@@ -178,6 +178,10 @@ namespace opensolid
     operator-(const UnitVector3d& unitVector);
 
     template <int iNumDimensions>
+    std::ostream&
+    operator<<(std::ostream& stream, const UnitVector<iNumDimensions>& unitVector);
+
+    template <int iNumDimensions>
     struct BoundsFunction<UnitVector<iNumDimensions>> :
         public BoundsFunction<Vector<double, iNumDimensions>>
     {

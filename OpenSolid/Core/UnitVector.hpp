@@ -264,6 +264,21 @@ namespace opensolid
     }
 
     template <int iNumDimensions>
+    std::ostream&
+    operator<<(std::ostream& stream, const UnitVector<iNumDimensions>& unitVector) {
+        stream << "UnitVector" << iNumDimensions << "d";
+        stream << "(";
+        for (int index = 0; index < iNumDimensions; ++index) {
+            stream << unitVector.component(index);
+            if (index < iNumDimensions - 1) {
+                stream << ",";
+            }
+        }
+        stream << ")";
+        return stream;
+    }
+
+    template <int iNumDimensions>
     inline
     const UnitVector<iNumDimensions>&
     TranslationFunction<UnitVector<iNumDimensions>>::operator()(
