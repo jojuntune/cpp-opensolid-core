@@ -26,6 +26,8 @@
 
 #include <OpenSolid/Core/Quaternion.hpp>
 
+#include <limits>
+
 namespace opensolid
 {
     void
@@ -221,7 +223,7 @@ namespace opensolid
 
         Quaternion3d quaternion = Quaternion3d::Identity();
         Matrix3d diagonalMatrix;
-        double lastAbsError = DBL_MAX;
+        double lastAbsError = std::numeric_limits<double>::max();
         while (true) {
             _eigenvectors = quaternion.rotationMatrix();
             diagonalMatrix = _eigenvectors.transpose() * matrix * _eigenvectors;
