@@ -198,6 +198,24 @@ namespace opensolid
             const EigenDecomposition<MatrixTraits<TDerived>::NumRows>
             eigenDecomposition() const;
 
+            typename MatrixTraits<TDerived>::PlainScalar
+            minComponent() const;
+
+            typename MatrixTraits<TDerived>::PlainScalar
+            minComponent(int* indexPtr) const;
+
+            typename MatrixTraits<TDerived>::PlainScalar
+            minComponent(int* rowIndexPtr, int* columnIndexPtr) const;
+
+            typename MatrixTraits<TDerived>::PlainScalar
+            maxComponent() const;
+
+            typename MatrixTraits<TDerived>::PlainScalar
+            maxComponent(int* indexPtr) const;
+
+            typename MatrixTraits<TDerived>::PlainScalar
+            maxComponent(int* rowIndexPtr, int* columnIndexPtr) const;
+
             template <class TUnaryFunction>
             const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
             map(TUnaryFunction unaryFunction) const;

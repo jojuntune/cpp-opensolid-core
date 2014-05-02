@@ -443,6 +443,119 @@ namespace opensolid
             >(derived());
         }
 
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::minComponent() const {
+            return minComponent(nullptr, nullptr);
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::minComponent(int* indexPtr) const {
+            if (indexPtr) {
+                int rowIndex = 0;
+                int columnIndex = 0;
+                double result = minComponent(&rowIndex, &columnIndex);
+                *indexPtr = columnIndex * numRows() + rowIndex;
+                return result;
+            } else {
+                return minComponent(nullptr, nullptr);
+            }
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::minComponent(int* rowIndexPtr, int* columnIndexPtr) const {
+            static_assert(
+                std::is_same<PlainScalar, double>::value,
+                "minComponent() only defined for double-valued matrices (ambiguous for Interval)"
+            );
+            double result = component(0, 0);
+            if (rowIndexPtr) {
+                *rowIndexPtr = 0;
+            }
+            if (columnIndexPtr) {
+                *columnIndexPtr = 0;
+            }
+            int rowIndex = 1;
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
+                for (; rowIndex < numRows(); ++rowIndex) {
+                    double candidate = component(rowIndex, columnIndex);
+                    if (candidate < result) {
+                        result = candidate;
+                        if (rowIndexPtr) {
+                            *rowIndexPtr = rowIndex;
+                        }
+                        if (columnIndexPtr) {
+                            *columnIndexPtr = columnIndex;
+                        }
+                    }
+                }
+                rowIndex = 0;
+            }
+            return result;
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::maxComponent() const {
+            return maxComponent(nullptr, nullptr);
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::maxComponent(int* indexPtr) const {
+            if (indexPtr) {
+                int rowIndex = 0;
+                int columnIndex = 0;
+                double result = maxComponent(&rowIndex, &columnIndex);
+                *indexPtr = columnIndex * numRows() + rowIndex;
+                return result;
+            } else {
+                return maxComponent(nullptr, nullptr);
+            }
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::maxComponent(int* rowIndexPtr, int* columnIndexPtr) const {
+            static_assert(
+                std::is_same<PlainScalar, double>::value,
+                "maxComponent() only defined for double-valued matrices (ambiguous for Interval)"
+            );
+            double result = component(0, 0);
+            if (rowIndexPtr) {
+                *rowIndexPtr = 0;
+            }
+            if (columnIndexPtr) {
+                *columnIndexPtr = 0;
+            }
+            int rowIndex = 1;
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
+                for (; rowIndex < numRows(); ++rowIndex) {
+                    double candidate = component(rowIndex, columnIndex);
+                    if (candidate > result) {
+                        result = candidate;
+                        if (rowIndexPtr) {
+                            *rowIndexPtr = rowIndex;
+                        }
+                        if (columnIndexPtr) {
+                            *columnIndexPtr = columnIndex;
+                        }
+                    }
+                }
+                rowIndex = 0;
+            }
+            return result;
+        }
+
         template <class TDerived> template <class TUnaryFunction>
         inline
         const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
