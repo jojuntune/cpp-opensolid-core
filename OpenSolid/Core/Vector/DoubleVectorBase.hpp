@@ -95,60 +95,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        double
-        DoubleVectorBase<iNumDimensions>::minComponent() const {
-            return this->components().reduce(
-                [] (double result, double component) -> double {
-                    return std::min(result, component);
-                }
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        double
-        DoubleVectorBase<iNumDimensions>::minComponent(int& index) const {
-            double result = this->component(0);
-            index = 0;
-            for (int i = 1; i < iNumDimensions; ++i) {
-                double component = this->component(i);
-                if (component < result) {
-                    result = component;
-                    index = i;
-                }
-            }
-            return result;
-        }
-
-        template <int iNumDimensions>
-        inline
-        double
-        DoubleVectorBase<iNumDimensions>::maxComponent() const {
-            return this->components().reduce(
-                [] (double result, double component) -> double {
-                    return std::max(result, component);
-                }
-            );
-        }
-
-        template <int iNumDimensions>
-        inline
-        double
-        DoubleVectorBase<iNumDimensions>::maxComponent(int& index) const {
-            double result = this->component(0);
-            index = 0;
-            for (int i = 1; i < iNumDimensions; ++i) {
-                double component = this->component(i);
-                if (component > result) {
-                    result = component;
-                    index = i;
-                }
-            }
-            return result;
-        }
-
-        template <int iNumDimensions>
-        inline
         bool
         DoubleVectorBase<iNumDimensions>::operator==(
             const Vector<double, iNumDimensions>& other

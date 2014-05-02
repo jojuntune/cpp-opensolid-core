@@ -60,18 +60,6 @@ namespace opensolid
             const UnitVector<iNumDimensions>
             normalized() const;
 
-            double
-            minComponent() const;
-
-            double
-            minComponent(int& index) const;
-
-            double
-            maxComponent() const;
-
-            double
-            maxComponent(int& index) const;
-
             bool
             operator==(const Vector<double, iNumDimensions>& other) const;
 

@@ -142,7 +142,7 @@ public:
 
     void testWhere() {
         auto predicate = [] (const Box2d& box) -> bool {
-            return box.diagonalVector().minComponent() - 2.0 >= Zero();
+            return box.diagonalVector().components().minComponent() - 2.0 >= Zero();
         };
         std::size_t testSize = boxSet().containing(Box2d(0, 0)).where(predicate).size();
         TS_ASSERT_EQUALS(testSize, 1);

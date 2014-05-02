@@ -105,7 +105,7 @@ TEST_CASE("Zero-checking") {
 
 TEST_CASE("Random vector generation") {
     IntervalVector3d bounds = IntervalVector3d::Random();
-    REQUIRE(bounds.diagonalVector().minComponent() > 0);
+    REQUIRE(bounds.diagonalVector().components().minComponent() > 0);
     for (int i = 0; i < 10; ++i) {
         Vector3d random = bounds.randomVector();
         REQUIRE(bounds.contains(random));
