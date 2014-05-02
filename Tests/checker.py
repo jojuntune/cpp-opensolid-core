@@ -57,12 +57,17 @@ def checkLine(filePath, lineNumber, line):
                     errorString = 'ERROR: Found \'{0}\' not on own line on line {1} of file {2}'
                     print(errorString.format(term, lineNumber, filePath))
                     errorFound = True
+        # Make sure only .cpp files includ Eigen headers
+        if not filePath.endswith('.cpp'):
+            if "#include <Eigen" in line:
+                print('ERROR: {0} has illegal Eigen include: {1}'.format(filePath, line.rstrip()))
+                errorFound = True
         # Make sure *.declarations.hpp only include <OpenSolid/config.hpp> and possibly
         # <boost/intrusive_ptr.hpp> (for forward declaration of *Ptr types)
         if '.declarations.hpp' in filePath:
             allowedHeaders = ['<boost/intrusive_ptr.hpp>']
             if '#include' in line and not any(header in line for header in allowedHeaders):
-                print('ERROR: {0} has illegal include: {1}'.format(filePath, line))
+                print('ERROR: {0} has illegal include: {1}'.format(filePath, line.rstrip()))
                 errorFound = True
 
 def checkHeader(filePath):
