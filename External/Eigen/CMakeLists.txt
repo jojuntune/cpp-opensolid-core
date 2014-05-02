@@ -16,10 +16,6 @@
     
     # Set EIGEN_ROOT in external/ directory (will then be passed up to root)
     set(EIGEN_ROOT ${EIGEN_ROOT} PARENT_SCOPE)
-
-########## Install Eigen headers ##########
-
-    install(DIRECTORY ${EIGEN_ROOT}/Eigen DESTINATION include PATTERN CMakeLists.txt EXCLUDE)
     
 ########## Add files to global source list ##########
 
