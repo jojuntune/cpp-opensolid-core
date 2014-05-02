@@ -141,25 +141,55 @@ TEST_CASE("Binary matrix folding") {
 
 TEST_CASE("Coefficient-wise squaring") {
     SECTION("Double matrices") {  
-        ColumnMatrix2d doubleMatrix;
-        doubleMatrix(0) = -1;
-        doubleMatrix(1) = 3;
+        ColumnMatrix2d matrix;
+        matrix(0) = -1;
+        matrix(1) = 3;
 
-        ColumnMatrix2d squaredDoubles = doubleMatrix.cwiseSquared();
-        REQUIRE(squaredDoubles(0) == 1);
-        REQUIRE(squaredDoubles(1) == 9);
+        ColumnMatrix2d squaredComponents = matrix.cwiseSquared();
+        REQUIRE(squaredComponents(0) == 1);
+        REQUIRE(squaredComponents(1) == 9);
     }
 
     SECTION("Interval matrices") {
-        IntervalColumnMatrix2d intervalMatrix;
-        intervalMatrix(0) = Interval(2, 3);
-        intervalMatrix(1) = Interval(-1, 1);
+        IntervalColumnMatrix2d matrix;
+        matrix(0) = Interval(2, 3);
+        matrix(1) = Interval(-1, 1);
 
-        IntervalColumnMatrix2d squaredIntervals = intervalMatrix.cwiseSquared();
-        REQUIRE(squaredIntervals(0).lowerBound() == 4);
-        REQUIRE(squaredIntervals(0).upperBound() == 9);
-        REQUIRE(squaredIntervals(1).lowerBound() == 0);
-        REQUIRE(squaredIntervals(1).upperBound() == 1);
+        IntervalColumnMatrix2d squaredComponents = matrix.cwiseSquared();
+        REQUIRE(squaredComponents(0).lowerBound() == 4);
+        REQUIRE(squaredComponents(0).upperBound() == 9);
+        REQUIRE(squaredComponents(1).lowerBound() == 0);
+        REQUIRE(squaredComponents(1).upperBound() == 1);
+    }
+}
+
+TEST_CASE("Coefficient-wise absolute value") {
+    SECTION("Double matrices") {  
+        ColumnMatrix2d matrix;
+        matrix(0) = -1;
+        matrix(1) = 3;
+
+        ColumnMatrix2d absoluteComponents = matrix.cwiseAbs();
+        REQUIRE(absoluteComponents(0) == 1);
+        REQUIRE(absoluteComponents(1) == 3);
+    }
+
+    SECTION("Interval matrices") {
+        Matrix<Interval, 4, 1> matrix;
+        matrix(0) = Interval(2, 3);
+        matrix(1) = Interval(-1, 2);
+        matrix(2) = Interval(-3, 1);
+        matrix(3) = Interval(-4, -3);
+
+        Matrix<Interval, 4, 1> absoluteComponents = matrix.cwiseAbs();
+        REQUIRE(absoluteComponents(0).lowerBound() == 2);
+        REQUIRE(absoluteComponents(0).upperBound() == 3);
+        REQUIRE(absoluteComponents(1).lowerBound() == 0);
+        REQUIRE(absoluteComponents(1).upperBound() == 2);
+        REQUIRE(absoluteComponents(2).lowerBound() == 0);
+        REQUIRE(absoluteComponents(2).upperBound() == 3);
+        REQUIRE(absoluteComponents(3).lowerBound() == 3);
+        REQUIRE(absoluteComponents(3).upperBound() == 4);
     }
 }
 

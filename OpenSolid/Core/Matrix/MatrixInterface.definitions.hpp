@@ -304,6 +304,13 @@ namespace opensolid
                 MatrixTraits<TDerived>::NumRows,
                 MatrixTraits<TDerived>::NumColumns
             >
+            cwiseAbs() const;
+
+            const Matrix<
+                typename MatrixTraits<TDerived>::PlainScalar,
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TDerived>::NumColumns
+            >
             cwiseSquared() const;
 
             template <class TOtherDerived>

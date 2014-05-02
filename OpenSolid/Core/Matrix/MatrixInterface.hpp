@@ -773,6 +773,21 @@ namespace opensolid
             );
         }
 
+        template <class TDerived>
+        inline
+        const Matrix<
+            typename MatrixTraits<TDerived>::PlainScalar,
+            MatrixTraits<TDerived>::NumRows,
+            MatrixTraits<TDerived>::NumColumns
+        >
+        MatrixInterface<TDerived>::cwiseAbs() const {
+            return map(
+                [] (Scalar component) -> Scalar {
+                    return abs(component);
+                }
+            );
+        }
+
         inline
         double
         componentSquared(double component) {
