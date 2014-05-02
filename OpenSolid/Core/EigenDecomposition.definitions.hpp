@@ -92,7 +92,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         void
-        compute(Matrix<double, 3, 3> matrix);
+        compute(const Matrix<double, 3, 3>& matrix);
     public:
         template <class TDerived>
         EigenDecomposition(const detail::MatrixInterface<TDerived>& matrix);

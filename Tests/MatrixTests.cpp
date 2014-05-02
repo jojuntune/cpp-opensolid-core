@@ -528,50 +528,57 @@ TEST_CASE("Stream output") {
 }
 
 TEST_CASE("2D Eigen decomposition") {
-    Matrix2d matrix;
-    matrix(0, 0) = 2;
-    matrix(1, 0) = 1;
-    matrix(0, 1) = 1;
-    matrix(1, 1) = 3;
+    for (int i = 0; i < 100; ++i) {
+        Matrix2d randomMatrix = Matrix2d::Random();
+        Matrix2d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
 
-    INFO("Matrix:\n" << matrix);
+        CAPTURE(symmetricMatrix);
 
-    auto decomposition = matrix.eigenDecomposition();
-    REQUIRE(decomposition.exists());
-    
-    ColumnMatrix2d eigenvalues = decomposition.eigenvalues();
-    Matrix2d eigenvectors = decomposition.eigenvectors();
-    INFO("Eigenvalues:\n" << eigenvalues);
-    INFO("Eigenvectors:\n" << eigenvectors);
+        auto decomposition = symmetricMatrix.eigenDecomposition();
+        REQUIRE(decomposition.exists());
+   
+        ColumnMatrix2d eigenvalues = decomposition.eigenvalues();
+        Matrix2d eigenvectors = decomposition.eigenvectors();
+        CAPTURE(eigenvalues);
+        CAPTURE(eigenvectors);
 
-    REQUIRE((matrix * eigenvectors.column(0) - eigenvalues(0) * eigenvectors.column(0)).isZero());
-    REQUIRE((matrix * eigenvectors.column(1) - eigenvalues(1) * eigenvectors.column(1)).isZero());
+        for (int j = 0; j < 2; ++j) {
+            double eigenvalue = eigenvalues(j);
+            ColumnMatrix2d eigenvector = eigenvectors.column(j);
+            CAPTURE(eigenvalue);
+            CAPTURE(eigenvector);
+            CAPTURE(symmetricMatrix * eigenvector);
+            CAPTURE(eigenvalue * eigenvector);
+            CAPTURE(symmetricMatrix * eigenvector - eigenvalue * eigenvector);
+            REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero());
+        }
+    }
 }
 
-// TEST_CASE("3D Eigen decomposition") {
-//     for (int i = 0; i < 100; ++i) {
-//         Matrix3d randomMatrix = Matrix3d::Random();
-//         Matrix3d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
-//
-//         CAPTURE(symmetricMatrix);
-//
-//         auto decomposition = symmetricMatrix.eigenDecomposition();
-//         REQUIRE(decomposition.exists());
-//    
-//         ColumnMatrix3d eigenvalues = decomposition.eigenvalues();
-//         Matrix3d eigenvectors = decomposition.eigenvectors();
-//         CAPTURE(eigenvalues);
-//         CAPTURE(eigenvectors);
-//
-//         for (int j = 0; j < 3; ++j) {
-//             double eigenvalue = eigenvalues(j);
-//             ColumnMatrix3d eigenvector = eigenvectors.column(j);
-//             CAPTURE(eigenvalue);
-//             CAPTURE(eigenvector);
-//             CAPTURE(symmetricMatrix * eigenvector);
-//             CAPTURE(eigenvalue * eigenvector);
-//             CAPTURE(symmetricMatrix * eigenvector - eigenvalue * eigenvector);
-//             REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero(1e-6));
-//         }
-//     }
-// }
+TEST_CASE("3D Eigen decomposition") {
+    for (int i = 0; i < 100; ++i) {
+        Matrix3d randomMatrix = Matrix3d::Random();
+        Matrix3d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
+
+        CAPTURE(symmetricMatrix);
+
+        auto decomposition = symmetricMatrix.eigenDecomposition();
+        REQUIRE(decomposition.exists());
+   
+        ColumnMatrix3d eigenvalues = decomposition.eigenvalues();
+        Matrix3d eigenvectors = decomposition.eigenvectors();
+        CAPTURE(eigenvalues);
+        CAPTURE(eigenvectors);
+
+        for (int j = 0; j < 3; ++j) {
+            double eigenvalue = eigenvalues(j);
+            ColumnMatrix3d eigenvector = eigenvectors.column(j);
+            CAPTURE(eigenvalue);
+            CAPTURE(eigenvector);
+            CAPTURE(symmetricMatrix * eigenvector);
+            CAPTURE(eigenvalue * eigenvector);
+            CAPTURE(symmetricMatrix * eigenvector - eigenvalue * eigenvector);
+            REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero());
+        }
+    }
+}
