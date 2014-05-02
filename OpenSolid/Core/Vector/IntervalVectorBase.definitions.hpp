@@ -56,6 +56,9 @@ namespace opensolid
 
             IntervalVectorBase(const Interval* sourcePtr);
         public:
+            const Vector<Interval, iNumDimensions>
+            normalized() const;
+
             bool
             isEmpty() const;
 

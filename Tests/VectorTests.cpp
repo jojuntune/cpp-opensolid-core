@@ -164,3 +164,14 @@ TEST_CASE("3D unit orthogonal vector") {
     UnitVector3d expected(-0.6, 0.8, 0.0);
     REQUIRE((testVector.unitOrthogonal() - expected).isZero());
 }
+
+TEST_CASE("Interval vector normalization") {
+    for (int i = 0; i < 100; ++i) {
+        IntervalVector3d intervalVector = 5 * IntervalVector3d::Random();
+        IntervalVector3d normalized = intervalVector.normalized();
+        REQUIRE(normalized.contains(intervalVector.centroid().normalized()));
+        for (const Vector3d& vertex : intervalVector.vertices()) {
+            REQUIRE(normalized.contains(vertex.normalized()));
+        }
+    }
+}

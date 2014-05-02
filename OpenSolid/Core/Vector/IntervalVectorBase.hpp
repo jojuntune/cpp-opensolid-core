@@ -81,6 +81,20 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
+        const Vector<Interval, iNumDimensions>
+        IntervalVectorBase<iNumDimensions>::normalized() const {
+            Interval norm = this->norm();
+            if (norm == opensolid::Zero()) {
+                assert(false);
+                return Vector<Interval, iNumDimensions>(
+                    Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+                );
+            }
+            return Vector<Interval, iNumDimensions>((1.0 / norm) * this->components());
+        }
+
+        template <int iNumDimensions>
+        inline
         bool
         IntervalVectorBase<iNumDimensions>::isEmpty() const {
             return this->components().any(
