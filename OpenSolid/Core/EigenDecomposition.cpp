@@ -284,6 +284,25 @@ namespace opensolid
         _eigenvalues(1) = diagonalMatrix(1, 1);
         _eigenvalues(2) = diagonalMatrix(2, 2);
 
+        // Attempt at 'polishing' eigenvectors - didn't seem to work, but might
+        // be able to be adjusted 
+        //
+        // for (int n = 0; n < 3; ++n) {
+        //     Matrix3d adjustedEigenvectors = _eigenvectors;
+        //     for (int i = 0; i < 3; ++i) {
+        //         int j = (i + 1) % 3;
+        //         int k = (i + 2) % 3;
+        //         ColumnMatrix3d v = matrix * _eigenvectors.column(i);
+        //         ColumnMatrix3d ej = _eigenvectors.column(j);
+        //         ColumnMatrix3d ek = _eigenvectors.column(k);
+        //         double xj = v.cwiseProduct(ej).sum() / _eigenvalues(j);
+        //         double xk = v.cwiseProduct(ek).sum() / _eigenvalues(k);
+        //         adjustedEigenvectors.column(i) -= xj * ej;
+        //         adjustedEigenvectors.column(i) -= xk * ek;
+        //     }
+        //     _eigenvectors = adjustedEigenvectors;
+        // }
+
         _exists = true;
     }
 
