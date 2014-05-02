@@ -449,3 +449,31 @@ TEST_CASE("2D Eigen decomposition") {
     REQUIRE((matrix * eigenvectors.column(0) - eigenvalues(0) * eigenvectors.column(0)).isZero());
     REQUIRE((matrix * eigenvectors.column(1) - eigenvalues(1) * eigenvectors.column(1)).isZero());
 }
+
+TEST_CASE("3D Eigen decomposition") {
+    for (int i = 0; i < 100; ++i) {
+        Matrix3d randomMatrix = Matrix3d::Random();
+        Matrix3d symmetricMatrix = 0.5 * (randomMatrix + randomMatrix.transpose());
+
+        CAPTURE(symmetricMatrix);
+
+        auto decomposition = symmetricMatrix.eigenDecomposition();
+        REQUIRE(decomposition.exists());
+    
+        ColumnMatrix3d eigenvalues = decomposition.eigenvalues();
+        Matrix3d eigenvectors = decomposition.eigenvectors();
+        CAPTURE(eigenvalues);
+        CAPTURE(eigenvectors);
+
+        for (int j = 0; j < 3; ++j) {
+            double eigenvalue = eigenvalues(j);
+            ColumnMatrix3d eigenvector = eigenvectors.column(j);
+            CAPTURE(eigenvalue);
+            CAPTURE(eigenvector);
+            CAPTURE(symmetricMatrix * eigenvector);
+            CAPTURE(eigenvalue * eigenvector);
+            CAPTURE(symmetricMatrix * eigenvector - eigenvalue * eigenvector);
+            REQUIRE((symmetricMatrix * eigenvector - eigenvalue * eigenvector).isZero(1e-6));
+        }
+    }
+}
