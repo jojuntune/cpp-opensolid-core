@@ -42,11 +42,60 @@ namespace opensolid
 {
     namespace detail
     {
-        template <int iNumAxes, int iNumDimensions>
+        template <
+            int iNumDimensions,
+            int iNumAxes,
+            bool bFewerAxesThanDimensions,
+            bool bFewerDimensionsThanAxes
+        >
+        struct ComputeInverseMatrix;
+
+        template <int iSize>
+        struct ComputeInverseMatrix<iSize, iSize, false, false>
+        {
+            inline
+            Matrix<double, iSize, iSize>
+            operator()(const Matrix<double, iSize, iSize>& matrix) const {
+                return matrix.inverse();
+            }
+        };
+
+        template <int iNumDimensions, int iNumAxes>
+        struct ComputeInverseMatrix<iNumDimensions, iNumAxes, true, false>
+        {
+            static_assert(iNumAxes < iNumDimensions, "Internal template metaprogramming error");
+            
+            inline
+            Matrix<double, iNumAxes, iNumDimensions>
+            operator()(const Matrix<double, iNumDimensions, iNumAxes>& matrix) const {
+                Matrix<double, iNumAxes, iNumDimensions> transpose = matrix.transpose();
+                return (transpose * matrix).inverse() * transpose;
+            } 
+        };
+
+        template <int iNumDimensions, int iNumAxes>
+        struct ComputeInverseMatrix<iNumDimensions, iNumAxes, false, true>
+        {
+            static_assert(iNumDimensions < iNumAxes, "Internal template metaprogramming error");
+            
+            inline
+            Matrix<double, iNumAxes, iNumDimensions>
+            operator()(const Matrix<double, iNumDimensions, iNumAxes>& matrix) const {
+                Matrix<double, iNumAxes, iNumDimensions> transpose = matrix.transpose();
+                return transpose * (matrix * transpose).inverse();
+            } 
+        };
+
+        template <int iNumDimensions, int iNumAxes>
+        inline
         Matrix<double, iNumAxes, iNumDimensions>
-        computeInverseMatrix(const Matrix<double, iNumDimensions, iNumAxes>& basisMatrix) {
-            Matrix<double, iNumAxes, iNumDimensions> transpose = basisMatrix.transpose();
-            return (transpose * basisMatrix).inverse() * transpose;
+        computeInverseMatrix(const Matrix<double, iNumDimensions, iNumAxes>& matrix) {
+            return ComputeInverseMatrix<
+                iNumDimensions,
+                iNumAxes,
+                (iNumAxes < iNumDimensions),
+                (iNumDimensions < iNumAxes)
+            >()(matrix);
         }
     }
 

@@ -137,3 +137,16 @@ TEST_CASE("Non-orthogonal") {
     REQUIRE((coordinateSystem * Point3d(1, 1, 1) - Point3d(4, 4, 4)).isZero());
     REQUIRE((Point3d(4, 4, 4) / coordinateSystem - Point3d(1, 1, 1)).isZero());
 }
+
+TEST_CASE("Degenerate") {
+    RowMatrix3d basisMatrix;
+    basisMatrix(0) = 1.0;
+    basisMatrix(1) = 2.0;
+    basisMatrix(2) = 3.0;
+    CoordinateSystem<1, 3> coordinateSystem(Point1d::Origin(), basisMatrix);
+    Point1d original(3.0);
+    Point3d transformed = original / coordinateSystem;
+    CAPTURE(transformed);
+    Point1d reconstructed = coordinateSystem * transformed;
+    REQUIRE((reconstructed.value() - original.value()) == Zero());
+}
