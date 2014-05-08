@@ -67,8 +67,8 @@
     add_simple_test(VectorTests VectorTests.cpp OpenSolidCore)
     add_simple_test(PositionTests PositionTests.cpp OpenSolidCore)
     add_simple_test(QuaternionTests QuaternionTests.cpp OpenSolidCore)
+    add_simple_test(CoordinateSystemTests CoordinateSystemTests.cpp OpenSolidCore)
 
-    add_cxxtest(CoordinateSystemTests CoordinateSystemTests.hpp OpenSolidCore)
     add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
     add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
