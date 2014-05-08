@@ -110,16 +110,27 @@ TEST_CASE("Accuracy") {
             zDirection
         ).normalized();
 
-        std::cout << coordinateSystem.basisMatrix() << std::endl;
-        std::cout << std::endl;
+        CAPTURE(coordinateSystem.basisMatrix());
+        
         Matrix3d shouldBeIdentity =
             coordinateSystem.basisMatrix() * coordinateSystem.basisMatrix().transpose();
-        std::cout << shouldBeIdentity << std::endl;
-        std::cout << std::endl;
-        std::cout << xDirection / coordinateSystem << std::endl;
-        std::cout << yDirection / coordinateSystem << std::endl;
-        std::cout << zDirection / coordinateSystem << std::endl;
-        std::cout << std::endl;
+        CAPTURE(shouldBeIdentity);
+        REQUIRE(shouldBeIdentity.isIdentity());
+
+        Vector3d xDirectionLocalized = xDirection / coordinateSystem;
+        Vector3d yDirectionLocalized = yDirection / coordinateSystem;
+        Vector3d zDirectionLocalized = zDirection / coordinateSystem;
+
+        CAPTURE(xDirectionLocalized);
+        CAPTURE(yDirectionLocalized);
+        CAPTURE(zDirectionLocalized);
+
+        REQUIRE(xDirectionLocalized.x() > Zero());
+        REQUIRE(xDirectionLocalized.y() == Zero());
+        REQUIRE(xDirectionLocalized.z() == Zero());
+        
+        REQUIRE(yDirectionLocalized.y() > Zero());
+        REQUIRE(yDirectionLocalized.z() == Zero());
     }
 }
 
