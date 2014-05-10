@@ -211,42 +211,6 @@ namespace opensolid
     }
 
     inline
-    bool
-    Point3d::isOn(const Triangle3d& triangle, double precision) const {
-        Point3d firstVertex = triangle.vertex(0);
-        Vector3d firstEdgeVector = triangle.vertex(1) - firstVertex;
-        Vector3d secondEdgeVector = triangle.vertex(2) - firstVertex;
-        
-        // Check whether the point is on the plane defined by the triangle
-        Vector3d perpendicularVector = firstEdgeVector.cross(secondEdgeVector);
-        double perpendicularSquaredLength = perpendicularVector.squaredNorm();
-        Vector3d displacement = *this - firstVertex;
-        double perpendicularDotProduct = displacement.dot(perpendicularVector);
-        double perpendicularMetric = perpendicularDotProduct * perpendicularDotProduct;
-        Zero perpendicularZero(perpendicularSquaredLength * precision * precision);
-        if (perpendicularMetric > perpendicularZero) {
-            return false;
-        }
-
-        // Check whether the point is within the triangle
-        PlanarCoordinateSystem3d triangleCoordinateSystem(
-            firstVertex,
-            firstEdgeVector,
-            secondEdgeVector
-        );
-        Point2d triangleCoordinates = *this / triangleCoordinateSystem;
-        double a = triangleCoordinates.x();
-        double b = triangleCoordinates.y();
-        Zero coordinateZero(precision);
-        if (a < coordinateZero || b < coordinateZero || 1 - a - b < coordinateZero) {
-            return false;
-        }
-        
-        // Passed both checks
-        return true;
-    }
-
-    inline
     const Point3d
     Point3d::Cylindrical(double radius, double angle, double height) {
         return Point3d(radius * cos(angle), radius * sin(angle), height);

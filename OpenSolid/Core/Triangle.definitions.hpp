@@ -136,6 +136,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         Plane3d
         plane() const;
+        
+        OPENSOLID_CORE_EXPORT
+        bool
+        contains(const Point<3>& point, double precision = 1e-12) const;
     };
 
     typedef Triangle<3> Triangle3d;

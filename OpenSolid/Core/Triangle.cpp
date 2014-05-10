@@ -58,4 +58,39 @@ namespace opensolid
     Triangle3d::plane() const {
         return Plane3d(vertex(0), normalVector());
     }
+    
+    bool
+    Triangle3d::contains(const Point3d& point, double precision) const {
+        Point3d firstVertex = vertex(0);
+        Vector3d firstEdgeVector = vertex(1) - firstVertex;
+        Vector3d secondEdgeVector = vertex(2) - firstVertex;
+        
+        // Check whether the point is on the plane defined by the triangle
+        Vector3d perpendicularVector = firstEdgeVector.cross(secondEdgeVector);
+        double perpendicularSquaredLength = perpendicularVector.squaredNorm();
+        Vector3d displacement = point - firstVertex;
+        double perpendicularDotProduct = displacement.dot(perpendicularVector);
+        double perpendicularMetric = perpendicularDotProduct * perpendicularDotProduct;
+        Zero perpendicularZero(perpendicularSquaredLength * precision * precision);
+        if (perpendicularMetric > perpendicularZero) {
+            return false;
+        }
+
+        // Check whether the point is within the triangle
+        PlanarCoordinateSystem3d triangleCoordinateSystem(
+            firstVertex,
+            firstEdgeVector,
+            secondEdgeVector
+        );
+        Point2d triangleCoordinates = point / triangleCoordinateSystem;
+        double a = triangleCoordinates.x();
+        double b = triangleCoordinates.y();
+        Zero coordinateZero(precision);
+        if (a < coordinateZero || b < coordinateZero || 1 - a - b < coordinateZero) {
+            return false;
+        }
+        
+        // Passed both checks
+        return true;
+    }
 }

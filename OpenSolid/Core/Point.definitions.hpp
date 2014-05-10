@@ -167,9 +167,6 @@ namespace opensolid
 
         bool
         isOn(const LineSegment<3>& lineSegment, double precision = 1e-12) const;
-
-        bool
-        isOn(const Triangle<3>& triangle, double precision = 1e-12) const;
         
         static const Point<3>
         Cylindrical(double radius, double angle, double height);

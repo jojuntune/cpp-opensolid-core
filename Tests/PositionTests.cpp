@@ -152,10 +152,10 @@ TEST_CASE("3D point predicates") {
     REQUIRE(extendedPoint.isOn(lineSegment.axis()));
     REQUIRE(!extendedPoint.isOn(lineSegment));
 
-    REQUIRE(triangle.centroid().isOn(triangle));
-    REQUIRE(triangle.vertex(1).isOn(triangle));
+    REQUIRE(triangle.contains(triangle.centroid()));
+    REQUIRE(triangle.contains(triangle.vertex(1)));
     Point3d planarPoint(-1, 0, 2);
     REQUIRE(planarPoint.isOn(triangle.plane()));
-    REQUIRE(!planarPoint.isOn(triangle));
-    REQUIRE(!Point3d(1, 1, 1).isOn(triangle));
+    REQUIRE_FALSE(triangle.contains(planarPoint));
+    REQUIRE_FALSE(triangle.contains(Point3d(1, 1, 1)));
 }
