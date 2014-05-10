@@ -362,4 +362,17 @@ public:
 
         TS_ASSERT_EQUALS(set.find(LineSegment2d(Point2d(1, 1), Point2d(7, 5))), set.end());
     }
+    
+     void testContains() {
+        std::vector<LineSegment2d> lineSegments(5);
+        lineSegments[0] = LineSegment2d(Point2d(1, 1), Point2d(3, 1));
+        lineSegments[1] = LineSegment2d(Point2d(2, 2), Point2d(4, 2));
+        lineSegments[2] = LineSegment2d(Point2d(3, 3), Point2d(5, 3));
+        lineSegments[3] = LineSegment2d(Point2d(4, 4), Point2d(6, 4));
+        lineSegments[4] = LineSegment2d(Point2d(5, 5), Point2d(7, 5));
+
+        SpatialSet<LineSegment2d> set(lineSegments);
+        TS_ASSERT(set.contains(LineSegment2d(Point2d(3 + 1e-14, 3), Point2d(5, 3 - 1e-14))));
+        TS_ASSERT(!set.contains(LineSegment2d(Point2d(1, 1), Point2d(7, 5))));
+    }
 };

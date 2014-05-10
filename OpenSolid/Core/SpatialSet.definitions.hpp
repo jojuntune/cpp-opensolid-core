@@ -145,6 +145,9 @@ namespace opensolid
 
         typename std::vector<TItem>::const_iterator
         find(const TItem& item, double precision = 1e-12) const;
+        
+        bool
+        contains(const TItem& item, double precision = 1e-12) const;
 
         std::vector<TItem>
         uniqueItems(double precision = 1e-12) const;

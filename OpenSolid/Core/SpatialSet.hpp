@@ -411,6 +411,13 @@ namespace opensolid
             return end();
         }
     }
+    
+    template <class TItem>
+    inline
+    bool
+    SpatialSet<TItem>::contains(const TItem& item, double precision) const {
+        return find(item, precision) != end();
+    }
 
     namespace detail
     {
