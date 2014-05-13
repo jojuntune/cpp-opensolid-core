@@ -69,12 +69,12 @@
     add_simple_test(QuaternionTests QuaternionTests.cpp OpenSolidCore)
     add_simple_test(CoordinateSystemTests CoordinateSystemTests.cpp OpenSolidCore)
     add_simple_test(DatumTests DatumTests.cpp OpenSolidCore)
-	
-    add_cxxtest(SimplexTests SimplexTests.hpp OpenSolidCore)
+    add_simple_test(SimplexTests SimplexTests.cpp OpenSolidCore)
+    add_simple_test(CollectionTests CollectionTests.cpp OpenSolidCore)
+    add_simple_test(CurveTests CurveTests.cpp OpenSolidCore)
+    
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
     add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
-    add_cxxtest(CurveTests CurveTests.hpp OpenSolidCore)
-    add_cxxtest(CollectionTests CollectionTests.hpp OpenSolidCore)
     
     add_to_global_source_list(
         IntervalTests.cpp
