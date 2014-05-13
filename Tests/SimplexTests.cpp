@@ -184,7 +184,7 @@ TEST_CASE("Triangle vertices") {
     };
     REQUIRE(triangle.vertices().any(hasPositiveZ));
     REQUIRE_FALSE(triangle.vertices().all(hasPositiveZ));
-    REQUIRE(triangle.vertices().where(hasPositiveZ).size(), 2);
+    REQUIRE(triangle.vertices().where(hasPositiveZ).size() == 2);
 }
 
 TEST_CASE("Triangle edges") {
