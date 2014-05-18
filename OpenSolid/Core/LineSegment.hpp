@@ -180,7 +180,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     bool
-    LineSegment<iNumDimensions>::contains(const Point2d& point, double precision = 1e-12) const {
+    LineSegment<iNumDimensions>::contains(const Point2d& point, double precision) const {
         Vector2d parallelVector = vector();
         Vector2d perpendicularVector(parallelVector.x(), -parallelVector.y());
         double squaredLength = parallelVector.squaredNorm();
@@ -206,7 +206,7 @@ namespace opensolid
     template <int iNumDimensions>
     inline
     bool
-    LineSegment<iNumDimensions>::contains(const Point3d& point, double precision = 1e-12) const {
+    LineSegment<iNumDimensions>::contains(const Point3d& point, double precision) const {
         Vector3d parallelVector = vector();
         double squaredLength = parallelVector.squaredNorm();
         Vector3d startVector = point - startVertex();
