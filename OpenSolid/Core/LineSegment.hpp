@@ -176,6 +176,57 @@ namespace opensolid
     LineSegment<iNumDimensions>::intersection(const Plane3d& plane, double precision) const {
         return Intersection<LineSegment3d, Plane3d>(*this, plane, precision);
     }
+    
+    template <int iNumDimensions>
+    inline
+    bool
+    LineSegment<iNumDimensions>::contains(const Point2d& point, double precision = 1e-12) const {
+        Vector2d parallelVector = vector();
+        Vector2d perpendicularVector(parallelVector.x(), -parallelVector.y());
+        double squaredLength = parallelVector.squaredNorm();
+        Vector2d startVector = point - startVertex();
+        Zero zero(precision * precision * squaredLength);
+
+        // Check whether the point is on the axis defined by the segment
+        double perpendicularMetric = startVector.dot(perpendicularVector);
+        if (perpendicularMetric * perpendicularMetric > zero) {
+            return false;
+        }
+
+        // Check whether point is located within the segment
+        Point1d localCoordinates = point / coordinateSystem();
+        if (!Interval::Unit().contains(localCoordinates.value())) {
+            return false;
+        }
+
+        // Passed all checks
+        return true;
+    }
+    
+    template <int iNumDimensions>
+    inline
+    bool
+    LineSegment<iNumDimensions>::contains(const Point3d& point, double precision = 1e-12) const {
+        Vector3d parallelVector = vector();
+        double squaredLength = parallelVector.squaredNorm();
+        Vector3d startVector = point - startVertex();
+        Zero zero(precision * precision * squaredLength);
+
+        // Check whether the point is on the axis defined by the segment
+        double perpendicularMetric = startVector.cross(parallelVector).squaredNorm();
+        if (perpendicularMetric > zero) {
+            return false;
+        }
+
+        // Check whether point is located within the segment
+        Point1d localCoordinates = point / coordinateSystem();
+        if (!Interval::Unit().contains(localCoordinates.value())) {
+            return false;
+        }
+
+        // Passed all checks
+        return true;
+    }
 
     template <int iNumDimensions>
     inline

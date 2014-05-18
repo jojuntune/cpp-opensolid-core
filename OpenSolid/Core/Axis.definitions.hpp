@@ -92,6 +92,9 @@ namespace opensolid
 
         static const Axis<2>
         Y();
+        
+        bool
+        contains(const Point<2>& point, double precision = 1e-12) const;
     };
 
     typedef Axis<2> Axis2d;

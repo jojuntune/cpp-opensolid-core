@@ -96,37 +96,6 @@ namespace opensolid
     }
 
     inline
-    bool
-    Point2d::isOn(const Axis2d& axis, double precision) const {
-        return distanceTo(axis) == Zero(precision);
-    }
-
-    inline
-    bool
-    Point2d::isOn(const LineSegment2d& lineSegment, double precision) const {
-        Vector2d parallelVector = lineSegment.vector();
-        Vector2d perpendicularVector(parallelVector.x(), -parallelVector.y());
-        double squaredLength = parallelVector.squaredNorm();
-        Vector2d startVector = *this - lineSegment.startVertex();
-        Zero zero(precision * precision * squaredLength);
-
-        // Check whether the point is on the axis defined by the segment
-        double perpendicularMetric = startVector.dot(perpendicularVector);
-        if (perpendicularMetric * perpendicularMetric > zero) {
-            return false;
-        }
-
-        // Check whether point is located within the segment
-        Point1d localCoordinates = *this / lineSegment.coordinateSystem();
-        if (!Interval::Unit().contains(localCoordinates.value())) {
-            return false;
-        }
-
-        // Passed all checks
-        return true;
-    }
-
-    inline
     const Point2d
     Point2d::Polar(double radius, double angle) {
         return Point2d(radius * cos(angle), radius * sin(angle));
@@ -184,30 +153,6 @@ namespace opensolid
     bool
     Point3d::isOn(const Plane3d& plane, double precision) const {
         return distanceTo(plane) == Zero(precision);
-    }
-
-    inline
-    bool
-    Point3d::isOn(const LineSegment3d& lineSegment, double precision) const {
-        Vector3d parallelVector = lineSegment.vector();
-        double squaredLength = parallelVector.squaredNorm();
-        Vector3d startVector = *this - lineSegment.startVertex();
-        Zero zero(precision * precision * squaredLength);
-
-        // Check whether the point is on the axis defined by the segment
-        double perpendicularMetric = startVector.cross(parallelVector).squaredNorm();
-        if (perpendicularMetric > zero) {
-            return false;
-        }
-
-        // Check whether point is located within the segment
-        Point1d localCoordinates = *this / lineSegment.coordinateSystem();
-        if (!Interval::Unit().contains(localCoordinates.value())) {
-            return false;
-        }
-
-        // Passed all checks
-        return true;
     }
 
     inline

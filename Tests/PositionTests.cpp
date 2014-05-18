@@ -125,13 +125,13 @@ TEST_CASE("2D point predicates") {
     Axis2d axis(Point2d(1, 1), Vector2d(2, 1).normalized());
     LineSegment2d lineSegment(Point2d(0, 1), Point2d(1, 0));
 
-    REQUIRE(Point2d(3, 2).isOn(axis));
-    REQUIRE(!Point2d(3, 3).isOn(axis));
+    REQUIRE(axis.contains(Point2d(3, 2)));
+    REQUIRE_FALSE(axis.contains(Point2d(3, 3)));
 
-    REQUIRE(Point2d(0.5, 0.5).isOn(lineSegment));
-    REQUIRE(Point2d(0, 1).isOn(lineSegment));
-    REQUIRE(!Point2d(-1, 2).isOn(lineSegment));
-    REQUIRE(!Point2d(1, 1).isOn(lineSegment));
+    REQUIRE(lineSegment.contains(Point2d(0.5, 0.5)));
+    REQUIRE(lineSegment.contains(Point2d(0, 1)));
+    REQUIRE_FALSE(lineSegment.contains(Point2d(-1, 2)));
+    REQUIRE_FALSE(lineSegment.contains(Point2d(1, 1)));
 }
 
 TEST_CASE("3D point predicates") {
@@ -146,11 +146,11 @@ TEST_CASE("3D point predicates") {
     REQUIRE(Point3d(0, 0, 2).isOn(plane));
     REQUIRE(!Point3d::Origin().isOn(plane));
 
-    REQUIRE(lineSegment.centroid().isOn(lineSegment));
-    REQUIRE(lineSegment.endVertex().isOn(lineSegment));
+    REQUIRE(lineSegment.contains(lineSegment.centroid()));
+    REQUIRE(lineSegment.contains(lineSegment.endVertex()));
     Point3d extendedPoint(2, 2, -1);
     REQUIRE(extendedPoint.isOn(lineSegment.axis()));
-    REQUIRE(!extendedPoint.isOn(lineSegment));
+    REQUIRE_FALSE(lineSegment.contains(extendedPoint));
 
     REQUIRE(triangle.contains(triangle.centroid()));
     REQUIRE(triangle.contains(triangle.vertex(1)));

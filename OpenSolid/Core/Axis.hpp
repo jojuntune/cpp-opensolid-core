@@ -101,6 +101,12 @@ namespace opensolid
     Axis2d::Y() {
         return Axis2d(Point2d::Origin(), UnitVector2d::Y());
     }
+    
+    inline
+    bool
+    Axis2d::contains(const Point2d& point, double precision) const {
+        return (point - originPoint()).dot(normalVector()) == Zero(precision);
+    }
 
     inline
     Axis3d::Axis() :

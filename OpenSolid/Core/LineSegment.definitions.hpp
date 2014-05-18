@@ -131,6 +131,12 @@ namespace opensolid
 
         Intersection<LineSegment<3>, Plane3d>
         intersection(const Plane3d& plane, double precision = 1e-12) const;
+        
+        bool
+        contains(const Point<2>& point, double precision = 1e-12) const;
+        
+        bool
+        contains(const Point<3>& point, double precision = 1e-12) const;
     };
 
     typedef LineSegment<1> LineSegment1d;

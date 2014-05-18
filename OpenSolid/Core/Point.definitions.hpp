@@ -118,12 +118,6 @@ namespace opensolid
         double
         distanceTo(const Axis<2>& axis) const;
 
-        bool
-        isOn(const Axis<2>& axis, double precision = 1e-12) const;
-
-        bool
-        isOn(const LineSegment<2>& lineSegment, double precision = 1e-12) const;
-
         static const Point<2>
         Polar(double radius, double angle);
     };
@@ -164,9 +158,6 @@ namespace opensolid
 
         bool
         isOn(const Plane3d& plane, double precision = 1e-12) const;
-
-        bool
-        isOn(const LineSegment<3>& lineSegment, double precision = 1e-12) const;
         
         static const Point<3>
         Cylindrical(double radius, double angle, double height);
