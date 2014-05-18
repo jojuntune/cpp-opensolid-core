@@ -140,22 +140,22 @@ TEST_CASE("3D point predicates") {
     LineSegment3d lineSegment(Point3d(0, 0, 1), Point3d(1, 1, 0));
     Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
 
-    REQUIRE(Point3d(2, 3, 4).isOn(axis));
-    REQUIRE(!Point3d(2, 3, 5).isOn(axis));
+    REQUIRE(axis.contains(Point3d(2, 3, 4)));
+    REQUIRE_FALSE(axis.contains(Point3d(2, 3, 5)));
 
-    REQUIRE(Point3d(0, 0, 2).isOn(plane));
-    REQUIRE(!Point3d::Origin().isOn(plane));
+    REQUIRE(plane.contains(Point3d(0, 0, 2)));
+    REQUIRE_FALSE(plane.contains(Point3d::Origin()));
 
     REQUIRE(lineSegment.contains(lineSegment.centroid()));
     REQUIRE(lineSegment.contains(lineSegment.endVertex()));
     Point3d extendedPoint(2, 2, -1);
-    REQUIRE(extendedPoint.isOn(lineSegment.axis()));
+    REQUIRE(lineSegment.axis().contains(extendedPoint));
     REQUIRE_FALSE(lineSegment.contains(extendedPoint));
 
     REQUIRE(triangle.contains(triangle.centroid()));
     REQUIRE(triangle.contains(triangle.vertex(1)));
     Point3d planarPoint(-1, 0, 2);
-    REQUIRE(planarPoint.isOn(triangle.plane()));
+    REQUIRE(triangle.plane().contains(planarPoint));
     REQUIRE_FALSE(triangle.contains(planarPoint));
     REQUIRE_FALSE(triangle.contains(Point3d(1, 1, 1)));
 }

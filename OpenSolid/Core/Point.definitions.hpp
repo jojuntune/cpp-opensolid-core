@@ -152,12 +152,6 @@ namespace opensolid
 
         double
         distanceTo(const Plane3d& plane) const;
-
-        bool
-        isOn(const Axis<3>& axis, double precision = 1e-12) const;
-
-        bool
-        isOn(const Plane3d& plane, double precision = 1e-12) const;
         
         static const Point<3>
         Cylindrical(double radius, double angle, double height);

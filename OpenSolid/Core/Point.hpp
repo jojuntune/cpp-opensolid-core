@@ -144,18 +144,6 @@ namespace opensolid
     }
 
     inline
-    bool
-    Point3d::isOn(const Axis3d& axis, double precision) const {
-        return squaredDistanceTo(axis) == Zero(precision * precision);
-    }
-
-    inline
-    bool
-    Point3d::isOn(const Plane3d& plane, double precision) const {
-        return distanceTo(plane) == Zero(precision);
-    }
-
-    inline
     const Point3d
     Point3d::Cylindrical(double radius, double angle, double height) {
         return Point3d(radius * cos(angle), radius * sin(angle), height);

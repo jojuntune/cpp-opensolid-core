@@ -140,6 +140,9 @@ namespace opensolid
 
         static const Axis<3>
         Z();
+        
+        bool
+        contains(const Point<3>& point, double precision = 1e-12) const;
     };
 
     typedef Axis<3> Axis3d;

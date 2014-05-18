@@ -181,6 +181,12 @@ namespace opensolid
     Axis3d::Z() {
         return Axis3d(Point3d::Origin(), UnitVector3d::Z());
     }
+    
+    inline
+    bool
+    Axis3d::contains(const Point3d& point, double precision) const {
+        return point.squaredDistanceTo(*this) == Zero(precision * precision);
+    }
 
     template <int iNumDimensions>
     inline

@@ -125,6 +125,10 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         PlanarCoordinateSystem3d
         coordinateSystem() const;
+        
+        OPENSOLID_CORE_EXPORT
+        bool
+        contains(const Point<3>& point, double precision = 1e-12) const;
     };
     
     template <>
