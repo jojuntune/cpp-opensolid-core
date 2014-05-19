@@ -72,22 +72,22 @@
     add_simple_test(SimplexTests SimplexTests.cpp OpenSolidCore)
     add_simple_test(CollectionTests CollectionTests.cpp OpenSolidCore)
     add_simple_test(CurveTests CurveTests.cpp OpenSolidCore)
+    add_simple_test(ParametricExpressionTests ParametricExpressionTests.cpp OpenSolidCore)
     
     add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
-    add_cxxtest(ParametricExpressionTests ParametricExpressionTests.hpp OpenSolidCore)
     
     add_to_global_source_list(
         IntervalTests.cpp
         MatrixTests.cpp
         VectorTests.cpp
-        PositionTests.hpp
-        CoordinateSystemTests.hpp
-        SimplexTests.hpp
+        PositionTests.cpp
+        CoordinateSystemTests.cpp
+        SimplexTests.cpp
         SetTests.hpp
-        ParametricExpressionTests.hpp
-        CurveTests.hpp
-        CollectionTests.hpp
-        DatumTests.hpp
+        ParametricExpressionTests.cpp
+        CurveTests.cpp
+        CollectionTests.cpp
+        DatumTests.cpp
     )
     
 ########## Graph library tests ##########
