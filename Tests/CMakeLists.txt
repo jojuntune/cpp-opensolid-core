@@ -72,9 +72,8 @@
     add_simple_test(SimplexTests SimplexTests.cpp OpenSolidCore)
     add_simple_test(CollectionTests CollectionTests.cpp OpenSolidCore)
     add_simple_test(CurveTests CurveTests.cpp OpenSolidCore)
-    add_simple_test(ParametricExpressionTests ParametricExpressionTests.cpp OpenSolidCore)
-    
-    add_cxxtest(SetTests SetTests.hpp OpenSolidCore)
+    add_simple_test(ParametricExpressionTests ParametricExpressionTests.cpp OpenSolidCore) 
+    add_simple_test(SetTests SetTests.cpp OpenSolidCore)
     
     add_to_global_source_list(
         IntervalTests.cpp
@@ -83,7 +82,7 @@
         PositionTests.cpp
         CoordinateSystemTests.cpp
         SimplexTests.cpp
-        SetTests.hpp
+        SetTests.cpp
         ParametricExpressionTests.cpp
         CurveTests.cpp
         CollectionTests.cpp
