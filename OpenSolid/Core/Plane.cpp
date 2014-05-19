@@ -156,11 +156,6 @@ namespace opensolid
         Vector3d yVector = normalVector().cross(xVector);
         return PlanarCoordinateSystem3d(originPoint(), xVector, yVector);
     }
-    
-    bool
-    Plane3d::contains(const Point3d& point, double precision) const {
-        return point.distanceTo(*this) == Zero(precision);
-    }
 
     Plane3d
     TransformationFunction<Plane3d, 3>::operator()(

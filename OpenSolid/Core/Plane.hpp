@@ -48,6 +48,12 @@ namespace opensolid
     Plane3d::normalVector() const {
         return _normalVector;
     }
+    
+    inline
+    bool
+    Plane3d::contains(const Point3d& point, double precision) const {
+        return point.distanceTo(*this) == Zero(precision);
+    }
 
     inline
     Plane3d
