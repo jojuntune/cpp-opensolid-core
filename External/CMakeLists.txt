@@ -24,8 +24,6 @@
     endif()
     
     if(${BUILD_TESTS})
-        add_subdirectory(CxxTest)
-        set(CXXTEST_ROOT ${CXXTEST_ROOT} PARENT_SCOPE)
         add_subdirectory(Catch)
         set(CATCH_ROOT ${CATCH_ROOT} PARENT_SCOPE)
     endif()

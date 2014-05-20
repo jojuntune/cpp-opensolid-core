@@ -24,13 +24,9 @@
 
 #include <OpenSolid/CLASS.hpp>
 
-#include <cxxtest/TestSuite.h>
+#include <catch/catch.hpp>
 
 using namespace opensolid;
 
-class CLASSTests : public CxxTest::TestSuite
-{
-public:
-    void testSOMETHING() {
-    }
-};
+TEST_CASE("Test name") {
+}
