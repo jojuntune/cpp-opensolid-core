@@ -345,7 +345,7 @@ TEST_CASE("Component") {
 }
 
 TEST_CASE("Transformation") {
-    CoordinateSystem3d coordinateSystem = CoordinateSystem3d::Global();
+    CoordinateSystem3d coordinateSystem = CoordinateSystem3d::global();
     coordinateSystem = coordinateSystem.translatedBy(Vector3d(1, 1, 1));
     coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
 

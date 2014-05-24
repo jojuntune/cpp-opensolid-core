@@ -172,7 +172,7 @@ namespace opensolid
         normalized() const;
 
         static const CoordinateSystem<iNumDimensions, iNumAxes>
-        Global();
+        global();
     };
 
     typedef CoordinateSystem<1, 1> CoordinateSystem1d;

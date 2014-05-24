@@ -494,7 +494,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     inline
     const CoordinateSystem<iNumDimensions, iNumAxes>
-    CoordinateSystem<iNumDimensions, iNumAxes>::Global() {
+    CoordinateSystem<iNumDimensions, iNumAxes>::global() {
         static_assert(
             iNumDimensions == iNumAxes,
             "Global coordinate system always has equal number of dimensions and axes"
