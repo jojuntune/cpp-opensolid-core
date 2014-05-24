@@ -83,7 +83,7 @@ void boxExamples() {
 }
 
 void axisExamples() {
-    Axis3d zAxis = Axis3d::Z();
+    Axis3d zAxis = Axis3d::z();
     Point3d point(1, 2, 3);
 
     Point3d rotated = point.rotatedAbout(zAxis, M_PI / 2);

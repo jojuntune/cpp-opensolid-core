@@ -92,13 +92,13 @@ namespace opensolid
 
     inline
     const Axis2d
-    Axis2d::X() {
+    Axis2d::x() {
         return Axis2d(Point2d::Origin(), UnitVector2d::X());
     }
 
     inline
     const Axis2d
-    Axis2d::Y() {
+    Axis2d::y() {
         return Axis2d(Point2d::Origin(), UnitVector2d::Y());
     }
     
@@ -166,19 +166,19 @@ namespace opensolid
 
     inline
     const Axis3d
-    Axis3d::X() {
+    Axis3d::x() {
         return Axis3d(Point3d::Origin(), UnitVector3d::X());
     }
 
     inline
     const Axis3d
-    Axis3d::Y() {
+    Axis3d::y() {
         return Axis3d(Point3d::Origin(), UnitVector3d::Y());
     }
 
     inline
     const Axis3d
-    Axis3d::Z() {
+    Axis3d::z() {
         return Axis3d(Point3d::Origin(), UnitVector3d::Z());
     }
     

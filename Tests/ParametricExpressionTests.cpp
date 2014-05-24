@@ -581,7 +581,7 @@ TEST_CASE("Squiggle Jacobians") {
     ParametricExpression<1, 2> scalar = scalarSquiggle();
     ParametricExpression<3, 2> vector = vectorSquiggle();
     std::vector<ColumnMatrix2d> parameterValues = squiggleParameterValues();
-    Matrix3d transformationMatrix = Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix();
+    Matrix3d transformationMatrix = Rotation3d(Axis3d::x(), M_PI / 4).transformationMatrix();
 
     for (unsigned i = 0; i < parameterValues.size(); ++i) {
         testJacobian(scalar, parameterValues[i]);

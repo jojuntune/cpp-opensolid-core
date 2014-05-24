@@ -35,8 +35,8 @@ using namespace opensolid;
 
 TEST_CASE("Transformation") {
     Point3d point(3, 2, 1);
-    REQUIRE((point.rotatedAbout(Axis3d::Z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
-    REQUIRE((point.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
+    REQUIRE((point.rotatedAbout(Axis3d::z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
+    REQUIRE((point.rotatedAbout(Axis3d::x(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
     REQUIRE((point.mirroredAbout(Plane3d::YZ()) - Point3d(-3, 2, 1)).isZero());
 }
 
@@ -49,7 +49,7 @@ TEST_CASE("Points") {
     REQUIRE(origin.components().isZero());
     REQUIRE(origin.isOrigin());
     REQUIRE((point1 + Vector3d(3, 3, 3) - point3).isZero());
-    REQUIRE((point1.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
+    REQUIRE((point1.rotatedAbout(Axis3d::x(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
 }
 
 TEST_CASE("Boxes") {
