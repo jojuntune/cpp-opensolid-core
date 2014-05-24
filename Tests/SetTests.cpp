@@ -224,7 +224,7 @@ TEST_CASE("Swap") {
     REQUIRE(secondSet[0] == 1);
 }
 
-TEST_CASE("R value") {
+TEST_CASE("Rvalue") {
     std::vector<double> values(3);
     values[0] = 1;
     values[1] = 2;
