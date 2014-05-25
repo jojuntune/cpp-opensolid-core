@@ -251,7 +251,7 @@ TEST_CASE("Conversion") {
         parameterValues(1) = 2;
         parameterValues(2) = 3;
 
-        REQUIRE(expression.evaluate(parameterValues) == RowMatrix3d::Constant(2.0));
+        REQUIRE(expression.evaluate(parameterValues) == RowMatrix3d::constant(2.0));
     }
 }
 
@@ -350,7 +350,7 @@ TEST_CASE("Transformation") {
     coordinateSystem = coordinateSystem.rotatedAbout(coordinateSystem.zAxis(), M_PI / 4);
 
     Parameter1d t;
-    ParametricExpression<3, 1> linear = ColumnMatrix3d::Ones() * t;
+    ParametricExpression<3, 1> linear = ColumnMatrix3d::ones() * t;
     ParametricExpression<3, 1> product = coordinateSystem.basisMatrix() * linear +
         coordinateSystem.originPoint().components();
     ParametricExpression<3, 1> quotient = coordinateSystem.inverseMatrix() *
@@ -620,7 +620,7 @@ TEST_CASE("Squiggle Jacobians") {
 
 TEST_CASE("Dot product with constant") {
     Parameter1d t;
-    ParametricExpression<3, 1> line = ColumnMatrix3d::Ones() + ColumnMatrix3d::Ones() * t;
+    ParametricExpression<3, 1> line = ColumnMatrix3d::ones() + ColumnMatrix3d::ones() * t;
     ParametricExpression<1, 1> dotProduct = line.dot(columnMatrix(0, 1, 0));
     REQUIRE((dotProduct.evaluate(0.0).value() - 1.0) == Zero());
     REQUIRE((dotProduct.evaluate(1.0).value() - 2.0) == Zero());
@@ -628,7 +628,7 @@ TEST_CASE("Dot product with constant") {
 
 TEST_CASE("Cross product with constant") {
     Parameter1d t;
-    ParametricExpression<3, 1> line = ColumnMatrix3d::Ones() + ColumnMatrix3d::Ones() * t;
+    ParametricExpression<3, 1> line = ColumnMatrix3d::ones() + ColumnMatrix3d::ones() * t;
     ParametricExpression<3, 1> crossProduct = line.cross(columnMatrix(0, 1, 0));
     REQUIRE((crossProduct.evaluate(0.0) - columnMatrix(-1, 0, 1)).isZero());
     REQUIRE((crossProduct.evaluate(1.0) - columnMatrix(-2, 0, 2)).isZero());

@@ -327,10 +327,10 @@ namespace opensolid
             );
         }
         if (this->isConstantExpression() && this->cast<ConstantExpression>()->isZero()) {
-            return new ConstantExpression(ColumnMatrixXd::Zero(3), numParameters());
+            return new ConstantExpression(ColumnMatrixXd::zero(3), numParameters());
         }
         if (other->isConstantExpression() && other->cast<ConstantExpression>()->isZero()) {
-            return new ConstantExpression(ColumnMatrixXd::Zero(3), numParameters());
+            return new ConstantExpression(ColumnMatrixXd::zero(3), numParameters());
         }
         return new CrossProductExpression(this, other);
     }
@@ -392,12 +392,12 @@ namespace opensolid
 
     ExpressionImplementationPtr
     operator+(const ExpressionImplementationPtr& firstOperand, double secondOperand) {
-        return firstOperand + ColumnMatrixXd::Constant(1, secondOperand);
+        return firstOperand + ColumnMatrixXd::constant(1, secondOperand);
     }
 
     ExpressionImplementationPtr
     operator+(double firstOperand, const ExpressionImplementationPtr& secondOperand) {
-        return secondOperand + ColumnMatrixXd::Constant(1, firstOperand);
+        return secondOperand + ColumnMatrixXd::constant(1, firstOperand);
     }
 
     ExpressionImplementationPtr
@@ -442,12 +442,12 @@ namespace opensolid
 
     ExpressionImplementationPtr
     operator-(const ExpressionImplementationPtr& firstOperand, double secondOperand) {
-        return firstOperand + ColumnMatrixXd::Constant(1, -secondOperand);
+        return firstOperand + ColumnMatrixXd::constant(1, -secondOperand);
     }
 
     ExpressionImplementationPtr
     operator-(double firstOperand, const ExpressionImplementationPtr& secondOperand) {
-        return (-secondOperand) + ColumnMatrixXd::Constant(1, firstOperand);
+        return (-secondOperand) + ColumnMatrixXd::constant(1, firstOperand);
     }
 
     ExpressionImplementationPtr
@@ -522,7 +522,7 @@ namespace opensolid
         }
         if (matrix.isZero()) {
             return new ConstantExpression(
-                ColumnMatrixXd::Zero(matrix.numRows()),
+                ColumnMatrixXd::zero(matrix.numRows()),
                 argument->numParameters()
             );
         }
@@ -544,7 +544,7 @@ namespace opensolid
     operator*(double scale, const ExpressionImplementationPtr& argument) {
         if (scale == Zero()) {
             return new ConstantExpression(
-                ColumnMatrixXd::Zero(argument->numDimensions()),
+                ColumnMatrixXd::zero(argument->numDimensions()),
                 argument->numParameters()
             );
         }

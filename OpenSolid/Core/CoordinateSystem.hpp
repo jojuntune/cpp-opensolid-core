@@ -502,7 +502,7 @@ namespace opensolid
         
         return CoordinateSystem(
             Point<iNumDimensions>::Origin(),
-            Matrix<double, iNumDimensions, iNumAxes>::Identity()
+            Matrix<double, iNumDimensions, iNumAxes>::identity()
         );
     }
 

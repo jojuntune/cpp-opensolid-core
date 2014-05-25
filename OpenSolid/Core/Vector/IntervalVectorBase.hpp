@@ -87,7 +87,7 @@ namespace opensolid
             if (norm == opensolid::Zero()) {
                 assert(false);
                 return Vector<Interval, iNumDimensions>(
-                    Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+                    Matrix<Interval, iNumDimensions, 1>::constant(Interval::Empty())
                 );
             }
             return Vector<Interval, iNumDimensions>((1.0 / norm) * this->components());
