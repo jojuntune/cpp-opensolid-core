@@ -125,14 +125,17 @@ namespace opensolid
             assert(false);
             return UnitVector3d();
         } else {
-            if (x() <= y()) {
-                if (x() <= z()) {
+            double absX = abs(x());
+            double absY = abs(y());
+            double absZ = abs(z());
+            if (absX <= absY) {
+                if (absX <= absZ) {
                     return UnitVector3d::X().cross(*this).normalized();
                 } else {
                     return UnitVector3d::Z().cross(*this).normalized();
                 }
             } else {
-                if (y() <= z()) {
+                if (absY <= absZ) {
                     return UnitVector3d::Y().cross(*this).normalized();
                 } else {
                     return UnitVector3d::Z().cross(*this).normalized();

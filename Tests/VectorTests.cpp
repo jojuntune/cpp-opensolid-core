@@ -160,9 +160,16 @@ TEST_CASE("2D unit orthogonal vector") {
 }
 
 TEST_CASE("3D unit orthogonal vector") {
-    Vector3d testVector(4, 3, 0);
-    UnitVector3d expected(-0.6, 0.8, 0.0);
-    REQUIRE((testVector.unitOrthogonal() - expected).isZero());
+    SECTION("Simple") {
+        Vector3d testVector(4, 3, 0);
+        UnitVector3d expected(-0.6, 0.8, 0.0);
+        REQUIRE((testVector.unitOrthogonal() - expected).isZero());
+    }
+    SECTION("Negative components") {
+        Vector3d testVector(0, 0, -1);
+        UnitVector3d expected(0, 1, 0);
+        REQUIRE((testVector.unitOrthogonal() - expected).isZero());
+    }
 }
 
 TEST_CASE("Interval vector normalization") {
