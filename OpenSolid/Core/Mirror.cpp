@@ -33,7 +33,7 @@ namespace opensolid
         template <int iNumDimensions>
         Matrix<double, iNumDimensions, iNumDimensions>
         mirrorTransformationMatrix(const UnitVector<iNumDimensions>& normalVector) {
-            return Matrix<double, iNumDimensions, iNumDimensions>::Identity() -
+            return Matrix<double, iNumDimensions, iNumDimensions>::identity() -
                 2 * normalVector.components() * normalVector.components().transpose();
         }
     }

@@ -195,7 +195,7 @@ namespace opensolid
 
         // Check whether point is located within the segment
         Point1d localCoordinates = point / coordinateSystem();
-        if (!Interval::Unit().contains(localCoordinates.value())) {
+        if (!Interval::unit().contains(localCoordinates.value())) {
             return false;
         }
 
@@ -220,7 +220,7 @@ namespace opensolid
 
         // Check whether point is located within the segment
         Point1d localCoordinates = point / coordinateSystem();
-        if (!Interval::Unit().contains(localCoordinates.value())) {
+        if (!Interval::unit().contains(localCoordinates.value())) {
             return false;
         }
 

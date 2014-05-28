@@ -36,17 +36,17 @@ TEST_CASE("Basic rotations") {
 
     SECTION("X") {
         quaternionMatrix = Quaternion3d(UnitVector3d::X(), M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix();
+        expectedMatrix = Rotation3d(Axis3d::x(), M_PI / 4).transformationMatrix();
     }
 
     SECTION("Y") {
         quaternionMatrix = Quaternion3d(-UnitVector3d::Y(), M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::Y().flipped(), M_PI / 4).transformationMatrix();
+        expectedMatrix = Rotation3d(Axis3d::y().flipped(), M_PI / 4).transformationMatrix();
     }
 
     SECTION("Z") {
         quaternionMatrix = Quaternion3d(UnitVector3d::Z(), -M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::Z(), -M_PI / 4).transformationMatrix();
+        expectedMatrix = Rotation3d(Axis3d::z(), -M_PI / 4).transformationMatrix();
     }
 
     REQUIRE((quaternionMatrix - expectedMatrix).isZero());

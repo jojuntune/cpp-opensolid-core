@@ -35,8 +35,8 @@ using namespace opensolid;
 
 TEST_CASE("Transformation") {
     Point3d point(3, 2, 1);
-    REQUIRE((point.rotatedAbout(Axis3d::Z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
-    REQUIRE((point.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
+    REQUIRE((point.rotatedAbout(Axis3d::z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
+    REQUIRE((point.rotatedAbout(Axis3d::x(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
     REQUIRE((point.mirroredAbout(Plane3d::YZ()) - Point3d(-3, 2, 1)).isZero());
 }
 
@@ -49,7 +49,7 @@ TEST_CASE("Points") {
     REQUIRE(origin.components().isZero());
     REQUIRE(origin.isOrigin());
     REQUIRE((point1 + Vector3d(3, 3, 3) - point3).isZero());
-    REQUIRE((point1.rotatedAbout(Axis3d::X(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
+    REQUIRE((point1.rotatedAbout(Axis3d::x(), M_PI / 2) - Point3d(1, -3, 2)).isZero());
 }
 
 TEST_CASE("Boxes") {
@@ -116,7 +116,7 @@ TEST_CASE("Box interpolation") {
     Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
     REQUIRE((box.interpolated(0.5, 0.5, 0.5) - Point3d(1.5, 3.5, 5.5)).isZero());
     REQUIRE((box.interpolated(0.0, 0.0, 0.0) - Point3d(1, 3, 5)).isZero());
-    Box3d wholeBox = box.interpolated(Interval::Unit(), Interval::Unit(), Interval::Unit());
+    Box3d wholeBox = box.interpolated(Interval::unit(), Interval::unit(), Interval::unit());
     REQUIRE(wholeBox.contains(box));
     REQUIRE(box.contains(wholeBox));
 }
