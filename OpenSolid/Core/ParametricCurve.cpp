@@ -192,7 +192,7 @@ namespace opensolid
             ParametricExpression<3, 1> curveExpression = centerPoint.components() +
                 cos(theta) * xVector.components() + sin(theta) * sidewaysVector.components() +
                 t * zVector.components();
-            return ParametricCurve3d(curveExpression, Interval::Unit());
+            return ParametricCurve3d(curveExpression, Interval::unit());
         }
     }
 
@@ -217,7 +217,7 @@ namespace opensolid
         ParametricExpression<1, 1> yExpression = centerPoint.y() + radius * sin(angleExpression);
         ParametricExpression<2, 1> curveExpression =
             ParametricExpression<2, 1>::FromComponents(xExpression, yExpression);
-        return ParametricCurve2d(curveExpression, Interval::Unit());
+        return ParametricCurve2d(curveExpression, Interval::unit());
     }
     
     ParametricCurve2d

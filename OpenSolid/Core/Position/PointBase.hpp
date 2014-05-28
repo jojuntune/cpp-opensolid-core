@@ -102,7 +102,7 @@ namespace opensolid
                 this->components().binaryMap(
                     other.components(),
                     [] (double component, double otherComponent) {
-                        return Interval::Hull(component, otherComponent);
+                        return Interval::hull(component, otherComponent);
                     }
                 )
             );

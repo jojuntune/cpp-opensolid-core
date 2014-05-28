@@ -116,7 +116,7 @@ TEST_CASE("Box interpolation") {
     Box3d box(Interval(1, 2), Interval(3, 4), Interval(5, 6));
     REQUIRE((box.interpolated(0.5, 0.5, 0.5) - Point3d(1.5, 3.5, 5.5)).isZero());
     REQUIRE((box.interpolated(0.0, 0.0, 0.0) - Point3d(1, 3, 5)).isZero());
-    Box3d wholeBox = box.interpolated(Interval::Unit(), Interval::Unit(), Interval::Unit());
+    Box3d wholeBox = box.interpolated(Interval::unit(), Interval::unit(), Interval::unit());
     REQUIRE(wholeBox.contains(box));
     REQUIRE(box.contains(wholeBox));
 }
