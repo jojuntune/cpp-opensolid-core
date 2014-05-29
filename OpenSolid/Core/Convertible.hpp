@@ -40,7 +40,7 @@ namespace opensolid
     template <class TDerived> template <class TOther>
     inline
     const TDerived
-    Convertible<TDerived>::From(const TOther& argument) {
+    Convertible<TDerived>::from(const TOther& argument) {
         return ConversionFunction<TOther, TDerived>()(argument);
     }
 }

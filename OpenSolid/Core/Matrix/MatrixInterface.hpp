@@ -971,7 +971,7 @@ namespace opensolid
         inline
         Interval
         componentHull(double firstComponent, double secondComponent) {
-            return Interval::Hull(firstComponent, secondComponent);
+            return Interval::hull(firstComponent, secondComponent);
         }
 
         inline
@@ -1016,7 +1016,7 @@ namespace opensolid
         componentIntersection(double firstComponent, double secondComponent) {
             return firstComponent - secondComponent == Zero() ?
                 Interval(firstComponent + 0.5 * (secondComponent - firstComponent)) :
-                Interval::Empty();
+                Interval::empty();
         }
 
         inline
@@ -1024,7 +1024,7 @@ namespace opensolid
         componentIntersection(double firstComponent, Interval secondComponent) {
             return secondComponent.contains(firstComponent) ?
                 Interval(firstComponent) :
-                Interval::Empty();
+                Interval::empty();
         }
 
         inline
@@ -1032,7 +1032,7 @@ namespace opensolid
         componentIntersection(Interval firstComponent, double secondComponent) {
             return firstComponent.contains(secondComponent) ?
                 Interval(secondComponent) :
-                Interval::Empty();
+                Interval::empty();
         }
 
         inline
@@ -1215,7 +1215,7 @@ namespace opensolid
         inline
         Interval
         randomComponent<Interval>() {
-            return Interval::Random();
+            return Interval::random();
         }
 
         template <class TDerived>

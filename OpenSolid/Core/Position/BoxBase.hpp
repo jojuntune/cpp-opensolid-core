@@ -310,7 +310,7 @@ namespace opensolid
         const Box<iNumDimensions>
         BoxBase<iNumDimensions>::Unit() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Unit())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::unit())
             );
         }
 
@@ -319,7 +319,7 @@ namespace opensolid
         const Box<iNumDimensions>
         BoxBase<iNumDimensions>::Empty() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Empty())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::empty())
             );
         }
 
@@ -328,7 +328,7 @@ namespace opensolid
         const Box<iNumDimensions>
         BoxBase<iNumDimensions>::Whole() {
             return Box<iNumDimensions>(
-                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::Whole())
+                Matrix<Interval, iNumDimensions, 1>::Constant(Interval::whole())
             );
         }
     }

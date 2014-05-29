@@ -150,7 +150,7 @@ namespace opensolid
         inline
         const Vector<TScalar, iNumDimensions>
         VectorBase<TScalar, iNumDimensions>::Random() {
-            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::Random());
+            return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::random());
         }
     }
 }

@@ -175,7 +175,7 @@ namespace opensolid
     Interval::intersection(Interval interval) const {
         double lowerBound = max(this->lowerBound(), interval.lowerBound());
         double upperBound = min(this->upperBound(), interval.upperBound());
-        return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::Empty();
+        return lowerBound <= upperBound ? Interval(lowerBound, upperBound) : Interval::empty();
     }
         
     inline
@@ -280,32 +280,32 @@ namespace opensolid
 
     inline
     Interval
-    Interval::Unit() {
+    Interval::unit() {
         return Interval(0, 1);
     }
     
     inline
     Interval
-    Interval::Hull(double firstValue, double secondValue) {
+    Interval::hull(double firstValue, double secondValue) {
         return Interval(min(firstValue, secondValue), max(firstValue, secondValue));
     }
 
     inline
     Interval
-    Interval::Empty() {
+    Interval::empty() {
         return Interval(INFINITY, -INFINITY);
     }
     
     inline
     Interval
-    Interval::Whole() {
+    Interval::whole() {
         return Interval(-INFINITY, INFINITY);
     }
 
     inline
     Interval
-    Interval::Random() {
-        return Hull(double(std::rand()) / RAND_MAX, double(std::rand()) / RAND_MAX);
+    Interval::random() {
+        return hull(double(std::rand()) / RAND_MAX, double(std::rand()) / RAND_MAX);
     }
 
     inline
@@ -542,7 +542,7 @@ namespace opensolid
     Interval
     sqrt(Interval interval) {
         if (interval < Zero()) {
-            return Interval::Empty();
+            return Interval::empty();
         } else {
             return Interval(
                 sqrt(max(0.0, interval.lowerBound())),

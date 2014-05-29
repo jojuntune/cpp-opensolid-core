@@ -63,49 +63,49 @@ namespace opensolid
         operator=(const detail::MatrixInterface<TOtherDerived>& other);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Constant(TScalar value);
+        constant(TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Constant(int size, TScalar value);
+        constant(int size, TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Constant(int numRows, int numColumns, TScalar value);
+        constant(int numRows, int numColumns, TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Zero();
+        zero();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Zero(int size);
+        zero(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Zero(int numRows, int numColumns);
+        zero(int numRows, int numColumns);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Ones();
+        ones();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Ones(int size);
+        ones(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Ones(int numRows, int numColumns);
+        ones(int numRows, int numColumns);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Identity();
+        identity();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Identity(int size);
+        identity(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Identity(int numRows, int numColumns);
+        identity(int numRows, int numColumns);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Random();
+        random();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Random(int size);
+        random(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        Random(int numRows, int numColumns);
+        random(int numRows, int numColumns);
     };
 
     typedef Matrix<double, 1, 1> Matrix1d;

@@ -49,7 +49,7 @@ namespace opensolid
         ExpressionImplementationPtr
         zeroExpression() {
             return ExpressionImplementationPtr(
-                new ConstantExpression(ColumnMatrixXd::Zero(iNumDimensions), iNumParameters)
+                new ConstantExpression(ColumnMatrixXd::zero(iNumDimensions), iNumParameters)
             );
         }
 

@@ -150,19 +150,19 @@ namespace opensolid
         operator/=(Interval interval);
         
         static Interval
-        Unit();
+        unit();
         
         static Interval
-        Hull(double firstValue, double secondValue);
+        hull(double firstValue, double secondValue);
         
         static Interval
-        Empty();
+        empty();
         
         static Interval
-        Whole();
+        whole();
 
         static Interval
-        Random();
+        random();
     };
 
     bool

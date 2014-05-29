@@ -29,7 +29,7 @@
 namespace opensolid
 {
     const Quaternion3d
-    Quaternion3d::Slerp(
+    Quaternion3d::slerp(
         const Quaternion3d& startQuaternion,
         const Quaternion3d& endQuaternion,
         double parameterValue
@@ -52,7 +52,7 @@ namespace opensolid
             endCoefficient * endQuaternion.components();
         double squaredNorm = slerpedComponents.cwiseSquared().sum();
         if (squaredNorm == Zero()) {
-            return Quaternion3d::Identity();
+            return Quaternion3d::identity();
         } else {
             slerpedComponents /= sqrt(squaredNorm);
             return Quaternion3d(slerpedComponents);
