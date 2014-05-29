@@ -173,7 +173,7 @@ namespace opensolid
 
     inline
     const Quaternion3d
-    Quaternion3d::Identity() {
+    Quaternion3d::identity() {
         Matrix<double, 4, 1> identityComponents;
         identityComponents(3) = 1.0;
         return Quaternion3d(identityComponents);

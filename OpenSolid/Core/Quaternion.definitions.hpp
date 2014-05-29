@@ -81,11 +81,11 @@ namespace opensolid
         operator*(const Quaternion3d& other) const;
 
         static const Quaternion3d
-        Identity();
+        identity();
 
         OPENSOLID_CORE_EXPORT
         static const Quaternion3d
-        Slerp(
+        slerp(
             const Quaternion3d& startQuaternion,
             const Quaternion3d& endQuaternion,
             double parameterValue
