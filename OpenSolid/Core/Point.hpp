@@ -97,7 +97,7 @@ namespace opensolid
 
     inline
     const Point2d
-    Point2d::Polar(double radius, double angle) {
+    Point2d::polar(double radius, double angle) {
         return Point2d(radius * cos(angle), radius * sin(angle));
     }
 
@@ -145,13 +145,13 @@ namespace opensolid
 
     inline
     const Point3d
-    Point3d::Cylindrical(double radius, double angle, double height) {
+    Point3d::cylindrical(double radius, double angle, double height) {
         return Point3d(radius * cos(angle), radius * sin(angle), height);
     }
 
     inline
     const Point3d
-    Point3d::Spherical(double radius, double polarAngle, double elevationAngle) {
+    Point3d::spherical(double radius, double polarAngle, double elevationAngle) {
         double sinElevation = sin(elevationAngle);
         double cosElevation = cos(elevationAngle);
         double sinPolar = sin(polarAngle);
