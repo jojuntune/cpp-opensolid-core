@@ -72,22 +72,21 @@ TEST_CASE("3D axis/triangle intersection") {
 }
 
 TEST_CASE("Non-orthogonal plane transformation") {
-    SECTION("Non-uniform scaling") {
-        Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(1, 0, 1).normalized());
-        CoordinateSystem3d coordinateSystem = CoordinateSystem3d(
-            Point3d::Origin(),
-            Vector3d(2, 0, 0),
-            Vector3d(0, 1, 0),
-            Vector3d(0, 0, 1)
-        );
-        Plane3d transformed = coordinateSystem * original;
-        REQUIRE((transformed.originPoint() - Point3d(2, 0, 1)).isZero());
-        REQUIRE((transformed.normalVector() - Vector3d(1, 0, 2).normalized()).isZero());  
-    }
-    SECTION("Projection onto plane") {
-        Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(-1, 0, -2).normalized());
-        Plane3d projected = original.projectedOnto(Plane3d::XY());
-        REQUIRE((projected.originPoint() - Point3d(1, 0, 0)).isZero());
-        REQUIRE((projected.normalVector() - Vector3d(0, 0, -1)).isZero());
-    }
+    Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(1, 0, 1).normalized());
+    CoordinateSystem3d coordinateSystem = CoordinateSystem3d(
+        Point3d::Origin(),
+        Vector3d(2, 0, 0),
+        Vector3d(0, 1, 0),
+        Vector3d(0, 0, 1)
+    );
+    Plane3d transformed = coordinateSystem * original;
+    REQUIRE((transformed.originPoint() - Point3d(2, 0, 1)).isZero());
+    REQUIRE((transformed.normalVector() - Vector3d(1, 0, 2).normalized()).isZero());
+}
+
+TEST_CASE("Plane mirroring") {
+    Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(-1, 0, -2).normalized());
+    Plane3d mirrored = original.mirroredAbout(Plane3d::XY());
+    REQUIRE((mirrored.originPoint() - Point3d(1, 0, -1)).isZero());
+    REQUIRE((mirrored.normalVector() - Vector3d(-1, 0, 2).normalized()).isZero());
 }

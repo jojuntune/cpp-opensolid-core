@@ -162,16 +162,19 @@ namespace opensolid
         const Plane3d& plane,
         const Matrix3d& matrix
     ) const {
-        PlanarCoordinateSystem3d transformedCoordinateSystem = transformationFunction(
-            plane.coordinateSystem(),
-            matrix
+        if (matrix.determinant() == Zero()) {
+            assert(false);
+            return Plane3d();
+        }
+        Matrix3d normalTransformationMatrix = matrix.inverse().transpose();
+        Vector3d transformedNormal = transformationFunction(
+            plane.normalVector(),
+            normalTransformationMatrix
         );
-        Vector3d transformedXBasisVector = transformedCoordinateSystem.xBasisVector();
-        Vector3d transformedYBasisVector = transformedCoordinateSystem.yBasisVector();
-        Vector3d transformedNormal = transformedXBasisVector.cross(transformedYBasisVector);
         double transformedNorm = transformedNormal.norm();
         if (transformedNorm == Zero()) {
-            throw PlaceholderError();
+            assert(false);
+            return Plane3d();
         }
         transformedNormal *= (1.0 / transformedNorm);
         return Plane3d(
