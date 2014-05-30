@@ -119,7 +119,7 @@ namespace opensolid
         distanceTo(const Axis<2>& axis) const;
 
         static const Point<2>
-        Polar(double radius, double angle);
+        polar(double radius, double angle);
     };
 
     typedef Point<2> Point2d;
@@ -154,10 +154,10 @@ namespace opensolid
         distanceTo(const Plane3d& plane) const;
         
         static const Point<3>
-        Cylindrical(double radius, double angle, double height);
+        cylindrical(double radius, double angle, double height);
 
         static const Point<3>
-        Spherical(double radius, double polarAngle, double elevationAngle);
+        spherical(double radius, double polarAngle, double elevationAngle);
     };
 
     typedef Point<3> Point3d;

@@ -191,7 +191,7 @@ TEST_CASE("Triangle edges") {
     auto lengthAccumulator = [] (double lengthSoFar, const LineSegment2d& edge) {
         return lengthSoFar + edge.length();
     };
-    double circumference = Triangle2d::Unit().edges().fold(0.0, lengthAccumulator);
+    double circumference = Triangle2d::unit().edges().fold(0.0, lengthAccumulator);
     REQUIRE((circumference - (2.0 + sqrt(2.0))) == Zero());
 }
 
@@ -199,11 +199,11 @@ TEST_CASE("Tetrahedron vertices") {
     auto pointIsOrigin = [] (const Point3d& point) {
         return point.isOrigin();
     };
-    REQUIRE(Tetrahedron3d::Unit().vertices().where(pointIsOrigin).size() == 1);
+    REQUIRE(Tetrahedron3d::unit().vertices().where(pointIsOrigin).size() == 1);
 }
 
 TEST_CASE("Tetrahedron edges") {
-    double totalLength = Tetrahedron3d::Unit().edges().fold(
+    double totalLength = Tetrahedron3d::unit().edges().fold(
         0.0,
         [] (double lengthSoFar, const LineSegment3d& edge) {
             return lengthSoFar + edge.length();
@@ -213,7 +213,7 @@ TEST_CASE("Tetrahedron edges") {
 }
 
 TEST_CASE("Tetrahedron faces") {
-    double totalArea = Tetrahedron3d::Unit().faces().fold(
+    double totalArea = Tetrahedron3d::unit().faces().fold(
         0.0,
         [] (double areaSoFar, const Triangle3d& face) {
             return areaSoFar + face.area();
@@ -252,7 +252,7 @@ TEST_CASE("Triangle containment") {
 }
 
 TEST_CASE("Tetrahedron containment") {
-    Tetrahedron3d tetrahedron = Tetrahedron3d::Unit();
+    Tetrahedron3d tetrahedron = Tetrahedron3d::unit();
 
     REQUIRE(tetrahedron.contains(tetrahedron.vertex(2)));
     REQUIRE(tetrahedron.contains(tetrahedron.centroid()));

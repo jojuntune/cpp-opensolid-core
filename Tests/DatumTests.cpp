@@ -86,7 +86,7 @@ TEST_CASE("Non-orthogonal plane transformation") {
 
 TEST_CASE("Plane mirroring") {
     Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(-1, 0, -2).normalized());
-    Plane3d mirrored = original.mirroredAbout(Plane3d::XY());
+    Plane3d mirrored = original.mirroredAbout(Plane3d::xy());
     REQUIRE((mirrored.originPoint() - Point3d(1, 0, -1)).isZero());
     REQUIRE((mirrored.normalVector() - Vector3d(-1, 0, 2).normalized()).isZero());
 }

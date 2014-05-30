@@ -58,7 +58,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ThroughPoints(
+        throughPoints(
             const Point<3>& firstPoint,
             const Point<3>& secondPoint,
             const Point<3>& thirdPoint
@@ -66,43 +66,43 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        Midplane(const Point<3>& pointBelow, const Point<3>& pointAbove);
+        midplane(const Point<3>& pointBelow, const Point<3>& pointAbove);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        Midplane(const Plane3d& planeBelow, const Plane3d& planeAbove);
+        midplane(const Plane3d& planeBelow, const Plane3d& planeAbove);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ThroughAxisAndPoint(const Axis<3>& axis, const Point<3>& point);
+        throughAxisAndPoint(const Axis<3>& axis, const Point<3>& point);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ThroughAxis(const Axis<3>& axis);
+        throughAxis(const Axis<3>& axis);
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        XY();
+        xy();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        XZ();
+        xz();
         
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        YX();
+        yx();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        YZ();
+        yz();
 
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ZX();
+        zx();
         
         OPENSOLID_CORE_EXPORT
         static Plane3d
-        ZY();
+        zy();
 
         const Point<3>&
         originPoint() const;

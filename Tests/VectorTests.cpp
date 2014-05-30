@@ -114,7 +114,7 @@ TEST_CASE("Random vector generation") {
 
 TEST_CASE("Custom vector type conversion") {
     SECTION("Conversion from custom type") {
-        Vector3d from = Vector3d::From(MyVector(1, 2, 3));
+        Vector3d from = Vector3d::from(MyVector(1, 2, 3));
         REQUIRE(from == Vector3d(1, 2, 3));
     }
 

@@ -37,7 +37,7 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::ThroughPoints(
+    Plane3d::throughPoints(
         const Point3d& firstPoint,
         const Point3d& secondPoint,
         const Point3d& thirdPoint
@@ -49,13 +49,13 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::Midplane(const Point3d& pointBelow, const Point3d& pointAbove) {
+    Plane3d::midplane(const Point3d& pointBelow, const Point3d& pointAbove) {
         Vector3d displacementVector = pointAbove - pointBelow;
         return Plane3d(pointBelow + 0.5 * displacementVector, displacementVector.normalized());
     }
 
     Plane3d
-    Plane3d::Midplane(const Plane3d& planeBelow, const Plane3d& planeAbove) {
+    Plane3d::midplane(const Plane3d& planeBelow, const Plane3d& planeAbove) {
         UnitVector3d belowNormalVector = planeBelow.normalVector();
         UnitVector3d aboveNormalVector = planeAbove.normalVector();
 
@@ -91,7 +91,7 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::ThroughAxisAndPoint(const Axis3d& axis, const Point3d& point) {
+    Plane3d::throughAxisAndPoint(const Axis3d& axis, const Point3d& point) {
         Vector3d normalVector = (point - axis.originPoint()).cross(axis.directionVector());
         if (normalVector.isZero()) {
             // Point is on axis
@@ -101,37 +101,37 @@ namespace opensolid
     }
 
     Plane3d
-    Plane3d::ThroughAxis(const Axis3d& axis) {
+    Plane3d::throughAxis(const Axis3d& axis) {
         return Plane3d(axis.originPoint(), axis.directionVector().unitOrthogonal());
     }
 
     Plane3d
-    Plane3d::XY() {
+    Plane3d::xy() {
         return Plane3d(Point3d::Origin(), UnitVector3d::Z());
     }
 
     Plane3d
-    Plane3d::XZ() {
+    Plane3d::xz() {
         return Plane3d(Point3d::Origin(), -UnitVector3d::Y());
     }
     
     Plane3d
-    Plane3d::YX() {
+    Plane3d::yx() {
         return Plane3d(Point3d::Origin(), -UnitVector3d::Z());
     }
 
     Plane3d
-    Plane3d::YZ() {
+    Plane3d::yz() {
         return Plane3d(Point3d::Origin(), UnitVector3d::X());
     }
 
     Plane3d
-    Plane3d::ZX() {
+    Plane3d::zx() {
         return Plane3d(Point3d::Origin(), UnitVector3d::Y());
     }
     
     Plane3d
-    Plane3d::ZY() {
+    Plane3d::zy() {
         return Plane3d(Point3d::Origin(), -UnitVector3d::X());
     }
     

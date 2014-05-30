@@ -88,10 +88,10 @@ namespace opensolid
         coordinateSystem() const;
 
         static const Axis<2>
-        X();
+        x();    
 
         static const Axis<2>
-        Y();
+        y();
         
         bool
         contains(const Point<2>& point, double precision = 1e-12) const;
@@ -133,13 +133,13 @@ namespace opensolid
         intersection(const Triangle<3>& triangle, double precision = 1e-12) const;
 
         static const Axis<3>
-        X();
+        x();
 
         static const Axis<3>
-        Y();
+        y();
 
         static const Axis<3>
-        Z();
+        z();
         
         bool
         contains(const Point<3>& point, double precision = 1e-12) const;

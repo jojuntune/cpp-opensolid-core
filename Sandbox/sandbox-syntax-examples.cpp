@@ -46,7 +46,7 @@ void vectorExamples() {
     Vector3d v3 = v1.cross(v2);
     assert((v3 - Vector3d(-3, 6, -3)).isZero());
 
-    Matrix3d m = Matrix3d::Identity();
+    Matrix3d m = Matrix3d::identity();
     assert((m * v1.components() - v1.components()).isZero());
     assert((m.inverse() - m).isZero());
 }
@@ -83,7 +83,7 @@ void boxExamples() {
 }
 
 void axisExamples() {
-    Axis3d zAxis = Axis3d::Z();
+    Axis3d zAxis = Axis3d::z();
     Point3d point(1, 2, 3);
 
     Point3d rotated = point.rotatedAbout(zAxis, M_PI / 2);
@@ -167,7 +167,7 @@ void triangleExamples() {
 }
 
 void tetrahedronExamples() {
-    Tetrahedron3d unitTetrahedron = Tetrahedron3d::Unit();
+    Tetrahedron3d unitTetrahedron = Tetrahedron3d::unit();
 
     Point3d firstVertex = unitTetrahedron.vertex(0);
     assert((firstVertex - Point3d::Origin()).isZero());
@@ -207,14 +207,14 @@ void spatialSetExamples() {
 void parametricExpressionExamples() {
     Parameter1d t;
 
-    ParametricExpression<3, 1> lineExpression = ColumnMatrix3d::Ones() + t * ColumnMatrix3d::Ones();
+    ParametricExpression<3, 1> lineExpression = ColumnMatrix3d::ones() + t * ColumnMatrix3d::ones();
     ColumnMatrix3d start = lineExpression.evaluate(0.0);
     ColumnMatrix3d mid = lineExpression.evaluate(0.5);
     ColumnMatrix3d end = lineExpression.evaluate(1.0);
 
-    assert((start - ColumnMatrix3d::Ones()).isZero());
-    assert((mid - ColumnMatrix3d::Constant(1.5)).isZero());
-    assert((end - ColumnMatrix3d::Constant(2)).isZero());
+    assert((start - ColumnMatrix3d::ones()).isZero());
+    assert((mid - ColumnMatrix3d::constant(1.5)).isZero());
+    assert((end - ColumnMatrix3d::constant(2)).isZero());
 
     ParametricExpression<1, 1> sineDerivative = sin(t).derivative();
     ParametricExpression<1, 1> cosineExpression = cos(t);

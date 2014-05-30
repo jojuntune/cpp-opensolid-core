@@ -36,17 +36,17 @@ TEST_CASE("Basic rotations") {
 
     SECTION("X") {
         quaternionMatrix = Quaternion3d(UnitVector3d::X(), M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::X(), M_PI / 4).transformationMatrix();
+        expectedMatrix = Rotation3d(Axis3d::x(), M_PI / 4).transformationMatrix();
     }
 
     SECTION("Y") {
         quaternionMatrix = Quaternion3d(-UnitVector3d::Y(), M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::Y().flipped(), M_PI / 4).transformationMatrix();
+        expectedMatrix = Rotation3d(Axis3d::y().flipped(), M_PI / 4).transformationMatrix();
     }
 
     SECTION("Z") {
         quaternionMatrix = Quaternion3d(UnitVector3d::Z(), -M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::Z(), -M_PI / 4).transformationMatrix();
+        expectedMatrix = Rotation3d(Axis3d::z(), -M_PI / 4).transformationMatrix();
     }
 
     REQUIRE((quaternionMatrix - expectedMatrix).isZero());
@@ -87,7 +87,7 @@ TEST_CASE("Angle and unit vector extraction") {
 }
 
 TEST_CASE("Slerp") {
-    Quaternion3d initial = Quaternion3d::Identity();
+    Quaternion3d initial = Quaternion3d::identity();
     Quaternion3d final =
         Quaternion3d(UnitVector3d::Z(), M_PI / 2) * Quaternion3d(UnitVector3d::X(), -M_PI / 2);
     Quaternion3d relative = final * initial.inverse();
@@ -97,13 +97,13 @@ TEST_CASE("Slerp") {
     double angle = relative.angle();
 
     SECTION("Initial") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 0.0);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 0.0);
         Matrix3d rotationMatrix = interpolated.rotationMatrix();
         REQUIRE(rotationMatrix.isIdentity());
     }
 
     SECTION("Mid") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 0.5);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 0.5);
         Matrix3d rotationMatrix = interpolated.rotationMatrix();
         Vector3d xBasisVector = Vector3d(rotationMatrix.column(0));
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
@@ -115,7 +115,7 @@ TEST_CASE("Slerp") {
     }
 
     SECTION("Final") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 1.0);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 1.0);
         Matrix3d rotationMatrix = interpolated.rotationMatrix();
         Vector3d xBasisVector = Vector3d(rotationMatrix.column(0));
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
@@ -130,17 +130,17 @@ TEST_CASE("Slerp of equal quaternions") {
     Quaternion3d quaternion(Vector3d(1, 1, 1).normalized(), M_PI / 3);
 
     SECTION("Initial") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(quaternion, quaternion, 0.0);
+        Quaternion3d interpolated = Quaternion3d::slerp(quaternion, quaternion, 0.0);
         REQUIRE((interpolated.components() - quaternion.components()).isZero());
     }
 
     SECTION("Mid") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(quaternion, quaternion, 0.5);
+        Quaternion3d interpolated = Quaternion3d::slerp(quaternion, quaternion, 0.5);
         REQUIRE((interpolated.components() - quaternion.components()).isZero());
     }
 
     SECTION("Final") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(quaternion, quaternion, 1.0);
+        Quaternion3d interpolated = Quaternion3d::slerp(quaternion, quaternion, 1.0);
         REQUIRE((interpolated.components() - quaternion.components()).isZero());
     }
 }
@@ -151,31 +151,31 @@ TEST_CASE("Degenerate slerp") {
     CAPTURE(initial.dot(final));
 
     SECTION("0.0") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 0.0);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 0.0);
         INFO("Rotation matrix:\n" << interpolated.rotationMatrix());
         REQUIRE((interpolated.components() - initial.components()).isZero());
     }
 
     SECTION("0.25") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 0.25);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 0.25);
         INFO("Rotation matrix:\n" << interpolated.rotationMatrix());
         REQUIRE((interpolated.components() - initial.components()).isZero());
     }
 
     SECTION("0.5") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 0.5);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 0.5);
         INFO("Rotation matrix:\n" << interpolated.rotationMatrix());
         REQUIRE(interpolated.rotationMatrix().isIdentity());
     }
 
     SECTION("0.75") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 0.75);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 0.75);
         INFO("Rotation matrix:\n" << interpolated.rotationMatrix());
         REQUIRE((interpolated.components() - final.components()).isZero());
     }
 
     SECTION("1.0") {
-        Quaternion3d interpolated = Quaternion3d::Slerp(initial, final, 1.0);
+        Quaternion3d interpolated = Quaternion3d::slerp(initial, final, 1.0);
         INFO("Rotation matrix:\n" << interpolated.rotationMatrix());
         REQUIRE((interpolated.components() - final.components()).isZero());
     }
