@@ -122,7 +122,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Tetrahedron3d
-        Unit();
+        unit();
     };
     
     template <>

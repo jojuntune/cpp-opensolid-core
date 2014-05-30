@@ -86,7 +86,7 @@ TEST_CASE("Non-orthogonal plane transformation") {
     }
     SECTION("Projection onto plane") {
         Plane3d original = Plane3d(Point3d(1, 0, 1), Vector3d(-1, 0, -2).normalized());
-        Plane3d projected = original.projectedOnto(Plane3d::XY());
+        Plane3d projected = original.projectedOnto(Plane3d::xy());
         REQUIRE((projected.originPoint() - Point3d(1, 0, 0)).isZero());
         REQUIRE((projected.normalVector() - Vector3d(0, 0, -1)).isZero());
     }

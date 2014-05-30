@@ -106,7 +106,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static Triangle<2>
-        Unit();
+        unit();
     };
 
     typedef Triangle<2> Triangle2d;

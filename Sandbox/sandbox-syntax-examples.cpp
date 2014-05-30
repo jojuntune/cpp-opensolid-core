@@ -167,7 +167,7 @@ void triangleExamples() {
 }
 
 void tetrahedronExamples() {
-    Tetrahedron3d unitTetrahedron = Tetrahedron3d::Unit();
+    Tetrahedron3d unitTetrahedron = Tetrahedron3d::unit();
 
     Point3d firstVertex = unitTetrahedron.vertex(0);
     assert((firstVertex - Point3d::Origin()).isZero());

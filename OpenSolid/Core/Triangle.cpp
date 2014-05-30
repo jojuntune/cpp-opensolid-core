@@ -40,7 +40,7 @@ namespace opensolid
     }
 
     Triangle2d
-    Triangle2d::Unit() {
+    Triangle2d::unit() {
         return Triangle2d(Point2d::Origin(), Point2d(1, 0), Point2d(0, 1));
     }
 

@@ -37,7 +37,7 @@ TEST_CASE("Transformation") {
     Point3d point(3, 2, 1);
     REQUIRE((point.rotatedAbout(Axis3d::z(), M_PI / 2) - Point3d(-2, 3, 1)).isZero());
     REQUIRE((point.rotatedAbout(Axis3d::x(), M_PI / 2) - Point3d(3, -1, 2)).isZero());
-    REQUIRE((point.mirroredAbout(Plane3d::YZ()) - Point3d(-3, 2, 1)).isZero());
+    REQUIRE((point.mirroredAbout(Plane3d::yz()) - Point3d(-3, 2, 1)).isZero());
 }
 
 TEST_CASE("Points") {
@@ -54,7 +54,7 @@ TEST_CASE("Points") {
 
 TEST_CASE("Boxes") {
     Box3d box1(Interval(1, 2), Interval(3, 4), Interval(5, 6));
-    Box3d projected = box1.projectedOnto(Plane3d::YZ());
+    Box3d projected = box1.projectedOnto(Plane3d::yz());
     REQUIRE(projected.x().lowerBound() == Zero());
     REQUIRE(projected.x().upperBound() == Zero());
     REQUIRE((projected.y().lowerBound() - box1.y().lowerBound()) == Zero());
