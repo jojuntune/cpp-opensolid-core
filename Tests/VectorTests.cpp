@@ -104,7 +104,7 @@ TEST_CASE("Zero-checking") {
 }
 
 TEST_CASE("Random vector generation") {
-    IntervalVector3d bounds = IntervalVector3d::Random();
+    IntervalVector3d bounds = IntervalVector3d::random();
     REQUIRE(bounds.diagonalVector().components().minComponent() > 0);
     for (int i = 0; i < 10; ++i) {
         Vector3d random = bounds.randomVector();
@@ -174,7 +174,7 @@ TEST_CASE("3D unit orthogonal vector") {
 
 TEST_CASE("Interval vector normalization") {
     for (int i = 0; i < 100; ++i) {
-        IntervalVector3d intervalVector = 5 * IntervalVector3d::Random();
+        IntervalVector3d intervalVector = 5 * IntervalVector3d::random();
         IntervalVector3d normalized = intervalVector.normalized();
         REQUIRE(normalized.contains(intervalVector.centroid().normalized()));
         for (const Vector3d& vertex : intervalVector.vertices()) {

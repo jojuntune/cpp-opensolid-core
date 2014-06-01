@@ -142,14 +142,14 @@ namespace opensolid
         template <class TScalar, int iNumDimensions>
         inline
         const Vector<TScalar, iNumDimensions>
-        VectorBase<TScalar, iNumDimensions>::Zero() {
+        VectorBase<TScalar, iNumDimensions>::zero() {
             return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::Zero());
         }
 
         template <class TScalar, int iNumDimensions>
         inline
         const Vector<TScalar, iNumDimensions>
-        VectorBase<TScalar, iNumDimensions>::Random() {
+        VectorBase<TScalar, iNumDimensions>::random() {
             return Vector<TScalar, iNumDimensions>(Matrix<TScalar, iNumDimensions, 1>::random());
         }
     }

@@ -99,9 +99,9 @@ TEST_CASE("2D") {
 TEST_CASE("Accuracy") {
     CoordinateSystem3d coordinateSystem;
     for (int i = 0; i < 3; ++i) {
-        Vector3d xDirection = Vector3d::Random();
-        Vector3d yDirection = Vector3d::Random();
-        Vector3d zDirection = Vector3d::Random();
+        Vector3d xDirection = Vector3d::random();
+        Vector3d yDirection = Vector3d::random();
+        Vector3d zDirection = Vector3d::random();
 
         coordinateSystem = CoordinateSystem3d(
             Point3d(1, 1, 1),

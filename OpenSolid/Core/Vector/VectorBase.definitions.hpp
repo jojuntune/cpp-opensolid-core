@@ -79,10 +79,10 @@ namespace opensolid
             intersection(const Vector<TOtherScalar, iNumDimensions>& other) const;
 
             static const Vector<TScalar, iNumDimensions>
-            Zero();
+            zero();
 
             static const Vector<TScalar, iNumDimensions>
-            Random();
+            random();
         };
     }
 }

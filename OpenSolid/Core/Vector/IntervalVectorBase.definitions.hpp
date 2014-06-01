@@ -144,13 +144,13 @@ namespace opensolid
             operator-=(const Vector<Interval, iNumDimensions>& other);
 
             static const Vector<Interval, iNumDimensions>
-            Unit();
+            unit();
 
             static const Vector<Interval, iNumDimensions>
-            Empty();
+            empty();
 
             static const Vector<Interval, iNumDimensions>
-            Whole();
+            whole();
         };
     }
 }

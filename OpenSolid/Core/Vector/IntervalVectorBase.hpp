@@ -342,7 +342,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::Unit() {
+        IntervalVectorBase<iNumDimensions>::unit() {
             return Vector<Interval, iNumDimensions>(
                 Matrix<Interval, iNumDimensions, 1>::constant(Interval::unit())
             );
@@ -351,7 +351,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::Empty() {
+        IntervalVectorBase<iNumDimensions>::empty() {
             return Vector<Interval, iNumDimensions>(
                 Matrix<Interval, iNumDimensions, 1>::constant(Interval::empty())
             );
@@ -360,7 +360,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Vector<Interval, iNumDimensions>
-        IntervalVectorBase<iNumDimensions>::Whole() {
+        IntervalVectorBase<iNumDimensions>::whole() {
             return Vector<Interval, iNumDimensions>(
                 Matrix<Interval, iNumDimensions, 1>::constant(Interval::whole())
             );
