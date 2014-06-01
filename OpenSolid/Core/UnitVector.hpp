@@ -80,13 +80,13 @@ namespace opensolid
 
     inline
     const UnitVector1d
-    UnitVector1d::X() {
+    UnitVector1d::i() {
         return UnitVector1d(1.0);
     }
 
     inline
     const UnitVector1d
-    UnitVector1d::Random() {
+    UnitVector1d::random() {
         return UnitVector1d(rand() > RAND_MAX / 2 ? 1.0 : -1.0);
     }
 
@@ -142,19 +142,19 @@ namespace opensolid
 
     inline
     const UnitVector2d
-    UnitVector2d::X() {
+    UnitVector2d::i() {
         return UnitVector2d(1.0, 0.0);
     }
 
     inline
     const UnitVector2d
-    UnitVector2d::Y() {
+    UnitVector2d::j() {
         return UnitVector2d(0.0, 1.0);
     }
 
     inline
     const UnitVector2d
-    UnitVector2d::Random() {
+    UnitVector2d::random() {
         while (true) {
             Vector2d candidate(
                 -1.0 + 2.0 * double(rand()) / RAND_MAX,
@@ -213,25 +213,25 @@ namespace opensolid
 
     inline
     const UnitVector3d
-    UnitVector3d::X() {
+    UnitVector3d::i() {
         return UnitVector3d(1.0, 0.0, 0.0);
     }
 
     inline
     const UnitVector3d
-    UnitVector3d::Y() {
+    UnitVector3d::j() {
         return UnitVector3d(0.0, 1.0, 0.0);
     }
 
     inline
     const UnitVector3d
-    UnitVector3d::Z() {
+    UnitVector3d::k() {
         return UnitVector3d(0.0, 0.0, 1.0);
     }
 
     inline
     const UnitVector3d
-    UnitVector3d::Random() {
+    UnitVector3d::random() {
         while (true) {
             Vector3d candidate(
                 -1.0 + 2.0 * double(rand()) / RAND_MAX,

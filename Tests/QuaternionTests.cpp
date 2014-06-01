@@ -35,17 +35,17 @@ TEST_CASE("Basic rotations") {
     Matrix3d expectedMatrix;
 
     SECTION("X") {
-        quaternionMatrix = Quaternion3d(UnitVector3d::X(), M_PI / 4).rotationMatrix();
+        quaternionMatrix = Quaternion3d(UnitVector3d::i(), M_PI / 4).rotationMatrix();
         expectedMatrix = Rotation3d(Axis3d::x(), M_PI / 4).transformationMatrix();
     }
 
     SECTION("Y") {
-        quaternionMatrix = Quaternion3d(-UnitVector3d::Y(), M_PI / 4).rotationMatrix();
+        quaternionMatrix = Quaternion3d(-UnitVector3d::j(), M_PI / 4).rotationMatrix();
         expectedMatrix = Rotation3d(Axis3d::y().flipped(), M_PI / 4).transformationMatrix();
     }
 
     SECTION("Z") {
-        quaternionMatrix = Quaternion3d(UnitVector3d::Z(), -M_PI / 4).rotationMatrix();
+        quaternionMatrix = Quaternion3d(UnitVector3d::k(), -M_PI / 4).rotationMatrix();
         expectedMatrix = Rotation3d(Axis3d::z(), -M_PI / 4).transformationMatrix();
     }
 
@@ -54,8 +54,8 @@ TEST_CASE("Basic rotations") {
 
 TEST_CASE("Composite rotation") {
     double inclinationAngle = acos(sqrt(2.0 / 3.0));
-    Quaternion3d quaternion = Quaternion3d(UnitVector3d::Z(), M_PI / 4) *
-        Quaternion3d(UnitVector3d::Y(), -inclinationAngle);
+    Quaternion3d quaternion = Quaternion3d(UnitVector3d::k(), M_PI / 4) *
+        Quaternion3d(UnitVector3d::j(), -inclinationAngle);
     CoordinateSystem3d coordinateSystem(
         Point3d::Origin(),
         Vector3d(1, 1, 1).normalized(),
@@ -67,7 +67,7 @@ TEST_CASE("Composite rotation") {
 
 TEST_CASE("Angle and unit vector extraction") {
     for (int i = 0; i < 100; ++i) {
-        UnitVector3d unitVector = UnitVector3d::Random();
+        UnitVector3d unitVector = UnitVector3d::random();
         double angle = Interval(-3 * M_PI / 4, 3 * M_PI / 4).randomValue();
         Quaternion3d quaternion = Quaternion3d(unitVector, angle);
         UnitVector3d extractedUnitVector = quaternion.unitVector();
@@ -89,7 +89,7 @@ TEST_CASE("Angle and unit vector extraction") {
 TEST_CASE("Slerp") {
     Quaternion3d initial = Quaternion3d::identity();
     Quaternion3d final =
-        Quaternion3d(UnitVector3d::Z(), M_PI / 2) * Quaternion3d(UnitVector3d::X(), -M_PI / 2);
+        Quaternion3d(UnitVector3d::k(), M_PI / 2) * Quaternion3d(UnitVector3d::i(), -M_PI / 2);
     Quaternion3d relative = final * initial.inverse();
     CAPTURE(relative.unitVector())
     CAPTURE(relative.angle());
@@ -109,9 +109,9 @@ TEST_CASE("Slerp") {
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
         Vector3d zBasisVector = Vector3d(rotationMatrix.column(2));
         Rotation3d rotation(axis, angle * 0.5);
-        REQUIRE((xBasisVector - UnitVector3d::X().transformedBy(rotation)).isZero());
-        REQUIRE((yBasisVector - UnitVector3d::Y().transformedBy(rotation)).isZero());
-        REQUIRE((zBasisVector - UnitVector3d::Z().transformedBy(rotation)).isZero());
+        REQUIRE((xBasisVector - UnitVector3d::i().transformedBy(rotation)).isZero());
+        REQUIRE((yBasisVector - UnitVector3d::j().transformedBy(rotation)).isZero());
+        REQUIRE((zBasisVector - UnitVector3d::k().transformedBy(rotation)).isZero());
     }
 
     SECTION("Final") {
@@ -120,9 +120,9 @@ TEST_CASE("Slerp") {
         Vector3d xBasisVector = Vector3d(rotationMatrix.column(0));
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
         Vector3d zBasisVector = Vector3d(rotationMatrix.column(2));
-        REQUIRE((xBasisVector - UnitVector3d::Y()).isZero());
-        REQUIRE((yBasisVector + UnitVector3d::Z()).isZero());
-        REQUIRE((zBasisVector + UnitVector3d::X()).isZero());
+        REQUIRE((xBasisVector - UnitVector3d::j()).isZero());
+        REQUIRE((yBasisVector + UnitVector3d::k()).isZero());
+        REQUIRE((zBasisVector + UnitVector3d::i()).isZero());
     }
 }
 
@@ -146,8 +146,8 @@ TEST_CASE("Slerp of equal quaternions") {
 }
 
 TEST_CASE("Degenerate slerp") {
-    Quaternion3d initial = Quaternion3d(UnitVector3d::Z(), -M_PI);
-    Quaternion3d final = Quaternion3d(UnitVector3d::Z(), M_PI);
+    Quaternion3d initial = Quaternion3d(UnitVector3d::k(), -M_PI);
+    Quaternion3d final = Quaternion3d(UnitVector3d::k(), M_PI);
     CAPTURE(initial.dot(final));
 
     SECTION("0.0") {

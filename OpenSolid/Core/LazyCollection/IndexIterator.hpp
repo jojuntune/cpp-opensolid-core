@@ -88,14 +88,14 @@ namespace opensolid
         template <class TCollection>
         inline
         IndexIterator<TCollection>
-        IndexIterator<TCollection>::Begin(const TCollection* collection) {
+        IndexIterator<TCollection>::begin(const TCollection* collection) {
             return IndexIterator<TCollection>(collection, 0);
         }
 
         template <class TCollection>
         inline
         IndexIterator<TCollection>
-        IndexIterator<TCollection>::End(const TCollection* collection) {
+        IndexIterator<TCollection>::end(const TCollection* collection) {
             return IndexIterator<TCollection>(collection, collection->size());
         }
     }

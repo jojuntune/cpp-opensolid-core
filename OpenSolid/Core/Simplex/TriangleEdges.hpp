@@ -53,14 +53,14 @@ namespace opensolid
         inline
         IndexIterator<TriangleEdges<iNumDimensions>>
         TriangleEdges<iNumDimensions>::begin() const {
-            return IndexIterator<TriangleEdges<iNumDimensions>>::Begin(this);
+            return IndexIterator<TriangleEdges<iNumDimensions>>::begin(this);
         }
 
         template <int iNumDimensions>
         inline
         IndexIterator<TriangleEdges<iNumDimensions>>
         TriangleEdges<iNumDimensions>::end() const {
-            return IndexIterator<TriangleEdges<iNumDimensions>>::End(this);
+            return IndexIterator<TriangleEdges<iNumDimensions>>::end(this);
         }
 
         template <int iNumDimensions>

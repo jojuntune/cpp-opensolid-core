@@ -53,14 +53,14 @@ namespace opensolid
         inline
         IndexIterator<SimplexVertices<TSimplex, iNumVertices>>
         SimplexVertices<TSimplex, iNumVertices>::begin() const {
-            return IndexIterator<SimplexVertices<TSimplex, iNumVertices>>::Begin(this);
+            return IndexIterator<SimplexVertices<TSimplex, iNumVertices>>::begin(this);
         }
 
         template <class TSimplex, int iNumVertices>
         inline
         IndexIterator<SimplexVertices<TSimplex, iNumVertices>>
         SimplexVertices<TSimplex, iNumVertices>::end() const {
-            return IndexIterator<SimplexVertices<TSimplex, iNumVertices>>::End(this);
+            return IndexIterator<SimplexVertices<TSimplex, iNumVertices>>::end(this);
         }
 
         template <class TSimplex, int iNumVertices>

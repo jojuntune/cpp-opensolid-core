@@ -36,7 +36,7 @@ namespace opensolid
     {
     public:
         static ParametricExpression<iNumDimensions, iNumParameters>
-        Zero();
+        zero();
     };
 
     template <int iNumDimensions, int iNumParameters>
@@ -44,7 +44,7 @@ namespace opensolid
     {
     public:
         static ParametricExpression<iNumDimensions, iNumParameters>
-        Constant(const Matrix<double, iNumDimensions, 1>& columnMatrix);
+        constant(const Matrix<double, iNumDimensions, 1>& columnMatrix);
     };
 
     template <int iNumParameters>
@@ -52,7 +52,7 @@ namespace opensolid
     {
     public:
         static ParametricExpression<1, iNumParameters>
-        Constant(double value);
+        constant(double value);
     };
 
     template <int iNumDimensions, int iNumParameters>
@@ -65,7 +65,7 @@ namespace opensolid
     {
     public:
         static ParametricExpression<iNumDimensions, iNumDimensions>
-        Identity();
+        identity();
     };
 
     template <int iNumDimensions, int iNumParameters>
@@ -78,19 +78,19 @@ namespace opensolid
     {
     public:
         static ParametricExpression<2, iNumParameters>
-        FromComponents(
+        fromComponents(
             const ParametricExpression<1, iNumParameters>& x,
             const ParametricExpression<1, iNumParameters>& y
         );
 
         static ParametricExpression<2, iNumParameters>
-        FromComponents(
+        fromComponents(
             const ParametricExpression<1, iNumParameters>& x,
             double y
         );
 
         static ParametricExpression<2, iNumParameters>
-        FromComponents(
+        fromComponents(
             double x,
             const ParametricExpression<1, iNumParameters>& y
         );
@@ -101,49 +101,49 @@ namespace opensolid
     {
     public:
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             const ParametricExpression<1, iNumParameters>& x,
             const ParametricExpression<1, iNumParameters>& y,
             const ParametricExpression<1, iNumParameters>& z
         );
 
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             const ParametricExpression<1, iNumParameters>& x,
             const ParametricExpression<1, iNumParameters>& y,
             double z
         );
         
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             const ParametricExpression<1, iNumParameters>& x,
             double y,
             const ParametricExpression<1, iNumParameters>& z
         );
         
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             double x,
             const ParametricExpression<1, iNumParameters>& y,
             const ParametricExpression<1, iNumParameters>& z
         );
         
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             const ParametricExpression<1, iNumParameters>& x,
             double y,
             double z
         );
         
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             double x,
             const ParametricExpression<1, iNumParameters>& y,
             double z
         );
         
         static ParametricExpression<3, iNumParameters>
-        FromComponents(
+        fromComponents(
             double x,
             double y,
             const ParametricExpression<1, iNumParameters>& z

@@ -41,7 +41,7 @@ TEST_CASE("Arc") {
     Point3d endPoint(1, -1, 1);
     ParametricCurve3d arc = ParametricCurve3d::Arc(
         centerPoint,
-        UnitVector3d::Z(),
+        UnitVector3d::k(),
         startPoint,
         endPoint
     );
@@ -92,7 +92,7 @@ TEST_CASE("Arc") {
 }
 
 TEST_CASE("Full arc") {
-    Axis3d axis(Point3d(0, 3, 3), UnitVector3d::X());
+    Axis3d axis(Point3d(0, 3, 3), UnitVector3d::i());
     Point3d point(1, 3, 1);
     ParametricCurve3d arc = ParametricCurve3d::Arc(axis, point, point);
 
@@ -116,7 +116,7 @@ TEST_CASE("2D arc") {
 TEST_CASE("Curve operations") {
     Parameter1d t;
     ParametricExpression<3, 1> expression =
-        ParametricExpression<3, 1>::FromComponents(t, t.squared(), 0.0);
+        ParametricExpression<3, 1>::fromComponents(t, t.squared(), 0.0);
     ParametricCurve3d parabola(expression, Interval(-2, 2));
 
     Vector3d tangentVector(parabola.tangentVector().evaluate(1.0));

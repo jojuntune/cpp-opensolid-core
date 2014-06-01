@@ -130,15 +130,15 @@ namespace opensolid
             double absZ = abs(z());
             if (absX <= absY) {
                 if (absX <= absZ) {
-                    return UnitVector3d::X().cross(*this).normalized();
+                    return UnitVector3d::i().cross(*this).normalized();
                 } else {
-                    return UnitVector3d::Z().cross(*this).normalized();
+                    return UnitVector3d::k().cross(*this).normalized();
                 }
             } else {
                 if (absY <= absZ) {
-                    return UnitVector3d::Y().cross(*this).normalized();
+                    return UnitVector3d::j().cross(*this).normalized();
                 } else {
-                    return UnitVector3d::Z().cross(*this).normalized();
+                    return UnitVector3d::k().cross(*this).normalized();
                 }
             }
         }

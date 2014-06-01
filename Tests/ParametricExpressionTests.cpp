@@ -100,7 +100,7 @@ ParametricExpression<3, 2>
 vectorSquiggle() {
     Parameter2d u = Parameter2d(0);
     Parameter2d v = Parameter2d(1);
-    return ParametricExpression<3, 2>::FromComponents(u, v, scalarSquiggle());
+    return ParametricExpression<3, 2>::fromComponents(u, v, scalarSquiggle());
 }
 
 std::vector<ColumnMatrix2d>
@@ -164,7 +164,7 @@ void testJacobian(
 }
 
 TEST_CASE("Constant") {
-    ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::Constant(3.0);
+    ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::constant(3.0);
     REQUIRE(expression.implementation()->isConstantExpression());
     REQUIRE((expression.evaluate(0.0).value() - 3) == Zero());
 }
@@ -244,7 +244,7 @@ TEST_CASE("Conversion") {
         REQUIRE((expression.evaluate(2, 3).value() - 6) == Zero());
     }
     {
-        ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::Constant(2.0);
+        ParametricExpression<1, 1> expression = ParametricExpression<1, 1>::constant(2.0);
 
         RowMatrix3d parameterValues;
         parameterValues(0) = 1;
@@ -377,10 +377,10 @@ TEST_CASE("Transformation") {
 TEST_CASE("Concatenation") {
     Parameter1d t;
     ParametricExpression<1, 1> x = t;
-    ParametricExpression<1, 1> y = ParametricExpression<1, 1>::Constant(3.0);
+    ParametricExpression<1, 1> y = ParametricExpression<1, 1>::constant(3.0);
     ParametricExpression<1, 1> z = t.squared();
     ParametricExpression<3, 1> concatenated =
-        ParametricExpression<3, 1>::FromComponents(x, y, z);
+        ParametricExpression<3, 1>::fromComponents(x, y, z);
     REQUIRE((concatenated.evaluate(2.0) - columnMatrix(2.0, 3.0, 4.0)).isZero());
 }
 
@@ -430,7 +430,7 @@ TEST_CASE("Arcsine") {
 TEST_CASE("Normal vector") {
     Parameter1d t;
     ParametricExpression<2, 1> expression =
-        columnMatrix(1, 1) + 2 * ParametricExpression<2, 1>::FromComponents(cos(t), sin(t));
+        columnMatrix(1, 1) + 2 * ParametricExpression<2, 1>::fromComponents(cos(t), sin(t));
     REQUIRE((expression.evaluate(-M_PI / 2) - columnMatrix(1, -1)).isZero());
     REQUIRE((expression.evaluate(0) - columnMatrix(3, 1)).isZero());
     REQUIRE((expression.evaluate(M_PI / 2) - columnMatrix(1, 3)).isZero());
@@ -457,13 +457,13 @@ TEST_CASE("Deduplication") {
     Parameter2d v = Parameter2d(1);
     {
         ParametricExpression<3, 1> constant1 =
-            ParametricExpression<3, 1>::Constant(columnMatrix(1, 2, 3));
+            ParametricExpression<3, 1>::constant(columnMatrix(1, 2, 3));
         ParametricExpression<3, 1> constant2 =
-            ParametricExpression<3, 1>::Constant(columnMatrix(1, 2, 3));
+            ParametricExpression<3, 1>::constant(columnMatrix(1, 2, 3));
         ParametricExpression<3, 1> constant3 =
-            ParametricExpression<3, 1>::Constant(columnMatrix(1, 2, 4));
+            ParametricExpression<3, 1>::constant(columnMatrix(1, 2, 4));
         ParametricExpression<3, 2> constant4 =
-            ParametricExpression<3, 2>::Constant(columnMatrix(1, 2, 3));
+            ParametricExpression<3, 2>::constant(columnMatrix(1, 2, 3));
 
         REQUIRE(constant1.implementation()->isDuplicateOf(constant2.implementation()));
         REQUIRE_FALSE(constant1.implementation()->isDuplicateOf(constant3.implementation()));

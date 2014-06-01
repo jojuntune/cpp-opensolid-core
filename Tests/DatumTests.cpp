@@ -55,12 +55,12 @@ TEST_CASE("Axis/plane intersection") {
 TEST_CASE("3D axis/triangle intersection") {
     Triangle3d triangle(Point3d(1, 0, 0), Point3d(0, 1, 0), Point3d(0, 0, 1));
     Axis3d intersectionAxis(Point3d::Origin(), Vector3d(1, 1, 1).normalized());
-    Axis3d missingAxis(Point3d(0, -1, 0), UnitVector3d::Z());
+    Axis3d missingAxis(Point3d(0, -1, 0), UnitVector3d::k());
     Axis3d offsetAxis(Point3d(1, 1, 1), Vector3d(1, -1, 0).normalized());
     Axis3d overlappingAxis(Point3d(0.5, 0.5, 0), Vector3d(0, -1, 1).normalized());
     Axis3d edgeCoincidentAxis(Point3d(0, 0, 1), Vector3d(1, 0, -1).normalized());
     Axis3d edgeIntersectionAxis(Point3d::Origin(), Vector3d(1, 1, 0).normalized());
-    Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), UnitVector3d::X());
+    Axis3d vertexIntersectionAxis(Point3d(1, 0, 1), UnitVector3d::i());
 
     auto intersection = intersectionAxis.intersection(triangle);
     REQUIRE(intersection.exists());

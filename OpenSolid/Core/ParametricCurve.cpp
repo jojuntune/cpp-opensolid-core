@@ -216,7 +216,7 @@ namespace opensolid
         ParametricExpression<1, 1> xExpression = centerPoint.x() + radius * cos(angleExpression);
         ParametricExpression<1, 1> yExpression = centerPoint.y() + radius * sin(angleExpression);
         ParametricExpression<2, 1> curveExpression =
-            ParametricExpression<2, 1>::FromComponents(xExpression, yExpression);
+            ParametricExpression<2, 1>::fromComponents(xExpression, yExpression);
         return ParametricCurve2d(curveExpression, Interval::unit());
     }
     

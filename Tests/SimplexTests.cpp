@@ -38,18 +38,18 @@ TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
     PlanarCoordinateSystem3d xyCoordinateSystem(
         Point3d::Origin(),
-        UnitVector3d::X(),
-        UnitVector3d::Y()
+        UnitVector3d::i(),
+        UnitVector3d::j()
     );
     PlanarCoordinateSystem3d yzCoordinateSystem(
         Point3d::Origin(),
-        UnitVector3d::Y(),
-        UnitVector3d::Z()
+        UnitVector3d::j(),
+        UnitVector3d::k()
     );
     PlanarCoordinateSystem3d xzCoordinateSystem(
         Point3d::Origin(),
-        UnitVector3d::X(),
-        UnitVector3d::Z()
+        UnitVector3d::i(),
+        UnitVector3d::k()
     );
 
     Triangle2d xyComponents = triangle3d / xyCoordinateSystem;
@@ -129,7 +129,7 @@ TEST_CASE("Coordinate system") {
 
 TEST_CASE("1D line segment") {
     LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
-    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), UnitVector3d::Y());
+    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), UnitVector3d::j());
     
     LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
     REQUIRE((localized.startVertex() - Point1d(2)).isZero());
@@ -223,7 +223,7 @@ TEST_CASE("Tetrahedron faces") {
 }
 
 TEST_CASE("Line segment/plane intersection") {
-    Plane3d plane(Point3d(0, 0, 1), UnitVector3d::Z());
+    Plane3d plane(Point3d(0, 0, 1), UnitVector3d::k());
 
     LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
     LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));

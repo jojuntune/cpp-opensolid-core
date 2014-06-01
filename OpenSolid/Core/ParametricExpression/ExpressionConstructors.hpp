@@ -38,13 +38,13 @@ namespace opensolid
 {
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
-    ZeroExpressionConstructor<iNumDimensions, iNumParameters>::Zero() {
+    ZeroExpressionConstructor<iNumDimensions, iNumParameters>::zero() {
         return new ConstantExpression(ColumnMatrixXd::zero(iNumDimensions), iNumParameters);
     }
 
     template <int iNumDimensions, int iNumParameters>
     ParametricExpression<iNumDimensions, iNumParameters>
-    ConstantExpressionConstructor<iNumDimensions, iNumParameters>::Constant(
+    ConstantExpressionConstructor<iNumDimensions, iNumParameters>::constant(
         const Matrix<double, iNumDimensions, 1>& columnMatrix
     ) {
         return new ConstantExpression(columnMatrix, iNumParameters);
@@ -52,19 +52,19 @@ namespace opensolid
 
     template <int iNumParameters>
     ParametricExpression<1, iNumParameters>
-    ConstantExpressionConstructor<1, iNumParameters>::Constant(double value) {
+    ConstantExpressionConstructor<1, iNumParameters>::constant(double value) {
         return new ConstantExpression(value, iNumParameters);
     }
 
     template <int iNumDimensions>
     ParametricExpression<iNumDimensions, iNumDimensions>
-    IdentityExpressionConstructor<iNumDimensions, iNumDimensions>::Identity() {
+    IdentityExpressionConstructor<iNumDimensions, iNumDimensions>::identity() {
         return new IdentityExpression(iNumDimensions);
     }
 
     template <int iNumParameters>
     ParametricExpression<2, iNumParameters>
-    FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<2, iNumParameters>::fromComponents(
         const ParametricExpression<1, iNumParameters>& x,
         const ParametricExpression<1, iNumParameters>& y
     ) {
@@ -73,7 +73,7 @@ namespace opensolid
 
     template <int iNumParameters>
     ParametricExpression<2, iNumParameters>
-    FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<2, iNumParameters>::fromComponents(
         const ParametricExpression<1, iNumParameters>& x,
         double y
     ) {
@@ -85,7 +85,7 @@ namespace opensolid
 
     template <int iNumParameters>
     ParametricExpression<2, iNumParameters>
-    FromComponentsExpressionConstructors<2, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<2, iNumParameters>::fromComponents(
         double x,
         const ParametricExpression<1, iNumParameters>& y
     ) {
@@ -97,7 +97,7 @@ namespace opensolid
 
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         const ParametricExpression<1, iNumParameters>& x,
         const ParametricExpression<1, iNumParameters>& y,
         const ParametricExpression<1, iNumParameters>& z
@@ -107,7 +107,7 @@ namespace opensolid
 
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         const ParametricExpression<1, iNumParameters>& x,
         const ParametricExpression<1, iNumParameters>& y,
         double z
@@ -120,7 +120,7 @@ namespace opensolid
     
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         const ParametricExpression<1, iNumParameters>& x,
         double y,
         const ParametricExpression<1, iNumParameters>& z
@@ -133,7 +133,7 @@ namespace opensolid
     
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         double x,
         const ParametricExpression<1, iNumParameters>& y,
         const ParametricExpression<1, iNumParameters>& z
@@ -146,7 +146,7 @@ namespace opensolid
     
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         const ParametricExpression<1, iNumParameters>& x,
         double y,
         double z
@@ -162,7 +162,7 @@ namespace opensolid
     
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         double x,
         const ParametricExpression<1, iNumParameters>& y,
         double z
@@ -178,7 +178,7 @@ namespace opensolid
     
     template <int iNumParameters>
     ParametricExpression<3, iNumParameters>
-    FromComponentsExpressionConstructors<3, iNumParameters>::FromComponents(
+    FromComponentsExpressionConstructors<3, iNumParameters>::fromComponents(
         double x,
         double y,
         const ParametricExpression<1, iNumParameters>& z

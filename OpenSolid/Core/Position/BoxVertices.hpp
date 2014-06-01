@@ -53,14 +53,14 @@ namespace opensolid
         inline
         IndexIterator<BoxVertices<iNumDimensions>>
         BoxVertices<iNumDimensions>::begin() const {
-            return IndexIterator<BoxVertices<iNumDimensions>>::Begin(this);
+            return IndexIterator<BoxVertices<iNumDimensions>>::begin(this);
         }
 
         template <int iNumDimensions>
         inline
         IndexIterator<BoxVertices<iNumDimensions>>
         BoxVertices<iNumDimensions>::end() const {
-            return IndexIterator<BoxVertices<iNumDimensions>>::End(this);
+            return IndexIterator<BoxVertices<iNumDimensions>>::end(this);
         }
 
         template <int iNumDimensions>
