@@ -80,7 +80,7 @@ namespace opensolid
             operator!=(const Point<iNumDimensions>& other) const;
 
             static const Point<iNumDimensions>
-            Origin();
+            origin();
         };
     }
 }

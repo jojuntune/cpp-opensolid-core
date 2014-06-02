@@ -261,7 +261,7 @@ TEST_CASE("Unique") {
         originalPoints.end(),
         rotatedPoints.begin(),
         [] (const Point2d& point) {
-            return point.rotatedAbout(Point2d::Origin(), 2 * M_PI / 3);
+            return point.rotatedAbout(Point2d::origin(), 2 * M_PI / 3);
         }
     );
     std::transform(
@@ -269,7 +269,7 @@ TEST_CASE("Unique") {
         originalPoints.end(),
         rotatedPoints.begin() + 3,
         [] (const Point2d& point) {
-            return point.rotatedAbout(Point2d::Origin(), -4 * M_PI / 3);
+            return point.rotatedAbout(Point2d::origin(), -4 * M_PI / 3);
         }
     );
 
@@ -279,7 +279,7 @@ TEST_CASE("Unique") {
         rotatedPoints.end(),
         testPoints.begin(),
         [] (const Point2d& point) {
-            return point.rotatedAbout(Point2d::Origin(), 10 * M_PI / 3);
+            return point.rotatedAbout(Point2d::origin(), 10 * M_PI / 3);
         }
     );
     testPoints[6] = Point2d(2 + 1e-14, 2 + 1e-14);

@@ -75,7 +75,7 @@ void boxExamples() {
     assert((maxVertex - Point2d(2, 2)).isZero());
 
     assert(box.contains(Point2d(2, 0)));
-    assert(!box.contains(Point2d::Origin()));
+    assert(!box.contains(Point2d::origin()));
 
     for (int i = 0; i < 1000; ++i) {
         assert(box.contains(box.randomPoint()));
@@ -153,7 +153,7 @@ void triangleExamples() {
     double hypotenuseLength = triangle.edge(0).length();
     assert(hypotenuseLength - 2 * sqrt(2.0) == Zero());
 
-    Point3d projectedOrigin = Point3d::Origin().projectedOnto(triangle.plane());
+    Point3d projectedOrigin = Point3d::origin().projectedOnto(triangle.plane());
     assert((projectedOrigin - Point3d(0, 0, 1)).isZero());
 
     PlanarCoordinateSystem3d triangleCoordinateSystem = triangle.coordinateSystem();
@@ -170,7 +170,7 @@ void tetrahedronExamples() {
     Tetrahedron3d unitTetrahedron = Tetrahedron3d::unit();
 
     Point3d firstVertex = unitTetrahedron.vertex(0);
-    assert((firstVertex - Point3d::Origin()).isZero());
+    assert((firstVertex - Point3d::origin()).isZero());
 
     Point3d secondVertex = unitTetrahedron.vertex(1);
     assert((secondVertex - Point3d(1, 0, 0)).isZero());
@@ -185,7 +185,7 @@ void tetrahedronExamples() {
 
 void spatialSetExamples() {
     std::vector<Point2d> pointList(5);
-    pointList[0] = Point2d::Origin();
+    pointList[0] = Point2d::origin();
     pointList[1] = Point2d(1, 0);
     pointList[2] = Point2d(0, 1);
     pointList[3] = Point2d(2, 2);

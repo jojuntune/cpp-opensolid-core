@@ -154,7 +154,7 @@ TEST_CASE("Degenerate") {
     basisMatrix(0) = 1.0;
     basisMatrix(1) = 2.0;
     basisMatrix(2) = 3.0;
-    CoordinateSystem<1, 3> coordinateSystem(Point1d::Origin(), basisMatrix);
+    CoordinateSystem<1, 3> coordinateSystem(Point1d::origin(), basisMatrix);
     Point1d original(3.0);
     Point3d transformed = original / coordinateSystem;
     CAPTURE(transformed);

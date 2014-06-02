@@ -39,7 +39,7 @@ TEST_CASE("Arc") {
     Point3d centerPoint(1, 1, 1);
     Point3d startPoint(3, 1, 1);
     Point3d endPoint(1, -1, 1);
-    ParametricCurve3d arc = ParametricCurve3d::Arc(
+    ParametricCurve3d arc = ParametricCurve3d::arc(
         centerPoint,
         UnitVector3d::k(),
         startPoint,
@@ -94,14 +94,14 @@ TEST_CASE("Arc") {
 TEST_CASE("Full arc") {
     Axis3d axis(Point3d(0, 3, 3), UnitVector3d::i());
     Point3d point(1, 3, 1);
-    ParametricCurve3d arc = ParametricCurve3d::Arc(axis, point, point);
+    ParametricCurve3d arc = ParametricCurve3d::arc(axis, point, point);
 
     REQUIRE((arc.evaluate(0.25) - Point3d(1, 5, 3)).isZero());
     REQUIRE((arc.evaluate(0.75) - Point3d(1, 1, 3)).isZero());
 }
 
 TEST_CASE("2D arc") {
-    ParametricCurve2d arc2d = ParametricCurve2d::Arc(
+    ParametricCurve2d arc2d = ParametricCurve2d::arc(
         Point2d(2, 1),
         ParametricCurve2d::COUNTERCLOCKWISE,
         Point2d(3, 1),
@@ -135,8 +135,8 @@ TEST_CASE("Curve operations") {
 }
 
 TEST_CASE("Multi-evaluation") {
-    ParametricCurve2d arc = ParametricCurve2d::Arc(
-        Point2d::Origin(),
+    ParametricCurve2d arc = ParametricCurve2d::arc(
+        Point2d::origin(),
         ParametricCurve2d::COUNTERCLOCKWISE,
         Point2d(1, 0),
         Point2d(0, 1)

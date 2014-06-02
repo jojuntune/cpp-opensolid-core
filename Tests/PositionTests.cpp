@@ -44,7 +44,7 @@ TEST_CASE("Points") {
     Point3d point1(1, 2, 3);
     Point3d point2(Vector3d(1, 2, 3));
     Point3d point3(4, 5, 6);
-    Point3d origin = Point3d::Origin();
+    Point3d origin = Point3d::origin();
     REQUIRE((point1 - point2).isZero());
     REQUIRE(origin.components().isZero());
     REQUIRE(origin.isOrigin());
@@ -144,7 +144,7 @@ TEST_CASE("3D point predicates") {
     REQUIRE_FALSE(axis.contains(Point3d(2, 3, 5)));
 
     REQUIRE(plane.contains(Point3d(0, 0, 2)));
-    REQUIRE_FALSE(plane.contains(Point3d::Origin()));
+    REQUIRE_FALSE(plane.contains(Point3d::origin()));
 
     REQUIRE(lineSegment.contains(lineSegment.centroid()));
     REQUIRE(lineSegment.contains(lineSegment.endVertex()));

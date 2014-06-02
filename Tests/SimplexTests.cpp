@@ -37,17 +37,17 @@ using namespace opensolid;
 TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
     PlanarCoordinateSystem3d xyCoordinateSystem(
-        Point3d::Origin(),
+        Point3d::origin(),
         UnitVector3d::i(),
         UnitVector3d::j()
     );
     PlanarCoordinateSystem3d yzCoordinateSystem(
-        Point3d::Origin(),
+        Point3d::origin(),
         UnitVector3d::j(),
         UnitVector3d::k()
     );
     PlanarCoordinateSystem3d xzCoordinateSystem(
-        Point3d::Origin(),
+        Point3d::origin(),
         UnitVector3d::i(),
         UnitVector3d::k()
     );
@@ -111,7 +111,7 @@ TEST_CASE("Triangle normal") {
 }
 
 TEST_CASE("Coordinate system") {
-    Triangle3d triangle(Point3d::Origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
+    Triangle3d triangle(Point3d::origin(), Point3d(2, 0, 0), Point3d(1, 2, 0));
     PlanarCoordinateSystem3d coordinateSystem = triangle.coordinateSystem();
 
     Point3d globalized = coordinateSystem * Point2d(0.5, 0.5);
@@ -129,7 +129,7 @@ TEST_CASE("Coordinate system") {
 
 TEST_CASE("1D line segment") {
     LineSegment3d lineSegment3d(Point3d(1, 2, 3), Point3d(4, 5, 6));
-    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::Origin(), UnitVector3d::j());
+    AxialCoordinateSystem3d axialCoordinateSystem(Point3d::origin(), UnitVector3d::j());
     
     LineSegment1d localized = lineSegment3d / axialCoordinateSystem;
     REQUIRE((localized.startVertex() - Point1d(2)).isZero());
@@ -143,7 +143,7 @@ TEST_CASE("1D line segment") {
 
 TEST_CASE("Set") {
     std::vector<Triangle3d> triangles(3);
-    triangles[0] = Triangle3d(Point3d::Origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
+    triangles[0] = Triangle3d(Point3d::origin(), Point3d(1, 0, 0), Point3d(0, 1, 0));
     triangles[1] = Triangle3d(Point3d(2, 1, 0), Point3d(3, 0, 0), Point3d(3, 1, 0));
     triangles[2] = Triangle3d(Point3d(0, 0, 1), Point3d(1, 0, 1), Point3d(1, 1, 1));
 
@@ -227,7 +227,7 @@ TEST_CASE("Line segment/plane intersection") {
 
     LineSegment3d firstSegment(Point3d(0, 0, 2), Point3d(2, 2, 2));
     LineSegment3d secondSegment(Point3d(0, 0, 1), Point3d(1, 1, 1));
-    LineSegment3d thirdSegment(Point3d::Origin(), Point3d(2, 2, 2));
+    LineSegment3d thirdSegment(Point3d::origin(), Point3d(2, 2, 2));
 
     auto firstIntersection = firstSegment.intersection(plane);
     auto secondIntersection = secondSegment.intersection(plane);
@@ -247,8 +247,8 @@ TEST_CASE("Triangle containment") {
     REQUIRE(triangle.contains(triangle.centroid()));
     REQUIRE(triangle.strictlyContains(triangle.centroid()));
     REQUIRE_FALSE(triangle.strictlyContains(triangle.vertex(2)));
-    REQUIRE_FALSE(triangle.contains(Point2d::Origin()));
-    REQUIRE_FALSE(triangle.strictlyContains(Point2d::Origin()));
+    REQUIRE_FALSE(triangle.contains(Point2d::origin()));
+    REQUIRE_FALSE(triangle.strictlyContains(Point2d::origin()));
 }
 
 TEST_CASE("Tetrahedron containment") {
@@ -258,6 +258,6 @@ TEST_CASE("Tetrahedron containment") {
     REQUIRE(tetrahedron.contains(tetrahedron.centroid()));
     REQUIRE(tetrahedron.strictlyContains(tetrahedron.centroid()));
     REQUIRE_FALSE(tetrahedron.strictlyContains(tetrahedron.vertex(2)));
-    REQUIRE(tetrahedron.contains(Point3d::Origin()));
-    REQUIRE_FALSE(tetrahedron.strictlyContains(Point3d::Origin()));
+    REQUIRE(tetrahedron.contains(Point3d::origin()));
+    REQUIRE_FALSE(tetrahedron.strictlyContains(Point3d::origin()));
 }

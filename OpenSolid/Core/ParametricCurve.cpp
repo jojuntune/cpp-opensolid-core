@@ -197,7 +197,7 @@ namespace opensolid
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Arc(
+    ParametricCurve2d::arc(
         const Point2d& centerPoint,
         double radius,
         double startAngle,
@@ -221,7 +221,7 @@ namespace opensolid
     }
     
     ParametricCurve2d
-    ParametricCurve2d::Arc(
+    ParametricCurve2d::arc(
         const Point2d& centerPoint,
         WindingDirection direction,
         const Point2d& startPoint,
@@ -262,11 +262,11 @@ namespace opensolid
         } else if (direction == CLOCKWISE && endAngle - startAngle >= Zero()) {
             endAngle -= 2 * M_PI;
         }
-        return Arc(centerPoint, radius, startAngle, endAngle);
+        return arc(centerPoint, radius, startAngle, endAngle);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Arc(
+    ParametricCurve2d::arc(
         double radius,
         WindingDirection direction, 
         const Point2d& startPoint,
@@ -277,11 +277,11 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        return Arc(centerPoint, direction, startPoint, endPoint);
+        return arc(centerPoint, direction, startPoint, endPoint);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Arc(
+    ParametricCurve2d::arc(
         const Point2d& startPoint,
         const Point2d& innerPoint,
         const Point2d& endPoint
@@ -296,39 +296,39 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        return Arc(centerPoint, direction, startPoint, endPoint);
+        return arc(centerPoint, direction, startPoint, endPoint);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Circle(const Point2d& centerPoint, double radius) {
-        return ParametricCurve2d::Arc(centerPoint, radius, 0, 2 * M_PI);
+    ParametricCurve2d::circle(const Point2d& centerPoint, double radius) {
+        return ParametricCurve2d::arc(centerPoint, radius, 0, 2 * M_PI);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Circle(
+    ParametricCurve2d::circle(
         const Point2d& centerPoint,
         double radius,
         WindingDirection direction,
         double startAngle
     ) {
         if (direction == COUNTERCLOCKWISE) {
-            return ParametricCurve2d::Arc(centerPoint, radius, startAngle, startAngle + 2 * M_PI);
+            return ParametricCurve2d::arc(centerPoint, radius, startAngle, startAngle + 2 * M_PI);
         } else {
-            return ParametricCurve2d::Arc(centerPoint, radius, startAngle, startAngle - 2 * M_PI);
+            return ParametricCurve2d::arc(centerPoint, radius, startAngle, startAngle - 2 * M_PI);
         }
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Circle(
+    ParametricCurve2d::circle(
         const Point2d& centerPoint,
         WindingDirection direction,
         const Point2d& startPoint
     ) {
-        return Arc(centerPoint, direction, startPoint, startPoint);
+        return arc(centerPoint, direction, startPoint, startPoint);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Circle(
+    ParametricCurve2d::circle(
         double radius,
         WindingDirection direction,
         const Point2d& startPoint,
@@ -339,11 +339,11 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        return Circle(centerPoint, direction, startPoint);
+        return circle(centerPoint, direction, startPoint);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Circle(
+    ParametricCurve2d::circle(
         const Point2d& startPoint,
         const Point2d& secondPoint,
         const Point2d& thirdPoint
@@ -358,16 +358,16 @@ namespace opensolid
             assert(false);
             return ParametricCurve2d();
         }
-        return Circle(centerPoint, direction, startPoint);
+        return circle(centerPoint, direction, startPoint);
     }
 
     ParametricCurve2d
-    ParametricCurve2d::Circumcircle(const Triangle2d& triangle) {
-        return Circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
+    ParametricCurve2d::circumcircle(const Triangle2d& triangle) {
+        return circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Arc(
+    ParametricCurve3d::arc(
         const Point3d& centerPoint,
         const UnitVector3d& axisDirection,
         const Point3d& startPoint,
@@ -395,8 +395,8 @@ namespace opensolid
             startRadialVector.normalized(),
             axisDirection.cross(startRadialVector).normalized()
         );
-        return planarCoordinateSystem * ParametricCurve2d::Arc(
-            Point2d::Origin(),
+        return planarCoordinateSystem * ParametricCurve2d::arc(
+            Point2d::origin(),
             ParametricCurve2d::COUNTERCLOCKWISE,
             startPoint / planarCoordinateSystem,
             endPoint / planarCoordinateSystem
@@ -404,7 +404,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Arc(
+    ParametricCurve3d::arc(
         const Axis3d& axis,
         const Point3d& startPoint,
         const Point3d& endPoint
@@ -438,11 +438,11 @@ namespace opensolid
         }
 
         Point3d centerPoint = projectedStartPoint + (projectedEndPoint - projectedStartPoint) / 2;
-        return Arc(centerPoint, axis.directionVector(), startPoint, endPoint);
+        return arc(centerPoint, axis.directionVector(), startPoint, endPoint);
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Arc(
+    ParametricCurve3d::arc(
         const UnitVector3d& axisDirection,
         double radius,
         const Point3d& startPoint,
@@ -465,7 +465,7 @@ namespace opensolid
             displacementVector.cross(axisDirection).normalized(),
             displacementVector.normalized()
         );
-        return planarCoordinateSystem * ParametricCurve2d::Arc(
+        return planarCoordinateSystem * ParametricCurve2d::arc(
             radius,
             ParametricCurve2d::COUNTERCLOCKWISE,
             startPoint / planarCoordinateSystem,
@@ -474,7 +474,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Arc(
+    ParametricCurve3d::arc(
         const Point3d& startPoint,
         const Point3d& innerPoint,
         const Point3d& endPoint
@@ -486,7 +486,7 @@ namespace opensolid
         }
         PlanarCoordinateSystem3d planarCoordinateSystem =
             Plane3d(innerPoint, normalVector.normalized()).coordinateSystem();
-        return planarCoordinateSystem * ParametricCurve2d::Arc(
+        return planarCoordinateSystem * ParametricCurve2d::arc(
             startPoint / planarCoordinateSystem,
             innerPoint / planarCoordinateSystem,
             endPoint / planarCoordinateSystem
@@ -494,7 +494,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Circle(
+    ParametricCurve3d::circle(
         const Point3d& centerPoint,
         const UnitVector3d& axisDirection,
         double radius
@@ -503,7 +503,7 @@ namespace opensolid
             assert(false);
             return ParametricCurve3d();
         }
-        return Circle(
+        return circle(
             centerPoint,
             axisDirection,
             centerPoint + radius * axisDirection.unitOrthogonal()
@@ -511,7 +511,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Circle(
+    ParametricCurve3d::circle(
         const Point3d& centerPoint,
         const UnitVector3d& axisDirection,
         const Point3d& startPoint
@@ -527,22 +527,22 @@ namespace opensolid
             assert(false);
             return ParametricCurve3d();
         }
-        return Arc(centerPoint, axisDirection, startPoint, startPoint);
+        return arc(centerPoint, axisDirection, startPoint, startPoint);
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Circle(const Axis3d& axis, const Point3d& startPoint) {
+    ParametricCurve3d::circle(const Axis3d& axis, const Point3d& startPoint) {
         Point3d centerPoint = startPoint.projectedOnto(axis);
         if ((startPoint - centerPoint).isZero()) {
             // Start point is on axis
             assert(false);
             return ParametricCurve3d();
         }
-        return Circle(centerPoint, axis.directionVector(), startPoint);
+        return circle(centerPoint, axis.directionVector(), startPoint);
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Circle(
+    ParametricCurve3d::circle(
         const UnitVector3d& axisDirection,
         double radius,
         const Point3d& startPoint,
@@ -565,7 +565,7 @@ namespace opensolid
             displacementVector.cross(axisDirection).normalized(),
             displacementVector.normalized()
         );
-        return planarCoordinateSystem * ParametricCurve2d::Circle(
+        return planarCoordinateSystem * ParametricCurve2d::circle(
             radius,
             ParametricCurve2d::COUNTERCLOCKWISE,
             startPoint / planarCoordinateSystem,
@@ -574,7 +574,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Circle(
+    ParametricCurve3d::circle(
         const Point3d& startPoint,
         const Point3d& secondPoint,
         const Point3d& thirdPoint
@@ -587,7 +587,7 @@ namespace opensolid
         }
         PlanarCoordinateSystem3d planarCoordinateSystem =
             Plane3d(secondPoint, normalVector).coordinateSystem();
-        return planarCoordinateSystem * ParametricCurve2d::Arc(
+        return planarCoordinateSystem * ParametricCurve2d::arc(
             startPoint / planarCoordinateSystem,
             secondPoint / planarCoordinateSystem,
             thirdPoint / planarCoordinateSystem
@@ -595,12 +595,12 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Circumcircle(const Triangle3d& triangle) {
-        return Circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
+    ParametricCurve3d::circumcircle(const Triangle3d& triangle) {
+        return circle(triangle.vertex(0), triangle.vertex(1), triangle.vertex(2));
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Helix(
+    ParametricCurve3d::helix(
         const Point3d& startCenterPoint,
         const Point3d& endCenterPoint,
         double radius,
@@ -635,7 +635,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Helix(
+    ParametricCurve3d::helix(
         const Point3d& startCenterPoint,
         const Point3d& endCenterPoint,
         WindingDirection direction,
@@ -679,7 +679,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Helix(
+    ParametricCurve3d::helix(
         const Point3d& startCenterPoint,
         const UnitVector3d& axisDirection,
         double radius,
@@ -707,7 +707,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Helix(
+    ParametricCurve3d::helix(
         const Point3d& startCenterPoint,
         const UnitVector3d& axisDirection,
         WindingDirection direction,
@@ -745,7 +745,7 @@ namespace opensolid
     }
 
     ParametricCurve3d
-    ParametricCurve3d::Helix(
+    ParametricCurve3d::helix(
         const Axis3d& axis,
         WindingDirection direction,
         const Point3d& startPoint,

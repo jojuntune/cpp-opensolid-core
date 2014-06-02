@@ -146,7 +146,7 @@ namespace opensolid
         template <int iNumDimensions>
         inline
         const Point<iNumDimensions>
-        PointBase<iNumDimensions>::Origin() {
+        PointBase<iNumDimensions>::origin() {
             return Point<iNumDimensions>(Matrix<double, iNumDimensions, 1>::zero());
         }
     }

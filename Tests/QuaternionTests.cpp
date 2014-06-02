@@ -57,7 +57,7 @@ TEST_CASE("Composite rotation") {
     Quaternion3d quaternion = Quaternion3d(UnitVector3d::k(), M_PI / 4) *
         Quaternion3d(UnitVector3d::j(), -inclinationAngle);
     CoordinateSystem3d coordinateSystem(
-        Point3d::Origin(),
+        Point3d::origin(),
         Vector3d(1, 1, 1).normalized(),
         Vector3d(-1, 1, 0).normalized(),
         Vector3d(-1, -1, 2).normalized()
@@ -93,7 +93,7 @@ TEST_CASE("Slerp") {
     Quaternion3d relative = final * initial.inverse();
     CAPTURE(relative.unitVector())
     CAPTURE(relative.angle());
-    Axis3d axis(Point3d::Origin(), relative.unitVector());
+    Axis3d axis(Point3d::origin(), relative.unitVector());
     double angle = relative.angle();
 
     SECTION("Initial") {

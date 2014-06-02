@@ -117,7 +117,7 @@ namespace opensolid
     Tetrahedron3d
     Tetrahedron3d::unit() {
         return Tetrahedron3d(
-            Point3d::Origin(),
+            Point3d::origin(),
             Point3d(1, 0, 0),
             Point3d(0, 1, 0),
             Point3d(0, 0, 1)

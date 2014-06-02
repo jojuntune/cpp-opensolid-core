@@ -102,7 +102,7 @@ namespace opensolid
     template <int iNumDimensions, int iNumAxes>
     inline
     CoordinateSystem<iNumDimensions, iNumAxes>::CoordinateSystem() :
-        _originPoint(Point<iNumDimensions>::Origin()) {
+        _originPoint(Point<iNumDimensions>::origin()) {
 
         _basisMatrix.setIdentity();
         _inverseMatrix.setIdentity();
@@ -501,7 +501,7 @@ namespace opensolid
         );
         
         return CoordinateSystem(
-            Point<iNumDimensions>::Origin(),
+            Point<iNumDimensions>::origin(),
             Matrix<double, iNumDimensions, iNumAxes>::identity()
         );
     }
