@@ -159,3 +159,50 @@ TEST_CASE("3D point predicates") {
     REQUIRE_FALSE(triangle.contains(planarPoint));
     REQUIRE_FALSE(triangle.contains(Point3d(1, 1, 1)));
 }
+
+TEST_CASE("Hull") {
+    Point3d point1(1, 2, 3);
+    Point3d point2(4, 5, 6);
+    Box3d box1(Interval(0, 1), Interval(2, 3), Interval(4, 5));
+    Box3d box2(Interval(-1, 0), Interval(-3, -2), Interval(-5, -4));
+
+    SECTION("Point-point") {
+        Box3d hull = point1.hull(point2);
+        REQUIRE(hull.x().lowerBound() == 1);
+        REQUIRE(hull.x().upperBound() == 4);
+        REQUIRE(hull.y().lowerBound() == 2);
+        REQUIRE(hull.y().upperBound() == 5);
+        REQUIRE(hull.z().lowerBound() == 3);
+        REQUIRE(hull.z().upperBound() == 6);
+    }
+
+    SECTION("Point-box") {
+        Box3d hull = point1.hull(box2);
+        REQUIRE(hull.x().lowerBound() == -1);
+        REQUIRE(hull.x().upperBound() == 1);
+        REQUIRE(hull.y().lowerBound() == -3);
+        REQUIRE(hull.y().upperBound() == 2);
+        REQUIRE(hull.z().lowerBound() == -5);
+        REQUIRE(hull.z().upperBound() == 3);
+    }
+
+    SECTION("Box-point") {
+        Box3d hull = box1.hull(point2);
+        REQUIRE(hull.x().lowerBound() == 0);
+        REQUIRE(hull.x().upperBound() == 4);
+        REQUIRE(hull.y().lowerBound() == 2);
+        REQUIRE(hull.y().upperBound() == 5);
+        REQUIRE(hull.z().lowerBound() == 4);
+        REQUIRE(hull.z().upperBound() == 6);
+    }
+
+    SECTION("Box-box") {
+        Box3d hull = box1.hull(box2);
+        REQUIRE(hull.x().lowerBound() == -1);
+        REQUIRE(hull.x().upperBound() == 1);
+        REQUIRE(hull.y().lowerBound() == -3);
+        REQUIRE(hull.y().upperBound() == 3);
+        REQUIRE(hull.z().lowerBound() == -5);
+        REQUIRE(hull.z().upperBound() == 5);
+    }
+}
