@@ -101,7 +101,7 @@ namespace opensolid
             return Box<iNumDimensions>(
                 this->components().binaryMap(
                     other.components(),
-                    [] (double component, double otherComponent) {
+                    [] (double component, double otherComponent) -> Interval {
                         return Interval::hull(component, otherComponent);
                     }
                 )
@@ -115,8 +115,8 @@ namespace opensolid
             return Box<iNumDimensions>(
                 this->components().binaryMap(
                     box.components(),
-                    [] (double component, Interval boxComponent) {
-                        boxComponent.hull(component);
+                    [] (double component, Interval boxComponent) -> Interval {
+                        return boxComponent.hull(component);
                     }
                 )
             );
