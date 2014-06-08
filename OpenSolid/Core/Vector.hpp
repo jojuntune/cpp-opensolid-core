@@ -58,6 +58,18 @@ namespace opensolid
     }
 
     inline
+    const UnitVector1d
+    Vector1d::unitX() {
+        return UnitVector1d(1.0);
+    }
+
+    inline
+    const UnitVector1d
+    Vector1d::unitRandom() {
+        return UnitVector1d(rand() > RAND_MAX / 2 ? 1.0 : -1.0);
+    }
+
+    inline
     Vector2d::Vector() :
         detail::DoubleVectorBase<2>() {
     }
@@ -80,6 +92,33 @@ namespace opensolid
             return UnitVector2d();
         } else {
             return Vector2d(-y(), x()).normalized();
+        }
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unitX() {
+        return UnitVector2d(1.0, 0.0);
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unitY() {
+        return UnitVector2d(0.0, 1.0);
+    }
+
+    inline
+    const UnitVector2d
+    Vector2d::unitRandom() {
+        while (true) {
+            Vector2d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return UnitVector2d(candidate / sqrt(candidateSquaredNorm));
+            }
         }
     }
 
@@ -130,16 +169,50 @@ namespace opensolid
             double absZ = abs(z());
             if (absX <= absY) {
                 if (absX <= absZ) {
-                    return UnitVector3d::i().cross(*this).normalized();
+                    return Vector3d::unitX().cross(*this).normalized();
                 } else {
-                    return UnitVector3d::k().cross(*this).normalized();
+                    return Vector3d::unitZ().cross(*this).normalized();
                 }
             } else {
                 if (absY <= absZ) {
-                    return UnitVector3d::j().cross(*this).normalized();
+                    return Vector3d::unitY().cross(*this).normalized();
                 } else {
-                    return UnitVector3d::k().cross(*this).normalized();
+                    return Vector3d::unitZ().cross(*this).normalized();
                 }
+            }
+        }
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitX() {
+        return UnitVector3d(1.0, 0.0, 0.0);
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitY() {
+        return UnitVector3d(0.0, 1.0, 0.0);
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitZ() {
+        return UnitVector3d(0.0, 0.0, 1.0);
+    }
+
+    inline
+    const UnitVector3d
+    Vector3d::unitRandom() {
+        while (true) {
+            Vector3d candidate(
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX,
+                -1.0 + 2.0 * double(rand()) / RAND_MAX
+            );
+            double candidateSquaredNorm = candidate.squaredNorm();
+            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
+                return UnitVector3d(candidate / sqrt(candidateSquaredNorm));
             }
         }
     }

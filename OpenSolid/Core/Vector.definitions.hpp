@@ -73,6 +73,12 @@ namespace opensolid
 
         explicit
         Vector(const Matrix<double, 1, 1>& components);
+
+        static const UnitVector<1>
+        unitRandom();
+
+        static const UnitVector<1>
+        unitX();
     };
 
     typedef Vector<double, 1> Vector1d;
@@ -93,6 +99,15 @@ namespace opensolid
 
         const UnitVector<2>
         unitOrthogonal() const;
+
+        static const UnitVector<2>
+        unitRandom();
+
+        static const UnitVector<2>
+        unitX();
+
+        static const UnitVector<2>
+        unitY();
     };
 
     typedef Vector<double, 2> Vector2d;
@@ -119,6 +134,18 @@ namespace opensolid
 
         const UnitVector<3>
         unitOrthogonal() const;
+
+        static const UnitVector<3>
+        unitRandom();
+
+        static const UnitVector<3>
+        unitX();
+
+        static const UnitVector<3>
+        unitY();
+
+        static const UnitVector<3>
+        unitZ();
     };
 
     typedef Vector<double, 3> Vector3d;

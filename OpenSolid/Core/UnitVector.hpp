@@ -30,8 +30,6 @@
 
 #include <OpenSolid/Core/Vector.hpp>
 
-#include <cstdlib>
-
 namespace opensolid
 {
     inline
@@ -76,18 +74,6 @@ namespace opensolid
     const UnitVector1d
     UnitVector1d::normalized() const {
         return *this;
-    }
-
-    inline
-    const UnitVector1d
-    UnitVector1d::i() {
-        return UnitVector1d(1.0);
-    }
-
-    inline
-    const UnitVector1d
-    UnitVector1d::random() {
-        return UnitVector1d(rand() > RAND_MAX / 2 ? 1.0 : -1.0);
     }
 
     inline
@@ -141,33 +127,6 @@ namespace opensolid
     }
 
     inline
-    const UnitVector2d
-    UnitVector2d::i() {
-        return UnitVector2d(1.0, 0.0);
-    }
-
-    inline
-    const UnitVector2d
-    UnitVector2d::j() {
-        return UnitVector2d(0.0, 1.0);
-    }
-
-    inline
-    const UnitVector2d
-    UnitVector2d::random() {
-        while (true) {
-            Vector2d candidate(
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX
-            );
-            double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector2d(candidate / sqrt(candidateSquaredNorm));
-            }
-        }
-    }
-
-    inline
     UnitVector3d::UnitVector() :
         Vector3d() {
     }
@@ -209,40 +168,6 @@ namespace opensolid
     UnitVector3d
     UnitVector3d::normalized() const {
         return *this;
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::i() {
-        return UnitVector3d(1.0, 0.0, 0.0);
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::j() {
-        return UnitVector3d(0.0, 1.0, 0.0);
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::k() {
-        return UnitVector3d(0.0, 0.0, 1.0);
-    }
-
-    inline
-    const UnitVector3d
-    UnitVector3d::random() {
-        while (true) {
-            Vector3d candidate(
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX,
-                -1.0 + 2.0 * double(rand()) / RAND_MAX
-            );
-            double candidateSquaredNorm = candidate.squaredNorm();
-            if (candidateSquaredNorm >= 0.25 && candidateSquaredNorm <= 1.0) {
-                return UnitVector3d(candidate / sqrt(candidateSquaredNorm));
-            }
-        }
     }
 
     inline

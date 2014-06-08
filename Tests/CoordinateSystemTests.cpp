@@ -36,7 +36,7 @@ TEST_CASE("Globalization") {
         Point3d(1, 1, 1),
         Vector3d(1, 1, 0),
         Vector3d(-1, 1, 0),
-        UnitVector3d::k()
+        Vector3d::unitZ()
     ).normalized();
 
     Point3d globalizedPoint = coordinateSystem * Point3d(1, 1, 1);
@@ -51,7 +51,7 @@ TEST_CASE("Localization") {
         Point3d(1, 1, 1),
         Vector3d(1, 1, 0),
         Vector3d(-1, 1, 0),
-        UnitVector3d::k()
+        Vector3d::unitZ()
     ).normalized();
 
     Point3d localizedPoint = Point3d(1, 0, 0) / coordinateSystem;

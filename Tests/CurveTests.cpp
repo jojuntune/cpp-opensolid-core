@@ -41,7 +41,7 @@ TEST_CASE("Arc") {
     Point3d endPoint(1, -1, 1);
     ParametricCurve3d arc = ParametricCurve3d::arc(
         centerPoint,
-        UnitVector3d::k(),
+        Vector3d::unitZ(),
         startPoint,
         endPoint
     );
@@ -92,7 +92,7 @@ TEST_CASE("Arc") {
 }
 
 TEST_CASE("Full arc") {
-    Axis3d axis(Point3d(0, 3, 3), UnitVector3d::i());
+    Axis3d axis(Point3d(0, 3, 3), Vector3d::unitX());
     Point3d point(1, 3, 1);
     ParametricCurve3d arc = ParametricCurve3d::arc(axis, point, point);
 
