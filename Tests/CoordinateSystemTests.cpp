@@ -36,7 +36,7 @@ TEST_CASE("Globalization") {
         Point3d(1, 1, 1),
         Vector3d(1, 1, 0),
         Vector3d(-1, 1, 0),
-        UnitVector3d::k()
+        Vector3d::unitZ()
     ).normalized();
 
     Point3d globalizedPoint = coordinateSystem * Point3d(1, 1, 1);
@@ -51,7 +51,7 @@ TEST_CASE("Localization") {
         Point3d(1, 1, 1),
         Vector3d(1, 1, 0),
         Vector3d(-1, 1, 0),
-        UnitVector3d::k()
+        Vector3d::unitZ()
     ).normalized();
 
     Point3d localizedPoint = Point3d(1, 0, 0) / coordinateSystem;
@@ -62,7 +62,7 @@ TEST_CASE("Localization") {
 }
 
 TEST_CASE("Transformation") {
-    CoordinateSystem3d global = CoordinateSystem3d::global();
+    CoordinateSystem3d global = CoordinateSystem3d::xyz();
     CoordinateSystem3d coordinateSystem =
         global.translatedBy(Vector3d(1, 1, 1)).rotatedAbout(global.xAxis(), -M_PI / 2);
     REQUIRE((coordinateSystem * Point3d(1, 2, 3) - Point3d(2, 4, -3)).isZero());
@@ -160,4 +160,16 @@ TEST_CASE("Degenerate") {
     CAPTURE(transformed);
     Point1d reconstructed = coordinateSystem * transformed;
     REQUIRE((reconstructed.value() - original.value()) == Zero());
+}
+
+TEST_CASE("Global coordinate system construction") {
+    REQUIRE((CoordinateSystem2d::xy().point(1, 2) - Point2d(1, 2)).isZero());
+    REQUIRE((CoordinateSystem2d::yx().point(-3, 4) - Point2d(4, -3)).isZero());
+
+    REQUIRE((PlanarCoordinateSystem3d::xy().point(5, 6) - Point3d(5, 6, 0)).isZero());
+    REQUIRE((PlanarCoordinateSystem3d::zy().point(1, 2) - Point3d(0, 2, 1)).isZero());
+
+    REQUIRE((CoordinateSystem3d::xyz().point(1, 2, 3) - Point3d(1, 2, 3)).isZero());
+    REQUIRE((CoordinateSystem3d::zxy().point(4, 5, 6) - Point3d(5, 6, 4)).isZero());
+    REQUIRE((CoordinateSystem3d::yxz().point(7, 8, 9) - Point3d(8, 7, 9)).isZero());
 }

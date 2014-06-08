@@ -61,7 +61,7 @@ void pointExamples() {
     Point3d scaled = p2.scaledAbout(p1, 2.0);
     assert((scaled - Point3d(3, 3, 3)).isZero());
 
-    Point3d translated = p1.translatedBy(UnitVector3d::j());
+    Point3d translated = p1.translatedBy(Vector3d::unitY());
     assert((translated - Point3d(1, 2, 1)).isZero());
 }
 
@@ -94,7 +94,7 @@ void axisExamples() {
 }
 
 void planeExamples() {
-    Plane3d plane(Point3d(1, 1, 1), UnitVector3d::i());
+    Plane3d plane(Point3d(1, 1, 1), Vector3d::unitX());
 
     Point3d mirrored = Point3d(2, 3, 4).mirroredAbout(plane);
     assert((mirrored - Point3d(0, 3, 4)).isZero());
@@ -145,7 +145,7 @@ void triangleExamples() {
     assert((centroid - Point3d(5.0 / 3.0, 5.0 / 3.0, 1)).isZero());
 
     UnitVector3d normalVector = triangle.normalVector();
-    assert((normalVector - UnitVector3d::k()).isZero());
+    assert((normalVector - Vector3d::unitZ()).isZero());
 
     double area = triangle.area();
     assert(area - 2.0 == Zero());

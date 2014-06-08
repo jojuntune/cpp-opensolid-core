@@ -172,7 +172,49 @@ namespace opensolid
         normalized() const;
 
         static const CoordinateSystem<iNumDimensions, iNumAxes>
-        global();
+        x();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        y();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        z();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yx();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zx();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xyz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        xzy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yxz();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        yzx();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zxy();
+
+        static const CoordinateSystem<iNumDimensions, iNumAxes>
+        zyx();
     };
 
     typedef CoordinateSystem<1, 1> CoordinateSystem1d;
