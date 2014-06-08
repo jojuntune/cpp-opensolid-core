@@ -7,25 +7,6 @@
 
     # Include macros for generating Visual Studio source groups
     include(CreateSourceGroups.cmake)
-
-    # Get version number (tag or revision) from Mercurial
-    execute_process(
-        COMMAND hg id -t
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE MERCURIAL_TAG
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    execute_process(
-        COMMAND hg id -i
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE MERCURIAL_REVISION
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(NOT ${MERCURIAL_TAG} STREQUAL "")
-        set(OPENSOLID_VERSION ${MERCURIAL_TAG} CACHE STRING "Mercurial revision tag" FORCE)
-    else()
-        set(OPENSOLID_VERSION ${MERCURIAL_REVISION} CACHE STRING "Mercurial revision ID" FORCE)
-    endif()
     
 ########## Set up user configuration options ##########
 
