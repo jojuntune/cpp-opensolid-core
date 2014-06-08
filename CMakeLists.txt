@@ -11,7 +11,6 @@
 ########## Set up user configuration options ##########
 
     set(BUILD_STATIC_LIBS OFF CACHE BOOL "Build static libraries")
-    set(BUILD_MESH_MODULE OFF CACHE BOOL "Build mesh module")
     set(BUILD_IO_MODULE OFF CACHE BOOL "Build I/O module")
     set(BUILD_DART_MODULE OFF CACHE BOOL "Build Dart module")
     set(BUILD_TESTS OFF CACHE BOOL "Build tests for all enabled modules (requires Python)")
@@ -152,11 +151,6 @@
         include_directories(${PROTOBUF_ROOT})
         include_directories(${SQLITE_ROOT})
         add_subdirectory(OpenSolid/IO)
-    endif()
-
-    # Include OpenMesh include directory if mesh module is enabled
-    if(${BUILD_MESH_MODULE})
-        include_directories(${OPENMESH_ROOT}/include)
     endif()
 
     # Build Dart bindings if selected
