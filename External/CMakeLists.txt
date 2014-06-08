@@ -14,11 +14,6 @@
         set(PROTOBUF_ROOT ${PROTOBUF_ROOT} PARENT_SCOPE)
     endif()
 
-    if(${BUILD_MESH_MODULE})
-        add_subdirectory(OpenMesh)
-        set(OPENMESH_ROOT ${OPENMESH_ROOT} PARENT_SCOPE)
-    endif()
-
     if(${BUILD_DART_MODULE})
         set(DART_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/Dart PARENT_SCOPE)
     endif()
