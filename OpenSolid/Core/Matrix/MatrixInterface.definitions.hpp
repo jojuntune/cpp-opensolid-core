@@ -220,14 +220,14 @@ namespace opensolid
             const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
             map(TUnaryFunction unaryFunction) const;
 
-            template <class TBinaryFunction, class TOtherDerived>
+            template <class TOtherDerived, class TBinaryFunction>
             const typename PairwiseMappedMatrixType<TBinaryFunction, TDerived, TOtherDerived>::Type
             binaryMap(
                 const MatrixInterface<TOtherDerived>& other,
                 TBinaryFunction binaryFunction
             ) const;
 
-            template <class TBinaryFunction, class TOtherDerived, class TResultDerived>
+            template <class TOtherDerived, class TBinaryFunction, class TResultDerived>
             void
             binaryMap(
                 const MatrixInterface<TOtherDerived>& other,
@@ -255,7 +255,7 @@ namespace opensolid
             bool
             any(TUnaryPredicate unaryPredicate) const;
 
-            template <class TBinaryPredicate, class TOtherDerived>
+            template <class TOtherDerived, class TBinaryPredicate>
             bool
             binaryAny(
                 const MatrixInterface<TOtherDerived>& other,
@@ -266,7 +266,7 @@ namespace opensolid
             bool
             all(TUnaryPredicate unaryPredicate) const;
 
-            template <class TBinaryPredicate, class TOtherDerived>
+            template <class TOtherDerived, class TBinaryPredicate>
             bool
             binaryAll(
                 const MatrixInterface<TOtherDerived>& other,
@@ -404,7 +404,7 @@ namespace opensolid
             void
             setRandom();
             
-            template <class TUnaryFunction, class TOtherDerived>
+            template <class TOtherDerived, class TUnaryFunction>
             void
             setMap(const MatrixInterface<TOtherDerived>& other, TUnaryFunction unaryFunction);
             

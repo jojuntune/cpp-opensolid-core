@@ -563,7 +563,7 @@ namespace opensolid
             return result;
         }
 
-        template <class TDerived> template <class TBinaryFunction, class TOtherDerived>
+        template <class TDerived> template <class TOtherDerived, class TBinaryFunction>
         inline
         const typename PairwiseMappedMatrixType<TBinaryFunction, TDerived, TOtherDerived>::Type
         MatrixInterface<TDerived>::binaryMap(
@@ -582,7 +582,7 @@ namespace opensolid
         }
 
         template <class TDerived>
-        template <class TBinaryFunction, class TOtherDerived, class TResultDerived>
+        template <class TOtherDerived, class TBinaryFunction, class TResultDerived>
         inline
         void
         MatrixInterface<TDerived>::binaryMap(
@@ -665,7 +665,7 @@ namespace opensolid
             return false;
         }
 
-        template <class TDerived> template <class TBinaryPredicate, class TOtherDerived>
+        template <class TDerived> template <class TOtherDerived, class TBinaryPredicate>
         inline
         bool
         MatrixInterface<TDerived>::binaryAny(
@@ -703,7 +703,7 @@ namespace opensolid
             return true;
         }
 
-        template <class TDerived> template <class TBinaryPredicate, class TOtherDerived>
+        template <class TDerived> template <class TOtherDerived, class TBinaryPredicate>
         inline
         bool
         MatrixInterface<TDerived>::binaryAll(
@@ -1206,7 +1206,7 @@ namespace opensolid
             }
         }
         
-        template <class TDerived> template <class TUnaryFunction, class TOtherDerived>
+        template <class TDerived> template <class TOtherDerived, class TUnaryFunction>
         inline
         void
         MatrixInterface<TDerived>::setMap(
