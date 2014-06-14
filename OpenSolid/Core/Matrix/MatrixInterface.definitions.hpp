@@ -408,6 +408,13 @@ namespace opensolid
                 const MatrixInterface<TResultDerived>& result
             );
             
+            template <class TFirstDerived, class TSecondDerived>
+            void
+            setProduct(
+                const MatrixInterface<TFirstDerived>& firstMatrix,
+                const MatrixInterface<TSecondDerived>& secondMatrix
+            );
+            
             template <class TOtherDerived>
             void
             setTranspose(const MatrixInterface<TOtherDerived>& other);

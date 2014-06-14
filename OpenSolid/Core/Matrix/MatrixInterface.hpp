@@ -1224,6 +1224,44 @@ namespace opensolid
             }
         }
         
+        template <class TDerived>
+        template <class TFirstDerived, class TSecondDerived>
+        inline
+        void
+        MatrixInterface<TDerived>::setProduct(
+            const MatrixInterface<TFirstDerived>& firstMatrix,
+            const MatrixInterface<TSecondDerived>& secondMatrix
+        ) {
+            typedef typename MatrixTraits<TFirstDerived>::Scalar FirstScalarType;
+            typedef typename MatrixTraits<TSecondDerived>::Scalar SecondScalarType;
+            typedef typename CommonScalar<TFirstDerived, TSecondDerived>::Type ResultScalarType;
+
+            CheckCompatibleSizes<
+                MatrixTraits<TFirstDerived>::NumColumns,
+                MatrixTraits<TSecondDerived>::NumRows
+            >(firstMatrix.numColumns(), secondMatrix.numRows());
+        
+            ResultScalarType* resultPtr = data();
+            const FirstScalarType* rowStart = firstMatrix.data();
+            const SecondScalarType* colStart = secondMatrix.data();
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
+                for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
+                    const FirstScalarType* rowPtr = rowStart;
+                    const SecondScalarType* colPtr = colStart;
+                    *resultPtr = (*rowPtr) * (*colPtr);
+                    for (int innerIndex = 1; innerIndex < firstMatrix.numColumns(); ++innerIndex) {
+                        rowPtr += firstMatrix.columnStride();
+                        ++colPtr;
+                        *resultPtr += (*rowPtr) * (*colPtr);
+                    }
+                    ++resultPtr;
+                    ++rowStart;
+                }
+                rowStart = firstMatrix.data();
+                colStart += secondMatrix.columnStride();
+            }
+        }
+        
         template <class TDerived> template <class TOtherDerived>
         inline
         void
@@ -1469,40 +1507,15 @@ namespace opensolid
             const MatrixInterface<TFirstDerived>& firstMatrix,
             const MatrixInterface<TSecondDerived>& secondMatrix
         ) {
-            typedef typename MatrixTraits<TFirstDerived>::Scalar FirstScalarType;
-            typedef typename MatrixTraits<TSecondDerived>::Scalar SecondScalarType;
             typedef typename CommonScalar<TFirstDerived, TSecondDerived>::Type ResultScalarType;
-
-            CheckCompatibleSizes<
-                MatrixTraits<TFirstDerived>::NumColumns,
-                MatrixTraits<TSecondDerived>::NumRows
-            >(firstMatrix.numColumns(), secondMatrix.numRows());
-
+        
             Matrix<
                 ResultScalarType,
                 MatrixTraits<TFirstDerived>::NumRows,
                 MatrixTraits<TSecondDerived>::NumColumns
             > result(firstMatrix.numRows(), secondMatrix.numColumns());
 
-            ResultScalarType* resultPtr = result.data();
-            const FirstScalarType* rowStart = firstMatrix.data();
-            const SecondScalarType* colStart = secondMatrix.data();
-            for (int columnIndex = 0; columnIndex < result.numColumns(); ++columnIndex) {
-                for (int rowIndex = 0; rowIndex < result.numRows(); ++rowIndex) {
-                    const FirstScalarType* rowPtr = rowStart;
-                    const SecondScalarType* colPtr = colStart;
-                    *resultPtr = (*rowPtr) * (*colPtr);
-                    for (int innerIndex = 1; innerIndex < firstMatrix.numColumns(); ++innerIndex) {
-                        rowPtr += firstMatrix.columnStride();
-                        ++colPtr;
-                        *resultPtr += (*rowPtr) * (*colPtr);
-                    }
-                    ++resultPtr;
-                    ++rowStart;
-                }
-                rowStart = firstMatrix.data();
-                colStart += secondMatrix.columnStride();
-            }
+            result.setProduct(firstMatrix, secondMatrix);
             return result;
         }
     }
