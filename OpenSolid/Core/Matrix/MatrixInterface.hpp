@@ -1230,6 +1230,16 @@ namespace opensolid
         MatrixInterface<TDerived>::setTranspose(
             const MatrixInterface<TOtherDerived>& other
         ) {
+            CheckCompatibleSizes<
+                MatrixTraits<TDerived>::NumRows, 
+                MatrixTraits<TOtherDerived>::NumColumns
+            >(numRows(), other.numColumns());
+        
+            CheckCompatibleSizes<
+                MatrixTraits<TDerived>::NumColumns, 
+                MatrixTraits<TOtherDerived>::NumRows
+            >(numColumns(), other.numRows());
+        
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     this->component(rowIndex, columnIndex) =
