@@ -577,29 +577,8 @@ namespace opensolid
                 TDerived,
                 TOtherDerived
             >::Type result(numRows(), numColumns());
-            binaryMap(other, binaryFunction, result);
+            result.setBinaryMap(other, binaryFunction, *this);
             return result;
-        }
-
-        template <class TDerived>
-        template <class TOtherDerived, class TBinaryFunction, class TResultDerived>
-        inline
-        void
-        MatrixInterface<TDerived>::binaryMap(
-            const MatrixInterface<TOtherDerived>& other,
-            TBinaryFunction binaryFunction,
-            MatrixInterface<TResultDerived>& result
-        ) const {
-            CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
-
-            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
-                for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    result.component(rowIndex, columnIndex) = binaryFunction(
-                        this->component(rowIndex, columnIndex),
-                        other.component(rowIndex, columnIndex)
-                    );
-                }
-            }
         }
 
         template <class TDerived> template <class TValue, class TFunction>
@@ -1218,6 +1197,27 @@ namespace opensolid
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     this->component(rowIndex, columnIndex) = unaryFunction(
+                        other.component(rowIndex, columnIndex)
+                    );
+                }
+            }
+        }
+        
+        template <class TDerived>
+        template <class TOtherDerived, class TBinaryFunction, class TResultDerived>
+        inline
+        void
+        MatrixInterface<TDerived>::setBinaryMap(
+            const MatrixInterface<TOtherDerived>& other,
+            TBinaryFunction binaryFunction,
+            const MatrixInterface<TResultDerived>& result
+        ) {
+            CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
+
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
+                for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
+                    this->component(rowIndex, columnIndex) = binaryFunction(
+                        result.component(rowIndex, columnIndex),
                         other.component(rowIndex, columnIndex)
                     );
                 }

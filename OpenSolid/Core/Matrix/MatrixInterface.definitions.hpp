@@ -227,14 +227,6 @@ namespace opensolid
                 TBinaryFunction binaryFunction
             ) const;
 
-            template <class TOtherDerived, class TBinaryFunction, class TResultDerived>
-            void
-            binaryMap(
-                const MatrixInterface<TOtherDerived>& other,
-                TBinaryFunction binaryFunction,
-                MatrixInterface<TResultDerived>& result
-            ) const;
-
             template <class TValue, class TFunction>
             const TValue
             fold(TValue initialValue, TFunction function) const;
@@ -407,6 +399,14 @@ namespace opensolid
             template <class TOtherDerived, class TUnaryFunction>
             void
             setMap(const MatrixInterface<TOtherDerived>& other, TUnaryFunction unaryFunction);
+            
+            template <class TOtherDerived, class TBinaryFunction, class TResultDerived>
+            void
+            setBinaryMap(
+                const MatrixInterface<TOtherDerived>& other,
+                TBinaryFunction binaryFunction,
+                const MatrixInterface<TResultDerived>& result
+            );
             
             template <class TOtherDerived>
             void

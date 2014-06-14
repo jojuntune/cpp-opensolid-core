@@ -116,12 +116,12 @@ namespace opensolid
             );
         } else {
             ConstMatrixViewXd exponentValues = evaluator.evaluate(secondOperand(), parameterView);
-            baseValues.binaryMap(
+            resultView.setBinaryMap(
                 exponentValues,
                 [] (double baseValue, double exponentValue) {
                     return pow(baseValue, exponentValue);
                 },
-                resultView
+                baseValues
             );
         }
     }
@@ -150,12 +150,12 @@ namespace opensolid
         } else {
             ConstIntervalMatrixViewXd exponentValues =
                 evaluator.evaluate(secondOperand(), parameterView);
-            baseValues.binaryMap(
+            resultView.setBinaryMap(
                 exponentValues,
                 [] (Interval baseValue, Interval exponentValue) {
                     return pow(baseValue, exponentValue);
                 },
-                resultView
+                baseValues
             );
         }
     }
