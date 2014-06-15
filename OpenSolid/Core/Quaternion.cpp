@@ -28,6 +28,37 @@
 
 namespace opensolid
 {
+    const Quaternion2d
+    Quaternion2d::slerp(
+        const Quaternion2d& startQuaternion,
+        const Quaternion2d& endQuaternion,
+        double parameterValue
+    ) {
+        double angle = acos(Interval(-1, 1).clamp(startQuaternion.dot(endQuaternion)));
+        double startCoefficient = 0.0;
+        double endCoefficient = 0.0;
+        double sinAngle = sin(angle);
+        if (sinAngle == Zero()) {
+            // Use linear interpolation for almost-parallel quaternions
+            startCoefficient = 1 - parameterValue;
+            endCoefficient = parameterValue;
+        } else {
+            startCoefficient = sin((1 - parameterValue) * angle) / sinAngle;
+            endCoefficient = sin(parameterValue * angle) / sinAngle;
+        }
+
+        ColumnMatrix2d slerpedComponents =
+            startCoefficient * startQuaternion.components() +
+            endCoefficient * endQuaternion.components();
+        double squaredNorm = slerpedComponents.cwiseSquared().sum();
+        if (squaredNorm == Zero()) {
+            return Quaternion2d::identity();
+        } else {
+            slerpedComponents /= sqrt(squaredNorm);
+            return Quaternion2d(slerpedComponents);
+        }
+    }
+
     const Quaternion3d
     Quaternion3d::slerp(
         const Quaternion3d& startQuaternion,

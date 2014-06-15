@@ -34,19 +34,116 @@
 namespace opensolid
 {
     inline
-    Quaternion3d::Quaternion3d() {
-        _components(3) = 1.0;
+    Quaternion2d::Quaternion() {
+        _components(0) = 1.0;
     }
 
     inline
-    Quaternion3d::Quaternion3d(const Matrix<double, 4, 1>& components) :
+    Quaternion2d::Quaternion(const ColumnMatrix2d& components) :
         _components(components) {
 
         assert(components.cwiseSquared().sum() - 1.0 == Zero());
     }
 
     inline
-    Quaternion3d::Quaternion3d(double x, double y, double z, double w) {
+    Quaternion2d::Quaternion(double cosAngle, double sinAngle) {
+        assert(cosAngle * cosAngle + sinAngle * sinAngle - 1 == Zero());
+
+        _components(0) = cosAngle;
+        _components(1) = sinAngle;
+    }
+
+    inline
+    Quaternion2d::Quaternion(double angle) {
+        _components(0) = cos(angle);
+        _components(1) = sin(angle);
+    }
+
+    inline
+    const ColumnMatrix2d&
+    Quaternion2d::components() const {
+        return _components;
+    }
+
+    inline
+    double
+    Quaternion2d::cosAngle() const {
+        return components()(0);
+    }
+
+    inline
+    double
+    Quaternion2d::sinAngle() const {
+        return components()(1);
+    }
+
+    inline
+    double
+    Quaternion2d::angle() const {
+        return atan2(sinAngle(), cosAngle());
+    }
+
+    inline
+    double
+    Quaternion2d::dot(const Quaternion2d& other) const {
+        return cosAngle() * other.cosAngle() + sinAngle() * other.sinAngle();
+    }
+
+    inline
+    const Quaternion2d
+    Quaternion2d::inverse() const {
+        return Quaternion2d(cosAngle(), -sinAngle());
+    }
+
+    inline
+    const Matrix2d
+    Quaternion2d::rotationMatrix() const {
+        Matrix2d result;
+        result(0, 0) = cosAngle();
+        result(1, 0) = sinAngle();
+        result(0, 1) = -sinAngle();
+        result(1, 1) = cosAngle();
+        return result;
+    }
+
+    inline
+    const Quaternion2d
+    Quaternion2d::operator*(const Quaternion2d& other) const {
+        double cosAngle = this->cosAngle() * other.cosAngle() - this->sinAngle() * other.sinAngle();
+        double sinAngle = this->sinAngle() * other.cosAngle() + this->cosAngle() * other.sinAngle();
+        
+        double squaredNorm = cosAngle * cosAngle + sinAngle * sinAngle;
+        if (squaredNorm - 1 == Zero()) {
+            double inverseNorm = 1.0 / sqrt(squaredNorm);
+            return Quaternion2d(cosAngle * inverseNorm, sinAngle * inverseNorm);
+        } else {
+            assert(false);
+            return Quaternion2d();
+        }
+    }
+
+    inline
+    const Quaternion2d
+    Quaternion2d::identity() {
+        ColumnMatrix2d identityComponents;
+        identityComponents(0) = 1.0;
+        return Quaternion2d(identityComponents);
+    }
+
+    inline
+    Quaternion3d::Quaternion() {
+        _components(3) = 1.0;
+    }
+
+    inline
+    Quaternion3d::Quaternion(const Matrix<double, 4, 1>& components) :
+        _components(components) {
+
+        assert(components.cwiseSquared().sum() - 1.0 == Zero());
+    }
+
+    inline
+    Quaternion3d::Quaternion(double x, double y, double z, double w) {
         assert(x * x + y * y + z * z + w * w - 1.0 == Zero());
         _components(0) = x;
         _components(1) = y;
@@ -55,7 +152,7 @@ namespace opensolid
     }
 
     inline
-    Quaternion3d::Quaternion3d(const UnitVector3d& unitVector, double angle) {
+    Quaternion3d::Quaternion(const UnitVector3d& unitVector, double angle) {
         double halfAngle = 0.5 * angle;
         double sinHalfAngle = sin(halfAngle);
         _components(0) = unitVector.x() * sinHalfAngle;
@@ -165,10 +262,15 @@ namespace opensolid
         double y = w2 * y1 + w1 * y2 + z1 * x2 - x1 * z2;
         double z = w2 * z1 + w1 * z2 + x1 * y2 - y1 * x2;
         double w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
-        double inverseNorm = 1.0 / sqrt(x * x + y * y + z * z + w * w);
-        assert(inverseNorm - 1.0 == Zero()); // Should be very close to normalized already
 
-        return Quaternion3d(x * inverseNorm, y * inverseNorm, z * inverseNorm, w * inverseNorm);
+        double squaredNorm = x * x + y * y + z * z + w * w;
+        if (squaredNorm - 1 == Zero()) {
+            double inverseNorm = 1.0 / sqrt(squaredNorm);
+            return Quaternion3d(x * inverseNorm, y * inverseNorm, z * inverseNorm, w * inverseNorm);
+        } else {
+            assert(false);
+            return Quaternion3d();
+        }
     }
 
     inline
