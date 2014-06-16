@@ -375,7 +375,7 @@ namespace opensolid
         std::vector<Matrix<double, iNumDimensions, 1>> results(parameterValues.size());
         MatrixViewXd resultView = detail::mutableView(results);
 
-        Evaluator evaluator;
+        detail::Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
@@ -391,7 +391,7 @@ namespace opensolid
         std::vector<Matrix<Interval, iNumDimensions, 1>> results(parameterValues.size());
         IntervalMatrixViewXd resultView = detail::mutableView(results);
 
-        Evaluator evaluator;
+        detail::Evaluator evaluator;
         implementation()->evaluate(argumentView, resultView, evaluator);
 
         return results;
@@ -511,7 +511,7 @@ namespace opensolid
         Matrix<Interval, iNumDimensions, iNumParameters> results;
         IntervalMatrixViewXd resultView = detail::mutableView(results);
 
-        Evaluator evaluator;
+        detail::Evaluator evaluator;
         implementation()->evaluateJacobian(argumentView, resultView, evaluator);
 
         return results;
