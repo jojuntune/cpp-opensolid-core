@@ -32,6 +32,7 @@
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Intersection.declarations.hpp>
@@ -69,6 +70,7 @@ namespace opensolid
 
     template <int iNumDimensions>
     class LineSegment :
+        public Convertible<LineSegment<iNumDimensions>>,
         public Transformable<LineSegment<iNumDimensions>>
     {
     private:

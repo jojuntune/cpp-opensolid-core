@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
 
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/Intersection.declarations.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
@@ -59,6 +60,7 @@ namespace opensolid
 
     template <>
     class Axis<2> :
+        public Convertible<Axis<2>>,
         public Transformable<Axis<2>>
     {
     private:
@@ -101,6 +103,7 @@ namespace opensolid
 
     template <>
     class Axis<3> :
+        public Convertible<Axis<3>>,
         public Transformable<Axis<3>>
     {
     private:

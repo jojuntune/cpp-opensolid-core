@@ -28,12 +28,14 @@
 
 #include <OpenSolid/Core/Quaternion.declarations.hpp>
 
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
-    class Quaternion3d
+    class Quaternion3d :
+        public Convertible<Quaternion3d>
     {
     private:
         Matrix<double, 4, 1> _components;

@@ -28,6 +28,7 @@
 
 #include <OpenSolid/Core/Quaternion.definitions.hpp>
 
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 

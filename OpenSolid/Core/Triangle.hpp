@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/BoundsType.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>

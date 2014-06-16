@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/BoundsType.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
@@ -66,6 +67,7 @@ namespace opensolid
     template <>
     class Triangle<1> :
         public detail::TriangleBase<1>,
+        public Convertible<Triangle<1>>,
         public Transformable<Triangle<1>>
     {
     public:
@@ -83,6 +85,7 @@ namespace opensolid
     template <>
     class Triangle<2> :
         public detail::TriangleBase<2>,
+        public Convertible<Triangle<2>>,
         public Transformable<Triangle<2>>
     {
     public:
@@ -114,6 +117,7 @@ namespace opensolid
     template <>
     class Triangle<3> :
         public detail::TriangleBase<3>,
+        public Convertible<Triangle<3>>,
         public Transformable<Triangle<3>>
     {
     public:

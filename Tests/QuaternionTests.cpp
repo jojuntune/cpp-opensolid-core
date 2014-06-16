@@ -30,6 +30,42 @@
 
 using namespace opensolid;
 
+struct MyQuat
+{
+    double x;
+    double y;
+    double z;
+    double w;
+
+    MyQuat(double x_, double y_, double z_, double w_) :
+        x(x_),
+        y(y_),
+        z(z_),
+        w(w_) {
+    }
+};
+
+namespace opensolid
+{
+    template <>
+    struct ConversionFunction<Quaternion3d, MyQuat>
+    {
+        const MyQuat
+        operator()(const Quaternion3d& quaternion) const {
+            return MyQuat(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
+        }
+    };
+
+    template <>
+    struct ConversionFunction<MyQuat, Quaternion3d>
+    {
+        const Quaternion3d
+        operator()(const MyQuat& myQuat) const {
+            return Quaternion3d(myQuat.x, myQuat.y, myQuat.z, myQuat.w);
+        }
+    };
+}
+
 TEST_CASE("Basic rotations") {
     Matrix3d quaternionMatrix;
     Matrix3d expectedMatrix;
@@ -179,4 +215,14 @@ TEST_CASE("Degenerate slerp") {
         INFO("Rotation matrix:\n" << interpolated.rotationMatrix());
         REQUIRE((interpolated.components() - final.components()).isZero());
     }
+}
+
+TEST_CASE("Conversion") {
+    Quaternion3d quaternion = Quaternion3d(UnitVector3d::X(), M_PI / 2);
+    MyQuat myQuat = quaternion.to<MyQuat>();
+
+    REQUIRE((myQuat.x - 1 / sqrt(2.0)) == Zero());
+    REQUIRE(myQuat.y == Zero());
+    REQUIRE(myQuat.z == Zero());
+    REQUIRE((myQuat.w - 1 / sqrt(2.0)) == Zero());
 }

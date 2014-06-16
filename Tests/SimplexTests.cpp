@@ -34,6 +34,193 @@
 
 using namespace opensolid;
 
+struct MyPoint3d
+{
+    double x;
+    double y;
+    double z;
+
+    MyPoint3d(double x_, double y_, double z_) :
+        x(x_),
+        y(y_),
+        z(z_) {
+    }
+};
+
+inline
+bool
+operator==(const MyPoint3d& myFirstPoint, const MyPoint3d& mySecondPoint) {
+    return myFirstPoint.x == mySecondPoint.x &&
+        myFirstPoint.y == mySecondPoint.y &&
+        myFirstPoint.z == mySecondPoint.z;
+}
+
+struct MyLineSegment3d
+{
+    MyPoint3d startPoint;
+    MyPoint3d endPoint;
+
+    MyLineSegment3d(const MyPoint3d& startPoint_, const MyPoint3d& endPoint_) :
+        startPoint(startPoint_),
+        endPoint(endPoint_) {
+    }
+};
+
+inline
+bool
+operator==(const MyLineSegment3d& myFirstLineSegment, const MyLineSegment3d& mySecondLineSegment) {
+    return myFirstLineSegment.startPoint == mySecondLineSegment.startPoint &&
+        myFirstLineSegment.endPoint == mySecondLineSegment.endPoint;
+}
+
+struct MyTriangle3d
+{
+    MyPoint3d point1;
+    MyPoint3d point2;
+    MyPoint3d point3;
+
+    MyTriangle3d(const MyPoint3d& point1_, const MyPoint3d& point2_, const MyPoint3d& point3_) :
+        point1(point1_),
+        point2(point2_),
+        point3(point3_) {
+    }
+};
+
+inline
+bool
+operator==(const MyTriangle3d& myFirstTriangle, const MyTriangle3d& mySecondTriangle) {
+    return myFirstTriangle.point1 == mySecondTriangle.point1 &&
+        myFirstTriangle.point2 == mySecondTriangle.point2 &&
+        myFirstTriangle.point3 == mySecondTriangle.point3;
+}
+
+struct MyTetrahedron3d
+{
+    MyPoint3d point1;
+    MyPoint3d point2;
+    MyPoint3d point3;
+    MyPoint3d point4;
+
+    MyTetrahedron3d(
+        const MyPoint3d& point1_,
+        const MyPoint3d& point2_,
+        const MyPoint3d& point3_,
+        const MyPoint3d& point4_
+    ) : point1(point1_),
+        point2(point2_),
+        point3(point3_),
+        point4(point4_) {
+    }
+};
+
+inline
+bool
+operator==(const MyTetrahedron3d& myFirstTetrahedron, const MyTetrahedron3d& mySecondTetrahedron) {
+    return myFirstTetrahedron.point1 == mySecondTetrahedron.point1 &&
+        myFirstTetrahedron.point2 == mySecondTetrahedron.point2 &&
+        myFirstTetrahedron.point3 == mySecondTetrahedron.point3 &&
+        myFirstTetrahedron.point4 == mySecondTetrahedron.point4;
+}
+
+namespace opensolid
+{
+    template <>
+    struct ConversionFunction<MyPoint3d, Point3d>
+    {
+        const Point3d
+        operator()(const MyPoint3d& myPoint) const {
+            return Point3d(myPoint.x, myPoint.y, myPoint.z);
+        }
+    };
+
+    template <>
+    struct ConversionFunction<Point3d, MyPoint3d>
+    {
+        const MyPoint3d
+        operator()(const Point3d& point) const {
+            return MyPoint3d(point.x(), point.y(), point.z());
+        }
+    };
+
+    template <>
+    struct ConversionFunction<MyLineSegment3d, LineSegment3d>
+    {
+        const LineSegment3d
+        operator()(const MyLineSegment3d& myLineSegment) const {
+            return LineSegment3d(
+                Point3d::From(myLineSegment.startPoint),
+                Point3d::From(myLineSegment.endPoint)
+            );
+        }
+    };
+
+    template <>
+    struct ConversionFunction<LineSegment3d, MyLineSegment3d>
+    {
+        const MyLineSegment3d
+        operator()(const LineSegment3d& lineSegment) const {
+            return MyLineSegment3d(
+                lineSegment.startVertex().to<MyPoint3d>(),
+                lineSegment.endVertex().to<MyPoint3d>()
+            );
+        }
+    };
+
+    template <>
+    struct ConversionFunction<MyTriangle3d, Triangle3d>
+    {
+        const Triangle3d
+        operator()(const MyTriangle3d& myTriangle) const {
+            return Triangle3d(
+                Point3d::From(myTriangle.point1),
+                Point3d::From(myTriangle.point2),
+                Point3d::From(myTriangle.point3)
+            );
+        }
+    };
+
+    template <>
+    struct ConversionFunction<Triangle3d, MyTriangle3d>
+    {
+        const MyTriangle3d
+        operator()(const Triangle3d& triangle) const {
+            return MyTriangle3d(
+                triangle.vertex(0).to<MyPoint3d>(),
+                triangle.vertex(1).to<MyPoint3d>(),
+                triangle.vertex(2).to<MyPoint3d>()
+            );
+        }
+    };
+
+    template <>
+    struct ConversionFunction<MyTetrahedron3d, Tetrahedron3d>
+    {
+        const Tetrahedron3d
+        operator()(const MyTetrahedron3d& myTetrahedron) const {
+            return Tetrahedron3d(
+                Point3d::From(myTetrahedron.point1),
+                Point3d::From(myTetrahedron.point2),
+                Point3d::From(myTetrahedron.point3),
+                Point3d::From(myTetrahedron.point4)
+            );
+        }
+    };
+
+    template <>
+    struct ConversionFunction<Tetrahedron3d, MyTetrahedron3d>
+    {
+        const MyTetrahedron3d
+        operator()(const Tetrahedron3d& tetrahedron) const {
+           return MyTetrahedron3d(
+                tetrahedron.vertex(0).to<MyPoint3d>(),
+                tetrahedron.vertex(1).to<MyPoint3d>(),
+                tetrahedron.vertex(2).to<MyPoint3d>(),
+                tetrahedron.vertex(3).to<MyPoint3d>()
+            );
+        }
+    };
+}
+
 TEST_CASE("Localization") {
     Triangle3d triangle3d(Point3d(1, 1, 1), Point3d(3, 1, 2), Point3d(2, 2, 4));
     PlanarCoordinateSystem3d xyCoordinateSystem(
@@ -260,4 +447,37 @@ TEST_CASE("Tetrahedron containment") {
     REQUIRE_FALSE(tetrahedron.strictlyContains(tetrahedron.vertex(2)));
     REQUIRE(tetrahedron.contains(Point3d::Origin()));
     REQUIRE_FALSE(tetrahedron.strictlyContains(Point3d::Origin()));
+}
+
+TEST_CASE("Line segment conversion") {
+    MyLineSegment3d initial = MyLineSegment3d(MyPoint3d(1, 0, 1), MyPoint3d(2, 0, 2));
+    LineSegment3d converted = LineSegment3d::From(initial);
+    MyLineSegment3d final = converted.to<MyLineSegment3d>();
+
+    REQUIRE((converted.squaredLength() - 2) == Zero());
+    REQUIRE(initial == final);
+}
+
+TEST_CASE("Triangle conversion") {
+    MyTriangle3d initial = MyTriangle3d(MyPoint3d(1, 1, 0), MyPoint3d(2, 1, 0), MyPoint3d(1, 2, 0));
+    Triangle3d converted = Triangle3d::From(initial);
+    MyTriangle3d final = converted.to<MyTriangle3d>();
+
+    REQUIRE((converted.area() - 0.5) == Zero());
+    REQUIRE(initial == final);
+}
+
+TEST_CASE("Tetrahedron conversion") {
+    Tetrahedron3d initial = Tetrahedron3d::Unit();
+    MyTetrahedron3d converted = initial.to<MyTetrahedron3d>();
+    MyTetrahedron3d expected = MyTetrahedron3d(
+        MyPoint3d(0, 0, 0),
+        MyPoint3d(1, 0, 0),
+        MyPoint3d(0, 1, 0),
+        MyPoint3d(0, 0, 1)
+    );
+    Tetrahedron3d final = Tetrahedron3d::From(converted);
+
+    REQUIRE(converted == expected);
+    REQUIRE(initial == final);
 }
