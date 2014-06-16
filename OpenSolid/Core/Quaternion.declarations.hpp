@@ -26,5 +26,6 @@
 
 namespace opensolid
 {
-    class Quaternion3d;
+    template <int iNumDimensions>
+    class Quaternion;
 }
