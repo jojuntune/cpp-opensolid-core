@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/AxisPlaneIntersection3d.hpp>
 #include <OpenSolid/Core/AxisTriangleIntersection3d.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Error.hpp>
 #include <OpenSolid/Core/Matrix.hpp>

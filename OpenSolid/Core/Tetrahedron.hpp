@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.hpp>
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/EqualityFunction.hpp>
 #include <OpenSolid/Core/LineSegment.hpp>

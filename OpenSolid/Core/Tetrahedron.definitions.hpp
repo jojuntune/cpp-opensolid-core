@@ -30,6 +30,7 @@
 
 #include <OpenSolid/Core/BoundsFunction.declarations.hpp>
 #include <OpenSolid/Core/Box.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/CoordinateSystem.declarations.hpp>
 #include <OpenSolid/Core/EqualityFunction.declarations.hpp>
 #include <OpenSolid/Core/LineSegment.declarations.hpp>
@@ -57,6 +58,7 @@ namespace opensolid
     };
 
     class Tetrahedron3d :
+        public Convertible<Tetrahedron3d>,
         public Transformable<Tetrahedron3d>
     {
     private:

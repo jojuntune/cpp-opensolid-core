@@ -28,13 +28,15 @@
 
 #include <OpenSolid/Core/Quaternion.declarations.hpp>
 
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/Matrix.definitions.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
 
 namespace opensolid
 {
     template <>
-    class Quaternion<2>
+    class Quaternion<2> :
+        public Convertible<Quaternion<2>>
     {
     private:
         Matrix<double, 2, 1> _components;
@@ -87,7 +89,8 @@ namespace opensolid
     typedef Quaternion<2> Quaternion2d;
 
     template <>
-    class Quaternion<3>
+    class Quaternion<3> :
+        public Convertible<Quaternion<3>>
     {
     private:
         Matrix<double, 4, 1> _components;

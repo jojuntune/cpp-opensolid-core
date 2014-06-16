@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Plane.declarations.hpp>
 
 #include <OpenSolid/Core/Axis.declarations.hpp>
+#include <OpenSolid/Core/Convertible.definitions.hpp>
 #include <OpenSolid/Core/CoordinateSystem.definitions.hpp>
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>
@@ -44,6 +45,7 @@ namespace opensolid
     };
 
     class Plane3d :
+        public Convertible<Plane3d>,
         public Transformable<Plane3d>
     {
     private:

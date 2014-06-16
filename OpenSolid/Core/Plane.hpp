@@ -29,6 +29,7 @@
 #include <OpenSolid/Core/Plane.definitions.hpp>
 
 #include <OpenSolid/Core/Axis.hpp>
+#include <OpenSolid/Core/Convertible.hpp>
 #include <OpenSolid/Core/CoordinateSystem.hpp>
 #include <OpenSolid/Core/Matrix.hpp>
 #include <OpenSolid/Core/Point.definitions.hpp>

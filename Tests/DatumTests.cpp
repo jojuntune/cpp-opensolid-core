@@ -28,7 +28,48 @@
 
 #include <catch/catch.hpp>
 
+#include <utility>
+
 using namespace opensolid;
+
+namespace opensolid
+{
+    template <>
+    struct ConversionFunction<Axis3d, std::pair<Point3d, UnitVector3d>>
+    {
+        const std::pair<Point3d, UnitVector3d>
+        operator()(const Axis3d& axis) const {
+            return std::pair<Point3d, UnitVector3d>(axis.originPoint(), axis.directionVector());
+        }
+    };
+
+    template <>
+    struct ConversionFunction<std::pair<Point3d, UnitVector3d>, Axis3d>
+    {
+        const Axis3d
+        operator()(const std::pair<Point3d, UnitVector3d>& pair) const {
+            return Axis3d(pair.first, pair.second);
+        }
+    };
+
+    template <>
+    struct ConversionFunction<Plane3d, std::pair<Point3d, UnitVector3d>>
+    {
+        const std::pair<Point3d, UnitVector3d>
+        operator()(const Plane3d& plane) const {
+            return std::pair<Point3d, UnitVector3d>(plane.originPoint(), plane.normalVector());
+        }
+    };
+
+    template <>
+    struct ConversionFunction<std::pair<Point3d, UnitVector3d>, Plane3d>
+    {
+        const Plane3d
+        operator()(const std::pair<Point3d, UnitVector3d>& pair) const {
+            return Plane3d(pair.first, pair.second);
+        }
+    };
+}
 
 TEST_CASE("Axis/plane intersection") {
     Plane3d plane(Point3d(1, 1, 1), Vector3d(1, 1, 1).normalized());
@@ -89,4 +130,14 @@ TEST_CASE("Plane mirroring") {
     Plane3d mirrored = original.mirroredAbout(Plane3d::xy());
     REQUIRE((mirrored.originPoint() - Point3d(1, 0, -1)).isZero());
     REQUIRE((mirrored.normalVector() - Vector3d(-1, 0, 2).normalized()).isZero());
+}
+
+TEST_CASE("Pair conversion") {
+    Axis3d axis = Axis3d(Point3d(1, 1, 1), Vector3d(1, 1, 1).normalized());
+    auto pair = axis.to<std::pair<Point3d, UnitVector3d>>();
+    Plane3d plane = Plane3d::from(pair);
+    Plane3d normalPlane = axis.normalPlane();
+
+    REQUIRE(plane.originPoint() == normalPlane.originPoint());
+    REQUIRE(plane.normalVector() == normalPlane.normalVector());
 }
