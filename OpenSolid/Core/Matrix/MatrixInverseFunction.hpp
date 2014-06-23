@@ -149,8 +149,9 @@ namespace opensolid
             } else {
                 assert(false);
                 return Matrix<typename MatrixTraits<TDerived>::PlainScalar, -1, -1>(
+                    std::pair<int, int>(
                     matrix.numRows(),
-                    matrix.numColumns()
+                    matrix.numColumns())
                 );
             }
         }

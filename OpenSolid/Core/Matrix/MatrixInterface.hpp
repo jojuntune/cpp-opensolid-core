@@ -85,6 +85,13 @@ namespace opensolid
 
         template <class TDerived>
         inline
+        std::pair<int, int> 
+        MatrixInterface<TDerived>::dimensions() const {
+            return std::pair<int, int>(derived().numRows(), derived().numColumns());
+        }
+        
+        template <class TDerived>
+        inline
         int
         MatrixInterface<TDerived>::size() const {
             return derived().size();
@@ -394,7 +401,9 @@ namespace opensolid
             MatrixTraits<TDerived>::NumRows
         >
         MatrixInterface<TDerived>::transpose() const {
-            Matrix<PlainScalar, NumColumns, NumRows> result(numColumns(), numRows());
+            Matrix<PlainScalar, NumColumns, NumRows> result(
+                std::pair<int, int>(numColumns(), numRows())
+            );
             result.setTranspose(*this);
             return result;
         }
@@ -556,8 +565,7 @@ namespace opensolid
         const typename MappedMatrixType<TUnaryFunction, TDerived>::Type
         MatrixInterface<TDerived>::map(TUnaryFunction unaryFunction) const {
             typename MappedMatrixType<TUnaryFunction, TDerived>::Type result(
-                numRows(),
-                numColumns()
+                std::pair<int, int>(numRows(), numColumns())
             );
             result.setMap(*this, unaryFunction);
             return result;
@@ -576,7 +584,7 @@ namespace opensolid
                 TBinaryFunction,
                 TDerived,
                 TOtherDerived
-            >::Type result(numRows(), numColumns());
+            >::Type result(std::pair<int, int>(numRows(), numColumns()));
             result.setBinaryMap(other, binaryFunction, *this);
             return result;
         }
@@ -1513,7 +1521,7 @@ namespace opensolid
                 ResultScalarType,
                 MatrixTraits<TFirstDerived>::NumRows,
                 MatrixTraits<TSecondDerived>::NumColumns
-            > result(firstMatrix.numRows(), secondMatrix.numColumns());
+            > result(std::pair<int, int>(firstMatrix.numRows(), secondMatrix.numColumns()));
 
             result.setProduct(firstMatrix, secondMatrix);
             return result;

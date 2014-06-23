@@ -331,7 +331,7 @@ TEST_CASE("Static/dynamic matrix conversion") {
     }
 
     SECTION("Dynamic to static") {
-        MatrixXd a(2, 2);
+        MatrixXd a(std::pair<int, int>(2, 2));
         a(0, 0) = 1;
         a(1, 0) = 2;
         a(0, 1) = 3;
@@ -346,7 +346,7 @@ TEST_CASE("Static/dynamic matrix conversion") {
 }
 
 TEST_CASE("Dynamic matrix row access") {
-    MatrixXd matrix(3, 11);
+    MatrixXd matrix(std::pair<int, int>(3, 11));
     for (int i = 0; i <= 10; ++i) {
         matrix(0, i) = 1 + i / 10.0;
         matrix(1, i) = 2 + i / 10.0;
@@ -360,7 +360,7 @@ TEST_CASE("Dynamic matrix row access") {
 }
 
 TEST_CASE("Dynamic matrix inversion") {
-    MatrixXd matrix(3, 3);
+    MatrixXd matrix(std::pair<int, int>(3, 3));
     matrix(0, 0) = 1;
     matrix(0, 1) = 1;
     matrix(1, 1) = 1;
@@ -379,7 +379,7 @@ TEST_CASE("Dynamic matrix inversion") {
 }
 
 TEST_CASE("Dynamic matrix map") {
-    MatrixXd matrix(3, 3);
+    MatrixXd matrix(std::pair<int, int>(3, 3));
     for (int index = 0; index < 9; ++index) {
         matrix(index) = index;
     }
@@ -394,12 +394,12 @@ TEST_CASE("Dynamic matrix map") {
 }
 
 TEST_CASE("Dynamic matrix binary map") {
-    MatrixXd firstMatrix(2, 3);
+    MatrixXd firstMatrix(std::pair<int, int>(2, 3));
     for (int index = 0; index < 6; ++index) {
         firstMatrix(index) = index;
     }
     
-    MatrixXd secondMatrix(2, 3);
+    MatrixXd secondMatrix(std::pair<int, int>(2, 3));
     for (int index = 0; index < 6; ++index) {
         secondMatrix(index) = 2 * index;
     }
@@ -418,7 +418,7 @@ TEST_CASE("Dynamic matrix binary map") {
 TEST_CASE("Dynamic matrix product") {
     // 1 3 5
     // 2 4 6
-    MatrixXd firstMatrix(2, 3);
+    MatrixXd firstMatrix(std::pair<int, int>(2, 3));
     for (int index = 0; index < 6; ++index) {
         firstMatrix(index) = index + 1;
     }
@@ -457,7 +457,7 @@ TEST_CASE("Block assignment") {
 }
 
 TEST_CASE("Dynamic matrix block assignment") {
-    MatrixXd matrix(10, 10);
+    MatrixXd matrix(std::pair<int, int>(10, 10));
     matrix.block(2, 3, 4, 5).setOnes();
     for (int columnIndex = 0; columnIndex < 10; ++columnIndex) {
         for (int rowIndex = 0; rowIndex < 10; ++rowIndex) {
@@ -511,7 +511,7 @@ TEST_CASE("Stream output") {
         checkTypeName(stream.str(), "ColumnMatrix3d");
     }
     SECTION("RowMatrixXd") {
-        RowMatrixXd matrix(3);
+        RowMatrixXd matrix(std::pair<int, int>(1, 3));
         stream << matrix;
         checkTypeName(stream.str(), "RowMatrixXd");
     }
@@ -521,7 +521,7 @@ TEST_CASE("Stream output") {
         checkTypeName(stream.str(), "IntervalMatrix3d");
     }
     SECTION("MatrixXd") {
-        MatrixXd matrix(3,3);
+        MatrixXd matrix(std::pair<int, int>(3,3));
         stream << matrix;
         checkTypeName(stream.str(), "MatrixXd");
     }

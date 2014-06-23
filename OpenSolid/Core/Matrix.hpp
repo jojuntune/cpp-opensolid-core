@@ -47,8 +47,8 @@ namespace opensolid
 
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
-    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(int numRows, int numColumns) :
-        detail::MatrixBase<TScalar, iNumRows, iNumColumns>(numRows, numColumns) {
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(std::pair<int, int> dimensions) :
+        detail::MatrixBase<TScalar, iNumRows, iNumColumns>(dimensions.first, dimensions.second) {
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -73,9 +73,8 @@ namespace opensolid
     inline
     Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
         const TScalar* sourcePtr,
-        int numRows, int
-        numColumns
-    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(numRows, numColumns) {
+        std::pair<int, int> dimensions
+    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(dimensions.first, dimensions.second) {
 
         for (int index = 0; index < this->size(); ++index) {
             this->data()[index] = sourcePtr[index];
@@ -130,8 +129,11 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     const Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::constant(int numRows, int numColumns, TScalar value) {
-        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
+    Matrix<TScalar, iNumRows, iNumColumns>::constant(
+        std::pair<int, int> dimensions, 
+        TScalar value
+    ) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(dimensions.first, dimensions.second);
         result.setConstant(value);
         return result;
     }
@@ -157,8 +159,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     const Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::zero(int numRows, int numColumns) {
-        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
+    Matrix<TScalar, iNumRows, iNumColumns>::zero(std::pair<int, int> dimensions) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(dimensions.first, dimensions.second);
         result.setZero();
         return result;
     }
@@ -184,8 +186,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     const Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::ones(int numRows, int numColumns) {
-        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
+    Matrix<TScalar, iNumRows, iNumColumns>::ones(std::pair<int, int> dimensions) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(dimensions.first, dimensions.second);
         result.setOnes();
         return result;
     }
@@ -211,8 +213,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     const Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::identity(int numRows, int numColumns) {
-        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
+    Matrix<TScalar, iNumRows, iNumColumns>::identity(std::pair<int, int> dimensions) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(dimensions.first, dimensions.second);
         result.setIdentity();
         return result;
     }
@@ -238,8 +240,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     const Matrix<TScalar, iNumRows, iNumColumns>
-    Matrix<TScalar, iNumRows, iNumColumns>::random(int numRows, int numColumns) {
-        Matrix<TScalar, iNumRows, iNumColumns> result(numRows, numColumns);
+    Matrix<TScalar, iNumRows, iNumColumns>::random(std::pair<int, int> dimensions) {
+        Matrix<TScalar, iNumRows, iNumColumns> result(dimensions.first, dimensions.second);
         result.setRandom();
         return result;
     }

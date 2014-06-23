@@ -44,13 +44,13 @@ namespace opensolid
 
         Matrix(int size);
 
-        Matrix(int numRows, int numColumns);
+        Matrix(std::pair<int, int> dimensions);
 
         Matrix(const TScalar* sourcePtr);
 
         Matrix(const TScalar* sourcePtr, int size);
 
-        Matrix(const TScalar* sourcePtr, int numRows, int numColumns);
+        Matrix(const TScalar* sourcePtr, std::pair<int, int> dimensions);
 
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
@@ -69,7 +69,7 @@ namespace opensolid
         constant(int size, TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        constant(int numRows, int numColumns, TScalar value);
+        constant(std::pair<int, int> dimensions, TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         zero();
@@ -78,7 +78,7 @@ namespace opensolid
         zero(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        zero(int numRows, int numColumns);
+        zero(std::pair<int, int> dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         ones();
@@ -87,7 +87,7 @@ namespace opensolid
         ones(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        ones(int numRows, int numColumns);
+        ones(std::pair<int, int> dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         identity();
@@ -96,7 +96,7 @@ namespace opensolid
         identity(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        identity(int numRows, int numColumns);
+        identity(std::pair<int, int> dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         random();
@@ -105,7 +105,7 @@ namespace opensolid
         random(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        random(int numRows, int numColumns);
+        random(std::pair<int, int> dimensions);
     };
 
     typedef Matrix<double, 1, 1> Matrix1d;

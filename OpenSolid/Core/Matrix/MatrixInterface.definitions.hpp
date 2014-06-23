@@ -68,6 +68,9 @@ namespace opensolid
 
             int
             numColumns() const;
+            
+            std::pair<int, int> 
+            dimensions() const;
 
             int
             size() const;
