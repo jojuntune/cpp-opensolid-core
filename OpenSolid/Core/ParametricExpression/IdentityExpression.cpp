@@ -78,7 +78,7 @@ namespace opensolid
 
         ExpressionImplementationPtr
         IdentityExpression::derivativeImpl(int parameterIndex) const {
-            ColumnMatrixXd result(numDimensions());
+            ColumnMatrixXd result(std::pair<int, int>(numDimensions(), 1));
             result(parameterIndex) = 1.0;
             return new ConstantExpression(result, numDimensions());
         }

@@ -41,7 +41,10 @@ namespace opensolid
         template <int iNumDimensions, int iNumParameters>
         ParametricExpression<iNumDimensions, iNumParameters>
         ZeroExpressionConstructor<iNumDimensions, iNumParameters>::zero() {
-            return new ConstantExpression(ColumnMatrixXd::zero(iNumDimensions), iNumParameters);
+            return new ConstantExpression(
+                ColumnMatrixXd::zero(std::pair<int, int>(iNumDimensions, 1)), 
+                iNumParameters
+            );
         }
 
         template <int iNumDimensions, int iNumParameters>

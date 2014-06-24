@@ -89,7 +89,10 @@ namespace opensolid
         
         ExpressionImplementationPtr
         ConstantExpression::derivativeImpl(int) const {
-            return new ConstantExpression(ColumnMatrixXd::zero(numDimensions()), numParameters());
+            return new ConstantExpression(
+                ColumnMatrixXd::zero(std::pair<int, int>(numDimensions(), 1)), 
+                numParameters()
+            );
         }
         
         bool
@@ -228,8 +231,11 @@ namespace opensolid
         }
 
         ConstantExpression::ConstantExpression(double value, int numParameters) :
-            _columnMatrix(ColumnMatrixXd::constant(1, value)),
-            _intervalColumnMatrix(IntervalColumnMatrixXd::constant(1, Interval(value))),
+            _columnMatrix(ColumnMatrixXd::constant(std::pair<int, int>(1, 1), value)),
+            _intervalColumnMatrix(IntervalColumnMatrixXd::constant(
+                std::pair<int, int>(1, 1), 
+                Interval(value)
+            )),
             _numParameters(numParameters) {
         }
     }

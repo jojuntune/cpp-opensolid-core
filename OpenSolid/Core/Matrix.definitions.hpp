@@ -42,13 +42,9 @@ namespace opensolid
     public:
         Matrix();
 
-        Matrix(int size);
-
         Matrix(std::pair<int, int> dimensions);
 
         Matrix(const TScalar* sourcePtr);
-
-        Matrix(const TScalar* sourcePtr, int size);
 
         Matrix(const TScalar* sourcePtr, std::pair<int, int> dimensions);
 
@@ -66,16 +62,10 @@ namespace opensolid
         constant(TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        constant(int size, TScalar value);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
         constant(std::pair<int, int> dimensions, TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         zero();
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        zero(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         zero(std::pair<int, int> dimensions);
@@ -84,25 +74,16 @@ namespace opensolid
         ones();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        ones(int size);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
         ones(std::pair<int, int> dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         identity();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        identity(int size);
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
         identity(std::pair<int, int> dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         random();
-
-        static const Matrix<TScalar, iNumRows, iNumColumns>
-        random(int size);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         random(std::pair<int, int> dimensions);

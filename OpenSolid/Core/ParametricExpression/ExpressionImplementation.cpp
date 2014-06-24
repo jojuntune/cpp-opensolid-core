@@ -213,7 +213,7 @@ namespace opensolid
                     0
                 );
                 
-                ColumnMatrixXd result(this->numDimensions());
+                ColumnMatrixXd result(std::pair<int, int>(this->numDimensions(), 1));
                 MatrixViewXd resultMap(
                     result.data(),
                     this->numDimensions(),
@@ -264,7 +264,9 @@ namespace opensolid
         ExpressionImplementationPtr
         ExpressionImplementation::concatenated(const ExpressionImplementationPtr& other) const {
             if (this->isConstantExpression() && other->isConstantExpression()) {
-                ColumnMatrixXd columnMatrix(this->numDimensions() + other->numDimensions());
+                ColumnMatrixXd columnMatrix(
+                    std::pair<int, int>(this->numDimensions() + other->numDimensions(), 1)
+                );
                 columnMatrix.block(0, 0, this->numDimensions(), 1) =
                     this->cast<ConstantExpression>()->columnMatrix();
                 columnMatrix.block(this->numDimensions(), 0, other->numDimensions(), 1) =
@@ -336,10 +338,16 @@ namespace opensolid
                 );
             }
             if (this->isConstantExpression() && this->cast<ConstantExpression>()->isZero()) {
-                return new ConstantExpression(ColumnMatrixXd::zero(3), numParameters());
+                return new ConstantExpression(
+                        ColumnMatrixXd::zero(std::pair<int, int>(3, 1)), 
+                        numParameters()
+                );
             }
             if (other->isConstantExpression() && other->cast<ConstantExpression>()->isZero()) {
-                return new ConstantExpression(ColumnMatrixXd::zero(3), numParameters());
+                return new ConstantExpression(
+                        ColumnMatrixXd::zero(std::pair<int, int>(3, 1)), 
+                        numParameters()
+                );
             }
             return new CrossProductExpression(this, other);
         }
@@ -404,12 +412,18 @@ namespace opensolid
 
         ExpressionImplementationPtr
         operator+(const ExpressionImplementationPtr& firstOperand, double secondOperand) {
-            return firstOperand + ColumnMatrixXd::constant(1, secondOperand);
+            return firstOperand + ColumnMatrixXd::constant(
+                std::pair<int, int>(1, 1), 
+                secondOperand
+            );
         }
 
         ExpressionImplementationPtr
         operator+(double firstOperand, const ExpressionImplementationPtr& secondOperand) {
-            return secondOperand + ColumnMatrixXd::constant(1, firstOperand);
+            return secondOperand + ColumnMatrixXd::constant(
+                std::pair<int, int>(1, 1), 
+                firstOperand
+            );
         }
 
         ExpressionImplementationPtr
@@ -454,12 +468,18 @@ namespace opensolid
 
         ExpressionImplementationPtr
         operator-(const ExpressionImplementationPtr& firstOperand, double secondOperand) {
-            return firstOperand + ColumnMatrixXd::constant(1, -secondOperand);
+            return firstOperand + ColumnMatrixXd::constant(
+                std::pair<int, int>(1, 1), 
+                -secondOperand
+            );
         }
 
         ExpressionImplementationPtr
         operator-(double firstOperand, const ExpressionImplementationPtr& secondOperand) {
-            return (-secondOperand) + ColumnMatrixXd::constant(1, firstOperand);
+            return (-secondOperand) + ColumnMatrixXd::constant(
+                std::pair<int, int>(1, 1), 
+                firstOperand
+            );
         }
 
         ExpressionImplementationPtr
@@ -536,7 +556,7 @@ namespace opensolid
             }
             if (matrix.isZero()) {
                 return new ConstantExpression(
-                    ColumnMatrixXd::zero(matrix.numRows()),
+                    ColumnMatrixXd::zero(std::pair<int, int>(matrix.numRows(), 1)),
                     argument->numParameters()
                 );
             }
@@ -558,7 +578,7 @@ namespace opensolid
         operator*(double scale, const ExpressionImplementationPtr& argument) {
             if (scale == Zero()) {
                 return new ConstantExpression(
-                    ColumnMatrixXd::zero(argument->numDimensions()),
+                    ColumnMatrixXd::zero(std::pair<int, int>(argument->numDimensions(), 1)),
                     argument->numParameters()
                 );
             }
