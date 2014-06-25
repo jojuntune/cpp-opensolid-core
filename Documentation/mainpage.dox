@@ -1,0 +1,92 @@
+/**
+
+\mainpage
+
+This documentation describes in detail the various classes and functions that make up OpenSolid. For a more high-level introduction to the ideas behind OpenSolid, and some examples of using it, please refer to the <a href="manual.pdf">OpenSolid manual</a>. This documentation, the OpenSolid manual, and OpenSolid itself are all very much works in progress!
+
+A mailing list has been set up at opensolid-devel@opensolid.org; to subscribe, go to <a href="http://lists.opensolid.org/mailman/listinfo/opensolid-devel">http://lists.opensolid.org/mailman/listinfo/opensolid-devel</a>.
+
+Perhaps the best way to quickly get used to OpenSolid is to play around with its Python extension. Once OpenSolid is built (see the instructions for your platform below), switch into the \c bin subdirectory of the OpenSolid build directory, run \c python, and then type <tt>from %opensolid import *</tt>.You should then be able to try out commands like those in the Python test files (e.g. <tt>scalar/__tests__.py</tt> in the OpenSolid source directory). For example:
+
+\verbatim
+>>> from opensolid import *
+>>> a = Constant(3,4)
+>>> print a.bounds()
+[3,4]
+>>> print a.eval()
+3.5
+\endverbatim
+
+\section building Building OpenSolid
+
+OpenSolid requires the following packages to build and run:
+
+- CMake
+- Subversion
+- Python
+- Boost (1.34 or higher)
+
+To generate Doxygen documentation, you'll need Doxygen and GraphViz; to generate the PDF manual, you'll need LaTeX. If those are not installed, you'll get a few warnings when running CMake, but OpenSolid itself will still build and run just fine.
+
+\subsection building-unix UNIX variants
+
+CMake, Subversion and Python should be available through whatever package manager your distribution uses. If Boost 1.34 is not yet available, you will have to compile it from source; the only binary library you'll need is Boost.Python. To do this, first download a Boost source distribution from the <a href="http://sourceforge.net/project/showfiles.php?group_id=7586">Boost SourceForge download page</a> and extract it to, say \c $HOME/downloads/boost_1_34_1. Then you need to first build the Boost build tool (Boost.Jam) and then use that to build and install Boost:
+
+\verbatim
+cd $HOME/downloads/boost_1_34_1/tools/jam/src
+./build.sh
+cd $HOME/downloads/boost_1_34_1
+sudo tools/jam/src/bin.linuxx86/bjam release debug-symbols=off threading=single,multi runtime-link=shared link=shared,static --with-python --toolset=gcc --layout=system install
+\endverbatim
+
+The \c bin.linuxx86 directory may be named differently depending on your computer's architecture (there should only be one \c bin.* directory). This will install Boost in the \c /usr/local/include and \c /usr/local/lib directories.
+
+To build OpenSolid, check out a copy into a new source directory.  Create a build directory and run CMake within that build directory (with the source directory as an argument). You should then be able to compile and test.  For example:
+
+\verbatim
+mkdir $HOME/opensolid
+mkdir $HOME/opensolid/source
+mkdir $HOME/opensolid/build
+cd $HOME/opensolid/source
+svn co http://opensolid.org/svn/opensolid/trunk .
+cd $HOME/opensolid/build
+cmake ../source
+make
+ctest
+\endverbatim
+
+If any changes are made to the source code, a simple \c make will rebuild OpenSolid and \c ctest will run the various tests (re-running CMake is not required). If you have Doxygen and GraphViz installed, <tt>make doxygen</tt> will generate Doxygen documentation (in HTML format, in the \c doxygen subdirectory). If you have LaTeX installed, <tt>make manual</tt> will generate the PDF manual (in the \c manual subdirectory).
+
+\subsection build-windows Windows
+
+The first step of building under Windows is to download and install <a href="http://cmake.org/HTML/Download.html">CMake</a> (make sure to select the 'add to path' option when installing), <a href="http://tortoisesvn.net/downloads">TortoiseSVN</a> (the Windows client for Subversion), and <a href="http://python.org/download/">Python</a>.
+
+Next, you'll need to download and install Visual C++ and the Microsoft Platform SDK.  First, download <a href="http://msdn2.microsoft.com/en-us/express/aa975050.aspx">Visual C++ 2005, Express Edition</a> and install it; install the graphical IDE component if you like, but it's not necessary (building OpenSolid is easiest using \c nmake from the command line).  Next, download the <a href="http://www.microsoft.com/downloads/details.aspx?familyid=0baf2b35-c656-4969-ace8-e4c0c0716adb">Microsoft Platform SDK</a>. Finally, right-click on 'My Computer', select 'Properties', click on the 'Advanced' tab, then 'Environment variables'. Create or edit the \c PATH, \c INCLUDE and \c LIB environment variables (under either 'User' or 'System') to include the following:
+- \c PATH: <tt>C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Bin</tt>
+- \c INCLUDE: <tt>C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include</tt>
+- \c LIB: <tt>C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib</tt>
+
+Finally, you'll need to install the Boost.Python library. This can be done similarly to how it is done under UNIX systems; download a Boost distribution from the <a href="http://sourceforge.net/project/showfiles.php?group_id=7586">Boost SourceForge download page</a> and extract it to create a (for example) \c boost_1_34_1 directory. Start up a Visual Studio command prompt (Start Menu -> Programs -> Visual C++ 2005 Express Edition -> Visual Studio Tools -> Visual Studio 2005 Command Prompt) and navigate to the \c boost_1_34_1 directory. Then you need to first build the Boost build tool (Boost.Jam) and then use that to build and install Boost:
+
+\verbatim
+cd tools\jam\src
+.\build.bat
+cd ..\..\..
+tools\jam\src\bin.ntx86\bjam.exe release debug-symbols=off threading=single,multi runtime-link=shared link=shared,static --with-python --toolset=msvc --layout=system install
+\endverbatim
+
+The \c bin.ntx86 directory may be named differently depending on your computer's architecture (there should only be one \c bin.* directory). This will install Boost in the \c C:\\Boost directory.
+
+Now, create an \c OpenSolid directory somewhere convenient and create \c source and \c build subdirectories (this layout isn't mandatory, but the following instructions assume it).  Before building, though, you need to add a few more paths to the \c PATH environment variable (as described above; separate paths by semicolons): \c C:\\Python25, \c C:\\Python25\\lib (assuming you've installed Python 2.5), \c C:\\Boost\\lib, and the \c bin subdirectory of your OpenSolid \c build directory (the \c bin subdirectory doesn't exist yet, but it will be created when OpenSolid is built and populated with all of the generated libraries and executables).
+
+Once that's done, check out a copy of the OpenSolid source by right-clicking on the \c source directory and selecting 'SVN checkout' (use the URL \c http://opensolid.org/svn/opensolid/trunk). Once the source is checked out, start a Visual Studio command prompt and navigate to the \c build directory.  Then, to build and test OpenSolid, run
+
+\verbatim
+cmake -G "NMake Makefiles" ..\source
+nmake
+ctest
+\endverbatim
+
+If any changes are made to the source code, a simple \c nmake will rebuild OpenSolid and \c ctest will run the various tests (re-running CMake is not required).
+
+*/
