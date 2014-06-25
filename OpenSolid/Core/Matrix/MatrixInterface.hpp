@@ -576,8 +576,6 @@ namespace opensolid
             const MatrixInterface<TOtherDerived>& other,
             TBinaryFunction binaryFunction
         ) const {
-            CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
-
             typename PairwiseMappedMatrixType<
                 TBinaryFunction,
                 TDerived,
@@ -1220,6 +1218,11 @@ namespace opensolid
         ) {
             CheckCompatibleMatrices<TDerived, TResultDerived>(derived(), result.derived());
 
+            CheckCompatibleMatrices<TOtherDerived, TResultDerived>(
+                other.derived(), 
+                result.derived()
+            );
+            
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
                     this->component(rowIndex, columnIndex) = binaryFunction(
@@ -1243,10 +1246,20 @@ namespace opensolid
             typedef typename CommonScalar<TFirstDerived, TSecondDerived>::Type ResultScalarType;
 
             CheckCompatibleSizes<
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TFirstDerived>::NumRows
+            >(numRows(), firstMatrix.numRows());
+            
+            CheckCompatibleSizes<
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TSecondDerived>::NumColumns
+            >(numColumns(), secondMatrix.numColumns());
+            
+            CheckCompatibleSizes<
                 MatrixTraits<TFirstDerived>::NumColumns,
                 MatrixTraits<TSecondDerived>::NumRows
             >(firstMatrix.numColumns(), secondMatrix.numRows());
-        
+                    
             ResultScalarType* resultPtr = data();
             const FirstScalarType* rowStart = firstMatrix.data();
             const SecondScalarType* colStart = secondMatrix.data();
