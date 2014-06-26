@@ -85,9 +85,9 @@ namespace opensolid
             for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
                 Vector3d firstPartial(firstJacobian.column(columnIndex));
                 Vector3d secondPartial(secondJacobian.column(columnIndex));
-                resultView.column(columnIndex) =
-                    (firstPartial.cross(secondVector) 
-                    + firstVector.cross(secondPartial)).components();
+                resultView.column(columnIndex) = (
+                    firstPartial.cross(secondVector) + firstVector.cross(secondPartial)
+                ).components();
             }
         }
         
@@ -109,9 +109,9 @@ namespace opensolid
             for (int columnIndex = 0; columnIndex < resultView.numColumns(); ++columnIndex) {
                 IntervalVector3d firstPartial(firstJacobian.column(columnIndex));
                 IntervalVector3d secondPartial(secondJacobian.column(columnIndex));
-                resultView.column(columnIndex) =
-                    (firstPartial.cross(secondVector) 
-                    + firstVector.cross(secondPartial)).components();
+                resultView.column(columnIndex) = (
+                    firstPartial.cross(secondVector) + firstVector.cross(secondPartial)
+                ).components();
             }
         }
 

@@ -231,8 +231,9 @@ namespace opensolid
          
         ExpressionImplementationPtr
         ExpressionImplementation::components(int startIndex, int numComponents) const {
-            if (startIndex < 0 || numComponents < 1 || 
-                startIndex + numComponents > numDimensions()) {
+            if (
+                startIndex < 0 || numComponents < 1 || startIndex + numComponents > numDimensions()
+            ) {
                 throw Error(new PlaceholderError());
             }
             if (numComponents == numDimensions()) {

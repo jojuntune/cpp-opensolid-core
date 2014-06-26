@@ -103,11 +103,15 @@ namespace opensolid
             ColumnMatrixXd operandNormalized = operandValue;
             operandNormalized /= operandNorm;
 
-            ConstMatrixViewXd operandJacobian = 
-                evaluator.evaluateJacobian(operand(), parameterView);
+            ConstMatrixViewXd operandJacobian = evaluator.evaluateJacobian(
+                operand(),
+                parameterView
+            );
 
-            resultView = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
-                operandJacobian)) / operandNorm;
+            resultView = (
+                operandJacobian -
+                    operandNormalized * (operandNormalized.transpose() * operandJacobian)
+            ) / operandNorm;
         }
         
         void
@@ -127,8 +131,10 @@ namespace opensolid
             ConstIntervalMatrixViewXd operandJacobian =
                 evaluator.evaluateJacobian(operand(), parameterView);
 
-            resultView = (operandJacobian - operandNormalized * (operandNormalized.transpose() *
-                operandJacobian)) / operandNorm;
+            resultView = (
+                operandJacobian -
+                    operandNormalized * (operandNormalized.transpose() * operandJacobian)
+            ) / operandNorm;
         }
 
         ExpressionImplementationPtr
