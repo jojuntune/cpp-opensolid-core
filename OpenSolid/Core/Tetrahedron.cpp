@@ -79,8 +79,12 @@ namespace opensolid
     Point3d
     Tetrahedron3d::centroid() const {
         return Point3d(
-            (vertex(0).components() + vertex(1).components() +
-                vertex(2).components() + vertex(3).components()) / 4.0
+            (
+                vertex(0).components() +
+                vertex(1).components() +
+                vertex(2).components() +
+                vertex(3).components()
+            ) / 4.0
         );
     }
 

@@ -49,6 +49,21 @@ def checkLine(filePath, lineNumber, line):
                 errorString = 'ERROR: Found closing brace not at beginning of line on line {0} of file {1}'
                 print(errorString.format(lineNumber, filePath))
                 errorFound = True
+        # Check for valid parentheses
+        numOpeningParentheses = line.count('(')
+        numClosingParentheses = line.count(')')
+        if numOpeningParentheses - numClosingParentheses > 1:
+            print('ERROR: More than one unmatched opening parenthesis found on line {0} of file {1}'.format(lineNumber, filePath))
+            errorFound = True
+        if numClosingParentheses - numOpeningParentheses > 1:
+            print('ERROR: More than one unmatched closing parenthesis found on line {0} of file {1}'.format(lineNumber, filePath))
+            errorFound = True
+        if numOpeningParentheses > numClosingParentheses and line.rstrip()[-1] != '(':
+            print('ERROR: Found unmatched opening parenthesis not at end of line on line {0} of file {1}'.format(lineNumber, filePath))
+            errorFound = True
+        if numClosingParentheses > numOpeningParentheses and line.lstrip()[0] != ')':
+            print('ERROR: Found unmatched closing parenthesis not at beginning of line on line {0} of file {1}'.format(lineNumber, filePath))
+            errorFound = True
         # Check for terms that should be on their own line
         # (ignore config.hpp where export macros are defined)
         if 'config.hpp' not in filePath and 'friend' not in line:
@@ -70,19 +85,38 @@ def checkLine(filePath, lineNumber, line):
                 print('ERROR: {0} has illegal include: {1}'.format(filePath, line.rstrip()))
                 errorFound = True
 
-def checkHeader(filePath):
+def checkIndentation(filePath, lineNumber, line, previousIndentation):
     global errorFound
-    for i, line in enumerate(open(filePath, 'rb')):
-        checkLineEnding(filePath, i + 1, line)
-    for i, line in enumerate(open(filePath, 'rt')):
-        checkLine(filePath, i + 1, line)
+    if not line.strip():
+        # Empty line - ignore
+        return previousIndentation
+    trimmedLine = line.lstrip()
+    numLeadingSpaces = len(line) - len(trimmedLine)
+    if numLeadingSpaces % 4 != 0:
+        print('ERROR: {0} leading spaces (not a multiple of 4) found on line {1} of file {2}'.format(numLeadingSpaces, lineNumber, filePath))
+        errorFound = True
+        return previousIndentation
+    indentation = numLeadingSpaces // 4
+    if trimmedLine.startswith(') : '): # Special case for constructors
+        indentation += 1
+    if previousIndentation is not None:
+        indentationChange = indentation - previousIndentation
+        if indentationChange > 1:
+            print('ERROR: Indentation increases by {0} levels on line {1} of file {2}'.format(indentationChange, lineNumber, filePath))
+            errorFound = True
+    return indentation
 
-def checkSource(filePath):
+
+def checkFile(filePath):
     global errorFound
     for i, line in enumerate(open(filePath, 'rb')):
         checkLineEnding(filePath, i + 1, line)
-    for i, line in enumerate(open(filePath, 'rt')):
-        checkLine(filePath, i + 1, line)
+    if filePath.endswith('.cpp') or filePath.endswith('.hpp'):
+        previousIndentation = None
+        for i, line in enumerate(open(filePath, 'rt')):
+            checkLine(filePath, i + 1, line)
+            previousIndentation = checkIndentation(filePath, i + 1, line, previousIndentation)
+
 
 for path, directories, files in os.walk(sys.argv[1]):
     i = 0
@@ -94,10 +128,7 @@ for path, directories, files in os.walk(sys.argv[1]):
             i = i + 1
     for filename in files:
         filePath = os.path.join(path, filename)
-        if filename.endswith('.hpp'):
-            checkHeader(filePath)
-        elif filename.endswith('.cpp'):
-            checkSource(filePath)
+        checkFile(filePath)
 
 # Print success message if no errors found
 if errorFound:

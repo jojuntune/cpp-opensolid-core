@@ -690,8 +690,8 @@ namespace opensolid
 
         detail::DeduplicationCache deduplicationCache;
         return implementation()->cross(
-            new detail::ConstantExpression(columnMatrix, iNumParameters))->
-            deduplicated(deduplicationCache);
+            new detail::ConstantExpression(columnMatrix, iNumParameters)
+        )->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>

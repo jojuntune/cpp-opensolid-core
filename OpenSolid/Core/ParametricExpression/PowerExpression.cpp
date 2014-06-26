@@ -185,9 +185,10 @@ namespace opensolid
                 double exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
                 ConstMatrixViewXd exponentJacobian =
                     evaluator.evaluateJacobian(secondOperand(), parameterView);
-                resultView = opensolid::pow(baseValue, exponentValue) *
-                    (opensolid::log(baseValue) * exponentJacobian + 
-                    exponentValue * baseJacobian / baseValue);
+                resultView = opensolid::pow(baseValue, exponentValue) * (
+                    opensolid::log(baseValue) * exponentJacobian +
+                        exponentValue * baseJacobian / baseValue
+                );
             }
         }
         
@@ -211,8 +212,10 @@ namespace opensolid
                     evaluator.evaluate(secondOperand(), parameterView).value();
                 ConstIntervalMatrixViewXd exponentJacobian =
                     evaluator.evaluateJacobian(secondOperand(), parameterView);
-                resultView = pow(baseValue, exponentValue) *
-                    (log(baseValue) * exponentJacobian + exponentValue * baseJacobian / baseValue);
+                resultView = opensolid::pow(baseValue, exponentValue) * (
+                    opensolid::log(baseValue) * exponentJacobian +
+                        exponentValue * baseJacobian / baseValue
+                );
             }
         }
 

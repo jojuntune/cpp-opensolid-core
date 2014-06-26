@@ -84,14 +84,14 @@ namespace opensolid
         inline
         double
         PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
-           return (derived() - other).squaredNorm();
+            return (derived() - other).squaredNorm();
         }
 
         template <int iNumDimensions>
         inline
         double
         PointBase<iNumDimensions>::distanceTo(const Point<iNumDimensions>& other) const {
-           return (derived() - other).norm();
+            return (derived() - other).norm();
         }
 
         template <int iNumDimensions>
