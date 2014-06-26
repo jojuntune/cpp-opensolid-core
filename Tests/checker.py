@@ -109,9 +109,12 @@ def checkIndentation(filePath, lineNumber, line, previousIndentation):
 
 def checkFile(filePath):
     global errorFound
-    for i, line in enumerate(open(filePath, 'rb')):
-        checkLineEnding(filePath, i + 1, line)
-    if filePath.endswith('.cpp') or filePath.endswith('.hpp'):
+    isSource = filePath.endswith('.cpp') or filePath.endswith('.hpp')
+    isOtherText = filePath.endswith('.txt') or filePath.endswith('.py')
+    if isSource or isOtherText:
+        for i, line in enumerate(open(filePath, 'rb')):
+            checkLineEnding(filePath, i + 1, line)
+    if isSource:
         previousIndentation = None
         for i, line in enumerate(open(filePath, 'rt')):
             checkLine(filePath, i + 1, line)
@@ -122,7 +125,7 @@ for path, directories, files in os.walk(sys.argv[1]):
     i = 0
     while i < len(directories):
         directory = directories[i]
-        if directory in ['External', 'IO', 'Python', 'UI'] or directory.lower().startswith('build'):
+        if directory in ['External', 'IO', 'Python', 'UI', '.hg'] or directory.lower().startswith('build'):
             del directories[i]
         else:
             i = i + 1
