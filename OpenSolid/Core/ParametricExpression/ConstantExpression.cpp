@@ -218,8 +218,9 @@ namespace opensolid
         }
 
         ConstantExpression::ConstantExpression(
-            const ColumnMatrixXd& columnMatrix, int numParameters) :
-            _columnMatrix(columnMatrix),
+            const ColumnMatrixXd& columnMatrix,
+            int numParameters
+        ) : _columnMatrix(columnMatrix),
             _intervalColumnMatrix(
                 columnMatrix.map(
                     [] (double component) {

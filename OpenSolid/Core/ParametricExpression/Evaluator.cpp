@@ -182,10 +182,12 @@ namespace opensolid
             if (iterator == cache.end()) {
                 // Cached results not found - insert new empty entry into cache and update iterator
                 // to point to the new entry
-                MatrixType newMatrix(std::pair<int, int>(
-                    expressionImplementation->numDimensions(),
-                    expressionImplementation->numParameters()
-                ));
+                MatrixType newMatrix(
+                    std::pair<int, int>(
+                        expressionImplementation->numDimensions(),
+                        expressionImplementation->numParameters()
+                    )
+                );
                 iterator = cache.insert(
                     std::pair<const KeyType, MatrixType>(key, std::move(newMatrix))
                 ).first;
