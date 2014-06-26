@@ -105,9 +105,11 @@ namespace opensolid
 
             for (int innerIndex = 1; innerIndex < outerExpression()->numParameters(); ++innerIndex)
             {
-                result = result +
+                result = (
+                    result +
                     outerExpression()->derivative(innerIndex)->composed(innerExpression()) *
-                    innerDerivative->component(innerIndex);
+                    innerDerivative->component(innerIndex)
+                );
             }
 
             return result;
@@ -120,8 +122,10 @@ namespace opensolid
             ExpressionImplementationPtr otherInnerExpression =
                 other->cast<CompositionExpression>()->innerExpression();
 
-            return outerExpression()->isDuplicateOf(otherOuterExpression) &&
-                innerExpression()->isDuplicateOf(otherInnerExpression);
+            return (
+                outerExpression()->isDuplicateOf(otherOuterExpression) &&
+                innerExpression()->isDuplicateOf(otherInnerExpression)
+            );
         }
 
         ExpressionImplementationPtr

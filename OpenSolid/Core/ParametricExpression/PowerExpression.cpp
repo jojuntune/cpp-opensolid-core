@@ -177,17 +177,18 @@ namespace opensolid
             ConstMatrixViewXd baseJacobian = 
                 evaluator.evaluateJacobian(firstOperand(), parameterView);
             if (_exponentIsConstant) {
-                resultView = 
+                resultView = (
                     _constantExponent * 
                     opensolid::pow(baseValue, _constantExponent - 1) * 
-                    baseJacobian;
+                    baseJacobian
+                );
             } else {
                 double exponentValue = evaluator.evaluate(secondOperand(), parameterView).value();
                 ConstMatrixViewXd exponentJacobian =
                     evaluator.evaluateJacobian(secondOperand(), parameterView);
                 resultView = opensolid::pow(baseValue, exponentValue) * (
                     opensolid::log(baseValue) * exponentJacobian +
-                        exponentValue * baseJacobian / baseValue
+                    exponentValue * baseJacobian / baseValue
                 );
             }
         }
@@ -205,8 +206,11 @@ namespace opensolid
             ConstIntervalMatrixViewXd baseJacobian =
                 evaluator.evaluateJacobian(firstOperand(), parameterView);
             if (_exponentIsConstant) {
-                resultView = 
-                    _constantExponent * pow(baseValue, _constantExponent - 1) * baseJacobian;
+                resultView = (
+                    _constantExponent *
+                    opensolid::pow(baseValue, _constantExponent - 1) *
+                    baseJacobian
+                );
             } else {
                 Interval exponentValue = 
                     evaluator.evaluate(secondOperand(), parameterView).value();
@@ -214,7 +218,7 @@ namespace opensolid
                     evaluator.evaluateJacobian(secondOperand(), parameterView);
                 resultView = opensolid::pow(baseValue, exponentValue) * (
                     opensolid::log(baseValue) * exponentJacobian +
-                        exponentValue * baseJacobian / baseValue
+                    exponentValue * baseJacobian / baseValue
                 );
             }
         }
@@ -222,8 +226,10 @@ namespace opensolid
         ExpressionImplementationPtr
         PowerExpression::derivativeImpl(int parameterIndex) const {
             if (_exponentIsConstant) {
-                return _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
-                    firstOperand()->derivative(parameterIndex);
+                return (
+                    _constantExponent *  pow(firstOperand(), secondOperand() - 1) *
+                    firstOperand()->derivative(parameterIndex)
+                );
             } else {
                 return (
                     secondOperand()->derivative(parameterIndex) * log(firstOperand()) +

@@ -540,8 +540,9 @@ namespace opensolid
             const ExpressionImplementationPtr& firstOperand,
             const ColumnMatrixXd& secondOperand
         ) {
-            return firstOperand 
-                * new ConstantExpression(secondOperand, firstOperand->numParameters());
+            return (
+                firstOperand * new ConstantExpression(secondOperand, firstOperand->numParameters())
+            );
         }
 
         ExpressionImplementationPtr
@@ -624,8 +625,9 @@ namespace opensolid
             const ColumnMatrixXd& firstOperand,
             const ExpressionImplementationPtr& secondOperand
         ) {
-            return new ConstantExpression(firstOperand, secondOperand->numParameters()) 
-                / secondOperand;
+            return (
+                new ConstantExpression(firstOperand, secondOperand->numParameters()) / secondOperand
+            );
         }
 
         ExpressionImplementationPtr
@@ -638,8 +640,9 @@ namespace opensolid
 
         ExpressionImplementationPtr
         operator/(double firstOperand, const ExpressionImplementationPtr& secondOperand) {
-            return new ConstantExpression(firstOperand, secondOperand->numParameters()) 
-                / secondOperand;
+            return (
+                new ConstantExpression(firstOperand, secondOperand->numParameters()) / secondOperand
+            );
         }
 
         ExpressionImplementationPtr

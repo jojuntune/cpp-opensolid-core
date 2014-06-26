@@ -101,8 +101,8 @@ def checkIndentation(filePath, lineNumber, line, previousIndentation):
         indentation += 1
     if previousIndentation is not None:
         indentationChange = indentation - previousIndentation
-        if indentationChange > 1:
-            print('ERROR: Indentation increases by {0} levels on line {1} of file {2}'.format(indentationChange, lineNumber, filePath))
+        if abs(indentationChange) > 1:
+            print('ERROR: Indentation changes by {0} levels on line {1} of file {2}'.format(indentationChange, lineNumber, filePath))
             errorFound = True
     return indentation
 

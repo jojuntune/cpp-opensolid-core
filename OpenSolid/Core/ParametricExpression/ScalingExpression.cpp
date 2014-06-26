@@ -84,8 +84,10 @@ namespace opensolid
         ScalingExpression::isDuplicateOfImpl(
             const ExpressionImplementationPtr& other
         ) const {
-            return duplicateOperands(other) &&
-                this->scale() == other->cast<ScalingExpression>()->scale();
+            return (
+                duplicateOperands(other) &&
+                this->scale() == other->cast<ScalingExpression>()->scale()
+            );
         }
 
         ExpressionImplementationPtr

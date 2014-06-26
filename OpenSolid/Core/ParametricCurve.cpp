@@ -108,8 +108,9 @@ namespace opensolid
             t3 /= sum;
 
             result = Point2d(
-                t1 * thirdPoint.components() + t2 * firstPoint.components() +
-                    t3 * secondPoint.components()
+                t1 * thirdPoint.components() +
+                t2 * firstPoint.components() +
+                t3 * secondPoint.components()
             );
             return true;
         }

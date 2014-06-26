@@ -50,9 +50,11 @@ struct MyPoint3d
 inline
 bool
 operator==(const MyPoint3d& myFirstPoint, const MyPoint3d& mySecondPoint) {
-    return myFirstPoint.x == mySecondPoint.x &&
+    return (
+        myFirstPoint.x == mySecondPoint.x &&
         myFirstPoint.y == mySecondPoint.y &&
-        myFirstPoint.z == mySecondPoint.z;
+        myFirstPoint.z == mySecondPoint.z
+    );
 }
 
 struct MyLineSegment3d
@@ -69,8 +71,10 @@ struct MyLineSegment3d
 inline
 bool
 operator==(const MyLineSegment3d& myFirstLineSegment, const MyLineSegment3d& mySecondLineSegment) {
-    return myFirstLineSegment.startPoint == mySecondLineSegment.startPoint &&
-        myFirstLineSegment.endPoint == mySecondLineSegment.endPoint;
+    return (
+        myFirstLineSegment.startPoint == mySecondLineSegment.startPoint &&
+        myFirstLineSegment.endPoint == mySecondLineSegment.endPoint
+    );
 }
 
 struct MyTriangle3d
@@ -89,9 +93,11 @@ struct MyTriangle3d
 inline
 bool
 operator==(const MyTriangle3d& myFirstTriangle, const MyTriangle3d& mySecondTriangle) {
-    return myFirstTriangle.point1 == mySecondTriangle.point1 &&
+    return ( 
+        myFirstTriangle.point1 == mySecondTriangle.point1 &&
         myFirstTriangle.point2 == mySecondTriangle.point2 &&
-        myFirstTriangle.point3 == mySecondTriangle.point3;
+        myFirstTriangle.point3 == mySecondTriangle.point3
+    );
 }
 
 struct MyTetrahedron3d
@@ -116,10 +122,12 @@ struct MyTetrahedron3d
 inline
 bool
 operator==(const MyTetrahedron3d& myFirstTetrahedron, const MyTetrahedron3d& mySecondTetrahedron) {
-    return myFirstTetrahedron.point1 == mySecondTetrahedron.point1 &&
+    return (
+        myFirstTetrahedron.point1 == mySecondTetrahedron.point1 &&
         myFirstTetrahedron.point2 == mySecondTetrahedron.point2 &&
         myFirstTetrahedron.point3 == mySecondTetrahedron.point3 &&
-        myFirstTetrahedron.point4 == mySecondTetrahedron.point4;
+        myFirstTetrahedron.point4 == mySecondTetrahedron.point4
+    );
 }
 
 namespace opensolid

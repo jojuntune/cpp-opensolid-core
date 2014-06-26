@@ -974,25 +974,31 @@ namespace opensolid
         inline
         Interval
         componentIntersection(double firstComponent, double secondComponent) {
-            return firstComponent - secondComponent == Zero() ?
+            return (
+                firstComponent - secondComponent == Zero() ?
                 Interval(firstComponent + 0.5 * (secondComponent - firstComponent)) :
-                Interval::empty();
+                Interval::empty()
+            );
         }
 
         inline
         Interval
         componentIntersection(double firstComponent, Interval secondComponent) {
-            return secondComponent.contains(firstComponent) ?
+            return (
+                secondComponent.contains(firstComponent) ?
                 Interval(firstComponent) :
-                Interval::empty();
+                Interval::empty()
+            );
         }
 
         inline
         Interval
         componentIntersection(Interval firstComponent, double secondComponent) {
-            return firstComponent.contains(secondComponent) ?
+            return (
+                firstComponent.contains(secondComponent) ?
                 Interval(secondComponent) :
-                Interval::empty();
+                Interval::empty()
+            );
         }
 
         inline
@@ -1104,8 +1110,9 @@ namespace opensolid
             
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->component(rowIndex, columnIndex) +=
-                        other.component(rowIndex, columnIndex);
+                    this->component(rowIndex, columnIndex) += (
+                        other.component(rowIndex, columnIndex)
+                    );
                 }
             }
         }
@@ -1118,8 +1125,9 @@ namespace opensolid
             
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->component(rowIndex, columnIndex) -=
-                        other.component(rowIndex, columnIndex);
+                    this->component(rowIndex, columnIndex) -= (
+                        other.component(rowIndex, columnIndex)
+                    );
                 }
             }
         }
@@ -1299,8 +1307,9 @@ namespace opensolid
         
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->component(rowIndex, columnIndex) =
-                        other.component(columnIndex, rowIndex);
+                    this->component(rowIndex, columnIndex) = (
+                        other.component(columnIndex, rowIndex)
+                    );
                 }
             }
         }

@@ -193,29 +193,37 @@ namespace opensolid
     inline
     bool
     Interval::contains(Interval interval, double tolerance) const {
-        return interval.lowerBound() >= lowerBound() - tolerance &&
-            interval.upperBound() <= upperBound() + tolerance;
+        return (
+            interval.lowerBound() >= lowerBound() - tolerance &&
+            interval.upperBound() <= upperBound() + tolerance
+        );
     }
 
     inline
     bool
     Interval::strictlyContains(Interval interval, double tolerance) const {
-        return interval.lowerBound() > lowerBound() + tolerance &&
-            interval.upperBound() < upperBound() - tolerance;
+        return ( 
+            interval.lowerBound() > lowerBound() + tolerance &&
+            interval.upperBound() < upperBound() - tolerance
+        );
     }
 
     inline
     bool
     Interval::overlaps(Interval interval, double tolerance) const {
-        return interval.lowerBound() <= upperBound() + tolerance &&
-            interval.upperBound() >= lowerBound() - tolerance;
+        return (
+            interval.lowerBound() <= upperBound() + tolerance &&
+            interval.upperBound() >= lowerBound() - tolerance
+        );
     }
 
     inline
     bool
     Interval::strictlyOverlaps(Interval interval, double tolerance) const {
-        return interval.lowerBound() < upperBound() - tolerance &&
-            interval.upperBound() > lowerBound() + tolerance;
+        return (
+            interval.lowerBound() < upperBound() - tolerance &&
+            interval.upperBound() > lowerBound() + tolerance
+        );
     }
 
     inline
@@ -323,8 +331,11 @@ namespace opensolid
     inline
     bool
     operator==(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.isSingleton() && secondInterval.isSingleton() &&
-            firstInterval.lowerBound() == secondInterval.lowerBound();
+        return (
+            firstInterval.isSingleton() &&
+            secondInterval.isSingleton() &&
+            firstInterval.lowerBound() == secondInterval.lowerBound()
+        );
     }
 
     inline
@@ -342,8 +353,10 @@ namespace opensolid
     inline
     bool
     operator!=(Interval firstInterval, Interval secondInterval) {
-        return firstInterval.lowerBound() > secondInterval.upperBound() ||
-            firstInterval.upperBound() < secondInterval.lowerBound();
+        return (
+            firstInterval.lowerBound() > secondInterval.upperBound() ||
+            firstInterval.upperBound() < secondInterval.lowerBound()
+        );
     }
 
     inline
@@ -421,15 +434,19 @@ namespace opensolid
     inline
     bool
     operator==(Interval interval, Zero zero) {
-        return interval.lowerBound() >= -zero.precision() &&
-            interval.upperBound() <= zero.precision();
+        return (
+            interval.lowerBound() >= -zero.precision() &&
+            interval.upperBound() <= zero.precision()
+        );
     }
 
     inline
     bool
     operator!=(Interval interval, Zero zero) {
-        return interval.lowerBound() > zero.precision() ||
-            interval.upperBound() < -zero.precision();
+        return (
+            interval.lowerBound() > zero.precision() ||
+            interval.upperBound() < -zero.precision()
+        );
     }
 
     inline

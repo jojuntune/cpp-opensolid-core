@@ -81,14 +81,19 @@ namespace opensolid
             if (divisorValue == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            ConstMatrixViewXd dividendValues =
-                evaluator.evaluate(firstOperand(), parameterView);
-            ConstMatrixViewXd dividendJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
-            ConstMatrixViewXd divisorJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
-            resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
-                (divisorValue * divisorValue);
+            ConstMatrixViewXd dividendValues = (
+                evaluator.evaluate(firstOperand(), parameterView)
+            );
+            ConstMatrixViewXd dividendJacobian = (
+                evaluator.evaluateJacobian(firstOperand(), parameterView)
+            );
+            ConstMatrixViewXd divisorJacobian = (
+                evaluator.evaluateJacobian(secondOperand(), parameterView)
+            );
+            resultView = (
+                (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
+                (divisorValue * divisorValue)
+            );
         }
         
         void
@@ -101,24 +106,33 @@ namespace opensolid
             if (divisorValue == Zero()) {
                 throw Error(new PlaceholderError());
             }
-            ConstIntervalMatrixViewXd dividendValues =
-                evaluator.evaluate(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd dividendJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd divisorJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
-            resultView = (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
-                (divisorValue * divisorValue);
+            ConstIntervalMatrixViewXd dividendValues = (
+                evaluator.evaluate(firstOperand(), parameterView)
+            );
+            ConstIntervalMatrixViewXd dividendJacobian = (
+                evaluator.evaluateJacobian(firstOperand(), parameterView)
+            );
+            ConstIntervalMatrixViewXd divisorJacobian = (
+                evaluator.evaluateJacobian(secondOperand(), parameterView)
+            );
+            resultView = (
+                (dividendJacobian * divisorValue - dividendValues * divisorJacobian) / 
+                (divisorValue * divisorValue)
+            );
         }
 
         ExpressionImplementationPtr
         QuotientExpression::derivativeImpl(int parameterIndex) const {
-            ExpressionImplementationPtr firstDerivative = 
-                firstOperand()->derivative(parameterIndex);
-            ExpressionImplementationPtr secondDerivative = 
-                secondOperand()->derivative(parameterIndex);
-            return(firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
-                secondOperand()->squaredNorm();
+            ExpressionImplementationPtr firstDerivative = (
+                firstOperand()->derivative(parameterIndex)
+            );
+            ExpressionImplementationPtr secondDerivative = (
+                secondOperand()->derivative(parameterIndex)
+            );
+            return (
+                (firstDerivative * secondOperand() - firstOperand() * secondDerivative) /
+                secondOperand()->squaredNorm()
+            );
         }
 
         bool

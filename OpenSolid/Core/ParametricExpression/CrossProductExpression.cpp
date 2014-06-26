@@ -117,8 +117,10 @@ namespace opensolid
 
         ExpressionImplementationPtr
         CrossProductExpression::derivativeImpl(int parameterIndex) const {
-            return firstOperand()->derivative(parameterIndex)->cross(secondOperand())
-                + firstOperand()->cross(secondOperand()->derivative(parameterIndex));
+            return (
+                firstOperand()->derivative(parameterIndex)->cross(secondOperand()) +
+                firstOperand()->cross(secondOperand()->derivative(parameterIndex))
+            );
         }
 
         bool

@@ -98,9 +98,11 @@ namespace opensolid
 
         bool
         ComponentsExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-            return duplicateOperands(other) &&
+            return (
+                duplicateOperands(other) &&
                 this->startIndex() == other->cast<ComponentsExpression>()->startIndex() &&
-                this->numComponents() == other->cast<ComponentsExpression>()->numComponents();
+                this->numComponents() == other->cast<ComponentsExpression>()->numComponents()
+            );
         }
         
         ExpressionImplementationPtr

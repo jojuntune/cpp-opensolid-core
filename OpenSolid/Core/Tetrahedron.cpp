@@ -32,38 +32,38 @@ namespace opensolid
     LineSegment3d
     Tetrahedron3d::edge(int index) const {
         switch (index) {
-            case 0:
-                return LineSegment3d(vertex(0), vertex(1));
-            case 1:
-                return LineSegment3d(vertex(1), vertex(2));
-            case 2:
-                return LineSegment3d(vertex(0), vertex(2));
-            case 3:
-                return LineSegment3d(vertex(2), vertex(3));
-            case 4:
-                return LineSegment3d(vertex(0), vertex(3));
-            case 5:
-                return LineSegment3d(vertex(3), vertex(1));
-            default:
-                assert(false);
-                return LineSegment3d();
+        case 0:
+            return LineSegment3d(vertex(0), vertex(1));
+        case 1:
+            return LineSegment3d(vertex(1), vertex(2));
+        case 2:
+            return LineSegment3d(vertex(0), vertex(2));
+        case 3:
+            return LineSegment3d(vertex(2), vertex(3));
+        case 4:
+            return LineSegment3d(vertex(0), vertex(3));
+        case 5:
+            return LineSegment3d(vertex(3), vertex(1));
+        default:
+            assert(false);
+            return LineSegment3d();
         }
     }
 
     Triangle3d
     Tetrahedron3d::face(int oppositeIndex) const {
         switch (oppositeIndex) {
-            case 0:
-                return Triangle3d(vertex(1), vertex(2), vertex(3));
-            case 1:
-                return Triangle3d(vertex(0), vertex(3), vertex(2));
-            case 2:
-                return Triangle3d(vertex(3), vertex(0), vertex(1));
-            case 3:
-                return Triangle3d(vertex(2), vertex(1), vertex(0));
-            default:
-                assert(false);
-                return Triangle3d();
+        case 0:
+            return Triangle3d(vertex(1), vertex(2), vertex(3));
+        case 1:
+            return Triangle3d(vertex(0), vertex(3), vertex(2));
+        case 2:
+            return Triangle3d(vertex(3), vertex(0), vertex(1));
+        case 3:
+            return Triangle3d(vertex(2), vertex(1), vertex(0));
+        default:
+            assert(false);
+            return Triangle3d();
         }
     }
 

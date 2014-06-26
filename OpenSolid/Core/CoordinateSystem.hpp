@@ -477,8 +477,10 @@ namespace opensolid
                 Vector<double, iNumDimensions> normalizedBasisVector(
                     resultBasisMatrix.column(normalizedColumnIndex)
                 );
-                resultBasisVector = resultBasisVector -
-                    resultBasisVector.dot(normalizedBasisVector) * normalizedBasisVector;
+                resultBasisVector = (
+                    resultBasisVector -
+                    resultBasisVector.dot(normalizedBasisVector) * normalizedBasisVector
+                );
             }
             if (resultBasisVector.isZero()) {
                 // Cannot normalize: basis matrix does not have full rank
@@ -769,8 +771,10 @@ namespace opensolid
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
             morphingFunction(coordinateSystem.originPoint(), morphingExpression),
-            morphingExpression.jacobian(coordinateSystem.originPoint().components()) *
+            (
+                morphingExpression.jacobian(coordinateSystem.originPoint().components()) *
                 coordinateSystem.basisMatrix()
+            )
         );
     }
 }

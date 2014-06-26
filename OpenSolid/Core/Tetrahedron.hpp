@@ -102,10 +102,12 @@ namespace opensolid
     inline
     bool
     Tetrahedron3d::operator==(const Tetrahedron3d& other) const {
-        return vertex(0) == other.vertex(0) &&
+        return (
+            vertex(0) == other.vertex(0) &&
             vertex(1) == other.vertex(1) &&
             vertex(2) == other.vertex(2) &&
-            vertex(3) == other.vertex(3);
+            vertex(3) == other.vertex(3)
+        );
     }
 
     inline
@@ -115,10 +117,11 @@ namespace opensolid
         const Tetrahedron3d& secondTetrahedron,
         double precision
     ) const {
-        return
+        return (
             equalityFunction(firstTetrahedron.vertex(0), secondTetrahedron.vertex(0), precision) &&
             equalityFunction(firstTetrahedron.vertex(1), secondTetrahedron.vertex(1), precision) &&
             equalityFunction(firstTetrahedron.vertex(2), secondTetrahedron.vertex(2), precision) &&
-            equalityFunction(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision);
+            equalityFunction(firstTetrahedron.vertex(3), secondTetrahedron.vertex(3), precision)
+        );
     }
 }

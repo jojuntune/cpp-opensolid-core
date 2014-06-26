@@ -77,8 +77,10 @@ namespace opensolid
 
         ExpressionImplementationPtr
         SumExpression::derivativeImpl(int parameterIndex) const {
-            return firstOperand()->derivative(parameterIndex) +
-                secondOperand()->derivative(parameterIndex);
+            return (
+                firstOperand()->derivative(parameterIndex) +
+                secondOperand()->derivative(parameterIndex)
+            );
         }
 
         bool

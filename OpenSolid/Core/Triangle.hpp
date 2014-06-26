@@ -102,9 +102,11 @@ namespace opensolid
         const Triangle<iNumDimensions>& secondTriangle,
         double precision
     ) const {
-        return equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
+        return (
+            equalityFunction(firstTriangle.vertex(0), secondTriangle.vertex(0), precision) &&
             equalityFunction(firstTriangle.vertex(1), secondTriangle.vertex(1), precision) &&
-            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision);
+            equalityFunction(firstTriangle.vertex(2), secondTriangle.vertex(2), precision)
+        );
     }
 
     template <int iNumDimensions>

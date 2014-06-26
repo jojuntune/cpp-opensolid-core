@@ -110,7 +110,7 @@ namespace opensolid
 
             resultView = (
                 operandJacobian -
-                    operandNormalized * (operandNormalized.transpose() * operandJacobian)
+                operandNormalized * (operandNormalized.transpose() * operandJacobian)
             ) / operandNorm;
         }
         
@@ -133,7 +133,7 @@ namespace opensolid
 
             resultView = (
                 operandJacobian -
-                    operandNormalized * (operandNormalized.transpose() * operandJacobian)
+                operandNormalized * (operandNormalized.transpose() * operandJacobian)
             ) / operandNorm;
         }
 
@@ -141,9 +141,10 @@ namespace opensolid
         NormalizedExpression::derivativeImpl(int parameterIndex) const {
             ExpressionImplementationPtr operandDerivative = operand()->derivative(parameterIndex);
             ExpressionImplementationPtr operandNormalized = operand()->normalized();
-            return
-                (operandDerivative - operandDerivative->dot(operandNormalized) * operandNormalized) 
-                / operand()->norm();
+            return (
+                operandDerivative -
+                operandDerivative->dot(operandNormalized) * operandNormalized
+            ) / operand()->norm();
         }
         
         ExpressionImplementationPtr

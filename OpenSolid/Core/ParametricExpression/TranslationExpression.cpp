@@ -84,8 +84,10 @@ namespace opensolid
 
         bool
         TranslationExpression::isDuplicateOfImpl(const ExpressionImplementationPtr& other) const {
-            return duplicateOperands(other) &&
-                (columnMatrix() - other->cast<TranslationExpression>()->columnMatrix()).isZero();
+            return (
+                duplicateOperands(other) &&
+                (columnMatrix() - other->cast<TranslationExpression>()->columnMatrix()).isZero()
+            );
         }
 
         ExpressionImplementationPtr

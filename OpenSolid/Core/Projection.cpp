@@ -46,8 +46,10 @@ namespace opensolid
     Projection3d::Projection3d(const Plane3d& plane) :
         LinearTransformation<3>(
             plane.originPoint(),
-            Matrix3d::identity() -
+            (
+                Matrix3d::identity() -
                 plane.normalVector().components() * plane.normalVector().components().transpose()
+            )
         ) {
     }
 }

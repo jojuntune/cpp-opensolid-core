@@ -67,8 +67,10 @@ namespace opensolid
             if (nonCommutativeCheck) {
                 return true;
             } else if (isCommutative) {
-                return firstOperand()->isDuplicateOf(otherSecondOperand) &&
-                    secondOperand()->isDuplicateOf(otherFirstOperand);
+                return (
+                    firstOperand()->isDuplicateOf(otherSecondOperand) &&
+                    secondOperand()->isDuplicateOf(otherFirstOperand)
+                );
             } else {
                 return false;
             }

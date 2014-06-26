@@ -64,9 +64,11 @@ namespace opensolid
             crossMatrix(7) = -x;
             crossMatrix(8) = 0.0;
 
-            return (1 - cosAngle) * axisComponents * axisComponents.transpose() +
+            return (
+                (1 - cosAngle) * axisComponents * axisComponents.transpose() +
                 cosAngle * Matrix3d::identity() +
-                sinAngle * crossMatrix;
+                sinAngle * crossMatrix
+            );
         }
     }
 

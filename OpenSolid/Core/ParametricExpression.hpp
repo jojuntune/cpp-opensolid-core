@@ -648,8 +648,10 @@ namespace opensolid
             throw Error(new PlaceholderError());
         }
         detail::DeduplicationCache deduplicationCache;
-        return implementation()->components(startIndex, iNumComponents)->
-            deduplicated(deduplicationCache);
+        return implementation()->components(
+            startIndex,
+            iNumComponents
+        )->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters> template <int iNumOtherDimensions>
@@ -658,8 +660,9 @@ namespace opensolid
         const ParametricExpression<iNumOtherDimensions, iNumParameters>& other
     ) const {
         detail::DeduplicationCache deduplicationCache;
-        return implementation()->concatenated(other.implementation())->
-            deduplicated(deduplicationCache);
+        return implementation()->concatenated(
+            other.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -668,8 +671,9 @@ namespace opensolid
         const Matrix<double, iNumDimensions, 1>& columnMatrix
     ) const {
         detail::DeduplicationCache deduplicationCache;
-        return implementation()->dot(new detail::ConstantExpression(columnMatrix, iNumParameters))->
-            deduplicated(deduplicationCache);
+        return implementation()->dot(
+            new detail::ConstantExpression(columnMatrix, iNumParameters)
+        )->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>
@@ -753,8 +757,9 @@ namespace opensolid
         const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (firstExpression.implementation() + secondExpression.implementation())->
-            deduplicated(deduplicationCache);
+        return (
+            firstExpression.implementation() + secondExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters>
@@ -798,8 +803,9 @@ namespace opensolid
         const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (firstExpression.implementation() - secondExpression.implementation())->
-            deduplicated(deduplicationCache);
+        return (
+            firstExpression.implementation() - secondExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
     
     template <int iNumDimensions, int iNumParameters>
@@ -849,8 +855,9 @@ namespace opensolid
         const ParametricExpression<1, iNumParameters>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (firstExpression.implementation() * secondExpression.implementation())->
-            deduplicated(deduplicationCache);
+        return (
+            firstExpression.implementation() * secondExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters, int iNumDimensions>
@@ -860,8 +867,9 @@ namespace opensolid
         const ParametricExpression<iNumDimensions, iNumParameters>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (firstExpression.implementation() * secondExpression.implementation())->
-            deduplicated(deduplicationCache);
+        return (
+            firstExpression.implementation() * secondExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
     template <int iNumParameters>
@@ -871,8 +879,9 @@ namespace opensolid
         const ParametricExpression<1, iNumParameters>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (firstExpression.implementation() * secondExpression.implementation())->
-            deduplicated(deduplicationCache);
+        return (
+            firstExpression.implementation() * secondExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
     template <int iNumDimensions, int iNumParameters>
@@ -912,8 +921,9 @@ namespace opensolid
         const ParametricExpression<1, iNumParameters>& secondExpression
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return (firstExpression.implementation() / secondExpression.implementation())->
-            deduplicated(deduplicationCache);
+        return (
+            firstExpression.implementation() / secondExpression.implementation()
+        )->deduplicated(deduplicationCache);
     }
     
     template <int iNumParameters>
@@ -993,8 +1003,10 @@ namespace opensolid
         const ParametricExpression<1, iNumParameters>& exponent
     ) {
         detail::DeduplicationCache deduplicationCache;
-        return pow(base.implementation(), exponent.implementation())->
-            deduplicated(deduplicationCache);
+        return pow(
+            base.implementation(),
+            exponent.implementation()
+        )->deduplicated(deduplicationCache);
     }
 
     template <int iNumDimensions, int iNumParameters>

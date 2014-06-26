@@ -361,10 +361,14 @@ TEST_CASE("Transformation") {
     std::vector<ColumnMatrix3d> expectedQuotientValues(5);
     for (int i = 0; i < 5; ++i) {
         parameterValues[i] = i / 4.0;
-        expectedProductValues[i] = parameterValues[i] * columnMatrix(0, sqrt(2.0), 1) +
-            columnMatrix(1, 1, 1);
-        expectedQuotientValues[i] = parameterValues[i] * columnMatrix(sqrt(2.0), 0, 1) +
-            columnMatrix(-sqrt(2.0), 0, -1);
+        expectedProductValues[i] = (
+            parameterValues[i] * columnMatrix(0, sqrt(2.0), 1) +
+            columnMatrix(1, 1, 1)
+        );
+        expectedQuotientValues[i] = (
+            parameterValues[i] * columnMatrix(sqrt(2.0), 0, 1) +
+            columnMatrix(-sqrt(2.0), 0, -1)
+        );
     }
     std::vector<ColumnMatrix3d> productValues = product.evaluate(parameterValues);
     std::vector<ColumnMatrix3d> quotientValues = quotient.evaluate(parameterValues);

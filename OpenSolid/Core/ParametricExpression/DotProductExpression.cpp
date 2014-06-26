@@ -84,13 +84,17 @@ namespace opensolid
             ConstMatrixViewXd firstValue = evaluator.evaluate(firstOperand(), parameterView);
             ConstMatrixViewXd secondValue = evaluator.evaluate(secondOperand(), parameterView);
 
-            ConstMatrixViewXd firstJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
-            ConstMatrixViewXd secondJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
+            ConstMatrixViewXd firstJacobian = (
+                evaluator.evaluateJacobian(firstOperand(), parameterView)
+            );
+            ConstMatrixViewXd secondJacobian = (
+                evaluator.evaluateJacobian(secondOperand(), parameterView)
+            );
             
-            resultView = firstValue.transpose() * secondJacobian +
-                secondValue.transpose() * firstJacobian;
+            resultView = (
+                firstValue.transpose() * secondJacobian +
+                secondValue.transpose() * firstJacobian
+            );
         }
         
         void
@@ -99,24 +103,32 @@ namespace opensolid
             IntervalMatrixViewXd& resultView,
             Evaluator& evaluator
         ) const {
-            ConstIntervalMatrixViewXd firstValue = 
-                evaluator.evaluate(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd secondValue = 
-                evaluator.evaluate(secondOperand(), parameterView);
+            ConstIntervalMatrixViewXd firstValue = (
+                evaluator.evaluate(firstOperand(), parameterView)
+            );
+            ConstIntervalMatrixViewXd secondValue = (
+                evaluator.evaluate(secondOperand(), parameterView)
+            );
 
-            ConstIntervalMatrixViewXd firstJacobian =
-                evaluator.evaluateJacobian(firstOperand(), parameterView);
-            ConstIntervalMatrixViewXd secondJacobian =
-                evaluator.evaluateJacobian(secondOperand(), parameterView);
+            ConstIntervalMatrixViewXd firstJacobian = (
+                evaluator.evaluateJacobian(firstOperand(), parameterView)
+            );
+            ConstIntervalMatrixViewXd secondJacobian = (
+                evaluator.evaluateJacobian(secondOperand(), parameterView)
+            );
             
-            resultView = firstValue.transpose() * secondJacobian +
-                secondValue.transpose() * firstJacobian;
+            resultView = (
+                firstValue.transpose() * secondJacobian +
+                secondValue.transpose() * firstJacobian
+            );
         }
 
         ExpressionImplementationPtr
         DotProductExpression::derivativeImpl(int parameterIndex) const {
-            return firstOperand()->derivative(parameterIndex)->dot(secondOperand())
-                + firstOperand()->dot(secondOperand()->derivative(parameterIndex));
+            return (
+                firstOperand()->derivative(parameterIndex)->dot(secondOperand()) +
+                firstOperand()->dot(secondOperand()->derivative(parameterIndex))
+            );
         }
 
         bool

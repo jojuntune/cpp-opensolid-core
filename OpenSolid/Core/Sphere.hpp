@@ -90,8 +90,10 @@ namespace opensolid
         const Sphere3d& secondSphere,
         double precision
     ) const {
-        return equalityFunction(firstSphere.centerPoint(), secondSphere.centerPoint(), precision) &&
-            equalityFunction(firstSphere.radius(), secondSphere.radius(), precision);
+        return (
+            equalityFunction(firstSphere.centerPoint(), secondSphere.centerPoint(), precision) &&
+            equalityFunction(firstSphere.radius(), secondSphere.radius(), precision)
+        );
     }
 
     inline
