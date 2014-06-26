@@ -211,7 +211,7 @@ namespace opensolid
     {
         const MyTetrahedron3d
         operator()(const Tetrahedron3d& tetrahedron) const {
-           return MyTetrahedron3d(
+            return MyTetrahedron3d(
                 tetrahedron.vertex(0).to<MyPoint3d>(),
                 tetrahedron.vertex(1).to<MyPoint3d>(),
                 tetrahedron.vertex(2).to<MyPoint3d>(),
