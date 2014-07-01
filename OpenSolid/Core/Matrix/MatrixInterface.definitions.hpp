@@ -45,6 +45,7 @@ namespace opensolid
         private:
             typedef typename MatrixTraits<TDerived>::Scalar Scalar;
             typedef typename MatrixTraits<TDerived>::PlainScalar PlainScalar;
+            
             static const int NumRows = MatrixTraits<TDerived>::NumRows;
             static const int NumColumns = MatrixTraits<TDerived>::NumColumns;
             static const int ColumnStride = MatrixTraits<TDerived>::ColumnStride;
@@ -62,15 +63,15 @@ namespace opensolid
 
             typename MatrixTraits<TDerived>::Scalar*
             data();
+            
+            std::pair<int, int> 
+            dimensions() const;
 
             int
             numRows() const;
 
             int
             numColumns() const;
-            
-            std::pair<int, int> 
-            dimensions() const;
 
             int
             size() const;
@@ -246,6 +247,12 @@ namespace opensolid
             typename MatrixTraits<TDerived>::PlainScalar
             reduce(TFunction function) const;
 
+            typename MatrixTraits<TDerived>::PlainScalar
+            sum() const;
+
+            typename MatrixTraits<TDerived>::PlainScalar
+            product() const;
+
             template <class TUnaryPredicate>
             bool
             any(TUnaryPredicate unaryPredicate) const;
@@ -353,12 +360,6 @@ namespace opensolid
                 CommonCols<TDerived, TOtherDerived>::Value
             >
             cwiseIntersection(const MatrixInterface<TOtherDerived>& other) const;
-
-            typename MatrixTraits<TDerived>::PlainScalar
-            sum() const;
-
-            typename MatrixTraits<TDerived>::PlainScalar
-            product() const;
 
             template <class TOtherDerived>
             bool
@@ -490,12 +491,12 @@ namespace opensolid
         };
 
         template <int iFirstCols, int iSecondCols>
-        struct CheckCompatibleCols :
+        struct CheckCompatibleColumns :
             public CheckCompatibleSizes<iFirstCols, iSecondCols>
         {
-            CheckCompatibleCols();
+            CheckCompatibleColumns();
 
-            CheckCompatibleCols(int firstCols, int secondCols);
+            CheckCompatibleColumns(int firstCols, int secondCols);
         };
 
         template <class TFirstMatrix, class TSecondMatrix>
@@ -504,7 +505,7 @@ namespace opensolid
                 MatrixTraits<TFirstMatrix>::NumRows,
                 MatrixTraits<TSecondMatrix>::NumRows
             >,
-            public CheckCompatibleCols<
+            public CheckCompatibleColumns<
                 MatrixTraits<TFirstMatrix>::NumColumns,
                 MatrixTraits<TSecondMatrix>::NumColumns
             >

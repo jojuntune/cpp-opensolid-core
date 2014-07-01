@@ -53,7 +53,7 @@ namespace opensolid
         struct CheckCompatibleRows;
 
         template <int iFirstCols, int iSecondCols>
-        struct CheckCompatibleCols;
+        struct CheckCompatibleColumns;
 
         template <class TFirstMatrix, class TSecondMatrix>
         struct CheckCompatibleMatrices;

@@ -71,6 +71,13 @@ namespace opensolid
 
         template <class TDerived>
         inline
+        std::pair<int, int> 
+        MatrixInterface<TDerived>::dimensions() const {
+            return std::pair<int, int>(numRows(), numColumns());
+        }
+
+        template <class TDerived>
+        inline
         int
         MatrixInterface<TDerived>::numRows() const {
             return derived().numRows();
@@ -81,13 +88,6 @@ namespace opensolid
         int
         MatrixInterface<TDerived>::numColumns() const {
             return derived().numColumns();
-        }
-
-        template <class TDerived>
-        inline
-        std::pair<int, int> 
-        MatrixInterface<TDerived>::dimensions() const {
-            return std::pair<int, int>(derived().numRows(), derived().numColumns());
         }
         
         template <class TDerived>
@@ -109,6 +109,7 @@ namespace opensolid
         typename MatrixTraits<TDerived>::PlainScalar
         MatrixInterface<TDerived>::component(int index) const {
             assert(index >= 0 && index < size());
+
             return component(index % numRows(), index / numRows());
         }
 
@@ -117,6 +118,7 @@ namespace opensolid
         typename MatrixTraits<TDerived>::Scalar&
         MatrixInterface<TDerived>::component(int index) {
             assert(index >= 0 && index < size());
+
             return component(index % numRows(), index / numRows());
         }
 
@@ -126,6 +128,7 @@ namespace opensolid
         MatrixInterface<TDerived>::component(int rowIndex, int columnIndex) const {
             assert(rowIndex >= 0 && rowIndex < numRows());
             assert(columnIndex >= 0 && columnIndex < numColumns());
+
             return *(data() + rowIndex + columnIndex * columnStride());
         }
 
@@ -135,6 +138,7 @@ namespace opensolid
         MatrixInterface<TDerived>::component(int rowIndex, int columnIndex) {
             assert(rowIndex >= 0 && rowIndex < numRows());
             assert(columnIndex >= 0 && columnIndex < numColumns());
+
             return *(data() + rowIndex + columnIndex * columnStride());
         }
 
@@ -170,7 +174,9 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalar
         MatrixInterface<TDerived>::value() const {
-            assert(numRows() == 1 && numColumns() == 1);
+            CheckCompatibleRows<NumRows, 1>(numRows(), 1);
+            CheckCompatibleColumns<NumColumns, 1>(numColumns(), 1);
+
             return component(0);
         }
 
@@ -178,7 +184,9 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::Scalar&
         MatrixInterface<TDerived>::value() {
-            assert(numRows() == 1 && numColumns() == 1);
+            CheckCompatibleRows<NumRows, 1>(numRows(), 1);
+            CheckCompatibleColumns<NumColumns, 1>(numColumns(), 1);
+
             return component(0);
         }
 
@@ -409,6 +417,7 @@ namespace opensolid
         }
 
         template <class TDerived>
+        inline
         typename MatrixTraits<TDerived>::PlainScalar
         MatrixInterface<TDerived>::determinant() const {
             return MatrixDeterminantFunction<
@@ -420,6 +429,7 @@ namespace opensolid
         }
 
         template <class TDerived>
+        inline
         const Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumRows,
@@ -632,6 +642,28 @@ namespace opensolid
                 rowIndex = 0;
             }
             return result;
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::sum() const {
+            return reduce(
+                [] (Scalar result, Scalar component) {
+                    return result + component;
+                }
+            );
+        }
+
+        template <class TDerived>
+        inline
+        typename MatrixTraits<TDerived>::PlainScalar
+        MatrixInterface<TDerived>::product() const {
+            return reduce(
+                [] (Scalar result, Scalar component) {
+                    return result * component;
+                }
+            );
         }
 
         template <class TDerived> template <class TUnaryPredicate>
@@ -1028,28 +1060,6 @@ namespace opensolid
             );
         }
 
-        template <class TDerived>
-        inline
-        typename MatrixTraits<TDerived>::PlainScalar
-        MatrixInterface<TDerived>::sum() const {
-            return reduce(
-                [] (Scalar result, Scalar component) {
-                    return result + component;
-                }
-            );
-        }
-
-        template <class TDerived>
-        inline
-        typename MatrixTraits<TDerived>::PlainScalar
-        MatrixInterface<TDerived>::product() const {
-            return reduce(
-                [] (Scalar result, Scalar component) {
-                    return result * component;
-                }
-            );
-        }
-
         template <class TDerived> template <class TOtherDerived>
         inline
         bool
@@ -1341,12 +1351,12 @@ namespace opensolid
 
         template <int iFirstCols, int iSecondCols>
         inline
-        CheckCompatibleCols<iFirstCols, iSecondCols>::CheckCompatibleCols() {
+        CheckCompatibleColumns<iFirstCols, iSecondCols>::CheckCompatibleColumns() {
         }
 
         template <int iFirstCols, int iSecondCols>
         inline
-        CheckCompatibleCols<iFirstCols, iSecondCols>::CheckCompatibleCols(
+        CheckCompatibleColumns<iFirstCols, iSecondCols>::CheckCompatibleColumns(
             int firstCols,
             int secondCols
         ) : CheckCompatibleSizes<iFirstCols, iSecondCols>(firstCols, secondCols) {
@@ -1366,7 +1376,7 @@ namespace opensolid
                 MatrixTraits<TFirstMatrix>::NumRows,
                 MatrixTraits<TSecondMatrix>::NumRows
             >(firstMatrix.numRows(), secondMatrix.numRows()),
-            CheckCompatibleCols<
+            CheckCompatibleColumns<
                 MatrixTraits<TFirstMatrix>::NumColumns,
                 MatrixTraits<TSecondMatrix>::NumColumns
             >(firstMatrix.numColumns(), secondMatrix.numColumns()) {
