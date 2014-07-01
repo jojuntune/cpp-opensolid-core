@@ -47,10 +47,77 @@ namespace opensolid
         Matrix(const TScalar* sourcePtr);
 
         Matrix(const TScalar* sourcePtr, std::pair<int, int> dimensions);
-
+       
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const TScalar firstComponent);
+        
+        Matrix(const TScalar firstComponent, const TScalar secondComponent);
+        
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent
+        );
+        
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent,
+            const TScalar fourthComponent
+        );
+        
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent,
+            const TScalar fourthComponent,
+            const TScalar fifthComponent
+        );
+        
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent,
+            const TScalar fourthComponent,
+            const TScalar fifthComponent,
+            const TScalar sixthComponent
+        );
 
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent,
+            const TScalar fourthComponent,
+            const TScalar fifthComponent,
+            const TScalar sixthComponent,
+            const TScalar seventhComponent
+        );
+        
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent,
+            const TScalar fourthComponent,
+            const TScalar fifthComponent,
+            const TScalar sixthComponent,
+            const TScalar seventhComponent,
+            const TScalar eighthComponent
+        );
+        
+        Matrix(
+            const TScalar firstComponent, 
+            const TScalar secondComponent, 
+            const TScalar thirdComponent,
+            const TScalar fourthComponent,
+            const TScalar fifthComponent,
+            const TScalar sixthComponent,
+            const TScalar seventhComponent,
+            const TScalar eighthComponent,
+            const TScalar ninthComponent
+        );
+        
         void
         operator=(const Matrix<TScalar, iNumRows, iNumColumns>& other);
 
