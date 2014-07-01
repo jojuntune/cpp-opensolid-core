@@ -42,80 +42,85 @@ namespace opensolid
     public:
         Matrix();
 
-        Matrix(std::pair<int, int> dimensions);
+        Matrix(const std::pair<int, int>& dimensions);
 
         Matrix(const TScalar* sourcePtr);
 
-        Matrix(const TScalar* sourcePtr, std::pair<int, int> dimensions);
+        Matrix(const TScalar* sourcePtr, const std::pair<int, int>& dimensions);
        
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
         
-        Matrix(const TScalar firstComponent);
-        
-        Matrix(const TScalar firstComponent, const TScalar secondComponent);
-        
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent
+            TScalar firstComponent
         );
         
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent,
-            const TScalar fourthComponent
+            TScalar firstComponent,
+            TScalar secondComponent
         );
         
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent,
-            const TScalar fourthComponent,
-            const TScalar fifthComponent
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent
         );
         
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent,
-            const TScalar fourthComponent,
-            const TScalar fifthComponent,
-            const TScalar sixthComponent
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent
+        );
+        
+        Matrix(
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent
         );
 
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent,
-            const TScalar fourthComponent,
-            const TScalar fifthComponent,
-            const TScalar sixthComponent,
-            const TScalar seventhComponent
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent,
+            TScalar seventhComponent
         );
         
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent,
-            const TScalar fourthComponent,
-            const TScalar fifthComponent,
-            const TScalar sixthComponent,
-            const TScalar seventhComponent,
-            const TScalar eighthComponent
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent,
+            TScalar seventhComponent,
+            TScalar eighthComponent
         );
         
         Matrix(
-            const TScalar firstComponent, 
-            const TScalar secondComponent, 
-            const TScalar thirdComponent,
-            const TScalar fourthComponent,
-            const TScalar fifthComponent,
-            const TScalar sixthComponent,
-            const TScalar seventhComponent,
-            const TScalar eighthComponent,
-            const TScalar ninthComponent
+            TScalar firstComponent, 
+            TScalar secondComponent, 
+            TScalar thirdComponent,
+            TScalar fourthComponent,
+            TScalar fifthComponent,
+            TScalar sixthComponent,
+            TScalar seventhComponent,
+            TScalar eighthComponent,
+            TScalar ninthComponent
         );
         
         void
@@ -129,31 +134,31 @@ namespace opensolid
         constant(TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        constant(std::pair<int, int> dimensions, TScalar value);
+        constant(const std::pair<int, int>& dimensions, TScalar value);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         zero();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        zero(std::pair<int, int> dimensions);
+        zero(const std::pair<int, int>& dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         ones();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        ones(std::pair<int, int> dimensions);
+        ones(const std::pair<int, int>& dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         identity();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        identity(std::pair<int, int> dimensions);
+        identity(const std::pair<int, int>& dimensions);
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
         random();
 
         static const Matrix<TScalar, iNumRows, iNumColumns>
-        random(std::pair<int, int> dimensions);
+        random(const std::pair<int, int>& dimensions);
     };
 
     typedef Matrix<double, 1, 1> Matrix1d;
