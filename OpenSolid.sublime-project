@@ -1,0 +1,46 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+            "file_exclude_patterns": ["*.sublime*", "*.hg*"],
+            "folder_exclude_patterns": [".hg*", "Build*", "build*"]
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4,
+        "translate_tabs_to_spaces": true,
+        "rulers": [100],
+        "match_brackets_angle": true,
+        "ensure_newline_at_eof_on_save": true,
+        "default_line_ending": "unix"
+    },
+    "build_systems":
+    [
+        {
+            "name": "OpenSolid - Debug",
+            "cmd": ["make", "-j3"],
+            "working_dir": "$project_path/Build/Debug",
+            "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
+        },
+        {
+            "name": "OpenSolid - Release",
+            "cmd": ["make", "-j3"],
+            "working_dir": "$project_path/Build/Release",
+            "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
+        },
+        {
+            "name": "OpenSolid - Clang Debug",
+            "cmd": ["make", "-j3"],
+            "working_dir": "$project_path/Build/Clang-Debug",
+            "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
+        },
+        {
+            "name": "OpenSolid - Clang Release",
+            "cmd": ["make", "-j3"],
+            "working_dir": "$project_path/Build/Clang-Release",
+            "file_regex": "(.+):(\\d+):(\\d+): (.+)$"
+        }
+    ]
+}
