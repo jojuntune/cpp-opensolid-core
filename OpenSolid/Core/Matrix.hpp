@@ -41,6 +41,29 @@ namespace opensolid
 
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
+        const Matrix<TScalar, iNumRows, iNumColumns>& other
+    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(other) {
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
+        Matrix<TScalar, iNumRows, iNumColumns>&& other
+    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(std::move(other)) {
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
+        const detail::MatrixInterface<TOtherDerived>& other
+    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(other.numRows(), other.numColumns()) {
+        
+        assign(other);
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
     Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const std::pair<int, int>& dimensions) :
         detail::MatrixBase<TScalar, iNumRows, iNumColumns>(dimensions.first, dimensions.second) {
     }
@@ -63,15 +86,6 @@ namespace opensolid
         for (int index = 0; index < this->size(); ++index) {
             this->data()[index] = sourcePtr[index];
         }
-    }
-
-    template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
-    inline
-    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
-        const detail::MatrixInterface<TOtherDerived>& other
-    ) : detail::MatrixBase<TScalar, iNumRows, iNumColumns>(other.numRows(), other.numColumns()) {
-
-        detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -233,7 +247,16 @@ namespace opensolid
     Matrix<TScalar, iNumRows, iNumColumns>::operator=(
         const Matrix<TScalar, iNumRows, iNumColumns>& other
     ) {
-        detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
+        detail::MatrixBase<TScalar, iNumRows, iNumColumns>::operator=(other);
+    }
+    
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    void
+    Matrix<TScalar, iNumRows, iNumColumns>::operator=(
+        Matrix<TScalar, iNumRows, iNumColumns>&& other
+    ) {
+        detail::MatrixBase<TScalar, iNumRows, iNumColumns>::operator=(std::move(other));
     }
 
     template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
@@ -242,7 +265,7 @@ namespace opensolid
     Matrix<TScalar, iNumRows, iNumColumns>::operator=(
         const detail::MatrixInterface<TOtherDerived>& other
     ) {
-        detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>::operator=(other);
+        assign(other);
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>

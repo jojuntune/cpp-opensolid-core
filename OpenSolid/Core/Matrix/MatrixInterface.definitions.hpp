@@ -109,12 +109,9 @@ namespace opensolid
             typename MatrixTraits<TDerived>::Scalar&
             value();
 
-            void
-            operator=(const MatrixInterface<TDerived>& other);
-
             template <class TOtherDerived>
             void
-            operator=(const MatrixInterface<TOtherDerived>& other);
+            assign(const MatrixInterface<TOtherDerived>& other);
 
             const MatrixView<
                 const typename MatrixTraits<TDerived>::PlainScalar,

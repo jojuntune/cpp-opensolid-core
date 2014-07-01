@@ -42,14 +42,18 @@ namespace opensolid
     public:
         Matrix();
 
+        Matrix(const Matrix<TScalar, iNumRows, iNumColumns>& other);
+
+        Matrix(Matrix<TScalar, iNumRows, iNumColumns>&& other);
+       
+        template <class TOtherDerived>
+        Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+
         Matrix(const std::pair<int, int>& dimensions);
 
         Matrix(const TScalar* sourcePtr);
 
         Matrix(const TScalar* sourcePtr, const std::pair<int, int>& dimensions);
-       
-        template <class TOtherDerived>
-        Matrix(const detail::MatrixInterface<TOtherDerived>& other);
         
         Matrix(
             TScalar firstComponent
@@ -125,6 +129,9 @@ namespace opensolid
         
         void
         operator=(const Matrix<TScalar, iNumRows, iNumColumns>& other);
+        
+        void
+        operator=(Matrix<TScalar, iNumRows, iNumColumns>&& other);
 
         template <class TOtherDerived>
         void

@@ -190,23 +190,10 @@ namespace opensolid
             return component(0);
         }
 
-        template <class TDerived>
-        inline
-        void
-        MatrixInterface<TDerived>::operator=(const MatrixInterface<TDerived>& other) {
-            CheckCompatibleMatrices<TDerived, TDerived>(derived(), other.derived());
-
-            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
-                for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    this->component(rowIndex, columnIndex) = other.component(rowIndex, columnIndex);
-                }
-            }
-        }
-
         template <class TDerived> template <class TOtherDerived>
         inline
         void
-        MatrixInterface<TDerived>::operator=(const MatrixInterface<TOtherDerived>& other) {
+        MatrixInterface<TDerived>::assign(const MatrixInterface<TOtherDerived>& other) {
             CheckCompatibleMatrices<TDerived, TOtherDerived>(derived(), other.derived());
 
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
