@@ -77,12 +77,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        BoxBase<iNumDimensions>::BoxBase(const Interval* sourcePtr) :
-            CartesianBase<Interval, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         bool
         BoxBase<iNumDimensions>::isEmpty() const {
             return this->components().any(

@@ -54,8 +54,6 @@ namespace opensolid
             DoubleVectorBase(double x, double y, double z);
 
             DoubleVectorBase(const Matrix<double, iNumDimensions, 1>& components);
-
-            DoubleVectorBase(const double* sourcePtr);
         public:
             const UnitVector<iNumDimensions>
             normalized() const;

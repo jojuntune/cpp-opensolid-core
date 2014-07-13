@@ -59,6 +59,10 @@ namespace opensolid
             derived() const;
 
             template <class TOtherDerived> friend class MatrixInterface;
+        protected:
+            template <class TOtherDerived>
+            void
+            assign(const MatrixInterface<TOtherDerived>& other);
         public:
             const typename MatrixTraits<TDerived>::Scalar*
             data() const;
@@ -110,13 +114,6 @@ namespace opensolid
 
             typename MatrixTraits<TDerived>::Scalar&
             value();
-
-            void
-            operator=(const MatrixInterface<TDerived>& other);
-
-            template <class TOtherDerived>
-            void
-            operator=(const MatrixInterface<TOtherDerived>& other);
 
             const MatrixView<
                 const typename MatrixTraits<TDerived>::PlainScalar,

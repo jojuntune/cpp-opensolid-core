@@ -77,12 +77,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        DoubleVectorBase<iNumDimensions>::DoubleVectorBase(const double* sourcePtr) :
-            VectorBase<double, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         const UnitVector<iNumDimensions>
         DoubleVectorBase<iNumDimensions>::normalized() const {
             double norm = this->norm();

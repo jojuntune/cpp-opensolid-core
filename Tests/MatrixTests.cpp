@@ -125,8 +125,10 @@ TEST_CASE("Compact layout") {
 TEST_CASE("2D matrix inversion") {
     for (int i = 0; i < 100; ++i) {
         Matrix2d matrix = Matrix2d::random();
+
         if (matrix.determinant() != Zero(1e-3)) {
             Matrix2d inverse = matrix.inverse();
+
             REQUIRE((matrix * inverse).isIdentity());
             REQUIRE((inverse * matrix).isIdentity());
         }
@@ -136,8 +138,10 @@ TEST_CASE("2D matrix inversion") {
 TEST_CASE("3D matrix inversion") {
     for (int i = 0; i < 100; ++i) {
         Matrix3d matrix = Matrix3d::random();
+
         if (matrix.determinant() != Zero(1e-3)) {
             Matrix3d inverse = matrix.inverse();
+
             REQUIRE((matrix * inverse).isIdentity());
             REQUIRE((inverse * matrix).isIdentity());
         }
@@ -148,9 +152,11 @@ TEST_CASE("2D Interval matrix inversion") {
     for (int i = 0; i < 100; ++i) {
         IntervalMatrix2d matrix = IntervalMatrix2d::random();
         IntervalMatrix2d inverse = matrix.inverse();
+
         auto containsFunction = [] (Interval testComponent, double identityComponent) -> bool {
             return testComponent.contains(identityComponent);
         };
+
         REQUIRE((matrix * inverse).binaryAll(Matrix2d::identity(), containsFunction));
         REQUIRE((inverse * matrix).binaryAll(Matrix2d::identity(), containsFunction));
     }
@@ -160,9 +166,11 @@ TEST_CASE("3D Interval matrix inversion") {
     for (int i = 0; i < 100; ++i) {
         IntervalMatrix3d matrix = IntervalMatrix3d::random();
         IntervalMatrix3d inverse = matrix.inverse();
+
         auto containsFunction = [] (Interval testComponent, double identityComponent) -> bool {
             return testComponent.contains(identityComponent);
         };
+
         REQUIRE((matrix * inverse).binaryAll(Matrix3d::identity(), containsFunction));
         REQUIRE((inverse * matrix).binaryAll(Matrix3d::identity(), containsFunction));
     }
@@ -175,6 +183,7 @@ TEST_CASE("Min component") {
             int rowIndex = 0;
             int columnIndex = 0;
             double minComponent = matrix.minComponent(&rowIndex, &columnIndex);
+
             REQUIRE(matrix(rowIndex, columnIndex) == minComponent);
             REQUIRE(
                 matrix.all(
@@ -190,6 +199,7 @@ TEST_CASE("Min component") {
             RowMatrix3d matrix = RowMatrix3d::random();
             int index = 0;
             double minComponent = matrix.minComponent(&index);
+
             REQUIRE(matrix(index) == minComponent);
             REQUIRE(
                 matrix.all(
@@ -209,6 +219,7 @@ TEST_CASE("Max component") {
             int rowIndex = 0;
             int columnIndex = 0;
             double maxComponent = matrix.maxComponent(&rowIndex, &columnIndex);
+
             REQUIRE(matrix(rowIndex, columnIndex) == maxComponent);
             REQUIRE(
                 matrix.all(
@@ -224,6 +235,7 @@ TEST_CASE("Max component") {
             RowMatrix3d matrix = RowMatrix3d::random();
             int index = 0;
             double maxComponent = matrix.maxComponent(&index);
+
             REQUIRE(matrix(index) == maxComponent);
             REQUIRE(
                 matrix.all(
@@ -237,10 +249,7 @@ TEST_CASE("Max component") {
 }
 
 TEST_CASE("Matrix folding") {
-    ColumnMatrix3d values;
-    values(0) = 3;
-    values(1) = 4;
-    values(2) = 5;
+    ColumnMatrix3d values(3.0, 4.0, 5.0);
 
     double product = values.fold(
         1.0,
@@ -248,20 +257,18 @@ TEST_CASE("Matrix folding") {
             return result * value;
         }
     );
+
     REQUIRE(product == 60);
     REQUIRE(product == values.product());
 }
 
 TEST_CASE("Binary matrix folding") {
-    ColumnMatrix3d values;
-    values(0) = 10;
-    values(1) = 20;
-    values(2) = 30;
-
-    IntervalColumnMatrix3d intervals;
-    intervals(0) = Interval(9, 11);
-    intervals(1) = Interval(18, 19);
-    intervals(2) = Interval(29, 31);
+    ColumnMatrix3d values(10.0, 20.0, 30.0);
+    IntervalColumnMatrix3d intervals(
+        Interval(9.0, 11.0),
+        Interval(18.0, 19.0),
+        Interval(29.0, 31.0)
+    );
     
     int containmentCount = intervals.binaryFold(
         values,
@@ -270,26 +277,23 @@ TEST_CASE("Binary matrix folding") {
             return result + (interval.contains(value) ? 1 : 0);
         }
     );
+
     REQUIRE(containmentCount == 2);
 }
 
 TEST_CASE("Coefficient-wise squaring") {
     SECTION("Double matrices") {  
-        ColumnMatrix2d matrix;
-        matrix(0) = -1;
-        matrix(1) = 3;
-
+        ColumnMatrix2d matrix(-1.0, 3.0);
         ColumnMatrix2d squaredComponents = matrix.cwiseSquared();
+
         REQUIRE(squaredComponents(0) == 1);
         REQUIRE(squaredComponents(1) == 9);
     }
 
     SECTION("Interval matrices") {
-        IntervalColumnMatrix2d matrix;
-        matrix(0) = Interval(2, 3);
-        matrix(1) = Interval(-1, 1);
-
+        IntervalColumnMatrix2d matrix(Interval(2.0, 3.0), Interval(-1.0, 1.0));
         IntervalColumnMatrix2d squaredComponents = matrix.cwiseSquared();
+
         REQUIRE(squaredComponents(0).lowerBound() == 4);
         REQUIRE(squaredComponents(0).upperBound() == 9);
         REQUIRE(squaredComponents(1).lowerBound() == 0);
@@ -299,23 +303,22 @@ TEST_CASE("Coefficient-wise squaring") {
 
 TEST_CASE("Coefficient-wise absolute value") {
     SECTION("Double matrices") {  
-        ColumnMatrix2d matrix;
-        matrix(0) = -1;
-        matrix(1) = 3;
-
+        ColumnMatrix2d matrix(-1.0, 3.0);
         ColumnMatrix2d absoluteComponents = matrix.cwiseAbs();
+
         REQUIRE(absoluteComponents(0) == 1);
         REQUIRE(absoluteComponents(1) == 3);
     }
 
     SECTION("Interval matrices") {
-        Matrix<Interval, 4, 1> matrix;
-        matrix(0) = Interval(2, 3);
-        matrix(1) = Interval(-1, 2);
-        matrix(2) = Interval(-3, 1);
-        matrix(3) = Interval(-4, -3);
-
+        Matrix<Interval, 4, 1> matrix(
+            Interval(2.0, 3.0),
+            Interval(-1.0, 2.0),
+            Interval(-3.0, 1.0),
+            Interval(-4.0, -3.0)
+        );
         Matrix<Interval, 4, 1> absoluteComponents = matrix.cwiseAbs();
+
         REQUIRE(absoluteComponents(0).lowerBound() == 2);
         REQUIRE(absoluteComponents(0).upperBound() == 3);
         REQUIRE(absoluteComponents(1).lowerBound() == 0);
@@ -328,15 +331,10 @@ TEST_CASE("Coefficient-wise absolute value") {
 }
 
 TEST_CASE("Coefficient-wise quotient") {
-    RowMatrix2d doubleMatrix;
-    doubleMatrix(0) = 1;
-    doubleMatrix(1) = 2;
-
-    IntervalRowMatrix2d intervalMatrix;
-    intervalMatrix(0) = Interval(2, 3);
-    intervalMatrix(1) = Interval(4, 5);
-    
+    RowMatrix2d doubleMatrix(1.0, 2.0);
+    IntervalRowMatrix2d intervalMatrix(Interval(2.0, 3.0), Interval(4.0, 5.0));
     IntervalRowMatrix2d quotients = doubleMatrix.cwiseQuotient(intervalMatrix);
+
     REQUIRE((quotients(0).lowerBound() - 1.0 / 3.0) == Zero());
     REQUIRE((quotients(0).upperBound() - 1.0 / 2.0) == Zero());
     REQUIRE((quotients(1).lowerBound() - 2.0 / 5.0) == Zero());
@@ -397,7 +395,7 @@ TEST_CASE("Static/dynamic matrix conversion") {
     }
 
     SECTION("Dynamic to static") {
-        MatrixXd a(std::pair<int, int>(2, 2));
+        MatrixXd a(2, 2);
         a(0, 0) = 1;
         a(1, 0) = 2;
         a(0, 1) = 3;
@@ -412,7 +410,7 @@ TEST_CASE("Static/dynamic matrix conversion") {
 }
 
 TEST_CASE("Dynamic matrix row access") {
-    MatrixXd matrix(std::pair<int, int>(3, 11));
+    MatrixXd matrix(3, 11);
     for (int i = 0; i <= 10; ++i) {
         matrix(0, i) = 1 + i / 10.0;
         matrix(1, i) = 2 + i / 10.0;
@@ -426,7 +424,7 @@ TEST_CASE("Dynamic matrix row access") {
 }
 
 TEST_CASE("Dynamic matrix inversion") {
-    MatrixXd matrix(std::pair<int, int>(3, 3));
+    MatrixXd matrix(3, 3);
     matrix(0, 0) = 1;
     matrix(0, 1) = 1;
     matrix(1, 1) = 1;
@@ -445,7 +443,7 @@ TEST_CASE("Dynamic matrix inversion") {
 }
 
 TEST_CASE("Dynamic matrix map") {
-    MatrixXd matrix(std::pair<int, int>(3, 3));
+    MatrixXd matrix(3, 3);
     for (int index = 0; index < 9; ++index) {
         matrix(index) = index;
     }
@@ -460,12 +458,12 @@ TEST_CASE("Dynamic matrix map") {
 }
 
 TEST_CASE("Dynamic matrix binary map") {
-    MatrixXd firstMatrix(std::pair<int, int>(2, 3));
+    MatrixXd firstMatrix(2, 3);
     for (int index = 0; index < 6; ++index) {
         firstMatrix(index) = index;
     }
     
-    MatrixXd secondMatrix(std::pair<int, int>(2, 3));
+    MatrixXd secondMatrix(2, 3);
     for (int index = 0; index < 6; ++index) {
         secondMatrix(index) = 2 * index;
     }
@@ -484,7 +482,7 @@ TEST_CASE("Dynamic matrix binary map") {
 TEST_CASE("Dynamic matrix product") {
     // 1 3 5
     // 2 4 6
-    MatrixXd firstMatrix(std::pair<int, int>(2, 3));
+    MatrixXd firstMatrix(2, 3);
     for (int index = 0; index < 6; ++index) {
         firstMatrix(index) = index + 1;
     }
@@ -523,7 +521,7 @@ TEST_CASE("Block assignment") {
 }
 
 TEST_CASE("Dynamic matrix block assignment") {
-    MatrixXd matrix(std::pair<int, int>(10, 10));
+    MatrixXd matrix(10, 10);
     matrix.block(2, 3, 4, 5).setOnes();
     for (int columnIndex = 0; columnIndex < 10; ++columnIndex) {
         for (int rowIndex = 0; rowIndex < 10; ++rowIndex) {
@@ -577,7 +575,7 @@ TEST_CASE("Stream output") {
         checkTypeName(stream.str(), "ColumnMatrix3d");
     }
     SECTION("RowMatrixXd") {
-        RowMatrixXd matrix(std::pair<int, int>(1, 3));
+        RowMatrixXd matrix(3);
         stream << matrix;
         checkTypeName(stream.str(), "RowMatrixXd");
     }
@@ -587,7 +585,7 @@ TEST_CASE("Stream output") {
         checkTypeName(stream.str(), "IntervalMatrix3d");
     }
     SECTION("MatrixXd") {
-        MatrixXd matrix(std::pair<int, int>(3,3));
+        MatrixXd matrix(3, 3);
         stream << matrix;
         checkTypeName(stream.str(), "MatrixXd");
     }

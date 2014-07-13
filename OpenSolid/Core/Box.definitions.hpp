@@ -85,9 +85,6 @@ namespace opensolid
         explicit
         Box(const Matrix<Interval, 1, 1>& components);
 
-        explicit
-        Box(const Interval* sourcePtr);
-
         const Point<1>
         interpolated(double xValue) const;
 
@@ -114,9 +111,6 @@ namespace opensolid
         explicit
         Box(const Matrix<Interval, 2, 1>& components);
 
-        explicit
-        Box(const Interval* sourcePtr);
-
         const Point<2>
         interpolated(double xValue, double yValue) const;
 
@@ -142,9 +136,6 @@ namespace opensolid
 
         explicit
         Box(const Matrix<Interval, 3, 1>& components);
-
-        explicit
-        Box(const Interval* sourcePtr);
 
         const Point<3>
         interpolated(double xValue, double yValue, double zValue) const;

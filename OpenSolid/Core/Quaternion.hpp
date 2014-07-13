@@ -35,8 +35,8 @@
 namespace opensolid
 {
     inline
-    Quaternion2d::Quaternion() {
-        _components(0) = 1.0;
+    Quaternion2d::Quaternion() :
+        _components(1.0, 0.0) {
     }
 
     inline
@@ -47,17 +47,15 @@ namespace opensolid
     }
 
     inline
-    Quaternion2d::Quaternion(double cosAngle, double sinAngle) {
-        assert(cosAngle * cosAngle + sinAngle * sinAngle - 1 == Zero());
+    Quaternion2d::Quaternion(double cosAngle, double sinAngle) :
+        _components(cosAngle, sinAngle) {
 
-        _components(0) = cosAngle;
-        _components(1) = sinAngle;
+        assert(cosAngle * cosAngle + sinAngle * sinAngle - 1 == Zero());
     }
 
     inline
-    Quaternion2d::Quaternion(double angle) {
-        _components(0) = cos(angle);
-        _components(1) = sin(angle);
+    Quaternion2d::Quaternion(double angle) :
+        _components(cos(angle), sin(angle)) {
     }
 
     inline
@@ -99,12 +97,7 @@ namespace opensolid
     inline
     const Matrix2d
     Quaternion2d::rotationMatrix() const {
-        Matrix2d result;
-        result(0, 0) = cosAngle();
-        result(1, 0) = sinAngle();
-        result(0, 1) = -sinAngle();
-        result(1, 1) = cosAngle();
-        return result;
+        return Matrix2d(cosAngle(), sinAngle(), -sinAngle(), cosAngle());
     }
 
     inline
@@ -126,14 +119,12 @@ namespace opensolid
     inline
     const Quaternion2d
     Quaternion2d::identity() {
-        ColumnMatrix2d identityComponents;
-        identityComponents(0) = 1.0;
-        return Quaternion2d(identityComponents);
+        return Quaternion2d(ColumnMatrix2d(1.0, 0.0));
     }
 
     inline
-    Quaternion3d::Quaternion() {
-        _components(3) = 1.0;
+    Quaternion3d::Quaternion() :
+        _components(0.0, 0.0, 0.0, 1.0) {
     }
 
     inline
@@ -144,12 +135,10 @@ namespace opensolid
     }
 
     inline
-    Quaternion3d::Quaternion(double x, double y, double z, double w) {
+    Quaternion3d::Quaternion(double x, double y, double z, double w) :
+        _components(x, y, z, w) {
+
         assert(x * x + y * y + z * z + w * w - 1.0 == Zero());
-        _components(0) = x;
-        _components(1) = y;
-        _components(2) = z;
-        _components(3) = w;
     }
 
     inline
@@ -277,8 +266,6 @@ namespace opensolid
     inline
     const Quaternion3d
     Quaternion3d::identity() {
-        Matrix<double, 4, 1> identityComponents;
-        identityComponents(3) = 1.0;
-        return Quaternion3d(identityComponents);
+        return Quaternion3d(Matrix<double, 4, 1>(0.0, 0.0, 0.0, 1.0));
     }
 }

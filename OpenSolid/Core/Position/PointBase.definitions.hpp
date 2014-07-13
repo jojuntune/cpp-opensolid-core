@@ -55,8 +55,6 @@ namespace opensolid
             PointBase(double x, double y, double z);
 
             PointBase(const Matrix<double, iNumDimensions, 1>& components);
-
-            PointBase(const double* sourcePtr);
         public:
             double
             squaredDistanceTo(const Point<iNumDimensions>& other) const;

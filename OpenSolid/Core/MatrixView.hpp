@@ -137,9 +137,7 @@ namespace opensolid
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::operator=(
         const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other
     ) {
-        detail::MatrixInterface<
-            MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>
-        >::operator=(other);
+        this->assign(other);
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
@@ -149,9 +147,7 @@ namespace opensolid
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::operator=(
         const detail::MatrixInterface<TOtherDerived>& other
     ) {
-        detail::MatrixInterface<
-            MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>
-        >::operator=(other);
+        this->assign(other);
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>

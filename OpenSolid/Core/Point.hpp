@@ -61,11 +61,6 @@ namespace opensolid
     }
 
     inline
-    Point1d::Point(const double* sourcePtr) :
-        detail::PointBase<1>(sourcePtr) {
-    }
-
-    inline
     Point2d::Point() {
     }
 
@@ -82,11 +77,6 @@ namespace opensolid
     inline
     Point2d::Point(const ColumnMatrix2d& components) :
         detail::PointBase<2>(components) {
-    }
-
-    inline
-    Point2d::Point(const double* sourcePtr) :
-        detail::PointBase<2>(sourcePtr) {
     }
 
     inline
@@ -118,11 +108,6 @@ namespace opensolid
     inline
     Point3d::Point(const ColumnMatrix3d& components) :
         detail::PointBase<3>(components) {
-    }
-
-    inline
-    Point3d::Point(const double* sourcePtr) :
-        detail::PointBase<3>(sourcePtr) {
     }
 
     inline

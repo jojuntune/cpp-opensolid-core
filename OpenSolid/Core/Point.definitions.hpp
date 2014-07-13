@@ -88,9 +88,6 @@ namespace opensolid
 
         explicit
         Point(const Matrix<double, 1, 1>& components);
-
-        explicit
-        Point(const double* sourcePtr);
     };
 
     typedef Point<1> Point1d;
@@ -111,9 +108,6 @@ namespace opensolid
 
         explicit
         Point(const Matrix<double, 2, 1>& components);
-
-        explicit
-        Point(const double* sourcePtr);
 
         double
         distanceTo(const Axis<2>& axis) const;
@@ -140,9 +134,6 @@ namespace opensolid
 
         explicit
         Point(const Matrix<double, 3, 1>& components);
-
-        explicit
-        Point(const double* sourcePtr);
 
         double
         squaredDistanceTo(const Axis<3>& axis) const;

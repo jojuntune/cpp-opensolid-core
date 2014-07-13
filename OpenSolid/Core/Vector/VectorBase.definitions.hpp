@@ -52,8 +52,6 @@ namespace opensolid
             VectorBase(TScalar x, TScalar y, TScalar z);
 
             VectorBase(const Matrix<TScalar, iNumDimensions, 1>& components);
-
-            VectorBase(const TScalar* sourcePtr);
         public:
             TScalar
             squaredNorm() const;

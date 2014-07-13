@@ -58,11 +58,6 @@ namespace opensolid
     }
 
     inline
-    Box1d::Box(const Interval* sourcePtr) :
-        detail::BoxBase<1>(sourcePtr) {
-    }
-
-    inline
     const Point1d
     Box1d::interpolated(double xValue) const {
         return minVertex() + Vector1d(xValue * x().width());
@@ -94,11 +89,6 @@ namespace opensolid
     }
 
     inline
-    Box2d::Box(const Interval* sourcePtr) :
-        detail::BoxBase<2>(sourcePtr) {
-    }
-
-    inline
     const Point2d
     Box2d::interpolated(double xValue, double yValue) const {
         return minVertex() + Vector2d(xValue * x().width(), yValue * y().width());
@@ -127,11 +117,6 @@ namespace opensolid
     inline
     Box3d::Box(const IntervalColumnMatrix3d& components) :
         detail::BoxBase<3>(components) {
-    }
-
-    inline
-    Box3d::Box(const Interval* sourcePtr) :
-        detail::BoxBase<3>(sourcePtr) {
     }
 
     inline

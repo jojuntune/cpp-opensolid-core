@@ -74,12 +74,6 @@ namespace opensolid
 
         template <class TScalar, int iNumDimensions>
         inline
-        VectorBase<TScalar, iNumDimensions>::VectorBase(const TScalar* sourcePtr) :
-            CartesianBase<TScalar, iNumDimensions>(sourcePtr) {
-        }
-
-        template <class TScalar, int iNumDimensions>
-        inline
         TScalar
         VectorBase<TScalar, iNumDimensions>::squaredNorm() const {
             return this->components().cwiseSquared().sum();

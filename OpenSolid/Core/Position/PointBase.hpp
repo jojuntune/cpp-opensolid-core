@@ -76,12 +76,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        PointBase<iNumDimensions>::PointBase(const double* sourcePtr) :
-            detail::CartesianBase<double, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         double
         PointBase<iNumDimensions>::squaredDistanceTo(const Point<iNumDimensions>& other) const {
             return (derived() - other).squaredNorm();

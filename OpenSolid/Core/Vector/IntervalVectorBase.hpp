@@ -75,12 +75,6 @@ namespace opensolid
 
         template <int iNumDimensions>
         inline
-        IntervalVectorBase<iNumDimensions>::IntervalVectorBase(const Interval* sourcePtr) :
-            VectorBase<Interval, iNumDimensions>(sourcePtr) {
-        }
-
-        template <int iNumDimensions>
-        inline
         const Vector<Interval, iNumDimensions>
         IntervalVectorBase<iNumDimensions>::normalized() const {
             Interval norm = this->norm();

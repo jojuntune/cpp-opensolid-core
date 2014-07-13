@@ -150,10 +150,7 @@ TEST_CASE("Non-orthogonal") {
 }
 
 TEST_CASE("Degenerate") {
-    RowMatrix3d basisMatrix;
-    basisMatrix(0) = 1.0;
-    basisMatrix(1) = 2.0;
-    basisMatrix(2) = 3.0;
+    RowMatrix3d basisMatrix(1.0, 2.0, 3.0);
     CoordinateSystem<1, 3> coordinateSystem(Point1d::origin(), basisMatrix);
     Point1d original(3.0);
     Point3d transformed = original / coordinateSystem;
