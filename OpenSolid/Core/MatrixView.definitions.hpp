@@ -45,8 +45,6 @@ namespace opensolid
         int _size;
         int _columnStride;
     public:
-        MatrixView(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other);
-
         template <int iOtherNumRows, int iOtherNumColumns, int iOtherColumnStride>
         MatrixView(
             const MatrixView<TScalar, iOtherNumRows, iOtherNumColumns, iOtherColumnStride>& other

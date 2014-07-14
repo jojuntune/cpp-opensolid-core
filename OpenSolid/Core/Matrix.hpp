@@ -350,6 +350,22 @@ namespace opensolid
 
     template <class TScalar, int iNumColumns>
     inline
+    Matrix<TScalar, -1, iNumColumns>::Matrix(Matrix<TScalar, -1, iNumColumns>&& other) :
+        _data(std::move(other._data)),
+        _numRows(other.numRows()) {
+    }
+
+    template <class TScalar, int iNumColumns>
+    inline
+    Matrix<TScalar, -1, iNumColumns>::Matrix(Matrix<TScalar, -1, -1>&& other) :
+        _data(std::move(other._data)),
+        _numRows(other.numRows()) {
+    
+        assert(other.numColumns() == iNumColumns);
+    }
+
+    template <class TScalar, int iNumColumns>
+    inline
     const TScalar*
     Matrix<TScalar, -1, iNumColumns>::data() const {
         return _data.data();
@@ -468,6 +484,22 @@ namespace opensolid
 
         assert(other.numRows() == iNumRows);
         this->assign(other);
+    }
+
+    template <class TScalar, int iNumRows>
+    inline
+    Matrix<TScalar, iNumRows, -1>::Matrix(Matrix<TScalar, iNumRows, -1>&& other) :
+        _data(std::move(other._data)),
+        _numColumns(other.numColumns()) {
+    }
+
+    template <class TScalar, int iNumRows>
+    inline
+    Matrix<TScalar, iNumRows, -1>::Matrix(Matrix<TScalar, -1, -1>&& other) :
+        _data(std::move(other._data)),
+        _numColumns(other.numColumns()) {
+    
+        assert(other.numRows() == iNumRows);
     }
 
     template <class TScalar, int iNumRows>
@@ -592,6 +624,30 @@ namespace opensolid
         _numColumns(other.numColumns()) {
 
         this->assign(other);
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, -1, -1>::Matrix(Matrix<TScalar, -1, -1>&& other) :
+        _data(std::move(other._data)),
+        _numRows(other.numRows()),
+        _numColumns(other.numColumns()) {
+    }
+
+    template <class TScalar> template <int iNumRows>
+    inline
+    Matrix<TScalar, -1, -1>::Matrix(Matrix<TScalar, iNumRows, -1>&& other) :
+        _data(std::move(other._data)),
+        _numRows(iNumRows),
+        _numColumns(other.numColumns()) {
+    }
+
+    template <class TScalar> template <int iNumColumns>
+    inline
+    Matrix<TScalar, -1, -1>::Matrix(Matrix<TScalar, -1, iNumColumns>&& other) :
+        _data(std::move(other._data)),
+        _numRows(other.numRows()),
+        _numColumns(iNumColumns) {
     }
 
     template <class TScalar>

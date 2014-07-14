@@ -191,6 +191,8 @@ namespace opensolid
     private:
         std::vector<TScalar> _data;
         int _numRows;
+
+        template <class TScalar, int iNumRows, int iNumColumns> friend class Matrix;
     public:
         static_assert(iNumColumns > 0, "Matrices must have at least one column");
 
@@ -200,6 +202,10 @@ namespace opensolid
        
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+
+        Matrix(Matrix<TScalar, -1, iNumColumns>&& other);
+
+        Matrix(Matrix<TScalar, -1, -1>&& other);
 
         const TScalar*
         data() const;
@@ -254,6 +260,8 @@ namespace opensolid
     private:
         std::vector<TScalar> _data;
         int _numColumns;
+
+        template <class TScalar, int iNumRows, int iNumColumns> friend class Matrix;
     public:
         static_assert(iNumRows > 0, "Matrices must have at least one row");
 
@@ -263,6 +271,10 @@ namespace opensolid
        
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+
+        Matrix(Matrix<TScalar, iNumRows, -1>&& other);
+
+        Matrix(Matrix<TScalar, -1, -1>&& other);
 
         const TScalar*
         data() const;
@@ -318,6 +330,8 @@ namespace opensolid
         std::vector<TScalar> _data;
         int _numRows;
         int _numColumns;
+
+        template <class TScalar, int iNumRows, int iNumColumns> friend class Matrix;
     public:
         Matrix(int numRows, int numColumns);
 
@@ -325,6 +339,14 @@ namespace opensolid
 
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+
+        Matrix(Matrix<TScalar, -1, -1>&& other);
+
+        template <int iNumRows>
+        Matrix(Matrix<TScalar, iNumRows, -1>&& other);
+
+        template <int iNumColumns>
+        Matrix(Matrix<TScalar, -1, iNumColumns>&& other);
 
         const TScalar*
         data() const;
