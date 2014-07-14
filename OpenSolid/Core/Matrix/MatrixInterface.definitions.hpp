@@ -80,7 +80,7 @@ namespace opensolid
             numColumns() const;
 
             int
-            size() const;
+            numComponents() const;
 
             int
             columnStride() const;

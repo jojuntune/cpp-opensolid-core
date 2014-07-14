@@ -256,7 +256,7 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     int
-    Matrix<TScalar, iNumRows, iNumColumns>::size() const {
+    Matrix<TScalar, iNumRows, iNumColumns>::numComponents() const {
         return iNumRows * iNumColumns;
     }
 
@@ -395,7 +395,7 @@ namespace opensolid
     template <class TScalar, int iNumColumns>
     inline
     int
-    Matrix<TScalar, -1, iNumColumns>::size() const {
+    Matrix<TScalar, -1, iNumColumns>::numComponents() const {
         return int(_data.size());
     }
 
@@ -533,7 +533,7 @@ namespace opensolid
     template <class TScalar, int iNumRows>
     inline
     int
-    Matrix<TScalar, iNumRows, -1>::size() const {
+    Matrix<TScalar, iNumRows, -1>::numComponents() const {
         return int(_data.size());
     }
 
@@ -619,7 +619,7 @@ namespace opensolid
     template <class TScalar> template <class TOtherDerived>
     inline
     Matrix<TScalar, -1, -1>::Matrix(const detail::MatrixInterface<TOtherDerived>& other) :
-        _data(other.size()),
+        _data(other.numComponents()),
         _numRows(other.numRows()),
         _numColumns(other.numColumns()) {
 
@@ -681,7 +681,7 @@ namespace opensolid
     template <class TScalar>
     inline
     int
-    Matrix<TScalar, -1, -1>::size() const {
+    Matrix<TScalar, -1, -1>::numComponents() const {
         return int(_data.size());
     }
 
@@ -780,11 +780,11 @@ namespace opensolid
         stream << "([";
         int numRows = matrix.numRows();
         int numColumns = matrix.numColumns();
-        int size = matrix.size();
+        int numComponents = matrix.numComponents();
         if (numRows == 1 || numColumns == 1) {
-            for (int index = 0; index < size; ++index) {
+            for (int index = 0; index < numComponents; ++index) {
                 stream << matrix(index);
-                if (index < size - 1) {
+                if (index < numComponents - 1) {
                     stream << ", ";
                 }
             }

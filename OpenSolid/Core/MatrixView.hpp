@@ -39,7 +39,7 @@ namespace opensolid
         _data(sourcePtr),
         _numRows(iNumRows),
         _numColumns(iNumColumns),
-        _size(iNumRows * iNumColumns),
+        _numComponents(iNumRows * iNumColumns),
         _columnStride(iColumnStride) {
 
         static_assert(iNumRows > 0, "Number of rows must be provided");
@@ -51,25 +51,25 @@ namespace opensolid
     inline
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
         TScalar* sourcePtr,
-        int size
+        int numComponents
     ) : _data(sourcePtr),
-        _numRows(iNumRows == 1 ? 1 : size),
-        _numColumns(iNumColumns == 1 ? 1 : size),
-        _size(size),
+        _numRows(iNumRows == 1 ? 1 : numComponents),
+        _numColumns(iNumColumns == 1 ? 1 : numComponents),
+        _numComponents(numComponents),
         _columnStride(iColumnStride) {
 
         static_assert(
             iNumRows == 1 || iNumColumns == 1,
-            "Only row or column matrix views can be initialized with a single size"
+            "Only row or column matrix views can be initialized with a single number of components"
         );
         static_assert(iColumnStride >= 0, "Column stride must be provided");
 
         assert(
-            (iNumRows == 1 && (size == iNumColumns || iNumColumns == -1)) ||
-            (iNumColumns == 1 && (size == iNumRows || iNumRows == -1))
+            (iNumRows == 1 && (numComponents == iNumColumns || iNumColumns == -1)) ||
+            (iNumColumns == 1 && (numComponents == iNumRows || iNumRows == -1))
         );
 
-        assert(size > 0);
+        assert(numComponents > 0);
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
@@ -81,7 +81,7 @@ namespace opensolid
     ) : _data(sourcePtr),
         _numRows(numRows),
         _numColumns(numColumns),
-        _size(numRows * numColumns),
+        _numComponents(numRows * numColumns),
         _columnStride(iColumnStride) {
 
         static_assert(iColumnStride >= 0, "Column stride must be provided");
@@ -103,7 +103,7 @@ namespace opensolid
     ) : _data(sourcePtr),
         _numRows(numRows),
         _numColumns(numColumns),
-        _size(numRows * numColumns),
+        _numComponents(numRows * numColumns),
         _columnStride(columnStride) {
 
         assert(numRows == iNumRows || iNumRows == -1);
@@ -123,7 +123,7 @@ namespace opensolid
     ) : _data(other.data()),
         _numRows(other.numRows()),
         _numColumns(other.numColumns()),
-        _size(other.size()),
+        _numComponents(other.numComponents()),
         _columnStride(other.columnStride()) {
 
         detail::CheckCompatibleSizes<iNumRows, iOtherRows> staticRowCheck;
@@ -181,8 +181,8 @@ namespace opensolid
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     int
-    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::size() const {
-        return _size;
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::numComponents() const {
+        return _numComponents;
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>

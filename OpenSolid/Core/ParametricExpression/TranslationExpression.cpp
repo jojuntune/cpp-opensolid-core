@@ -114,7 +114,7 @@ namespace opensolid
         ) : UnaryOperation(operand),
             _columnMatrix(columnMatrix) {
 
-            assert(columnMatrix.size() == operand->numDimensions());
+            assert(columnMatrix.numComponents() == operand->numDimensions());
         }
     }
 }

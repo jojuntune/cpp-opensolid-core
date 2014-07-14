@@ -107,8 +107,8 @@ namespace opensolid
         template <class TDerived>
         inline
         int
-        MatrixInterface<TDerived>::size() const {
-            return derived().size();
+        MatrixInterface<TDerived>::numComponents() const {
+            return derived().numComponents();
         }
 
         template <class TDerived>
@@ -122,7 +122,7 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::PlainScalar
         MatrixInterface<TDerived>::component(int index) const {
-            assert(index >= 0 && index < size());
+            assert(index >= 0 && index < numComponents());
 
             return component(index % numRows(), index / numRows());
         }
@@ -131,7 +131,7 @@ namespace opensolid
         inline
         typename MatrixTraits<TDerived>::Scalar&
         MatrixInterface<TDerived>::component(int index) {
-            assert(index >= 0 && index < size());
+            assert(index >= 0 && index < numComponents());
 
             return component(index % numRows(), index / numRows());
         }

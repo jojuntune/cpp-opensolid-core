@@ -42,7 +42,7 @@ namespace opensolid
         TScalar* _data;
         int _numRows;
         int _numColumns;
-        int _size;
+        int _numComponents;
         int _columnStride;
     public:
         template <int iOtherNumRows, int iOtherNumColumns, int iOtherColumnStride>
@@ -52,7 +52,7 @@ namespace opensolid
 
         MatrixView(TScalar* sourcePtr);
 
-        MatrixView(TScalar* sourcePtr, int size);
+        MatrixView(TScalar* sourcePtr, int numComponents);
 
         MatrixView(TScalar* sourcePtr, int numRows, int numColumns);
 
@@ -78,7 +78,7 @@ namespace opensolid
         numColumns() const;
 
         int
-        size() const;
+        numComponents() const;
 
         int
         columnStride() const;
