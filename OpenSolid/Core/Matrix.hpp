@@ -350,6 +350,13 @@ namespace opensolid
 
     template <class TScalar, int iNumColumns>
     inline
+    Matrix<TScalar, -1, iNumColumns>::Matrix(const Matrix<TScalar, -1, iNumColumns>& other) :
+        _data(other._data),
+        _numRows(other.numRows()) {
+    }
+
+    template <class TScalar, int iNumColumns>
+    inline
     Matrix<TScalar, -1, iNumColumns>::Matrix(Matrix<TScalar, -1, iNumColumns>&& other) :
         _data(std::move(other._data)),
         _numRows(other.numRows()) {
@@ -484,6 +491,13 @@ namespace opensolid
 
         assert(other.numRows() == iNumRows);
         this->assign(other);
+    }
+
+    template <class TScalar, int iNumRows>
+    inline
+    Matrix<TScalar, iNumRows, -1>::Matrix(const Matrix<TScalar, iNumRows, -1>& other) :
+        _data(other._data),
+        _numColumns(other.numColumns()) {
     }
 
     template <class TScalar, int iNumRows>
@@ -624,6 +638,14 @@ namespace opensolid
         _numColumns(other.numColumns()) {
 
         this->assign(other);
+    }
+
+    template <class TScalar>
+    inline
+    Matrix<TScalar, -1, -1>::Matrix(const Matrix<TScalar, -1, -1>& other) :
+        _data(other._data),
+        _numRows(other.numRows()),
+        _numColumns(other.numColumns()) {
     }
 
     template <class TScalar>

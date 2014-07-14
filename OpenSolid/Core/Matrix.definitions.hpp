@@ -202,6 +202,8 @@ namespace opensolid
        
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const Matrix<TScalar, -1, iNumColumns>& other);
 
         Matrix(Matrix<TScalar, -1, iNumColumns>&& other);
 
@@ -271,6 +273,8 @@ namespace opensolid
        
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const Matrix<TScalar, iNumRows, -1>& other);
 
         Matrix(Matrix<TScalar, iNumRows, -1>&& other);
 
@@ -339,6 +343,8 @@ namespace opensolid
 
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);
+        
+        Matrix(const Matrix<TScalar, -1, -1>& other);
 
         Matrix(Matrix<TScalar, -1, -1>&& other);
 
