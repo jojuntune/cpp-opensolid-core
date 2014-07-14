@@ -385,7 +385,7 @@ namespace opensolid
             const ExpressionImplementationPtr& argument, 
             const ColumnMatrixXd& columnMatrix
         ) {
-            if (columnMatrix.size() != argument->numDimensions()) {
+            if (columnMatrix.numComponents() != argument->numDimensions()) {
                 throw Error(new PlaceholderError());
             }
             if (columnMatrix.isZero()) {
@@ -527,10 +527,10 @@ namespace opensolid
 
         ExpressionImplementationPtr
         operator*(const MatrixXd& matrix, const ExpressionImplementationPtr& argument) {
-            if (matrix.size() == 0) {
+            if (matrix.numComponents() == 0) {
                 throw Error(new PlaceholderError());
             }
-            if (matrix.size() == 1) {
+            if (matrix.numComponents() == 1) {
                 return matrix.value() * argument;
             }
             if (matrix.numColumns() != argument->numDimensions()) {
