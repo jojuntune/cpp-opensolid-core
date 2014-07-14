@@ -192,7 +192,7 @@ namespace opensolid
         std::vector<TScalar> _data;
         int _numRows;
 
-        template <class TScalar, int iNumRows, int iNumColumns> friend class Matrix;
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
     public:
         static_assert(iNumColumns > 0, "Matrices must have at least one column");
 
@@ -261,7 +261,7 @@ namespace opensolid
         std::vector<TScalar> _data;
         int _numColumns;
 
-        template <class TScalar, int iNumRows, int iNumColumns> friend class Matrix;
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
     public:
         static_assert(iNumRows > 0, "Matrices must have at least one row");
 
@@ -331,7 +331,7 @@ namespace opensolid
         int _numRows;
         int _numColumns;
 
-        template <class TScalar, int iNumRows, int iNumColumns> friend class Matrix;
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
     public:
         Matrix(int numRows, int numColumns);
 
