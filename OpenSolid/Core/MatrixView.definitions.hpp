@@ -45,6 +45,13 @@ namespace opensolid
         int _size;
         int _columnStride;
     public:
+        MatrixView(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other);
+
+        template <int iOtherNumRows, int iOtherNumColumns, int iOtherColumnStride>
+        MatrixView(
+            const MatrixView<TScalar, iOtherNumRows, iOtherNumColumns, iOtherColumnStride>& other
+        );
+
         MatrixView(TScalar* sourcePtr);
 
         MatrixView(TScalar* sourcePtr, int size);
@@ -52,9 +59,6 @@ namespace opensolid
         MatrixView(TScalar* sourcePtr, int numRows, int numColumns);
 
         MatrixView(TScalar* sourcePtr, int numRows, int numColumns, int columnStride);
-
-        template <int iOtherRows, int iOtherCols, int iOtherColStride>
-        MatrixView(const MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other);
 
         void
         operator=(const MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>& other);
