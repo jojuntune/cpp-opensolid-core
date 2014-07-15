@@ -35,14 +35,6 @@
 #include <cassert>
 #include <algorithm>
 
-// Disable warning C4351 (Visual Studio warning that _data array will in fact be value-initialized
-// as specified in the C++ standard; previous versions of Visual Studio did not always
-// value-initialize as required)
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4351)
-#endif
-
 namespace opensolid
 {
     template <class TScalar, int iNumRows, int iNumColumns>
