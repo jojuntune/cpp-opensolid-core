@@ -31,6 +31,7 @@
 #include <OpenSolid/Core/Interval.definitions.hpp>
 #include <OpenSolid/Core/Matrix/MatrixInterface.definitions.hpp>
 
+#include <array>
 #include <vector>
 
 namespace opensolid
@@ -40,7 +41,9 @@ namespace opensolid
         public detail::MatrixInterface<Matrix<TScalar, iNumRows, iNumColumns>>
     {
     private:
-        TScalar _data[iNumRows * iNumColumns];
+        std::array<TScalar, iNumRows * iNumColumns>  _data;
+
+        template <class TOtherScalar, int iOtherNumRows, int iOtherNumColumns> friend class Matrix;
 
         Matrix(bool);
     public:
@@ -50,6 +53,14 @@ namespace opensolid
         Matrix();
 
         Matrix(const std::pair<int, int>& dimensions);
+
+        Matrix(const Matrix<TScalar, iNumRows, iNumColumns>& other);
+
+        Matrix(const Matrix<TScalar, -1, iNumColumns>& other);
+
+        Matrix(const Matrix<TScalar, iNumRows, -1>& other);
+
+        Matrix(const Matrix<TScalar, -1, -1>& other);
        
         template <class TOtherDerived>
         Matrix(const detail::MatrixInterface<TOtherDerived>& other);

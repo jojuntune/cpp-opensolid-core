@@ -33,6 +33,7 @@
 #include <OpenSolid/Core/MatrixView.hpp>
 
 #include <cassert>
+#include <algorithm>
 
 // Disable warning C4351 (Visual Studio warning that _data array will in fact be value-initialized
 // as specified in the C++ standard; previous versions of Visual Studio did not always
@@ -65,6 +66,35 @@ namespace opensolid
         assert(dimensions.first == iNumRows);
         assert(dimensions.second == iNumColumns);
     }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(
+        const Matrix<TScalar, iNumRows, iNumColumns>& other
+    ) : _data(other._data) {
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const Matrix<TScalar, -1, iNumColumns>& other) {
+        assert(other.numRows() == iNumRows);
+        std::copy(other._data.begin(), other._data.end(), _data.begin());
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const Matrix<TScalar, iNumRows, -1>& other) {
+        assert(other.numColumns() == iNumColumns);
+        std::copy(other._data.begin(), other._data.end(), _data.begin());
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns>
+    inline
+    Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const Matrix<TScalar, -1, -1>& other) {
+        assert(other.numRows() == iNumRows);
+        assert(other.numColumns() == iNumColumns);
+        std::copy(other._data.begin(), other._data.end(), _data.begin());
+    }
    
     template <class TScalar, int iNumRows, int iNumColumns> template <class TOtherDerived>
     inline
@@ -78,7 +108,7 @@ namespace opensolid
     inline
     Matrix<TScalar, iNumRows, iNumColumns>::Matrix(const TScalar firstComponent) {
         static_assert(iNumRows * iNumColumns == 1, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
+        _data[0] = firstComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -88,8 +118,8 @@ namespace opensolid
         const TScalar secondComponent
     ) {
         static_assert(iNumRows * iNumColumns == 2, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -100,9 +130,9 @@ namespace opensolid
         const TScalar thirdComponent
     ) {
         static_assert(iNumRows * iNumColumns == 3, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -114,10 +144,10 @@ namespace opensolid
         const TScalar fourthComponent        
     ) {
         static_assert(iNumRows * iNumColumns == 4, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
-        this->data()[3] = fourthComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
+        _data[3] = fourthComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -130,11 +160,11 @@ namespace opensolid
         const TScalar fifthComponent
     ) {
         static_assert(iNumRows * iNumColumns == 5, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
-        this->data()[3] = fourthComponent;
-        this->data()[4] = fifthComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
+        _data[3] = fourthComponent;
+        _data[4] = fifthComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -148,12 +178,12 @@ namespace opensolid
         const TScalar sixthComponent
     ) {
         static_assert(iNumRows * iNumColumns == 6, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
-        this->data()[3] = fourthComponent;
-        this->data()[4] = fifthComponent;
-        this->data()[5] = sixthComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
+        _data[3] = fourthComponent;
+        _data[4] = fifthComponent;
+        _data[5] = sixthComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -168,13 +198,13 @@ namespace opensolid
         const TScalar seventhComponent
     ) {
         static_assert(iNumRows * iNumColumns == 7, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
-        this->data()[3] = fourthComponent;
-        this->data()[4] = fifthComponent;
-        this->data()[5] = sixthComponent;
-        this->data()[6] = seventhComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
+        _data[3] = fourthComponent;
+        _data[4] = fifthComponent;
+        _data[5] = sixthComponent;
+        _data[6] = seventhComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -190,14 +220,14 @@ namespace opensolid
         const TScalar eighthComponent
     ) {
         static_assert(iNumRows * iNumColumns == 8, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
-        this->data()[3] = fourthComponent;
-        this->data()[4] = fifthComponent;
-        this->data()[5] = sixthComponent;
-        this->data()[6] = seventhComponent;
-        this->data()[7] = eighthComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
+        _data[3] = fourthComponent;
+        _data[4] = fifthComponent;
+        _data[5] = sixthComponent;
+        _data[6] = seventhComponent;
+        _data[7] = eighthComponent;
     }
     
     template <class TScalar, int iNumRows, int iNumColumns>
@@ -214,29 +244,29 @@ namespace opensolid
         const TScalar ninthComponent
     ) {
         static_assert(iNumRows * iNumColumns == 9, "Incorrect matrix size");
-        this->data()[0] = firstComponent;
-        this->data()[1] = secondComponent;
-        this->data()[2] = thirdComponent;
-        this->data()[3] = fourthComponent;
-        this->data()[4] = fifthComponent;
-        this->data()[5] = sixthComponent;
-        this->data()[6] = seventhComponent;
-        this->data()[7] = eighthComponent;
-        this->data()[8] = ninthComponent;
+        _data[0] = firstComponent;
+        _data[1] = secondComponent;
+        _data[2] = thirdComponent;
+        _data[3] = fourthComponent;
+        _data[4] = fifthComponent;
+        _data[5] = sixthComponent;
+        _data[6] = seventhComponent;
+        _data[7] = eighthComponent;
+        _data[8] = ninthComponent;
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     const TScalar*
     Matrix<TScalar, iNumRows, iNumColumns>::data() const {
-        return _data;
+        return _data.data();
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
     inline
     TScalar*
     Matrix<TScalar, iNumRows, iNumColumns>::data() {
-        return _data;
+        return _data.data();
     }
 
     template <class TScalar, int iNumRows, int iNumColumns>
