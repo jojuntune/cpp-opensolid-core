@@ -25,6 +25,7 @@
 #include <OpenSolid/Core/Axis.hpp>
 #include <OpenSolid/Core/Plane.hpp>
 #include <OpenSolid/Core/Point.hpp>
+#include <OpenSolid/Core/ParametricExpression.hpp>
 
 #include <catch/catch.hpp>
 
@@ -140,4 +141,56 @@ TEST_CASE("Pair conversion") {
 
     REQUIRE(plane.originPoint() == normalPlane.originPoint());
     REQUIRE(plane.normalVector() == normalPlane.normalVector());
+}
+
+TEST_CASE("Plane morphing") {
+    Parameter<3> x(0);
+    Parameter<3> y(1);
+    Parameter<3> z(2);
+    ParametricExpression<3, 3> morphingExpression = ParametricExpression<3, 3>::fromComponents(
+        x + z.squared(),
+        y,
+        z
+    );
+
+    SECTION("XY Plane") {
+        Plane3d plane(Point3d::origin(), Vector3d::unitZ());
+        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
+
+        REQUIRE((morphedPlane.originPoint() - plane.originPoint()).isZero());
+        REQUIRE((morphedPlane.normalVector() - plane.normalVector()).isZero());
+    }
+
+    SECTION("Raised XY Plane") {
+        Plane3d plane(Point3d(0.0, 0.0, 2.0), Vector3d::unitZ());
+        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
+
+        REQUIRE((morphedPlane.originPoint() - Point3d(4.0, 0.0, 2.0)).isZero());
+        REQUIRE((morphedPlane.normalVector() - plane.normalVector()).isZero());
+    }
+
+    SECTION("YZ plane") {
+        Plane3d plane(Point3d::origin(), Vector3d::unitX());
+        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
+
+        REQUIRE((morphedPlane.originPoint() - plane.originPoint()).isZero());
+        REQUIRE((morphedPlane.normalVector() - plane.normalVector()).isZero());
+    }
+
+    SECTION("Raised YZ plane") {
+        Plane3d plane(Point3d(0.0, 0.0, 2.0), Vector3d::unitX());
+        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
+
+        REQUIRE((morphedPlane.originPoint() - Point3d(4.0, 0.0, 2.0)).isZero());
+        REQUIRE((morphedPlane.normalVector() - Vector3d(1.0, 0.0, -4.0).normalized()).isZero());
+    }
+
+    SECTION("Sloped plane") {
+        Plane3d plane(Point3d(1.0, 0.0, 1.0), Vector3d(-1.0, 0.0, 1.0).normalized());
+        Plane3d morphedPlane = plane.morphedBy(morphingExpression);
+
+        REQUIRE((morphedPlane.originPoint() - Point3d(2.0, 0.0, 1.0)).isZero());
+        CAPTURE(morphedPlane.normalVector());
+        REQUIRE((morphedPlane.normalVector() - Vector3d(-1.0, 0.0, 3.0).normalized()).isZero());
+    }
 }
