@@ -163,7 +163,11 @@ namespace opensolid
     struct ScalingFunction<Triangle<iNumDimensions>>
     {
         Triangle<iNumDimensions>
-        operator()(const Triangle<iNumDimensions>& triangle, double scale) const;
+        operator()(
+            const Triangle<iNumDimensions>& triangle,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -182,7 +186,9 @@ namespace opensolid
         Triangle<iNumResultDimensions>
         operator()(
             const Triangle<iNumDimensions>& triangle,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 

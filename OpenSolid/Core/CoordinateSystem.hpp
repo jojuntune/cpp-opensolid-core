@@ -721,15 +721,42 @@ namespace opensolid
         );
     }
 
+    template <class TDerived, int iNumAxes>
+    inline
+    typename LocalizedType<
+        TDerived,
+        CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>
+    >::Type
+    operator/(
+        const Transformable<TDerived>& transformable,
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    ) {
+        return localized(transformable.derived(), coordinateSystem);
+    }
+
+    template <class TDerived, int iNumDimensions>
+    inline
+    typename GlobalizedType<
+        TDerived,
+        CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>
+    >::Type
+    operator*(
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
+        const Transformable<TDerived>& transformable
+    ) {
+        return globalized(transformable.derived(), coordinateSystem);
+    }
+
     template <int iNumDimensions, int iNumAxes>
     inline
     const CoordinateSystem<iNumDimensions, iNumAxes>
     ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            scalingFunction(coordinateSystem.originPoint(), scale),
+            scaled(coordinateSystem.originPoint(), originPoint, scale),
             scale * coordinateSystem.basisMatrix()
         );
     }
@@ -742,7 +769,7 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return CoordinateSystem<iNumDimensions, iNumAxes>(
-            translationFunction(coordinateSystem.originPoint(), vector),
+            translated(coordinateSystem.originPoint(), vector),
             coordinateSystem.basisMatrix()
         );
     }
@@ -754,11 +781,18 @@ namespace opensolid
         iNumResultDimensions
     >::operator()(
         const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            transformationFunction(coordinateSystem.originPoint(), matrix),
-            matrix * coordinateSystem.basisMatrix()
+            transformed(
+                coordinateSystem.originPoint(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
+            transformationMatrix * coordinateSystem.basisMatrix()
         );
     }
 
@@ -770,7 +804,7 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return CoordinateSystem<iNumResultDimensions, iNumAxes>(
-            morphingFunction(coordinateSystem.originPoint(), morphingExpression),
+            morphed(coordinateSystem.originPoint(), morphingExpression),
             (
                 morphingExpression.jacobian(coordinateSystem.originPoint().components()) *
                 coordinateSystem.basisMatrix()

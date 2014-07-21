@@ -253,11 +253,12 @@ namespace opensolid
     LineSegment<iNumDimensions>
     ScalingFunction<LineSegment<iNumDimensions>>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return LineSegment<iNumDimensions>(
-            scalingFunction(lineSegment.startVertex(), scale),
-            scalingFunction(lineSegment.endVertex(), scale)
+            scaled(lineSegment.startVertex(), originPoint, scale),
+            scaled(lineSegment.endVertex(), originPoint, scale)
         );
     }
 
@@ -269,8 +270,8 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return LineSegment<iNumDimensions>(
-            translationFunction(lineSegment.startVertex(), vector),
-            translationFunction(lineSegment.endVertex(), vector)
+            translated(lineSegment.startVertex(), vector),
+            translated(lineSegment.endVertex(), vector)
         );
     }
 
@@ -279,11 +280,23 @@ namespace opensolid
     LineSegment<iNumResultDimensions>
     TransformationFunction<LineSegment<iNumDimensions>, iNumResultDimensions>::operator()(
         const LineSegment<iNumDimensions>& lineSegment,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return LineSegment<iNumResultDimensions>(
-            transformationFunction(lineSegment.startVertex(), matrix),
-            transformationFunction(lineSegment.endVertex(), matrix)
+            transformed(
+                lineSegment.startVertex(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
+            transformed(
+                lineSegment.endVertex(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            )
         );
     }
 
@@ -295,8 +308,8 @@ namespace opensolid
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
         return LineSegment<iNumResultDimensions>(
-            morphingFunction(lineSegment.startVertex(), morphingExpression),
-            morphingFunction(lineSegment.endVertex(), morphingExpression)
+            morphed(lineSegment.startVertex(), morphingExpression),
+            morphed(lineSegment.endVertex(), morphingExpression)
         );
     }
 }

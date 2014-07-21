@@ -92,7 +92,7 @@ namespace opensolid
     struct ScalingFunction<Sphere3d>
     {
         Sphere3d
-        operator()(const Sphere3d& sphere, double scale) const;
+        operator()(const Sphere3d& sphere, const Point<3>& originPoint, double scale) const;
     };
 
     template <>
@@ -107,7 +107,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Sphere3d
-        operator()(const Sphere3d& sphere, const Matrix<double, 3, 3>& matrix) const;
+        operator()(
+            const Sphere3d& sphere,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>

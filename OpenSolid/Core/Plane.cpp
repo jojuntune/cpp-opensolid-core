@@ -160,17 +160,16 @@ namespace opensolid
     Plane3d
     TransformationFunction<Plane3d, 3>::operator()(
         const Plane3d& plane,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
-        if (matrix.determinant() == Zero()) {
+        if (transformationMatrix.determinant() == Zero()) {
             assert(false);
             return Plane3d();
         }
-        Matrix3d normalTransformationMatrix = matrix.inverse().transpose();
-        Vector3d transformedNormal = transformationFunction(
-            plane.normalVector(),
-            normalTransformationMatrix
-        );
+        Matrix3d normalTransformationMatrix = transformationMatrix.inverse().transpose();
+        Vector3d transformedNormal(normalTransformationMatrix * plane.normalVector().components());
         double transformedNorm = transformedNormal.norm();
         if (transformedNorm == Zero()) {
             assert(false);
@@ -178,7 +177,12 @@ namespace opensolid
         }
         transformedNormal *= (1.0 / transformedNorm);
         return Plane3d(
-            transformationFunction(plane.originPoint(), matrix),
+            transformed(
+                plane.originPoint(),
+                originPoint,
+                transformationMatrix,
+                destinationPoint
+            ),
             UnitVector3d(transformedNormal)
         );
     }
@@ -188,17 +192,21 @@ namespace opensolid
         const Plane3d& plane,
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
-        Vector3d morphedNormal = transformationFunction(
-            plane.normalVector(),
-            morphingExpression.jacobian(plane.originPoint().components())
-        );
+        Matrix3d jacobian =  morphingExpression.jacobian(plane.originPoint().components());
+        if (jacobian.determinant() == Zero()) {
+            assert(false);
+            return Plane3d();
+        }
+        Matrix3d normalTransformationMatrix = jacobian.inverse().transpose();
+        Vector3d morphedNormal(normalTransformationMatrix * plane.normalVector().components());
         double morphedNorm = morphedNormal.norm();
         if (morphedNorm == Zero()) {
-            throw PlaceholderError();
+            assert(false);
+            return Plane3d();
         }
         morphedNormal *= (1.0 / morphedNorm);
         return Plane3d(
-            morphingFunction(plane.originPoint(), morphingExpression),
+            morphed(plane.originPoint(), morphingExpression),
             UnitVector3d(morphedNormal)
         );
     }

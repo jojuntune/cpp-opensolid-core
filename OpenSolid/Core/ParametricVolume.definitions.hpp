@@ -89,21 +89,33 @@ namespace opensolid
     struct ScalingFunction<ParametricVolume3d>
     {
         ParametricVolume3d
-        operator()(const ParametricVolume3d& parametricVolume, double scale) const;
+        operator()(
+            const ParametricVolume3d& parametricVolume,
+            const Point<3>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
     struct TranslationFunction<ParametricVolume3d>
     {
         ParametricVolume3d
-        operator()(const ParametricVolume3d& parametricVolume, const Vector3d& vector) const;
+        operator()(
+            const ParametricVolume3d& parametricVolume,
+            const Vector<double, 3>& vector
+        ) const;
     };
 
     template <>
     struct TransformationFunction<ParametricVolume3d, 3>
     {
         ParametricVolume3d
-        operator()(const ParametricVolume3d& parametricVolume, const Matrix3d& matrix) const;
+        operator()(
+            const ParametricVolume3d& parametricVolume,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>

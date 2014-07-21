@@ -154,7 +154,11 @@ namespace opensolid
     struct ScalingFunction<Axis<iNumDimensions>>
     {
         const Axis<iNumDimensions>
-        operator()(const Axis<iNumDimensions>& axis, double scale) const;
+        operator()(
+            const Axis<iNumDimensions>& axis,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -173,7 +177,9 @@ namespace opensolid
         const Axis<iNumResultDimensions>
         operator()(
             const Axis<iNumDimensions>& axis,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 

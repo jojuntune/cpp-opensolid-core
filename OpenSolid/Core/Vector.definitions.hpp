@@ -275,7 +275,11 @@ namespace opensolid
     struct ScalingFunction<Vector<TScalar, iNumDimensions>>
     {
         const Vector<TScalar, iNumDimensions>
-        operator()(const Vector<TScalar, iNumDimensions>& vector, double scale) const;
+        operator()(
+            const Vector<TScalar, iNumDimensions>& vector,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <class TScalar, int iNumDimensions>
@@ -294,7 +298,9 @@ namespace opensolid
         const Vector<TScalar, iNumResultDimensions>
         operator()(
             const Vector<TScalar, iNumDimensions>& vector,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 }

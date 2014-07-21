@@ -84,7 +84,11 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, double scale) const;
+        operator()(
+            const BoundedVolume3d& boundedVolume,
+            const Point<3>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
@@ -92,7 +96,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, const Vector3d& vector) const;
+        operator()(const BoundedVolume3d& boundedVolume, const Vector<double ,3>& vector) const;
     };
 
     template <>
@@ -100,7 +104,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedVolume3d
-        operator()(const BoundedVolume3d& boundedVolume, const Matrix3d& matrix) const;
+        operator()(
+            const BoundedVolume3d& boundedVolume,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>

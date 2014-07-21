@@ -60,6 +60,9 @@ namespace opensolid
         public Transformable<CoordinateSystem<iNumDimensions, iNumAxes>>,
         public Convertible<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
+    public:
+        static const int NumDimensions = iNumDimensions;
+        static const int NumAxes = iNumAxes;
     private:
         Point<iNumDimensions> _originPoint;
         Matrix<double, iNumDimensions, iNumAxes> _basisMatrix;
@@ -226,12 +229,33 @@ namespace opensolid
     typedef CoordinateSystem<3, 2> PlanarCoordinateSystem3d;
     typedef CoordinateSystem<3, 3> CoordinateSystem3d;
 
+    template <class TDerived, int iNumAxes>
+    typename LocalizedType<
+        TDerived,
+        CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>
+    >::Type
+    operator/(
+        const Transformable<TDerived>& transformable,
+        const CoordinateSystem<NumDimensions<TDerived>::Value, iNumAxes>& coordinateSystem
+    );
+
+    template <class TDerived, int iNumDimensions>
+    typename GlobalizedType<
+        TDerived,
+        CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>
+    >::Type
+    operator*(
+        const CoordinateSystem<iNumDimensions, NumDimensions<TDerived>::Value>& coordinateSystem,
+        const Transformable<TDerived>& transformable
+    );
+
     template <int iNumDimensions, int iNumAxes>
     struct ScalingFunction<CoordinateSystem<iNumDimensions, iNumAxes>>
     {
         const CoordinateSystem<iNumDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
+            const Point<iNumDimensions>& originPoint,
             double scale
         ) const;
     };
@@ -252,7 +276,9 @@ namespace opensolid
         const CoordinateSystem<iNumResultDimensions, iNumAxes>
         operator()(
             const CoordinateSystem<iNumDimensions, iNumAxes>& coordinateSystem,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 

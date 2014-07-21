@@ -160,7 +160,11 @@ namespace opensolid
     struct ScalingFunction<LineSegment<iNumDimensions>>
     {
         LineSegment<iNumDimensions>
-        operator()(const LineSegment<iNumDimensions>& lineSegment, double scale) const;
+        operator()(
+            const LineSegment<iNumDimensions>& lineSegment,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -179,7 +183,9 @@ namespace opensolid
         LineSegment<iNumResultDimensions>
         operator()(
             const LineSegment<iNumDimensions>& lineSegment,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 

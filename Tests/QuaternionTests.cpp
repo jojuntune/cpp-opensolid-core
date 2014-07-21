@@ -23,7 +23,6 @@
 ************************************************************************************/
 
 #include <OpenSolid/Core/Quaternion.hpp>
-#include <OpenSolid/Core/Rotation.hpp>
 #include <OpenSolid/Core/UnitVector.hpp>
 
 #include <catch/catch.hpp>
@@ -64,52 +63,6 @@ namespace opensolid
             return Quaternion3d(myQuat.x, myQuat.y, myQuat.z, myQuat.w);
         }
     };
-}
-
-TEST_CASE("Basic rotations 2D") {
-    Matrix2d quaternionMatrix;
-    Matrix2d expectedMatrix;
-
-    SECTION("Positive") {
-        quaternionMatrix = Quaternion2d(M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation2d(Point2d::origin(), M_PI / 4).transformationMatrix();
-    }
-
-    SECTION("Negative") {
-        quaternionMatrix = Quaternion2d(-M_PI / 2).rotationMatrix();
-        expectedMatrix = Rotation2d(Point2d::origin(), -M_PI / 2).transformationMatrix();
-    }
-
-    REQUIRE((quaternionMatrix - expectedMatrix).isZero());
-}
-
-TEST_CASE("Basic rotations 3D") {
-    Matrix3d quaternionMatrix;
-    Matrix3d expectedMatrix;
-
-    SECTION("X") {
-        quaternionMatrix = Quaternion3d(Vector3d::unitX(), M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::x(), M_PI / 4).transformationMatrix();
-    }
-
-    SECTION("Y") {
-        quaternionMatrix = Quaternion3d(-Vector3d::unitY(), M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::y().flipped(), M_PI / 4).transformationMatrix();
-    }
-
-    SECTION("Z") {
-        quaternionMatrix = Quaternion3d(Vector3d::unitZ(), -M_PI / 4).rotationMatrix();
-        expectedMatrix = Rotation3d(Axis3d::z(), -M_PI / 4).transformationMatrix();
-    }
-
-    REQUIRE((quaternionMatrix - expectedMatrix).isZero());
-}
-
-TEST_CASE("Composite rotation 2D") {
-    Matrix2d quaternionMatrix = (Quaternion2d(M_PI / 4) * Quaternion2d(M_PI / 2)).rotationMatrix();
-    Matrix2d expectedMatrix = Rotation2d(Point2d::origin(), 3 * M_PI / 4).transformationMatrix();
-
-    REQUIRE((quaternionMatrix - expectedMatrix).isZero());
 }
 
 TEST_CASE("Composite rotation 3D") {
@@ -193,10 +146,9 @@ TEST_CASE("Slerp 3D") {
         Vector3d xBasisVector = Vector3d(rotationMatrix.column(0));
         Vector3d yBasisVector = Vector3d(rotationMatrix.column(1));
         Vector3d zBasisVector = Vector3d(rotationMatrix.column(2));
-        Rotation3d rotation(axis, angle * 0.5);
-        REQUIRE((xBasisVector - Vector3d::unitX().transformedBy(rotation)).isZero());
-        REQUIRE((yBasisVector - Vector3d::unitY().transformedBy(rotation)).isZero());
-        REQUIRE((zBasisVector - Vector3d::unitZ().transformedBy(rotation)).isZero());
+        REQUIRE((xBasisVector - Vector3d::unitX().rotatedAbout(axis, angle * 0.5)).isZero());
+        REQUIRE((yBasisVector - Vector3d::unitY().rotatedAbout(axis, angle * 0.5)).isZero());
+        REQUIRE((zBasisVector - Vector3d::unitZ().rotatedAbout(axis, angle * 0.5)).isZero());
     }
 
     SECTION("Final") {

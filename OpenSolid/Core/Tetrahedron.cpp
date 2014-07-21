@@ -131,13 +131,14 @@ namespace opensolid
     Tetrahedron3d
     ScalingFunction<Tetrahedron3d>::operator()(
         const Tetrahedron3d& tetrahedron,
+        const Point3d& originPoint,
         double scale
     ) const {
         return Tetrahedron3d(
-            scalingFunction(tetrahedron.vertex(0), scale),
-            scalingFunction(tetrahedron.vertex(1), scale),
-            scalingFunction(tetrahedron.vertex(2), scale),
-            scalingFunction(tetrahedron.vertex(3), scale)
+            scaled(tetrahedron.vertex(0), originPoint, scale),
+            scaled(tetrahedron.vertex(1), originPoint, scale),
+            scaled(tetrahedron.vertex(2), originPoint, scale),
+            scaled(tetrahedron.vertex(3), originPoint, scale)
         );
     }
 
@@ -147,23 +148,25 @@ namespace opensolid
         const Vector3d& vector
     ) const {
         return Tetrahedron3d(
-            translationFunction(tetrahedron.vertex(0), vector),
-            translationFunction(tetrahedron.vertex(1), vector),
-            translationFunction(tetrahedron.vertex(2), vector),
-            translationFunction(tetrahedron.vertex(3), vector)
+            translated(tetrahedron.vertex(0), vector),
+            translated(tetrahedron.vertex(1), vector),
+            translated(tetrahedron.vertex(2), vector),
+            translated(tetrahedron.vertex(3), vector)
         );
     }
 
     Tetrahedron3d
     TransformationFunction<Tetrahedron3d, 3>::operator()(
         const Tetrahedron3d& tetrahedron,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return Tetrahedron3d(
-            transformationFunction(tetrahedron.vertex(0), matrix),
-            transformationFunction(tetrahedron.vertex(1), matrix),
-            transformationFunction(tetrahedron.vertex(2), matrix),
-            transformationFunction(tetrahedron.vertex(3), matrix)
+            transformed(tetrahedron.vertex(0), originPoint, transformationMatrix, destinationPoint),
+            transformed(tetrahedron.vertex(1), originPoint, transformationMatrix, destinationPoint),
+            transformed(tetrahedron.vertex(2), originPoint, transformationMatrix, destinationPoint),
+            transformed(tetrahedron.vertex(3), originPoint, transformationMatrix, destinationPoint)
         );
     }
 
@@ -173,10 +176,10 @@ namespace opensolid
         const ParametricExpression<3, 3>& morphingExpression
     ) const {
         return Tetrahedron3d(
-            morphingFunction(tetrahedron.vertex(0), morphingExpression),
-            morphingFunction(tetrahedron.vertex(1), morphingExpression),
-            morphingFunction(tetrahedron.vertex(2), morphingExpression),
-            morphingFunction(tetrahedron.vertex(3), morphingExpression)
+            morphed(tetrahedron.vertex(0), morphingExpression),
+            morphed(tetrahedron.vertex(1), morphingExpression),
+            morphed(tetrahedron.vertex(2), morphingExpression),
+            morphed(tetrahedron.vertex(3), morphingExpression)
         );
     }
 }

@@ -197,7 +197,11 @@ namespace opensolid
     struct ScalingFunction<Box<iNumDimensions>>
     {
         const Box<iNumDimensions>
-        operator()(const Box<iNumDimensions>& box, double scale) const;
+        operator()(
+            const Box<iNumDimensions>& box,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -216,7 +220,9 @@ namespace opensolid
         const Box<iNumResultDimensions>
         operator()(
             const Box<iNumDimensions>& box,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 

@@ -89,21 +89,30 @@ namespace opensolid
     struct ScalingFunction<ParametricArea2d>
     {
         ParametricArea2d
-        operator()(const ParametricArea2d& parametricArea, double scale) const;
+        operator()(
+            const ParametricArea2d& parametricArea,
+            const Point<2>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
     struct TranslationFunction<ParametricArea2d>
     {
         ParametricArea2d
-        operator()(const ParametricArea2d& parametricArea, const Vector2d& vector) const;
+        operator()(const ParametricArea2d& parametricArea, const Vector<double, 2>& vector) const;
     };
 
     template <>
     struct TransformationFunction<ParametricArea2d, 2>
     {
         ParametricArea2d
-        operator()(const ParametricArea2d& parametricArea, const Matrix2d& matrix) const;
+        operator()(
+            const ParametricArea2d& parametricArea,
+            const Point<2>& originPoint,
+            const Matrix<double, 2, 2>& transformationMatrix,
+            const Point<2>& destinationPoint
+        ) const;
     };
 
     template <>

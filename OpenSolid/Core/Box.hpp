@@ -227,9 +227,12 @@ namespace opensolid
     const Box<iNumDimensions>
     ScalingFunction<Box<iNumDimensions>>::operator()(
         const Box<iNumDimensions>& box,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
-        return Box<iNumDimensions>(box.components() * scale);
+        return Box<iNumDimensions>(
+            originPoint.components() + scale * (box.components() - originPoint.components())
+        );
     }
 
     template <int iNumDimensions>
@@ -246,9 +249,13 @@ namespace opensolid
     const Box<iNumResultDimensions>
     TransformationFunction<Box<iNumDimensions>, iNumResultDimensions>::operator()(
         const Box<iNumDimensions>& box,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
-        return Box<iNumResultDimensions>(matrix * box.components());
+        return Box<iNumResultDimensions>(
+            destinationPoint.components() + matrix * (box.components() - originPoint.components())
+        );
     }
 
     template <int iNumDimensions, int iNumResultDimensions>

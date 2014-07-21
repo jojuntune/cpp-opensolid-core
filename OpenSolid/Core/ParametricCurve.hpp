@@ -88,10 +88,11 @@ namespace opensolid
     ParametricCurve<iNumDimensions>
     ScalingFunction<ParametricCurve<iNumDimensions>>::operator()(
         const ParametricCurve<iNumDimensions>& curve,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return ParametricCurve<iNumDimensions>(
-            scale * curve.expression(),
+            originPoint.components() + scale * (curve.expression() - originPoint.components()),
             curve.domain()
         );
     }
@@ -112,10 +113,14 @@ namespace opensolid
     ParametricCurve<iNumResultDimensions>
     TransformationFunction<ParametricCurve<iNumDimensions>, iNumResultDimensions>::operator()(
         const ParametricCurve<iNumDimensions>& curve,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
         return ParametricCurve<iNumResultDimensions>(
-            matrix * curve.expression(),
+            destinationPoint.components() + (
+                transformationMatrix * (curve.expression() - originPoint.components())
+            ),
             curve.domain()
         );
     }

@@ -64,10 +64,13 @@ namespace opensolid
     ParametricVolume3d
     ScalingFunction<ParametricVolume3d>::operator()(
         const ParametricVolume3d& parametricArea,
+        const Point3d& originPoint,
         double scale
     ) const {
         return ParametricVolume3d(
-            scale * parametricArea.expression(),
+            originPoint.components() + (
+                scale * (parametricArea.expression() - originPoint.components())
+            ),
             parametricArea.domain()
         );
     }
@@ -86,10 +89,14 @@ namespace opensolid
     ParametricVolume3d
     TransformationFunction<ParametricVolume3d, 3>::operator()(
         const ParametricVolume3d& parametricArea,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return ParametricVolume3d(
-            matrix * parametricArea.expression(),
+            destinationPoint.components() + (
+                transformationMatrix * (parametricArea.expression() - originPoint.components())
+            ),
             parametricArea.domain()
         );
     }

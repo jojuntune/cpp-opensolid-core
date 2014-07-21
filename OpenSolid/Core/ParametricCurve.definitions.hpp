@@ -408,7 +408,11 @@ namespace opensolid
     struct ScalingFunction<ParametricCurve<iNumDimensions>>
     {
         ParametricCurve<iNumDimensions>
-        operator()(const ParametricCurve<iNumDimensions>& curve, double scale) const;
+        operator()(
+            const ParametricCurve<iNumDimensions>& curve,
+            const Point<iNumDimensions>& originPoint,
+            double scale
+        ) const;
     };
 
     template <int iNumDimensions>
@@ -427,7 +431,9 @@ namespace opensolid
         ParametricCurve<iNumResultDimensions>
         operator()(
             const ParametricCurve<iNumDimensions>& curve,
-            const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+            const Point<iNumDimensions>& originPoint,
+            const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+            const Point<iNumResultDimensions>& destinationPoint
         ) const;
     };
 

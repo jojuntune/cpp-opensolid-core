@@ -136,7 +136,7 @@ namespace opensolid
     struct ScalingFunction<Plane3d>
     {
         Plane3d
-        operator()(const Plane3d& plane, double scale) const;
+        operator()(const Plane3d& plane, const Point<3>& originPoint, double scale) const;
     };
 
     template <>
@@ -151,7 +151,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Plane3d
-        operator()(const Plane3d& plane, const Matrix<double, 3, 3>& matrix) const;
+        operator()(
+            const Plane3d& plane,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>

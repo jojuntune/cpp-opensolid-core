@@ -64,10 +64,13 @@ namespace opensolid
     ParametricArea2d
     ScalingFunction<ParametricArea2d>::operator()(
         const ParametricArea2d& parametricArea,
+        const Point2d& originPoint,
         double scale
     ) const {
         return ParametricArea2d(
-            scale * parametricArea.expression(),
+            originPoint.components() + (
+                scale * (parametricArea.expression() - originPoint.components())
+            ),
             parametricArea.domain()
         );
     }
@@ -86,10 +89,14 @@ namespace opensolid
     ParametricArea2d
     TransformationFunction<ParametricArea2d, 2>::operator()(
         const ParametricArea2d& parametricArea,
-        const Matrix2d& matrix
+        const Point2d& originPoint,
+        const Matrix2d& transformationMatrix,
+        const Point2d& destinationPoint
     ) const {
         return ParametricArea2d(
-            matrix * parametricArea.expression(),
+            destinationPoint.components() + (
+                transformationMatrix * (parametricArea.expression() - originPoint.components())
+            ),
             parametricArea.domain()
         );
     }

@@ -194,10 +194,11 @@ namespace opensolid
     const Axis<iNumDimensions>
     ScalingFunction<Axis<iNumDimensions>>::operator()(
         const Axis<iNumDimensions>& axis,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return Axis<iNumDimensions>(
-            scalingFunction(axis.originPoint(), scale),
+            scaled(axis.originPoint(), originPoint, scale),
             scale >= 0.0 ? axis.directionVector() : -axis.directionVector()
         );
     }
@@ -210,7 +211,7 @@ namespace opensolid
         const Vector<double, iNumDimensions>& vector
     ) const {
         return Axis<iNumDimensions>(
-            translationFunction(axis.originPoint(), vector),
+            translated(axis.originPoint(), vector),
             axis.directionVector()
         );
     }
@@ -219,11 +220,15 @@ namespace opensolid
     const Axis<iNumResultDimensions>
     TransformationFunction<Axis<iNumDimensions>, iNumResultDimensions>::operator()(
         const Axis<iNumDimensions>& axis,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
-        Vector<double, iNumResultDimensions> transformedDirection = transformationFunction(
+        Vector<double, iNumResultDimensions> transformedDirection = transformed(
             axis.directionVector(),
-            matrix
+            originPoint,
+            transformationMatrix
+            destinationPoint
         );
         double transformedNorm = transformedDirection.norm();
         if (transformedNorm == Zero()) {
@@ -231,7 +236,7 @@ namespace opensolid
         }
         transformedDirection *= (1.0 / transformedNorm);
         return Axis<iNumResultDimensions>(
-            transformationFunction(axis.originPoint(), matrix),
+            transformed(axis.originPoint(), originPoint, transformationMatrix, destinationPoint),
             UnitVector<iNumResultDimensions>(transformedDirection)
         );
     }
@@ -242,9 +247,9 @@ namespace opensolid
         const Axis<iNumDimensions>& axis,
         const ParametricExpression<iNumResultDimensions, iNumDimensions>& morphingExpression
     ) const {
-        Vector<double, iNumResultDimensions> morphedDirection = transformationFunction(
-            axis.directionVector(),
-            morphingExpression.jacobian(axis.originPoint().components())
+        Vector<double, iNumResultDimensions> morphedDirection(
+            morphingExpression.jacobian(axis.originPoint().components()) *
+            axis.directionVector().components()
         );
         double morphedNorm = morphedDirection.norm();
         if (morphedNorm == Zero()) {
@@ -252,7 +257,7 @@ namespace opensolid
         }
         morphedDirection *= (1.0 / morphedNorm);
         return Axis<iNumResultDimensions>(
-            morphingFunction(axis.originPoint(), morphingExpression),
+            morphed(axis.originPoint(), morphingExpression),
             UnitVector<iNumResultDimensions>(morphedDirection)
         );
     }

@@ -58,9 +58,13 @@ namespace opensolid
 
     inline
     Plane3d
-    ScalingFunction<Plane3d>::operator()(const Plane3d& plane, double scale) const {
+    ScalingFunction<Plane3d>::operator()(
+        const Plane3d& plane,
+        const Point3d& originPoint,
+        double scale
+    ) const {
         return Plane3d(
-            scalingFunction(plane.originPoint(), scale),
+            scaled(plane.originPoint(), originPoint, scale),
             scale >= 0.0 ? plane.normalVector() : -plane.normalVector()
         );
     }
@@ -72,7 +76,7 @@ namespace opensolid
         const Vector<double, 3>& vector
     ) const {
         return Plane3d(
-            translationFunction(plane.originPoint(), vector),
+            translated(plane.originPoint(), vector),
             plane.normalVector()
         );
     }

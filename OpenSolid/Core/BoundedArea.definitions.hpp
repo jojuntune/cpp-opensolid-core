@@ -84,7 +84,11 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, double scale) const;
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Point<2>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
@@ -92,7 +96,7 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Vector2d& vector) const;
+        operator()(const BoundedArea2d& boundedArea, const Vector<double, 2>& vector) const;
     };
 
     template <>
@@ -100,7 +104,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         const BoundedArea2d
-        operator()(const BoundedArea2d& boundedArea, const Matrix2d& matrix) const;
+        operator()(
+            const BoundedArea2d& boundedArea,
+            const Point<2>& originPoint,
+            const Matrix<double, 2, 2>& transformationMatrix,
+            const Point<2>& destinationPoint
+        ) const;
     };
 
     template <>

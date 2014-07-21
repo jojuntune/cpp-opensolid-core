@@ -69,10 +69,11 @@ namespace opensolid
     ParametricSurface3d
     ScalingFunction<ParametricSurface3d>::operator()(
         const ParametricSurface3d& surface,
+        const Point3d& originPoint,
         double scale
     ) const {
         return ParametricSurface3d(
-            scale * surface.expression(),
+            originPoint.components() + scale * (surface.expression() - originPoint.components()),
             surface.domain()
         );
     }
@@ -91,10 +92,14 @@ namespace opensolid
     ParametricSurface3d
     TransformationFunction<ParametricSurface3d, 3>::operator()(
         const ParametricSurface3d& surface,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
         return ParametricSurface3d(
-            matrix * surface.expression(),
+            destinationPoint.components() + (
+                transformationMatrix * (surface.expression() - originPoint.components())
+            ),
             surface.domain()
         );
     }

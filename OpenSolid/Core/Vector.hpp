@@ -443,6 +443,7 @@ namespace opensolid
     const Vector<TScalar, iNumDimensions>
     ScalingFunction<Vector<TScalar, iNumDimensions>>::operator()(
         const Vector<TScalar, iNumDimensions>& vector,
+        const Point<iNumDimensions>& originPoint,
         double scale
     ) const {
         return scale * vector;
@@ -463,8 +464,10 @@ namespace opensolid
     const Vector<TScalar, iNumResultDimensions>
     TransformationFunction<Vector<TScalar, iNumDimensions>, iNumResultDimensions>::operator()(
         const Vector<TScalar, iNumDimensions>& vector,
-        const Matrix<double, iNumResultDimensions, iNumDimensions>& matrix
+        const Point<iNumDimensions>& originPoint,
+        const Matrix<double, iNumResultDimensions, iNumDimensions>& transformationMatrix,
+        const Point<iNumResultDimensions>& destinationPoint
     ) const {
-        return Vector<TScalar, iNumResultDimensions>(matrix * vector.components());
+        return Vector<TScalar, iNumResultDimensions>(transformationMatrix * vector.components());
     }
 }

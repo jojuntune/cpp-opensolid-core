@@ -143,7 +143,11 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Tetrahedron3d
-        operator()(const Tetrahedron3d& tetrahedron, double scale) const;
+        operator()(
+            const Tetrahedron3d& tetrahedron,
+            const Point<3>& originPoint,
+            double scale
+        ) const;
     };
 
     template <>
@@ -159,7 +163,12 @@ namespace opensolid
     {
         OPENSOLID_CORE_EXPORT
         Tetrahedron3d
-        operator()(const Tetrahedron3d& tetrahedron, const Matrix<double, 3, 3>& matrix) const;
+        operator()(
+            const Tetrahedron3d& tetrahedron,
+            const Point<3>& originPoint,
+            const Matrix<double, 3, 3>& transformationMatrix,
+            const Point<3>& destinationPoint
+        ) const;
     };
 
     template <>

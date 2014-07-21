@@ -98,8 +98,12 @@ namespace opensolid
 
     inline
     Sphere3d
-    ScalingFunction<Sphere3d>::operator()(const Sphere3d& sphere, double scale) const {
-        return Sphere3d(scalingFunction(sphere.centerPoint(), scale), scale * sphere.radius());
+    ScalingFunction<Sphere3d>::operator()(
+        const Sphere3d& sphere,
+        const Point3d& originPoint,
+        double scale
+    ) const {
+        return Sphere3d(scaled(sphere.centerPoint(), originPoint, scale), scale * sphere.radius());
     }
 
     inline
@@ -108,6 +112,6 @@ namespace opensolid
         const Sphere3d& sphere,
         const Vector3d& vector
     ) const {
-        return Sphere3d(translationFunction(sphere.centerPoint(), vector), sphere.radius());
+        return Sphere3d(translated(sphere.centerPoint(), vector), sphere.radius());
     }
 }

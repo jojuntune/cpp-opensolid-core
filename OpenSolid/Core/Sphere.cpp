@@ -62,11 +62,13 @@ namespace opensolid
     Sphere3d
     TransformationFunction<Sphere3d, 3>::operator()(
         const Sphere3d& sphere,
-        const Matrix3d& matrix
+        const Point3d& originPoint,
+        const Matrix3d& transformationMatrix,
+        const Point3d& destinationPoint
     ) const {
-        double scale = abs(cubeRoot(matrix.determinant()));
+        double scale = abs(cubeRoot(transformationMatrix.determinant()));
         return Sphere3d(
-            transformationFunction(sphere.centerPoint(), matrix),
+            transformed(sphere.centerPoint(), originPoint, transformationMatrix, destinationPoint),
             scale * sphere.radius()
         );
     }
@@ -80,7 +82,7 @@ namespace opensolid
             cubeRoot(morphingExpression.jacobian(sphere.centerPoint().components()).determinant())
         );
         return Sphere3d(
-            morphingFunction(sphere.centerPoint(), morphingExpression),
+            morphed(sphere.centerPoint(), morphingExpression),
             scale * sphere.radius()
         );
     }

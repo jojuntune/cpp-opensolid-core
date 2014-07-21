@@ -43,6 +43,21 @@ namespace opensolid
 
     template <class TTransformable, int iNumResultDimensions>
     struct MorphedType;
+    
+    template <class TTransformable>
+    struct RotatedType;
+
+    template <class TTransformable>
+    struct MirroredType;
+
+    template <class TTransformable, class TDatum>
+    struct ProjectedType;
+
+    template <class TTransformable, class TCoordinateSystem>
+    struct LocalizedType;
+
+    template <class TTransformable, class TCoordinateSystem>
+    struct GlobalizedType;
 
     template <class TTransformable>
     struct ScalingFunction;
@@ -57,17 +72,17 @@ namespace opensolid
     struct MorphingFunction;
 
     template <class TTransformable>
-    struct ScaledAboutPointType;
+    struct RotationFunction;
 
     template <class TTransformable>
-    struct TransformedAboutPointType;
+    struct MirrorFunction;
 
-    template <class TTransformable, int iNumResultDimensions>
-    struct LocalizedType;
+    template <class TTransformable, class TDatum>
+    struct ProjectionFunction;
 
-    template <class TTransformable, int iNumResultDimensions>
-    struct GlobalizedType;
+    template <class TTransformable, class TCoordinateSystem>
+    struct LocalizationFunction;
 
-    template <class TTransformable, int iNumResultDimensions>
-    struct TransplantedType;
+    template <class TTransformable, class TCoordinateSystem>
+    struct GlobalizationFunction;
 }
