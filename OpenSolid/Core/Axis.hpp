@@ -227,7 +227,7 @@ namespace opensolid
         Vector<double, iNumResultDimensions> transformedDirection = transformed(
             axis.directionVector(),
             originPoint,
-            transformationMatrix
+            transformationMatrix,
             destinationPoint
         );
         double transformedNorm = transformedDirection.norm();
