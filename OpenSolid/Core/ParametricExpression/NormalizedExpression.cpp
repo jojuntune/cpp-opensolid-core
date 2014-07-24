@@ -110,7 +110,7 @@ namespace opensolid
 
             resultView = (
                 operandJacobian -
-                operandNormalized * (operandNormalized.transpose() * operandJacobian)
+                operandNormalized * operandNormalized.transposeProduct(operandJacobian)
             ) / operandNorm;
         }
         
@@ -133,7 +133,7 @@ namespace opensolid
 
             resultView = (
                 operandJacobian -
-                operandNormalized * (operandNormalized.transpose() * operandJacobian)
+                operandNormalized * operandNormalized.transposeProduct(operandJacobian)
             ) / operandNorm;
         }
 

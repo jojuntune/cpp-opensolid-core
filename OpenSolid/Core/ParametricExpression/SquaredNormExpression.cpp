@@ -78,7 +78,8 @@ namespace opensolid
             ConstMatrixViewXd operandValue = evaluator.evaluate(operand(), parameterView);
             ConstMatrixViewXd operandJacobian = 
                 evaluator.evaluateJacobian(operand(), parameterView);
-            resultView = 2.0 * operandValue.transpose() * operandJacobian;
+            resultView.setTransposeProduct(operandValue, operandJacobian);
+            resultView *= 2.0;
         }
         
         void
@@ -90,7 +91,8 @@ namespace opensolid
             ConstIntervalMatrixViewXd operandBounds = evaluator.evaluate(operand(), parameterView);
             ConstIntervalMatrixViewXd operandJacobian =
                 evaluator.evaluateJacobian(operand(), parameterView);
-            resultView = 2.0 * operandBounds.transpose() * operandJacobian;
+            resultView.setTransposeProduct(operandBounds, operandJacobian);
+            resultView *= 2.0;
         }
 
         ExpressionImplementationPtr

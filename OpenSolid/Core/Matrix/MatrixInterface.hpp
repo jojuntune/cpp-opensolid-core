@@ -1270,7 +1270,6 @@ namespace opensolid
         ) {
             typedef typename MatrixTraits<TFirstDerived>::Scalar FirstScalarType;
             typedef typename MatrixTraits<TSecondDerived>::Scalar SecondScalarType;
-            typedef typename CommonScalar<TFirstDerived, TSecondDerived>::Type ResultScalarType;
 
             CheckCompatibleSizes<
                 MatrixTraits<TDerived>::NumRows,
@@ -1286,26 +1285,79 @@ namespace opensolid
                 MatrixTraits<TFirstDerived>::NumColumns,
                 MatrixTraits<TSecondDerived>::NumRows
             >(firstMatrix.numColumns(), secondMatrix.numRows());
-                    
-            ResultScalarType* resultPtr = data();
-            const FirstScalarType* rowStart = firstMatrix.data();
-            const SecondScalarType* colStart = secondMatrix.data();
+
             for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
                 for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
-                    const FirstScalarType* rowPtr = rowStart;
-                    const SecondScalarType* colPtr = colStart;
-                    *resultPtr = (*rowPtr) * (*colPtr);
+                    Scalar& result = component(rowIndex, columnIndex);
+                    result = firstMatrix(rowIndex, 0) * secondMatrix(0, columnIndex);
                     for (int innerIndex = 1; innerIndex < firstMatrix.numColumns(); ++innerIndex) {
-                        rowPtr += firstMatrix.columnStride();
-                        ++colPtr;
-                        *resultPtr += (*rowPtr) * (*colPtr);
+                        result += (
+                            firstMatrix(rowIndex, innerIndex) *
+                            secondMatrix(innerIndex, columnIndex)
+                        );
                     }
-                    ++resultPtr;
-                    ++rowStart;
                 }
-                rowStart = firstMatrix.data();
-                colStart += secondMatrix.columnStride();
             }
+        }
+        
+        template <class TDerived>
+        template <class TFirstDerived, class TSecondDerived>
+        inline
+        void
+        MatrixInterface<TDerived>::setTransposeProduct(
+            const MatrixInterface<TFirstDerived>& firstMatrix,
+            const MatrixInterface<TSecondDerived>& secondMatrix
+        ) {
+            typedef typename MatrixTraits<TFirstDerived>::Scalar FirstScalarType;
+            typedef typename MatrixTraits<TSecondDerived>::Scalar SecondScalarType;
+
+            CheckCompatibleSizes<
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TFirstDerived>::NumColumns
+            >(numRows(), firstMatrix.numColumns());
+            
+            CheckCompatibleSizes<
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TSecondDerived>::NumColumns
+            >(numColumns(), secondMatrix.numColumns());
+            
+            CheckCompatibleSizes<
+                MatrixTraits<TFirstDerived>::NumRows,
+                MatrixTraits<TSecondDerived>::NumRows
+            >(firstMatrix.numRows(), secondMatrix.numRows());
+
+            for (int columnIndex = 0; columnIndex < numColumns(); ++columnIndex) {
+                for (int rowIndex = 0; rowIndex < numRows(); ++rowIndex) {
+                    Scalar& result = component(rowIndex, columnIndex);
+                    result = firstMatrix(0, rowIndex) * secondMatrix(0, columnIndex);
+                    for (int innerIndex = 1; innerIndex < firstMatrix.numRows(); ++innerIndex) {
+                        result += (
+                            firstMatrix(innerIndex, rowIndex) *
+                            secondMatrix(innerIndex, columnIndex)
+                        );
+                    }
+                }
+            }
+        }
+
+        template <class TDerived> template <class TOtherDerived>
+        inline
+        const Matrix<
+            typename CommonScalar<TDerived, TOtherDerived>::Type,
+            MatrixTraits<TDerived>::NumColumns,
+            MatrixTraits<TOtherDerived>::NumColumns
+        >
+        MatrixInterface<TDerived>::transposeProduct(
+            const MatrixInterface<TOtherDerived>& other
+        ) const {
+            Matrix<
+                typename CommonScalar<TDerived, TOtherDerived>::Type,
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TOtherDerived>::NumColumns
+            > result(std::pair<int, int>(this->numColumns(), other.numColumns()));
+
+            result.setTransposeProduct(*this, other);
+            return result;
         }
 
         template <int iFirstSize, int iSecondSize>

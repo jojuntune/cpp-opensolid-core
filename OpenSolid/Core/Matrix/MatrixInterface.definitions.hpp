@@ -421,6 +421,21 @@ namespace opensolid
                 const MatrixInterface<TFirstDerived>& firstMatrix,
                 const MatrixInterface<TSecondDerived>& secondMatrix
             );
+            
+            template <class TFirstDerived, class TSecondDerived>
+            void
+            setTransposeProduct(
+                const MatrixInterface<TFirstDerived>& firstMatrix,
+                const MatrixInterface<TSecondDerived>& secondMatrix
+            );
+
+            template <class TOtherDerived>
+            const Matrix<
+                typename CommonScalar<TDerived, TOtherDerived>::Type,
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TOtherDerived>::NumColumns
+            >
+            transposeProduct(const MatrixInterface<TOtherDerived>& other) const;
         };
 
         template <class TUnaryFunction, class TScalar>

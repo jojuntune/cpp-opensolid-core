@@ -92,8 +92,8 @@ namespace opensolid
             );
             
             resultView = (
-                firstValue.transpose() * secondJacobian +
-                secondValue.transpose() * firstJacobian
+                firstValue.transposeProduct(secondJacobian) +
+                secondValue.transposeProduct(firstJacobian)
             );
         }
         
@@ -118,8 +118,8 @@ namespace opensolid
             );
             
             resultView = (
-                firstValue.transpose() * secondJacobian +
-                secondValue.transpose() * firstJacobian
+                firstValue.transposeProduct(secondJacobian) +
+                secondValue.transposeProduct(firstJacobian)
             );
         }
 
