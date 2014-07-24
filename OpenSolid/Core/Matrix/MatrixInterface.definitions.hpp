@@ -399,6 +399,10 @@ namespace opensolid
             void
             setRandom();
             
+            template <class TOtherDerived>
+            void
+            setTranspose(const MatrixInterface<TOtherDerived>& other);
+            
             template <class TOtherDerived, class TUnaryFunction>
             void
             setMap(const MatrixInterface<TOtherDerived>& other, TUnaryFunction unaryFunction);
@@ -417,10 +421,6 @@ namespace opensolid
                 const MatrixInterface<TFirstDerived>& firstMatrix,
                 const MatrixInterface<TSecondDerived>& secondMatrix
             );
-            
-            template <class TOtherDerived>
-            void
-            setTranspose(const MatrixInterface<TOtherDerived>& other);
         };
 
         template <class TUnaryFunction, class TScalar>
