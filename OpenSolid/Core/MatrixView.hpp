@@ -132,6 +132,38 @@ namespace opensolid
     }
 
     template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    template <int iOtherRows, int iOtherCols, int iOtherColStride>
+    inline
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
+        MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>& other
+    ) : _data(other.data()),
+        _numRows(other.numRows()),
+        _numColumns(other.numColumns()),
+        _numComponents(other.numComponents()),
+        _columnStride(other.columnStride()) {
+
+        detail::CheckCompatibleSizes<iNumRows, iOtherRows> staticRowCheck;
+        detail::CheckCompatibleSizes<iNumColumns, iOtherCols> staticColCheck;
+        detail::CheckCompatibleSizes<iColumnStride, iOtherColStride> staticColStrideCheck;
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
+    template <int iOtherRows, int iOtherCols, int iOtherColStride>
+    inline
+    MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::MatrixView(
+        MatrixView<TScalar, iOtherRows, iOtherCols, iOtherColStride>&& other
+    ) : _data(other.data()),
+        _numRows(other.numRows()),
+        _numColumns(other.numColumns()),
+        _numComponents(other.numComponents()),
+        _columnStride(other.columnStride()) {
+
+        detail::CheckCompatibleSizes<iNumRows, iOtherRows> staticRowCheck;
+        detail::CheckCompatibleSizes<iNumColumns, iOtherCols> staticColCheck;
+        detail::CheckCompatibleSizes<iColumnStride, iOtherColStride> staticColStrideCheck;
+    }
+
+    template <class TScalar, int iNumRows, int iNumColumns, int iColumnStride>
     inline
     void
     MatrixView<TScalar, iNumRows, iNumColumns, iColumnStride>::operator=(
