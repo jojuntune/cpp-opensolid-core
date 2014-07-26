@@ -69,14 +69,14 @@ namespace opensolid
         inline
         ConstMatrixViewXd
         constView(const Matrix<double, iNumRows, iNumColumns>& matrix) {
-            return ConstMatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return matrix.view();
         }
 
         template <int iNumRows, int iNumColumns>
         inline
         ConstIntervalMatrixViewXd
         constView(const Matrix<Interval, iNumRows, iNumColumns>& matrix) {
-            return ConstIntervalMatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return matrix.view();
         }
 
         inline
@@ -119,14 +119,14 @@ namespace opensolid
         inline
         MatrixViewXd
         mutableView(Matrix<double, iNumRows, iNumColumns>& matrix) {
-            return MatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return matrix.view();
         }
 
         template <int iNumRows, int iNumColumns>
         inline
         IntervalMatrixViewXd
         mutableView(Matrix<Interval, iNumRows, iNumColumns>& matrix) {
-            return IntervalMatrixViewXd(matrix.data(), iNumRows, iNumColumns, iNumRows);
+            return matrix.view();
         }
 
         inline
