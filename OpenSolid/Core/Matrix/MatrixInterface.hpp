@@ -391,6 +391,40 @@ namespace opensolid
 
         template <class TDerived>
         inline
+        MatrixView<
+            const typename MatrixTraits<TDerived>::Scalar,
+            MatrixTraits<TDerived>::NumRows,
+            MatrixTraits<TDerived>::NumColumns,
+            MatrixTraits<TDerived>::ColumnStride
+        >
+        MatrixInterface<TDerived>::view() const {
+            return MatrixView<
+                const typename MatrixTraits<TDerived>::Scalar,
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TDerived>::ColumnStride
+            >(data(), numRows(), numColumns(), columnStride());
+        }
+
+        template <class TDerived>
+        inline
+        MatrixView<
+            typename MatrixTraits<TDerived>::Scalar,
+            MatrixTraits<TDerived>::NumRows,
+            MatrixTraits<TDerived>::NumColumns,
+            MatrixTraits<TDerived>::ColumnStride
+        >
+        MatrixInterface<TDerived>::view() {
+            return MatrixView<
+                typename MatrixTraits<TDerived>::Scalar,
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TDerived>::ColumnStride
+            >(data(), numRows(), numColumns(), columnStride());
+        }
+
+        template <class TDerived>
+        inline
         const Matrix<
             typename MatrixTraits<TDerived>::PlainScalar,
             MatrixTraits<TDerived>::NumColumns,

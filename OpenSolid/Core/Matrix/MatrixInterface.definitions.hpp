@@ -181,6 +181,22 @@ namespace opensolid
             >
             block(int startRow, int startCol, int blockRows, int blockCols);
 
+            MatrixView<
+                const typename MatrixTraits<TDerived>::Scalar,
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TDerived>::ColumnStride
+            >
+            view() const;
+
+            MatrixView<
+                typename MatrixTraits<TDerived>::Scalar,
+                MatrixTraits<TDerived>::NumRows,
+                MatrixTraits<TDerived>::NumColumns,
+                MatrixTraits<TDerived>::ColumnStride
+            >
+            view();
+
             const Matrix<
                 typename MatrixTraits<TDerived>::PlainScalar,
                 MatrixTraits<TDerived>::NumColumns,
