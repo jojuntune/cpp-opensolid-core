@@ -22,68 +22,15 @@
 *                                                                                   *
 ************************************************************************************/
 
+#pragma once
+
 #include <OpenSolid/config.hpp>
-
-#include <OpenSolid/Core/Matrix.hpp>
-#include <OpenSolid/Core/ParametricExpression.hpp>
-#include <OpenSolid/Core/Sphere.hpp>
-
-#include <cmath>
 
 namespace opensolid
 {
-    namespace
+    enum WindingDirection
     {
-        inline
-        double
-        cubeRoot(double value) {
-            if (value == Zero()) {
-                return 0.0;
-            } else if (value - 1.0 == Zero()) {
-                return 1.0;
-            } else if (value + 1.0 == Zero()) {
-                return -1.0;
-            } else {
-                #ifdef _MSC_VER
-                    #if (_MSC_VER >= 1800)
-                        // std::cbrt() first implemented in Visual Studio 2013
-                        return std::cbrt(value);
-                    #else
-                        // Fallback for previous versions of Visual Studio
-                        return std::pow(value, 1.0 / 3.0);
-                    #endif
-                #else
-                    return std::cbrt(value);
-                #endif
-            }
-        }
-    }
-
-    Sphere3d
-    TransformationFunction<Sphere3d, 3>::operator()(
-        const Sphere3d& sphere,
-        const Point3d& originPoint,
-        const Matrix3d& transformationMatrix,
-        const Point3d& destinationPoint
-    ) const {
-        double scale = abs(cubeRoot(transformationMatrix.determinant()));
-        return Sphere3d(
-            transformed(sphere.centerPoint(), originPoint, transformationMatrix, destinationPoint),
-            scale * sphere.radius()
-        );
-    }
-
-    Sphere3d
-    MorphingFunction<Sphere3d, 3>::operator()(
-        const Sphere3d& sphere,
-        const ParametricExpression<3, 3>& morphingExpression
-    ) const {
-        double scale = abs(
-            cubeRoot(morphingExpression.jacobian(sphere.centerPoint().components()).determinant())
-        );
-        return Sphere3d(
-            morphed(sphere.centerPoint(), morphingExpression),
-            scale * sphere.radius()
-        );
-    }
+        COUNTERCLOCKWISE,
+        CLOCKWISE
+    };
 }

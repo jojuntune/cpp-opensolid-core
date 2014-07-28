@@ -29,7 +29,9 @@
 #include <OpenSolid/Core/Sphere.definitions.hpp>
 
 #include <OpenSolid/Core/Box.hpp>
+#include <OpenSolid/Core/Circle.hpp>
 #include <OpenSolid/Core/Convertible.hpp>
+#include <OpenSolid/Core/LineSegment.hpp>
 #include <OpenSolid/Core/Point.hpp>
 #include <OpenSolid/Core/Transformable.hpp>
 #include <OpenSolid/Core/Zero.hpp>
@@ -113,5 +115,54 @@ namespace opensolid
         const Vector3d& vector
     ) const {
         return Sphere3d(translated(sphere.centerPoint(), vector), sphere.radius());
+    }
+
+    inline
+    Sphere3d
+    RotationFunction<Sphere3d>::operator()(
+        const Sphere3d& sphere,
+        const Point3d& originPoint,
+        const Matrix3d& rotationMatrix
+    ) const {
+        return Sphere3d(
+            rotated(sphere.centerPoint(), originPoint, transformationMatrix),
+            sphere.radius()
+        );
+    }
+
+    inline
+    Sphere3d
+    MirrorFunction<Sphere3d>::operator()(
+        const Sphere3d& sphere,
+        const Point3d& originPoint,
+        const UnitVector3d& normalVector
+    ) const {
+        return Sphere3d(mirrored(sphere.centerPoint(), originPoint, normalVector), sphere.radius());
+    }
+
+    inline
+    LineSegment3d
+    ProjectionFunction<Sphere3d, Axis3d>::operator()(
+        const Sphere3d& sphere,
+        const Axis3d& axis
+    ) const {
+        Point3d projectedCenter = sphere.centerPoint().projectedOnto(axis);
+        return LineSegment3d(
+            projectedCenter - sphere.radius() * axis.directionVector(),
+            projectedCenter + sphere.radius() * axis.directionVector()
+        );
+    }
+
+    inline
+    Circle3d
+    ProjectionFunction<Sphere3d, Plane3d>::operator()(
+        const Sphere3d& sphere,
+        const Plane3d& plane
+    ) const {
+        return Circle3d(
+            sphere.centerPoint().projectedOnto(plane),
+            plane.normalVector(),
+            sphere.radius()
+        );
     }
 }

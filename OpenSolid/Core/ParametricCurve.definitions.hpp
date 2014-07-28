@@ -35,10 +35,12 @@
 #include <OpenSolid/Core/Matrix.declarations.hpp>
 #include <OpenSolid/Core/ParametricCurve/ParametricCurveBase.definitions.hpp>
 #include <OpenSolid/Core/ParametricExpression.definitions.hpp>
+#include <OpenSolid/Core/Plane.declarations.hpp>
 #include <OpenSolid/Core/Point.declarations.hpp>
 #include <OpenSolid/Core/Transformable.definitions.hpp>
 #include <OpenSolid/Core/Triangle.declarations.hpp>
 #include <OpenSolid/Core/UnitVector.declarations.hpp>
+#include <OpenSolid/Core/WindingDirection.definitions.hpp>
 
 namespace opensolid
 {
@@ -76,29 +78,20 @@ namespace opensolid
         Interval _domain;
         Box<2> _bounds;
     public:
-        enum WindingDirection
-        {
-            COUNTERCLOCKWISE,
-            CLOCKWISE
-        };
-
         ParametricCurve();
 
         ParametricCurve(const ParametricCurve<2>& other);
 
         ParametricCurve(ParametricCurve<2>&& other);
 
-        ParametricCurve(
-            const ParametricExpression<2, 1>& expression,
-            Interval domain
-        );
+        ParametricCurve(const ParametricExpression<2, 1>& expression, Interval domain);
 
         ///// Arcs /////
         //
         // Argument order:
         //   centerPoint
         //   radius
-        //   direction
+        //   windingDirection
         //   startPoint
         //   startAngle
         //   innerPoint
@@ -118,7 +111,7 @@ namespace opensolid
         static ParametricCurve<2>
         arc(
             const Point<2>& centerPoint,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<2>& startPoint,
             const Point<2>& endPoint
         );
@@ -127,7 +120,7 @@ namespace opensolid
         static ParametricCurve<2>
         arc(
             double radius,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<2>& startPoint,
             const Point<2>& endPoint
         );
@@ -145,7 +138,7 @@ namespace opensolid
         // Argument order:
         //   centerPoint
         //   radius
-        //   direction
+        //   windingDirection
         //   startAngle
         //   startPoint
         //   secondPoint
@@ -153,17 +146,14 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<2>
-        circle(
-            const Point<2>& centerPoint,
-            double radius
-        );
+        circle(const Point<2>& centerPoint, double radius);
 
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<2>
         circle(
             const Point<2>& centerPoint,
             double radius,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             double startAngle
         );
 
@@ -171,7 +161,7 @@ namespace opensolid
         static ParametricCurve<2>
         circle(
             const Point<2>& centerPoint,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<2>& startPoint
         );
 
@@ -179,7 +169,7 @@ namespace opensolid
         static ParametricCurve<2>
         circle(
             double radius,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<2>& startPoint,
             const Point<2>& secondPoint
         );
@@ -194,9 +184,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<2>
-        circumcircle(
-            const Triangle<2>& triangle
-        );
+        circumcircle(const Triangle<2>& triangle);
     };
 
     typedef ParametricCurve<2> ParametricCurve2d;
@@ -211,12 +199,6 @@ namespace opensolid
         Interval _domain;
         Box<3> _bounds;
     public:
-        enum WindingDirection
-        {
-            COUNTERCLOCKWISE,
-            CLOCKWISE
-        };
-        
         ParametricCurve();
 
         ParametricCurve(const ParametricCurve<3>& other);
@@ -232,8 +214,9 @@ namespace opensolid
         //
         // Argument order:
         //   centerPoint
+        //   normalVector
+        //   plane
         //   axis
-        //   axisDirection
         //   radius
         //   startPoint
         //   innerPoint
@@ -243,7 +226,15 @@ namespace opensolid
         static ParametricCurve<3>
         arc(
             const Point<3>& centerPoint,
-            const UnitVector<3>& axisDirection,
+            const UnitVector<3>& normalVector,
+            const Point<3>& startPoint,
+            const Point<3>& endPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        arc(
+            const Plane3d& plane,
             const Point<3>& startPoint,
             const Point<3>& endPoint
         );
@@ -259,7 +250,7 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
         arc(
-            const UnitVector<3>& axisDirection,
+            const UnitVector<3>& normalVector,
             double radius,
             const Point<3>& startPoint,
             const Point<3>& endPoint
@@ -277,8 +268,9 @@ namespace opensolid
         //
         // Argument order:
         //   centerPoint
+        //   normalVector
+        //   plane
         //   axis
-        //   axisDirection
         //   radius
         //   startPoint
         //   innerPoint
@@ -286,17 +278,20 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
-        circle(
-            const Point<3>& centerPoint,
-            const UnitVector<3>& axisDirection,
-            double radius
-        );
+        circle(const Point<3>& centerPoint, const UnitVector<3>& normalVector, double radius);
 
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
         circle(
             const Point<3>& centerPoint,
-            const UnitVector<3>& axisDirection,
+            const UnitVector<3>& normalVector,
+            const Point<3>& startPoint
+        );
+
+        OPENSOLID_CORE_EXPORT
+        static ParametricCurve<3>
+        circle(
+            const Plane3d& plane,
             const Point<3>& startPoint
         );
 
@@ -310,8 +305,8 @@ namespace opensolid
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
         circle(
-            const UnitVector<3>& axisDirection,
             double radius,
+            const UnitVector<3>& normalVector,
             const Point<3>& startPoint,
             const Point<3>& secondPoint
         );
@@ -326,9 +321,7 @@ namespace opensolid
 
         OPENSOLID_CORE_EXPORT
         static ParametricCurve<3>
-        circumcircle(
-            const Triangle<3>& triangle
-        );
+        circumcircle(const Triangle<3>& triangle);
 
         ///// Helices /////
         //
@@ -351,7 +344,7 @@ namespace opensolid
             const Point<3>& startCenterPoint,
             const Point<3>& endCenterPoint,
             double radius,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             double pitch, // if <= 0: determine from numTurns
             double numTurns // if <= 0: determine from pitch
         );
@@ -361,7 +354,7 @@ namespace opensolid
         helix(
             const Point<3>& startCenterPoint,
             const Point<3>& endCenterPoint,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<3>& startPoint,
             double pitch, // if <= 0: determine from numTurns
             double numTurns // if <= 0: determine from pitch
@@ -373,7 +366,7 @@ namespace opensolid
             const Point<3>& startCenterPoint,
             const UnitVector<3>& axisDirection,
             double radius,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             double pitch, // if <= 0: determine from numTurns/length
             double numTurns, // if <= 0: determine from pitch/length
             double length // if <= 0: determine from pitch/numTurns
@@ -384,7 +377,7 @@ namespace opensolid
         helix(
             const Point<3>& startCenterPoint,
             const UnitVector<3>& axisDirection,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<3>& startPoint,
             double pitch, // if <= 0: determine from numTurns/length
             double numTurns, // if <= 0: determine from pitch/length
@@ -395,7 +388,7 @@ namespace opensolid
         static ParametricCurve<3>
         helix(
             const Axis<3>& axis,
-            WindingDirection direction,
+            WindingDirection windingDirection,
             const Point<3>& startPoint,
             double pitch, // if <= 0: determine from numTurns/length
             double numTurns, // if <= 0: determine from pitch/length
